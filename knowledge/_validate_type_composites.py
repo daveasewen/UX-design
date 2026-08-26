@@ -39,8 +39,19 @@ EXEMPT
 Usage:  python3 knowledge/_validate_type_composites.py <file.html|file.css> [more ...]
         python3 knowledge/_validate_type_composites.py --selftest
         python3 knowledge/_validate_type_composites.py --inventory   # CSV of every fail
-        python3 knowledge/_validate_type_composites.py               # DEF-006 build mode
+        python3 knowledge/_validate_type_composites.py --ratchet     # tier (b), MAY REWRITE
+        python3 knowledge/_validate_type_composites.py --check       # tier (b), READ-ONLY (#219)
+        python3 knowledge/_validate_type_composites.py               # raw inventory, exits 1
 Exit non-zero on any violation (blocking). Wired into _build_all.py as DEF-006.
+
+⛔ #219 — WHICH FLAG IS THE GATE. Bare is the RAW INVENTORY: it lists every violation in the
+declared debt and exits 1 by design, so it is a WORKLIST, not a verdict. The gated posture is
+`--ratchet` (Dave #119, shrink-only). A caller that runs the gates generically — the Apollo pack's
+runner does — gets the worklist and reads Apollo's own declared debt as fresh failures; that was
+the fourth of the four packed-gate reds. `--check` is `--ratchet` MINUS THE WRITE, added so a
+generic runner and the build survey can ASK this gate without mutating the ruled allowance.
+⚠ To gate a DESIGNER'S OWN file, name it: `… _validate_type_composites.py my-page.html`. The
+default target set is Apollo's own canon and snippets and does not include anyone else's work.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -249,7 +260,7 @@ DEFAULT_TARGETS = (
 RATCHET_FILE = os.path.join(HERE, "_type_ratchet.json")
 
 
-def run_ratchet(paths):
+def run_ratchet(paths, write=True):
     """Tier (b) — SHRINK-ONLY RATCHET, ruled by Dave #119 (2026-08-07).
 
     Enforces today against any NEW violation; existing debt is DECLARED in
@@ -258,6 +269,33 @@ def run_ratchet(paths):
     own gate" — the claimed difference is it may ONLY shrink and is carried as
     declared debt, never absorbed as a pass. The baseline was MEASURED at wiring,
     not copied from _HANDOFF-118 (whose 1,101 was a dated measurement).
+
+    ⛔ #219 — `write=False` IS THE `--check` ARM, AND IT EXISTS BECAUSE A RATCHET
+    THAT WRITES CANNOT BE ASKED A QUESTION. This gate was the fourth of the four
+    packed-gate reds (`s219-D5(Q5)`). Diagnosis, measured rather than guessed:
+      · the ratchet STATE FILE IS ALREADY SHIPPED — `knowledge/_type_ratchet.json`
+        is in the v3 ship list, so this was NOT the "missing gate-state file in the
+        stage" case Dave's clause anticipates. Nothing to add to the manifest.
+      · the pack's runner calls every shipped gate BARE, and bare is the RAW
+        INVENTORY mode: it prints every violation and exits 1. In the repo the
+        gated posture has always been `--ratchet` (`_build_all.STEPS`); the pack
+        had no way to know that, so it asked the gate the wrong question and read
+        Apollo's own DECLARED DEBT as 664 fresh failures in a designer's first CI run.
+      · and `--ratchet` could not simply be handed to the runner: on a smaller file
+        population it SHRINKS AND REWRITES the baseline. Driven in an extracted pack:
+        `TYPE RATCHET PASS — debt shrank 1091 -> 664; baseline ratcheted down`, with
+        `_type_ratchet.json` mutated on disk. A gate that edits the ruled allowance as
+        a side effect of being run is not a checker, and in a designer's own project
+        it would silently re-baseline against THEIR tree.
+    ⇒ `--check` is the same comparison with the write removed. The repo keeps
+    `--ratchet` and Dave's #119 shrink behaviour EXACTLY as ruled — this adds no new
+    posture and moves no allowance in either direction. It also spells the flag the way
+    `_build_survey.NON_MUTATING` already recognises, so the step becomes ASKABLE.
+    ⚠ The 664-vs-1091 SLACK is real and is NOT a defect this arm hides: the pack ships a
+    subset of the gated files, so it carries a subset of the same declared debt, and the
+    comparison stays honest (no NEW violation). Whether the pack's shipped baseline should
+    be re-measured at bake time is a STAGING question — named for N1 in the #219 N2 report,
+    not decided here, and never by raising a number.
     """
     import io, json
     buf, real = io.StringIO(), sys.stdout
@@ -276,14 +314,19 @@ def run_ratchet(paths):
               f"{count - base} NEW violation(s); the ratchet only shrinks.")
         return 1
     if count < base:
+        if not write:
+            print(f"TYPE RATCHET CHECK PASS — {count} violation(s) under the declared debt "
+                  f"{base} ({base - count} of slack); 0 NEW. Baseline NOT rewritten (--check). "
+                  f"This is DEBT, not a pass of the underlying gate.")
+            return 0
         state["baseline"] = count
         state["shrunk"] = f"{base} -> {count} on {__import__('datetime').date.today()}"
         with open(RATCHET_FILE, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)
         print(f"TYPE RATCHET PASS — debt shrank {base} -> {count}; baseline ratcheted down.")
         return 0
-    print(f"TYPE RATCHET PASS — declared debt holds at {base} (0 new). "
-          f"This is DEBT, not a pass of the underlying gate.")
+    print(f"TYPE RATCHET {'CHECK ' if not write else ''}PASS — declared debt holds at {base} "
+          f"(0 new). This is DEBT, not a pass of the underlying gate.")
     return 0
 
 
@@ -299,6 +342,8 @@ if __name__ == "__main__":
         sys.exit(selftest())
     if args and args[0] == "--ratchet":
         sys.exit(run_ratchet([p for p in DEFAULT_TARGETS if os.path.exists(p)]))
+    if args and args[0] == "--check":       # #219 — the same ask, without the write
+        sys.exit(run_ratchet([p for p in DEFAULT_TARGETS if os.path.exists(p)], write=False))
     if args and args[0] == "--inventory":
         rest = args[1:] or [p for p in DEFAULT_TARGETS if os.path.exists(p)]
         sys.exit(run(rest, inventory=True))

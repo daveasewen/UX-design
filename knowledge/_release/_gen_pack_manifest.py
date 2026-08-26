@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""_gen_v3_manifest.py — the GENERATOR behind `designer-skills-v3/build-designer-pack.sh`.
+"""_gen_pack_manifest.py — the GENERATOR behind `apollo-spider/build-designer-pack.sh`.
 
 WHY THIS EXISTS. `s219-D4(2)`: "THE EXACT CUT IS A PROPOSED MANIFEST FOR HIS EYE BEFORE THE
 BAKE — release = explicit, versioned, Dave's word." A hand-kept ship list is the v1 defect the
@@ -10,9 +10,9 @@ the bake reads the manifest rather than re-deriving the list a second time.
 
 THE THREE JOBS (one file, three modes; the .sh is the only entry point a human drives):
 
-  --manifest   enumerate the cut at <commit> into knowledge/_release/_v3_manifest.json
+  --manifest   enumerate the cut at <commit> into knowledge/_release/_pack_manifest.json
   --probe      import-probe every knowledge/_validate_*.py in an ISOLATED staging dir and
-               write knowledge/_release/_v3_gate_probe.json (the gate verdict table)
+               write knowledge/_release/_pack_gate_probe.json (the gate verdict table)
   --stage      materialise the manifest's paths at <commit> into a dir (the bake's stage)
   --zip        deterministic zip of a stage dir (fixed mtimes, sorted order, fixed mode)
   --check      verify a baked pack against manifest + commit
@@ -54,12 +54,12 @@ commit and writes exactly two files under `knowledge/_release/`, plus whatever s
 it is explicitly given. It globs nothing else and widens no other gate's glob.
 
 USAGE
-    python3 knowledge/_release/_gen_v3_manifest.py --manifest --commit <sha>
-    python3 knowledge/_release/_gen_v3_manifest.py --probe --commit <sha>
-    python3 knowledge/_release/_gen_v3_manifest.py --stage <dir> --commit <sha>
-    python3 knowledge/_release/_gen_v3_manifest.py --zip <stage> --out <zip> --commit <sha>
-    python3 knowledge/_release/_gen_v3_manifest.py --check <zip> --commit <sha>
-    python3 knowledge/_release/_gen_v3_manifest.py --selftest
+    python3 knowledge/_release/_gen_pack_manifest.py --manifest --commit <sha>
+    python3 knowledge/_release/_gen_pack_manifest.py --probe --commit <sha>
+    python3 knowledge/_release/_gen_pack_manifest.py --stage <dir> --commit <sha>
+    python3 knowledge/_release/_gen_pack_manifest.py --zip <stage> --out <zip> --commit <sha>
+    python3 knowledge/_release/_gen_pack_manifest.py --check <zip> --commit <sha>
+    python3 knowledge/_release/_gen_pack_manifest.py --selftest
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -83,10 +83,34 @@ import zipfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 
-VERSION = "v3.0.0"
+# ---------------------------------------------------------------------------------------------
+# IDENTITY (s219-D8). Two name families, and the rule is module TYPE correctness:
+#   APOLLO PACK RELEASES take LUNAR MODULE names — they are what lands in a designer's hands.
+#   MEMENTO RELEASES take COMMAND MODULE names — Memento navigates, remembers, carries the crew.
+# The repo stays the command seat. s219-D8 tightens that to the STRICT MISSION PAIR: a release
+# takes ONE mission's whole pair. This is Apollo 9 — SPIDER (the LM) and GUMDROP (the CM). The
+# next release takes Apollo 10's pair, then Apollo 11's, in mission order; the names are in the
+# ruling, not copied here, because a future release's name is not this file's live fact.
+# s219-D6's module-type error and s219-D7's cross-mission pairing are both SUPERSEDED — neither
+# reached a commit — and D7's two-family TYPE rule stands and is stated above.
+#
+# ⚠ THE FILENAMES ARE DELIBERATELY GENERIC — `_gen_pack_manifest.py`, `_pack_manifest.json`,
+# `_pack_gate_probe.json`. The release IDENTITY lives in the DATA below and in the zip's name,
+# never in the machinery's filenames. #219 paid for the other choice: the v3-named generator and
+# its two v3-named artefacts had to be renamed across nine files the moment Dave named the
+# release, and Eagle and Columbia are still in reserve. The generator is the machinery that cuts
+# THE CURRENT PACK; what that pack is called is a field, not a path.
+# (The names are spelled out only in the report, deliberately — a stale-name grep runs over this
+# file in the selftest, and a file that quotes the dead name cannot police it.)
+PACK_NAME = "Apollo — Spider"          # display name, prose register
+PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
+VERSION = "v1.0.0"                     # Spider's own lineage starts here; v1/v2 stay frozen
+MEMENTO_CUT_NAME = "Memento — Gumdrop"
+MEMENTO_CUT_VERSION = "v1.0.0"
+
 SCHEMA = "apollo-designer-pack-manifest/1"
-MANIFEST_PATH = os.path.join(HERE, "_v3_manifest.json")
-PROBE_PATH = os.path.join(HERE, "_v3_gate_probe.json")
+MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
+PROBE_PATH = os.path.join(HERE, "_pack_gate_probe.json")
 
 # ---------------------------------------------------------------------------------------------
 # THE CUT — declared as include/exclude rules over the commit's tracked path list.
@@ -150,6 +174,25 @@ HELPER_HOMES = {
     "gen_theme_cascade": "knowledge/canon/gen_theme_cascade.py",
 }
 
+# HOW A GATE IS INVOKED IN THE PACK, where a bare run is not the right question (#219 N2 -> N1
+# handoff, N2's own measurement). The probe DERIVES an invocation for the two shapes it can
+# detect — a write-gate refusal wants `--write`, an args refusal that names `--all` wants `--all`.
+# Everything else defaults to bare, and for one gate bare is the wrong question:
+#
+#   _validate_type_composites.py — bare, it reports the design system's ENTIRE standing composite
+#   debt (664 inside the pack) as if a designer had caused it on the day they unzipped. `--check`
+#   asks the question the pack actually wants asked — "has the declared debt GROWN?" — and it is
+#   the gate's own ratchet arm, not a softer gate: `TYPE RATCHET CHECK PASS — declared debt holds
+#   at 1091 (0 new). This is DEBT, not a pass of the underlying gate.`
+#
+# ⛔ THIS TABLE IS A LAST RESORT AND MUST STAY SMALL. An invocation the PROBE measures is a
+# verdict; an invocation typed here is a claim, and it ages like every other typed claim. Each
+# entry needs a one-line reason above it, and the manifest carries the invocation so the pack's
+# runner replays what was measured rather than knowing a convention.
+DECLARED_INVOCATIONS = {
+    "_validate_type_composites.py": "--check",
+}
+
 # Data files the gates read that are NOT part of any other group but must ride with the gates
 # for them to have anything to check. Verdict-driven: only the ones the probe proves are needed.
 GATE_DATA_CANDIDATES = [
@@ -192,8 +235,8 @@ EXCLUDED = [
                                       "(memento-package machinery manifest says so verbatim)."),
     ("designer-skills-v1/", "FROZEN release, s114-D4."),
     ("designer-skills-v2/", "FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for "
-                            "the v3 refresh, not the source — v3 ships its own five from "
-                            "designer-skills-v3/skills/ (#219 R3)."),
+                            "the Spider refresh, not the source — Spider ships its own five from "
+                            "apollo-spider/skills/ (#219 R3)."),
 ]
 
 
@@ -260,9 +303,16 @@ def groups():
              plain="render.py — the proven headless-Chromium shape, so a designer can see their "
                    "own work the way Dave does.",
              match=lambda p: p == "knowledge/_render/render.py"),
+        # s219-D5 (Q2) SETTLED the licence question this card used to carry: the desktop cut
+        # ships, "designers are in-licence". The rule is unchanged — the group already claimed
+        # these files — but the card no longer sends Dave to an open question that is closed.
+        # The fence that is NOT moved: everything else under knowledge/assets/fonts/ stays
+        # EXCLUDED, webfont packs included; the licence covers the desktop set only.
         dict(key="library.fonts", group="library", title="Desktop fonts",
              plain="The licensed desktop cut, so the library renders in the real face. "
-                   "LICENCE QUESTION — see the open questions.",
+                   "LICENCE POSITION, settled at s219-D5: these ship — your designers are "
+                   "in-licence, the same licence that lets the desktop set be tracked in this "
+                   "private repo. The webfont packs stay out.",
              match=_under("knowledge/assets/fonts/_desktop/")),
 
         dict(key="memento", group="memento-clean-cut", title="Memento machinery",
@@ -283,11 +333,11 @@ def groups():
         # #219 seam 7, on R3's Q1: the skills group ships R3's OWN five, not v2's four. Until this
         # was repointed the pack shipped v2's skills and none of the refreshed set — the whole
         # point of s219-D4(4). ⚠ FUNCTION OF THE COMMIT like every other path: at a commit before
-        # designer-skills-v3/skills/ is tracked this claims NOTHING and the group is empty.
+        # apollo-spider/skills/ is tracked this claims NOTHING and the group is empty.
         dict(key="skills", group="skills", title="Skills",
-             plain="The five v3 skills: four refreshed against this knowledge base and the new "
+             plain="The five Spider skills: four refreshed against this knowledge base and the new "
                    "gate-runner that runs the packed gates on a designer's own work.",
-             match=lambda p: p.startswith("designer-skills-v3/skills/")
+             match=lambda p: p.startswith("apollo-spider/skills/")
                              and p.endswith("/SKILL.md")),
     ]
 
@@ -457,10 +507,27 @@ def classify(rc, out, err, shipped):
     return "RUNNABLE", "ran, verdict FAIL (exit %d) — a verdict is a run" % rc
 
 
+FLAG_REJECTED = ("cannot read %s", "unrecognized arguments: %s", "no such file or directory: '%s'",
+                 "unknown argument '%s'", "invalid argument %s")
+
+
+def flag_rejected(flag, text):
+    """Did the gate read the declared flag as a FILENAME (or refuse it) rather than as a flag?
+
+    The failure this catches is specific and was MEASURED: a gate whose copy at some commit has
+    no `--check` arm reads `--check` as a path and reports `cannot read --check: [Errno 2]` — an
+    argument error dressed as a verdict. Matching is on the flag NEXT TO an error phrase, never
+    on the flag alone: a gate that legitimately prints its own flag in a summary line must not
+    trip this [[unmatched-grep-is-not-an-absence]], in its mirror form.
+    """
+    low = text.lower()
+    return any((tpl % flag.lower()) in low for tpl in FLAG_REJECTED)
+
+
 def _tail(p, n=3):
     """Name the path the way the DESIGNER will see it, not the way the probe staged it.
     The probe extracts into <tmp>/pack/, so a raw traceback path reads
-    `/var/tmp/v3probe-xxxx/pack/knowledge/_state.json` — and `pack/knowledge/_state.json` on
+    `/var/tmp/packprobe-xxxx/pack/knowledge/_state.json` — and `pack/knowledge/_state.json` on
     Dave's page is a directory that exists nowhere. Strip the stage, keep the repo path."""
     if "/pack/" in p:
         p = p.split("/pack/")[-1]
@@ -486,7 +553,7 @@ def probe_gates(sha, stage_root=None, only=None, verbose=False, full_stage=None)
 
     knowledge_files = {os.path.basename(p) for p in paths if os.path.dirname(p) == "knowledge"}
 
-    tmp = stage_root or tempfile.mkdtemp(prefix="v3gateprobe-", dir="/var/tmp")
+    tmp = stage_root or tempfile.mkdtemp(prefix="packgateprobe-", dir="/var/tmp")
     stage = os.path.join(tmp, "pack")
     if not os.path.isdir(stage):
         os.makedirs(stage, exist_ok=True)
@@ -521,7 +588,20 @@ def probe_gates(sha, stage_root=None, only=None, verbose=False, full_stage=None)
         r = subprocess.run(["timeout", str(PROBE_TIMEOUT), sys.executable, gp],
                            cwd=stage, capture_output=True, env=env)
         out, err = r.stdout.decode("utf8", "replace"), r.stderr.decode("utf8", "replace")
-        invocation = ""
+        invocation = DECLARED_INVOCATIONS.get(base, "")
+        if invocation:
+            r2 = subprocess.run(["timeout", str(PROBE_TIMEOUT), sys.executable, gp, invocation],
+                                cwd=stage, capture_output=True, env=env)
+            o2 = r2.stdout.decode("utf8", "replace")
+            e2 = r2.stderr.decode("utf8", "replace")
+            if flag_rejected(invocation, o2 + e2):
+                # THE DECLARED INVOCATION IS A CLAIM AND THE PROBE CHECKS IT. At a commit whose
+                # copy of this gate has no such flag, the flag is read as a FILENAME and the
+                # verdict becomes an argument error — a worse red than the honest one, invented
+                # by the table. So the claim falls back to the measured bare run and says so.
+                invocation = ""
+            else:
+                r, out, err = r2, o2, e2
         if "REFUSED (write-gate)" in out + err:
             invocation = "--write"
         elif ARGS_REFUSAL.search(out + err) and "--all" in (out + err):
@@ -611,16 +691,16 @@ def extract(sha, paths, dest, tolerant=False):
             raise RuntimeError("tar failed: " + tr.stderr.decode()[:400])
 
 
-PACK_SURFACE_PREFIX = "designer-skills-v3/"
+PACK_SURFACE_PREFIX = "apollo-spider/"
 
 
 def pack_path(p):
     """Repo path -> path inside the pack root.
 
     #219 stage 2, conductor-authorised (R3 Q2 + seam 7's stage-1 flag). The pack's OWN
-    surfaces — skills/, ci-template/ — live under designer-skills-v3/ in the REPO, but a
+    surfaces — skills/, ci-template/ — live under apollo-spider/ in the REPO, but a
     designer who unzips the pack must find skills/ at the root, not nested two levels down
-    as Apollo-designer-skills-v3.0.0/designer-skills-v3/skills/. R3's consequence note:
+    as Apollo-Spider-v1.0.0/apollo-spider/skills/. R3's consequence note:
     "most will not find the skills at all. That is a silent failure of the whole release."
     So the bake's stage flattens that ONE prefix, and check_pack verifies through the SAME
     mapping — one function, both directions, so the stager and the checker cannot disagree
@@ -631,7 +711,7 @@ def pack_path(p):
 
 
 def flatten_stage(stage):
-    """Move the stage's designer-skills-v3/ contents to the stage root (the pack_path layout).
+    """Move the stage's apollo-spider/ contents to the stage root (the pack_path layout).
     Refuses on a name collision rather than silently overwriting either side."""
     nested = os.path.join(stage, PACK_SURFACE_PREFIX.rstrip("/"))
     if not os.path.isdir(nested):
@@ -648,14 +728,31 @@ def flatten_stage(stage):
 # THE MANIFEST
 # ---------------------------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------------------------
+# THE FIVE CARDS — and, since `s219-D5`, THEIR ANSWERS.
+#
+# Every card below was put to Dave on this page and every one of them came back answered in
+# `s219-D5`. The card is NOT deleted when it is answered: the question is the reason the answer
+# is legible, and a decision surface that erases what was asked leaves the answer floating. So
+# each answered card carries an `answered` block — the ruling that settles it, his position in
+# his own words, and (where a lane has enacted it) what the pack now does.
+#
+# ⛔ AN ANSWERED CARD STOPS ASKING. The renderer paints no radio input on an answered card and
+# moves it out of the "only you can settle" section, whose count is DERIVED from the unanswered
+# set. A page that keeps offering a settled choice is [[dont-launder-a-premise-into-a-ruling]]
+# printed at 15.5px on the surface Dave rules from.
+#
+# ⚠ TRANSCRIBED, NOT DECIDED (#219 N1 scope note). Q2 and Q3 are this lane's clauses and their
+# `enacted` lines are measured here. Q1, Q4 and Q5 carry his ruling and NO enactment claim —
+# their work belongs to other lanes, and stating the position is a record, not a promotion.
 OPEN_QUESTIONS = [
-    dict(id="Q1", title="Memento ships machinery with no store — does v3 hand designers an "
+    dict(id="Q1", title="Memento ships machinery with no store — does the pack hand designers an "
                         "EMPTY record to fill?",
          body="I checked, because the brief asked. memento-package ships five machinery files "
               "and a lexicon, and it ships no record at all — no chain, no rulings store, no "
               "task store, not even an empty one. Its own manifest says why: every adopting "
               "project grows its own chain.||"
-              "Mirroring that exactly means a designer unzips v3, says good morning, and "
+              "Mirroring that exactly means a designer unzips the pack, says good morning, and "
               "Memento has nowhere to write.||"
               "The proposal, if you want them productive on day one: ship three empty stores "
               "with the right shape and nothing inside. A task store holding an empty list. A "
@@ -666,7 +763,13 @@ OPEN_QUESTIONS = [
               "brace or we do.",
          options=["Mirror memento exactly — no stores, the pack's first run creates them",
                   "Ship the three empty store shapes (recommended)",
-                  "Ship empty stores AND a starter _CHAIN.md explaining the first move"]),
+                  "Ship empty stores AND a starter _CHAIN.md explaining the first move"],
+         answered=dict(
+             ruling="s219-D5 (Q1)",
+             position="Empty stores ship, plus a starter _CHAIN.md explaining the first move — "
+                      "and the cold start itself is part of the release: “I think we need to "
+                      "work on the UX of Memento on a cold strts and really guide the designers "
+                      "through the first chat.”")),
     dict(id="Q2", title="Do the licensed desktop fonts travel in the zip?",
          body="The library only looks like Apollo in the real face. The desktop cut is tracked "
               "in this repo on purpose — the .gitignore says why: the repo is private and "
@@ -678,7 +781,16 @@ OPEN_QUESTIONS = [
               "Eight of the thirty-four megabytes are the fonts, so this is also the single "
               "biggest lever on download size.",
          options=["Ship the desktop fonts (54 files) — designers are in-licence",
-                  "Leave the fonts out and note the fallback in the pack README"]),
+                  "Leave the fonts out and note the fallback in the pack README"],
+         answered=dict(
+             ruling="s219-D5 (Q2)",
+             position="The 54 licensed desktop fonts SHIP. His words: “designers are "
+                      "in-licence” — the same licence position that makes the desktop cut "
+                      "tracked in this private repo covers the designers the pack goes to. "
+                      "The webfont packs stay out; that fence is unmoved.",
+             enacted="Shipped by the library group's rule over "
+                     "knowledge/assets/fonts/_desktop/ — the count on this card is read out of "
+                     "the manifest, not typed, so it cannot drift from what the zip carries.")),
     dict(id="Q3", title="Do the canon GENERATORS ship, or only the canon they produce?",
          body="The canon folder holds canon.css and type.css — and the four generators that "
               "mint them from the tokens.||"
@@ -688,9 +800,22 @@ OPEN_QUESTIONS = [
               "Shipping them means a designer can change a token and re-mint canon. It also "
               "means they can produce canon that never passed a gate. The gates are in the "
               "pack too, which is why I lean towards shipping them.",
-         options=["Ship the generators (v3 is the working engine — recommended, the gates are "
+         options=["Ship the generators (the pack is the working engine — recommended, the gates are "
                   "in the pack too)",
-                  "Ship the minted CSS only, v2-style"]),
+                  "Ship the minted CSS only, v2-style"],
+         answered=dict(
+             ruling="s219-D5 (Q3)",
+             position="The canon generators SHIP — “v3 is the working engine, the gates are in "
+                      "the pack too” — WITH an explicit warning when a designer attempts one.",
+             enacted="The warning fires IN THE PACK ONLY. Each of the four canon generators "
+                     "asks _helpgate.pack_gate() whether it is running inside an unzipped pack "
+                     "(a _MANIFEST.json carrying this schema, sitting beside knowledge/). In "
+                     "this repo that marker does not exist and the call is a no-op, so nothing "
+                     "here changes. In the pack it prints his own framing — changing a token "
+                     "and re-minting canon can produce canon that never passed a gate — and "
+                     "refuses until the designer passes --i-understand. Nothing is injected at "
+                     "bake time: the file in the zip is byte-identical to the file in the "
+                     "repo, which is what keeps the pack audit able to check it at all.")),
     dict(id="Q4", title="Which runbooks are design-facing and which are yours?",
          body="Eleven runbooks are proposed in, as design-facing. Seven are held out as your "
               "own working ritual: capture, git commit, the context gauge, the parallel "
@@ -701,7 +826,15 @@ OPEN_QUESTIONS = [
               "the machinery and no capture ritual has a chain that never grows.",
          options=["Hold all seven out (mirrors memento-package exactly)",
                   "Send capture-ritual across with the Memento half (recommended)",
-                  "Send capture-ritual and context-gauge across"]),
+                  "Send capture-ritual and context-gauge across"],
+         answered=dict(
+             ruling="s219-D5 (Q4)",
+             position="capture-ritual AND context-gauge both cross — CUSTOMISED for the "
+                      "designers' environment. His words: “remember the designers will be "
+                      "running this in VS-code with co-pilot, I think we should ship this but "
+                      "customised for their environment.” That also sets the pack's target "
+                      "environment: VS Code + Copilot, on memento-package's "
+                      "copilot-instructions.md precedent.")),
     # ---------------------------------------------------------------------------------------
     # #219 seam 7, on R2's Q1 (and R3's Q6 — the two lanes found the same thing from opposite
     # ends and both asked for a card). Dave is shown "39 gates that run anywhere" a few inches
@@ -736,11 +869,17 @@ OPEN_QUESTIONS = [
               "hidden. It is built and mutation-tested, and it is deliberately NOT wired on, "
               "because switching it on is a decision about what the pack claims, not a "
               "mechanical default.",
-         options=["Fix the four before the bake — cut v3 from a commit whose own gates are green",
+         options=["Fix the four before the bake — cut the pack from a commit whose own gates are green",
                   "Ship them with the baseline switched on — reds recorded, printed, and only "
                   "new ones fail the designer's build",
                   "Ship them red and documented — the pack README names the four, the skill "
-                  "tells designers to subtract them"]),
+                  "tells designers to subtract them"],
+         answered=dict(
+             ruling="s219-D5 (Q5)",
+             position="Fix the four BEFORE the bake — “cut v3 from a commit whose own gates are "
+                      "green”. Each at cause: a missing gate-state file in the stage is SHIPPED, "
+                      "not baselined away; a real defect is repaired; no baseline plaster. The "
+                      "baseline machinery stays built and stays unwired.")),
 ]
 
 # The four gates named in Q5's body. Held as data so the selftest can prove they still exist:
@@ -780,10 +919,10 @@ def build_manifest(sha, probe):
     # honestly. It belongs to the GATES group and not to a group of its own, deliberately: a
     # workflow that runs the gates is not a seventh thing to explain to Dave, it is how the gates
     # get run. ⚠ IT IS A FUNCTION OF THE COMMIT LIKE EVERY OTHER PATH — at a commit where
-    # designer-skills-v3/ci-template/ does not yet exist this list is EMPTY and the manifest's
+    # apollo-spider/ci-template/ does not yet exist this list is EMPTY and the manifest's
     # bytes are unchanged, which is exactly why adding this rule did not invalidate the manifest
     # R1 generated. It starts shipping at the commit that lands the files.
-    ci_template = sorted(p for p in paths if p.startswith("designer-skills-v3/ci-template/"))
+    ci_template = sorted(p for p in paths if p.startswith("apollo-spider/ci-template/"))
 
     # Every path is owned by exactly ONE group. The gates group pulls in helper modules and data
     # files that other groups may already own (canon/_type-bindings.json is engine-canon's, and
@@ -847,11 +986,20 @@ def build_manifest(sha, probe):
 
     return dict(
         schema=SCHEMA,
+        pack=PACK_NAME,
+        slug=PACK_SLUG,
         version=VERSION,
+        # The cut of Memento inside this pack has its OWN identity and its own version line
+        # (s219-D8). It is stamped here, in the pack README and in PROVENANCE.json — the three
+        # places the pack states where it came from — and NOWHERE inside memento-package/, which
+        # is the repo's own machinery and not this release's to sign.
+        carries=dict(name=MEMENTO_CUT_NAME, version=MEMENTO_CUT_VERSION,
+                     what="A clean cut of Memento: machinery only, no record. Its version line "
+                          "is its own; the pack's version does not move it."),
         status="PROPOSED — awaiting Dave's word (s219-D4(2): release = his word)",
         commit=sha,
         commit_date=commit_date(sha),
-        ruling="s219-D4",
+        ruling="s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
         groups=out_groups,
         excluded=excluded,
         open_questions=OPEN_QUESTIONS,
@@ -881,7 +1029,7 @@ def all_paths(man):
 
 # ---------------------------------------------------------------------------------------------
 # THE PAGE — Dave's go/no-go surface. GENERATED from the manifest, never hand-kept: a page that
-# said 1,590 files while the manifest said something else is the exact defect v3 exists to end.
+# said 1,590 files while the manifest said something else is the exact defect this release shape exists to end.
 # Two-register rule (_RUNBOOK-review-doc.md, ruled #66-D5): plain prose leads every card, the
 # machinery folds beneath it. Dave is dyslexic — one group per card, one idea per sentence.
 # ---------------------------------------------------------------------------------------------
@@ -947,6 +1095,8 @@ PAGE_CSS = """
   .opts label{display:flex; gap:10px; align-items:flex-start; cursor:pointer;}
   .rec{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
        color:#1F5C38; margin-left:6px;}
+  .ruled{font-size:15.5px; max-width:70ch; margin:6px 0 12px; padding:12px 14px;
+         background:#F3F8F5; border:1px solid #BEDCC9; border-radius:8px;}
   .head{display:flex; flex-wrap:wrap; gap:34px; padding:18px 22px; border:1px solid var(--pgline);
         border-radius:10px; background:var(--pgsoft); margin:18px 0 8px;}
   .head div b{display:block; font-size:24px; letter-spacing:-.02em;
@@ -1007,20 +1157,32 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     out = []
     A = out.append
     A('<!doctype html>\n<meta charset="utf-8">')
-    A('<title>Designer pack v3 — the release manifest — PROPOSED</title>')
-    A('<!-- reviews/RELEASE-V3-MANIFEST-2026-08-26-v1.html — #219 R1.\n'
-      '     GENERATED by knowledge/_release/_gen_v3_manifest.py --page. Do not hand-edit:\n'
-      '     every count on this page is read out of _v3_manifest.json, which is itself\n'
+    A('<title>%s — the release manifest — PROPOSED</title>' % esc(PACK_NAME))
+    A('<!-- reviews/RELEASE-SPIDER-2026-08-26-v1.html — #219 R1.\n'
+      '     GENERATED by knowledge/_release/_gen_pack_manifest.py --page. Do not hand-edit:\n'
+      '     every count on this page is read out of _pack_manifest.json, which is itself\n'
       '     generated from a named commit. Nothing on this page is typed. -->')
     A('<link rel="stylesheet" href="../knowledge/canon/canon.css">')
     A('<link rel="stylesheet" href="../knowledge/canon/type.css">')
     A('<style>%s</style>' % PAGE_CSS)
     A('<div class="wrap">')
 
-    A('<h1>Designer pack v3 — what ships <span class="tag prop">Proposed</span></h1>')
-    A('<p class="lede">#219 lane R1 · 2026-08-26 · nothing is baked, nothing is committed, '
+    A('<h1>%s — what ships <span class="tag prop">Proposed</span></h1>' % esc(PACK_NAME))
+    A('<p class="lede">#219 · 2026-08-26 · nothing is baked, nothing is committed, '
       'no release exists. This page is the list, for your eye. The bake does not run until '
       'you say it does.</p>')
+    # s219-D8, the naming, stated once in plain words where a reader meets the pack for the
+    # first time. Two families by TYPE, and one MISSION per release.
+    A('<p class="note"><b>The names.</b> This pack is <b>%s</b>, version <code>%s</code> — '
+      'Apollo pack releases take LUNAR MODULE names, because they are the thing that lands in a '
+      'designer\'s hands. The clean cut of Memento it carries is <b>%s %s</b> — Memento '
+      'releases take COMMAND MODULE names, because Memento is what navigates and remembers. '
+      'The repo itself stays the command seat. A release takes <b>one mission\'s whole pair</b>: '
+      'Spider and Gumdrop are both Apollo 9, and the next release is Apollo 10\'s pair, in '
+      'mission order. (<code>s219-D8</code>; supersedes <code>s219-D7</code> and '
+      '<code>s219-D6</code>, neither of which reached a commit.)</p>'
+      % (esc(PACK_NAME), esc(man["version"]), esc(MEMENTO_CUT_NAME),
+         esc(MEMENTO_CUT_VERSION)))
 
     A('<h2>The short version</h2>')
     A('<p>You said you wanted designers to get <em>as close to what you use as possible, '
@@ -1038,7 +1200,15 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     if zip_bytes:
         A('<div><b>%s</b><span>zipped — the download</span></div>' % mb(zip_bytes))
     A('<div><b>%d</b><span>gates that run anywhere</span></div>' % (c["runnable"] + c["needs_dep"]))
-    A('<div><b>%d</b><span>questions for you</span></div>' % len(man["open_questions"]))
+    # DERIVED, both halves. The headline metric counts what is STILL open — a page that said
+    # "5 questions for you" beside five cards he has already answered would be the
+    # [[banner-figures-are-parsed-not-prose]] class one inch from where he rules, which is
+    # exactly what seam 7 fixed here in the other direction.
+    _still_open = len([q for q in man["open_questions"] if not q.get("answered")])
+    _settled = len(man["open_questions"]) - _still_open
+    A('<div><b>%d</b><span>questions for you</span></div>' % _still_open)
+    if _settled:
+        A('<div><b>%d</b><span>you have settled</span></div>' % _settled)
     A('</div>')
     A('<p class="note">Read from commit <code>%s</code> (%s) — nothing has been baked. '
       'Manifest fingerprint '
@@ -1074,7 +1244,7 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
             if gates.get("ci_template"):
                 A('<p class="note"><b>The pack ships a CI workflow too.</b> %d file(s) at '
                   '<code>ci-template/</code> in the pack root (their repo home is '
-                  '<code>designer-skills-v3/ci-template/</code>): a GitHub Actions workflow a '
+                  '<code>apollo-spider/ci-template/</code>): a GitHub Actions workflow a '
                   'designer copies into their own repo, the runner it calls, and a README that '
                   'says what blocks, what only advises, and how to turn a check off honestly '
                   '(delete the step — never hide it behind continue-on-error).</p>'
@@ -1107,26 +1277,61 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     # [[banner-figures-are-parsed-not-prose]] class one inch from where he rules. Now derived.
     _NW = {1: "One thing", 2: "Two things", 3: "Three things", 4: "Four things",
            5: "Five things", 6: "Six things", 7: "Seven things"}
-    _nq = len(man["open_questions"])
-    A('<h2>%s only you can settle <span class="tag ask">Ask</span></h2>'
-      % _NW.get(_nq, "%d things" % _nq))
-    A('<p>None of these are blocked on work. They are all judgement calls about where a line '
-      'sits. Nothing is pre-selected.</p>')
-    for q in man["open_questions"]:
-        A('<div class="card q">')
-        A('<h3>%s. %s</h3>' % (esc(q["id"]), esc(q["title"])))
+
+    def _body(q):
         # Short paragraphs, not a wall. The body carries `||` where a break belongs — Dave
         # reads one idea per block, and an unbroken twelve-line paragraph is the format he
         # has already told us costs him time.
         for para in q["body"].split("||"):
             A('<p class="plain">%s</p>' % esc(para.strip()))
-        A('<ul class="opts">')
-        for i, o in enumerate(q["options"]):
-            rec = " recommended" in o or "(recommended" in o
-            A('<li><label><input type="radio" name="%s" value="%d"><span>%s%s</span></label></li>'
-              % (esc(q["id"]), i, esc(o.replace(" (recommended)", "").replace(" — recommended", "")),
-                 '<span class="rec">recommended</span>' if rec else ""))
-        A('</ul></div>')
+
+    open_q = [q for q in man["open_questions"] if not q.get("answered")]
+    done_q = [q for q in man["open_questions"] if q.get("answered")]
+
+    if open_q:
+        _nq = len(open_q)
+        A('<h2>%s only you can settle <span class="tag ask">Ask</span></h2>'
+          % _NW.get(_nq, "%d things" % _nq))
+        A('<p>None of these are blocked on work. They are all judgement calls about where a '
+          'line sits. Nothing is pre-selected.</p>')
+        for q in open_q:
+            A('<div class="card q">')
+            A('<h3>%s. %s</h3>' % (esc(q["id"]), esc(q["title"])))
+            _body(q)
+            A('<ul class="opts">')
+            for i, o in enumerate(q["options"]):
+                rec = " recommended" in o or "(recommended" in o
+                A('<li><label><input type="radio" name="%s" value="%d"><span>%s%s</span>'
+                  '</label></li>'
+                  % (esc(q["id"]), i,
+                     esc(o.replace(" (recommended)", "").replace(" — recommended", "")),
+                     '<span class="rec">recommended</span>' if rec else ""))
+            A('</ul></div>')
+
+    # ---- the same cards, once he has answered them. NO radio inputs: an answered card must
+    # not keep offering the choice back. The question stays visible because the answer is only
+    # legible beside what was asked.
+    if done_q:
+        _nd = len(done_q)
+        A('<h2>%s you settled <span class="tag in">Ruled</span></h2>'
+          % _NW.get(_nd, "%d things" % _nd))
+        A('<p>Your answers, as they were given, with the ruling that carries each one. Where a '
+          'lane has already built it, what the pack now does is stated underneath.</p>')
+        for q in done_q:
+            ans = q["answered"]
+            A('<div class="card">')
+            A('<h3>%s. %s</h3>' % (esc(q["id"]), esc(q["title"])))
+            A('<p class="ruled"><span class="tag in">Ruled</span> <b>%s</b> — %s</p>'
+              % (esc(ans["ruling"]), esc(ans["position"])))
+            if ans.get("enacted"):
+                A('<p class="note"><b>What the pack does now.</b> %s</p>' % esc(ans["enacted"]))
+            A('<details><summary>The question as it was put to you, and the options</summary>')
+            _body(q)
+            A('<ul class="opts">')
+            for o in q["options"]:
+                A('<li><span>%s</span></li>'
+                  % esc(o.replace(" (recommended)", "").replace(" — recommended", "")))
+            A('</ul></details></div>')
 
     # ---- how the bake works
     A('<h2>How it gets built, once you say yes</h2>')
@@ -1136,19 +1341,19 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
       'your word, not the script\'s.</p>')
     # #219 stage 2 — the layout, stated so the page shows the TRUE shape a designer meets.
     A('<p class="note"><b>What unzipping looks like.</b> The zip opens into one folder, '
-      '<code>Apollo-designer-skills-v3.0.0/</code>, and everything sits directly inside it: '
+      '<code>Apollo-Spider-v1.0.0/</code>, and everything sits directly inside it: '
       '<code>skills/</code>, <code>knowledge/</code>, <code>ci-template/</code>, '
       '<code>showroom/</code>, <code>memento-package/</code>, <code>_MANIFEST.json</code>, '
       '<code>README.md</code>. The skills and the CI template live under '
-      '<code>designer-skills-v3/</code> in this repo, but the bake flattens that prefix away '
+      '<code>apollo-spider/</code> in this repo, but the bake flattens that prefix away '
       '— a designer must find <code>skills/</code> the moment the zip opens, not two folders '
       'down. The pack checker verifies the zip through the same mapping.</p>')
     A('<details><summary>The commands</summary><div class="paths">'
-      'bash designer-skills-v3/build-designer-pack.sh --manifest --commit &lt;sha&gt;<br>'
-      'bash designer-skills-v3/build-designer-pack.sh --dry-run --out-dir /var/tmp/x '
+      'bash apollo-spider/build-designer-pack.sh --manifest --commit &lt;sha&gt;<br>'
+      'bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/x '
       '--commit &lt;sha&gt;<br>'
-      'bash designer-skills-v3/build-designer-pack.sh --release --commit &lt;sha&gt;<br>'
-      'bash designer-skills-v3/build-designer-pack.sh --check &lt;zip&gt; --commit &lt;sha&gt;'
+      'bash apollo-spider/build-designer-pack.sh --release --commit &lt;sha&gt;<br>'
+      'bash apollo-spider/build-designer-pack.sh --check &lt;zip&gt; --commit &lt;sha&gt;'
       '</div></details>')
     if zip_sha:
         A('<p class="note">Proved today on a throwaway copy: built twice, into two different '
@@ -1157,7 +1362,7 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
           'and with one byte changed in one token file — red, naming the file.</p>'
           % esc(zip_sha[:16]))
 
-    A('<p class="note warn"><b>Nothing here is enacted.</b> <code>designer-skills-v3/</code> '
+    A('<p class="note warn"><b>Nothing here is enacted.</b> <code>apollo-spider/</code> '
       'holds the build script and nothing else. No pack has been baked, no zip exists in '
       '<code>dist/</code>, and no ruling was written. v1 and v2 are untouched.</p>')
     A('</div>')
@@ -1250,7 +1455,7 @@ def check_pack(zip_path, man, sha):
     with zipfile.ZipFile(zip_path) as z:
         names = set(z.namelist())
         # #219 stage 2: the pack layout is pack_path(repo path) — the stager flattens
-        # designer-skills-v3/ to the root, and this check verifies through the SAME mapping.
+        # apollo-spider/ to the root, and this check verifies through the SAME mapping.
         repo_by_pack = {}
         for p in all_paths(man):
             q = pack_path(p)
@@ -1368,7 +1573,7 @@ def selftest():
 
     # ---- path naming: the probe's stage prefix must never reach Dave's page
     bite("tail/strips-stage",
-         _tail("/var/tmp/v3probe-abc/pack/knowledge/_state.json"), "knowledge/_state.json")
+         _tail("/var/tmp/packprobe-abc/pack/knowledge/_state.json"), "knowledge/_state.json")
     bite("tail/keeps-plain-path", _tail("knowledge/canon/canon.css"), "knowledge/canon/canon.css")
 
     # ---- the args-refusal arm
@@ -1389,8 +1594,8 @@ def selftest():
                    "knowledge/snippets/button.reference.html", "knowledge/canon/canon.css",
                    "knowledge/_validate_radius.py", "showroom/index.json",
                    "memento-package/machinery/_gen_chain.py",
-                   "designer-skills-v3/skills/generate-from-canon/SKILL.md",
-                   "designer-skills-v3/skills/check-with-gates/SKILL.md",
+                   "apollo-spider/skills/generate-from-canon/SKILL.md",
+                   "apollo-spider/skills/check-with-gates/SKILL.md",
                    "knowledge/_RUNBOOK-compose-from-canon.md"]
     for p in probe_paths:
         hits = [g["key"] for g in tbl if g["match"](p)]
@@ -1410,10 +1615,10 @@ def selftest():
 
     # ---- the flatten (#219 stage 2, R3 Q2): pack layout is pack_path(repo path)
     bite("packpath/skills-flatten",
-         pack_path("designer-skills-v3/skills/usability-review/SKILL.md"),
+         pack_path("apollo-spider/skills/usability-review/SKILL.md"),
          "skills/usability-review/SKILL.md")
     bite("packpath/ci-template-flatten",
-         pack_path("designer-skills-v3/ci-template/run-gates.py"),
+         pack_path("apollo-spider/ci-template/run-gates.py"),
          "ci-template/run-gates.py")
     bite("packpath/engine-passes-through", pack_path("knowledge/canon/canon.css"),
          "knowledge/canon/canon.css")
@@ -1421,28 +1626,28 @@ def selftest():
     bite("packpath/injective-on-probe-set", len(set(mapped)), len(mapped),
          "two shipped repo paths may not land on one pack path")
     # driven, not just mapped: a real stage, flattened, and the collision refusal
-    tmp = tempfile.mkdtemp(prefix="v3flatten-", dir="/var/tmp")
+    tmp = tempfile.mkdtemp(prefix="packflatten-", dir="/var/tmp")
     try:
-        os.makedirs(os.path.join(tmp, "designer-skills-v3", "skills", "x"))
+        os.makedirs(os.path.join(tmp, "apollo-spider", "skills", "x"))
         os.makedirs(os.path.join(tmp, "knowledge"))
-        open(os.path.join(tmp, "designer-skills-v3", "skills", "x", "SKILL.md"), "w").write("s\n")
+        open(os.path.join(tmp, "apollo-spider", "skills", "x", "SKILL.md"), "w").write("s\n")
         open(os.path.join(tmp, "knowledge", "y.css"), "w").write("c\n")
         flatten_stage(tmp)
         bite("flatten/skills-at-root",
              os.path.exists(os.path.join(tmp, "skills", "x", "SKILL.md")), True)
         bite("flatten/nested-dir-gone",
-             os.path.exists(os.path.join(tmp, "designer-skills-v3")), False)
+             os.path.exists(os.path.join(tmp, "apollo-spider")), False)
         bite("flatten/engine-untouched",
              os.path.exists(os.path.join(tmp, "knowledge", "y.css")), True)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     # the collision refusal, on its OWN stage — reusing the last one made a no-op mutant die
     # by FileExistsError instead of by a named bite [[a-crash-is-not-a-fail]]
-    tmp = tempfile.mkdtemp(prefix="v3flatten-", dir="/var/tmp")
+    tmp = tempfile.mkdtemp(prefix="packflatten-", dir="/var/tmp")
     try:
-        os.makedirs(os.path.join(tmp, "designer-skills-v3"))
+        os.makedirs(os.path.join(tmp, "apollo-spider"))
         # file vs file: the one shape os.rename would SILENTLY overwrite if the guard went
-        open(os.path.join(tmp, "designer-skills-v3", "README.md"), "w").write("pack side\n")
+        open(os.path.join(tmp, "apollo-spider", "README.md"), "w").write("pack side\n")
         open(os.path.join(tmp, "README.md"), "w").write("root side\n")
         try:
             flatten_stage(tmp)
@@ -1463,6 +1668,39 @@ def selftest():
     # so the list is what has to be checked — the page cannot be trusted to police itself.
     qids = [q["id"] for q in OPEN_QUESTIONS]
     bite("questions/unique-ids", len(qids), len(set(qids)))
+    # An answered card must say WHO answered it. "It was decided" with no ruling id is how a
+    # conductor's reading becomes a ruling by repetition [[dont-launder-a-premise-into-a-ruling]].
+    for q in OPEN_QUESTIONS:
+        a = q.get("answered")
+        if not a:
+            continue
+        bite("questions/answered-cites-a-ruling:%s" % q["id"],
+             bool(a.get("ruling", "").startswith("s")), True,
+             "an answered card must name the ruling that settles it")
+        bite("questions/answered-states-a-position:%s" % q["id"],
+             len(a.get("position", "").strip()) > 40, True)
+    bite("questions/Q2-and-Q3-are-this-lanes-clauses",
+         sorted(q["id"] for q in OPEN_QUESTIONS
+                if q.get("answered", {}).get("enacted")), ["Q2", "Q3"],
+         "only the clauses #219 N1 enacted may claim an enactment on Dave's page")
+
+    # ---- THE RENAME CANNOT ROT BACK (s219-D8). The generator names the pack in DATA, and its
+    # own source must carry no surviving reference to the name the release used to have. A grep
+    # over this file is a real assertion here because this file IS the naming authority.
+    _src = open(os.path.abspath(__file__), encoding="utf-8").read()
+    # ⚠ THE DEAD NAMES ARE ASSEMBLED, NEVER TYPED WHOLE. Spelling them as literals here would
+    # put them in the very file the bite greps, and the check would fail on its own text — a
+    # self-referential red that teaches you to weaken the assertion. Driven: the first cut of
+    # this bite went red on itself, four times.
+    for dead in ("designer-skills-" + "v3", "_v3" + "_manifest", "_v3" + "_gate_probe",
+                 "Apollo-" + "designer-skills"):
+        bite("naming/no-stale:%s" % dead, dead in _src, False,
+             "the pre-s219-D8 name survives in the generator that is supposed to have replaced it")
+    bite("naming/slug-matches-name", PACK_SLUG, PACK_NAME.replace(" — ", "-"))
+    bite("naming/prefix-is-the-pack-dir", PACK_SURFACE_PREFIX, "apollo-spider/")
+    bite("naming/memento-cut-is-named", (MEMENTO_CUT_NAME, MEMENTO_CUT_VERSION),
+         ("Memento — Gumdrop", "v1.0.0"),
+         "the cut inside the pack carries its own identity (s219-D8)")
     for q in OPEN_QUESTIONS:
         bite("questions/has-body:%s" % q["id"], len(q["body"].strip()) > 40, True)
         bite("questions/two-or-more-options:%s" % q["id"], len(q["options"]) >= 2, True,
@@ -1487,6 +1725,143 @@ def selftest():
              [o for o in q5[0]["options"] if "recommended" in o], [],
              "the red-gate card must not pre-select a disposition")
 
+    # ---- THE DECLARED INVOCATIONS (#219 N2 -> N1 handoff). A typed invocation is a claim, so
+    # the gate it names must exist and the probe must be able to disown it when it does not work.
+    for g, inv in DECLARED_INVOCATIONS.items():
+        bite("invocation/gate-exists:%s" % g,
+             os.path.exists(os.path.join(ROOT, "knowledge", g)), True,
+             "a declared invocation names a gate that is not in the repo — re-derive it")
+        bite("invocation/is-a-flag:%s" % g, inv.startswith("-"), True)
+    bite("invocation/rejection-is-seen",
+         flag_rejected("--check", "! cannot read --check: [Errno 2] No such file"), True,
+         "a flag read as a FILENAME must be disowned, not shipped as a verdict")
+    bite("invocation/legit-mention-is-not-a-rejection",
+         flag_rejected("--check", "TYPE RATCHET CHECK PASS — declared debt holds at 1091 "
+                                  "(0 new); run --check in CI"), False,
+         "a gate naming its own flag in a summary must not read as a rejection")
+    _runner = open(os.path.join(ROOT, "apollo-spider", "ci-template", "run-gates.py"),
+                   encoding="utf-8").read()
+    bite("invocation/runner-reads-the-manifest", 'v.get("invocation")' in _runner, True,
+         "the pack's runner must take the argv from the manifest, not from a convention")
+    bite("invocation/runner-passes-it", "run_one(path, cwd, pack, a.timeout, argv)" in _runner,
+         True, "the runner must actually PASS the argv it read")
+
+    # ---- THE PACK GATE (s219-D5 Q3, #219 N1). The canon generators ship, and a designer who
+    # reaches for one is warned — IN THE PACK ONLY. Both halves are DRIVEN, in real processes:
+    # a no-op here cannot be proved by reading the marker check, and a warning that only exists
+    # in a docstring is not a warning [[mutation-tests-the-clause-not-the-feature]].
+    import _helpgate as _hg
+    CANON_GENS = ["knowledge/canon/gen_canon_tokens.py",
+                  "knowledge/canon/gen_canon_components.py",
+                  "knowledge/canon/gen_canon_bento.py",
+                  "knowledge/canon/gen_theme_cascade.py"]
+    for g in CANON_GENS:
+        _gsrc = open(os.path.join(ROOT, g), encoding="utf-8").read()
+        bite("packguard/wired:%s" % os.path.basename(g),
+             "_pack_gate(__file__" in _gsrc, True,
+             "a canon generator that ships must ask the pack gate")
+        # ⛔ #219 seam 8. `pack_gate` HAS a `name` guard and it DEFAULTS to "__main__", so a call
+        # site that omits `name=__name__` gets the guard's value without the guard's meaning: the
+        # refusal fires on IMPORT as well as on run. Measured cost — two shipped gates
+        # (`_validate_state_snap.py`, `_gate_minted_consumption.py`) IMPORT `gen_theme_cascade`
+        # and both went RED (exit 2) inside a real baked pack. Neither lane's proof could see it:
+        # N1 drove the generators as SCRIPTS, and N2's stage had no `_MANIFEST.json` marker at its
+        # root so the guard never fired there at all. The wiring bite above is therefore not
+        # enough — the ARGUMENT is the clause [[mutation-tests-the-clause-not-the-feature]].
+        bite("packguard/guard-is-argued:%s" % os.path.basename(g),
+             "name=__name__" in _gsrc, True,
+             "the pack gate must be told __name__, or it refuses importers too")
+        bite("packguard/repo-is-not-a-pack:%s" % os.path.basename(g),
+             _hg.pack_root(os.path.join(ROOT, g)), None,
+             "the marker must NOT be found in this repo — that is what keeps repo behaviour "
+             "unchanged on the same bytes")
+
+    tmp = tempfile.mkdtemp(prefix="packguard-", dir="/var/tmp")
+    try:
+        def _fake_pack(where, schema=SCHEMA):
+            os.makedirs(os.path.join(where, "knowledge", "canon"), exist_ok=True)
+            shutil.copy(os.path.join(ROOT, "knowledge", "_helpgate.py"),
+                        os.path.join(where, "knowledge", "_helpgate.py"))
+            if schema is not None:
+                with open(os.path.join(where, "_MANIFEST.json"), "w") as f:
+                    json.dump({"schema": schema, "version": VERSION}, f)
+            gen = os.path.join(where, "knowledge", "canon", "gen_fake.py")
+            with open(gen, "w") as f:
+                f.write('"""fake canon generator."""\n'
+                        'import os as _o, sys as _s\n'
+                        '_d = _o.path.dirname(_o.path.abspath(__file__))\n'
+                        'while _d != "/" and not _o.path.exists(_o.path.join(_d, "_helpgate.py")):\n'
+                        '    _d = _o.path.dirname(_d)\n'
+                        '_s.path.insert(0, _d)\n'
+                        'from _helpgate import pack_gate as _pg\n'
+                        '_pg(__file__, name=__name__, what="canon")\n'
+                        'VALUE = 42\n'
+                        # shaped like a real canon generator: the WORK is under __main__, the
+                        # shared definitions are importable. That is why the import arm is a
+                        # real question rather than a trivially true one.
+                        'if __name__ == "__main__":\n'
+                        '    print("MINTED", _s.argv[1:])\n')
+            return gen
+
+        def _consumer(where, gen):
+            """A shipped GATE that IMPORTS a canon generator — the shape that broke."""
+            c = os.path.join(where, "knowledge", "gate_fake_consumer.py")
+            with open(c, "w") as f:
+                f.write('"""a gate that imports the generator for its single source of truth."""\n'
+                        'import os as _o, sys as _s\n'
+                        '_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)),'
+                        ' "canon"))\n'
+                        'from %s import VALUE\n'
+                        'print("GATE RAN", VALUE)\n' % os.path.basename(gen)[:-3])
+            return c
+
+        def _drive(gen, *argv):
+            r = subprocess.run([sys.executable, gen] + list(argv),
+                               capture_output=True, text=True)
+            return r.returncode, r.stdout + r.stderr
+
+        inside = _fake_pack(os.path.join(tmp, "Apollo-Spider-v1.0.0"))
+        rc, out = _drive(inside)
+        bite("packguard/refuses-in-a-pack", (rc, "REFUSED (pack-gate)" in out), (2, True),
+             "inside a pack the generator must refuse, loud and named: " + out[-300:])
+        _flat = " ".join(out.split())   # the warning is WRAPPED for a terminal; the claim is
+        bite("packguard/carries-daves-framing",              # about the words, not the wrapping
+             "canon that never passed a gate" in _flat, True,
+             "the warning must carry the framing the ruling quotes, not a paraphrase")
+        bite("packguard/names-the-hatch", "--i-understand" in out, True,
+             "a refusal must name the flag that proceeds")
+        bite("packguard/minted-nothing", "MINTED" in out, False,
+             "the refusal must fire BEFORE the generator does its work")
+
+        # ---- THE IMPORT ARM (#219 seam 8). The refusal is for someone RUNNING the generator.
+        # A shipped gate that imports it for a shared definition is not re-minting anything, and
+        # must be untouched. Driven inside the SAME fake pack, so the marker is genuinely found.
+        rc, out = _drive(_consumer(os.path.join(tmp, "Apollo-Spider-v1.0.0"), inside))
+        bite("packguard/import-is-a-no-op", (rc, "GATE RAN 42" in out), (0, True),
+             "a gate that IMPORTS a canon generator inside a pack must not be refused — this is "
+             "the arm that catches a call site which forgot `name=__name__`: " + out[-300:])
+        bite("packguard/import-does-not-mint", "MINTED" in out, False,
+             "importing must not run the generator's own work either")
+
+        rc, out = _drive(inside, "--i-understand", "--only", "x")
+        bite("packguard/flag-proceeds", (rc, "MINTED" in out), (0, True),
+             "--i-understand must let the run through: " + out[-300:])
+        bite("packguard/flag-is-consumed", "MINTED ['--only', 'x']" in out, True,
+             "the acknowledgement flag must not survive into the generator's own argv: "
+             + out[-200:])
+
+        outside = _fake_pack(os.path.join(tmp, "not-a-pack"), schema=None)
+        rc, out = _drive(outside)
+        bite("packguard/no-marker-is-a-no-op", (rc, "MINTED" in out), (0, True),
+             "with no pack marker the guard must be invisible: " + out[-300:])
+
+        wrong = _fake_pack(os.path.join(tmp, "wrong-schema"), schema="something-else/9")
+        rc, out = _drive(wrong)
+        bite("packguard/wrong-schema-is-not-a-pack", (rc, "MINTED" in out), (0, True),
+             "a stray _MANIFEST.json must not be mistaken for a pack: " + out[-300:])
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
     # ---- determinism: canonical() is order-independent
     a = canonical({"b": 1, "a": [3, 2]})
     b = canonical({"a": [3, 2], "b": 1})
@@ -1495,7 +1870,7 @@ def selftest():
          "a real content change MUST change the bytes")
 
     # ---- deterministic_zip: same stage twice ⇒ identical bytes; a content change ⇒ different
-    tmp = tempfile.mkdtemp(prefix="v3ziptest-", dir="/var/tmp")
+    tmp = tempfile.mkdtemp(prefix="packziptest-", dir="/var/tmp")
     try:
         st = os.path.join(tmp, "stage")
         os.makedirs(os.path.join(st, "sub"))

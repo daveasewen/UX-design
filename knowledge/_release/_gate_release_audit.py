@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""_gate_release_audit.py — is the v3 SHIP LIST still a function of the tree, and does the
+"""_gate_release_audit.py — is the PACK SHIP LIST still a function of the tree, and does the
 baked pack still match it?
 
 ★ THE DEFECT CLASS THIS EXISTS FOR, in the repo's own words. v2 shipped from a hand-written
 copy-list, and its receipt records what that cost: *"v1's copy-list had gone stale — never
 shipped canon/type.css nor tokens/themes/"*. A copy-list is a claim about the tree that nothing
-re-measures. v3 replaced it with a GENERATED manifest — and a generated file is only better than
+re-measures. Apollo — Spider replaced it with a GENERATED manifest — and a generated file is only better than
 a typed one while something re-generates it and compares. That is this gate.
 
 THREE QUESTIONS, THREE POSTURES, and the split is the house rule: a MECHANICAL determinism check
@@ -19,7 +19,7 @@ BLOCKS; anything PROMOTION-FLAVOURED advises, because promotion is Dave's word (
                      RIGHT — only whether the file is what it claims to be.
 
   --pack             BLOCKING, with a REFUSAL as its resting state. If a zip exists in
-                     designer-skills-v3/dist/, its contents are checked against the manifest and
+                     apollo-spider/dist/, its contents are checked against the manifest and
                      against the commit's own blobs (the generator's `check_pack`). If NO zip
                      exists, that is not a failure and not a pass: it is COULD-NOT-ASK (77) —
                      nothing is baked because the release is Dave's word and the manifest still
@@ -58,17 +58,17 @@ import _could_not_ask as cna
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import _gen_v3_manifest as gen  # noqa: E402 — the generator IS the reference implementation
+import _gen_pack_manifest as gen  # noqa: E402 — the generator IS the reference implementation
 
 ROOT = gen.ROOT
-DIST = os.path.join(ROOT, "designer-skills-v3", "dist")
-REMEDY = ("python3 knowledge/_release/_gen_v3_manifest.py --probe --commit <sha> && "
-          "python3 knowledge/_release/_gen_v3_manifest.py --manifest --commit <sha>")
+DIST = os.path.join(ROOT, "apollo-spider", "dist")
+REMEDY = ("python3 knowledge/_release/_gen_pack_manifest.py --probe --commit <sha> && "
+          "python3 knowledge/_release/_gen_pack_manifest.py --manifest --commit <sha>")
 
 
 def _load_manifest():
     if not os.path.exists(gen.MANIFEST_PATH):
-        return None, cna.refuse("the v3 manifest",
+        return None, cna.refuse("the pack manifest",
                                 "there is no manifest at %s — nothing has been proposed yet. "
                                 "Generate it: %s" % (gen.MANIFEST_PATH, REMEDY))
     with open(gen.MANIFEST_PATH, encoding="utf-8") as f:
@@ -86,13 +86,13 @@ def manifest_check():
     r = subprocess.run(["git", "rev-parse", "--verify", "--quiet", sha + "^{commit}"],
                        cwd=ROOT, capture_output=True, text=True)
     if r.returncode != 0:
-        return cna.refuse("the v3 manifest",
+        return cna.refuse("the pack manifest",
                           "the manifest names commit %s, which is not reachable in this "
                           "checkout — a fresh generation cannot be made to compare against. "
                           "(A shallow clone or a rewritten history does this; it is not a "
                           "verdict about the manifest.)" % sha[:12])
     if not os.path.exists(gen.PROBE_PATH):
-        return cna.refuse("the v3 manifest",
+        return cna.refuse("the pack manifest",
                           "the gate probe at %s is missing, and the manifest's gate verdicts "
                           "are MEASURED from it — regenerating without it would guess. Run the "
                           "probe: %s" % (gen.PROBE_PATH, REMEDY))
@@ -135,7 +135,7 @@ def manifest_check():
 
 
 def packs():
-    return sorted(glob.glob(os.path.join(DIST, "Apollo-designer-skills-v*.zip")))
+    return sorted(glob.glob(os.path.join(DIST, "Apollo-Spider-v*.zip")))
 
 
 def pack_check():
@@ -147,8 +147,8 @@ def pack_check():
     zips = packs()
     if not zips:
         return cna.refuse(
-            "the baked v3 pack",
-            "there is no zip in designer-skills-v3/dist/, so there is no pack to audit. That is "
+            "the baked pack",
+            "there is no zip in apollo-spider/dist/, so there is no pack to audit. That is "
             "the expected resting state: the manifest reads %r and s219-D4(2) makes the release "
             "Dave's word, not this gate's. The moment a pack is baked this check starts biting."
             % str(man.get("status", ""))[:40])
@@ -177,7 +177,7 @@ def drift():
     r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True)
     head = r.stdout.strip()
     if r.returncode != 0 or not head:
-        return cna.refuse("the v3 ship list", "HEAD is not resolvable in this checkout")
+        return cna.refuse("the pack ship list", "HEAD is not resolvable in this checkout")
     if head == sha:
         print("PASS — the manifest was generated at HEAD (%s). The ship list is current."
               % sha[:12])
@@ -185,7 +185,7 @@ def drift():
     c = subprocess.run(["git", "rev-list", "--count", "%s..HEAD" % sha],
                        cwd=ROOT, capture_output=True, text=True)
     if c.returncode != 0:
-        return cna.refuse("the v3 ship list",
+        return cna.refuse("the pack ship list",
                           "the manifest's commit %s is not an ancestor of HEAD in this checkout "
                           "— the distance cannot be measured" % sha[:12])
     n = c.stdout.strip() or "?"

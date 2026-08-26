@@ -28,6 +28,7 @@ your repo where a reviewer can see it, and a gate that starts passing should be 
 import argparse
 import json
 import os
+import shlex
 import subprocess
 import sys
 
@@ -62,7 +63,13 @@ def gates_from_manifest(pack, want_browser):
             continue
         path = os.path.join(pack, "knowledge", v["gate"])
         if os.path.exists(path):
-            out.append((v["gate"], path))
+            # #219 N2 -> N1 handoff. A gate's ARGV is part of its measured verdict, not a
+            # convention the runner is expected to know: the manifest records how the gate was
+            # ACTUALLY invoked when its verdict was measured, and the runner replays exactly
+            # that. Without this the pack calls `_validate_type_composites.py` bare and a
+            # designer meets the design system's whole standing debt as if it were theirs.
+            # Read as a string and split, so the manifest's schema does not move.
+            out.append((v["gate"], path, shlex.split(v.get("invocation") or "")))
     return sorted(out)
 
 
@@ -77,15 +84,17 @@ def gates_by_glob(pack, want_browser):
         text = open(p, encoding="utf-8", errors="replace").read()
         is_browser = "playwright" in text
         if is_browser == want_browser:
-            out.append((os.path.basename(p), p))
+            # No manifest ⇒ no measured invocation. Bare is the honest default here: guessing
+            # an argv for a gate nothing measured is how a runner invents a verdict.
+            out.append((os.path.basename(p), p, []))
     return out
 
 
-def run_one(path, cwd, pack, timeout):
+def run_one(path, cwd, pack, timeout, argv=()):
     env = dict(os.environ)
     env["PYTHONPATH"] = os.path.join(pack, "knowledge") + os.pathsep + env.get("PYTHONPATH", "")
     try:
-        r = subprocess.run([sys.executable, path], cwd=cwd, env=env,
+        r = subprocess.run([sys.executable, path] + list(argv), cwd=cwd, env=env,
                            capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         # A timeout never said why it failed, so it is a failure and not a refusal.
@@ -120,8 +129,8 @@ def main():
     print("Apollo gates — %d to run, from %s" % (len(gates), source))
     print("pack: %s" % pack)
     if a.list:
-        for name, _ in gates:
-            print("  " + name)
+        for name, _, argv in gates:
+            print("  " + name + ("  " + " ".join(argv) if argv else ""))
         return 0
     if not gates:
         print("Nothing to run. With --browser this is normal unless the pack ships "
@@ -139,8 +148,8 @@ def main():
 
     cwd = os.getcwd()
     passed, failed, refused = [], [], []
-    for name, path in gates:
-        rc, out = run_one(path, cwd, pack, a.timeout)
+    for name, path, argv in gates:
+        rc, out = run_one(path, cwd, pack, a.timeout, argv)
         if rc == 0:
             passed.append(name)
             print("  pass          %s" % name)

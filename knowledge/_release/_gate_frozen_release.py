@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """_gate_frozen_release.py — s114-D4 ENFORCED BY MACHINE: a shipped release is FROZEN.
 
-★ WHY THIS EXISTS. `s114-D4` has been the rule since #114 and `s219-D4(5)` restates it for v3:
+★ WHY THIS EXISTS. `s114-D4` has been the rule since #114 and `s219-D4(5)` restates it for the pack:
 a released pack is frozen; you do not edit a release, you cut a new one. Until now NOTHING
 checked it. The rule lived in prose, in a memory hook, and in the habit of whoever happened to
 be reading — which is the [[instrument-without-a-consumer]] shape inverted: a rule with no gate.
@@ -13,7 +13,7 @@ WHAT IS FROZEN, AND HOW IT IS RECORDED. `_frozen-releases.json` is a LEDGER, one
 release. Each row names the release's SURFACE (path prefixes), the COMMIT the surface was
 recorded at, the file count, and a CONTENT HASH — sha256 over `path <blob-sha>` lines, sorted.
 The ledger is SEEDED BY MEASUREMENT (`--seed`), never typed: a hand-typed hash is a claim about
-the tree that nothing re-measures, which is the exact defect v3's generated manifest exists to
+the tree that nothing re-measures, which is the exact defect the pack's generated manifest exists to
 end [[measure-dont-convert-units]].
 
 THE THREE ARMS, and each one can fail on its own:
@@ -31,7 +31,7 @@ THE THREE ARMS, and each one can fail on its own:
      goes green again having recorded the edit as the new truth. So this arm reads the ledger AT
      THE PARENT COMMIT and compares row by row. If a row's `content_sha256` or `baseline_commit`
      MOVED while its `version` STAYED THE SAME, that is a re-record without a bump ⇒ RED.
-     Moving a frozen surface is legal — it is what cutting v3.0.1 means — but it must be spelled
+     Moving a frozen surface is legal — it is what cutting v1.0.1 means — but it must be spelled
      as a version, which is `s114-D4`'s whole point: *explicit, versioned, Dave's word*.
 
 ⛔ WHAT THIS GATE DOES NOT DECIDE. Whether a release SHOULD be cut, and what version it carries,
@@ -71,18 +71,28 @@ DEFAULT_ROOT = os.path.dirname(os.path.dirname(HERE))
 LEDGER_REL = "knowledge/_release/_frozen-releases.json"
 
 # The surfaces, and the ONE place they are declared. A release's surface is a set of path
-# prefixes, because "the release" is not always a whole directory: v3's frozen surface is the
+# prefixes, because "the release" is not always a whole directory: Spider's frozen surface is the
 # BAKED ZIP, not the build script and not the skills — those are the machinery that makes the
 # next release, and freezing them would freeze the next cut before it was made.
+#
+# ⚠ THE OPTIONAL FIFTH FIELD, `renamed_from`, and why it had to exist (#219 N1, s219-D8). The
+# laundering arm matches rows BY ID against the parent commit's ledger. Renaming a release —
+# which is exactly what s219-D8 does, `designer-skills-v3` -> `apollo-spider` — makes the old id
+# vanish and a new id appear, and an id the arm cannot find is an id it skips. A rename would
+# therefore have carried a content move through the gate in perfect silence: the one shape the
+# laundering arm exists to stop, wearing a different name. So a rename is DECLARED here, the arm
+# follows it, and a row that vanishes with nobody claiming it is RED.
 SURFACES = [
     ("designer-skills-v1", ["designer-skills-v1/"], "v1",
      "The first designer pack. Hand-cut, superseded, kept for history."),
     ("designer-skills-v2", ["designer-skills-v2/"], "v2",
      "The shipped v2 pack, baked from 7071538. s219-D4(1) copies its four SKILL.md FORWARD for "
      "refresh — copying out is reading, and reading is not a change."),
-    ("designer-skills-v3", ["designer-skills-v3/dist/"], "v3.0.0",
-     "v3's frozen surface is the BAKED ZIP in dist/, nothing else. build-designer-pack.sh, "
-     "ci-template/ and skills/ are the machinery that cuts the release and stay editable."),
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.0",
+     "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
+     "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
+     "machinery that cuts the release and stay editable.",
+     "designer-skills-v3"),
 ]
 
 
@@ -150,11 +160,16 @@ def seed(root, rev):
     if not sha:
         raise RuntimeError("'%s' is not a commit in %s" % (rev, root))
     rows = []
-    for rid, prefixes, version, note in SURFACES:
+    for decl in SURFACES:
+        rid, prefixes, version, note = decl[:4]
+        renamed_from = decl[4] if len(decl) > 4 else None
         surf = surface_at(root, sha, prefixes)
-        rows.append(dict(id=rid, version=version, surface=list(prefixes),
-                         baseline_commit=sha, files=len(surf),
-                         content_sha256=content_sha(surf), note=note))
+        row = dict(id=rid, version=version, surface=list(prefixes),
+                   baseline_commit=sha, files=len(surf),
+                   content_sha256=content_sha(surf), note=note)
+        if renamed_from:
+            row["renamed_from"] = renamed_from
+        rows.append(row)
     doc = {
         "_README": ("FROZEN-RELEASE LEDGER (s114-D4, s219-D4(5)). One row per shipped release. "
                     "Every field here is MEASURED by knowledge/_release/_gate_frozen_release.py "
@@ -238,8 +253,17 @@ def arm_laundering(root, rev, led):
                 "anything" % (parent[:12], e.__class__.__name__)], None
     was = {r["id"]: r for r in prev.get("releases", [])}
     fails = []
+    claimed_old_ids = set()
     for row in led["releases"]:
         old = was.get(row["id"])
+        if old is None and row.get("renamed_from"):
+            # A DECLARED rename: follow it, so the recording is compared across the name change
+            # instead of being skipped. s219-D8 renamed designer-skills-v3 -> apollo-spider.
+            old = was.get(row["renamed_from"])
+            if old is not None:
+                claimed_old_ids.add(row["renamed_from"])
+        if old is not None:
+            claimed_old_ids.add(row["id"])
         if not old:
             continue
         moved = (old.get("content_sha256") != row.get("content_sha256")
@@ -252,6 +276,18 @@ def arm_laundering(root, rev, led):
                          % (row["id"], row.get("version", "?"),
                             (old.get("content_sha256") or "?")[:12],
                             (row.get("content_sha256") or "?")[:12]))
+
+    # THE VANISHED-ROW ARM. A row recorded at the parent and gone now is a frozen release that
+    # stopped being tracked — either dropped, or renamed without saying so. Either way the
+    # laundering arm can no longer see that surface, and a gate that has gone blind must say so
+    # rather than pass [[instrument-without-a-consumer]].
+    for oid in sorted(set(was) - claimed_old_ids):
+        fails.append("A FROZEN RELEASE ROW VANISHED: %s was recorded at %s and is not in the "
+                     "ledger now. If it was renamed, declare it — add `renamed_from: \"%s\"` to "
+                     "the new row in SURFACES and re-seed — so the laundering arm can still "
+                     "compare the recording across the name change. A row that disappears takes "
+                     "its surface out of the freeze in silence."
+                     % (oid, parent[:12], oid))
     return fails, None
 
 
@@ -389,6 +425,61 @@ def selftest():
         rc, out = _run(root, "--no-worktree")
         bite("bump/green", rc == 0,
              "a declared version bump is the legal way to move a frozen surface: " + out[-400:])
+
+        # ---- THE RENAME ARM (#219 N1, s219-D8). Three children of the SAME parent, so each is
+        # compared against a ledger that still carries the OLD id — which is the only shape in
+        # which "did the arm follow the rename" is a real question.
+        _rc, base_rev, _ = git(root, "rev-parse", "HEAD")
+        base_rev = base_rev.strip()
+
+        def _rewrite_row(fn, msg):
+            led = read_ledger(root)
+            for row in led["releases"]:
+                if row["id"].startswith("designer-skills-v2"):
+                    fn(row)
+            with open(ledger_path(root), "w") as f:
+                f.write(json.dumps(led, indent=2, sort_keys=True) + "\n")
+            git(root, "add", "-A")
+            git(root, "commit", "-q", "-m", msg)
+
+        def _reset():
+            git(root, "reset", "--hard", "-q", base_rev)
+
+        # (a) renamed with nothing declared — the row VANISHES and the arm must say so
+        def _bare_rename(row):
+            row["id"] = "apollo-beagle"
+        _rewrite_row(_bare_rename, "rename the row, declare nothing")
+        rc, out = _run(root, "--no-worktree")
+        bite("rename/undeclared-vanish-bites",
+             rc == 1 and "VANISHED" in out and "designer-skills-v2" in out,
+             "an id that disappears from the ledger must be RED by name, not skipped: "
+             + out[-500:])
+        _reset()
+
+        # (b) renamed AND declared, nothing moved — the arm FOLLOWS it and stays green
+        def _declared_rename(row):
+            row["id"] = "apollo-beagle"
+            row["renamed_from"] = "designer-skills-v2"
+        _rewrite_row(_declared_rename, "rename the row, declare it")
+        rc, out = _run(root, "--no-worktree")
+        bite("rename/declared-is-green", rc == 0,
+             "a declared rename with no content move must pass: " + out[-500:])
+        _reset()
+
+        # (c) THE ONE THAT MATTERS: renamed AND declared, but the recording MOVED and the version
+        # did not. `renamed_from` must be a bridge, never an escape hatch — without the arm
+        # following the rename this is exactly the laundering the gate exists to stop, and it
+        # would have gone green.
+        def _rename_and_move(row):
+            row["id"] = "apollo-beagle"
+            row["renamed_from"] = "designer-skills-v2"
+            row["content_sha256"] = "0" * 64
+        _rewrite_row(_rename_and_move, "rename the row and move it, no bump")
+        rc, out = _run(root, "--no-worktree")
+        bite("rename/does-not-launder-a-move",
+             rc == 1 and "WITHOUT A VERSION BUMP" in out,
+             "a rename must not carry a content move past the laundering arm: " + out[-500:])
+        _reset()
 
         # ---- a ledger that is not there is a REFUSAL, not a pass
         os.remove(ledger_path(root))

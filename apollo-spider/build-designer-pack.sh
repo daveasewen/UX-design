@@ -1,43 +1,43 @@
 #!/usr/bin/env bash
-# build-designer-pack.sh — the v3 release build. Run from the repo root:
+# build-designer-pack.sh — the Apollo — Spider release build. Run from the repo root:
 #
-#     bash designer-skills-v3/build-designer-pack.sh --manifest --commit <sha>
-#     bash designer-skills-v3/build-designer-pack.sh --dry-run --out-dir /var/tmp/x --commit <sha>
-#     bash designer-skills-v3/build-designer-pack.sh --release --commit <sha>
-#     bash designer-skills-v3/build-designer-pack.sh --check <zip> --commit <sha>
-#     bash designer-skills-v3/build-designer-pack.sh --selftest
+#     bash apollo-spider/build-designer-pack.sh --manifest --commit <sha>
+#     bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/x --commit <sha>
+#     bash apollo-spider/build-designer-pack.sh --release --commit <sha>
+#     bash apollo-spider/build-designer-pack.sh --check <zip> --commit <sha>
+#     bash apollo-spider/build-designer-pack.sh --selftest
 #
 # ⛔ RELEASE IS DAVE'S WORD (s219-D4(2)). `--release` refuses unless the manifest carries his
 # ratification. Until then the only bake this script will perform is `--dry-run`, into a
-# throwaway directory, which never touches designer-skills-v3/ or dist/.
+# throwaway directory, which never touches apollo-spider/ or dist/.
 #
 # WHAT IS DIFFERENT FROM v2 (designer-skills-v2/build-designer-kb.sh), and why:
 #
 #   v2 carried a hand-written copy-list of `cp` lines. Its own receipt records the cost: "v1's
 #   copy-list had gone stale — never shipped canon/type.css nor tokens/themes/". A copy-list is
-#   a claim about the tree that nothing re-measures. v3 has NO copy-list: the ship set is a
-#   GENERATED manifest (knowledge/_release/_v3_manifest.json), and this script reads it.
+#   a claim about the tree that nothing re-measures. Spider has NO copy-list: the ship set is a
+#   GENERATED manifest (knowledge/_release/_pack_manifest.json), and this script reads it.
 #
-#   v2 baked into designer-skills-v2/knowledge/ inside the repo, then zipped that. v3 bakes into
-#   a STAGE and zips the stage — designer-skills-v3/ holds this script and (from R3) the skills,
+#   v2 baked into designer-skills-v2/knowledge/ inside the repo, then zipped that. Spider bakes into
+#   a STAGE and zips the stage — apollo-spider/ holds this script and (from R3) the skills,
 #   and never holds a baked copy of the engine. One less thing that can go stale.
 #
-#   v2 stamped `$(date)` into the README. v3 stamps the COMMIT's date, because a build-day stamp
+#   v2 stamped `$(date)` into the README. Spider stamps the COMMIT's date, because a build-day stamp
 #   makes two bakes of the same commit differ, and a pack whose bytes move on their own cannot be
 #   delta-audited. Same commit + same manifest ⇒ byte-identical zip, proven by --dry-run twice.
 #
-# WHAT v2 GOT RIGHT AND v3 KEEPS: the bake comes from a NAMED COMMIT via `git archive`, never
+# WHAT v2 GOT RIGHT AND SPIDER KEEPS: the bake comes from a NAMED COMMIT via `git archive`, never
 # from the working tree. The v2 receipt: "baked from HEAD 7071538 (build green 38/38), NOT the
 # dirty working tree — the conductor's mid-flight edits are untouched and deliberately not
 # captured." That discipline is the reason a release can be reasoned about at all.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GEN="$ROOT/knowledge/_release/_gen_v3_manifest.py"
-MANIFEST="$ROOT/knowledge/_release/_v3_manifest.json"
-VERSION="v3.0.0"
-PACKNAME="Apollo-designer-skills-${VERSION}"
-DIST="$ROOT/designer-skills-v3/dist"
+GEN="$ROOT/knowledge/_release/_gen_pack_manifest.py"
+MANIFEST="$ROOT/knowledge/_release/_pack_manifest.json"
+VERSION="v1.0.0"
+PACKNAME="Apollo-Spider-${VERSION}"
+DIST="$ROOT/apollo-spider/dist"
 
 MODE=""
 COMMIT=""
@@ -132,8 +132,8 @@ manifest)
   python3 "$GEN" --manifest --commit "$COMMIT"
   # Dave's go/no-go page rides with the manifest — the page is GENERATED from it, so the two
   # cannot drift apart and be believed separately.
-  PAGE="$ROOT/reviews/RELEASE-V3-MANIFEST-$(git -C "$ROOT" show -s --format=%cs "$COMMIT")-v1.html"
-  [ -f "$PAGE" ] || PAGE="$(ls -1 "$ROOT"/reviews/RELEASE-V3-MANIFEST-*-v*.html 2>/dev/null | tail -1)"
+  PAGE="$ROOT/reviews/RELEASE-SPIDER-$(git -C "$ROOT" show -s --format=%cs "$COMMIT")-v1.html"
+  [ -f "$PAGE" ] || PAGE="$(ls -1 "$ROOT"/reviews/RELEASE-SPIDER-*-v*.html 2>/dev/null | tail -1)"
   [ -n "$PAGE" ] && python3 "$GEN" --page "$PAGE"
   echo "page: $PAGE"
   ;;
@@ -145,20 +145,20 @@ dryrun|release)
   [ "$MAN_COMMIT" = "$COMMIT" ] \
     || die "the manifest was generated at ${MAN_COMMIT:0:12}, you asked to bake ${COMMIT:0:12}.
          Re-run --manifest. (The manifest IS the ship list; baking a different commit against it
-         is exactly the stale-copy-list defect v3 exists to end.)"
+         is exactly the stale-copy-list defect this release shape exists to end.)"
 
   if [ "$MODE" = release ]; then
     require_clean
     ratified || die "the manifest's status is not RATIFIED. s219-D4(2): the exact cut is a
          proposed manifest for Dave's eye BEFORE the bake — release is his word, not the
-         script's. Show him reviews/RELEASE-V3-MANIFEST-*.html, then set the status."
-    OUTDIR="$(mktemp -d "${TMPDIR:-/var/tmp}/apollo-v3-XXXXXX")"
+         script's. Show him reviews/RELEASE-SPIDER-*.html, then set the status."
+    OUTDIR="$(mktemp -d "${TMPDIR:-/var/tmp}/apollo-spider-XXXXXX")"
     ZIP="$DIST/${PACKNAME}.zip"
   else
     [ -n "$OUTDIR" ] || die "--dry-run needs --out-dir <throwaway dir>"
     case "$OUTDIR" in
-      "$ROOT"|"$ROOT"/designer-skills-v3*|"$ROOT"/dist*)
-        die "--dry-run must not write inside designer-skills-v3/ or dist/ — those are the
+      "$ROOT"|"$ROOT"/apollo-spider*|"$ROOT"/dist*)
+        die "--dry-run must not write inside apollo-spider/ or dist/ — those are the
          RELEASE surfaces and s219-D4(5) freezes them. Pick a throwaway under /var/tmp." ;;
     esac
     mkdir -p "$OUTDIR"
@@ -183,18 +183,29 @@ dryrun|release)
   cat > "$STAGE/PROVENANCE.json" <<JSON
 {
   "pack": "$PACKNAME",
+  "name": "Apollo — Spider",
   "version": "$VERSION",
+  "carries": {
+    "name": "Memento — Gumdrop",
+    "version": "v1.0.0",
+    "what": "A clean cut of Memento: machinery only, no record. Its version line is its own — the pack's version does not move it."
+  },
   "commit": "$COMMIT",
   "commit_date": "$COMMIT_DATE",
   "manifest_sha256": "$MAN_SHA",
   "files": $N_FILES,
-  "ruling": "s219-D4",
+  "ruling": "s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
   "reproducible": "same commit + same manifest produces a byte-identical zip"
 }
 JSON
 
   cat > "$STAGE/README.md" <<MD
-# Apollo — designer pack $VERSION
+# Apollo — Spider ($VERSION), carrying Memento — Gumdrop
+
+Apollo releases are named after the LUNAR MODULES, because they are the part that lands. Memento
+is named after the COMMAND MODULES, because it is the part that navigates and remembers. This is
+**Apollo — Spider**, and the clean cut of Memento inside it is **Memento — Gumdrop**. A release
+takes one mission's whole pair: Spider and Gumdrop are both Apollo 9.
 
 The working Apollo engine, plus a clean cut of Memento. Not a demo and not a summary: these are
 the same tokens, component contracts, reference markup, canon CSS, gates, runbooks and library
@@ -204,12 +215,14 @@ the design system itself runs on. Build with it and see where you get to.
 
 | | |
 |---|---|
+| pack | \`Apollo — Spider\` |
 | version | \`$VERSION\` |
+| carries | \`Memento — Gumdrop v1.0.0\` |
 | commit | \`$COMMIT\` |
 | commit date | \`$COMMIT_DATE\` |
 | manifest sha256 | \`$MAN_SHA\` |
 | files | $N_FILES |
-| ruling | \`s219-D4\` |
+| ruling | \`s219-D8\` (naming) · \`s219-D5\` (what ships) · \`s219-D4\` (the cut) |
 
 Every file above came out of that commit via \`git archive\` — not out of anyone's working
 directory. The ship list is \`_MANIFEST.json\`, which is generated, not hand-kept. Two builds of
@@ -218,6 +231,10 @@ between two packs is a real difference and can be audited.
 
 ## What is in here
 
+- \`skills/\` — the five skills, at the root where you will find them. Four are written against
+  this exact knowledge base; the fifth, \`check-with-gates\`, runs the packed gates on your work.
+- \`ci-template/\` — a GitHub Actions workflow you copy into your own repo, the runner it calls,
+  and a README saying what blocks and how to turn a check off honestly.
 - \`knowledge/tokens/\` — every design token, plus the four theme override sets.
 - \`knowledge/components/\` — one contract per component: props, variants, token bindings,
   states, anti-patterns, accessibility.
@@ -230,8 +247,18 @@ between two packs is a real difference and can be audited.
 - \`knowledge/_RUNBOOK-*.md\` — the procedures: compose from canon, take a component through its
   gates, render and verify, write a criteria contract, onboard an existing code library.
 - \`showroom/\` — the live library, including the foundations pages.
-- \`memento-package/\` — Memento's machinery. Machinery only: no chain, no record. Your project
-  grows its own.
+- \`memento-package/\` — **Memento — Gumdrop v1.0.0**: Memento's machinery, and only the
+  machinery. No chain, no rulings, no record of any kind. Your project grows its own memory from
+  nothing, which is the point. Its version line is its own — this pack's version does not move
+  it, and a later Apollo release may carry the same Gumdrop or a newer cut.
+
+## The canon generators, and one warning
+
+The generators that mint canon from the tokens are in here, because this is the working engine
+and not a baked copy of one. Changing a token and re-minting canon can produce canon that never
+passed a gate. Each generator says so when you run it inside this pack and asks you to pass
+\`--i-understand\` before it will proceed. Then run \`python3 ci-template/run-gates.py\` — that
+is what tells you whether what you just minted still passes.
 
 ## What is deliberately NOT in here
 
@@ -255,7 +282,7 @@ MD
 
   # Fold the measured download size and fingerprint back into Dave's page. The page must not
   # claim a zip size it never saw — the only honest source for it is a bake that actually ran.
-  PAGE="$(ls -1 "$ROOT"/reviews/RELEASE-V3-MANIFEST-*-v*.html 2>/dev/null | tail -1)"
+  PAGE="$(ls -1 "$ROOT"/reviews/RELEASE-SPIDER-*-v*.html 2>/dev/null | tail -1)"
   if [ -n "$PAGE" ]; then
     python3 "$GEN" --page "$PAGE" --zip-bytes "$ZBYTES" --zip-sha "$ZSHA"
   fi

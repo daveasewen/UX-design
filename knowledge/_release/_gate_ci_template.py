@@ -53,8 +53,8 @@ import _could_not_ask as cna
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-TEMPLATE_DIR = os.path.join(ROOT, "designer-skills-v3", "ci-template")
-TEMPLATE_REL = "designer-skills-v3/ci-template"
+TEMPLATE_DIR = os.path.join(ROOT, "apollo-spider", "ci-template")
+TEMPLATE_REL = "apollo-spider/ci-template"
 WORKFLOW = "gates.yml"
 RUNNER = "run-gates.py"
 READMES = "README.md"
@@ -100,7 +100,7 @@ def _referenced_scripts(doc):
 
 def _ship_list():
     """(paths, manifest_commit) from the generated manifest, or (None, None)."""
-    p = os.path.join(HERE, "_v3_manifest.json")
+    p = os.path.join(HERE, "_pack_manifest.json")
     if not os.path.exists(p):
         return None, None
     man = json.load(open(p, encoding="utf-8"))

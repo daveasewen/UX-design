@@ -150,7 +150,7 @@ name: gates
 #     ITS `version` CHANGING, read out of the ledger blob at the PARENT commit. Moving a frozen
 #     surface is legal. Moving it silently is not.
 #   ② HALF A CI THAT IS NEVER RUN HERE. The pack ships a workflow template for a designer's own
-#     project (`designer-skills-v3/ci-template/`). A broken `on:` block or a step calling a script
+#     project (`apollo-spider/ci-template/`). A broken `on:` block or a step calling a script
 #     the zip does not carry would never show up in this repo's CI, and the first person to find
 #     out would be a designer. `_gate_ci_template.py` PARSES it as YAML — not with a regex over
 #     the text, the ds-039 lesson [[no-gate-parses-the-artefact]] — and refuses to let it ship a
@@ -179,6 +179,25 @@ name: gates
 #   ⚠ ALSO DECLARED: `actionlint` is not installed here, so the template's validation is
 #   STRUCTURAL (parsed YAML + referenced-script + README-promise arms). The gate runs actionlint
 #   when it is present and says so when it is not.
+#
+# ---- FIFTH ENTRY, 2026-08-26 (#219 N1 + seam 8, `s219-D8`). A RENAME, and nothing above is
+# false — every path in the fourth entry moved and the entry's PATHS were updated in place,
+# because a path is a pointer and a stale pointer is a lie about where the machinery lives, not
+# history. The release formerly called `designer-skills-v3` is **Apollo — Spider v1.0.0**; the
+# clean cut of Memento it carries is **Memento — Gumdrop v1.0.0**. Two name families by module
+# TYPE (LM = the pack, it lands; CM = the Memento cut, it navigates), and a release takes ONE
+# MISSION'S WHOLE PAIR — Spider and Gumdrop are both Apollo 9. `s219-D6` and `s219-D7` named the
+# pack twice over before this and were BOTH superseded before any commit carried either name, so
+# this log records ONE rename, `designer-skills-v3` -> `apollo-spider`, not a chain of three.
+# Their names live in `knowledge/_rulings.json`, which is where superseded history belongs.
+# The dir is `apollo-spider/`, the zip is `Apollo-Spider-v1.0.0.zip`,
+# and the generator and its two artefacts took DELIBERATELY GENERIC names —
+# `_gen_pack_manifest.py`, `_pack_manifest.json`, `_pack_gate_probe.json` — so that the next
+# lunar module does not cost another rename wave across nine files. The frozen ledger's third
+# row was RE-SEEDED at its own baseline commit (`--seed --at 71bb2f7`), which left v1's and v2's
+# rows byte-identical and changed only the row that was renamed; the laundering arm learned to
+# follow a DECLARED rename (`renamed_from`) and to go RED when a row vanishes undeclared, which
+# is the hole this rename would otherwise have opened in it.
 #
 # `fetch-depth: 0` on both checkouts is the SECOND, INDEPENDENT #173 cause:
 # `_gen_chain.build_verdict_line()` runs `git show 18c7789:…` (VERDICT_SHA), and
@@ -361,7 +380,7 @@ jobs:
 
       # BLOCKING. s114-D4 by machine at last. A refusal is possible (no ledger, no history) and
       # is passed through as a refusal — never as green, and never as a red either.
-      - name: Frozen-release gate — v1, v2 and any baked v3 zip may not move without a version bump (BLOCKING)
+      - name: Frozen-release gate — v1, v2 and any baked Spider zip may not move without a version bump (BLOCKING)
         run: |
           rc=0; python3 knowledge/_release/_gate_frozen_release.py --check || rc=$?
           if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
@@ -372,7 +391,7 @@ jobs:
 
       # BLOCKING. The v2 receipt's own words for the class this ends: "v1's copy-list had gone
       # stale — never shipped canon/type.css nor tokens/themes/".
-      - name: v3 ship-list audit — the manifest must be what its generator produces (BLOCKING)
+      - name: Pack ship-list audit — the manifest must be what its generator produces (BLOCKING)
         run: |
           rc=0; python3 knowledge/_release/_gate_release_audit.py --check || rc=$?
           if [ "$rc" = "77" ]; then echo "^ COULD-NOT-ASK — printed, not counted, not a verdict."; rc=0; fi
@@ -409,13 +428,13 @@ jobs:
       # tree, --release while the manifest says PROPOSED. On a clean CI checkout the dirty-tree
       # arm SELF-SKIPS and says so, rather than claiming a green it cannot have.
       - name: Build-script selftest — the release refusals, driven (BLOCKING)
-        run: bash designer-skills-v3/build-designer-pack.sh --selftest
+        run: bash apollo-spider/build-designer-pack.sh --selftest
 
       # ADVISORY, and it must stay so. A manifest generated at an older commit than HEAD means a
       # pack cut now would ship older content. That is a real fact and NOT a defect — cutting
       # from an older commit is a legitimate choice, and ⬛ WHEN TO RE-CUT IS DAVE'S (s219-D4(2)).
       # `continue-on-error` MIRRORS the ADVISORY route in `_build_all.STEPS`, the same way the
       # claim-table linter and the probe registry above do.
-      - name: v3 ship-list drift — how far behind HEAD the ship list is (ADVISORY; re-cutting is Dave's)
+      - name: Pack ship-list drift — how far behind HEAD the ship list is (ADVISORY; re-cutting is Dave's)
         continue-on-error: true
         run: python3 knowledge/_release/_gate_release_audit.py --drift

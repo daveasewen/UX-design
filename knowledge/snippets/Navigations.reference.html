@@ -111,10 +111,23 @@
      it is gone. Declared here rather than discovered again. */
   .nav-searchbar[hidden]{display:none;}
   .nav-searchbar{background:var(--surface); border-bottom:1px solid var(--rule); padding:8px 32px;}
-  .nav-searchbar .search{position:relative; display:flex; align-items:center; height:48px;
+  /* ⛔ #219 — THE FIELD WRAPPER IS `.nav-search`, NOT `.search`, AND THE NAME IS LOAD-BEARING.
+     `.search input` is a GLOBAL BINDING SITE in canon/type.css (T-D9): it is appended beside
+     `.t-cm-label` and carries that composite's declarations for Search-field and
+     Filter-toolbar-bar, which both OMIT the font on purpose and rely on the binding. This
+     searchbar does not — its input carries `class="t-cm-label"` explicitly and re-declares its
+     own geometry against its own tokens. So a bare `.search` here made canon's binding reach a
+     fifth file that never asked for it: `_validate_type_blast_radius.py` read ESCAPED and the
+     pack's copy of that gate shipped red (one of the four s219-D5(Q5) reds). Namespaced at
+     cause rather than `--update`-ing a fifth site into the registry — recording a binding site
+     the file does not consume is exactly the unacknowledged reach the registry exists to stop.
+     ⚠ PIXEL-NEUTRAL, and that is measured, not hoped: `.search input` and `.t-cm-label` are the
+     SAME rule in type.css (font-size 16px, weight 400, line-height 1, --slot 20px), so the
+     input rendered identically before and after. Related class: #202 vocabulary collision. */
+  .nav-searchbar .nav-search{position:relative; display:flex; align-items:center; height:48px;
     border-bottom:1px solid var(--field-border); background:transparent;}
-  .nav-searchbar .search:hover{background:var(--hover);}
-  .nav-searchbar .search:focus-within{box-shadow:inset 0 -2px 0 var(--field-active);}
+  .nav-searchbar .nav-search:hover{background:var(--hover);}
+  .nav-searchbar .nav-search:focus-within{box-shadow:inset 0 -2px 0 var(--field-active);}
   .nav-searchbar .mag{flex:none; display:inline-flex; align-items:center; justify-content:center;
     width:20px; height:20px; color:var(--icon); margin:0 12px;}
   .nav-searchbar .mag svg{width:20px; height:20px; fill:currentColor;}
@@ -170,7 +183,7 @@
        Search-field's UNDERLINE form, copied — including the clear × that exists only while the
        field holds a value. `hidden` is the state carrier and the CSS above forces it to obey. -->
   <div class="nav-searchbar" id="navSearch" hidden>
-    <div class="search" role="search">
+    <div class="nav-search" role="search">
       <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#nv-search"/></svg></span>
       <input id="navSearchInput" class="t-cm-label" type="search" aria-label="Search accounts, payments and payees" placeholder="Search accounts, payments and payees">
       <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#nv-clear"/></svg></button>

@@ -59,7 +59,17 @@ USAGE
   python3 knowledge/_validate_evidence.py --selftest
 
 EXIT: 0 clean · 1 lint failure, parse residual, rc mismatch (or a refusal under --strict-sample)
-      · 2 bad invocation.
+      · 2 bad invocation · 77 COULD-NOT-ASK (#219, see below).
+
+⛔ #219 — A BARE INVOCATION IS LEGAL, AND HAS THREE HONEST ANSWERS. This gate used to exit 2
+with no argument, which is *bad arguments* and not a verdict at all — so the gate shipped in the
+Apollo pack could NEVER pass however it was called, and it was the first of the four packed-gate
+reds `s219-D5(Q5)` sent back to be fixed AT CAUSE. Bare now defaults to `notes/_claims`, the
+same path the two wired invocations name, so a workflow line and this gate cannot drift apart.
+When that home is absent — the pack's case and a fresh designer project's case, because `notes/`
+is deliberately outside the release ship list — the answer is **COULD-NOT-ASK (77)** with the
+unreachable input NAMED (`_could_not_ask.py`), never a FAIL and never a silent pass. Naming a
+table or a directory always overrides the default.
 
 CONSUMER at birth: the PM-wave seam, alongside `_join_claim_tables.py`.
 ✅ WIRED #208 — the `s204-D1` precondition (driven in >= 1 real wave) was MET by the #208
@@ -74,7 +84,9 @@ the repo root, so the step does not depend on the build's cwd.
 Selftest: plants a token-less mechanical row, a dead path pointer, and an rc mismatch — each
 must be named; removing each must go green. Includes a REFUSAL arm proving a side-effecting
 command is refused rather than run, and a determinism arm proving the same seed draws the
-same rows.
+same rows. #219 adds a NO-MATERIAL arm in BOTH directions, driven in a throwaway tree with cwd
+and ROOT both moved: absent home -> 77, empty home -> 77, and a PLANTED bad row under a present
+home -> 1, so the refusal is shown not to have swallowed the gate.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -86,6 +98,12 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import sys, os, re, json, glob, random, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _claimtable as CT
+import _could_not_ask as CNA          # #219 — the third verdict, for the no-material case
+
+# #219 — the conventional home of this repo's claim tables. `_build_all.py` and the house
+# workflow both name it explicitly; this constant is what a BARE invocation falls back to, so
+# the three cannot drift apart. It is a PATH, not a policy: naming a table always wins.
+DEFAULT_CLAIMS = os.path.join("notes", "_claims")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_SEED = 205
@@ -366,9 +384,36 @@ def main(argv):
             skip.add(argv[i + 1])
     paths = [p for p in paths if p not in skip]
     if not paths:
-        sys.stderr.write("✖ REFUSED: need at least one <rows.jsonl> (a DIRECTORY is also legal — "
-                         "every *.jsonl in it is linted)\n")
-        return 2
+        # ⛔ #219 — A GATE THAT CANNOT BE INVOKED WITHOUT AN ARGUMENT CANNOT SHIP.
+        # This gate was the first of the four s219-D5(Q5) reds. Every OTHER gate in the pack
+        # carries a DEFAULT_TARGETS of its own; this one alone had none, so a runner that calls
+        # the shipped gates the obvious way (`python3 <gate>`) got rc=2 — bad arguments, which is
+        # not a verdict at all. Fixed at cause here rather than in the runner's call signature:
+        # a gate should know where its own material lives.
+        #   · The repo's own two invocations pass `notes/_claims` explicitly and are UNCHANGED.
+        #   · Bare now defaults to that same conventional home, so the two agree by construction
+        #     instead of by a copied string in a workflow file.
+        #   · When the home is not there — which is the pack's case, and a fresh designer
+        #     project's case, because `notes/` is deliberately OUT of the ship list — the answer
+        #     is COULD-NOT-ASK (77), not FAIL. The gate has no rows to lint; it has not found a
+        #     defect. Keyed on the UNREACHABLE INPUT and named, per `_could_not_ask.py`; NEVER on
+        #     "am I in CI" [[gate-cannot-pass-in-one-environment]].
+        # ⚠ The refusal is reproducible on any machine by taking notes/_claims away, and the
+        # reachable side still bites: with the directory present a planted bad row still exits 1.
+        default = os.path.join(ROOT, DEFAULT_CLAIMS)
+        if not os.path.isdir(default):
+            return CNA.refuse(
+                "the evidence linter",
+                "no claim table was named and the conventional home %s does not exist here — "
+                "there are no evidence rows to lint (notes/ is out of the release ship list, so "
+                "this is the expected reading in a packed or a fresh project). Name a "
+                "<rows.jsonl> or a directory of them to ask this gate anything." % DEFAULT_CLAIMS)
+        if not glob.glob(os.path.join(default, "*.jsonl")):
+            return CNA.refuse(
+                "the evidence linter",
+                "%s exists but holds no *.jsonl claim table — nothing to lint yet." % DEFAULT_CLAIMS)
+        print("no claim table named — defaulting to %s" % DEFAULT_CLAIMS)
+        paths = [DEFAULT_CLAIMS]
     # #208 WIRING: `_build_all.py` runs steps with an arbitrary cwd, and the wave seam wants ONE
     # invocation over a whole directory of tables (the verifier had to `cat` three files into a
     # temp path to get past a 1:1 limit elsewhere). Both are resolved here, LOUDLY: a token that
@@ -435,6 +480,7 @@ def _row(i, **kw):
 
 
 def selftest():
+    global ROOT                      # #219 no-material arm repoints it at a throwaway tree
     import tempfile
     fails = []
     tmp = tempfile.mkdtemp(prefix="evidence-selftest-")
@@ -633,6 +679,51 @@ def selftest():
         fails.append("DETERMINISM: two different seeds drew an identical sample — seeding is inert")
     else:
         print("  ✅ determinism arm: seed 7 draws %r twice; seed 8 draws %r" % (a, c))
+
+    # --- #219 NO-MATERIAL arm: bare invocation, BOTH directions, driven not asserted ---------
+    # The clause under test is the one that turned the first of the four s219-D5(Q5) packed-gate
+    # reds green. It is proved by MOVING THE INPUT, never by an env var: ROOT is repointed at a
+    # throwaway tree, so this reproduces on any machine [[gate-cannot-pass-in-one-environment]].
+    # ⚠ BOTH cwd AND ROOT are moved. `main()` resolves a path against cwd FIRST and only then
+    # against ROOT, so repointing ROOT alone left arm (c) silently linting the REAL notes/_claims
+    # (360 dead pointers, exit 1 — a pass for the wrong reason). Caught by reading the output.
+    _real_root, _real_cwd = ROOT, os.getcwd()
+    _tmp = tempfile.mkdtemp(prefix="ev-nomat-")
+    try:
+        os.chdir(_tmp)
+        # (a) no notes/_claims at all -> COULD-NOT-ASK (77), never 1 and never 0
+        ROOT = _tmp
+        rc = main([])
+        if rc != CNA.EXIT:
+            fails.append("NO-MATERIAL ARM: a bare run with no notes/_claims returned %r, want "
+                         "%d (COULD-NOT-ASK). A gate with nothing to look at has found no defect, "
+                         "and rc=2 is bad arguments, not a verdict." % (rc, CNA.EXIT))
+        else:
+            print("  ✅ no-material arm: bare + no notes/_claims -> COULD-NOT-ASK (%d), named"
+                  % CNA.EXIT)
+        # (b) the directory exists but is empty -> still a refusal, with its own reason
+        os.makedirs(os.path.join(_tmp, "notes", "_claims"))
+        if main([]) != CNA.EXIT:
+            fails.append("NO-MATERIAL ARM: an EMPTY notes/_claims did not refuse")
+        else:
+            print("  ✅ no-material arm: an empty notes/_claims refuses too, with its own reason")
+        # (c) ⛔ THE OTHER DIRECTION — the refusal must not swallow the gate. Plant a row that
+        #     the linter is known to fail on; bare must now find it and exit 1, not refuse.
+        with open(os.path.join(_tmp, "notes", "_claims", "planted.jsonl"), "w",
+                  encoding="utf-8") as f:
+            f.write(json.dumps(_row("NM-1", tag="PROVEN",
+                                    evidence="no command, no path, no figure")) + "\n")
+        rc = main(["--no-sample"])
+        if rc != 1:
+            fails.append("NO-MATERIAL ARM (other direction): a bare run over a PLANTED bad row "
+                         "returned %r, want 1 — the default is defaulting to a pass" % rc)
+        else:
+            print("  ✅ no-material arm (other direction): bare over a planted bad row still "
+                  "exits 1 — the refusal has not swallowed the gate")
+    finally:
+        os.chdir(_real_cwd)
+        ROOT = _real_root
+        shutil.rmtree(_tmp, ignore_errors=True)
 
     if fails:
         print("⛔ _validate_evidence selftest: %d failure(s)" % len(fails))

@@ -1,9 +1,9 @@
 # Composition gate audit
 
 ## canon.css
-- defs 934, var() refs 498
+- defs 973, var() refs 559
 - ✅ vars resolve, braces balanced, spine markers present
-- ℹ️ canon.css: 1 var(s) resolved via inline-scope (set in snippet markup, not CSS): ['--sc']
+- ℹ️ canon.css: 4 var(s) resolved via inline-scope (set in snippet markup, not CSS): ['--b1', '--b2', '--sc', '--self']
 
 ## composed screens (7)
 - ✅ canon-gallery.canon.html — 76 canon classes, 0 rogue hex, 0 redefines, all resolve

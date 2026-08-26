@@ -31,6 +31,20 @@ No gate may match names with a regex and call that a measurement. This one:
      @supports, @container) carry context;
   2. records every custom-property DECLARATION with its full selector chain,
      at-rule context and 1-based line number;
+     ⛔ #219 - EXCEPT inside @keyframes. A keyframe's block heads (`from`, `to`,
+     `0%`, `50%`) are FRAME POSITIONS, not selectors, and they are not any of the
+     three axes above - so `context_of("from")` scored them as two different
+     SCOPES and a registered-property animation read as a same-(theme,mode) FORK.
+     It is the opposite of one: a keyframe whose `from` and `to` agreed would be
+     an animation that does nothing. Measured at #219 on the DV-D16 stacked-column
+     physics (`@keyframes cn-chart-bar-dvStackF1{from{--dvf1:0;} to{--dvf1:1;}}`,
+     canon.css:7199-7201) - three false FORKs, the four packed-gate reds' number 2.
+     Fixed AT CAUSE per s219-D5(Q5): the frames are skipped, NOT ledgered - the
+     ledger is a record of forks Dave has yet to rule on, and a false positive
+     filed there would have been baseline plaster over a gate defect.
+     ⚠ Only the FRAMES are skipped. `@property --dvf1{...}` descriptors were already
+     out (no selector), and a custom property declared under a @media/@supports
+     context still carries that context and is still measured.
   3. classifies each selector in a selector list into (theme, mode, scope);
   4. RESOLVES var() chains the way the browser does - substituting the value
      the same element would see, walking the fallback ladder
@@ -114,10 +128,16 @@ def strip_comments(text):
     return "".join(out)
 
 
+# #219 - vendor-prefixed forms included; the head is matched, not searched for, so a
+# selector that merely mentions the word cannot pull a real rule out of the measurement.
+RE_KEYFRAMES = re.compile(r"@(?:-[a-z]+-)?keyframes\b")
+
+
 def parse_declarations(text, path):
     """Walk the stylesheet, yielding custom-property declarations in context.
 
     Returns list of dicts: selector, at_rules, prop, value, line.
+    ⛔ #219: declarations inside @keyframes are NOT returned - see the docstring.
     """
     src = strip_comments(text)
     decls = []
@@ -157,6 +177,12 @@ def parse_declarations(text, path):
                 sels = [k for kind, k in stack if kind == "sel"]
                 ats = [k for kind, k in stack if kind == "at"]
                 if not sels:
+                    continue
+                # #219 - a @keyframes block head is a FRAME POSITION, not a selector.
+                # See the parser note in the module docstring: measuring `from` against
+                # `to` as two scopes turns every registered-property animation into a
+                # false FORK. Skipped at the source, never ledgered.
+                if any(RE_KEYFRAMES.match(a) for a in ats):
                     continue
                 decls.append({
                     "file": path,
@@ -370,16 +396,66 @@ SELFTEST_FORKED = """
 .cn-button { --pri-hover: #626262; }
 """
 
+# #219 - the KEYFRAMES arm, in the shape that actually bit (canon.css:7199-7201).
+# --pri-hover is deliberately given the SAME clean-sheet treatment as SELFTEST_CLEAN so
+# the arm's verdict cannot be changed by anything except the keyframe frames.
+SELFTEST_KEYFRAMES = """
+:root { --brand: #DB0011; --pri-hover: var(--brand); }
+[data-apollo-theme="legacy"] { --brand: #A8000B; }
+@property --dvf1{syntax:"<number>"; inherits:true; initial-value:1;}
+@keyframes grow1 { from { --dvf1: 0; } to { --dvf1: 1; } }
+@-webkit-keyframes grow1 { from { --dvf1: 0; } to { --dvf1: 1; } }
+"""
+
+# #219 - the OTHER direction. A real same-(theme,mode) fork sitting under a @media
+# context must still be measured: the skip is keyed on @keyframes ALONE, and a clause
+# that swallowed every at-rule would have retired the gate's @media coverage silently.
+SELFTEST_MEDIA_FORK = """
+:root { --brand: #DB0011; --pri-hover: var(--brand); }
+@media (min-width: 600px) { .cn-button { --pri-hover: #626262; } }
+"""
+
 
 def selftest():
-    """Two bites, in memory, no repo bytes touched.
+    """Four bites, in memory, no repo bytes touched.
 
     1. clean sheet: --pri-hover resolves to #db0011 in mono and #a8000b in
        legacy -> BENIGN_THEME_AXIS, NOT a fork (the four-theme requirement).
     2. forked sheet: .cn-button disagrees with :root inside mono -> FORK.
+    3. #219 KEYFRAMES: an animated registered property (from 0 -> to 1) yields NO
+       declaration at all, so --dvf1 has no verdict. Drop the RE_KEYFRAMES skip and
+       this arm reports FORK - which is exactly the red this fixed.
+    4. #219 MEDIA CONTROL: a real fork under @media is STILL a FORK - the skip is
+       keyed on @keyframes alone and has not eaten the at-rule coverage.
     A green that cannot fail is an assertion, so both directions are driven.
     """
     ok = True
+
+    # --- arm 3: the keyframe frames must not reach the measurement at all ---
+    kdecls = parse_declarations(SELFTEST_KEYFRAMES, "<selftest-keyframes>")
+    kprops = sorted({d["prop"] for d in kdecls})
+    kgood = "--dvf1" not in kprops
+    ok = ok and kgood
+    print("  selftest keyfrm --dvf1 declarations parsed -> %d  want 0  %s"
+          % (len([d for d in kdecls if d["prop"] == "--dvf1"]), "OK" if kgood else "FAIL"))
+    kindex, kcontexts = build_index(kdecls)
+    _, kverdicts = measure(kindex, kcontexts)
+    kv = kverdicts.get("--dvf1", {}).get("verdict")
+    kgood2 = kv is None
+    ok = ok and kgood2
+    print("  selftest keyfrm --dvf1 -> %-18s want %-18s %s"
+          % (kv, "(no verdict)", "OK" if kgood2 else "FAIL"))
+
+    # --- arm 4: the control - @media must still carry a real fork through ---
+    mdecls = parse_declarations(SELFTEST_MEDIA_FORK, "<selftest-media>")
+    mindex, mcontexts = build_index(mdecls)
+    _, mverdicts = measure(mindex, mcontexts)
+    mv = mverdicts.get("--pri-hover", {}).get("verdict")
+    mgood = mv == "FORK"
+    ok = ok and mgood
+    print("  selftest media  --pri-hover -> %-18s want %-18s %s"
+          % (mv, "FORK", "OK" if mgood else "FAIL"))
+
     for label, css, want in (("clean", SELFTEST_CLEAN, "BENIGN_THEME_AXIS"),
                              ("forked", SELFTEST_FORKED, "FORK")):
         decls = parse_declarations(css, "<selftest-%s>" % label)

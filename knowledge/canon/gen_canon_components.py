@@ -24,6 +24,10 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+# s219-D5 (Q3): the canon generators SHIP with the designer pack, and a designer who
+# reaches for one is warned first. NO-OP IN THIS REPO — the guard looks for the pack's
+# own _MANIFEST.json marker, which only an unzipped pack has. Same bytes both sides.
+from _helpgate import pack_gate as _pack_gate; _pack_gate(__file__, name=__name__, what='the canon component layer')
 import os, re, json, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
