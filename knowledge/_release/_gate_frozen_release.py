@@ -236,6 +236,11 @@ def arm_worktree(root, led):
     return fails
 
 
+# The recording of a surface with zero files — sha256 over an empty body. The birth clause in
+# arm_laundering keys on this and nothing else: a parent row at this sha shipped nothing.
+_EMPTY_SURFACE_SHA = hashlib.sha256(b"").hexdigest()
+
+
 def arm_laundering(root, rev, led):
     """A re-record without a version bump. Returns (fails, refusal_reason_or_None)."""
     parent = rev_ok(root, rev + "^")
@@ -266,9 +271,24 @@ def arm_laundering(root, rev, led):
             claimed_old_ids.add(row["id"])
         if not old:
             continue
-        moved = (old.get("content_sha256") != row.get("content_sha256")
-                 or old.get("baseline_commit") != row.get("baseline_commit"))
+        # ⚠ #219 (found live at the Spider bake): movement is CONTENT movement. A `--seed` that
+        # re-measures an identical surface refreshes `baseline_commit` while the content sha is
+        # byte-for-byte the same — that is a re-measurement of an unmoved truth, not a move, and
+        # flagging it forced a version bump for editing nothing (the inverse of s114-D4's point).
+        # A baseline_commit that moves WITH content still fails, on the content.
+        moved = old.get("content_sha256") != row.get("content_sha256")
         if moved and old.get("version") == row.get("version"):
+            # ⚠ THE BIRTH CLAUSE (#219, the Spider bake, s219-D10). A row whose PARENT recording
+            # is the EMPTY surface (sha256 of zero `path <blob>` lines — the row was seeded
+            # before any release existed, dist/ empty) gaining content at the same version is
+            # not a re-record of anything shipped: nothing existed to edit. It is the release
+            # LANDING, which is exactly the act s219-D4(2)/s219-D10 make Dave's word. The clause
+            # is deliberately one-way and single-use per row: once the recording is non-empty,
+            # any further move at the same version is laundering again, caught below — proven by
+            # the selftest's existing non-empty fixtures, while the live #219 bake proved the
+            # green direction (empty -> Apollo-Spider-v1.0.0.zip at v1.0.0).
+            if old.get("content_sha256") == _EMPTY_SURFACE_SHA:
+                continue
             fails.append("RE-RECORDED WITHOUT A VERSION BUMP: %s still says version %s, but its "
                          "recording moved (%s -> %s). s114-D4: a release is explicit and "
                          "VERSIONED — re-seeding the ledger is not a substitute for cutting a "
