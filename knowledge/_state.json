@@ -3575,6 +3575,156 @@
       "condition": "stated"
     },
     {
+      "links": [
+        "notes/_subreports/2026-08-27-220-audit-L1.md",
+        "notes/_subreports/2026-08-27-220-audit-L2.md",
+        "notes/_subreports/2026-08-27-220-audit-L3.md",
+        "notes/_subreports/2026-08-27-220-audit-L4.md",
+        "notes/_subreports/2026-08-27-220-audit-L5.md",
+        "notes/_subreports/2026-08-27-220-audit-L6.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-audit-wave-divvy.md",
+      "id": "W-218",
+      "title": "#220 BRIEF - the six-lane audit wave divvy (L1 gate fleet - L2 generator fleet - L3 token/canon health - L4 designer first hour - L5 sitting page - L6 efficiency ledger)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the six lane reports are all filed and cited by path in the #220 session record, and the conductor has replayed each lane's REPLAY-THESE",
+      "body": "The divvy for the #220 six-lane audit wave, run after the v1.0.1 bake. SHARED RULES fenced every lane to its own report + assets dir: no repairs, no rulings, no promotions, no git, no memory. All six lanes filed.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/assets/2026-08-27-220-audit-L1/",
+        ".github/workflows/gates.yml",
+        "knowledge/_build_all.py"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L1.md",
+      "id": "W-219",
+      "title": "#220 FILED REPORT - L1 gate fleet (correctness): CI red at the FIRST gates step since aa26947, eight false greens, four proved by planted defect",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or parked L1's five ruling-shaped questions - chiefly whether the CI red at the first gates step is repaired before the next push - and the eight false greens are scheduled or explicitly accepted",
+      "body": "s218-D7 filed report. COUNTS: findings 18 / ruling-shaped 5 / UNPROVEN 4. Fleet enumerated from all FOUR consumer surfaces and driven both in the working tree and in a bare clone at 707e5aa (#194 single-variable method). The gates job of .github/workflows/gates.yml is RED AT ITS FIRST STEP and has been since aa26947 (2026-08-26): two sessions of Knowledge build, 27 gate bite-tests, 19 advisory bite-tests, commit-script selftest and claim-table linter have not run in CI. Four survey steps fail on the committed tree, all ABORT-routed. Eight false greens established, four by planted-defect mutation with a firing control beside each: two BLOCKING gates blind to CSS logical properties, one blind to style= attributes entirely; _validate_wiring.py green only because its glob cannot see the _gate_*.py namespace; five committed gate artefacts stale at HEAD with nothing comparing them. The fleet's static leg has NO HTML or CSS parser anywhere in it. Declared gap: _capture_gate.py --selftest, fenced by the brief.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/assets/2026-08-27-220-audit-L2/",
+        "knowledge/gen_dashboard.py"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L2.md",
+      "id": "W-220",
+      "title": "#220 FILED REPORT - L2 generator fleet: 35 of 36 driven, 21 byte-reproduce, gen_dashboard --check has no reachable FAIL path, and a case-sensitivity class degrades 7 components on CI's Linux",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or parked L2's five ruling-shaped questions and the gen_dashboard --check no-FAIL-path plus the Chart-*.meta.json case-sensitivity class are scheduled as repairs",
+      "body": "s218-D7 filed report. COUNTS: findings 14 / ruling-shaped 5 / UNPROVEN 3. All 36 knowledge/** generators enumerated, 35 driven (gen_thumbs.py excepted - 143 chromium screenshots exceeds the ~178s call wall), every run in a write-safe /var/tmp copy. 21 reproduce their committed artefact byte-for-byte; 7 drift in four classes (2 nondeterminism/timestamps, 4 stale artefact, 1 declared ahead-artefact). gen_library_214.py is byte-identical on macOS and SILENTLY DEGRADES on Linux, which is what CI runs. Two findings not to skip: gen_dashboard.py --check, a BLOCKING build gate, has NO REACHABLE FAIL PATH (0 or 77, never 1) and the dashboard it guards IS stale at #219 / 194 items against a store holding 290; SPACING_STOPS is still TWO HOMES and the module owning one carries a comment asserting it is the only place those numbers are typed - measurably false.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/assets/2026-08-27-220-audit-L3/",
+        "knowledge/_validate_token_forks.py"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L3.md",
+      "id": "W-221",
+      "title": "#220 FILED REPORT - L3 token & canon health: 14 instruments driven, live populations CLEAN of silent black, 16 drifted fallback cause-sites in 5 sibling generators, fork-ledger rot",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or parked L3's ruling-shaped questions and the 16 drifted fallback cause-sites plus the fork-ledger rot are scheduled as repairs",
+      "body": "s218-D7 filed report. 12 findings filed (F-1..F-12), 4 rated HIGH, 3 red flags for the conductor. 9 of 9 named instruments driven + 5 adjacent = 14, 0 could-not-run, 0 crashes; 9 green, 4 green-with-standing-advisories, 1 red under its OWN stricter flag (token-forks --strict exits 1 on 98 forks while baseline exits 0 - same tree, opposite verdict, only the permissive mode wired). Class sweeps over 650 files / 9,508 distinct var refs: SILENT BLACK 0 in every live population (CLEAN), 118 in frozen reviews/*.html of which 0 are defects; HEX BYPASS 28 in canon.css+type.css (0.23% of 12,009 mints), 810 in showroom/*.html, 450 in _foundations, 0 of 1,314 gated by any existing instrument; STALE FALLBACK 11 generator cause sites + 5 page-local-alias consumer drift = 16 in 5 sibling generators, 118 shipped-artefact occurrences in 44 files. The s220-D1 mint resolves 8/8 per theme x mode, values matching the ruled table exactly. F-9 the probe-README false premise (64 findings that are gone), F-10 fork-ledger rot 5 rows, F-12 retrieval writes.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/assets/2026-08-27-220-audit-L4/",
+        "apollo-spider/dist/Apollo-Spider-v1.0.1.zip"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L4.md",
+      "id": "W-222",
+      "title": "#220 FILED REPORT - L4 designer first hour: the shipped v1.0.1 pack driven as a designer, 19 findings, 4 blocking the first hour",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or parked L4's ruling-shaped questions and the four blocking first-hour stumbles are scheduled for a release after v1.0.1",
+      "body": "s218-D7 filed report. COUNTS: pack v1.0.1, sha256 c8934ebdb63306526223f8478561ccd3e18f502b4db01746c0f468ba6e6923d1 (matches the bake commit's claim), 1,646 files, 43 MB, 26 pack instructions driven, 19 findings (4 blocking a designer's first hour, 9 misdirect/doc-vs-behaviour drift, 6 accounting), 9 of the pack's own documented behaviour-claims driven: 6 held, 3 failed. The pack was extracted fresh from the dist zip to /var/tmp and every command run from the unzipped root as a designer would. GREEN ON DAY ONE HOLDS: run-gates.py = 35 pass / 0 FAIL / 0 could-not-ask in 7s on a virgin pack; both check-with-gates routes work and their mutation arms fire. BLOCKING: F5 tiktoken is documented Optional and the wrap step hard-REFUSES without it, so a designer on a clean machine loses the whole first session and Copilot greets them in Arm 0 next morning; plus the retrieval signpost naming a script the pack does not carry, the runner's phantom zero-population logic, and no-playwright FAIL-vs-CNA. The Copilot bridge is NARROWED by this artefact drive but still not proven by a live designer session.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "reviews/SITTING-220-2026-08-27-v1.html",
+        "notes/_subreports/assets/2026-08-27-220-audit-L5/",
+        "reviews/SITTING-219-2026-08-25-v2.html"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L5.md",
+      "id": "W-223",
+      "title": "#220 FILED REPORT - L5 the consolidated sitting page: 122 calls indexed, 97 open, 25 CANDIDATE-closed, nothing closed",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has worked the sitting page and ruled or parked the calls it indexes; the 25 CANDIDATE-closed cards stay candidate until he says otherwise",
+      "body": "s218-D7 filed report. COUNTS: findings 9 / ruling-shaped 3 / UNPROVEN 4. Every RULING-SHAPED QUESTIONS section in notes/_subreports/2026-08-2[567]-*.md was read (33 sections across 31 reports, extracted mechanically by heading, not by eye), plus the standing 33 cards of reviews/SITTING-219-2026-08-25-v2.html (W-184). NOTHING WAS CLOSED - every candidate-close is drawn as a struck card carrying the clause or probe that answers it, and each was PROBED IN THE TREE TODAY rather than inherited: three turned out to be answered by an ENACTMENT rather than a ruling, and one by a CHAT SENTENCE THAT LIVES ONLY IN A CODE COMMENT (the finding that produced s220-D3). All 189 links resolve; 0 page errors, 0 console errors, 0 failed requests, no horizontal overflow at 480px. One render defect found by eye and fixed inside the lane's own region: the tick and no-entry glyphs are TOFU in the real HSBC cut, and the #219 index Dave has already been sent carries both.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/assets/2026-08-27-220-audit-L6/",
+        "knowledge/_build_all.py"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-audit-L6.md",
+      "id": "W-224",
+      "title": "#220 FILED REPORT - L6 efficiency ledger: 140/140 build steps timed, 9 CI steps, 12 priced trims, and a DECLARED fence breach",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or parked L6's five ruling-shaped questions and the 12 priced trims are adopted, scheduled or declined",
+      "body": "s218-D7 filed report. COUNTS: 140/140 _build_all.STEPS timed (64 non-mutating on the live tree, 76 mutating in a disposable --shared clone), 9 CI steps timed end-to-end, 3-job CI graph mapped, 25 pages weighed, 2 git-repack prices measured, 1 full render re-stage driven cold in ONE call, 19 findings, 12 priced trims, 3 COULD-NOT-RUN declared, 5 ruling-shaped questions, subs 0. _build_all.py was NEVER invoked end-to-end: the 249.7s figure is the SUM of its 140 steps driven individually in STEPS order, a MODEL not a stopwatch reading, and labelled as such everywhere. T-1: git gc recovers ~744 MB and is DAVE'S MACHINE ONLY (the sandbox tmp_obj kill class). T-2: parallel survey saves ~118s per push. T-4: timeout re-dial. Dead runbook stratum 0/17 debs. DECLARED FENCE BREACH: _capture_gate.py --selftest ran twice against the brief's ban; MEASURED CONSEQUENCE was that no tracked file moved, twice - reported as a premise to re-check upward, NOT as a licence to drop the fence, and the re-check is priced and not run.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-audit-L5.md",
+        "reviews/SITTING-219-2026-08-25-v2.html"
+      ],
+      "home": "reviews/SITTING-220-2026-08-27-v1.html",
+      "id": "W-225",
+      "title": "#220 THE CONSOLIDATED SITTING PAGE - 122 calls in six surface groups, 97 open and 25 CANDIDATE-closed, all AWAITING Dave",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has sat with the page and ruled, parked or discarded the calls it indexes",
+      "body": "Generated by lane L5 of the #220 audit wave. Indexes 122 calls across six surface groups - 97 open, 25 CANDIDATE-CLOSED and NOTHING CLOSED. Renders clean in light and dark in all four themes; 189 links all resolve; 0 page errors, 0 console errors, 0 failed requests, no horizontal overflow at 480px. Supersedes nothing: reviews/SITTING-219-2026-08-25-v2.html (W-184) stays as the #219 index and its 33 standing cards are folded in here. Rowed in knowledge/_REVIEW-SIGNOFF.md at the #220 wrap.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "knowledge/_RUNBOOK-capture-ritual.md",
+        "GOOD-MORNING.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-wrap-brief.md",
+      "id": "W-226",
+      "title": "#220 BRIEF - the delegated wrap brief (session facts, gauge moments, DO-NOT-RULE fence, residuals to carry)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the #220 wrap commit has landed with its subject read back from git log and the conductor has relayed both title lines in chat",
+      "body": "The conductor's brief to the #220 Opus wrap sub. Carries the session facts (three rulings, the arc, the filed-report list, the commit range), the three gauge moments stated separately, the DO-NOT-RULE fence and the residuals to carry. Records the conductor's own miss: the ARMED 190,000 stop line was crossed mid-bake without an at-crossing declaration and was declared LATE, when Dave asked how hot.",
+      "condition": "stated"
+    },
+    {
       "id": "G1",
       "title": "Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…",
       "project": "memento",

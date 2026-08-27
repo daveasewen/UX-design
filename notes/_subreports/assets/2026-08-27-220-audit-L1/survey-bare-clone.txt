@@ -1,0 +1,191 @@
+— 140 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 45s · non-mutating steps only
+
+  ✅ [ 3] token blast-radius + graph report — determinism/staleness chec
+  ✅ [ 4] token blast-radius + graph report selftest (#79 P6)
+  ✅ [ 9] help-gate selftest — 5 mutation bites (#158 class gate)
+  ✅ [11] assertion veracity selftest — verbs bite + registry well-forme
+
+==============================================================================
+SURVEY: 4 pass · 0 FAIL · 0 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 8 not asked (mutating) · 128 outside --range 1:12 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+NOT ASKED (8 mutating steps) — run --include-mutating on a clean tree to include them:
+  [1] compliance knowledge graph
+  [2] token blast-radius + graph report
+  [5] guideline rules index (gate)
+  [6] runbook index (generated)
+  [7] standing-instructions reachability gate
+  [8] help-gate — no entry point may write before it reads argv (#158 cl
+  [10] assertion veracity gate — claims that can rot
+  [12] capture/provenance gate — status+provenance on new notes+dossiers 
+
+real	0m28.033s
+user	0m27.976s
+sys	0m0.056s
+— 140 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 45s · non-mutating steps only
+
+  ✅ [14] gauge-tokens selftest -- counting path + cache + degraded-meas
+  ✅ [15] roll-state measurer selftest (#77 T1)
+  ✅ [16] commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1
+  ✅ [17] GM/LS mover selftest — hardened move mechanics (M5)
+  ❌ [18] section-usage instrumentation selftest (#23)  exit 1
+  ✅ [20] lane records determinism check (O1′ #24)
+  ✅ [21] lane records selftest — schema refusals + routing contract (O1
+  ✅ [26] worklist store selftest — schema presence gates incl. priority
+  ✅ [28] decision-graph selftest — conflict gate bites on unresolved/op
+  ✅ [29] spine-writer selftest — splice invariants + no-half-writes (#7
+  ✅ [38] component-partials sync — AUTO-PARTIAL injection + contracts (
+  ✅ [39] component-partials selftest (ADR-0013)
+  ✅ [40] token-set distribution sync — AUTO-TOKENS injection (s121-D1)
+  ✅ [41] token-set distribution selftest (s121-D1)
+  ✅ [43] Behaviour contract selftest (ADR-0015)
+  ✅ [45] canon components determinism check (ADR-0013 ruling 4)
+  ✅ [47] partial-ratchet selftest (ADR-0013)
+  ✅ [50] theme cascade sync — [data-apollo-theme] layer (ADR-0011)
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ⊘ [61] dashboard sync — generated progress dashboard (RULED #164, bui  COULD-NOT-ASK
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ✅ [70] wiring gate selftest — 4 bites
+
+==============================================================================
+SURVEY: 25 pass · 1 FAIL · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 30 not asked (mutating) · 83 outside --range 14:70 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (1) — this is the number no single `_build_all.py` run can tell you:
+
+  [18] section-usage instrumentation selftest (#23)
+      python3 knowledge/_gm_usage.py --selftest   (exit 1)
+      [_gm_usage selftest] FAIL:
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 77)
+      COULD-NOT-ASK: dashboard/index.html — the page differs, but a live gate baked into it is reading INPUTS OUTSIDE THE COMMITTED TREE, so its verdict — and therefore this page — cannot be reproduced here: provenance names `_inscribe_ruling.py`; provenance names `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`; provenance names `outputs/_PARTITION-button-primary-2026-08-06-v1.md`. Every one of those paths is untracked, so an environment that has them and one that does not will render different prose from the SAME commit. This is a REFUSAL, not a staleness verdict in either direction: the page's agreement with the stores is UNKNOWN here and is reported as unknown. Ask it where those inputs are present (a working tree that holds them), or commit them.
+
+NOT ASKED (30 mutating steps) — run --include-mutating on a clean tree to include them:
+  [19] lane records — regenerate LS §🛤 view (O1′ #24)
+  [22] cross-reference index
+  [23] sutherland acceptance fixtures
+  [24] states-completeness probe (advisory)
+  [25] worklist store gate — open items state what would close them; opti
+  [27] decision-graph — typed edges + conflict gate (advisory, ADR-0012)
+  [30] _LIVE-STATE staleness gate + lifecycle-block generation (advisory,
+  [31] advisory signals — prose rules (advisory)
+  … and 22 more
+
+real	0m6.440s
+user	0m6.017s
+sys	0m1.455s
+— 140 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 45s · non-mutating steps only
+
+  ❌ [74] state-contrast gate selftest — paint stack, report arithmetic,  exit 2
+  ✅ [76] type-composites selftest
+  ✅ [85] KG edge gate selftest (6 bites)
+  ✅ [87] Token fork-ban selftest (2-direction)
+  ✅ [91] binds-resolve selftest — 5 bites incl. any-store clause (#146)
+  ✅ [93] chart-intent resolve selftest — 4 bites incl. list case + abse
+  ✅ [95] DataViz gate selftest — bite-tests dv-004 + the dtype vocabula
+  ✅ [97] property-resolves gate C2 selftest — 4 bites + a bite-the-bite
+  ✅ [99] dataviz var-resolution gate selftest — 8 arms incl. alias chai
+  ✅ [101] minted-consumption selftest — 10 arms incl. both false-positiv
+  ✅ [103] hidden-attr display selftest — 16 bites incl. the real #218 mu
+  ✅ [108] consult tool selftest (advisory)
+  ✅ [109] search core selftest — two-stage engine + receipt format (O2′ 
+  ❌ [111] memento index determinism check (O2′ #25)  exit 1
+  ✅ [112] memento index selftest — contract refusals + determinism (O2′ 
+  ✅ [113] memento search selftest — known-answer retrieval + fetch refus
+  ✅ [115] graph mention map determinism check (#115 step 0)
+  ✅ [116] graph mention map selftest — hit/miss/refusal bites (#115 step
+  ⊘ [118] read chain determinism check — stale _CHAIN.md serves a PREVIO  COULD-NOT-ASK
+  ❌ [119] read chain selftest — verbatim terms + the CUT + refusal on a   exit 1
+  ⊘ [121] memento schematic determinism check — a stale diagram publishe  COULD-NOT-ASK
+  ⊘ [122] memento schematic selftest — figure provenance, caption geomet  COULD-NOT-ASK
+  ✅ [124] memento-package delta-audit selftest — mutation-tested, all 4 
+  ✅ [126] instrument-fit selftest (advisory, ds-015)
+  ✅ [129] could-not-ask convention selftest (#193 — the third verdict's 
+  ⊘ [132] governs matcher selftest — the [12]/[13] trigger-index arm, na  COULD-NOT-ASK
+  ✅ [133] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [134] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [135] pack ship-list audit — the manifest is byte-identical to a fre
+  ✅ [136] release-audit selftest — manifest compare + the pack arm's res
+  ✅ [137] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [138] pack-side CI template selftest — 10 mutants incl. a smuggled c
+
+==============================================================================
+SURVEY: 25 pass · 3 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 38 not asked (mutating) · 70 outside --range 71:140 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (3) — this is the number no single `_build_all.py` run can tell you:
+
+  [74] state-contrast gate selftest — paint stack, report arithmetic, named args
+      python3 knowledge/_validate_state_contrast.py --selftest   (exit 2)
+      StateContrastSelftestError: chromium would not launch (Error("BrowserType.launch: Executable doesn't exist at /sessions/gifted-ecstatic-carson/.cache/
+
+  [111] memento index determinism check (O2′ #25)
+      python3 knowledge/_build_memento_index.py --check   (exit 1)
+      (no ✗/FAIL line — see full output)
+
+  [119] read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)
+      python3 knowledge/_gen_chain.py --selftest   (exit 1)
+      ✗ is materially smaller than GOOD-MORNING.md (30,808 vs 59,640 tape (cl100k ESTIMATE), 51.7% of it, floor <40%; tier measured, not assumed: tiktoken c
+
+COULD-NOT-ASK (4) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [118] read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)
+      python3 knowledge/_gen_chain.py --check   (exit 77)
+      COULD-NOT-ASK: _CHAIN.md — MEASUREMENT REFUSAL, NOT A FRESHNESS VERDICT IN EITHER DIRECTION. The committed file is stamped `real` (real); the only tier reachable in THIS environment is `tape (cl100k ESTIMATE)` (cl100k). Every size figure would differ for that reason alone, so a byte comparison right now would be noise wearing a verdict, whichever way it fell. ⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, proven by single-variable isolation) — so a bare checkout can never agree with a `real` stamp. Give this environment the same measurer, or re-ask where it is reachable. The freshness of _CHAIN.md is UNKNOWN and is reported as unknown rather than guessed.
+
+  [121] memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)
+      python3 knowledge/_gen_schematic.py --check   (exit 77)
+      COULD-NOT-ASK: reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html — MEASUREMENT REFUSAL, NOT A CONTENT VERDICT IN EITHER DIRECTION. The committed page carries figures in ['real']; the only tier reachable in THIS environment is `tape (cl100k ESTIMATE)` (cl100k). Every token figure would differ for that reason alone. ⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, proven by single-variable isolation), so a bare checkout can never agree with a `real` page. Give this environment the same measurer, or re-ask where it is reachable — this artefact's content is UNKNOWN here and is reported as unknown rather than guessed.
+
+  [122] memento schematic selftest — figure provenance, caption geometry, self-recheck (#127)
+      python3 knowledge/_gen_schematic.py --selftest   (exit 77)
+      COULD-NOT-ASK: reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html --selftest — MEASUREMENT REFUSAL, NOT A CONTENT VERDICT IN EITHER DIRECTION. The committed page carries figures in ['real']; the only tier reachable in THIS environment is `tape (cl100k ESTIMATE)` (cl100k). Every token figure would differ for that reason alone. ⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, proven by single-variable isolation), so a bare checkout can never agree with a `real` page. Give this environment the same measurer, or re-ask where it is reachable — this artefact's content is UNKNOWN here and is reported as unknown rather than guessed. ⇒ THESE BITES ARE NOT SKIPPED, THEY ARE UNASKABLE HERE: they are asked in full wherever `real` is reachable (any session holding `API-KEY.txt` or the token cache), and that run is the proof of record.
+
+  [132] governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)
+      python3 knowledge/_governs.py --selftest   (exit 77)
+      COULD-NOT-ASK: _governs.py --selftest — 3 evidence pointer(s) name paths this checkout cannot hold: ruling ds-034's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-034's evidence `outputs/_PARTITION-button-primary-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-035's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer
+
+NOT ASKED (38 mutating steps) — run --include-mutating on a clean tree to include them:
+  [71] compose gate (orphan wired #119)
+  [72] screen gate — compose+icons+a11y over fitness fixtures (re-wired #
+  [73] state-contrast gate — driven hover/pressed, light+dark (un-exempte
+  [75] type-composites ratchet — tier (b), debt 1101 shrink-only (Dave #1
+  [77] coverage gate
+  [78] pro-forma universal gate
+  [79] pro-forma CSS-governed motion gate (DEF-003)
+  [80] pro-forma no-hardcode styling gate (DEF-004)
+  … and 30 more
+
+real	0m39.174s
+user	0m37.477s
+sys	0m1.359s

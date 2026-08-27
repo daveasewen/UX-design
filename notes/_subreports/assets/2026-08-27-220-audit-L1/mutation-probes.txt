@@ -1,0 +1,37 @@
+L1 MUTATION PROBES — driven in a bare clone (git clone --no-hardlinks . /var/tmp/l1clone),
+tree restored with `git checkout -- .` between every probe (verified: 0 dirty after each).
+
+A. _validate_radius.py  (route=GATE, BLOCKING; STRICT surfaces = knowledge/canon/canon.css + type.css)
+   A1 CONTROL   append `.l1probe{border-radius:8px}` to knowledge/canon/canon.css
+                -> "1 strict fail(s)" · "X canon/canon.css: border-radius:8px" · EXIT=1   (bites)
+   A2 MUTANT    append `.l1probe{border-start-start-radius:8px}`
+                -> "0 strict fail(s)" · EXIT=0                                            (BLIND)
+   A3 MUTANT    append `.l1probe{border-end-end-radius:12px;border-inline-start-width:3px}`
+                -> "0 strict fail(s)" · EXIT=0                                            (BLIND)
+   CAUSE: knowledge/_validate_radius.py:152
+          DECL_RE = re.compile(r'border-radius\s*:\s*([^;}]+)')
+          — the literal `border-radius`; no CSS logical radius longhand is in the pattern.
+
+B. _validate_no_hardcode.py  (route=GATE, BLOCKING; DEF-004; corpus = knowledge/_proforma/*.html)
+   target file: knowledge/_proforma/Masthead-interactive.html
+   B1 CONTROL   insert `.l1probe{border-width:3px}` inside its <style> block
+                -> "No-hardcode gate FAILED" · EXIT=1                                     (bites)
+   B2 MUTANT    insert `.l1probe{border-inline-width:3px}`            -> EXIT=0           (BLIND)
+   B3 MUTANT    insert `.l1probe{border-block-start-width:3px}`       -> EXIT=0           (BLIND)
+   B4 MUTANT    insert <div style="padding:13px;border-radius:7px;border-width:5px"> after <body>
+                (grep confirmed the string is in the file) -> EXIT=0                      (BLIND)
+   CAUSE: knowledge/_validate_no_hardcode.py:27
+          BORDERW = r'(?:border(?:-(?:top|right|bottom|left|width))?|outline(?:-width)?)'
+          — no `-inline-`/`-block-` longhands; and :35
+          def styles(html): return "\n".join(re.findall(r"<style[^>]*>(.*?)</style>", html, re.S))
+          — only <style> blocks are scanned, so a style="" ATTRIBUTE is outside the gate entirely.
+          (knowledge/_validate_compose.py:57 already reads style="" attributes — the extraction exists.)
+
+C. WRITER-GATE STALENESS — pristine bare clone, one gate at a time, `git checkout -- .` between:
+   _validate_a11y.py            -> M knowledge/_A11Y-GATE.md          (654 -> 664 notes; 1300 -> 1310 controls)
+   _validate_advisory.py        -> M knowledge/_ADVISORY-SIGNALS.md   (123 -> 130 signals)
+   _validate_theme_provenance.py-> M knowledge/_THEME-PROVENANCE-GATE.md (26 rows changed)
+   _build_integrity.py          -> M knowledge/_INTEGRITY-REPORT.md   (19 -> 21 warnings; 1030 -> 1035 leaf tokens, 41 -> 42 groups)
+   _build_instrument_fit.py     -> M knowledge/_INSTRUMENT-FIT.md + _instrument-fit.json (adds the _validate_hidden_display.py row)
+   DISCRIMINATION CONTROL (same method, byte-identical output, 0 dirty):
+   _validate_dark_surfaces.py · _validate_snippets.py · _validate_token_tiers.py · _validate_edge_extremity.py
