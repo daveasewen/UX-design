@@ -1,11 +1,11 @@
 {
   "carries": {
     "name": "Memento — Gumdrop",
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own; the pack's version does not move it."
   },
-  "commit": "2f7c47bb904bd55c6ce94d0fecd81711bc79c5e4",
-  "commit_date": "2026-08-26T19:37:29+01:00",
+  "commit": "3f7a63a39e861a33bfa603b86c80fba24ec20c75",
+  "commit_date": "2026-08-27T16:43:16+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "2f7c47bb904bd55c6ce94d0fecd81711bc79c5e4",
+    "commit": "3f7a63a39e861a33bfa603b86c80fba24ec20c75",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -2397,8 +2397,8 @@
       "title": "Memento Claude plugin"
     },
     {
-      "bytes": 211313,
-      "files": 18,
+      "bytes": 231406,
+      "files": 19,
       "group": "gumdrop",
       "key": "gumdrop",
       "paths": [
@@ -2417,6 +2417,7 @@
         "apollo-spider/gumdrop/_rulings.json",
         "apollo-spider/gumdrop/_state.json",
         "apollo-spider/gumdrop/_state.py",
+        "apollo-spider/gumdrop/machinery/_build_memento_index.py",
         "apollo-spider/gumdrop/machinery/_could_not_ask.py",
         "apollo-spider/gumdrop/runbooks/_RUNBOOK-capture-ritual.md",
         "apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md"
@@ -2442,9 +2443,19 @@
     }
   ],
   "import_closure": {
-    "bytes": 6564,
-    "files": 1,
+    "bytes": 26657,
+    "companions": 1,
+    "files": 2,
     "seeds": [
+      {
+        "dest": "memento-package/claude-plugin/memento/machinery/_build_memento_index.py",
+        "module": "_build_memento_index",
+        "needed_by": [
+          "memento-package/claude-plugin/memento/machinery/_memento_search.py"
+        ],
+        "src": "apollo-spider/gumdrop/machinery/_build_memento_index.py",
+        "why": "the Memento door REFUSES until its index exists, and only this builder writes one"
+      },
       {
         "dest": "memento-package/claude-plugin/memento/machinery/_could_not_ask.py",
         "module": "_could_not_ask",
@@ -2455,7 +2466,7 @@
       }
     ],
     "unmodelled_path_inserts": 0,
-    "why": "A packed module's module-level imports must resolve from where THAT FILE lands in the pack. v1.0.0 shipped memento-package/claude-plugin/memento/machinery/_gen_chain.py with no _could_not_ask.py beside it and it could not be imported at all. These seeds are byte-copies of files already in the pack, placed where the importer can reach them."
+    "why": "A packed module's module-level imports must resolve from where THAT FILE lands in the pack. v1.0.0 shipped memento-package/claude-plugin/memento/machinery/_gen_chain.py with no _could_not_ask.py beside it and it could not be imported at all. These seeds are byte-copies of files already in the pack, placed where the importer can reach them. `companions` counts the DECLARED half (see DOOR_COMPANIONS): a dependency stated in a runtime refusal, which no import parser can see — v1.0.1's Memento door shipped with no index builder anywhere in the pack."
   },
   "open_questions": [
     {
@@ -2559,8 +2570,8 @@
         "files": 55
       },
       "gumdrop": {
-        "bytes": 211313,
-        "files": 18
+        "bytes": 231406,
+        "files": 19
       },
       "library": {
         "bytes": 27878450,
@@ -2579,10 +2590,10 @@
         "files": 5
       }
     },
-    "bytes": 39747234,
-    "files": 1640,
-    "pack_bytes": 39753798,
-    "pack_files": 1641
+    "bytes": 39767327,
+    "files": 1641,
+    "pack_bytes": 39793984,
+    "pack_files": 1643
   },
-  "version": "v1.0.0"
+  "version": "v1.0.1"
 }
