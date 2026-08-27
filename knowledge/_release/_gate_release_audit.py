@@ -153,8 +153,27 @@ def pack_check():
             "Dave's word, not this gate's. The moment a pack is baked this check starts biting."
             % str(man.get("status", ""))[:40])
     sha = man["commit"]
+    # ⛔ #220 (first two-release day): the manifest is a LIVE fact and speaks for exactly ONE
+    # version — man["version"]. Auditing an OLDER frozen zip against the CURRENT manifest is a
+    # category error that made this arm structurally red the moment a second release existed
+    # (v1.0.0 can never match v1.0.1's manifest — 33 named "missing" paths that were never in
+    # its cut). Older zips are FROZEN HISTORY under _gate_frozen_release.py's jurisdiction
+    # (content_sha256 in the ledger); this arm now names them SKIPPED rather than failing them.
+    want = str(man.get("version", "")).strip()
+    current = [z for z in zips
+               if os.path.basename(z) == "Apollo-Spider-%s.zip" % want]
+    if not current:
+        print("❌ the manifest reads version %r and NO zip in dist/ carries it "
+              "(zips present: %s) — the manifest names a release nobody baked."
+              % (want, ", ".join(os.path.basename(z) for z in zips)))
+        return 1
     bad = 0
     for z in zips:
+        if z not in current:
+            print("SKIPPED — %s is FROZEN HISTORY (not the manifest's %s); its integrity is "
+                  "_gate_frozen_release.py's jurisdiction, not this arm's"
+                  % (os.path.relpath(z, ROOT), want))
+            continue
         fails = gen.check_pack(z, man, sha)
         if fails:
             bad += 1
@@ -240,6 +259,30 @@ def selftest():
              "with no zip in dist/ the arm must REFUSE (77), never pass silently; got %r" % rc)
     bite("pack/refusal-is-not-zero", not cna.is_refusal(0),
          "the convention's exit code must not collide with a pass")
+
+    # ---- #220 two-release scoping: the arm audits ONLY the manifest's own version; a frozen
+    # older zip must be SKIPPED (never failed), and a manifest naming an unbaked version is RED.
+    if refusal is None and len(packs()) >= 2:
+        bite("pack/frozen-history-is-skipped-not-failed", rc == 0,
+             "with the current zip green, an older frozen zip must not turn the arm red "
+             "(the pre-#220 category error); got rc=%r" % rc)
+    if refusal is None and packs():
+        # mutation: hide the manifest's own zip from the glob — the arm must go RED
+        # (a manifest naming a release nobody baked), never skip-everything-and-pass.
+        _want = str(json.loads(text).get("version", "")).strip()
+        _cur = "Apollo-Spider-%s.zip" % _want
+        _all = packs()
+        _g = globals()
+        _real_packs = _g["packs"]
+        _g["packs"] = lambda: [z for z in _all if os.path.basename(z) != _cur]
+        try:
+            _mut_rc = pack_check() if _g["packs"]() else None
+        finally:
+            _g["packs"] = _real_packs
+        if _mut_rc is not None:
+            bite("pack/unbaked-version-is-red", _mut_rc == 1,
+                 "a manifest naming a version with no zip must be RED, not a "
+                 "skip-everything pass; got %r" % _mut_rc)
 
     # ---- the drift arm must never be able to say PASS while the commits differ
     r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True)
