@@ -35,7 +35,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$ROOT/knowledge/_release/_gen_pack_manifest.py"
 MANIFEST="$ROOT/knowledge/_release/_pack_manifest.json"
-VERSION="v1.0.0"
+VERSION="v1.0.1"
 PACKNAME="Apollo-Spider-${VERSION}"
 DIST="$ROOT/apollo-spider/dist"
 
@@ -177,6 +177,14 @@ dryrun|release)
   MAN_SHA="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$MANIFEST")"
   COMMIT_DATE="$(git -C "$ROOT" show -s --format=%cI "$COMMIT")"
   N_FILES="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["totals"]["files"])' "$MANIFEST")"
+  # ⛔ #220. The Gumdrop cut's version was TYPED here three times (PROVENANCE.json, the README
+  # provenance table, the memento-package bullet) while its one home is the generator's
+  # MEMENTO_CUT_VERSION. At the v1.0.1 bump all three would have shipped "v1.0.0" inside a pack
+  # whose manifest said v1.0.1 — a pack that disagrees with itself about what it carries. It is
+  # now READ from the manifest the generator wrote (ADR-0017, one home). A missing key dies loud
+  # under `set -e` rather than defaulting to a version nobody chose.
+  MEM_NAME="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["name"])' "$MANIFEST")"
+  MEM_VERSION="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["version"])' "$MANIFEST")"
 
   cp "$MANIFEST" "$STAGE/_MANIFEST.json"
 
@@ -186,8 +194,8 @@ dryrun|release)
   "name": "Apollo — Spider",
   "version": "$VERSION",
   "carries": {
-    "name": "Memento — Gumdrop",
-    "version": "v1.0.0",
+    "name": "$MEM_NAME",
+    "version": "$MEM_VERSION",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own — the pack's version does not move it."
   },
   "commit": "$COMMIT",
@@ -217,7 +225,7 @@ the design system itself runs on. Build with it and see where you get to.
 |---|---|
 | pack | \`Apollo — Spider\` |
 | version | \`$VERSION\` |
-| carries | \`Memento — Gumdrop v1.0.0\` |
+| carries | \`$MEM_NAME $MEM_VERSION\` |
 | commit | \`$COMMIT\` |
 | commit date | \`$COMMIT_DATE\` |
 | manifest sha256 | \`$MAN_SHA\` |
@@ -253,7 +261,7 @@ between two packs is a real difference and can be audited.
 - \`.github/\` — the VS Code + Copilot bridge. \`copilot-instructions.md\` is loaded automatically
   and indexes the five skills with the phrases that should trigger each one; \`prompts/\` makes
   each skill a slash command. Without this the skills sit in the pack and never fire.
-- \`memento-package/\` — **Memento — Gumdrop v1.0.0**: Memento's machinery, plus the cold start.
+- \`memento-package/\` — **$MEM_NAME $MEM_VERSION**: Memento's machinery, plus the cold start.
   The machinery is the engine this design system runs on. The record it ships is **empty on
   purpose**: an empty task store, an empty rulings store — both with the shapes already right and
   driven against those shapes before shipping — and a starter \`_CHAIN.md\` that explains the

@@ -104,9 +104,9 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.0"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.1"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
-MEMENTO_CUT_VERSION = "v1.0.0"
+MEMENTO_CUT_VERSION = "v1.0.1"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -207,6 +207,93 @@ GATE_DATA_CANDIDATES = [
     "knowledge/canon/_bindings-applied.json",
 ]
 
+# ---------------------------------------------------------------------------------------------
+# THE PHOTOGRAPHY SPECIMEN (#220, Dave's ask: "30 or so… so that the bentos and gallery work")
+#
+# ⛔ WHY THIS EXISTS AT ALL. The pack ships showroom/, and the shipped bento and gallery pages
+# reference photographs BY FILENAME. `knowledge/assets/photography-web/` was excluded wholesale,
+# so v1.0.0's foundations pages render with every image broken. A library whose showroom is a
+# grid of missing-image glyphs is not a library.
+#
+# THE FIRST FIFTEEN ARE NOT A CHOICE. They are `gen_bento_roles_217.SPECIMEN_FILES` — the pinned
+# set every one of those pages was built and signed off on — and they are IMPORTED from that
+# module, never re-typed here. ADR-0017: one home. A second copy of a pinned list is a list that
+# drifts, and #218 already paid for slicing this set by sort order
+# [[specimen-starts-from-reference]].
+#
+# THE OTHER FIFTEEN are chosen against the manifest's own measured data, not by eye:
+#   · ≤ 300 KB derivative, the ceiling `verify_photography_218.py` already declares;
+#   · ASPECT SPREAD to the limit the population allows — and the population is the constraint,
+#     not the taste: of 251 derivatives only 8 are portrait and 3 are square. All 5 unpinned
+#     portraits and all 3 squares are taken, because taking fewer would leave a bento with no
+#     tall or square tile to place. The remaining 7 are landscape.
+#   · SUBJECT and SOURCE variety read out of `exif_description` / `licence_source`: the pinned 15
+#     are 13/15 Getty and lean corporate, so the 7 landscapes deliberately bring Stocksy and
+#     EyeEm, and subjects the pinned set has none of — trade/logistics, culture, travel,
+#     architecture, a close portrait, leisure.
+#
+# ⚠ A PINNED NAME WHOSE FILE IS GONE SHIPS NOTHING, SILENTLY, unless something says so. The
+# selftest bites the whole set for existence at generation time.
+PHOTOGRAPHY_ADDITIONS = (
+    # the five unpinned portraits — every portrait the population has
+    "1168737-w1600.jpg",                        # Stocksy · woman reading behind a red book
+    "688657-w1600.jpg",                         # Stocksy · woman on a boat, feet in the water
+    "gettyimages-1273552095-144dpi-w1600.jpg",  # Getty · Hong Kong street traffic
+    "gettyimages-2184837877-w1600.jpg",         # Getty · man eating lunch at a cafe
+    "gettyimages-643949547-144dpi-w1600.jpg",   # Getty · alpenglow on a mountain ridge
+    # all three squares — every square the population has
+    "gettyimages-167527306-w1600.jpg",          # Getty · child in a wetsuit on a beach
+    "gettyimages-184310083-w1600.jpg",          # Getty · balcony shadows, architectural abstract
+    "gettyimages-dv2068033-144dpi-w1600.jpg",   # Getty · office worker at a desk at sunset
+    # seven landscapes, for subject and source spread
+    "3476592-w1600.jpg",                        # Stocksy · boys on a sandy beach at sunset
+    "eyeem-100014108-147578861-w1600.jpg",      # EyeEm · close portrait, woman to camera
+    "eyeem-100014108-152975235-w1600.jpg",      # EyeEm · low angle, building against sky
+    "stocksy-3225764-w1600.jpg",                # Stocksy · Man Mo temple lanterns, Hong Kong
+    "stocksy-5763914-w1600.jpg",                # Stocksy · docks and containers — trade
+    "stocksy-613297-w1600.jpg",                 # Stocksy · two professionals discussing finance
+    "stocksy-6968340-w1600.jpg",                # Stocksy · airplane wing at sunrise
+)
+
+
+# ---------------------------------------------------------------------------------------------
+# GATES THAT LIVE IN THE DESIGNER-GATE NAMESPACE BUT AUDIT THE RELEASE, NOT THE DESIGN (#220)
+#
+# Every other release-side gate is fenced out of the ship list by ACCIDENT of where it sits:
+# `knowledge/_release/_gate_*.py` does not start with `knowledge/_gate_`, so the gates match
+# never sees it. `_gate_pack_imports.py` sits at `knowledge/` and would therefore be claimed —
+# and its SUBJECT is a baked pack. A designer who unzips this has no zip to audit and no bake to
+# run; the gate would ship, be counted in the roster, and have nothing to say.
+#
+# ⛔ AND IT WOULD MOVE A NUMBER DAVE RULED. `s219-D9`: *"the ship list carries only gates that can
+# actually run in a designer's project - 55 files in the gates group (35 runnable + 3 needs-dep
+# + helpers/data/ci-template)"*. Letting a new gate in raises 55 to 56 with nobody deciding
+# anything [[dont-launder-a-premise-into-a-ruling]]. The roster stays at 55 and whether this
+# gate should ship is asked, not assumed.
+RELEASE_SIDE_GATES = {"_gate_pack_imports.py"}
+
+_PHOTO_SPECIMEN = []
+
+
+def photography_specimen():
+    """The 30 filenames that ship. The pinned 15 come from their ONE home, by import."""
+    if not _PHOTO_SPECIMEN:
+        d = os.path.join(ROOT, "knowledge", "_render")
+        if d not in sys.path:
+            sys.path.insert(0, d)
+        try:
+            from gen_bento_roles_217 import SPECIMEN_FILES
+        except Exception as e:                    # loud and named — never a quiet short set
+            raise RuntimeError("photography specimen REFUSED: cannot read the pinned set from "
+                               "knowledge/_render/gen_bento_roles_217.py (%s). The pack's bento "
+                               "and gallery pages name those files; shipping a guess is worse "
+                               "than refusing." % e)
+        _PHOTO_SPECIMEN.extend(tuple(SPECIMEN_FILES) + PHOTOGRAPHY_ADDITIONS)
+    return tuple(_PHOTO_SPECIMEN)
+
+
+PHOTOGRAPHY_DIR = "knowledge/assets/photography-web/"
+
 EXCLUDED = [
     ("reviews/", "Dave's review surfaces — this session's thinking, not the engine. s219-D4(1): "
                  "'without all the review files and extras'."),
@@ -220,8 +307,17 @@ EXCLUDED = [
     ("knowledge/assets/fonts/", "LICENCE. Only the _desktop set ships (see the library group); "
                                 "any webfont pack is outside the licence we hold."),
     ("knowledge/assets/photography/", "LICENCE. Getty/EyeEm stock originals — non-repo already."),
-    ("knowledge/assets/photography-web/", "LICENCE. Getty/EyeEm derivatives — redistribution is "
-                                          "not covered."),
+    ("knowledge/assets/photography-web/", "LICENCE, NARROWED AT #220. The 251 derivatives as a "
+                                          "SET stay out — redistributing a stock library is not "
+                                          "covered. What ships is a NAMED specimen of 30, and "
+                                          "only because the shipped bento and gallery pages "
+                                          "reference 15 of them BY FILENAME and render broken "
+                                          "without them (Dave's ask, #220). Same shape as the "
+                                          "fonts fence: the directory is excluded, one declared "
+                                          "subset is not. ⚠ THE LICENCE POSITION ITSELF IS NOT "
+                                          "SETTLED — s219-D5(Q2) settled the FONT licence and "
+                                          "says nothing about Getty/EyeEm/Stocksy. This is "
+                                          "Dave's word to give, and it is asked in the report."),
     ("knowledge/tokens/_raw/", "ADR-0005: raw Figma exports are client assets, untracked."),
     ("API-KEY.txt", "Secret."),
     (".token-cache.json", "Secret."),
@@ -231,8 +327,25 @@ EXCLUDED = [
     ("knowledge/_state.json", "Dave's task store — his items, not a designer's."),
     ("knowledge/_rulings.json", "Apollo's ruling store — Dave's record."),
     ("knowledge/_SESSIONS.jsonl", "Session state."),
-    ("knowledge/_memento-index.json", "Generated from Apollo's own record; adopters regenerate "
-                                      "(memento-package machinery manifest says so verbatim)."),
+    ("knowledge/_memento-index.json",
+     "Generated from Apollo's own record — Dave's memory, and it must not travel. ⚠ THE REASON "
+     "THIS ROW USED TO GIVE WAS FALSE, and it is corrected here rather than softened: it said "
+     "'adopters regenerate'. THEY CANNOT. Measured at #220 from a fresh stage — the pack carries "
+     "NO index builder (`knowledge/_build_memento_index.py` is not in the ship list and nothing "
+     "else writes the index), so a Gumdrop designer following `memento-package/README.md` line "
+     "59 or the boot skill's line 75 to `machinery/_memento_search.py` gets a refusal naming "
+     "`python3 knowledge/_build_all.py`, which the pack also does not carry. RETRIEVAL — half of "
+     "what Memento IS — cannot be started in a Gumdrop project at all. Driven, not reasoned: "
+     "copying Apollo's builder into the stage and running it produces FIFTEEN refusals (every "
+     "declared source missing, every glob empty), because its corpus contract is Apollo's "
+     "GM/LS/archives/gauge-log/lanes/briefs, none of which a fresh project has. So carrying the "
+     "builder in the import closure is not the fix — it would ship a REFUSAL, the exact thing "
+     "s219-D9 chose against. This is `memento-package/machinery/_MACHINERY-MANIFEST.md`'s own "
+     "generalisation-debt item 3 ('index bootstrap for a fresh project'), still undone: the cut "
+     "was copied verbatim on the stated rule that 'generalisation is a build step, not a copy "
+     "step', and that build step was never built. ⛔ NOT SETTLED HERE — what the pack should do "
+     "about retrieval is a ship-list decision and Dave's alone; it is asked in the #220 "
+     "addendum report with three priced options."),
     ("designer-skills-v1/", "FROZEN release, s114-D4."),
     ("designer-skills-v2/", "FROZEN release, s114-D4. Its four SKILL.md were the REFERENCE for "
                             "the Spider refresh, not the source — Spider ships its own five from "
@@ -282,7 +395,8 @@ def groups():
                    "pack to find out whether it works away from this repo — the verdicts are "
                    "measured, not guessed.",
              match=lambda p: (p.startswith("knowledge/_validate_")
-                              or p.startswith("knowledge/_gate_")) and p.endswith(".py")),
+                              or p.startswith("knowledge/_gate_")) and p.endswith(".py")
+                             and os.path.basename(p) not in RELEASE_SIDE_GATES),
 
         dict(key="runbooks", group="runbooks", title="Runbooks",
              plain="The design-facing procedures: how to compose from canon, how to take a "
@@ -314,6 +428,18 @@ def groups():
                    "in-licence, the same licence that lets the desktop set be tracked in this "
                    "private repo. The webfont packs stay out.",
              match=_under("knowledge/assets/fonts/_desktop/")),
+        # #220, Dave's ask. NAMED FILES ONLY — the match is set membership, never a prefix, so
+        # the directory stays excluded and only the declared specimen crosses the fence. See
+        # PHOTOGRAPHY_ADDITIONS for how the 30 were chosen and what the population allowed.
+        dict(key="library.photography", group="library", title="Photography specimen",
+             plain="Thirty photographs, so the bento and gallery pages in the showroom actually "
+                   "have something in them. Fifteen are the pinned set those pages name by "
+                   "filename — without them every tile is a broken image. The other fifteen add "
+                   "the tall and square shapes a bento needs and a wider spread of subjects. "
+                   "LICENCE POSITION: the stock library as a whole does NOT ship; this named "
+                   "specimen does, and whether it may is Dave's word.",
+             match=lambda p: (p.startswith(PHOTOGRAPHY_DIR)
+                              and p[len(PHOTOGRAPHY_DIR):] in set(photography_specimen()))),
 
         dict(key="memento", group="memento-clean-cut", title="Memento machinery",
              plain="A clean cut of Memento — the chain generator, retrieval, the graph edges, "
@@ -828,6 +954,279 @@ def flatten_stage(stage):
 
 
 # ---------------------------------------------------------------------------------------------
+# THE IMPORT CLOSURE (#220, at cause on the v1.0.0 defect)
+#
+# ⛔ WHAT WENT WRONG, AND WHY IT WAS A DECISION AND NOT A FILE. v1.0.0 shipped
+# `memento-package/claude-plugin/memento/machinery/_gen_chain.py`, and it dies on import:
+# `ModuleNotFoundError: No module named '_could_not_ask'`. Its sibling copy at
+# `memento-package/machinery/` runs, because the SEED MAP above lands
+# `apollo-spider/gumdrop/machinery/_could_not_ask.py` there — and only there. The package delta
+# gate was GREEN over the difference, because it compares paths and bytes and never asks whether
+# either copy runs. So the pack shipped a chain generator a Gumdrop designer cannot start.
+#
+# The closure that already existed was `helper_closure` in build_manifest, and it is exactly the
+# right idea in the wrong scope: it is keyed on the GATE PROBE (only files the probe ran), and it
+# resolves every helper into `knowledge/` (`HELPER_HOMES`). A module packed anywhere else — the
+# whole memento cut, the gumdrop cut — is outside its reach. Copying one file into one directory
+# would have been a plaster that recurs at v1.0.2 [[gate-dont-patch]].
+#
+# THE DECISION, RESTATED: *any* module a packed `.py` imports AT MODULE LEVEL must be reachable
+# from where that file lands IN THE PACK. Not in the repo — the repo copy of `_gen_chain.py` is
+# equally broken and nobody noticed, because in the repo nobody runs it from there.
+#
+# HOW RESOLUTION IS MODELLED, and where the model stops. Python finds a module on `sys.path`, so
+# the model reads the roots each file actually declares:
+#   · its own directory (every one of these files does `sys.path.insert(0, HERE)`);
+#   · any `sys.path.insert/append` whose argument is a `__file__`-rooted expression this module
+#     can evaluate — `os.path.dirname`, `os.path.abspath`, `os.path.join` over string literals
+#     and module-level names it has already seen;
+#   · the help-gate preamble, which is a WHILE LOOP searching upward for `_helpgate.py` and is
+#     recognised as the idiom it is: the root is the nearest ancestor directory holding it.
+# An insert this evaluator cannot read is COUNTED and REPORTED as `unmodelled`, never assumed
+# harmless [[measuring-tool-must-not-guess]]. The static model is deliberately the cheap half:
+# `knowledge/_gate_pack_imports.py` is the expensive half and it actually imports the files from
+# a stage, which is the only reading that cannot be wrong about `sys.path`.
+# ---------------------------------------------------------------------------------------------
+
+_HELPGATE_IDIOM = "_hg_sys.path.insert"     # the repo-wide help-gate preamble, byte-stable
+_UNKNOWN = object()
+
+
+def _eval_pathish(node, env, selfdir):
+    """Evaluate a `__file__`-rooted path expression, or return _UNKNOWN. No exec, no import."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    if isinstance(node, ast.Name):
+        if node.id == "__file__":
+            return selfdir + "/__self__.py"
+        return env.get(node.id, _UNKNOWN)
+    if isinstance(node, ast.Call):
+        f, dotted = node.func, []
+        while isinstance(f, ast.Attribute):
+            dotted.append(f.attr)
+            f = f.value
+        if isinstance(f, ast.Name):
+            dotted.append(f.id)
+        name = ".".join(reversed(dotted))
+        args = [_eval_pathish(a, env, selfdir) for a in node.args]
+        if any(a is _UNKNOWN for a in args) or not args:
+            return _UNKNOWN
+        if name in ("os.path.abspath", "os.path.realpath"):
+            return args[0]
+        if name == "os.path.dirname":
+            return os.path.dirname(args[0])
+        if name == "os.path.join":
+            return os.path.join(*args)
+    return _UNKNOWN
+
+
+def analyse_imports(src, packdir):
+    """(module-level imported names, sys.path roots in PACK space, unmodelled-insert count).
+
+    Module level ONLY, plus the bodies of top-level `try`/`if`/`while` — that is the set whose
+    failure makes the FILE unimportable, which is the defect class. An import inside a function
+    is a runtime question and is declared as out of scope rather than half-modelled."""
+    try:
+        tree = ast.parse(src)
+    except SyntaxError:
+        return set(), set(), 0
+    env, roots, mods = {}, set(), set()
+    unmodelled = [0]
+    hg = _HELPGATE_IDIOM in src
+
+    def visit(n):
+        if isinstance(n, ast.Assign) and len(n.targets) == 1 \
+                and isinstance(n.targets[0], ast.Name):
+            v = _eval_pathish(n.value, env, packdir)
+            if v is not _UNKNOWN:
+                env[n.targets[0].id] = v
+        if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call):
+            c, f, dotted = n.value, n.value.func, []
+            while isinstance(f, ast.Attribute):
+                dotted.append(f.attr)
+                f = f.value
+            if isinstance(f, ast.Name):
+                dotted.append(f.id)
+            nm = ".".join(reversed(dotted))
+            if nm.endswith("path.insert") or nm.endswith("path.append"):
+                v = _eval_pathish(c.args[-1], env, packdir) if c.args else _UNKNOWN
+                if v is _UNKNOWN:
+                    # The help-gate's own insert is UNKNOWN by construction (its variable is
+                    # rebound inside the search loop) and it is modelled below, by name.
+                    if not (hg and nm.startswith("_hg_sys")):
+                        unmodelled[0] += 1
+                else:
+                    roots.add(os.path.normpath(v).lstrip("/"))
+        if isinstance(n, ast.Import):
+            for a in n.names:
+                mods.add(a.name.split(".")[0])
+        elif isinstance(n, ast.ImportFrom):
+            if n.module and n.level == 0:
+                mods.add(n.module.split(".")[0])
+
+    for n in tree.body:
+        visit(n)
+        if isinstance(n, (ast.Try, ast.If, ast.While)):
+            for sub in ast.walk(n):
+                if sub is not n:
+                    visit(sub)
+    roots.add(packdir)
+    return mods, roots, unmodelled[0]
+
+
+def import_closure(paths, read_blob):
+    """What must be SEEDED so every packed module's module-level imports travel with it.
+
+    `paths` are REPO paths; `read_blob(repo_path) -> str` supplies the bytes AT THE COMMIT (never
+    the working tree — the whole bake is a function of a named commit). Returns
+    (seeds, unmodelled, unsourced): seeds are dicts {module, dest, src, needed_by}, `dest` a PACK
+    path, `src` the REPO path whose blob fills it. A module nobody in the pack carries lands in
+    `unsourced` and the caller REFUSES — a closure that silently gives up is the blind gate again.
+    """
+    pk = {}
+    for p in paths:
+        pk[pack_path(p)] = p
+    by_dir, by_base = {}, {}
+    for q in pk:
+        by_dir.setdefault(os.path.dirname(q), set()).add(os.path.basename(q))
+        by_base.setdefault(os.path.basename(q), []).append(q)
+
+    seeds, unsourced, unmodelled = {}, [], 0
+    for q in sorted(pk):
+        if not q.endswith(".py"):
+            continue
+        src = read_blob(pk[q])
+        d = os.path.dirname(q)
+        mods, roots, um = analyse_imports(src, d)
+        unmodelled += um
+        if _HELPGATE_IDIOM in src:
+            a = d
+            while True:
+                if "_helpgate.py" in by_dir.get(a, set()):
+                    roots.add(a)
+                    break
+                if not a:
+                    break
+                a = os.path.dirname(a)
+        for m in sorted(mods):
+            fn = m + ".py"
+            if fn not in by_base:
+                continue                              # stdlib, third party, or simply not ours
+            if any(fn in by_dir.get(r, set()) for r in roots):
+                continue                              # already reachable where it lands
+            dest = os.path.join(d, fn)
+            # The NEAREST carrier in pack space wins: a memento module is filled from the memento
+            # copy, not from knowledge/. Deterministic — longest shared prefix, then sort order.
+            cands = sorted(by_base[fn],
+                           key=lambda c: (-len(os.path.commonprefix([c, q])), c))
+            if not cands:
+                unsourced.append((q, m))
+                continue
+            e = seeds.setdefault(dest, dict(module=m, dest=dest, src=pk[cands[0]], needed_by=[]))
+            e["needed_by"].append(q)
+    for e in seeds.values():
+        e["needed_by"] = sorted(set(e["needed_by"]))
+    return [seeds[k] for k in sorted(seeds)], unmodelled, sorted(unsourced)
+
+
+def apply_closure(stage, seeds):
+    """Materialise the closure ON THE STAGE, from bytes ALREADY IN THE STAGE.
+
+    ⛔ The fill never comes from the working tree. Its source is the same blob the commit put at
+    `pack_path(src)`, so a closure copy is byte-identical to the file it mirrors and `check_pack`
+    can verify it against the commit like every other path."""
+    for s in seeds:
+        src = os.path.join(stage, pack_path(s["src"]))
+        dst = os.path.join(stage, s["dest"])
+        if not os.path.exists(src):
+            raise RuntimeError("closure source missing from the stage: %r (for %r)"
+                               % (pack_path(s["src"]), s["dest"]))
+        if os.path.exists(dst):
+            raise RuntimeError("closure collision: %r already exists at the stage" % s["dest"])
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copyfile(src, dst)
+
+
+# ---------------------------------------------------------------------------------------------
+# THE COMPANION CLOSURE (#220 addendum) — the same sentence as the import closure, one clause
+# wider, for a dependency no parser can see.
+#
+# ⛔ WHAT WENT WRONG. v1.0.1's stage shipped `_memento_search.py` — the Memento door, which the
+# pack's own README and memento-boot skill both tell a designer to use — and running it from a
+# fresh stage gives:
+#
+#     memento-search (Memento door): index missing at …/machinery/_memento-index.json
+#       — run the build (python3 knowledge/_build_all.py); REFUSING to search nothing.
+#
+# and `knowledge/_build_all.py` is not in the pack. Retrieval, one of the two things Memento IS,
+# could not be started in a Gumdrop project at all.
+#
+# ⚠ WHY THE POINTER IS NOT THE DEFECT, MEASURED. `_build_all.py` is named at 80 sites across 38
+# packed files, and `memento-package/machinery/_MACHINERY-MANIFEST.md` rules the reason: the cut
+# is "VERBATIM copies — Apollo names … are still inside them, on purpose … Generalisation is a
+# build step, not a copy step; a half-renamed copy would be neither auditable nor runnable."
+# A mechanical strip or repoint IS that half-rename. And Apollo's own
+# `knowledge/_build_memento_index.py` cannot be the thing the closure carries: driven in a fresh
+# stage it dies on `_gen_lanes`, and its declared corpus is the whole Apollo memory (GM/LS
+# archives, gauge log, decisions ledger, briefs, lanes, component registry), which it REFUSES to
+# build without. A closure carries files; it cannot carry a corpus.
+#
+# THE DECISION. The pack's OWN generalisation-debt list, item 3, is "Index bootstrap for a fresh
+# project (the no-chain arm of the ratified boot rule)". The Gumdrop cut now carries that
+# bootstrap (`apollo-spider/gumdrop/machinery/_build_memento_index.py`), and this closure states
+# the packaging half: A PACKED DOOR TRAVELS WITH ITS BUILDER. The seed map lands the bootstrap in
+# `memento-package/machinery/` and ONLY there — exactly the v1.0.0 shape that left the plugin
+# mirror's `_gen_chain.py` unimportable — so the mirror is filled the same way, from bytes already
+# in the stage.
+#
+# ⚠ WHY IT IS DECLARED AND NOT DERIVED. `import_closure` can read an `import` statement. Nothing
+# static can read "this tool refuses until you run that other tool": the dependency lives in a
+# runtime refusal string. So the pair is DECLARED here, with its reason, and the generator REFUSES
+# if the named companion is carried nowhere — the same refusal the import closure makes, for the
+# same reason [[instrument-without-a-consumer]].
+DOOR_COMPANIONS = (
+    ("_memento_search.py", "_build_memento_index.py",
+     "the Memento door REFUSES until its index exists, and only this builder writes one"),
+)
+
+
+def companion_closure(paths):
+    """Declared companions that must sit beside a packed door wherever that door lands.
+
+    Same seed shape as `import_closure` (so `apply_closure`, the manifest block, `--stage` and
+    `check_pack` all read one list), and the same nearest-carrier-in-pack-space fill rule.
+    Returns (seeds, unsourced)."""
+    pk = {}
+    for p in paths:
+        pk[pack_path(p)] = p
+    by_dir, by_base = {}, {}
+    for q in pk:
+        by_dir.setdefault(os.path.dirname(q), set()).add(os.path.basename(q))
+        by_base.setdefault(os.path.basename(q), []).append(q)
+
+    seeds, unsourced = {}, []
+    for door, companion, why in DOOR_COMPANIONS:
+        for q in sorted(pk):
+            if os.path.basename(q) != door:
+                continue
+            d = os.path.dirname(q)
+            if companion in by_dir.get(d, set()):
+                continue                              # already beside it
+            cands = sorted(by_base.get(companion, []),
+                           key=lambda c: (-len(os.path.commonprefix([c, q])), c))
+            if not cands:
+                unsourced.append((q, companion))
+                continue
+            dest = os.path.join(d, companion)
+            e = seeds.setdefault(dest, dict(module=os.path.splitext(companion)[0], dest=dest,
+                                            src=pk[cands[0]], needed_by=[], why=why))
+            e["needed_by"].append(q)
+    for e in seeds.values():
+        e["needed_by"] = sorted(set(e["needed_by"]))
+    return [seeds[k] for k in sorted(seeds)], sorted(unsourced)
+
+
+# ---------------------------------------------------------------------------------------------
 # THE MANIFEST
 # ---------------------------------------------------------------------------------------------
 
@@ -1134,9 +1533,66 @@ def build_manifest(sha, probe):
         out_groups.append(entry)
         seen_group.setdefault(g["group"], []).append(entry)
 
+    # ---- THE IMPORT CLOSURE (#220). Computed over the FINAL ship list, from the commit's own
+    # blobs, and recorded so the stager, `check_pack` and `_gate_pack_imports.py` all read ONE
+    # answer. A module the pack does not carry anywhere is a REFUSAL, not a shrug: the whole
+    # point of this block is that v1.0.0 shipped an unimportable file and nothing said so.
+    ship_paths = sorted({p for e in out_groups for p in e["paths"]})
+    _blob_cache = {}
+
+    def _read_blob(p):
+        if p not in _blob_cache:
+            _blob_cache[p] = git("show", "%s:%s" % (sha, p))
+        return _blob_cache[p]
+
+    seeds, unmodelled, unsourced = import_closure(ship_paths, _read_blob)
+    if unsourced:
+        raise RuntimeError(
+            "IMPORT CLOSURE REFUSED — %d packed module(s) import something the pack carries "
+            "NOWHERE, so no seed can fix it. Either ship the module or stop shipping the "
+            "importer: %s" % (len(unsourced), unsourced[:5]))
+    comp_seeds, comp_unsourced = companion_closure(ship_paths)
+    if comp_unsourced:
+        raise RuntimeError(
+            "COMPANION CLOSURE REFUSED — %d packed door(s) declare a companion the pack carries "
+            "NOWHERE at this commit: %s.\n"
+            "   The ship list comes from `git ls-tree` AT THE COMMIT, so an UNCOMMITTED companion "
+            "is invisible here and this refusal is what an incomplete pair looks like.\n"
+            "   REMEDY, one of: (1) commit the companion — for the Memento door that is "
+            "`apollo-spider/gumdrop/machinery/_build_memento_index.py` — and re-run at the new "
+            "sha; or (2) delete its DOOR_COMPANIONS entry, which is a decision to ship a door "
+            "that cannot be opened."
+            % (len(comp_unsourced), comp_unsourced[:5]))
+    # ONE seed list from here on: the manifest block, `apply_closure`, `--stage` and `check_pack`
+    # all read `import_closure.seeds`, and a second list would be a second place to forget.
+    collide = {s["dest"] for s in seeds} & {s["dest"] for s in comp_seeds}
+    if collide:
+        raise RuntimeError("CLOSURE COLLISION — %s is claimed by both the import closure and a "
+                           "declared companion" % sorted(collide))
+    seeds = sorted(seeds + comp_seeds, key=lambda s: s["dest"])
+    closure_bytes = blob_sizes(sha, sorted({s["src"] for s in seeds}))
+    import_closure_block = dict(
+        seeds=seeds,
+        files=len(seeds),
+        companions=len(comp_seeds),
+        bytes=sum(closure_bytes.get(s["src"], 0) for s in seeds),
+        unmodelled_path_inserts=unmodelled,
+        why="A packed module's module-level imports must resolve from where THAT FILE lands in "
+            "the pack. v1.0.0 shipped memento-package/claude-plugin/memento/machinery/"
+            "_gen_chain.py with no _could_not_ask.py beside it and it could not be imported at "
+            "all. These seeds are byte-copies of files already in the pack, placed where the "
+            "importer can reach them. `companions` counts the DECLARED half (see "
+            "DOOR_COMPANIONS): a dependency stated in a runtime refusal, which no import parser "
+            "can see — v1.0.1's Memento door shipped with no index builder anywhere in the pack.",
+    )
+
     totals = dict(
         files=sum(e["files"] for e in out_groups),
         bytes=sum(e["bytes"] for e in out_groups),
+        # What a designer actually unzips: the ship list PLUS the closure copies. `files` stays
+        # the ship list because `--manifest` refuses when it and `all_paths(man)` disagree.
+        pack_files=sum(e["files"] for e in out_groups) + import_closure_block["files"],
+        pack_bytes=sum(e["bytes"] for e in out_groups) + import_closure_block["bytes"],
         by_group={gk: dict(files=sum(e["files"] for e in es),
                            bytes=sum(e["bytes"] for e in es))
                   for gk, es in seen_group.items()},
@@ -1196,6 +1652,7 @@ def build_manifest(sha, probe):
         ruling="s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
         groups=out_groups,
         excluded=excluded,
+        import_closure=import_closure_block,
         open_questions=OPEN_QUESTIONS,
         totals=totals,
         gate_probe=dict(timeout_s=probe["timeout_s"],
@@ -1441,8 +1898,12 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
       'exactly what changed between two releases.</p>')
 
     A('<div class="head">')
-    A('<div><b>%s</b><span>files in the pack</span></div>' % "{:,}".format(man["totals"]["files"]))
-    A('<div><b>%s</b><span>on disk</span></div>' % mb(man["totals"]["bytes"]))
+    # #220: what a designer unzips is the ship list PLUS the import-closure copies. The label
+    # says "in the pack", so the number has to be the pack's, not the ship list's.
+    A('<div><b>%s</b><span>files in the pack</span></div>'
+      % "{:,}".format(man["totals"].get("pack_files", man["totals"]["files"])))
+    A('<div><b>%s</b><span>on disk</span></div>'
+      % mb(man["totals"].get("pack_bytes", man["totals"]["bytes"])))
     if zip_bytes:
         A('<div><b>%s</b><span>zipped — the download</span></div>' % mb(zip_bytes))
     A('<div><b>%d</b><span>gates that run anywhere</span></div>' % (c["runnable"] + c["needs_dep"]))
@@ -1598,15 +2059,20 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
       'still says <em>Proposed</em>. That last refusal is the one that matters: the release is '
       'your word, not the script\'s.</p>')
     # #219 stage 2 — the layout, stated so the page shows the TRUE shape a designer meets.
+    # ⛔ #220. The pack root was TYPED here as `Apollo-Spider-v1.0.0/` while the thing it names
+    # is `PACK_SLUG`-`VERSION` two hundred lines up. At the v1.0.1 bump Dave's go/no-go page
+    # would have described unzipping a folder the bake no longer produces — a page whose job is
+    # to be believed, quietly wrong about the one path a designer types first. Derived now.
     A('<p class="note"><b>What unzipping looks like.</b> The zip opens into one folder, '
-      '<code>Apollo-Spider-v1.0.0/</code>, and everything sits directly inside it: '
+      '<code>%s-%s/</code>, and everything sits directly inside it: '
       '<code>FIRST-SESSION.md</code>, <code>skills/</code>, <code>.github/</code>, '
       '<code>knowledge/</code>, <code>ci-template/</code>, '
       '<code>showroom/</code>, <code>memento-package/</code>, <code>_MANIFEST.json</code>, '
       '<code>README.md</code>. The skills and the CI template live under '
       '<code>apollo-spider/</code> in this repo, but the bake flattens that prefix away '
       '— a designer must find <code>skills/</code> the moment the zip opens, not two folders '
-      'down. The pack checker verifies the zip through the same mapping.</p>')
+      'down. The pack checker verifies the zip through the same mapping.</p>'
+      % (PACK_SLUG, VERSION))
     A('<details><summary>The commands</summary><div class="paths">'
       'bash apollo-spider/build-designer-pack.sh --manifest --commit &lt;sha&gt;<br>'
       'bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/x '
@@ -1722,6 +2188,13 @@ def check_pack(zip_path, man, sha):
                 fails.append("flatten collision: %r and %r both land at pack path %r"
                              % (repo_by_pack[q], p, q))
             repo_by_pack[q] = p
+        # #220: the closure copies are pack paths with no repo path of their own — their bytes
+        # are the SOURCE's blob, so they verify against the commit through the same bridge.
+        for s in man.get("import_closure", {}).get("seeds", []):
+            if s["dest"] in repo_by_pack:
+                fails.append("closure collision: %r is both a shipped path and a closure copy"
+                             % s["dest"])
+            repo_by_pack[s["dest"]] = s["src"]
         want = set(repo_by_pack)
         # the pack root is <pack>/<pack path>; strip the single root component
         roots = {n.split("/")[0] for n in names}
@@ -1970,6 +2443,187 @@ def selftest():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
+    # ---- THE IMPORT CLOSURE (#220). Bitten on a synthetic pack that reproduces the v1.0.0
+    # SHAPE — two mirrored machinery dirs, one of them missing the sibling — because a bite over
+    # the live tree only proves today's tree [[mutation-tests-the-clause-not-the-feature]].
+    _HG = ("import os as _hg_os, sys as _hg_sys\n"
+           "_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))\n"
+           "while _hg_d != '/' and not _hg_os.path.exists("
+           "_hg_os.path.join(_hg_d, '_helpgate.py')):\n"
+           "    _hg_d = _hg_os.path.dirname(_hg_d)\n"
+           "_hg_sys.path.insert(0, _hg_d)\n"
+           "from _helpgate import help_gate\n")
+    fake = {
+        "apollo-spider/gumdrop/_helpgate.py": "def help_gate(*a): pass\n",
+        "apollo-spider/gumdrop/machinery/_could_not_ask.py": _HG,
+        "memento-package/machinery/_gen_chain.py":
+            _HG + "import os, sys\nHERE = os.path.dirname(os.path.abspath(__file__))\n"
+                  "sys.path.insert(0, HERE)\nimport _could_not_ask\n",
+        "memento-package/claude-plugin/memento/machinery/_gen_chain.py":
+            _HG + "import os, sys\nHERE = os.path.dirname(os.path.abspath(__file__))\n"
+                  "sys.path.insert(0, HERE)\nimport _could_not_ask\n",
+    }
+    seeds, unmod, unsourced = import_closure(sorted(fake), lambda p: fake[p])
+    bite("closure/finds-the-v100-defect",
+         [s["dest"] for s in seeds],
+         ["memento-package/claude-plugin/memento/machinery/_could_not_ask.py"],
+         "the closure must name the ONE dir whose sibling import cannot resolve")
+    bite("closure/seed-source-is-the-nearest-carrier",
+         seeds[0]["src"] if seeds else None,
+         "apollo-spider/gumdrop/machinery/_could_not_ask.py")
+    bite("closure/needed-by-names-the-importer",
+         seeds[0]["needed_by"] if seeds else None,
+         ["memento-package/claude-plugin/memento/machinery/_gen_chain.py"])
+    bite("closure/no-unsourced-in-the-fixture", unsourced, [])
+    bite("closure/helpgate-walkup-is-modelled", unmod, 0,
+         "the help-gate preamble is an idiom, not an unmodelled sys.path insert")
+    # the seeded copy resolves — the same closure over the FIXED pack finds nothing left to do
+    fixed = dict(fake)
+    fixed["memento-package/claude-plugin/memento/machinery/_could_not_ask.py"] = _HG
+    bite("closure/idempotent-once-satisfied",
+         import_closure(sorted(fixed), lambda p: fixed[p])[0], [])
+    # ⚠ THE DECLARED LIMIT, bitten so it cannot be forgotten. A module the pack carries NOWHERE
+    # is indistinguishable, statically, from a third-party import — so the closure cannot see it
+    # and MUST NOT pretend to. That case is `_gate_pack_imports.py`'s, which imports for real.
+    # Bitten in both directions so the limit is a measured property, not a comment.
+    orphan = {"memento-package/machinery/_gen_chain.py":
+              "import os, sys\nHERE = os.path.dirname(os.path.abspath(__file__))\n"
+              "sys.path.insert(0, HERE)\nimport _nowhere_at_all\n"}
+    _os, _ou, _ous = import_closure(sorted(orphan), lambda p: orphan[p])
+    bite("closure/limit-a-module-the-pack-lacks-is-invisible", (_os, _ous), ([], []),
+         "static closure cannot tell 'ours but absent' from 'third party' — the runtime gate can")
+    # an unmodelled sys.path insert is COUNTED, never assumed harmless
+    murky = {"knowledge/x.py": "import sys\nsys.path.insert(0, compute_it())\nimport _y\n",
+             "knowledge/deep/_y.py": ""}
+    bite("closure/unmodelled-insert-counted",
+         import_closure(sorted(murky), lambda p: murky[p])[1], 1)
+
+    # ---- THE COMPANION CLOSURE (#220 addendum). Same fixture SHAPE — the seed map lands the
+    # builder in memento-package/machinery only, and the plugin mirror carries the door with no
+    # builder beside it. That is the v1.0.0 defect wearing different clothes, and the bite is
+    # over a synthetic pack for the same reason [[mutation-tests-the-clause-not-the-feature]].
+    doors = {
+        "apollo-spider/gumdrop/machinery/_build_memento_index.py": "BUILDER\n",
+        "memento-package/machinery/_memento_search.py": "DOOR\n",
+        "memento-package/claude-plugin/memento/machinery/_memento_search.py": "DOOR\n",
+    }
+    cseeds, cunsourced = companion_closure(sorted(doors))
+    # ⚠ EXACTLY ONE seed, and the bite was WRONG first: `pack_path` already lands the builder in
+    # memento-package/machinery/, so that door is satisfied by the seed map and needs nothing.
+    # The plugin mirror is the only dir the map does not reach — which is, precisely, the v1.0.0
+    # defect's dir. The fixture corrected the expectation, not the code.
+    bite("companion/fills-only-the-dir-the-seed-map-cannot-reach",
+         sorted(s["dest"] for s in cseeds),
+         ["memento-package/claude-plugin/memento/machinery/_build_memento_index.py"],
+         "the seed map already satisfies memento-package/machinery; the mirror is the gap")
+    bite("companion/source-is-the-nearest-carrier",
+         sorted({s["src"] for s in cseeds}),
+         ["apollo-spider/gumdrop/machinery/_build_memento_index.py"])
+    bite("companion/needed-by-names-the-door",
+         cseeds[0]["needed_by"] if cseeds else None,
+         ["memento-package/claude-plugin/memento/machinery/_memento_search.py"])
+    bite("companion/why-travels-with-the-seed",
+         bool(cseeds and "REFUSES until its index" in cseeds[0].get("why", "")), True,
+         "a declared dependency must carry the reason it was declared")
+    bite("companion/no-unsourced-in-the-fixture", cunsourced, [])
+    # already satisfied -> nothing to do (so a second bake does not re-seed)
+    satisfied = dict(doors)
+    satisfied["memento-package/machinery/_build_memento_index.py"] = "BUILDER\n"
+    satisfied["memento-package/claude-plugin/memento/machinery/"
+              "_build_memento_index.py"] = "BUILDER\n"
+    bite("companion/idempotent-once-satisfied", companion_closure(sorted(satisfied))[0], [])
+    # a door with NO builder anywhere must REFUSE, never ship a door that cannot open
+    orphan_door = {"memento-package/machinery/_memento_search.py": "DOOR\n"}
+    _cs, _cu = companion_closure(sorted(orphan_door))
+    bite("companion/door-with-no-builder-anywhere-is-unsourced",
+         (_cs, _cu), ([], [("memento-package/machinery/_memento_search.py",
+                            "_build_memento_index.py")]),
+         "build_manifest REFUSES on this — a packed door whose builder is nowhere")
+    bite("companion/no-door-no-seed", companion_closure(
+        ["apollo-spider/gumdrop/machinery/_build_memento_index.py"])[0], [],
+        "a builder with no door beside it is not a reason to copy anything")
+    # ---- the stage arm: DRIVEN, because a mapping that is only asserted proves nothing
+    tmp3 = tempfile.mkdtemp(prefix="packclosure-", dir="/var/tmp")
+    try:
+        for d in ("memento-package/machinery",
+                  "memento-package/claude-plugin/memento/machinery"):
+            os.makedirs(os.path.join(tmp3, d))
+        open(os.path.join(tmp3, "memento-package/machinery/_could_not_ask.py"),
+             "w").write("REAL\n")
+        apply_closure(tmp3, [dict(module="_could_not_ask",
+                                  dest="memento-package/claude-plugin/memento/machinery/"
+                                       "_could_not_ask.py",
+                                  src="apollo-spider/gumdrop/machinery/_could_not_ask.py",
+                                  needed_by=[])])
+        bite("closure/stage-copy-lands",
+             open(os.path.join(tmp3, "memento-package/claude-plugin/memento/machinery/"
+                                     "_could_not_ask.py")).read(), "REAL\n",
+             "the copy must come from the STAGE (the commit's bytes), not the working tree")
+        try:
+            apply_closure(tmp3, [dict(module="_x", dest="memento-package/machinery/_x.py",
+                                      src="apollo-spider/gumdrop/machinery/_nope.py",
+                                      needed_by=[])])
+            verdict = "no error"
+        except RuntimeError:
+            verdict = "RuntimeError"
+        bite("closure/stage-missing-source-refuses", verdict, "RuntimeError")
+    finally:
+        shutil.rmtree(tmp3, ignore_errors=True)
+
+    # ---- THE PHOTOGRAPHY SPECIMEN (#220). The pinned 15 are IMPORTED; the bite proves the
+    # import happened and that the set is the size and shape the group claims.
+    spec = photography_specimen()
+    bite("photography/thirty", len(spec), 30)
+    bite("photography/no-duplicates", len(set(spec)), 30)
+    bite("photography/fifteen-additions", len(PHOTOGRAPHY_ADDITIONS), 15)
+    _rendr = os.path.join(ROOT, "knowledge", "_render")
+    if _rendr not in sys.path:
+        sys.path.insert(0, _rendr)
+    try:
+        from gen_bento_roles_217 import SPECIMEN_FILES as _PIN
+        bite("photography/pinned-set-is-the-pages-own",
+             sorted(set(_PIN) - set(spec)), [],
+             "every name the bento/gallery pages resolve must be in the cut")
+        bite("photography/additions-do-not-overlap-the-pin",
+             sorted(set(_PIN) & set(PHOTOGRAPHY_ADDITIONS)), [])
+    except ImportError as e:
+        fails.append("[photography/pinned-set-readable] %s" % e)
+        n[0] += 1
+    # ⚠ A pinned name whose file is gone ships nothing, silently. Bitten against DISK.
+    _webd = os.path.join(ROOT, PHOTOGRAPHY_DIR)
+    bite("photography/every-named-file-exists",
+         sorted(f for f in spec if not os.path.exists(os.path.join(_webd, f))), [],
+         "a named specimen file is missing from knowledge/assets/photography-web/")
+    # the fence: the DIRECTORY stays excluded, only the named set crosses
+    bite("photography/unnamed-file-claimed-by-nobody",
+         [g["key"] for g in tbl if g["match"](PHOTOGRAPHY_DIR + "not-in-the-specimen.jpg")], [])
+    bite("photography/named-file-is-claimed",
+         [g["key"] for g in tbl if g["match"](PHOTOGRAPHY_DIR + spec[0])],
+         ["library.photography"])
+
+    # ---- the roster fence (#220). A release-side gate must not slip into the designer roster
+    # and move `s219-D9`'s ruled 55. Bitten in BOTH directions or it is not a fence.
+    bite("gates/release-side-gate-is-not-shipped",
+         [g["key"] for g in tbl if g["match"]("knowledge/_gate_pack_imports.py")], [],
+         "it audits a baked pack; a designer has no pack to audit, and s219-D9 ruled 55")
+    bite("gates/an-ordinary-gate-still-ships",
+         [g["key"] for g in tbl if g["match"]("knowledge/_gate_minted_consumption.py")],
+         ["gates"], "the fence must be one named file, not a widened glob")
+
+    # ---- retrieval (#220 addendum). The `_memento-index.json` exclusion used to promise
+    # "adopters regenerate"; the pack ships nothing they could regenerate it WITH, so the promise
+    # was false and the row now says so. A stated reason is a CONCLUSION, and a conclusion is
+    # debt [[conclusions-are-debt-s129-d5]] — these two bites are its re-checker. If a future
+    # lane ships a builder, the second one goes red and the reason must be rewritten, not left
+    # to rot into a second false promise.
+    _idx_reason = dict(EXCLUDED)["knowledge/_memento-index.json"]
+    bite("retrieval/exclusion-names-the-missing-builder",
+         "_build_memento_index.py" in _idx_reason and "CANNOT" in _idx_reason, True,
+         "the row must name what is absent, not imply adopters can regenerate")
+    bite("retrieval/no-index-builder-travels",
+         [g["key"] for g in tbl if g["match"]("knowledge/_build_memento_index.py")], [],
+         "if this ever ships, the exclusion reason above is STALE — rewrite it in the same edit")
+
     # ---- the open questions (#219 seam 7). Dave's decision surface is generated from this list,
     # so the list is what has to be checked — the page cannot be trusted to police itself.
     qids = [q["id"] for q in OPEN_QUESTIONS]
@@ -2072,8 +2726,11 @@ def selftest():
              "the pre-s219-D8 name survives in the generator that is supposed to have replaced it")
     bite("naming/slug-matches-name", PACK_SLUG, PACK_NAME.replace(" — ", "-"))
     bite("naming/prefix-is-the-pack-dir", PACK_SURFACE_PREFIX, "apollo-spider/")
+    # ⚠ #220. The literal on the right is a HAND-MOVED FIXTURE and that is deliberate: it makes
+    # every version bump of the carried cut a decision somebody typed, not a value that drifted.
+    # Moved v1.0.0 -> v1.0.1 at the #220 bake, in the same edit as MEMENTO_CUT_VERSION itself.
     bite("naming/memento-cut-is-named", (MEMENTO_CUT_NAME, MEMENTO_CUT_VERSION),
-         ("Memento — Gumdrop", "v1.0.0"),
+         ("Memento — Gumdrop", "v1.0.1"),
          "the cut inside the pack carries its own identity (s219-D8)")
     for q in OPEN_QUESTIONS:
         bite("questions/has-body:%s" % q["id"], len(q["body"].strip()) > 40, True)
@@ -2416,6 +3073,16 @@ def main():
         os.makedirs(os.path.dirname(os.path.abspath(a.page)), exist_ok=True)
         open(a.page, "w").write(html)
         print("page -> %s (%d bytes)" % (a.page, len(html)))
+        # ⛔ #220: THE RECIPE, AT THE MOMENT IT IS NEEDED AND WITH THE PATH THAT EXISTS.
+        # Writing this page REWRITES Dave's review surface and strips the review pair's
+        # stamps, so the overlay has to be re-injected or he opens a page with no comment
+        # pins on it (#219 R2's item 5). The #219 stage-2 recipes told the conductor to run
+        # `knowledge/_make_review.py`, which has never existed — the injector is and always
+        # was `knowledge/_review/_make_review.py`, and a conductor following the block
+        # verbatim got `No such file or directory` [[read-chain-is-where-staleness-is-free]].
+        # It is printed here, by the tool that causes the need, rather than left in a report.
+        print("  NEXT: python3 knowledge/_review/_make_review.py %s" % a.page)
+        print("        (this write stripped the review pair's stamps — re-inject the overlay)")
         return
 
     if a.stage:
@@ -2431,8 +3098,16 @@ def main():
         extract(sha, all_paths(man), a.stage)
         apply_seed_map(a.stage)          # seed map FIRST — see pack_path
         flatten_stage(a.stage)
-        print("staged %d paths -> %s (pack surfaces flattened to the root — see pack_path)"
-              % (len(all_paths(man)), a.stage))
+        # THE IMPORT CLOSURE, last: it copies within the flattened stage, so it must run after
+        # both moves or it would fill a directory the flatten is about to rename (#220).
+        seeds = man.get("import_closure", {}).get("seeds", [])
+        apply_closure(a.stage, seeds)
+        print("staged %d paths + %d import-closure copies -> %s "
+              "(pack surfaces flattened to the root — see pack_path)"
+              % (len(all_paths(man)), len(seeds), a.stage))
+        for s in seeds:
+            print("  closure: %s  <- %s  (for %s)"
+                  % (s["dest"], s["src"], ", ".join(s["needed_by"])))
         return
 
     if a.zip:

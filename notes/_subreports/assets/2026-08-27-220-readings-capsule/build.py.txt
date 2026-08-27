@@ -1,0 +1,606 @@
+# NON-REPO: /var/tmp/rd220/build.py (sandbox-local, #220 sub). Writes exactly ONE file:
+#   reviews/CORRECTION-READINGS-2026-08-27-v1.html
+# Specimen markup + specimen CSS are COPIED verbatim from showroom/_foundations/bento-rails.html.
+import io, os, re
+
+REPO = '/sessions/gifted-ecstatic-carson/mnt/UX-design'
+OUT  = os.path.join(REPO, 'reviews', 'CORRECTION-READINGS-2026-08-27-v1.html')
+
+IMG = '../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg'
+ALT = 'PORTRAIT OF YOUNG MAN ON STEPS'
+LIC = 'Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH'
+
+# ---- THE SPECIMEN. Copied from bento-rails.html lines 806-807 (the rejected card), with the
+# theme attribute lifted one level up (see .rd-panel) so light and dark can stand side by side.
+TILE = ('\n      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" '
+        'data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" '
+        'src="%s" alt="%s" loading="lazy" width="1600" height="1067"></span>'
+        '<figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">%s</span>'
+        '<span class="bm-lic t-cm-legal">%s</span></figcaption></figure>\n' % (IMG, ALT, ALT, LIC))
+
+def spec(page_bg, rounding, cap_bg, bento_bg='transparent', keylines='off'):
+    return ('<div class="br-spec"><div class="bm-stage" data-type="gallery" data-page-bg="%s" '
+            'data-spacing="40" data-keylines="%s" data-bento-bg="%s" data-mode="bento" '
+            'data-edge="square" data-rounding="%s" data-cap-bg="%s"><div class="bm-page-ground">'
+            '<div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery rd-wall" '
+            'data-bento-role="gallery"><div class="c-bento__grid">%s</div></div></div></div></div></div>'
+            % (page_bg, keylines, bento_bg, rounding, cap_bg, TILE))
+
+def pair(label, dials, page_bg, rounding, cap_bg, bento_bg='transparent', keylines='off', refused=False, struck=False):
+    """One specimen, rendered LIGHT and DARK side by side. `dials` is the plain-prose dial read-out."""
+    cls = 'rd-block' + (' rd-refused' if refused else '') + (' rd-struck' if struck else '')
+    cells = []
+    for mode in ('light', 'dark'):
+        cells.append(
+            '<figure class="rd-cell"><figcaption class="rd-mode t-cm-legal">%s</figcaption>'
+            '<div class="rd-panel" data-apollo-theme="console"><div class="rd-panel-bd" data-theme="%s">%s'
+            '</div></div></figure>' % (mode.capitalize(), mode,
+                                       spec(page_bg, rounding, cap_bg, bento_bg, keylines)))
+    return ('<div class="%s"><p class="rd-splabel t-ed-body-small"><b>%s</b></p>'
+            '<p class="rd-dials t-cm-legal">%s</p><div class="rd-pair">%s</div></div>'
+            % (cls, label, dials, ''.join(cells)))
+
+def lines(items):
+    return ('<ul class="br-lines">' +
+            ''.join('<li class="t-ed-body-small">%s</li>' % i for i in items) + '</ul>')
+
+# ---------------------------------------------------------------- CSS
+CSS = r"""
+/* ===========================================================================
+   REVIEW PAGE — three readings of one correction. #220.
+   ⛔ THE SPECIMEN STYLES BELOW ARE COPIED, NOT RE-DRAWN. Everything between the
+   COPIED-FROM-ARTEFACT markers is lifted from showroom/_foundations/bento-rails.html
+   (the approved artefact) so a specimen on this page renders through exactly the rules
+   that render it there. Page chrome is scoped to `.rd-`.
+   ⛔ EVERY var() CARRIES A LITERAL FALLBACK — a custom property that fails to resolve
+   renders silent black and no gate catches it.
+   ⛔ NEUTRAL HUES ONLY. No red, no yellow, no green anywhere on this page: the two-red
+   law and the mono error ink camp are untouched by it. A refusal is carried by weight,
+   a strike and a printed reason — never by a hue.
+   =========================================================================== */
+html,body{margin:0;}
+body{background:var(--background-default,#FFFFFF);}
+.rd{
+  --page:      var(--background-default,#FFFFFF);
+  --surface:   var(--surface-raised,#FFFFFF);
+  --surface-2: var(--surface-subtle,#F3F3F3);
+  --line:      var(--border-subtle,#D7D8D6);
+  --line-2:    var(--border-strong,#767676);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --radius:    var(--border-radius-surface,0px);
+  --radius-ctl:var(--border-radius-control,0px);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+}
+.rd *{box-sizing:border-box;}
+/* the ink is restated on a CHILD of the themed element — measured 2026-08-22, carried from
+   the artefact rather than re-derived. */
+.rd, .rd-head{color:var(--text-default,#1A1A1A);}
+
+.rd-head{padding:var(--sp-5,24px) var(--sp-6,32px); border-bottom:1px solid var(--line,#D7D8D6);}
+.rd-head h1{margin:0 0 var(--sp-2,8px);}
+.rd-head p{margin:0 0 4px; color:var(--ink-2,#545454); max-width:88ch;}
+main{padding:var(--sp-6,32px); max-width:1180px;}
+.rd-sec{margin:0 0 var(--sp-7,48px); border-top:1px solid var(--line,#D7D8D6);
+  padding-top:var(--sp-5,24px);}
+.rd-sec:first-of-type{border-top:0; padding-top:0;}
+.rd-sec h2{margin:0 0 var(--sp-2,8px);}
+.rd-sec h3{margin:var(--sp-5,24px) 0 var(--sp-2,8px);}
+.rd-sec p{margin:0 0 var(--sp-3,12px); color:var(--ink-2,#545454); max-width:84ch;}
+.rd-sec p b, .br-lines b{color:var(--ink,#1A1A1A); font-weight:500;}
+.rd-kicker{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;
+  margin:0 0 var(--sp-2,8px); display:flex; align-items:center; gap:var(--sp-2,8px);}
+.rd-kicker::before{content:''; width:20px; height:1px; background:var(--line,#D7D8D6);}
+.rd-quote{border-left:3px solid var(--ink,#1A1A1A); padding:var(--sp-3,12px) var(--sp-4,16px);
+  margin:0 0 var(--sp-3,12px); max-width:84ch;}
+.rd-quote p{margin:0; color:var(--ink,#1A1A1A);}
+.rd-quote .rd-attrib{margin-top:6px; color:var(--ink-2,#545454);}
+.rd-note{border:1px solid var(--line,#D7D8D6); border-left-width:4px;
+  padding:var(--sp-3,12px) var(--sp-4,16px); margin:var(--sp-4,16px) 0 0; max-width:84ch;}
+.rd-note p{margin:0 0 var(--sp-2,8px);}
+.rd-note p:last-child{margin:0;}
+.rd-foot{border-top:1px solid var(--line,#D7D8D6); padding-top:var(--sp-4,16px);
+  color:var(--ink-2,#545454); max-width:96ch;}
+.rd-foot p{margin:0 0 var(--sp-2,8px);}
+.rd-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;
+  background:var(--surface-2,#F3F3F3); padding:0 .3em;}
+
+/* ---- a specimen block: one dial-set, LIGHT and DARK side by side ---- */
+.rd-block{margin:var(--sp-4,16px) 0 var(--sp-5,24px);}
+.rd-splabel{margin:0 0 2px; color:var(--ink,#1A1A1A);}
+.rd-dials{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454); letter-spacing:0.06em;
+  text-transform:uppercase;}
+/* ⛔ THE CELL IS CAPPED, AND THAT IS NOT COSMETIC. Every `.c-bento` is `container-type:inline-size`,
+   so canon's responsive bands answer the WALL's width, not the window's. Uncapped cells would put
+   the light wall and the dark wall in different bands at some widths, and the pair would then be
+   comparing LAYOUT while claiming to compare MODE. Capped at 420px the wall lands ~356px — under
+   canon's 520px band in every viewport — so both cells resolve one column, always. Same class rule
+   as the artefact's stacked P4 comparison (ds-054). */
+.rd-pair{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,420px));
+  gap:var(--sp-5,24px); align-items:start;}
+.rd-cell{margin:0; min-width:0;}
+.rd-mode{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.12em;
+  margin:0 0 6px;}
+.rd-panel{border:1px solid var(--line,#D7D8D6);}
+.rd-panel-bd{background:var(--background-default,#FFFFFF); color:var(--text-default,#1A1A1A);
+  padding:var(--sp-3,12px);}
+/* the specimen restates the ink on a child of the themed element */
+.rd-panel-bd .br-spec{color:var(--text-default,#1A1A1A);}
+/* ---- A REFUSAL, in the artefact's own vocabulary: weight, a strike and a printed reason.
+   NEVER a hue. The specimen is dimmed rather than hidden, because the point of showing it is
+   that you can see what is being refused. ---- */
+.rd-refused .rd-splabel{text-decoration:line-through;}
+.rd-refused .rd-pair{opacity:.55;}
+/* ⛔ A DEMONSTRATION IS NOT A REFUSAL. The broken shape under Reading C is on the page to be
+   LOOKED AT, so it is struck but never dimmed — dimming the thing you are asking someone to
+   see is the very defect this page exists to prevent. */
+.rd-struck .rd-splabel{text-decoration:line-through;}
+.rd-why{border:1px solid var(--line-2,#767676); padding:var(--sp-2,8px) var(--sp-3,12px);
+  margin:0 0 var(--sp-3,12px); max-width:84ch; color:var(--ink-2,#545454);}
+.rd-why b{color:var(--ink,#1A1A1A); font-weight:500;}
+
+/* =====================================================================================
+   COPIED-FROM-ARTEFACT START — showroom/_foundations/bento-rails.html
+   ===================================================================================== */
+/* ---- the rails library cards ---- */
+.br-lines{margin:0 0 var(--sp-3,12px); padding:0; list-style:none; display:flex;
+  flex-direction:column; gap:4px;}
+.br-lines li{max-width:80ch; color:var(--ink-2,#545454);}
+.br-meta{color:var(--text-secondary,#545454); display:flex; flex-wrap:wrap; gap:8px;
+  letter-spacing:0.06em; text-transform:uppercase; margin:0 0 var(--sp-3,12px);}
+.br-pill{border:1px solid var(--border-subtle,#D7D8D6); padding:2px 8px;}
+.br-pill--default{border-color:var(--text-default,#1A1A1A); font-weight:600;}
+.br-pill--struck{text-decoration:line-through;}
+.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+/* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
+.br-spec .bm-stage{border:0; margin-top:0;}
+.br-spec .bm-page-ground{padding:var(--sp-4,16px);}
+.br-spec .bm-gtile{grid-column:span 1 !important; grid-row:span 1 !important;}
+.br-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);
+  table-layout:fixed;}
+.br-table th, .br-table td{border-bottom:1px solid var(--border-subtle,#D7D8D6);
+  padding:8px 10px; text-align:left; vertical-align:top; white-space:normal;
+  overflow-wrap:anywhere; color:var(--ink-2,#545454);}
+.br-table th{color:var(--text-secondary,#545454); text-transform:uppercase;
+  letter-spacing:0.08em; font-weight:500;}
+.br-table td:first-child{color:var(--ink,#1A1A1A);}
+.br-scroll{overflow-x:auto; border:1px solid var(--border-subtle,#D7D8D6);}
+.br-open{border-left:3px solid var(--text-default,#1A1A1A); padding-left:var(--sp-3,12px);}
+
+/* ---- the `--bm-*` surface the specimen stage reads. Declared on `.br-spec`, which is a CHILD
+   of the element carrying the theme — substituting on a child is deterministic in every state
+   probed, where substituting on the themed element itself has disagreed (measured 2026-08-22). */
+.br-spec{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#767676);
+  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
+  --bm-page:var(--background-default,#FFFFFF);
+  --bm-grey:var(--surface-subtle,#F0F0F0);
+  --bm-white:var(--surface-raised,#FFFFFF);
+  --bm-darkgrey:var(--surface-digital-black,#1A1A1A);
+  --bm-ink-rev:var(--text-reverse,#FFFFFF);
+  --bm-radius-ctl:var(--border-radius-control,0px);
+  --bm-container-radius:var(--border-radius-container,0px);}
+
+/* ---- the stage ---- */
+.bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
+.bm-page-ground{padding:var(--sp-5,24px);}
+.bm-stage[data-page-bg="grey"] .bm-page-ground{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-page-bg="white"] .bm-page-ground{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-page-bg="page"] .bm-page-ground{background:var(--bm-page,#FFFFFF);}
+.bm-pane{display:none;}
+.bm-stage[data-type="gallery"] .bm-pane[data-pane="gallery"]{display:block;}
+
+/* ---- the WALL grounds ---- */
+.bm-stage[data-bento-bg="grey"] .c-bento.bm-wall{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-bento-bg="white"] .c-bento.bm-wall{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-bento-bg="darkgrey"] .c-bento.bm-wall{background:var(--bm-darkgrey,#1A1A1A);}
+.bm-stage[data-bento-bg="transparent"] .c-bento.bm-wall{background:transparent;}
+/* INK FOLLOWS THE EFFECTIVE GROUND — a transparent caption has no ground of its own, so its ink
+   is the ink of the ground that actually paints behind it: the wall's. (s219-D3(2)/(5)) */
+.bm-stage[data-bento-bg="darkgrey"][data-cap-bg="transparent"] .bm-cap{
+  color:var(--bm-ink-rev,#FFFFFF);}
+
+/* ---- SPACING — one declared rule per ruled stop. A value off the rail has no rule. ---- */
+.bm-stage[data-spacing="1"] .c-bento.bm-wall{--bento-gutter:1px;}
+.bm-stage[data-spacing="2"] .c-bento.bm-wall{--bento-gutter:2px;}
+.bm-stage[data-spacing="4"] .c-bento.bm-wall{--bento-gutter:4px;}
+.bm-stage[data-spacing="16"] .c-bento.bm-wall{--bento-gutter:16px;}
+.bm-stage[data-spacing="24"] .c-bento.bm-wall{--bento-gutter:24px;}
+.bm-stage[data-spacing="40"] .c-bento.bm-wall{--bento-gutter:40px;}
+/* keylines at the open spacings: a plain 1px tile border. */
+.bm-stage[data-keylines="on"]:not([data-spacing="1"]) .bm-wall > .c-bento__grid > .bm-tile{
+  border:1px solid var(--bm-line,#D7D8D6);}
+
+/* ---- INSTANCE DIALS. `.c-bento.` in the selector is DELIBERATE: canon's role rules are (0,2,0),
+   a bare class is (0,1,0) and the role rule would beat it — silently, in one theme, at one width. */
+.c-bento.bm-gallery{--bento-columns:4; --bento-row-unit:240px;}
+.c-bento.rd-wall{--bento-columns:1; --bento-row-unit:240px;}
+
+/* ---- tile CONTENT ---- */
+.bm-tile{margin:0; display:flex; flex-direction:column; min-width:0; overflow:hidden;
+  background:var(--tertiary-background-default,#FFFFFF);}
+/* ⛔ A GALLERY TILE PAINTS NO GROUND, and that is what makes this whole question real. The picture
+   supplies its own ground, so the CAPTION's immediate ground is the wall. Paint the tile instead
+   and the caption would sit on the tile's surface and the ground behind a caption would never be
+   the thing the rule compares against. */
+.bm-gtile{background:transparent;}
+.bm-imgbox{display:block; flex:1 1 auto; min-height:0; overflow:hidden;}
+.bm-img{display:block; width:100%; height:100%; object-fit:cover;
+  background:var(--surface-subtle,#F0F0F0);}
+.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#545454); display:flex;
+  flex-direction:column; gap:2px; justify-content:center;}
+.bm-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
+  -webkit-box-orient:vertical; overflow:hidden;}
+
+/* ---- CAPTION GROUNDS. The caption's IMMEDIATE ground is the tile, which takes the bento
+   background — so these two are what the legality rule compares. ---- */
+.bm-stage[data-cap-bg="grey"] .bm-cap{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-cap-bg="white"] .bm-cap{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-cap-bg="transparent"] .bm-cap{background:transparent;}
+/* THE DARK CAPTION GROUND and its reversed-out ink: two declarations, ONE decision — the second
+   follows the first in the stylesheet, so a designer cannot set them inconsistently. s219-D3(3). */
+.bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
+  color:var(--bm-ink-rev,#FFFFFF);}
+.bm-stage[data-cap-bg="grey"] .bm-cap,
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+
+/* ---- CONSOLE IMAGE ROUNDING (gallery). Both options are canon's container radius; what moves is
+   WHAT IS ROUNDED. `corners` rounds the picture and leaves the caption square and unclipped;
+   `capsule` rounds and clips the whole tile so caption and image are one block. Six
+   classes/attributes because canon's gallery tile rule is (0,4,0). ---- */
+.bm-stage[data-rounding="corners"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile{border-radius:0; overflow:visible;}
+.bm-stage[data-rounding="corners"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile .bm-imgbox{
+  border-radius:var(--bm-container-radius,0px); overflow:hidden;}
+.bm-stage[data-rounding="capsule"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile{
+  border-radius:var(--bm-container-radius,0px); overflow:hidden;}
+/* =====================================================================================
+   COPIED-FROM-ARTEFACT END
+   ===================================================================================== */
+
+@media (max-width:820px){ main{padding:var(--sp-5,24px) var(--sp-4,16px);} }
+@media (prefers-reduced-motion: reduce){
+  .rd *,.rd *::before,.rd *::after{transition-duration:.01ms !important;
+    animation-duration:.01ms !important;}
+}
+"""
+
+# ---------------------------------------------------------------- BODY
+P = []
+w = P.append
+
+w('<!doctype html>')
+w('<html lang="en" data-apollo-theme="mono">')
+w('<head>')
+w('<meta charset="utf-8">')
+w('<meta name="viewport" content="width=device-width, initial-scale=1">')
+w('<title>The capsule correction &mdash; three readings</title>')
+w('<!-- #220 review page. NOT ENACTED. Specimen markup + specimen CSS COPIED from '
+  'showroom/_foundations/bento-rails.html. -->')
+w('<link rel="stylesheet" href="../knowledge/canon/type.css">')
+w('<link rel="stylesheet" href="../knowledge/canon/canon.css">')
+w('<style>%s</style>' % CSS)
+w('</head>')
+w('<body data-theme="light" class="rd">')
+
+w('<header class="rd-head">')
+w('  <h1 class="t-ed-heading-3">The capsule correction &mdash; three readings</h1>')
+w('  <p class="t-ed-body">One sentence from Dave supports three different rules. They do not ship '
+  'the same page. All three are drawn below, live, so the choice can be made by eye rather than '
+  'by argument.</p>')
+w('  <p class="t-ed-body-small">Console theme. Every specimen is shown in <b>light and dark, side '
+  'by side</b>. The markup and the stylesheet under every specimen are copied from the approved '
+  'page &mdash; nothing here is re-drawn, and only the dials differ between one specimen and the '
+  'next.</p>')
+w('  <p class="t-cm-legal">Nothing on this page is enacted. No rule, no manifest and no generator '
+  'has been changed.</p>')
+w('</header>')
+w('<main>')
+
+# ---------------------------------------------------------------- THE BEFORE
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">The card he rejected</p>')
+w('<h2 class="t-ed-heading-4">&ldquo;This would never exist&rdquo;</h2>')
+w('<div class="rd-quote"><p class="t-ed-body">&ldquo;almost right, this would never exist. its '
+  'ether cohesive capsule or rounded full image if there is no background colour on the '
+  'caption.&rdquo;</p>'
+  '<p class="rd-attrib t-cm-legal">Dave, 2026-08-26, on the <b>Capsule &mdash; White</b> card of the '
+  'bento rails page.</p></div>')
+w('<p class="t-ed-body">Here is that card, exactly as it stands on the page today.</p>')
+w(pair('The card as it stands: a capsule whose caption is white, on a page that is also white',
+       'Console gallery &middot; capsule &middot; caption ground white &middot; page ground the page itself',
+       'page', 'capsule', 'white'))
+w('<h3 class="t-ed-heading-4">What you are looking at</h3>')
+w(lines([
+  '<b>In light</b> the caption&rsquo;s white and the page&rsquo;s white are the same colour, so the '
+  'bottom half of the capsule has nothing to draw it. The picture reads as rounded on top and cut '
+  'off square at the bottom, and the caption floats loose underneath.',
+  '<b>In dark</b> the same card is fine. There the caption ground and the page ground are '
+  'different colours, so the capsule draws all the way round. <b>The defect is light-mode only</b> '
+  '&mdash; and that is already a fact about how wide the fix ought to be.',
+  'The capsule is doing its job. It is being asked to draw an edge in a colour that is already '
+  'there.',
+]))
+w('<div class="rd-note"><p class="t-ed-body-small"><b>And this is why the readings matter.</b> His '
+  'sentence names a condition (&ldquo;if there is no background colour on the caption&rdquo;) and '
+  'an answer (&ldquo;either cohesive capsule or rounded full image&rdquo;). Which of the two he is '
+  'ruling on &mdash; the colour, the condition, or the shape &mdash; changes what gets built, how '
+  'far it reaches, and whether white survives at all.</p></div>')
+w('</section>')
+
+# ---------------------------------------------------------------- READING A
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Reading A</p>')
+w('<h2 class="t-ed-heading-4">White leaves the capsule&rsquo;s list of caption grounds</h2>')
+w('<p class="t-ed-body">Take white off the list. The console gallery&rsquo;s capsule keeps two '
+  'caption grounds and no others: the lightest grey, and the dark grey with its text reversed out. '
+  'A caption with no ground of its own stops being the capsule&rsquo;s problem &mdash; it belongs '
+  'to the other chord, the rounded picture with the caption bare beneath it.</p>')
+w('<p class="t-ed-body">This is the reading the receipt already wrote down, and it is '
+  '<b>unconditional</b>: white is gone from the capsule on every page ground, in both modes, with '
+  'no exceptions to compute.</p>')
+w('<h3 class="t-ed-heading-4">What survives</h3>')
+w(pair('The lightest grey &mdash; today&rsquo;s default, unchanged',
+       'capsule &middot; caption ground lightest grey &middot; page ground the page itself',
+       'page', 'capsule', 'grey'))
+w(pair('The dark grey &mdash; the ramp&rsquo;s dark step, text reversing out on its own',
+       'capsule &middot; caption ground dark grey &middot; page ground the page itself',
+       'page', 'capsule', 'darkgrey'))
+w('<div class="rd-note"><p class="t-ed-body-small"><b>Look at the dark cell.</b> In dark, this '
+  'caption ground and the page ground behind it are <b>the same colour</b>. So this capsule has no '
+  'edge either &mdash; rounded on top, cut off square at the bottom, caption floating loose. It is '
+  'the picture at the top of this page, in the member Reading A keeps, shipping today as a ruled '
+  'part of the chord.</p>'
+  '<p class="t-ed-body-small">Measured in the browser, not judged by eye: caption ground and page '
+  'ground both resolve to the same value in console dark.</p></div>')
+w('<h3 class="t-ed-heading-4">Where a ground-less caption goes instead</h3>')
+w('<p class="t-ed-body">Not to a capsule. To the other chord, which already exists and is already '
+  'ruled: four rounded corners on the picture, and the caption bare beneath it on whatever is '
+  'behind.</p>')
+w(pair('The rounded picture &mdash; the caption has no ground and does not need one',
+       'rounded corners &middot; caption ground none &middot; page ground the page itself',
+       'page', 'corners', 'transparent'))
+w('<h3 class="t-ed-heading-4">What it costs</h3>')
+w(lines([
+  'The white caption ground stops existing for the console capsule. There is no page you can put '
+  'it on to get it back.',
+  'The chord goes from three grounds to two.',
+  'It takes away a ground that is <b>correct in dark</b> and wrong only in light &mdash; while '
+  'leaving in place a ground that is broken in dark. See the note under the dark-grey specimen '
+  'above.',
+  'Nothing new has to be worked out at edit time. A list gets shorter, and that is the whole '
+  'change.',
+  '<b>The card at the top of this page becomes unbuildable</b> &mdash; which is the plainest '
+  'reading of &ldquo;this would never exist&rdquo;.',
+]))
+w('</section>')
+
+# ---------------------------------------------------------------- READING B
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Reading B</p>')
+w('<h2 class="t-ed-heading-4">White stays, and is refused only where it cannot be seen</h2>')
+w('<p class="t-ed-body">Keep white on the list, and refuse the one pairing that breaks. A white '
+  'caption is a legal capsule ground as long as the ground actually painting behind the wall is '
+  'not itself white or the page. Where it is, the option is struck out at edit time and the reason '
+  'is printed beside it.</p>')
+w('<p class="t-ed-body">There is already a rule of exactly this shape on the rails page: <i>a '
+  'caption cannot sit on its own colour</i>. It compares the caption&rsquo;s ground to the '
+  '<b>bento&rsquo;s</b> ground &mdash; and the bento&rsquo;s ground here is transparent, so it has '
+  'nothing to compare against and waves the pairing through. Widening it to compare against the '
+  'ground that actually paints is the whole of this reading.</p>')
+w('<h3 class="t-ed-heading-4">Legal under B</h3>')
+w('<p class="t-ed-body">Put something behind the wall and the white caption has an edge again. '
+  'This specimen is illegal under Reading A and perfectly good under Reading B &mdash; it is the '
+  'single clearest place the two readings part company.</p>')
+w(pair('A white caption on a capsule, over a grey page ground',
+       'capsule &middot; caption ground white &middot; page ground lightest grey',
+       'grey', 'capsule', 'white'))
+w('<div class="rd-note"><p class="t-ed-body-small"><b>And look at the dark cell.</b> In dark, '
+  'white and the lightest grey resolve to <b>the same colour</b> &mdash; so the pairing that is '
+  'legal in light is broken in dark, and the capsule disappears again.</p>'
+  '<p class="t-ed-body-small">That is not a detail of this specimen. It means Reading B&rsquo;s '
+  'verdict is not a property of the pairing at all: it is a property of the pairing '
+  '<b>and the mode</b>, and the rule has to be worked out twice.</p></div>')
+w('<h3 class="t-ed-heading-4">Refused under B</h3>')
+w('<div class="rd-why"><p class="t-ed-body-small"><b>Refused:</b> the caption ground and the ground '
+  'painting behind the wall are the same colour, so the capsule has no edge to draw. Pick another '
+  'caption ground, or change the page ground underneath it.</p></div>')
+w(pair('A white caption on a capsule, over the page&rsquo;s own ground',
+       'capsule &middot; caption ground white &middot; page ground the page itself &middot; refused',
+       'page', 'capsule', 'white', refused=True))
+w('<p class="t-cm-legal">The strike and the dimming are the refusal vocabulary the explorer already '
+  'uses: weight, a line through it, and the reason in words. No colour carries the refusal.</p>')
+w('<h3 class="t-ed-heading-4">What it costs</h3>')
+w(lines([
+  'White stays available, and there are pages where it is the right answer &mdash; the grey-ground '
+  'specimen above is one of them.',
+  'Legality becomes <b>conditional</b>. Whether a caption ground is offered now depends on a '
+  'decision two levels up, which the person setting the dial is not looking at.',
+  'Something has to resolve the effective ground &mdash; caption, then wall, then page &mdash; and '
+  'today nothing does. The existing rule stops one level short, which is exactly how this card got '
+  'onto the page.',
+  '<b>The card at the top of this page becomes a refusal rather than an impossibility</b>: still '
+  'wrong here, still fine one page ground over.',
+  '<b>And the verdict flips between light and dark</b>, measured on this page: the pairing refused '
+  'above is fine in dark, and the pairing called legal above breaks in dark. Two verdicts per '
+  'pairing, not one.',
+]))
+w('</section>')
+
+# ---------------------------------------------------------------- READING C
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Reading C</p>')
+w('<h2 class="t-ed-heading-4">A caption with no ground re-forms the whole tile</h2>')
+w('<p class="t-ed-body">This reading is not about white at all. It takes &ldquo;if there is no '
+  'background colour on the caption&rdquo; as the <b>condition</b> and &ldquo;either cohesive '
+  'capsule or rounded full image&rdquo; as the <b>complete answer</b>: when a caption has no ground '
+  'of its own, the tile may take exactly two shapes, and there is no third.</p>')
+w('<h3 class="t-ed-heading-4">The first legal shape &mdash; the cohesive capsule</h3>')
+w('<p class="t-ed-body">One capsule holds the picture and the caption together, and the caption is '
+  'clipped inside it. The capsule is filled, so its edge is drawn all the way round.</p>')
+w(pair('Cohesive capsule &mdash; picture and caption clipped inside one filled capsule',
+       'capsule &middot; caption ground lightest grey &middot; page ground the page itself',
+       'page', 'capsule', 'grey'))
+w('<h3 class="t-ed-heading-4">The second legal shape &mdash; the rounded full image</h3>')
+w('<p class="t-ed-body">The picture is rounded on all four corners and the caption sits bare '
+  'beneath it, on whatever is behind. Nothing is clipped, and nothing pretends to be a capsule.</p>')
+w(pair('Rounded full image &mdash; the caption bare beneath it',
+       'rounded corners &middot; caption ground none &middot; page ground the page itself',
+       'page', 'corners', 'transparent'))
+w('<h3 class="t-ed-heading-4">The shape that would never exist</h3>')
+w('<p class="t-ed-body">A capsule asked to hold a caption that has no ground. The clip rounds the '
+  'top of the picture and the bottom of a strip you cannot see, so what reads is half a capsule '
+  'and a caption floating below it. This is the same picture as the card at the top of this page, '
+  'arrived at from the other direction.</p>')
+w(pair('Half a capsule, and a caption strip with nothing under it',
+       'capsule &middot; caption ground none &middot; page ground the page itself &middot; '
+       'the thing he says would never exist',
+       'page', 'capsule', 'transparent', struck=True))
+w('<h3 class="t-ed-heading-4">What it costs</h3>')
+w(lines([
+  'White is untouched. It stays a legal capsule caption ground everywhere, on every page ground.',
+  'The rule moves off the colour and onto the <b>shape</b>, so it covers cases nobody has hit yet '
+  '&mdash; every future ground-less caption, not just this one.',
+  'It reaches wider than the console gallery. Ground-less captions exist in every theme, so this '
+  'is a bigger ruling than the card that prompted it.',
+  'A proposed fence already says a capsule with no caption ground needs keylines turned on or it '
+  'is not a capsule. Under C that fence stops being a separate rule and becomes a consequence of '
+  'the two-shape law &mdash; one rule instead of two.',
+]))
+w('<div class="rd-note"><p class="t-ed-body-small"><b>The sharp edge of Reading C, said plainly.</b> '
+  'Read strictly, C does <i>not</i> refuse the card at the top of this page. That caption has a '
+  'background colour &mdash; white &mdash; so the condition never fires, and a white capsule on a '
+  'white page stays legal and stays broken. C only catches it if &ldquo;no background colour&rdquo; '
+  'is read as &ldquo;no ground you can actually see&rdquo;.</p>'
+  '<p class="t-ed-body-small">That is not a detail. It is the difference between C being the '
+  'answer and C being a second, separate ruling that still leaves this card standing.</p></div>')
+w('</section>')
+
+# ---------------------------------------------------------------- MEASURED
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Measured, not asserted</p>')
+w('<h2 class="t-ed-heading-4">What the pixels say</h2>')
+w('<p class="t-ed-body">Every specimen above was measured in the browser rather than looked at. '
+  'Two of the numbers change the argument, so they are here in full.</p>')
+w('<div class="br-scroll"><table class="br-table">')
+w('<thead><tr><th>The caption ground you pick</th><th>Console light</th><th>Console dark</th>'
+  '</tr></thead><tbody>')
+for r in [('White','#FFFFFF','#1F1F1F'),
+          ('Lightest grey','#F0F0F0','#1F1F1F'),
+          ('Dark grey','#1A1A1A','#1A1A1A'),
+          ('&mdash; and the page ground behind it','#FFFFFF','#1A1A1A')]:
+    w('<tr><td class="t-ed-body-small">%s</td><td class="t-ed-body-small">%s</td>'
+      '<td class="t-ed-body-small">%s</td></tr>' % r)
+w('</tbody></table></div>')
+w('<h3 class="t-ed-heading-4">The first thing the table says</h3>')
+w('<p class="t-ed-body"><b>In dark, white and the lightest grey are the same colour.</b> The ramp '
+  'has three steps in light and two in dark. Any rule written about &ldquo;white&rdquo; is '
+  'therefore a rule about the lightest grey as well, in half the modes.</p>')
+w('<h3 class="t-ed-heading-4">The second thing, and it is the sharper one</h3>')
+w('<p class="t-ed-body"><b>In dark, the dark-grey caption ground is exactly the page ground.</b> '
+  'So the dark-grey capsule &mdash; a ruled member of the chord, shipping today, and the member '
+  'Reading A keeps &mdash; has no edge at all in dark. It draws the same broken picture as the '
+  'card Dave rejected, one mode over, and nothing on the rails page says so.</p>')
+w('<div class="rd-note"><p class="t-ed-body-small"><b>What this does to the three readings.</b> '
+  'It is evidence that white is not the problem &mdash; the problem is a caption ground landing on '
+  'the ground behind it, which happens to three different members in three different '
+  'mode-and-page combinations. Reading A fixes one of them. Reading B fixes them per mode, and '
+  'has to be computed twice. Reading C is the only one whose rule does not care which colour '
+  'happened to collide.</p>'
+  '<p class="t-ed-body-small">Stated honestly: this is a <b>finding</b>, not a fourth reading, and '
+  'not a recommendation. It is the same defect showing up in places the correction did not '
+  'name.</p></div>')
+w('</section>')
+
+# ---------------------------------------------------------------- COMPARISON
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Side by side</p>')
+w('<h2 class="t-ed-heading-4">Where the three disagree</h2>')
+w('<p class="t-ed-body">Every row is a real difference in what ships, not a difference in '
+  'wording.</p>')
+rows = [
+  ('Does white survive as a capsule caption ground?',
+   'No. Gone, everywhere.',
+   'Yes, except where the ground behind is white or the page.',
+   'Yes, untouched.'),
+  ('What decides whether a pairing is legal?',
+   'The list of grounds the chord offers.',
+   'The ground that actually paints behind the wall.',
+   'The shape the tile takes when a caption has no ground.'),
+  ('How far does it reach?',
+   'The console gallery capsule chord.',
+   'The console gallery capsule chord.',
+   'Every ground-less caption, in every theme.'),
+  ('What has to be built?',
+   'A shorter list.',
+   'Something that resolves the effective ground, caption to wall to page.',
+   'A two-shape law &mdash; which absorbs a fence that already exists.'),
+  ('What becomes of the card he rejected?',
+   'Unbuildable.',
+   'Refused here; legal on a grey page.',
+   'Still legal, unless &ldquo;no background colour&rdquo; means &ldquo;none you can see&rdquo;.'),
+  ('Does the verdict depend on light or dark?',
+   'No. White is gone in both.',
+   'Yes &mdash; measured on this page, it flips between them.',
+   'No. The shape is the same in both modes.'),
+  ('Biggest risk',
+   'Loses a ground that is fine on a coloured page and correct in dark, while leaving one that '
+   'is broken in dark.',
+   'A conditional rule the designer cannot see the cause of.',
+   'A ruling much larger than the card that prompted it.'),
+]
+w('<div class="br-scroll"><table class="br-table">')
+w('<thead><tr><th>&nbsp;</th><th>Reading A &mdash; white leaves</th>'
+  '<th>Reading B &mdash; white is fenced</th><th>Reading C &mdash; the tile re-forms</th></tr></thead>')
+w('<tbody>')
+for r in rows:
+    w('<tr><td class="t-ed-body-small"><b>%s</b></td><td class="t-ed-body-small">%s</td>'
+      '<td class="t-ed-body-small">%s</td><td class="t-ed-body-small">%s</td></tr>' % r)
+w('</tbody></table></div>')
+w('</section>')
+
+# ---------------------------------------------------------------- NOT DECIDED HERE
+w('<section class="rd-sec">')
+w('<p class="rd-kicker t-cm-legal">Not decided here</p>')
+w('<h2 class="t-ed-heading-4">One thing this page deliberately leaves alone</h2>')
+w('<div class="br-open"><p class="t-ed-body"><b>Mono&rsquo;s access to the dark caption ground is '
+  'expressly open, and is NOT decided by this page.</b> It is open by ruling, not refused on '
+  'taste, and none of the three readings above touches it.</p>'
+  '<p class="t-cm-legal">Provenance: s219-D3(3); carried on the rails page as X6.</p></div>')
+w('</section>')
+
+# ---------------------------------------------------------------- FOOTER
+w('<section class="rd-sec">')
+w('<div class="rd-foot">')
+w('<p class="t-ed-body-small"><b>Where whichever reading wins gets enacted.</b> The rails manifest '
+  '<span class="rd-code">knowledge/_render/_bento_edit_rails.json</span> is GENERATED. It is '
+  'regenerated by <span class="rd-code">knowledge/_render/gen_bento_matrix_217.py --rails</span>, '
+  'and a hand edit of the manifest is a RED &mdash; the selftest asserts the file equals a fresh '
+  'generation. The library page is then rewritten by '
+  '<span class="rd-code">knowledge/_render/gen_foundations_217.py</span>. Two commands, in that '
+  'order.</p>')
+w('<p class="t-ed-body-small"><b>Nothing on this page has been enacted.</b> No manifest, no '
+  'generator, no showroom page and no ruling record was touched to build it.</p>')
+w('<p class="t-cm-legal">Provenance &mdash; chords and the ink rule: s219-D3(2), s219-D3(3) chord '
+  'one and chord two. The two proposed fences named above are the rails page&rsquo;s X1 (from P2, '
+  '&ldquo;a caption cannot sit on its own colour&rdquo;) and X2 (from P3, &ldquo;a capsule with no '
+  'edge is not a capsule&rdquo;), both PROPOSED, neither ruled. Dave&rsquo;s words and the parking '
+  'of this correction: notes/_receipts/2026-08-25-219-role-defaults-exports.md, section PARKED '
+  'CORRECTION. Specimens copied from showroom/_foundations/bento-rails.html. Built #220, '
+  '2026-08-27.</p>')
+w('</div>')
+w('</section>')
+
+w('</main>')
+w('</body>')
+w('</html>')
+
+html = '\n'.join(P)
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
+with io.open(OUT, 'w', encoding='utf-8') as f:
+    f.write(html)
+print('WROTE', OUT, len(html), 'bytes')
+print('specimens(dial-sets):', html.count('class="br-spec"'))
+print('pairs:', html.count('class="rd-pair"'))

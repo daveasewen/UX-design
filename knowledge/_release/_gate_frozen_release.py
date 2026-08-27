@@ -29,10 +29,24 @@ THE THREE ARMS, and each one can fail on its own:
   3. THE LAUNDERING ARM (blocking, and the reason the ledger is not a rubber stamp). A ledger
      you can re-seed at will is not a freeze: you edit v2, re-run `--seed`, and the surface arm
      goes green again having recorded the edit as the new truth. So this arm reads the ledger AT
-     THE PARENT COMMIT and compares row by row. If a row's `content_sha256` or `baseline_commit`
-     MOVED while its `version` STAYED THE SAME, that is a re-record without a bump ⇒ RED.
+     THE PARENT COMMIT and compares row by row. If a row's `content_sha256` MOVED while its
+     `version` STAYED THE SAME, that is a re-record without a bump ⇒ RED.
      Moving a frozen surface is legal — it is what cutting v1.0.1 means — but it must be spelled
      as a version, which is `s114-D4`'s whole point: *explicit, versioned, Dave's word*.
+
+     ⛔ IT KEYS ON `content_sha256` AND ON NOTHING ELSE — corrected at #220, because this
+     paragraph used to say "`content_sha256` **or `baseline_commit`**" and the code has never
+     done that. #219 proved the gap live and it was written down as a finding rather than fixed:
+     the Spider bake re-seeded the WHOLE ledger, all three rows' `baseline_commit` moved
+     `71bb2f7` -> `ef44b1a` with every `version` unchanged, and this arm printed
+     `PASS — 3 arm(s) asked, no frozen surface moved`. That is CORRECT behaviour (see the
+     `moved =` line below: re-measuring an unmoved surface is not a move), and the docstring
+     was the thing that was wrong. It matters because the #219 reports carried a standing
+     instruction — *"do not re-seed the whole ledger at HEAD — that would move `baseline_commit`
+     on v1 and v2 and light the laundering arm for both"* — which is FALSE, and a seat obeying
+     it protects against the wrong thing while the real fence (content) goes unwatched.
+     [[premise-ages-faster-than-rule]] — a warning is a claim about mechanism and ages like one.
+     `baseline_commit` is PROVENANCE, not a trigger: it records where a recording was taken.
 
 ⛔ WHAT THIS GATE DOES NOT DECIDE. Whether a release SHOULD be cut, and what version it carries,
 is Dave's word (`s219-D4(2)`). This gate only refuses to let the question go unasked. It has no
@@ -88,10 +102,18 @@ SURFACES = [
     ("designer-skills-v2", ["designer-skills-v2/"], "v2",
      "The shipped v2 pack, baked from 7071538. s219-D4(1) copies its four SKILL.md FORWARD for "
      "refresh — copying out is reading, and reading is not a change."),
-    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.0",
+    # ⛔ #220. THIS LITERAL IS THE VERSION BUMP THE LEDGER'S OWN README DEMANDS, and it is a
+    # THIRD version home neither bake report's REPLAY-THESE named (they named the generator and
+    # build-designer-pack.sh). `seed()` takes a row's `version` from HERE, not from the zip's
+    # filename — so baking v1.0.1 into dist/ and re-seeding without moving this line would move
+    # `content_sha256` while `version` stood still, which is precisely the shape the laundering
+    # arm calls a laundered edit. The gate would have refused its own release. Moved with the
+    # bake, in the same commit as the content, exactly as the _README says.
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.1",
      "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
      "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
-     "machinery that cuts the release and stay editable.",
+     "machinery that cuts the release and stay editable. The surface is the DIRECTORY, so it "
+     "holds every baked zip: v1.0.0 stays beside v1.0.1 and the row's version names the newest.",
      "designer-skills-v3"),
 ]
 
@@ -176,7 +198,11 @@ def seed(root, rev):
                     "--seed — never hand-typed. Editing a frozen surface means cutting a NEW "
                     "release: change the files, re-seed, and BUMP that row's `version` in the "
                     "same commit. Re-seeding without a bump is caught by the gate's laundering "
-                    "arm, which reads this file at the parent commit."),
+                    "arm, which reads this file at the parent commit and compares "
+                    "`content_sha256` — that field ALONE. `baseline_commit` is provenance: it "
+                    "records where a recording was taken and moving it is not, on its own, a "
+                    "laundered edit. Re-seeding every row at a new commit is therefore safe and "
+                    "proven so (#219, corrected at #220)."),
         "schema": "apollo-frozen-releases/1",
         "seeded_at": sha,
         "releases": rows,

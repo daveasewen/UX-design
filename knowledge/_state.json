@@ -3264,6 +3264,234 @@
       "condition": "stated"
     },
     {
+      "links": [
+        "knowledge/_gate_pack_imports.py",
+        ".github/workflows/gates.yml",
+        "knowledge/_release/_gen_pack_manifest.py",
+        "notes/_subreports/2026-08-27-220-bake-v101.md",
+        "notes/_subreports/2026-08-27-220-bake-v101-addendum.md"
+      ],
+      "home": "knowledge/_gate_pack_imports.py",
+      "id": "W-198",
+      "title": "#220 NEW INSTRUMENT - the pack-import gate: imports every packed .py in an isolated copy from where it lands, ADVISORY and unwired",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled the two SEPARATE questions the #220 bake report puts about it - whether it ships inside the designer pack (today it is fenced out of the gates roster by RELEASE_SIDE_GATES so s219-D9's ruled 55 does not move by accident) and whether it is promoted to blocking in this repo's CI - and that ruling is either wired into .github/workflows/gates.yml or recorded as a decision not to wire it",
+      "body": "s219-D9-adjacent, built #220 bake-v101 lane. Exit is 0 whatever it finds unless --strict is passed and NOTHING wires --strict; not in _build_all.py, not in gates.yml. It does not model sys.path - it copies the pack into a throwaway dir and imports each .py in its own subprocess under __name__='_packprobe_<n>'. Known-answer control DRIVEN: on the shipped Apollo-Spider-v1.0.0.zip it reports exactly 1 MISSING-LOCAL, exactly the predicted file and module. Verdict vocabulary MISSING-LOCAL / MISSING-THIRD-PARTY / RAN-AS-SCRIPT / NEEDS-ARGV / ERROR-AT-IMPORT / TIMEOUT. selftest 18 bites, 0 fails. #220 addendum gave it a pristine-tree-per-probe restore at 14:13 after the gate was measured reporting its OWN footprint (two KeyError: 'verification' reds) as the subject's defect - that false finding travelled through a report, a brief and a delegation before anything drove it.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "apollo-spider/gumdrop/machinery/_build_memento_index.py",
+        "knowledge/_release/_gen_pack_manifest.py",
+        "notes/_subreports/2026-08-27-220-bake-v101-addendum.md"
+      ],
+      "home": "apollo-spider/gumdrop/machinery/_build_memento_index.py",
+      "id": "W-199",
+      "title": "#220 NEW INSTRUMENT - the Gumdrop index bootstrap: a Memento index builder over the corpus a Gumdrop project actually has, so retrieval can be STARTED in a designer's project",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled the #220 addendum's question 3 - whether memento-package/machinery/_MACHINERY-MANIFEST.md's generalisation-debt list has item 3 (index bootstrap for a fresh project) struck now that it is built, which is a change to the frozen package surface _validate_package_delta.py guards - or has explicitly parked it",
+      "body": "#220 addendum, item 1, fixed AT CAUSE. v1.0.0 shipped a pack that PROMISES retrieval in two documents (memento-package/README.md:28 and skills/memento-boot/SKILL.md:75) and shipped nothing that could build the index: _memento_search.py refused and pointed at knowledge/_build_all.py, which is not in the pack. Both obvious repairs were DRIVEN and are measurably false - repointing the refusal is a content rewrite of 80 sites across 38 packed files that the cut's own verbatim-copy spec forbids, and Apollo's own _build_memento_index.py cannot travel (ModuleNotFoundError: _gen_lanes, plus a declared corpus of the whole Apollo memory). 411 lines / 20,093 bytes. Corpus: runbooks/*.md REQUIRED, GOOD-MORNING.md and _LIVE-STATE.md optional and skipped BY NAME in a printed roster, _rulings.json optional and ships empty on purpose (s219-D5 Q1). The corpus root is WALKED (nearest ancestor holding _GUMDROP-MANIFEST.md), not assumed, because the door ships in two machinery dirs and only one has a runbooks/ sibling. KIND_ORDER is read out of the door beside it BY AST at build time so the builder cannot emit a kind the door drops silently. selftest 17 bites, 0 fails, counted at run time not typed. It reaches the plugin mirror through a new DECLARED companion closure (DOOR_COMPANIONS + companion_closure) in _gen_pack_manifest.py, because the seed map lands it in memento-package/machinery/ and only there - the v1.0.0 defect's exact shape.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-bake-v101.md",
+        "notes/_subreports/2026-08-27-220-bake-v101.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-bake-v101.md",
+      "id": "W-200",
+      "title": "#220 brief - the Spider/Gumdrop v1.0.1 bake-preparation lane (sub index `bake-v101`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-bake-v101.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `bake-v101` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-bake-v101.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-bake-v101-addendum.md",
+        "notes/_subreports/2026-08-27-220-bake-v101-addendum.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-bake-v101-addendum.md",
+      "id": "W-201",
+      "title": "#220 brief - the addendum lane: Gumdrop retrieval at cause and the two compliance KeyErrors re-driven (sub index `bake-v101-addendum`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-bake-v101-addendum.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `bake-v101-addendum` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-bake-v101-addendum.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-caption-dark-ladder.md",
+        "notes/_subreports/2026-08-27-220-caption-dark-ladder.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-caption-dark-ladder.md",
+      "id": "W-202",
+      "title": "#220 brief - the console dark caption ground, drawn as a ladder for Dave's eye (sub index `caption-dark-ladder`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-caption-dark-ladder.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `caption-dark-ladder` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-caption-dark-ladder.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-charts-sparkline.md",
+        "notes/_subreports/2026-08-27-220-charts-sparkline.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-charts-sparkline.md",
+      "id": "W-203",
+      "title": "#220 brief - the DV-J2b sparkline strand (sub index `charts-sparkline`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-charts-sparkline.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `charts-sparkline` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-charts-sparkline.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-readings-capsule-correction.md",
+        "notes/_subreports/2026-08-27-220-readings-capsule.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-readings-capsule-correction.md",
+      "id": "W-204",
+      "title": "#220 brief - three readings of Dave's parked capsule-chord correction (sub index `readings-capsule-correction`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-readings-capsule.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `readings-capsule-correction` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-readings-capsule.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_briefs/2026-08-27-220-replay-discharge.md",
+        "notes/_subreports/2026-08-27-220-replay-discharge.md"
+      ],
+      "home": "notes/_briefs/2026-08-27-220-replay-discharge.md",
+      "id": "W-205",
+      "title": "#220 brief - every REPLAY-THESE item from the #219 filed reports, replayed (sub index `replay-discharge`)",
+      "state": "open",
+      "owner": "claude",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the lane it commissioned has FILED its report at notes/_subreports/2026-08-27-220-replay-discharge.md and the conductor has cited that report BY PATH in the #220 wrap (s218-D7 filed-sub-reports)",
+      "body": "Delegation brief for #220's `replay-discharge` lane. Rowed at the bake seam so the document is not invisible to the doc-row gate [[forgotten-document-class]]. Its report is notes/_subreports/2026-08-27-220-replay-discharge.md.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-bake-v101.md",
+        "notes/_briefs/2026-08-27-220-bake-v101.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-bake-v101.md",
+      "id": "W-206",
+      "title": "#220 FILED REPORT - Spider/Gumdrop v1.0.1: import defect fixed at cause, the pack-import gate born, 30 photographs added, bake PREPARED",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the conductor has replayed its REPLAY-THESE list (superseded in part by the addendum's) and Dave has ruled or explicitly parked its SIX ruling-shaped questions - chiefly Q1, whether the 30 Getty/EyeEm/Stocksy photography derivatives may ship at all, which is a LICENCE position and his alone",
+      "body": "COUNTS: items 6 / green 6 / red 0 / new bites 20 / mutations 5 / ruling-shaped 6 / findings 5. Measured: zip 13,339,337 -> 18,977,431 bytes, 1,613 -> 1,644 entries, ship paths 1,610 -> 1,640, bento.html 0/44 -> 44/44 images, grids-gallery.html 0/30 -> 30/30, packed .py that cannot import 1 -> 0. WITHDRAWN by the addendum: finding 5 and question 5 (the two KeyError: 'verification' compliance builders were the measuring gate's own footprint, not a defect).",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-bake-v101-addendum.md",
+        "notes/_briefs/2026-08-27-220-bake-v101-addendum.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-bake-v101-addendum.md",
+      "id": "W-207",
+      "title": "#220 FILED REPORT - addendum: Gumdrop retrieval fixed at cause, and the two compliance KeyErrors proved to be the gate's OWN footprint",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the conductor has replayed its REPLAY-THESE list (which SUPERSEDES the prior report's) and Dave has ruled or explicitly parked its THREE ruling-shaped questions, and has been told that the prior report's finding 5 / question 5 are WITHDRAWN",
+      "body": "COUNTS: items 3 / green 3 / red 0 / new bites 27 / mutations 3 / ruling-shaped 3 / findings 4. The expensive lesson, stated as a class: a gate that MUTATES its subject reports its own footprint as the subject's defect - by name, with a traceback, consistently across two subjects, which is exactly what evidence looks like. Mutation control reproduced the prior report's counts byte-for-byte. Two designed-red arms named for the conductor: _gate_release_audit.py --pack and --check, both clearing only at the bake.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-caption-dark-ladder.md",
+        "notes/_briefs/2026-08-27-220-caption-dark-ladder.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-caption-dark-ladder.md",
+      "id": "W-208",
+      "title": "#220 FILED REPORT - the console dark caption ground drawn as a ladder for Dave's eye",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or explicitly parked its SIX ruling-shaped questions and picked a rung from the ladder",
+      "body": "COUNTS: findings 11 / ruling-shaped 6 / UNPROVEN 4. Bento lane, Dave's dark-mode caption correction. Rowed at the bake seam; the lane's own conductor owns the reading.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-charts-sparkline.md",
+        "notes/_briefs/2026-08-27-220-charts-sparkline.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-charts-sparkline.md",
+      "id": "W-209",
+      "title": "#220 FILED REPORT - charts lane DV-J2b sparkline: DISCHARGED BY MEASUREMENT, nothing built, deliberately",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or explicitly parked its FOUR ruling-shaped questions, chiefly what to do about the stale-queue surface that misled a fourth lane",
+      "body": "COUNTS: probes 12 / findings 9 / ruling-shaped 4 / UNPROVEN 2 / files created 1 (the report). STEP 0 falsified the brief's premise: the sparkline strand is `superseded` and the table-idiom strand `landed` in the records, and the build the brief specified would have REVERSED a Dave ruling (s182-D2). FOURTH recorded recurrence of the stale-queue class (#26, #196, #199, #220).",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-readings-capsule.md",
+        "notes/_briefs/2026-08-27-220-readings-capsule-correction.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-readings-capsule.md",
+      "id": "W-210",
+      "title": "#220 FILED REPORT - three readings of Dave's capsule-chord correction, rendered side by side rather than built",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "Dave has pointed at one of the three readings and has ruled or explicitly parked the SIX ruling-shaped questions the report puts",
+      "body": "COUNTS: findings 9 / ruling-shaped 6 / UNPROVEN 3. Enacts the mock-the-readings rule: an ambiguous VISUAL ruling gets 2-3 readings rendered side by side for Dave to point at, never the likeliest one built. Review surface: reviews/CORRECTION-READINGS-2026-08-27-v1.html.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-08-27-220-replay-discharge.md",
+        "notes/_briefs/2026-08-27-220-replay-discharge.md"
+      ],
+      "home": "notes/_subreports/2026-08-27-220-replay-discharge.md",
+      "id": "W-211",
+      "title": "#220 FILED REPORT - every REPLAY-THESE item from the #219 filed reports, replayed and graded",
+      "state": "open",
+      "owner": "dave",
+      "opened": 220,
+      "project": "apollo",
+      "closes_when": "the 12 RED items are each repaired or explicitly parked, the 25 COULD-NOT-RUN items each have a named reason and an owner, and Dave has ruled or explicitly parked the ruling-shaped questions the report puts",
+      "body": "COUNTS: items 116 / green 79 / red 12 / could-not-run 25. The conductor's #220 verification lane. Its finding 1 (the shipped v1.0.0 zip contains an unrunnable _gen_chain.py) is what commissioned the bake-v101 lane and was fixed at cause there.",
+      "condition": "stated"
+    },
+    {
       "id": "G1",
       "title": "Worklist-index cap DOFIRST_INDEX_TK_MAX = 700 (_capture_gate.py:1403,…",
       "project": "memento",
