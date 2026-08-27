@@ -613,6 +613,139 @@ def contrast(ground_word, ink_token, theme, mode="light"):
                                 resolve_token(ink_token, theme, mode)), 2)
 
 
+# ------------------------------------------- ⬛ #220 PROPOSED · THE CAPTION-GROUND MINT (dark only)
+# ⬛ #220 (Dave, 2026-08-27) — HIS OWN WORDS, off `reviews/CAPTION-DARK-LADDER-2026-08-27-v1.html`:
+#   "I prefer rgb(48,48,48) · #303030 … is there a primitive that's close in the neutral ramp?"
+# The nearest point on the ruled neutral ramp is `color/neutral/5` — `#313131` (knowledge/tokens/
+# colour.json; canon.css `--color-neutral-5`), ONE grey point off his pick, ΔL* ≈ 0.4.
+# ⚠ STATUS: **PROPOSED, PENDING DAVE'S CONFIRM.** The binding is enacted so he can look at it. No
+# ruling is inscribed here and none may be: `_inscribe_ruling.py` is the conductor's and his.
+#
+# ⛔ WHY A DARK-ONLY OVERRIDE AND NOT A RE-POINTED TOKEN — MEASURED, NOT PREFERRED.
+# `notes/_subreports/2026-08-27-220-caption-dark-ladder.md` finding 4: the base dark surface ramp is
+# MODE-INVERTED. `--surface-raised-hover` is `#232323` in dark and `#F0F0F0` in light;
+# `--surface-action-disabled` is `#484848` in dark and `#E1E1E1` in light. Re-point the capsule's
+# caption-ground slot at either of them in BOTH modes and the LIGHT card takes a pale ground under
+# white ink — 1.14:1 and 1.31:1, both far under the ruled 4.5:1 floor. A rung is legal ONLY as a
+# dark-only bind, which is what this table is. Light mode is not touched, anywhere.
+#
+# ⛔ AND IT IS THE CAPTION SURFACE, NOT THE RAMP STEP. `darkgrey` is ALSO a section ground
+# (`data-bento-bg="darkgrey"`, s219-D3(5)) and a wall painted with it is not a caption. Widening the
+# mint to the WORD would repaint every dark-grey wall as well, which nothing was ruled about — so
+# the key carries the surface (this table is consulted by `caption_*` and by nothing else) as well
+# as the theme, the mode and the word. `GROUND_TOKEN` stays the ramp's own answer.
+#
+# ⛔ NO TOKEN IS MINTED AND NO ALIAS IS REPOINTED. `color/neutral/5` already exists; CONSUMING it is
+# the whole point. A new semantic role for it — or a repoint of `--surface-digital-black` — is a
+# PROMOTION, and promotions are Dave's ([[derivation-governance]]). ⚠ THE LAYERING COST IS DECLARED
+# rather than hidden: ADR-0014 says semantic roles alias `color/neutral/*` and CONSUMERS read the
+# semantic role. This binding reads the primitive directly, which is the honest shape of a PROPOSED
+# value that has no semantic role yet. Whether one gets minted is a ruling-shaped question, filed.
+#
+# ⛔ MONO IS GRANTED NOTHING. s219-D3(3)/X6 leave mono's access to the dark caption chord EXPRESSLY
+# OPEN; `capbg_for('gallery','mono')` still does not carry `darkgrey`, and this table does not
+# reach a theme that cannot select the ground in the first place.
+CAPTION_GROUND_MINTS = {
+    # (theme, mode, ground word) -> the primitive a CAPTION ground resolves through
+    ("console", "dark", "darkgrey"): {
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": None,
+        "from": "#220 — Dave's pick on the caption-dark ladder: rgb(48,48,48) / #303030",
+        "why": "the shipped console-dark capsule caption ground resolves --surface-digital-black "
+               "#1A1A1A, which IS the page ground (--background-default, console dark) — so the "
+               "caption has no capsule to sit in. neutral/5 lifts it off the page.",
+        "replaces": "--surface-digital-black",
+    },
+}
+
+
+def caption_ground_mint(ground_word, theme, mode):
+    """-> the #220 mint row governing a CAPTION ground at this theme x mode, or None."""
+    return CAPTION_GROUND_MINTS.get((theme, mode, ground_word))
+
+
+def caption_ground_token(ground_word, theme, mode):
+    """-> the token a CAPTION ground resolves THROUGH here — the mint's primitive if one governs,
+    else the ramp's own token.
+    ⛔ CALLERS THAT MEAN THE SECTION OR PAGE GROUND MUST KEEP USING `GROUND_TOKEN`. The mint is
+    scoped to the caption surface, and a helper that could not tell the two apart would repaint
+    every dark-grey wall the first time anyone reached for it."""
+    m = caption_ground_mint(ground_word, theme, mode)
+    return m["css_var"] if m else GROUND_TOKEN[ground_word]
+
+
+def caption_ground_hex(ground_word, theme, mode="light"):
+    """-> the concrete #RRGGBB a CAPTION ground actually paints, mint included.
+    ⛔ s200-D1 — DERIVED AT MINT TIME OUT OF canon.css, never typed here and never resolved live."""
+    return resolve_token(caption_ground_token(ground_word, theme, mode), theme, mode)
+
+
+def caption_contrast(ground_word, ink_token, theme, mode="light"):
+    """-> the WCAG ratio of a caption's ink on the ground THE CAPTION ACTUALLY PAINTS.
+
+    ⛔ THE TWIN OF `contrast()`, AND THE SPLIT IS THE POINT. A manifest that reported the ramp
+    step's ratio while the stylesheet painted the mint would be a gate that cannot read the
+    artefact ([[no-gate-parses-the-artefact]]) — and it would report 17.40:1 for a card measuring
+    ~12.9:1. Section and page grounds keep `contrast()`; caption grounds come here."""
+    from _contrast_utils import contrast_ratio          # noqa: E402  (KNOW is on sys.path)
+    return round(contrast_ratio(caption_ground_hex(ground_word, theme, mode),
+                                resolve_token(ink_token, theme, mode)), 2)
+
+
+def caption_mint_rules():
+    """-> the generated CSS replacing `__CAPTION_MINT_RULES__` — the mint, declared.
+
+    ⛔ TWO STEPS, AND THE FIRST ONE IS NOT DECORATION. The value lands on the THEME CARRIER, once
+    per theme, and only `[data-theme="dark"]` consumes it. That is what makes a PINNED specimen
+    answerable: on `showroom/_foundations/bento-rails.html` the mode lives on `<body>` and the
+    theme is pinned on the CARD (`.br-spec[data-apollo-theme="console"]`), so a compound
+    `[data-apollo-theme][data-theme]` selector — canon's own idiom — never matches there, and a
+    plain descendant pair would let the page switcher's theme leak into a card pinned to another.
+    An inherited custom property answers at the nearest carrier, which is the pin.
+    ⛔ EVERY THEME EMITS A VALUE, even the three that are unchanged, for `settings_css`'s reason:
+    a block that emitted only the difference would read as "console is the special one" and a
+    per-theme probe would have no per-theme rule to read.
+    ⛔ EVERY var() CARRIES A LITERAL FALLBACK MINTED FROM canon.css — a dangling ground var renders
+    SILENT BLACK and no gate sees it ([[dangling-dataviz-var-renders-silent-black]]).
+    ⛔ LIGHT MINTS ARE REFUSED BY NAME: light carries no `data-theme` attribute, so a light mint
+    would compile to a selector that matches nothing and would look enacted while painting
+    nothing ([[instrument-without-a-consumer]])."""
+    bad = [k for k in CAPTION_GROUND_MINTS if k[1] != "dark"]
+    if bad:
+        raise SystemExit(
+            "gen_bento_matrix_217: CAPTION_GROUND_MINTS carries a non-dark mint %s. Light mode has "
+            "no `data-theme` attribute to select on, so the rule would match nothing and the mint "
+            "would be silently inert. A light-mode caption ground is a RULING, not a mint." % bad)
+    words = sorted({k[2] for k in CAPTION_GROUND_MINTS})
+    L = []
+    for word in words:
+        token = GROUND_TOKEN[word]
+        slot = "--bm-cap-dark-%s" % word
+        L.append("/* ⬛ #220 PROPOSED — the dark-mode CAPTION ground for `%s`, one declared value "
+                 "per theme.\n   ⛔ The unminted themes stay pointed at the ramp's own token (%s); "
+                 "only a theme this\n   table names is moved, and only in dark. */" % (word, token))
+        for theme in THEMES:
+            m = caption_ground_mint(word, theme, "dark")
+            if m:
+                L.append('[data-apollo-theme="%s"]{%s:var(%s,%s);}  /* %s · %s · %s */'
+                         % (theme, slot, m["css_var"],
+                            resolve_token(m["css_var"], theme, "dark"),
+                            m["primitive"], m["status"].upper(), m["from"]))
+            else:
+                L.append('[data-apollo-theme="%s"]{%s:var(%s,%s);}  /* unchanged — the ramp step */'
+                         % (theme, slot, token, resolve_token(token, theme, "dark")))
+        L.append("/* ⛔ DARK IS THE ONLY CONSUMER. In light there is no `[data-theme]` to match, so "
+                 "the\n   canonical caption rule above governs and light mode is untouched — which "
+                 "is the\n   whole reason this is a mint and not a repointed token (mode-inverted "
+                 "ramp, #220). */")
+        L.append('[data-theme="dark"] .bm-stage[data-cap-bg="%s"] .bm-cap{background:var(%s,var(%s,'
+                 '%s));}' % (word, slot, GROUND_TOKEN[word],
+                             resolve_token(GROUND_TOKEN[word], "mono", "dark")))
+    return "\n".join(L)
+
+
 # ------------------------------------------------------------------------------------ THE CHORDS
 # ⬛ s219-D3(3) — THE FIRST TWO RULED CHORDS, AND THEIR SCOPE IS CONSOLE GALLERY.
 # "THE FIRST TWO RULED CHORDS, from his console example, SCOPE CONSOLE GALLERY: chord one — full
@@ -755,8 +888,11 @@ def ink_violation(state):
 
 
 def contrast_violations(ground_word, theme, modes=("light", "dark")):
-    """-> [refusals] — X4, for ONE ground option in ONE theme. Empty means every mode clears the
-    floor against the ink the ground implies."""
+    """-> [refusals] — X4, for ONE CAPTION ground option in ONE theme. Empty means every mode clears
+    the floor against the ink the ground implies.
+    ⛔ IT MEASURES THE PAINT, NOT THE RAMP (#220): the caption ground is read through
+    `caption_ground_hex`, so a mode-scoped mint is gated at the value the card actually renders. Its
+    two callers — `chord_refusals` and the mutation arm — both ask about a CAPTION."""
     if ground_word == "transparent":
         return []                      # no ground of its own: measured through the chain, not here
     token = ink_for(ground_word)
@@ -764,7 +900,7 @@ def contrast_violations(ground_word, theme, modes=("light", "dark")):
         return ["X4 — %r has no ink rule, so its contrast cannot be gated" % ground_word]
     out = []
     for mode in modes:
-        r = contrast(ground_word, token, theme, mode)
+        r = caption_contrast(ground_word, token, theme, mode)
         if r < CONTRAST_FLOOR:
             out.append("X4 — %s/%s: %s on %s is %.2f:1, under the %s:1 floor"
                        % (theme, mode, token, ground_word, r, CONTRAST_FLOOR))
@@ -843,8 +979,12 @@ def chord_sweep():
                     # wall's own grounds are swept in their own right below.
                     continue
                 token = ink_for(ground)
+                # ⛔ A CHORD MEMBER'S GROUND IS A **CAPTION** GROUND (#220), so it is swept through
+                # `caption_contrast` — the value the card paints, mint included. The section and
+                # page sweeps below stay on `contrast()`: no mint reaches a wall or a page.
                 rows.append((chord["id"], theme, type_, member, ground, token,
-                             {m: contrast(ground, token, theme, m) for m in ("light", "dark")}))
+                             {m: caption_contrast(ground, token, theme, m)
+                              for m in ("light", "dark")}))
     # ⛔ AND THE SECTION GROUND IS SWEPT TOO (s219-D3(5)): a transparent caption is judged against
     # the EFFECTIVE ground, which is the bento's, so every bentoBg the ramp offers is a caption
     # ground in waiting and is gated as one.
@@ -1120,14 +1260,33 @@ def chord_block():
             token = ink_for(ground) if ground else None
             row = {"dials": m, "ground": ground, "ink_token": token}
             if token:
-                row["contrast"] = {"%s/%s" % (th, mode): contrast(ground, token, th, mode)
+                # ⛔ #220 — THE MANIFEST STATES THE PAINT, NOT THE RAMP. A chord member's ground is
+                # a CAPTION ground, so both the ratio and the resolved hex come through the caption
+                # chain. A manifest that reported `--surface-digital-black`'s 17.40:1 while the card
+                # rendered the mint's ~12.9:1 would be the most convincing wrong file in the repo
+                # ([[no-gate-parses-the-artefact]]), and the library page reads THIS FILE
+                # (s219-D3(6)) rather than the source.
+                row["contrast"] = {"%s/%s" % (th, mode): caption_contrast(ground, token, th, mode)
                                    for th, _ty in [tuple(s) for s in c["scope"]]
                                    for mode in ("light", "dark")}
                 row["resolved"] = {"%s/%s" % (th, mode):
-                                   {"ground": resolve_token(GROUND_TOKEN[ground], th, mode),
+                                   {"ground": caption_ground_hex(ground, th, mode),
                                     "ink": resolve_token(token, th, mode)}
                                    for th, _ty in [tuple(s) for s in c["scope"]]
                                    for mode in ("light", "dark")}
+                # ⬛ #220 PROPOSED — where a MINT governs, the manifest says so BY NAME, per state.
+                # A value that moved with no row saying which decision moved it is a value nobody
+                # can trace back to Dave.
+                mints = {"%s/%s" % (th, mode): {
+                             "primitive": mm["primitive"], "css_var": mm["css_var"],
+                             "status": mm["status"], "from": mm["from"],
+                             "replaces": mm["replaces"], "why": mm["why"],
+                             "was": resolve_token(GROUND_TOKEN[ground], th, mode)}
+                         for th, _ty in [tuple(s) for s in c["scope"]]
+                         for mode in ("light", "dark")
+                         for mm in [caption_ground_mint(ground, th, mode)] if mm}
+                if mints:
+                    row["caption_ground_mint"] = mints
             members.append(row)
         out["chords"].append({
             "id": c["id"], "name": c["name"], "ruled_by": c["ruled_by"],
@@ -1734,6 +1893,11 @@ __CORNER_RULES__
   color:var(--bm-ink-rev,#FFFFFF);}
 .bm-stage[data-cap-bg="grey"] .bm-cap,
 .bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+/* ⬛ #220 PROPOSED — THE DARK-MODE CAPTION GROUND MINT. Generated from CAPTION_GROUND_MINTS, so
+   the value, the primitive it comes from and the themes it does NOT touch are all one table.
+   ⛔ The ink is NOT restated: `ink_follows` is the rule above and the mint moves a GROUND, not a
+   pairing. The reversed-out ink still comes with `data-cap-bg="darkgrey"`, once. */
+__CAPTION_MINT_RULES__
 
 /* ---- CONSOLE IMAGE ROUNDING (gallery). Both options are canon's container radius; what moves
    is WHAT IS ROUNDED. `4 corners of the image` rounds the picture and leaves the caption square
@@ -2733,6 +2897,8 @@ def page(shell, c=None):
               .replace("__JUST_SPACING_RULES__", just_rules)
               .replace("__SUB_SPACING_RULES__", sub_rules)
               .replace("__SWEEP_STOP_RULES__", sweep_rules)
+              # ⬛ #220 PROPOSED — the dark-only caption-ground mint, generated from the one table.
+              .replace("__CAPTION_MINT_RULES__", caption_mint_rules())
               # ⬛ #218 — corner keylines; the layout arm ships the block EMPTY so the corner
               # assertion in verify_bento_matrix_217.py goes RED by name (Dave's symptom back:
               # square boxes everywhere, the radius invisible).
@@ -3349,6 +3515,7 @@ def selftest():
     bite("R5c · every generated block landed — no placeholder survived into the page",
          [p for p in ("__SPACING_RULES__", "__MAIN_SPACING_RULES__", "__JUST_SPACING_RULES__",
                       "__SUB_SPACING_RULES__", "__SWEEP_STOP_RULES__", "__CORNER_RULES__",
+                      "__CAPTION_MINT_RULES__",
                       "__PHOTO_RULES__", "__SUB_STOPS__", "__ROLE_TYPE__",
                       "__KEYLINE_EXCLUDED__", "__LEGALITY_BODY__",
                       "__CAPBG_DARK_SCOPE__", "__X6_PLAIN__",
@@ -3499,6 +3666,94 @@ def selftest():
     bite("C4b · the sweep's own worst reading is the one lane B measured live — legacy dark, "
          "5.93:1 — so the gate and the browser agree about where the floor is nearest",
          min(min(r.values()) for *_x, r in _sweep), 5.93)
+
+    # ---- ⬛ #220 PROPOSED · THE CAPTION-GROUND MINT, BOTH DIRECTIONS ----
+    _mint_css = caption_mint_rules()
+    bite("C4c · ⬛ #220 PROPOSED — THE MINT IS EXACTLY ONE ENTRY, dark only, console only, "
+         "`darkgrey` only, and it names the PRIMITIVE it consumes. `color/neutral/5` already "
+         "exists (canon.css `--color-neutral-5`); no token is minted and no alias is repointed",
+         (sorted(CAPTION_GROUND_MINTS),
+          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["primitive"],
+          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["status"],
+          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["ruled_by"],
+          resolve_token("--color-neutral-5", "console", "dark")),
+         ([("console", "dark", "darkgrey")], "color/neutral/5", "proposed", None, "#313131"))
+    bite("C4d · ⛔ THE VALUE IS MINTED FROM canon.css, NEVER TYPED (s200-D1) — the caption ground "
+         "console/dark resolves the primitive, and the three unminted themes plus BOTH LIGHT "
+         "MODES still resolve the ramp's own `--surface-digital-black`. A naive token bind would "
+         "have broken light; this one cannot reach it",
+         ({th: caption_ground_hex("darkgrey", th, "dark") for th in THEMES},
+          {th: caption_ground_hex("darkgrey", th, "light") for th in THEMES},
+          {th: caption_ground_token("darkgrey", th, "light") for th in THEMES}),
+         ({"mono": "#1A1A1A", "legacy": "#1A1A1A", "console": "#313131",
+           "supercharge": "#13110E"},
+          {"mono": "#1A1A1A", "legacy": "#1A1A1A", "console": "#1A1A1A",
+           "supercharge": "#13110E"},
+          {th: "--surface-digital-black" for th in THEMES}))
+    bite("C4e · ⛔ THE MINT MOVES A CAPTION AND NOTHING ELSE. The SECTION ground (`bentoBg`) and "
+         "the PAGE rail keep the ramp's own answer in console dark, so a dark-grey WALL is the "
+         "same colour it was — the key carries the surface, not just the word",
+         (resolve_token(GROUND_TOKEN["darkgrey"], "console", "dark"),
+          contrast("darkgrey", "--text-reverse", "console", "dark"),
+          caption_contrast("darkgrey", "--text-reverse", "console", "dark"),
+          [r[6]["dark"] for r in _sweep if r[0] == "$bentoBg" and r[1] == "console"
+           and r[4] == "darkgrey"]),
+         ("#1A1A1A", 17.4, 13.01, [17.4]))
+    bite("C4f · ⬛ THE CAPTION MINT CLEARS THE RULED INK FLOOR IN BOTH MODES, measured on the "
+         "value the card PAINTS — and the console capsule chord's other two grounds are "
+         "untouched, so the chord is still legal with no refusal at all",
+         (contrast_violations("darkgrey", "console"),
+          chord_refusals("capsule", "console", "gallery",
+                         {"capBg": "darkgrey", "bentoBg": "grey", "keylines": "off"}),
+          {m: caption_contrast("grey", "--text-secondary", "console", m)
+           for m in ("light", "dark")}),
+         ([], [], {"light": 15.27, "dark": 16.48}))
+    bite("C4g · ⛔ THE STYLESHEET SAYS WHAT THE TABLE SAYS — one declared value per theme (so a "
+         "PINNED specimen answers with its own and never inherits the page switcher's), the mint "
+         "only on console, and DARK is the only consumer: light carries no `[data-theme]` to "
+         "match, which is why light mode cannot be reached from here",
+         (_mint_css.count("--bm-cap-dark-darkgrey:"),
+          '[data-apollo-theme="console"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}'
+          in _mint_css,
+          _mint_css.count("var(--color-neutral-5,"),
+          '[data-theme="dark"] .bm-stage[data-cap-bg="darkgrey"] .bm-cap{' in _mint_css,
+          '[data-theme="light"]' in _mint_css,
+          # ⚠ Dave's own pick `#303030` is CARRIED as provenance and must never be a VALUE: the
+          # enacted colour is the primitive's `#313131`, one grey point off it. Asserting the
+          # literal simply absent was wrong — it appears in the mint comment, which is where a
+          # reader finds out whose decision this was.
+          [ln for ln in _mint_css.splitlines() if "#303030" in ln and "/*" not in ln],
+          "#303030" in _mint_css),
+         (4, True, 1, True, False, [], True))
+
+    # ---- ⬛ #220 · MUTANT FOUR — THE MINT ESCAPES ITS MODE ----
+    # ⛔ The clause under test is DARK-ONLY, and finding 4 is why: the ramp is mode-inverted, so a
+    # mint that reached light would put a #313131 ground under `--text-reverse`… which passes. The
+    # real damage is that a LIGHT mint compiles to `[data-theme="light"]`, an attribute no page
+    # carries — it would look enacted and paint nothing ([[instrument-without-a-consumer]]). The
+    # arm asserts the generator REFUSES BY NAME rather than emitting an inert rule.
+    # ⛔ `_raises` CANNOT BE USED HERE and that is a measurement, not a preference: it catches
+    # `Exception`, and a generator's refusal is a `SystemExit` — a BaseException. The first cut of
+    # this arm used it and the refusal walked straight past the helper and killed the selftest
+    # ([[a-crash-is-not-a-fail]]). The helper is left alone; this arm names what it catches.
+    _saved_mints = dict(CAPTION_GROUND_MINTS)
+    _m4 = None
+    try:
+        CAPTION_GROUND_MINTS[("console", "light", "darkgrey")] = dict(
+            CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")])
+        caption_mint_rules()
+    except SystemExit as _exc:
+        _m4 = _exc
+    finally:
+        CAPTION_GROUND_MINTS.clear()
+        CAPTION_GROUND_MINTS.update(_saved_mints)
+    bite("C4h · ⬛ MUTANT FOUR — THE MINT ESCAPES ITS MODE: a light-mode entry is added to the "
+         "table and the generator REFUSES BY NAME instead of compiling a selector that matches "
+         "nothing. ⚠ AND THE TABLE IS RESTORED: the bite re-asserts the live mint afterwards, "
+         "because an arm that leaked would make every bite after it a measurement of the mutant",
+         (isinstance(_m4, SystemExit), "no `data-theme` attribute" in str(_m4),
+          sorted(CAPTION_GROUND_MINTS), caption_ground_hex("darkgrey", "console", "light")),
+         (True, True, [("console", "dark", "darkgrey")], "#1A1A1A"))
 
     # ---- THE THREE MUTANTS, each RED BY NAME ----
     # ⛔ A mutation test proves the CLAUSE, not the feature ([[mutation-tests-the-clause-not-the-

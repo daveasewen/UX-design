@@ -1,0 +1,179 @@
+import glob, os, sys, json, math
+from playwright.sync_api import sync_playwright
+from PIL import Image
+import numpy as np
+
+REPO = '/sessions/gifted-ecstatic-carson/mnt/UX-design'
+URL  = 'file://' + REPO + '/reviews/RUNG-ENACT-2026-08-27-v1.html'
+W    = int(sys.argv[1])
+PNG  = sys.argv[2]
+TXT  = sys.argv[3]
+
+def _lin(c):
+    c = c / 255.0
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+def lum(rgb):
+    r, g, b = [_lin(v) for v in rgb]
+    return 0.2126*r + 0.7152*g + 0.0722*b
+def ratio(a, b):
+    la, lb = lum(a), lum(b); hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+def lstar(rgb):
+    y = lum(rgb)
+    f = y ** (1/3.0) if y > 216/24389.0 else (24389/27.0*y + 16)/116.0
+    return 116*f - 16
+def prgb(s):
+    n = [int(float(x)) for x in s.replace('rgba(','').replace('rgb(','').replace(')','').split(',')[:3]]
+    return tuple(n)
+
+JS_FONT = """() => {
+  const c = document.createElement('canvas').getContext('2d');
+  const m = f => { c.font = '40px ' + f; return +c.measureText('Handgloves 12345').width.toFixed(2); };
+  return {target:m('HSBC_MtUnivers_Latin'), uf:m('"Univers Next HSBC"'),
+          ufor:m('"Univers Next for HSBC"'), dejavu:m('"DejaVu Sans"'),
+          nonexistent:m('"Nope Not A Face XYZ"')};
+}"""
+
+JS_SPECS = """() => {
+  const out = [];
+  document.querySelectorAll('.br-spec[data-probe]').forEach(sp => {
+    const cap  = sp.querySelector('.bm-cap');
+    const pg   = sp.querySelector('.bm-page-ground');
+    const wall = sp.querySelector('.c-bento');
+    const grid = sp.querySelector('.c-bento__grid');
+    const tile = sp.querySelector('.c-bento__tile');
+    const img  = sp.querySelector('img');
+    const cs = getComputedStyle(cap), ps = getComputedStyle(pg), ts = getComputedStyle(tile);
+    const rung = sp.closest('.cdl-col');
+    let printed = [];
+    if (rung) rung.querySelectorAll('.cdl-num').forEach(n => printed.push(
+      [n.querySelector('dt').textContent.trim(), n.querySelector('dd').textContent.trim()]));
+    out.push({
+      probe: sp.dataset.probe,
+      capBg: cs.backgroundColor, capInk: cs.color, pageBg: ps.backgroundColor,
+      capBox: cap.getBoundingClientRect().toJSON(),
+      pgBox:  pg.getBoundingClientRect().toJSON(),
+      capH: +cap.getBoundingClientRect().height.toFixed(2),
+      wallW: +wall.getBoundingClientRect().width.toFixed(2),
+      cols: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+      tileRadius: ts.borderTopLeftRadius, tileOverflow: ts.overflow,
+      imgOk: img.complete && img.naturalWidth > 0,
+      printed: printed
+    });
+  });
+  return {specs: out,
+          hscroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          sections: document.querySelectorAll('.cdl-sec').length,
+          rungs: document.querySelectorAll('.cdl-col').length,
+          strips: document.querySelectorAll('.cdl-strip-row').length,
+          scrollY: window.scrollY, docH: document.documentElement.scrollHeight};
+}"""
+
+def patch_mode(im, x, y, w, h):
+    a = np.array(im.crop((int(x), int(y), int(x+w), int(y+h))).convert('RGB'))
+    a = a.reshape(-1, 3)
+    vals, counts = np.unique(a, axis=0, return_counts=True)
+    return tuple(int(v) for v in vals[counts.argmax()]), float(counts.max()) / len(a)
+
+L = []
+def say(s):
+    L.append(s); print(s)
+
+shell = glob.glob('/var/tmp/pw-browsers-220/chromium_headless_shell-*/chrome-linux/headless_shell')[0]
+with sync_playwright() as p:
+    b = p.chromium.launch(executable_path=shell, headless=True,
+                          args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu"])
+    pg = b.new_page(viewport={"width": W, "height": 1400}, device_scale_factor=1)
+    pg.goto(URL); pg.wait_for_timeout(1200)
+    pg.add_style_tag(content="*{transition:none !important;animation:none !important}")
+    # THE ARTEFACT'S MARKUP CARRIES loading="lazy" AND IT IS COPIED VERBATIM, so the rungs below
+    # the fold never decode until they are scrolled to. Walk the document, then return to the top.
+    h = pg.evaluate("document.documentElement.scrollHeight")
+    y = 0
+    while y < h:
+        pg.evaluate("window.scrollTo(0,%d)" % y); pg.wait_for_timeout(160); y += 700
+    pg.evaluate("window.scrollTo(0,0)"); pg.wait_for_timeout(600)
+    pg.wait_for_function(
+        "() => Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)",
+        timeout=25000)
+    pg.wait_for_timeout(300)
+
+    f = pg.evaluate(JS_FONT)
+    say('== FONT PROBE (control-asserted, not a boolean) @%d ==' % W)
+    say('   target=%(target)s uf=%(uf)s ufor=%(ufor)s | controls dejavu=%(dejavu)s nonexistent=%(nonexistent)s' % f)
+    font_ok = (f['target'] == f['uf'] == f['ufor']
+               and f['target'] != f['dejavu'] and f['target'] != f['nonexistent'])
+    say('   FONT VERDICT: %s' % ('GREEN - real HSBC cut, both aliases land, differs from BOTH controls'
+                                 if font_ok else 'RED - silent fallback suspected'))
+
+    # #217 pothole: the FIRST full_page shot reflows. Take a throwaway, then measure, then capture.
+    pg.screenshot(path='/var/tmp/re220/_throwaway.png', full_page=True)
+    pg.wait_for_timeout(200)
+    d1 = pg.evaluate(JS_SPECS)
+    pg.screenshot(path=PNG, full_page=True)
+    d2 = pg.evaluate(JS_SPECS)
+    moved = [a['probe'] for a, c in zip(d1['specs'], d2['specs'])
+             if abs(a['capBox']['y'] - c['capBox']['y']) > 0.6]
+    say('== REGISTRATION ==')
+    say('   boxes that moved between measure and capture: %d %s' % (len(moved), moved))
+    if moved:
+        say('   REFUSED: raster is mis-registered, pixel readings below are NOT trustworthy')
+    d = d2
+    im = Image.open(PNG)
+    say('   full-page raster: %dx%d  doc height %d' % (im.size[0], im.size[1], d['docH']))
+
+    say('== PAGE ==')
+    say('   sections=%d  rungs=%d  strip rows=%d  specimens=%d  horizontal overflow=%d px'
+        % (d['sections'], d['rungs'], d['strips'], len(d['specs']), d['hscroll']))
+
+    say('== PER-SPECIMEN: COMPUTED vs RENDERED PIXELS vs WHAT THE PAGE PRINTS ==')
+    hdr = ('%-12s %-16s %-16s %-16s %-16s %-8s %-8s %-7s %-6s %-5s'
+           % ('probe','capBg(computed)','capBg(PIXELS)','pageBg(computed)','pageBg(PIXELS)',
+              'ink','sep','dL*','capH','cols'))
+    say('   ' + hdr)
+    bad_pix, bad_print, warm, imgs_bad, band_bad = [], [], [], [], []
+    rows = []
+    for s in d['specs']:
+        cb, pb = prgb(s['capBg']), prgb(s['pageBg'])
+        ink = prgb(s['capInk'])
+        cbx = s['capBox']; pgx = s['pgBox']
+        # caption patch: right-hand end of the caption, inset, away from the glyphs
+        pcap, fcap = patch_mode(im, cbx['x'] + cbx['width'] - 26, cbx['y'] + 6, 20, 20)
+        # page-ground patch: inside the page ground, outside the wall (16px padding)
+        ppg, fpg = patch_mode(im, pgx['x'] + 2, pgx['y'] + 2, 12, 12)
+        if pcap != cb: bad_pix.append((s['probe'], 'cap', s['capBg'], pcap, round(fcap,2)))
+        if ppg  != pb: bad_pix.append((s['probe'], 'page', s['pageBg'], ppg, round(fpg,2)))
+        if not (cb[0] == cb[1] == cb[2]): warm.append((s['probe'], cb))
+        if not s['imgOk']: imgs_bad.append(s['probe'])
+        if s['cols'] != 1: band_bad.append((s['probe'], s['cols']))
+        ic, sep, dl = ratio(ink, cb), ratio(cb, pb), abs(lstar(cb) - lstar(pb))
+        rows.append((s['probe'], cb, pb, ic, sep, dl))
+        say('   %-12s %-16s %-16s %-16s %-16s %-8.2f %-8.3f %-7.2f %-6.1f %-5d'
+            % (s['probe'], 'rgb%s' % (cb,), 'rgb%s' % (pcap,), 'rgb%s' % (pb,), 'rgb%s' % (ppg,),
+               ic, sep, dl, s['capH'], s['cols']))
+        for k, v in s['printed']:
+            if k.lower().startswith('caption ground') and ('rgb(%d,%d,%d)' % cb) not in v.replace(' ',''):
+                bad_print.append((s['probe'], k, v, cb))
+            if k.lower().startswith('ink on') and ('%.2f:1' % ic) not in v:
+                bad_print.append((s['probe'], k, v, '%.2f:1' % ic))
+            if k.lower().startswith('ground against') and ('%.2f:1' % sep) not in v:
+                bad_print.append((s['probe'], k, v, '%.2f:1' % sep))
+
+    say('== VERDICTS ==')
+    say('   pixel vs computed disagreements : %d %s' % (len(bad_pix), bad_pix[:4]))
+    say('   printed vs measured disagreements: %d %s' % (len(bad_print), bad_print[:4]))
+    say('   non-neutral (warm/cool) grounds  : %d %s' % (len(warm), warm))
+    say('   broken images                    : %d %s' % (len(imgs_bad), imgs_bad))
+    say('   specimens NOT in the 1-column band: %d %s' % (len(band_bad), band_bad))
+    caps = sorted(set(round(s['capH'],1) for s in d['specs']))
+    walls = sorted(set(round(s['wallW'],1) for s in d['specs']))
+    rads  = sorted(set(s['tileRadius'] for s in d['specs']))
+    ovf   = sorted(set(s['tileOverflow'] for s in d['specs']))
+    say('   caption heights: %s   wall widths: %s' % (caps, walls))
+    say('   tile radius: %s   tile overflow: %s' % (rads, ovf))
+    say('   font: %s' % ('GREEN' if font_ok else 'RED'))
+    b.close()
+
+with open(TXT, 'w') as fh:
+    fh.write('\n'.join(L) + '\n')
+print('\nwrote', TXT, 'and', PNG)

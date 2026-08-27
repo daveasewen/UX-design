@@ -488,6 +488,21 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   color:var(--bm-ink-rev,#FFFFFF);}
 .bm-stage[data-cap-bg="grey"] .bm-cap,
 .bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+/* ⬛ #220 PROPOSED — THE DARK-MODE CAPTION GROUND MINT. Generated from CAPTION_GROUND_MINTS, so
+   the value, the primitive it comes from and the themes it does NOT touch are all one table.
+   ⛔ The ink is NOT restated: `ink_follows` is the rule above and the mint moves a GROUND, not a
+   pairing. The reversed-out ink still comes with `data-cap-bg="darkgrey"`, once. */
+/* ⬛ #220 PROPOSED — the dark-mode CAPTION ground for `darkgrey`, one declared value per theme.
+   ⛔ The unminted themes stay pointed at the ramp's own token (--surface-digital-black); only a theme this
+   table names is moved, and only in dark. */
+[data-apollo-theme="mono"]{--bm-cap-dark-darkgrey:var(--surface-digital-black,#1A1A1A);}  /* unchanged — the ramp step */
+[data-apollo-theme="legacy"]{--bm-cap-dark-darkgrey:var(--surface-digital-black,#1A1A1A);}  /* unchanged — the ramp step */
+[data-apollo-theme="console"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}  /* color/neutral/5 · PROPOSED · #220 — Dave's pick on the caption-dark ladder: rgb(48,48,48) / #303030 */
+[data-apollo-theme="supercharge"]{--bm-cap-dark-darkgrey:var(--surface-digital-black,#13110E);}  /* unchanged — the ramp step */
+/* ⛔ DARK IS THE ONLY CONSUMER. In light there is no `[data-theme]` to match, so the
+   canonical caption rule above governs and light mode is untouched — which is the
+   whole reason this is a mint and not a repointed token (mode-inverted ramp, #220). */
+[data-theme="dark"] .bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-cap-dark-darkgrey,var(--surface-digital-black,#1A1A1A));}
 
 /* ---- CONSOLE IMAGE ROUNDING (gallery). Both options are canon's container radius; what moves
    is WHAT IS ROUNDED. `4 corners of the image` rounds the picture and leaves the caption square

@@ -624,6 +624,24 @@ def settings_css(settings=None):
         # beside it — `cap_ink_decl()` walks the effective-ground chain and returns the token the
         # ground implies, so a ground and an ink cannot be set inconsistently on this page.
         ink_token, ink = cap_ink_decl(s)
+        # ⛔ #220 — THIS BLOCK IS MODE-FLAT, AND THAT IS NOW A GATED FACT. Every declaration above
+        # is one per THEME; none of them is one per MODE. `gen_bento_matrix_217.CAPTION_GROUND_MINTS`
+        # is mode-scoped by construction (the dark ramp is mode-inverted, #220 finding 4), so the
+        # day a shipped default's caption ground carries a mint, this page would emit the UNMINTED
+        # value and paint something the manifest says it does not — silently, in one mode.
+        # No shipped default reaches a minted ground today (`capBg` is grey/transparent in all
+        # four), so nothing is emitted; the refusal exists so the next move cannot be silent
+        # ([[gate-dont-patch]]). It is DRIVEN by --selftest bite 6f, so it is not an unfired fence.
+        minted = [m for m in ("light", "dark")
+                  if matrix.caption_ground_mint(s.get("capBg"), theme, m)]
+        if minted:
+            raise SystemExit(
+                "gen_foundations_217: the %s gallery default's caption ground %r carries a #220 "
+                "CAPTION_GROUND_MINT in %s, but this settings block is MODE-FLAT — one declaration "
+                "per theme, none per mode. Emitting it here would paint the unminted value in %s "
+                "and disagree with _bento_edit_rails.json. Split the caption declaration by mode "
+                "before moving a default onto a minted ground."
+                % (theme, s.get("capBg"), "/".join(minted), "/".join(minted)))
         L.append("%s%s .px-cap{background:%s; color:%s;}" % (sel, TILE, cap, ink))
         L.append("%s%s .px-cap .px-desc, %s%s .px-cap .px-lic{color:%s;}"
                  % (sel, TILE, sel, TILE, ink))
@@ -1893,6 +1911,32 @@ def selftest():
          # makes console-gallery rounding CAPSULE, which puts canon's container radius on the TILE
          # and lets the opener inherit it. Three values, not two, and the third is the ruling.
          (True, False, False, ["0", "inherit", "var(--border-radius-container,0px)"]))
+    # ---- ⬛ #220 · THE MODE-FLAT REFUSAL, DRIVEN ----------------------------------------------
+    # ⛔ A gate that does not run cannot fail ([[instrument-without-a-consumer]]). The settings
+    # block is one declaration per THEME and none per MODE; the #220 caption mint is mode-scoped.
+    # No shipped default reaches a minted ground today, so the fence is invisible in the artefact —
+    # which is exactly why it is DRIVEN here, by moving the console default onto the minted ground
+    # and asserting the generator refuses BY NAME rather than emitting the unminted value.
+    # ⚠ SystemExit, not Exception: a generator's refusal is a BaseException and a bare
+    # `except Exception` would let it walk past ([[a-crash-is-not-a-fail]]).
+    _mf_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+    _mf_settings["console"]["capBg"] = "darkgrey"
+    _mf = None
+    try:
+        settings_css(_mf_settings)
+    except SystemExit as _exc:
+        _mf = str(_exc)
+    bite("6f · ⬛ #220 MUTATION ARM — A SHIPPED DEFAULT MOVES ONTO A MINTED GROUND. The console "
+         "gallery default's capBg is set to `darkgrey`, which carries the #220 dark-only caption "
+         "mint; the MODE-FLAT settings block must REFUSE BY NAME rather than compile the unminted "
+         "value and disagree with _bento_edit_rails.json. ⚠ And the LIVE block is unchanged: the "
+         "four shipped caption grounds carry no mint in either mode, so nothing is emitted today",
+         (_mf is not None,
+          bool(_mf) and "MODE-FLAT" in _mf and "darkgrey" in _mf,
+          sorted({t for t in matrix.THEMES for m in ("light", "dark")
+                  if matrix.caption_ground_mint(GALLERY_SETTINGS[t]["capBg"], t, m)}),
+          sorted({GALLERY_SETTINGS[t]["capBg"] for t in matrix.THEMES})),
+         (True, True, [], ["grey", "transparent"]))
     bite("23 · every ruled dial word is a member of gen_bento_matrix_217's OWN option sets "
          "(P2/P3 legality included), for ALL THREE TYPES — s219-D1 (3) ships twelve defaults",
          validate_all(), [])
