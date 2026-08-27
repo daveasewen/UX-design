@@ -118,11 +118,29 @@ THEME + MODE — the same broadcast the showroom and the library use
         in the token store, so `role_policy("gallery")` still answers EXEMPT. Flipping the store
         is a canon regen (the ordered serial) and it is NOT this lane's to run — the default lives
         in the settings table and the role's own answer is still asked, kept and printed.
-    (3) CONSOLE GALLERY ROUNDING IS CAPSULE, which puts canon's container radius on the TILE in
-        that theme — s217-D5's open P3, resolved as the shipped default by Dave's own export.
+    (3) ⛔ SUPERSEDED AT #220 — see below. s219-D2 (3) made CONSOLE GALLERY ROUNDING CAPSULE,
+        which put canon's container radius on the TILE in that theme. It stands as frozen history.
     (4) KEYLINES: ON only in legacy display and legacy gallery, off everywhere else. This page is
         a gallery, so LEGACY now ships a 1px tile edge and the other three do not — the compiled
         block carries both constructions and `--selftest` bite 24b asserts the split.
+
+✅ #220 — s220-D2: THE CONSOLE GALLERY DEFAULT IS CHORD TWO, AND NO OPTION WAS REMOVED
+  (1) ALL FOUR CAPTION TREATMENTS STAY LEGAL. Dave: "these 4 are all 'legal'" — capsule + grey
+      ground, capsule + dark ground, rounded image + transparent caption, capsule + lightest
+      ground. Readings that would have removed one are REJECTED, no ground-vs-ground refusal floor
+      is adopted, and the rails page's X1/X2 stay PROPOSED-not-ruled. ⛔ NOTHING IN THIS FILE
+      NARROWS AN OPTION SET, and `--selftest` bite 6i asserts it rather than promising it.
+  (2) THE DEFAULT MOVED. "if you are asking for a default lets go with rounded corner image with
+      transparent capsule" and, over the light/dark pair, "I guess this would be the default for
+      the two modes" — console gallery now ships `rounding: corners` + `capBg: transparent`,
+      IDENTICAL in light and dark, which aligns it with legacy and supercharge. It supersedes
+      s219-D2 (3) and the console-gallery capsule+grey rows of the s219-D1 (3) exports; the
+      supersession is a LAYER in `role_defaults_219.SUPERSESSIONS` and the receipt is untouched.
+      ⚠ CONSEQUENCE ON THIS PAGE: no theme ships `capsule` any more, so the compiled block's
+      radius set loses `inherit` (bite 6b), and mono is now the only grey caption ground
+      (bite 25). Both bites moved WITH the ruling rather than being widened to tolerate it.
+  (3) MONO'S GALLERY DEFAULT IS EXPRESSLY OPEN and keeps `capBg: grey` until Dave's word —
+      asserted in both directions by bite 6h, so a later lane cannot drift it quietly.
   ⚠ AND A CONSEQUENCE THAT IS NOT COSMETIC: three of the four gallery defaults say
   `pageBg: transparent`. A standalone page whose BODY paints nothing would show the UA canvas —
   white, in every theme, in dark mode too. So the page ground moved onto `html` (`--background-
@@ -299,6 +317,20 @@ ROLE_DEFAULTS = defaults219.DEFAULTS
 # The LIVE gallery settings this page compiles. The name is kept so every consumer that already
 # addresses it keeps working; what changed is where the values come from.
 GALLERY_SETTINGS = ROLE_DEFAULTS["gallery"]
+
+# ⬛ s220-D2 (2) — THE SHIPPED TABLE IS THE RECEIPT PLUS THE RULED SUPERSESSIONS, and BOTH are in
+# scope here on purpose. `ROLE_DEFAULTS` is what the page compiles; `RECEIPT_ROLE_DEFAULTS` is the
+# frozen parse of Dave's own #219 exports. A generator that could only see the live table would
+# have nothing to compare a supersession against, and the receipt's evidence would survive only as
+# prose ([[header-wins-over-audit]]).
+RECEIPT_ROLE_DEFAULTS = defaults219.RECEIPT_DEFAULTS
+SUPERSESSIONS = defaults219.SUPERSESSIONS
+# ⚠ AND THE RECEIPT'S PIXELS GO STALE WITH THE DIAL. A `resolved` readback is the pixel the
+# RETIRED default painted; cross-checking a shipped page against it after a supersession is
+# checking today's paint against yesterday's ruling. The map says WHICH readbacks are stale and
+# WHY, so a probe declares the divergence by name instead of skipping it in silence
+# ([[premise-ages-faster-than-rule]]).
+RESOLVED_SUPERSEDED = defaults219.RESOLVED_SUPERSEDED
 
 # ⬛ s219-D2 (1) — THE MONO CAPTION RIDER IS RETIRED, and it is kept here as a NAMED SUPERSESSION
 # rather than deleted. Dave, asked which of the two grounds governs: "I changed my mind just go
@@ -568,6 +600,15 @@ def settings_css(settings=None):
          "   console rounding capsule, and keylines ON in legacy only. Edge stays square",
          "   in all four. Every dial word was checked against gen_bento_matrix_217's own",
          "   ruled option sets; every var() carries a literal fallback.",
+         "   ⬛ s220-D2 (2) THEN SUPERSEDED THE CONSOLE GALLERY ROW ITSELF: rounding",
+         "   capsule + capBg grey become CHORD TWO — rounding corners + caption",
+         "   transparent — IDENTICAL in light and dark, aligning console with legacy and",
+         "   supercharge. Dave: \"if you are asking for a default lets go with rounded",
+         "   corner image with transparent capsule\" / \"this would be the default for the",
+         "   two modes\". The #219 export keeps its own words in its receipt.",
+         "   ⛔ s220-D2 (1) REMOVES NO OPTION — all four caption treatments stay legal in",
+         "   the edit pass, and s220-D2 (3) leaves MONO's grey caption ground EXPRESSLY",
+         "   OPEN. What moved is one DEFAULT, in one theme, on two dials.",
          "   ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is",
          "   compiled is the DEFAULT the page ships in, not the only reachable state.",
          "   ========================================================================== */"]
@@ -604,11 +645,17 @@ def settings_css(settings=None):
             L.append("%s%s .px-open{border:%s solid var(%s,%s); box-shadow:none; "
                      "background:transparent;}"
                      % (sel, TILE, KEYLINE[2], KEYLINE[0], KEYLINE[1]))
-            L.append("%s%s .px-open:hover{border-color:var(--border-strong,#767676);}"
+            # s220-D1: fallback was #767676, which canon resolves in no theme and no mode.
+            L.append("%s%s .px-open:hover{border-color:var(--border-strong,#808080);}"
                      % (sel, TILE))
         # rounding = 4 corners of the image: the PICTURE takes the container radius, the tile
-        # stays square and unclipped. CAPSULE moves the radius onto the TILE itself — s219-D2 (3)
-        # makes that the console gallery's default, resolving s217-D5's open P3.
+        # stays square and unclipped. CAPSULE moves the radius onto the TILE itself.
+        # ⬛ s220-D2 (2) — CORNERS IS NOW THE DEFAULT IN ALL FOUR THEMES. s219-D2 (3) made console
+        # the one capsule theme; Dave's #220 word moved it to chord two. ⛔ BOTH BRANCHES STAY:
+        # `capsule` is a legal edit-pass option in every theme (s220-D2 (1) — "these 4 are all
+        # 'legal'"), and deleting the branch no default reaches today is how an option quietly
+        # becomes unreachable ([[instrument-without-a-consumer]] read the other way round). The
+        # capsule branch is DRIVEN by bite 6i, which compiles it in every theme.
         if s["rounding"] == "corners":
             L.append("%s%s{border-radius:0;}" % (sel, TILE))
             L.append("%s%s .px-open{border-radius:0; overflow:visible;}" % (sel, TILE))
@@ -862,7 +909,9 @@ CSS = """
   --surface:   var(--surface-raised,#FFFFFF);
   --surface-2: var(--surface-subtle,#F3F3F3);
   --line:      var(--border-subtle,#D7D8D6);
-  --line-2:    var(--border-strong,#767676);
+  --line-2:    var(--border-strong,#808080);   /* s220-D1: was #767676 — a value canon resolves in
+                                                  no theme and no mode. See gen_bento_matrix_217
+                                                  bite 12's fallback-drift arm. */
   --ink:       var(--text-default,#1A1A1A);
   --ink-2:     var(--text-secondary,#545454);
   --focus:     var(--focus-ring,#1A1A1A);
@@ -1548,13 +1597,32 @@ def photography_page(rows, meta, residuals):
     # The RECEIPT's own pixel readback beside each dial word, so the token identification is on
     # the page rather than in a comment: `grey` is `--surface-subtle`, and the mono row is the
     # rgb(240, 240, 240) Dave's export measured.
+    # ⬛ s220-D2 (2) — AND A READBACK A SUPERSESSION HAS RETIRED SAYS SO, IN THE CELL. Console's
+    # `tileRadiusPx: 20` and `captionBackground: rgb(240, 240, 240)` are the pixels the CAPSULE
+    # default painted. Printed bare beside a page that now ships corners + transparent, they would
+    # be a confident false statement about the wall the reader is looking at — the receipt is not
+    # wrong, it is simply about a default that no longer ships
+    # ([[premise-ages-faster-than-rule]]). The marker is DERIVED from the supersession layer, so a
+    # future supersession marks its own cells and nobody has to remember to.
     rres = defaults219.RESOLVED["gallery"]
+    _stale = RESOLVED_SUPERSEDED.get("gallery", {})
+
+    def _rcell(theme, field, text, cls=""):
+        mark = _stale.get(theme, {}).get(field)
+        td = "<td%s>%s" % (" class='%s'" % cls if cls else "", esc(text))
+        if mark:
+            td += (" <b>&mdash; RETIRED</b><br><span class='t-cm-legal'>%s</span>"
+                   % esc(mark))
+        return td + "</td>"
+
     rrows = "".join(
-        "<tr><td>%s</td><td class='num'>%spx</td><td class='num'>%s</td><td class='num'>%s</td>"
-        "<td>%s</td><td>%s</td><td class='num'>%s</td></tr>"
-        % (t, esc(rres[t].get("gutterPx")), esc(rres[t].get("tileRadiusPx")),
-           esc(rres[t].get("tileBorderPx")), esc(rres[t].get("pageBackground")),
-           esc(rres[t].get("captionBackground")), esc(rres[t].get("captionSpacePx")))
+        "<tr><td>%s</td><td class='num'>%spx</td>%s%s%s%s<td class='num'>%s</td></tr>"
+        % (t, esc(rres[t].get("gutterPx")),
+           _rcell(t, "tileRadiusPx", rres[t].get("tileRadiusPx"), "num"),
+           _rcell(t, "tileBorderPx", rres[t].get("tileBorderPx"), "num"),
+           _rcell(t, "pageBackground", rres[t].get("pageBackground")),
+           _rcell(t, "captionBackground", rres[t].get("captionBackground")),
+           esc(rres[t].get("captionSpacePx")))
         for t in matrix.THEMES)
 
     body = """
@@ -1615,6 +1683,26 @@ def photography_page(rows, meta, residuals):
       <p>A dial word is not a promise of a hex: <code>grey</code> is
       <code>--surface-subtle</code>, <code>white</code> is <code>--surface-raised</code>, and each
       resolves to that <i>theme's</i> value in that <i>mode</i>.</p>
+    </div>
+    <div class="finding">
+      <b>The CONSOLE gallery default is chord two now &mdash; <code>s220-D2 (2)</code> supersedes
+      <code>s219-D2 (3)</code> and Dave's own #219 export.</b> His #219 export shipped console on
+      <b>capsule + grey caption</b>. At #220, asked for a default across the four legal caption
+      treatments, he said: <i>&ldquo;these 4 are all &lsquo;legal&rsquo;. but if you are asking for
+      a default lets go with rounded corner image with transparent capsule&rdquo;</i> and, over the
+      light/dark pair, <i>&ldquo;I guess this would be the default for the two modes&rdquo;</i>. So
+      console ships <code>rounding: corners</code> + <code>capBg: transparent</code>,
+      <b>identical in light and dark</b> &mdash; the same default legacy and supercharge already
+      carried. The #219 export is <b>not rewritten</b>: it stays in its receipt, and the
+      supersession is a layer over it, which is why the readback table above marks console's
+      capsule pixels <b>RETIRED</b> rather than deleting them.
+      <p>⛔ <b>NO OPTION WAS REMOVED</b> (<code>s220-D2 (1)</code>). All four caption treatments
+      &mdash; capsule + grey, capsule + dark, rounded image + transparent caption, capsule +
+      lightest &mdash; stay legal in the edit pass, the <code>rounding</code> dial still carries
+      both members in every theme, and the rails page's <code>X1</code>/<code>X2</code> exclusions
+      stay <b>PROPOSED</b>, not ruled. Only the DEFAULT moved.
+      <b>And <code>mono</code> did not move at all</b>: <code>s220-D2 (3)</code> leaves mono's grey
+      caption ground <b>expressly open</b> &mdash; it keeps grey until Dave's word.</p>
     </div>
     <div class="finding">
       <b>&ldquo;Edge: square&rdquo; is the GALLERY-ROLE DEFAULT now &mdash;
@@ -1907,10 +1995,13 @@ def selftest():
                          _sb)),
           bool(re.search(r"--bento-columns|--bento-row-unit", _sb)),
           _sb_radii),
-         # ⬛ `inherit` JOINED THE SET AT #219, and it is the capsule's own radius: s219-D2 (3)
-         # makes console-gallery rounding CAPSULE, which puts canon's container radius on the TILE
-         # and lets the opener inherit it. Three values, not two, and the third is the ruling.
-         (True, False, False, ["0", "inherit", "var(--border-radius-container,0px)"]))
+         # ⬛ `inherit` JOINED THE SET AT #219 and LEFT AGAIN AT #220, and both moves are rulings.
+         # s219-D2 (3) made console-gallery rounding CAPSULE, which put canon's container radius
+         # on the TILE and let the opener inherit it. s220-D2 (2) moves console to chord two, so
+         # no shipped default is a capsule any more and the compiled block declares two radius
+         # values, not three. ⛔ THE CAPSULE BRANCH IS NOT GONE — it is a legal option (s220-D2
+         # (1)) and bite 6i compiles it in every theme; what changed is what the page SHIPS.
+         (True, False, False, ["0", "var(--border-radius-container,0px)"]))
     # ---- ⬛ #220 · THE MODE-FLAT REFUSAL, DRIVEN ----------------------------------------------
     # ⛔ A gate that does not run cannot fail ([[instrument-without-a-consumer]]). The settings
     # block is one declaration per THEME and none per MODE; the #220 caption mint is mode-scoped.
@@ -1919,24 +2010,176 @@ def selftest():
     # and asserting the generator refuses BY NAME rather than emitting the unminted value.
     # ⚠ SystemExit, not Exception: a generator's refusal is a BaseException and a bare
     # `except Exception` would let it walk past ([[a-crash-is-not-a-fail]]).
-    _mf_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
-    _mf_settings["console"]["capBg"] = "darkgrey"
-    _mf = None
-    try:
-        settings_css(_mf_settings)
-    except SystemExit as _exc:
-        _mf = str(_exc)
-    bite("6f · ⬛ #220 MUTATION ARM — A SHIPPED DEFAULT MOVES ONTO A MINTED GROUND. The console "
-         "gallery default's capBg is set to `darkgrey`, which carries the #220 dark-only caption "
-         "mint; the MODE-FLAT settings block must REFUSE BY NAME rather than compile the unminted "
-         "value and disagree with _bento_edit_rails.json. ⚠ And the LIVE block is unchanged: the "
-         "four shipped caption grounds carry no mint in either mode, so nothing is emitted today",
-         (_mf is not None,
-          bool(_mf) and "MODE-FLAT" in _mf and "darkgrey" in _mf,
+    # ⬛ s220-D1 EXTENDED THIS ARM FROM ONE THEME TO FOUR. `CAPTION_GROUND_MINTS` used to hold a
+    # single console row; it now holds one per theme, so an arm that drove console alone would
+    # leave three of the four fences untried ([[instrument-without-a-consumer]]) — and three is
+    # exactly the number of themes whose mint has no visible consumer yet.
+    _mf = {}
+    for _t in matrix.THEMES:
+        _mf_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+        _mf_settings[_t]["capBg"] = "darkgrey"
+        try:
+            settings_css(_mf_settings)
+            _mf[_t] = None
+        except SystemExit as _exc:
+            _mf[_t] = str(_exc)
+    bite("6f · ⬛ #220/s220-D1 MUTATION ARM — A SHIPPED DEFAULT MOVES ONTO A MINTED GROUND, IN "
+         "EVERY THEME IN TURN, AND THE TWO FENCES ANSWER IN ORDER. In console `darkgrey` is a "
+         "legal caption word, so the MODE-FLAT mint fence is the one that bites. In the other "
+         "three X6 has not opened, so the OPTION-SET fence bites FIRST and the mint fence is never "
+         "reached — recorded rather than papered over, because a refusal that names the first "
+         "obstacle is not evidence about the binding one "
+         "([[refusal-names-the-first-obstacle]]); 6g drives the binding one directly. "
+         "⚠ And the LIVE block is unchanged: the four shipped caption grounds are grey/transparent "
+         "and carry no mint in either mode, so nothing is emitted today and light is untouched",
+         (sorted(t for t in matrix.THEMES if _mf[t] is None),
+          sorted(t for t in matrix.THEMES
+                 if _mf[t] and "MODE-FLAT" in _mf[t] and "darkgrey" in _mf[t] and t in _mf[t]),
+          sorted(t for t in matrix.THEMES
+                 if _mf[t] and "do not validate" in _mf[t] and "darkgrey" in _mf[t]),
           sorted({t for t in matrix.THEMES for m in ("light", "dark")
                   if matrix.caption_ground_mint(GALLERY_SETTINGS[t]["capBg"], t, m)}),
           sorted({GALLERY_SETTINGS[t]["capBg"] for t in matrix.THEMES})),
-         (True, True, [], ["grey", "transparent"]))
+         ([], ["console"], ["legacy", "mono", "supercharge"], [], ["grey", "transparent"]))
+    # ---- ⬛ s220-D1 · THE BINDING FENCE, DRIVEN PAST THE FIRST OBSTACLE ----------------------
+    # ⛔ WHY THIS ARM EXISTS AT ALL. 6f proves the three unscoped themes refuse — but by the WRONG
+    # fence. The mint fence for mono/legacy/supercharge is the one that matters the day s219-D3(3)
+    # /X6 opens and one of them gains the dark caption ground; until then it is a fence nobody has
+    # tried to cross ([[instrument-without-a-consumer]]). So the arm opens X6 the way a ruling
+    # would — by widening the capsule chord's SCOPE, which is the one place chord reach is data —
+    # and then asserts each theme's mode-flat refusal by name. The chord is DEEP-COPIED and
+    # restored, and the restore is asserted: an arm that leaked would make every later bite a
+    # measurement of the mutant.
+    import copy as _copy
+    _saved_scope = _copy.deepcopy(matrix.CHORDS)
+    _bind = {}
+    try:
+        for _c in matrix.CHORDS:
+            if _c["id"] == "capsule":
+                _c["scope"] = [(t, "gallery") for t in matrix.THEMES]
+        for _t in matrix.THEMES:
+            _b_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+            _b_settings[_t]["capBg"] = "darkgrey"
+            try:
+                settings_css(_b_settings)
+                _bind[_t] = None
+            except SystemExit as _exc:
+                _bind[_t] = str(_exc)
+    finally:
+        matrix.CHORDS[:] = _saved_scope
+        matrix.CHORDS_BY_ID.clear()
+        matrix.CHORDS_BY_ID.update({c["id"]: c for c in matrix.CHORDS})
+    bite("6g · ⬛ s220-D1 — THE MODE-FLAT FENCE BITES IN ALL FOUR THEMES once X6 is out of the way. "
+         "The capsule chord's scope is widened to every theme (the one place chord reach is data), "
+         "each default is moved onto the newly-minted `darkgrey`, and every theme's settings block "
+         "REFUSES BY NAME — naming itself, the ground and the mode. ⚠ AND THE SCOPE IS RESTORED: "
+         "the bite re-asserts the ruled console-only reach afterwards",
+         (sorted(t for t in matrix.THEMES if _bind[t] is None),
+          sorted(t for t in matrix.THEMES
+                 if _bind[t] and "MODE-FLAT" in _bind[t] and "darkgrey" in _bind[t]
+                 and t in _bind[t] and "dark" in _bind[t]),
+          sorted(matrix.capbg_for("gallery", t) for t in matrix.THEMES),
+          [tuple(s) for s in matrix.CHORDS_BY_ID["capsule"]["scope"]]),
+         ([], ["console", "legacy", "mono", "supercharge"],
+          [["grey", "white", "darkgrey", "transparent"]]
+          + [["grey", "white", "transparent"]] * 3,
+          [("console", "gallery")]))
+    # ---- ⬛ #220 · s220-D2 — THE DEFAULT SWITCH, AND WHAT IT MAY NOT TOUCH -------------------
+    # ⛔ THREE BITES, THREE DIFFERENT CLAIMS, ON PURPOSE. 6h is the switch AND the receipt it did
+    # not rewrite; 6i is the OPTION SPACE the switch may not narrow; 6j is the intersection it may
+    # not leak into. A single "console is corners now" bite would have gone green on a build that
+    # silently removed the capsule option or dragged mono along with it, which is the exact shape
+    # s220-D2 (1) and (3) forbid ([[green-tests-cannot-see-scope]]).
+    _live_c = GALLERY_SETTINGS["console"]
+    _rec_c = RECEIPT_ROLE_DEFAULTS["gallery"]["console"]
+    bite("6h · ⬛ s220-D2 (2)/(3) — THE CONSOLE GALLERY DEFAULT IS CHORD TWO IN BOTH MODES, THE "
+         "#219 RECEIPT STILL SAYS CAPSULE+GREY, AND MONO IS UNTOUCHED. Dave: \"lets go with "
+         "rounded corner image with transparent capsule\" / \"this would be the default for the "
+         "two modes\". The receipt clause is the one that matters most: a supersession that "
+         "rewrote the export would erase the evidence of what he approved at #219 and no gate "
+         "would fire. And mono's `grey` is EXPRESSLY OPEN (s220-D2 (3)) — asserted as an "
+         "unchanged BLOCK, not just an unchanged dial, so a lane that 'aligns' mono with console "
+         "reds here by name",
+         ((_live_c["rounding"], _live_c["capBg"]),
+          (_rec_c["rounding"], _rec_c["capBg"]),
+          GALLERY_SETTINGS["mono"] == RECEIPT_ROLE_DEFAULTS["gallery"]["mono"],
+          defaults219.superseded_dials("gallery", "mono"),
+          GALLERY_SETTINGS["mono"]["capBg"],
+          defaults219.default_for_mode("gallery", "console", "light")
+          == defaults219.default_for_mode("gallery", "console", "dark"),
+          '[data-apollo-theme="console"] %s .px-cap{background:transparent;' % TILE
+          in settings_block,
+          '[data-apollo-theme="mono"] %s .px-cap{background:var(--surface-subtle,#F0F0F0);' % TILE
+          in settings_block),
+         (("corners", "transparent"), ("capsule", "grey"), True, {}, "grey", True, True, True))
+    # ⛔ 6i — THE CLAUSE THE RULING SPENDS MOST OF ITS WORDS ON. s220-D2 (1): "these 4 are all
+    # 'legal'" — readings A and B were REJECTED as removals. So the bite drives the four treatments
+    # the ruling names, in console gallery, and asserts each is still LEGAL and still REACHABLE;
+    # it then compiles the CAPSULE branch this page no longer ships, because a branch no default
+    # reaches is a branch nobody drives ([[instrument-without-a-consumer]]).
+    # ⚠ AND THE ONE REFUSAL IS NAMED RATHER THAN COUNTED AS A REMOVAL. `capsule + darkgrey` is
+    # legal in the option space and cannot be COMPILED ON THIS PAGE, because the settings block is
+    # MODE-FLAT and that ground carries a s220-D1 caption mint (bite 6f). That is a property of
+    # this generator, not a narrowing of the rails, and saying so is the difference between a
+    # refusal that names the binding obstacle and one that names the first
+    # ([[refusal-names-the-first-obstacle]]).
+    _treat = [("capsule", "grey"), ("capsule", "darkgrey"),
+              ("corners", "transparent"), ("capsule", "white")]
+    _legal, _reach, _chord = [], [], []
+    for _rnd, _cb in _treat:
+        _st = dict(GALLERY_SETTINGS["console"])
+        _st.update({"rounding": _rnd, "capBg": _cb})
+        _legal.append(matrix.caption_legal(_cb, _st["bentoBg"])
+                      and matrix.capsule_legal(_rnd, _cb, _st["keylines"]))
+        _reach.append(_cb in matrix.capbg_for("gallery", "console"))
+        _chord.append(matrix.chord_refusals(
+            "capsule" if _rnd == "capsule" else "rounded", "console", "gallery", _st))
+    _cap_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+    _cap_settings["console"].update({"rounding": "capsule", "capBg": "grey"})
+    _cap_block = settings_css(_cap_settings)
+    _mf_dark = None
+    try:
+        _dg = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+        _dg["console"].update({"rounding": "capsule", "capBg": "darkgrey"})
+        settings_css(_dg)
+    except SystemExit as _exc:
+        _mf_dark = str(_exc)
+    bite("6i · ⬛ s220-D2 (1) — NO OPTION WAS REMOVED. All four caption treatments the ruling "
+         "names stay LEGAL and REACHABLE in console gallery, the rounding dial still carries both "
+         "members, the caption ramp is unnarrowed in every theme, X1/X2 are still PROPOSED (the "
+         "ruling refuses to promote them), and the CAPSULE branch still compiles — driven, with "
+         "its `inherit` radius, on a settings table this page does not ship. ⚠ capsule+darkgrey "
+         "is refused HERE by the MODE-FLAT mint fence, BY NAME — a generator property, not a "
+         "narrowing of the rails",
+         (_legal, _reach, [len(c) for c in _chord],
+          [r[0] for r in matrix.ROUNDINGS],
+          [matrix.capbg_for("gallery", t) for t in matrix.THEMES],
+          [matrix.EXCLUSIONS_BY_ID[x]["status"] for x in ("X1", "X2")],
+          "border-radius:inherit" in _cap_block,
+          bool(_mf_dark and "MODE-FLAT" in _mf_dark and "darkgrey" in _mf_dark)),
+         ([True] * 4, [True] * 4, [0, 0, 0, 0],
+          ["corners", "capsule"],
+          [["grey", "white", "transparent"], ["grey", "white", "transparent"],
+           ["grey", "white", "darkgrey", "transparent"], ["grey", "white", "transparent"]],
+          ["proposed", "proposed"], True, True))
+    # ⛔ 6j — THE SIZE OF THE OPTION SPACE, WHICH A DEFAULT MAY NOT CHANGE AT ALL. `counts_by_theme`
+    # enumerates every legal state per theme x type out of the matrix's own option lists; it never
+    # consults a default. So these four numbers move only if an OPTION was added or taken away —
+    # which is exactly the removal s220-D2 (1) rejects, and exactly the thing a "the console
+    # default is corners now" assertion cannot see. The figures are hand-computed off the ruled
+    # sets, not read back off the code.
+    _cnt = matrix.counts_by_theme()
+    bite("6j · ⬛ s220-D2 (1) — THE OPTION SPACE IS THE SAME SIZE EITHER SIDE OF THE DEFAULT "
+         "SWITCH: gallery 648/648/864/648 (console's extra 216 is the capsule chord's `darkgrey`, "
+         "X6), display 48 and dashboard 288 in all four. A default is not an option, and the "
+         "supersession layer lives in role_defaults_219, which the matrix does not import",
+         ([_cnt[t]["gallery"] for t in matrix.THEMES],
+          sorted({_cnt[t]["display"] for t in matrix.THEMES}),
+          sorted({_cnt[t]["dashboard"] for t in matrix.THEMES}),
+          sorted(d["dial"] for d in defaults219.supersession_rows()),
+          sorted({(d["type"], d["theme"]) for d in defaults219.supersession_rows()})),
+         ([648, 648, 864, 648], [48], [288],
+          ["capBg", "rounding"], [("gallery", "console")]))
     bite("23 · every ruled dial word is a member of gen_bento_matrix_217's OWN option sets "
          "(P2/P3 legality included), for ALL THREE TYPES — s219-D1 (3) ships twelve defaults",
          validate_all(), [])
@@ -1964,13 +2207,18 @@ def selftest():
     #   • the two themes Dave grounded in grey are exactly mono and console.
     _grey = sorted({m for m in re.findall(r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-cap\{'
                                           r'background:var\(--surface-subtle', _sb)})
+    # ⬛ s220-D2 (2) MOVED THE FOURTH CLAUSE, AND THE MOVE IS THE POINT. Console's caption ground
+    # was `grey` by his #219 export; his #220 word makes it transparent. MONO IS NOW THE ONLY GREY
+    # CAPTION GROUND ON THIS PAGE — and s220-D2 (3) leaves mono's EXPRESSLY OPEN, so this bite is
+    # also the tripwire for a lane that "aligns" mono with console without a ruling.
     bite("25 · the mono caption ground is LIGHT GREY by token (s219-D2 (1) supersedes the #218 "
-         "dark rider, which appears nowhere)",
+         "dark rider, which appears nowhere), and after s220-D2 (2) mono is the ONLY theme "
+         "shipping a grey caption ground",
          (("var(--surface-subtle,#F0F0F0)" in settings_block),
           ("--surface-digital-black" in settings_block or "--text-reverse" in settings_block),
           ("var(--text-secondary,#545454)" in settings_block),
           _grey),
-         (True, False, True, ["console", "mono"]))
+         (True, False, True, ["mono"]))
     # ⬛ AND THE PIXEL DAVE ACTUALLY APPROVED. The dial word is checked against his own receipt's
     # resolved readback, so the token identification cannot quietly drift off the colour he saw.
     bite("25b · the mono caption token is the one his export RESOLVED — rgb(240, 240, 240)",

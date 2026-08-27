@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The lift, in four themes</title>
+<!-- #220 / s220-D1 review page. The mints are ENACTED and PROPOSED — pending Dave. Specimen markup and specimen CSS COPIED from showroom/_foundations/bento-rails.html; the mint rules are the generator's own output, asserted present in that artefact. -->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+/* ===========================================================================
+   REVIEW PAGE — the caption-ground lift, extended to four themes. #220 / s220-D1.
+   ⛔ THE SPECIMEN STYLES BELOW ARE COPIED, NOT RE-DRAWN. Everything between the
+   COPIED-FROM-ARTEFACT markers is lifted from showroom/_foundations/bento-rails.html
+   by way of the #220 banked sources, so a specimen on this page renders through
+   exactly the rules that render it there. The `.cdl-` chrome names come WITH the copy.
+   ⛔ AND THE MINT BLOCK IS NOT COPIED AT ALL — it is emitted by the generator's own
+   `caption_mint_rules()` at build time and asserted byte-present in the artefact.
+   ⛔ EVERY var() CARRIES A LITERAL FALLBACK — a custom property that fails to resolve
+   renders silent black and no gate catches it.
+   ⛔ NEUTRAL HUES ONLY IN THE CHROME. No red, no yellow, no green anywhere on this page:
+   the two-red law and the mono error ink camp are untouched by it. The one warm value
+   that appears is supercharge's own RULED ramp step, inside a specimen, never in chrome.
+   =========================================================================== */
+html,body{margin:0;}
+body{background:var(--background-default,#FFFFFF);}
+.cdl{
+  --page:      var(--background-default,#FFFFFF);
+  --surface-2: var(--surface-subtle,#F3F3F3);
+  --line:      var(--border-subtle,#D7D8D6);
+  --line-2:    var(--border-strong,#808080);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page,#FFFFFF); color:var(--ink,#1A1A1A); -webkit-font-smoothing:antialiased;
+}
+.cdl *{box-sizing:border-box;}
+.cdl, .cdl-head{color:var(--text-default,#1A1A1A);}
+
+.cdl-head{padding:var(--sp-5,24px) var(--sp-6,32px); border-bottom:1px solid var(--line,#D7D8D6);}
+.cdl-head h1{margin:0 0 var(--sp-2,8px);}
+.cdl-head p{margin:0 0 6px; color:var(--ink-2,#545454); max-width:88ch;}
+main{padding:var(--sp-6,32px); max-width:1180px;}
+.cdl-sec{margin:0 0 var(--sp-7,48px); border-top:1px solid var(--line,#D7D8D6);
+  padding-top:var(--sp-5,24px);}
+.cdl-sec:first-of-type{border-top:0; padding-top:0;}
+.cdl-sec h2{margin:0 0 var(--sp-2,8px);}
+.cdl-sec h3{margin:var(--sp-5,24px) 0 var(--sp-2,8px);}
+.cdl-sec p{margin:0 0 var(--sp-3,12px); color:var(--ink-2,#545454); max-width:84ch;}
+.cdl-sec p b, .cdl-lines b{color:var(--ink,#1A1A1A); font-weight:500;}
+.cdl-kicker{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;
+  margin:0 0 var(--sp-2,8px); display:flex; align-items:center; gap:var(--sp-2,8px);}
+.cdl-kicker::before{content:''; width:20px; height:1px; background:var(--line,#D7D8D6);}
+.cdl-quote{border-left:3px solid var(--ink,#1A1A1A); padding:var(--sp-3,12px) var(--sp-4,16px);
+  margin:0 0 var(--sp-3,12px); max-width:84ch;}
+.cdl-quote p{margin:0; color:var(--ink,#1A1A1A);}
+.cdl-quote .cdl-attrib{margin-top:6px; color:var(--ink-2,#545454);}
+.cdl-note{border:1px solid var(--line,#D7D8D6); border-left-width:4px;
+  padding:var(--sp-3,12px) var(--sp-4,16px); margin:var(--sp-4,16px) 0 0; max-width:84ch;}
+.cdl-note p{margin:0 0 var(--sp-2,8px);}
+.cdl-note p:last-child{margin:0;}
+.cdl-open{border-left:3px solid var(--text-default,#1A1A1A); padding-left:var(--sp-3,12px);}
+.cdl-foot{border-top:1px solid var(--line,#D7D8D6); padding-top:var(--sp-4,16px);
+  color:var(--ink-2,#545454); max-width:96ch;}
+.cdl-foot p{margin:0 0 var(--sp-2,8px);}
+.cdl-lines{margin:0 0 var(--sp-3,12px); padding:0; list-style:none; display:flex;
+  flex-direction:column; gap:6px;}
+.cdl-lines li{max-width:80ch; color:var(--ink-2,#545454);}
+
+/* ---- THE PAIR ---------------------------------------------------------------------
+   ⛔ THE CELL IS CAPPED, AND THAT IS NOT COSMETIC. Every `.c-bento` is
+   `container-type:inline-size`, so canon's responsive bands answer the WALL's width, not
+   the window's. Capped at 420px the wall lands 360px — under canon's 520px band at every
+   viewport — so BEFORE and AFTER resolve ONE column each, always, and the two are never
+   compared across a layout band (the ds-054 class rule). Both cells share the cap, so the
+   ONLY variable between them is the caption ground. ---- */
+.cdl-pair{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,420px));
+  gap:var(--sp-5,24px); align-items:start; margin:var(--sp-4,16px) 0;}
+.cdl-col{margin:0; min-width:0;}
+.cdl-col-hd{margin:0 0 6px; color:var(--ink,#1A1A1A);}
+/* ⛔ THE SUB-LINE IS HEIGHT-LOCKED, AND IT IS NOT COSMETIC. SEEN, THEN FIXED (#220): the two
+   sub-lines wrap to a different number of lines, which pushed the two cards to different
+   vertical origins — and a pair compared at different origins reads as a pair of different
+   cards. The ONLY difference between two cells has to be the caption ground. */
+.cdl-col-sub{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454); min-height:3em;}
+.cdl-panel{border:1px solid var(--line,#D7D8D6);}
+.cdl-panel-bd{background:var(--background-default,#FFFFFF); color:var(--text-default,#1A1A1A);
+  padding:var(--sp-3,12px);}
+/* the specimen restates the ink on a CHILD of the themed element (carried from the artefact) */
+.cdl-panel-bd .br-spec{color:var(--text-default,#1A1A1A);}
+
+/* the measured read-out under each cell */
+.cdl-nums{margin:var(--sp-3,12px) 0 0; display:flex; flex-direction:column; gap:0;
+  border-top:1px solid var(--line,#D7D8D6);}
+.cdl-num{display:grid; grid-template-columns:minmax(120px,44%) 1fr; gap:var(--sp-3,12px);
+  padding:7px 0; border-bottom:1px solid var(--line,#D7D8D6);}
+.cdl-num dt{margin:0; color:var(--ink-2,#545454); text-transform:uppercase;
+  letter-spacing:0.08em;}
+.cdl-num dd{margin:0; color:var(--ink,#1A1A1A); overflow-wrap:anywhere;}
+
+/* ---- the LIGHT row, deliberately smaller: it is the thing that must NOT have moved.
+   Capped at 300px the wall lands 240px — the same single-column band as the dark pairs. ---- */
+.cdl-refs{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,300px));
+  gap:var(--sp-4,16px); align-items:start; margin:var(--sp-3,12px) 0 var(--sp-4,16px);}
+.cdl-ref{margin:0; min-width:0;}
+.cdl-ref-cap{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.12em;
+  margin:0 0 6px;}
+.cdl-ref-nums{margin:6px 0 0; color:var(--ink-2,#545454);}
+
+/* ---- the caption-ground slot WITHOUT the picture, per theme, before beside after.
+   ⛔ THE STRIP IS NOT INSIDE A THEME BLOCK, AND THAT IS A FIX, NOT A SHORTCUT (measured
+   #220): canon paints a bare `[data-theme="dark"]` element, and a page-chrome custom
+   property is substituted where it is DECLARED — so `--ink-2` had already resolved to the
+   LIGHT mode's value on `<body>` and every label beside the swatches went black on black.
+   The swatches paint LITERAL values instead, which is honest here because the thing being
+   compared IS a literal grey. ---- */
+.cdl-strip{border:1px solid var(--line,#D7D8D6); margin-top:var(--sp-3,12px);}
+.cdl-strip-row{display:grid; grid-template-columns:minmax(120px,18%) 1fr 1fr minmax(150px,22%);
+  gap:0; align-items:stretch; border-bottom:1px solid var(--line,#D7D8D6);}
+.cdl-strip-row:last-child{border-bottom:0;}
+.cdl-strip-lbl{padding:10px var(--sp-3,12px); color:var(--ink-2,#545454); min-width:0;
+  overflow-wrap:anywhere;}
+.cdl-strip-fig{padding:10px var(--sp-3,12px); color:var(--ink-2,#545454); min-width:0;
+  border-left:1px solid var(--line,#D7D8D6);}
+.cdl-swatch{background:var(--cdl-page-dark,#1A1A1A); padding:10px 14px; min-width:0;
+  display:flex; align-items:center;}
+.cdl-swatch span{display:block; background:var(--cdl-ground,#1A1A1A); color:#FFFFFF;
+  padding:8px 12px; width:100%;}
+
+.cdl-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);
+  table-layout:fixed;}
+.cdl-table th, .cdl-table td{border-bottom:1px solid var(--line,#D7D8D6);
+  padding:8px 10px; text-align:left; vertical-align:top; white-space:normal;
+  overflow-wrap:anywhere; color:var(--ink-2,#545454);}
+.cdl-table th{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.08em;
+  font-weight:500;}
+.cdl-table td:first-child{color:var(--ink,#1A1A1A);}
+.cdl-scroll{overflow-x:auto; border:1px solid var(--line,#D7D8D6);}
+.cdl-code{border:1px solid var(--line,#D7D8D6); padding:var(--sp-3,12px);
+  overflow-x:auto; margin:var(--sp-3,12px) 0; color:var(--ink,#1A1A1A);}
+.cdl-code pre{margin:0; white-space:pre; color:var(--ink,#1A1A1A);}
+
+/* =====================================================================================
+   COPIED-FROM-ARTEFACT START — showroom/_foundations/bento-rails.html
+   (via notes/_subreports/assets/2026-08-27-220-rung-enact/build.py.txt)
+   ===================================================================================== */
+.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+/* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
+.br-spec .bm-stage{border:0; margin-top:0;}
+.br-spec .bm-page-ground{padding:var(--sp-4,16px);}
+.br-spec .bm-gtile{grid-column:span 1 !important; grid-row:span 1 !important;}
+
+/* ---- the `--bm-*` surface the specimen stage reads. Declared on `.br-spec`, which is a CHILD
+   of the element carrying the theme — substituting on a child is deterministic in every state
+   probed, where substituting on the themed element itself has disagreed (measured 2026-08-22). */
+.br-spec{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#808080);
+  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
+  --bm-page:var(--background-default,#FFFFFF);
+  --bm-grey:var(--surface-subtle,#F0F0F0);
+  --bm-white:var(--surface-raised,#FFFFFF);
+  --bm-darkgrey:var(--surface-digital-black,#1A1A1A);
+  --bm-ink-rev:var(--text-reverse,#FFFFFF);
+  --bm-radius-ctl:var(--border-radius-control,0px);
+  --bm-container-radius:var(--border-radius-container,0px);}
+
+/* ---- the stage ---- */
+.bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
+.bm-page-ground{padding:var(--sp-5,24px);}
+.bm-stage[data-page-bg="grey"] .bm-page-ground{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-page-bg="white"] .bm-page-ground{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-page-bg="page"] .bm-page-ground{background:var(--bm-page,#FFFFFF);}
+.bm-pane{display:none;}
+.bm-stage[data-type="gallery"] .bm-pane[data-pane="gallery"]{display:block;}
+
+/* ---- the WALL grounds ---- */
+.bm-stage[data-bento-bg="grey"] .c-bento.bm-wall{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-bento-bg="white"] .c-bento.bm-wall{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-bento-bg="darkgrey"] .c-bento.bm-wall{background:var(--bm-darkgrey,#1A1A1A);}
+.bm-stage[data-bento-bg="transparent"] .c-bento.bm-wall{background:transparent;}
+/* INK FOLLOWS THE EFFECTIVE GROUND — a transparent caption has no ground of its own, so its ink
+   is the ink of the ground that actually paints behind it: the wall's. (s219-D3(2)/(5)) */
+.bm-stage[data-bento-bg="darkgrey"][data-cap-bg="transparent"] .bm-cap{
+  color:var(--bm-ink-rev,#FFFFFF);}
+
+/* ---- SPACING — one declared rule per ruled stop. A value off the rail has no rule. ---- */
+.bm-stage[data-spacing="40"] .c-bento.bm-wall{--bento-gutter:40px;}
+/* keylines at the open spacings: a plain 1px tile border. */
+.bm-stage[data-keylines="on"]:not([data-spacing="1"]) .bm-wall > .c-bento__grid > .bm-tile{
+  border:1px solid var(--bm-line,#D7D8D6);}
+
+/* ---- INSTANCE DIALS. `.c-bento.` in the selector is DELIBERATE: canon's role rules are (0,2,0),
+   a bare class is (0,1,0) and the role rule would beat it — silently, in one theme, at one width. */
+.c-bento.bm-gallery{--bento-columns:4; --bento-row-unit:240px;}
+.c-bento.cdl-wall{--bento-columns:1; --bento-row-unit:240px;}
+
+/* ---- tile CONTENT ---- */
+.bm-tile{margin:0; display:flex; flex-direction:column; min-width:0; overflow:hidden;
+  background:var(--tertiary-background-default,#FFFFFF);}
+/* ⛔ A GALLERY TILE PAINTS NO GROUND, and that is what makes this whole question real. The picture
+   supplies its own ground, so the CAPTION's immediate ground is the wall. */
+.bm-gtile{background:transparent;}
+.bm-imgbox{display:block; flex:1 1 auto; min-height:0; overflow:hidden;}
+.bm-img{display:block; width:100%; height:100%; object-fit:cover;
+  background:var(--surface-subtle,#F0F0F0);}
+.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#545454); display:flex;
+  flex-direction:column; gap:2px; justify-content:center;}
+.bm-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
+  -webkit-box-orient:vertical; overflow:hidden;}
+
+/* ---- CAPTION GROUNDS. The caption's IMMEDIATE ground is the tile, which takes the bento
+   background — so these two are what the legality rule compares. ---- */
+.bm-stage[data-cap-bg="grey"] .bm-cap{background:var(--bm-grey,#F0F0F0);}
+.bm-stage[data-cap-bg="white"] .bm-cap{background:var(--bm-white,#FFFFFF);}
+.bm-stage[data-cap-bg="transparent"] .bm-cap{background:transparent;}
+/* THE DARK CAPTION GROUND and its reversed-out ink: two declarations, ONE decision — the second
+   follows the first in the stylesheet, so a designer cannot set them inconsistently. s219-D3(3). */
+.bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
+  color:var(--bm-ink-rev,#FFFFFF);}
+.bm-stage[data-cap-bg="grey"] .bm-cap,
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+
+/* ---- CONSOLE IMAGE ROUNDING (gallery). `capsule` rounds and clips the whole tile so caption and
+   image are one block. Six classes/attributes because canon's gallery tile rule is (0,4,0). ---- */
+.bm-stage[data-rounding="corners"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile{border-radius:0; overflow:visible;}
+.bm-stage[data-rounding="corners"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile .bm-imgbox{
+  border-radius:var(--bm-container-radius,0px); overflow:hidden;}
+.bm-stage[data-rounding="capsule"] .c-bento[data-bento-role="gallery"] >
+  .c-bento__grid > .c-bento__tile.bm-gtile{
+  border-radius:var(--bm-container-radius,0px); overflow:hidden;}
+/* =====================================================================================
+   COPIED-FROM-ARTEFACT END
+   ===================================================================================== */
+
+/* =====================================================================================
+   THE ENACTED MINT — emitted by gen_bento_matrix_217.caption_mint_rules() at build time and
+   asserted byte-present in showroom/_foundations/bento-rails.html. NOT a copy: the same
+   function that writes the artefact writes this.
+   ===================================================================================== */
+/* ⬛ #220 · s220-D1 PROPOSED — the dark-mode CAPTION ground for `darkgrey`, one declared value per theme.
+   ⛔ A theme this table does not name stays pointed at the ramp's own token (--surface-digital-black), and only
+   dark is ever moved. Unminted here: none — all four themes carry a row. */
+[data-apollo-theme="mono"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}  /* color/neutral/5 · PROPOSED · #220 s220-D1 — Dave: "yes the other themes need an appropriate lift too, align with the neutral primitives please" */
+[data-apollo-theme="legacy"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}  /* color/neutral/5 · PROPOSED · #220 s220-D1 — Dave: "yes the other themes need an appropriate lift too, align with the neutral primitives please" */
+[data-apollo-theme="console"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}  /* color/neutral/5 · PROPOSED · #220 — Dave's pick on the caption-dark ladder: rgb(48,48,48) / #303030 */
+[data-apollo-theme="supercharge"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#312C26);}  /* color/neutral/5 · PROPOSED · #220 s220-D1 — Dave: "yes the other themes need an appropriate lift too, align with the neutral primitives please" */
+/* ⛔ DARK IS THE ONLY CONSUMER. In light there is no `[data-theme]` to match, so the
+   canonical caption rule above governs and light mode is untouched — which is the
+   whole reason this is a mint and not a repointed token (mode-inverted ramp, #220). */
+[data-theme="dark"] .bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-cap-dark-darkgrey,var(--surface-digital-black,#1A1A1A));}
+
+/* ⛔ THE GREY-DEFAULT SECTION NEEDS ITS OWN SLOT, AND IT IS NOT A MINT. `grey` carries no entry in
+   CAPTION_GROUND_MINTS — that is the whole point of section 5 — so its candidates are drawn by
+   substituting `--bm-grey` directly on the specimen. Nothing in the repo moves because of it. */
+
+@media (max-width:820px){
+  main{padding:var(--sp-5,24px) var(--sp-4,16px);}
+}
+@media (prefers-reduced-motion: reduce){
+  .cdl *,.cdl *::before,.cdl *::after{transition-duration:.01ms !important;
+    animation-duration:.01ms !important;}
+}
+</style>
+</head>
+<body data-theme="light" class="cdl">
+<header class="cdl-head">
+<p class="cdl-kicker t-cm-legal">Apollo &middot; #220 &middot; s220-D1 &middot; PROPOSED</p>
+<h1 class="t-ed-heading-2">The dark caption ground, lifted in all four themes</h1>
+<p class="t-ed-body">Console was fixed first. This page extends the same fix to Mono, Legacy and Supercharge &mdash; and shows the one case it does <b>not</b> fix, so you can rule on that separately.</p>
+<p class="t-cm-legal">Every colour on this page is resolved out of <code>canon.css</code> at build time. Nothing is typed. Each right-hand card carries no override at all: it renders through the enacted rules.</p>
+</header>
+<main>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">1 &middot; What you said</p>
+<h2 class="t-ed-heading-3">Your words, and what they were enacted as</h2>
+<div class="cdl-quote"><p class="t-ed-body">&ldquo;yes the other themes need an appropriate lift too, align with the neutral primitives please&rdquo;</p><p class="cdl-attrib t-cm-legal">Dave, 2026-08-27</p></div>
+<p class="t-ed-body">The four themes do not share one grey ramp &mdash; Supercharge&rsquo;s is warm by ruling. But they <b>do</b> share one <b>address</b>: the neutral DNA tier. <code>--color-neutral-5</code> is declared once and each theme resolves it through its own ramp. So the fix is <b>one index in four rows</b>, not four hand-picked greys &mdash; and if a theme&rsquo;s ramp ever moves, this moves with it.</p>
+<ul class="cdl-lines"><li class="t-ed-body-small">Mono, Legacy and Console resolve <code>--color-neutral-5</code> to <b>#313131</b>.</li><li class="t-ed-body-small">Supercharge resolves the same token to <b>#312C26</b> &mdash; its own warm step, not a neutral grey dropped into a warm theme.</li><li class="t-ed-body-small">Light mode is untouched in every theme. The mint cannot reach it, and the generator refuses by name if anyone tries.</li><li class="t-ed-body-small">No token was minted and no alias repointed. <code>color/neutral/5</code> already existed; consuming it is the point.</li></ul>
+<div class="cdl-note"><p class="t-ed-body-small"><b>Picked by lift, not by look-alike.</b> The same grey sits differently on different pages, so the test is the <b>lift</b> off each theme&rsquo;s own dark page, measured in &Delta;L*. The band is Console&rsquo;s own number &mdash; <b>&Delta;L* 11.06</b> &mdash; give or take 2, so <b>9.00 to 13.00</b>.</p></div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">2 &middot; Before, beside after</p>
+<h2 class="t-ed-heading-3">Four themes, dark mode, the same card</h2>
+<p class="t-ed-body">Same photograph, same markup, same dials, same width. The only thing that differs inside a pair is the caption ground. <b>The left card is the substituted one</b> &mdash; it is put back to where it was this morning; the right card is simply the page as it now is.</p>
+<h3 class="t-ed-heading-4">Mono</h3>
+<p class="t-ed-body-small">The caption ground was <b>the page ground itself</b> &mdash; &Delta;L* 0.00, no capsule at all.</p>
+<div class="cdl-pair">
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Before</p>
+<p class="cdl-col-sub t-cm-legal">#1A1A1A &mdash; <code>--surface-digital-black</code>, substituted back in.</p>
+<div class="cdl-panel" data-apollo-theme="mono"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-cap-dark-darkgrey:#1A1A1A;" data-probe="before-mono"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">17.40:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +0.00 &nbsp;&middot;&nbsp; 1.000:1 &nbsp;&middot;&nbsp; outside the band</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">After &mdash; enacted</p>
+<p class="cdl-col-sub t-cm-legal">#313131 &mdash; <code>--color-neutral-5</code> (<code>color/neutral/5</code>). No override on this card.</p>
+<div class="cdl-panel" data-apollo-theme="mono"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" data-probe="after-mono"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(49,49,49) &middot; #313131</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">13.01:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +11.06 &nbsp;&middot;&nbsp; 1.338:1 &nbsp;&middot;&nbsp; IN THE BAND</dd></div></dl>
+</figure>
+</div>
+<h3 class="t-ed-heading-4">Legacy</h3>
+<p class="t-ed-body-small">The caption ground was <b>the page ground itself</b> &mdash; &Delta;L* 0.00, no capsule at all.</p>
+<div class="cdl-pair">
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Before</p>
+<p class="cdl-col-sub t-cm-legal">#1A1A1A &mdash; <code>--surface-digital-black</code>, substituted back in.</p>
+<div class="cdl-panel" data-apollo-theme="legacy"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-cap-dark-darkgrey:#1A1A1A;" data-probe="before-legacy"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">17.40:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +0.00 &nbsp;&middot;&nbsp; 1.000:1 &nbsp;&middot;&nbsp; outside the band</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">After &mdash; enacted</p>
+<p class="cdl-col-sub t-cm-legal">#313131 &mdash; <code>--color-neutral-5</code> (<code>color/neutral/5</code>). No override on this card.</p>
+<div class="cdl-panel" data-apollo-theme="legacy"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" data-probe="after-legacy"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(49,49,49) &middot; #313131</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">13.01:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +11.06 &nbsp;&middot;&nbsp; 1.338:1 &nbsp;&middot;&nbsp; IN THE BAND</dd></div></dl>
+</figure>
+</div>
+<h3 class="t-ed-heading-4">Console</h3>
+<p class="t-ed-body-small">The caption ground was <b>the page ground itself</b> &mdash; &Delta;L* 0.00, no capsule at all.</p>
+<div class="cdl-pair">
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Before</p>
+<p class="cdl-col-sub t-cm-legal">#1A1A1A &mdash; <code>--surface-digital-black</code>, substituted back in.</p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-cap-dark-darkgrey:#1A1A1A;" data-probe="before-console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">17.40:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +0.00 &nbsp;&middot;&nbsp; 1.000:1 &nbsp;&middot;&nbsp; outside the band</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">After &mdash; enacted</p>
+<p class="cdl-col-sub t-cm-legal">#313131 &mdash; <code>--color-neutral-5</code> (<code>color/neutral/5</code>). No override on this card.</p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" data-probe="after-console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(49,49,49) &middot; #313131</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">13.01:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +11.06 &nbsp;&middot;&nbsp; 1.338:1 &nbsp;&middot;&nbsp; IN THE BAND</dd></div></dl>
+</figure>
+</div>
+<h3 class="t-ed-heading-4">Supercharge</h3>
+<p class="t-ed-body-small">The caption ground was <b>darker than the page</b> &mdash; &Delta;L* -4.10, the inversion.</p>
+<div class="cdl-pair">
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Before</p>
+<p class="cdl-col-sub t-cm-legal">#13110E &mdash; <code>--surface-digital-black</code>, substituted back in.</p>
+<div class="cdl-panel" data-apollo-theme="supercharge"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-cap-dark-darkgrey:#13110E;" data-probe="before-supercharge"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(19,17,14) &middot; #13110E</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">17.45:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* -4.10 &nbsp;&middot;&nbsp; 1.083:1 &nbsp;&middot;&nbsp; BELOW THE PAGE</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">After &mdash; enacted</p>
+<p class="cdl-col-sub t-cm-legal">#312C26 &mdash; <code>--color-neutral-5</code> (<code>color/neutral/5</code>). No override on this card.</p>
+<div class="cdl-panel" data-apollo-theme="supercharge"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" data-probe="after-supercharge"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(49,44,38) &middot; #312C26</dd></div><div class="cdl-num"><dt class="t-cm-legal">Page ground</dt><dd class="t-cm-figure-6">rgb(26,26,26) &middot; #1A1A1A</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">12.80:1 &mdash; CLEARS the ruled 4.5:1 floor</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +9.08 &nbsp;&middot;&nbsp; 1.259:1 &nbsp;&middot;&nbsp; IN THE BAND</dd></div></dl>
+</figure>
+</div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">3 &middot; The half that must not move</p>
+<h2 class="t-ed-heading-3">And light did not move, in any theme</h2>
+<p class="t-ed-body">The dark grey ramp is <b>mode-inverted</b>: the tokens that would give dark its lift are pale in light, and a caption ground repointed in both modes would put white ink on a near-white card. That is why this is a dark-only bind. Below is the same card in <b>light</b>, in all four themes, rendering through the enacted rules.</p>
+<div class="cdl-refs">
+<figure class="cdl-ref">
+<p class="cdl-ref-cap t-cm-legal">Mono &middot; light</p>
+<div class="cdl-panel" data-apollo-theme="mono"><div class="cdl-panel-bd" data-theme="light"><div class="br-spec" data-probe="light-mono"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<p class="cdl-ref-nums t-cm-figure-6">rgb(26,26,26) &middot; ink 17.40:1 &mdash; unchanged</p>
+</figure>
+<figure class="cdl-ref">
+<p class="cdl-ref-cap t-cm-legal">Legacy &middot; light</p>
+<div class="cdl-panel" data-apollo-theme="legacy"><div class="cdl-panel-bd" data-theme="light"><div class="br-spec" data-probe="light-legacy"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<p class="cdl-ref-nums t-cm-figure-6">rgb(26,26,26) &middot; ink 17.40:1 &mdash; unchanged</p>
+</figure>
+<figure class="cdl-ref">
+<p class="cdl-ref-cap t-cm-legal">Console &middot; light</p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="light"><div class="br-spec" data-probe="light-console"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<p class="cdl-ref-nums t-cm-figure-6">rgb(26,26,26) &middot; ink 17.40:1 &mdash; unchanged</p>
+</figure>
+<figure class="cdl-ref">
+<p class="cdl-ref-cap t-cm-legal">Supercharge &middot; light</p>
+<div class="cdl-panel" data-apollo-theme="supercharge"><div class="cdl-panel-bd" data-theme="light"><div class="br-spec" data-probe="light-supercharge"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="darkgrey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<p class="cdl-ref-nums t-cm-figure-6">rgb(19,17,14) &middot; ink 17.45:1 &mdash; unchanged</p>
+</figure>
+</div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">4 &middot; The grounds alone</p>
+<h2 class="t-ed-heading-3">The same four decisions with the picture taken away</h2>
+<p class="t-ed-body">Each row is one theme&rsquo;s dark page with the caption ground painted on it &mdash; before on the left, after on the right. This is the quickest place to point.</p>
+<div class="cdl-strip">
+<div class="cdl-strip-row"><div class="cdl-strip-lbl t-cm-legal">Theme</div><div class="cdl-strip-lbl t-cm-legal">Before</div><div class="cdl-strip-lbl t-cm-legal">After</div><div class="cdl-strip-fig t-cm-legal">Lift, before &rarr; after</div></div>
+<div class="cdl-strip-row">
+<div class="cdl-strip-lbl t-ed-body-small">Mono<br><span class="t-cm-legal">page #1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#1A1A1A;"><span class="t-cm-figure-6">#1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#313131;"><span class="t-cm-figure-6">#313131</span></div>
+<div class="cdl-strip-fig t-cm-figure-6">&Delta;L* +0.00 &rarr; +11.06</div>
+</div>
+<div class="cdl-strip-row">
+<div class="cdl-strip-lbl t-ed-body-small">Legacy<br><span class="t-cm-legal">page #1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#1A1A1A;"><span class="t-cm-figure-6">#1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#313131;"><span class="t-cm-figure-6">#313131</span></div>
+<div class="cdl-strip-fig t-cm-figure-6">&Delta;L* +0.00 &rarr; +11.06</div>
+</div>
+<div class="cdl-strip-row">
+<div class="cdl-strip-lbl t-ed-body-small">Console<br><span class="t-cm-legal">page #1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#1A1A1A;"><span class="t-cm-figure-6">#1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#313131;"><span class="t-cm-figure-6">#313131</span></div>
+<div class="cdl-strip-fig t-cm-figure-6">&Delta;L* +0.00 &rarr; +11.06</div>
+</div>
+<div class="cdl-strip-row">
+<div class="cdl-strip-lbl t-ed-body-small">Supercharge<br><span class="t-cm-legal">page #1A1A1A</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#13110E;"><span class="t-cm-figure-6">#13110E</span></div>
+<div class="cdl-swatch" style="--cdl-page-dark:#1A1A1A; --cdl-ground:#312C26;"><span class="t-cm-figure-6">#312C26</span></div>
+<div class="cdl-strip-fig t-cm-figure-6">&Delta;L* -4.10 &rarr; +9.08</div>
+</div>
+</div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">5 &middot; A separate decision &mdash; yours to veto alone</p>
+<h2 class="t-ed-heading-3">The caption ground the page actually ships in still barely lifts</h2>
+<p class="t-ed-body">Everything above is the <b>dark grey</b> caption ground &mdash; an option in the capsule chord. It is <b>not</b> what the gallery ships in. Console and Mono ship a <b>lightest-grey</b> caption, which in dark resolves <b>#1F1F1F</b> against a <b>#1A1A1A</b> page: &Delta;L* +2.49. Nearly as invisible as the thing that was just fixed.</p>
+<div class="cdl-note"><p class="t-ed-body-small"><b>Nothing here is enacted, and the reason is a gap in the ramp, not caution.</b> The band member that fixed the dark-grey ground is <code>--color-neutral-5</code>. Point the lightest-grey caption at it too and the two options become <b>the same colour</b> with two different ink rules &mdash; the option stops being an option. The next primitives down are the elevation steps, and they fall <b>short of the band</b>. So there is no primitive that lifts this ground into the band without colliding, and inventing a value is a promotion, which is yours.</p></div>
+<p class="t-ed-body">Drawn below: what ships today, and the two existing primitives nearest to a fix. Both are real tokens; <b>neither reaches the band.</b></p>
+<div class="cdl-pair">
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Ships today &mdash; #1F1F1F</p>
+<p class="cdl-col-sub t-cm-legal"><code>--surface-subtle</code></p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-grey:#1F1F1F;" data-probe="grey-1F1F1F"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(31,31,31) &middot; #1F1F1F</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +2.49 &nbsp;&middot;&nbsp; short of the band by 6.51</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">16.48:1</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Candidate &mdash; #232323</p>
+<p class="cdl-col-sub t-cm-legal"><code>--color-neutral-raise-2</code> &mdash; drawn, not enacted.</p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-grey:#232323;" data-probe="grey-232323"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(35,35,35) &middot; #232323</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +4.45 &nbsp;&middot;&nbsp; short of the band by 4.55</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">15.72:1</dd></div></dl>
+</figure>
+<figure class="cdl-col">
+<p class="cdl-col-hd t-ed-heading-5">Candidate &mdash; #272727</p>
+<p class="cdl-col-sub t-cm-legal"><code>--color-neutral-raise-3</code> &mdash; drawn, not enacted.</p>
+<div class="cdl-panel" data-apollo-theme="console"><div class="cdl-panel-bd" data-theme="dark"><div class="br-spec" style="--bm-grey:#272727;" data-probe="grey-272727"><div class="bm-stage" data-type="gallery" data-page-bg="page" data-spacing="40" data-keylines="off" data-bento-bg="transparent" data-mode="bento" data-edge="square" data-rounding="capsule" data-cap-bg="grey"><div class="bm-page-ground"><div class="bm-pane" data-pane="gallery"><div class="c-bento bm-wall bm-gallery cdl-wall" data-bento-role="gallery"><div class="c-bento__grid">
+      <figure class="c-bento__tile bm-tile bm-gtile " data-c="1" data-r="1" data-ragged="1,1" data-square="1,1"><span class="bm-imgbox"><img class="bm-img" src="../knowledge/assets/photography-web/eyeem-100014108-180570836-w1600.jpg" alt="PORTRAIT OF YOUNG MAN ON STEPS" loading="lazy" width="1600" height="1067"></span><figcaption class="c-bento__caption bm-cap"><span class="bm-desc t-ed-caption">PORTRAIT OF YOUNG MAN ON STEPS</span><span class="bm-lic t-cm-legal">Copyright &copy; 2021, Dmitry Marchenko, licensed via EyeEm Mobile GmbH</span></figcaption></figure>
+</div></div></div></div></div></div></div></div>
+<dl class="cdl-nums"><div class="cdl-num"><dt class="t-cm-legal">Caption ground</dt><dd class="t-cm-figure-6">rgb(39,39,39) &middot; #272727</dd></div><div class="cdl-num"><dt class="t-cm-legal">Lift off the page</dt><dd class="t-cm-figure-6">&Delta;L* +6.37 &nbsp;&middot;&nbsp; short of the band by 2.63</dd></div><div class="cdl-num"><dt class="t-cm-legal">Ink on that ground</dt><dd class="t-cm-figure-6">14.94:1</dd></div></dl>
+</figure>
+</div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">6 &middot; Where it is written</p>
+<h2 class="t-ed-heading-3">One table, four rows, and everything else derived</h2>
+<p class="t-ed-body">The whole decision is one table in <code>knowledge/_render/gen_bento_matrix_217.py</code>. The stylesheet, the manifest the library page reads, the contrast gate and this page all read it; nothing is typed twice.</p>
+<div class="cdl-scroll"><table class="cdl-table">
+<thead><tr><th class="t-cm-legal">Theme</th><th class="t-cm-legal">Resolves through</th><th class="t-cm-legal">Was</th><th class="t-cm-legal">Now</th><th class="t-cm-legal">Lift</th><th class="t-cm-legal">Ink</th><th class="t-cm-legal">Selectable today?</th></tr></thead><tbody>
+<tr><td class="t-ed-body-small">Mono</td><td class="t-cm-figure-6">--color-neutral-5</td><td class="t-cm-figure-6">#1A1A1A</td><td class="t-cm-figure-6">#313131</td><td class="t-cm-figure-6">+0.00 &rarr; +11.06</td><td class="t-cm-figure-6">13.01:1</td><td class="t-ed-body-small">no &mdash; the chord is Console-only, still open</td></tr>
+<tr><td class="t-ed-body-small">Legacy</td><td class="t-cm-figure-6">--color-neutral-5</td><td class="t-cm-figure-6">#1A1A1A</td><td class="t-cm-figure-6">#313131</td><td class="t-cm-figure-6">+0.00 &rarr; +11.06</td><td class="t-cm-figure-6">13.01:1</td><td class="t-ed-body-small">no &mdash; the chord is Console-only, still open</td></tr>
+<tr><td class="t-ed-body-small">Console</td><td class="t-cm-figure-6">--color-neutral-5</td><td class="t-cm-figure-6">#1A1A1A</td><td class="t-cm-figure-6">#313131</td><td class="t-cm-figure-6">+0.00 &rarr; +11.06</td><td class="t-cm-figure-6">13.01:1</td><td class="t-ed-body-small">yes</td></tr>
+<tr><td class="t-ed-body-small">Supercharge</td><td class="t-cm-figure-6">--color-neutral-5</td><td class="t-cm-figure-6">#13110E</td><td class="t-cm-figure-6">#312C26</td><td class="t-cm-figure-6">-4.10 &rarr; +9.08</td><td class="t-cm-figure-6">12.80:1</td><td class="t-ed-body-small">no &mdash; the chord is Console-only, still open</td></tr>
+</tbody></table></div>
+<div class="cdl-note"><p class="t-ed-body-small"><b>Three of the four cannot be selected yet, and that is deliberate.</b> Whether Mono, Legacy and Supercharge get the dark caption ground at all is a question left open in September&rsquo;s ruling and it is still open. What changed here is only what the ground <b>would</b> paint. Nothing was granted.</p></div>
+</section>
+<section class="cdl-sec">
+<p class="cdl-kicker t-cm-legal">7 &middot; Not decided here</p>
+<h2 class="t-ed-heading-3">What is still yours</h2>
+<div class="cdl-open">
+<ul class="cdl-lines"><li class="t-ed-body-small"><b>Is the lift right?</b> Three themes land on Console&rsquo;s exact number. Supercharge lands 9.08, a little under, because its warm ramp has no step nearer the band. The one that is nearer &mdash; its third elevation step, #322E29 &mdash; is a <b>calculated</b> value, not one pulled from Figma, and it belongs to the raised-surface family the other two caption grounds already use.</li><li class="t-ed-body-small"><b>Should Supercharge stay warm here at all?</b> Its dark <b>page</b> is a neutral #1A1A1A while its surfaces are warm. Keeping the caption warm follows the theme; matching the page would mean a neutral grey. This page draws the warm answer &mdash; the neutral one would be #313131, &Delta;L* +11.06.</li><li class="t-ed-body-small"><b>The lightest-grey default (section 5).</b> Veto it on its own: leave it, move the shipped default onto the dark-grey ground that now works, or add a step to the ramp &mdash; which is a promotion.</li><li class="t-ed-body-small"><b>Does a semantic role get minted?</b> Today the binding reads the primitive directly. That is honest for a proposed value with no role yet and wrong as a permanent shape.</li><li class="t-ed-body-small"><b>Does the chord open to the other three themes?</b> Untouched here, and still open.</li></ul>
+</div>
+</section>
+<section class="cdl-sec">
+<div class="cdl-foot">
+<p class="t-cm-legal"><b>Method.</b> Specimen markup and specimen CSS are copied verbatim from <code>showroom/_foundations/bento-rails.html</code> between explicit COPIED-FROM-ARTEFACT markers; canon supplies the rest. The mint rules on this page are emitted by the generator&rsquo;s own <code>caption_mint_rules()</code> and asserted byte-present in that artefact before the page is written, so a proof page over a stale artefact raises instead of going green.</p>
+<p class="t-cm-legal"><b>Status.</b> PROPOSED. The rule is yours; the values are proposed to your eye. No ruling was inscribed and nothing was committed by the lane that built this. Light mode is byte-identical in all four themes. Every ground on this page is neutral (R=G=B) except Supercharge&rsquo;s, which is its own ruled warm ramp and is asserted monotone warm. No red, no yellow, no green. Built #220, 2026-08-27.</p>
+</div>
+</section>
+</main>
+</body>
+</html>

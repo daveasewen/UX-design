@@ -21,13 +21,32 @@ without a cycle. This module imports only the standard library, so BOTH may cons
 explorer's boot STATE and the library's compiled settings can be the same twelve values rather
 than two tables that agree today.
 
+⬛ AND THE RECEIPT IS NOT THE LAST WORD — s220-D2 (2), #220, 2026-08-27. Dave superseded two dials
+of his own console gallery export in chat: "if you are asking for a default lets go with rounded
+corner image with transparent capsule" and, over the light/dark pair, "I guess this would be the
+default for the two modes." A supersession is APPLIED OVER the parse by `SUPERSESSIONS` below; the
+receipt is never rewritten. His word outranks his own export (the s219-D2 (1) latest-wins pattern),
+and the export stays on disk as the RECEIPT of what he approved at #219.
+
 WHAT A CONSUMER GETS
-  DEFAULTS[type][theme]        -> the export's `state` block (the RULING)
+  DEFAULTS[type][theme]        -> the SHIPPED default: the export's `state` block with every ruled
+                                  supersession applied (the RULING as it stands today)
+  RECEIPT_DEFAULTS[type][theme]-> the export's `state` block AS PARSED, frozen history
+  SUPERSESSIONS                -> the ruled overrides, each naming its ruling, the receipt's word,
+                                  the word that replaced it and Dave's own sentence
   RESOLVED[type][theme]        -> the export's `resolved` block (the RECEIPT: pixels Dave saw)
+  RESOLVED_SUPERSEDED[type][theme] -> {receipt field: why} — the `resolved` readbacks a supersession
+                                  has made STALE, so a probe declares the divergence instead of
+                                  cross-checking a shipped page against a retired default
   SPACING_STOPS                -> s219-D1 (4), the ruled stop set {1, 2, 4, 16, 24, 40}
   DIALS[type]                  -> the dial names that type's grammar carries
+  MODES                        -> the two modes a default answers for (s220-D2 (2): ONE default,
+                                  both modes — the twelve state blocks carry no mode axis)
   spacing_px(word)             -> "40px" for a ruled stop; a NAMED refusal otherwise
   state(type, theme)           -> one state block, refusing loudly on an unknown pair
+  default_for_mode(t, th, m)   -> the same block for `light` and for `dark`; an unknown mode is a
+                                  NAMED refusal. This is s220-D2 (2)'s "default for the two modes"
+                                  as machinery rather than as a comment.
 
 ⚠ THE `resolved` BLOCKS ARE RECEIPTS, NOT SETTINGS ([[premise-ages-faster-than-rule]]). They are
 what the tuner measured in the tab the export was taken in, all twelve in `mode: light`. They are
@@ -166,7 +185,137 @@ def _parse(path=RECEIPT):
     return defaults, resolved, receipt_theme
 
 
-DEFAULTS, RESOLVED, RECEIPT_RESOLVED_THEME = _parse()
+RECEIPT_DEFAULTS, RESOLVED, RECEIPT_RESOLVED_THEME = _parse()
+
+# ---------------------------------------------------------------------------
+# ⬛ s220-D2 (2) — THE CONSOLE GALLERY DEFAULT BECOMES CHORD TWO, IN BOTH MODES
+# ---------------------------------------------------------------------------
+# Dave, #220, off reviews/CORRECTION-READINGS-2026-08-27-v1.html:
+#   "these 4 are all \"legal\". but if you are asking for a default lets go with rounded corner
+#    image with transparent capsule"
+#   and over the light/dark pair: "I guess this would be the default for the two modes"
+# s219-D3(3) names that pair CHORD TWO — `rounding: corners` on the image, `capBg: transparent`.
+# It supersedes s219-D2 (3)'s capsule default AND the console-gallery capsule+grey rows of the
+# s219-D1 (3) tuner exports, and it aligns console's gallery default with legacy and supercharge.
+#
+# ⛔ THE SUPERSESSION IS A LAYER, NOT AN EDIT. The receipt
+# (`notes/_receipts/2026-08-25-219-role-defaults-exports.md`) is a RECEIPT — the twelve verbatim
+# exports Dave took in his own tuner. Rewriting a row of it to match a later ruling would destroy
+# the evidence of what he approved at #219 and leave the supersession invisible
+# ([[header-wins-over-audit]]: add to a ratified record, never trim it). So the parse above is kept
+# whole as `RECEIPT_DEFAULTS`, and every override below states the word it replaces — which is
+# ASSERTED against the receipt at import time, so an edited receipt is a LOUD refusal rather than
+# a silently absorbed change.
+#
+# ⛔ NOTHING HERE REMOVES AN OPTION. s220-D2 (1): "these 4 are all 'legal'" — all four caption
+# treatments stay reachable in the edit pass. A supersession moves the DEFAULT and touches no
+# option set; readings A and B, which would have removed options, are REJECTED by the same ruling.
+# The option space lives in `gen_bento_matrix_217` (ROUNDINGS / GROUND_RAMP / capbg_for) and this
+# module cannot reach it — the separation is the guarantee, and `gen_foundations_217`'s selftest
+# asserts it where both are in scope.
+#
+# ⛔ MONO IS NOT HERE, AND ITS ABSENCE IS THE RULING. s220-D2 (3) leaves mono's gallery default
+# (`capBg: grey`) EXPRESSLY OPEN — asked in chat, not ruled — so it keeps grey until Dave's word.
+# `no_supersession` below is a positive statement of that, not an oversight, and the selftest bites
+# it in both directions.
+SUPERSESSIONS = [
+    {
+        "type": "gallery", "theme": "console", "dial": "rounding",
+        "was": "capsule", "now": "corners",
+        "ruled_by": "s220-D2 (2)",
+        "supersedes": "s219-D2 (3) · the s219-D1 (3) console gallery export",
+        "modes": "both — one default, identical in light and dark",
+        "dave": "if you are asking for a default lets go with rounded corner image with "
+                "transparent capsule",
+    },
+    {
+        "type": "gallery", "theme": "console", "dial": "capBg",
+        "was": "grey", "now": "transparent",
+        "ruled_by": "s220-D2 (2)",
+        "supersedes": "the s219-D1 (3) console gallery export (capsule + grey ground)",
+        "modes": "both — one default, identical in light and dark",
+        "dave": "I guess this would be the default for the two modes",
+    },
+]
+
+# (type, theme) pairs a ruling has EXPRESSLY left alone, so an absence can be read as a decision.
+NO_SUPERSESSION = {
+    ("gallery", "mono"): "s220-D2 (3) — mono's gallery default (capBg: grey) is EXPRESSLY OPEN: "
+                         "asked in chat, not ruled. It keeps grey until Dave's word.",
+}
+
+# The two modes a default answers for. ⛔ NOT A NEW AXIS: the twelve state blocks carry no mode
+# dimension and s220-D2 (2) rules that they should not — "the default for the two modes" is ONE
+# default that both modes render. The tuple exists so `default_for_mode` can refuse a third word.
+MODES = ("light", "dark")
+
+
+def _apply_supersessions(receipt):
+    """-> (live defaults, {(type,theme): {resolved field: why}}). LOUD on any disagreement.
+
+    ⛔ THE `was` FIELD IS A GATE, NOT A COMMENT. If the receipt no longer says what the
+    supersession claims to be superseding, the two records have drifted and this module refuses
+    rather than applying an override to a word nobody ruled about
+    ([[premise-ages-faster-than-rule]])."""
+    live = {t: {th: dict(s) for th, s in per.items()} for t, per in receipt.items()}
+    stale = {}
+    # which `resolved` readback each dial's pixels live under, so a superseded dial can name the
+    # receipt field it has made stale instead of leaving a probe to cross-check a retired default.
+    field_for = {"capBg": "captionBackground", "bentoBg": "bentoBackground",
+                 "pageBg": "pageBackground", "rounding": "tileRadiusPx",
+                 "keylines": "tileBorderPx"}
+    for sup in SUPERSESSIONS:
+        t, th, dial = sup["type"], sup["theme"], sup["dial"]
+        if t not in live or th not in live[t]:
+            raise RoleDefaultsError(
+                "%s supersedes %s/%s, which the receipt does not carry" % (sup["ruled_by"], t, th))
+        if dial not in DIALS[t]:
+            raise RoleDefaultsError(
+                "%s supersedes the dial %r, which is not part of the %s grammar (%s)"
+                % (sup["ruled_by"], dial, t, "/".join(DIALS[t])))
+        if (t, th) in NO_SUPERSESSION:
+            raise RoleDefaultsError(
+                "%s supersedes %s/%s, which is EXPRESSLY left alone: %s"
+                % (sup["ruled_by"], t, th, NO_SUPERSESSION[(t, th)]))
+        got = receipt[t][th][dial]
+        if got != sup["was"]:
+            raise RoleDefaultsError(
+                "%s says it supersedes %s/%s.%s = %r, but the receipt says %r. The receipt is "
+                "FROZEN HISTORY and a supersession may not be applied to a word nobody ruled "
+                "about — reconcile the two records before this module can answer."
+                % (sup["ruled_by"], t, th, dial, sup["was"], got))
+        if sup["was"] == sup["now"]:
+            raise RoleDefaultsError(
+                "%s supersedes %s/%s.%s with the value it already has (%r) — an override that "
+                "changes nothing is a record of a decision that did not happen"
+                % (sup["ruled_by"], t, th, dial, sup["now"]))
+        live[t][th][dial] = sup["now"]
+        fld = field_for.get(dial)
+        if fld:
+            stale.setdefault(t, {}).setdefault(th, {})[fld] = (
+                "%s moved %s from %r to %r; this readback is the pixel the RETIRED default "
+                "resolved and no longer describes the shipped page"
+                % (sup["ruled_by"], dial, sup["was"], sup["now"]))
+    return live, stale
+
+
+DEFAULTS, RESOLVED_SUPERSEDED = _apply_supersessions(RECEIPT_DEFAULTS)
+
+
+def supersession_rows():
+    """-> the ruled overrides as flat rows, for a manifest or a report. The receipt's word is
+    carried BESIDE the live one — a supersession that printed only the new value would read as if
+    the export had always said it."""
+    return [{"type": s["type"], "theme": s["theme"], "dial": s["dial"],
+             "receipt": s["was"], "shipped": s["now"], "ruled_by": s["ruled_by"],
+             "supersedes": s["supersedes"], "modes": s["modes"], "dave": s["dave"]}
+            for s in SUPERSESSIONS]
+
+
+def superseded_dials(type_, theme):
+    """-> {dial: the receipt's retired word} for one intersection; {} where nothing was ruled."""
+    return {s["dial"]: s["was"] for s in SUPERSESSIONS
+            if s["type"] == type_ and s["theme"] == theme}
 
 
 def state(type_, theme):
@@ -177,6 +326,22 @@ def state(type_, theme):
         raise RoleDefaultsError(
             "no #219 default for type=%r theme=%r — the ruled set is %s x %s"
             % (type_, theme, TYPES, THEMES))
+
+
+def default_for_mode(type_, theme, mode):
+    """-> the shipped default block for ONE mode. ⬛ s220-D2 (2) — "I guess this would be the
+    default for the two modes": there is ONE default and both modes render it, so this returns the
+    SAME block for `light` and for `dark`.
+
+    ⛔ IT EXISTS TO BE ASKED, NOT TO BRANCH. A caller that wants a per-mode default has to widen
+    this function, and widening it is a ruling — which is the whole difference between a default
+    that happens to be the same in both modes today and one Dave ruled identical
+    ([[translate-prose-into-machinery]]). An unknown mode is a NAMED refusal, never a default."""
+    if mode not in MODES:
+        raise RoleDefaultsError(
+            "mode %r is not one of %s — a default answers for the two modes (s220-D2 (2)) and a "
+            "third mode is not a thing this grammar has." % (mode, "/".join(MODES)))
+    return state(type_, theme)
 
 
 def spacing_px(word):
@@ -212,13 +377,18 @@ def used_stops():
 
 
 def table():
-    """-> the twelve, one line each, for a human and for the report."""
+    """-> the twelve SHIPPED defaults, one line each, for a human and for the report. A dial a
+    ruling superseded prints the receipt's retired word beside it — a table that showed only the
+    live value would read as if the export had always said it."""
     out = []
     for t in TYPES:
         for th in THEMES:
-            s = DEFAULTS[t][th]
-            out.append("  %-9s %-11s %s" % (t, th, " · ".join(
-                "%s=%s" % (d, s[d]) for d in DIALS[t])))
+            s, sup = DEFAULTS[t][th], superseded_dials(t, th)
+            bits = []
+            for d in DIALS[t]:
+                bits.append("%s=%s%s" % (d, s[d],
+                                         " (was %s)" % sup[d] if d in sup else ""))
+            out.append("  %-9s %-11s %s" % (t, th, " · ".join(bits)))
     return "\n".join(out)
 
 
@@ -243,8 +413,61 @@ def selftest():
     # s219-D2 (2) / (3) / (4), likewise hand-computed off the ruling's words.
     if sorted({DEFAULTS["gallery"][th]["edge"] for th in THEMES}) != ["square"]:
         fails.append("s219-D2 (2) rules SQUARE the gallery default in all four themes")
-    if DEFAULTS["gallery"]["console"]["rounding"] != "capsule":
-        fails.append("s219-D2 (3) rules the console gallery rounding CAPSULE")
+    # ⬛ s220-D2 (2) — THE CONSOLE GALLERY DEFAULT IS CHORD TWO, AND THE RECEIPT STILL SAYS CAPSULE.
+    # Both halves are asserted: the shipped pair, and the frozen row it superseded. A bite that
+    # only checked the new value would go green the day someone "tidied" the receipt to match, and
+    # the evidence of what Dave approved at #219 would be gone with no gate firing.
+    live_console = DEFAULTS["gallery"]["console"]
+    if (live_console["rounding"], live_console["capBg"]) != ("corners", "transparent"):
+        fails.append("s220-D2 (2) rules the console gallery default CHORD TWO — rounding=corners, "
+                     "capBg=transparent; the live table says rounding=%s, capBg=%s"
+                     % (live_console["rounding"], live_console["capBg"]))
+    rec_console = RECEIPT_DEFAULTS["gallery"]["console"]
+    if (rec_console["rounding"], rec_console["capBg"]) != ("capsule", "grey"):
+        fails.append("the #219 receipt's console gallery export no longer reads capsule + grey "
+                     "(it reads %s + %s) — s219-D2 (3) and the export are FROZEN HISTORY and the "
+                     "supersession layer is what moves the shipped default, never the receipt"
+                     % (rec_console["rounding"], rec_console["capBg"]))
+    # ⬛ s220-D2 (2) — ONE DEFAULT, BOTH MODES. Driven through the accessor rather than asserted in
+    # prose, and the third mode is driven too: a refusal nobody tries to cross is not a fence
+    # ([[instrument-without-a-consumer]]).
+    if default_for_mode("gallery", "console", "light") != \
+            default_for_mode("gallery", "console", "dark"):
+        fails.append("s220-D2 (2) rules ONE console gallery default for the two modes; "
+                     "default_for_mode returns two different blocks")
+    try:
+        default_for_mode("gallery", "console", "auto")
+        fails.append("default_for_mode accepted a mode outside %s — an unknown mode must be a "
+                     "NAMED refusal, never a default" % (MODES,))
+    except RoleDefaultsError:
+        pass
+    # ⬛ s220-D2 (3) — MONO'S GALLERY DEFAULT IS UNCHANGED, and the absence is asserted as a
+    # DECISION. Three clauses: the live block is byte-identical to the receipt's, no supersession
+    # names mono, and the ground is still `grey`. ⛔ A later lane that moves mono to match console
+    # reds here by name rather than sliding through on the console bite.
+    if DEFAULTS["gallery"]["mono"] != RECEIPT_DEFAULTS["gallery"]["mono"]:
+        fails.append("s220-D2 (3) leaves mono's gallery default EXPRESSLY OPEN — the live block "
+                     "must equal the receipt's, and it does not (%s vs %s)"
+                     % (DEFAULTS["gallery"]["mono"], RECEIPT_DEFAULTS["gallery"]["mono"]))
+    if superseded_dials("gallery", "mono"):
+        fails.append("a supersession names gallery/mono, which s220-D2 (3) leaves OPEN: %s"
+                     % superseded_dials("gallery", "mono"))
+    # ⬛ THE SUPERSESSION LAYER TOUCHES NOTHING IT DOES NOT NAME. Every other intersection must be
+    # the receipt's, unchanged — a default switch that leaked would be exactly the removal
+    # s220-D2 (1) rejects, and the leak would be invisible one intersection at a time.
+    named = {(s["type"], s["theme"]) for s in SUPERSESSIONS}
+    leaked = sorted("%s/%s" % (t, th) for t in TYPES for th in THEMES
+                    if (t, th) not in named and DEFAULTS[t][th] != RECEIPT_DEFAULTS[t][th])
+    if leaked:
+        fails.append("the supersession layer changed %s, which no ruling names — a default switch "
+                     "that reaches an intersection it did not name is a change nobody ruled"
+                     % leaked)
+    # and inside the one intersection it DOES name, only the two ruled dials moved.
+    moved = sorted(d for d in DIALS["gallery"]
+                   if DEFAULTS["gallery"]["console"][d] != RECEIPT_DEFAULTS["gallery"]["console"][d])
+    if moved != ["capBg", "rounding"]:
+        fails.append("s220-D2 (2) moves exactly `rounding` and `capBg` on console gallery; "
+                     "the layer moved %s" % moved)
     on = sorted("%s/%s" % (t, th) for t in TYPES for th in THEMES
                 if DEFAULTS[t][th]["keylines"] == "on")
     if on != ["display/legacy", "gallery/legacy"]:
@@ -275,6 +498,15 @@ def main():
     print("THE TWELVE #219 SHIPPED DEFAULTS (s219-D1), parsed from %s\n"
           % os.path.relpath(RECEIPT, ROOT))
     print(table())
+    print("\nRULED SUPERSESSIONS — applied over the receipt, which is FROZEN HISTORY:")
+    if not SUPERSESSIONS:
+        print("  (none)")
+    for r in supersession_rows():
+        print("  %s/%s.%s  %s → %s   [%s, %s]\n     supersedes %s\n     Dave: \"%s\""
+              % (r["type"], r["theme"], r["dial"], r["receipt"], r["shipped"],
+                 r["ruled_by"], r["modes"], r["supersedes"], r["dave"]))
+    for (t, th), why in sorted(NO_SUPERSESSION.items()):
+        print("  ⛔ %s/%s EXPRESSLY OPEN — %s" % (t, th, why))
     return 0
 
 

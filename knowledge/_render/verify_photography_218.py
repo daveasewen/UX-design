@@ -405,6 +405,19 @@ def drive(path, themes, shots=None):
                 # keyword (a page body that paints nothing falls through to the UA canvas). That
                 # divergence is DECLARED, not skipped in silence.
                 rec = foundations.RECEIPT_RESOLVED["gallery"][theme]
+                # ⬛ s220-D2 (2) — AND A READBACK A LATER RULING RETIRED IS NOT EVIDENCE ANY MORE.
+                # ⛔ THE CLASS, NOT THE CASE: the twelve #219 `resolved` blocks are the pixels the
+                # THEN-shipped default painted. When a ruling supersedes a dial, its readback
+                # describes a wall that no longer ships, and cross-checking today's paint against
+                # it reds the ENACTMENT rather than a defect. The retired fields are read from
+                # `foundations.RESOLVED_SUPERSEDED`, which is derived from the supersession layer
+                # itself — never from a theme name typed here — so the next supersession is
+                # covered without anyone remembering to come back. ⚠ AND IT IS DECLARED, NOT
+                # SKIPPED: the divergence prints with the ruling that caused it, exactly as the
+                # transparent-page divergence below does. The dial word is still checked against
+                # its TOKEN a few lines above (`_want_ground`), so the caption is not unwatched.
+                retired = getattr(foundations, "RESOLVED_SUPERSEDED", {}).get(
+                    "gallery", {}).get(theme, {})
                 if mode == "light":
                     if ruled["pageBg"] != "transparent":
                         if not _same_colour(s["pageGround"], rec["pageBackground"]):
@@ -416,7 +429,13 @@ def drive(path, themes, shots=None):
                                      "(transparent); this page compiles the DOCUMENT ground "
                                      "instead — declared divergence, %s"
                                      % (theme, rec["pageBackground"], s["pageGround"]))
-                    if not _same_colour((s["capBg"] or [None])[0], rec["captionBackground"]):
+                    if "captionBackground" in retired:
+                        lines.append("     ⚠ %s: the export resolved captionBackground %s, "
+                                     "RETIRED — %s; the page resolves %s"
+                                     % (theme, rec["captionBackground"],
+                                        retired["captionBackground"],
+                                        (s["capBg"] or [None])[0]))
+                    elif not _same_colour((s["capBg"] or [None])[0], rec["captionBackground"]):
                         fails.append("%s CAPTION — %s: Dave's export resolved captionBackground "
                                      "%s; the page resolves %s"
                                      % (SETTINGS_BUCKET, tag, rec["captionBackground"],

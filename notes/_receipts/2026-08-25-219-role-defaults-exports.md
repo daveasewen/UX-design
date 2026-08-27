@@ -446,3 +446,10 @@ white page) from the defect side. ⛔ **PARKED by Dave in the same breath** ("i 
 now though") — the bento lane resumes after the Apollo designer-release task. ⚠ Until enacted, the
 bento-rails page carries one card he has said would never exist — known, accepted as parked.
 
+**DISCHARGED 2026-08-27 (#220), BY ADDITION — `s220-D2`.** Dave superseded his own correction off
+the readings surface (`reviews/CORRECTION-READINGS-2026-08-27-v1.html`): *"these 4 are all
+'legal'"* — the white-ground capsule is a LEGAL edit option, never the default; the console
+gallery default becomes chord two (rounded-corner image + transparent caption, both modes),
+enacted at `notes/_subreports/2026-08-27-220-default-switch.md`. The correction above stands as
+frozen history; nothing here is trimmed.
+

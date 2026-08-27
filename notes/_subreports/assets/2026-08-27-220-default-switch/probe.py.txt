@@ -1,0 +1,304 @@
+# NON-REPO RUNTIME: copied to /var/tmp/ds220/probe.py and run there (s191-D2 marker).
+# CANONICAL HOME is this file. Adapted from the #220 theme-lift lane's banked probe.
+#
+# ⛔ WHAT IT CHANGES FROM ITS PARENT, AND WHY. The parent's subject was a COLOUR, so its verdicts
+# were about ΔL* bands and hue neutrality. This lane's subject is a DEFAULT — two dials, in two
+# modes — so the verdicts are:
+#   · the BEFORE/AFTER pair differs on the caption ground AND on the geometry, in BOTH modes
+#     (a pair that differed in only one of the two would be showing half the ruling);
+#   · the TWO AFTER cards carry IDENTICAL dials — s220-D2 (2)'s "default for the two modes",
+#     asserted in the browser rather than argued from the settings table;
+#   · MONO's two cards still paint a grey caption ground — s220-D2 (3), untouched;
+#   · all FOUR option specimens render and none of them is missing.
+# The hue assertion is kept and kept SPLIT (three themes neutral, supercharge monotone-warm within
+# its own ruled ramp) — a page about greys that stopped checking for a warm drift would be blind to
+# exactly the defect Dave cannot see ([[colour-stability-red-yellow-problem]]).
+import glob, os, sys
+from playwright.sync_api import sync_playwright
+from PIL import Image
+import numpy as np
+
+REPO = '/sessions/gifted-ecstatic-carson/mnt/UX-design'
+URL = 'file://' + REPO + '/reviews/DEFAULT-SWITCH-2026-08-27-v1.html'
+W = int(sys.argv[1])
+PNG = sys.argv[2]
+TXT = sys.argv[3]
+
+
+def _lin(c):
+    c = c / 255.0
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def lum(rgb):
+    r, g, b = [_lin(v) for v in rgb]
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def ratio(a, b):
+    la, lb = lum(a), lum(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def prgb(s):
+    n = [int(float(x)) for x in
+         s.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',')[:3]]
+    return tuple(n)
+
+
+def alpha(s):
+    parts = s.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',')
+    return float(parts[3]) if len(parts) > 3 else 1.0
+
+
+sys.path.insert(0, os.path.join(REPO, 'knowledge', '_render'))
+import gen_bento_matrix_217 as matrix          # noqa: E402
+WARM_STEPS = [matrix.resolve_token('--color-neutral-%s' % s, 'supercharge', 'dark')
+              for s in ('4', 'raise-1', 'raise-2', 'raise-3', '5', '6')]
+
+
+def _h2t(h):
+    h = h.lstrip('#')
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+WARM_MAX = max(max(_h2t(h)) - min(_h2t(h)) for h in WARM_STEPS)
+
+JS_FONT = """() => {
+  const c = document.createElement('canvas').getContext('2d');
+  const m = f => { c.font = '40px ' + f; return +c.measureText('Handgloves 12345').width.toFixed(2); };
+  return {target:m('HSBC_MtUnivers_Latin'), uf:m('"Univers Next HSBC"'),
+          ufor:m('"Univers Next for HSBC"'), dejavu:m('"DejaVu Sans"'),
+          nonexistent:m('"Nope Not A Face XYZ"')};
+}"""
+
+JS_SPECS = """() => {
+  const out = [];
+  document.querySelectorAll('.br-spec[data-probe]').forEach(sp => {
+    const cap  = sp.querySelector('.bm-cap');
+    const pg   = sp.querySelector('.bm-page-ground');
+    const wall = sp.querySelector('.c-bento');
+    const grid = sp.querySelector('.c-bento__grid');
+    const tile = sp.querySelector('.c-bento__tile');
+    const box  = sp.querySelector('.bm-imgbox');
+    const img  = sp.querySelector('img');
+    const st   = sp.querySelector('.bm-stage');
+    const cs = getComputedStyle(cap), ps = getComputedStyle(pg);
+    const ts = getComputedStyle(tile), bs = getComputedStyle(box);
+    const panel = sp.closest('.cdl-panel');
+    const col = sp.closest('.cdl-col') || sp.closest('.cdl-opt');
+    let printed = [];
+    if (col) col.querySelectorAll('.cdl-num').forEach(n => printed.push(
+      [n.querySelector('dt').textContent.trim(), n.querySelector('dd').textContent.trim()]));
+    out.push({
+      probe: sp.dataset.probe,
+      theme: panel ? panel.getAttribute('data-apollo-theme') : '',
+      mode: panel ? panel.querySelector('[data-theme]').getAttribute('data-theme') : '',
+      dialRounding: st.getAttribute('data-rounding'), dialCapBg: st.getAttribute('data-cap-bg'),
+      dialSpacing: st.getAttribute('data-spacing'), dialEdge: st.getAttribute('data-edge'),
+      dialKeylines: st.getAttribute('data-keylines'), dialBentoBg: st.getAttribute('data-bento-bg'),
+      capBg: cs.backgroundColor, capInk: cs.color, pageBg: ps.backgroundColor,
+      capBox: cap.getBoundingClientRect().toJSON(),
+      pgBox:  pg.getBoundingClientRect().toJSON(),
+      capH: +cap.getBoundingClientRect().height.toFixed(2),
+      wallW: +wall.getBoundingClientRect().width.toFixed(2),
+      cols: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+      tileRadius: ts.borderTopLeftRadius, tileOverflow: ts.overflow,
+      imgRadius: bs.borderTopLeftRadius, imgOverflow: bs.overflow,
+      imgOk: img.complete && img.naturalWidth > 0,
+      printed: printed
+    });
+  });
+  return {specs: out,
+          hscroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          sections: document.querySelectorAll('.cdl-sec').length,
+          cols: document.querySelectorAll('.cdl-col').length,
+          opts: document.querySelectorAll('.cdl-opt').length,
+          tableRows: document.querySelectorAll('.cdl-table tbody tr').length,
+          docH: document.documentElement.scrollHeight};
+}"""
+
+
+def patch_mode(im, x, y, w, h):
+    a = np.array(im.crop((int(x), int(y), int(x + w), int(y + h))).convert('RGB'))
+    a = a.reshape(-1, 3)
+    vals, counts = np.unique(a, axis=0, return_counts=True)
+    return tuple(int(v) for v in vals[counts.argmax()]), float(counts.max()) / len(a)
+
+
+L = []
+
+
+def say(s):
+    L.append(s)
+    print(s)
+
+
+shell = glob.glob('/var/tmp/pw-browsers-220/chromium_headless_shell-*/chrome-linux/'
+                  'headless_shell')[0]
+with sync_playwright() as p:
+    b = p.chromium.launch(executable_path=shell, headless=True,
+                          args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+    pg = b.new_page(viewport={"width": W, "height": 1400}, device_scale_factor=1)
+    pg.goto(URL)
+    pg.wait_for_timeout(1200)
+    pg.add_style_tag(content="*{transition:none !important;animation:none !important}")
+    # THE ARTEFACT'S MARKUP CARRIES loading="lazy" AND IT IS COPIED VERBATIM, so specimens below
+    # the fold never decode until they are scrolled to. Walk the document, then return to the top.
+    h = pg.evaluate("document.documentElement.scrollHeight")
+    y = 0
+    while y < h:
+        pg.evaluate("window.scrollTo(0,%d)" % y)
+        pg.wait_for_timeout(160)
+        y += 700
+    pg.evaluate("window.scrollTo(0,0)")
+    pg.wait_for_timeout(600)
+    pg.wait_for_function(
+        "() => Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)",
+        timeout=25000)
+    pg.wait_for_timeout(300)
+
+    f = pg.evaluate(JS_FONT)
+    say('== FONT PROBE (control-asserted, not a boolean) @%d ==' % W)
+    say('   target=%(target)s uf=%(uf)s ufor=%(ufor)s | controls dejavu=%(dejavu)s '
+        'nonexistent=%(nonexistent)s' % f)
+    font_ok = (f['target'] == f['uf'] == f['ufor']
+               and f['target'] != f['dejavu'] and f['target'] != f['nonexistent'])
+    say('   FONT VERDICT: %s'
+        % ('GREEN - real HSBC cut, both aliases land, differs from BOTH controls'
+           if font_ok else 'RED - silent fallback suspected'))
+
+    # #217 pothole: the FIRST full_page shot reflows. Take a throwaway, then measure, then capture.
+    pg.screenshot(path='/var/tmp/ds220/_throwaway.png', full_page=True)
+    pg.wait_for_timeout(200)
+    d1 = pg.evaluate(JS_SPECS)
+    pg.screenshot(path=PNG, full_page=True)
+    d2 = pg.evaluate(JS_SPECS)
+    moved = [a['probe'] for a, c in zip(d1['specs'], d2['specs'])
+             if abs(a['capBox']['y'] - c['capBox']['y']) > 0.6]
+    say('== REGISTRATION ==')
+    say('   boxes that moved between measure and capture: %d %s' % (len(moved), moved))
+    if moved:
+        say('   REFUSED: raster is mis-registered, pixel readings below are NOT trustworthy')
+    d = d2
+    im = Image.open(PNG)
+    say('   full-page raster: %dx%d  doc height %d' % (im.size[0], im.size[1], d['docH']))
+
+    say('== PAGE ==')
+    say('   sections=%d  pair-cols=%d  option cards=%d  table rows=%d  specimens=%d  '
+        'horizontal overflow=%d px'
+        % (d['sections'], d['cols'], d['opts'], d['tableRows'], len(d['specs']), d['hscroll']))
+
+    say('== PER-SPECIMEN: DIALS, COMPUTED COLOUR, RENDERED PIXELS, GEOMETRY ==')
+    say('   %-20s %-6s %-5s %-8s %-11s %-17s %-17s %-8s %-7s %-7s %-6s %-4s'
+        % ('probe', 'theme', 'mode', 'rounding', 'capBg-dial', 'capBg(computed)',
+           'capBg(PIXELS)', 'ink', 'tileR', 'imgR', 'capH', 'col'))
+    by = {}
+    bad_pix, bad_print, hue_bad, imgs_bad, band_bad = [], [], [], [], []
+    for s in d['specs']:
+        cb, pb = prgb(s['capBg']), prgb(s['pageBg'])
+        ink = prgb(s['capInk'])
+        transparent = alpha(s['capBg']) == 0.0
+        # ⛔ THE EFFECTIVE GROUND, NOT THE DECLARED ONE. A transparent caption paints nothing, so
+        # what the eye (and the ink) meets is the ground behind it — here the page. Measuring the
+        # ink against rgba(0,0,0,0) would return a ratio against black and read as a pass.
+        eff = pb if transparent else cb
+        cbx, pgx = s['capBox'], s['pgBox']
+        pcap, fcap = patch_mode(im, cbx['x'] + cbx['width'] - 26, cbx['y'] + 6, 20, 20)
+        ppg, fpg = patch_mode(im, pgx['x'] + 2, pgx['y'] + 2, 12, 12)
+        if pcap != eff:
+            bad_pix.append((s['probe'], 'cap', s['capBg'], pcap, round(fcap, 2)))
+        if ppg != pb:
+            bad_pix.append((s['probe'], 'page', s['pageBg'], ppg, round(fpg, 2)))
+        if s['theme'] == 'supercharge':
+            if not (eff[0] >= eff[1] >= eff[2]) or (eff[0] - eff[2]) > WARM_MAX:
+                hue_bad.append((s['probe'], eff, 'not monotone-warm within the ruled ramp'))
+        elif not (eff[0] == eff[1] == eff[2]):
+            hue_bad.append((s['probe'], eff, 'not neutral'))
+        if not s['imgOk']:
+            imgs_bad.append(s['probe'])
+        if s['cols'] != 1:
+            band_bad.append((s['probe'], s['cols']))
+        ic = ratio(ink, eff)
+        by[s['probe']] = dict(s, eff=eff, ink=ic, pix=pcap)
+        say('   %-20s %-6s %-5s %-8s %-11s %-17s %-17s %-8.2f %-7s %-7s %-6.1f %-4d'
+            % (s['probe'], s['theme'][:6], s['mode'], s['dialRounding'], s['dialCapBg'],
+               'rgb%s' % (eff,), 'rgb%s' % (pcap,), ic, s['tileRadius'], s['imgRadius'],
+               s['capH'], s['cols']))
+        for k, v in s['printed']:
+            kk = k.lower()
+            flat = v.replace(' ', '')
+            if kk.startswith('what the caption sits on') and ('rgb(%d,%d,%d)' % eff) not in flat:
+                bad_print.append((s['probe'], k, v, eff))
+            if kk.startswith('caption ink') and ('%.2f:1' % ic) not in v:
+                bad_print.append((s['probe'], k, v, '%.2f:1' % ic))
+
+    say('== THE RULING, ASSERTED IN THE DOCUMENT ==')
+    claims = []
+
+    def claim(name, ok, detail):
+        claims.append((name, ok, detail))
+        say('   %-58s %s   %s' % (name, 'PASS' if ok else 'FAIL', detail))
+
+    for mode in ('light', 'dark'):
+        bf, af = by.get('before-%s' % mode), by.get('after-%s' % mode)
+        if not bf or not af:
+            claim('%s pair present' % mode, False, 'a card is missing')
+            continue
+        claim('%s: BEFORE is capsule+grey, AFTER is corners+transparent' % mode,
+              (bf['dialRounding'], bf['dialCapBg']) == ('capsule', 'grey')
+              and (af['dialRounding'], af['dialCapBg']) == ('corners', 'transparent'),
+              '%s+%s vs %s+%s' % (bf['dialRounding'], bf['dialCapBg'],
+                                  af['dialRounding'], af['dialCapBg']))
+        claim('%s: the caption ground actually CHANGED in pixels' % mode,
+              bf['pix'] != af['pix'], 'rgb%s -> rgb%s' % (bf['pix'], af['pix']))
+        claim('%s: the GEOMETRY changed too (tile/image radius swap)' % mode,
+              (bf['tileRadius'], bf['imgRadius']) != (af['tileRadius'], af['imgRadius'])
+              and af['tileRadius'] == '0px' and af['imgRadius'] != '0px',
+              'before tile %s/img %s -> after tile %s/img %s'
+              % (bf['tileRadius'], bf['imgRadius'], af['tileRadius'], af['imgRadius']))
+        claim('%s: AFTER caption ink clears the ruled 4.5:1 floor' % mode,
+              af['ink'] >= 4.5, '%.2f:1' % af['ink'])
+
+    al, ad = by.get('after-light'), by.get('after-dark')
+    if al and ad:
+        dial_keys = ('dialRounding', 'dialCapBg', 'dialSpacing', 'dialEdge', 'dialKeylines',
+                     'dialBentoBg')
+        claim('ONE DEFAULT, BOTH MODES — the two AFTER cards carry identical dials',
+              all(al[k] == ad[k] for k in dial_keys),
+              ' · '.join('%s=%s' % (k[4:].lower(), al[k]) for k in dial_keys))
+        claim('and the two modes still paint DIFFERENT grounds (canon doing its job)',
+              al['pix'] != ad['pix'], 'light rgb%s · dark rgb%s' % (al['pix'], ad['pix']))
+
+    ml, md = by.get('mono-light'), by.get('mono-dark')
+    if ml and md:
+        claim('s220-D2 (3) — MONO still ships a GREY caption ground, both modes',
+              ml['dialCapBg'] == md['dialCapBg'] == 'grey' and alpha(ml['capBg']) == 1.0,
+              'light rgb%s · dark rgb%s' % (ml['pix'], md['pix']))
+
+    opts = sorted(k for k in by if k.startswith('opt-'))
+    claim('s220-D2 (1) — all FOUR legal treatments rendered', len(opts) == 4, ', '.join(opts))
+    claim('  and each option specimen drew a real photograph',
+          all(by[o]['imgOk'] for o in opts), '%d/%d' % (sum(by[o]['imgOk'] for o in opts),
+                                                        len(opts)))
+
+    say('== VERDICTS ==')
+    say('   pixel vs computed disagreements   : %d %s' % (len(bad_pix), bad_pix[:4]))
+    say('   printed vs measured disagreements : %d %s' % (len(bad_print), bad_print[:4]))
+    say('   hue-rule violations (split assert): %d %s' % (len(hue_bad), hue_bad))
+    say('   broken images                     : %d %s' % (len(imgs_bad), imgs_bad))
+    say('   specimens NOT in the 1-column band: %d %s' % (len(band_bad), band_bad))
+    say('   claims failed                     : %d %s'
+        % (sum(1 for _n, ok, _d in claims if not ok),
+           [n for n, ok, _d in claims if not ok]))
+    caps = sorted(set(round(s['capH'], 1) for s in d['specs']))
+    walls = sorted(set(round(s['wallW'], 1) for s in d['specs']))
+    say('   caption heights: %s   wall widths: %s' % (caps, walls))
+    say('   supercharge ramp widest channel spread: %d' % WARM_MAX)
+    say('   font: %s' % ('GREEN' if font_ok else 'RED'))
+    b.close()
+
+with open(TXT, 'w') as fh:
+    fh.write('\n'.join(L) + '\n')
+print('\nwrote', TXT, 'and', PNG)

@@ -203,8 +203,8 @@
       "themes": "all",
       "theme_locked": false,
       "control": "segmented",
-      "ruled_by": "s217-D5(P3) \u00b7 s219-D2(3)",
-      "note": "Never console-only: authored in all four themes, visibly different wherever the radius token is non-zero. s219-D2(3) defaults console gallery to capsule."
+      "ruled_by": "s217-D5(P3) \u00b7 s219-D2(3) \u00b7 s220-D2(2)",
+      "note": "Never console-only: authored in all four themes, visibly different wherever the radius token is non-zero. s219-D2(3) defaulted console gallery to CAPSULE; s220-D2(2) SUPERSEDES that \u2014 the console gallery default is now chord two (corners + transparent caption), identical in light and dark. \u26d4 BOTH MEMBERS STAY: s220-D2(1) rules all four caption treatments legal, so the capsule is an edit-pass option in every theme and only the DEFAULT moved."
     },
     "bentoBg": {
       "kind": "enum",
@@ -590,6 +590,101 @@
     ],
     "$blocking_sweep": "Every ground option of every chord is measured against the ink its ground implies, in light AND dark, in every theme the chord is scoped to. A reading under the floor is a selftest FAILURE, not a note (s219-D3(3): 'the CI sweep is blocking')."
   },
+  "caption_ground_mints": {
+    "$what": "The dark-mode CAPTION ground mints. One DNA-tier address (color/neutral/5) in every theme; ADR-0014 resolves it per theme, so supercharge takes its warm step and the other three take the neutral one.",
+    "$ruled_by": "s220-D1 (PROPOSED \u2014 Dave ruled the RULE, the values are proposed to his eye)",
+    "$quoted": "yes the other themes need an appropriate lift too, align with the neutral primitives please",
+    "$band": {
+      "unit": "CIE L* (D65) difference against the theme's own --background-default",
+      "calibration": 11.06,
+      "min": 9.0,
+      "max": 13.0,
+      "why": "the #220 console pick, neutral/5 over #1A1A1A, +/- 2"
+    },
+    "$reachable_note": "`reachable_here` is X6, NOT the mint. Three themes are minted and cannot select the ground: s219-D3(3) leaves their access to the dark caption chord EXPRESSLY OPEN and s220-D1 does not touch it. The ramp is made right in advance; the permission stays Dave's.",
+    "rows": [
+      {
+        "theme": "console",
+        "mode": "dark",
+        "ground_word": "darkgrey",
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": null,
+        "from": "#220 \u2014 Dave's pick on the caption-dark ladder: rgb(48,48,48) / #303030",
+        "why": "the shipped console-dark capsule caption ground resolves --surface-digital-black #1A1A1A, which IS the page ground (--background-default, console dark) \u2014 so the caption has no capsule to sit in. neutral/5 lifts it off the page.",
+        "replaces": "--surface-digital-black",
+        "page_ground": "#1A1A1A",
+        "was": "#1A1A1A",
+        "now": "#313131",
+        "lift_dl_star_was": 0.0,
+        "lift_dl_star_now": 11.06,
+        "ink_token": "--text-reverse",
+        "ink_contrast_now": 13.01,
+        "reachable_here": true
+      },
+      {
+        "theme": "legacy",
+        "mode": "dark",
+        "ground_word": "darkgrey",
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": null,
+        "from": "#220 s220-D1 \u2014 Dave: \"yes the other themes need an appropriate lift too, align with the neutral primitives please\"",
+        "why": "legacy's dark `darkgrey` caption ground resolves --surface-digital-black #1A1A1A on a #1A1A1A page \u2014 \u0394L* 0.00, the identical vanish. neutral/5 (#313131 here) lifts it \u0394L* +11.06. \u26a0 legacy cannot SELECT this ground today (X6 open).",
+        "replaces": "--surface-digital-black",
+        "page_ground": "#1A1A1A",
+        "was": "#1A1A1A",
+        "now": "#313131",
+        "lift_dl_star_was": 0.0,
+        "lift_dl_star_now": 11.06,
+        "ink_token": "--text-reverse",
+        "ink_contrast_now": 13.01,
+        "reachable_here": false
+      },
+      {
+        "theme": "mono",
+        "mode": "dark",
+        "ground_word": "darkgrey",
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": null,
+        "from": "#220 s220-D1 \u2014 Dave: \"yes the other themes need an appropriate lift too, align with the neutral primitives please\"",
+        "why": "mono's dark `darkgrey` caption ground resolves --surface-digital-black #1A1A1A, which IS mono's dark page ground \u2014 \u0394L* 0.00, the identical vanish console had. neutral/5 (#313131 here) lifts it \u0394L* +11.06, the console calibration exactly. \u26a0 mono cannot SELECT this ground today (X6/s219-D3(3) is open); the ramp is made right in advance and no chord access is granted.",
+        "replaces": "--surface-digital-black",
+        "page_ground": "#1A1A1A",
+        "was": "#1A1A1A",
+        "now": "#313131",
+        "lift_dl_star_was": 0.0,
+        "lift_dl_star_now": 11.06,
+        "ink_token": "--text-reverse",
+        "ink_contrast_now": 13.01,
+        "reachable_here": false
+      },
+      {
+        "theme": "supercharge",
+        "mode": "dark",
+        "ground_word": "darkgrey",
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": null,
+        "from": "#220 s220-D1 \u2014 Dave: \"yes the other themes need an appropriate lift too, align with the neutral primitives please\"",
+        "why": "supercharge's is the INVERTED case and needed the opposite move: its dark `darkgrey` caption ground resolves --surface-digital-black #13110E on a #1A1A1A page \u2014 \u0394L* -4.10, a caption ground DARKER than the page it sits on. The same DNA-tier address resolves through supercharge's ruled WARM ramp (ADR-0014: `neutral/N -> color/warm/N`), so --color-neutral-5 is warm/5 #312C26 here: \u0394L* +9.08, above the page and inside the band, and the theme stays warm. \u26a0 supercharge cannot SELECT this ground today (X6 open).",
+        "replaces": "--surface-digital-black",
+        "page_ground": "#1A1A1A",
+        "was": "#13110E",
+        "now": "#312C26",
+        "lift_dl_star_was": -4.1,
+        "lift_dl_star_now": 9.08,
+        "ink_token": "--text-reverse",
+        "ink_contrast_now": 12.8,
+        "reachable_here": false
+      }
+    ]
+  },
   "intersections": {
     "mono": {
       "display": {
@@ -946,6 +1041,132 @@
           "keylines": "off",
           "mode": "bento",
           "edge": "square",
+          "rounding": "corners",
+          "pageBg": "transparent",
+          "bentoBg": "transparent",
+          "capBg": "transparent"
+        },
+        "supercharge": {
+          "spacing": "1",
+          "keylines": "off",
+          "mode": "bento",
+          "edge": "square",
+          "rounding": "corners",
+          "pageBg": "transparent",
+          "bentoBg": "transparent",
+          "capBg": "transparent"
+        }
+      }
+    },
+    "complaints": [],
+    "$supersessions_note": "A shipped default that a later ruling MOVED. `was` is the word in Dave's own #219 tuner export, which stays on disk as a RECEIPT and is never rewritten; `now` is what ships. \u26d4 A supersession moves a DEFAULT and removes no OPTION \u2014 s220-D2(1): 'these 4 are all \"legal\"'. The option sets above are unchanged by anything in this block.",
+    "supersessions": [
+      {
+        "type": "gallery",
+        "theme": "console",
+        "dial": "rounding",
+        "was": "capsule",
+        "now": "corners",
+        "ruled_by": "s220-D2 (2)",
+        "supersedes": "s219-D2 (3) \u00b7 the s219-D1 (3) console gallery export",
+        "modes": "both \u2014 one default, identical in light and dark",
+        "dave": "if you are asking for a default lets go with rounded corner image with transparent capsule"
+      },
+      {
+        "type": "gallery",
+        "theme": "console",
+        "dial": "capBg",
+        "was": "grey",
+        "now": "transparent",
+        "ruled_by": "s220-D2 (2)",
+        "supersedes": "the s219-D1 (3) console gallery export (capsule + grey ground)",
+        "modes": "both \u2014 one default, identical in light and dark",
+        "dave": "I guess this would be the default for the two modes"
+      }
+    ],
+    "receipt_values": {
+      "dashboard": {
+        "legacy": {
+          "mainSpacing": "24",
+          "subSpacing": "4",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "mono": {
+          "mainSpacing": "40",
+          "subSpacing": "4",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "console": {
+          "mainSpacing": "40",
+          "subSpacing": "4",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "supercharge": {
+          "mainSpacing": "24",
+          "subSpacing": "2",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        }
+      },
+      "display": {
+        "supercharge": {
+          "spacing": "2",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "console": {
+          "spacing": "24",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "mono": {
+          "spacing": "16",
+          "keylines": "off",
+          "pageBg": "grey",
+          "bentoBg": "transparent"
+        },
+        "legacy": {
+          "spacing": "24",
+          "keylines": "on",
+          "pageBg": "transparent",
+          "bentoBg": "transparent"
+        }
+      },
+      "gallery": {
+        "legacy": {
+          "spacing": "24",
+          "keylines": "on",
+          "mode": "bento",
+          "edge": "square",
+          "rounding": "corners",
+          "pageBg": "white",
+          "bentoBg": "transparent",
+          "capBg": "transparent"
+        },
+        "mono": {
+          "spacing": "40",
+          "keylines": "off",
+          "mode": "bento",
+          "edge": "square",
+          "rounding": "corners",
+          "pageBg": "transparent",
+          "bentoBg": "transparent",
+          "capBg": "grey"
+        },
+        "console": {
+          "spacing": "40",
+          "keylines": "off",
+          "mode": "bento",
+          "edge": "square",
           "rounding": "capsule",
           "pageBg": "transparent",
           "bentoBg": "transparent",
@@ -962,8 +1183,7 @@
           "capBg": "transparent"
         }
       }
-    },
-    "complaints": []
+    }
   },
   "$open_questions": [
     "MONO'S ACCESS TO THE DARK-CAPTION CHORD \u2014 s219-D3(3) says EXPRESSLY OPEN, not ruled. Nothing here grants it: `darkgrey` is not in mono's reachable caption grounds, exclusion X6 refuses it, and the refusal prints this question as its reason rather than a preference. FOR DAVE.",

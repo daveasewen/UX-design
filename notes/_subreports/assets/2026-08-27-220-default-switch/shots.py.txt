@@ -1,0 +1,30 @@
+# NON-REPO (/var/tmp/ds220, s191-D2). Banks one PNG per section of the proof page, so the report's
+# evidence is the SECTIONS a reader points at, not a 5000px strip nobody can read.
+import glob, sys
+from playwright.sync_api import sync_playwright
+REPO='/sessions/gifted-ecstatic-carson/mnt/UX-design'
+URL='file://'+REPO+'/reviews/DEFAULT-SWITCH-2026-08-27-v1.html'
+NAMES=['where-it-stands','pair-light','pair-dark','four-options','mono-open','where-written',
+       'not-decided']
+shell=glob.glob('/var/tmp/pw-browsers-220/chromium_headless_shell-*/chrome-linux/headless_shell')[0]
+with sync_playwright() as p:
+    b=p.chromium.launch(executable_path=shell,headless=True,
+                        args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu"])
+    pg=b.new_page(viewport={"width":1180,"height":1400},device_scale_factor=1)
+    pg.goto(URL); pg.wait_for_timeout(1000)
+    h=pg.evaluate("document.documentElement.scrollHeight"); y=0
+    while y<h:
+        pg.evaluate("window.scrollTo(0,%d)"%y); pg.wait_for_timeout(150); y+=700
+    pg.evaluate("window.scrollTo(0,0)"); pg.wait_for_timeout(500)
+    pg.wait_for_function("() => Array.from(document.images).every(i=>i.complete&&i.naturalWidth>0)",
+                         timeout=25000)
+    pg.screenshot(path='/var/tmp/ds220/_tw.png', full_page=True); pg.wait_for_timeout(200)
+    secs=pg.query_selector_all('.cdl-sec')
+    for i,s in enumerate(secs):
+        n=NAMES[i] if i<len(NAMES) else 'sec%d'%i
+        s.scroll_into_view_if_needed(); pg.wait_for_timeout(200)
+        s.screenshot(path='/var/tmp/ds220/evidence-%s.png'%n)
+        print('shot', n)
+    f=pg.query_selector('.cdl-foot'); f.scroll_into_view_if_needed(); pg.wait_for_timeout(150)
+    f.screenshot(path='/var/tmp/ds220/evidence-foot.png'); print('shot foot')
+    b.close()

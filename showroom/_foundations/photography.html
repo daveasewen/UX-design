@@ -25,7 +25,9 @@
   --surface:   var(--surface-raised,#FFFFFF);
   --surface-2: var(--surface-subtle,#F3F3F3);
   --line:      var(--border-subtle,#D7D8D6);
-  --line-2:    var(--border-strong,#767676);
+  --line-2:    var(--border-strong,#808080);   /* s220-D1: was #767676 — a value canon resolves in
+                                                  no theme and no mode. See gen_bento_matrix_217
+                                                  bite 12's fallback-drift arm. */
   --ink:       var(--text-default,#1A1A1A);
   --ink-2:     var(--text-secondary,#545454);
   --focus:     var(--focus-ring,#1A1A1A);
@@ -206,6 +208,15 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
    console rounding capsule, and keylines ON in legacy only. Edge stays square
    in all four. Every dial word was checked against gen_bento_matrix_217's own
    ruled option sets; every var() carries a literal fallback.
+   ⬛ s220-D2 (2) THEN SUPERSEDED THE CONSOLE GALLERY ROW ITSELF: rounding
+   capsule + capBg grey become CHORD TWO — rounding corners + caption
+   transparent — IDENTICAL in light and dark, aligning console with legacy and
+   supercharge. Dave: "if you are asking for a default lets go with rounded
+   corner image with transparent capsule" / "this would be the default for the
+   two modes". The #219 export keeps its own words in its receipt.
+   ⛔ s220-D2 (1) REMOVES NO OPTION — all four caption treatments stay legal in
+   the edit pass, and s220-D2 (3) leaves MONO's grey caption ground EXPRESSLY
+   OPEN. What moved is one DEFAULT, in one theme, on two dials.
    ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is
    compiled is the DEFAULT the page ships in, not the only reachable state.
    ========================================================================== */
@@ -226,7 +237,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 [data-apollo-theme="legacy"] body.fx{background:var(--surface-raised,#FFFFFF);}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo{--bento-gutter:24px; background:transparent;}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:1px solid var(--border-subtle,#D7D8D6); box-shadow:none; background:transparent;}
-[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:var(--border-strong,#767676);}
+[data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:var(--border-strong,#808080);}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
@@ -234,17 +245,17 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="legacy"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
 /* ink follows ground (s219-D3 (2)): white -> --text-secondary */
 
-/* ---- console · spacing 40 (40px) · keylines off · bento · square edge · rounding capsule · page transparent · bento transparent · caption grey ---- */
+/* ---- console · spacing 40 (40px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption transparent ---- */
 [data-apollo-theme="console"] body.fx{background:var(--background-default,#FFFFFF);}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo{--bento-gutter:40px; background:transparent;}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border:0; box-shadow:none; background:transparent;}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open:hover{border-color:transparent;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:var(--border-radius-container,0px);}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:inherit; overflow:hidden;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:0;}
-[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:var(--surface-subtle,#F0F0F0); color:var(--text-secondary,#545454);}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile{border-radius:0;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-open{border-radius:0; overflow:visible;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}
+[data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap{background:transparent; color:var(--text-secondary,#545454);}
 [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-desc, [data-apollo-theme="console"] .fx .c-bento.fx-wall-photo > .c-bento__grid > .c-bento__tile .px-cap .px-lic{color:var(--text-secondary,#545454);}
-/* ink follows ground (s219-D3 (2)): grey -> --text-secondary */
+/* ink follows ground (s219-D3 (2)): page -> --text-secondary */
 
 /* ---- supercharge · spacing 1 (1px) · keylines off · bento · square edge · rounding corners · page transparent · bento transparent · caption transparent ---- */
 [data-apollo-theme="supercharge"] body.fx{background:var(--background-default,#FFFFFF);}
@@ -315,7 +326,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     <div class="tablewrap"><table class="t-cm-legal">
       <thead><tr><th>theme</th><th>gutter</th><th>keylines</th><th>mode</th><th>edge</th>
         <th>rounding</th><th>page ground</th><th>bento ground</th><th>caption ground</th></tr></thead>
-      <tbody><tr><td>mono</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>grey</td></tr><tr><td>legacy</td><td class='num'>24px</td><td>on</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>transparent</td><td>transparent</td></tr><tr><td>console</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>capsule</td><td>transparent</td><td>transparent</td><td>grey</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>transparent</td></tr></tbody>
+      <tbody><tr><td>mono</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>grey</td></tr><tr><td>legacy</td><td class='num'>24px</td><td>on</td><td>bento</td><td>square</td><td>corners</td><td>white</td><td>transparent</td><td>transparent</td></tr><tr><td>console</td><td class='num'>40px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>transparent</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td>off</td><td>bento</td><td>square</td><td>corners</td><td>transparent</td><td>transparent</td><td>transparent</td></tr></tbody>
     </table></div>
     <p class="t-ed-body-small lede">And what Dave's own tuner <b>resolved</b> for those four
       states &mdash; the pixels he approved, carried from the receipt rather than re-measured
@@ -325,7 +336,7 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     <div class="tablewrap"><table class="t-cm-legal">
       <thead><tr><th>theme</th><th>gutter</th><th>tile radius</th><th>tile border</th>
         <th>page background</th><th>caption background</th><th>caption space</th></tr></thead>
-      <tbody><tr><td>mono</td><td class='num'>40px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240)</td><td class='num'>86</td></tr><tr><td>legacy</td><td class='num'>24px</td><td class='num'>0</td><td class='num'>1</td><td>rgb(255, 255, 255)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr><tr><td>console</td><td class='num'>40px</td><td class='num'>20</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240)</td><td class='num'>86</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr></tbody>
+      <tbody><tr><td>mono</td><td class='num'>40px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240)</td><td class='num'>86</td></tr><tr><td>legacy</td><td class='num'>24px</td><td class='num'>0</td><td class='num'>1</td><td>rgb(255, 255, 255)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr><tr><td>console</td><td class='num'>40px</td><td class='num'>20 <b>&mdash; RETIRED</b><br><span class='t-cm-legal'>s220-D2 (2) moved rounding from &#x27;capsule&#x27; to &#x27;corners&#x27;; this readback is the pixel the RETIRED default resolved and no longer describes the shipped page</span></td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgb(240, 240, 240) <b>&mdash; RETIRED</b><br><span class='t-cm-legal'>s220-D2 (2) moved capBg from &#x27;grey&#x27; to &#x27;transparent&#x27;; this readback is the pixel the RETIRED default resolved and no longer describes the shipped page</span></td><td class='num'>86</td></tr><tr><td>supercharge</td><td class='num'>1px</td><td class='num'>0</td><td class='num'>0</td><td>rgba(0, 0, 0, 0)</td><td>rgba(0, 0, 0, 0)</td><td class='num'>86</td></tr></tbody>
     </table></div>
     <div class="finding">
       <b>The mono caption ground is LIGHT GREY now &mdash; <code>s219-D2 (1)</code> supersedes
@@ -339,6 +350,26 @@ td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       <p>A dial word is not a promise of a hex: <code>grey</code> is
       <code>--surface-subtle</code>, <code>white</code> is <code>--surface-raised</code>, and each
       resolves to that <i>theme's</i> value in that <i>mode</i>.</p>
+    </div>
+    <div class="finding">
+      <b>The CONSOLE gallery default is chord two now &mdash; <code>s220-D2 (2)</code> supersedes
+      <code>s219-D2 (3)</code> and Dave's own #219 export.</b> His #219 export shipped console on
+      <b>capsule + grey caption</b>. At #220, asked for a default across the four legal caption
+      treatments, he said: <i>&ldquo;these 4 are all &lsquo;legal&rsquo;. but if you are asking for
+      a default lets go with rounded corner image with transparent capsule&rdquo;</i> and, over the
+      light/dark pair, <i>&ldquo;I guess this would be the default for the two modes&rdquo;</i>. So
+      console ships <code>rounding: corners</code> + <code>capBg: transparent</code>,
+      <b>identical in light and dark</b> &mdash; the same default legacy and supercharge already
+      carried. The #219 export is <b>not rewritten</b>: it stays in its receipt, and the
+      supersession is a layer over it, which is why the readback table above marks console's
+      capsule pixels <b>RETIRED</b> rather than deleting them.
+      <p>⛔ <b>NO OPTION WAS REMOVED</b> (<code>s220-D2 (1)</code>). All four caption treatments
+      &mdash; capsule + grey, capsule + dark, rounded image + transparent caption, capsule +
+      lightest &mdash; stay legal in the edit pass, the <code>rounding</code> dial still carries
+      both members in every theme, and the rails page's <code>X1</code>/<code>X2</code> exclusions
+      stay <b>PROPOSED</b>, not ruled. Only the DEFAULT moved.
+      <b>And <code>mono</code> did not move at all</b>: <code>s220-D2 (3)</code> leaves mono's grey
+      caption ground <b>expressly open</b> &mdash; it keeps grey until Dave's word.</p>
     </div>
     <div class="finding">
       <b>&ldquo;Edge: square&rdquo; is the GALLERY-ROLE DEFAULT now &mdash;

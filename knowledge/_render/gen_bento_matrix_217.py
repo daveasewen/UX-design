@@ -642,11 +642,67 @@ def contrast(ground_word, ink_token, theme, mode="light"):
 # semantic role. This binding reads the primitive directly, which is the honest shape of a PROPOSED
 # value that has no semantic role yet. Whether one gets minted is a ruling-shaped question, filed.
 #
-# ⛔ MONO IS GRANTED NOTHING. s219-D3(3)/X6 leave mono's access to the dark caption chord EXPRESSLY
-# OPEN; `capbg_for('gallery','mono')` still does not carry `darkgrey`, and this table does not
-# reach a theme that cannot select the ground in the first place.
+# ⛔ MONO IS GRANTED NO CHORD. s219-D3(3)/X6 leave mono's access to the dark caption chord
+# EXPRESSLY OPEN and this table does not touch that: `capbg_for('gallery','mono')` still does not
+# carry `darkgrey`, so mono/legacy/supercharge cannot SELECT this ground today. What the table says
+# about them is what the ground WOULD paint if the chord ever reached them — the ramp is right in
+# advance, and the permission stays Dave's.
+#
+# ⬛ s220-D1 (Dave, 2026-08-27) — HIS OWN WORDS: "yes the other themes need an appropriate lift
+# too, align with the neutral primitives please." THE RULE IS HIS; the per-theme values below are
+# PROPOSED to his eye. STATUS stays `proposed` for all four rows.
+#
+# ⛔ ONE ADDRESS, FOUR THEMES — AND THAT IS THE ALIGNMENT, NOT A COINCIDENCE. Every row names the
+# SAME DNA-tier primitive, `color/neutral/5`. ADR-0014 makes that tier load-bearing: canon.css
+# declares `--color-neutral-*` at `:root` and supercharge's theme block REBINDS all twenty onto its
+# ruled warm ramp (`neutral/N -> color/warm/N`, anchor `neutral/4 -> warm/2`). So one token resolves
+# per theme by canon's own cascade — #313131 in mono/legacy/console, #312C26 (warm/5) in
+# supercharge — and "align with the neutral primitives" is enacted as ONE INDEX rather than as four
+# hand-picked greys. A hand-picked list would have to be re-picked every time a theme's ramp moved.
+#
+# ⛔ PICKED BY LIFT, NOT BY HEX. The brief's first pitfall: the same grey lifts differently over
+# different theme pages. Measured (dark, CIE L* D65, against each theme's OWN `--background-default`
+# — which is `#1A1A1A` in all four, supercharge included):
+#     mono        #313131  ΔL* +11.06  sep 1.338  ink 13.01:1   (WAS #1A1A1A, ΔL* 0.00 — the vanish)
+#     legacy      #313131  ΔL* +11.06  sep 1.338  ink 13.01:1   (WAS #1A1A1A, ΔL* 0.00 — the vanish)
+#     console     #313131  ΔL* +11.06  sep 1.338  ink 13.01:1   (the #220 calibration, unchanged)
+#     supercharge #312C26  ΔL*  +9.08  sep 1.259  ink 12.80:1   (WAS #13110E, ΔL* -4.10 — INVERTED)
+# TARGET BAND: the console calibration ΔL* 11.06, +/- 2 (9.00 .. 13.00). REJECTED, with numbers:
+# `--color-neutral-4` (0.00 / supercharge -4.10, the defect itself), `raise-1` (+2.49 / +6.16),
+# `raise-2` (+4.45 / +8.06), `raise-3` (+6.37 / +9.93), `--color-neutral-6` (+21.33 / +15.37).
+# ⚠ supercharge's `raise-3` (#322E29, +9.93) is NUMERICALLY nearer the calibration than neutral/5
+# and is still REFUSED, for two reasons that are not taste: ADR-0014 records supercharge's
+# `raise-1..3` as CALCULATED and provisional ("on the review sheet") while `warm/5` is an OBSERVED
+# Figma primitive; and `raise-*` is the ELEVATION family that `grey`/`white` already resolve
+# through, so a `darkgrey` caption landing there would cross two ground words onto one semantic.
 CAPTION_GROUND_MINTS = {
     # (theme, mode, ground word) -> the primitive a CAPTION ground resolves through
+    ("mono", "dark", "darkgrey"): {
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": None,
+        "from": "#220 s220-D1 — Dave: \"yes the other themes need an appropriate lift too, align "
+                "with the neutral primitives please\"",
+        "why": "mono's dark `darkgrey` caption ground resolves --surface-digital-black #1A1A1A, "
+               "which IS mono's dark page ground — ΔL* 0.00, the identical vanish console had. "
+               "neutral/5 (#313131 here) lifts it ΔL* +11.06, the console calibration exactly. "
+               "⚠ mono cannot SELECT this ground today (X6/s219-D3(3) is open); the ramp is made "
+               "right in advance and no chord access is granted.",
+        "replaces": "--surface-digital-black",
+    },
+    ("legacy", "dark", "darkgrey"): {
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": None,
+        "from": "#220 s220-D1 — Dave: \"yes the other themes need an appropriate lift too, align "
+                "with the neutral primitives please\"",
+        "why": "legacy's dark `darkgrey` caption ground resolves --surface-digital-black #1A1A1A "
+               "on a #1A1A1A page — ΔL* 0.00, the identical vanish. neutral/5 (#313131 here) lifts "
+               "it ΔL* +11.06. ⚠ legacy cannot SELECT this ground today (X6 open).",
+        "replaces": "--surface-digital-black",
+    },
     ("console", "dark", "darkgrey"): {
         "primitive": "color/neutral/5",
         "css_var": "--color-neutral-5",
@@ -656,6 +712,22 @@ CAPTION_GROUND_MINTS = {
         "why": "the shipped console-dark capsule caption ground resolves --surface-digital-black "
                "#1A1A1A, which IS the page ground (--background-default, console dark) — so the "
                "caption has no capsule to sit in. neutral/5 lifts it off the page.",
+        "replaces": "--surface-digital-black",
+    },
+    ("supercharge", "dark", "darkgrey"): {
+        "primitive": "color/neutral/5",
+        "css_var": "--color-neutral-5",
+        "status": "proposed",
+        "ruled_by": None,
+        "from": "#220 s220-D1 — Dave: \"yes the other themes need an appropriate lift too, align "
+                "with the neutral primitives please\"",
+        "why": "supercharge's is the INVERTED case and needed the opposite move: its dark "
+               "`darkgrey` caption ground resolves --surface-digital-black #13110E on a #1A1A1A "
+               "page — ΔL* -4.10, a caption ground DARKER than the page it sits on. The same "
+               "DNA-tier address resolves through supercharge's ruled WARM ramp (ADR-0014: "
+               "`neutral/N -> color/warm/N`), so --color-neutral-5 is warm/5 #312C26 here: "
+               "ΔL* +9.08, above the page and inside the band, and the theme stays warm. "
+               "⚠ supercharge cannot SELECT this ground today (X6 open).",
         "replaces": "--surface-digital-black",
     },
 }
@@ -694,6 +766,70 @@ def caption_contrast(ground_word, ink_token, theme, mode="light"):
                                 resolve_token(ink_token, theme, mode)), 2)
 
 
+def caption_lstar(hex_value):
+    """-> CIE L* (D65) for a `#RRGGBB`, off the repo's ONE luminance function.
+    ⛔ `knowledge/_contrast_utils` is addressed rather than re-implemented, for `contrast()`'s
+    reason: a second luminance function in a second file is how two gates come to disagree about
+    the same pair of colours. ΔL* is the unit s220-D1's band is stated in, because at these
+    luminances a contrast RATIO barely moves (1.00 -> 1.34 across the whole defect).
+    ⛔ RETURNS FULL PRECISION AND ROUNDS NOTHING. Rounding here and differencing afterwards read
+    ΔL* 11.07 for the pair the #220 lane measured in the BROWSER at 11.06 — a disagreement with the
+    record created purely by rounding an intermediate. Callers round the DIFFERENCE, once."""
+    from _contrast_utils import hex_to_rgb, luminance          # noqa: E402  (KNOW is on sys.path)
+    y = luminance(*hex_to_rgb(hex_value))
+    f = y ** (1.0 / 3.0) if y > 216.0 / 24389.0 else (24389.0 / 27.0 * y + 16.0) / 116.0
+    return 116.0 * f - 16.0
+
+
+def caption_mint_block():
+    """-> the manifest's SCOPE-INDEPENDENT record of every #220/s220-D1 caption-ground mint.
+
+    ⛔ WHY THIS EXISTS SEPARATELY FROM `chord_block()`. The chord block reports a mint only where a
+    CHORD MEMBER reaches it, and the capsule chord is scoped to console gallery (s219-D3(3)). At
+    s220-D1 three more themes were minted — themes that cannot SELECT the ground yet — so the chord
+    block would have carried console's row and said nothing at all about the other three. A value
+    that moved with no row saying which decision moved it is a value nobody can trace back to Dave
+    ([[no-gate-parses-the-artefact]], and `_bento_edit_rails.json` is what the library page reads,
+    s219-D3(6)).
+    ⛔ EVERY NUMBER HERE IS RESOLVED, NOT TYPED (s200-D1), and the LIFT is the reported unit."""
+    rows = []
+    for (theme, mode, word) in sorted(CAPTION_GROUND_MINTS):
+        m = CAPTION_GROUND_MINTS[(theme, mode, word)]
+        now = caption_ground_hex(word, theme, mode)
+        was = resolve_token(GROUND_TOKEN[word], theme, mode)
+        page = resolve_token("--background-default", theme, mode)
+        ink = ink_for(word)
+        rows.append({
+            "theme": theme, "mode": mode, "ground_word": word,
+            "primitive": m["primitive"], "css_var": m["css_var"],
+            "status": m["status"], "ruled_by": m["ruled_by"],
+            "from": m["from"], "why": m["why"], "replaces": m["replaces"],
+            "page_ground": page,
+            "was": was, "now": now,
+            "lift_dl_star_was": round(caption_lstar(was) - caption_lstar(page), 2),
+            "lift_dl_star_now": round(caption_lstar(now) - caption_lstar(page), 2),
+            "ink_token": ink,
+            "ink_contrast_now": caption_contrast(word, ink, theme, mode),
+            "reachable_here": word in capbg_for("gallery", theme),
+        })
+    return {
+        "$what": "The dark-mode CAPTION ground mints. One DNA-tier address (color/neutral/5) in "
+                 "every theme; ADR-0014 resolves it per theme, so supercharge takes its warm step "
+                 "and the other three take the neutral one.",
+        "$ruled_by": "s220-D1 (PROPOSED — Dave ruled the RULE, the values are proposed to his eye)",
+        "$quoted": "yes the other themes need an appropriate lift too, align with the neutral "
+                   "primitives please",
+        "$band": {"unit": "CIE L* (D65) difference against the theme's own --background-default",
+                  "calibration": 11.06, "min": 9.0, "max": 13.0,
+                  "why": "the #220 console pick, neutral/5 over #1A1A1A, +/- 2"},
+        "$reachable_note": "`reachable_here` is X6, NOT the mint. Three themes are minted and "
+                           "cannot select the ground: s219-D3(3) leaves their access to the dark "
+                           "caption chord EXPRESSLY OPEN and s220-D1 does not touch it. The ramp "
+                           "is made right in advance; the permission stays Dave's.",
+        "rows": rows,
+    }
+
+
 def caption_mint_rules():
     """-> the generated CSS replacing `__CAPTION_MINT_RULES__` — the mint, declared.
 
@@ -723,9 +859,12 @@ def caption_mint_rules():
     for word in words:
         token = GROUND_TOKEN[word]
         slot = "--bm-cap-dark-%s" % word
-        L.append("/* ⬛ #220 PROPOSED — the dark-mode CAPTION ground for `%s`, one declared value "
-                 "per theme.\n   ⛔ The unminted themes stay pointed at the ramp's own token (%s); "
-                 "only a theme this\n   table names is moved, and only in dark. */" % (word, token))
+        _unminted = [t for t in THEMES if not caption_ground_mint(word, t, "dark")]
+        L.append("/* ⬛ #220 · s220-D1 PROPOSED — the dark-mode CAPTION ground for `%s`, one "
+                 "declared value per theme.\n   ⛔ A theme this table does not name stays pointed "
+                 "at the ramp's own token (%s), and only\n   dark is ever moved. Unminted here: "
+                 "%s. */" % (word, token, ", ".join(_unminted) if _unminted else "none — all four "
+                             "themes carry a row"))
         for theme in THEMES:
             m = caption_ground_mint(word, theme, "dark")
             if m:
@@ -1095,6 +1234,15 @@ def _defaults_block():
         "$resolved_from": None,
         "values": None,
         "complaints": [],
+        # ⬛ s220-D2(2) — THE MANIFEST MUST CARRY THE SUPERSESSION, NOT JUST ITS RESULT. This file
+        # is what the library page reads (s219-D3(6)). A `values` block showing `corners` with no
+        # row saying a ruling MOVED it there reads as if Dave's #219 export had always said so —
+        # the same class as a manifest reporting the ramp while the page paints the mint
+        # ([[no-gate-parses-the-artefact]]). Both the retired word and the ruling that retired it
+        # travel with the live value, and `receipt_values` is the frozen parse beside it.
+        "$supersessions_note": None,
+        "supersessions": [],
+        "receipt_values": None,
     }
     try:
         import gen_foundations_217 as _f          # lazy: gen_foundations imports THIS module
@@ -1111,6 +1259,20 @@ def _defaults_block():
     block["$resolved_from"] = "gen_foundations_217.%s" % found
     vals = getattr(_f, found)
     block["values"] = vals
+    # The supersession layer, BY ADDRESS like the defaults themselves. Absent rather than invented
+    # if the module does not carry one — a manifest that fabricated an empty history would be
+    # stating that nothing was ever superseded.
+    sups = getattr(_f, "SUPERSESSIONS", None)
+    if sups is not None:
+        block["supersessions"] = [dict(s) for s in sups]
+        block["$supersessions_note"] = (
+            "A shipped default that a later ruling MOVED. `was` is the word in Dave's own #219 "
+            "tuner export, which stays on disk as a RECEIPT and is never rewritten; `now` is what "
+            "ships. ⛔ A supersession moves a DEFAULT and removes no OPTION — s220-D2(1): 'these 4 "
+            "are all \"legal\"'. The option sets above are unchanged by anything in this block.")
+    rec = getattr(_f, "RECEIPT_ROLE_DEFAULTS", None)
+    if rec is not None:
+        block["receipt_values"] = rec
     space = option_space()
     for type_, per_theme in sorted(vals.items()):
         if not isinstance(per_theme, dict):
@@ -1184,10 +1346,14 @@ def option_space():
                      "of the span grid, and justified rows have no ragged edge to square.",
                      available_when={"mode": "bento"}),
         "rounding": dial("enum", [r[0] for r in ROUNDINGS], {r[0]: r[1] for r in ROUNDINGS},
-                         ["gallery"], "segmented", "s217-D5(P3) · s219-D2(3)",
+                         ["gallery"], "segmented", "s217-D5(P3) · s219-D2(3) · s220-D2(2)",
                          "Never console-only: authored in all four themes, visibly different "
-                         "wherever the radius token is non-zero. s219-D2(3) defaults console "
-                         "gallery to capsule."),
+                         "wherever the radius token is non-zero. s219-D2(3) defaulted console "
+                         "gallery to CAPSULE; s220-D2(2) SUPERSEDES that — the console gallery "
+                         "default is now chord two (corners + transparent caption), identical in "
+                         "light and dark. ⛔ BOTH MEMBERS STAY: s220-D2(1) rules all four caption "
+                         "treatments legal, so the capsule is an edit-pass option in every theme "
+                         "and only the DEFAULT moved."),
         # ⛔ pageBg IS NOT HERE. s219-D3(4) takes the page background OUT of the bento dial grammar
         # and gives it its own page-level rail — `page_rail()`, a sibling of `dials` in the
         # manifest, not a member of it. Leaving it here as a bento dial with a note saying it is
@@ -1353,6 +1519,7 @@ def edit_rails():
         "dials": space,
         "page_rail": page_rail(),
         "constraints": chord_block(),
+        "caption_ground_mints": caption_mint_block(),
         "intersections": intersections(),
         "types": {t: {"canon_role": TYPE_ROLE[t],
                       "dials": [d for d in space
@@ -1662,7 +1829,15 @@ CSS = """
    ⬛ Everything the ruling did not say in words is marked PROPOSED on the page.
    ⛔ Every var() carries a literal fallback (silent-black class).
    =========================================================================== */
-.bm{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#767676);
+/* ⚠ `--border-strong` FALLBACK CORRECTED AT s220-D1, and it was CAUGHT BY A GATE, not by an eye.
+   It read `#767676` (color/grey/600, a stale HSBC value) — a literal canon resolves in NO theme
+   and NO mode: `--border-strong` is `#808080` in mono/legacy/console and `#524842` in supercharge.
+   Nothing painted differently (canon defines the token, so the fallback never ran), which is
+   precisely why it survived: an unrun fallback is invisible until the var goes dangling, and then
+   it paints a colour nobody chose. Bite 12's new drift arm now asserts EVERY fallback literal on
+   this page against canon's own answers, so the class cannot come back quietly. Two sibling sites
+   in gen_foundations_217.py carried the same literal and are corrected with it. */
+.bm{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#808080);
   --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
   --bm-page:var(--background-default,#FFFFFF);
   --bm-grey:var(--surface-subtle,#F0F0F0);
@@ -1702,15 +1877,15 @@ CSS = """
 .bm-range{-webkit-appearance:none; appearance:none; width:220px; max-width:46vw; height:32px;
   background:transparent; margin:0; cursor:pointer; color:var(--bm-ink,#1A1A1A);}
 .bm-range:focus-visible{outline:2px solid var(--bm-ink,#1A1A1A); outline-offset:2px;}
-.bm-range::-webkit-slider-runnable-track{height:2px; background:var(--bm-line-2,#767676);}
-.bm-range::-moz-range-track{height:2px; background:var(--bm-line-2,#767676);}
+.bm-range::-webkit-slider-runnable-track{height:2px; background:var(--bm-line-2,#808080);}
+.bm-range::-moz-range-track{height:2px; background:var(--bm-line-2,#808080);}
 .bm-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:16px; height:16px;
   margin-top:-7px; background:var(--bm-ink,#1A1A1A); border:0;
   border-radius:var(--bm-radius-ctl,0px);}
 .bm-range::-moz-range-thumb{width:16px; height:16px; background:var(--bm-ink,#1A1A1A); border:0;
   border-radius:var(--bm-radius-ctl,0px);}
 .bm-out{min-width:5ch; color:var(--bm-ink,#1A1A1A); font-variant-numeric:tabular-nums;
-  border:1px solid var(--bm-line-2,#767676); padding:3px 8px; text-align:center;}
+  border:1px solid var(--bm-line-2,#808080); padding:3px 8px; text-align:center;}
 .bm-stops{display:flex; gap:6px; color:var(--bm-ink-2,#545454); letter-spacing:0.06em;}
 
 /* ---- the stage ---- */
@@ -1958,15 +2133,15 @@ __JUST_SPACING_RULES__
 .bm-stage[data-rounding="corners"] .bm-jbox{border-radius:var(--bm-container-radius,0px);}
 
 /* ---- export + matrix table ---- */
-.bm-export{border:1px solid var(--bm-line-2,#767676); margin-top:var(--sp-5,24px);}
+.bm-export{border:1px solid var(--bm-line-2,#808080); margin-top:var(--sp-5,24px);}
 .bm-exhead{display:flex; flex-wrap:wrap; gap:var(--sp-3,12px); align-items:center;
   padding:var(--sp-3,12px) var(--sp-4,16px); border-bottom:1px solid var(--bm-line,#D7D8D6);}
 .bm-export pre{margin:0; padding:var(--sp-4,16px); overflow-x:auto;
   background:var(--bm-page,#FFFFFF); color:var(--bm-ink,#1A1A1A);}
-.bm-tag{display:inline-block; border:1px solid var(--bm-line-2,#767676);
+.bm-tag{display:inline-block; border:1px solid var(--bm-line-2,#808080);
   color:var(--bm-ink,#1A1A1A); padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase;}
 .bm-btn{font:inherit; font-family:inherit; cursor:pointer; min-height:var(--tap,44px);
-  border:1px solid var(--bm-line-2,#767676); background:transparent; color:var(--bm-ink,#1A1A1A);
+  border:1px solid var(--bm-line-2,#808080); background:transparent; color:var(--bm-ink,#1A1A1A);
   padding:0 var(--sp-4,16px); border-radius:var(--bm-radius-ctl,0px);}
 /* ============================================================================================
    ⬛ THE KEYLINE NOTE — s217-D8, RULED. What stood here was the A / B / C DECISION SPREAD: three
@@ -1993,7 +2168,7 @@ __JUST_SPACING_RULES__
   gap:var(--sp-3,12px); align-items:baseline;}
 /* the two ruled-behaviour notes, one per regime. Exactly one is on screen whenever the strip is. */
 .bm-sp-open, .bm-sp-note{display:none; color:var(--bm-ink-2,#545454); margin:var(--sp-3,12px) 0 0;
-  border-left:2px solid var(--bm-line-2,#767676); padding:var(--sp-3,12px) var(--sp-4,16px);}
+  border-left:2px solid var(--bm-line-2,#808080); padding:var(--sp-3,12px) var(--sp-4,16px);}
 .bm-stage[data-sub-spacing="1"] .bm-sp-note{display:block;}
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-sp-open{display:block;}
 /* ⛔ THE HAIRLINE GEOMETRY, AND IT NOW HAS ONE CONSUMER REGIME ONLY — the 1px flush stop, on the
@@ -3158,11 +3333,58 @@ def selftest():
                    if m not in declared})
     bite("11 · ⛔ no foreign var() without a literal fallback (silent-black class)", bare, [])
     hexes = sorted({x.upper() for x in _re.findall(r"#[0-9A-Fa-f]{6}", rules)})
-    chromatic = [x for x in hexes
-                 if max(int(x[1:3], 16), int(x[3:5], 16), int(x[5:7], 16))
-                 - min(int(x[1:3], 16), int(x[3:5], 16), int(x[5:7], 16)) > 8]
-    bite("12 · every authored colour is a NEUTRAL — no red, no yellow, no green in the chrome",
-         (chromatic, "#000000" in hexes), ([], False))
+
+    def _spread(x):
+        ch = (int(x[1:3], 16), int(x[3:5], 16), int(x[5:7], 16))
+        return max(ch) - min(ch)
+
+    # ⬛ s220-D1 SPLIT THIS GATE IN TWO, AND THE SPLIT MADE IT STRICTER RATHER THAN LOOSER.
+    # ⛔ THE CASE THAT FORCED IT, NAMED: supercharge's ruled ramp is WARM (ADR-0014 rebinds
+    # `--color-neutral-N -> color/warm/N`), so the #220 caption mint's per-theme fallback literal in
+    # supercharge is `#312C26` — chromatic by this gate's own arithmetic (spread 11) and CORRECT.
+    # Widening the threshold to admit it would have blinded the gate to every warm hex, which is
+    # exactly the colour class Dave cannot judge by eye ([[colour-stability-red-yellow-problem]]).
+    # So the two populations are separated instead:
+    #   (a) AUTHORED chrome hexes — a bare literal this file typed. Still zero chromatic, no change.
+    #   (b) var() FALLBACK literals — minted from canon. A chromatic one is legal ONLY if canon
+    #       itself resolves that exact token to that exact value in some theme x mode. That is a
+    #       NEW assertion the old gate never made: a fallback that has DRIFTED from canon is now a
+    #       red, in either direction, chromatic or not.
+    _bare_src = _re.sub(r"var\(\s*--[a-z0-9-]+\s*,\s*#[0-9A-Fa-f]{6}\s*\)", "var(--x)", rules)
+    authored = sorted({x.upper() for x in _re.findall(r"#[0-9A-Fa-f]{6}", _bare_src)})
+    chromatic = [x for x in authored if _spread(x) > 8]
+    _fb = sorted({(t, h.upper()) for t, h in _re.findall(
+        r"var\(\s*(--[a-z0-9-]+)\s*,\s*(#[0-9A-Fa-f]{6})\s*\)", rules)})
+
+    def _canon_answers(tok):
+        out = set()
+        for th in THEMES:
+            for md in ("light", "dark"):
+                try:
+                    out.add(resolve_token(tok, th, md))
+                except KeyError:
+                    pass
+        return out
+
+    drifted = sorted([(t, h) for t, h in _fb if _canon_answers(t) and h not in _canon_answers(t)])
+    chromatic_fb = sorted([(t, h) for t, h in _fb if _spread(h) > 8])
+    # ⛔ AND THE SECOND LEVEL, WHICH THE FIRST ARM CANNOT SEE. A page-local alias is declared as
+    # `--bm-line-2: var(--border-strong,#808080)` and then CONSUMED as `var(--bm-line-2,#808080)`.
+    # Canon has no opinion about `--bm-line-2`, so the drift arm above correctly skips it — and the
+    # consumer's own fallback is then ungoverned by anything. It must be the SAME literal the alias
+    # declares, or two different colours are waiting behind one name for the day the alias goes
+    # missing. EIGHT consumers of `--bm-line-2` on this page disagreed at s220-D1 (all `#767676`,
+    # a value canon resolves nowhere) and are corrected with the declaration.
+    _local = dict(_re.findall(
+        r"(--bm-[a-z0-9-]+)\s*:\s*var\(\s*--[a-z0-9-]+\s*,\s*(#[0-9A-Fa-f]{6})\s*\)", rules))
+    local_drift = sorted({(t, h.upper(), _local[t].upper()) for t, h in _fb
+                          if t in _local and h.upper() != _local[t].upper()})
+    bite("12 · every AUTHORED colour is a NEUTRAL — no red, no yellow, no green in the chrome; "
+         "every var() FALLBACK literal on a CANON token is canon's own answer for it (so the one "
+         "chromatic fallback here is supercharge's RULED warm ramp and nothing else can be); and "
+         "every fallback on a PAGE-LOCAL alias is the literal that alias itself declares",
+         (chromatic, "#000000" in hexes, drifted, chromatic_fb, local_drift),
+         ([], False, [], [("--color-neutral-5", "#312C26")], []))
     # the page must not re-declare bento STRUCTURE (s217-D2 owns it)
     structure = [sel.strip() for sel, decls in _re.findall(r"([^{}]+)\{([^{}]*)\}", rules)
                  if "c-bento" in sel
@@ -3551,6 +3773,34 @@ def selftest():
           (_rails_doc["defaults"]["$resolved_from"] is not None)
           or ("$unresolved" in _rails_doc["defaults"]["values"])),
          (True, True, [], True))
+    # ⬛ s220-D2(2) — THE MANIFEST CARRIES THE SUPERSESSION, THE RETIRED WORD AND THE RECEIPT.
+    # ⛔ WHY A BITE AND NOT A COMMENT: this file is what the library page reads (s219-D3(6)). Left
+    # to `values` alone it would print `corners` for console gallery with nothing saying a ruling
+    # moved it there, and Dave's own #219 export would look like it had always said so. The bite
+    # asserts BOTH records are present and that they DISAGREE in exactly the ruled way — a
+    # supersession whose `was` had quietly become its `now` would be a decision that did not
+    # happen. And it asserts the option space is untouched: `rounding` still carries both members.
+    _dfl = _rails_doc["defaults"]
+    _sups = _dfl.get("supersessions") or []
+    bite("R6e · ⬛ s220-D2(2) — the console gallery default is CHORD TWO (corners + transparent) "
+         "and the manifest ALSO carries the #219 receipt's capsule+grey and the ruling that "
+         "retired it. ⛔ s220-D2(1) removes no option: `rounding` still offers both members and "
+         "X1/X2 are still PROPOSED",
+         ((_dfl["values"]["gallery"]["console"]["rounding"],
+           _dfl["values"]["gallery"]["console"]["capBg"]),
+          ((_dfl.get("receipt_values") or {}).get("gallery", {}).get("console", {}).get("rounding"),
+           (_dfl.get("receipt_values") or {}).get("gallery", {}).get("console", {}).get("capBg")),
+          sorted((s["dial"], s["was"], s["now"], s["ruled_by"]) for s in _sups),
+          sorted({(s["type"], s["theme"]) for s in _sups}),
+          _rails_doc["dials"]["rounding"]["options"],
+          [x["status"] for x in _rails_doc["constraints"]["exclusions"]
+           if x["id"] in ("X1", "X2")],
+          _dfl["values"]["gallery"]["mono"]["capBg"]),
+         (("corners", "transparent"), ("capsule", "grey"),
+          [("capBg", "grey", "transparent", "s220-D2 (2)"),
+           ("rounding", "capsule", "corners", "s220-D2 (2)")],
+          [("gallery", "console")],
+          ["corners", "capsule"], ["proposed", "proposed"], "grey"))
     _disk = (open(RAILS_PATH, encoding="utf-8").read()
              if os.path.exists(RAILS_PATH) else "⛔ NOT WRITTEN — run --rails")
     bite("R6d · ⛔ GENERATED, NEVER HAND-KEPT — the rails file on disk IS this generation "
@@ -3669,27 +3919,90 @@ def selftest():
 
     # ---- ⬛ #220 PROPOSED · THE CAPTION-GROUND MINT, BOTH DIRECTIONS ----
     _mint_css = caption_mint_rules()
-    bite("C4c · ⬛ #220 PROPOSED — THE MINT IS EXACTLY ONE ENTRY, dark only, console only, "
-         "`darkgrey` only, and it names the PRIMITIVE it consumes. `color/neutral/5` already "
-         "exists (canon.css `--color-neutral-5`); no token is minted and no alias is repointed",
+    bite("C4c · ⬛ #220/s220-D1 PROPOSED — THE MINT IS FOUR ENTRIES, ONE PER THEME, dark only, "
+         "`darkgrey` only, and every one of them names the SAME DNA-tier primitive. "
+         "`color/neutral/5` already exists (canon.css `--color-neutral-5`); no token is minted, no "
+         "alias is repointed, and nothing is hand-picked per theme",
          (sorted(CAPTION_GROUND_MINTS),
-          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["primitive"],
-          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["status"],
-          CAPTION_GROUND_MINTS[("console", "dark", "darkgrey")]["ruled_by"],
-          resolve_token("--color-neutral-5", "console", "dark")),
-         ([("console", "dark", "darkgrey")], "color/neutral/5", "proposed", None, "#313131"))
-    bite("C4d · ⛔ THE VALUE IS MINTED FROM canon.css, NEVER TYPED (s200-D1) — the caption ground "
-         "console/dark resolves the primitive, and the three unminted themes plus BOTH LIGHT "
-         "MODES still resolve the ramp's own `--surface-digital-black`. A naive token bind would "
-         "have broken light; this one cannot reach it",
+          sorted({m["primitive"] for m in CAPTION_GROUND_MINTS.values()}),
+          sorted({m["css_var"] for m in CAPTION_GROUND_MINTS.values()}),
+          sorted({m["status"] for m in CAPTION_GROUND_MINTS.values()}),
+          sorted({str(m["ruled_by"]) for m in CAPTION_GROUND_MINTS.values()}),
+          sorted({m["replaces"] for m in CAPTION_GROUND_MINTS.values()})),
+         (sorted([(th, "dark", "darkgrey") for th in THEMES]),
+          ["color/neutral/5"], ["--color-neutral-5"], ["proposed"], ["None"],
+          ["--surface-digital-black"]))
+    bite("C4d · ⛔ THE VALUE IS MINTED FROM canon.css, NEVER TYPED (s200-D1) — ONE ADDRESS, FOUR "
+         "ANSWERS. `--color-neutral-5` resolves through each theme's own DNA tier (ADR-0014), so "
+         "supercharge takes its WARM step and the other three take the neutral one, from one line "
+         "of table. BOTH LIGHT MODES still resolve the ramp's own `--surface-digital-black` in "
+         "every theme: a naive token bind would have broken light; this one cannot reach it",
          ({th: caption_ground_hex("darkgrey", th, "dark") for th in THEMES},
           {th: caption_ground_hex("darkgrey", th, "light") for th in THEMES},
-          {th: caption_ground_token("darkgrey", th, "light") for th in THEMES}),
-         ({"mono": "#1A1A1A", "legacy": "#1A1A1A", "console": "#313131",
-           "supercharge": "#13110E"},
+          {th: caption_ground_token("darkgrey", th, "light") for th in THEMES},
+          {th: resolve_token("--color-neutral-5", th, "dark") for th in THEMES}),
+         ({"mono": "#313131", "legacy": "#313131", "console": "#313131",
+           "supercharge": "#312C26"},
           {"mono": "#1A1A1A", "legacy": "#1A1A1A", "console": "#1A1A1A",
            "supercharge": "#13110E"},
-          {th: "--surface-digital-black" for th in THEMES}))
+          {th: "--surface-digital-black" for th in THEMES},
+          {"mono": "#313131", "legacy": "#313131", "console": "#313131",
+           "supercharge": "#312C26"}))
+    # ---- ⬛ s220-D1 · THE LIFT ITSELF, MEASURED PER THEME, AND THE BAND NAMED ----
+    # ⛔ THE PITFALL THIS BITE EXISTS FOR: aligning to a primitive by HEX SIMILARITY instead of by
+    # LIFT repeats the defect, because the same grey lifts differently over different theme pages.
+    # So the assertion is on ΔL* against each theme's OWN `--background-default`, not on the hex.
+    # ⚠ ΔL* is computed here and nowhere else in this file; `contrast()`/`caption_contrast()` stay
+    # the repo's one ratio implementation and are asserted alongside it, so the two never drift.
+    _mint_block = caption_mint_block()
+    _band = (_mint_block["$band"]["min"], _mint_block["$band"]["max"])
+    _lift = {r["theme"]: r["lift_dl_star_now"] for r in _mint_block["rows"]}
+    _was = {r["theme"]: r["lift_dl_star_was"] for r in _mint_block["rows"]}
+    bite("C4i · ⬛ s220-D1 — THE LIFT, MEASURED PER THEME AGAINST ITS OWN DARK PAGE. Every minted "
+         "caption ground now sits INSIDE the console calibration band (ΔL* 11.06 +/- 2) and ABOVE "
+         "its page; before the mint two themes were AT the page (0.00) and supercharge was BELOW "
+         "it (-4.10, a caption ground darker than the page). The band is the assertion — a hex "
+         "that matched console's and lifted differently would pass a hex test and fail this one",
+         (_band, _lift, _was,
+          sorted(th for th in THEMES if not _band[0] <= _lift[th] <= _band[1]),
+          sorted(th for th in THEMES if _lift[th] <= 0),
+          {th: caption_contrast("darkgrey", "--text-reverse", th, "dark") for th in THEMES}),
+         ((9.0, 13.0),
+          {"mono": 11.06, "legacy": 11.06, "console": 11.06, "supercharge": 9.08},
+          {"mono": 0.0, "legacy": 0.0, "console": 0.0, "supercharge": -4.1},
+          [], [],
+          {"mono": 13.01, "legacy": 13.01, "console": 13.01, "supercharge": 12.8}))
+    bite("C4j · ⛔ s220-D1 GRANTS NO CHORD — X6 STILL REFUSES, IN THREE THEMES. The mint makes the "
+         "GROUND right; it does not make the ground REACHABLE. `capbg_for('gallery', …)` still "
+         "carries `darkgrey` in console alone, and applying the capsule chord elsewhere still "
+         "refuses by name with s219-D3(3)'s open question printed. Fixing mono's dark-MODE "
+         "rendering must not grant or imply the light-mode chord that is EXPRESSLY OPEN",
+         ({th: ("darkgrey" in capbg_for("gallery", th)) for th in THEMES},
+          sorted({th for th in THEMES
+                  if any(r.startswith("X6") for r in
+                         chord_refusals("capsule", th, "gallery", {"capBg": "darkgrey"}))}),
+          chord_refusals("capsule", "console", "gallery", {"capBg": "darkgrey"})),
+         ({"mono": False, "legacy": False, "console": True, "supercharge": False},
+          ["legacy", "mono", "supercharge"], []))
+    bite("C4k · ⛔ s220-D1 — THE MANIFEST CARRIES THE MINTS WITHOUT A CHORD TO HANG THEM ON. "
+         "`_bento_edit_rails.json` is what the library page reads (s219-D3(6)) and its chord block "
+         "reports a mint only where a chord member reaches one — which would have shown console "
+         "and stayed silent about the three themes that moved. `caption_ground_mints` is "
+         "scope-independent: four rows, the band named, the LIFT before and after, and X6 "
+         "reported as reachability rather than as permission",
+         (len(_mint_block["rows"]),
+          sorted({r["css_var"] for r in _mint_block["rows"]}),
+          sorted({r["mode"] for r in _mint_block["rows"]}),
+          {r["theme"]: r["reachable_here"] for r in _mint_block["rows"]},
+          {r["theme"]: (r["was"], r["now"], r["page_ground"]) for r in _mint_block["rows"]},
+          sorted({r["ink_token"] for r in _mint_block["rows"]})),
+         (4, ["--color-neutral-5"], ["dark"],
+          {"mono": False, "legacy": False, "console": True, "supercharge": False},
+          {"mono": ("#1A1A1A", "#313131", "#1A1A1A"),
+           "legacy": ("#1A1A1A", "#313131", "#1A1A1A"),
+           "console": ("#1A1A1A", "#313131", "#1A1A1A"),
+           "supercharge": ("#13110E", "#312C26", "#1A1A1A")},
+          ["--text-reverse"]))
     bite("C4e · ⛔ THE MINT MOVES A CAPTION AND NOTHING ELSE. The SECTION ground (`bentoBg`) and "
          "the PAGE rail keep the ramp's own answer in console dark, so a dark-grey WALL is the "
          "same colour it was — the key carries the surface, not just the word",
@@ -3699,22 +4012,26 @@ def selftest():
           [r[6]["dark"] for r in _sweep if r[0] == "$bentoBg" and r[1] == "console"
            and r[4] == "darkgrey"]),
          ("#1A1A1A", 17.4, 13.01, [17.4]))
-    bite("C4f · ⬛ THE CAPTION MINT CLEARS THE RULED INK FLOOR IN BOTH MODES, measured on the "
-         "value the card PAINTS — and the console capsule chord's other two grounds are "
-         "untouched, so the chord is still legal with no refusal at all",
-         (contrast_violations("darkgrey", "console"),
+    bite("C4f · ⬛ THE CAPTION MINT CLEARS THE RULED INK FLOOR IN BOTH MODES IN ALL FOUR THEMES, "
+         "measured on the value the card PAINTS — and the console capsule chord's other two "
+         "grounds are untouched, so the chord is still legal with no refusal at all",
+         ({th: contrast_violations("darkgrey", th) for th in THEMES},
           chord_refusals("capsule", "console", "gallery",
                          {"capBg": "darkgrey", "bentoBg": "grey", "keylines": "off"}),
           {m: caption_contrast("grey", "--text-secondary", "console", m)
            for m in ("light", "dark")}),
-         ([], [], {"light": 15.27, "dark": 16.48}))
+         ({th: [] for th in THEMES}, [], {"light": 15.27, "dark": 16.48}))
     bite("C4g · ⛔ THE STYLESHEET SAYS WHAT THE TABLE SAYS — one declared value per theme (so a "
-         "PINNED specimen answers with its own and never inherits the page switcher's), the mint "
-         "only on console, and DARK is the only consumer: light carries no `[data-theme]` to "
-         "match, which is why light mode cannot be reached from here",
+         "PINNED specimen answers with its own and never inherits the page switcher's), ONE "
+         "ADDRESS in all four with FOUR different literal fallbacks minted from canon (the warm "
+         "one is supercharge's DNA-tier rebind, not a typo), and DARK is the only consumer: light "
+         "carries no `[data-theme]` to match, which is why light mode cannot be reached from here",
          (_mint_css.count("--bm-cap-dark-darkgrey:"),
           '[data-apollo-theme="console"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}'
           in _mint_css,
+          '[data-apollo-theme="supercharge"]{--bm-cap-dark-darkgrey:'
+          'var(--color-neutral-5,#312C26);}' in _mint_css,
+          _mint_css.count("var(--surface-digital-black,"),
           _mint_css.count("var(--color-neutral-5,"),
           '[data-theme="dark"] .bm-stage[data-cap-bg="darkgrey"] .bm-cap{' in _mint_css,
           '[data-theme="light"]' in _mint_css,
@@ -3724,7 +4041,10 @@ def selftest():
           # reader finds out whose decision this was.
           [ln for ln in _mint_css.splitlines() if "#303030" in ln and "/*" not in ln],
           "#303030" in _mint_css),
-         (4, True, 1, True, False, [], True))
+         # ⚠ `--surface-digital-black` drops from 4 to 1: the three unminted theme lines are gone
+         # and the ONE survivor is the CONSUMER's second-level fallback, which must stay — a
+         # dangling ground var renders silent black and no gate sees it.
+         (4, True, True, 1, 4, True, False, [], True))
 
     # ---- ⬛ #220 · MUTANT FOUR — THE MINT ESCAPES ITS MODE ----
     # ⛔ The clause under test is DARK-ONLY, and finding 4 is why: the ramp is mode-inverted, so a
@@ -3753,7 +4073,7 @@ def selftest():
          "because an arm that leaked would make every bite after it a measurement of the mutant",
          (isinstance(_m4, SystemExit), "no `data-theme` attribute" in str(_m4),
           sorted(CAPTION_GROUND_MINTS), caption_ground_hex("darkgrey", "console", "light")),
-         (True, True, [("console", "dark", "darkgrey")], "#1A1A1A"))
+         (True, True, sorted([(th, "dark", "darkgrey") for th in THEMES]), "#1A1A1A"))
 
     # ---- THE THREE MUTANTS, each RED BY NAME ----
     # ⛔ A mutation test proves the CLAUSE, not the feature ([[mutation-tests-the-clause-not-the-
