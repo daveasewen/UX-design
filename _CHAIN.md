@@ -82,11 +82,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **284 items · 204 live · 111 Dave's · 93 mine · 270 carry a stated close condition · **14 UNCONDITIONED**.**
+> **285 items · 205 live · 112 Dave's · 93 mine · 271 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (111) — 111 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (112) — 112 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -144,6 +144,7 @@
 > - `W-209` **#220 FILED REPORT - charts lane DV-J2b sparkline: DISCHARGED BY MEASUREMENT, nothing built, deliberately** — *closes when:* Dave has ruled or explicitly parked its FOUR ruling-shaped questions, chiefly what to do about the stale-queue surface that misled a fourth lane
 > - `W-210` **#220 FILED REPORT - three readings of Dave's capsule-chord correction, rendered side by side rather than built** — *closes when:* Dave has pointed at one of the three readings and has ruled or explicitly parked the SIX ruling-shaped questions the report puts
 > - `W-211` **#220 FILED REPORT - every REPLAY-THESE item from the #219 filed reports, replayed and graded** — *closes when:* the 12 RED items are each repaired or explicitly parked, the 25 COULD-NOT-RUN items each have a named reason and an owner, and Dave has ruled or explicitly parked the ruling-shaped questions the report puts
+> - `W-212` **#220 FILED REPORT - the commit-and-bake seam: Spider/Gumdrop v1.0.1 landed in three commits, artefact built and fully driven, --release BLOCKED by a live parallel lane** — *closes when:* the v1.0.1 bake has been run from a clean tree at 3f7a63a and produced the expected 18,992,272-byte / 1,646-entry zip, the frozen ledger has been seeded to version v1.0.1, _gate_release_audit.py --pack reads PASS, the push has happened and the CI read-back has been delivered to Dave in chat (s203-D1), and Dave has ruled or explicitly parked the report's five ruling-shaped questions
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -206,7 +207,7 @@
 
 ---
 
-*(Chain ends. **47,177 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **47,418 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 94,376 real and stays whole for retrieval; you have paid for
 50% of it, and that is the intended figure, not a shortfall.)*
