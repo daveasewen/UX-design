@@ -587,6 +587,12 @@ def is_dirty():
 # word) — a gate that cannot tell a mention from a mandate is not a gate.
 RATIFY_IDS = {
     "v1.0.0": "s219-D10",   # #219, Dave's word 'bake' (2026-08-26)
+    "v1.0.2": "s223-D7",    # #223, Dave's word 'bake it' (2026-08-28) — the first cut to pass
+                            # through this re-keyed gate: the machine held v1.0.2 at PROPOSED
+                            # until his fresh word, which is exactly what s223-D3 built it to do.
+                            # v1.0.1 has no row and never will: it was cut at #220, before the
+                            # re-key existed, under v1.0.0's inherited word — the defect s223-D3
+                            # names. Rows are ADDED here, never moved (ADR-0017, one home).
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
@@ -1766,6 +1772,42 @@ def all_paths(man):
     for g in man["groups"]:
         out.extend(g["paths"])
     return sorted(set(out))
+
+
+# ---------------------------------------------------------------------------------------------
+# ⛔ #223, s223-D8 — THE RATIFICATION STAMP LIVES OUTSIDE THE ZIP.
+#
+# Measured at the #223 bake: `status` is a key of the manifest, the manifest is COPIED INTO THE
+# PACK as `_MANIFEST.json`, and its sha256 is stamped into `PROVENANCE.json` and the pack
+# `README.md`. So the act of recording Dave's word — PROPOSED → RATIFIED — moved three shipped
+# files, and a released zip could NEVER byte-match the dry-run twin he gave his word against
+# (measured: 3 differing entries of 1652, one line each). A release shape in which the twin is
+# structurally a different artefact from the release has no byte-fence left worth the name.
+#
+# Dave ruled the redesign over acceptance (s223-D8): the packed manifest ships STATUS-FREE.
+# Ratification is a REPO-SIDE fact — it lives in `knowledge/_rulings.json` (its one home,
+# ADR-0017), it is derived into `knowledge/_release/_pack_manifest.json` for the audit arms and
+# for Dave's go/no-go page, and `build-designer-pack.sh` still refuses to `--release` without
+# it. None of that has to ride inside the zip: nothing in the pack ever read the key (driven —
+# the pack's readers of `_MANIFEST.json` take `groups`, `verdicts`, `schema` and `totals`), and
+# a designer holding the zip cannot verify a ratification from a string anyway.
+#
+# The consequence is the point: the packed bytes are now WORD-INDEPENDENT, so `--dry-run` and
+# `--release` at the same commit produce the same zip, for this cut and every future one.
+PACKED_DROP_KEYS = ("status",)
+
+
+def packed_manifest_text(repo_text):
+    """The bytes that ship as `_MANIFEST.json`, derived from the repo-side manifest text.
+
+    Word-independent by construction: every key whose value is a function of Dave's
+    ratification is dropped here and nowhere else, so the repo-side contract (what
+    `--manifest-check` and `--drift` compare, what the page renders) is untouched.
+    """
+    man = json.loads(repo_text)
+    for k in PACKED_DROP_KEYS:
+        man.pop(k, None)
+    return canonical(man)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -3093,6 +3135,59 @@ def selftest():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
+    # ---- s223-D8: THE PACKED MANIFEST IS WORD-INDEPENDENT -------------------------------------
+    # The fence these bites hold: `--dry-run` and `--release` at the same commit must produce the
+    # same bytes, whatever Dave has or has not said yet. Before s223-D8 they could not, and the
+    # release shape had no byte-fence left. Each bite below is drivable to both verdicts — the
+    # mutation bite drives the defect itself rather than describing it.
+    _mk = lambda st: canonical({"schema": "apollo-designer-pack-manifest/1", "version": VERSION,
+                                "commit": "0" * 40, "status": st,
+                                "groups": [{"key": "k", "paths": ["a"]}]})
+    _prop = _mk("PROPOSED — no ruling is keyed to %s yet" % VERSION)
+    _rat = _mk("RATIFIED — s223-D7 names %s in the store" % VERSION)
+    bite("packed/repo-side-states-differ", _prop != _rat, True,
+         "the control: the two repo-side manifests MUST differ, or the next bite is vacuous")
+    bite("packed/word-independent", packed_manifest_text(_prop), packed_manifest_text(_rat),
+         "PROPOSED and RATIFIED must pack to byte-identical content (s223-D8)")
+    bite("packed/no-status-key", "status" in json.loads(packed_manifest_text(_rat)), False,
+         "the ratification stamp does not ship inside the zip")
+    bite("packed/nothing-else-dropped",
+         sorted(json.loads(packed_manifest_text(_rat))),
+         sorted(k for k in json.loads(_rat) if k != "status"),
+         "the packed copy drops the status key and NOTHING else")
+    # ⚠ THE MUTATION, DRIVEN. Re-adding the status key to the packed copy — the pre-s223-D8
+    # behaviour, spelled as `PACKED_DROP_KEYS = ()` — must make the word-independence assertion
+    # fail. A fence whose defect it cannot reproduce is not a fence
+    # [[mutation-tests-the-clause-not-the-feature]].
+    _keep = PACKED_DROP_KEYS
+    try:
+        globals()["PACKED_DROP_KEYS"] = ()
+        bite("packed/mutation-restores-the-defect",
+             packed_manifest_text(_prop) != packed_manifest_text(_rat), True,
+             "with nothing dropped the two states MUST diverge — that is the bug s223-D8 fixed")
+    finally:
+        globals()["PACKED_DROP_KEYS"] = _keep
+    bite("packed/mutation-was-restored", PACKED_DROP_KEYS, ("status",),
+         "the mutation must not leak past the bite that drove it")
+    if os.path.exists(MANIFEST_PATH):
+        _real = open(MANIFEST_PATH, encoding="utf-8").read()
+        bite("packed/real-manifest-has-status", "status" in json.loads(_real), True,
+             "repo-side keeps the stamp — it is what --manifest-check and the page read")
+        bite("packed/real-packed-has-none", "status" in json.loads(packed_manifest_text(_real)),
+             False, "the shipped copy of the very manifest this cut bakes carries no status")
+    # ---- and the BAKE SCRIPT must actually use it. The generator can be perfect and the pack
+    # still ship the repo-side bytes if the bake `cp`s the file — so the wiring is asserted here
+    # rather than left to a reader [[instrument-without-a-consumer]].
+    if os.path.exists(_bake):
+        bite("packed/bake-derives-the-copy", "--pack-copy" in _bake_src, True,
+             "the bake must DERIVE the packed manifest, not copy the repo-side one")
+        bite("packed/bake-does-not-cp-the-manifest",
+             'cp "$MANIFEST" "$STAGE/_MANIFEST.json"' in _bake_src, False,
+             "a raw copy would put the status key back inside the zip")
+        bite("packed/stamp-is-over-the-shipped-bytes",
+             '"$STAGE/_MANIFEST.json")"' in _bake_src, True,
+             "MAN_SHA must fingerprint what ships, not the repo-side file")
+
     # ---- determinism: canonical() is order-independent
     a = canonical({"b": 1, "a": [3, 2]})
     b = canonical({"a": [3, 2], "b": 1})
@@ -3135,6 +3230,9 @@ def main():
     ap.add_argument("--stage")
     ap.add_argument("--zip")
     ap.add_argument("--check")
+    ap.add_argument("--pack-copy", help="write the STATUS-FREE packed _MANIFEST.json to this "
+                                        "path (s223-D8: the ratify stamp stays repo-side, so "
+                                        "the packed bytes are word-independent)")
     ap.add_argument("--page", help="write Dave's go/no-go page to this path")
     ap.add_argument("--zip-bytes", type=int, help="--page: the proved zip size, in bytes")
     ap.add_argument("--zip-sha", help="--page: the proved zip fingerprint")
@@ -3203,6 +3301,20 @@ def main():
         print("  commit %s  files %d  bytes %d  sha256 %s"
               % (sha[:12], man["totals"]["files"], man["totals"]["bytes"],
                  manifest_hash(text)[:16]))
+        return
+
+    if a.pack_copy:
+        if not os.path.exists(MANIFEST_PATH):
+            print("REFUSED: no manifest at %s — run --manifest first. The packed copy is "
+                  "DERIVED from the repo-side manifest, never written independently."
+                  % MANIFEST_PATH, file=sys.stderr)
+            sys.exit(2)
+        text = packed_manifest_text(open(MANIFEST_PATH, encoding="utf-8").read())
+        os.makedirs(os.path.dirname(os.path.abspath(a.pack_copy)), exist_ok=True)
+        with open(a.pack_copy, "w", encoding="utf-8") as f:
+            f.write(text)
+        print("packed manifest -> %s  (status-free, s223-D8)" % a.pack_copy)
+        print("  sha256 %s" % manifest_hash(text))
         return
 
     if a.page:

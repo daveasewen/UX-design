@@ -174,7 +174,6 @@ dryrun|release)
   python3 "$GEN" --stage "$STAGE" --commit "$COMMIT"
 
   # ---- provenance, stamped from the COMMIT (never from today) --------------------------------
-  MAN_SHA="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$MANIFEST")"
   COMMIT_DATE="$(git -C "$ROOT" show -s --format=%cI "$COMMIT")"
   N_FILES="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["totals"]["files"])' "$MANIFEST")"
   # ⛔ #220. The Gumdrop cut's version was TYPED here three times (PROVENANCE.json, the README
@@ -186,7 +185,17 @@ dryrun|release)
   MEM_NAME="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["name"])' "$MANIFEST")"
   MEM_VERSION="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["version"])' "$MANIFEST")"
 
-  cp "$MANIFEST" "$STAGE/_MANIFEST.json"
+  # ⛔ #223, s223-D8 — THE PACKED MANIFEST SHIPS STATUS-FREE, AND THE STAMP IS TAKEN OVER IT.
+  # The manifest used to be `cp`'d in whole and its sha stamped below from the REPO-SIDE file.
+  # Both of those made the zip a function of Dave's ratification word: flipping PROPOSED →
+  # RATIFIED moved `_MANIFEST.json`, `PROVENANCE.json` and `README.md`, so a released pack could
+  # never byte-match the dry-run twin he ruled on. The packed copy is now DERIVED by the
+  # generator with the status key dropped, and MAN_SHA is the sha256 of THE BYTES THAT ACTUALLY
+  # SHIP — which is also the only fingerprint a designer holding the zip can reproduce.
+  # Repo-side, `knowledge/_release/_pack_manifest.json` keeps its status untouched: that is what
+  # `--manifest-check`, `--drift` and Dave's go/no-go page read, and what `ratified` fences on.
+  python3 "$GEN" --pack-copy "$STAGE/_MANIFEST.json"
+  MAN_SHA="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$STAGE/_MANIFEST.json")"
 
   cat > "$STAGE/PROVENANCE.json" <<JSON
 {

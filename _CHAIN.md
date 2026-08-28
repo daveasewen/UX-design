@@ -84,7 +84,7 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **330 items · 250 live · 123 Dave's · 127 mine · 316 carry a stated close condition · **14 UNCONDITIONED**.**
+> **332 items · 252 live · 123 Dave's · 129 mine · 318 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
@@ -213,14 +213,14 @@
 > - `W-99zw` **#219 R3 filed report - the five v3 skills, seven walked exercises and five ruling-shaped questions** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its five ruling-shaped questions - the gate-runner's name and the manifest repoint (Q1, blocking the bake), where the skills land inside the zip (Q2), whether empty _proforma/_fitness-test dirs ship (Q3, pairs with R1's Q1), whether the gates' internal --help voice ships as-is (Q4), and whether the skills cite gate names inline (Q5) - or parked them explicitly
 > - `W-99zz` **#219 R2 filed report - release CI both halves, the frozen-release bite quoted, and five ruling-shaped questions** — *closes when:* the conductor has replayed the report's REPLAY-THESE items and Dave has ruled its five ruling-shaped questions - chiefly Q1, whether the pack ships with four gates that are red at bake - or parked them explicitly
 >
-> **MINE (127), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `W-186` · `W-187` · `W-188` · `W-189` · `W-194` · `W-197` · `W-200` · `W-201` · `W-202` · `W-203` · `W-204` · `W-205` · `W-213` · `W-215` · `W-218` · `W-226` · `W-227` · `W-228` · `W-229` · `W-230` · `W-231` · `W-232` · `W-233` · `W-234` · `W-235` · `W-236` · `W-237` · `W-238` · `W-239` · `W-240` · `W-241` · `W-242` · `W-243` · `W-245` · `W-246` · `W-247` · `W-248` · `W-249` · `W-250` · `W-251` · `W-252` · `W-253` · `W-254` · `W-255` · `W-256` · `W-257` · `G4` · `W-99za` · `W-99zh` · `W-99zv` · `W-99zx` · `W-99zy`
+> **MINE (129), ids only — bodies are in the store, not here:** `W-0b` · `W-01` · `W-02` · `W-03` · `W-04` · `W-05` · `W-06` · `W-07` · `W-08` · `W-09` · `W-10` · `W-11` · `W-12` · `W-13` · `W-17` · `W-35` · `W-42` · `W-43` · `W-44` · `W-45` · `W-46` · `W-47` · `W-48` · `W-49` · `W-50` · `W-52` · `W-54` · `W-55` · `W-56` · `W-57` · `W-59` · `W-62` · `W-86` · `W-97` · `W-99` · `W-99a` · `W-99f` · `W-99h` · `W-99i` · `W-99j` · `W-99m` · `W-99n` · `W-99p` · `W-99s` · `W-99t` · `W-99u` · `W-99w` · `W-99z` · `W-107` · `W-139` · `W-140` · `W-141` · `W-144` · `W-145` · `W-146` · `W-147` · `W-148` · `W-155` · `W-156` · `W-157` · `W-158` · `W-161` · `W-162` · `W-163` · `W-164` · `W-165` · `W-169` · `W-171` · `W-173` · `W-174` · `W-177` · `W-178` · `W-180` · `W-182` · `W-185` · `W-186` · `W-187` · `W-188` · `W-189` · `W-194` · `W-197` · `W-200` · `W-201` · `W-202` · `W-203` · `W-204` · `W-205` · `W-213` · `W-215` · `W-218` · `W-226` · `W-227` · `W-228` · `W-229` · `W-230` · `W-231` · `W-232` · `W-233` · `W-234` · `W-235` · `W-236` · `W-237` · `W-238` · `W-239` · `W-240` · `W-241` · `W-242` · `W-243` · `W-245` · `W-246` · `W-247` · `W-248` · `W-249` · `W-250` · `W-251` · `W-252` · `W-253` · `W-254` · `W-255` · `W-256` · `W-257` · `W-258` · `W-259` · `G4` · `W-99za` · `W-99zh` · `W-99zv` · `W-99zx` · `W-99zy`
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **60,214 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **60,226 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 113,261 real and stays whole for retrieval; you have paid for
 53% of it. Under 40% is this generator's own floor — above it, the wrapper is
