@@ -288,9 +288,21 @@ redistribute. \`_MANIFEST.json\` lists every exclusion with its reason.
 
 ## What you need installed
 
-\`pip install tiktoken\` — **required**, and the only one. \`FIRST-SESSION.md\` § Before you start
-says why: the chain generator counts tokens with the real encoder and REFUSES to write the file
-at all on an estimate, so the first wrap fails without it.
+\`pip install tiktoken\` — the only one, and it is RECOMMENDED rather than required: the pack
+carries its own exact encoder for machines that cannot install it. \`FIRST-SESSION.md\` § Before you
+start says why: the chain generator counts tokens exactly and REFUSES to write the file at all on
+an estimate — with \`tiktoken\` it does that faster, without it the pack's own engine does it.
+
+**The pack also carries its own encoder.** \`memento-package/machinery/_encoder_home.py\` contains a
+pure-Python \`cl100k_base\` implementation — the same pretokenizer, the same byte-pair merges, over
+the same vendored data — which runs when \`tiktoken\` cannot be imported and NAMES ITSELF when it
+does (\`purepy cl100k_base (exact, equality-gated)\`, never the real library's name). It is exact,
+not an estimate, and the pack ships the gate that proves it:
+
+    python3 memento-package/machinery/_encoder_home.py --equality-gate
+
+which drives both encoders over this pack's own text and refuses on the first token they disagree
+about. It is a few times slower, which is why \`tiktoken\` is still the recommended path.
 
 **You do not need network access for the encoder itself.** \`tiktoken\` normally downloads its
 \`cl100k_base\` encoding data from \`openaipublic.blob.core.windows.net\`, which is blocked on many

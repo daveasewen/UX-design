@@ -35,5 +35,13 @@ whole path end to end:
 
     python3 memento-package/machinery/_encoder_home.py --check
 
+**Two engines read this one file.** `tiktoken` reads it through its own cache lookup, and — when
+`tiktoken` cannot be imported at all — the helper's own pure-Python `cl100k_base` encoder reads it
+directly (`s222-D3`). Same data, same merges, same numbers; the helper's `--equality-gate` is what
+makes "same numbers" a checked claim rather than a promise. One consequence worth stating: rename
+or damage this file and **both** engines fail, identically and loudly. One file, one failure mode,
+one refusal.
+
 **What is still an install step.** The `tiktoken` *wheel* itself (`pip install tiktoken`) still
-comes from PyPI. Vendoring the wheel is a different question and is deliberately not done here.
+comes from PyPI, and it is RECOMMENDED — it is several times faster than the pure-Python engine.
+Vendoring the wheel is a different question and is deliberately not done here.

@@ -102,6 +102,37 @@ an estimate exactly as it always has. Nothing here makes a failure quieter; it m
 measurement reachable. Check the whole path with
 `python3 memento-package/machinery/_encoder_home.py --check`.
 
+## The pure-Python fallback encoder (`s222-D3`, #222)
+
+The same helper carries a SECOND engine: a `cl100k_base` encoder written in stdlib Python over
+the same vendored data file — cl100k's pretokenizer (translated term by term from the published
+regex, because stdlib `re` has neither `\p{L}` nor possessive quantifiers; the translation is
+justified line by line in the module), the byte-pair merges in rank order, and `tiktoken`'s own
+special-token semantics including the `ValueError` on an unescaped special token.
+
+**It runs ONLY when `import tiktoken` fails**, and it never borrows the real library's name:
+`count()` returns `(tokens, engine)` and the two engine names are
+`tiktoken cl100k_base` and `purepy cl100k_base (exact, equality-gated)`. Dave's word, `s222-D3`:
+the engine is named in every output line, never silent. The helper deliberately does NOT register
+itself in `sys.modules` as `tiktoken`, because that would make the fallback invisible to exactly
+the callers that report which engine they used.
+
+**"Exact" is a gated claim, not an adjective.**
+
+    python3 memento-package/machinery/_encoder_home.py --equality-gate [paths…]
+
+drives both engines over a real corpus plus 68 adversarial cases (whitespace runs, contractions,
+CJK, RTL, combining marks, emoji ZWJ sequences, special tokens, trailing newlines) and compares
+TOKEN SEQUENCES, not counts — two wrong sequences can share a length. It refuses on the first
+divergence, naming the file, the token index and the decoded text either side. With no `tiktoken`
+to compare against it exits **COULD-NOT-RUN (2)**, never green. `--selftest` mutation-tests it
+both ways: swap two merge ranks ⇒ the gate fires; restore ⇒ green again.
+
+**Measured, not assumed.** `--timings` prints the numbers behind the "recommended, not required"
+claim. Cold start of the pure-Python engine ~0.24 s (ranks + Unicode class derivation, once per
+process); after that it runs about 4× slower than the Rust library, i.e. milliseconds on any
+artefact this pack actually measures.
+
 ## What is deliberately NOT here
 
 - **A record of any kind.** No chain content, no rulings, no tasks. Every adopting project grows

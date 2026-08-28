@@ -4,8 +4,8 @@
     "version": "v1.0.1",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own; the pack's version does not move it."
   },
-  "commit": "3f7a63a39e861a33bfa603b86c80fba24ec20c75",
-  "commit_date": "2026-08-27T16:43:16+01:00",
+  "commit": "36754e247a2c6274c6f87c0ceb59acedbb6c51e2",
+  "commit_date": "2026-08-28T13:09:38+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,7 +101,7 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 11 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "3f7a63a39e861a33bfa603b86c80fba24ec20c75",
+    "commit": "36754e247a2c6274c6f87c0ceb59acedbb6c51e2",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -128,8 +128,16 @@
         "why": "crashed: AssertionError: file_contains must find a present needle"
       },
       {
+        "gate": "_validate_descender_computed.py",
+        "why": "crashed:   - [pid=253] <gracefully close end>"
+      },
+      {
         "gate": "_validate_evidence.py",
         "why": "runs, but its verdict is about notes/_claims, which the pack does not ship"
+      },
+      {
+        "gate": "_validate_hit_area.py",
+        "why": "crashed:   - [pid=357] <gracefully close end>"
       },
       {
         "gate": "_validate_kg.py",
@@ -148,8 +156,8 @@
         "why": "crashed: AssertionError: must discover the git runbook"
       },
       {
-        "gate": "_validate_wiring.py",
-        "why": "reaches for knowledge/_build_all.py, which the pack does not ship"
+        "gate": "_validate_state_contrast.py",
+        "why": "crashed: ╚══════════════════════════════════════════════════════╝"
       }
     ],
     "timeout_s": 25
@@ -1393,19 +1401,19 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 799319,
+      "bytes": 759207,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
         "apollo-spider/ci-template/run-gates.py"
       ],
       "counts": {
-        "empty_population": 3,
-        "needs_dep": 3,
-        "repo_bound": 9,
-        "runnable": 35
+        "empty_population": 4,
+        "needs_dep": 0,
+        "repo_bound": 11,
+        "runnable": 38
       },
-      "files": 55,
+      "files": 56,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1420,7 +1428,9 @@
         "knowledge/_contrast_utils.py",
         "knowledge/_could_not_ask.py",
         "knowledge/_dtcg_units.py",
+        "knowledge/_gate_artefact_fresh.py",
         "knowledge/_gate_dataviz_vars.py",
+        "knowledge/_gate_inline_style_parse.py",
         "knowledge/_gate_minted_consumption.py",
         "knowledge/_helpgate.py",
         "knowledge/_htmlmask.py",
@@ -1442,7 +1452,6 @@
         "knowledge/_validate_grid.py",
         "knowledge/_validate_help_gate.py",
         "knowledge/_validate_hidden_display.py",
-        "knowledge/_validate_hit_area.py",
         "knowledge/_validate_icons.py",
         "knowledge/_validate_intent_resolve.py",
         "knowledge/_validate_legacy_leak.py",
@@ -1454,13 +1463,13 @@
         "knowledge/_validate_radius.py",
         "knowledge/_validate_screen.py",
         "knowledge/_validate_snippets.py",
-        "knowledge/_validate_state_contrast.py",
         "knowledge/_validate_state_snap.py",
         "knowledge/_validate_theme_provenance.py",
         "knowledge/_validate_token_forks.py",
         "knowledge/_validate_token_tiers.py",
         "knowledge/_validate_type_blast_radius.py",
         "knowledge/_validate_type_composites.py",
+        "knowledge/_validate_wiring.py",
         "knowledge/chart-intents.json",
         "knowledge/component-types.json",
         "knowledge/gen_snippet_tokens.py"
@@ -1468,6 +1477,15 @@
       "plain": "The executable checks. Each one below was RUN in an isolated copy of this pack to find out whether it works away from this repo — the verdicts are measured, not guessed.",
       "title": "Runnable gates",
       "verdicts": [
+        {
+          "gate": "_gate_artefact_fresh.py",
+          "invocation": "--write",
+          "population": "graded",
+          "selftest": "red",
+          "third_party": [],
+          "verdict": "RUNNABLE",
+          "why": "ran clean, verdict PASS"
+        },
         {
           "gate": "_gate_dataviz_vars.py",
           "invocation": "",
@@ -1494,6 +1512,15 @@
           "third_party": [],
           "verdict": "REPO-BOUND",
           "why": "runs, but its verdict is about knowledge/_git_commit.sh, which the pack does not ship"
+        },
+        {
+          "gate": "_gate_inline_style_parse.py",
+          "invocation": "",
+          "population": "EMPTY-IN-PACK",
+          "selftest": "red",
+          "third_party": [],
+          "verdict": "RUNNABLE",
+          "why": "ran clean, verdict PASS"
         },
         {
           "gate": "_gate_minted_consumption.py",
@@ -1620,8 +1647,8 @@
           "third_party": [
             "playwright"
           ],
-          "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "verdict": "REPO-BOUND",
+          "why": "crashed:   - [pid=253] <gracefully close end>"
         },
         {
           "gate": "_validate_dtcg.py",
@@ -1685,8 +1712,8 @@
           "third_party": [
             "playwright"
           ],
-          "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "verdict": "REPO-BOUND",
+          "why": "crashed:   - [pid=357] <gracefully close end>"
         },
         {
           "gate": "_validate_icons.py",
@@ -1829,12 +1856,12 @@
           "gate": "_validate_state_contrast.py",
           "invocation": "",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
-          "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "verdict": "REPO-BOUND",
+          "why": "crashed: ╚══════════════════════════════════════════════════════╝"
         },
         {
           "gate": "_validate_state_snap.py",
@@ -1896,8 +1923,8 @@
           "population": "",
           "selftest": "crashed",
           "third_party": [],
-          "verdict": "REPO-BOUND",
-          "why": "reaches for knowledge/_build_all.py, which the pack does not ship"
+          "verdict": "RUNNABLE",
+          "why": "ran, verdict FAIL (exit 1) — a verdict is a run"
         }
       ]
     },
@@ -1923,7 +1950,7 @@
       "title": "Runbooks"
     },
     {
-      "bytes": 14018658,
+      "bytes": 14040851,
       "files": 288,
       "group": "library",
       "key": "library.showroom",
@@ -2221,7 +2248,7 @@
       "title": "Showroom"
     },
     {
-      "bytes": 27604,
+      "bytes": 38154,
       "files": 1,
       "group": "library",
       "key": "library.rails",
@@ -2347,7 +2374,7 @@
       "title": "Photography specimen"
     },
     {
-      "bytes": 125865,
+      "bytes": 141274,
       "files": 7,
       "group": "memento-clean-cut",
       "key": "memento",
@@ -2364,7 +2391,7 @@
       "title": "Memento machinery"
     },
     {
-      "bytes": 7652,
+      "bytes": 8434,
       "files": 2,
       "group": "memento-clean-cut",
       "key": "memento.docs",
@@ -2376,7 +2403,7 @@
       "title": "Memento docs"
     },
     {
-      "bytes": 136983,
+      "bytes": 152551,
       "files": 11,
       "group": "memento-clean-cut",
       "key": "memento.plugin",
@@ -2397,8 +2424,8 @@
       "title": "Memento Claude plugin"
     },
     {
-      "bytes": 231406,
-      "files": 19,
+      "bytes": 1935563,
+      "files": 22,
       "group": "gumdrop",
       "key": "gumdrop",
       "paths": [
@@ -2411,6 +2438,8 @@
         "apollo-spider/FIRST-SESSION.md",
         "apollo-spider/gumdrop/_CHAIN.md",
         "apollo-spider/gumdrop/_GUMDROP-MANIFEST.md",
+        "apollo-spider/gumdrop/_encoder-cache/9b5ad71b2ce5302211f9c61530b329a4922fc6a4",
+        "apollo-spider/gumdrop/_encoder-cache/README.md",
         "apollo-spider/gumdrop/_governs.py",
         "apollo-spider/gumdrop/_helpgate.py",
         "apollo-spider/gumdrop/_inscribe_ruling.py",
@@ -2419,6 +2448,7 @@
         "apollo-spider/gumdrop/_state.py",
         "apollo-spider/gumdrop/machinery/_build_memento_index.py",
         "apollo-spider/gumdrop/machinery/_could_not_ask.py",
+        "apollo-spider/gumdrop/machinery/_encoder_home.py",
         "apollo-spider/gumdrop/runbooks/_RUNBOOK-capture-ritual.md",
         "apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md"
       ],
@@ -2426,7 +2456,7 @@
       "title": "Memento — Gumdrop cold start"
     },
     {
-      "bytes": 31987,
+      "bytes": 32365,
       "files": 5,
       "group": "skills",
       "key": "skills",
@@ -2566,19 +2596,19 @@
         "files": 1157
       },
       "gates": {
-        "bytes": 799319,
-        "files": 55
+        "bytes": 759207,
+        "files": 56
       },
       "gumdrop": {
-        "bytes": 231406,
-        "files": 19
+        "bytes": 1935563,
+        "files": 22
       },
       "library": {
-        "bytes": 27878450,
+        "bytes": 27911193,
         "files": 374
       },
       "memento-clean-cut": {
-        "bytes": 270500,
+        "bytes": 302259,
         "files": 20
       },
       "runbooks": {
@@ -2586,14 +2616,14 @@
         "files": 11
       },
       "skills": {
-        "bytes": 31987,
+        "bytes": 32365,
         "files": 5
       }
     },
-    "bytes": 39767327,
-    "files": 1641,
-    "pack_bytes": 39793984,
-    "pack_files": 1643
+    "bytes": 41496252,
+    "files": 1645,
+    "pack_bytes": 41522909,
+    "pack_files": 1647
   },
   "version": "v1.0.1"
 }

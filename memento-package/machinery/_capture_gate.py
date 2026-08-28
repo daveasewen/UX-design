@@ -165,6 +165,17 @@ def encoder_home_note():
     return _ENCODER_HOME_NOTE
 
 
+def encoder_home_module():
+    """The `_encoder_home` module this file's bootstrap loaded, or None when it found none.
+
+    ⚠ A READ of what the bootstrap already did — it never imports, never searches, never
+    falls back. Apollo's own tree carries no `_encoder_home.py` above `knowledge/`, so
+    `_eh_mod` is never bound there, this returns None, and the measurement cascade below is
+    byte-for-byte the behaviour it had before `s222-D3`. In the released pack the bootstrap
+    DOES bind it, and `measure_tokens` can reach the pack's own exact encoder."""
+    return globals().get("_eh_mod")
+
+
 # ---------------------------------------------------------------------------------------------
 # ds-021 / M6 — THE ONE UNIT AND THE HONEST FALLBACK.
 # Ported verbatim, `knowledge/_capture_gate.py` line 361.
@@ -278,9 +289,10 @@ def _tier_of(method):
 
 def measure_tokens(text):
     """Returns (tokens, method). REAL Claude tokens when reachable (#82-D1, Dave's); otherwise
-    tiktoken when present (OBSERVED); otherwise the MEASURED byte divisor, labelled ESTIMATE.
-    All three are declared and they are never silently mixed — a number whose method is unstated
-    is the thing this gate exists to prevent.
+    tiktoken when present (OBSERVED); otherwise — `s222-D3` — the pack's OWN exact cl100k
+    engine over its vendored data, which names itself; otherwise the MEASURED byte divisor,
+    labelled ESTIMATE. Every tier is declared and they are never silently mixed — a number
+    whose method is unstated is the thing this gate exists to prevent.
 
     Ported from `knowledge/_capture_gate.py`'s `measure_tokens` (including the #59 fix: the
     `get_encoding()` call is guarded too, not just the import — a healthy `import tiktoken`
@@ -306,6 +318,21 @@ def measure_tokens(text):
         tiktoken = importlib.import_module("tiktoken")
     except Exception:
         if not _heal_tiktoken():
+            # ---- s222-D3: the PACK'S OWN EXACT ENGINE, before any estimate. Same vendored
+            # cl100k data, real pretokenizer + merges, equality-gated against tiktoken. It
+            # NAMES ITSELF (`purepy cl100k_base (exact, equality-gated)`) — never borrows the
+            # library's label, because a fallback wearing the real library's name is a silent
+            # fallback. This is the cl100k TIER, not a new one: the numbers are byte-identical
+            # by construction and by gate, so a chain stamped by one engine still byte-matches
+            # a check by the other. Nothing here can return an unlabelled number.
+            _eh = encoder_home_module()
+            if _eh is not None:
+                try:
+                    _n, _which = _eh.count(text)
+                    _TIERS_SEEN.add("cl100k")
+                    return _n, _which
+                except Exception:
+                    pass
             _TIERS_SEEN.add("estimate")
             return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                     f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")

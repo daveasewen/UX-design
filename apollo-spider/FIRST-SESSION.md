@@ -29,16 +29,16 @@ it stops being today. Nothing in between gets promoted by accident.
 
 ## Before you start
 
-You need Python 3, VS Code with GitHub Copilot, and **one Python package**. No account and no
-API key.
+You need Python 3 and VS Code with GitHub Copilot. There is **one Python package**, and it is
+recommended rather than required — see below. No account and no API key.
 
     pip install tiktoken
 
-That is required, not optional. Step 4 of this session regenerates the chain — the file that
+**Recommended, not required.** Step 4 of this session regenerates the chain — the file that
 makes tomorrow's "good morning" work — and the generator that writes it **refuses to write
-anything at all** unless it can count tokens with the real encoder. It will not guess and then
-label the guess; a measuring tool that estimates silently is the thing this whole system exists
-to prevent. Without `tiktoken`, Step 4c fails and your first session does not survive the night.
+anything at all** unless it can count tokens exactly. It will not guess and then label the
+guess. Without `tiktoken` it still counts exactly, with the encoder this pack carries itself,
+and it says which one it used; `tiktoken` is simply several times faster.
 
 **The encoder's data file is already inside this pack.** Normally `tiktoken` downloads it, once,
 from `openaipublic.blob.core.windows.net` — a host that is blocked on plenty of corporate
@@ -61,14 +61,26 @@ be empty, and the fact that it answers at all is the check.
 
 The second should end with:
 
-    tiktoken OK — 4 tokens, measured with the encoder data inside this pack (no download, no environment variable to set).
+    ENCODER OK — engine: tiktoken cl100k_base — 4 tokens, measured with the encoder data inside this pack (no download, no environment variable to set).
 
 It does not describe the setup, it drives it: it finds the vendored data, checks it is the right
-bytes, points `tiktoken` at it, and then actually encodes a string. **It needs no network at
-all** — if it passes on a machine with the internet unplugged, that is the intended result, not a
-surprise. Anything else it prints starts with `ENCODER-HOME:` and names the exact file it looked
-for and what it wants you to do. If it refuses, fix it here: everything else in this session
-works without it, but the last step does not.
+bytes, points `tiktoken` at it, and then actually encodes a string. **It names the engine it
+used**, every time — a token count whose method is unstated is the one thing this pack will not
+print. **It needs no network at all** — if it passes on a machine with the internet unplugged,
+that is the intended result, not a surprise. Anything else it prints starts with `ENCODER-HOME:`
+and names the exact file it looked for and what it wants you to do. If it refuses, fix it here:
+everything else in this session works without it, but the last step does not.
+
+**If `tiktoken` is not installed, this check still passes** — and it will say so, naming a
+different engine: `purepy cl100k_base (exact, equality-gated)`. That is the pack's own encoder,
+written in plain Python over the same vendored data. It is exact, not an estimate: it runs the
+same pretokenizer and the same byte-pair merges, and the pack carries the gate that proves it —
+
+    python3 memento-package/machinery/_encoder_home.py --equality-gate
+
+which drives both encoders over this pack's own text and refuses on the first token they
+disagree about. It is a few times slower than the real library, which is why the `pip install`
+line above is still the recommended path.
 
 ---
 
