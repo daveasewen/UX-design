@@ -23,6 +23,16 @@ FOUR ARMS.
            DOFIRST_INDEX_TK_MAX, LS_DELTA_RE, _TIKTOKEN_HEAL_TRIED).
        (b) `knowledge/_gm_usage.py` @ commit ace3ed3 — GM_VOCAB, LS_VOCAB (the shim's own
            docstring flags this as "A DEPENDENCY THE MANIFEST DID NOT NAME").
+     ★ 2b — PACKED SHIM BODY FIDELITY (#223, Dave's `s223-D4`). The two chains above compare
+       the SOURCE to ITSELF at two points in time; until #223 that was ALL this arm did, while
+       its prose claimed to prove the packed bodies had not drifted. Measured: editing BOTH
+       packed copies identically left the gate GREEN. `check_shim_bodies` is the repair — it
+       OPENS both packed copies and compares every name declared ported to that name's source
+       AT THE PORT COMMIT, tolerating only the exactly-quoted, per-difference allowances in
+       DECLARED_SHIM_DIFFS (three of them, all already declared in the shim's own docstrings:
+       the dropped `_gm_usage` import in `chain_parts`/`dofirst_index`, and `measure_tokens`'s
+       one optional `_real_gauge()` import). ⬛ DECLARED SCOPE: it compares CODE, not prose —
+       see the note above DECLARED_SHIM_DIFFS.
   3. CROSS-COPY IDENTITY — every file in `machinery/` must be byte-identical to its
      namesake in `claude-plugin/memento/machinery/`, in both directions, PLUS both copies
      must together carry every file on the known-files list (catches the case where a file
@@ -62,6 +72,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import ast
+import copy
 import difflib
 import hashlib
 import os
@@ -105,6 +116,77 @@ PORTED_FUNCS_A = ("chain_parts", "read_chain_tk", "measure_tokens", "measurement
                   "dofirst_index", "_heal_tiktoken")
 PORTED_CONSTS_A = ("BYTES_PER_TOKEN", "DOFIRST_ITEM_RE", "DOFIRST_HOOK_MAX",
                    "DOFIRST_INDEX_TK_MAX", "LS_DELTA_RE", "_TIKTOKEN_HEAL_TRIED")
+
+# ---- ARM 2b: the DECLARED DIFFERENCES between the packed shim and its source -------------
+# ⚠ THIS IS NOT A DIFF-COUNT THRESHOLD. Each allowance below is a NAMED, EXACTLY QUOTED
+# rewrite of the SOURCE's code into the SHIM's code, and each declares HOW MANY TIMES it must
+# apply. A rule that stops matching FAILS LOUD (the allowance has rotted) instead of quietly
+# widening — a tolerance with a number on it is just a blind spot that has learnt to count.
+# Everything left over after the declared rewrites is DRIFT, and is named as such.
+# Every rule here is a difference the SHIM'S OWN DOCSTRING already declares in prose; this
+# table is that prose made machine-checkable.
+#
+# ⬛ DECLARED SCOPE — CODE, NOT PROSE. Bodies are normalised through `ast.unparse` with
+# docstrings stripped, so comments and docstrings are OUT of this comparison BY DESIGN: the
+# shim deliberately rewrites every ported docstring to drop Apollo-internal narration, and
+# says so per name ("Ported verbatim … with the source's X replaced by Y"). A prose-only edit
+# to a ported body is therefore NOT caught here. That is a DECLARED limit, not a silent one.
+_GM_GUARD_CHAIN = """    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:
+        return (None, None, f'_gm_usage unavailable ({e}) — chain UNMEASURED, not assumed clean')
+"""
+_GM_GUARD_INDEX = """    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:
+        return (None, f'_gm_usage unavailable ({e}) — presence index NOT built, not assumed empty')
+"""
+_REAL_TIER_SOURCE = """        try:
+            (n, how) = gauge.count(text)
+            if how == 'real':
+                _TIERS_SEEN.add('real')
+                return (n, 'real')
+        except Exception:
+            pass
+"""
+_REAL_TIER_SHIM = """        gauge = _real_gauge()
+        if gauge is not None:
+            try:
+                (n, how) = gauge.count(text)
+                if how == 'real':
+                    _TIERS_SEEN.add('real')
+                    return (n, 'real')
+            except Exception:
+                pass
+"""
+# {ported name: ((label, exact source text, exact shim text, times it must apply), ...)}
+DECLARED_SHIM_DIFFS = {
+    "chain_parts": (
+        ("the `_gm_usage` import guard is DROPPED — GM_VOCAB/LS_VOCAB are ported INTO the "
+         "shim instead (chain (b)), so there is no module to import",
+         _GM_GUARD_CHAIN, "", 1),
+        ("`_gm_usage.GM_VOCAB` reads the shim's own ported `GM_VOCAB`",
+         "_gm_usage.GM_VOCAB", "GM_VOCAB", 1),
+        ("`_gm_usage.LS_VOCAB` reads the shim's own ported `LS_VOCAB`",
+         "_gm_usage.LS_VOCAB", "LS_VOCAB", 1),
+    ),
+    "dofirst_index": (
+        ("the `_gm_usage` import guard is DROPPED — GM_VOCAB is ported INTO the shim instead "
+         "(chain (b)), so there is no module to import",
+         _GM_GUARD_INDEX, "", 1),
+        ("`_gm_usage.GM_VOCAB` reads the shim's own ported `GM_VOCAB`",
+         "_gm_usage.GM_VOCAB", "GM_VOCAB", 2),
+    ),
+    "measure_tokens": (
+        ("THE ONE DECLARED OPTIONAL IMPORT (the shim's `measure_tokens` docstring: \"the real "
+         "tier is reached through `_real_gauge()` (optional import) rather than a hard "
+         "module-level `import _gauge_tokens`, because that module is deliberately not "
+         "shipped here\")",
+         _REAL_TIER_SOURCE, _REAL_TIER_SHIM, 1),
+    ),
+}
 
 # ---- Provenance chain (b): knowledge/_gm_usage.py @ ace3ed3 ------------------------------
 PORT_COMMIT_B = "ace3ed3"
@@ -157,6 +239,129 @@ def extract_named(source_text, names):
         if node is not None:
             out[name] = ast.get_source_segment(source_text, node)
     return out
+
+
+def _strip_docstrings(node):
+    """A deep copy of `node` with the docstring removed from it and from every def/class
+    nested inside it, so a comparison sees CODE only (comments never survive `ast.unparse`
+    in the first place). See DECLARED SCOPE above DECLARED_SHIM_DIFFS."""
+    n = copy.deepcopy(node)
+    for sub in ast.walk(n):
+        if isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and sub.body:
+            first = sub.body[0]
+            if (isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant)
+                    and isinstance(first.value.value, str)):
+                sub.body.pop(0)
+                if not sub.body:
+                    sub.body = [ast.Pass()]
+    return n
+
+
+def extract_named_code(source_text, names):
+    """{name: normalised CODE text} for every name found at module level — `ast.unparse` of
+    the node with docstrings stripped. Both sides of every comparison are normalised by the
+    SAME interpreter, so this is a like-for-like code comparison, insensitive to layout and
+    to the shim's deliberately rewritten prose. Missing names are absent from the dict."""
+    tree = ast.parse(source_text)
+    out = {}
+    for name in names:
+        node = _find_node(tree, name)
+        if node is not None:
+            out[name] = ast.unparse(_strip_docstrings(node))
+    return out
+
+
+def _first_divergence(expected, got):
+    """The first differing line pair, quoted — so a drift finding names the actual text."""
+    e_lines, g_lines = expected.splitlines(), got.splitlines()
+    for i in range(max(len(e_lines), len(g_lines))):
+        e = e_lines[i] if i < len(e_lines) else "<end of expected>"
+        g = g_lines[i] if i < len(g_lines) else "<end of shim>"
+        if e != g:
+            return f"line {i + 1}: expected {e.strip()!r}, shim has {g.strip()!r}"
+    return "<no line-level divergence — trailing whitespace only>"
+
+
+def _apply_declared_diffs(name, src_code):
+    """Rewrite the SOURCE's code into what the shim is DECLARED to hold. Returns
+    (rewritten_text, [rule_failures]). A rule that does not apply exactly its declared number
+    of times fails LOUD: an allowance the gate cannot perform must never widen into a silent
+    pass, which is the very defect this sub-check was built to end."""
+    problems = []
+    for label, frm, to, count in DECLARED_SHIM_DIFFS.get(name, ()):
+        seen = src_code.count(frm)
+        if seen != count:
+            problems.append(
+                f"SHIM BODIES: a DECLARED-DIFFERENCE rule no longer applies for {name!r} — "
+                f"{label} — its source text was expected {count}x, found {seen}x. The allowance "
+                f"is stale, so this gate refuses to compare on a rewrite it cannot perform "
+                f"(quoted source text: {frm.strip()[:100]!r}).")
+            continue
+        src_code = src_code.replace(frm, to)
+    return src_code, problems
+
+
+# ------------------------------------------------------- arm 2b: PACKED SHIM BODY FIDELITY
+def check_shim_bodies(repo, git_root):
+    """Open the PACKED SHIM — both copies — and compare each body it declares as ported to
+    that name's source AT THE PORT COMMIT, tolerating only the quoted DECLARED_SHIM_DIFFS.
+
+    ⚠ WHY THE PORT COMMIT AND NOT HEAD. This asks "does the pack carry what it says it
+    ported?"; `check_shim_provenance`'s chain check separately asks "has the source moved
+    since?". Two questions, two checks, composed — and this one stays stable while the source
+    legitimately evolves, so it never needs re-porting or a PORT_COMMIT_A bump to stay honest.
+
+    ⛔ BORN #223 (Dave's `s223-D4`). The arm above claimed in prose to prove the packed bodies
+    had not drifted, but BOTH halves of its comparison read `knowledge/_capture_gate.py` — it
+    never opened a packed copy at all. Measured at #222 and re-measured at #223: editing BOTH
+    packed copies identically left the gate GREEN (editing one fires arm 3, which is a
+    different question). A gate that cannot see the artefact it names is the
+    [[no-gate-parses-the-artefact]] class."""
+    fails = []
+    old_text, err = _git_show(git_root, PORT_COMMIT_A, SHIM_SOURCE_FILE_A)
+    if err:
+        return [f"SHIM BODIES: could not read {SHIM_SOURCE_FILE_A} @ {PORT_COMMIT_A} — {err}"]
+    names = PORTED_FUNCS_A + PORTED_CONSTS_A
+    src_code = extract_named_code(old_text, names)
+    for copy_label, copy_rel in (("machinery/", COPY_A), ("claude-plugin copy", COPY_B)):
+        shim_path = os.path.join(repo, copy_rel, SHIM_NAME)
+        if not os.path.isfile(shim_path):
+            fails.append(f"SHIM BODIES: {copy_rel}/{SHIM_NAME} does not exist — cannot open the "
+                         f"packed shim's ported bodies ({copy_label})")
+            continue
+        try:
+            shim_code = extract_named_code(open(shim_path, encoding="utf-8").read(), names)
+        except SyntaxError as e:
+            fails.append(f"SHIM BODIES: {copy_rel}/{SHIM_NAME} does not parse as Python ({e}) — "
+                         f"the packed bodies cannot be read, so this arm REFUSES rather than "
+                         f"passing blind")
+            continue
+        for n in names:
+            s = src_code.get(n)
+            if s is None:
+                fails.append(f"SHIM BODIES: {n!r} is not in {SHIM_SOURCE_FILE_A} @ "
+                             f"{PORT_COMMIT_A} — the packed body cannot be audited against the "
+                             f"source the shim names")
+                continue
+            expected, problems = _apply_declared_diffs(n, s)
+            if problems:
+                fails.extend(problems)
+                continue
+            got = shim_code.get(n)
+            if got is None:
+                fails.append(f"SHIM BODIES: {n!r} is DECLARED ported but is MISSING from "
+                             f"{copy_rel}/{SHIM_NAME} ({copy_label}) — the pack ships a shim "
+                             f"that does not carry what its own docstring claims")
+                continue
+            if got != expected:
+                allowed = [lbl for lbl, _f, _t, _c in DECLARED_SHIM_DIFFS.get(n, ())]
+                fails.append(
+                    f"SHIM BODIES: {n!r} in {copy_rel}/{SHIM_NAME} ({copy_label}) has DRIFTED "
+                    f"from {SHIM_SOURCE_FILE_A} @ {PORT_COMMIT_A} — {_diff_line_count(expected, got)} "
+                    f"line(s) differ BEYOND the declared allowance(s) "
+                    f"{allowed if allowed else '(none declared for this name)'}. "
+                    f"{_first_divergence(expected, got)}")
+    return fails
 
 
 def _git_show(git_root, commit, relpath):
@@ -314,6 +519,10 @@ def check_shim_provenance(repo, git_root):
            PORTED_FUNCS_A + PORTED_CONSTS_A, "chain(a)")
     _chain("knowledge/_gm_usage.py", SHIM_SOURCE_FILE_B, PORT_COMMIT_B,
            PORTED_CONSTS_B, "chain(b)")
+    # ARM 2b (#223, s223-D4) — the half that actually OPENS the packed copies. Everything
+    # above this line compares the SOURCE to itself at two points in time; without this call
+    # the arm's docstring claim about the packed bodies was unbacked.
+    fails += check_shim_bodies(repo, git_root)
     return fails
 
 
@@ -539,6 +748,69 @@ def selftest():
             print(f"      quoted: {[x for x in found if 'deadbee' in x][0]}")
     finally:
         shutil.rmtree(d, ignore_errors=True)
+
+    # ---- ARM 2b — PACKED SHIM BODY FIDELITY (#223, s223-D4) ---------------------------
+    # ⛔ THE BITE THAT DID NOT EXIST. Every bite above mutates a SOURCE; none had ever mutated
+    # a PACKED copy, which is why the arm could claim the packed bodies in prose and never
+    # open one. (e) is the exact mutation measured GREEN before the repair.
+    d = _make_fixture()
+    try:
+        marker = "    _DRIFT_MARKER = 999\n"
+        anchor = "    if not os.environ.get(_REAL_TIER_ENV):"
+        for rel in (COPY_A, COPY_B):                      # BOTH copies, identically
+            p = os.path.join(d, rel, SHIM_NAME)
+            t = open(p, encoding="utf-8").read()
+            assert t.count(anchor) == 1, "fixture setup: measure_tokens anchor not found"
+            open(p, "w", encoding="utf-8").write(t.replace(anchor, marker + anchor))
+        found = check_shim_bodies(d, ROOT)
+        bite("ARM2(e) mutation: BOTH packed shim copies edited IDENTICALLY (invisible to the "
+             "cross-copy arm) — caught, names the drifted body and both copies",
+             sum(1 for x in found if "measure_tokens" in x and "DRIFTED" in x) == 2
+             and any(COPY_B in x for x in found))
+        bite("ARM2(e) control: the same fixture's CROSS-COPY arm stays silent, proving arm 2b "
+             "is what saw it (the copies really are still identical to each other)",
+             not check_cross_copy_identity(d))
+        if found:
+            print(f"      quoted: {found[0][:180]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (f) NARROWNESS — an edit INSIDE the tolerated region is not tolerated. Proves the
+    #     allowance is an exactly-quoted rewrite, not a fuzzy "anything near the gauge" pass.
+    d = _make_fixture()
+    try:
+        p = os.path.join(d, COPY_A, SHIM_NAME)
+        t = open(p, encoding="utf-8").read()
+        old = "        gauge = _real_gauge()\n"
+        assert t.count(old) == 1, "fixture setup: the declared optional-import line moved"
+        open(p, "w", encoding="utf-8").write(t.replace(old, "        gauge = _real_gauge_X()\n"))
+        found = check_shim_bodies(d, ROOT)
+        bite("ARM2(f) mutation: an edit INSIDE the one declared-difference region still FAILS "
+             "— the allowance tolerates its exact quoted text and nothing adjacent to it",
+             any("measure_tokens" in x and "DRIFTED" in x for x in found))
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (g) A ROTTED ALLOWANCE FAILS LOUD. If a declared rule's source text ever stops existing
+    #     (a re-port, a formatting change, a different `ast.unparse`), the gate must refuse —
+    #     never silently compare on a rewrite it could not perform.
+    saved = dict(DECLARED_SHIM_DIFFS)
+    try:
+        DECLARED_SHIM_DIFFS["read_chain_tk"] = (
+            ("selftest: a rule whose source text does not exist", "NO_SUCH_TEXT_XYZ", "", 1),)
+        found = check_shim_bodies(ROOT, ROOT)
+        bite("ARM2(g) mutation: a DECLARED-DIFFERENCE rule that no longer matches fails LOUD "
+             "and named, rather than widening into a silent pass",
+             any("no longer applies" in x and "read_chain_tk" in x for x in found))
+        if found:
+            print(f"      quoted: {found[0][:180]}")
+    finally:
+        DECLARED_SHIM_DIFFS.clear()
+        DECLARED_SHIM_DIFFS.update(saved)
+
+    bite("ARM2(h) control: with the real table restored, the real pack is GREEN — the three "
+         "declared allowances are load-bearing, and a correct pack is not red",
+         check_shim_bodies(ROOT, ROOT) == [])
 
     if fails:
         print(f"  ✗ _validate_package_delta selftest: {len(fails)} bite(s) failed")

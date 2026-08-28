@@ -232,8 +232,57 @@ def launch(p):
                                     "chromium_headless_shell-*/chrome-linux/headless_shell"))
              or glob.glob(os.path.expanduser(
                  "~/.cache/ms-playwright/chromium_headless_shell-*/chrome-linux/headless_shell")))
-    return p.chromium.launch(executable_path=shell[0] if shell else None, headless=True,
-                             args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+    try:
+        return p.chromium.launch(executable_path=shell[0] if shell else None, headless=True,
+                                 args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+    except Exception as e:                                    # a crash is not a fail — name it
+        raise _browser_unreachable(e)
+
+
+def _browser_unreachable(e):
+    """⛔ #223 — THE THIRD STATE: playwright IMPORTS, its BROWSER BINARIES are absent.
+
+    #221 (below, in `drive()`) closed the cannot-import state: an absent module now reaches the
+    `COULD-NOT-ASK` legal form at rc=77 instead of a bare traceback at rc=1. But `pip install
+    playwright` WITHOUT `playwright install chromium` is a THIRD state, and it was still leaving
+    by the old door: `p.chromium.launch()` raised playwright's own `Error` ("Executable doesn't
+    exist at .../chromium_headless_shell-*/headless_shell"), nothing caught it, and this gate
+    exited **1** with a raw traceback — the same code a real MEASURED descender failure returns.
+    Two consequences, both driven at #223 before this was written:
+      · a designer met an absent browser as a build FAILURE, which `ci-template/README.md`
+        promises they will not [[gate-cannot-pass-in-one-environment]];
+      · the release gate probe classifies by what happens when a gate RUNS, so on a box with no
+        browser binaries this gate flipped NEEDS-DEP → REPO-BOUND and silently left the ship list,
+        moving the pack off Dave's ruled 55 (s219-D9).
+    The refusal machinery was right and already proven — again it was the ENTRANCE that was one
+    state too narrow [[honest-refusal-needs-a-legal-form]].
+
+    ⚠ Keyed on the LAUNCH ACTUALLY FAILING, never on a path-glob guess about where binaries
+    ought to live [[feedback-measuring-tool-must-not-guess]]: install them here and the refusal
+    disappears on this very machine. `except Exception` is deliberate and scoped to the single
+    `launch()` call — inside `sync_playwright()` the only thing being attempted is STARTING a
+    browser, so any failure of it is a fact about this box's instrument, never a verdict about
+    the CSS. A missing shared library reaches the same door as a missing binary, and says so.
+    """
+    msg = str(e)
+    absent = "Executable doesn't exist" in msg or "playwright install" in msg
+    what = ("playwright is installed but its BROWSER BINARIES are not — the chromium executable "
+            "it drives was never downloaded" if absent else
+            "chromium would not launch on this box")
+    # ONE LINE, always: `_could_not_ask.reason_in()` reads the FIRST marked line and nothing
+    # after it, and playwright's launch error carries a multi-line ASCII-box banner. Left raw,
+    # every consumer's summary (`_build_survey.py`, `_probe_registry/_registry.py`, the pack
+    # runner) would truncate this reason mid-sentence and drop the remedy.
+    # `repr()` would drag playwright's whole "<3 Playwright Team" box in as escaped \n's; the
+    # FIRST line of the message is the part that names the missing executable.
+    detail = "%s: %s" % (type(e).__name__,
+                         " ".join((msg.splitlines() or [""])[0].split())[:240])
+    return DescenderUnreachable(
+        f"{what} ({detail}) — this gate measures rendered geometry and cannot be answered without a "
+        f"browser. Install them with `playwright install chromium`. Inside this design system's "
+        f"own CI the proof lives in the `render` job, which installs chromium and runs this "
+        f"BLOCKING — nothing here is claimed green, and THIS IS NOT A SKIP: the question was "
+        f"unaskable on this box.")
 
 
 def font_precondition(page):

@@ -130,6 +130,64 @@ def _playwright_unreachable():
         "be proven without it; run `pip install playwright && playwright install chromium`")
 
 
+LAUNCH_ARGS = ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--force-color-profile=srgb"]
+
+
+def _launch_chromium(p):
+    """⛔ #223 — THE THIRD STATE: playwright IMPORTS, its BROWSER BINARIES are absent.
+
+    #193/#221 closed the cannot-import state — `_playwright_unreachable()` above carries it to
+    exit 77 with a `COULD-NOT-ASK:` line. But `pip install playwright` WITHOUT `playwright
+    install chromium` is a THIRD state, and until #223 it left by the old door: the bare run
+    (`run()`) let playwright's own launch `Error` ("Executable doesn't exist at
+    .../chromium_headless_shell-*/headless_shell") escape as an unhandled traceback at rc=**1**
+    — the SAME code `main()` returns for a real measured contrast failure — while `--selftest`
+    called it a `StateContrastSelftestError` at rc=**2**, this file's ARGUMENT-error code. One
+    environment fact, two wrong vocabularies, neither of them the ruled refusal. Consequences,
+    both driven at #223 before this was written:
+      · a designer met an absent browser as a build FAILURE, which `ci-template/README.md`
+        promises they will not [[gate-cannot-pass-in-one-environment]];
+      · the release gate probe classifies by what happens when a gate RUNS, so on a box with no
+        browser binaries this gate flipped NEEDS-DEP → REPO-BOUND and silently left the ship
+        list, moving the pack off Dave's ruled 55 (s219-D9).
+    The refusal machinery was right and already proven; the ENTRANCE was one state too narrow
+    [[honest-refusal-needs-a-legal-form]] — the same shape of miss #221 fixed for the import.
+
+    THE ONE HOME (ADR-0017 write-once) for starting this gate's browser: both call sites — the
+    bare audit run and the selftest's `_measure_fixtures()`, including the s152-D1 mutation
+    control's second launch — come through here, so they cannot drift into two accounts of one
+    fact. `StateContrastUnreachable` subclasses `StateContrastSelftestError`, so every existing
+    `except` that already handled "could not be run" keeps working unchanged; what changes is
+    that `__main__` now recognises it and answers 77 + `COULD-NOT-ASK:` instead of 2.
+
+    ⚠ Keyed on the LAUNCH ACTUALLY FAILING, never on a path-glob guess about where binaries ought
+    to live [[feedback-measuring-tool-must-not-guess]]: install them here and the refusal
+    disappears on this very machine. `except Exception` is deliberate and scoped to the single
+    launch call — inside `sync_playwright()` the only thing being attempted is STARTING a
+    browser, so any failure of it is a fact about this box's instrument, never a verdict about
+    the CSS. A missing shared library reaches the same door as a missing binary, and says so.
+    """
+    try:
+        return p.chromium.launch(args=LAUNCH_ARGS)
+    except Exception as e:                     # a gate that needs a browser cannot be proven
+        msg = str(e)                           # without one — a REFUSAL, never a silent skip
+        absent = "Executable doesn't exist" in msg or "playwright install" in msg
+        what = ("playwright is installed but its BROWSER BINARIES are not — the chromium "
+                "executable it drives was never downloaded" if absent else
+                "chromium would not launch on this box")
+        # ONE LINE, always: `_could_not_ask.reason_in()` reads the FIRST marked line and nothing
+        # after it, and playwright's launch error carries a multi-line ASCII-box banner. Left raw,
+        # every consumer's summary (`_build_survey.py`, `_probe_registry/_registry.py`, the pack
+        # runner) would truncate this reason mid-sentence — including __main__'s NOT-A-SKIP tail.
+        # `repr()` would drag playwright's whole "<3 Playwright Team" box in as escaped \n's; the
+        # FIRST line of the message is the part that names the missing executable.
+        detail = "%s: %s" % (type(e).__name__,
+                             " ".join((msg.splitlines() or [""])[0].split())[:240])
+        raise StateContrastUnreachable(
+            f"{what} ({detail}) — this gate measures rendered pixels and cannot be proven without "
+            f"a browser; install them with `playwright install chromium`")
+
+
 # ⛔ #194 — THE FORK BOMB, AND WHY THE PROBE MUST COME FIRST.
 # #193 gave this gate a COULD-NOT-ASK refusal and two arms to prove it, and those arms drive the
 # real consumer path: a SUBPROCESS of this very file, `--selftest`, with a planted `playwright`
@@ -547,7 +605,7 @@ def run(filters):
                 " — refusing to write an empty audit that would read as a clean one")
     results = {}
     with sync_playwright() as p:
-        b = p.chromium.launch(args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--force-color-profile=srgb"])
+        b = _launch_chromium(p)   # #223: an absent browser refuses at 77, never rc=1 as a verdict
         for f in files:
             name = os.path.basename(f).replace(".reference.html","")
             sink = []
@@ -934,11 +992,11 @@ def _measure_fixtures(script=MEASURE, only=None):
     got = {}
     items = [(k, v) for k, v in FIXTURES.items() if only is None or k in only]
     with sync_playwright() as p:
-        try:
-            b = p.chromium.launch(args=["--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--force-color-profile=srgb"])
-        except Exception as e:                     # a gate that needs a browser cannot be proven
-            raise StateContrastSelftestError(      # without one — FAILURE, never a silent skip
-                f"chromium would not launch ({e!r}); this gate cannot be proven without a browser")
+        # #223: was a local `except Exception -> StateContrastSelftestError` (rc=2, this file's
+        # ARGUMENT-error code) — an environment fact wearing the vocabulary of a mistyped flag.
+        # `_launch_chromium()` is now the ONE home for those words and raises the Unreachable
+        # subclass, so the same absent browser answers 77 + COULD-NOT-ASK on BOTH paths.
+        b = _launch_chromium(p)
         try:
             for name, html in items:
                 path = os.path.join(tmp, name + ".html")

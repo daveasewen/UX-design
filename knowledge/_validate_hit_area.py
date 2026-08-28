@@ -117,7 +117,9 @@ Usage:
   python3 knowledge/_validate_hit_area.py --all --out knowledge/_HIT-AREA-ADVISORY.md
   python3 knowledge/_validate_hit_area.py --all --ignore-pseudo # mutation lever (see above)
   python3 knowledge/_validate_hit_area.py --selftest            # acceptance: the 3 known cases
-Exit 0 = ran (advisory) · 1 = --strict with findings · 2 = harness unavailable / selftest fail.
+Exit 0 = ran (advisory) · 1 = --strict with findings · 2 = selftest fail / no input files ·
+77 = COULD-NOT-ASK, the harness is unavailable on this box (#209, and #223 for a browser that
+is installed but will not start) — a REFUSAL, never a pass and never a verdict.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -302,11 +304,61 @@ def _shell_path():
     return None
 
 
+def _harness_unavailable(e):
+    """⛔ #223 (s223-D5 clause 2) — THE THIRD STATE: playwright IMPORTS, the browser will not RUN.
+
+    Same repair, same shape, as `_validate_descender_computed._browser_unreachable` and
+    `_validate_state_contrast._launch_chromium` took earlier this session — fix the CLASS, not
+    the instance. `_shell_path()` above closes only the state where NO binary can be found; when
+    one IS found and `p.chromium.launch()` then fails, nothing caught it, and this gate exited
+    **1** with a raw traceback — the same code a real MEASURED hit-area breach returns under
+    `--strict`. Consequences, both driven at #223 before this was written:
+      · a designer met an unusable browser as a build FAILURE, which `ci-template/README.md`
+        promises they will not [[gate-cannot-pass-in-one-environment]];
+      · the release gate probe classifies by what happens when a gate RUNS, so this gate filed
+        REPO-BOUND and left the ship list — visible in the committed probe of record
+        (`knowledge/_release/_pack_gate_probe.json`, commit `789f4331`).
+
+    ⚠ Keyed on the LAUNCH ACTUALLY FAILING, never on a path-glob guess about where binaries
+    ought to live [[feedback-measuring-tool-must-not-guess]]: make chromium runnable here and the
+    refusal disappears on this very machine. `except Exception` is deliberate and scoped to the
+    single `launch()` call — the only thing being attempted there is STARTING a browser, so any
+    failure of it is a fact about this box's instrument, never a verdict about the CSS.
+    """
+    msg = str(e)
+    absent = "Executable doesn't exist" in msg or "playwright install" in msg
+    # ONE LINE, always: `_could_not_ask.reason_in()` reads the FIRST marked line and nothing after
+    # it, and playwright's launch error carries a multi-line call log. But that first line names
+    # the API call (`BrowserType.launch: Target page … has been closed`), not the CAUSE — when
+    # chromium dies at startup the cause is the log's first `[err]` line (a missing shared
+    # library, say). Both, collapsed onto one line, or the reader cannot act on the refusal.
+    detail = " ".join((msg.splitlines() or [""])[0].split())
+    for line in msg.splitlines():
+        if "[err]" in line:
+            detail += " | " + " ".join(line.split()).split("[err]", 1)[1].strip()
+            break
+    what = ("playwright is installed but its BROWSER BINARIES are not — the chromium executable "
+            "it drives was never downloaded" if absent else
+            "playwright is installed and a chromium binary was found, but it would not START on "
+            "this box")
+    remedy = ("Install them with `playwright install chromium`." if absent else
+              "The binary is on disk; what failed is starting it — `playwright install --with-deps "
+              "chromium` re-installs it together with the system libraries it needs.")
+    return RuntimeError(
+        "HIT-AREA: HARNESS UNAVAILABLE — %s (%s: %s). %s This gate measures rendered hit-target "
+        "geometry and cannot be answered without a browser. Inside this design system's own CI the "
+        "proof lives in the `render` job of .github/workflows/gates.yml, which installs chromium "
+        "and runs this BLOCKING — nothing here is claimed green, and THIS IS NOT A SKIP: the "
+        "question was unaskable on this box."
+        % (what, type(e).__name__, detail[:240], remedy))
+
+
 def measure(files, widths, ignore_pseudo=False, minimum=MIN_DEFAULT, quiet=False,
             ignore_shell=False, ignore_hittest=False):
     """Render each file at each width and return (rows, font_ok_map).
 
-    A harness problem raises RuntimeError — the caller turns that into exit 2.
+    A harness problem raises RuntimeError naming itself HARNESS UNAVAILABLE — the caller turns
+    that into the COULD-NOT-ASK refusal at exit 77 (#209); any other RuntimeError stays exit 2.
     """
     try:
         from playwright.sync_api import sync_playwright
@@ -330,8 +382,12 @@ def measure(files, widths, ignore_pseudo=False, minimum=MIN_DEFAULT, quiet=False
 
     rows, fonts = [], {}
     with sync_playwright() as p:
-        b = p.chromium.launch(executable_path=shell, headless=True,
-                              args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+        try:
+            b = p.chromium.launch(executable_path=shell, headless=True,
+                                  args=["--no-sandbox", "--disable-dev-shm-usage",
+                                        "--disable-gpu"])
+        except Exception as e:            # #223: an unusable browser refuses at 77, never rc=1
+            raise _harness_unavailable(e)
         try:
             for f in files:
                 name = os.path.basename(f).replace(".reference.html", "")
@@ -593,8 +649,11 @@ if __name__ == "__main__":
         # #209: HARNESS UNAVAILABLE gets the ruled legal form — rc=77 COULD-NOT-ASK, the
         # environment-refusal vocabulary (s172-era convention; P-3 got the same form at #208,
         # [[honest-refusal-needs-a-legal-form]]). _build_all reads 77 as a DECLARED refusal
-        # and continues; a real harness CRASH (browser present but broken) stays rc=2 — a
-        # crash is not a refusal and must not wear one ([[a-crash-is-not-a-fail]] inverse).
+        # and continues. ⚠ #223 amended what falls on which side: a browser that is PRESENT but
+        # will not LAUNCH is now HARNESS UNAVAILABLE too (see `_harness_unavailable`) — it is a
+        # fact about this box's instrument, not a verdict about the CSS. What still stays rc=2 is
+        # a crash INSIDE a running browser — a measurement that went wrong is not a refusal and
+        # must not wear one ([[a-crash-is-not-a-fail]] inverse).
         if "HARNESS UNAVAILABLE" in str(e):
             print("COULD-NOT-ASK: %s" % e, file=sys.stderr)
             sys.exit(77)

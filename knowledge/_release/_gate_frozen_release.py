@@ -109,7 +109,7 @@ SURFACES = [
     # `content_sha256` while `version` stood still, which is precisely the shape the laundering
     # arm calls a laundered edit. The gate would have refused its own release. Moved with the
     # bake, in the same commit as the content, exactly as the _README says.
-    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.1",
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.2",
      "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
      "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
      "machinery that cuts the release and stay editable. The surface is the DIRECTORY, so it "

@@ -35,7 +35,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$ROOT/knowledge/_release/_gen_pack_manifest.py"
 MANIFEST="$ROOT/knowledge/_release/_pack_manifest.json"
-VERSION="v1.0.1"
+VERSION="v1.0.2"
 PACKNAME="Apollo-Spider-${VERSION}"
 DIST="$ROOT/apollo-spider/dist"
 

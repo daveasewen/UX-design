@@ -26,7 +26,10 @@ only a run answers that [[mutation-tests-the-clause-not-the-feature]]. The class
 
   RUNNABLE        the gate reached a verdict (exit 0, or a clean non-zero FAIL with no
                   traceback) inside the staged pack
-  NEEDS-DEP(x)    ModuleNotFoundError naming a third-party module `x`
+  NEEDS-DEP(x)    ModuleNotFoundError naming a third-party module `x` — or (s223-D5) an honest
+                  COULD-NOT-ASK refusal at exit 77, where `x` is the remedy the refusal itself
+                  names: the gate could not ASK its question on this box, which is a fact about
+                  the box, never a verdict about the pack
   REPO-BOUND(why) it crashed reaching for something the pack does not ship — the offending
                   path is extracted from the traceback and named in the verdict
 
@@ -104,9 +107,9 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.1"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.2"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
-MEMENTO_CUT_VERSION = "v1.0.1"
+MEMENTO_CUT_VERSION = "v1.0.2"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -564,21 +567,51 @@ def is_dirty():
 # The read is from the CHECKOUT's store deliberately — the cut commit predates the ratification
 # entry by construction, so a commit-archive read would deadlock the bake against itself.
 # Fails LOUD on a malformed store; a missing entry is not an error, it is PROPOSED.
-RATIFY_ID = "s219-D10"
+#
+# ⛔ #223, s223-D3 — THE KEY IS PER CUT, NOT ETERNAL. This was a single hard-coded id,
+# `RATIFY_ID = "s219-D10"`, which is Dave's word for v1.0.0 and for nothing else. Because the
+# lookup never mentioned the VERSION, every future manifest inherited v1.0.0's ratification:
+# bump `VERSION` to v1.0.2 and the page still printed "Ratified", and `--release` — whose only
+# fence is that word (build-designer-pack.sh: `ratified || die`) — would have waved the next
+# bake through without ever asking him. s219-D4(2) says the cut is HIS word; an eternal key
+# turns one word into a standing permission, which is the opposite of what it says.
+# So the id is now looked up BY THIS CUT'S VERSION. v1.0.0 keeps its word forever — the
+# mapping is a ledger, not a switch, and rows are added, never moved. A version with no row
+# is PROPOSED: the machine ASKS, and only Dave's fresh ruling answers.
+# An EXPLICIT MAPPING deliberately, not a text-match on ruling bodies: a substring hunt for
+# "v1.0.2" across every `says` field would ratify a cut off a ruling that merely MENTIONED it
+# (this very entry, s223-D3, names v1.0.2 in its own body while explicitly withholding the
+# word) — a gate that cannot tell a mention from a mandate is not a gate.
+RATIFY_IDS = {
+    "v1.0.0": "s219-D10",   # #219, Dave's word 'bake' (2026-08-26)
+}
+
+RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
 
 
-def ratification_status():
-    p = os.path.join(os.path.dirname(__file__), "..", "_rulings.json")
+def ratify_id(version=None):
+    """The ruling id that ratifies THIS cut — None if no ruling has been keyed to it yet."""
+    return RATIFY_IDS.get(VERSION if version is None else version)
+
+
+def ratification_status(store_path=None, version=None):
+    v = VERSION if version is None else version
+    p = RULINGS_PATH if store_path is None else store_path
     data = json.load(open(p))
     rl = data if isinstance(data, list) else data.get("rulings", data.get("entries"))
     if rl is None:
         raise SystemExit("_gen_pack_manifest: knowledge/_rulings.json has no rulings array — "
                          "cannot derive the release status from a store I cannot read")
+    want = ratify_id(v)
+    if want is None:
+        return ("PROPOSED — no ruling is keyed to %s yet (s223-D3: the ratify check is re-keyed "
+                "PER CUT). s219-D4(2): release = his word, and this cut has not had it." % v)
     for r in rl:
-        if r.get("id") == RATIFY_ID and r.get("status") == "ruled":
-            return ("RATIFIED — %s, Dave's word 'bake' (2026-08-26); "
-                    "s219-D4(2) satisfied by the store, not by prose" % RATIFY_ID)
-    return "PROPOSED — awaiting Dave's word (s219-D4(2): release = his word)"
+        if r.get("id") == want and r.get("status") == "ruled":
+            return ("RATIFIED — %s names %s in the store; "
+                    "s219-D4(2) satisfied by the store, not by prose" % (want, v))
+    return ("PROPOSED — %s is keyed to ruling %s, which is not 'ruled' in the store "
+            "(s219-D4(2): release = his word)" % (v, want))
 
 
 def status_word():
@@ -618,6 +651,14 @@ TRACE = "Traceback (most recent call last)"
 # only `ModuleNotFoundError:` would call those RUNNABLE and hide a real dependency
 # [[unmatched-grep-is-not-an-absence]] — the needle is the phrase, not the exception class.
 MODNOTFOUND = re.compile(r"No module named [\"']([^\"']+)[\"']")
+# ⛔ s223-D5 clause (1) — A REFUSAL IS NOT A VERDICT. Exit 77 is `_could_not_ask.EXIT`, the ruled
+# COULD-NOT-ASK code: the gate could not ASK its question on THIS box. Named here as a literal
+# because the classifier must run inside the staged pack, where `knowledge/_could_not_ask.py`
+# may not be importable — the number is the contract, and it is asserted in `--selftest`.
+REFUSAL_EXIT = 77
+# The remedy a refusal names in its own words — the ruled legal form puts it in backticks
+# (`playwright install chromium`). Read, never guessed [[feedback-measuring-tool-must-not-guess]].
+REFUSAL_REMEDY = re.compile(r"`([^`\n]{3,80})`")
 PATHERR = re.compile(r"(?:FileNotFoundError|NotADirectoryError|IsADirectoryError)[^\n]*?"
                      r"'([^']+)'")
 # A gate that refuses for want of an ARGUMENT has run perfectly well; it just wants a target.
@@ -644,6 +685,15 @@ PATHISH = re.compile(r"((?:knowledge|showroom|reviews|notes|runs|memento-package
                      r"|GOOD-MORNING\.md|_LIVE-STATE\.md|_CHAIN\.md|_rulings\.json|_state\.json)")
 
 
+def _refusal_dep(blob):
+    """Name what a COULD-NOT-ASK refusal says is missing, in the REFUSAL'S OWN WORDS."""
+    line = next((l for l in blob.split("\n") if "COULD-NOT-ASK" in l), "")
+    for cmd in REFUSAL_REMEDY.findall(line or blob):
+        if "install" in cmd:
+            return cmd
+    return "something this box does not have — see the refusal"
+
+
 def classify(rc, out, err, shipped):
     """The verdict classifier. Reads the RUN, never the source."""
     blob = (out or "") + "\n" + (err or "")
@@ -656,6 +706,17 @@ def classify(rc, out, err, shipped):
         if name in STD:
             return "REPO-BOUND", "stdlib module %r unavailable — environment, not the pack" % name
         return "NEEDS-DEP", name
+    # ⛔ s223-D5 clause (1) — THE EXIT-77 ARM. A gate that exits 77 has REFUSED: it did not reach
+    # a verdict, it said the question was unaskable on this box. Without this arm such a run fell
+    # through to "ran, verdict FAIL — a verdict is a run" (RUNNABLE), so a refusal was recorded as
+    # a red, and the differential arm below could call it "a live red". Measured at #223: the
+    # browser gates, once repaired to refuse honestly instead of crashing, classified by whether
+    # the PROBE MACHINE happened to have chromium installed. NEEDS-DEP is the existing vocabulary
+    # for exactly this — the gate ships, and the missing thing is named beside it. Kept BELOW the
+    # MODNOTFOUND arm on purpose: a refusal that names a module still gets classified by that
+    # module's name, which is more precise than the remedy sentence.
+    if rc == REFUSAL_EXIT:
+        return "NEEDS-DEP", _refusal_dep(blob)
     if TRACE in blob:
         pm = PATHERR.search(blob)
         if pm:
@@ -1862,7 +1923,7 @@ def render_page(man, zip_bytes=None, zip_sha=None, man_sha=None):
     if status_word() == "RATIFIED":
         A('<h1>%s — what ships <span class="tag ok">Ratified</span></h1>' % esc(PACK_NAME))
         A('<p class="lede">#219 · 2026-08-26 · ratified by %s — Dave’s word, in the store. '
-          'This page is the list the bake reads.</p>' % RATIFY_ID)
+          'This page is the list the bake reads.</p>' % ratify_id())
     else:
         A('<h1>%s — what ships <span class="tag prop">Proposed</span></h1>' % esc(PACK_NAME))
         A('<p class="lede">#219 · 2026-08-26 · nothing is baked, nothing is committed, '
@@ -2279,6 +2340,21 @@ def selftest():
                         "(ModuleNotFoundError(\"No module named 'playwright'\"))", "", set())
     bite("classify/caught-import", v, "NEEDS-DEP")
     bite("classify/caught-import-name", w, "playwright")
+
+    # ---- s223-D5 clause (1): THE EXIT-77 ARM. A refusal that names no module at all — the
+    # browser gates' third state, where playwright IMPORTS and its browser will not run — must
+    # still be NEEDS-DEP, and must name the remedy the refusal itself printed. Before this arm
+    # these fell through to RUNNABLE and a refusal was filed as a verdict FAIL.
+    v, w = classify(REFUSAL_EXIT,
+                    "COULD-NOT-ASK: HIT-AREA: HARNESS UNAVAILABLE — playwright is installed and "
+                    "a chromium binary was found, but it would not START on this box. The binary "
+                    "is on disk; what failed is starting it — `playwright install --with-deps "
+                    "chromium` re-installs it with the system libraries it needs.", "", set())
+    bite("classify/refusal-is-needs-dep", v, "NEEDS-DEP", "a refusal is not a verdict")
+    bite("classify/refusal-names-its-own-remedy", w, "playwright install --with-deps chromium")
+    # …and the arm is SCOPED to 77: a real measured red must stay a red [[gate-inside-the-growth-loop]]
+    v, w = classify(1, "ADVISORY: 12 target(s) measured, 2 finding(s) — UNDER by 5px", "", set())
+    bite("classify/refusal-arm-does-not-widen", v, "RUNNABLE", "a measured FAIL is still a run")
 
     # ---- the SUBJECT test, both directions. A missing-language line naming an unshipped path
     # is REPO-BOUND; the very same path shape in a non-missing line must NOT trip it.
@@ -2728,9 +2804,10 @@ def selftest():
     bite("naming/prefix-is-the-pack-dir", PACK_SURFACE_PREFIX, "apollo-spider/")
     # ⚠ #220. The literal on the right is a HAND-MOVED FIXTURE and that is deliberate: it makes
     # every version bump of the carried cut a decision somebody typed, not a value that drifted.
-    # Moved v1.0.0 -> v1.0.1 at the #220 bake, in the same edit as MEMENTO_CUT_VERSION itself.
+    # Moved v1.0.0 -> v1.0.1 at the #220 bake, and v1.0.1 -> v1.0.2 at #223 (s223-D2), each
+    # time in the same edit as MEMENTO_CUT_VERSION itself.
     bite("naming/memento-cut-is-named", (MEMENTO_CUT_NAME, MEMENTO_CUT_VERSION),
-         ("Memento — Gumdrop", "v1.0.1"),
+         ("Memento — Gumdrop", "v1.0.2"),
          "the cut inside the pack carries its own identity (s219-D8)")
     for q in OPEN_QUESTIONS:
         bite("questions/has-body:%s" % q["id"], len(q["body"].strip()) > 40, True)
