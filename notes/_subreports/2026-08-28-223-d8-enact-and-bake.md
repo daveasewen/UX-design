@@ -5,9 +5,11 @@
 **Date:** 2026-08-28
 **Rulings enacted:** `s223-D8` (both legs) · `s223-D7` (the bake word, carried to the fixed sha per D8)
 
-> ⏳ **THIS FILE IS WRITTEN IN TWO PASSES.** §1–§3 (legs A and B) are complete and were true at the
-> landing commit. §4–§7 (the release surface, the bake, the final push, CI) are filled in after
-> that commit, because the bake cannot run against a dirty tree — see §3.3.
+> ## ✅ **BAKED. `Apollo-Spider-v1.0.2.zip` · 19,850,657 B · sha256 `3a7fe297140862b7…`**
+> ## ✅ **The released zip is BYTE-IDENTICAL to its dry-run twin — which is the whole point of `s223-D8`, and it is now true for every future cut.**
+>
+> ⏳ Written in two passes: §1–§2 were true at the pre-bake commit; §3 onward were filled in
+> after it, because `--release` refuses on a dirty tree.
 
 ---
 
@@ -245,8 +247,340 @@ status in repo-side: RATIFIED — s223-D7 names v1.0.2 in the s…
 
 ---
 
-## 3. LANDING THE PRE-BAKE COMMIT
+## 3. LANDING THE PRE-BAKE COMMIT — `14af4d7`
 
-*(§3 completed in pass 2 — see below.)*
+### 3.1 The working tree, every path accounted for
+
+I inherited the bake sub's declared uncommitted work. Nothing was discarded.
+
+| path | whose | why it is dirty |
+|---|---|---|
+| `apollo-spider/FIRST-SESSION.md` | **mine** | leg 1, §1.2 |
+| `apollo-spider/build-designer-pack.sh` | **mine** | leg 2, §2.1(c) |
+| `knowledge/_release/_gen_pack_manifest.py` | bake sub's `RATIFY_IDS` v1.0.2 row **+ mine** (leg 2) | both kept |
+| `knowledge/_release/_pack_manifest.json` | bake sub's | regenerated at `004ddc9`, status RATIFIED |
+| `reviews/RELEASE-SPIDER-2026-08-26-v1.html` + `.REVIEW.html` | bake sub's | page regenerated from the RATIFIED manifest, overlay re-injected |
+| `knowledge/_state.json` | bake sub's `W-258` **+ mine** | see §3.2 |
+| `knowledge/_rulings.json` | **conductor's** — `s223-D7`/`s223-D8` | never written by me |
+| `knowledge/_probe/session-223.json`, `notes/_dream/_GRADE-DECISIONS.jsonl` | conductor's | session bookkeeping |
+| `notes/_REHEARSAL-LOG.jsonl` | conductor's + dry-run appends | — |
+| `notes/_subreports/2026-08-28-223-bake-v102.md` | bake sub's report | untracked, carried in |
+| `_CHAIN.md` | **mine** | `_gen_chain.py` before the commit |
+
+### 3.2 ⛔ A REFUSAL I HAD TO CLEAR FIRST — `W-258` was malformed
+
+`python3 knowledge/_state.py` was **exiting 1** on the bake sub's own row:
+
+```
+⛔ W-258: condition='UNCONDITIONED' but closes_when is "Dave's fifteen-minute Copilot first-session…" — say which it is
+⛔ W-258: UNCONDITIONED and NOT in the frozen legacy set. You cannot open an item without stating
+   what would end it. The 19 inherited items are exempt … a NEW item has no such excuse.
+```
+
+The row carried a real `closes_when` **and** `condition: "UNCONDITIONED"` — the one combination
+the gate names as incoherent. `_state.add()` derives the field
+(`it.setdefault("condition", CONDITIONED if it.get("closes_when") else UNCONDITIONED)`); the row
+had been hand-shaped instead. **No judgment was available:** with a `closes_when` present the only
+legal value is `stated`. Repaired through the module's own `load`/`save`, not by hand-editing the
+JSON. The declared-debt count fell 15 → 14, and the frozen legacy set is untouched.
+
+My own row, `W-259`, was minted through `_state.add()` with `home` pointing at this file — which
+had to exist first, since `add()` refuses an unresolvable home (it did refuse, once, and that
+refusal is why the report skeleton was written before the row).
+
+```
+items 332 · live 252 · conditioned 318 · UNCONDITIONED 14      (exit 0)
+```
+
+### 3.3 The commit
+
+```
+$ python3 knowledge/_gen_chain.py                    # or the commit script refuses STALE
+$ SESSION_N=223 bash knowledge/_git_commit.sh --reconciled /var/tmp/msg-223-prebake.txt --all-dirty
+  doc-row gate: population 146 · staged-in-THIS-commit 2 · unrowed 0
+  ✅ PASS — every in-scope document has a store row.
+  [master 14af4d7] … 14 files changed, 830 insertions(+), 60 deletions(-)
+$ bash knowledge/_git_commit.sh --push
+  ✅ pushed and VERIFIED: remote master == local 14af4d76c2eac378b6f72fdf4836a2bc6d201c94
+```
+
+**Landing sha 1 — `14af4d76c2eac378b6f72fdf4836a2bc6d201c94`.** Subject, read back from
+`git log -1`:
+
+> `after #223 2026-08-28 — the v1.0.2 pre-bake fix commit - s223-D8 enacted in both legs: the stale Apollo-Spider-v1.0.1…`
 
 ---
+
+## 4. THE RELEASE SURFACE AT THE LANDING SHA — `bff12fe`
+
+```
+$ python3 knowledge/_release/_gen_pack_manifest.py --probe    --commit 14af4d76c2ea…   # 49s
+$ python3 knowledge/_release/_gen_pack_manifest.py --manifest --commit 14af4d76c2ea…
+  manifest -> knowledge/_release/_pack_manifest.json
+    commit 14af4d76c2ea  files 1647  bytes 41678300  sha256 dfb9603b94065076
+
+  version: v1.0.2   commit: 14af4d76c2ea
+  status:  RATIFIED — s223-D7 names v1.0.2 in the store; s219-D4(2) satisfied by the store, not by prose
+  GATES GROUP: gates   files: 58
+```
+
+- **Gates group 58 — exactly Dave's ruled `s223-D6` figure.** It did not move, so there was
+  nothing to stop for. Derived from a fresh 49-second probe, not carried over.
+- **Status RATIFIED via the `RATIFY_IDS` `v1.0.2 → s223-D7` row.** His word carried to the fixed
+  sha; he was not re-asked, per `s223-D8`.
+- Ship list unchanged from `004ddc9`: 1,647 files / 41,678,300 bytes.
+
+```
+$ python3 knowledge/_release/_gate_release_audit.py --manifest-check
+PASS — the manifest … is byte-identical to a fresh generation at 14af4d76c2ea (1647 files, sha256 dfb9603b94065076)
+$ python3 knowledge/_release/_gate_release_audit.py --drift
+PASS — the manifest was generated at HEAD (14af4d76c2ea). The ship list is current.
+```
+
+Page + review pair regenerated from that manifest, then committed and pushed.
+
+**Landing sha 2 — `bff12fe2a00a5540d3fe7322a27e95ffe09e9bd6`**, subject:
+
+> `after #223 2026-08-28 — the release surface regenerated at the s223-D8 landing sha 14af4d7 - gate probe re-measured (…`
+
+---
+
+## 5. THE BAKE — **AND THE POINT OF `s223-D8` HELD**
+
+### 5.1 Dry-run twice at `14af4d7`
+
+```
+$ bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/dr1 --commit 14af4d76c2ea…
+sha256: 3a7fe297140862b706f83c072e52be1a8c0af5145c6f8b5a516d198ce9f287b6
+$ … --out-dir /var/tmp/dr2 …
+sha256: 3a7fe297140862b706f83c072e52be1a8c0af5145c6f8b5a516d198ce9f287b6
+$ cmp /var/tmp/dr1/…zip /var/tmp/dr2/…zip && echo BYTE-IDENTICAL
+BYTE-IDENTICAL          19850657 bytes each
+```
+
+### 5.2 The word-independence proof, on the real artefact
+
+Before the release, with the repo-side manifest forced back to `PROPOSED` (the exact experiment
+the bake sub ran, which then gave two different shas):
+
+```
+$ …status = "PROPOSED — no ruling is keyed to v1.0.2 yet…"
+$ bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/dr3 --commit 14af4d76c2ea…
+sha256: 3a7fe297140862b706f83c072e52be1a8c0af5145c6f8b5a516d198ce9f287b6      ← THE SAME
+$ git checkout -- knowledge/_release/_pack_manifest.json                       # restored
+```
+
+| | before `s223-D8` (bake sub, measured) | after (this cut, measured) |
+|---|---|---|
+| manifest PROPOSED | `26eb33c3…` | **`3a7fe297…`** |
+| manifest RATIFIED | `6787d87d…` | **`3a7fe297…`** |
+
+### 5.3 `--release` into `dist/`
+
+Tree cleaned first (a dry-run rewrites the go/no-go page), then:
+
+```
+$ bash apollo-spider/build-designer-pack.sh --release --commit 14af4d76c2ea…
+  216 finding(s). ADVISORY — exiting 0.        ← VERSION arm 0 findings (was 1; total was 217)
+pack:   apollo-spider/dist/Apollo-Spider-v1.0.2.zip
+sha256: 3a7fe297140862b706f83c072e52be1a8c0af5145c6f8b5a516d198ce9f287b6
+size:   19,850,657 B
+```
+
+> ## ✅ **RELEASED sha256 == DRY-RUN sha256 — `3a7fe297…`. The fence held.**
+
+The advisory gate over the real baked stage: `COMMAND 16 · COUNTS 2 · PATH 198 · VERSION 0`.
+(The COUNTS arm reads 2 here and 1 in §1.5 because the bake's stage also carries the *generated*
+`README.md` with its typed `files:` figure. Pre-existing, advisory, out of scope.)
+
+### 5.4 ⛔ ONE REFUSAL, AND ITS REPAIR — `--check` went RED
+
+```
+$ bash apollo-spider/build-designer-pack.sh --check apollo-spider/dist/Apollo-Spider-v1.0.2.zip --commit 14af4d76c2ea…
+CHECK RED — 1 problem(s):
+  pack README does not carry the manifest hash
+```
+
+**A true consequence of leg B, and the arm was wrong, not the pack.** `check_pack()` asserted the
+README carried `manifest_hash(canonical(man))` — the sha of the **repo-side** manifest. After
+`s223-D8` the README stamps the sha of the manifest **that ships**. Repaired so the arm reads
+those bytes back out of the zip, and gained a second assertion in the same edit:
+
+```python
+packed = z.read(root + "/_MANIFEST.json")
+packed_sha = hashlib.sha256(packed).hexdigest()
+if packed_sha not in txt: …
+if packed.decode("utf8") != packed_manifest_text(canonical(man)):
+    fails.append("the shipped _MANIFEST.json is not the status-free derivation "
+                 "of the repo-side manifest (s223-D8)")
+```
+
+This is **strictly stronger** than what it replaced: the old arm compared the README to a file
+sitting *outside* the pack and would have passed a zip whose own `_MANIFEST.json` had been
+swapped. The repo↔pack link is not lost — it is now asserted directly, as the derivation
+identity. I judged this mechanical (the arm's stated intent is unchanged; only the object it
+measures moved, and it moved because `s223-D8` moved it). Re-driven:
+
+```
+CHECK GREEN — apollo-spider/dist/Apollo-Spider-v1.0.2.zip matches the manifest at 14af4d76c2ea
+$ python3 knowledge/_release/_gen_pack_manifest.py --selftest
+selftest: 214 bites, 0 fail(s)
+```
+
+`knowledge/_release/_gen_pack_manifest.py` is **not** a shipped path, so the repair does not need
+to be inside this zip.
+
+### 5.5 The ledger seed — `s223-D5(3)`, in the #220 two-commit shape
+
+`--seed` **measures the committed surface** (`git ls-tree -r <rev>`), so seeding before the zip
+landed produced a false row — driven and observed:
+
+```
+$ python3 knowledge/_release/_gate_frozen_release.py --seed        # BEFORE the zip commit
+  apollo-spider   version v1.0.2   2 file(s)  027ce796a98b         ← 2 files: no v1.0.2 zip
+$ cp /var/tmp/ledger-before.json knowledge/_release/_frozen-releases.json   # restored, byte-identical
+```
+
+`s223-D2`'s "in the same commit" is satisfied the way #220 satisfied it — **verified, not
+assumed**: `git rev-list --ancestry-path 9f58516..b0b49de` shows the v1.0.1 ledger seed is a
+*descendant* of the v1.0.1 bake commit. Same order here:
+
+```
+e33ea1b   the zip + the --check repair + the re-folded page
+a91b7e0   the ledger seed
+$ python3 knowledge/_release/_gate_frozen_release.py --seed        # AFTER the zip commit
+  apollo-spider   version v1.0.2   3 file(s)  d20213cf3d14
+```
+
+The row moves `content_sha256` `027ce796…` → `d20213cf…` **with** the version bump
+`v1.0.1` → `v1.0.2` in that same commit — the legal act `s114-D4` describes, and the shape the
+laundering arm exists to require.
+
+### 5.6 The gates, driven
+
+```
+$ python3 knowledge/_release/_gate_frozen_release.py            # at a91b7e0, post-commit
+frozen-release gate — 3 release(s) at a91b7e035812
+  designer-skills-v1   version v1          6 file(s)  b83d048483b7
+  designer-skills-v2   version v2        849 file(s)  e1d8019b97cc
+  apollo-spider        version v1.0.2      3 file(s)  d20213cf3d14
+PASS — 3 arm(s) asked, no frozen surface moved.                                   rc=0
+
+$ python3 knowledge/_release/_gate_release_audit.py --manifest-check
+PASS — … byte-identical to a fresh generation at 14af4d76c2ea
+$ python3 knowledge/_release/_gate_release_audit.py --pack
+SKIPPED — …v1.0.0.zip is FROZEN HISTORY …
+SKIPPED — …v1.0.1.zip is FROZEN HISTORY …
+PASS — apollo-spider/dist/Apollo-Spider-v1.0.2.zip matches the manifest at 14af4d76c2ea
+```
+
+`apollo-spider/dist/`'s history was never touched: v1.0.0 and v1.0.1 are byte-unchanged and the
+gate says so.
+
+---
+
+## 6. THE COMMITS, AND CI
+
+| sha | what |
+|---|---|
+| `14af4d7` | the s223-D8 pre-bake fix (both legs) |
+| `bff12fe` | the release surface regenerated at `14af4d7` |
+| `e33ea1b` | **Spider v1.0.2 BAKED** — the zip, the `--check` repair, the re-folded page |
+| `a91b7e0` | the frozen-release ledger seed |
+
+All pushed; `remote master == local a91b7e035812b427387bdb988ec1d491e8cd269b`, verified by the
+commit script's own read-back.
+
+### ⛔ CI — **COULD-NOT-RUN**
+
+```
+$ curl -s https://api.github.com/repos/daveasewen/UX-design/actions/runs?per_page=5
+{ "message": "Not Found", "status": "404" }
+```
+
+The repo is private and this sandbox holds no GitHub credential, so the unauthenticated API
+cannot see it. **404 is not a CI verdict and I am not reporting one.** The conductor owes the
+read-back via Dave's Chrome.
+
+---
+
+## 7. UNPROVEN / OWED
+
+- **⬛ THE STANDING UNPROVEN — Dave's fifteen-minute Copilot first-session** on his own machine.
+  `s223-D7` names it the only real test; it is the `closes_when` on `W-259`. Everything in this
+  report is machine evidence about the pack, not evidence that the pack *works for him*. What
+  changed in its favour: step one of that session no longer sends him to a directory that does
+  not exist.
+- **⛔ CI — COULD-NOT-RUN** (§6).
+- **⚠ OWED A WORD — the three `Memento — Gumdrop v1.0.0` literals** (§1.4). Not touched, not
+  ruled. They also shipped in v1.0.1.
+- **⚠ The brief's "45 baseline"** for `_gate_pack_docs.py` is not reproducible (§1.5); measured
+  216 → 215 with the VERSION arm going 1 → 0.
+- **Not attempted:** promoting the pack-docs gate to blocking, and surfacing its advisory
+  findings on the go/no-go page. Both are ruling-shaped, both named by the bake sub, neither
+  ruled.
+
+---
+
+## 8. REPLAY-THESE
+
+```bash
+cd <repo>
+
+# LEG 1 — the sweep, over every path the manifest carries
+python3 - <<'PY'
+import json, os
+m = json.load(open('knowledge/_release/_pack_manifest.json'))
+paths = sorted({p for g in m['groups'] for p in g['paths']})
+for p in paths:
+    for i, line in enumerate(open(p, encoding='utf-8', errors='replace').read().splitlines(), 1):
+        if 'v1.0.1' in line or 'v1.0.0' in line:
+            print(f"{p}:{i}: {line.strip()[:180]}")
+PY
+grep -n "VERSION_RE" knowledge/_release/_gate_pack_docs.py      # the class the gate defines
+
+# the gate, over a real staged tree
+mkdir -p /var/tmp/dgate/Apollo-Spider-v1.0.2
+python3 knowledge/_release/_gen_pack_manifest.py --stage /var/tmp/dgate/Apollo-Spider-v1.0.2 --commit 14af4d7
+cp knowledge/_release/_pack_manifest.json /var/tmp/dgate/Apollo-Spider-v1.0.2/_MANIFEST.json
+python3 knowledge/_release/_gate_pack_docs.py --stage /var/tmp/dgate/Apollo-Spider-v1.0.2 | grep -E "=== |ADVISORY"
+
+# LEG 2 — the packed manifest is status-free, and the mutation is red
+python3 knowledge/_release/_gen_pack_manifest.py --selftest                  # 214 bites, 0 fail(s)
+sed -i 's/^PACKED_DROP_KEYS = ("status",)$/PACKED_DROP_KEYS = ()/' knowledge/_release/_gen_pack_manifest.py
+python3 knowledge/_release/_gen_pack_manifest.py --selftest                  # 5 fail(s)
+git checkout -- knowledge/_release/_gen_pack_manifest.py                     # ⚠ RESTORE
+python3 knowledge/_release/_gen_pack_manifest.py --pack-copy /var/tmp/packed-man.json
+python3 -c "import json;print('status' in json.load(open('/var/tmp/packed-man.json')))"   # False
+
+# THE FENCE — dry-run == release, and PROPOSED == RATIFIED
+bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/dr1 --commit 14af4d7
+sha256sum apollo-spider/dist/Apollo-Spider-v1.0.2.zip /var/tmp/dr1/Apollo-Spider-v1.0.2.zip
+#   both 3a7fe297140862b706f83c072e52be1a8c0af5145c6f8b5a516d198ce9f287b6
+
+# the released pack, and the frozen surfaces
+bash apollo-spider/build-designer-pack.sh --check apollo-spider/dist/Apollo-Spider-v1.0.2.zip --commit 14af4d7
+python3 knowledge/_release/_gate_frozen_release.py
+python3 knowledge/_release/_gate_release_audit.py --manifest-check
+python3 knowledge/_release/_gate_release_audit.py --pack
+```
+
+---
+
+## 9. PITFALLS FOR WHOEVER PICKS THIS UP
+
+- **⛔ NOTHING SURVIVES A TOOL-CALL BOUNDARY IN THIS SANDBOX.** I backgrounded the gate probe with
+  `nohup` and polled it across calls; `pgrep -f "…--probe"` matched the *polling shell's own
+  command line* and reported STILL RUNNING for **35 minutes** while the process had been dead
+  since the first boundary. Run it inline: it takes **49 seconds**. A liveness check whose
+  pattern matches the checker is not a liveness check.
+- **`--seed` measures the COMMITTED surface**, so the bake is two commits: zip first, ledger
+  second. Verified against #220's own order.
+- **A dry-run rewrites the go/no-go page** (folding in the zip size and sha) and strips the review
+  overlay — so it dirties the tree, and `--release` refuses on a dirty tree. Restore the page
+  before `--release`; re-inject the overlay after it.
+- **`--check`'s README arm is now about the PACKED manifest** (§5.4). Anything else that compares
+  a shipped file to its repo-side twin should be looked at through the same lens.
+- **The manifest's commit and the bake's commit must match**, and the release commit is therefore
+  always a *later* commit than the one the pack was cut from. `--drift` will read one behind
+  immediately after a bake; that is the shape, not a defect.
