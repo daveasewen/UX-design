@@ -78,12 +78,92 @@ BEHAVIOUR HELD IDENTICAL, ON PURPOSE:
   - `chain_parts` / `dofirst_index` REFUSE (return `None` + a reason) rather than emit a
     confident-but-empty chain or worklist index on any parse failure — a declared gap, never a
     silent one.
+
+ONE THING HERE IS NOT A PORT, AND SAYS SO (`s222-D2`, #222). Immediately below the imports there
+is a small bootstrap that points `TIKTOKEN_CACHE_DIR` at the encoder data VENDORED INSIDE THE
+PACK, through the single helper `_encoder_home.py`. It is pack-only wiring, not ported
+behaviour: it changes no tier, no label and no refusal — it only makes the `cl100k_base` tier
+REACHABLE on a machine that cannot download anything. The block declares all of this in place.
 """
 import importlib
 import os
 import re
 import subprocess
 import sys
+
+# ---------------------------------------------------------------------------------------------
+# s222-D2 — THE PACK MEASURES TOKENS OUT OF THE BOX. Dave, #222, off the first live
+# Copilot-bridge session: the chain inscription refused because tiktoken could not FETCH its
+# encoding file from `openaipublic.blob.core.windows.net`. The refusal was right; needing a
+# reachable blob host was not. The encoding data now SHIPS INSIDE THE PACK, and exactly one
+# helper knows where — `_encoder_home.py`, beside this file. This block is the only place in
+# this module that calls it, and it runs before anything below asks for an encoder.
+#
+# ⛔ IT ADDS NOTHING TO A MEASUREMENT AND SUBTRACTS NOTHING FROM A REFUSAL. All it does is
+# `os.environ.setdefault("TIKTOKEN_CACHE_DIR", …)` — so a designer's own value still wins. If
+# the vendored data is missing or the wrong size, `_encoder_home` says so LOUD and BY NAME on
+# stderr, `measure_tokens` falls to the SAME self-labelling ESTIMATE tier it falls to today,
+# and `_gen_chain.py` refuses to write a chain on an estimate exactly as it does today. The
+# no-estimate principle is untouched: this makes the real measurement REACHABLE, never quieter.
+#
+# ⚠ DECLARED, FOR THE DELTA-AUDIT GATE: this is NOT a ported name. Every function and constant
+# this shim declares as ported from `knowledge/_capture_gate.py` is addressed by the gate BY
+# NAME and is byte-identical to its source; `_ENCODER_HOME_*` is pack-only wiring, which is
+# precisely what a purpose-written shim is for. Nothing ported was edited to add it.
+#
+# ⚠ THE IMPORT IS OPTIONAL BY DESIGN, NOT BY CARELESSNESS. This file has two homes: the PACK,
+# where `_encoder_home.py` and `_encoder-cache/` ride beside it, and the source repo, where
+# neither does (Apollo measures through its own gauge). A hard import would make the repo copy
+# UNIMPORTABLE — shipping an unimportable machinery file is the v1.0.0 defect this release
+# shape exists to end. Absence is not silence: `_ENCODER_HOME_NOTE` records exactly what
+# happened and `encoder_home_note()` states it, and every tier below still labels itself.
+_ENCODER_HOME_OK = False
+_ENCODER_HOME_NOTE = "not attempted"
+try:
+    import importlib.util as _ehu
+    # ⚠ TWO COPIES OF THIS SHIM SHIP, AT DIFFERENT DEPTHS, AND THERE IS ONLY ONE HELPER.
+    # `memento-package/machinery/` has it as a sibling; `memento-package/claude-plugin/memento/
+    # machinery/` does not — the helper is not duplicated into the plugin, because two copies of
+    # a path-resolver is the drift class this package argues against everywhere else. So look
+    # for it beside this file AND under `machinery/` of every ancestor, which reaches the one
+    # copy from both homes. ⬛ DECLARED: a plugin EXTRACTED on its own, away from the pack, has
+    # no helper and no `_encoder-cache/` above it — it degrades loudly through the same named
+    # path below, exactly as this shim did before `s222-D2`.
+    _eh_d = os.path.dirname(os.path.abspath(__file__))
+    _eh_path, _eh_tried = None, []
+    while True:
+        for _c in (os.path.join(_eh_d, "_encoder_home.py"),
+                   os.path.join(_eh_d, "machinery", "_encoder_home.py")):
+            _eh_tried.append(_c)
+            if _eh_path is None and os.path.isfile(_c):
+                _eh_path = _c
+        _eh_up = os.path.dirname(_eh_d)
+        if _eh_path is not None or _eh_up == _eh_d:
+            break
+        _eh_d = _eh_up
+    if _eh_path is None:
+        raise ImportError("no _encoder_home.py at any of: %s" % ", ".join(_eh_tried))
+    _eh_spec = _ehu.spec_from_file_location("_encoder_home", _eh_path)
+    if _eh_spec is None:
+        raise ImportError("no module spec at %s" % _eh_path)
+    _eh_mod = _ehu.module_from_spec(_eh_spec)
+    _eh_spec.loader.exec_module(_eh_mod)
+    _ENCODER_HOME_OK, _ENCODER_HOME_NOTE = _eh_mod.ensure()
+except Exception as _eh_ex:                       # noqa: BLE001 — the reason is kept, not eaten
+    _ENCODER_HOME_NOTE = (
+        "no `_encoder_home.py` beside this file (%s: %s) — this copy of the shim resolves no "
+        "vendored encoder data, and token measurement uses whatever tiktoken can reach on its "
+        "own. In the released pack the helper and `_encoder-cache/` ride beside this file."
+        % (type(_eh_ex).__name__, _eh_ex))
+
+
+def encoder_home_note():
+    """What the vendored-encoder bootstrap did in THIS process, as a sentence.
+
+    ★ Exists so that a reader of a refusal can be told which encoder path was tried without
+    having to read this module. A state nobody can ask about is a state nobody will check."""
+    return _ENCODER_HOME_NOTE
+
 
 # ---------------------------------------------------------------------------------------------
 # ds-021 / M6 — THE ONE UNIT AND THE HONEST FALLBACK.

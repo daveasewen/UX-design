@@ -269,6 +269,9 @@ between two packs is a real difference and can be audited.
   Your project grows its own memory from nothing, which is the point: the shapes are machinery,
   the contents are your record. Its version line is its own — this pack's version does not move
   it, and a later Apollo release may carry the same Gumdrop or a newer cut.
+- \`memento-package/_encoder-cache/\` — the \`cl100k_base\` encoder data, vendored so token
+  measurement works with no download and no environment variable. Its README says what it is,
+  what it mirrors, its sha256 and its licence.
 
 ## The canon generators, and one warning
 
@@ -287,8 +290,20 @@ redistribute. \`_MANIFEST.json\` lists every exclusion with its reason.
 
 \`pip install tiktoken\` — **required**, and the only one. \`FIRST-SESSION.md\` § Before you start
 says why: the chain generator counts tokens with the real encoder and REFUSES to write the file
-at all on an estimate, so the first wrap fails without it. It fetches its encoding file once from
-\`openaipublic.blob.core.windows.net\`.
+at all on an estimate, so the first wrap fails without it.
+
+**You do not need network access for the encoder itself.** \`tiktoken\` normally downloads its
+\`cl100k_base\` encoding data from \`openaipublic.blob.core.windows.net\`, which is blocked on many
+corporate laptops. That data ships inside this pack instead, at
+\`memento-package/_encoder-cache/\` (see the README beside it), and
+\`memento-package/machinery/_encoder_home.py\` — the one place that knows where it is — points
+\`tiktoken\` at it automatically, by \`setdefault\`, so your own \`TIKTOKEN_CACHE_DIR\` still wins.
+Only the \`tiktoken\` **wheel** still comes from PyPI. Check the whole path in one command:
+
+    python3 memento-package/machinery/_encoder_home.py --check
+
+If the vendored data is ever missing or damaged, that check and the chain generator both refuse
+loudly and name the file — there is no estimate fallback and never a silently wrong number.
 
 A few gates additionally drive a real browser and need \`playwright\`. They are included, they are
 not in the default run, and they name their own dependency when you run them without it — a

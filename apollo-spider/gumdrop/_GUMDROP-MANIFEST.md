@@ -75,6 +75,33 @@ shipped machinery before release:
 | `_inscribe_ruling.py --write`, first entry | inscribed, 0 → 1 rulings, all other bytes identical |
 | `_inscribe_ruling.py --selftest` inside the pack | runs; 3 arms declared UNMEASURED (see above) |
 
+## The vendored encoder (`s222-D2`, #222) — the one thing here that is not a copy of Apollo
+
+`_encoder-cache/9b5ad71b2ce5302211f9c61530b329a4922fc6a4` (1,681,126 bytes, sha256
+`223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7`) is `tiktoken`'s own MIT
+encoding data for `cl100k_base`, mirrored from
+`https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken`. It is not an Apollo
+file and has no `knowledge/` original, so it is not in the copies table above — it is a vendored
+third-party artefact, and `_encoder-cache/README.md` beside it carries its provenance and licence.
+
+**Why it is here.** Dave, #222, off the first live Copilot-bridge session, where the chain
+inscription refused because that host was unreachable: *"I need this to work out of the box for
+the designers."* With the data inside the pack, token measurement needs no download, no reachable
+host and no environment variable.
+
+**One helper, one home.** `machinery/_encoder_home.py` is the only place that path is written
+down. It resolves `_encoder-cache/` by walking up from its own file, then does
+`os.environ.setdefault("TIKTOKEN_CACHE_DIR", …)` — `setdefault`, so a designer's own value wins.
+`machinery/_capture_gate.py` (both packed copies of the shim, at different depths) calls it once
+at import; the plugin mirror is NOT given a second copy of the helper — it finds this one, which
+is the point of `setdefault` and of a resolver that searches rather than assumes.
+
+**The refusal is untouched.** If the vendored file is missing or the wrong size, the helper says
+so on stderr, loud and naming the exact path, and `_gen_chain.py` then refuses to write a chain on
+an estimate exactly as it always has. Nothing here makes a failure quieter; it makes the real
+measurement reachable. Check the whole path with
+`python3 memento-package/machinery/_encoder_home.py --check`.
+
 ## What is deliberately NOT here
 
 - **A record of any kind.** No chain content, no rulings, no tasks. Every adopting project grows

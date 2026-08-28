@@ -40,8 +40,12 @@ anything at all** unless it can count tokens with the real encoder. It will not 
 label the guess; a measuring tool that estimates silently is the thing this whole system exists
 to prevent. Without `tiktoken`, Step 4c fails and your first session does not survive the night.
 
-`tiktoken` fetches its encoding file once, from `openaipublic.blob.core.windows.net`. On a locked
--down corporate laptop that host may be blocked — worth knowing now rather than at Step 4.
+**The encoder's data file is already inside this pack.** Normally `tiktoken` downloads it, once,
+from `openaipublic.blob.core.windows.net` — a host that is blocked on plenty of corporate
+laptops, and when it is blocked the chain step refuses. So the pack ships that data itself, in
+`memento-package/_encoder-cache/`, and finds it on its own. **There is nothing for you to
+download and no environment variable to set.** The `pip install` line above is for the `tiktoken`
+package itself, which still comes from PyPI; the *data* it would otherwise fetch is already here.
 
 Open **this pack's folder** as your VS Code workspace (File → Open Folder → the unzipped
 `Apollo-Spider-v1.0.1` directory). Copilot reads `.github/copilot-instructions.md` from a
@@ -50,13 +54,21 @@ workspace automatically, and that file is what tells it how to behave here.
 Quick check that everything landed — **both lines, before you start**:
 
     python3 memento-package/_state.py
-    python3 -c "import tiktoken; print('tiktoken OK —', len(tiktoken.get_encoding('cl100k_base').encode('the quick brown fox')), 'tokens')"
+    python3 memento-package/machinery/_encoder_home.py --check
 
 The first should print a row of zeroes. That is your empty worklist reporting in — it is meant to
-be empty, and the fact that it answers at all is the check. The second should print
-`tiktoken OK — 4 tokens`. It proves three things in one line: the package is installed, the
-encoding file downloaded, and the host was reachable. If it does not print that, fix it here.
-Everything else in this session works without it; only the last step does not.
+be empty, and the fact that it answers at all is the check.
+
+The second should end with:
+
+    tiktoken OK — 4 tokens, measured with the encoder data inside this pack (no download, no environment variable to set).
+
+It does not describe the setup, it drives it: it finds the vendored data, checks it is the right
+bytes, points `tiktoken` at it, and then actually encodes a string. **It needs no network at
+all** — if it passes on a machine with the internet unplugged, that is the intended result, not a
+surprise. Anything else it prints starts with `ENCODER-HOME:` and names the exact file it looked
+for and what it wants you to do. If it refuses, fix it here: everything else in this session
+works without it, but the last step does not.
 
 ---
 
@@ -284,6 +296,12 @@ size figure it would bake into the file would have been measured on the wrong in
 file full of confidently wrong numbers is worse than no file. There is no estimate fallback. If
 you see that refusal, run `pip install tiktoken`, re-run the two checks in § Before you start,
 then come back here. Nothing you did in Steps 1–3 is lost.
+
+⚠ **A blocked network is not a reason for this step to fail.** The encoder data ships inside the
+pack, so this step works with the internet unplugged. If the refusal above is preceded by lines
+beginning `ENCODER-HOME:`, the vendored data itself is missing or damaged — those lines name the
+exact file. Restore it from a fresh copy of the pack, or point `TIKTOKEN_CACHE_DIR` at a
+directory that has it; your own value for that variable is always respected.
 
 ---
 
