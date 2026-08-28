@@ -29,9 +29,12 @@ only a run answers that [[mutation-tests-the-clause-not-the-feature]]. The class
   NEEDS-DEP(x)    ModuleNotFoundError naming a third-party module `x` — or (s223-D5) an honest
                   COULD-NOT-ASK refusal at exit 77, where `x` is the remedy the refusal itself
                   names: the gate could not ASK its question on this box, which is a fact about
-                  the box, never a verdict about the pack
+                  the box, never a verdict about the pack. ⛔ NARROWED (s223-D6): only when what
+                  the refusal lacks is INSTALLABLE BY THE DESIGNER — a refusal naming a repo
+                  resource the pack does not ship is REPO-BOUND, not a dependency
   REPO-BOUND(why) it crashed reaching for something the pack does not ship — the offending
-                  path is extracted from the traceback and named in the verdict
+                  path is extracted from the traceback and named in the verdict — or it REFUSED
+                  for such a path (s223-D6), which no install command can supply
 
 ★ THE DIFFERENTIAL ARM — because a FAIL is not automatically a run. A gate that returns a
 clean non-zero verdict inside the pack has demonstrably RUN; but its red may be caused by the
@@ -685,6 +688,24 @@ PATHISH = re.compile(r"((?:knowledge|showroom|reviews|notes|runs|memento-package
                      r"|GOOD-MORNING\.md|_LIVE-STATE\.md|_CHAIN\.md|_rulings\.json|_state\.json)")
 
 
+def _unshipped_subject(blob, shipped):
+    """Name the first REPO RESOURCE a run says it could not reach and the pack does not ship.
+
+    THE SUBJECT TEST, factored out so the SAME structural question can be asked of two very
+    different runs: a clean FAIL (below) and a COULD-NOT-ASK refusal (the s223-D6 arm). Sharing
+    one implementation is the point — two copies of a test drift, and the narrowing would then
+    mean something subtly different from the fence it was modelled on [[gate-dont-patch]].
+    Returns the offending path, or None when nothing missing-and-unshipped is named.
+    """
+    for line in blob.split("\n"):
+        if not MISSING_LINE.search(line):
+            continue
+        for p in PATHISH.findall(line):
+            if p not in shipped and "*" not in p:
+                return p
+    return None
+
+
 def _refusal_dep(blob):
     """Name what a COULD-NOT-ASK refusal says is missing, in the REFUSAL'S OWN WORDS."""
     line = next((l for l in blob.split("\n") if "COULD-NOT-ASK" in l), "")
@@ -715,7 +736,21 @@ def classify(rc, out, err, shipped):
     # for exactly this — the gate ships, and the missing thing is named beside it. Kept BELOW the
     # MODNOTFOUND arm on purpose: a refusal that names a module still gets classified by that
     # module's name, which is more precise than the remedy sentence.
+    # ⛔ s223-D6 — THE ARM NARROWS. NEEDS-DEP means a dependency THE DESIGNER CAN INSTALL. Measured
+    # at the 5efd667 regeneration: the arm as first written swept in `_validate_evidence.py`, whose
+    # honest refusal is for the repo's `notes/_claims` — a directory no designer machine will ever
+    # hold and no `install` command can produce — and its import companion, moving the gates group
+    # 56 → 60. So a refusal is put to the SAME structural question the REPO-BOUND fence below
+    # already asks: does it name a repo resource in missing-language that the pack does not ship?
+    # If it does, the thing it lacks is the REPO, not a dependency, and it stays REPO-BOUND. The
+    # test is structural, not a keyword blocklist: it reads the refusal's own path-naming, so a
+    # new gate refusing for some other unshipped repo path is classified right without being
+    # listed anywhere [[gate-inside-the-growth-loop]].
     if rc == REFUSAL_EXIT:
+        unshipped = _unshipped_subject(blob, shipped)
+        if unshipped:
+            return "REPO-BOUND", "refuses for %s, a repo resource the pack does not ship — not " \
+                                 "a dependency the designer can install" % _tail(unshipped)
         return "NEEDS-DEP", _refusal_dep(blob)
     if TRACE in blob:
         pm = PATHERR.search(blob)
@@ -735,16 +770,10 @@ def classify(rc, out, err, shipped):
                            "stated contract, not a fence"
     # THE SUBJECT TEST. A clean FAIL is a verdict — unless the message says the thing it went
     # looking for is not in the pack. That is a packaging fact, and it is readable mechanically.
-    outside = []
-    for line in blob.split("\n"):
-        if not MISSING_LINE.search(line):
-            continue
-        for p in PATHISH.findall(line):
-            if p not in shipped and "*" not in p:
-                outside.append(p)
+    outside = _unshipped_subject(blob, shipped)
     if outside:
         return "REPO-BOUND", "runs, but its verdict is about %s, which the pack does not ship" \
-                             % _tail(outside[0])
+                             % _tail(outside)
     return "RUNNABLE", "ran, verdict FAIL (exit %d) — a verdict is a run" % rc
 
 
@@ -2355,6 +2384,40 @@ def selftest():
     # …and the arm is SCOPED to 77: a real measured red must stay a red [[gate-inside-the-growth-loop]]
     v, w = classify(1, "ADVISORY: 12 target(s) measured, 2 finding(s) — UNDER by 5px", "", set())
     bite("classify/refusal-arm-does-not-widen", v, "RUNNABLE", "a measured FAIL is still a run")
+
+    # ---- s223-D6: THE ARM IS NARROW, BOTH DIRECTIONS. NEEDS-DEP means a dependency the designer
+    # can install. The two texts below are the REAL refusals measured at #223, abbreviated only by
+    # cutting whole trailing sentences — the discriminating clause of each is verbatim.
+    # (a) a refusal for a REPO resource the pack does not ship is REPO-BOUND, never NEEDS-DEP.
+    v, w = classify(REFUSAL_EXIT,
+                    "COULD-NOT-ASK: the evidence linter — no claim table was named and the "
+                    "conventional home notes/_claims does not exist here — there are no evidence "
+                    "rows to lint (notes/ is out of the release ship list).", "",
+                    {"knowledge/canon/canon.css"})
+    bite("classify/refusal-for-repo-resource-is-repo-bound", v, "REPO-BOUND",
+         "no `install` command can hand a designer the repo's notes/_claims")
+    bite("classify/refusal-repo-resource-named-in-why", "notes/_claims" in w, True)
+    # (b) the INSTALLABLE refusal is untouched — and its text carries `no such file or directory`
+    # and a `.github/...` path, so this bite also proves the narrowing did not widen on prose.
+    v, w = classify(REFUSAL_EXIT,
+                    "COULD-NOT-ASK: HIT-AREA: HARNESS UNAVAILABLE — the chromium binary would not "
+                    "START (libXdamage.so.1: cannot open shared object file: No such file or "
+                    "directory) — `playwright install --with-deps chromium` re-installs it with "
+                    "the system libraries it needs. Inside this design system's own CI the proof "
+                    "lives in the `render` job of .github/workflows/gates.yml.", "",
+                    {"knowledge/canon/canon.css"})
+    bite("classify/refusal-installable-still-needs-dep", v, "NEEDS-DEP",
+         "a missing BROWSER is installable by the designer — s223-D6 must not sweep it out")
+    bite("classify/refusal-installable-keeps-its-remedy", w,
+         "playwright install --with-deps chromium")
+    # (c) and the narrowing respects `shipped`: the same refusal, when the pack DOES carry the
+    # named path, is not a packaging fence at all.
+    v, w = classify(REFUSAL_EXIT,
+                    "COULD-NOT-ASK: knowledge/tokens/colour.json could not be read — install "
+                    "`pip install jsonschema` to ask this gate anything.", "",
+                    {"knowledge/tokens/colour.json"})
+    bite("classify/refusal-shipped-path-is-not-a-fence", v, "NEEDS-DEP",
+         "the path it names IS in the pack, so the missing thing is the dependency")
 
     # ---- the SUBJECT test, both directions. A missing-language line naming an unshipped path
     # is REPO-BOUND; the very same path shape in a non-missing line must NOT trip it.

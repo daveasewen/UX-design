@@ -1,11 +1,11 @@
 {
   "carries": {
     "name": "Memento — Gumdrop",
-    "version": "v1.0.1",
+    "version": "v1.0.2",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own; the pack's version does not move it."
   },
-  "commit": "789f4331242ef7bca6d7bfd8d0f1765bafff6e4f",
-  "commit_date": "2026-08-28T14:12:20+01:00",
+  "commit": "5efd6678eb33be1c5f3641ac91c78f93750ea3fb",
+  "commit_date": "2026-08-28T15:57:54+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,11 +101,11 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 11 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 7 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
-      "reason": "THE TWO THAT TOOK THE ROSTER FROM 57 TO 55, named because Dave's answer to Q6 was 55 gates on the condition the drop is visible. _validate_evidence.py runs, but its verdict is about notes/_claims, which the pack does not ship — and _claimtable.py is its only local helper, so it travels with it. Neither is missing by accident and neither is broken: a check whose subject the pack does not carry has nothing to say in a designer's project."
+      "reason": "THE TWO THAT TOOK THE ROSTER FROM 57 TO 55, named because Dave's answer to Q6 was 55 gates on the condition the drop is visible. something this box does not have — see the refusal — and _claimtable.py is its only local helper, so it travels with it. Neither is missing by accident and neither is broken: a check whose subject the pack does not carry has nothing to say in a designer's project."
     },
     {
       "path": "knowledge/ (everything else)",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "789f4331242ef7bca6d7bfd8d0f1765bafff6e4f",
+    "commit": "5efd6678eb33be1c5f3641ac91c78f93750ea3fb",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -126,18 +126,6 @@
       {
         "gate": "_validate_assertions.py",
         "why": "crashed: AssertionError: file_contains must find a present needle"
-      },
-      {
-        "gate": "_validate_descender_computed.py",
-        "why": "crashed:   - [pid=257] <gracefully close end>"
-      },
-      {
-        "gate": "_validate_evidence.py",
-        "why": "runs, but its verdict is about notes/_claims, which the pack does not ship"
-      },
-      {
-        "gate": "_validate_hit_area.py",
-        "why": "crashed:   - [pid=361] <gracefully close end>"
       },
       {
         "gate": "_validate_kg.py",
@@ -154,10 +142,6 @@
       {
         "gate": "_validate_standing_instructions.py",
         "why": "crashed: AssertionError: must discover the git runbook"
-      },
-      {
-        "gate": "_validate_state_contrast.py",
-        "why": "crashed: ╚══════════════════════════════════════════════════════╝"
       }
     ],
     "timeout_s": 25
@@ -1401,7 +1385,7 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 759207,
+      "bytes": 957169,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
@@ -1409,11 +1393,11 @@
       ],
       "counts": {
         "empty_population": 4,
-        "needs_dep": 0,
-        "repo_bound": 11,
+        "needs_dep": 4,
+        "repo_bound": 7,
         "runnable": 38
       },
-      "files": 56,
+      "files": 60,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1425,6 +1409,7 @@
         "knowledge/_a11y_target.py",
         "knowledge/_assertions.json",
         "knowledge/_binds-ratchet.json",
+        "knowledge/_claimtable.py",
         "knowledge/_contrast_utils.py",
         "knowledge/_could_not_ask.py",
         "knowledge/_dtcg_units.py",
@@ -1449,9 +1434,11 @@
         "knowledge/_validate_descender_computed.py",
         "knowledge/_validate_dtcg.py",
         "knowledge/_validate_edge_extremity.py",
+        "knowledge/_validate_evidence.py",
         "knowledge/_validate_grid.py",
         "knowledge/_validate_help_gate.py",
         "knowledge/_validate_hidden_display.py",
+        "knowledge/_validate_hit_area.py",
         "knowledge/_validate_icons.py",
         "knowledge/_validate_intent_resolve.py",
         "knowledge/_validate_legacy_leak.py",
@@ -1463,6 +1450,7 @@
         "knowledge/_validate_radius.py",
         "knowledge/_validate_screen.py",
         "knowledge/_validate_snippets.py",
+        "knowledge/_validate_state_contrast.py",
         "knowledge/_validate_state_snap.py",
         "knowledge/_validate_theme_provenance.py",
         "knowledge/_validate_token_forks.py",
@@ -1643,12 +1631,12 @@
           "gate": "_validate_descender_computed.py",
           "invocation": "",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
-          "verdict": "REPO-BOUND",
-          "why": "crashed:   - [pid=257] <gracefully close end>"
+          "verdict": "NEEDS-DEP",
+          "why": "playwright install chromium"
         },
         {
           "gate": "_validate_dtcg.py",
@@ -1674,8 +1662,8 @@
           "population": "",
           "selftest": "green",
           "third_party": [],
-          "verdict": "REPO-BOUND",
-          "why": "runs, but its verdict is about notes/_claims, which the pack does not ship"
+          "verdict": "NEEDS-DEP",
+          "why": "something this box does not have — see the refusal"
         },
         {
           "gate": "_validate_grid.py",
@@ -1708,12 +1696,12 @@
           "gate": "_validate_hit_area.py",
           "invocation": "--all",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
-          "verdict": "REPO-BOUND",
-          "why": "crashed:   - [pid=361] <gracefully close end>"
+          "verdict": "NEEDS-DEP",
+          "why": "playwright install --with-deps chromium"
         },
         {
           "gate": "_validate_icons.py",
@@ -1860,8 +1848,8 @@
           "third_party": [
             "playwright"
           ],
-          "verdict": "REPO-BOUND",
-          "why": "crashed: ╚══════════════════════════════════════════════════════╝"
+          "verdict": "NEEDS-DEP",
+          "why": "playwright install chromium"
         },
         {
           "gate": "_validate_state_snap.py",
@@ -2588,7 +2576,7 @@
   "ruling": "s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
   "schema": "apollo-designer-pack-manifest/1",
   "slug": "Apollo-Spider",
-  "status": "RATIFIED — s219-D10, Dave's word 'bake' (2026-08-26); s219-D4(2) satisfied by the store, not by prose",
+  "status": "PROPOSED — no ruling is keyed to v1.0.2 yet (s223-D3: the ratify check is re-keyed PER CUT). s219-D4(2): release = his word, and this cut has not had it.",
   "totals": {
     "by_group": {
       "engine-canon": {
@@ -2596,8 +2584,8 @@
         "files": 1157
       },
       "gates": {
-        "bytes": 759207,
-        "files": 56
+        "bytes": 957169,
+        "files": 60
       },
       "gumdrop": {
         "bytes": 1974739,
@@ -2620,10 +2608,10 @@
         "files": 5
       }
     },
-    "bytes": 41538718,
-    "files": 1645,
-    "pack_bytes": 41565375,
-    "pack_files": 1647
+    "bytes": 41736680,
+    "files": 1649,
+    "pack_bytes": 41763337,
+    "pack_files": 1651
   },
-  "version": "v1.0.1"
+  "version": "v1.0.2"
 }
