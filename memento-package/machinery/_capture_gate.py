@@ -9,7 +9,7 @@ Apollo-laced lines (provenance/status gates, section-size budgets, band arithmet
 module that reproduces the behaviour of those four functions and nothing else, so the package
 does not have to drag Apollo's gate machinery along for the ride.
 
-PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `9dcf62d` (2026-08-10, that file's own
+PROVENANCE. Ported from `knowledge/_capture_gate.py` @ HEAD `ba2c9f5` (2026-08-28, that file's own
 last touch), these names — ⚠ names, not line ranges: the source file has grown well past 4,000
 lines since the first port, so its line numbers no longer address the right text and the
 delta-audit gate addresses everything BY NAME (AST source-segment hashing):
