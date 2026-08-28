@@ -107,9 +107,15 @@ CONSOLE = dict(found.GALLERY_SETTINGS['console'])
 TODAY = dict(found.GALLERY_SETTINGS['mono'])
 TODAY_REC = dict(found.RECEIPT_ROLE_DEFAULTS['gallery']['mono'])
 if TODAY != TODAY_REC:
-    raise SystemExit('build: mono/gallery moved (%s vs %s) — s220-D2 (3) leaves it EXPRESSLY '
-                     'OPEN, so the TODAY card of this page would be wrong. Stop and look.'
-                     % (TODAY, TODAY_REC))
+    raise SystemExit(
+        'build: mono/gallery has MOVED (%s vs the #219 receipt %s). ⬛ s222-D1 (#222, '
+        '2026-08-28) RULED THE CANDIDATE THIS PAGE PROPOSED — "yes the defaults for mono are '
+        'fine" / "yes this is correct" — so mono now SHIPS capBg: transparent and the TODAY card '
+        'would draw the candidate twice, which is not a decision surface. ⛔ THE PAGE ON DISK IS '
+        'FROZEN EVIDENCE: it is the surface Dave ruled off and it must not be rebuilt over. A '
+        'later mono question gets a NEW -vN page reading TODAY against ITS OWN candidate, not a '
+        'regeneration of this one ([[feedback-version-dont-overwrite]]).'
+        % (TODAY, TODAY_REC))
 if (CONSOLE['rounding'], CONSOLE['capBg']) != ('corners', 'transparent'):
     raise SystemExit('build: console gallery ships %s/%s — this page claims the s220-D2 RULED '
                      'default (corners/transparent) and may not misquote it.'

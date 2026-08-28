@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""#222 mutation arm driver — NON-REPO (s191-D2): /var/tmp/ds222/arm.py.
+ONE VARIABLE CHANGED: the s222-D1 mono supersession is REMOVED from the layer and the shipped
+table re-derived — exactly the PRE-#222 state (mono gallery capBg: grey). Nothing written, no git.
+  python3 arm.py before|after  role_defaults|foundations|matrix
+"""
+import sys
+REPO = "/sessions/charming-gifted-pascal/mnt/UX-design"
+sys.path.insert(0, REPO + "/knowledge/_render")
+which, target = sys.argv[1], sys.argv[2]
+import role_defaults_219 as R
+if which == "before":
+    R.SUPERSESSIONS[:] = [s for s in R.SUPERSESSIONS
+                          if not (s["theme"] == "mono" and s["ruled_by"] == "s222-D1")]
+    R.NO_SUPERSESSION[("gallery", "mono")] = R.NO_SUPERSESSION_CLOSED[("gallery", "mono")]
+    R.DEFAULTS, R.RESOLVED_SUPERSEDED = R._apply_supersessions(R.RECEIPT_DEFAULTS)
+print("ARM %s · mono capBg = %r · supersessions %d"
+      % (which, R.DEFAULTS["gallery"]["mono"]["capBg"], len(R.SUPERSESSIONS)))
+if target == "role_defaults":
+    sys.exit(R.selftest())
+if target == "foundations":
+    import gen_foundations_217 as F
+    sys.exit(F.selftest())
+if target == "matrix":
+    import gen_foundations_217 as F
+    import gen_bento_matrix_217 as M
+    assert F.GALLERY_SETTINGS["mono"]["capBg"] == R.DEFAULTS["gallery"]["mono"]["capBg"]
+    sys.exit(M.selftest())
+if target == "mutant-default":
+    import gen_foundations_217 as F
+    F.write_default_mutant()
+    sys.exit(0)
+if target == "mutant-settings":
+    import gen_foundations_217 as F
+    F.write_settings_mutant()
+    sys.exit(0)
+raise SystemExit("unknown target %r" % target)

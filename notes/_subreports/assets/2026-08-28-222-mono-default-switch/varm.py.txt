@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+"""#222 VERIFIER arm driver — NON-REPO (s191-D2): /var/tmp/ds222/varm.py.
+Patches the SAME one variable on the VERIFIER side too, so a before/after count compares
+like with like. Without this, the generator is pre-switch and the verifier post-switch and the
+number measures the cross-wiring, not the arm.
+  python3 varm.py before|after <verifier args...>
+"""
+import runpy, sys
+REPO = "/sessions/charming-gifted-pascal/mnt/UX-design"
+sys.path.insert(0, REPO + "/knowledge/_render")
+which = sys.argv[1]
+rest = sys.argv[2:]
+import role_defaults_219 as R
+if which == "before":
+    R.SUPERSESSIONS[:] = [s for s in R.SUPERSESSIONS
+                          if not (s["theme"] == "mono" and s["ruled_by"] == "s222-D1")]
+    R.NO_SUPERSESSION[("gallery", "mono")] = R.NO_SUPERSESSION_CLOSED[("gallery", "mono")]
+    R.DEFAULTS, R.RESOLVED_SUPERSEDED = R._apply_supersessions(R.RECEIPT_DEFAULTS)
+import gen_foundations_217 as F
+print("VARM %s · verifier sees mono capBg = %r" % (which, F.GALLERY_SETTINGS["mono"]["capBg"]))
+sys.argv = [REPO + "/knowledge/_render/verify_photography_218.py"] + rest
+runpy.run_path(sys.argv[0], run_name="__main__")

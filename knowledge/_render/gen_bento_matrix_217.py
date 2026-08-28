@@ -3828,25 +3828,34 @@ def selftest():
     # happen. And it asserts the option space is untouched: `rounding` still carries both members.
     _dfl = _rails_doc["defaults"]
     _sups = _dfl.get("supersessions") or []
-    bite("R6e · ⬛ s220-D2(2) — the console gallery default is CHORD TWO (corners + transparent) "
-         "and the manifest ALSO carries the #219 receipt's capsule+grey and the ruling that "
-         "retired it. ⛔ s220-D2(1) removes no option: `rounding` still offers both members and "
+    bite("R6e · ⬛ s220-D2(2) + s222-D1 — BOTH gallery default switches are in the manifest WITH "
+         "the #219 receipt rows they superseded and the rulings that retired them: console is "
+         "CHORD TWO (corners + transparent) over the receipt's capsule+grey, and mono is "
+         "transparent over the receipt's grey. ⛔ NEITHER RULING REMOVES AN OPTION: `rounding` "
+         "still offers both members, mono's caption ramp still offers grey/white/transparent, and "
          "X1/X2 are still PROPOSED",
          ((_dfl["values"]["gallery"]["console"]["rounding"],
            _dfl["values"]["gallery"]["console"]["capBg"]),
           ((_dfl.get("receipt_values") or {}).get("gallery", {}).get("console", {}).get("rounding"),
            (_dfl.get("receipt_values") or {}).get("gallery", {}).get("console", {}).get("capBg")),
-          sorted((s["dial"], s["was"], s["now"], s["ruled_by"]) for s in _sups),
+          sorted((s["theme"], s["dial"], s["was"], s["now"], s["ruled_by"]) for s in _sups),
           sorted({(s["type"], s["theme"]) for s in _sups}),
           _rails_doc["dials"]["rounding"]["options"],
           [x["status"] for x in _rails_doc["constraints"]["exclusions"]
            if x["id"] in ("X1", "X2")],
-          _dfl["values"]["gallery"]["mono"]["capBg"]),
+          (_dfl["values"]["gallery"]["mono"]["rounding"],
+           _dfl["values"]["gallery"]["mono"]["capBg"]),
+          ((_dfl.get("receipt_values") or {}).get("gallery", {}).get("mono", {}).get("rounding"),
+           (_dfl.get("receipt_values") or {}).get("gallery", {}).get("mono", {}).get("capBg")),
+          capbg_for("gallery", "mono")),
          (("corners", "transparent"), ("capsule", "grey"),
-          [("capBg", "grey", "transparent", "s220-D2 (2)"),
-           ("rounding", "capsule", "corners", "s220-D2 (2)")],
-          [("gallery", "console")],
-          ["corners", "capsule"], ["proposed", "proposed"], "grey"))
+          [("console", "capBg", "grey", "transparent", "s220-D2 (2)"),
+           ("console", "rounding", "capsule", "corners", "s220-D2 (2)"),
+           ("mono", "capBg", "grey", "transparent", "s222-D1")],
+          [("gallery", "console"), ("gallery", "mono")],
+          ["corners", "capsule"], ["proposed", "proposed"],
+          ("corners", "transparent"), ("corners", "grey"),
+          ["grey", "white", "transparent"]))
     _disk = (open(RAILS_PATH, encoding="utf-8").read()
              if os.path.exists(RAILS_PATH) else "⛔ NOT WRITTEN — run --rails")
     bite("R6d · ⛔ GENERATED, NEVER HAND-KEPT — the rails file on disk IS this generation "

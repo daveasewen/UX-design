@@ -27,6 +27,13 @@ corner image with transparent capsule" and, over the light/dark pair, "I guess t
 default for the two modes." A supersession is APPLIED OVER the parse by `SUPERSESSIONS` below; the
 receipt is never rewritten. His word outranks his own export (the s219-D2 (1) latest-wins pattern),
 and the export stays on disk as the RECEIPT of what he approved at #219.
+⬛ AND AGAIN FOR MONO — s222-D1, #222, 2026-08-28. The clause s220-D2 (3) left EXPRESSLY OPEN is
+closed: mono's gallery default becomes square image + transparent caption, both modes ("yes the
+defaults for mono are fine" / "yes this is correct"). ONE dial moves — `capBg: grey ->
+transparent`; the square is mono's own `--border-radius-container: 0` under console's ruled
+`rounding: corners`, not a second override. The grey ground stays an EDIT-PASS OPTION and nothing
+leaves the grammar. ⚠ Whether mono may reach the DARK caption chord is s219-D3's question and is
+STILL OPEN — not answered here.
 
 WHAT A CONSUMER GETS
   DEFAULTS[type][theme]        -> the SHIPPED default: the export's `state` block with every ruled
@@ -34,6 +41,10 @@ WHAT A CONSUMER GETS
   RECEIPT_DEFAULTS[type][theme]-> the export's `state` block AS PARSED, frozen history
   SUPERSESSIONS                -> the ruled overrides, each naming its ruling, the receipt's word,
                                   the word that replaced it and Dave's own sentence
+  NO_SUPERSESSION              -> (type, theme) a ruling EXPRESSLY left alone, so an absence reads
+                                  as a decision. A supersession naming one of these REFUSES.
+  NO_SUPERSESSION_CLOSED       -> the ones a LATER ruling closed, kept as history so an open
+                                  clause cannot vanish without a trace
   RESOLVED[type][theme]        -> the export's `resolved` block (the RECEIPT: pixels Dave saw)
   RESOLVED_SUPERSEDED[type][theme] -> {receipt field: why} — the `resolved` readbacks a supersession
                                   has made STALE, so a probe declares the divergence instead of
@@ -232,10 +243,31 @@ RECEIPT_DEFAULTS, RESOLVED, RECEIPT_RESOLVED_THEME = _parse()
 # module cannot reach it — the separation is the guarantee, and `gen_foundations_217`'s selftest
 # asserts it where both are in scope.
 #
-# ⛔ MONO IS NOT HERE, AND ITS ABSENCE IS THE RULING. s220-D2 (3) leaves mono's gallery default
-# (`capBg: grey`) EXPRESSLY OPEN — asked in chat, not ruled — so it keeps grey until Dave's word.
-# `no_supersession` below is a positive statement of that, not an oversight, and the selftest bites
-# it in both directions.
+# ---------------------------------------------------------------------------
+# ⬛ s222-D1 (#222, 2026-08-28) — AND THEN DAVE'S WORD CAME FOR MONO, AND THE OPEN CLAUSE CLOSED
+# ---------------------------------------------------------------------------
+# s220-D2 (3) left mono's gallery default (`capBg: grey`) EXPRESSLY OPEN — asked in chat, not
+# ruled. At #222, off `reviews/MONO-GALLERY-DEFAULT-2026-08-27-v1.html`, Dave ruled it:
+#   "yes the defaults for mono are fine"
+#   and on the reflected firm reading (square image + transparent caption, console's colours,
+#   both modes; the grey ground stays an edit-pass option): "yes this is correct"
+#
+# ⛔ IT IS ONE DIAL, AND THE OTHER HALF OF THE CANDIDATE IS MONO'S OWN RADIUS TOKEN. The candidate
+# is console's ruled pair, but mono's export already says `rounding: corners` and mono's
+# `--border-radius-container` resolves 0 in both modes — so the SAME rule that rounds console's
+# image draws mono's square, and there is NO `rounding` supersession here. A `rounding` entry
+# would have been an override that changes nothing, which `_apply_supersessions` refuses by name.
+# The one dial that moves is `capBg: grey -> transparent`.
+#
+# ⛔ AND NOTHING LEAVES THE GRAMMAR. s222-D1 says so in its own words: grey (the s219-D2 (1)
+# light-grey `#F0F0F0` ground), white and transparent all stay edit-pass options. A supersession
+# moves a DEFAULT; the option space lives in `gen_bento_matrix_217` and this module cannot reach
+# it. `selftest` drives mono's reachable set to prove it, and `gen_foundations_217`'s bites `6k` /
+# `6l` assert it where both modules are in scope.
+#
+# ⚠ EXPRESSLY NOT RULED, AND STILL OPEN: whether mono may reach the DARK caption chord
+# (s219-D3's open question / X6's console-only scope). s222-D1 names it in chat as a separate
+# call and leaves it open. Nothing here narrows or answers it.
 SUPERSESSIONS = [
     {
         "type": "gallery", "theme": "console", "dial": "rounding",
@@ -254,12 +286,33 @@ SUPERSESSIONS = [
         "modes": "both — one default, identical in light and dark",
         "dave": "I guess this would be the default for the two modes",
     },
+    {
+        "type": "gallery", "theme": "mono", "dial": "capBg",
+        "was": "grey", "now": "transparent",
+        "ruled_by": "s222-D1",
+        "supersedes": "s220-D2 (3)'s EXPRESSLY OPEN clause · the s219-D1 (3) mono gallery "
+                      "export's grey capBg (the s219-D2 (1) light-grey ground)",
+        "modes": "both — one default, identical in light and dark",
+        "dave": "yes the defaults for mono are fine — and on the reflected firm reading: "
+                "yes this is correct",
+    },
 ]
 
 # (type, theme) pairs a ruling has EXPRESSLY left alone, so an absence can be read as a decision.
-NO_SUPERSESSION = {
-    ("gallery", "mono"): "s220-D2 (3) — mono's gallery default (capBg: grey) is EXPRESSLY OPEN: "
-                         "asked in chat, not ruled. It keeps grey until Dave's word.",
+# ⬛ s222-D1 CLOSED THE ONE ENTRY THIS TABLE CARRIED, and the closure is RECORDED rather than
+# deleted: an open clause that simply vanishes leaves no trace that it was ever open, and the next
+# reader cannot tell a ruling from an oversight ([[header-wins-over-audit]] — add to a ratified
+# record, never trim it).
+NO_SUPERSESSION = {}
+
+# The intersections a ruling once left open and a LATER ruling closed: {(type, theme): why}.
+# ⚠ This is history, not a fence — `_apply_supersessions` does not consult it. It exists so the
+# table above can be empty without the record of s220-D2 (3) going with it.
+NO_SUPERSESSION_CLOSED = {
+    ("gallery", "mono"): "s220-D2 (3) left mono's gallery default (capBg: grey) EXPRESSLY OPEN — "
+                         "asked in chat, not ruled. CLOSED by s222-D1 (#222, 2026-08-28), Dave: "
+                         "\"yes the defaults for mono are fine\" / \"yes this is correct\" — "
+                         "capBg becomes transparent, both modes. Grey stays an edit-pass option.",
 }
 
 # The two modes a default answers for. ⛔ NOT A NEW AXIS: the twelve state blocks carry no mode
@@ -459,17 +512,79 @@ def selftest():
                      "NAMED refusal, never a default" % (MODES,))
     except RoleDefaultsError:
         pass
-    # ⬛ s220-D2 (3) — MONO'S GALLERY DEFAULT IS UNCHANGED, and the absence is asserted as a
-    # DECISION. Three clauses: the live block is byte-identical to the receipt's, no supersession
-    # names mono, and the ground is still `grey`. ⛔ A later lane that moves mono to match console
-    # reds here by name rather than sliding through on the console bite.
-    if DEFAULTS["gallery"]["mono"] != RECEIPT_DEFAULTS["gallery"]["mono"]:
-        fails.append("s220-D2 (3) leaves mono's gallery default EXPRESSLY OPEN — the live block "
-                     "must equal the receipt's, and it does not (%s vs %s)"
-                     % (DEFAULTS["gallery"]["mono"], RECEIPT_DEFAULTS["gallery"]["mono"]))
-    if superseded_dials("gallery", "mono"):
-        fails.append("a supersession names gallery/mono, which s220-D2 (3) leaves OPEN: %s"
-                     % superseded_dials("gallery", "mono"))
+    # ⬛ s222-D1 — MONO'S GALLERY DEFAULT IS TRANSPARENT NOW, AND THE RECEIPT STILL SAYS GREY.
+    # ⛔ THE BITE MOVED WITH THE RULING RATHER THAN BEING LOOSENED. Until #222 this asserted the
+    # opposite — mono's live block byte-equal to the receipt's, no supersession naming mono, the
+    # ground still `grey` — because s220-D2 (3) left it OPEN. Left alone it would have gone RED on
+    # the correct answer and GREEN on a regression, which is worse than no bite
+    # ([[green-tests-cannot-see-scope]]). Five clauses, each a different claim:
+    #   • the shipped mono pair is (corners, transparent) — the square is the RADIUS TOKEN's;
+    #   • the RECEIPT still reads (corners, grey), so the evidence of #219 was not "tidied";
+    #   • exactly ONE dial is superseded, and its retired word is the receipt's;
+    #   • only `capBg` moved inside the intersection — a leak into `edge`/`mode` is not this ruling;
+    #   • ONE default, both modes, driven through the accessor.
+    live_mono = DEFAULTS["gallery"]["mono"]
+    if (live_mono["rounding"], live_mono["capBg"]) != ("corners", "transparent"):
+        fails.append("s222-D1 rules mono's gallery default square image + transparent caption — "
+                     "rounding=corners (mono's --border-radius-container resolves 0, so corners "
+                     "draws square) and capBg=transparent; the live table says rounding=%s, "
+                     "capBg=%s" % (live_mono["rounding"], live_mono["capBg"]))
+    rec_mono = RECEIPT_DEFAULTS["gallery"]["mono"]
+    if (rec_mono["rounding"], rec_mono["capBg"]) != ("corners", "grey"):
+        fails.append("the #219 receipt's mono gallery export no longer reads corners + grey (it "
+                     "reads %s + %s) — the export is FROZEN HISTORY and s222-D1 is applied as a "
+                     "LAYER over it, never as an edit to it"
+                     % (rec_mono["rounding"], rec_mono["capBg"]))
+    if superseded_dials("gallery", "mono") != {"capBg": "grey"}:
+        fails.append("s222-D1 supersedes exactly one mono dial — capBg, retiring `grey`; the "
+                     "layer says %s" % superseded_dials("gallery", "mono"))
+    moved_mono = sorted(d for d in DIALS["gallery"]
+                        if DEFAULTS["gallery"]["mono"][d] != RECEIPT_DEFAULTS["gallery"]["mono"][d])
+    if moved_mono != ["capBg"]:
+        fails.append("s222-D1 moves exactly `capBg` on mono gallery; the layer moved %s"
+                     % moved_mono)
+    if default_for_mode("gallery", "mono", "light") != \
+            default_for_mode("gallery", "mono", "dark"):
+        fails.append("s222-D1 rules ONE mono gallery default for the two modes; "
+                     "default_for_mode returns two different blocks")
+    # ⛔ AND NO OPTION LEFT THE GRAMMAR — the clause s222-D1 spends its own words on. The option
+    # space is `gen_bento_matrix_217`'s, not this module's, so it is DRIVEN rather than asserted
+    # in prose: the retired word must still be a reachable capBg for mono gallery, beside the one
+    # that replaced it. ⚠ A crash here is a NAMED failure, never a silent skip
+    # ([[unmatched-grep-is-not-an-absence]]).
+    try:
+        from gen_bento_matrix_217 import capbg_for as _capbg_for
+        _reach = list(_capbg_for("gallery", "mono"))
+    except Exception as exc:                                  # pragma: no cover - import shape
+        _reach = None
+        fails.append("could not drive gen_bento_matrix_217.capbg_for('gallery','mono') to prove "
+                     "s222-D1 removed no option: %s" % exc)
+    if _reach is not None and not ({"grey", "white", "transparent"} <= set(_reach)):
+        fails.append("s222-D1 removes NO option — grey (the s219-D2 (1) ground), white and "
+                     "transparent must all stay reachable in mono gallery's chord set; the "
+                     "matrix offers %s" % _reach)
+    # ⛔ AND THE `NO_SUPERSESSION` FENCE IS STILL CROSSED, though the table it guards is now empty.
+    # s222-D1 closed its one entry; a fence nobody tries to cross is not a fence
+    # ([[instrument-without-a-consumer]]), so a synthetic entry is pushed through the real
+    # code path and the refusal must name the intersection.
+    _saved = dict(NO_SUPERSESSION)
+    try:
+        NO_SUPERSESSION[("gallery", "console")] = "selftest probe — not a ruling"
+        try:
+            _apply_supersessions(RECEIPT_DEFAULTS)
+            fails.append("_apply_supersessions applied a supersession over an intersection listed "
+                         "in NO_SUPERSESSION — the positive statement of an absence is not a fence "
+                         "if nothing refuses")
+        except RoleDefaultsError:
+            pass
+    finally:
+        NO_SUPERSESSION.clear()
+        NO_SUPERSESSION.update(_saved)
+    # and the closure is RECORDED, not deleted — s220-D2 (3) was open and s222-D1 closed it.
+    if ("gallery", "mono") not in NO_SUPERSESSION_CLOSED:
+        fails.append("the s220-D2 (3) open clause was removed from NO_SUPERSESSION without being "
+                     "recorded in NO_SUPERSESSION_CLOSED — an open clause that simply vanishes "
+                     "leaves no trace that it was ever open")
     # ⬛ THE SUPERSESSION LAYER TOUCHES NOTHING IT DOES NOT NAME. Every other intersection must be
     # the receipt's, unchanged — a default switch that leaked would be exactly the removal
     # s220-D2 (1) rejects, and the leak would be invisible one intersection at a time.
@@ -491,8 +606,15 @@ def selftest():
     if on != ["display/legacy", "gallery/legacy"]:
         fails.append("s219-D2 (4) rules keylines ON only in legacy display and legacy gallery; "
                      "the parse says %s" % on)
-    if DEFAULTS["gallery"]["mono"]["capBg"] != "grey":
-        fails.append("s219-D2 (1) supersedes the mono caption ground to light grey")
+    # ⬛ s219-D2 (1) IS NOW A RECEIPT CLAUSE, AND RE-POINTING IT IS THE HONEST MOVE. It supersedes
+    # the #218 dark rider to light grey, and that is what Dave's #219 export says — which is
+    # exactly the word s222-D1 retires. So the clause is asked of the RECEIPT (frozen history,
+    # where s219-D2 (1) still governs) rather than of the shipped table. Deleting it would have
+    # lost the only assertion that the mono ground the ruling retired was ever `grey`.
+    if RECEIPT_DEFAULTS["gallery"]["mono"]["capBg"] != "grey":
+        fails.append("s219-D2 (1) supersedes the mono caption ground to light grey in the #219 "
+                     "export; the receipt now reads %s"
+                     % RECEIPT_DEFAULTS["gallery"]["mono"]["capBg"])
     # the receipt's own pixel readback for that supersession, so the token behind `grey` stays
     # identifiable from the data rather than from a comment
     if RESOLVED["gallery"]["mono"].get("captionBackground") != "rgb(240, 240, 240)":
@@ -525,6 +647,10 @@ def main():
                  r["ruled_by"], r["modes"], r["supersedes"], r["dave"]))
     for (t, th), why in sorted(NO_SUPERSESSION.items()):
         print("  ⛔ %s/%s EXPRESSLY OPEN — %s" % (t, th, why))
+    if not NO_SUPERSESSION:
+        print("  (no intersection is expressly open)")
+    for (t, th), why in sorted(NO_SUPERSESSION_CLOSED.items()):
+        print("  ✅ %s/%s WAS OPEN, NOW CLOSED — %s" % (t, th, why))
     return 0
 
 

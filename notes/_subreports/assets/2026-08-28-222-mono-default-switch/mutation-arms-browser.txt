@@ -1,0 +1,24 @@
+=== #222 BROWSER mutation arms — both sides patched (generator AND verifier), so the count compares like with like
+
+--- --break-default (gallery/mono capBg -> white) + verify_photography --default-mutation --themes mono
+[BEFORE: mono ruled grey]
+VARM before · verifier sees mono capBg = 'grey'
+  ⬛ SETTINGS CAPTION GROUND — mono/light: dial says `grey` (--surface-subtle), resolved rgb(255, 255, 255)
+  ⬛ SETTINGS CAPTION — mono/light: Dave's export resolved captionBackground rgb(240, 240, 240); the page resolves rgb(255, 255, 255)
+✅ MINTED-DEFAULT ARM RED AS REQUIRED — 2 SETTINGS CAPTION assertion(s) failed by name
+[AFTER: mono ruled transparent]
+VARM after · verifier sees mono capBg = 'transparent'
+  ⬛ SETTINGS CAPTION GROUND — mono/light: dial says `transparent` (transparent), resolved rgb(255, 255, 255)
+  ⬛ SETTINGS CAPTION GROUND — mono/dark: dial says `transparent` (transparent), resolved rgb(31, 31, 31)
+✅ MINTED-DEFAULT ARM RED AS REQUIRED — 2 SETTINGS CAPTION assertion(s) failed by name
+
+--- --break-settings (block STRIPPED) + verify_photography --settings-mutation --themes mono,console
+[BEFORE: mono ruled grey]
+VARM before · verifier sees mono capBg = 'grey'
+  ⬛ SETTINGS CAPTION GROUND — mono/light: dial says `grey` (--surface-subtle), resolved rgba(0, 0, 0, 0)
+  ⬛ SETTINGS CAPTION — mono/light: Dave's export resolved captionBackground rgb(240, 240, 240); the page resolves rgba(0, 0, 0, 0)
+  ⬛ SETTINGS CAPTION GROUND — mono/dark: dial says `grey` (--surface-subtle), resolved rgba(0, 0, 0, 0)
+✅ MUTATION ARM RED AS REQUIRED — 19 SETTINGS assertion(s) failed, by name: SETTINGS CAPTION; SETTINGS CAPTION GROUND; SETTINGS GUTTER; SETTINGS KEYLINES; SETTINGS ROUNDING
+[AFTER: mono ruled transparent]
+VARM after · verifier sees mono capBg = 'transparent'
+✅ MUTATION ARM RED AS REQUIRED — 16 SETTINGS assertion(s) failed, by name: SETTINGS GUTTER; SETTINGS KEYLINES; SETTINGS ROUNDING

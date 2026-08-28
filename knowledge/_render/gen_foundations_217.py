@@ -607,8 +607,14 @@ def settings_css(settings=None):
          "   corner image with transparent capsule\" / \"this would be the default for the",
          "   two modes\". The #219 export keeps its own words in its receipt.",
          "   ⛔ s220-D2 (1) REMOVES NO OPTION — all four caption treatments stay legal in",
-         "   the edit pass, and s220-D2 (3) leaves MONO's grey caption ground EXPRESSLY",
-         "   OPEN. What moved is one DEFAULT, in one theme, on two dials.",
+         "   the edit pass. What moved is one DEFAULT, in one theme, on two dials.",
+         "   ⬛ s222-D1 (#222) THEN CLOSED s220-D2 (3)'s OPEN CLAUSE FOR MONO: its caption",
+         "   ground moves grey -> transparent, both modes — \"yes the defaults for mono",
+         "   are fine\" / \"yes this is correct\". ONE dial; the SQUARE image is mono's own",
+         "   --border-radius-container resolving 0 under the same `corners` rule that",
+         "   rounds console's, not a second override. ⛔ The grey ground (--surface-subtle,",
+         "   #F0F0F0) STAYS an edit-pass option — nothing left the grammar. ⚠ Whether mono",
+         "   may reach the DARK caption chord is s219-D3's question and is STILL OPEN.",
          "   ⚠ Every dial here remains an EDIT-PASS OPTION (s219-D1 (1)/(2)) — what is",
          "   compiled is the DEFAULT the page ships in, not the only reachable state.",
          "   ========================================================================== */"]
@@ -2033,8 +2039,10 @@ def selftest():
          "reached — recorded rather than papered over, because a refusal that names the first "
          "obstacle is not evidence about the binding one "
          "([[refusal-names-the-first-obstacle]]); 6g drives the binding one directly. "
-         "⚠ And the LIVE block is unchanged: the four shipped caption grounds are grey/transparent "
-         "and carry no mint in either mode, so nothing is emitted today and light is untouched",
+         "⚠ And the LIVE block is unchanged: after s222-D1 all four shipped caption grounds are "
+         "`transparent` (mono's `grey` was the last one, and it moved by ruling, not by this arm) "
+         "and none carries a mint in either mode, so nothing is emitted today and light is "
+         "untouched",
          (sorted(t for t in matrix.THEMES if _mf[t] is None),
           sorted(t for t in matrix.THEMES
                  if _mf[t] and "MODE-FLAT" in _mf[t] and "darkgrey" in _mf[t] and t in _mf[t]),
@@ -2043,7 +2051,7 @@ def selftest():
           sorted({t for t in matrix.THEMES for m in ("light", "dark")
                   if matrix.caption_ground_mint(GALLERY_SETTINGS[t]["capBg"], t, m)}),
           sorted({GALLERY_SETTINGS[t]["capBg"] for t in matrix.THEMES})),
-         ([], ["console"], ["legacy", "mono", "supercharge"], [], ["grey", "transparent"]))
+         ([], ["console"], ["legacy", "mono", "supercharge"], [], ["transparent"]))
     # ---- ⬛ s220-D1 · THE BINDING FENCE, DRIVEN PAST THE FIRST OBSTACLE ----------------------
     # ⛔ WHY THIS ARM EXISTS AT ALL. 6f proves the three unscoped themes refuse — but by the WRONG
     # fence. The mint fence for mono/legacy/supercharge is the one that matters the day s219-D3(3)
@@ -2095,26 +2103,95 @@ def selftest():
     # s220-D2 (1) and (3) forbid ([[green-tests-cannot-see-scope]]).
     _live_c = GALLERY_SETTINGS["console"]
     _rec_c = RECEIPT_ROLE_DEFAULTS["gallery"]["console"]
-    bite("6h · ⬛ s220-D2 (2)/(3) — THE CONSOLE GALLERY DEFAULT IS CHORD TWO IN BOTH MODES, THE "
-         "#219 RECEIPT STILL SAYS CAPSULE+GREY, AND MONO IS UNTOUCHED. Dave: \"lets go with "
-         "rounded corner image with transparent capsule\" / \"this would be the default for the "
-         "two modes\". The receipt clause is the one that matters most: a supersession that "
-         "rewrote the export would erase the evidence of what he approved at #219 and no gate "
-         "would fire. And mono's `grey` is EXPRESSLY OPEN (s220-D2 (3)) — asserted as an "
-         "unchanged BLOCK, not just an unchanged dial, so a lane that 'aligns' mono with console "
-         "reds here by name",
+    bite("6h · ⬛ s220-D2 (2) — THE CONSOLE GALLERY DEFAULT IS CHORD TWO IN BOTH MODES AND THE "
+         "#219 RECEIPT STILL SAYS CAPSULE+GREY. Dave: \"lets go with rounded corner image with "
+         "transparent capsule\" / \"this would be the default for the two modes\". The receipt "
+         "clause is the one that matters most: a supersession that rewrote the export would "
+         "erase the evidence of what he approved at #219 and no gate would fire. ⚠ MONO'S OWN "
+         "SWITCH IS BITE 6k — it was asserted here as an UNCHANGED block until s222-D1 closed "
+         "s220-D2 (3)'s open clause, and it moved to its own bite rather than being loosened",
          ((_live_c["rounding"], _live_c["capBg"]),
           (_rec_c["rounding"], _rec_c["capBg"]),
-          GALLERY_SETTINGS["mono"] == RECEIPT_ROLE_DEFAULTS["gallery"]["mono"],
-          defaults219.superseded_dials("gallery", "mono"),
-          GALLERY_SETTINGS["mono"]["capBg"],
           defaults219.default_for_mode("gallery", "console", "light")
           == defaults219.default_for_mode("gallery", "console", "dark"),
           '[data-apollo-theme="console"] %s .px-cap{background:transparent;' % TILE
-          in settings_block,
-          '[data-apollo-theme="mono"] %s .px-cap{background:var(--surface-subtle,#F0F0F0);' % TILE
           in settings_block),
-         (("corners", "transparent"), ("capsule", "grey"), True, {}, "grey", True, True, True))
+         (("corners", "transparent"), ("capsule", "grey"), True, True))
+    # ---- ⬛ #222 · s222-D1 — THE MONO SWITCH, AND WHAT IT MAY NOT TOUCH ----------------------
+    # ⛔ TWO BITES, TWO DIFFERENT CLAIMS, THE SAME SHAPE #220 PROVED. 6k is the switch AND the
+    # receipt it did not rewrite AND the radius token that draws the square; 6l is the option
+    # space the switch may not narrow. ⚠ THE MONO CLAUSES OF 6h WERE RE-POINTED, NOT WIDENED:
+    # until #222 they asserted mono was UNCHANGED because s220-D2 (3) left it EXPRESSLY OPEN.
+    # Left tolerant they would have gone green on a regression, which is worse than no bite
+    # ([[green-tests-cannot-see-scope]]).
+    _live_m = GALLERY_SETTINGS["mono"]
+    _rec_m = RECEIPT_ROLE_DEFAULTS["gallery"]["mono"]
+    _rad = [(matrix.theme_tokens("mono", m).get("--border-radius-container"),
+             matrix.theme_tokens("mono", m).get("--border-radius-default")) for m in ("light",
+                                                                                      "dark")]
+    bite("6k · ⬛ s222-D1 — THE MONO GALLERY DEFAULT IS SQUARE IMAGE + TRANSPARENT CAPTION IN "
+         "BOTH MODES, AND THE #219 RECEIPT STILL SAYS GREY. Dave: \"yes the defaults for mono "
+         "are fine\" / \"yes this is correct\", closing s220-D2 (3)'s expressly-open clause. ⛔ "
+         "ONE DIAL MOVED — `capBg: grey -> transparent`. The SQUARE is not a second override: "
+         "mono ships `rounding: corners` from its own #219 export and its "
+         "`--border-radius-container` resolves through `--border-radius-default` to 0 in BOTH "
+         "modes, so the very rule that rounds console's image draws mono's square. A `rounding` "
+         "supersession would have been an override that changes nothing, which role_defaults_219 "
+         "refuses by name",
+         ((_live_m["rounding"], _live_m["capBg"]),
+          (_rec_m["rounding"], _rec_m["capBg"]),
+          defaults219.superseded_dials("gallery", "mono"),
+          sorted(d for d in _live_m if _live_m[d] != _rec_m[d]),
+          defaults219.default_for_mode("gallery", "mono", "light")
+          == defaults219.default_for_mode("gallery", "mono", "dark"),
+          '[data-apollo-theme="mono"] %s .px-cap{background:transparent;' % TILE
+          in settings_block,
+          '[data-apollo-theme="mono"] %s .px-img{border-radius:'
+          'var(--border-radius-container,0px);' % TILE in settings_block,
+          _rad),
+         (("corners", "transparent"), ("corners", "grey"), {"capBg": "grey"}, ["capBg"], True,
+          True, True,
+          [("var(--border-radius-default)", "0"), ("var(--border-radius-default)", "0")]))
+    # ⛔ 6l — THE CLAUSE s222-D1 SPENDS ITS OWN WORDS ON: "the reachable chord set is UNTOUCHED —
+    # grey, white and transparent all stay edit-pass options". The retired word is the one that
+    # matters: a default switch that quietly took `grey` out of mono's ramp would be the removal
+    # s220-D2 (1) rejected for console, one theme over. So the three grounds are each driven
+    # through the matrix's own legality and reachability functions, and the GREY branch is
+    # COMPILED on a settings table this page no longer ships — a branch no default reaches is a
+    # branch nobody drives ([[instrument-without-a-consumer]]).
+    # ⚠ AND THE DARK CHORD IS ASSERTED STILL-REFUSED, WHICH IS NOT AN ANSWER TO IT. s219-D3's X6
+    # question — whether mono may reach the dark caption ground — is EXPRESSLY still open in
+    # s222-D1. The bite pins the status quo so this lane cannot be read as having granted or
+    # narrowed it ([[dont-launder-a-premise-into-a-ruling]]).
+    _mtreat = [("corners", "grey"), ("corners", "white"), ("corners", "transparent"),
+               ("capsule", "grey")]
+    _mlegal, _mreach = [], []
+    for _rnd, _cb in _mtreat:
+        _st = dict(GALLERY_SETTINGS["mono"])
+        _st.update({"rounding": _rnd, "capBg": _cb})
+        _mlegal.append(matrix.caption_legal(_cb, _st["bentoBg"])
+                       and matrix.capsule_legal(_rnd, _cb, _st["keylines"]))
+        _mreach.append(_cb in matrix.capbg_for("gallery", "mono"))
+    _grey_settings = {t: dict(s) for t, s in GALLERY_SETTINGS.items()}
+    _grey_settings["mono"]["capBg"] = "grey"
+    _grey_block = settings_css(_grey_settings)
+    _dark_st = dict(GALLERY_SETTINGS["mono"])
+    _dark_st.update({"rounding": "capsule", "capBg": "darkgrey"})
+    _dark_ref = matrix.chord_refusals("capsule", "mono", "gallery", _dark_st)
+    bite("6l · ⬛ s222-D1 — NO OPTION WAS REMOVED FROM MONO. grey (the s219-D2 (1) light-grey "
+         "ground the ruling RETIRED as a default), white and transparent are each still LEGAL "
+         "and still REACHABLE in mono gallery, the ramp is unnarrowed, and the grey branch still "
+         "COMPILES its `var(--surface-subtle,#F0F0F0)` declaration on a settings table this page "
+         "no longer ships. ⚠ AND THE DARK CHORD IS STILL REFUSED BY NAME (X6, console-only "
+         "scope) — s219-D3's question is EXPRESSLY still open and this bite pins that, it does "
+         "not answer it",
+         (_mlegal, _mreach, matrix.capbg_for("gallery", "mono"),
+          '[data-apollo-theme="mono"] %s .px-cap{background:var(--surface-subtle,#F0F0F0);' % TILE
+          in _grey_block,
+          "var(--surface-subtle,#F0F0F0)" in settings_block,
+          bool(_dark_ref) and any("X6" in r and "not ruled yet" in r for r in _dark_ref),
+          "darkgrey" in matrix.capbg_for("gallery", "mono")),
+         ([True] * 4, [True] * 4, ["grey", "white", "transparent"], True, False, True, False))
     # ⛔ 6i — THE CLAUSE THE RULING SPENDS MOST OF ITS WORDS ON. s220-D2 (1): "these 4 are all
     # 'legal'" — readings A and B were REJECTED as removals. So the bite drives the four treatments
     # the ruling names, in console gallery, and asserts each is still LEGAL and still REACHABLE;
@@ -2172,17 +2249,23 @@ def selftest():
     # default is corners now" assertion cannot see. The figures are hand-computed off the ruled
     # sets, not read back off the code.
     _cnt = matrix.counts_by_theme()
-    bite("6j · ⬛ s220-D2 (1) — THE OPTION SPACE IS THE SAME SIZE EITHER SIDE OF THE DEFAULT "
-         "SWITCH: gallery 648/648/864/648 (console's extra 216 is the capsule chord's `darkgrey`, "
-         "X6), display 48 and dashboard 288 in all four. A default is not an option, and the "
-         "supersession layer lives in role_defaults_219, which the matrix does not import",
+    bite("6j · ⬛ s220-D2 (1) / s222-D1 — THE OPTION SPACE IS THE SAME SIZE EITHER SIDE OF BOTH "
+         "DEFAULT SWITCHES: gallery 648/648/864/648 (console's extra 216 is the capsule chord's "
+         "`darkgrey`, X6), display 48 and dashboard 288 in all four — INCLUDING mono's 648, "
+         "unmoved by s222-D1. A default is not an option, and the supersession layer lives in "
+         "role_defaults_219, which the matrix does not import",
          ([_cnt[t]["gallery"] for t in matrix.THEMES],
           sorted({_cnt[t]["display"] for t in matrix.THEMES}),
           sorted({_cnt[t]["dashboard"] for t in matrix.THEMES}),
           sorted(d["dial"] for d in defaults219.supersession_rows()),
-          sorted({(d["type"], d["theme"]) for d in defaults219.supersession_rows()})),
+          sorted({(d["type"], d["theme"]) for d in defaults219.supersession_rows()}),
+          sorted((d["theme"], d["dial"], d["ruled_by"])
+                 for d in defaults219.supersession_rows())),
          ([648, 648, 864, 648], [48], [288],
-          ["capBg", "rounding"], [("gallery", "console")]))
+          ["capBg", "capBg", "rounding"],
+          [("gallery", "console"), ("gallery", "mono")],
+          [("console", "capBg", "s220-D2 (2)"), ("console", "rounding", "s220-D2 (2)"),
+           ("mono", "capBg", "s222-D1")]))
     bite("23 · every ruled dial word is a member of gen_bento_matrix_217's OWN option sets "
          "(P2/P3 legality included), for ALL THREE TYPES — s219-D1 (3) ships twelve defaults",
          validate_all(), [])
@@ -2210,18 +2293,25 @@ def selftest():
     #   • the two themes Dave grounded in grey are exactly mono and console.
     _grey = sorted({m for m in re.findall(r'\[data-apollo-theme="([a-z]+)"\][^{}]*\.px-cap\{'
                                           r'background:var\(--surface-subtle', _sb)})
-    # ⬛ s220-D2 (2) MOVED THE FOURTH CLAUSE, AND THE MOVE IS THE POINT. Console's caption ground
-    # was `grey` by his #219 export; his #220 word makes it transparent. MONO IS NOW THE ONLY GREY
-    # CAPTION GROUND ON THIS PAGE — and s220-D2 (3) leaves mono's EXPRESSLY OPEN, so this bite is
-    # also the tripwire for a lane that "aligns" mono with console without a ruling.
-    bite("25 · the mono caption ground is LIGHT GREY by token (s219-D2 (1) supersedes the #218 "
-         "dark rider, which appears nowhere), and after s220-D2 (2) mono is the ONLY theme "
-         "shipping a grey caption ground",
-         (("var(--surface-subtle,#F0F0F0)" in settings_block),
+    # ⬛ s220-D2 (2) MOVED THE FOURTH CLAUSE AND s222-D1 MOVED THE FIRST — TWICE RE-POINTED, NEVER
+    # WIDENED. Console's caption ground was `grey` by his #219 export; his #220 word made it
+    # transparent, leaving mono the only grey ground on the page. His #222 word moves mono too, so
+    # NO THEME ships a grey caption ground now. ⛔ The clause is asked of the GREY-SETTINGS BUILD
+    # (`_grey_block`, bite 6l) rather than deleted: the token identification — `grey` is
+    # `--surface-subtle`, `#F0F0F0` in mono — is the thing s219-D2 (1) ruled and it is still true
+    # of the option; what changed is that no DEFAULT selects it. A bite that just dropped the
+    # clause would stop watching the ground the edit pass can still choose.
+    bite("25 · the caption ground the `grey` dial names is still the TOKEN s219-D2 (1) ruled — "
+         "`var(--surface-subtle,#F0F0F0)` when mono is dialled to grey (the #218 dark rider "
+         "appears nowhere, in either build), and after s222-D1 NO theme SHIPS a grey caption "
+         "ground: all four defaults are transparent",
+         (("var(--surface-subtle,#F0F0F0)" in _grey_block),
           ("--surface-digital-black" in settings_block or "--text-reverse" in settings_block),
+          ("--surface-digital-black" in _grey_block or "--text-reverse" in _grey_block),
           ("var(--text-secondary,#545454)" in settings_block),
-          _grey),
-         (True, False, True, ["mono"]))
+          _grey,
+          sorted({GALLERY_SETTINGS[t]["capBg"] for t in matrix.THEMES})),
+         (True, False, False, True, [], ["transparent"]))
     # ⬛ AND THE PIXEL DAVE ACTUALLY APPROVED. The dial word is checked against his own receipt's
     # resolved readback, so the token identification cannot quietly drift off the colour he saw.
     bite("25b · the mono caption token is the one his export RESOLVED — rgb(240, 240, 240)",
@@ -2475,8 +2565,11 @@ def write_default_mutant(arm=("gallery", "mono", "capBg", "white")):
     """⬛ #219 — THE MINTED-DEFAULT ARM, and it is a SHARPER question than `--break-settings`.
 
     That arm removes the whole block, which proves the block is load-bearing. This one ships the
-    block INTACT with ONE MINTED DEFAULT WRONG — mono's caption ground moved off `grey`
-    (`--surface-subtle`, the s219-D2 (1) supersession) onto `white`. Every other declaration is
+    block INTACT with ONE MINTED DEFAULT WRONG — mono's caption ground moved off the ruled word
+    onto `white`. ⚠ THE RULED WORD MOVED UNDER THE ARM AND THE PROSE FOLLOWED IT: until #222 that
+    was `grey` (`--surface-subtle`, the s219-D2 (1) supersession); s222-D1 makes it `transparent`,
+    so the arm now mutates transparent -> white. The arm itself is unchanged and still arms — its
+    own guard refuses a mutation that changes nothing. Every other declaration is
     byte-identical, the page still validates, and the only thing that can catch it is a probe that
     asks whether the CAPTION GROUND IS THE TOKEN THE RULED DIAL NAMES. A settings assertion that
     survives this is measuring "a settings block exists", not "the ruled default reached the
