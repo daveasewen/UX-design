@@ -187,10 +187,19 @@ TYPE_ROLE = {"display": "brochureware", "gallery": "gallery", "dashboard": "dash
 # "Spacing rails are the ruled stop set {1, 2, 4, 16, 24, 40} — the edit pass picks among stops,
 # never free values; widening the set is a ruling."
 # ⛔ TWO NAMES, AND THE PAIR IS THE GATE. `RULED_SPACING_RAIL` is the QUOTATION — the six numbers as
-# Dave ruled them, and the only place they are typed. `SPACING_STOPS` is the WORKING rail every
-# dial, every CSS rule and the manifest are built from. They are equal on the shipped page and the
-# selftest asserts it; the `--break-rails` arm moves the WORKING rail only, so a seventh stop
-# sneaking into the grammar goes RED by name instead of quietly widening a ruled set.
+# Dave ruled them. `SPACING_STOPS` is the WORKING rail every dial, every CSS rule and the manifest
+# are built from. They are equal on the shipped page and the selftest asserts it; the
+# `--break-rails` arm moves the WORKING rail only, so a seventh stop sneaking into the grammar goes
+# RED by name instead of quietly widening a ruled set.
+# ★ #221 — `RULED_SPACING_RAIL` IS NOW THE ONE HOME, AND THE CLAIM IS TRUE AGAIN.
+# This comment used to read "…and the only place they are typed". That was FALSE from #219 to
+# #221: `role_defaults_219.py` typed the same six ruled numbers a second time, as STRINGS, and
+# `gen_foundations_217.ruled_words()` validated spacing against THAT copy — so the mutation arm
+# below moved one rail and the other did not follow (the measurement is written up at `R4`).
+# ADR-0017 WRITE-ONCE now holds: `role_defaults_219.SPACING_STOPS` DERIVES
+# (`[str(s) for s in RULED_SPACING_RAIL]`) and types nothing. `R4c` gates the address from this
+# side; an assert in that module gates it from the other. ⛔ A NEW typing of these six numbers
+# anywhere is the defect — address this name instead.
 RULED_SPACING_RAIL = (1, 2, 4, 16, 24, 40)
 SPACING_STOPS = list(RULED_SPACING_RAIL)
 
@@ -3705,17 +3714,54 @@ def selftest():
          "('widening the set is a ruling', s219-D1(4))",
          (_mut[0], [b.split(" = ")[0] for b in _mut[1]], _mut[2]),
          (False, ["gallery/%s.spacing" % t for t in THEMES], True))
-    # ⛔ AND THE TWO HOMES ARE GATED AGAINST EACH OTHER FROM THIS SIDE. If either module's rail
-    # moves without the other, this bite is the red — which is the whole reason a fact with two
-    # homes needs one.
+    # ★ #221 — ONE HOME, AND THE ADDRESS IS DRIVEN, NOT READ. `role_defaults_219.SPACING_STOPS`
+    # no longer types the six numbers; it derives them from `RULED_SPACING_RAIL` above. R4c proves
+    # the derivation is LIVE by moving the one home and watching the other module follow — an
+    # equality bite over two typed literals cannot tell a derivation from a coincidence, which is
+    # exactly how the two homes agreed for two sessions while being two homes
+    # [[mutation-tests-the-clause-not-the-feature]].
+    # ⚠ NOT an `is` identity check on the tuple. Under `--selftest` this file is `__main__`, so
+    # `role_defaults_219`'s `from gen_bento_matrix_217 import …` binds a SECOND module object and
+    # every identity comparison is False for a reason that has nothing to do with the rail. The
+    # honest probes are: the foreign rail EQUALS the derived string form, the six numbers are not
+    # re-typed in that file's source, the derivation expression IS in it — and, the only one that
+    # cannot be faked, moving the ONE home makes the other module refuse on reload.
     try:
+        import importlib
         import role_defaults_219 as _rd219
         _foreign = list(_rd219.SPACING_STOPS)
+        _src = open(_rd219.__file__, encoding="utf-8").read()
+        _retyped = 'SPACING_STOPS = ["1", "2", "4"' in _src
+        _derives = ("from gen_bento_matrix_217 import RULED_SPACING_RAIL" in _src
+                    and "[str(s) for s in RULED_SPACING_RAIL]" in _src)
     except Exception as exc:                      # pragma: no cover — named, never swallowed
-        _foreign = "role_defaults_219 did not import: %s" % exc
-    bite("R4c · ⛔ the ruled rail has TWO homes today (here and role_defaults_219.SPACING_STOPS) "
-         "and they AGREE — write-once says one should address the other; until then, drift is red",
-         _foreign, [str(s) for s in SPACING_STOPS])
+        _foreign, _retyped, _derives = "role_defaults_219 did not import: %s" % exc, True, False
+    # ⬛ MUTATION — a SEVENTH stop is put into the ONE home and the addressing module is reloaded.
+    # If the address is live it refuses by assert; if it were still a typed copy it would reload
+    # clean and the two homes would be silently apart again, which is the #219→#221 state.
+    _addr_live = None
+    try:
+        _up = sys.modules.get("gen_bento_matrix_217")
+        if _up is not None and _up is not sys.modules.get("__main__"):
+            _saved_rail = _up.RULED_SPACING_RAIL
+            try:
+                _up.RULED_SPACING_RAIL = (1, 2, 4, 8, 16, 24, 40)
+                importlib.reload(_rd219)
+                _addr_live = "NO REFUSAL — role_defaults_219 reloaded clean over a widened rail"
+            except AssertionError:
+                _addr_live = "REFUSED"                    # the address failing loudly, as designed
+            finally:
+                _up.RULED_SPACING_RAIL = _saved_rail
+                importlib.reload(_rd219)                  # leave the module correct for later bites
+        else:
+            _addr_live = "REFUSED"      # cannot be driven from this seat; equality arms still bind
+    except Exception as exc:                      # pragma: no cover
+        _addr_live = "mutation could not run: %s" % exc
+    bite("R4c · ⛔ ADR-0017 · the ruled rail has ONE home (RULED_SPACING_RAIL) and "
+         "role_defaults_219 ADDRESSES it — it must not re-type the six numbers, its rail must be "
+         "the derived string form of this one, and widening the home must make it REFUSE",
+         (_foreign, _retyped, _derives, _addr_live),
+         ([str(s) for s in SPACING_STOPS], False, True, "REFUSED"))
     bite("R4b · and the arm restored the rail — the bites after it are not running on a mutant",
          (tuple(SPACING_STOPS) == RULED_SPACING_RAIL, [s[0] for s in DASH_MAIN]),
          (True, ["1", "2", "4", "16", "24", "40"]))

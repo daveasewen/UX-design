@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Run the Apollo pack's gates and report three verdicts: pass, FAIL, COULD-NOT-ASK.
 
-This is the runner the CI template calls. You can also run it by hand:
+This is the runner the CI template calls. You can also run it by hand, from the pack root:
 
-    python3 apollo-pack/ci-template/run-gates.py
-    python3 apollo-pack/ci-template/run-gates.py --browser   # the playwright ones
-    python3 apollo-pack/ci-template/run-gates.py --list
+    python3 ci-template/run-gates.py
+    python3 ci-template/run-gates.py --browser   # the playwright ones
+    python3 ci-template/run-gates.py --list
 
 WHICH GATES RUN. The pack ships `_MANIFEST.json`, and every gate in it carries a verdict that
 was MEASURED by running it outside the design system's own repo:
@@ -28,12 +28,53 @@ your repo where a reviewer can see it, and a gate that starts passing should be 
 import argparse
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
 
 COULD_NOT_ASK = 77
 MARKER = "COULD-NOT-ASK:"
+
+# ---------------------------------------------------------------- what a green actually graded
+# ⛔ #221 (from #220's L4 audit, finding F11). `ci-template/README.md` promised a designer:
+# "A green that graded nothing is not the same as a green that graded something, and the runner
+# prints the difference." It did not. Every one of the 35 gates printed an identical bare `pass`,
+# including the ones that grade YOUR work and have nothing to look at on day one — the runner
+# captured each gate's output and threw it away. A documented consumer for a signal nobody
+# emitted: [[instrument-without-a-consumer]], inverted.
+#
+# The runner does not compute a population. It cannot — only the gate knows what it globbed.
+# What it does now is REPORT the gate's own closing line, and read a population out of it using
+# the declared patterns below. When nothing parses, it says `population not stated` — never
+# zero, never silence. A measuring tool must not guess.
+#
+# VERDICT WORDS ARE NOT POPULATIONS. `0 failure(s)` is a result; `0 tranche file(s)` is a
+# population. Counting the first as the second would report every clean gate as having graded
+# nothing, which is the same lie in the other direction.
+NOT_A_POPULATION = ("fail", "failure", "error", "warning", "note", "violation", "signal",
+                    "exception", "leak", "hex", "unknown", "hole", "miss", "defect", "red")
+POP_RE = re.compile(r"(\d[\d,]*)\s+([a-z][a-z\- ]{0,24}?)\(s\)")
+# Gates that say it in words instead of digits. Matched as a phrase, not inferred from a zero.
+EMPTY_PHRASES = ("no tranche files found", "nothing to grade", "population of zero",
+                 "no files to grade")
+
+
+def population_of(output):
+    """(figure, unit, closing_line) read out of a gate's OWN output. figure is None when the
+    gate did not state one — which is a reading, not a zero."""
+    lines = [l.strip() for l in (output or "").splitlines() if l.strip()]
+    last = lines[-1] if lines else ""
+    low = last.lower()
+    for phrase in EMPTY_PHRASES:
+        if phrase in low:
+            return 0, "file", last
+    for m in POP_RE.finditer(last):
+        unit = m.group(2).strip().rstrip("-").split()[-1] if m.group(2).strip() else ""
+        if unit.lower() in NOT_A_POPULATION:
+            continue
+        return int(m.group(1).replace(",", "")), m.group(2).strip() or "item", last
+    return None, None, last
 
 
 def find_pack(start):
@@ -148,11 +189,23 @@ def main():
 
     cwd = os.getcwd()
     passed, failed, refused = [], [], []
+    graded_nothing, unstated = [], []
     for name, path, argv in gates:
         rc, out = run_one(path, cwd, pack, a.timeout, argv)
         if rc == 0:
             passed.append(name)
-            print("  pass          %s" % name)
+            n, unit, last = population_of(out)
+            if n == 0:
+                graded_nothing.append(name)
+                note = "graded NOTHING — 0 %s(s)" % (unit or "file")
+            elif n is None:
+                unstated.append(name)
+                note = "population not stated"
+            else:
+                note = "graded %s %s(s)" % ("{:,}".format(n), unit)
+            print("  pass          %-38s %s" % (name, note))
+            if last:
+                print("                %s" % last[:150])
         elif rc == COULD_NOT_ASK:
             reason = next((l.strip() for l in out.splitlines() if MARKER in l), MARKER)
             refused.append((name, reason))
@@ -176,6 +229,17 @@ def main():
     new_fail = [(nm, tail) for nm, tail in failed if nm not in known_red]
     old_fail = [nm for nm, _ in failed if nm in known_red]
     print("\n%d pass · %d FAIL · %d could-not-ask" % (len(passed), len(failed), len(refused)))
+    # THE DIFFERENCE THE README PROMISES. Printed even when it is zero-of-zero, because
+    # "no gate graded nothing" is itself the reading a designer wants on the day they check.
+    if graded_nothing:
+        print("  ⚠ %d of those green(s) graded a population of ZERO — they have nothing to look "
+              "at yet, which is not the same as finding nothing wrong: %s"
+              % (len(graded_nothing), ", ".join(graded_nothing)))
+    else:
+        print("  (no green graded a population of zero)")
+    if unstated:
+        print("  (%d green(s) did not state a population; the runner does not invent one: %s)"
+              % (len(unstated), ", ".join(unstated)))
     if old_fail:
         print("  (%d of those failures are in the baseline and do not fail the build: %s)"
               % (len(old_fail), ", ".join(old_fail)))

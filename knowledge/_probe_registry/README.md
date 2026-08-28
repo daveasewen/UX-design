@@ -56,10 +56,30 @@ Skip it deliberately with `--skip-env sandbox-render`; the skip is printed, neve
 - **Environment split (#173):** P-1/P-2/P-4/P-5/P-7/P-8 are pure python and run anywhere python
   does. P-3 and P-6 are `sandbox-render` and are **UNPROVEN IN CI** — `s204-D1` item 5 owns the
   CI pixel leg.
-- **P-7 and P-8 are NOT green on the current tree, and that is deliberate** (#210). They were
-  registered ADVISORY with their live findings standing and **nothing repaired** — P-7 6 findings
-  + 3 WARN, P-8 58 findings in 9 files. Repair, and promotion of either to a blocking gate, is
-  **Dave's**.
+- **⛔ NO FINDINGS COUNT IS TYPED IN THIS FILE, AND THAT IS THE #221 REPAIR.** Until #221 this
+  bullet read *"P-7 and P-8 are NOT green on the current tree, and that is deliberate (#210) …
+  P-7 6 findings + 3 WARN, P-8 58 findings in 9 files."* **Both probes were repaired at #211**
+  — P-7 at `knowledge/snippets/Layout-utilities.reference.html:244`, P-8 at its generator cause
+  (`knowledge/gen_token_ramp.py:28`, *"HTML COMMENTS ARE NOT CSS, AND THIS GENERATOR NOW KNOWS
+  THAT"*) — and **nobody told the registry**. Driven on the default globs at #220 and again at
+  #221 both read `findings=0`, so this file asserted **64 standing findings that do not exist**,
+  for nine sessions. Anyone briefing off it carried a false premise.
+  That is exactly the class **P-5** exists to catch — a stale carried figure — sitting in P-5's
+  own registry, outside P-5's population. [[conclusions-are-debt-s129-d5]]
+  **The fix is not a corrected number, it is no number.** A findings count is a property of a
+  MOMENT, so its ONE home is a probe RUN and this document carries the ADDRESS (ADR-0017):
+
+  ```
+  python3 knowledge/_probe_registry/_registry.py --run --survey    # every probe, rc=0 always
+  python3 knowledge/_probe_registry/_registry.py --run --probe P-7 # one probe, rc=1 on findings
+  ```
+
+  The last reading taken that way — **#221, 2026-08-27**, quoted from the runner's own summary,
+  not retyped from a report — was `P-1 0 · P-2 0 · P-4 52 · P-5 0 · P-7 0 · P-8 0`, with **P-3
+  and P-6 COULD-NOT-ASK** (playwright not importable in that sandbox; a refusal, not a pass).
+  ⚠ Read that as a DATED RECEIPT, never as the current state: if you need today's number, run
+  the command. Repair of any standing finding, and promotion of any probe to a blocking gate,
+  remains **Dave's**.
 
 ## Adding a probe
 

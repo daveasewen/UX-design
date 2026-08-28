@@ -907,14 +907,17 @@ CSS = """
 .fx{
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--surface-raised,#FFFFFF);
-  --surface-2: var(--surface-subtle,#F3F3F3);
+  --surface-2: var(--surface-subtle,#F0F0F0);   /* #221: was #F3F3F3 */
   --line:      var(--border-subtle,#D7D8D6);
   --line-2:    var(--border-strong,#808080);   /* s220-D1: was #767676 — a value canon resolves in
                                                   no theme and no mode. See gen_bento_matrix_217
                                                   bite 12's fallback-drift arm. */
   --ink:       var(--text-default,#1A1A1A);
   --ink-2:     var(--text-secondary,#545454);
-  --focus:     var(--focus-ring,#1A1A1A);
+  --focus:     var(--focus-ring,#305A85);      /* #221: was #1A1A1A — a BLACK focus ring where the
+                                                  ruled ring is blue, in 8 of 8 theme x mode. The
+                                                  s220-D1 repair five lines above swept its own
+                                                  line and not this block. */
   --focus-w:   var(--focus-ring-width,2px);
   --radius:    var(--border-radius-surface,0px);
   --radius-ctl:var(--border-radius-control,0px);
@@ -2334,11 +2337,30 @@ def selftest():
     # so no red and no green can be authored here — the two-red law (s151-D1) and the mono
     # error-ink camp (s149-D1) are settled law about UI ink and are simply not reached.
     hexes = sorted({c.upper() for c in re.findall(r"#[0-9A-Fa-f]{6}", rules)})
-    chromatic = [c for c in hexes
-                 if max(int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16))
-                 - min(int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16)) > 8]
-    bite("18 · every authored colour is a neutral — no red, no green, the two-red law unreached",
-         (chromatic, "#000000" in hexes), ([], False))
+
+    def _spread(c):
+        ch = (int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16))
+        return max(ch) - min(ch)
+
+    # ★ #221 — THE s220-D1 SPLIT, SWEPT HERE. s220-D1 separated AUTHORED chrome hexes from var()
+    # FALLBACK literals in `gen_bento_matrix_217` bite 12, and the split made the gate STRICTER:
+    # a fallback is legal only if canon itself resolves that exact token to that exact value in
+    # some theme x mode. That upgrade was made in ONE generator and never swept — the same
+    # [[gate-glob-scope-rule]] miss as the fallbacks it was built to catch, one layer up. Unsplit,
+    # this bite read the RULED focus ring `#305A85` as an authored chromatic colour and went red
+    # on the #221 repair that put the ruled ring back. It now asks the two questions apart:
+    #   (a) AUTHORED  — a bare literal this file typed. Still zero chromatic. Unchanged.
+    #   (b) FALLBACK  — governed by canon, and by `_gate_fallback_drift_221.py` across all five
+    #                   sibling generators (ADVISORY). Named here, never silently exempted.
+    _bare_src = re.sub(r"var\(\s*--[a-z0-9-]+\s*,\s*#[0-9A-Fa-f]{6}\s*\)", "var(--x)", rules)
+    authored = sorted({c.upper() for c in re.findall(r"#[0-9A-Fa-f]{6}", _bare_src)})
+    chromatic = [c for c in authored if _spread(c) > 8]
+    fb_chromatic = sorted({(t, h.upper()) for t, h in re.findall(
+        r"var\(\s*(--[a-z0-9-]+)\s*,\s*(#[0-9A-Fa-f]{6})\s*\)", rules) if _spread(h) > 8})
+    bite("18 · every AUTHORED colour is a neutral — no red, no green, the two-red law unreached; "
+         "and the only chromatic var() FALLBACK is the RULED focus ring, which canon answers",
+         (chromatic, "#000000" in hexes, fb_chromatic),
+         ([], False, [("--focus-ring", "#305A85")]))
     bite("19 · every measured logo row reached the inventory table",
          all(r["file"] in logos for r in rows["logos"]), True)
     # --- s217-D3: the role re-point, and the half of the ruling it must NOT have taken ---------

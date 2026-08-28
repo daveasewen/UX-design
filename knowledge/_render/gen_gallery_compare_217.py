@@ -247,12 +247,12 @@ CSS_HEAD = """
 .gc{
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--tertiary-background-default,#FFFFFF);
-  --surface-2: var(--tertiary-background-hover,#F3F3F3);
+  --surface-2: var(--tertiary-background-hover,#F0F0F0);   /* #221: was #F3F3F3 */
   --line:      var(--border-subtle,#D7D8D6);
-  --line-2:    var(--border-strong,#767676);
+  --line-2:    var(--border-strong,#808080);               /* #221: was #767676 */
   --ink:       var(--text-default,#1A1A1A);
   --ink-2:     var(--text-secondary,#545454);
-  --focus:     var(--focus-ring,#1A1A1A);
+  --focus:     var(--focus-ring,#305A85);                  /* #221: was #1A1A1A */
   --focus-w:   var(--focus-ring-width,2px);
   --radius-ctl:var(--border-radius-control,0px);
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
@@ -291,10 +291,10 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
 .sublabel::before{content:''; width:20px; height:1px; background:var(--line);}
 .gc a{color:inherit;}
 .gc code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px;
-  background:var(--surface-2,#F3F3F3); padding:0 .3em;}
+  background:var(--surface-2,#F0F0F0); padding:0 .3em;}
 .note{margin:var(--sp-3) 0 0; color:var(--ink-2); max-width:74ch;}
 .note b{color:var(--ink);}
-.badge{display:inline-block; border:1px solid var(--line-2,#767676); color:var(--ink,#1A1A1A);
+.badge{display:inline-block; border:1px solid var(--line-2,#808080); color:var(--ink,#1A1A1A);
   padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 var(--sp-3);}
 .gc-tag{display:inline-block; border:1px solid var(--ink,#1A1A1A); color:var(--page,#FFFFFF);
   background:var(--ink,#1A1A1A); padding:2px 10px; letter-spacing:0.12em;
@@ -317,7 +317,7 @@ table.gc-diff td:first-child{color:var(--ink); width:22%;}
 __MONOCAP__
 __RECUT__
 .gc-img{display:block; width:100%; height:100%; min-height:0;
-  background:var(--surface-2,#F3F3F3);}
+  background:var(--surface-2,#F0F0F0);}
 
 /* ---- CANDIDATE A · tile chrome only. NO GRID, NO GAP, NO SPAN, NO ROLE RULE. ------------- */
 .gc-atile{margin:0; display:grid; grid-template-rows:1fr auto;

@@ -29,19 +29,34 @@ it stops being today. Nothing in between gets promoted by accident.
 
 ## Before you start
 
-You need Python 3 and VS Code with GitHub Copilot. Nothing else — no install, no account,
-no API key.
+You need Python 3, VS Code with GitHub Copilot, and **one Python package**. No account and no
+API key.
+
+    pip install tiktoken
+
+That is required, not optional. Step 4 of this session regenerates the chain — the file that
+makes tomorrow's "good morning" work — and the generator that writes it **refuses to write
+anything at all** unless it can count tokens with the real encoder. It will not guess and then
+label the guess; a measuring tool that estimates silently is the thing this whole system exists
+to prevent. Without `tiktoken`, Step 4c fails and your first session does not survive the night.
+
+`tiktoken` fetches its encoding file once, from `openaipublic.blob.core.windows.net`. On a locked
+-down corporate laptop that host may be blocked — worth knowing now rather than at Step 4.
 
 Open **this pack's folder** as your VS Code workspace (File → Open Folder → the unzipped
-`Apollo-Spider-v1.0.0` directory). Copilot reads `.github/copilot-instructions.md` from a
+`Apollo-Spider-v1.0.1` directory). Copilot reads `.github/copilot-instructions.md` from a
 workspace automatically, and that file is what tells it how to behave here.
 
-Quick check that everything landed:
+Quick check that everything landed — **both lines, before you start**:
 
     python3 memento-package/_state.py
+    python3 -c "import tiktoken; print('tiktoken OK —', len(tiktoken.get_encoding('cl100k_base').encode('the quick brown fox')), 'tokens')"
 
-You should see a row of zeroes. That is your empty worklist reporting in — it is meant to be
-empty, and the fact that it answers at all is the check.
+The first should print a row of zeroes. That is your empty worklist reporting in — it is meant to
+be empty, and the fact that it answers at all is the check. The second should print
+`tiktoken OK — 4 tokens`. It proves three things in one line: the package is installed, the
+encoding file downloaded, and the host was reachable. If it does not print that, fix it here.
+Everything else in this session works without it; only the last step does not.
 
 ---
 
@@ -206,10 +221,20 @@ between them are entirely yours.
 
 > **1. The next thing to pick up** — one line each, the open work in priority order. `W-01`.
 
+> **TITLE THE NEXT CHAT →** `#2 — the error-state page`
+
 # §A — standing
 
 Things that are true about this project generally, rather than about today.
 ```
+
+⚠ **Keep the `TITLE THE NEXT CHAT` line, and keep its number one ahead of `★ LATEST`.** The
+generator lifts it to the very top of the chain, so tomorrow's session is told what to call
+itself before it reads anything else — the chat half of the ritual is the half no gate can
+check, which is why the line goes first. Get the numbers out of step (say `#5` when `★ LATEST`
+is `#1`) and the generator refuses rather than publishing a wrong one: that is the *skipped
+wrap* it is watching for. Leave the line out and `--selftest` reports two bites unmeasured,
+which is honest but less useful than having it.
 
 `memento-package/_LIVE-STATE.md` — what changed today:
 
@@ -253,9 +278,12 @@ design system's own record and mentions decisions, sessions and file paths that 
 project, not to yours. Your session's words are the part between the `★ LATEST` and `⏱` markers
 — that is the bit that is about you. The wrapper is scenery for now.
 
-**Optional:** `pip install tiktoken` makes the chain's size figures accurate. Without it the
-generator falls back to an estimate and says so in its own output — which is the honest
-behaviour, not a fault. Nothing else depends on it.
+⚠ **This is the step that needs `tiktoken`** (§ Before you start). If it is missing, the
+generator prints a MEASUREMENT REFUSAL, exits 1 and — deliberately — **writes nothing**: every
+size figure it would bake into the file would have been measured on the wrong instrument, and a
+file full of confidently wrong numbers is worse than no file. There is no estimate fallback. If
+you see that refusal, run `pip install tiktoken`, re-run the two checks in § Before you start,
+then come back here. Nothing you did in Steps 1–3 is lost.
 
 ---
 

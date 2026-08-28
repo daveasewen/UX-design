@@ -1,4 +1,6 @@
-provenance: promoted #66 from `notes/2026-07-31-what-memento-is-onepager-v1.md` · 2026-08-01
+provenance: promoted #66 from a 2026-07-31 one-pager in the source repo's `notes/` · 2026-08-01
+(that note is not shipped — session notes are deliberately not in the pack; this file IS the
+promoted version of it, so there is nothing further to open)
 status: PASSED — Dave's voice pass #66, as-is, no edits ("its good as is, i like it")
 
 # What Memento is

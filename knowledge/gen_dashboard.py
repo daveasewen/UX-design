@@ -215,6 +215,17 @@ def untracked_inputs(gates, repo=ROOT):
     `git` itself cannot be asked, that is returned as its own named entry rather than silently
     yielding an empty list, which would read as "all inputs are committed"
     [[measuring-tool-must-not-guess]].
+
+    ★ #221 — A BARE BASENAME IS A NAME, NOT A ROOT-RELATIVE PATH.
+    `git ls-files -- _inscribe_ruling.py`, asked from the repo root, answers *"is that file
+    tracked AT THE ROOT"* — and it is not; it lives at `knowledge/_inscribe_ruling.py`. Gates
+    name their siblings by bare name as a matter of course (`_governs.py --selftest`'s remedy
+    sentence is the live instance), so the exact-path question classified a **tracked** file as
+    untracked, `mismatch_verdict()` refused on every single run where the page differed, and its
+    FAIL branch became UNREACHABLE — a BLOCKING build step that could not accuse its own
+    artefact [[instrument-without-a-consumer]]. The clause the refusal is FOR is unchanged: a
+    token carrying a slash still asks the exact-path question; a bare token is asked *"is a file
+    of this NAME tracked anywhere in the tree?"* and is only reported when the answer is no.
     """
     cand = {}
     for g in gates or []:
@@ -225,8 +236,10 @@ def untracked_inputs(gates, repo=ROOT):
                 cand.setdefault(m, g["name"])
     if not cand:
         return []
+    pathspec = sorted(cand)
+    pathspec += ["*/" + t for t in sorted(cand) if "/" not in t]     # bare token, tracked ANYWHERE
     try:
-        p = subprocess.run(["git", "ls-files", "--"] + sorted(cand), cwd=repo,
+        p = subprocess.run(["git", "ls-files", "--"] + pathspec, cwd=repo,
                            capture_output=True, text=True, timeout=30)
         if p.returncode != 0:
             return [("git", "REFUSED: `git ls-files` exited %d (%s) — which inputs are committed "
@@ -234,7 +247,10 @@ def untracked_inputs(gates, repo=ROOT):
         tracked = set(p.stdout.split("\n"))
     except Exception as exc:                                   # a crash is not a fail
         return [("git", "REFUSED, NAMED: %s — which inputs are committed is UNKNOWN here" % exc)]
-    return sorted((gate, path) for path, gate in cand.items() if path not in tracked)
+    names = set(os.path.basename(t) for t in tracked if t)
+    def _missing(path):
+        return path not in tracked if "/" in path else path not in names
+    return sorted((gate, path) for path, gate in cand.items() if _missing(path))
 
 
 def mismatch_verdict(gates):
@@ -300,6 +316,25 @@ def refusal_selftest(arm):
         out[:200])
     arm("the refusal does NOT accuse the page of being out of sync",
         "OUT OF SYNC" not in out, out[:200])
+    # ★ DIRECTION 3 (#221) — THE BARE BASENAME, both ways. This is the arm that keeps the FAIL
+    # branch reachable: `_governs.py --selftest` names `_inscribe_ruling.py` by bare name on
+    # every run, and while that read as untracked the gate could return 0 or 77 and never 1.
+    sibling = [{"name": "provenance", "lines": [
+        "remedy: inscribe it with `_inscribe_ruling.py` — never by hand"]}]
+    import io as _io1
+    import contextlib as _ctx1
+    with _ctx1.redirect_stdout(_io1.StringIO()):
+        bare_rc = mismatch_verdict(sibling)
+    arm("a BARE BASENAME that is tracked somewhere in the tree is NOT an untracked input",
+        untracked_inputs(sibling) == [], repr(untracked_inputs(sibling)))
+    arm("…so a mismatch whose only named token is a tracked sibling FAILS (1), never refuses (77)",
+        bare_rc == 1, "got %r — the FAIL branch is unreachable again" % (bare_rc,))
+    ghost_bare = "__no_such_sibling_2026__.py"
+    bare_absent = [{"name": "provenance", "lines": [
+        "FAIL _governs: run `%s` first" % ghost_bare]}]
+    arm("…and a bare basename tracked NOWHERE is still detected, so the refusal keeps its clause",
+        untracked_inputs(bare_absent) == [("provenance", ghost_bare)],
+        repr(untracked_inputs(bare_absent)))
 
 
 # ---------------------------------------------------------------------------

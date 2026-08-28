@@ -94,7 +94,12 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 2. **Read the contract.** `knowledge/components/<slug>.meta.json` — variants, states,
    antiPatterns, relationships.
 3. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. Root
-   element gets `class="canon"` plus the two theme attributes. Drop each component in as
+   element (or `<body>`) gets `class="canon"` plus **one** theme attribute:
+   `data-theme="light"` or `data-theme="dark"`. That is the whole contract — it is what
+   `canon.css` actually selects on, and it is what
+   `knowledge/_RUNBOOK-compose-from-canon.md` § Compose a screen says. (`data-mode` is a
+   component-level attribute, not a theme one: in `canon.css` it appears only inside
+   `.cn-template-auth`, swapping a light/dark logo mark. Do not put it on the root.) Drop each component in as
    its scope class + the snippet's own markup — `<div class="cn-button"><button class="btn
    primary">…</button></div>`. Use the `.c-*` layout utilities. **Your own `<style>` is
    harness only**: no hex, no redefining a `.c-*` or `.cn-*` class. If you're redefining a

@@ -283,11 +283,30 @@ is what tells you whether what you just minted still passes.
 Review files, session notes, run logs, client project work, and the licensed material we cannot
 redistribute. \`_MANIFEST.json\` lists every exclusion with its reason.
 
-## Gates that need something installed
+## What you need installed
 
-A few gates drive a real browser and need \`playwright\`. They are included and they name their
-own dependency when you run them without it — see \`_MANIFEST.json\` for which ones.
+\`pip install tiktoken\` — **required**, and the only one. \`FIRST-SESSION.md\` § Before you start
+says why: the chain generator counts tokens with the real encoder and REFUSES to write the file
+at all on an estimate, so the first wrap fails without it. It fetches its encoding file once from
+\`openaipublic.blob.core.windows.net\`.
+
+A few gates additionally drive a real browser and need \`playwright\`. They are included, they are
+not in the default run, and they name their own dependency when you run them without it — a
+\`COULD-NOT-ASK:\` line and exit 77, which does not fail the build. See \`_MANIFEST.json\` for
+which ones.
 MD
+
+  # ---- ADVISORY: read the staged pack in the DESIGNER'S grammar (#221, from #220-L4) --------
+  # This is the only moment the pack exists as a tree and can still be fixed without a re-cut.
+  # Six of L4's nineteen findings were one defect — a shipped document naming a path or command
+  # that is not in the pack it ships in — and no gate in the fleet reads a document the way the
+  # person holding it will [[no-gate-parses-the-artefact]].
+  # ⬛ ADVISORY, BY CONSTRUCTION: the gate returns 0 whatever it finds, and `|| true` is
+  # deliberately NOT used, so a rc=2 REFUSAL (bad arguments, unreadable stage) still stops the
+  # bake under `set -e`. Advisory means "its findings do not block"; it does not mean "ignore
+  # the instrument when it cannot run". Promotion to blocking is Dave's word.
+  echo "reading the staged pack as a designer would (ADVISORY)…"
+  python3 "$ROOT/knowledge/_release/_gate_pack_docs.py" --stage "$STAGE"
 
   echo "zipping (deterministic: fixed mtimes from the commit, sorted order)…"
   python3 "$GEN" --zip "$STAGE" --out "$ZIP" --commit "$COMMIT"

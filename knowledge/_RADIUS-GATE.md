@@ -5,4 +5,13 @@
 
 ## ✅ STRICT surfaces clean (canon + 81 migrated snippet(s))
 
+## ⬛ DECLARED ADVISORY — physical corner longhands (4)
+
+*#221 widened this gate's grammar; these declarations were invisible to it until now and are reported, not enforced. Whether a corner-square spelt as `border-top-left-radius:0` beside token-valued siblings is legal is a **RULING** (it decides whether canon changes or the rule does) and is ⬛ DAVE'S. They do NOT move this gate's exit code.*
+
+- `canon/canon.css` → `border-top-left-radius:0`
+- `canon/canon.css` → `border-bottom-left-radius:0`
+- `snippets/Split-button.reference.html` → `border-top-left-radius:0`
+- `snippets/Split-button.reference.html` → `border-bottom-left-radius:0`
+
 ## ✅ no advisory hardcodes remain

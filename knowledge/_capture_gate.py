@@ -4231,6 +4231,344 @@ def governing_records_join_check(repo):
     return warns, notes
 
 
+# ★★ THE REGEN-SERIAL COMPLETENESS CHECK (#221) — ADVISORY AT BIRTH.
+#
+# THE CLASS: the regen serial set is ORDERED, and a wave that regenerates a SUBSET of it commits
+# artefacts that disagree with the generators standing beside them. #210 paid ~6 CI reds for
+# exactly that. The remedy has been carried as PROSE in every divvy brief since — "run the WHOLE
+# serial per wave, ramp first, index last" — and by #221 THREE separate conductors had restated it
+# by hand in three briefs. A rule that must be re-typed by every conductor is a rule with no
+# instrument [[gate-dont-patch]]; this is the instrument.
+#
+# ⛔ WHAT IT CAN AND CANNOT SEE, SAID BEFORE IT SPEAKS [[feedback-measuring-tool-must-not-guess]].
+# git records WHICH ARTEFACTS CHANGED. It does not record WHICH SCRIPTS RAN, so "ramp first, index
+# last" is only half observable from this seat, and the halves are reported separately rather than
+# blended into one confident verdict [[measure-dont-convert-units]]:
+#   • MEMBERSHIP is observable, and it is the half that actually cost the CI reds: the wave changed
+#     artefacts owned by serial members i…j and left a member INSIDE that span untouched.
+#   • ORDER is observable ONLY while the wave is still UNCOMMITTED, because only then were the
+#     artefacts' mtimes written by this machine in this session. Once committed, mtime is checkout
+#     noise, and this arm DECLARES ITSELF UNOBSERVABLE rather than grade on rubbish (#173: a gate
+#     that cannot pass in one environment is a defect — one that SAYS SO is not).
+#
+# ★ NOTHING BELOW IS TYPED, and that is the whole design. The serial's ORDER is PARSED out of
+# `_build_all.py::STEPS`, which is its one home (ADR-0017 WRITE-ONCE — this ADDRESSES that home,
+# it never copies it), and an artefact's OWNER is read from the artefact's own generation banner.
+# ⛔ Parsed with `ast`, never imported: executing `_build_all.py` to learn its own step order would
+# put the build's module-level code on the wrap path, and a measuring instrument must not be able
+# to start a build [[instrument-without-a-consumer]] in reverse.
+# ⚠ A provenance claim is believed ONLY when the script it names is ITSELF a serial member. Prose
+# that merely says the word "generated" proves nothing [[unmatched-grep-is-not-an-absence]], and
+# `_REVIEW-SIGNOFF.md` really does carry the sentence "generated review inherits them".
+#
+# ⛔ ADVISORY AT BIRTH. The tier lives at REGEN_SERIAL_BLOCKING and promotion is DAVE'S WORD, not
+# an agent's. It warns rather than gates because its population is derived from hand-written
+# banners, and a first red would land on a conductor mid-wrap.
+REGEN_SERIAL_BLOCKING = False
+# The serial's terminal member, named by the standing ritual ("`_build_memento_index.py` LAST",
+# `_RUNBOOK-capture-ritual.md` step 2g). ⚠ ADDRESSED, not invented: this is the ONE member the
+# `index last` half of the rule speaks about, and the termination arm asks about no other.
+REGEN_SERIAL_INDEX = "_build_memento_index.py"
+# The generation banner. A line must BOTH carry one of these markers AND name a serial member.
+_REGEN_MARK_RE = re.compile(r"[Gg]enerated|GENERATED|[Rr]egenerated?\s+by|AUTO-GENERATED|DO NOT EDIT")
+_REGEN_PY_RE = re.compile(r"\b([A-Za-z0-9_][A-Za-z0-9_./-]*\.py)\b")
+# Provenance lives in a header. Never read a multi-megabyte artefact whole to find it.
+_REGEN_SCAN_BYTES = 8192
+_REGEN_EXTS = (".md", ".html", ".css", ".json", ".svg")
+
+
+def _regen_serial_positions(repo):
+    """`{script basename: FIRST position in _build_all.py::STEPS}`, PARSED not executed.
+
+    Returns (positions, error). `error` is a LOUD, NAMED string — never an empty dict wearing a
+    green's clothes [[a-crash-is-not-a-fail]].
+    """
+    path = os.path.join(repo, "knowledge", "_build_all.py")
+    if not os.path.exists(path):
+        return None, "no `knowledge/_build_all.py` under this tree"
+    try:
+        with open(path, encoding="utf-8") as f:
+            tree = ast.parse(f.read(), filename=path)
+    except (OSError, SyntaxError, ValueError) as e:                   # noqa: BLE001
+        return None, f"{type(e).__name__}: {e}"
+    node = None
+    for stmt in tree.body:
+        if isinstance(stmt, ast.Assign) and any(
+                isinstance(t, ast.Name) and t.id == "STEPS" for t in stmt.targets):
+            node = stmt.value
+            break
+    if not isinstance(node, (ast.List, ast.Tuple)):
+        return None, "`STEPS` is not a module-level list/tuple in `_build_all.py`"
+    positions = {}
+    for i, el in enumerate(node.elts):
+        if isinstance(el, (ast.Tuple, ast.List)) and len(el.elts) >= 2:
+            s = el.elts[1]
+            if isinstance(s, ast.Constant) and isinstance(s.value, str):
+                positions.setdefault(os.path.basename(s.value), i)
+    if not positions:
+        return None, "`STEPS` parsed but named no scripts"
+    return positions, None
+
+
+def _regen_owner(abs_path, positions):
+    """The serial script that CLAIMS `abs_path` in its own generation banner, or None."""
+    try:
+        with open(abs_path, encoding="utf-8", errors="replace") as f:
+            head = f.read(_REGEN_SCAN_BYTES)
+    except OSError:
+        return None
+    for ln in head.splitlines():
+        if not _REGEN_MARK_RE.search(ln):
+            continue
+        for m in _REGEN_PY_RE.finditer(ln):
+            name = os.path.basename(m.group(1))
+            if name in positions:
+                return name
+    return None
+
+
+def _regen_owned_map(repo, positions):
+    """`{serial script: [tracked artefacts it claims]}` across the whole tracked tree.
+
+    This is the population the MEMBERSHIP arm needs: without it the check could say which members
+    a wave HIT but never which it SKIPPED, and a gate that cannot name the omission is the #210
+    lesson restated rather than enforced.
+    """
+    out = _git_out(repo, "ls-files")
+    if out is None:
+        return None
+    owned = {}
+    for rel in out.splitlines():
+        rel = rel.strip()
+        if not rel.endswith(_REGEN_EXTS):
+            continue
+        owner = _regen_owner(os.path.join(repo, rel), positions)
+        if owner:
+            owned.setdefault(owner, []).append(rel)
+    return owned
+
+
+def regen_serial_check(repo, sha=None):
+    """Did this wave run the WHOLE ordered serial, or a subset? Returns (warns, notes). ADVISORY."""
+    warns, notes = [], []
+    positions, err = _regen_serial_positions(repo)
+    if positions is None:
+        return warns, [f"REGEN SERIAL SKIPPED — the serial's own home is unreadable ({err}). "
+                       f"NOT a pass: the ordered set was never read, so nothing was compared."]
+    if sha is None:
+        wrap = _last_wrap_commit(repo)
+        if wrap is None:
+            return warns, [f"REGEN SERIAL SKIPPED — no `after #<n>` wrap commit is visible under "
+                           f"{repo}, so the wave has no start point. NOT a pass."]
+        sha = wrap[0]
+    changed = _changed_since(repo, sha, ".")
+    if changed is None:
+        return ([f"REGEN SERIAL DID NOT RUN — git could not name the set changed since "
+                 f"`{sha[:7]}`. This is UNKNOWN, not a clean wave."], notes)
+    # ⚡ The ownership map is a whole-tree header sweep (~1,400 files, ~8 s). It is only needed
+    # once the wave is KNOWN to contain a serial artefact, so ask the cheap question first: are
+    # any of THESE changed paths claimed? Most wraps regenerate nothing and stop on the next line.
+    changed_set = set(changed)
+    if not any(_regen_owner(os.path.join(repo, rel), positions) for rel in changed
+               if rel.endswith(_REGEN_EXTS)):
+        return warns, [f"REGEN SERIAL: {len(changed)} path(s) changed since `{sha[:7]}`, none of "
+                       f"them an artefact claimed by a serial member — no regen wave in evidence, "
+                       f"so there is no serial to complete."]
+    owned = _regen_owned_map(repo, positions)
+    if owned is None:
+        return ([f"REGEN SERIAL DID NOT RUN — `git ls-files` could not answer under {repo}, so "
+                 f"the artefact-ownership map is UNKNOWN, not empty."], notes)
+
+    hit = sorted({s for s, arts in owned.items() if changed_set.intersection(arts)},
+                 key=lambda s: positions[s])
+    if not hit:
+        return warns, [f"REGEN SERIAL: {len(changed)} path(s) changed since `{sha[:7]}` include a "
+                       f"claimed artefact, but none is TRACKED under a serial member's ownership "
+                       f"(a new, uncommitted artefact). Nothing to complete; NOT a full pass."]
+
+    lo, hi = positions[hit[0]], positions[hit[-1]]
+    skipped = sorted((s for s, arts in owned.items()
+                      if lo < positions[s] < hi and not changed_set.intersection(arts)),
+                     key=lambda s: positions[s])
+    span = (f"`{hit[0]}` (step {lo}) … `{hit[-1]}` (step {hi})" if len(hit) > 1
+            else f"`{hit[0]}` (step {lo}) alone")
+
+    # ---- ARM 1, MEMBERSHIP: a hole inside the span is the #210 shape exactly.
+    if skipped:
+        warns.append(
+            f"REGEN SERIAL (advisory): this wave regenerated {span}, but "
+            f"{len(skipped)} serial member(s) INSIDE that span were NOT re-run — "
+            + " · ".join(f"`{s}` (step {positions[s]})" for s in skipped[:6])
+            + (f" (+{len(skipped) - 6} more)" if len(skipped) > 6 else "")
+            + ". The regen serial set is ORDERED and is run WHOLE per wave, ramp first, index "
+              "last — #210 paid ~6 CI reds for exactly this subset. Re-run the skipped members "
+              "in step order, or say in the wrap record why this wave legitimately stops short.")
+
+    # ---- ARM 2, TERMINATION. ⛔ NARROW ON PURPOSE. The obvious generalisation — "the highest
+    # -positioned member that owns an artefact must always be in the wave" — is WIDER THAN THE
+    # RULE, and a gate may only be as wide as the rule it enforces [[gate-glob-scope-rule]]. The
+    # standing discipline names ONE terminal member, the memento index (`_RUNBOOK-capture-ritual`
+    # step 2g: "`_build_memento_index.py` LAST"), because that is the step whose output must
+    # describe the tree every other step just rewrote. So this arm asks about THAT member and
+    # nothing else, and declares itself inapplicable rather than guessing a terminal.
+    if REGEN_SERIAL_INDEX not in owned:
+        notes.append(f"REGEN SERIAL — TERMINATION ARM INAPPLICABLE (declared): `"
+                     f"{REGEN_SERIAL_INDEX}` claims no tracked artefact in this tree, so "
+                     f"`index last` cannot be observed here. NOT a pass.")
+    elif positions.get(REGEN_SERIAL_INDEX, -1) > hi:
+        warns.append(
+            f"REGEN SERIAL (advisory): this wave regenerated {span} but did NOT re-run "
+            f"`{REGEN_SERIAL_INDEX}` (step {positions[REGEN_SERIAL_INDEX]}), which the capture "
+            f"ritual runs LAST (step 2g) precisely so the corpus describes the tree the earlier "
+            f"steps just rewrote. Run it last, or say in the wrap record why this wave does not.")
+
+    # ---- ARM 3, ORDER: only honest while the wave is uncommitted. Otherwise DECLARE the blindness.
+    dirty_out = _git_out(repo, "diff", "--name-only")
+    dirty = {p.strip() for p in (dirty_out or "").splitlines() if p.strip()}
+    stamps = []
+    for s in hit:
+        arts = [a for a in owned[s] if a in changed_set]
+        if not all(a in dirty for a in arts):
+            stamps = None
+            break
+        try:
+            stamps.append((positions[s], s, max(os.path.getmtime(os.path.join(repo, a))
+                                                for a in arts)))
+        except OSError:
+            stamps = None
+            break
+    if stamps is None or len(stamps) < 2:
+        notes.append("REGEN SERIAL — ORDER ARM UNOBSERVABLE (declared, not passed): mtimes only "
+                     "testify while the wave is still uncommitted in this working tree. Part of "
+                     "this wave is already committed, so run order cannot be read from this seat "
+                     "and is NOT being graded [[a-crash-is-not-a-fail]].")
+    else:
+        inversions = [(a, b) for (_pa, a, ma), (_pb, b, mb) in zip(stamps, stamps[1:])
+                      if ma > mb]
+        if inversions:
+            warns.append(
+                "REGEN SERIAL (advisory): the serial ran OUT OF ORDER — "
+                + " · ".join(f"`{a}` was regenerated AFTER `{b}`, which follows it in `STEPS`"
+                             for a, b in inversions[:4])
+                + ". Ramp first, index last: a later member built against an earlier member's "
+                  "stale output is the #210 red wearing a full-serial disguise.")
+        else:
+            notes.append(f"REGEN SERIAL: order arm OBSERVABLE (wave uncommitted) and CLEAN — "
+                         f"{len(stamps)} member(s) regenerated in `STEPS` order.")
+
+    if not warns:
+        notes.append(f"REGEN SERIAL: wave since `{sha[:7]}` regenerated {span}; no member inside "
+                     f"the span was skipped and the terminal member is accounted for "
+                     f"({len(owned)} of {len(positions)} serial members own tracked artefacts). "
+                     f"ADVISORY at birth; promotion to blocking is Dave's.")
+    return warns, notes
+
+
+# ★★ THE SHARED-HELPER SINGLE-IMPLEMENTATION COMPARER (#221) — ADVISORY AT BIRTH.
+#
+# THE CLASS: `mask_comments` was written TWICE, once in each of two generators, with no gate
+# comparing them (W-92 residual). #211 fixed the INSTANCE properly — `_htmlmask.py` is now the one
+# implementation and both generators import it — and each consumer carries a bite asserting
+# `mask_comments.__module__ == "_htmlmask"`.
+#
+# ⛔ WHAT THOSE TWO BITES CANNOT SEE, WHICH IS WHY THIS EXISTS. They are asserted BY THE TWO KNOWN
+# CONSUMERS, about themselves. A THIRD file that writes its own `def mask_comments` tomorrow is
+# invisible to both: neither bite runs in it, and nothing in the tree counts the implementations.
+# That is the duplicate-home defect re-opening by addition rather than by edit — the shape
+# ADR-0017 (WRITE-ONCE) exists to forbid, and the shape a per-consumer assertion structurally
+# cannot catch [[green-tests-cannot-see-scope]].
+# ⇒ This is the COMPARER: it counts implementations across the whole tracked tree and names every
+# consumer that reaches the helper by any route other than the one home.
+#
+# ⚠ PARSED IN THE CONSUMER'S GRAMMAR, never grepped [[no-gate-parses-the-artefact]]: `ast`, so a
+# `def mask_comments` inside a docstring, a comment or a string literal cannot fake a duplicate,
+# and a real one cannot hide behind odd whitespace. A file this checkout cannot parse is reported
+# as UNREADABLE, never counted as clean [[a-crash-is-not-a-fail]].
+#
+# ⛔ ADVISORY AT BIRTH. Tier lives at SHARED_HELPER_BLOCKING; promotion is DAVE'S WORD.
+# ⛔ AND IT COMPARES ONLY — it never rewrites a generator. Consolidating a real second
+# implementation is a refactor with a ruling attached, and this gate's job is to make the
+# duplicate impossible to carry SILENTLY, not to pick the survivor.
+SHARED_HELPER_BLOCKING = False
+# helper name → the ONE module that may define it (basename of its home).
+SHARED_HELPERS = {"mask_comments": "_htmlmask.py"}
+
+
+def shared_helper_dedup_check(repo):
+    """One implementation per shared helper, tree-wide. Returns (warns, notes). ADVISORY."""
+    warns, notes = [], []
+    out = _git_out(repo, "ls-files", "*.py")
+    if out is None:
+        return ([f"SHARED HELPER: the dedup comparer DID NOT RUN — `git ls-files` could not "
+                 f"answer under {repo}. UNKNOWN, not a single implementation."], notes)
+    files = [p.strip() for p in out.splitlines() if p.strip().endswith(".py")]
+    if not files:
+        return warns, [f"SHARED HELPER dedup SKIPPED — no tracked `.py` under {repo}. NOT a pass."]
+    defs, importers, callers, unreadable = {}, {}, {}, []
+    for rel in files:
+        try:
+            with open(os.path.join(repo, rel), encoding="utf-8") as f:
+                tree = ast.parse(f.read(), filename=rel)
+        except (OSError, SyntaxError, ValueError, UnicodeDecodeError) as e:   # noqa: BLE001
+            unreadable.append(f"`{rel}` ({type(e).__name__})")
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in SHARED_HELPERS:
+                defs.setdefault(node.name, []).append(rel)
+            elif isinstance(node, ast.ImportFrom):
+                for a in node.names:
+                    if a.name in SHARED_HELPERS:
+                        importers.setdefault(a.name, {})[rel] = node.module or ""
+            elif isinstance(node, ast.Name) and node.id in SHARED_HELPERS:
+                callers.setdefault(node.id, set()).add(rel)
+    if unreadable:
+        warns.append(f"SHARED HELPER (advisory): {len(unreadable)} tracked `.py` file(s) could "
+                     f"NOT be parsed, so they were NOT searched for a duplicate implementation — "
+                     + " · ".join(unreadable[:4])
+                     + ". UNKNOWN is never counted as clean.")
+    for helper, home in sorted(SHARED_HELPERS.items()):
+        homes = sorted(defs.get(helper, []))
+        legal = [p for p in homes if os.path.basename(p) == home]
+        strays = [p for p in homes if os.path.basename(p) != home]
+        if not homes:
+            warns.append(f"SHARED HELPER (advisory): `{helper}()` is DECLARED to live in `{home}` "
+                         f"but NOTHING in the tracked tree defines it. Either the home moved and "
+                         f"SHARED_HELPERS is stale, or the helper is gone and its consumers are "
+                         f"broken — an unmatched search is not an absence.")
+            continue
+        if strays:
+            warns.append(
+                f"SHARED HELPER (advisory): `{helper}()` has {len(homes)} implementations and may "
+                f"have ONE — its home is `{home}`, and it is ALSO defined in "
+                + " · ".join(f"`{p}`" for p in strays[:5])
+                + (f" (+{len(strays) - 5} more)" if len(strays) > 5 else "")
+                + ". This is the W-92 duplicate-home defect re-opening BY ADDITION (ADR-0017 "
+                  "WRITE-ONCE). ⛔ Which implementation survives is a REFACTOR WITH A RULING "
+                  "ATTACHED — this gate names the duplicate, it does not pick the winner.")
+        elif not legal:
+            warns.append(f"SHARED HELPER (advisory): `{helper}()` is defined only in "
+                         + " · ".join(f"`{p}`" for p in homes)
+                         + f", never in its declared home `{home}`.")
+        for rel, module in sorted(importers.get(helper, {}).items()):
+            if module and os.path.basename(home)[:-3] not in module.split("."):
+                warns.append(f"SHARED HELPER (advisory): `{rel}` imports `{helper}` from "
+                             f"`{module}`, not from `{home[:-3]}` — a second route to a shared "
+                             f"helper is a second implementation waiting to happen.")
+        blind = sorted(callers.get(helper, set()) - set(importers.get(helper, {})) - set(homes))
+        if blind:
+            notes.append(f"SHARED HELPER: {len(blind)} file(s) name `{helper}` without a direct "
+                         f"`from {home[:-3]} import` — "
+                         + " · ".join(f"`{p}`" for p in blind[:4])
+                         + ". Re-exported or locally aliased; NOT flagged, but named so a reader "
+                           "can check the route rather than assume it.")
+        if not strays and legal:
+            notes.append(f"SHARED HELPER: `{helper}()` has exactly ONE implementation "
+                         f"(`{legal[0]}`) and {len(importers.get(helper, {}))} importer(s) across "
+                         f"{len(files)} tracked `.py` file(s). ADVISORY at birth; promotion to "
+                         f"blocking is Dave's.")
+    return warns, notes
+
+
 # ------------------------------------------- ★ #218 — FILED SUB-REPORTS, THE CITATION CHECK
 # `s218-D7`: every sub writes its full report to `notes/_subreports/` and returns a STUB. The
 # stub is the ONLY thing the conductor sees in chat, which imports one specific failure mode —
@@ -4263,8 +4601,30 @@ SUBREPORT_RECEIPTS = os.path.join("notes", "_receipts")
 # template writes them, per [[gate-must-quote-what-it-forbids]] — and parsed rather than
 # eyeballed because the stub's figures are COPIED from these lines: an unparseable COUNTS line
 # means the stub's numbers came from somewhere else [[no-gate-parses-the-artefact]].
+# ⛔ #221 — THE GATE AND ITS OWN TEMPLATE DISAGREED, AND THE TEMPLATE IS THE INSTRUCTION.
+# `_TEMPLATE.md:45` prescribes ``COUNTS: findings `<N>` · ruling-shaped `<N>` · UNPROVEN `<N>` ``
+# — BACKTICKED, because that is how this project writes a figure. The pattern demanded BARE
+# digits, so a sub that followed the skeleton exactly produced a line this gate called
+# unparseable. MEASURED at #221 across `notes/_subreports/`: **37 of 44** filed reports carrying a
+# COUNTS line failed the parse, the #220 audit reports among them — i.e. the check had been
+# reporting "no parseable COUNTS line" about reports whose COUNTS line was CORRECT.
+# ⇒ Fixed on the GATE, not on 37 reports: where a queue and its canon disagree, the defect is the
+# side that is not the instruction [[feedback-survey-before-build]]. The figure may now wear the
+# repo's ordinary decoration (backticks and/or bold) and nothing else is loosened — the three
+# fields, their order and their separator are still the specification, and a malformed line still
+# fails (driven both ways in `selftest_subreport_citation`).
+# ⚠ AND THE SECOND HALF, MEASURED THE SAME WAY: many lanes carry the three required fields IN
+# ORDER and then keep going (`… · UNPROVEN 5 · new gates 19 · selftest bites 4`). The three
+# figures the stub copies are all present and parseable, so the trailing continuation is not a
+# defect — anchoring hard at `$` was. Widening for it takes the parse from 13/44 to 24/44.
+# ⛔ AND NO FURTHER, DELIBERATELY. A third form exists (`COUNTS: 14 findings · 3 ruling-shaped`,
+# the figure BEFORE the noun, 3 more reports) and it is NOT accepted here: that is a change to the
+# CONTRACT's vocabulary, not to its decoration, and "do not loosen it blind" is the #218 lesson on
+# this very check. It is filed as a ruling-shaped question instead [[feedback-dont-launder-a-premise-into-a-ruling]].
+_CNT = r"[`*]{0,3}(\d+)[`*]{0,3}"
 SUBREPORT_COUNTS_RE = re.compile(
-    r"^COUNTS:\s*findings\s+(\d+)\s*·\s*ruling-shaped\s+(\d+)\s*·\s*UNPROVEN\s+(\d+)\s*$", re.M)
+    r"^\s*[`*]{0,2}COUNTS:[`*]{0,2}\s*findings\s+" + _CNT + r"\s*·\s*ruling-shaped\s+" + _CNT
+    + r"\s*·\s*UNPROVEN\s+" + _CNT + r"(?:\s*[·`*].*)?$", re.M)
 SUBREPORT_REPLAY_RE = re.compile(r"^REPLAY-THESE:\s*(\S.*)$", re.M)
 SUBREPORT_QUESTIONS_RE = re.compile(r"^#{1,6}\s*RULING-SHAPED QUESTIONS\s*$", re.M)
 WRAP_COMMIT_SUBJECT_RE = re.compile(r"^after\s+#\d+\b")
@@ -4467,6 +4827,17 @@ def wrap_checks(repo, today, lane=False):
     _jw, _jn = governing_records_join_check(repo)
     warns += _jw
     notes += _jn
+    # ★ #221 — the regen-serial completeness check (#210's ~6 CI reds, restated by hand in three
+    # conductors' briefs). ADVISORY AT BIRTH: it appends to WARNS, never to FAILS. ⛔ The tier
+    # lives at REGEN_SERIAL_BLOCKING and promotion to blocking is DAVE'S WORD, not an agent's.
+    _rw, _rn = regen_serial_check(repo)
+    (fails if REGEN_SERIAL_BLOCKING else warns).extend(_rw)
+    notes += _rn
+    # ★ #221 — the shared-helper single-implementation comparer (W-92's residual, the half the two
+    # per-consumer bites structurally cannot see). ADVISORY AT BIRTH; tier at SHARED_HELPER_BLOCKING.
+    _hw, _hn = shared_helper_dedup_check(repo)
+    (fails if SHARED_HELPER_BLOCKING else warns).extend(_hw)
+    notes += _hn
     # ★ #218 `s218-D7` — the filed-sub-report citation check. Runs for LANE wraps too, on purpose:
     # a lane delegates subs like any other session, and its receipt is its record. ADVISORY AT
     # BIRTH — the tier lives at SUBREPORT_CITE_BLOCKING and promotion is DAVE'S WORD.
@@ -4797,8 +5168,14 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse
     if not fails and not warns:
         lines.append("✅ Green — all scoped surfaces carry provenance + status.")
     if report:
-        with open(report, "w", encoding="utf-8") as f:
-            f.write("\n".join(lines) + "\n")
+        veto = selftest_write_veto(report)
+        if veto:
+            # ⛔ LOUD AND NAMED, never a silent skip: the caller asked for a write and did not get
+            # one, and a wrap that believes it wrote its report is worse than one that failed.
+            sys.stderr.write(veto + "\n")
+        else:
+            with open(report, "w", encoding="utf-8") as f:
+                f.write("\n".join(lines) + "\n")
 
     if rehearse:
         # TERSE BY DESIGN — the window pays for every printed line; the whole point of the
@@ -7150,11 +7527,17 @@ def selftest():
     # ⚠ And the suppression is not silent. `selftest_real_tier_reachable()` unsuppresses for one
     # probe and PRINTS the tier it observed, so a run always says which instrument it reached.
     # [[instrument-without-a-consumer]] — a switch nothing reports on is a switch nobody audits.
+    # ★ #221 — arm the selftest write-door veto for the whole run (see selftest_write_veto).
+    # Set here rather than inside `_selftest_body` so that EVERY arm, including any added later,
+    # is covered by construction and not by an author's memory.
+    global _SELFTEST_ACTIVE
+    _SELFTEST_ACTIVE = True
     _real_saved = os.environ.get("CAPTURE_GATE_NO_REAL")
     os.environ["CAPTURE_GATE_NO_REAL"] = "1"
     try:
         return _selftest_body()
     finally:
+        _SELFTEST_ACTIVE = False
         if _real_saved is None:
             os.environ.pop("CAPTURE_GATE_NO_REAL", None)
         else:
@@ -7500,6 +7883,268 @@ def selftest_boot_delta_parse():
     return failures
 
 
+def selftest_regen_serial():
+    """★ #221 — THE REGEN-SERIAL COMPLETENESS CHECK, DRIVEN IN BOTH DIRECTIONS.
+
+    Every arm runs the REAL `regen_serial_check` against a REAL git repo whose `_build_all.py`
+    carries a REAL `STEPS` list — the parse is half of what is being tested, so a hand-built dict
+    would grade the wrong thing [[mutation-tests-the-clause-not-the-feature]]. The #210 shape (a
+    wave that skips a member INSIDE its own span) is planted and then REMOVED, so the arm is shown
+    red AND green rather than only red.
+    """
+    failures = []
+    steps_src = (
+        "STEPS = [\n"
+        "    ('ramp', 'gen_ramp_fixture.py'),\n"
+        "    ('middle', 'gen_middle_fixture.py'),\n"
+        "    ('later', 'gen_later_fixture.py'),\n"
+        "    ('index', '_build_memento_index.py'),\n"
+        "]\n")
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"regen-serial: git unavailable in this checkout ({e})")
+            return failures
+
+        def put(rel, body):
+            p = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(body)
+            return p
+
+        def art(script, n=1):
+            return f"# fixture\n*Generated 2026-08-27 by `{script}`.*\n{'x' * n}\n"
+
+        put("knowledge/_build_all.py", steps_src)
+        put("knowledge/_RAMP.md", art("gen_ramp_fixture.py"))
+        put("knowledge/_MIDDLE.md", art("gen_middle_fixture.py"))
+        put("knowledge/_LATER.md", art("gen_later_fixture.py"))
+        put("knowledge/_INDEX.md", art("_build_memento_index.py"))
+        put("notes/plain.md", "no banner here, nothing claims this file\n")
+        subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+        subprocess.run(git + ["commit", "-qm", "fixture base"], capture_output=True, timeout=30)
+        sha = (_git_out(td, "rev-parse", "HEAD") or "").strip()
+        if not sha:
+            SELFTEST_REFUSALS.append("regen-serial: the fixture repo took no commit")
+            return failures
+
+        # ---- ARM 0, THE SERIAL PARSE ITSELF: order is READ from STEPS, never assumed.
+        pos, err = _regen_serial_positions(td)
+        if err or not pos or pos.get("gen_ramp_fixture.py") != 0 \
+                or pos.get("_build_memento_index.py") != 3:
+            failures.append(f"regen-serial: `STEPS` did not parse into positions — err={err} "
+                            f"pos={pos}. Every arm below reads order from this parse.")
+            return failures
+
+        # ---- GREEN CONTROL (attribute-the-diff): a wave touching nothing owned says so, quietly.
+        put("notes/plain.md", "edited, still claimed by nobody\n")
+        w_, n_ = regen_serial_check(td, sha=sha)
+        if w_ or not any("no regen wave in evidence" in x for x in n_):
+            failures.append(f"regen-serial CONTROL: a wave with no serial artefact in it did not "
+                            f"read as 'no regen wave' — warns={w_[:1]} notes={n_[:1]}. Every red "
+                            f"below would be unattributable.")
+
+        # ---- ARM 1, THE #210 SHAPE: ramp + later + index re-run, the MIDDLE member skipped.
+        for rel, script in (("knowledge/_RAMP.md", "gen_ramp_fixture.py"),
+                            ("knowledge/_LATER.md", "gen_later_fixture.py"),
+                            ("knowledge/_INDEX.md", "_build_memento_index.py")):
+            put(rel, art(script, 2))
+        w_, _n = regen_serial_check(td, sha=sha)
+        if not any("NOT re-run" in x and "gen_middle_fixture.py" in x for x in w_):
+            failures.append(f"regen-serial: a wave that SKIPPED `gen_middle_fixture.py` inside its "
+                            f"own span passed — this is the #210 subset defect exactly, and the "
+                            f"check is blind to it: {w_}")
+
+        # ---- ARM 2 (mutation control): re-run the skipped member; the warn must CLEAR.
+        put("knowledge/_MIDDLE.md", art("gen_middle_fixture.py", 2))
+        w_, _n = regen_serial_check(td, sha=sha)
+        if any("NOT re-run" in x for x in w_):
+            failures.append(f"regen-serial: the membership warn did NOT clear when the whole "
+                            f"serial was run — the check fires on everything and so proves "
+                            f"nothing: {w_}")
+
+        # ---- ARM 3, `index last`: the index left behind must be named, and named SPECIFICALLY.
+        subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+        subprocess.run(git + ["commit", "-qm", "full serial"], capture_output=True, timeout=30)
+        sha2 = (_git_out(td, "rev-parse", "HEAD") or "").strip()
+        put("knowledge/_RAMP.md", art("gen_ramp_fixture.py", 3))
+        put("knowledge/_MIDDLE.md", art("gen_middle_fixture.py", 3))
+        w_, _n = regen_serial_check(td, sha=sha2)
+        if not any("_build_memento_index.py" in x and "did NOT re-run" in x for x in w_):
+            failures.append(f"regen-serial: a wave that regenerated members and left the memento "
+                            f"index behind passed — `index last` is unenforced: {w_}")
+
+        # ---- ARM 4, ORDER, and it is the arm that must not overclaim. The wave is UNCOMMITTED,
+        # so mtimes testify: ramp stamped AFTER the index is a serial run backwards.
+        put("knowledge/_INDEX.md", art("_build_memento_index.py", 3))
+        base = os.path.getmtime(os.path.join(td, "knowledge/_MIDDLE.md"))
+        os.utime(os.path.join(td, "knowledge/_RAMP.md"), (base + 50, base + 50))
+        os.utime(os.path.join(td, "knowledge/_INDEX.md"), (base - 50, base - 50))
+        w_, _n = regen_serial_check(td, sha=sha2)
+        if not any("OUT OF ORDER" in x for x in w_):
+            failures.append(f"regen-serial: the ramp regenerated AFTER the index did not read as "
+                            f"out of order — `ramp first, index last` is unenforced: {w_}")
+
+        # ---- ARM 5 (mutation control): stamp them in STEPS order; the order warn must CLEAR.
+        for i, rel in enumerate(("knowledge/_RAMP.md", "knowledge/_MIDDLE.md",
+                                 "knowledge/_INDEX.md")):
+            os.utime(os.path.join(td, rel), (base + i, base + i))
+        w_, n_ = regen_serial_check(td, sha=sha2)
+        if any("OUT OF ORDER" in x for x in w_):
+            failures.append(f"regen-serial: an in-order wave was called out of order — the order "
+                            f"arm fires on everything: {w_}")
+        if not any("order arm OBSERVABLE" in x for x in n_):
+            failures.append(f"regen-serial: an uncommitted, in-order wave did not report the order "
+                            f"arm as OBSERVABLE — silence here is indistinguishable from a skip: "
+                            f"{n_}")
+
+    # ---- ARM 6: no serial home ⇒ a DECLARED skip, never a green. [[a-crash-is-not-a-fail]]
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = regen_serial_check(td)
+        if w_ or not any("SKIPPED" in x and "NOT a pass" in x for x in n_):
+            failures.append(f"regen-serial: a tree with no `_build_all.py` must SKIP OUT LOUD — "
+                            f"warns={w_} notes={n_}")
+
+    # ---- ARM 7 (tier pin, the M10 pattern): ADVISORY AT BIRTH. It must reach the wrap's WARNS
+    # and never its FAILS — a silent promotion by an agent is what this pin exists to catch.
+    if REGEN_SERIAL_BLOCKING:
+        failures.append("regen-serial: REGEN_SERIAL_BLOCKING is True — this check was promoted "
+                        "to blocking without Dave's word. Promotion is HIS, not an edit's.")
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write("Last refreshed: 2026-07-27\n")
+        f_, w_, n_ = wrap_checks(td, datetime.date(2026, 7, 27), lane=True)
+        if any("REGEN SERIAL" in x for x in f_):
+            failures.append("regen-serial: the check reached the wrap's FAILS — it is ADVISORY at "
+                            "birth and its promotion is Dave's word, not an edit")
+        if not any("REGEN SERIAL" in x for x in list(w_) + list(n_)):
+            failures.append(f"regen-serial: the check is not wired into wrap_checks at all — an "
+                            f"instrument with no consumer cannot fail: {(list(w_) + list(n_))[:2]}")
+    return failures
+
+
+def selftest_shared_helper_dedup():
+    """★ #221 — THE SHARED-HELPER COMPARER, DRIVEN BOTH WAYS, INCLUDING THE GREP TRAP.
+
+    The arm that matters most is the one where a `def mask_comments` sits INSIDE A STRING: a
+    grep-shaped implementation would call that a duplicate and cry wolf, and a gate that cries
+    wolf gets switched off. Parsing in the consumer's own grammar is the claim, so it is the claim
+    that gets tested [[no-gate-parses-the-artefact]].
+    """
+    failures = []
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"shared-helper: git unavailable in this checkout ({e})")
+            return failures
+
+        def put(rel, body):
+            p = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(body)
+            subprocess.run(git + ["add", rel], capture_output=True, timeout=30)
+            return p
+
+        put("knowledge/_htmlmask.py", "def mask_comments(html):\n    return html\n")
+        put("knowledge/gen_one.py", "from _htmlmask import mask_comments\nx = mask_comments('a')\n")
+
+        # ---- GREEN CONTROL (attribute-the-diff): one home, one legal importer.
+        w_, n_ = shared_helper_dedup_check(td)
+        if w_ or not any("exactly ONE implementation" in x for x in n_):
+            failures.append(f"shared-helper CONTROL: a single-implementation tree did not read "
+                            f"clean — warns={w_[:1]} notes={n_[:1]}; every red below would be "
+                            f"unattributable")
+
+        # ---- ARM 1, THE W-92 SHAPE RE-OPENING BY ADDITION: a second implementation appears.
+        dup = put("knowledge/gen_two.py", "def mask_comments(html):\n    return html.upper()\n")
+        w_, _n = shared_helper_dedup_check(td)
+        if not any("may have ONE" in x and "gen_two.py" in x for x in w_):
+            failures.append(f"shared-helper: a SECOND `def mask_comments` passed — the comparer is "
+                            f"blind to the exact defect it was built for: {w_}")
+
+        # ---- ARM 2 (mutation control): remove the duplicate; the warn must CLEAR.
+        os.remove(dup)
+        subprocess.run(git + ["rm", "-q", "--cached", "knowledge/gen_two.py"],
+                       capture_output=True, timeout=30)
+        w_, _n = shared_helper_dedup_check(td)
+        if any("may have ONE" in x for x in w_):
+            failures.append(f"shared-helper: the duplicate warn did NOT clear once the duplicate "
+                            f"was gone — the check fires on everything: {w_}")
+
+        # ---- ARM 3, THE GREP TRAP: a `def mask_comments` inside a STRING is not an implementation.
+        put("knowledge/gen_doc.py",
+            'HELP = """\ndef mask_comments(html):\n    ...\n"""\n# a docstring, not a definition\n')
+        w_, _n = shared_helper_dedup_check(td)
+        if any("may have ONE" in x for x in w_):
+            failures.append(f"shared-helper: a `def mask_comments` inside a STRING was counted as "
+                            f"a duplicate — this comparer is grep-shaped, not ast-shaped, and "
+                            f"will cry wolf until someone switches it off: {w_}")
+
+        # ---- ARM 4: a second ROUTE to the helper is a second implementation waiting to happen.
+        put("knowledge/gen_three.py", "from _sneaky import mask_comments\n")
+        w_, _n = shared_helper_dedup_check(td)
+        if not any("not from `_htmlmask`" in x and "gen_three.py" in x for x in w_):
+            failures.append(f"shared-helper: an import of `mask_comments` from the WRONG module "
+                            f"passed silently: {w_}")
+        os.remove(os.path.join(td, "knowledge/gen_three.py"))
+        subprocess.run(git + ["rm", "-q", "--cached", "knowledge/gen_three.py"],
+                       capture_output=True, timeout=30)
+
+        # ---- ARM 5: an unparseable file is UNKNOWN, never counted as clean.
+        put("knowledge/broken.py", "def mask_comments(  <<< not python\n")
+        w_, _n = shared_helper_dedup_check(td)
+        if not any("could NOT be parsed" in x and "broken.py" in x for x in w_):
+            failures.append(f"shared-helper: an unparseable `.py` was silently skipped — a file "
+                            f"the comparer could not read is UNKNOWN, not clean: {w_}")
+        os.remove(os.path.join(td, "knowledge/broken.py"))
+        subprocess.run(git + ["rm", "-q", "--cached", "knowledge/broken.py"],
+                       capture_output=True, timeout=30)
+
+        # ---- ARM 6: the home itself disappearing must be LOUD, not a quiet zero.
+        os.remove(os.path.join(td, "knowledge/_htmlmask.py"))
+        subprocess.run(git + ["rm", "-q", "--cached", "knowledge/_htmlmask.py"],
+                       capture_output=True, timeout=30)
+        w_, _n = shared_helper_dedup_check(td)
+        if not any("NOTHING in the tracked tree defines it" in x for x in w_):
+            failures.append(f"shared-helper: the helper's home vanished and the comparer reported "
+                            f"no implementations as if that were fine: {w_}")
+
+    # ---- ARM 7: a tree git cannot answer for is UNKNOWN, never a single implementation.
+    with tempfile.TemporaryDirectory() as td:
+        w_, n_ = shared_helper_dedup_check(td)
+        if not (any("DID NOT RUN" in x for x in w_) or any("SKIPPED" in x for x in n_)):
+            failures.append(f"shared-helper: a non-repo tree neither refused nor declared a skip — "
+                            f"warns={w_} notes={n_}")
+
+    # ---- ARM 8 (tier pin, the M10 pattern): ADVISORY AT BIRTH; promotion is Dave's word.
+    if SHARED_HELPER_BLOCKING:
+        failures.append("shared-helper: SHARED_HELPER_BLOCKING is True — promoted to blocking "
+                        "without Dave's word. Promotion is HIS, not an edit's.")
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write("Last refreshed: 2026-07-27\n")
+        f_, w_, n_ = wrap_checks(td, datetime.date(2026, 7, 27), lane=True)
+        if any("SHARED HELPER" in x for x in f_):
+            failures.append("shared-helper: the comparer reached the wrap's FAILS — it is ADVISORY "
+                            "at birth and its promotion is Dave's word, not an edit")
+        if not any("SHARED HELPER" in x for x in list(w_) + list(n_)):
+            failures.append(f"shared-helper: not wired into wrap_checks at all — an instrument "
+                            f"with no consumer cannot fail: {(list(w_) + list(n_))[:2]}")
+    return failures
+
+
 def selftest_instrument_stray():
     """★ #218 — THE INSTRUMENT-STRAY GATE, DRIVEN. It had NO selftest for eighty sessions:
     built #138, wired the same day, and never once proven to bite in a test
@@ -7614,10 +8259,40 @@ def selftest_subreport_citation():
       · the POPULATION — the template and an `assets/**` file must never enter it;
       · the CITATION SURFACE — a citation in a receipt UNCHANGED since the last wrap must NOT
         count, or the surface is "the whole repo" and the check can never fire.
+
+    ★ #221 adds the COUNTS-PARSE arm. The pattern demanded BARE digits while the skeleton every
+    sub is told to copy writes the figures in BACKTICKS, so 37 of 44 filed reports were called
+    unparseable for obeying the template. The arm below drives the template's OWN form first —
+    a gate must be tested against the instruction it enforces, not against the shape its author
+    happened to imagine [[no-gate-parses-the-artefact]] — and keeps four malformed lines RED so
+    the widening cannot rot into "anything containing the word COUNTS".
     """
     failures = []
     GOOD = ("# r\n\nCOUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2\n\n"
             "## RULING-SHAPED QUESTIONS\n\nnone\n\nREPLAY-THESE: none — the stub carries everything.\n")
+
+    # ---- ★ #221, THE COUNTS PARSE. The FIRST fixture is the skeleton's own line, verbatim from
+    # `notes/_subreports/_TEMPLATE.md:45` with its backticks — the form the gate used to reject.
+    for line, why in (
+            ("COUNTS: findings `18` · ruling-shaped `5` · UNPROVEN `4`",
+             "the TEMPLATE's own backticked form (`_TEMPLATE.md:45`)"),
+            ("COUNTS: findings 18 · ruling-shaped 5 · UNPROVEN 4", "the bare form"),
+            ("**COUNTS:** findings **3** · ruling-shaped **1** · UNPROVEN **0**", "a bolded line"),
+            ("**COUNTS:** findings 9 · ruling-shaped 7 · UNPROVEN 5 · new gates 19",
+             "the three required fields followed by a lane's extra ones")):
+        if not SUBREPORT_COUNTS_RE.search(line):
+            failures.append(f"COUNTS parse: {why} did NOT parse — `{line[:70]}`. A sub that obeys "
+                            f"the skeleton must not be told its COUNTS line is unreadable.")
+    # ---- and the mutation control: the widening must not have eaten the specification.
+    for line, why in (
+            ("COUNTS: findings 18 · UNPROVEN 4", "a MISSING field"),
+            ("COUNTS: findings many · ruling-shaped 5 · UNPROVEN 4", "a non-numeric figure"),
+            ("COUNTS: ruling-shaped 5 · findings 18 · UNPROVEN 4", "the fields OUT OF ORDER"),
+            ("COUNTS: findings 18, ruling-shaped 5, UNPROVEN 4", "comma separators, not `·`")):
+        if SUBREPORT_COUNTS_RE.search(line):
+            failures.append(f"COUNTS parse: {why} was ACCEPTED — `{line[:70]}`. The decoration was "
+                            f"loosened, not the contract; three fields, in order, separated by "
+                            f"`·` is still the specification.")
     with tempfile.TemporaryDirectory() as td:
         git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
         try:
@@ -7874,6 +8549,8 @@ def _selftest_body():
                 + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
+                + selftest_regen_serial()        # ★ #221 — the ordered serial, whole per wave
+                + selftest_shared_helper_dedup() # ★ #221 — W-92's residual: ONE implementation
                 + selftest_subreport_citation()  # ★ #218 `s218-D7` — the unread-pointer check
                 + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
@@ -7986,6 +8663,47 @@ CG_USAGE = ("legal argv: `--build` (the ONLY writing mode — regenerates knowle
             "rehearsal log) · `--selftest` · `--help`")
 ARGV_REFUSAL_MARKER = "REFUSED (argv contract)"
 
+# ★★ #221 — THE THIRD LEG OF THE #158 WRITE-BY-DEFAULT CLASS: A SELFTEST AIMED AT THE REAL FILE.
+#
+# ⛔ THE PREMISE THAT AGED, RECORDED BECAUSE A CORRECTED ONE IS WORTH MORE THAN A REPEATED ONE
+# [[premise-ages-faster-than-rule]]. Every #221 lane was briefed that `--selftest` WRITES the
+# tracked `knowledge/_CAPTURE-GATE.md` and told to restore it afterwards. DRIVEN at #221: it does
+# not. `--selftest` passes `report=None`, both wrap modes are nulled by S-D3, and the two argv
+# legs refuse. Measured three ways on the real file — md5 identical before and after a full run,
+# mtime unmoved, `git status` clean — plus a filesystem-hook probe that counted ZERO python-level
+# `open(w)`/`remove`/`rename`/`copy` calls aimed at that path across a whole selftest.
+#
+# ⇒ SO WHY THIS EXISTS. The argv contract closes the doors that EXIST; it cannot close the door a
+# future arm OPENS. `selftest()` calls `run()` many times, and the only thing standing between an
+# arm that passes `report=REPORT` (a copy-paste from the `--build` arm, say) and a transient
+# verdict landing in a committed report is an author remembering. That is the #158 class itself —
+# a write reachable without a stated intention — and a class fix must make it IMPOSSIBLE, not
+# unlikely [[gate-dont-patch]]. A pure function, so it can be TESTED rather than trusted, and so
+# the test needs no write to prove the refusal.
+_SELFTEST_ACTIVE = False
+SELFTEST_WRITE_MARKER = "REFUSED (selftest write-door)"
+
+
+def selftest_write_veto(report):
+    """A refusal string if this write must not happen, else None.
+
+    The ONE rule: while a selftest is running, the TRACKED report is off limits. Scratch paths
+    (the canary fixtures) stay writable — a selftest that cannot write anywhere could not prove
+    `--build` still works.
+    """
+    if not _SELFTEST_ACTIVE or not report:
+        return None
+    try:
+        same = os.path.realpath(report) == os.path.realpath(REPORT)
+    except OSError:                                                   # noqa: BLE001
+        same = os.path.abspath(report) == os.path.abspath(REPORT)
+    if not same:
+        return None
+    return (f"✖ {SELFTEST_WRITE_MARKER}: a selftest arm aimed a report write at the TRACKED "
+            f"{REPORT}. Selftests write to scratch fixtures, never to the committed artefact "
+            f"(#158 write-by-default class, selftest leg). The write was REFUSED, not silently "
+            f"skipped — point the arm at a tempdir canary instead.")
+
 
 def argv_refusal(argv):
     """The contract, as a pure function so it can be TESTED rather than trusted.
@@ -8094,6 +8812,30 @@ def selftest_argv_contract():
         if open(canary_path, encoding="utf-8").read().strip() == "CANARY":
             failures.append("argv contract: `--build` did NOT write the report — the one "
                             "explicit write path is dead, so the build's own report will rot")
+
+    # ---- ★ #221, THE SELFTEST LEG. Driven as a PURE FUNCTION, on purpose: proving "a selftest
+    # cannot write the tracked report" by letting a selftest try to write the tracked report
+    # would, if the guard were broken, destroy the very artefact under test. The veto is the
+    # clause; the clause is what gets driven [[mutation-tests-the-clause-not-the-feature]].
+    saved = _SELFTEST_ACTIVE
+    try:
+        globals()["_SELFTEST_ACTIVE"] = True
+        got = selftest_write_veto(REPORT)
+        if not got or SELFTEST_WRITE_MARKER not in got:
+            failures.append(f"selftest write-door: a report write aimed at the TRACKED {REPORT} "
+                            f"during a selftest was NOT vetoed — got {got!r}. The #158 class is "
+                            f"open on its selftest leg.")
+        for scratch in (os.path.join(tempfile.gettempdir(), "_CG-SCRATCH.md"), None):
+            if selftest_write_veto(scratch):
+                failures.append(f"selftest write-door: a SCRATCH write ({scratch!r}) was vetoed "
+                                f"too — a selftest that cannot write anywhere cannot prove "
+                                f"`--build` still works. The veto is too wide.")
+        globals()["_SELFTEST_ACTIVE"] = False
+        if selftest_write_veto(REPORT):
+            failures.append("selftest write-door: the veto fired OUTSIDE a selftest — `--build` "
+                            "is the ruled write path and this would kill it.")
+    finally:
+        globals()["_SELFTEST_ACTIVE"] = saved
     return failures
 
 

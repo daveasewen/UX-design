@@ -9,7 +9,10 @@ separate step) plus corpus ADAPTERS. The doors:
   knowledge/_consult.py          — the DS-decisions door (exists since ds-009; now thin)
   knowledge/_memento_search.py   — the Memento door (GM/LS sections · archives · briefs ·
                                    ledgers · runbooks · lanes), index built by
-                                   knowledge/_build_memento_index.py
+                                   `_build_memento_index.py` — which lives in `knowledge/`
+                                   in this repo and in `memento-package/machinery/` in a
+                                   shipped pack. This file runs, byte-identical, in BOTH:
+                                   name the builder, never a tree-specific path to it.
 
 One retrieval spine, three customers — the third is the KG forcing function (floated by
 Dave 2026-07-27, scoped in by him mid-flight #25): the consult-receipt line FORMAT lives
@@ -144,12 +147,63 @@ def group_header(label, shown, total, all_results=False, cap_hint="--all for mor
     return f"{label} ({shown} of {total} shown — {cap_hint}):"
 
 
+# ------------------------------------------------------- naming the builder, in EITHER tree
+# ⛔ #221 (from #220's L4 audit, finding F3). The missing-index refusal below used to TYPE
+# `python3 knowledge/_build_all.py`. That path is true in this repo and FALSE in every shipped
+# pack: `_build_all.py` is not on the ship list, so a designer's very first retrieval attempt —
+# the one `.github/copilot-instructions.md` operating rule 2 sends them to — refused with a
+# pointer to a file they do not have, while the builder that DOES ship
+# (`memento-package/machinery/_build_memento_index.py`, driven clean from a virgin unzip at
+# #220-L4) sat two directories away. Retrieval is half of what Memento is, and it was one
+# filename from working.
+#
+# A typed path cannot be right in two trees. The fix is RESOLUTION, not a second typed string
+# [[gate-dont-patch]]: derive the builder's NAME from the index's own name, then look for it on
+# disk beside the index (both trees keep the builder next to what it writes) and one level up.
+# Nothing found ⇒ say so; a measuring tool must not guess, and naming a script the reader does
+# not have is worse than admitting the builder cannot be located.
+BUILDER_FALLBACKS = ("_build_all.py",)
+
+
+def builder_names_for(index_path):
+    """The builder filename(s) this index's own name implies, most specific first.
+
+    `_memento-index.json` → `_build_memento_index.py`; `_consult-index.json` →
+    `_build_consult_index.py`. Derived, never a lookup table that can rot behind a new door.
+    """
+    stem = re.sub(r"\.json$", "", os.path.basename(index_path)).lstrip("_")
+    names = []
+    if stem.endswith("-index"):
+        names.append("_build_%s_index.py" % stem[: -len("-index")].replace("-", "_"))
+    return tuple(names) + BUILDER_FALLBACKS
+
+
+def index_builder_command(index_path):
+    """`python3 <path to the builder that writes this index>`, resolved on disk — or None.
+
+    None is a real answer and the caller says it out loud, rather than printing a path that
+    exists in somebody else's tree.
+    """
+    d = os.path.dirname(os.path.abspath(index_path))
+    for base in (d, os.path.dirname(d)):
+        for name in builder_names_for(index_path):
+            cand = os.path.join(base, name)
+            if os.path.isfile(cand):
+                rel = os.path.relpath(cand, os.getcwd())
+                return "python3 %s" % (cand if rel.startswith("..") else rel)
+    return None
+
+
 def load_records_or_refuse(index_path, what):
     """Load a door's index and REFUSE (SystemExit) if missing or empty — a door with
     nothing behind it is a broken door, not a quiet one."""
     if not os.path.exists(index_path):
-        raise SystemExit(f"{what}: index missing at {index_path} — run the build "
-                         f"(python3 knowledge/_build_all.py); REFUSING to search nothing.")
+        cmd = index_builder_command(index_path)
+        how = ("run the build (%s)" % cmd) if cmd else (
+            "and the builder that writes it is not beside it — this door cannot name what "
+            "would build it, and will not invent a path")
+        raise SystemExit(f"{what}: index missing at {index_path} — {how}; "
+                         f"REFUSING to search nothing.")
     with open(index_path, encoding="utf-8") as f:
         data = json.load(f)
     records = data.get("records", [])
@@ -258,6 +312,41 @@ def selftest():
         bite("empty/missing index REFUSES", False)
     except SystemExit as e:
         bite("empty/missing index REFUSES", "REFUSING" in str(e))
+
+    # ---- #221/F3: the refusal's SIGNPOST, driven in BOTH directions -------------------------
+    # A green over "it refused" was exactly what let the wrong builder path survive into a
+    # shipped pack. These bites grade WHAT the refusal says, on a real tree built here.
+    bite("builder name is DERIVED from the index name (memento door)",
+         builder_names_for("/x/_memento-index.json")[0] == "_build_memento_index.py")
+    bite("builder name is DERIVED from the index name (consult door)",
+         builder_names_for("/x/_consult-index.json")[0] == "_build_consult_index.py")
+    import tempfile as _tf
+    with _tf.TemporaryDirectory() as _d:
+        _idx = os.path.join(_d, "_memento-index.json")
+        # direction 1 — the builder IS there: the refusal must name THAT file, and it must
+        # exist on this box.
+        _bld = os.path.join(_d, "_build_memento_index.py")
+        open(_bld, "w").write("# selftest stub\n")
+        try:
+            load_records_or_refuse(_idx, "selftest")
+            bite("missing index names the builder BESIDE it", False)
+        except SystemExit as e:
+            _m = re.search(r"python3 ([^\s)]+)", str(e))   # stop at the closing paren
+            bite("missing index names the builder BESIDE it",
+                 bool(_m) and os.path.isfile(os.path.join(os.getcwd(), _m.group(1))
+                                             if not os.path.isabs(_m.group(1)) else _m.group(1)))
+            bite("the named builder is the DERIVED one, not a fallback",
+                 "_build_memento_index.py" in str(e) and "_build_all.py" not in str(e))
+        os.remove(_bld)
+        # direction 2 — no builder anywhere: REFUSE to invent one. This is the arm that would
+        # have caught F3: the old code printed `knowledge/_build_all.py` unconditionally.
+        try:
+            load_records_or_refuse(_idx, "selftest")
+            bite("no builder on disk ⇒ names NO command", False)
+        except SystemExit as e:
+            bite("no builder on disk ⇒ names NO command",
+                 "python3 " not in str(e) and "will not invent" in str(e))
+            bite("no builder on disk ⇒ still REFUSES", "REFUSING" in str(e))
 
     if fails:
         print(f"selftest FAILED — {len(fails)} bite(s): {fails}")

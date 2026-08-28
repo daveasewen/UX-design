@@ -1,0 +1,91 @@
+# NON-REPO RUNTIME (s191-D2 marker: NON-REPO: /var/tmp/mono221_probe.py; banked as .txt in the
+# subreport assets). Render-verify for reviews/MONO-GALLERY-DEFAULT-2026-08-27-v1.html.
+# Runbook: canvas probe WITH CONTROLS (never fonts.check), settle transitions BEFORE reading,
+# goto file:// (never set_content), verdict printed BEFORE anything else can eat it.
+from playwright.sync_api import sync_playwright
+
+REPO = '/sessions/eloquent-zealous-bohr/mnt/UX-design'
+PAGE = 'file://%s/reviews/MONO-GALLERY-DEFAULT-2026-08-27-v1.html' % REPO
+SHELL = '/var/tmp/pw-browsers-220/chromium_headless_shell-1234/chrome-linux/headless_shell'
+OUT = REPO + '/outputs'
+
+FONT_PROBE = """() => {
+  const c = document.createElement('canvas').getContext('2d');
+  const m = f => { c.font = '40px ' + f; return Math.round(c.measureText('Handgloves 12345').width); };
+  return { target: m('HSBC_MtUnivers_Latin'), alias1: m('"Univers Next HSBC"'),
+           alias2: m('"Univers Next for HSBC"'), control: m('DejaVu Sans'),
+           noface: m('NoSuchFace221') };
+}"""
+
+CARD_PROBE = """(p) => {
+  const root = document.querySelector('[data-probe="' + p + '"]');
+  if (!root) return null;
+  const g = el => getComputedStyle(el);
+  const box = root.querySelector('.bm-imgbox');
+  const cap = root.querySelector('.bm-cap');
+  const tile = root.querySelector('.bm-tile');
+  return { boxRadius: g(box).borderTopLeftRadius, tileRadius: g(tile).borderTopLeftRadius,
+           capBg: g(cap).backgroundColor, capInk: g(cap).color };
+}"""
+
+fails = []
+with sync_playwright() as p:
+    b = p.chromium.launch(executable_path=SHELL, headless=True,
+                          args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+    pg = b.new_page(viewport={"width": 1180, "height": 1400})
+    pg.goto(PAGE)
+    pg.add_style_tag(content="*{transition:none !important; animation:none !important;}")
+    pg.wait_for_timeout(600)
+
+    f = pg.evaluate(FONT_PROBE)
+    print('FONT', f)
+    if not (f['target'] == f['alias1'] == f['alias2']):
+        fails.append('font aliases do not land on the target width: %s' % f)
+    if f['target'] == f['control'] or f['target'] == f['noface']:
+        fails.append('font probe cannot discriminate (target==control/noface): %s' % f)
+
+    cards = {}
+    for probe in ('con-light', 'cand-light', 'today-light',
+                  'con-dark', 'cand-dark', 'today-dark'):
+        v = pg.evaluate(CARD_PROBE, probe)
+        cards[probe] = v
+        print('%-11s %s' % (probe, v))
+        if v is None:
+            fails.append('probe %s not found' % probe)
+    strip_n = pg.evaluate("document.querySelectorAll('[data-probe^=\"strip-\"]').length")
+    print('strip cards:', strip_n)
+    if strip_n != 8:
+        fails.append('expected 8 strip cards, found %s' % strip_n)
+
+    T = 'rgba(0, 0, 0, 0)'
+    for m, ink, capg in (('light', 'rgb(26, 26, 26)', 'rgb(240, 240, 240)'),
+                         ('dark', 'rgb(255, 255, 255)', 'rgb(31, 31, 31)')):
+        con, cand, today = cards['con-' + m], cards['cand-' + m], cards['today-' + m]
+        if not con or not cand or not today:
+            continue
+        if con['boxRadius'] != '20px':
+            fails.append('console %s image radius %s != 20px' % (m, con['boxRadius']))
+        if cand['boxRadius'] != '0px':
+            fails.append('candidate %s image radius %s != 0px (premise B on the pixels)' % (m, cand['boxRadius']))
+        if today['boxRadius'] != '0px':
+            fails.append('today %s image radius %s != 0px' % (m, today['boxRadius']))
+        if con['capBg'] != T or cand['capBg'] != T:
+            fails.append('%s transparent captions paint a ground: con %s cand %s' % (m, con['capBg'], cand['capBg']))
+        if today['capBg'] != capg:
+            fails.append('today %s caption ground %s != %s' % (m, today['capBg'], capg))
+        if cand['capInk'] != con['capInk']:
+            fails.append('%s candidate ink %s != console ink %s (premise A on the pixels)' % (m, cand['capInk'], con['capInk']))
+        if cand['capInk'] != ink:
+            fails.append('%s candidate ink %s != %s' % (m, cand['capInk'], ink))
+
+    pg.screenshot(path=OUT + '/mono221-1180.png', full_page=True)
+    pg2 = b.new_page(viewport={"width": 480, "height": 1200})
+    pg2.goto(PAGE)
+    pg2.add_style_tag(content="*{transition:none !important; animation:none !important;}")
+    pg2.wait_for_timeout(600)
+    pg2.screenshot(path=OUT + '/mono221-480.png', full_page=True)
+    b.close()
+
+print('VERDICT:', 'GREEN' if not fails else 'RED')
+for x in fails:
+    print('  FAIL:', x)

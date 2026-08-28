@@ -481,6 +481,10 @@ def main():
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--json", dest="json_out")
     ap.add_argument("--collisions", nargs="*")
+    # ★ #221 — READ-ONLY. Reports ledger rows the tree stopped agreeing with. It writes nothing
+    # (`$do_not`: "No script may add to this file automatically"), it changes no verdict, no
+    # threshold and no wiring, and it does not alter this gate's exit code.
+    ap.add_argument("--reconcile", action="store_true")
     args = ap.parse_args()
 
     if args.selftest:
@@ -529,6 +533,9 @@ def main():
             print("      %s: %s   ->  %s"
                   % (f["prop"], q["declared"], q["resolved"]))
 
+    if args.reconcile:
+        reconcile_report(ledger, verdicts, forks, args.ledger)
+
     if args.collisions:
         collision_report(args.collisions, verdicts)
 
@@ -559,8 +566,55 @@ def main():
         print("\nGATE RED: %d fork(s)%s"
               % (len(reportable), "" if args.strict else " not in the ledger"))
         return 1
-    print("\nGATE GREEN: no %sfork" % ("" if args.strict else "undeclared "))
+    # ★ #221 — THE GREEN LINE STATES ITS OWN QUESTION (L3 F-3). Baseline mode asks "is any fork
+    # UNDECLARED?"; `--strict` asks "is any fork PRESENT?". Same tree, same minute, opposite
+    # verdicts — and only the permissive one is wired, so a reader running the gate the way CI
+    # runs it saw a bare "GATE GREEN" standing over every declared fork in the tree. The green now
+    # says what it did NOT ask. ⛔ NO wiring, threshold or fork value moved: which question is the
+    # gate remains DAVE'S, and the ledger has been waiting on it since 2026-08-09.
+    if args.strict:
+        print("\nGATE GREEN: no fork at all (STRICT — every fork, declared or not)")
+    else:
+        print("\nGATE GREEN: no UNDECLARED fork. ⚠ This did NOT ask whether forks exist: %d fork(s) "
+              "stand and are declared in the ledger. Run --strict for the full list, --reconcile "
+              "for ledger rows the tree no longer agrees with." % len(forks))
     return 0
+
+
+def reconcile_report(ledger, verdicts, forks, ledger_path):
+    """⬛ ADVISORY, READ-ONLY (#221, from #220 audit L3 finding F-10).
+
+    Baseline mode fails only on an UNDECLARED fork, so **a declared row that stops being true is
+    invisible forever**. The ledger's `$measured` header is a dated receipt from `s139`
+    (2026-08-09); the tree has moved under it and nothing compared the two. Two of the rows this
+    prints are now UNIFORM — there is no divergence left to rule, and they have sat on Dave's
+    queue regardless.
+
+    ⛔ IT PRUNES NOTHING AND WRITES NOTHING. The rows are Dave's own `#209` sanctions and the
+    ledger says so in as many words (`$do_not`). Re-stamping `$measured` without re-running would
+    be the carried-figure defect this arm exists to expose [[banner-figures-are-parsed-not-prose]].
+    """
+    live = {f["prop"] for f in forks}
+    print("\n--- LEDGER RECONCILE (ADVISORY, read-only, #221) ---")
+    print("  ledger     : %s" % ledger_path)
+    print("  declared   : %d row(s)   measured today: %d fork(s)" % (len(ledger), len(live)))
+    stale = []
+    for name in sorted(ledger):
+        if name in live:
+            continue
+        v = verdicts.get(name)
+        stale.append((name, v["verdict"] if v else "NAME NOT PRESENT IN THE GLOB TODAY"))
+    for name, verdict in stale:
+        print("  LEDGER-STALE: %-24s declared FORK, measured %s" % (name, verdict))
+    if not stale:
+        print("  ✅ every declared row is still a fork in the tree — the ledger is current.")
+    else:
+        print("  ⛔ %d declared row(s) no longer describe the tree. NOT pruned: these are Dave's "
+              "own sanctions and `$do_not` forbids a script touching this file. What they need is "
+              "his word, not an edit." % len(stale))
+    undeclared_live = sorted(live - set(ledger))
+    print("  undeclared forks in the tree today: %s" % (", ".join(undeclared_live) or "none"))
+    return stale
 
 
 def collision_report(paths, canon_verdicts):

@@ -55,7 +55,17 @@ try:
     # reachability probe (see `_playwright_unreachable()`); a name that exists only on the failing
     # branch would make the probe itself raise NameError on the box where the instrument is
     # PRESENT — a measuring tool that crashes where it can measure.
-except ModuleNotFoundError as _e:
+except ImportError as _e:
+    # ⛔ #221 (from #220's L4 audit, finding F12). This clause named `ModuleNotFoundError` — a
+    # SUBCLASS of ImportError — so it caught only "no such module" and let every OTHER import
+    # failure through as a bare traceback at rc=1: a half-installed playwright, a shadowing stub,
+    # a broken C extension, an `ImportError` raised from inside the package's own __init__. L4
+    # drove exactly that state and got an unhandled traceback where the README promises a
+    # COULD-NOT-ASK. The refusal machinery below was already right and already proven; the
+    # ENTRANCE to it was one class too narrow. [[honest-refusal-needs-a-legal-form]] — the legal
+    # form existed and the real failure mode could not reach it.
+    # ⚠ Deliberately NOT `except Exception`: an import that fails for a reason that is not an
+    # import problem should still fail loud rather than be reported as an absent instrument.
     _PLAYWRIGHT_IMPORT_ERROR = repr(_e)  # `as _e` is scoped to the except block (Python 3 deletes
     # it on exit), so the closure below must capture a plain string now, not the exception object.
     # ENV-DEPENDENCE (residual ⑥, #133): with the module missing, the OLD code let this raise

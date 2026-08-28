@@ -85,11 +85,29 @@ TYPES = ["dashboard", "display", "gallery"]
 
 # ⬛ s219-D1 (4) — THE SPACING RAILS. Dave option-selected the six stops: "These six stops".
 # The edit pass picks AMONG stops; a free value is not reachable and widening the set is a ruling.
+#
+# ★ #221 — ADDRESSED, NOT TYPED (ADR-0017 WRITE-ONCE). Until today these six ruled numbers were
+# typed HERE as strings and again in `gen_bento_matrix_217.RULED_SPACING_RAIL` as ints — one live
+# fact, two homes, and the int/str difference meant a naive `==` between them failed even when
+# they agreed. A seventh ruled stop edited into one home left the other silently wrong; only
+# `gen_bento_matrix_217`'s bite `R4c` stood between that and a quiet widening, and its own comment
+# claimed — measurably falsely — to be "the only place they are typed". THE ONE HOME IS THE
+# RULING'S QUOTATION, `gen_bento_matrix_217.RULED_SPACING_RAIL`; this module DERIVES its string
+# form from it and types nothing. ⛔ No value moved: `[str(s) for s in (1,2,4,16,24,40)]` is the
+# same six strings that were typed here, asserted below and by `R4c` from the other side.
+#
 # ⚠ THIS IS WIDER THAN THE EXPLORER'S CONTROL AS SHIPPED. `gen_bento_matrix_217.SPACINGS` carries
 # three (1 / 24 / 40) — the s217-D5 trio — and Dave's display defaults use 2 and 16, which that
 # control cannot currently reach. The gap is REPORTED by `unreachable_stops()` rather than papered
 # over here: a default no control can select is a default nobody can return to after an edit.
-SPACING_STOPS = ["1", "2", "4", "16", "24", "40"]
+if HERE not in sys.path:                                 # standalone `--table` and sibling import
+    sys.path.insert(0, HERE)
+from gen_bento_matrix_217 import RULED_SPACING_RAIL      # noqa: E402 — the ONE home of the six
+SPACING_STOPS = [str(s) for s in RULED_SPACING_RAIL]
+assert SPACING_STOPS == ["1", "2", "4", "16", "24", "40"], (
+    "s219-D1(4): the ruled spacing rail moved under this module — %r. Widening or narrowing the "
+    "set is a RULING, not a build decision; this assert is the address failing loudly rather than "
+    "the two homes drifting quietly (#221, ADR-0017)." % (SPACING_STOPS,))
 
 # ⚠ THE SUB-BENTO LADDER IS NOT MIRRORED HERE, DELIBERATELY. s217-D6 ruled it as Dave's typed
 # ladder (1,2,4,8,12,16,20,24) and s219-D1 (4) re-rules every spacing dial onto the six rails, so

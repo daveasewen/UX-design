@@ -533,6 +533,78 @@ def first_sentence(text, cap=150):
     return line
 
 
+# ---------------------------------------------------------------------------
+# ★ #221 — THE META REFERENCE IS NORMALISED, BECAUSE A LOWERCASE SLUG IS NOT A FILENAME.
+#
+# `collect()` built the meta path as `slug + ".meta.json"` and asked `os.path.exists`. Seven
+# metas are committed with a CAPITAL prefix (`Chart-boxplot.meta.json` …) while their showroom
+# pages, and therefore their slugs, are lowercase. On Dave's case-insensitive APFS that resolved;
+# on Linux — which is what all three CI jobs and every shipped-pack designer run — it MISSED, and
+# `level_of()` fell through to `"unfiled"` while `blurb` fell to `""`. Same commit, two different
+# artefacts: a bogus seventh ladder tier, Pattern 33 -> 26, "Ladder tiers" reading 7 not 6.
+# Single-variable isolation (#221): `collect()` run twice, changing only META to a genuinely
+# case-sensitive copy, differed in EXACTLY those 7 rows and nothing else.
+# [[gate-cannot-pass-in-one-environment]] in the shape where the ARTEFACT differs, not the verdict.
+#
+# ⛔ The reference is normalised HERE; the seven FILENAMES are not renamed. Whether they should be
+# is Dave's — every `Chart-*.reference.html` snippet is capitalised too, so the casing may be a
+# convention this generator cannot see. `--casing` (ADVISORY) names them so the question is
+# visible instead of silent, and `residuals["meta_case"]` carries them into the residual report.
+# ---------------------------------------------------------------------------
+_META_INDEX = {}
+
+
+def _meta_index(meta_dir=None):
+    """`{casefolded name: real name}` for `META`, listed once. Case is PRESERVED by `listdir` on
+    every filesystem, so this comparison means the same thing on APFS and on ext4."""
+    d = meta_dir or META
+    if d not in _META_INDEX:
+        try:
+            names = os.listdir(d)
+        except OSError as exc:                                 # a crash is not a fail
+            raise RuntimeError("REFUSED, NAMED: cannot list the component meta directory %s (%s)"
+                               % (d, exc))
+        _META_INDEX[d] = {n.lower(): n for n in names if n.endswith(".meta.json")}
+    return _META_INDEX[d]
+
+
+def resolve_meta(slug, meta_dir=None):
+    """`(path_or_None, exact_case)` for `<slug>.meta.json`.
+
+    Exact case wins. A meta that resolves only case-insensitively is STILL RESOLVED — the index
+    must not depend on the filesystem it is generated on — but it is returned with
+    `exact_case=False` so the caller can DECLARE it rather than skip it in silence.
+    """
+    d = meta_dir or META
+    want = slug + ".meta.json"
+    exact = os.path.join(d, want)
+    idx = _meta_index(d)
+    if idx.get(want.lower()) == want:
+        return exact, True
+    real = idx.get(want.lower())
+    if real is None:
+        return None, False
+    return os.path.join(d, real), False
+
+
+def casing_mismatches(meta_dir=None):
+    """`[(slug, filename_on_disk)]` — every showroom slug whose meta filename differs in CASE.
+
+    Pure string comparison over a directory listing, so it returns the same answer on a
+    case-insensitive and a case-sensitive filesystem. That is the point: the defect it names is
+    invisible to `os.path.exists` on exactly one of the two.
+    """
+    out = []
+    for page in sorted(glob.glob(os.path.join(SHOWROOM, "*.html"))):
+        slug = os.path.basename(page)[:-5]
+        if slug == "index":
+            continue
+        path, exact = resolve_meta(slug, meta_dir)
+        if path is not None and not exact:
+            out.append((slug, os.path.basename(path)))
+    return out
+
+
 def collect():
     """-> (rows, residuals). One row per EXISTING showroom page — the page is the artefact."""
     snippets = {showroom.slug_of(p): p
@@ -544,16 +616,18 @@ def collect():
 
     rows, residuals = [], {"no_meta": [], "unfiled": [], "no_behaviour": [], "dead_alias": [],
                            "usage_other": [], "no_thumb": [], "dead_related": [],
-                           "no_foundation_page": [],
+                           "no_foundation_page": [], "meta_case": [],
                            "itinerary": "read" if gated is not None else "MISSING"}
     for page in sorted(glob.glob(os.path.join(SHOWROOM, "*.html"))):
         slug = os.path.basename(page)[:-5]
         if slug == "index":
             continue
-        mpath = os.path.join(META, slug + ".meta.json")
+        mpath, exact_case = resolve_meta(slug)       # #221 — normalised, never filesystem-dependent
         meta = None
-        if os.path.exists(mpath):
+        if mpath is not None:
             meta = json.load(open(mpath))
+            if not exact_case:
+                residuals["meta_case"].append((slug, os.path.basename(mpath)))
         else:
             residuals["no_meta"].append(slug)
         lvl = level_of(slug, meta)
@@ -1665,6 +1739,64 @@ def selftest():
           sorted(re.findall(r'data-slug="(foundation-grids-[a-z0-9]+)"', page))),
          (False, False, True))
 
+    # ★ 39/40/41 (#221) — THE CASE-SENSITIVITY BITE, DRIVEN ON A REAL CASE-SENSITIVE FILESYSTEM.
+    # A bite that only asserts about `resolve_meta` would prove nothing on APFS, where the old
+    # broken code also passed. So: mirror the metas into a scratch directory (POSIX /var/tmp is
+    # case-sensitive; APFS-mounted repo paths are not), and drive `collect()` against it. Bite 39
+    # is the FIX — the rows must be identical. Bite 40 is the MUTATION — with `resolve_meta`
+    # replaced by the old exact-path lookup, the same run must go WRONG, by name, so the bite is
+    # proved falsifiable rather than merely green. Bite 41 fixes the advisory arm's two verdicts.
+    import shutil as _sh, tempfile as _tf
+    _scratch = _tf.mkdtemp(prefix="lib214-case-", dir=os.environ.get("TMPDIR", "/var/tmp"))
+    try:
+        for _n in os.listdir(META):
+            if _n.endswith(".meta.json"):
+                _sh.copyfile(os.path.join(META, _n), os.path.join(_scratch, _n))
+        _cs_is_sensitive = not os.path.exists(
+            os.path.join(_scratch, "Chart-boxplot.meta.json".lower()))
+        _real_meta = META
+        try:
+            globals()["META"] = _scratch
+            _META_INDEX.pop(_scratch, None)
+            _cs_rows, _cs_res = collect()
+        finally:
+            globals()["META"] = _real_meta
+        bite("39 · #221 · a case-sensitive filesystem yields the IDENTICAL index (the CI defect)",
+             (_cs_is_sensitive, _cs_rows == rows, _cs_res["no_meta"]),
+             (True, True, []))
+        # MUTATION: put the pre-#221 lookup back and watch the same run break, by name.
+        _saved = globals()["resolve_meta"]
+        try:
+            globals()["resolve_meta"] = lambda s, d=None: (
+                (os.path.join(d or META, s + ".meta.json"), True)
+                if os.path.exists(os.path.join(d or META, s + ".meta.json")) else (None, False))
+            globals()["META"] = _scratch
+            _mut_rows, _mut_res = collect()
+        finally:
+            globals()["resolve_meta"] = _saved
+            globals()["META"] = _real_meta
+        bite("40 · #221 · …and the OLD exact-path lookup demonstrably loses those rows to 'unfiled'",
+             (sorted(_mut_res["no_meta"]) == sorted(_mut_res["unfiled"]),
+              len(_mut_res["no_meta"]) > 0 if _cs_is_sensitive else True,
+              _mut_rows != rows if _cs_is_sensitive else True),
+             (True, True, True))
+        # BOTH VERDICTS of the advisory arm, on this platform, whatever it is: a lowercased
+        # mirror is the CLEAN tree (arm clears), the repo's own metas are the DIRTY one (arm
+        # fires). A gate that cannot reach both verdicts here is the #173 class.
+        _clean = _tf.mkdtemp(prefix="lib214-clean-", dir=os.environ.get("TMPDIR", "/var/tmp"))
+        try:
+            for _n in os.listdir(META):
+                if _n.endswith(".meta.json"):
+                    _sh.copyfile(os.path.join(META, _n), os.path.join(_clean, _n.lower()))
+            _META_INDEX.pop(_clean, None)
+            bite("41 · #221 · the ADVISORY casing arm reaches BOTH verdicts on this platform",
+                 (casing_mismatches(_clean), bool(casing_mismatches(_scratch))),
+                 ([], bool(casing_mismatches())))
+        finally:
+            _sh.rmtree(_clean, ignore_errors=True)
+    finally:
+        _sh.rmtree(_scratch, ignore_errors=True)
+
     if fails:
         print("gen_library_214 --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -1672,6 +1804,8 @@ def selftest():
         sys.exit(1)
     print("gen_library_214 --selftest OK — %d bites." % len(ran))
     print("   residual · no meta.json: %s" % (residuals["no_meta"] or "none"))
+    print("   residual · meta filename CASE differs from slug (#221, resolved not skipped): %s"
+          % (", ".join("%s -> %s" % t for t in residuals["meta_case"]) or "none"))
     print("   residual · unfiled level: %s" % (residuals["unfiled"] or "none"))
     print("   residual · usage group 'Other': %s" % (residuals["usage_other"] or "none"))
     print("   residual · missing thumbnail: %d entry(s)" % len(residuals["no_thumb"]))
@@ -1688,6 +1822,8 @@ def report(rows, residuals):
     print("   status:            %s" % ", ".join("%s %d" % (k, counts[k]) for k in sorted(counts)))
     print("   itinerary source:  %s" % residuals["itinerary"])
     print("   no meta.json:      %s" % (residuals["no_meta"] or "none"))
+    print("   meta case mismatch: %s"        # #221 — declared, never a silent case-insensitive win
+          % (", ".join("%s -> %s" % t for t in residuals["meta_case"]) or "none"))
     print("   unfiled level:     %s" % (residuals["unfiled"] or "none"))
     print("   usage 'Other':     %s" % (residuals["usage_other"] or "none"))
     print("   foundation page missing: %s" % (residuals["no_foundation_page"] or "none"))
@@ -1697,7 +1833,38 @@ def report(rows, residuals):
           % (len(residuals["no_behaviour"]), ", ".join(residuals["no_behaviour"][:8])))
 
 
+def casing_arm():
+    """`--casing` · ⬛ ADVISORY AT BIRTH (#221) — not wired into `_build_all.py`, not in `gates.yml`,
+    and promotion to blocking is Dave's word.
+
+    Exit **1** when any showroom slug's meta filename differs from the slug in CASE, **0** when
+    none do. The comparison is string-against-`os.listdir`, so THE SAME VERDICT IS REACHABLE ON
+    BOTH PLATFORMS — which is the whole point: `os.path.exists` gives opposite answers on APFS and
+    ext4, and that difference is what silently degraded 7 rows of the index in CI
+    [[gate-cannot-pass-in-one-environment]]. `resolve_meta()` now makes the ARTEFACT identical
+    either way; this arm keeps the underlying mismatch VISIBLE instead of absorbed.
+    """
+    bad = casing_mismatches()
+    if not bad:
+        print("✅ meta-filename casing (ADVISORY, #221): every showroom slug has an EXACT-CASE "
+              "meta. The index cannot differ by filesystem.")
+        return 0
+    print("⚠ META FILENAME CASING (ADVISORY, #221) — %d slug(s) resolve only case-insensitively:"
+          % len(bad))
+    for slug, fname in bad:
+        print("   %-24s slug expects %-28s on disk it is %s" % (slug, slug + ".meta.json", fname))
+    print("   These RESOLVE (gen_library_214 normalises the reference), so the index is identical "
+          "on APFS and ext4. Renaming the files is a naming-convention question and is DAVE'S: "
+          "the sibling `Chart-*.reference.html` snippets are capitalised too.")
+    return 1
+
+
 def main():
+    if "--casing" in sys.argv:
+        # ⛔ sys.exit, NOT return: `main()`'s return value is discarded at the bottom of this file,
+        # so an arm that merely `return`s its verdict is an [[instrument-without-a-consumer]] —
+        # it would have printed RED and exited 0. Caught by driving it, not by reading it.
+        sys.exit(casing_arm())
     if "--selftest" in sys.argv:
         return selftest()
     if "--break-groups" in sys.argv:

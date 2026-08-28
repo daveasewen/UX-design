@@ -45,13 +45,29 @@ def strip_noise(t):
     return t
 
 
-def main():
+def scan():
+    """-> (flags, scanned). Extracted at #221 so the determinism clause can be BITTEN."""
     flags = []          # (dir, file, hex, reason, count)
     scanned = 0
     for d in MONO_DIRS:
         base = os.path.join(HERE, d)
-        for root, _, files in os.walk(base):
-            for fn in files:
+        # ⛔ #221 — `os.walk` YIELDS IN FILESYSTEM ORDER, AND THIS GATE WROTE ITS REPORT IN THAT
+        # ORDER. Same commit, byte-identical inputs, same interpreter — and the working tree and
+        # a `git clone --no-hardlinks` of it produced DIFFERENT `_THEME-PROVENANCE-GATE.md`
+        # files. Measured: both say `Scanned 164` and `48 hardcoded foreign-theme colour(s)`,
+        # both are 58 lines, and 26 lines differ in EACH direction — a pure permutation. The
+        # numbers were never wrong; the row order was a fingerprint of whichever filesystem
+        # happened to generate the file.
+        # ⚠ AND IT WAS BEING READ AS DRIFT. #220-L1 finding 7 listed this artefact as stale with
+        # "26 rows changed" — the same 26. On the evidence here that row is a FALSE staleness:
+        # the artefact was not out of date, it was unsorted. A non-deterministic generator is
+        # worse than a stale one, because every environment disagrees with every other and no
+        # comparison anywhere can mean anything. [[measure-dont-convert-units]]
+        # ⚠ NO VALUE MOVES. Sorting changes the ORDER of the rows and nothing else: 164 scanned
+        # and 48 findings before and after, verified.
+        for root, dirs, files in os.walk(base):
+            dirs.sort()
+            for fn in sorted(files):
                 if not fn.endswith(".html"):
                     continue
                 scanned += 1
@@ -63,6 +79,48 @@ def main():
                         seen[h] = seen.get(h, 0) + 1
                 for h, n in sorted(seen.items()):
                     flags.append((d, fn, h, FOREIGN[h], n))
+    # belt and braces: the walk is sorted above, and the RESULT is sorted here, so the report's
+    # order is DERIVED from the data rather than observed from the disk. Either alone would do;
+    # both together mean a future change to the walk cannot silently reintroduce the defect.
+    flags.sort(key=lambda r: (MONO_DIRS.index(r[0]), r[1], r[2]))
+    return flags, scanned
+
+
+def selftest():
+    """The determinism clause, driven — the class #221 found by comparing two environments."""
+    fails = []
+    a, scanned_a = scan()
+    b, scanned_b = scan()
+    if a != b:
+        fails.append("TWO RUNS DISAGREE — the scan is not deterministic within one process")
+    if scanned_a != scanned_b:
+        fails.append("scanned count moved between two runs: %d vs %d" % (scanned_a, scanned_b))
+    if a != sorted(a, key=lambda r: (MONO_DIRS.index(r[0]), r[1], r[2])):
+        fails.append("REPORT ORDER IS NOT DERIVED — rows are in filesystem order, so this "
+                     "artefact is a fingerprint of the machine that wrote it and no two "
+                     "environments can ever agree (#221)")
+    # the control: an UNSORTED copy must fail the same assertion, or the assertion proves nothing
+    if len(a) > 1:
+        shuffled = list(reversed(a))
+        if shuffled == sorted(shuffled, key=lambda r: (MONO_DIRS.index(r[0]), r[1], r[2])):
+            fails.append("CONTROL FAILED — a reversed row list still reads as sorted, so the "
+                         "order assertion above cannot fail and is decoration")
+    else:
+        fails.append("CONTROL UNAVAILABLE — fewer than 2 rows on this tree; the order assertion "
+                     "is unfalsifiable here and is DECLARED, not claimed")
+    if not scanned_a:
+        fails.append("POPULATION EMPTY — the gate would publish a green over nothing")
+    print("theme-provenance selftest: %d row(s) over %d file(s) · 5 arm(s) · %d failure(s)"
+          % (len(a), scanned_a, len(fails)))
+    for f in fails:
+        print("  ⛔ " + f)
+    return 1 if fails else 0
+
+
+def main():
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
+    flags, scanned = scan()
 
     lines = ["# Theme-provenance gate (ADR-0011, R-D19) — ADVISORY\n\n",
              f"Scanned **{scanned}** Mono-designated library files "

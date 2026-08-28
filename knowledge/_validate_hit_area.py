@@ -311,10 +311,16 @@ def measure(files, widths, ignore_pseudo=False, minimum=MIN_DEFAULT, quiet=False
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as exc:                                   # loud, named
+        # ⛔ #221 (from #220's L4 audit, finding F19). This refusal SHIPS, and it used to hand a
+        # designer this repo's own sandbox staging convention — `PYTHONPATH=/var/tmp/pylibs-s<n>`,
+        # a per-session directory that exists on nobody's laptop. A refusal is only honest if the
+        # reader can act on it; the actionable instruction is the install, and the runbook stays
+        # named for the seat that needs the staged form.
         raise RuntimeError(
             "HIT-AREA: HARNESS UNAVAILABLE — playwright not importable (%s). "
-            "Stage it per knowledge/_RUNBOOK-render-verify.md "
-            "(PYTHONPATH=/var/tmp/pylibs-s<n>); this is NOT a pass." % exc)
+            "Install it with `pip install playwright && playwright install chromium`. "
+            "(Inside this repo's sandbox, stage it per knowledge/_RUNBOOK-render-verify.md "
+            "instead.) This is NOT a pass." % exc)
     shell = _shell_path()
     if not shell:
         raise RuntimeError(

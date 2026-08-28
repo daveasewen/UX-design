@@ -240,19 +240,50 @@ jobs:
       - name: Survey the COMMITTED tree — every check/selftest before any regeneration
         run: python3 knowledge/_build_survey.py --timeout 60
 
+      # ⛔ #221 LANE A — `if: ${{ !cancelled() }}` ON EVERY STEP BELOW, AND WHY IT IS NOT A
+      # WEAKENING. GitHub Actions gives every step an implicit `if: success()`. So when the
+      # survey step above goes red, the five steps that follow it are SKIPPED — not failed,
+      # not reported, *never asked*. #220-L1 measured the consequence: the survey has exited
+      # non-zero since `aa26947` (2026-08-26), and for two sessions the 27 gate bites, the 19
+      # advisory bite-tests, the commit-script selftest and the claim-table linter have not
+      # run in CI at all. That is #193's own lesson at the JOB level — *"a queue of unknown
+      # length behind one refusal"* — except these were failures, and the queue was five long.
+      # `!cancelled()` DOES NOT SUPPRESS ANYTHING: each step below still fails the job when it
+      # fails, exactly as before. It only stops one red step from deciding that four
+      # independent questions may not be asked. The three steps that legitimately advise keep
+      # their `continue-on-error`, which is a different mechanism and is unchanged.
+      # ⚠ THE SURVEY'S ORDER IS NOT NEGOTIABLE and was deliberately left alone: it asks the
+      # COMMITTED tree BEFORE any regeneration (the #60-D4 write-then-check seam). Moving it
+      # after the build would destroy the one thing it exists to do.
+      # ⚠ MEASURED, NOT ASSUMED (#221 lane A, bare clone at 9dbf413 = the CI proxy): with the
+      # survey red for three named steps ([13] capture/provenance, [18] `_gm_usage`, [119]
+      # `_gen_chain --selftest`), the four queued steps below were driven by hand and every
+      # one of them ANSWERED — `test_gates.py` 27/0, `test_advisory.py` 19 cases all biting,
+      # `_git_commit.sh --selftest` 14 bites, and the claim-table linter reporting
+      # `6 lint · 0 unparsed · 4 rc/observation mismatch`, which is real information CI has
+      # been blind to for two sessions.
+      # ⚠ STILL PROSE, STILL UNPARSED — but the claim is mechanical: an Actions step with no
+      # `if:` carries `success()`, and `knowledge/_release/_gate_ci_template.py` is the only
+      # instrument in this repo that PARSES a workflow, and it parses the PACK's template, not
+      # this file. See the RULING-SHAPED QUESTIONS in
+      # `notes/_subreports/2026-08-27-221-laneA.md` for the priced proposal to point it here.
       - name: Knowledge build — all derived views + blocking gates
+        if: ${{ !cancelled() }}
         run: python3 knowledge/_build_all.py
 
       - name: Gate self-tests — every gate bites its failure class
+        if: ${{ !cancelled() }}
         run: python3 knowledge/_tests/test_gates.py
 
       - name: Advisory bite-tests — advisory checks must bite (and never block)
+        if: ${{ !cancelled() }}
         run: python3 knowledge/_tests/test_advisory.py
 
       # #208 — the commit script's own gate finally has a runner. `--selftest` is READ-ONLY (no
       # staging, no commit, no push, no writes) and drives the msgfile-prefix counter both ways:
       # 5 shapes that must fire, 5 near misses that must stay silent.
       - name: Commit-script selftest — the msgfile-prefix gate bites both directions (#208)
+        if: ${{ !cancelled() }}
         run: bash knowledge/_git_commit.sh --selftest
 
       # #208 — W-44 IN CI. The `s204-D1` precondition (driven in >= 1 real verifier wave) was met
@@ -265,8 +296,43 @@ jobs:
       # lint failures + 3 rc mismatches that ADR-0017 does not let this lane rewrite.
       # ⬛ FLIPPING THIS TO BLOCKING IS DAVE'S, once that historical residual is triaged.
       - name: Claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: python3 knowledge/_validate_evidence.py notes/_claims
+
+      # ADVISORY, BORN ADVISORY (#221 lane A, from #220-L1 finding 7). THE FALSE GREEN THIS
+      # CLOSES: five gates in this repo do not ASSERT about an artefact, they REWRITE one —
+      # `_validate_a11y.py` → `_A11Y-GATE.md`, `_validate_advisory.py` → `_ADVISORY-SIGNALS.md`,
+      # `_validate_theme_provenance.py` → `_THEME-PROVENANCE-GATE.md`, `_build_integrity.py` →
+      # `_INTEGRITY-REPORT.md`, `_build_instrument_fit.py` → `_INSTRUMENT-FIT.md` + its json.
+      # None carries a `--check` arm, so `_build_survey.py` cannot ask them; the build step
+      # above regenerates them and then never COMPARES; and this job has never had a
+      # `git diff --exit-code` after the build. So CI writes fresh copies of five published
+      # reports, throws them away, and the committed ones drift — L1 measured all five stale at
+      # `707e5aa` (654→664 a11y notes, 123→130 advisory signals, 26 theme-provenance rows,
+      # 19→21 integrity warnings, one missing instrument-fit row).
+      # ⚠ NOT a blanket `git diff --exit-code`: the build legitimately rewrites other artefacts,
+      # and a blanket diff would red on those too. `_gate_artefact_fresh.py` names its five
+      # populations and reports only on them. ⬛ PROMOTION TO BLOCKING IS DAVE'S — it is
+      # advisory at birth and says so in its own header (L1's ruling-shaped question 3).
+      - name: Committed gate artefacts vs a fresh run — the writer-gates nothing compares (ADVISORY; born advisory, #221)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python3 knowledge/_gate_artefact_fresh.py --check
+
+      # ADVISORY, BORN ADVISORY (#221 lane A, the #122 seed — [[no-gate-parses-the-artefact]]).
+      # #220-L1 finding 16: the fleet's static leg has NO HTML parser and NO CSS parser anywhere
+      # in it — eight BLOCKING gates read HTML/CSS with `re` alone. Finding 12 is what that
+      # costs: `_validate_no_hardcode.py` read only `<style>` blocks, so
+      # `<div style="padding:13px;border-radius:7px;border-width:5px">` walked through a BLOCKING
+      # DEF-004 gate green. This step is the SEED, not the ocean: ONE parser, over the narrowest
+      # population where a parser would have caught a proved false green (the `style=""`
+      # attributes of `knowledge/_proforma/*.html`), in the consumer's own grammar
+      # (`html.parser`). The rest of finding 16 is priced, not built — see the lane A report.
+      - name: Inline-style parse gate — `style=""` read with an HTML parser, not a regex (ADVISORY; #122 seed)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python3 knowledge/_gate_inline_style_parse.py --check
 
   # Render job — added #155 (Dave ruled: "keep the ubuntu solution", on #153-A ⑨).
   # BLOCKING: the state-contrast selftest (57 arms incl. the s152-D1 mutation

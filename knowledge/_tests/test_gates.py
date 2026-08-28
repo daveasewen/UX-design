@@ -139,18 +139,72 @@ def case_write_gate(tmp):
            f"exit={r2.returncode}, out={out2.strip()[:160]!r}")
 
 
+# ⛔ #221 — THE TWO REPAIRED GATES' OWN BITES, GIVEN A RUNNER.
+# #220-L1 finding 9: eight fleet members ship a `--selftest` that NOTHING RUNS, and finding 10:
+# 26 BLOCKING-routed scripts have no known-answer test that actually runs. The two L1 chose to
+# mutation-probe were both on that list and BOTH turned out to be blind — which is the whole
+# argument [[instrument-without-a-consumer]]. #221 repaired both at cause and gave each a bite
+# list; this is the consumer, and it is a consumer that CI already runs.
+# ⚠ READ-ONLY BY CONSTRUCTION: both arms return before their `main()` writes, so this needs no
+# `fresh_copy` and mutates nothing. Verified by md5 either side when the arms were built.
+# ⚠ NOT WIRED HERE, AND WHY: the other six orphan selftests of L1 finding 9 are not added in
+# this change. `_validate_hit_area.py --selftest` is the BROWSER case (L1 finding 14) and would
+# make this file a #173 gate — one that cannot pass in the `gates` job — so it must wait for a
+# shared `browser_reachable()` refusal. The remaining five are cheap and are priced as a handoff
+# in `notes/_subreports/2026-08-27-221-laneA.md`, not smuggled in beside a repair.
+SELFTEST_ARMS = [
+    ("radius gate's own bites run (8 longhand mutants + token controls, #221)", "_validate_radius.py"),
+    ("no-hardcode gate's own bites run (8 planted + 8 clean, #221)", "_validate_no_hardcode.py"),
+    ("theme-provenance report order is DERIVED, not filesystem order (#221)",
+     "_validate_theme_provenance.py"),
+    ("wiring gate's own bites run (13, incl. the widened glob + the anti-laundering arm, #221)",
+     "_validate_wiring.py"),
+]
+
+
+def case_selftest_arms():
+    for name, script in SELFTEST_ARMS:
+        p = os.path.join(KNOW, script)
+        r = subprocess.run([sys.executable, p, "--selftest"],
+                           capture_output=True, text=True, timeout=120)
+        out = (r.stdout + r.stderr).strip()
+        record(name, r.returncode == 0, f"exit={r.returncode}, out={out[-200:]!r}")
+
+
 def bite(tmp, name, tag, gate, mutate, marker):
-    """Copy → mutate → run gate → assert it bites with the expected complaint."""
+    """Copy → mutate → run gate → assert it bites with the expected complaint.
+
+    ⛔ #221 — EACH BITE NOW RELEASES ITS COPY, and this is a repair, not tidying. Every case
+    took a `fresh_copy` of `knowledge/` and NOTHING removed it until the whole suite finished,
+    so the peak cost was 27 copies held at once. MEASURED in this sandbox: one copy is 93 MB of
+    tracked content, so the suite needed ~2.6 GB of free scratch to reach its own last case, and
+    it did not have it — three separate runs died mid-suite with `[Errno 28] No space left on
+    device` at cases 5, 12 and 24 of 27. The verdict a reader got was a `shutil.Error` traceback,
+    not "3 gates unproven".
+    ⚠ THIS IS THE [[gate-cannot-pass-in-one-environment]] CLASS AIMED AT THE BITE HARNESS ITSELF
+    — the one instrument whose job is to prove the others bite. It is CI-green only because a
+    GitHub runner has the disk; on any box that does not, the suite silently stops being a
+    27-case suite and nobody is told which cases were skipped.
+    ⚠ AND IT IS WORSE IN A WORKING TREE THAN IN A CHECKOUT: `fresh_copy` copies the LIVE
+    directory, so it also copies whatever untracked bulk is sitting in it. Measured here:
+    tracked `knowledge/assets` is 55 MB, the working tree's is 5.2 GB — so in this session a
+    single copy was ~50x the size CI ever sees. ⬛ Whether `assets` belongs in `IGNORE` is NOT
+    decided here: several gates in `CASES` read from it, and a wrong `IGNORE` entry is a gate
+    made blind, which is the exact class #220-L1 spent its lane on. Priced as a handoff.
+    """
     k = fresh_copy(tmp, tag)
     try:
-        mutate(k)
-    except Exception as e:
-        record(name, False, f"mutation failed: {e}")
-        return
-    code, out = run_gate(k, gate)
-    ok = (code != 0) and (marker in out)
-    detail = f"exit={code}, marker {'found' if marker in out else 'MISSING: ' + marker!r}"
-    record(name, ok, detail)
+        try:
+            mutate(k)
+        except Exception as e:
+            record(name, False, f"mutation failed: {e}")
+            return
+        code, out = run_gate(k, gate)
+        ok = (code != 0) and (marker in out)
+        detail = f"exit={code}, marker {'found' if marker in out else 'MISSING: ' + marker!r}"
+        record(name, ok, detail)
+    finally:
+        shutil.rmtree(k, ignore_errors=True)
 
 
 def mut_token_drift(k):
@@ -411,6 +465,7 @@ def main():
     try:
         case_control(tmp)
         case_write_gate(tmp)
+        case_selftest_arms()
         for name, tag, gate, mutate, marker in CASES:
             bite(tmp, name, tag, gate, mutate, marker)
     finally:

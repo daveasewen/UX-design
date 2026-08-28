@@ -77,6 +77,23 @@ BANK = os.path.join(SCRATCH, "descender-computed-bank.json")
 # Reuse the arithmetic leg's parser so the two legs cannot drift apart on what a "rule" is.
 sys.path.insert(0, HERE)
 import _validate_descender_clip as A  # noqa: E402
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
+
+
+class DescenderUnreachable(Exception):
+    """The INSTRUMENT is absent — a browser this box cannot host, not a verdict about the CSS.
+
+    ⛔ #221 (from #220's L4 audit, finding F12). `drive()` used to raise a bare
+    `SystemExit("... UNDRIVEABLE ...")`, which exits **1** — the same code a real measured
+    descender failure returns. The pack's own `ci-template/README.md` promises a designer three
+    verdicts and says a check that cannot run "does not fail the build"; this refusal could not
+    say so in the runner's vocabulary, so every adopter without playwright met it as a build
+    FAILURE. The words were honest; the exit code was not.
+    [[honest-refusal-needs-a-legal-form]] · [[gate-cannot-pass-in-one-environment]]
+
+    `__main__` answers this one in the #193 convention — a `COULD-NOT-ASK:` line and
+    `_could_not_ask.EXIT` (77) — so a survey counts it as a refusal, not a failure.
+    """
 
 # The one property pair that decides a descender clip. `text-box-trim` says whether the box is
 # trimmed at all; `text-box-edge` says to WHICH edge. Chromium serialises `text text` as `text`.
@@ -233,10 +250,16 @@ def drive(items, canon_css_path=None):
     """Render each (slug, selectors) both ways. Returns {slug: {...}}; raises on an undriveable env."""
     try:
         from playwright.sync_api import sync_playwright
-    except Exception as e:                                    # a crash is not a fail — name it
-        raise SystemExit(f"descender --computed: UNDRIVEABLE — playwright not importable ({e}). "
-                         f"Stage it per knowledge/_RUNBOOK-render-verify.md and set PYTHONPATH / "
-                         f"PLAYWRIGHT_BROWSERS_PATH. This is a REFUSAL, not a pass.")
+    except ImportError as e:                                  # a crash is not a fail — name it
+        # ⚠ The instruction here is the one a DESIGNER can follow. It used to name this repo's
+        # own sandbox staging convention (`_RUNBOOK-render-verify.md`, `PYTHONPATH=/var/tmp/
+        # pylibs-s<n>`), which means nothing on a laptop and is #220-L4's finding F19 class:
+        # a session-local convention leaking into a shipped refusal.
+        raise DescenderUnreachable(
+            f"playwright is not importable ({e}) — this gate measures rendered geometry and "
+            f"cannot be answered without a browser. Install it with `pip install playwright && "
+            f"playwright install chromium`. Inside this design system's own CI the proof lives "
+            f"in the `render` job, which installs chromium and runs this BLOCKING.")
     canon_css_path = canon_css_path or CANON_CSS
     stage = tempfile.mkdtemp(prefix="g2-", dir=SCRATCH)
     results = {}
@@ -438,4 +461,9 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except DescenderUnreachable as _e:
+        # The ONE place this becomes an exit code. 77 + a marked line, so the pack runner and
+        # `_build_all.py` both read it as a declared refusal instead of a measured failure.
+        sys.exit(cna.refuse("DESCENDER-COMPUTED: HARNESS UNAVAILABLE", str(_e)))

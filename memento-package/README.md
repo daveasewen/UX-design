@@ -47,9 +47,17 @@ you, per the instructions in `.github/copilot-instructions.md`.
 5. From then on, saying "good morning" picks up wherever the last session left off.
 
 **Optional health check:** once you've had at least one session (so the project has its
-`GOOD-MORNING.md`), run `python3 machinery/_gen_chain.py --selftest` from the project root. All
-bites should pass. Run from a bare, fresh unzip it will report "GOOD-MORNING.md is missing" —
-that's expected, not a fault: there's no project content yet for it to check.
+`GOOD-MORNING.md`), run `python3 machinery/_gen_chain.py --selftest` from the project root. Run
+from a bare, fresh unzip it will report "GOOD-MORNING.md is missing" — that's expected, not a
+fault: there's no project content yet for it to check.
+
+⚠ **One bite is expected to fail in a new project, and it is honest about why.** The generated
+chain is meant to be materially smaller than the `GOOD-MORNING.md` it replaces — the floor is
+40% — and in a brand-new project it is not, because the wrapper text around your session's few
+lines is still sized for the design system this machinery came from. The bite reports the real
+ratio and calls it a failure, which is correct: it is a known, declared shortfall in the cut,
+not something you have done wrong, and it shrinks on its own as your record grows. Every other
+bite should pass. If a *different* one fails, that is worth reporting.
 
 ## What to try
 
