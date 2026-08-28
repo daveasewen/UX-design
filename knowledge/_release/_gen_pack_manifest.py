@@ -2365,8 +2365,25 @@ def check_pack(zip_path, man, sha):
             txt = z.read(readme[0]).decode("utf8", "replace")
             if sha not in txt:
                 fails.append("pack README does not carry the commit sha %s" % sha[:12])
-            if manifest_hash(canonical(man)) not in txt:
-                fails.append("pack README does not carry the manifest hash")
+            # ⛔ #223, s223-D8. The README stamps the sha256 of THE MANIFEST THAT SHIPS, and
+            # since the ratification stamp moved outside the zip that is the status-free packed
+            # copy, not the repo-side file. This arm reads those bytes back OUT OF THE ZIP,
+            # which makes it strictly stronger than the version it replaces: the old arm
+            # compared the README to a file sitting outside the pack, and would have passed a
+            # pack whose own _MANIFEST.json had been swapped. The repo↔pack link it used to
+            # carry is not lost — it is asserted directly, as the derivation identity.
+            packed_name = root + "/_MANIFEST.json"
+            if packed_name not in names:
+                fails.append("pack has no _MANIFEST.json at its root")
+            else:
+                packed = z.read(packed_name)
+                packed_sha = hashlib.sha256(packed).hexdigest()
+                if packed_sha not in txt:
+                    fails.append("pack README does not carry the sha256 of the _MANIFEST.json "
+                                 "that ships (%s…)" % packed_sha[:16])
+                if packed.decode("utf8") != packed_manifest_text(canonical(man)):
+                    fails.append("the shipped _MANIFEST.json is not the status-free derivation "
+                                 "of the repo-side manifest (s223-D8)")
         else:
             fails.append("pack has no README.md at its root")
     return fails
