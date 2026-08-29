@@ -24,7 +24,7 @@ and NOT ONE that reads a shipped document the way the person holding it will. Th
 over an artefact should parse it in its consumer's grammar. A designer's grammar is: *I type
 this command / I open this path, and it works.*
 
-WHAT IT DOES — four arms, each drivable to both verdicts (see `--selftest`).
+WHAT IT DOES — five arms, each drivable to both verdicts (see `--selftest`).
 
   1. COMMANDS RESOLVE.  Every `python3 <path>` in every shipped `.md` must name a file that is
      in the pack. Resolved from the pack root FIRST (what the docs say they run from) and then
@@ -39,6 +39,23 @@ WHAT IT DOES — four arms, each drivable to both verdicts (see `--selftest`).
      checked against `_MANIFEST.json`'s own verdict tallies, and the published `files:` figure
      against the staged file count. Figures a manifest can compute should not be typed
      [[measure-dont-convert-units]] — until they are generated, they can at least be checked.
+  5. THE CARRIED CUT AGREES WITH ITSELF.  Arm 3 knows exactly one spelling — `Apollo-Spider-vX` —
+     and a pack names TWO versions: the Spider it is, and the Memento — Gumdrop cut it carries.
+     #224 measured the blind spot: three `Memento — Gumdrop v1.0.0` literals shipped inside
+     v1.0.2, whose `_MANIFEST.json` says it carries v1.0.2, and this gate was silent on all
+     three. Arm 5 collects every `Memento — Gumdrop vX.Y.Z` literal in the same document scope
+     and grades them AGAINST EACH OTHER. Two spellings in one pack is a pack disagreeing with
+     itself about what it carries, which is a finding whoever is right.
+
+     ⛔ WHAT ARM 5 DELIBERATELY DOES NOT DO. There is no ruled canonical Gumdrop version, so
+     this arm never compares a literal to `pack_version` (that is the SPIDER version — a
+     different register) and never asserts which of two disagreeing literals is correct.
+     Asserting one would be this gate inventing a ruling it was not given [[gate-glob-scope-rule]].
+     It reports the spread in every run, green or red, so the figure is never invisible
+     [[instrument-without-a-consumer]]; a single consistent spelling passes whatever it says.
+     One literal lives in `memento-package/_state.json` (`built_by`), which is JSON and NOT in
+     this gate's `.md` document scope — declared here so its absence from the sweep is a stated
+     boundary and not a silent one. Widening the glob is a separate call, and Dave's.
 
 ⚠ WHAT IT CANNOT SEE. It does not follow prose ("the folder above this one"), does not run the
 commands it resolves, and does not grade whether an existing file says the right thing. It
@@ -89,6 +106,12 @@ DESIGNER_CREATES = {
 DETAIL_CAP = 20                       # per arm; the COUNT is never capped, only the printout
 VERSION_RE = re.compile(r"Apollo-Spider-v(\d+\.\d+\.\d+)")
 GATES_COUNT_RE = re.compile(r"\*\*(\d+)\s+gates\*\*")
+# arm 5 — the CARRIED cut, a different version register from VERSION_RE's. Anchored on "Memento"
+# so a bare "Gumdrop v…" in prose is not swept: measured on the shipped v1.0.2 tree, every
+# occurrence in a shipped `.md` carries the full "Memento — Gumdrop v" spelling, so the anchor
+# costs nothing [[unmatched-grep-is-not-an-absence]]. The separator is tolerated as em/en/hyphen
+# with any spacing, because a dash is exactly the character a hand-typed literal gets wrong.
+GUMDROP_RE = re.compile(r"Memento\s*[—–-]\s*Gumdrop\s+v(\d+\.\d+\.\d+)")
 
 
 def md_files(stage):
@@ -125,6 +148,7 @@ def is_placeholder(s):
 def audit(stage, pack_version=None):
     """Returns (findings, stats). A finding is (arm, doc, needle, why)."""
     findings, skipped, checked = [], 0, 0
+    gumdrop = {}                          # arm 5: version -> [(doc, literal), …], EVERY occurrence
     docs = md_files(stage)
     for doc in docs:
         try:
@@ -168,6 +192,25 @@ def audit(stage, pack_version=None):
                     findings.append(("version", doc, m.group(0),
                                      "this pack is v%s — a version string was not swept at bake"
                                      % pack_version))
+        # ---- arm 5: the CARRIED cut. Collected here, graded after every doc is read — the
+        # question is cross-document by construction ("do these agree?"), so it cannot be
+        # answered from inside the loop.
+        for m in GUMDROP_RE.finditer(text):
+            checked += 1
+            gumdrop.setdefault(m.group(1), []).append((doc, m.group(0)))
+    # ---- arm 5, the verdict: internal consistency ONLY. ⛔ Never compared to pack_version —
+    # that is the Spider version, and no canonical Gumdrop version is ruled. One spelling passes,
+    # whatever it says; two spellings is the pack disagreeing with itself about what it carries.
+    if len(gumdrop) > 1:
+        spread = ", ".join("v%s ×%d" % (v, len(gumdrop[v])) for v in sorted(gumdrop))
+        for v in sorted(gumdrop):
+            for doc, lit in gumdrop[v]:
+                findings.append(("gumdrop", doc, lit,
+                                 "the shipped documents name %d different Gumdrop cuts (%s) — "
+                                 "this pack disagrees with itself about what it carries. Graded "
+                                 "against EACH OTHER only: no canonical Gumdrop version is "
+                                 "ruled, so this gate does not say which one is right"
+                                 % (len(gumdrop), spread)))
     # ---- arm 4: typed counts against the manifest
     man_path = os.path.join(stage, "_MANIFEST.json")
     if os.path.exists(man_path):
@@ -214,13 +257,29 @@ def audit(stage, pack_version=None):
                 findings.append(("counts", "PROVENANCE.json", "files: %d" % claimed,
                                  "the staged tree holds %d file(s) — the published figure comes "
                                  "from a different column than the one it names" % actual))
-    return findings, {"docs": len(docs), "checked": checked, "skipped": skipped}
+    return findings, {"docs": len(docs), "checked": checked, "skipped": skipped,
+                      "gumdrop": {v: len(occ) for v, occ in gumdrop.items()}}
 
 
 def report(findings, stats, stage, strict):
     print("pack-docs gate (ADVISORY) — %d document(s), %d name(s) resolved, %d placeholder(s) "
           "skipped by name" % (stats["docs"], stats["checked"], stats["skipped"]))
     print("  stage: %s" % stage)
+    # arm 5's reading is PRINTED EVERY RUN, green or red. A figure only shown when it is wrong
+    # is a figure nobody can baseline [[instrument-without-a-consumer]].
+    g = stats.get("gumdrop") or {}
+    if not g:
+        print("  ⚠ no `Memento — Gumdrop vX.Y.Z` literal in any shipped document — arm 5 (the "
+              "carried-cut sweep) is UNRUN, and says so rather than passing quietly.")
+    elif len(g) == 1:
+        v, n = next(iter(g.items()))
+        print("  carried cut, as the shipped documents name it: Memento — Gumdrop v%s (×%d) — "
+              "internally consistent." % (v, n))
+    else:
+        print("  ⚠ carried cut, as the shipped documents name it: %s — THEY DISAGREE. ⛔ No "
+              "canonical Gumdrop version is ruled; this arm grades the literals against EACH "
+              "OTHER only and never says which is right." % ", ".join(
+                  "Memento — Gumdrop v%s (×%d)" % (v, g[v]) for v in sorted(g)))
     if not findings:
         print("✅ every command and path in every shipped document resolves in the tree it "
               "ships in.")
@@ -320,6 +379,37 @@ def selftest():
         f, _ = audit(d, pack_version="9.9.9")
         bite("arm 3 CLEARS on the current version", f == [])
 
+        # -- arm 5: the carried cut. Three directions, because two verdicts are not enough here:
+        #    it must FIRE on a disagreement, CLEAR on agreement, and — the bite that fences the
+        #    ruling — CLEAR when the carried cut simply differs from the pack's own version.
+        g2 = os.path.join(d, "memento-package", "CARRIED.md")
+        open(doc, "w").write(clean + "This pack carries `Memento — Gumdrop v0.4.2`.\n")
+        open(g2, "w").write("*Memento — Gumdrop v0.4.2, for VS Code + GitHub Copilot.*\n")
+        f, s = audit(d, pack_version="9.9.9")
+        bite("arm 5 CLEARS on one consistent Gumdrop spelling across two documents",
+             f == [] and s["gumdrop"] == {"0.4.2": 2})
+        bite("arm 5 does NOT grade the carried cut against the SPIDER version "
+             "(v0.4.2 inside a v9.9.9 pack is green — it invents no ruling)",
+             not any(a == "gumdrop" for a, _, _n, _w in f))
+        open(g2, "w").write("*Memento — Gumdrop v0.4.1, for VS Code + GitHub Copilot.*\n")
+        f, s = audit(d, pack_version="9.9.9")
+        bite("arm 5 FIRES when two shipped documents name different Gumdrop cuts (#224)",
+             sum(1 for a, _, _n, _w in f if a == "gumdrop") == 2
+             and s["gumdrop"] == {"0.4.2": 1, "0.4.1": 1})
+        bite("arm 5 names BOTH cuts in the finding, so neither is presumed right",
+             all("v0.4.1" in w and "v0.4.2" in w
+                 for a, _, _n, w in f if a == "gumdrop"))
+        # the em dash is what a hand-typed literal gets wrong; a hyphen must not escape the sweep
+        open(g2, "w").write("*Memento - Gumdrop v0.4.1, for VS Code.*\n")
+        f, _ = audit(d, pack_version="9.9.9")
+        bite("arm 5 sees a hyphen-spelled literal too (the dash is not a hiding place)",
+             any(a == "gumdrop" and "Gumdrop v0.4.1" in n for a, _, n, _w in f))
+        os.remove(g2)
+        open(doc, "w").write(clean)
+        f, s = audit(d, pack_version="9.9.9")
+        bite("arm 5 reports UNRUN rather than green when no Gumdrop literal is in scope",
+             f == [] and s["gumdrop"] == {})
+
         # -- arm 4: a typed gate count that disagrees with the manifest (F14)
         rd = os.path.join(d, "ci-template", "README.md")
         open(rd, "w").write("| **3 gates** | run on plain Python |\n")
@@ -357,7 +447,7 @@ def selftest():
     if fails:
         print("\npack-docs selftest FAILED — %d bite(s): %s" % (len(fails), fails))
         return 1
-    print("\npack-docs selftest OK — 4 arms, each driven to BOTH verdicts.")
+    print("\npack-docs selftest OK — 5 arms, each driven to BOTH verdicts.")
     return 0
 
 
