@@ -609,6 +609,10 @@ RATIFY_IDS = {
                             # v1.0.1 has no row and never will: it was cut at #220, before the
                             # re-key existed, under v1.0.0's inherited word — the defect s223-D3
                             # names. Rows are ADDED here, never moved (ADR-0017, one home).
+    "v1.0.3": "s224-D1",    # #225, Dave's word 'Ratify — bake it' (2026-08-29), given at the
+                            # opener against the s224-D1 store entry (tier-1 port-back cut);
+                            # per s223-D3 the ratify check is re-keyed PER CUT and this ruling
+                            # IS the store entry --release requires.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
