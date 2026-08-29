@@ -1,5 +1,23 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-08-29 #224 (2d, at the #224 wrap) — via the mover
+
+*The #221 delta, moved VERBATIM at the 2d boundary (LATEST + 2 PRIOR) when #224 became LATEST. Nothing deleted — moved. Its durable WHY lives in `knowledge/_rulings.json`, the filed reports under `notes/_subreports/` and git.*
+## ⏱ PRIOR DELTA — 2026-08-28 (Fri from `date`) (**#221**, one day spilling past midnight 2026-08-27→28, FABLE conductor + 4 MEASURED Opus repair lanes + 2 MEASURED Fable subs (adversarial verifier + mono specimen) + this OPUS wrap sub, DELEGATED wrap, ⛔ **ZERO RULINGS INSCRIBED** — the repair wave: the #220 audit findings enacted, six lanes)
+
+*(WHY/HOW: ✅ **A `_DECISION-HISTORY/` DOSSIER WAS WRITTEN — `_DECISION-HISTORY/2026-08-28-221-the-repair-wave.md`** (row `W-240`): why the audit and the surgery were deliberately separated, what the divvy's two stale premises cost, and why a gate firing on its first day answers [[instrument-without-a-consumer]] rather than repeating it.)*
+
+- ★★ **THE WAVE LANDED AS ONE RECONCILED COMMIT — `2d375c6`**, subject verified from `git log`: `after #221 2026-08-28 — #221: the repair wave — the #220 audit findings enacted, six lanes`. Six reports filed under `s218-D7` and **CITED BY PATH**: `notes/_subreports/2026-08-27-221-lane{A,B,C,D}.md` · `-verify.md` · `-mono-specimen.md`. Twelve rows `W-227`…`W-238`; this wrap adds `W-239`/`W-240`.
+- ⚠ **THE DIVVY CARRIED TWO STALE PREMISES AND LANE D FOUND THEM.** Four of Lane D's six items were **ALREADY BUILT** at #218/#211 — one of them built *because the same brief text was handed to that session too* — and the divvy's global write-door pitfall was **FALSE at HEAD**. Only the regen-serial check had never existed. ★ **The conductor's own miss, named by his own honesty clause; digested at the #222 opener and ruled nowhere.**
+- ★★ **A GATE WITH A CONSUMER ON DAY ONE.** `_gate_fallback_drift_221.py` returned **rc=1** in-session on `gen_mono_gallery_221.py` — `var(--surface-subtle,#F3F3F3)` against canon's own answers — the same stale value the wave had just repaired in seven generators. **Re-derived to `#F0F0F0`, regenerated, green; re-driven at this wrap: `0 drifted`.** ⛔ **Still ADVISORY, and it stays advisory.**
+- ✅ **VERIFY WAVE: 82 GREEN · 1 RED · 9 COULD-NOT-RUN, ALL FOUR CROSS-LANE SEAMS GREEN.** ⛔ The one red is **a wrong expected figure in Lane D's replay prose**, not a broken instrument — the shared-helper flip gives 3 coherent tier-pin failures where the report says 1. ⚠ **Could-not-runs are graded COULD-NOT-RUN, never green.**
+- ⬛ **MONO'S DEFAULT — BOTH PREMISES TRUE, NOTHING RULED.** `reviews/MONO-GALLERY-DEFAULT-2026-08-27-v1.html` shows console's ruled default beside the mono candidate beside mono today, light and dark, with **computed VERIFIED-AT-HEAD chips**. ⛔ **`s221-D1` does not exist in the store — `s220-D2`'s EXPRESSLY OPEN mono clause stands and his one word is owed.**
+- ⚙ **GAUGE — THREE MOMENTS, NONE ROUNDED INTO ANOTHER** [[measure-dont-convert-units]]. **boot 69,692 real — ⛔ OUT of the `s208-D1` band by 11,789, the ELEVENTH consecutive**, declared at the opener and logged once. **brief-cut FILL 207,853 real · sub-cut 207,853 real over 32 turns, first-hand.** ✅ **The ~190,000 crossing was DECLARED BEFORE IT HAPPENED** — #220's pitfall (d) remedy enacted. **subs 1,507,353 tokens (n=6)**, QUOTA never FILL.
+- ⛔ **NOT RUN / NOT CLAIMED BY THIS WRAP:** no memory step 3 (NON-REPO, **the conductor's, DECLARED SKIPPED**) · no CI read-back (`gh` absent, API 404s unauthenticated from this seat — the verdict stays the conductor's, `s203-D1`) · **no push from this seat** · no `_build_all.py` · **no write to `knowledge/_rulings.json`, which was READ ONLY**.
+- ⬛ **OPEN AND DAVE'S, CARRIED FORWARD:** **mono's one word** · his eye on the mono candidate page · the **97 open sitting calls + 25 candidates, unchanged** · the **`s208-D1` re-base** (eleventh drift, his boot-REDUCTION rider binds) · the **29 fork candidates and the THIRD RED `#a8000b`** the two-red law does not name · **Lane C's F9 handoff** (`apollo-spider/gumdrop/_state.py` a byte-identical twin of `knowledge/_state.py`, no comparing gate) · **Lane A's residual CI causes**, two ruling-shaped · the **CI read-back queue**, still blocked at his GitHub sign-in · the **five advisory instruments' promote-or-park**.
+
+
+
 ## Rolled 2026-08-28 #223 (2d, at the #223 wrap) — via the mover
 
 *The #220 delta, moved VERBATIM at the 2d boundary (LATEST + 2 PRIOR) when #223 became LATEST. Nothing deleted — moved. Its durable WHY lives in `knowledge/_rulings.json` § `s220-D1`…`s220-D3` and in the #220 banner now at `_GM-ARCHIVE.md` § Batch 2026-08-28 #222.*
