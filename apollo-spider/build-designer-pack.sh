@@ -35,7 +35,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$ROOT/knowledge/_release/_gen_pack_manifest.py"
 MANIFEST="$ROOT/knowledge/_release/_pack_manifest.json"
-VERSION="v1.0.2"
+VERSION="v1.0.3"
 PACKNAME="Apollo-Spider-${VERSION}"
 DIST="$ROOT/apollo-spider/dist"
 
@@ -270,6 +270,12 @@ between two packs is a real difference and can be audited.
 - \`.github/\` — the VS Code + Copilot bridge. \`copilot-instructions.md\` is loaded automatically
   and indexes the five skills with the phrases that should trigger each one; \`prompts/\` makes
   each skill a slash command. Without this the skills sit in the pack and never fire.
+- \`.vscode/settings.json\` — the other half of that bridge: three Copilot settings that turn on
+  the agent's debug-file log, which is where Copilot records **the server's own reported token
+  usage for your session**. That is the session gauge, and until this cut the pack told you it
+  did not exist. Reload the window once after unzipping.
+  \`memento-package/runbooks/_RUNBOOK-context-gauge.md\` says how to read it, what the number
+  means, and — just as important — what it must never be compared to.
 - \`memento-package/\` — **$MEM_NAME $MEM_VERSION**: Memento's machinery, plus the cold start.
   The machinery is the engine this design system runs on. The record it ships is **empty on
   purpose**: an empty task store, an empty rulings store — both with the shapes already right and

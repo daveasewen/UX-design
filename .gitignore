@@ -2,6 +2,15 @@
 .DS_Store
 Thumbs.db
 .vscode/
+# EXCEPTION (s224-D1, v1.0.3): the RELEASE SURFACE's .vscode/ is not editor noise — it is a
+# SHIPPED FILE. `apollo-spider/.vscode/settings.json` turns on Copilot's agent debug logging so
+# the designer's session gauge has a real reading to take (see
+# apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md). ⛔ The pack's ship list is generated
+# from `git ls-tree` at a named commit, so an IGNORED file can never ship, however the manifest
+# rules are written. Two lines are required, not one: git does not descend into an excluded
+# DIRECTORY, so the directory must be re-included before the file can be.
+!apollo-spider/.vscode/
+!apollo-spider/.vscode/settings.json
 .idea/
 
 # Python

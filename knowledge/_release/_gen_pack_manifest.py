@@ -110,9 +110,9 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.2"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.3"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
-MEMENTO_CUT_VERSION = "v1.0.2"
+MEMENTO_CUT_VERSION = "v1.0.3"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -477,9 +477,11 @@ def groups():
         # claims was already owned.
         dict(key="gumdrop", group="gumdrop", title="Memento — Gumdrop cold start",
              plain="What a designer meets on day one: the guided first session, the Copilot "
-                   "boot instructions, an empty task store and an empty rulings store with the "
-                   "shapes already right, a starter chain that explains the first move, and the "
-                   "two Memento runbooks rewritten for VS Code + Copilot. The stores ship EMPTY "
+                   "boot instructions, the workspace settings that turn on Copilot's agent debug "
+                   "log so the session gauge has a real reading to take, an empty task store and "
+                   "an empty rulings store with the shapes already right, a starter chain that "
+                   "explains the first move, and the two Memento runbooks rewritten for VS Code "
+                   "+ Copilot. The stores ship EMPTY "
                    "on purpose — the shape is machinery, the contents are the designer's record.",
              match=lambda p: (p.startswith("apollo-spider/gumdrop/")
                               or p == "apollo-spider/FIRST-SESSION.md"
@@ -488,7 +490,21 @@ def groups():
                               # makes the skills reachable in VS Code (#219 N3 dialect check).
                               # Naming one file here and adding the shims later is how half a
                               # bridge ships.
-                              or p.startswith("apollo-spider/.github/"))),
+                              or p.startswith("apollo-spider/.github/")
+                              # ⛔ #224, s224-D1. `.vscode/settings.json` is the OTHER half of the
+                              # VS Code bridge and it is a SHIPPED FILE, not editor noise: it
+                              # turns on Copilot's agent debug-file logging, which is what makes
+                              # the context-gauge runbook's reading exist at all. The pack up to
+                              # v1.0.2 told the designer "there is no reading to take"; that was
+                              # measured false on a real locked-down machine, and this file is
+                              # the correction's working half.
+                              # ⚠ A MATCH RULE ALONE CANNOT SHIP IT. The ship list is generated
+                              # from `git ls-tree` at the named commit, so the repo's root
+                              # `.gitignore` (`.vscode/`) had to grow an explicit two-line
+                              # exception for `apollo-spider/.vscode/` first — otherwise this
+                              # lambda claims a path that is never in the tree and the group
+                              # silently ships one file short [[forgotten-document-class]].
+                              or p.startswith("apollo-spider/.vscode/"))),
 
         # #219 seam 7, on R3's Q1: the skills group ships R3's OWN five, not v2's four. Until this
         # was repointed the pack shipped v2's skills and none of the refreshed set — the whole
@@ -2530,7 +2546,11 @@ def selftest():
                    "apollo-spider/gumdrop/_rulings.json",
                    "apollo-spider/gumdrop/runbooks/_RUNBOOK-context-gauge.md",
                    "apollo-spider/FIRST-SESSION.md",
-                   "apollo-spider/.github/copilot-instructions.md"]
+                   "apollo-spider/.github/copilot-instructions.md",
+                   # #224, s224-D1 — the Copilot telemetry tap. A DOTFILE, which is the whole
+                   # reason it gets its own probe row: dot-paths are the ones a packer drops
+                   # quietly [[unmatched-grep-is-not-an-absence]].
+                   "apollo-spider/.vscode/settings.json"]
     for p in probe_paths:
         hits = [g["key"] for g in tbl if g["match"](p)]
         bite("groups/claims:%s" % os.path.basename(p), len(hits) >= 1, True,
@@ -2569,6 +2589,11 @@ def selftest():
          "the seed map must be consulted BEFORE the apollo-spider flatten")
     bite("packpath/coldstart-docs-flatten",
          pack_path("apollo-spider/FIRST-SESSION.md"), "FIRST-SESSION.md")
+    # #224, s224-D1. The dotfile lands at the PACK ROOT, where VS Code looks — `.vscode/` two
+    # levels down is a settings file nothing reads. Same flatten as FIRST-SESSION.md, asserted
+    # separately because a dot-path is the one a flatten is most likely to skip.
+    bite("packpath/vscode-settings-flatten",
+         pack_path("apollo-spider/.vscode/settings.json"), ".vscode/settings.json")
     tmp2 = tempfile.mkdtemp(prefix="packseed-", dir="/var/tmp")
     try:
         os.makedirs(os.path.join(tmp2, "apollo-spider", "gumdrop", "runbooks"))
@@ -2926,10 +2951,11 @@ def selftest():
     bite("naming/prefix-is-the-pack-dir", PACK_SURFACE_PREFIX, "apollo-spider/")
     # ⚠ #220. The literal on the right is a HAND-MOVED FIXTURE and that is deliberate: it makes
     # every version bump of the carried cut a decision somebody typed, not a value that drifted.
-    # Moved v1.0.0 -> v1.0.1 at the #220 bake, and v1.0.1 -> v1.0.2 at #223 (s223-D2), each
-    # time in the same edit as MEMENTO_CUT_VERSION itself.
+    # Moved v1.0.0 -> v1.0.1 at the #220 bake, v1.0.1 -> v1.0.2 at #223 (s223-D2), and
+    # v1.0.2 -> v1.0.3 at #224 (s224-D1), each time in the same edit as MEMENTO_CUT_VERSION
+    # itself.
     bite("naming/memento-cut-is-named", (MEMENTO_CUT_NAME, MEMENTO_CUT_VERSION),
-         ("Memento — Gumdrop", "v1.0.2"),
+         ("Memento — Gumdrop", "v1.0.3"),
          "the cut inside the pack carries its own identity (s219-D8)")
     for q in OPEN_QUESTIONS:
         bite("questions/has-body:%s" % q["id"], len(q["body"].strip()) > 40, True)

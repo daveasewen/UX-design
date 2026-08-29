@@ -131,7 +131,11 @@ At the end of a working session, run the sequence in
 **Do not wait to be asked.** When a session has been running long enough that you are starting to
 lose the thread of it, say so and offer to wrap — before the quality of the handoff starts to
 suffer, not after. `memento-package/runbooks/_RUNBOOK-context-gauge.md` explains how to judge that
-in this environment, and is honest about what cannot be measured here.
+in this environment. It also shows how to take a **real reading**: `.vscode/settings.json` in this
+pack turns on Copilot's agent debug log, which records the server's own reported token usage for
+the session. That figure is **cumulative session usage** — never compare it to a file's token count
+or to the `tape` figure on `_CHAIN.md`. When the log is not available, say so and stay on the
+estimate tier; never report an estimate as a measurement.
 
 ---
 

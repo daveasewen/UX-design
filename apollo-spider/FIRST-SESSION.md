@@ -48,7 +48,7 @@ download and no environment variable to set.** The `pip install` line above is f
 package itself, which still comes from PyPI; the *data* it would otherwise fetch is already here.
 
 Open **this pack's folder** as your VS Code workspace (File → Open Folder → the unzipped
-`Apollo-Spider-v1.0.2` directory). Copilot reads `.github/copilot-instructions.md` from a
+`Apollo-Spider-v1.0.3` directory). Copilot reads `.github/copilot-instructions.md` from a
 workspace automatically, and that file is what tells it how to behave here.
 
 Quick check that everything landed — **both lines, before you start**:
@@ -81,6 +81,32 @@ same pretokenizer and the same byte-pair merges, and the pack carries the gate t
 which drives both encoders over this pack's own text and refuses on the first token they
 disagree about. It is a few times slower than the real library, which is why the `pip install`
 line above is still the recommended path.
+
+### One more thing to switch on — the session gauge
+
+**⚠ Two different token counts live in this pack, and confusing them is the mistake to avoid.**
+The check you just ran measures **a piece of text** — a file, a document, the chain. It does not
+and cannot tell you **how full this session is**. That second question needs a different
+instrument, and it is not one this pack computes: it is a number GitHub Copilot's own server
+already reports, which you have to turn the log on to see.
+
+This pack ships those settings for you, in **`.vscode/settings.json`** at the pack root. Opening
+this folder as your workspace picks them up. They ask Copilot's agent to write its debug log to a
+file — the log that carries the server's reported token usage for your session — and they set the
+automatic-compaction guard at 220,000 tokens. **Reload the window once** (⇧⌘P / Ctrl+Shift+P →
+*Developer: Reload Window*) so the agent starts with logging on.
+
+⚠ **These settings are shipped on one machine's evidence, not on ours.** They were found working
+on a locked-down corporate laptop; we have no Copilot to drive them in. If your Copilot version
+has renamed a key, VS Code's settings editor will show it greyed out — search Settings for
+`agentDebugLog` and use whatever it is called now. **If the log never appears, nothing here
+breaks**: you simply do not have the reading, and you say so rather than guessing a number.
+
+`memento-package/runbooks/_RUNBOOK-context-gauge.md` § *Taking the reading by hand* is the whole
+procedure: where the log is (find it with *Developer: Open Extension Logs Folder* — the path is
+undocumented and we deliberately do not write one down), what the number means, and how to use it
+as an early warning that a session is going stale. Read it before your first long session, not
+during one.
 
 ---
 
