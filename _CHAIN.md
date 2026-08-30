@@ -86,11 +86,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **347 items · 265 live · 125 Dave's · 140 mine · 333 carry a stated close condition · **14 UNCONDITIONED**.**
+> **354 items · 272 live · 132 Dave's · 140 mine · 340 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (125) — 125 with a ratified `closes_when`, 0 with NONE:**
+> **DAVE'S (132) — 132 with a ratified `closes_when`, 0 with NONE:**
 > - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
 > - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…** — *closes when:* Dave ratifies or reverses
 > - `W-104` **#215 taxonomy research v2 - Carbon deep-dive, 135-component ladder map, lifecycle vocabulary, name distribution, nav screenshots** — *closes when:* Dave has ruled on the 12 PROPOSED-FOR-DAVE placements in section 2.3 and on Map A vs Map B (whether a Primitives tier is used), and gen_library_214.py LEVELS + level_of() have been changed to match, with the section 2.2 table regenerated from the changed derivation
@@ -162,6 +162,13 @@
 > - `W-269` **#225 filed report - Gumdrop gate widening: arm 5 sweeps carried-cut literals against EACH OTHER (advisory), and its first real catch is that shipped v1.0.2 disagrees with itself (v1.0.0 x2 vs v1.0.2 x2)** — *closes when:* Dave rules the report's 4 ruling-shaped questions - the Gumdrop version story (README generated from carries.version vs typed runbook headers, the disagreement regenerates every cut), whether arm 5 widens past .md, whether --selftest gets wired into _build_all.STEPS, and promotion to blocking - or parks them explicitly
 > - `W-271` **#225 filed report - carries-home enacted (s225-D2): ratio 52.55->34.12 GREEN, but it buys exactly ONE wrap - at #226 the PRIOR-banner roll drops the denominator and the ratio returns ~55 RED; denominator re-definition is ruling-shaped** — *closes when:* Dave rules the report's 3 ruling-shaped questions - chiefly the ratio's denominator re-definition (or wrapper cut, priced beside it) so the <40 floor is passable structurally, plus the carry_wording_check repoint to _CARRIES.md before #226 makes it silently quiet - or parks them explicitly
 > - `W-273` **#225 filed report - context-system design review: architecture RIGHT, instrument BROKEN - _capture_gate._tier_probe() measures 'x' (permanent cache hit) so 'real' is stamped on cl100k numbers; retrieval blind to 0/65 subreports, 0/17 ADRs, 0/279 rulings, 39.6 percent of records unreachable** — *closes when:* Dave rules on the ranked strip list - S1 tier-probe fix (first, saves 0, re-prices everything), S2 harness-remainder split (ds-025 item 1, ~70,500 real, precondition of his own boot-reduction rider), S4 retrieval ranker + index coverage - and the 6 ruling-shaped questions, or parks them explicitly
+> - `W-275` **#226 filed report - wrapper-diet pricing: wrapper 13,061 tape, 96.1pc state_block, four readings driven (A 55.82 RED / B 55.19 RED / C 29.61 GREEN / D 41.31 RED / D' 39.20), FOUR red lines not two, state_block repo-blind** — *closes when:* Dave points at one of the four wrapper readings (or rules his own) and answers or parks the report's 4 ruling-shaped questions
+> - `W-276` **#226 filed report - replay sweep: 36 items, GREEN 26 / RED 6 (3 known-expected, 1 drift-explained, 1 ruling-shaped, 1 repaired in gitignored scratch) / COULD-NOT-RUN 2 / NOT-RUN-declared 2** — *closes when:* Dave rules or parks the sweep's ruling-shaped red and the KIND_ORDER hole disposition; the remaining reds stay carried by their own rows
+> - `W-277` **#226 filed report - dream-pass-10 digest: P1-P4 floated, P4 sequencing trap (guard before RATIFY_IDS key-move kills the next --release), P3 minimum option is the s125-D1 forbidden act** — *closes when:* Dave rules or parks the digest's 9 ruling-shaped questions - chiefly the P4 order (move the RATIFY_IDS key, then build the guard)
+> - `W-278` **#226 review page - the wrapper-diet decision surface: four readings rendered live for Dave's point** — *closes when:* Dave has looked at the page and pointed at a reading (closes with W-275), or strikes the page
+> - `W-279` **#226 review page - dream-pass-10 digest rendered for Dave's eye** — *closes when:* Dave has worked the digest page's calls (closes with W-277), or strikes the page
+> - `W-280` **#226 draft brief - W-273 S1 nonce-probe fix: _tier_probe() caught lying LIVE, fix proven on four arms, DELIBERATELY UNWIRED** — *closes when:* Dave says the word and the S1 nonce-probe fix is committed (closes into W-273's S1 limb), or he parks it
+> - `W-281` **#227 NEW INSTRUMENT - scratch-hygiene probe (ADVISORY): names current-user VM scratch at wrap while it is still deletable; dead-session orphans reported as unremovable total** — *closes when:* Dave promotes the probe to blocking, or expressly parks it advisory (derivation governance - promotion is his)
 > - `W-38` **Size-ramp + per-theme size modes proposal (FLOATED, Dave's instinct, #200)** — *closes when:* Dave rules the pair semantics and the per-theme mode mapping, or drops the shape
 > - `W-41` **#203 delegated-wrap brief (DO-NOT-RULE list + session facts for the Opus wrap sub)** — *closes when:* the #203 wrap commit is pushed by the conductor under s203-D1 AND the CI read-back is relayed to Dave in chat - both limbs, per the ruling's own words
 > - `W-51` **#207 addendum: Dave's critique of the #206 record (promotion vocabulary open; candidature homed)** — *closes when:* Dave rules the twice-caught vocabulary question (does a mined historical occasion count as a 'catch' toward s204-D1's bar?) AND rules promote/wait/park on the three candidates; the candidature record in knowledge/_DS-IMPROVEMENTS.md then carries the outcome
@@ -224,8 +231,8 @@
 
 ---
 
-*(Chain ends. **21,720 real — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **22,305 real — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 41,525 real and stays whole for retrieval; you have paid for
-52% of it. Under 40% is this generator's own floor — above it, the wrapper is
+54% of it. Under 40% is this generator's own floor — above it, the wrapper is
 carrying more than the slice, and `--selftest` says so by name.)*

@@ -31,7 +31,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 2g, 3, 4, 4b, 5, 5b)
+## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 2g, 3, 4, 4b, 4c, 5, 5b)
 
 *Steps **2e** and **2f** were added 2026-07-27 (GM-D1…D9, `notes/_MEMENTO-DECISIONS.md` § GM
 growth-contracts ruling). They extend the 2c/2d pattern — cap + archive sibling + verbatim move +
@@ -627,6 +627,18 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    §C brief and let the ROLE come from Dave's opener line — and include the **DIVVY PLAN** (lanes ·
    model per lane · serial set · shared files assigned per lane) in the forward brief, per
    `_RUNBOOK-parallel-conductor.md`.
+
+4c. **Scratch hygiene — clean the VM disk WHILE YOUR USER STILL EXISTS.** *(Added #227,
+   2026-08-30, measured cause: the sandbox VM disk (~9.6G) PERSISTS across sessions but every
+   session runs as a throwaway Linux user; `/var/tmp` is sticky and there is no root, so scratch
+   that outlives its owner is PERMANENTLY UNDELETABLE from inside. At #227 boot the VM was 100%
+   full — 3.2G of dead-session orphans, chiefly the #220 playwright browsers at 984M — and
+   `useradd` itself ENOSPC'd five times: no shell at all until a host restart.)*
+   Run `python3 knowledge/_gate_scratch_hygiene.py` (ADVISORY, born #227 — promotion is Dave's):
+   it names every `/var/tmp` + `/tmp` entry the CURRENT user owns and the VM fill %. Remove what
+   you own (`--clean` does it), because the next session cannot. Orphans owned by dead sessions
+   are reported as a total only — drift visibility, not action. ⚠ The wrap is the LAST moment
+   this cleanup is possible; a skipped 4c is a permanent squatter, not a deferral.
 
 5. **Commit + push.** Claude commits via `_git_commit.sh` (see `_RUNBOOK-git-commit.md`), which
    handles the lock dance. **Dave pushes via GitHub Desktop only** — never terminal push, never a

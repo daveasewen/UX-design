@@ -741,6 +741,22 @@ SHAPE ONLY)`. This correction was itself made with no concurrent writer in this 
 > a reading that disagrees with the tally by >2× is a prompt to check units (throughput vs fill),
 > not reassurance.**
 
+**★ COLD SANDBOX, `pip install tiktoken` FAILS — the MEASURED fallback (#227, 2026-08-30).**
+On a VM whose disk is full (see `_RUNBOOK-capture-ritual.md` step 4c for the cause), pip dies at
+`/tmp/pip-unpack-*` ENOSPC — it hard-codes `/tmp`, and `TMPDIR` does not save it. The working
+recipe, driven at #227 with the VM at 100%:
+1. ⚠ **The VM is `aarch64`** (Apple-silicon host) — an x86_64 wheel yields the misleading
+   `ImportError: … circular import`; the arch is the real cause. Fetch **cp310 · manylinux ·
+   aarch64** wheels for `tiktoken` and `regex` straight from PyPI (`urllib` to the JSON API,
+   then `curl -o` onto the MOUNT — host disk, not VM disk) and `unzip` them into a mount dir.
+2. `export PYTHONPATH=<that dir>` and
+   `export TIKTOKEN_CACHE_DIR=apollo-spider/gumdrop/_encoder-cache` — the s222-D2 vendored
+   encoding data, IN-REPO, exact. ⛔ NOT `…/gumdrop/machinery/_encoder-cache` — that path does
+   not exist here, and pointing tiktoken at a wrong path makes it download 1.6M into a NEW dir
+   inside the tree (the #227 pollution, moved to `_to_delete/_227-encoder-cache-pollution/`).
+3. `_checkin.py` then measures REAL. ⚠ Nothing survives a tool-call boundary — the two exports
+   must ride in the same bash call as the thing they serve.
+
 **★ THE PLAN BLOCK AT A LANE SEAM — `--block` (B2, brief `_BRIEF-borrowed-instruments-2026-08-12-v2.md` §2).**
 `python3 knowledge/_checkin.py --block` prints six lines — `SOURCE` (provenance, mandatory, line 0)
 · `DONE` · `DOING` · `NEXT` · `STOP` · `BUDGET` — and **it is a RENDERING of state, never a store:
