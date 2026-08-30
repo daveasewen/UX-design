@@ -3145,7 +3145,13 @@
 :where(.cn-search-field) :is(button, :where(.cn-search-field) a, :where(.cn-search-field) label, :where(.cn-search-field) span, :where(.cn-search-field) small, :where(.cn-search-field) strong, :where(.cn-search-field) em, :where(.cn-search-field) b, :where(.cn-search-field) i, :where(.cn-search-field) th, :where(.cn-search-field) td, :where(.cn-search-field) dt, :where(.cn-search-field) dd, :where(.cn-search-field) li, :where(.cn-search-field) figcaption, :where(.cn-search-field) legend, :where(.cn-search-field) caption, :where(.cn-search-field) summary, :where(.cn-search-field) output, :where(.cn-search-field) time, :where(.cn-search-field) input[type=text], :where(.cn-search-field) input[type=search], :where(.cn-search-field) input[type=email], :where(.cn-search-field) input[type=tel], :where(.cn-search-field) input[type=url], :where(.cn-search-field) input[type=password], :where(.cn-search-field) input[type=number], :where(.cn-search-field) input:not([type]), :where(.cn-search-field) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 :where(.cn-search-field) .stack{display:flex; flex-direction:column; gap:32px; max-width:360px;}
 :where(.cn-search-field) .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
-    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
+    /* s227 canon-gap B5: the field bound NO radius, so in a rounded theme it sat square beside the
+       dropdown trigger and the filter chips on the same toolbar row — both of which bind
+       border-radius/control. Bound on the BASE rule (not on .boxed) so the underline and boxed
+       variants take the same shape, exactly as Dropdown's .trigger and Input-fields' .uctrl input
+       — the other two underline-construction controls — already do. */
+    border-radius:var(--border-radius-control);}
 :where(.cn-search-field) .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
 :where(.cn-search-field) .search .mag svg{width:20px; height:20px; fill:currentColor;}
 :where(.cn-search-field) .search input{flex:1; min-width:0; height:100%; border:0; background:var(--bg); color:var(--text); /* type: t-cm-label (bound in canon/type.css - T-D9/T-D12) */ outline:none;}
@@ -7245,7 +7251,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24), ported from Chart-line ── */
 :where(.cn-chart-bar) .dv-tbl-toggle, :where(.cn-chart-bar) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 /* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
 :where(.cn-chart-bar) .dv-tbl-toggle::before, :where(.cn-chart-bar) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-bar) .dv-tbl-toggle > *, :where(.cn-chart-bar) .dv-vt > *{position:relative; z-index:1;}
@@ -7462,7 +7468,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
 :where(.cn-chart-boxplot) .dv-tbl-toggle, :where(.cn-chart-boxplot) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-boxplot) .dv-tbl-toggle::before, :where(.cn-chart-boxplot) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-boxplot) .dv-tbl-toggle > *, :where(.cn-chart-boxplot) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-boxplot) .dv-tbl-toggle:hover, :where(.cn-chart-boxplot) .dv-vt:hover{border-color:var(--ink);}
@@ -7603,7 +7609,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
 :where(.cn-chart-bullet) .dv-tbl-toggle, :where(.cn-chart-bullet) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-bullet) .dv-tbl-toggle::before, :where(.cn-chart-bullet) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-bullet) .dv-tbl-toggle > *, :where(.cn-chart-bullet) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-bullet) .dv-tbl-toggle:hover, :where(.cn-chart-bullet) .dv-vt:hover{border-color:var(--ink);}
@@ -7731,7 +7737,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
 :where(.cn-chart-butterfly-h) .dv-tbl-toggle, :where(.cn-chart-butterfly-h) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-butterfly-h) .dv-tbl-toggle::before, :where(.cn-chart-butterfly-h) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-butterfly-h) .dv-tbl-toggle > *, :where(.cn-chart-butterfly-h) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-butterfly-h) .dv-tbl-toggle:hover, :where(.cn-chart-butterfly-h) .dv-vt:hover{border-color:var(--ink);}
@@ -7893,7 +7899,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
 :where(.cn-chart-butterfly-v) .dv-tbl-toggle, :where(.cn-chart-butterfly-v) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-butterfly-v) .dv-tbl-toggle::before, :where(.cn-chart-butterfly-v) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-butterfly-v) .dv-tbl-toggle > *, :where(.cn-chart-butterfly-v) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-butterfly-v) .dv-tbl-toggle:hover, :where(.cn-chart-butterfly-v) .dv-vt:hover{border-color:var(--ink);}
@@ -8057,7 +8063,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
 :where(.cn-chart-candlestick) .dv-tbl-toggle, :where(.cn-chart-candlestick) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-candlestick) .dv-tbl-toggle::before, :where(.cn-chart-candlestick) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-candlestick) .dv-tbl-toggle > *, :where(.cn-chart-candlestick) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-candlestick) .dv-tbl-toggle:hover, :where(.cn-chart-candlestick) .dv-vt:hover{border-color:var(--ink);}
@@ -8155,6 +8161,8 @@
   --target-alpha: var(--data-target-alpha);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --data-control-swatch-off: currentColor;
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -8280,7 +8288,7 @@
 :where(.cn-chart-combo) .dv-controls{--control-h:32px;}
 :where(.cn-chart-combo) .dv-tbl-toggle, :where(.cn-chart-combo) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 /* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
 :where(.cn-chart-combo) .dv-tbl-toggle::before, :where(.cn-chart-combo) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-combo) .dv-tbl-toggle > *, :where(.cn-chart-combo) .dv-vt > *{position:relative; z-index:1;}
@@ -8295,8 +8303,14 @@
 :where(.cn-chart-combo) .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
 /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
 :where(.cn-chart-combo) .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
-    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
-:where(.cn-chart-combo) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
+    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
+    /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
+       segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
+       Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
+    border-radius:var(--seg-rad-xs);}
+:where(.cn-chart-combo) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
+    border-radius:var(--seg-thumb-xs);}
 :where(.cn-chart-combo) .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
 :where(.cn-chart-combo) .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
@@ -8432,7 +8446,7 @@
 :where(.cn-chart-donut) .dv-controls{--control-h:32px;}
 :where(.cn-chart-donut) .dv-tbl-toggle, :where(.cn-chart-donut) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 /* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
 :where(.cn-chart-donut) .dv-tbl-toggle::before, :where(.cn-chart-donut) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-donut) .dv-tbl-toggle > *, :where(.cn-chart-donut) .dv-vt > *{position:relative; z-index:1;}
@@ -8636,7 +8650,7 @@
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, ported from Chart-bar/Chart-line ── */
 :where(.cn-chart-histogram) .dv-tbl-toggle, :where(.cn-chart-histogram) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-histogram) .dv-tbl-toggle::before, :where(.cn-chart-histogram) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-histogram) .dv-tbl-toggle > *, :where(.cn-chart-histogram) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-histogram) .dv-tbl-toggle:hover, :where(.cn-chart-histogram) .dv-vt:hover{border-color:var(--ink);}
@@ -8738,6 +8752,8 @@
   --target-alpha: var(--data-target-alpha);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --data-control-swatch-off: currentColor;
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -8864,7 +8880,7 @@
 /* action + dropdown buttons (Copy CSV · View as table) — 1px outline, height-matched */
 :where(.cn-chart-line) .dv-tbl-toggle, :where(.cn-chart-line) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 /* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
 :where(.cn-chart-line) .dv-tbl-toggle::before, :where(.cn-chart-line) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-line) .dv-tbl-toggle > *, :where(.cn-chart-line) .dv-vt > *{position:relative; z-index:1;}
@@ -8883,8 +8899,14 @@
      2026-07-24): 2px inset + 1px frame, the fill FLOATS in the gutter — the view switch's exact
      construction, one cell. ON = fill shows (aria-pressed, via :has); OFF = empty framed cell. */
 :where(.cn-chart-line) .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
-    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
-:where(.cn-chart-line) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
+    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
+    /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
+       segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
+       Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
+    border-radius:var(--seg-rad-xs);}
+:where(.cn-chart-line) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
+    border-radius:var(--seg-thumb-xs);}
 :where(.cn-chart-line) .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
 :where(.cn-chart-line) .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
@@ -9032,7 +9054,7 @@
 :where(.cn-chart-pie) .dv-controls{--control-h:32px;}
 :where(.cn-chart-pie) .dv-tbl-toggle, :where(.cn-chart-pie) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-pie) .dv-tbl-toggle::before, :where(.cn-chart-pie) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-pie) .dv-tbl-toggle > *, :where(.cn-chart-pie) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-pie) .dv-tbl-toggle:hover, :where(.cn-chart-pie) .dv-vt:hover{border-color:var(--ink);}
@@ -9277,7 +9299,7 @@
      segments figure carries live .dv-legrow rows subscribed to canon/dv-legend.js. */
 :where(.cn-chart-scatter) .dv-tbl-toggle, :where(.cn-chart-scatter) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 /* v5.1 -- 44 hit target via the canon invisible ::before (foundational hit-area; canon gap). */
 :where(.cn-chart-scatter) .dv-tbl-toggle::before, :where(.cn-chart-scatter) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-scatter) .dv-tbl-toggle > *, :where(.cn-chart-scatter) .dv-vt > *{position:relative; z-index:1;}
@@ -9584,7 +9606,7 @@
 :where(.cn-chart-stacked-area) .dv-controls{--control-h:32px;}
 :where(.cn-chart-stacked-area) .dv-tbl-toggle, :where(.cn-chart-stacked-area) .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
 :where(.cn-chart-stacked-area) .dv-tbl-toggle::before, :where(.cn-chart-stacked-area) .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-stacked-area) .dv-tbl-toggle > *, :where(.cn-chart-stacked-area) .dv-vt > *{position:relative; z-index:1;}
 :where(.cn-chart-stacked-area) .dv-tbl-toggle:hover, :where(.cn-chart-stacked-area) .dv-vt:hover{border-color:var(--ink);}
@@ -11368,7 +11390,13 @@
 :where(.cn-filter-toolbar-bar) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Search-field.reference.html, verbatim (boxed) ===== */
 :where(.cn-filter-toolbar-bar) .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
-    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
+    /* s227 canon-gap B5: the field bound NO radius, so in a rounded theme it sat square beside the
+       dropdown trigger and the filter chips on the same toolbar row — both of which bind
+       border-radius/control. Bound on the BASE rule (not on .boxed) so the underline and boxed
+       variants take the same shape, exactly as Dropdown's .trigger and Input-fields' .uctrl input
+       — the other two underline-construction controls — already do. */
+    border-radius:var(--border-radius-control);}
 :where(.cn-filter-toolbar-bar) .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
 :where(.cn-filter-toolbar-bar) .search .mag svg{width:20px; height:20px; fill:currentColor;}
 /* .search input's font is OMITTED here exactly as it is in Search-field.reference.html itself —

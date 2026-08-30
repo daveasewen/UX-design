@@ -45,15 +45,21 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --bg:#FFFFFF00; --hover:#F0F0F0; --border:#808080; --border-active:#000000; --text:#1A1A1A; --icon:#1A1A1A; --page:#FFFFFF; }
-  [data-theme="dark"]{ --bg:#FFFFFF00; --hover:#232323; --border:#808080; --border-active:#FFFFFF; --text:#FFFFFF; --icon:#FFFFFF; --page:#1A1A1A; }
+  [data-theme="light"]{ --bg:#FFFFFF00; --hover:#F0F0F0; --border:#808080; --border-active:#000000; --text:#1A1A1A; --icon:#1A1A1A; --page:#FFFFFF; --border-radius-control:0; }
+  [data-theme="dark"]{ --bg:#FFFFFF00; --hover:#232323; --border:#808080; --border-active:#FFFFFF; --text:#FFFFFF; --icon:#FFFFFF; --page:#1A1A1A; --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .stack{display:flex; flex-direction:column; gap:32px; max-width:360px;}
   .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */}
 
   .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
-    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
+    /* s227 canon-gap B5: the field bound NO radius, so in a rounded theme it sat square beside the
+       dropdown trigger and the filter chips on the same toolbar row — both of which bind
+       border-radius/control. Bound on the BASE rule (not on .boxed) so the underline and boxed
+       variants take the same shape, exactly as Dropdown's .trigger and Input-fields' .uctrl input
+       — the other two underline-construction controls — already do. */
+    border-radius:var(--border-radius-control);}
   .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
   .search .mag svg{width:20px; height:20px; fill:currentColor;}
   .search input{flex:1; min-width:0; height:100%; border:0; background:var(--bg); color:var(--text); /* type: t-cm-label (bound in canon/type.css - T-D9/T-D12) */ outline:none;}
@@ -109,7 +115,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Search field",
-    "vars": { "--hover": "form/background/hover", "--border": "form/border/default", "--border-active": "form/border/active", "--text": "text/default", "--icon": "icon/default", "--page": "background/default" },
+    "vars": { "--hover": "form/background/hover", "--border": "form/border/default", "--border-active": "form/border/active", "--text": "text/default", "--icon": "icon/default", "--page": "background/default", "--border-radius-control": "border-radius/control" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" },

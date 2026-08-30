@@ -93,7 +93,13 @@
 
   /* ===== Search-field.reference.html, verbatim (boxed) ===== */
   .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
-    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
+    /* s227 canon-gap B5: the field bound NO radius, so in a rounded theme it sat square beside the
+       dropdown trigger and the filter chips on the same toolbar row — both of which bind
+       border-radius/control. Bound on the BASE rule (not on .boxed) so the underline and boxed
+       variants take the same shape, exactly as Dropdown's .trigger and Input-fields' .uctrl input
+       — the other two underline-construction controls — already do. */
+    border-radius:var(--border-radius-control);}
   .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
   .search .mag svg{width:20px; height:20px; fill:currentColor;}
   /* .search input's font is OMITTED here exactly as it is in Search-field.reference.html itself —

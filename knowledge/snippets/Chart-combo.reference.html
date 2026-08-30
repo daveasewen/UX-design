@@ -105,6 +105,7 @@
     --data-target:#313131; --target-alpha:1;
     --shadow:#00000033; --pop-border:#FFFFFF00;
     --border-radius-control:0; --border-radius-surface:0;
+    --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
@@ -116,6 +117,7 @@
     --data-target:#B7B7B7; --target-alpha:1;
     --shadow:#000000D9; --pop-border:#808080;
     --border-radius-control:0; --border-radius-surface:0;
+    --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   [data-contrast="high"]{
     --data-series-1:var(--data-series-1-hc);
@@ -249,7 +251,7 @@
   .dv-controls{--control-h:32px;}
   .dv-tbl-toggle,.dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
-    flex:none; transition:border-color var(--ease);}
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
   /* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
   .dv-tbl-toggle::before,.dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
   .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
@@ -265,8 +267,14 @@
 
   /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
   .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
-    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
-  .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
+    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
+    /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
+       segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
+       Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
+    border-radius:var(--seg-rad-xs);}
+  .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
+    border-radius:var(--seg-thumb-xs);}
   .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
   .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
@@ -480,6 +488,7 @@
               "--data-grid": "data/grid/color", "--grid-alpha": "data/grid/alpha",
               "--data-target": "data/target/color", "--target-alpha": "data/target/alpha",
               "--shadow": "elevation/functional", "--pop-border": "elevation/border",
+              "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-thumb-xs": "border-radius/segmented-thumb/xs",
               "--border-radius-control": "border-radius/control",
               "--border-radius-surface": "border-radius/surface" },
     "contrastPairs": [

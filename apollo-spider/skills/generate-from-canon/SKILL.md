@@ -89,6 +89,16 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 
 ## Procedure
 
+0. **Brief first.** Look for the newest `briefs/*-grill.md` in the project. If one
+   exists, **read it and cite it** in the used/missing note — which brief, and which of
+   its answers shaped the build (theme above all). If there is none, run the `grill-me`
+   skill; if the designer would rather not, ask **one** question before you build —
+   *which theme?* — because rule 5's four themes differ in corner shape as well as
+   colour, and **mono makes every radius zero by design**, so a mono build is
+   radius-blind: it cannot show you a shape decision you might have wanted. If the theme
+   question is skipped too, **say which default you are using before you build** — mono,
+   and square — and record it as a default, never as a choice. Never pick a theme
+   silently.
 1. **Find.** Search `showroom/index.json` for each thing the screen needs — by alias and
    blurb. Open the showroom page to confirm it's the right thing.
 2. **Read the contract.** `knowledge/components/<slug>.meta.json` — variants, states,
