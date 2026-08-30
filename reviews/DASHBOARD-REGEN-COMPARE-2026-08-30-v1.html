@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard: Dave's canon vs by-the-book regen — #227</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --ink-soft:#5C5C5C; --page:#F4F4F4; --panel:#FFFFFF;
+    --line:#D7D7D7; --accent:#DA1A00;
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  header.bar{
+    position:sticky; top:0; z-index:10;
+    background:var(--panel); border-bottom:1px solid var(--line);
+    padding:14px 20px; display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  }
+  .bar h1{font-size:16px; font-weight:500; margin:0; letter-spacing:-.01em}
+  .bar .sub{font-size:13px; color:var(--ink-soft); margin:0}
+  .spacer{flex:1 1 auto}
+
+  .ctl{display:flex; align-items:center; gap:6px; font-size:13px}
+  .ctl > span{color:var(--ink-soft)}
+  .ctl button{
+    font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--line);
+    background:var(--panel); color:var(--ink); cursor:pointer; margin-left:-1px;
+  }
+  .ctl button:first-of-type{margin-left:0}
+  .ctl button[aria-pressed="true"]{background:var(--ink); color:#FFFFFF; border-color:var(--ink)}
+  .ctl button:focus-visible{outline:2px solid var(--accent); outline-offset:1px; z-index:1; position:relative}
+
+  .note{
+    margin:0; padding:10px 20px; font-size:13px; line-height:1.5;
+    background:#FFF6F4; border-bottom:1px solid var(--line); color:#5C2018;
+  }
+  .note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .note[hidden]{display:none}
+
+  .stage{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); min-height:calc(100vh - 60px)}
+  .stage.solo{grid-template-columns:1fr}
+  .pane{display:flex; flex-direction:column; background:var(--panel); min-width:0}
+  .pane[hidden]{display:none}
+  .pane-head{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel);
+  }
+  .pane-head h2{margin:0; font-size:14px; font-weight:500}
+  .pane-head .meta{font-size:12px; color:var(--ink-soft)}
+  .pane-head .tag{
+    font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    border:1px solid var(--line); padding:2px 7px; color:var(--ink-soft);
+  }
+  .frame-wrap{flex:1 1 auto; position:relative; background:var(--page); overflow:hidden}
+  iframe{width:100%; height:100%; border:0; display:block; background:#FFFFFF}
+
+  .frame-wrap[data-w="tablet"] iframe{width:768px; margin-inline:auto; box-shadow:0 0 0 1px var(--line)}
+  .frame-wrap[data-w="mobile"] iframe{width:390px; margin-inline:auto; box-shadow:0 0 0 1px var(--line)}
+
+  footer.legend{
+    padding:14px 20px; font-size:13px; line-height:1.6; color:var(--ink-soft);
+    background:var(--panel); border-top:1px solid var(--line);
+  }
+  footer.legend strong{color:var(--ink); font-weight:500}
+  footer.legend ul{margin:8px 0 0; padding-left:18px}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div>
+    <h1>Dashboard — hand-polished vs by-the-book regen</h1>
+    <p class="sub">#227 · left: <code>international-banking-dashboard.canon.html</code> · right: <code>international-banking-dashboard.regen-v1.html</code></p>
+  </div>
+  <div class="spacer"></div>
+
+  <div class="ctl" role="group" aria-label="Light or dark">
+    <span>Mode</span>
+    <button type="button" data-mode="light" aria-pressed="true">Light</button>
+    <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Apollo theme">
+    <span>Theme</span>
+    <button type="button" data-apollo="mono" aria-pressed="false">Mono</button>
+    <button type="button" data-apollo="legacy" aria-pressed="false">Legacy</button>
+    <button type="button" data-apollo="console" aria-pressed="true">Console</button>
+    <button type="button" data-apollo="supercharge" aria-pressed="false">Supercharge</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Viewport width">
+    <span>Width</span>
+    <button type="button" data-width="full" aria-pressed="true">Full</button>
+    <button type="button" data-width="tablet" aria-pressed="false">768</button>
+    <button type="button" data-width="mobile" aria-pressed="false">390</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Which pane">
+    <span>Show</span>
+    <button type="button" data-show="both" aria-pressed="true">Both</button>
+    <button type="button" data-show="dave" aria-pressed="false">Dave only</button>
+    <button type="button" data-show="regen" aria-pressed="false">Regen only</button>
+  </div>
+</header>
+
+<p class="note" id="crossOriginNote" hidden>
+  <strong>The synchronised theme control cannot reach inside the frames.</strong>
+  Chrome treats every <code>file://</code> page as its own origin, so this page is not allowed to
+  set <code>data-theme</code> / <code>data-apollo-theme</code> on the two dashboards.
+  Two ways round it: serve the repo over HTTP
+  (<code>cd &lt;repo&gt; &amp;&amp; python3 -m http.server 8000</code>, then open
+  <code>http://localhost:8000/reviews/DASHBOARD-REGEN-COMPARE-2026-08-30-v1.html</code>),
+  or use each dashboard's own account-menu theme toggle for light/dark.
+</p>
+
+<div class="stage" id="stage">
+  <section class="pane" id="paneDave">
+    <div class="pane-head">
+      <h2>Dave's hand-polished file</h2>
+      <span class="tag">canon.html</span>
+      <span class="meta">38.8&nbsp;KB · authored <code>data-apollo-theme="console"</code> · 13 harness rules, 2 <code>border-radius</code> declarations</span>
+    </div>
+    <div class="frame-wrap" data-w="full">
+      <iframe id="fDave" title="Dave's hand-polished dashboard"
+              src="../dashboards/international-banking-dashboard.canon.html"></iframe>
+    </div>
+  </section>
+
+  <section class="pane" id="paneRegen">
+    <div class="pane-head">
+      <h2>By-the-book regen</h2>
+      <span class="tag">regen-v1.html</span>
+      <span class="meta">Built from an intent spec via <code>generate-from-canon</code> · shipped <code>mono</code> + the rails' dashboard defaults · harness = page width only</span>
+    </div>
+    <div class="frame-wrap" data-w="full">
+      <iframe id="fRegen" title="By-the-book regenerated dashboard"
+              src="../dashboards/international-banking-dashboard.regen-v1.html"></iframe>
+    </div>
+  </section>
+</div>
+
+<footer class="legend">
+  <strong>What to look at.</strong> Both files pass <code>knowledge/_validate_screen.py</code> with an
+  identical verdict, so the gate sees no difference at all — your eye is the only instrument here.
+  <ul>
+    <li><strong>The tiles.</strong> Canon gives a dashboard-role bento tile no background, no border and
+      no padding; the regen therefore has none. Your <code>.dashboard-tile</code> invented that surface.</li>
+    <li><strong>The row height.</strong> <code>--layout-bento-row-unit</code> is a fixed <code>320px</code>.
+      The regen ships that. You overrode it to <code>minmax(148px,auto)</code>.</li>
+    <li><strong>The corners, in Console.</strong> Look at the chart toolbar: the Monthly / Year-to-date
+      switch is rounded, the "Copy data (CSV)" and "View as table" boxes beside it are square, and so is
+      the payment search field. None of those three bind a radius token in canon.</li>
+    <li><strong>The masthead.</strong> Canon's masthead reference ships a text wordmark. The regen has the
+      word "HSBC"; yours has the hexagon.</li>
+  </ul>
+  Full measurements: <code>notes/_subreports/2026-08-30-227-dashboard-regen-diff.md</code>.
+</footer>
+
+<script>
+(function(){
+  var frames = [document.getElementById('fDave'), document.getElementById('fRegen')];
+  var state = { mode:'light', apollo:'console', width:'full', show:'both' };
+  var blocked = false;
+
+  function press(sel, attr, value){
+    Array.prototype.forEach.call(document.querySelectorAll(sel), function(b){
+      b.setAttribute('aria-pressed', String(b.dataset[attr] === value));
+    });
+  }
+
+  function paintFrame(f){
+    var doc;
+    try { doc = f.contentDocument; } catch (e) { doc = null; }
+    if (!doc || !doc.documentElement) { blocked = true; return; }
+    try {
+      doc.documentElement.setAttribute('data-apollo-theme', state.apollo);
+      if (doc.body) {
+        doc.body.setAttribute('data-apollo-theme', state.apollo);
+        doc.body.setAttribute('data-theme', state.mode);
+      }
+      doc.documentElement.setAttribute('data-theme', state.mode);
+    } catch (e) { blocked = true; }
+  }
+
+  function paint(){
+    blocked = false;
+    frames.forEach(paintFrame);
+    document.getElementById('crossOriginNote').hidden = !blocked;
+  }
+
+  function applyWidth(){
+    Array.prototype.forEach.call(document.querySelectorAll('.frame-wrap'), function(w){
+      w.dataset.w = state.width;
+    });
+  }
+
+  function applyShow(){
+    var stage = document.getElementById('stage');
+    document.getElementById('paneDave').hidden  = state.show === 'regen';
+    document.getElementById('paneRegen').hidden = state.show === 'dave';
+    stage.classList.toggle('solo', state.show !== 'both');
+  }
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-mode],button[data-apollo],button[data-width],button[data-show]');
+    if (!b) return;
+    if (b.dataset.mode)   { state.mode   = b.dataset.mode;   press('button[data-mode]','mode',state.mode);       paint(); }
+    if (b.dataset.apollo) { state.apollo = b.dataset.apollo; press('button[data-apollo]','apollo',state.apollo); paint(); }
+    if (b.dataset.width)  { state.width  = b.dataset.width;  press('button[data-width]','width',state.width);    applyWidth(); }
+    if (b.dataset.show)   { state.show   = b.dataset.show;   press('button[data-show]','show',state.show);       applyShow(); }
+  });
+
+  frames.forEach(function(f){ f.addEventListener('load', paint); });
+  setTimeout(paint, 400);
+})();
+</script>
+</body>
+</html>
