@@ -1879,17 +1879,42 @@ def measure_tokens(text):
     return out
 
 
-def _tier_probe():
-    """The tier a measurement taken RIGHT NOW would use — WITHOUT recording it.
+_PROBE_VERDICT = None   # W-273 S1 (#227): the per-process probe verdict, beside _TIERS_SEEN
 
-    ★ The snapshot/restore is the point. A health probe is not a measurement, and a probe that
-    wrote into `_TIERS_SEEN` would let `measurement_mixed()` fire on its own footprint — an
-    instrument manufacturing the very condition it reports. That is
+
+def _tier_probe():
+    """The tier a measurement of NOVEL text taken RIGHT NOW would use — WITHOUT recording it.
+
+    ⛔ RE-DESIGNED (#227, W-273 S1, Dave's word on the #226 draft brief): the old probe
+    measured the one-character string "x" — permanently cached in `.token-cache.json` — so
+    `gauge.count()`'s cache-hit branch answered "real" REGARDLESS of API reachability. Driven
+    live at #226: probe said `real` while a novel nonce measured `cl100k-estimate`, key
+    present, API unreachable. The probe now measures a NONCE (cache-miss by construction), so
+    the answer is the tier a real measurement would actually get. Price, declared: ONE ~10-token
+    API call per process when reachable. The verdict is held per process — reachability within
+    one process run is one fact, and a probe per call would turn a health check into a
+    metronome. `_cache_write=False` keeps the nonce out of the content-keyed cache (the #226
+    fake-real arm seeded one junk row; the kwarg removes the class at the root).
+
+    ★ The snapshot/restore stays — it is the point. A health probe is not a measurement, and a
+    probe that wrote into `_TIERS_SEEN` would let `measurement_mixed()` fire on its own
+    footprint — an instrument manufacturing the very condition it reports. That is
     [[check-after-its-own-remedy]] in miniature, and it is cheaper to forbid here than to debug
     later from a mixed-tier warning nobody can reproduce."""
+    global _PROBE_VERDICT
+    if _PROBE_VERDICT is not None:
+        return _PROBE_VERDICT
     snapshot = set(_TIERS_SEEN)
+    nonce = "tier-probe nonce " + os.urandom(16).hex()
     try:
-        return _tier_of(measure_tokens("x")[1])
+        try:
+            _PROBE_VERDICT = _tier_of(gauge.count(nonce, _cache_write=False)[1])
+        except gauge.MeasurementRefused:
+            # Neither the API nor tiktoken — the cascade's LOWER tiers (s222-D3 vendored
+            # engine, bytes ESTIMATE) are what a real measurement would get; measure_tokens
+            # names them, and its inner gauge.count refuses again so no cache write happens.
+            _PROBE_VERDICT = _tier_of(measure_tokens(nonce)[1])
+        return _PROBE_VERDICT
     finally:
         _TIERS_SEEN.clear()
         _TIERS_SEEN.update(snapshot)
@@ -6642,11 +6667,16 @@ def selftest_growth():
     # instrument or — worse — stay silent on a degraded one. Same forcing technique as M6, above.
     # ⚠ #82-D1: same bypass hazard as M6 — the real tier must be suppressed too, or this arm
     # tests a path it never reaches.
+    # ⚠ W-273 S1 (#227): the probe verdict is now HELD PER PROCESS, so an arm that flips the
+    # environment mid-process must clear the hold or it reads the pre-flip verdict — the arm
+    # simulates a different process state, and the clear is part of the simulation.
+    global _PROBE_VERDICT
     saved = {k: os.environ.get(k) for k in _envs}
     for k in _envs:
         os.environ[k] = "1"
     sys.modules["tiktoken"] = None
     try:
+        _PROBE_VERDICT = None
         if not measurement_degraded():
             failures.append("#59: measurement_degraded() read False with tiktoken absent — it "
                             "has drifted from measure_tokens()'s own fallback decision")
@@ -6654,6 +6684,7 @@ def selftest_growth():
         del sys.modules["tiktoken"]
         for k, v in saved.items():
             os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
+    _PROBE_VERDICT = None    # W-273 S1: same reason — the healthy-restored check is a new state
     if measurement_degraded():
         failures.append("#59: measurement_degraded() read True with a healthy tiktoken restored "
                         "— it would refuse every build() forever, not just a genuinely degraded one")
@@ -6680,7 +6711,8 @@ def selftest_growth():
     _snap0 = set(_TIERS_SEEN)
     _TIERS_SEEN.clear()
     try:
-        _tier_probe()
+        _PROBE_VERDICT = None    # W-273 S1: a held verdict would skip the measurement and
+        _tier_probe()            # trivially pass this bite — clear it so the probe really runs
         if _TIERS_SEEN:
             failures.append(f"#82-D1: _tier_probe() RECORDED {sorted(_TIERS_SEEN)} into "
                             f"_TIERS_SEEN — a health probe that writes its own footprint lets "
@@ -6689,6 +6721,26 @@ def selftest_growth():
     finally:
         _TIERS_SEEN.clear()
         _TIERS_SEEN.update(_snap0)
+    # ---- W-273 S1 (#227): THE OLD LIE MUST STAY DEAD. The pre-#227 probe measured "x" —
+    # permanently cached — so with the API dead it still answered 'real' (driven live at #226:
+    # probe said real, a novel nonce measured cl100k-estimate). Re-enacted, not asserted: the
+    # API is forced dead, the held verdict cleared, and the probe must NOT say 'real' — and it
+    # must not have seeded its nonce into the content-keyed cache.
+    _saved_verdict, _saved_read_key = _PROBE_VERDICT, gauge.read_key
+    _rows_before = len(gauge._cache())
+    try:
+        gauge.read_key = lambda: None          # the API is unreachable, deterministically
+        _PROBE_VERDICT = None                  # force a fresh probe past the per-process hold
+        _v = _tier_probe()
+        if _v == "real":
+            failures.append("W-273 S1: _tier_probe() said 'real' with the API dead — the "
+                            "cached-'x' lie is back: the probe is not measuring novel text")
+        if len(gauge._cache()) != _rows_before:
+            failures.append("W-273 S1: the probe changed the token-cache row count — a health "
+                            "probe seeded a junk row into a content-keyed cache")
+    finally:
+        gauge.read_key = _saved_read_key
+        _PROBE_VERDICT = _saved_verdict
     # ★ And mixed-tier detection must be able to say YES, not merely default to NO. Re-enacted
     # here rather than asserted: a guard proved only in its passing state is an assertion.
     _snap = set(_TIERS_SEEN)

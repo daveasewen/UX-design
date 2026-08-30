@@ -218,7 +218,7 @@ class MeasurementRefused(RuntimeError):
     """
 
 
-def count(text: str, allow_api: bool = True) -> tuple[int, str]:
+def count(text: str, allow_api: bool = True, _cache_write: bool = True) -> tuple[int, str]:
     """Return `(tokens, method)`. `method` is 'real' or 'cl100k-estimate' — NEVER dropped.
 
     ⛔ REFUSES (`MeasurementRefused`) when neither method is reachable. ★ Note what this
@@ -251,11 +251,12 @@ def count(text: str, allow_api: bool = True) -> tuple[int, str]:
             with urllib.request.urlopen(req, timeout=20) as r:
                 n = json.load(r)["input_tokens"]
             c[h] = n
-            try:
-                with open(CACHE, "w", encoding="utf-8") as f:
-                    json.dump(c, f)
-            except Exception:
-                pass          # a cache that cannot write is slow, not wrong
+            if _cache_write:      # W-273 S1 (#227): a tier PROBE must not seed a junk row
+                try:              # into a content-keyed cache — one nonce per process, forever
+                    with open(CACHE, "w", encoding="utf-8") as f:
+                        json.dump(c, f)
+                except Exception:
+                    pass          # a cache that cannot write is slow, not wrong
             return n, "real"
         except (urllib.error.URLError, OSError, KeyError, ValueError):
             pass              # fall through to the LABELLED estimate — never to silence
