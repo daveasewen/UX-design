@@ -1,6 +1,6 @@
 ---
 name: generate-from-canon
-description: Build a screen or component using only the Apollo design system — its 135 reviewed components, its tokens, its type composites and its layout rails — never inventing new ones. Flags anything the system is missing instead of improvising. Use when you want on-brand, accessible UI drafted by construction. Outputs React (preferred) or plain HTML/CSS.
+description: Build a screen or component using only the Apollo design system — its 135 reviewed components, its tokens, its type composites and its layout rails — never inventing new ones. Flags anything the system is missing instead of improvising. Use when you want on-brand, accessible UI drafted by construction. Outputs React (preferred) or plain HTML/CSS. Use this whenever the thing being asked for IS a piece of UI, however casually it is put — “build me a dashboard”, “build a screen”, “make a page”, “design a settings page”, “create a form”, “mock up a view”, “add a card to this screen”, “put a table on that page”, “can you lay this out”.
 ---
 
 # Generate from canon

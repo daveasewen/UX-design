@@ -1,6 +1,6 @@
 ---
 name: draft-a-new-pattern
-description: Help create a NEW component or pattern that fits the Apollo design system — built from its existing tokens, type composites, states, layout rails, accessibility rules and naming — and package it as a candidate ready to propose for the library. Use when the system is missing something you need. Produces a reviewable draft, not adopted canon.
+description: Help create a NEW component or pattern that fits the Apollo design system — built from its existing tokens, type composites, states, layout rails, accessibility rules and naming — and package it as a candidate ready to propose for the library. Use when the system is missing something you need. Produces a reviewable draft, not adopted canon. Use this when the output is UI and nothing in the library fits — “we need a component the system doesn’t have”, “design a new pattern for this”, “there’s no widget for this, invent one”, “add something to the library”, “the closest component is wrong, make a proper one”.
 ---
 
 # Draft a new pattern

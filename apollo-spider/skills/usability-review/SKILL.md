@@ -1,6 +1,6 @@
 ---
 name: usability-review
-description: Run an expert usability inspection of a screen or flow against Nielsen's 10 heuristics, producing severity-rated, actionable findings. Use to evaluate interaction quality — distinct from design-system conformance, from the executable gates, and from accessibility auditing.
+description: Run an expert usability inspection of a screen or flow against Nielsen's 10 heuristics, producing severity-rated, actionable findings. Use to evaluate interaction quality — distinct from design-system conformance, from the executable gates, and from accessibility auditing. Use this when the question is about the experience of a screen or flow rather than its construction — “is this usable”, “would someone understand this screen”, “UX review of this flow”, “what’s confusing here”, “will people get lost in this”.
 ---
 
 # Usability review (heuristic inspection)

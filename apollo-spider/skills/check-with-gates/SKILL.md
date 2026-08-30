@@ -1,6 +1,6 @@
 ---
 name: check-with-gates
-description: Run Apollo's own executable gates against work in progress — contrast, token binding, type composites, icon provenance, accessibility targets, hardcoded values — and read the verdict honestly. Use to prove a design conforms rather than assert it. The mechanical half of check-against-design-system.
+description: Run Apollo's own executable gates against work in progress — contrast, token binding, type composites, icon provenance, accessibility targets, hardcoded values — and read the verdict honestly. Use to prove a design conforms rather than assert it. The mechanical half of check-against-design-system. Use this whenever a screen or component is about to be shown to anyone — “check my work”, “run the checks on this”, “is this accessible”, “what’s the contrast here”, “is this ready to share”, “anything wrong with this page”.
 ---
 
 # Check with gates

@@ -1,6 +1,6 @@
 ---
 name: grill-me
-description: Ask the six questions that decide how a piece of Apollo work will look, before any of it gets built — theme first, then light/dark, density, brand assets, data and constraints. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new project or a new design task, and always before generate-from-canon builds anything.
+description: Ask the six questions that decide how a piece of Apollo work will look, before any of it gets built — theme first, then light/dark, density, brand assets, data and constraints. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new design project or a new design task, and always before generate-from-canon builds anything, whenever briefs/ holds no current brief for that task. Use this on openings like “new design project”, “I’m starting a new screen”, “make this look like our brand”, “use our brand colours”, “which theme should we use”, “what do you need from me before you build”, “here’s a new product area” — and skip it, silently, when a current brief already exists.
 ---
 
 # Grill me
@@ -15,13 +15,26 @@ has to be used it is said out loud before anything is built.
 
 ## When to run this
 
-- At the start of a **new project**.
-- At the start of a **new design task** inside a project that already has a brief, when
-  the task is different enough to want its own answers (a different product area, a
-  different audience, a different surface).
-- **Before `generate-from-canon` builds anything.** That skill checks for a brief first
-  and will ask the theme question itself if it can't find one — running this properly is
-  the better version of that.
+**Look in `briefs/` before you ask anything.** That folder is the trigger, not the shape
+of the request. If it already holds a current brief for the task in hand, **this skill is
+finished — do not ask the six questions, do not mention them, get on with the work.** A
+grill that re-fires on every prompt is one a designer turns off within the hour, and they
+turn off everything else with it.
+
+Run it when the folder gives you no answer:
+
+- At the start of a **new design project** — `briefs/` is empty or does not exist.
+- At the start of a **new design task** inside a project that already has briefs, when the
+  task is different enough to want its own answers (a different product area, a different
+  audience, a different surface) and no brief covers it.
+- **Before `generate-from-canon` builds anything**, when no current brief exists. That
+  skill checks for a brief first and will ask the theme question itself if it can't find
+  one — running this properly is the better version of that.
+
+A brief is **current** when it covers the task being asked for. Age alone does not retire
+one; a different task does. When it is genuinely unclear whether an existing brief covers
+this work, ask that single question — *"there's a brief from Tuesday for the payments
+area; does this belong to it?"* — rather than re-running all six.
 
 ## How to skip
 

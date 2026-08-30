@@ -1,6 +1,6 @@
 ---
 name: check-against-design-system
-description: Review a UI candidate against the Apollo design system and flag where it drifts — invented components or variants, hard-coded values instead of tokens, raw type instead of composites, theme leaks, red-law breaches, off-rails layout, anti-pattern violations and missing states. Use to check whether a design conforms before it advances. Pairs with check-with-gates, which proves mechanically what this skill judges by reading.
+description: Review a UI candidate against the Apollo design system and flag where it drifts — invented components or variants, hard-coded values instead of tokens, raw type instead of composites, theme leaks, red-law breaches, off-rails layout, anti-pattern violations and missing states. Use to check whether a design conforms before it advances. Pairs with check-with-gates, which proves mechanically what this skill judges by reading. Use this when the question is asked of an existing screen or component — “does this match our design system”, “is this on brand”, “review this screen”, “why does this look off”, “did we build this the right way”, “check this page before I share it”.
 ---
 
 # Check against the design system
