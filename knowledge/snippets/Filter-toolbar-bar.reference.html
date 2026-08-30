@@ -74,6 +74,7 @@
     --border-radius-control:0; --border-radius-surface:0;
     /* ---- Segmented-control.reference.html, verbatim ---- */
     --surface:#FFFFFF; --sel:#000000; --on-sel:#FFFFFF; --hit:44px;
+    --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   [data-theme="dark"]{
     --bg:#FFFFFF00; --hover:#232323; --border:#808080; --border-active:#FFFFFF; --text:#FFFFFF; --icon:#FFFFFF; --page:#1A1A1A;
@@ -83,6 +84,7 @@
     --text-disabled:#767676; --text-reverse:#FFFFFF; --error:#F6604C; --focus:#4587A7;
     --border-radius-control:0; --border-radius-surface:0;
     --surface:#1F1F1F; --sel:#FFFFFF; --on-sel:#333333; --hit:44px;
+    --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
@@ -154,8 +156,20 @@
   .sep{height:1px; background:var(--divider); margin:8px 0;}
 
   /* ===== Segmented-control.reference.html, verbatim ===== */
-  .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
-  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top; border-radius:var(--seg-rad);}
+  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+  .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}   /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
+  .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}    /* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
   /* .seg button / .seg.sm button fonts are OMITTED here exactly as they are in
      Segmented-control.reference.html itself — canon/type.css already binds `.seg.sm button` (12/500)
      and `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9); every instance in this file's
@@ -325,6 +339,8 @@
     "layer": "2 Lock-up",
     "$layer": "2 Lock-up",
     "vars": {
+      "--seg-rad-s": "border-radius/segmented-container/s", "--seg-thumb-s": "border-radius/segmented-thumb/s",
+      "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-thumb-xs": "border-radius/segmented-thumb/xs",
       "--hover": "form/background/hover", "--border": "form/border/default", "--border-active": "form/border/active",
       "--text": "text/default", "--icon": "icon/default", "--page": "background/default",
       "--field-bg-hover": "form/background/hover", "--menu-surface": "background/default", "--menu-border": "elevation/border",

@@ -519,7 +519,7 @@
   --padding-fixed-xlarge: 24px;
   --padding-segmented-control-xs: 2px;
   --padding-segmented-control-s: 2px;
-  --padding-segmented-control-m: 4px;
+  --padding-segmented-control-m: 2px;
   --padding-segmented-control-l: 4px;
 
   /* ---- Layout  (layout.json) ---- */
@@ -558,7 +558,7 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --target-min: 44px;
-  --size-segmented-control-xs: 24px;
+  --size-segmented-control-xs: 28px;
   --size-segmented-control-s: 36px;
   --size-segmented-control-m: 44px;
   --size-segmented-control-l: 48px;
@@ -7131,6 +7131,10 @@
   --grow-dur: 760ms;
   --grow-ease-out: cubic-bezier(.22,.61,.36,1);
   --grow-ease-in: cubic-bezier(.64,0,.78,.39);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --page: var(--background-default);
   --ink: var(--text-default);
   --baseline: var(--border-action-strong);
@@ -7265,10 +7269,22 @@
 :where(.cn-chart-bar) .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 :where(.cn-chart-bar) .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
 /* the SORT switch CONSUMES the Segmented-control atom (sliding indicator, 2px inset, square Mono) */
-:where(.cn-chart-bar) .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-chart-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
 :where(.cn-chart-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease);}
+    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+:where(.cn-chart-bar) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-chart-bar) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-bar) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -8390,6 +8406,10 @@
   --alpha-96: 0.96;
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --page: var(--background-default);
   --ink: var(--text-default);
   --line: var(--border-subtle);
@@ -8461,10 +8481,22 @@
 :where(.cn-chart-donut) .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
 /* the value ⇄ % pair CONSUMES the Segmented-control atom (exemplar canon): sliding indicator,
      2px inset track, square (Mono), --control-h matched; type = .seg.sm button (12/500, T-D15). */
-:where(.cn-chart-donut) .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-chart-donut) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
 :where(.cn-chart-donut) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease);}
+    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+:where(.cn-chart-donut) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-chart-donut) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-donut) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -8736,6 +8768,8 @@
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 160ms cubic-bezier(.4,0,.2,1);
   --draw-slow: 2400ms cubic-bezier(.33,0,.3,1);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --page: var(--background-default);
   --ink: var(--text-default);
   --baseline: var(--border-action-strong);
@@ -8916,11 +8950,23 @@
 /* the VIEW pair CONSUMES the Segmented-control atom (Dave 2026-07-24): sliding indicator, 2px inset
      track, square (Mono). Height-matched to --control-h; inner buttons STRETCH to fill. Type =
      canon/type.css .seg.sm button (12/500, T-D15). */
-:where(.cn-chart-line) .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-chart-line) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
 :where(.cn-chart-line) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease);}
+    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
 /* active fill — floats in the 2px inset, slides */
+:where(.cn-chart-line) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-chart-line) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-line) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -9005,6 +9051,10 @@
   --alpha-96: 0.96;
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --page: var(--background-default);
   --ink: var(--text-default);
   --line: var(--border-subtle);
@@ -9066,10 +9116,22 @@
 :where(.cn-chart-pie) .dv-csv.is-copied .dv-ico-copy{display:none;}
 :where(.cn-chart-pie) .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 :where(.cn-chart-pie) .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
-:where(.cn-chart-pie) .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-chart-pie) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
 :where(.cn-chart-pie) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease);}
+    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+:where(.cn-chart-pie) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-chart-pie) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-pie) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -11349,6 +11411,10 @@
   --fs: 16px;
   --ease: 160ms cubic-bezier(.4,0,.2,1);
   --tags-ease: 220ms cubic-bezier(.4,0,.2,1);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --hover: var(--form-background-hover);
   --border: var(--form-border-default);
   --border-active: var(--form-border-active);
@@ -11449,8 +11515,22 @@
 :where(.cn-filter-toolbar-bar) .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 :where(.cn-filter-toolbar-bar) .sep{height:1px; background:var(--divider); margin:8px 0;}
 /* ===== Segmented-control.reference.html, verbatim ===== */
-:where(.cn-filter-toolbar-bar) .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
-:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-filter-toolbar-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top; border-radius:var(--seg-rad);}
+:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+:where(.cn-filter-toolbar-bar) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
+:where(.cn-filter-toolbar-bar) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
+/* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
 /* .seg button / .seg.sm button fonts are OMITTED here exactly as they are in
      Segmented-control.reference.html itself — canon/type.css already binds `.seg.sm button` (12/500)
      and `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9); every instance in this file's
@@ -18469,6 +18549,10 @@
   --phys-size: 120;
   --chip-grow: 1.06;
   --chip-press: 0.94;
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
+  --seg-rad-xs: var(--border-radius-segmented-container-xs);
+  --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
   --page: var(--background-default);
   --surface: var(--tertiary-background-default);
   --text: var(--text-default);
@@ -18606,10 +18690,24 @@
      `--ease` to `--tset-move`: BOTH are var-NAME collisions with other components on this
      page (Segmented-control calls form/border/default `--border`; Data-grid and
      Template-dashboard call border/subtle by that name). Same tokens, one name each. ---- */
-:where(.cn-template-settings) .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+:where(.cn-template-settings) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top; border-radius:var(--seg-rad);}
 :where(.cn-template-settings) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0;
-    transition:left var(--tset-move), width var(--tset-move);}
+    transition:left var(--tset-move), width var(--tset-move); border-radius:var(--seg-thumb);}
 /* the active fill — floats in the 2px inset, slides */
+:where(.cn-template-settings) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+/* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
+:where(.cn-template-settings) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
+/* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
 :where(.cn-template-settings) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
@@ -22197,8 +22295,8 @@
   --border-radius-segmented-container-xs: 6px;
   --border-radius-segmented-thumb-l: 6px;
   --border-radius-segmented-thumb-m: 4px;
-  --border-radius-segmented-thumb-s: 2px;
-  --border-radius-segmented-thumb-xs: 0;
+  --border-radius-segmented-thumb-s: 6px;
+  --border-radius-segmented-thumb-xs: 4px;
   --border-radius-surface: 20px;
   --layout-bento-gutter: 24px;
   --mark-error: #FFFFFF;
@@ -22207,7 +22305,7 @@
   --mark-warning: #000000;
   --padding-card-internal: 20px;
   --padding-segmented-control-l: 4px;
-  --padding-segmented-control-m: 4px;
+  --padding-segmented-control-m: 2px;
   --padding-segmented-control-s: 2px;
   --padding-segmented-control-xs: 2px;
   --rag-error: #B92F1E;
@@ -22231,7 +22329,7 @@
   --size-segmented-control-m: 44px;
   --size-segmented-control-min-hit-area: 44px;
   --size-segmented-control-s: 36px;
-  --size-segmented-control-xs: 24px;
+  --size-segmented-control-xs: 28px;
   --step-complete: #5DAC7B;
   --tabs-badge-background: #B92F1E;
 }
@@ -22530,11 +22628,19 @@
 [data-apollo-theme="console"] .cn-chart-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-chart-boxplot{
   --border-radius-control: 8px;
@@ -22584,20 +22690,32 @@
 [data-apollo-theme="console"] .cn-chart-combo{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-combo,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-combo{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-chart-donut{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-donut,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-donut{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-chart-histogram{
   --border-radius-control: 8px;
@@ -22611,20 +22729,36 @@
 [data-apollo-theme="console"] .cn-chart-line{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-line{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-chart-pie{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-pie,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-pie{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-chart-scatter{
   --border-radius-control: 8px;
@@ -22795,11 +22929,19 @@
 [data-apollo-theme="console"] .cn-filter-toolbar-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-filter-toolbar-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-filter-toolbar-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-footer-doormat-lockup{
   --border-radius-control: 8px;
@@ -23103,6 +23245,13 @@
   --warn: #D5990B;
   --warn-tint: #654D14;
 }
+[data-apollo-theme="console"] .cn-search-field{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-search-field,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-search-field{
+  --border-radius-control: 8px;
+}
 [data-apollo-theme="console"] .cn-section-heading-lockup{
   --badge-surface: #B92F1E;
   --border-radius-control: 8px;
@@ -23127,9 +23276,9 @@
   --seg-h-l: 48px;
   --seg-h-m: 44px;
   --seg-h-s: 36px;
-  --seg-h-xs: 24px;
+  --seg-h-xs: 28px;
   --seg-pad-l: 4px;
-  --seg-pad-m: 4px;
+  --seg-pad-m: 2px;
   --seg-pad-s: 2px;
   --seg-pad-xs: 2px;
   --seg-rad-l: 12px;
@@ -23138,17 +23287,17 @@
   --seg-rad-xs: 6px;
   --seg-thumb-l: 6px;
   --seg-thumb-m: 4px;
-  --seg-thumb-s: 2px;
-  --seg-thumb-xs: 0;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-segmented-control,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-segmented-control{
   --seg-h-l: 48px;
   --seg-h-m: 44px;
   --seg-h-s: 36px;
-  --seg-h-xs: 24px;
+  --seg-h-xs: 28px;
   --seg-pad-l: 4px;
-  --seg-pad-m: 4px;
+  --seg-pad-m: 2px;
   --seg-pad-s: 2px;
   --seg-pad-xs: 2px;
   --seg-rad-l: 12px;
@@ -23157,8 +23306,8 @@
   --seg-rad-xs: 6px;
   --seg-thumb-l: 6px;
   --seg-thumb-m: 4px;
-  --seg-thumb-s: 2px;
-  --seg-thumb-xs: 0;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
 }
 [data-apollo-theme="console"] .cn-selection-controls{
   --border-radius-control: 8px;
@@ -23551,6 +23700,10 @@
   --error-tint: #EECDC9;
   --info: #5A85C1;
   --info-tint: #D1DDEE;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
   --success: #5DAC7B;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-template-settings,
@@ -23562,6 +23715,10 @@
   --error-tint: #60231C;
   --info: #5A85C1;
   --info-tint: #364963;
+  --seg-rad-s: 8px;
+  --seg-rad-xs: 6px;
+  --seg-thumb-s: 6px;
+  --seg-thumb-xs: 4px;
   --success: #5DAC7B;
 }
 [data-apollo-theme="console"] .cn-template-wizard{

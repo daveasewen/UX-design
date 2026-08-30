@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard diff — decisions · #227</title>
+<style>
+:root{
+  --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#6e6e6e;
+  --page:#f4f3f1; --card:#ffffff; --line:#dcd9d4; --line-2:#eceae6;
+  --code-bg:#f7f6f4; --code-ink:#2a2a2a;
+  --accent:#1d4ed8;
+  --adopt:#1f6b3a; --park:#8a5a00; --reject:#DA1A00; --discuss:#1d4ed8;
+  --chip-adopt:#e6f2ea; --chip-park:#fbf1dc; --chip-reject:#fbe7e4; --chip-discuss:#e6ecfb;
+  --focus:#1d4ed8;
+  --defect:#8a2b12; --gap:#2a5b8a; --improve:#4a3b8a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#ececea; --ink-2:#b4b2ae; --ink-3:#8e8c88;
+    --page:#141413; --card:#1e1e1c; --line:#3a3835; --line-2:#2b2a28;
+    --code-bg:#191918; --code-ink:#d6d4d0;
+    --accent:#8fb0ff;
+    --adopt:#68c08c; --park:#e0b45c; --reject:#F6604C; --discuss:#8fb0ff;
+    --chip-adopt:#1d2d24; --chip-park:#2e2718; --chip-reject:#33201d; --chip-discuss:#1c2233;
+    --focus:#8fb0ff;
+    --defect:#e59a80; --gap:#8fc0e8; --improve:#b8aaf0;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; padding:0 0 132px;
+  background:var(--page); color:var(--ink);
+  font:400 17px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  letter-spacing:.005em;
+}
+.wrap{max-width:900px; margin:0 auto; padding:0 20px}
+
+/* ---------- masthead ---------- */
+header.top{padding:44px 0 8px}
+.eyebrow{font-size:13px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+h1{font-size:34px; line-height:1.2; margin:0 0 12px; letter-spacing:-.015em}
+.lede{font-size:19px; line-height:1.6; color:var(--ink-2); margin:0 0 18px; max-width:60ch}
+.src{font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3); word-break:break-all}
+
+.how{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:22px 0 8px}
+.how h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+.how ol{margin:0; padding-left:22px}
+.how li{margin:0 0 8px; max-width:64ch}
+.how li:last-child{margin-bottom:0}
+.warn{color:var(--reject); font-weight:600}
+
+/* ---------- filters ---------- */
+.filters{display:flex; flex-wrap:wrap; gap:8px; margin:26px 0 6px; position:sticky; top:0; z-index:5;
+  background:var(--page); padding:12px 0; border-bottom:1px solid var(--line-2)}
+.fbtn{font:500 14px/1 inherit; color:var(--ink-2); background:var(--card); border:1px solid var(--line);
+  border-radius:999px; padding:9px 14px; cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink)}
+.fbtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+
+/* ---------- sections ---------- */
+section.band{margin:40px 0 0}
+section.band > h2{font-size:24px; line-height:1.3; margin:0 0 6px; letter-spacing:-.01em}
+section.band > p.bandnote{color:var(--ink-2); margin:0 0 20px; max-width:62ch}
+
+/* ---------- cards ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--line);
+  border-radius:10px; padding:22px 22px 18px; margin:0 0 18px}
+.card[data-state="adopt"]{border-left-color:var(--adopt)}
+.card[data-state="park"]{border-left-color:var(--park)}
+.card[data-state="reject"]{border-left-color:var(--reject)}
+.card[data-state="discuss"]{border-left-color:var(--discuss)}
+.card[data-state="answer"]{border-left-color:var(--adopt)}
+.card.hidden{display:none}
+
+.cardhead{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin:0 0 10px}
+.cid{font:700 15px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:.02em;
+  background:var(--code-bg); border:1px solid var(--line-2); border-radius:6px; padding:6px 9px}
+.klass{font-size:12px; letter-spacing:.07em; text-transform:uppercase; font-weight:700}
+.klass.defect{color:var(--defect)} .klass.gap{color:var(--gap)} .klass.improve{color:var(--improve)}
+.klass.question{color:var(--accent)}
+.chip{margin-left:auto; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  border-radius:999px; padding:5px 11px; color:var(--ink-3); background:var(--code-bg); border:1px solid var(--line-2)}
+.card[data-state="adopt"] .chip,.card[data-state="answer"] .chip{background:var(--chip-adopt); color:var(--adopt); border-color:transparent}
+.card[data-state="park"] .chip{background:var(--chip-park); color:var(--park); border-color:transparent}
+.card[data-state="reject"] .chip{background:var(--chip-reject); color:var(--reject); border-color:transparent}
+.card[data-state="discuss"] .chip{background:var(--chip-discuss); color:var(--discuss); border-color:transparent}
+
+.card h3{font-size:20px; line-height:1.4; margin:0 0 12px; max-width:58ch; letter-spacing:-.005em}
+.card p{margin:0 0 12px; max-width:64ch}
+.card ul{margin:0 0 12px; padding-left:22px; max-width:64ch}
+.card li{margin:0 0 6px}
+strong{font-weight:650}
+
+pre.ev{background:var(--code-bg); border:1px solid var(--line-2); border-radius:8px;
+  padding:12px 14px; margin:0 0 12px; overflow-x:auto;
+  font:400 13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+.evlabel{font:600 12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3);
+  letter-spacing:.04em; margin:0 0 6px; text-transform:none}
+.action{border-left:3px solid var(--line); padding:2px 0 2px 14px; margin:0 0 14px; color:var(--ink-2); max-width:62ch}
+.action b{color:var(--ink); font-weight:650}
+.tbl{width:100%; border-collapse:collapse; margin:0 0 14px; font-size:15px; display:block; overflow-x:auto}
+.tbl th,.tbl td{border-bottom:1px solid var(--line-2); padding:8px 12px 8px 0; text-align:left; vertical-align:top}
+.tbl th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+code{font:400 .92em/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:var(--code-bg);
+  border:1px solid var(--line-2); border-radius:4px; padding:1px 5px}
+pre.ev code{background:none; border:0; padding:0; font-size:inherit}
+
+/* ---------- controls ---------- */
+.controls{border-top:1px solid var(--line-2); margin-top:16px; padding-top:16px}
+.radios{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px}
+.radios label{display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-weight:550; font-size:15px;
+  background:var(--page)}
+.radios input{margin:0; width:17px; height:17px; accent-color:var(--accent)}
+.radios label:has(input:checked){border-color:currentColor; font-weight:700}
+.radios label.adopt:has(input:checked){color:var(--adopt); background:var(--chip-adopt)}
+.radios label.park:has(input:checked){color:var(--park); background:var(--chip-park)}
+.radios label.reject:has(input:checked){color:var(--reject); background:var(--chip-reject)}
+.radios label.discuss:has(input:checked){color:var(--discuss); background:var(--chip-discuss)}
+.radios input:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
+.cmtlabel{display:block; font-size:14px; font-weight:600; color:var(--ink-3); margin:0 0 6px}
+textarea{width:100%; min-height:64px; resize:vertical; font:400 16px/1.55 inherit; color:var(--ink);
+  background:var(--page); border:1px solid var(--line); border-radius:8px; padding:11px 13px}
+textarea:focus-visible{outline:2px solid var(--focus); outline-offset:1px; border-color:var(--focus)}
+.clearone{background:none; border:0; color:var(--ink-3); font:500 13px inherit; cursor:pointer;
+  padding:8px 0 0; text-decoration:underline}
+
+/* ---------- prompt block ---------- */
+#promptblock{margin:48px 0 0}
+#promptblock h2{font-size:24px; margin:0 0 8px}
+#promptblock p{color:var(--ink-2); max-width:64ch; margin:0 0 16px}
+pre#prompt{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px;
+  white-space:pre-wrap; word-break:break-word; overflow-x:auto; max-height:520px; overflow-y:auto;
+  font:400 14px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+
+/* ---------- footer bar ---------- */
+.bar{position:fixed; left:0; right:0; bottom:0; z-index:10; background:var(--card);
+  border-top:1px solid var(--line); box-shadow:0 -2px 14px rgba(0,0,0,.07)}
+.barin{max-width:900px; margin:0 auto; padding:14px 20px; display:flex; flex-wrap:wrap;
+  align-items:center; gap:14px}
+.counts{font-size:15px; font-weight:600; line-height:1.4}
+.counts span{color:var(--ink-3); font-weight:500}
+.spacer{flex:1 1 auto}
+button.primary{font:650 16px/1 inherit; color:var(--page); background:var(--ink); border:1px solid var(--ink);
+  border-radius:8px; padding:13px 20px; cursor:pointer}
+button.ghost{font:550 15px/1 inherit; color:var(--ink-2); background:transparent; border:1px solid var(--line);
+  border-radius:8px; padding:13px 16px; cursor:pointer}
+button:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+#copystatus{font-size:14px; font-weight:600; min-width:1px}
+#copystatus.ok{color:var(--adopt)} #copystatus.bad{color:var(--reject)}
+.assert{font-size:13px; color:var(--ink-3); padding:10px 0 0; border-top:1px solid var(--line-2); margin-top:34px}
+.assert.bad{color:var(--reject); font-weight:700}
+#sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap}
+@media (max-width:620px){
+  h1{font-size:28px} .lede{font-size:17px} .card{padding:18px 16px 14px} .card h3{font-size:18px}
+  .barin{padding:12px 16px; gap:10px} button.primary,button.ghost{flex:1 1 auto}
+}
+</style>
+</head>
+<body>
+<div id="sr" aria-live="polite"></div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Apollo · session #227 · decision page</p>
+  <h1>Dashboard regen diff — your call on 25 findings</h1>
+  <p class="lede">The by-the-book regen versus your hand-polished page. Every finding from the
+  sub-report is here as a card. Decide it, comment on it, then copy the prompt at the bottom
+  and paste it back to me.</p>
+  <p class="src">Source: notes/_subreports/2026-08-30-227-dashboard-regen-diff.md<br>
+  Findings 25 &middot; generation defects 3 &middot; canon gaps 14 &middot; Dave improvements 8 &middot; ruling-shaped questions 7</p>
+
+  <div class="how">
+    <h2>How this works</h2>
+    <ol>
+      <li><b>Pick one</b> per card: Adopt, Park, Reject, or Discuss. Nothing is preselected.</li>
+      <li><b>Comment freely.</b> The comment is the useful part — the radio is just the verb.</li>
+      <li><b>Copy the prompt</b> at the end and paste it to me. <span class="warn">That paste is the
+      only durable output.</span> Your answers are saved in this browser so a refresh is safe, but a
+      cleared cache or a different browser loses them. Copy before you close the tab.</li>
+    </ol>
+  </div>
+</header>
+
+<nav class="filters" aria-label="Filter cards">
+  <button class="fbtn" data-filter="all" aria-pressed="true">All 32</button>
+  <button class="fbtn" data-filter="undecided" aria-pressed="false">Undecided</button>
+  <button class="fbtn" data-filter="defect" aria-pressed="false">Generation defects 3</button>
+  <button class="fbtn" data-filter="gap" aria-pressed="false">Canon gaps 14</button>
+  <button class="fbtn" data-filter="improve" aria-pressed="false">Your improvements 8</button>
+  <button class="fbtn" data-filter="question" aria-pressed="false">Questions 7</button>
+</nav>
+
+<!-- ================= A · GENERATION DEFECTS ================= -->
+<section class="band" id="band-A">
+  <h2>A · Generation defects</h2>
+  <p class="bandnote">Canon has it. The by-the-book flow lost it.</p>
+
+  <article class="card" data-id="A1" data-kind="finding" data-class="defect">
+    <div class="cardhead"><span class="cid">A1</span><span class="klass defect">Generation defect</span><span class="chip">Undecided</span></div>
+    <h3>The segmented control loses its radius binding, because the reference markup omits the wrapper that carries it.</h3>
+    <p>Canon <b>has</b> the binding:</p>
+    <p class="evlabel">canon.css:14307, 14309</p>
+    <pre class="ev"><code>:where(.cn-segmented-control) .seg{--seg-rad:var(--seg-rad-s); … border-radius:var(--seg-rad); …}
+:where(.cn-segmented-control) .seg .ind{… border-radius:var(--seg-thumb); …}</code></pre>
+    <p>But both consumers re-declare <code>.seg</code> in their own scope <b>without</b> a radius, and both sit earlier in the file, so whichever rule is last wins:</p>
+    <p class="evlabel">canon.css:8897, 11424</p>
+    <pre class="ev"><code>:where(.cn-chart-line) .seg{position:relative; display:inline-flex;
+  height:var(--control-h); box-sizing:border-box; padding:2px;
+  border:1px solid var(--line); background:transparent; vertical-align:top;}
+
+:where(.cn-filter-toolbar-bar) .seg{position:relative; display:inline-flex;
+  padding:2px; border:1px solid var(--border); background:var(--surface);
+  vertical-align:top;}</code></pre>
+    <p>Neither carries <code>border-radius</code>. And the reference markup a generator is told to copy has no <code>.cn-segmented-control</code> wrapper:</p>
+    <pre class="ev"><code>Filter-toolbar-bar.reference.html
+  &lt;div class="ftb-view"&gt;&lt;div class="seg md" role="group" aria-label="View as"&gt;
+
+Chart-line.reference.html
+  &lt;div class="seg sm" role="group" aria-label="Chart view — one of two scales"&gt;</code></pre>
+    <p>So the regen's two segmented controls are square in every theme. Yours are not — you wrapped both:
+    <code>&lt;div class="cn-segmented-control"&gt;&lt;div class="seg sm"&gt;</code>. Because <code>:where()</code>
+    contributes zero specificity, all three <code>.seg</code> rules sit at (0,1,0) and the
+    <code>.cn-segmented-control</code> block at line 14307 wins on source order alone.
+    <b>Your double-wrap is load-bearing, and nothing in the skill, the meta or the reference tells you to do it.</b></p>
+    <p class="action"><b>Report's proposed action:</b> none — it raises question <b>Q-A1</b> instead
+    (stop re-declaring <code>.seg</code> in the consumer scopes, or put the wrapper in the two references?).</p>
+  </article>
+
+  <article class="card" data-id="A2" data-kind="finding" data-class="defect">
+    <div class="cardhead"><span class="cid">A2</span><span class="klass defect">Generation defect</span><span class="chip">Undecided</span></div>
+    <h3>The Procedure never asks which theme the screen is for, and mono hides every radius decision.</h3>
+    <p>SKILL.md rule 5 says "Pick a theme and say which" and names mono "the baseline". The Procedure
+    (steps 1–5) never asks. No discovery artefact — <code>showroom/index.json</code>, any meta, the rails —
+    records a project default. The regen therefore shipped mono. Your page is
+    <code>data-apollo-theme="console"</code>. Consequence, measured:</p>
+    <table class="tbl">
+      <thead><tr><th>token</th><th>mono</th><th>console</th></tr></thead>
+      <tbody>
+        <tr><td><code>--border-radius-control</code></td><td>0</td><td>8px</td></tr>
+        <tr><td><code>--border-radius-surface</code></td><td>0</td><td>20px</td></tr>
+        <tr><td><code>--border-radius-container</code></td><td>0</td><td>20px</td></tr>
+        <tr><td><code>--border-radius-segmented-container-xs</code></td><td>0</td><td>6px</td></tr>
+        <tr><td><code>--border-radius-segmented-thumb-xs</code></td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p class="evlabel">canon.css:542-554 (mono) · canon.css:22160-22175 ([data-apollo-theme="console"])</p>
+    <p>Every finding in B5, B6, B7 and A1 is <b>invisible</b> in a mono build. The pipeline can produce a
+    radius-blind page and pass its own gate without ever surfacing the question. This is why your session
+    "took a bit of work" and a mono regen looks fine: you were working in the one theme where the omissions show.</p>
+    <p class="action"><b>Report's proposed action:</b> none — it raises question <b>Q-A2</b>
+    (required opening question in the Procedure, plus a per-project default a generator reads?).</p>
+  </article>
+
+  <article class="card" data-id="A3" data-kind="finding" data-class="defect">
+    <div class="cardhead"><span class="cid">A3</span><span class="klass defect">Generation defect</span><span class="chip">Undecided</span></div>
+    <h3>The reviewed references contain inline styles and raw px, so copying them faithfully breaks SKILL rule 3.</h3>
+    <p><code>Filter-toolbar-bar.reference.html</code> carries five inline <code>style=</code> attributes,
+    two of which are in the markup a generator must copy:</p>
+    <pre class="ev"><code>style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"  ×2  (the sr-only labels)
+style="display:flex; flex-wrap:wrap;"                                                  (.ftb-chips .row)</code></pre>
+    <p>Rule 3 says "never a raw hex or px … Spacing, radius and border width are tokens too". Rule 2 says
+    copy the snippet. The two rules contradict each other on this file. The regen carried the inline styles
+    (faithful copy); you replaced them with a <code>.dashboard-live</code> harness class.</p>
+    <p>Canon has no visually-hidden utility of its own — <code>grep '^\.c-' canon.css</code> returns only:</p>
+    <pre class="ev"><code>.c-actionbar .c-amount-in .c-amount-out .c-bento .c-choice-group .c-choice-row
+.c-eyebrow .c-fill .c-grid .c-grid-auto .c-pad .c-row .c-row-between .c-screen
+.c-stack .c-stat-cell .c-stat-grid .c-summary .c-tabbar</code></pre>
+    <p class="action"><b>Report's proposed action:</b> add a <code>.c-sr-only</code> utility and clean the
+    two references — raised as question <b>Q-A3</b>.</p>
+  </article>
+</section>
+
+<!-- ================= B · CANON GAPS ================= -->
+<section class="band" id="band-B">
+  <h2>B · Canon gaps</h2>
+  <p class="bandnote">The system genuinely lacks it. No generator could have done better.</p>
+
+  <article class="card" data-id="B1" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B1</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>There is no snippet and no meta for the bento — the one thing the whole page is built out of.</h3>
+    <pre class="ev"><code>ls knowledge/snippets/ | grep -ci bento          → 0
+ls knowledge/components/ | grep -ci foundation   → 0</code></pre>
+    <p><code>showroom/index.json</code> lists <code>foundation-bento</code>, <code>foundation-bento-rails</code>
+    and <code>foundation-grids-dashboard</code> as <code>level: foundation, status: beta</code>, each pointing
+    at a <code>showroom/_foundations/*.html</code> page. SKILL.md rule 2 — "Copy the snippet, don't re-draw it" —
+    is <b>unsatisfiable</b> for the bento.</p>
+    <p>The regen's bento markup had to be assembled by reading <code>canon.css</code> source
+    (<code>.c-bento</code>, <code>.c-bento__grid</code>, <code>.c-bento__tile[data-c][data-r]</code>), which is
+    exactly the "hand-rolling invents defects" the rule exists to prevent.</p>
+    <p class="action"><b>Report's finding:</b> no, a bento dashboard-role exemplar you can copy does not exist.
+    The prior finding holds and is now measured at the file level, not just the rendered one.</p>
+  </article>
+
+  <article class="card" data-id="B2" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B2</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>A dashboard-role bento TILE has no surface anywhere in canon.</h3>
+    <pre class="ev"><code>grep -c 'bm-tile\|bm-card\|bm-wall\|bm-inner' knowledge/canon/canon.css   → 0</code></pre>
+    <p>The only rendered dashboard exemplar is <code>showroom/_foundations/grids-dashboard.html</code>,
+    which paints its tiles with <b>page-local</b> CSS:</p>
+    <p class="evlabel">showroom/_foundations/grids-dashboard.html:487</p>
+    <pre class="ev"><code>.bm-panel,.bm-card{padding:var(--sp-4,16px); gap:var(--sp-2,8px); justify-content:flex-end;}</code></pre>
+    <p>Canon's role block is explicit that this is deliberate:</p>
+    <p class="evlabel">canon.css:1166</p>
+    <pre class="ev"><code>.c-bento[data-bento-role="dashboard"]{
+  --bento-radius:var(--border-radius-container);
+  --bento-gutter:1px;
+  overflow:hidden; }</code></pre>
+    <p>Radius on the container, 1px gutter, tiles square — a model that only reads if the tiles have a ground
+    and the gutter shows as a hairline between them. <b>Canon supplies the gutter and withholds the ground.</b>
+    You supplied it:</p>
+    <pre class="ev"><code>.dashboard-tile{padding:24px;background:var(--surface-raised);min-width:0;overflow:visible}</code></pre>
+    <p class="action"><b>Report's finding:</b> the regen has no tile surface at all. This is the single biggest
+    visual difference between the two files and it is not taste — it is an absent declaration.
+    Back-port priced at <b>C1</b>.</p>
+  </article>
+
+  <article class="card" data-id="B3" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B3</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>Dashboard rows are a fixed 320px and the rails expose no dial for it.</h3>
+    <p class="evlabel">canon.css:539, 1092</p>
+    <pre class="ev"><code>--layout-bento-row-unit: 320px;
+grid-auto-rows:var(--bento-row-unit);   /* "⚠ FIXED rows" */</code></pre>
+    <p><code>_bento_edit_rails.json → types.dashboard.dials</code> =
+    <code>["mainSpacing","subSpacing","keylines","bentoBg"]</code>. No row unit. So a by-the-book stat band is
+    <b>320px tall per row</b> and the regen ships it that way. You overrode both:</p>
+    <pre class="ev"><code>.c-bento.dashboard-bento{… --bento-row-unit:minmax(148px,auto) …}
+.c-bento.dashboard-stats-bento{--bento-row-unit:auto}</code></pre>
+    <p>⚠ Canon's own comment at <code>canon.css:1090-1092</code> warns that intrinsic rows kill the span
+    vocabulary ("MEASURED #217, Foundations photography bento"), so this is <b>not</b> a silent flip.</p>
+    <p class="action"><b>Report's proposed action:</b> a <code>rowUnit</code> dial on the stops rail, or a
+    different default for the dashboard role — raised as question <b>Q-B3</b>.</p>
+  </article>
+
+  <article class="card" data-id="B4" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B4</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The rails' dial names bind to nothing, and one of them contradicts canon.css.</h3>
+    <pre class="ev"><code>grep -c 'mainSpacing\|subSpacing\|bentoBg\|keylines' knowledge/canon/canon.css   → 0</code></pre>
+    <p><code>_bento_edit_rails.json</code> says <code>$permission_levels.generation</code>: <i>"ships the minted
+    defaults only — zero decisions up front, every generated instance lands on canon."</i> There is no class,
+    attribute or custom property in canon that a generator can write to ship them. SKILL rule 7 sends you to
+    "one file" for every layout dial; that file names dials the stylesheet has never heard of.</p>
+    <p>And they disagree. The mono dashboard default is <code>subSpacing: "4"</code>; <code>canon.css:1181</code>
+    hardcodes <code>--bento-gutter:1px</code> for the role. You used a third number, <code>2px</code>.
+    <b>Three sources, three values, for one gap.</b></p>
+    <p class="action"><b>Report's proposed action:</b> rule the number — raised as question <b>Q-B4</b>.
+    Back-port priced at <b>C3</b> (nil in code) and <b>C7</b>.</p>
+  </article>
+
+  <article class="card" data-id="B5" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B5</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The search field binds no radius — in a toolbar where its two neighbours do.</h3>
+    <pre class="ev"><code>grep -c '\.search[^ ]*{[^}]*border-radius' knowledge/canon/canon.css   → 0</code></pre>
+    <p class="evlabel">canon.css:3159, 11382</p>
+    <pre class="ev"><code>:where(.cn-search-field) .search.boxed{border:1px solid var(--border); padding:0 8px;}
+:where(.cn-filter-toolbar-bar) .search.boxed{border:1px solid var(--border); padding:0 8px;}</code></pre>
+    <p>No <code>border-radius</code> on <code>.search</code> in either scope, nor on the base rule. Meanwhile,
+    inside the <b>same</b> <code>.cn-filter-toolbar-bar</code> block:</p>
+    <p class="evlabel">canon.css:11397, 11439</p>
+    <pre class="ev"><code>… .dd .trigger{… border-radius:var(--border-radius-control); …}
+… .tag{… border:1px solid var(--border); border-radius:var(--border-radius-control); …}</code></pre>
+    <p>In console that is an 8px-rounded dropdown and 8px-rounded chips sitting beside a square search box,
+    on one row.</p>
+    <p class="action"><b>Report's finding:</b> this is your "search input squareness", and it is canon's, not
+    the generator's — the pipeline reproduced it faithfully. Neither file fixes it; your page has it too.</p>
+  </article>
+
+  <article class="card" data-id="B6" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B6</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The chart toolbar has three bordered boxes with no radius; you patched one pair and the other two are still square in your own file.</h3>
+    <p class="evlabel">canon.css:8865, 8885</p>
+    <pre class="ev"><code>:where(.cn-chart-line) .dv-tbl-toggle, :where(.cn-chart-line) .dv-vt{
+  position:relative; height:var(--control-h); box-sizing:border-box;
+  display:inline-flex; align-items:center; background:transparent;
+  border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+  flex:none; transition:border-color var(--ease);}
+
+:where(.cn-chart-line) .dv-toggle-seg{position:relative; display:inline-flex;
+  height:var(--control-h); box-sizing:border-box; …}</code></pre>
+    <p>None of <code>.dv-tbl-toggle</code>, <code>.dv-vt</code>, <code>.dv-toggle-seg</code> binds a radius.
+    Your <b>two</b> border-radius declarations repair <code>.dv-toggle-seg</code> and its <code>.ind</code> only.
+    So in your console page the chart toolbar reads left to right as:</p>
+    <ul>
+      <li>rounded segmented switch (6px, via your <code>.cn-segmented-control</code> wrapper)</li>
+      <li>rounded "Target line" (your patch)</li>
+      <li>rounded "Last year" (your patch)</li>
+      <li><b>square</b> "Copy data (CSV)"</li>
+      <li><b>square</b> "View as table"</li>
+    </ul>
+    <p>A residual you did not catch. Same pattern lives in <code>.cn-chart-combo</code>
+    (<code>canon.css:8297</code>) and by inspection in chart-bar / chart-donut / chart-pie.</p>
+    <p class="action"><b>Report's proposed action:</b> back-port priced at <b>C5</b> — 2 declarations × the
+    chart scopes that share the block, plus the two you missed. Gate-glob-scope rule applies.</p>
+  </article>
+
+  <article class="card" data-id="B7" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B7</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The segmented-control's contract and its implementation disagree, and the live size mapping declares itself PROPOSED, not ruled.</h3>
+    <p><code>knowledge/components/segmented-control.meta.json → variants</code>:</p>
+    <pre class="ev"><code>label-square-md  (Default)  ·  sm  ·  lg  ·  icons</code></pre>
+    <p>The <b>ruled</b> <code>xs / s / m / l</code> scale — minted heights 24 / 36 / 44 / 48, with its own
+    <code>--border-radius-segmented-{container,thumb}-{xs,s,m,l}</code> tokens — appears nowhere in the meta.
+    It is implemented in <code>canon.css:14330-14342</code> and in the reference. A generator reading the
+    contract, as SKILL step 2 instructs, picks from the <b>legacy</b> family and never learns the ruled one
+    exists. The regen used <code>.seg sm</code> and <code>.seg md</code>; so did you.</p>
+    <p class="evlabel">canon.css:14345, 14351-14352</p>
+    <pre class="ev"><code>⚠ ORDINAL map (sm→xs · md→s · lg→m), PROPOSED not ruled — the nearest-HEIGHT
+  reading collapses md and lg onto the same scale (32→36 and 36→36), which is why
+  it was not taken silently. Both readings are drawn in
+  reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html for Dave to point at.
+
+:where(.cn-segmented-control) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+:where(.cn-segmented-control) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}</code></pre>
+    <p><b>Your suspicion that "the -xs members are wrong" is measurable, and it is this.</b> In console:</p>
+    <table class="tbl">
+      <thead><tr><th>class</th><th>container radius</th><th>thumb radius</th></tr></thead>
+      <tbody>
+        <tr><td><code>.seg.sm</code> → xs</td><td><b>6px</b></td><td><b>0px</b></td></tr>
+        <tr><td><code>.seg.md</code> → s</td><td>8px</td><td>2px</td></tr>
+        <tr><td><code>.seg.lg</code> → m</td><td>10px</td><td>4px</td></tr>
+      </tbody>
+    </table>
+    <p><code>.seg.sm</code> is the only step in the ladder whose thumb is square inside a rounded track,
+    because <code>--border-radius-segmented-thumb-xs</code> is 0 in console while its container is 6px.
+    The chart's view switch is a <code>.seg.sm</code>. That is the pair you are looking at.</p>
+    <p class="action"><b>Report's proposed action:</b> not a generation defect and not something to fix here —
+    <code>reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html</code> exists and is waiting for your eye.
+    Raised as question <b>Q-B7</b>.</p>
+  </article>
+
+  <article class="card" data-id="B8" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B8</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The masthead logo slot is a text wordmark; canon has no image composition and no light/dark mark swap.</h3>
+    <p class="evlabel">canon.css:1756</p>
+    <pre class="ev"><code>:where(.cn-navigations) .logo{font-weight:500; font-size:20px;
+  color:var(--logo); letter-spacing:-.01em;}
+
+grep -c '\.logo img' knowledge/canon/canon.css   → 0</code></pre>
+    <p><code>Navigations.reference.html</code> ships <code>&lt;span class="logo" aria-label="HSBC"&gt;HSBC&lt;/span&gt;</code>.
+    The regen copied it and therefore reads the word "HSBC" in the masthead. The real marks exist —
+    <code>knowledge/assets/logos/hexagon-{light,dark}-{colour,mono}.svg</code> plus the masterbrand set — and
+    <code>foundation-logos</code> is in the index, but nothing composes them into the masthead, and canon's only
+    light/dark mark swap lives inside <code>.cn-template-auth</code>. You wrote the composition yourself:</p>
+    <pre class="ev"><code>.cn-navigations .dashboard-logo{display:inline-flex;align-items:center;justify-content:center;width:56px;min-width:56px}
+.cn-navigations .dashboard-logo img{display:block;width:42px;height:auto}</code></pre>
+    <p>⚠ And your <code>&lt;img src="…hexagon-light-colour.svg"&gt;</code> is <b>pinned to the light mark</b> —
+    it does not swap in dark mode. The gap bit you too.</p>
+    <p class="action"><b>Report's proposed action:</b> back-port priced at <b>C6</b> — a <code>.logo img</code>
+    rule plus a Navigations snippet update is small; the light/dark mark swap is the real work and has no
+    precedent outside <code>.cn-template-auth</code>.</p>
+  </article>
+
+  <article class="card" data-id="B9" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B9</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>There is no page-width container.</h3>
+    <p><code>.c-screen</code> (<code>canon.css:982</code>) is <code>width:390px</code> — a mobile frame.
+    No desktop page container exists among the <code>.c-*</code> utilities. Both files invented one in harness:</p>
+    <pre class="ev"><code>Dave:   padding:0 24px 24px          (on a flex stack)
+regen:  max-width:1280px; margin-inline:auto</code></pre>
+    <p><code>page_rail</code> in the rails names the page <i>ground</i> (<code>page</code> / <code>white</code> /
+    <code>grey</code>) but not the page <i>measure</i>, and binds neither.</p>
+    <p class="action"><b>Report's proposed action:</b> none stated. Related back-port at <b>C7</b>
+    (a page-level ground utility so <code>page_rail</code> has somewhere to land).</p>
+  </article>
+
+  <article class="card" data-id="B10" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B10</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3><code>.c-summary</code> hardcodes a raw font, in breach of SKILL rule 4, and is invisible to discovery.</h3>
+    <p class="evlabel">canon.css:999-1000</p>
+    <pre class="ev"><code>.c-summary__k{ color:var(--muted); font:400 16px/1.4 var(--font); }
+.c-summary__v{ color:var(--text); font:500 16px/1.4 var(--font); … }</code></pre>
+    <p>Raw <code>font-size</code> / <code>font-weight</code> / <code>line-height</code>, not a
+    <code>.t-cm-*</code> composite — inside canon itself.</p>
+    <p>Two things are called "summary": the <b>component</b> (<code>.cn-summary .summary__*</code>, the one in
+    <code>showroom/index.json</code>, the one the regen used) and this <b>utility</b>, which is in no index and
+    which the compose runbook explicitly recommends ("Use the <code>.c-*</code> utilities … <code>.c-summary</code>").
+    You used the utility. <b>A generator following the index uses the component; a generator following the
+    runbook uses the type-unsafe one.</b></p>
+    <p class="action"><b>Report's proposed action:</b> none stated.</p>
+  </article>
+
+  <article class="card" data-id="B11" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B11</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>Nothing says how to get an icon into a self-contained page.</h3>
+    <p>SKILL rule 8: "Icons are real assets only — from <code>knowledge/assets/icons/</code>." 659 SVG files on
+    disk. Neither the skill nor <code>_RUNBOOK-compose-from-canon.md</code> says whether to inline a
+    <code>&lt;symbol&gt;</code> sprite, reference by path, or use <code>&lt;img&gt;</code>.</p>
+    <p>Both files independently improvised the same answer (an inline sprite of <code>&lt;symbol&gt;</code>s with
+    <code>&lt;use href="#…"&gt;</code>), which suggests <b>the convention is real and simply unwritten</b>.</p>
+    <p class="action"><b>Report's proposed action:</b> none stated — but the convention is already agreed by
+    two independent hands and only needs writing down.</p>
+  </article>
+
+  <article class="card" data-id="B12" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B12</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The composed-screen gate cannot tell the two files apart.</h3>
+    <p><code>knowledge/_validate_screen.py</code> returns <code>PASS ✅</code> with an identical three-line body
+    and an identical 12× <code>dv-marker</code> warning on both — on a hand-polished 38.8KB page and an unstyled
+    45.6KB one:</p>
+    <pre class="ev"><code>## international-banking-dashboard.regen-v1.html
+- compose: ✅
+- icon-source: ✅ all paths library-matched
+- a11y: ✅  (warn: DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum … ×12)
+RESULT: PASS ✅
+
+## international-banking-dashboard.canon.html
+- compose: ✅
+- icon-source: ✅ all paths library-matched
+- a11y: ✅  (warn: DATA MARK `g.dv-marker` … ×12)
+RESULT: PASS ✅</code></pre>
+    <p>It checks compose-legality, icon provenance and a11y. It has no check for: whether a bento tile has a
+    ground, whether a bordered control binds a radius token, whether a fixed row unit swallows its content,
+    or whether the page renders at all.</p>
+    <p class="action"><b>Report's finding:</b> a green gate here is not evidence of a usable screen — which is
+    the whole reason you had to do the work by hand.</p>
+  </article>
+
+  <article class="card" data-id="B13" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B13</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>The runbook and the skill disagree on the theme contract, and the runbook is wrong.</h3>
+    <p><code>knowledge/_RUNBOOK-compose-from-canon.md</code> § Compose a screen: <i>"Root element gets
+    <code>class="canon"</code>; theme via <code>data-theme="light|dark"</code> on it (or <code>&lt;body&gt;</code>)."</i>
+    SKILL.md step 3 quotes it as <i>"That is the whole contract."</i> But:</p>
+    <pre class="ev"><code>grep -c 'data-apollo-theme' knowledge/canon/canon.css   → 1187
+grep -c 'data-apollo-theme' knowledge/canon/type.css    →    0
+
+grep -o 'data-apollo-theme="[a-z]*"' → console 360 · legacy 413 · supercharge 414 · mono 0</code></pre>
+    <p>1,187 rules in canon.css select on <code>data-apollo-theme</code>. Mono is the attribute-less default, so
+    <b>a generator that follows the runbook literally ships mono forever and never discovers the other three
+    themes exist.</b> SKILL rule 5 gets it right; step 3 then defers to a runbook that contradicts rule 5.</p>
+    <p class="action"><b>Report's proposed action:</b> none stated — the runbook line is simply wrong and
+    outranked by rule 5. Tied to <b>A2</b>.</p>
+  </article>
+
+  <article class="card" data-id="B14" data-kind="finding" data-class="gap">
+    <div class="cardhead"><span class="cid">B14</span><span class="klass gap">Canon gap</span><span class="chip">Undecided</span></div>
+    <h3>Running the skill's own step 5 silently clobbers a tracked report file.</h3>
+    <p><code>knowledge/_validate_screen.py</code> does not only print — it <b>rewrites</b>
+    <code>knowledge/_SCREEN-GATE.md</code> with the results of the current invocation only. Before this session
+    that file held seven subjects:</p>
+    <pre class="ev"><code>## canon-gallery.canon.html · nio-dash-console-v1 · nio-dash-console-v2 · payments-journey
+## sme-payments-desktop · sme-payments-swiss · sme-payments</code></pre>
+    <p>After two runs it held two. <code>git diff --stat</code> read
+    <code>knowledge/_SCREEN-GATE.md | 28 ++------------------------</code> (3 insertions, 26 deletions).
+    <b>It was restored</b> (<code>git checkout -- knowledge/_SCREEN-GATE.md</code>, verified back to seven
+    subjects) and the gate verdicts are quoted verbatim in the report instead, so nothing is lost.</p>
+    <p>But this is a real trap: SKILL.md step 5 tells every user of the skill to run this command
+    ("A draft you haven't gated is a claim, not a result"), and doing so destroys the standing record for every
+    other screen. It is also a write-once / ADR-0017 violation in miniature — one file holding live facts for
+    seven subjects, rewritten wholesale by any one of them.</p>
+    <p>⚠ Also declared: <code>notes/_REHEARSAL-LOG.jsonl</code> shows one added line
+    (<code>"kind": "wrap-open"</code>, <code>"date": "2026-08-30"</code>). That is <b>not</b> the sub's —
+    nothing it ran writes jsonl — but it is in the working tree, so the conductor should reconcile it rather
+    than assume it is clean.</p>
+    <p class="action"><b>Report's proposed action:</b> append per-subject, or write
+    <code>knowledge/_screen-gate/&lt;subject&gt;.md</code>, rather than replacing the whole file —
+    raised as question <b>Q-B14</b>.</p>
+  </article>
+</section>
+
+<!-- ================= C · DAVE IMPROVEMENTS ================= -->
+<section class="band" id="band-C">
+  <h2>C · Your improvements, priced as back-ports</h2>
+  <p class="bandnote">Your whole harness is 29 declarations. Every one is either a gap above or plumbing.
+  Priced by what a back-port actually costs.</p>
+
+  <article class="card" data-id="C1" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C1</span><span class="klass improve">Your improvement · repairs B2</span><span class="chip">Undecided</span></div>
+    <h3>The dashboard tile ground.</h3>
+    <pre class="ev"><code>.dashboard-tile{padding:24px;background:var(--surface-raised);min-width:0;overflow:visible}</code></pre>
+    <p class="action"><b>Price — Medium.</b> One canon rule
+    (<code>.c-bento[data-bento-role="dashboard"] &gt; .c-bento__grid &gt; .c-bento__tile</code>), one rails
+    <code>tileSurface</code> dial plus its default, and a regression pass over gallery/display roles which
+    deliberately have no tile ground. <b>Changes every existing dashboard bento.</b></p>
+  </article>
+
+  <article class="card" data-id="C2" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C2</span><span class="klass improve">Your improvement · repairs B3</span><span class="chip">Undecided</span></div>
+    <h3>Intrinsic bento rows instead of the fixed 320px.</h3>
+    <pre class="ev"><code>--bento-row-unit:minmax(148px,auto)   /   auto</code></pre>
+    <p class="action"><b>Price — Small in code, heavy in governance.</b> <code>canon.css:1090</code> warns
+    intrinsic rows destroy the span vocabulary. Needs a <code>rowUnit</code> dial on the stops rail rather than
+    a silent default change. <b>Your eye owed.</b></p>
+  </article>
+
+  <article class="card" data-id="C3" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C3</span><span class="klass improve">Your improvement · repairs B4</span><span class="chip">Undecided</span></div>
+    <h3>The bento gutter, ruled to one number.</h3>
+    <pre class="ev"><code>--bento-gutter:2px    (rails say 4 · canon hardcodes 1px · you used 2px)</code></pre>
+    <p class="action"><b>Price — Nil in code.</b> One number to rule. Cheapest item here and it unblocks the
+    rails/canon reconciliation.</p>
+  </article>
+
+  <article class="card" data-id="C4" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C4</span><span class="klass improve">Your improvement · the double border</span><span class="chip">Undecided</span></div>
+    <h3>Flush variants: a component that owns a border, inside a tile that now owns a ground.</h3>
+    <pre class="ev"><code>.dashboard-stat-tile .stat-card{padding:24px;border:none}
+.dashboard-tile .cn-list-items ul.list{border:none}</code></pre>
+    <p class="action"><b>Price — Medium.</b> A <code>flush</code> / <code>bare</code> variant on stat-card and
+    list-items — 2 metas, 2 snippets, 2 canon blocks, plus the variant naming question.
+    <b>Falls out of C1</b>: the moment tiles have a ground, every bordered component inside one needs this.</p>
+  </article>
+
+  <article class="card" data-id="C5" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C5</span><span class="klass improve">Your improvement · repairs B6</span><span class="chip">Undecided</span></div>
+    <h3>Chart toolbar corners.</h3>
+    <pre class="ev"><code>.cn-chart-line .dv-toggle-seg{border-radius:var(--border-radius-segmented-container-xs)}
+.cn-chart-line .dv-toggle-seg .ind{border-radius:var(--border-radius-segmented-thumb-xs)}</code></pre>
+    <p class="action"><b>Price — Small but wide.</b> 2 declarations × the chart scopes that share the block
+    (chart-line, chart-combo, and by inspection bar/donut/pie), <b>plus the two you missed</b>
+    (<code>.dv-vt</code>, <code>.dv-tbl-toggle</code>). Gate-glob-scope rule applies: rule only as wide as
+    the glob.</p>
+  </article>
+
+  <article class="card" data-id="C6" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C6</span><span class="klass improve">Your improvement · repairs B8</span><span class="chip">Undecided</span></div>
+    <h3>Masthead logo composition.</h3>
+    <pre class="ev"><code>.cn-navigations .dashboard-logo img{width:42px}   (+ the 56px slot)</code></pre>
+    <p class="action"><b>Price — Small-medium.</b> A <code>.logo img</code> rule in canon plus a Navigations
+    snippet update is small; the light/dark mark swap is the real work and has no precedent outside
+    <code>.cn-template-auth</code>. <b>Note your own version does not swap.</b></p>
+  </article>
+
+  <article class="card" data-id="C7" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C7</span><span class="klass improve">Your improvement · repairs B4</span><span class="chip">Undecided</span></div>
+    <h3>The page ground, enacted by hand.</h3>
+    <pre class="ev"><code>.dashboard-root{background:var(--surface-subtle)}    /* the rails' pageBg: grey default */</code></pre>
+    <p class="action"><b>Price — Small.</b> One page-level utility (<code>.c-page-grey</code> or an attribute)
+    so <code>page_rail</code> has somewhere to land.</p>
+  </article>
+
+  <article class="card" data-id="C8" data-kind="finding" data-class="improve">
+    <div class="cardhead"><span class="cid">C8</span><span class="klass improve">Your improvement · masthead responsive</span><span class="chip">Undecided</span></div>
+    <h3>The masthead has no responsive collapse.</h3>
+    <pre class="ev"><code>@media(max-width:520px){.cn-navigations .main{display:none} …}</code></pre>
+    <p class="action"><b>Price — Medium.</b> Hiding the nav is a stopgap, not the fix — a real collapse
+    (menu button + flyout) is a Navigations component change, and <b>the component already has the flyout
+    machinery</b>.</p>
+  </article>
+
+  <div class="how" style="margin-top:26px">
+    <h2>The inversion worth noticing (report §3c, not a card)</h2>
+    <p style="margin:0 0 10px; max-width:64ch">Two components the by-the-book flow got <i>right</i> and the
+    hand-polish dropped: the regen uses <code>.cn-empty-state</code> and <code>.cn-summary</code> (the
+    component); you hand-rolled <code>.transaction-empty</code> and used the <code>.c-summary</code>
+    <b>utility</b> with its raw font (B10).</p>
+    <p style="margin:0; max-width:64ch">Under SKILL step 3 — "no redefining a <code>.c-*</code>/<code>.cn-*</code>
+    class … if you're redefining a component locally, you've left canon" — three of your rules
+    (<code>.cn-chart-line .dv-toggle-seg</code>, <code>.dashboard-tile .cn-list-items ul.list</code>,
+    <code>.c-bento.dashboard-bento</code>) are formally out of canon. Which is the point:
+    <b>canon could not express what you needed, so you left it. The regen stayed inside canon and is
+    unusable.</b></p>
+  </div>
+</section>
+
+<!-- ================= Q · RULING-SHAPED QUESTIONS ================= -->
+<section class="band" id="band-Q">
+  <h2>Q · Ruling-shaped questions</h2>
+  <p class="bandnote">The sub ruled nothing. These seven are marked <code>Q:</code> in the report and are yours
+  to answer. The comment box is the answer — the buttons just say whether you are answering now.</p>
+
+  <article class="card" data-id="Q-A1" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A1</span><span class="klass question">Question · from A1</span><span class="chip">Unanswered</span></div>
+    <h3>Should the consumer scopes stop re-declaring <code>.seg</code> at all, or should the two references carry the <code>.cn-segmented-control</code> wrapper?</h3>
+    <p>Either fixes the square segmented control. Removing the re-declarations changes every existing chart and
+    filter toolbar; adding the wrapper changes two reference files and every page generated from them after.</p>
+  </article>
+
+  <article class="card" data-id="Q-A2" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A2</span><span class="klass question">Question · from A2</span><span class="chip">Unanswered</span></div>
+    <h3>Should the theme be a required opening question in the Procedure, and should there be a per-project default recorded somewhere a generator reads?</h3>
+    <p>Today mono is taken silently, and mono is the one theme in which every radius finding is invisible.</p>
+  </article>
+
+  <article class="card" data-id="Q-A3" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A3</span><span class="klass question">Question · from A3</span><span class="chip">Unanswered</span></div>
+    <h3>Add a <code>.c-sr-only</code> utility and clean the two references?</h3>
+    <p>Canon has no visually-hidden utility, so the reference files carry inline <code>style=</code> attributes
+    that rule 3 forbids and rule 2 tells you to copy.</p>
+  </article>
+
+  <article class="card" data-id="Q-B3" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B3</span><span class="klass question">Question · from B3</span><span class="chip">Unanswered</span></div>
+    <h3>A <code>rowUnit</code> dial on the stops rail, or a different default for the dashboard role?</h3>
+    <p>Canon warns at <code>canon.css:1090-1092</code> that intrinsic rows kill the span vocabulary
+    (measured at #217), so a silent default flip is not available.</p>
+  </article>
+
+  <article class="card" data-id="Q-B4" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B4</span><span class="klass question">Question · from B4</span><span class="chip">Unanswered</span></div>
+    <h3>The bento gutter — which is it: rails <code>4</code>, canon <code>1px</code>, or your <code>2px</code>?</h3>
+    <p>Three sources, three values, one gap. Nil in code once ruled.</p>
+  </article>
+
+  <article class="card" data-id="Q-B7" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B7</span><span class="klass question">Question · from B7</span><span class="chip">Unanswered</span></div>
+    <h3>Is the xs thumb <code>0</code> correct — a square thumb is the intent — or should the ordinal map move <code>.seg.sm</code> onto <code>s</code>?</h3>
+    <p><code>reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html</code> draws both readings and is already waiting
+    for your eye. This is the pair in the chart's view switch.</p>
+  </article>
+
+  <article class="card" data-id="Q-B14" data-kind="question" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B14</span><span class="klass question">Question · from B14</span><span class="chip">Unanswered</span></div>
+    <h3>Should the gate append per-subject (or write <code>knowledge/_screen-gate/&lt;subject&gt;.md</code>) rather than replacing the whole file?</h3>
+    <p>As it stands, following SKILL step 5 destroys the standing gate record for every other screen.</p>
+  </article>
+</section>
+
+<!-- ================= UNPROVEN ================= -->
+<section class="band" id="band-U">
+  <h2>Declared unproven</h2>
+  <p class="bandnote">Not decisions — four things the sub could not prove. Listed so nothing here reads as
+  more certain than it is.</p>
+  <div class="how">
+    <ol>
+      <li><b>U1 · Nothing has been rendered.</b> No headless browser in the sandbox and pip is dead on a full
+      disk. Every claim is read from CSS source, token values and selector order, quoted with file and line —
+      but <b>no pixel in either file has been measured.</b></li>
+      <li><b>U2 · The compare page's synchronised theme control is untested.</b> It writes to both iframes,
+      which <code>file://</code> normally refuses as cross-origin. It detects the refusal and reveals a fallback
+      banner — <b>that detection path is also untested.</b> If the buttons do nothing and no banner appears,
+      that is this: serve the repo over HTTP first.</li>
+      <li><b>U3 · Only the gate SKILL step 5 names was run</b> (<code>_validate_screen.py</code>, on both files).
+      The wider <code>check-with-gates</code> suite was not run; the individual radius, type, contrast and
+      dataviz gates were not driven on either file.</li>
+      <li><b>U4 · B7 is a measurement, not a verdict.</b> Whether the xs mapping is wrong is your call.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= PROMPT ================= -->
+<section id="promptblock">
+  <h2>The prompt — copy this back to me</h2>
+  <p>The Copy button in the bar below puts this on your clipboard. If it refuses (browsers often block the
+  clipboard on <code>file://</code> pages), select the text here and copy it by hand. <b>This block is the
+  real output — everything else is just a way of typing it.</b></p>
+  <pre id="prompt" tabindex="0">Nothing decided yet.</pre>
+  <p class="assert" id="assert">Checking card count…</p>
+</section>
+</div>
+
+<div class="bar">
+  <div class="barin">
+    <div class="counts">
+      <span>Findings</span> <b id="cFind">0/25</b> &nbsp;·&nbsp;
+      <span>Questions</span> <b id="cQ">0/7</b>
+    </div>
+    <div class="spacer"></div>
+    <span id="copystatus" role="status"></span>
+    <button class="ghost" id="reset" type="button">Clear all</button>
+    <button class="ghost" id="jump" type="button">Show prompt</button>
+    <button class="primary" id="copy" type="button">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "apollo-227-dashboard-diff-decisions-v1";
+  var FIND_DECLARED = 25, Q_DECLARED = 7;
+  var FIND_OPTS = [["adopt","Adopt"],["park","Park"],["reject","Reject"],["discuss","Discuss"]];
+  var Q_OPTS    = [["answer","Answer"],["park","Park"],["discuss","Discuss"]];
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card[data-id]"));
+  var state = {};   /* id -> {d: decision|null, c: comment} */
+
+  /* ---------- storage, never fatal ---------- */
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") state = o; }
+    }catch(e){ /* storage dead — page still works */ }
+  }
+  function save(){
+    try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* ---------- build controls ---------- */
+  cards.forEach(function(card){
+    var id = card.getAttribute("data-id");
+    var isQ = card.getAttribute("data-kind") === "question";
+    var opts = isQ ? Q_OPTS : FIND_OPTS;
+    if(!state[id]) state[id] = {d:null, c:""};
+
+    var box = document.createElement("div");
+    box.className = "controls";
+
+    var radios = document.createElement("div");
+    radios.className = "radios";
+    radios.setAttribute("role","radiogroup");
+    radios.setAttribute("aria-label","Decision for " + id);
+    opts.forEach(function(o){
+      var lab = document.createElement("label");
+      lab.className = o[0];
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "dec-" + id; inp.value = o[0];
+      inp.id = "dec-" + id + "-" + o[0];
+      inp.addEventListener("change", function(){
+        state[id].d = o[0]; save(); paint(card); refresh();
+      });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(o[1]));
+      radios.appendChild(lab);
+    });
+    box.appendChild(radios);
+
+    var cl = document.createElement("label");
+    cl.className = "cmtlabel"; cl.setAttribute("for","cmt-" + id);
+    cl.textContent = isQ ? "Your answer / ruling" : "Your comment";
+    box.appendChild(cl);
+
+    var ta = document.createElement("textarea");
+    ta.id = "cmt-" + id;
+    ta.placeholder = isQ ? "Say what it should be…" : "Anything you want carried back…";
+    ta.addEventListener("input", function(){
+      state[id].c = ta.value; save(); refresh();
+    });
+    box.appendChild(ta);
+
+    var clr = document.createElement("button");
+    clr.type = "button"; clr.className = "clearone"; clr.textContent = "Clear this card";
+    clr.addEventListener("click", function(){
+      state[id] = {d:null, c:""};
+      var checked = card.querySelector('input[type="radio"]:checked');
+      if(checked) checked.checked = false;
+      ta.value = ""; save(); paint(card); refresh();
+    });
+    box.appendChild(clr);
+
+    card.appendChild(box);
+  });
+
+  /* ---------- paint ---------- */
+  function paint(card){
+    var id = card.getAttribute("data-id");
+    var isQ = card.getAttribute("data-kind") === "question";
+    var st = state[id] || {d:null,c:""};
+    var chip = card.querySelector(".chip");
+    if(st.d){
+      card.setAttribute("data-state", st.d);
+      var opts = isQ ? Q_OPTS : FIND_OPTS, lbl = st.d;
+      opts.forEach(function(o){ if(o[0] === st.d) lbl = o[1]; });
+      chip.textContent = lbl;
+    }else{
+      card.removeAttribute("data-state");
+      chip.textContent = isQ ? "Unanswered" : "Undecided";
+    }
+  }
+
+  function hydrate(){
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var st = state[id];
+      if(!st) return;
+      if(st.d){
+        var r = card.querySelector('input[value="' + st.d + '"]');
+        if(r) r.checked = true;
+      }
+      var ta = card.querySelector("textarea");
+      if(ta && st.c) ta.value = st.c;
+      paint(card);
+    });
+  }
+
+  /* ---------- prompt ---------- */
+  function oneLine(s){ return String(s || "").replace(/\s+/g, " ").trim(); }
+
+  function build(){
+    var findLines = [], qLines = [], undecided = [], unanswered = [], notes = [];
+    var nFind = 0, nQ = 0, totFind = 0, totQ = 0;
+
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var isQ = card.getAttribute("data-kind") === "question";
+      var st = state[id] || {d:null,c:""};
+      if(isQ) totQ++; else totFind++;
+      var cmt = oneLine(st.c);
+      if(st.d){
+        var line = id + " " + st.d.toUpperCase() + (cmt ? " — " + cmt : "");
+        if(isQ){ qLines.push(line); nQ++; } else { findLines.push(line); nFind++; }
+      }else{
+        if(isQ) unanswered.push(id); else undecided.push(id);
+        if(cmt) notes.push(id + " (no decision) — " + cmt);
+      }
+    });
+
+    var out = [];
+    out.push("APOLLO #227 — dashboard regen diff, my decisions");
+    out.push("Source: notes/_subreports/2026-08-30-227-dashboard-regen-diff.md");
+    out.push("Page: reviews/DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html");
+    out.push("Findings decided " + nFind + "/" + totFind + " · questions answered " + nQ + "/" + totQ);
+    out.push("");
+    out.push("FINDINGS");
+    out.push(findLines.length ? findLines.join("\n") : "(none decided)");
+    out.push("");
+    out.push("QUESTIONS");
+    out.push(qLines.length ? qLines.join("\n") : "(none answered)");
+    if(notes.length){
+      out.push("");
+      out.push("NOTES ON UNDECIDED");
+      out.push(notes.join("\n"));
+    }
+    out.push("");
+    out.push("UNDECIDED: " + (undecided.length ? undecided.join(", ") : "none"));
+    out.push("UNANSWERED: " + (unanswered.length ? unanswered.join(", ") : "none"));
+    return {text: out.join("\n"), nFind: nFind, nQ: nQ, totFind: totFind, totQ: totQ};
+  }
+
+  var promptEl = document.getElementById("prompt");
+  var cFind = document.getElementById("cFind");
+  var cQ = document.getElementById("cQ");
+
+  function refresh(){
+    var b = build();
+    promptEl.textContent = b.text;
+    cFind.textContent = b.nFind + "/" + b.totFind;
+    cQ.textContent = b.nQ + "/" + b.totQ;
+  }
+
+  /* ---------- copy ---------- */
+  var statusEl = document.getElementById("copystatus");
+  function status(msg, ok){
+    statusEl.textContent = msg;
+    statusEl.className = ok ? "ok" : "bad";
+    document.getElementById("sr").textContent = msg;
+    window.setTimeout(function(){ if(statusEl.textContent === msg){ statusEl.textContent = ""; statusEl.className = ""; } }, 6000);
+  }
+  function legacyCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly","");
+      ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0";
+      ta.style.opacity = "0"; ta.style.width = "2px"; ta.style.height = "2px";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){ return false; }
+  }
+  function selectPre(){
+    try{
+      var r = document.createRange(); r.selectNodeContents(promptEl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      promptEl.scrollIntoView({behavior:"smooth", block:"center"});
+    }catch(e){}
+  }
+  document.getElementById("copy").addEventListener("click", function(){
+    var text = build().text;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        status("Copied — paste it to Claude", true);
+      }).catch(function(){
+        if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+        else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+      });
+    }else{
+      if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+      else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+    }
+  });
+  document.getElementById("jump").addEventListener("click", function(){
+    document.getElementById("promptblock").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    if(!window.confirm("Clear every decision and comment on this page?")) return;
+    state = {};
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      state[id] = {d:null, c:""};
+      var r = card.querySelector('input[type="radio"]:checked'); if(r) r.checked = false;
+      var ta = card.querySelector("textarea"); if(ta) ta.value = "";
+      paint(card);
+    });
+    save(); refresh(); status("Cleared", true);
+  });
+
+  /* ---------- filters ---------- */
+  var fbtns = Array.prototype.slice.call(document.querySelectorAll(".fbtn"));
+  fbtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.getAttribute("data-filter");
+      fbtns.forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      cards.forEach(function(card){
+        var id = card.getAttribute("data-id");
+        var show = f === "all"
+          || (f === "undecided" && !(state[id] && state[id].d))
+          || (f === card.getAttribute("data-class"));
+        card.classList.toggle("hidden", !show);
+      });
+      Array.prototype.slice.call(document.querySelectorAll("section.band")).forEach(function(sec){
+        var vis = sec.querySelectorAll(".card:not(.hidden)").length;
+        var hasCards = sec.querySelectorAll(".card").length > 0;
+        sec.style.display = (hasCards && vis === 0) ? "none" : "";
+      });
+    });
+  });
+
+  /* ---------- count assertion ---------- */
+  function assert(){
+    var el = document.getElementById("assert");
+    var nF = cards.filter(function(c){ return c.getAttribute("data-kind") === "finding"; }).length;
+    var nQq = cards.filter(function(c){ return c.getAttribute("data-kind") === "question"; }).length;
+    var ids = {}, dup = [];
+    cards.forEach(function(c){
+      var id = c.getAttribute("data-id");
+      if(ids[id]) dup.push(id); else ids[id] = 1;
+    });
+    var ok = (nF === FIND_DECLARED) && (nQq === Q_DECLARED) && dup.length === 0;
+    el.textContent = ok
+      ? nF + "/" + FIND_DECLARED + " findings rendered · " + nQq + "/" + Q_DECLARED
+        + " ruling-shaped questions rendered · all ids unique · matches the report's COUNTS line."
+      : "⚠ COUNT MISMATCH — rendered " + nF + " findings (expected " + FIND_DECLARED + ") and "
+        + nQq + " questions (expected " + Q_DECLARED + ")"
+        + (dup.length ? " · duplicate ids: " + dup.join(", ") : "") + ". Tell Claude.";
+    el.className = ok ? "assert" : "assert bad";
+  }
+
+  load(); hydrate(); refresh(); assert();
+})();
+</script>
+</body>
+</html>

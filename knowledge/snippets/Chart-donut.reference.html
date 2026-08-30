@@ -103,6 +103,7 @@
     --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
     --shadow:#00000033; --pop-border:#FFFFFF00;
     --border-radius-control:0; --border-radius-surface:0;
+    --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
@@ -112,6 +113,7 @@
     --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
     --shadow:#000000D9; --pop-border:#808080;
     --border-radius-control:0; --border-radius-surface:0;
+    --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
   }
   [data-contrast="high"]{
     --data-series-1:var(--data-series-1-hc);
@@ -176,10 +178,21 @@
 
   /* the value ⇄ % pair CONSUMES the Segmented-control atom (exemplar canon): sliding indicator,
      2px inset track, square (Mono), --control-h matched; type = .seg.sm button (12/500, T-D15). */
-  .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top;}
+/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
+     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
+     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
+     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
+     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
+     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
+     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
+     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
+     thumb radii are geometrically correct for this construction. */
+  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
   .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease);}
+    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+  .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}   /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
   .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -456,7 +469,9 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Donut chart",
-    "vars": { "--page": "background/default", "--ink": "text/default", "--line": "border/subtle",
+    "vars": {
+      "--seg-rad-s": "border-radius/segmented-container/s", "--seg-thumb-s": "border-radius/segmented-thumb/s",
+      "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-thumb-xs": "border-radius/segmented-thumb/xs", "--page": "background/default", "--ink": "text/default", "--line": "border/subtle",
               "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
               "--data-series-4": "data/series/4", "--data-series-5": "data/series/5",
               "--data-series-1-hc": "data/series-high-contrast/1", "--data-series-2-hc": "data/series-high-contrast/2",

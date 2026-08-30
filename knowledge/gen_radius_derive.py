@@ -78,6 +78,22 @@ SUPERSEDED_DERIVED_RADIUS_FLOOR = 2
 # are SUPERSEDED by 0/2/4/6). Padding remains a real spacing token, untouched.
 SEGMENTED_THUMB_DIAL = 6
 
+# THE CONCENTRIC SCOPE — Dave's ruling #227 (2026-08-30; conductor inscribes as s227-D4).
+# Dave: "the inner radii is just not right for console on the the two small sizes, and I got
+# fed up of it continually wrong, especially as we had a way of calculating it, thats why I
+# dropped it."  The way of calculating it is s200-D1 clause (c) — the CONCENTRIC law,
+# thumb = track radius - track padding — which s202-D2 replaced with the flat dial.
+#
+# WHY THE FLAT DIAL FAILS AT SMALL SIZES, stated so it is not re-tuned back by accident:
+# a flat subtraction eats a small radius whole. Console xs is a 6px track; 6 - 6 = 0, a
+# SQUARE thumb inside a rounded track. s is 8; 8 - 6 = 2, near-square. Concentric subtracts
+# the padding (2), so the inner corner stays parallel to the outer one at every size.
+#
+# SCOPE IS DELIBERATELY THE TWO SMALL SCALES, Dave's own words. m and l keep the dial until
+# he rules otherwise; ⚠ see $concentricOpenQuestion in the emitted proposal — with m's padding
+# now 2px (#227) the dial leaves m 4px further from concentric than it was.
+SEGMENTED_CONCENTRIC_SCALES = ("xs", "s")
+
 # The scale set is READ FROM THE TOKEN STORE (s201-D1 dimension-first grammar xs/s/m/l;
 # the padding-first small/medium/large set is RETIRED and must never be emitted again).
 SEGMENTED_SCALE_ORDER = ["xs", "s", "m", "l"]
@@ -296,15 +312,44 @@ def card_padding(radius):
     return snap2(max(radius, CARD_PADDING_MIN), "card padding")
 
 
-def thumb_radius(container_r, padding=None):
-    """RULED s202-D2 (#202, Dave, 2026-08-18), corrected reading:
-        thumb = max(container - SEGMENTED_THUMB_DIAL, 0)   with the dial = 6.
+def thumb_radius(container_r, padding=None, scale=None):
+    """thumb = max(container - X, 0). s201-D5's SHAPE is invariant (squares stay square,
+    no floor); only the subtrahend X moves, and WHICH X applies is per-scale:
 
-    s201-D5's shape survives (max(container - X, 0); squares stay square, no floor);
-    s202-D2 re-tunes X from the track padding to the tuned dial. `padding` is accepted
-    and IGNORED so the signature stays legible at the call site — it is deliberately no
-    longer an input to the radius. Mint-time only (s200-D1 clause a)."""
+      scale in SEGMENTED_CONCENTRIC_SCALES  ->  X = the track PADDING  (CONCENTRIC)
+          Dave's ruling #227 (2026-08-30), restoring s200-D1 clause (c) for xs and s.
+      otherwise                             ->  X = SEGMENTED_THUMB_DIAL (the tuned 6)
+          s202-D2 (#202, Dave, 2026-08-18), unchanged for m and l.
+
+    `padding` is a REQUIRED input in the concentric branch and a REFUSAL if absent —
+    UNKNOWN is never defaulted (s200-D1 fail-loud contract). Mint-time only (clause a)."""
+    if scale is not None and scale in SEGMENTED_CONCENTRIC_SCALES:
+        if padding is None:
+            refuse("thumb radius scale %s" % scale,
+                   "the CONCENTRIC branch (#227) needs the track padding and it is absent "
+                   "— UNKNOWN is never defaulted")
+        return max(container_r - padding, 0)
     return max(container_r - SEGMENTED_THUMB_DIAL, 0)
+
+
+def thumb_inputs(scale, container_r, padding):
+    """The audit trail for ONE scale's thumb: which law fired, its subtrahend, its ruling."""
+    if scale in SEGMENTED_CONCENTRIC_SCALES:
+        return {
+            "law": "concentric",
+            "subtrahend": padding,
+            "subtrahend_name": "track padding",
+            "ruled": ("Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the "
+                      "two small scales; conductor inscribes as s227-D4"),
+            "formula": "thumb = max(container_radius - padding, 0)",
+        }
+    return {
+        "law": "tuned dial",
+        "subtrahend": SEGMENTED_THUMB_DIAL,
+        "subtrahend_name": "tuned dial",
+        "ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
+        "formula": "thumb = max(container_radius - %d, 0)" % SEGMENTED_THUMB_DIAL,
+    }
 
 
 def build():
@@ -319,31 +364,41 @@ def build():
         for scale, inp in segmented_scales(theme).items():
             spad = inp["padding"]
             container_r = inp["container_radius"]
+            law = thumb_inputs(scale, container_r, spad)
             segs[scale] = {
-                "$ruled": ("s202-D2 (#202, Dave, 2026-08-18, corrected reading) — thumb = "
-                           "max(container - %d, 0); the dial replaces padding as the input, "
-                           "s201-D5's squares-stay-square shape retained"
-                           % SEGMENTED_THUMB_DIAL),
+                "$ruled": law["ruled"],
+                "$law": law["law"],
                 "padding": spad,
                 "$paddingStatus": "READ FROM STORE (%s)" % inp["padding_source"],
                 "container_radius": container_r,
                 "$containerStatus": "READ FROM STORE (%s)" % inp["container_source"],
                 "container_role_radius": container_role_r,
                 "thumb_dial": SEGMENTED_THUMB_DIAL,
-                "thumb_radius_raw": container_r - SEGMENTED_THUMB_DIAL,
-                "thumb_radius": thumb_radius(container_r),
-                "formula": ("thumb_radius = max(container_radius - %d, 0) — RULED s202-D2 "
-                            "(tuned dial; padding is NOT an input)" % SEGMENTED_THUMB_DIAL),
-                "inputs": {"container_radius": container_r, "dial": SEGMENTED_THUMB_DIAL},
-                "$paddingIsNotAnInput": ("padding %d is carried here as the control's real "
-                                         "spacing token; s202-D2 removed it from the thumb "
-                                         "radius derivation" % spad),
+                "thumb_subtrahend": law["subtrahend"],
+                "thumb_subtrahend_name": law["subtrahend_name"],
+                "thumb_radius_raw": container_r - law["subtrahend"],
+                "thumb_radius": thumb_radius(container_r, spad, scale),
+                "formula": law["formula"],
+                "arithmetic": "track %d - %s %d = thumb %d" % (
+                    container_r, law["subtrahend_name"], law["subtrahend"],
+                    thumb_radius(container_r, spad, scale)),
+                "inputs": ({"container_radius": container_r, "padding": spad}
+                           if law["law"] == "concentric"
+                           else {"container_radius": container_r,
+                                 "dial": SEGMENTED_THUMB_DIAL}),
+                "$paddingIsAnInput": (
+                    ("padding %d IS the subtrahend at this scale — CONCENTRIC, restored by "
+                     "Dave's ruling #227" % spad) if law["law"] == "concentric" else
+                    ("padding %d is carried here as the control's real spacing token only; at "
+                     "this scale s202-D2's tuned dial is the subtrahend" % spad)),
                 "$square": container_r == 0,
                 "$squareNote": (
                     "container radius is 0 (square theme: mono / legacy / supercharge, base set "
-                    "minted s202-D1): max(0 - %d, 0) = 0 — squares stay square, s201-D5 shape. "
-                    "No floor is applied; the old PROPOSED floor of %d is SUPERSEDED."
-                    % (SEGMENTED_THUMB_DIAL, SUPERSEDED_DERIVED_RADIUS_FLOOR)) if container_r == 0 else None,
+                    "minted s202-D1): max(0 - %d, 0) = 0 — squares stay square, s201-D5 shape, "
+                    "and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), "
+                    "so no square theme moves. No floor is applied; the old PROPOSED floor of "
+                    "%d is SUPERSEDED."
+                    % (law["subtrahend"], SUPERSEDED_DERIVED_RADIUS_FLOOR)) if container_r == 0 else None,
             }
 
         themes[theme] = {
@@ -381,9 +436,11 @@ def build():
                     "a separate, Dave-authorised act (s200-D1 clause a, mint-time only)."),
         "$ruledFormulae": [
             "card padding = max(radius, 8) snapped to 2px — RULED s201-D4 (#201)",
-            "segmented thumb = max(container - %d, 0) — RULED s202-D2 (#202, corrected reading); "
-            "the 6 is Dave's TUNED DIAL, re-tunable by a future tuner pass; squares stay square "
-            "(s201-D5 shape retained, padding retired as the input)" % SEGMENTED_THUMB_DIAL,
+            "segmented thumb = max(container - X, 0) — s201-D5's SHAPE, invariant. X is "
+            "PER SCALE: the track PADDING at scales %s (CONCENTRIC — Dave's ruling #227, "
+            "2026-08-30, restoring s200-D1 clause (c) for the two small sizes), and the tuned "
+            "dial %d at every other scale (s202-D2, #202, unchanged). Squares stay square "
+            "under both laws." % (list(SEGMENTED_CONCENTRIC_SCALES), SEGMENTED_THUMB_DIAL),
         ],
         "$decidesNothing": [
             "which values get MINTED, and for which themes — Dave's act, never this script's",
@@ -396,10 +453,14 @@ def build():
                 "max(container - X, 0) shape. Never applied; recorded so the retirement is legible."
                 % SUPERSEDED_DERIVED_RADIUS_FLOOR),
             "thumb_derives_from_padding": (
-                "the thumb radius USED to derive from the track padding (s200-D1 clause c, "
-                "s201-D5). SUPERSEDED by s202-D2 (#202, corrected reading): the input is now the "
-                "tuned dial %d. Console's concentric 4/6/6/8 became 0/2/4/6 in the same motion."
-                % SEGMENTED_THUMB_DIAL),
+                "⚠ PARTIALLY UN-SUPERSEDED. History: the thumb radius originally derived from "
+                "the track padding (s200-D1 clause c, s201-D5); s202-D2 (#202) replaced that "
+                "input with the tuned dial %d, and console's concentric 4/6/6/8 became 0/2/4/6 "
+                "in the same motion. Dave's ruling #227 (2026-08-30) RESTORES the concentric "
+                "input at scales %s — he said the dial had it 'continually wrong' on the two "
+                "small sizes, because a flat subtraction eats a small radius whole (6 - 6 = 0, "
+                "a square thumb in a rounded track). The dial survives at m and l."
+                % (SEGMENTED_THUMB_DIAL, list(SEGMENTED_CONCENTRIC_SCALES))),
             "scale_set_small_medium_large": (
                 "the padding-first small/medium/large scale set (paddings 2/4/6) was RETIRED at "
                 "s201-D1 and is no longer emitted anywhere in this file."),
@@ -419,8 +480,18 @@ def build():
             "card_padding_min": CARD_PADDING_MIN,
             "padding_step": PADDING_STEP,
             "segmented_thumb_dial": SEGMENTED_THUMB_DIAL,
+            "segmented_concentric_scales": list(SEGMENTED_CONCENTRIC_SCALES),
             "segmented_scale_order": list(SEGMENTED_SCALE_ORDER),
         },
+        "$concentricOpenQuestion": (
+            "RULING-SHAPED, NOT SETTLED — for Dave. #227 changed TWO things that meet at scale "
+            "`m`: the track padding dropped 4 -> 2, and the concentric law came back at xs/s "
+            "only. Console `m` therefore now reads track 10, padding 2, thumb 4 (dial) where "
+            "concentric would give 8 — the dial sits 4px further from concentric than it did "
+            "before the padding moved. Scale `l` reads track 12, padding 4, thumb 6 (dial) vs "
+            "concentric 8. Dave said only the two small sizes were wrong, so nothing was "
+            "changed at m/l; extending SEGMENTED_CONCENTRIC_SCALES to all four is one constant "
+            "away if he wants it."),
         "$inputs": [
             "knowledge/tokens/layout.json (border-radius family + segmented-container scales)",
             "knowledge/tokens/spacing.json (padding/segmented-control scales)",
@@ -486,6 +557,76 @@ def check():
     print("CHECK OK — proposal file matches recomputation (%d themes)."
           % len(fresh["themes"]))
     return 0
+
+# ---------------------------------------------------------------- THE MINT ASSERT
+# BORN ADVISORY at #227 (2026-08-30). Promotion to a blocking gate is Dave's act, not
+# this script's.
+#
+# WHY IT EXISTS — Dave, #227: "the inner radii is just not right for console on the the
+# two small sizes, and I got fed up of it CONTINUALLY WRONG, especially as we had a way
+# of CALCULATING it". The derivation existed since s200-D1 and was correct; what was
+# missing is that NOTHING COMPARED THE MINT TO IT. `--check` only proves the proposal
+# file matches a recomputation — a hand-typed store value that disagrees with the
+# derivation passes `--check` silently, because the proposal is recomputed FROM the
+# store. That blind spot is the whole defect class, and this is the instrument for it.
+#
+# It reads the store (the same inputs build() reads) and asserts, per theme per scale:
+#     minted border-radius/segmented-thumb/<scale>  ==  thumb_radius(track, padding, scale)
+# which at the CONCENTRIC scales (#227) is exactly  thumb == track - padding.
+
+def _minted_thumb(theme, scale):
+    """The thumb radius AS MINTED for one theme/scale — theme override wins over base."""
+    key = "border-radius/segmented-thumb/%s" % scale
+    ov = _theme_overrides(theme)
+    if key in ov:
+        return as_px(ov[key].get("$value"), "%s %s" % (theme, key)), "%s override" % theme
+    layout = load_json(LAYOUT, "layout.json")
+    return (as_px(_base_node(layout, key, "layout.json %s" % key), "layout.json %s" % key),
+            "layout.json base")
+
+
+def assert_mint(quiet=False):
+    """ADVISORY (#227): every MINTED segmented thumb must equal what the ruled law derives.
+
+    Returns rc 0 when the mint and the derivation agree, 1 when any scale disagrees.
+    Never writes anything."""
+    rows, bad = [], []
+    for theme in THEMES:
+        for scale, inp in segmented_scales(theme).items():
+            track, pad = inp["container_radius"], inp["padding"]
+            law = thumb_inputs(scale, track, pad)
+            want = thumb_radius(track, pad, scale)
+            got, src = _minted_thumb(theme, scale)
+            ok = (got == want)
+            rows.append((theme, scale, law["law"], track, pad,
+                         law["subtrahend_name"], law["subtrahend"], want, got, src, ok))
+            if not ok:
+                bad.append("%s/%s: MINTED thumb %d != DERIVED %d  (%s: track %d - %s %d)"
+                           % (theme, scale, got, want, law["law"], track,
+                              law["subtrahend_name"], law["subtrahend"]))
+    if not quiet:
+        print("ASSERT-MINT (ADVISORY, #227) — minted thumb vs ruled derivation")
+        for (th, sc, lw, tr, pd, sn, sv, want, got, src, ok) in rows:
+            print("  %-19s %-2s  %-11s  track %2d - %-13s %d = %2d   minted %2d  [%s] %s"
+                  % (th, sc, lw, tr, sn, sv, want, got, src, "OK" if ok else "<<< WRONG"))
+    if bad:
+        print("ASSERT-MINT RED — %d minted value(s) disagree with the derivation:"
+              % len(bad), file=sys.stderr)
+        for b in bad:
+            print("  " + b, file=sys.stderr)
+        print("  Fix the STORE (or the law), never the artifact. Advisory at #227 — "
+              "promotion to a blocking gate is Dave's act.", file=sys.stderr)
+        return 1
+    if not quiet:
+        print("ASSERT-MINT OK — %d theme/scale pair(s): every minted thumb equals its "
+              "derived value." % len(rows))
+    return 0
+
+
+def _STORE_CACHE_BUST():
+    """No-op today: load_json() reads from disk on every call, so a restored store is
+    seen immediately. Declared so a future cache cannot make the selftest lie."""
+    return None
 
 
 def selftest():
@@ -567,17 +708,77 @@ def selftest():
     # s202-D2 DIAL PROOF — drive the formula directly, both clauses:
     #   (1) the thumb tracks the DIAL, not the padding;
     #   (2) padding is no longer an input at all (varying it cannot move the result).
+    # (a) THE DIAL BRANCH — m, l, and any unscaled call. Padding must stay inert HERE.
+    dial_scale = next((sc for sc in SEGMENTED_SCALE_ORDER
+                       if sc not in SEGMENTED_CONCENTRIC_SCALES), None)
+    if dial_scale is None:
+        failures.append("no dial-governed scale left to prove the s202-D2 branch on")
     for cont, expect in [(6, 0), (8, 2), (10, 4), (12, 6), (0, 0), (4, 0)]:
-        got = thumb_radius(cont)
+        got = thumb_radius(cont, None, dial_scale)
         if got != expect:
-            failures.append("dial proof: thumb_radius(%d) = %d, expected %d (dial %d)"
-                            % (cont, got, expect, SEGMENTED_THUMB_DIAL))
+            failures.append("dial proof: thumb_radius(%d, scale=%s) = %d, expected %d "
+                            "(dial %d)" % (cont, dial_scale, got, expect, SEGMENTED_THUMB_DIAL))
     for pad in (0, 2, 4, 6, 20):
-        if thumb_radius(10, pad) != thumb_radius(10):
-            failures.append("padding still feeds the thumb radius: padding %d moved the "
-                            "result — s202-D2 retired padding as an input" % pad)
-    print("SELFTEST: s202-D2 dial proof ran (dial=%d; padding proven inert)."
-          % SEGMENTED_THUMB_DIAL)
+        if thumb_radius(10, pad, dial_scale) != thumb_radius(10, None, dial_scale):
+            failures.append("padding fed the thumb radius at DIAL scale %s: padding %d moved "
+                            "the result — s202-D2 keeps padding inert at m/l" % (dial_scale, pad))
+    print("SELFTEST: s202-D2 dial proof ran at scale %s (dial=%d; padding inert THERE)."
+          % (dial_scale, SEGMENTED_THUMB_DIAL))
+
+    # (b) THE CONCENTRIC BRANCH — #227. Padding must be LIVE here, and it must be the
+    #     only subtrahend: the same track with two paddings must give two answers.
+    conc_scale = SEGMENTED_CONCENTRIC_SCALES[0]
+    for track, pad, expect in [(6, 2, 4), (8, 2, 6), (10, 4, 6), (2, 2, 0), (0, 2, 0),
+                               (2, 8, 0), (20, 4, 16)]:
+        got = thumb_radius(track, pad, conc_scale)
+        if got != expect:
+            failures.append("concentric proof (#227): thumb_radius(%d, pad=%d, scale=%s) = %d, "
+                            "expected %d" % (track, pad, conc_scale, got, expect))
+    if thumb_radius(10, 2, conc_scale) == thumb_radius(10, 6, conc_scale):
+        failures.append("concentric proof (#227): padding is INERT at scale %s — the #227 law "
+                        "did not take, the dial is still firing" % conc_scale)
+    # and the two branches must genuinely differ, or the scope set is doing nothing
+    if thumb_radius(6, 2, conc_scale) == thumb_radius(6, 2, dial_scale):
+        failures.append("concentric and dial branches agree at track 6 / pad 2 — "
+                        "SEGMENTED_CONCENTRIC_SCALES is not being honoured")
+    # a concentric scale with NO padding must REFUSE, never default
+    try:
+        thumb_radius(6, None, conc_scale)
+    except DeriveRefusal:
+        pass
+    else:
+        failures.append("concentric branch defaulted a missing padding instead of refusing")
+    print("SELFTEST: #227 concentric proof ran at scale %s (padding proven LIVE, dial "
+          "branch proven distinct, missing padding proven to refuse)." % conc_scale)
+
+    # (c) THE MINT ASSERT — plant a wrong thumb IN THE STORE and prove assert_mint sees red.
+    #     This is the arm that answers "continually wrong": the store is what ships.
+    if assert_mint(quiet=True) != 0:
+        failures.append("assert_mint is RED on the real store before any mutation")
+    conc_path = os.path.join(THEMES_DIR, THEME_FILE["apollo-console"])
+    store_original = open(conc_path, "r", encoding="utf-8").read()
+    try:
+        doc = json.loads(store_original)
+        key = "border-radius/segmented-thumb/%s" % conc_scale
+        real = doc["overrides"][key]["$value"]
+        doc["overrides"][key]["$value"] = as_px(real, "selftest") + 3   # a wrong thumb
+        with open(conc_path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, indent=2)
+        rc = assert_mint(quiet=True)
+        print("  planted [console %s thumb %s -> %s in the STORE] -> assert-mint rc=%d %s"
+              % (conc_scale, real, as_px(real, "selftest") + 3, rc,
+                 "DETECTED" if rc != 0 else "*** MISSED ***"))
+        if rc == 0:
+            failures.append("assert_mint MISSED a wrong thumb planted in the store — the "
+                            "#227 instrument does not work")
+    finally:
+        with open(conc_path, "w", encoding="utf-8") as fh:
+            fh.write(store_original)
+        _STORE_CACHE_BUST()
+    if assert_mint(quiet=True) != 0:
+        failures.append("assert_mint did not go green again after the store was restored")
+    print("SELFTEST: #227 mint-assert proof ran (wrong thumb planted in the STORE, seen, "
+          "restored).")
 
     # The DIAL itself must be pinned in the emitted file — a re-tune must show as drift.
     if fresh["$knobs"].get("segmented_thumb_dial") != SEGMENTED_THUMB_DIAL:
@@ -602,10 +803,15 @@ def main():
                     help="recompute and compare against the proposal file; rc!=0 on drift")
     ap.add_argument("--selftest", action="store_true",
                     help="mutation proof: plant wrong derived values, prove detection")
+    ap.add_argument("--assert-mint", action="store_true", dest="assert_mint",
+                    help="ADVISORY (#227): assert every MINTED segmented thumb equals its "
+                         "derived value (concentric at xs/s, tuned dial at m/l)")
     args = ap.parse_args()
     try:
         if args.selftest:
             return selftest()
+        if args.assert_mint:
+            return assert_mint()
         if args.check:
             return check()
         doc = write(build())
