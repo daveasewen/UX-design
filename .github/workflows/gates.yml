@@ -386,8 +386,26 @@ jobs:
       - name: State-contrast selftest — every arm, mutation controls included (BLOCKING)
         run: python3 knowledge/_validate_state_contrast.py --selftest
 
+      # #225 — the sweep's red was UNREAD for three sessions (virtualized log, #224 residual ③;
+      # forensics: notes/_subreports/2026-08-29-225-ci-reds-forensics.md — locally 135/135 green
+      # on byte-identical inputs, so the red is CI-environmental and the log is the only witness).
+      # `tee` + PIPESTATUS keeps the exit honest (default shell has no pipefail); the artifact
+      # uploads on `always()` so a red run finally hands over its own evidence. The audit file
+      # rides along because the sweep rewrites it unconditionally (_validate_state_contrast.py:1385).
       - name: Full state-contrast sweep — BLOCKING (s218-D4; 0 text failures over 135)
-        run: python3 knowledge/_validate_state_contrast.py
+        run: |
+          python3 knowledge/_validate_state_contrast.py 2>&1 | tee render-sweep.log
+          exit ${PIPESTATUS[0]}
+
+      - name: "Upload sweep log — the #224/#225 UNREAD-item remedy (evidence, not a gate)"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: state-contrast-sweep-log
+          path: |
+            render-sweep.log
+            knowledge/_STATE-CONTRAST-AUDIT.md
+          if-no-files-found: warn
 
       # #208 — W-45 IN CI, AND IT BELONGS IN *THIS* JOB, DECLARED. The registry holds 5 probes;
       # P-3 (dangling dataviz var → silent black, the #184 class) is `environment:
