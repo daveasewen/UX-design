@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAB overlay — three readings of "how does it appear?" · #227</title>
+<style>
+  /* ---------------------------------------------------------------------------------
+     REVIEW-PAGE CHROME.
+     These are the review page's OWN values, not canon. Every one is lifted verbatim
+     from a knowledge/canon/canon.css primitive (--color-mono-4, --color-grey-300/600,
+     --color-grey-dark-mode-600, --color-grey-white, --color-primary, focus-ring pair,
+     --color-grey-transparent-black-20/-85). Nothing here is invented.
+
+     They deliberately wear canon's SHORT ALIAS NAMES (--surface, --text, --muted,
+     --border, --page, --focus, --shadow, --font, --ease, --pri, --reverse) for one
+     reason: apollo-fab.js probes for --surface at mount, and when it finds it the
+     overlay inherits the page's theme instead of its hard fallback pair. That lets
+     Dave watch the FAB re-theme itself on file://, where the dashboards inside the
+     iframes are out of reach. On a real Apollo page canon.css supplies these instead.
+     --------------------------------------------------------------------------------- */
+  :root, [data-theme="light"]{
+    --page:#F0F0F0; --surface:#FFFFFF; --text:#1A1A1A; --muted:#767676;
+    --border:#D7D8D6; --divider:#D7D8D6; --pri:#DB0011; --reverse:#FFFFFF;
+    --focus:#305A85; --shadow:#00000033;
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:140ms cubic-bezier(.4,0,.2,1);
+    --note-bg:#FFF6F4; --note-ink:#5C2018;
+  }
+  [data-theme="dark"]{
+    --page:#000000; --surface:#1D1D1D; --text:#FFFFFF; --muted:#B7B7B7;
+    --border:#404040; --divider:#404040; --pri:#DB0011; --reverse:#FFFFFF;
+    --focus:#4587A7; --shadow:#000000D9;
+    --note-bg:#25211C; --note-ink:#F6604C;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease);
+  }
+
+  header.bar{
+    position:sticky; top:0; z-index:10;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    padding:14px 20px; display:flex; flex-wrap:wrap; gap:16px 24px; align-items:center;
+  }
+  .bar h1{font-size:16px; font-weight:500; margin:0; letter-spacing:-.01em}
+  .bar .sub{font-size:13px; color:var(--muted); margin:2px 0 0; line-height:1.5}
+  .bar code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .spacer{flex:1 1 auto}
+
+  .ctl{display:flex; align-items:center; gap:6px; font-size:13px}
+  .ctl > span{color:var(--muted)}
+  .ctl button{
+    font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); cursor:pointer; margin-left:-1px;
+  }
+  .ctl button:first-of-type{margin-left:0}
+  .ctl button[aria-pressed="true"]{background:var(--text); color:var(--surface); border-color:var(--text)}
+  .ctl button:focus-visible{outline:2px solid var(--focus); outline-offset:1px; position:relative; z-index:1}
+
+  .note{
+    margin:0; padding:10px 20px; font-size:13px; line-height:1.55;
+    background:var(--note-bg); color:var(--note-ink);
+    border-bottom:1px solid var(--border);
+  }
+  .note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .note[hidden]{display:none}
+
+  .intro{
+    padding:16px 20px; font-size:14px; line-height:1.6; max-width:104ch;
+    border-bottom:1px solid var(--border); background:var(--surface);
+  }
+  .intro p{margin:0 0 10px}
+  .intro p:last-child{margin:0}
+  .intro strong{font-weight:500}
+
+  /* --- the three readings ---------------------------------------------------------- */
+  .stage{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--border); border-bottom:1px solid var(--border);
+  }
+  .pane{display:flex; flex-direction:column; background:var(--surface); min-width:0}
+  .pane-head{padding:12px 16px; border-bottom:1px solid var(--border)}
+  .pane-head .kicker{
+    display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 4px;
+  }
+  .pane-head h2{margin:0; font-size:15px; font-weight:500; letter-spacing:-.01em}
+  .pane-head .how{margin:6px 0 0; font-size:12px; line-height:1.5; color:var(--text)}
+  .pane-head .cost{margin:6px 0 0; font-size:12px; line-height:1.5; color:var(--muted)}
+  .pane-head .how b{font-weight:500}
+
+  /* The frame-wrap is the FAB's container: position:relative makes the overlay
+     absolute INSIDE this box instead of fixed to the viewport, so three instances
+     can sit side by side without fighting. On a real page the overlay is fixed. */
+  .frame-wrap{
+    position:relative; height:620px; background:var(--page); overflow:hidden;
+    border-top:1px solid var(--border);
+  }
+  iframe{width:100%; height:100%; border:0; display:block; background:#FFFFFF}
+
+  /* --- inspector practice strip ---------------------------------------------------- */
+  .strip{padding:14px 20px; background:var(--surface); border-bottom:1px solid var(--border)}
+  .strip h3{margin:0 0 4px; font-size:13px; font-weight:500}
+  .strip p{margin:0 0 10px; font-size:12px; line-height:1.5; color:var(--muted); max-width:100ch}
+  .strip .boxes{display:flex; flex-wrap:wrap; gap:8px}
+  .strip .boxes > *{
+    padding:10px 14px; border:1px dashed var(--border); background:var(--page);
+    font-size:12px; color:var(--muted);
+  }
+
+  footer.legend{
+    padding:16px 20px 28px; font-size:13px; line-height:1.65; color:var(--muted);
+    background:var(--surface);
+  }
+  footer.legend strong{color:var(--text); font-weight:500}
+  footer.legend ul{margin:8px 0 14px; padding-left:18px}
+  footer.legend code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+
+  @media (max-width:1180px){
+    .stage{grid-template-columns:1fr}
+    .frame-wrap{height:560px}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="bar">
+  <div>
+    <h1>FAB overlay — three readings of "how does it appear?"</h1>
+    <p class="sub">#227 · one file, <code>knowledge/_render/apollo-fab.js</code>, three <code>reveal</code> values ·
+      each frame is <code>dashboards/international-banking-dashboard.canon.html</code>, untouched</p>
+  </div>
+  <div class="spacer"></div>
+
+  <div class="ctl" role="group" aria-label="Review page mode">
+    <span>This page</span>
+    <button type="button" data-mode="light" aria-pressed="true">Light</button>
+    <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Corner zone">
+    <span>Corner zone</span>
+    <button type="button" id="hintToggle" aria-pressed="false">Show the 72&nbsp;px zone</button>
+  </div>
+</header>
+
+<p class="note" id="crossOriginNote" hidden>
+  <strong>The overlays cannot reach inside the frames on <code>file://</code>.</strong>
+  Chrome treats every <code>file://</code> page as its own origin, so an overlay sitting on this page
+  is not allowed to set <code>data-apollo-theme</code> on a dashboard inside an iframe — or to hover
+  its components. Each FAB has fallen back to driving <em>this</em> page instead, which is why the
+  page itself re-themes when you use one, and why the practice strip below is what the inspector can
+  see. To drive the real dashboards, serve the repo over HTTP:
+  <code>cd &lt;repo&gt; &amp;&amp; python3 -m http.server 8000</code>, then open
+  <code>http://localhost:8000/reviews/FAB-READINGS-2026-08-30-v1.html</code>.
+</p>
+
+<div class="intro">
+  <p><strong>The question on the page.</strong> The controls are the same in all three. What differs is
+    how the FAB <em>arrives</em> — and that is the only thing being asked. Open each one, switch a theme,
+    switch light/dark, turn <b>Inspect components</b> on and hover something.</p>
+  <p><strong>What it is not.</strong> The overlay is never part of the design. It is one fixed layer with
+    its own z-index, it changes no layout, and it leaves when the one <code>&lt;script&gt;</code> tag
+    that loaded it leaves. The dashboards in these frames have not been edited.</p>
+</div>
+
+<div class="strip">
+  <h3>Inspector practice strip</h3>
+  <p>Placeholder boxes wearing real <code>cn-*</code> class names, so the provenance inspector has
+    something to name while the frames are out of reach on <code>file://</code>. Turn Inspect on in any
+    of the three panels, then hover these. Served over HTTP the inspector reads the real dashboard
+    instead, and these become redundant.</p>
+  <div class="boxes">
+    <div class="cn-stat-card">.cn-stat-card</div>
+    <div class="cn-chart-line">.cn-chart-line</div>
+    <div class="cn-filter-toolbar-bar">.cn-filter-toolbar-bar</div>
+    <div class="cn-pagination">.cn-pagination</div>
+    <div class="cn-navigations">.cn-navigations</div>
+    <div class="cn-alert">.cn-alert</div>
+    <div class="cn-carousel">.cn-carousel</div>
+  </div>
+</div>
+
+<div class="stage">
+
+  <section class="pane">
+    <div class="pane-head">
+      <span class="kicker">Reading A</span>
+      <h2>The FAB is simply there</h2>
+      <p class="how"><b>How it appears:</b> a 56&nbsp;px disc in the bottom-right, present from the moment
+        the page loads. Click it and the panel opens above it.</p>
+      <p class="cost"><b>The trade-off:</b> nothing to discover and nothing to teach — but you have
+        permanently spent the bottom-right corner of every design you show, and it sits on top of
+        whatever lives there.</p>
+    </div>
+    <div class="frame-wrap" id="wrapA">
+      <iframe id="frameA" title="Banking dashboard with an always-visible FAB"
+              src="../dashboards/international-banking-dashboard.canon.html"></iframe>
+    </div>
+  </section>
+
+  <section class="pane">
+    <div class="pane-head">
+      <span class="kicker">Reading B</span>
+      <h2>A hot corner reveals it</h2>
+      <p class="how"><b>How it appears:</b> nothing is drawn until the pointer enters a
+        <b>72&nbsp;px&nbsp;×&nbsp;72&nbsp;px</b> zone in the bottom-right corner; then the FAB fades in.
+        Move away and it fades out again. On touch there is no hover at all, so a
+        <b>tap in that same corner</b> reveals it.</p>
+      <p class="cost"><b>The trade-off:</b> the design is clean until you go looking — but anyone you
+        hand the file to has to be told where to look, once.</p>
+    </div>
+    <div class="frame-wrap" id="wrapB">
+      <iframe id="frameB" title="Banking dashboard with a hot-corner FAB"
+              src="../dashboards/international-banking-dashboard.canon.html"></iframe>
+    </div>
+  </section>
+
+  <section class="pane">
+    <div class="pane-head">
+      <span class="kicker">Reading C</span>
+      <h2>Nothing at all, until you summon it</h2>
+      <p class="how"><b>How it appears:</b> it does not, until you <b>double-press&nbsp;Shift</b> — or,
+        on touch, <b>double-tap the bottom-right corner</b>. <b>Esc</b> puts it away again.</p>
+      <p class="cost"><b>The trade-off:</b> presentation-grade — the screen is only the design, with no
+        corner to avoid and nothing to find by accident. The cost is that the gesture has to be known,
+        so this one is for you, not for a client clicking around on their own.</p>
+    </div>
+    <div class="frame-wrap" id="wrapC">
+      <iframe id="frameC" title="Banking dashboard with a keyboard-summoned FAB"
+              src="../dashboards/international-banking-dashboard.canon.html"></iframe>
+    </div>
+  </section>
+
+</div>
+
+<footer class="legend">
+  <strong>What is being asked.</strong> Which of the three, and what the corner should be. Nothing here
+  is ruled — the 72&nbsp;px zone in reading B is a proposal, and it is a single config value either way.
+  <ul>
+    <li><strong>One file, three modes.</strong> All three panels load the same
+      <code>knowledge/_render/apollo-fab.js</code>. The only difference between them is
+      <code>reveal: 'always' | 'hotcorner' | 'summon'</code> and <code>cornerSize</code>. Whichever you
+      pick is a config value in the script tag, not a rebuild:
+      <code>&lt;script src="…/apollo-fab.js" data-reveal="hotcorner" data-corner="72"&gt;&lt;/script&gt;</code>.</li>
+    <li><strong>Theme labels.</strong> The <em>Common</em> button still writes
+      <code>data-apollo-theme="legacy"</code> — the label was renamed for the demo, the attribute value
+      was not, because canon.css keys its cascade on that value. The rename is a separate lane.</li>
+    <li><strong>The inspector.</strong> With the component map loaded it gives the component's name,
+      category, purpose and token verdict; without it — the normal case on <code>file://</code> — it
+      still names every component from its <code>cn-*</code> class. The nameless path is the default,
+      not a failure. Its highlight and tooltip are <code>pointer-events:none</code> at all times, so it
+      never steals a click from the design underneath.</li>
+    <li><strong>The corner is measured, not hit-tested.</strong> Readings B and C watch pointer
+      coordinates rather than putting an invisible box in the corner, so even the hidden variants take
+      nothing away from whatever sits under that corner of the design.</li>
+    <li><strong>z-index.</strong> The layer sits at <code>2147483000</code>, above the dashboard's own
+      sticky masthead and above anything a generated page plausibly declares. Overridable per mount
+      with <code>data-z</code>.</li>
+  </ul>
+  Build notes and what is unproven: <code>notes/_subreports/2026-08-30-227-fab-overlay.md</code>.
+</footer>
+
+<script src="../knowledge/_render/apollo-fab.js" data-auto="off"></script>
+<script>
+(function(){
+  var META = '../knowledge/_render/apollo-fab-meta.json';
+
+  var fabs = [
+    ApolloFAB.mount({
+      reveal:'always',
+      container:document.getElementById('wrapA'),
+      frame:document.getElementById('frameA'),
+      metaUrl:META, label:'A · always'
+    }),
+    ApolloFAB.mount({
+      reveal:'hotcorner', cornerSize:72,
+      container:document.getElementById('wrapB'),
+      frame:document.getElementById('frameB'),
+      metaUrl:META, label:'B · hot corner'
+    }),
+    ApolloFAB.mount({
+      reveal:'summon', cornerSize:72,
+      container:document.getElementById('wrapC'),
+      frame:document.getElementById('frameC'),
+      metaUrl:META, label:'C · summoned'
+    })
+  ];
+
+  /* Cross-origin banner — the same probe the #227 compare page uses: try to reach each
+     frame's document and show the note if any one of them is walled off. Re-run on load
+     because a frame is not reachable until it has one. */
+  function probe(){
+    var blocked = false;
+    ['frameA','frameB','frameC'].forEach(function(id){
+      var f = document.getElementById(id), d = null;
+      try { d = f.contentDocument; } catch (e) { d = null; }
+      if (!d || !d.documentElement) { blocked = true; }
+    });
+    document.getElementById('crossOriginNote').hidden = !blocked;
+  }
+  ['frameA','frameB','frameC'].forEach(function(id){
+    document.getElementById(id).addEventListener('load', probe);
+  });
+  probe();
+  setTimeout(probe, 400);
+
+  /* This page's own light/dark, so the FABs can be seen re-theming with their host. */
+  var modeBtns = document.querySelectorAll('[data-mode]');
+  Array.prototype.forEach.call(modeBtns, function(b){
+    b.addEventListener('click', function(){
+      var m = b.dataset.mode;
+      document.documentElement.setAttribute('data-theme', m);
+      document.body.setAttribute('data-theme', m);
+      Array.prototype.forEach.call(modeBtns, function(x){
+        x.setAttribute('aria-pressed', String(x.dataset.mode === m));
+      });
+      fabs.forEach(function(f){ f.applyTokenMode(); });
+    });
+  });
+
+  /* Show the corner zone on readings B and C. */
+  var hint = document.getElementById('hintToggle'), hintOn = false;
+  hint.addEventListener('click', function(){
+    hintOn = !hintOn;
+    hint.setAttribute('aria-pressed', String(hintOn));
+    fabs[1].setHint(hintOn);
+    fabs[2].setHint(hintOn);
+  });
+})();
+</script>
+
+</body>
+</html>
