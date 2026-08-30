@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session 227 — the loose ends</title>
+<style>
+:root{
+  --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#6e6e6e;
+  --page:#f4f3f1; --card:#ffffff; --line:#dcd9d4; --line-2:#eceae6;
+  --code-bg:#f7f6f4; --code-ink:#2a2a2a;
+  --accent:#1d4ed8;
+  --adopt:#1f6b3a; --park:#8a5a00; --reject:#DA1A00; --discuss:#1d4ed8;
+  --chip-adopt:#e6f2ea; --chip-park:#fbf1dc; --chip-reject:#fbe7e4; --chip-discuss:#e6ecfb;
+  --focus:#1d4ed8;
+  --look:#2a5b8a; --word:#4a3b8a; --sit:#8a2b12;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#ececea; --ink-2:#b4b2ae; --ink-3:#8e8c88;
+    --page:#141413; --card:#1e1e1c; --line:#3a3835; --line-2:#2b2a28;
+    --code-bg:#191918; --code-ink:#d6d4d0;
+    --accent:#8fb0ff;
+    --adopt:#68c08c; --park:#e0b45c; --reject:#F6604C; --discuss:#8fb0ff;
+    --chip-adopt:#1d2d24; --chip-park:#2e2718; --chip-reject:#33201d; --chip-discuss:#1c2233;
+    --focus:#8fb0ff;
+    --look:#8fc0e8; --word:#b8aaf0; --sit:#e59a80;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; padding:0 0 132px;
+  background:var(--page); color:var(--ink);
+  font:400 17px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  letter-spacing:.005em;
+}
+.wrap{max-width:900px; margin:0 auto; padding:0 20px}
+
+/* ---------- masthead ---------- */
+header.top{padding:44px 0 8px}
+.eyebrow{font-size:13px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+h1{font-size:34px; line-height:1.2; margin:0 0 12px; letter-spacing:-.015em}
+.lede{font-size:19px; line-height:1.6; color:var(--ink-2); margin:0 0 18px; max-width:60ch}
+.src{font:400 13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3); word-break:break-word}
+a{color:var(--accent)}
+
+.how{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:22px 0 8px}
+.how h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+.how ol{margin:0; padding-left:22px}
+.how li{margin:0 0 8px; max-width:64ch}
+.how li:last-child{margin-bottom:0}
+.warn{color:var(--reject); font-weight:600}
+
+/* ---------- already-ruled strip ---------- */
+.ruled{background:transparent; border:1px dashed var(--line); border-radius:10px;
+  padding:16px 20px; margin:22px 0 0; color:var(--ink-3)}
+.ruled h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 4px}
+.ruled p.sub{font-size:15px; margin:0 0 12px; color:var(--ink-3); max-width:64ch}
+.ruled ul{margin:0; padding-left:20px; list-style:none}
+.ruled li{margin:0 0 8px; font-size:15px; line-height:1.55; max-width:66ch; text-indent:-20px; padding-left:20px}
+.ruled li:last-child{margin-bottom:0}
+.ruled b{color:var(--ink-2); font-weight:650}
+.tick{color:var(--adopt); font-weight:700}
+
+/* ---------- filters ---------- */
+.filters{display:flex; flex-wrap:wrap; gap:8px; margin:26px 0 6px; position:sticky; top:0; z-index:5;
+  background:var(--page); padding:12px 0; border-bottom:1px solid var(--line-2)}
+.fbtn{font:500 14px/1 inherit; color:var(--ink-2); background:var(--card); border:1px solid var(--line);
+  border-radius:999px; padding:9px 14px; cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink)}
+.fbtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+
+/* ---------- sections ---------- */
+section.band{margin:44px 0 0}
+section.band > h2{font-size:26px; line-height:1.25; margin:0 0 6px; letter-spacing:-.01em}
+section.band > p.bandnote{color:var(--ink-2); margin:0 0 20px; max-width:62ch; font-size:18px}
+
+/* ---------- cards ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--line);
+  border-radius:10px; padding:22px 22px 18px; margin:0 0 18px}
+.card[data-state="apply"],.card[data-state="answer"]{border-left-color:var(--adopt)}
+.card[data-state="park"]{border-left-color:var(--park)}
+.card[data-state="reject"]{border-left-color:var(--reject)}
+.card[data-state="discuss"]{border-left-color:var(--discuss)}
+.card.hidden{display:none}
+
+.cardhead{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin:0 0 10px}
+.cid{font:700 15px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:.02em;
+  background:var(--code-bg); border:1px solid var(--line-2); border-radius:6px; padding:6px 9px}
+.klass{font-size:12px; letter-spacing:.07em; text-transform:uppercase; font-weight:700}
+.klass.look{color:var(--look)} .klass.word{color:var(--word)} .klass.sit{color:var(--sit)}
+.chip{margin-left:auto; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  border-radius:999px; padding:5px 11px; color:var(--ink-3); background:var(--code-bg); border:1px solid var(--line-2)}
+.card[data-state="apply"] .chip,.card[data-state="answer"] .chip{background:var(--chip-adopt); color:var(--adopt); border-color:transparent}
+.card[data-state="park"] .chip{background:var(--chip-park); color:var(--park); border-color:transparent}
+.card[data-state="reject"] .chip{background:var(--chip-reject); color:var(--reject); border-color:transparent}
+.card[data-state="discuss"] .chip{background:var(--chip-discuss); color:var(--discuss); border-color:transparent}
+
+.card h3{font-size:21px; line-height:1.38; margin:0 0 12px; max-width:56ch; letter-spacing:-.005em}
+.card p{margin:0 0 12px; max-width:64ch}
+.card ul{margin:0 0 12px; padding-left:22px; max-width:64ch}
+.card li{margin:0 0 6px}
+strong{font-weight:650}
+
+pre.ev{background:var(--code-bg); border:1px solid var(--line-2); border-radius:8px;
+  padding:12px 14px; margin:0 0 12px; overflow-x:auto;
+  font:400 13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+.evlabel{font:600 12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3);
+  letter-spacing:.04em; margin:0 0 6px}
+.srcline{font:400 12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3);
+  margin:14px 0 0; word-break:break-word}
+.srcline b{color:var(--ink-2)}
+.action{border-left:3px solid var(--line); padding:2px 0 2px 14px; margin:0 0 14px; color:var(--ink-2); max-width:62ch}
+.action b{color:var(--ink); font-weight:650}
+.golink{display:inline-block; margin:0 0 12px; font-weight:650; font-size:15px;
+  border:1px solid var(--accent); color:var(--accent); border-radius:8px; padding:9px 14px; text-decoration:none}
+.golink:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.tbl{width:100%; border-collapse:collapse; margin:0 0 14px; font-size:15px; display:block; overflow-x:auto}
+.tbl th,.tbl td{border-bottom:1px solid var(--line-2); padding:8px 12px 8px 0; text-align:left; vertical-align:top}
+.tbl th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+code{font:400 .92em/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:var(--code-bg);
+  border:1px solid var(--line-2); border-radius:4px; padding:1px 5px}
+pre.ev code{background:none; border:0; padding:0; font-size:inherit}
+
+/* ---------- controls ---------- */
+.controls{border-top:1px solid var(--line-2); margin-top:16px; padding-top:16px}
+.radios{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px}
+.radios label{display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-weight:550; font-size:15px;
+  background:var(--page)}
+.radios input{margin:0; width:17px; height:17px; accent-color:var(--accent)}
+.radios label:has(input:checked){border-color:currentColor; font-weight:700}
+.radios label.apply:has(input:checked),.radios label.answer:has(input:checked){color:var(--adopt); background:var(--chip-adopt)}
+.radios label.park:has(input:checked){color:var(--park); background:var(--chip-park)}
+.radios label.reject:has(input:checked){color:var(--reject); background:var(--chip-reject)}
+.radios label.discuss:has(input:checked){color:var(--discuss); background:var(--chip-discuss)}
+.radios input:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
+.cmtlabel{display:block; font-size:14px; font-weight:600; color:var(--ink-3); margin:0 0 6px}
+textarea{width:100%; min-height:64px; resize:vertical; font:400 16px/1.55 inherit; color:var(--ink);
+  background:var(--page); border:1px solid var(--line); border-radius:8px; padding:11px 13px}
+textarea:focus-visible{outline:2px solid var(--focus); outline-offset:1px; border-color:var(--focus)}
+.clearone{background:none; border:0; color:var(--ink-3); font:500 13px inherit; cursor:pointer;
+  padding:8px 0 0; text-decoration:underline}
+
+/* ---------- prompt block ---------- */
+#promptblock{margin:48px 0 0}
+#promptblock h2{font-size:24px; margin:0 0 8px}
+#promptblock p{color:var(--ink-2); max-width:64ch; margin:0 0 16px}
+pre#prompt{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px;
+  white-space:pre-wrap; word-break:break-word; overflow-x:auto; max-height:520px; overflow-y:auto;
+  font:400 14px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+
+/* ---------- footer bar ---------- */
+.bar{position:fixed; left:0; right:0; bottom:0; z-index:10; background:var(--card);
+  border-top:1px solid var(--line); box-shadow:0 -2px 14px rgba(0,0,0,.07)}
+.barin{max-width:900px; margin:0 auto; padding:14px 20px; display:flex; flex-wrap:wrap;
+  align-items:center; gap:14px}
+.counts{font-size:15px; font-weight:600; line-height:1.4}
+.counts span{color:var(--ink-3); font-weight:500}
+.spacer{flex:1 1 auto}
+button.primary{font:650 16px/1 inherit; color:var(--page); background:var(--ink); border:1px solid var(--ink);
+  border-radius:8px; padding:13px 20px; cursor:pointer}
+button.ghost{font:550 15px/1 inherit; color:var(--ink-2); background:transparent; border:1px solid var(--line);
+  border-radius:8px; padding:13px 16px; cursor:pointer}
+button:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+#copystatus{font-size:14px; font-weight:600; min-width:1px}
+#copystatus.ok{color:var(--adopt)} #copystatus.bad{color:var(--reject)}
+.assert{font-size:13px; color:var(--ink-3); padding:10px 0 0; border-top:1px solid var(--line-2); margin-top:34px}
+.assert.bad{color:var(--reject); font-weight:700}
+#sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap}
+@media (max-width:620px){
+  h1{font-size:28px} .lede{font-size:17px} .card{padding:18px 16px 14px} .card h3{font-size:19px}
+  .barin{padding:12px 16px; gap:10px} button.primary,button.ghost{flex:1 1 auto}
+}
+</style>
+</head>
+<body>
+<div id="sr" aria-live="polite"></div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Apollo &middot; session #227 &middot; decision page</p>
+  <h1>Everything today left open, on one page</h1>
+  <p class="lede">Five sub-reports ran today. Between them they raised 44 questions that are yours
+  and nobody else's. They are all here. Pick a verb, say a word, copy the prompt at the bottom
+  and paste it back to me.</p>
+
+  <p class="src">Sources (5):<br>
+  notes/_subreports/2026-08-30-227-grillme-and-radius.md<br>
+  notes/_subreports/2026-08-30-227-segmented-ruling-enact.md<br>
+  notes/_subreports/2026-08-30-227-fab-overlay.md<br>
+  notes/_subreports/2026-08-30-227-contract-redteam.md<br>
+  notes/_subreports/2026-08-30-226-dream-pass-10-digest.md &nbsp;<i>(carried from #226)</i></p>
+
+  <p class="src">&#9656; The dashboard regen diff is <b>not</b> here. It has its own page:
+  <a href="DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html">DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html</a>
+  &mdash; 25 findings and 7 questions. Nothing on that page is repeated on this one.</p>
+
+  <section class="ruled" aria-label="Already ruled today">
+    <h2>Already ruled today &mdash; no action needed</h2>
+    <p class="sub">The red team's two blocking findings are settled, and so are four more.
+    Listed so you can see them go by, not so you decide them again.</p>
+    <ul>
+      <li><span class="tick">&#10003;</span> <b>B1 &mdash; cold-start ships nothing.</b>
+      Closed by <b>s227-D6</b>: the Monday cut gains a <code>cold-start</code> manifest group.</li>
+      <li><span class="tick">&#10003;</span> <b>B2 &mdash; Copilot gets the contract only by overwriting the boot file.</b>
+      Ruled <b>Merge</b> (<b>s227-D5</b>): one generated file carries both payloads.</li>
+      <li><span class="tick">&#10003;</span> <b>S1 &mdash; the "on-canon" escape hatch defeats box 2.</b>
+      In the cut per <b>s227-D6</b>: the S1 sentence lands in <code>REPORT-TEMPLATE.md</code> box 2.</li>
+      <li><span class="tick">&#10003;</span> <b>S11 + grill-me Q5 &mdash; <code>brief-template.md</code> and grill-me do not ship.</b>
+      In the cut per <b>s227-D6</b>: grill-me v2 and brief-template are claimed in the ship list.</li>
+      <li><span class="tick">&#10003;</span> <b>S13 &mdash; the Copilot boot file omits grill-me.</b>
+      In the cut per <b>s227-D6</b>: prompts shim + skills-table row.</li>
+      <li><span class="tick">&#10003;</span> <b>N5 &mdash; the manifest prose says "five skills".</b>
+      In the cut per <b>s227-D6</b>: the six retuned skill descriptions.</li>
+    </ul>
+    <p class="sub" style="margin:14px 0 0">&#9888; <b>One clause of s227-D6 is why this page exists:</b>
+    the cut is scoped to <i>"the SHARP set applied or explicitly parked"</i>.
+    The 15 contract cards below are that apply-or-park, and they are due Monday.</p>
+  </section>
+
+  <div class="how">
+    <h2>How this works</h2>
+    <ol>
+      <li><b>Three bands.</b> One look settles it &middot; one word settles it &middot; needs a sitting.
+      Nothing else orders them.</li>
+      <li><b>Pick one verb per card.</b> Where an edit is already written for you, the verbs are
+      Apply / Park / Reject / Discuss. Where I need your words, they are Answer / Park / Discuss
+      and the box <i>is</i> the answer.</li>
+      <li><b>Copy the prompt</b> at the end and paste it to me. <span class="warn">That paste is the
+      only durable output.</span> Answers are saved in this browser so a refresh is safe; a cleared
+      cache or a different browser loses them.</li>
+    </ol>
+  </div>
+</header>
+
+<nav class="filters" aria-label="Filter cards">
+  <button class="fbtn" data-filter="all" aria-pressed="true">All 44</button>
+  <button class="fbtn" data-filter="undecided" aria-pressed="false">Undecided</button>
+  <button class="fbtn" data-filter="look" aria-pressed="false">One look 8</button>
+  <button class="fbtn" data-filter="word" aria-pressed="false">One word 26</button>
+  <button class="fbtn" data-filter="sit" aria-pressed="false">A sitting 10</button>
+  <button class="fbtn" data-filter="monday" aria-pressed="false">Due Monday 15</button>
+  <button class="fbtn" data-filter="carried" aria-pressed="false">From #226 9</button>
+</nav>
+
+<!-- ================= BAND 1 · ONE LOOK ================= -->
+<section class="band" id="band-look">
+  <h2>One look settles it</h2>
+  <p class="bandnote">Eight cards where the answer is on a page. Open it, look, say the word.</p>
+
+  <article class="card" data-id="L1" data-kind="choice" data-class="look" data-src="fab">
+    <div class="cardhead"><span class="cid">L1</span><span class="klass look">One look &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>Which reveal for the FAB &mdash; A always visible, B hot corner, or C summoned?</h3>
+    <a class="golink" href="FAB-READINGS-2026-08-30-v1.html">Open FAB-READINGS &mdash; three panes, side by side</a>
+    <p>All three are rendered as three live panes of the same dashboard, each running the same
+    <code>apollo-fab.js</code>. Whichever you point at is one config value, not a rebuild.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>1. Which reveal? A always-visible / B hot corner / C summoned. Not picked, by
+   instruction - three readings are rendered side by side and Dave points.
+   Whichever he picks is data-reveal="...", not a rebuild.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 1</p>
+  </article>
+
+  <article class="card" data-id="L2" data-kind="choice" data-class="look" data-src="fab">
+    <div class="cardhead"><span class="cid">L2</span><span class="klass look">One look &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>The hot-corner zone is 72&nbsp;px. Is that your number?</h3>
+    <a class="golink" href="FAB-READINGS-2026-08-30-v1.html">Open FAB-READINGS &mdash; the header toggle draws the zone</a>
+    <p>72 is a <b>proposal</b>, reasoned not measured: it is ~1.3&times; the 56&nbsp;px FAB it reveals,
+    so the pointer never has to leave the zone to reach the button. Your number goes in as
+    <code>data-corner="N"</code>.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>2. The corner-zone size. 72 px square is a PROPOSAL, not a ruling. It is ~1.3x
+   the 56 px FAB it reveals, so the pointer never has to leave the zone to reach
+   the button. Dave's number: data-corner="N".</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 2</p>
+  </article>
+
+  <article class="card" data-id="L3" data-kind="choice" data-class="look" data-src="seg">
+    <div class="cardhead"><span class="cid">L3</span><span class="klass look">One look &middot; segmented</span><span class="chip">Unanswered</span></div>
+    <h3>Should concentric extend to <code>m</code> and <code>l</code> as well?</h3>
+    <a class="golink" href="SEGMENTED-RULING-2026-08-30-v1.html">Open SEGMENTED-RULING &mdash; the m and l cards are drawn for this</a>
+    <p>This is the one the sub calls <b>"the one that matters"</b>. Your two changes met at <code>m</code>:
+    the padding dropped to 2, and concentric came back at <code>xs</code>/<code>s</code> only. So the
+    dial now sits <b>further</b> from concentric at <code>m</code> than it did before you moved the padding.</p>
+    <table class="tbl">
+      <thead><tr><th>scale</th><th>track</th><th>padding</th><th>thumb today</th><th>concentric would give</th></tr></thead>
+      <tbody>
+        <tr><td>console <code>m</code></td><td>10</td><td>2</td><td>4 (dial)</td><td><b>8</b></td></tr>
+        <tr><td>console <code>l</code></td><td>12</td><td>4</td><td>6 (dial)</td><td><b>8</b></td></tr>
+      </tbody>
+    </table>
+    <p>You said only the two small sizes were wrong, so <code>m</code> and <code>l</code> were left alone.
+    Extending is <b>one constant and a re-mint</b>:
+    <code>SEGMENTED_CONCENTRIC_SCALES = ("xs","s","m","l")</code>.</p>
+    <p class="evlabel">knowledge/gen_radius_derive.py:95 (probed at this HEAD)</p>
+    <pre class="ev"><code>SEGMENTED_CONCENTRIC_SCALES = ("xs", "s")</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q1</p>
+  </article>
+
+  <article class="card" data-id="L4" data-kind="choice" data-class="look" data-src="seg">
+    <div class="cardhead"><span class="cid">L4</span><span class="klass look">One look &middot; segmented</span><span class="chip">Unanswered</span></div>
+    <h3>Console <code>xs</code> thumb 4 and <code>s</code> thumb 6 &mdash; do they look right to you?</h3>
+    <a class="golink" href="SEGMENTED-RULING-2026-08-30-v1.html">Open SEGMENTED-RULING &mdash; 64 specimens, before and after</a>
+    <p>The arithmetic is proven and the law is restored. Whether those radii <b>look</b> right is the
+    one thing no gate can answer. Nobody has seen a rendered pixel of this &mdash; the build VM has
+    no browser. Your eye is the first render.</p>
+    <p class="evlabel">driven live by the generator</p>
+    <pre class="ev"><code>xs concentric  track 6  - track padding 2 = thumb 4
+s  concentric  track 8  - track padding 2 = thumb 6
+m  tuned dial  track 10 - tuned dial     6 = thumb 4
+l  tuned dial  track 12 - tuned dial     6 = thumb 6</code></pre>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>UNPROVEN 2. That 4 and 6 are right to Dave's eye. The arithmetic is proven and
+the law is restored; whether console xs/s look right at those radii is his
+judgement, which is what the review page is for.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;UNPROVEN &middot; 2</p>
+  </article>
+
+  <article class="card" data-id="L5" data-kind="choice" data-class="look" data-src="seg">
+    <div class="cardhead"><span class="cid">L5</span><span class="klass look">One look &middot; segmented</span><span class="chip">Unanswered</span></div>
+    <h3>The <code>sm</code>&rarr;<code>xs</code> ordinal map now has six more files depending on it.</h3>
+    <a class="golink" href="SEGMENTED-ADOPTION-2026-08-25-v1.html">Open SEGMENTED-ADOPTION &mdash; both readings drawn</a>
+    <p>The map is still marked <code>PROPOSED</code> and was <b>not</b> edited today. But mirroring the
+    atom's ramp into six more snippets means six more files now depend on that proposed reading.
+    Pick the other reading and those six change with it.</p>
+    <p>&#9888; <b>One measurement that kills the tempting shortcut.</b> The brief thought
+    <code>xs</code>&rarr;28 made <code>sm</code> an exact height match. It does not &mdash; those are
+    two different measurements:</p>
+    <table class="tbl">
+      <thead><tr><th>&nbsp;</th><th>what is measured</th><th>value</th></tr></thead>
+      <tbody>
+        <tr><td><code>.seg.xs</code></td><td>outer box, border-box</td><td><b>28px</b></td></tr>
+        <tr><td><code>.seg.sm</code></td><td>button (canon.css:14462)</td><td>28px</td></tr>
+        <tr><td><code>.seg.sm</code></td><td>outer box (28 + 2&times;2 pad + 2&times;1 border)</td><td><b>34px</b></td></tr>
+      </tbody>
+    </table>
+    <p><b>6px apart, outer to outer.</b> A near-miss, not an alignment.</p>
+    <p class="action"><b>Overlap, declared:</b> the dashboard diff page asks the same map question as
+    <b>Q-B7</b>. Answer it there or here &mdash; not twice. What changed under it today is the blast
+    radius, plus the fact that console <code>xs</code> thumb is no longer 0 (it is 4), so Q-B7's
+    premise has moved.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q4, and &sect;the sm/xs "exact height match" is NOT one</p>
+  </article>
+
+  <article class="card" data-id="L6" data-kind="choice" data-class="look" data-src="fab">
+    <div class="cardhead"><span class="cid">L6</span><span class="klass look">One look &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>What the inspector shows, and how high it floats.</h3>
+    <a class="golink" href="FAB-READINGS-2026-08-30-v1.html">Open FAB-READINGS &mdash; hover any component</a>
+    <p>Four fields per component &mdash; <b>name, category, purpose (first sentence), token verdict</b>
+    &mdash; is the sub's selection, not a schema you ruled. Any other selection is one edit and one
+    re-run of the generator.</p>
+    <p>The <code>z-index: 2147483000</code> is also a pick, overridable per mount with
+    <code>data-z</code>. It is <b>reasoned, not observed</b> against the dashboard's sticky masthead.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 6</p>
+  </article>
+
+  <article class="card" data-id="L7" data-kind="choice" data-class="look" data-src="grill">
+    <div class="cardhead"><span class="cid">L7</span><span class="klass look">One look &middot; radius</span><span class="chip">Unanswered</span></div>
+    <h3>In console the chart toolbar now has a 6px frame beside an 8px button. Deliberate?</h3>
+    <a class="golink" href="../showroom/chart-line.html">Open showroom/chart-line.html</a>
+    <p><code>.dv-toggle-seg</code> was given the segmented atom's shape pair rather than
+    <code>--border-radius-control</code> &mdash; <b>copied from your own hand-patch</b>, not re-derived.
+    The consequence is that the Target-line toggle frame and the Copy-data button beside it take
+    <b>different radii</b> in console.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>Q3: .dv-toggle-seg takes the segmented atom's shape pair, not
+--border-radius-control. Copied from Dave's own hand-patch. It means the toggle
+frame and the neighbouring Copy data button take different radii in console
+(6px vs 8px) - visible, and deliberate on his part in his own page.
+Confirming it here makes it canon.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-grillme-and-radius.md &sect;Ruling-shaped &middot; Q3</p>
+  </article>
+
+  <article class="card" data-id="L8" data-kind="choice" data-class="look" data-src="grill">
+    <div class="cardhead"><span class="cid">L8</span><span class="klass look">One look &middot; radius</span><span class="chip">Unanswered</span></div>
+    <h3>The search field's radius went on the <b>base</b> rule &mdash; so the underline variant rounds too.</h3>
+    <a class="golink" href="../showroom/search-field.html">Open showroom/search-field.html</a>
+    <p>Bound on <code>.search</code>, not on <code>.search.boxed</code>, so both variants take the same
+    shape. Precedent says base: Dropdown's <code>.trigger</code> and Input-fields' <code>.uctrl input</code>
+    are both underline constructions and both bind the control radius.</p>
+    <p><b>But a rounded <i>underline</i> field is a shape decision, not a bug fix.</b> If you want only
+    the boxed variant rounded, the change is moving one declaration in two snippets and regenerating.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>Q1: Search radius on the BASE rule, or on .boxed only?
+I bound the base rule, so the underline search rounds too. ... Proposed-not-ruled
+default. If Dave wants only the boxed variant rounded, the change is moving one
+declaration from .search to .search.boxed in two snippets and regenerating.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-grillme-and-radius.md &sect;Ruling-shaped &middot; Q1</p>
+  </article>
+</section>
+
+<!-- ================= BAND 2 · ONE WORD ================= -->
+<section class="band" id="band-word">
+  <h2>One word settles it</h2>
+  <p class="bandnote">Twenty-six cards. Every one of them has its options written out. You are
+  saying yes, no, or which &mdash; not designing anything.</p>
+
+  <article class="card" data-id="W1" data-kind="choice" data-class="word" data-src="seg">
+    <div class="cardhead"><span class="cid">W1</span><span class="klass word">One word &middot; segmented</span><span class="chip">Unanswered</span></div>
+    <h3>You said "extra large". There is no XL. It was read as <code>l</code>. Correct?</h3>
+    <p>The minted scale is <code>xs / s / m / l</code> (s201-D1, dimension-first). "Small and extra
+    large stay the same" was read as <b><code>l</code></b>, and <code>l</code> was left completely
+    untouched &mdash; 48px, pad 4, track 12, thumb 6.</p>
+    <p>This reading is already written into <b>s227-D4</b> as a declared reading, yours to correct.
+    If you meant something else, only <code>l</code> needs revisiting.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>"extra large" - the minted scale has no XL. It is xs / s / m / l (s201-D1,
+dimension-first). Read as l, and l was left completely untouched (48px, pad 4,
+track 12, thumb 6). If he meant something else, only l needs revisiting.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Dave's four numbers &middot; the "extra large" warning</p>
+  </article>
+
+  <article class="card" data-id="W2" data-kind="choice" data-class="word" data-src="grill">
+    <div class="cardhead"><span class="cid">W2</span><span class="klass word">One word &middot; radius</span><span class="chip">Unanswered</span></div>
+    <h3>The chart-toolbar radius fix was widened from one chart to thirteen. Keep it wide?</h3>
+    <p>The diff report named <code>.cn-chart-line</code>. The pattern is in <b>13</b> chart snippets,
+    identical text in all of them. Fixing only chart-line would have made the line chart round and
+    the other twelve square &mdash; <b>a new inconsistency in place of an old one</b>.</p>
+    <p>If you want it narrower, the revert is scoped per file.</p>
+    <p class="evlabel">the sub, verbatim</p>
+    <pre class="ev"><code>Q2: I widened B6 from one chart to thirteen. ... It is in 13 chart snippets,
+identical text in all. Fixing only chart-line would have made the line chart
+round and the other twelve square - a new inconsistency in place of an old one.
+So the whole class was repaired. If Dave wants it narrower, the revert is
+scoped per file.</code></pre>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-grillme-and-radius.md &sect;Ruling-shaped &middot; Q2</p>
+  </article>
+
+  <article class="card" data-id="W3" data-kind="choice" data-class="word" data-src="seg,grill">
+    <div class="cardhead"><span class="cid">W3</span><span class="klass word">One word &middot; A1 remainder</span><span class="chip">Unanswered</span></div>
+    <h3>Five components re-declare <code>.seg</code> with <b>no inset</b>. Give them 2px, or mint a zero-inset thumb?</h3>
+    <p>13 snippets re-declare a bare <code>.seg</code> rule. Six were repaired today &mdash; the ones
+    whose 2px inset matches the minted padding, so the minted thumb radii are geometrically correct
+    there. Five were <b>deliberately left alone</b>:</p>
+    <p class="evlabel">the five, and why</p>
+    <pre class="ev"><code>Table, Template-dashboard, Template-list-index, Template-report, View-options
+
+  .seg has NO padding and .ind sits at top/left:0.
+  With a zero inset the concentric thumb equals the TRACK radius,
+  and no token carries that value - so binding --seg-thumb-s there
+  would ship a knowingly wrong number.</code></pre>
+    <p>Two ways out, both yours:</p>
+    <ul>
+      <li>they gain a 2px inset, and become the same case as the six already repaired; or</li>
+      <li>a zero-inset thumb slot gets minted.</li>
+    </ul>
+    <p class="action"><b>Why it matters right now:</b> the grill-me lane flagged the same seam from the
+    other side &mdash; after its repair, a chart toolbar reads <i>rounded toggles, rounded Copy/View,
+    and a square view switch</i> wherever the wrapper is absent. Six of those are now fixed. These
+    five are the remainder. <i>(Which fix A1 takes in principle is Q-A1 on the dashboard diff page;
+    this card is only about the five.)</i></p>
+    <p class="srcline"><b>Sources (2):</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q2
+    &nbsp;&middot;&nbsp; 2026-08-30-227-grillme-and-radius.md &sect;Ruling-shaped &middot; Q4</p>
+  </article>
+
+  <article class="card" data-id="W4" data-kind="choice" data-class="word" data-src="seg">
+    <div class="cardhead"><span class="cid">W4</span><span class="klass word">One word &middot; segmented</span><span class="chip">Unanswered</span></div>
+    <h3><code>Tab-bar</code> uses the class name <code>.seg</code> for a different component. Rename it?</h3>
+    <p>It is <code>.seg</code> + <code>.seg__item</code> with <code>border-radius:999px</code> &mdash;
+    a pill tab bar, not the segmented atom, sharing the class name. Left untouched today.</p>
+    <p><b>Worth renaming before the collision bites.</b> Nothing depends on the name today; everything
+    that touches <code>.seg</code> tomorrow does.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q5</p>
+  </article>
+
+  <article class="card" data-id="W5" data-kind="choice" data-class="word" data-src="grill,fab">
+    <div class="cardhead"><span class="cid">W5</span><span class="klass word">One word &middot; naming</span><span class="chip">Unanswered</span></div>
+    <h3>"Common" is what designers read. <code>legacy</code> is what the code says. Reconcile, or leave it?</h3>
+    <p>Two lanes hit the same seam today from opposite sides:</p>
+    <ul>
+      <li><b>grill-me</b> writes <b>Common <i>(code key: <code>legacy</code>)</i></b> &mdash; that
+      parenthetical is the only place the two names are reconciled for a designer.</li>
+      <li><b>The FAB overlay's</b> theme button reads <b>Common</b> while writing
+      <code>data-apollo-theme="legacy"</code>, because canon keys its cascade on that value
+      (<code>canon.css:20819</code>).</li>
+    </ul>
+    <p>The rename was ruled a separate lane, so nothing was renamed. If it lands, the parenthetical
+    drops. If it does not, the parenthetical is load-bearing and should probably appear in more
+    places, not fewer.</p>
+    <p class="srcline"><b>Sources (2):</b> 2026-08-30-227-grillme-and-radius.md &sect;Ruling-shaped &middot; Q6
+    &nbsp;&middot;&nbsp; 2026-08-30-227-fab-overlay.md &sect;What was done &middot; 1 (Theme)</p>
+  </article>
+
+  <article class="card" data-id="W6" data-kind="choice" data-class="word" data-src="seg">
+    <div class="cardhead"><span class="cid">W6</span><span class="klass word">One word &middot; hygiene</span><span class="chip">Unanswered</span></div>
+    <h3>Four review pages were written today and <b>none of them has a store row</b>.</h3>
+    <p>That is the forgotten-document class (#185): a document with no store row is invisible to
+    every later retrieval. The pages are:</p>
+    <pre class="ev"><code>reviews/SEGMENTED-RULING-2026-08-30-v1.html
+reviews/FAB-READINGS-2026-08-30-v1.html
+reviews/DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html
+reviews/SESSION-227-DECISIONS-2026-08-30-v1.html   <- this page</code></pre>
+    <p>Minting the rows is the conductor's act, not a sub's &mdash; so it needs your word that it
+    happens at the wrap, or it will not.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q7</p>
+  </article>
+
+  <article class="card" data-id="W7" data-kind="choice" data-class="word" data-src="seg,redteam">
+    <div class="cardhead"><span class="cid">W7</span><span class="klass word">One word &middot; wiring</span><span class="chip">Unanswered</span></div>
+    <h3>Three instruments exist that <b>nothing ever runs</b>. Do they join the gate run?</h3>
+    <p>Two lanes found the same shape independently. A gate that does not run cannot fail.</p>
+    <p class="evlabel">probed at this HEAD &mdash; grep across .py .yml .sh .toml</p>
+    <pre class="ev"><code>gen_radius_derive     -> only the file itself. Not in _build_all.py, not in gates.yml.
+gen_projections       -> nothing references it.
+verify_placement      -> nothing references it.</code></pre>
+    <p>So today's radius defect had <b>two independent covers</b>: nothing ran the derivation's checks,
+    and <code>--check</code> structurally could not see a wrong mint anyway. The new
+    <code>--assert-mint</code> closes the second. Only wiring closes the first.</p>
+    <p class="action"><b>The rows, already written:</b></p>
+    <pre class="ev"><code>("radius derivation - proposal determinism (s200-D1)", "gen_radius_derive.py", ["--check"]),
+("radius mint assert - minted thumb == derived (advisory, #227)", "gen_radius_derive.py", ["--assert-mint"]),
+("radius derivation selftest (s200-D1/#227)", "gen_radius_derive.py", ["--selftest"]),</code></pre>
+    <p>Not taken by either sub, because wiring is promotion and <code>_build_all.py</code> is shared
+    spine other lanes may be editing.</p>
+    <p class="srcline"><b>Sources (2):</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q3
+    &nbsp;&middot;&nbsp; 2026-08-30-227-contract-redteam.md &sect;REPLAY-THESE</p>
+  </article>
+
+  <article class="card" data-id="W8" data-kind="edit" data-class="word" data-src="seg">
+    <div class="cardhead"><span class="cid">W8</span><span class="klass word">One word &middot; generator</span><span class="chip">Undecided</span></div>
+    <h3><code>gen_canon_tokens.py</code> has no <code>--check</code>, and <b>writes when you give it one</b>.</h3>
+    <p class="evlabel">knowledge/canon/gen_canon_tokens.py:341</p>
+    <pre class="ev"><code>if "--selftest" in sys.argv:      # every other flag falls through to the WRITE path</code></pre>
+    <p>Passing <code>--check</code> at baseline <b>rewrote <code>canon.css</code></b>. Harmlessly this
+    time &mdash; byte-identical, <code>git status</code> stayed clean, verified. But this is the #158
+    write-by-default class the help-gate exists for, in a generator the help-gate does not cover.</p>
+    <p class="action"><b>Not fixed today</b> &mdash; out of that lane's ruling. Apply means: give it a
+    real <code>--check</code>, or make an unknown flag refuse instead of writing.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-segmented-ruling-enact.md &sect;Q: for Dave &middot; Q6</p>
+  </article>
+
+  <article class="card" data-id="W9" data-kind="choice" data-class="word" data-src="fab">
+    <div class="cardhead"><span class="cid">W9</span><span class="klass word">One word &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>The summon gesture is a double-press of <b>Shift</b>. Keep it?</h3>
+    <p>Proposed: double-press Shift within 500&nbsp;ms, plus double-tap the corner on touch, Esc to
+    dismiss. Shift was chosen because <b>it types nothing and collides with no browser or dashboard
+    shortcut</b>.</p>
+    <p>If you dislike it: double-press Escape, or a chord like <code>Ctrl+.</code>. Cheap to change
+    &mdash; one branch in <code>_key</code>.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 3</p>
+  </article>
+
+  <article class="card" data-id="W10" data-kind="choice" data-class="word" data-src="fab">
+    <div class="cardhead"><span class="cid">W10</span><span class="klass word">One word &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>The readings page reveals the FAB <b>differently from a shipped page</b>. Keep the demo hack?</h3>
+    <p>The shipping mechanism is coordinate maths, so it intercepts nothing. But pointer events
+    landing inside an iframe never reach the host document, so <b>over the readings page's frames the
+    corner watcher hears nothing</b>. A real hit zone is armed &mdash; only when a frame was named and
+    turned out unreachable.</p>
+    <ul>
+      <li><b>(a) Keep it</b> &mdash; the readings page is actually usable on <code>file://</code>, and
+      the panel says which mode it is in. <i>The sub recommends this.</i></li>
+      <li><b>(b) Drop it</b> &mdash; and you must run <code>python3 -m http.server</code> before you
+      can feel readings B and C at all.</li>
+    </ul>
+    <p>On a normal page the sensor is <code>display:none</code> and the shipping mechanism is
+    untouched. Proven both ways in the verifier.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 4 (with &sect;Findings &middot; 3)</p>
+  </article>
+
+  <article class="card" data-id="W11" data-kind="choice" data-class="word" data-src="fab">
+    <div class="cardhead"><span class="cid">W11</span><span class="klass word">One word &middot; FAB</span><span class="chip">Unanswered</span></div>
+    <h3>The readings page wears <b>canon's alias names</b> with its own values. Is that all right?</h3>
+    <p><code>--surface</code>, <code>--text</code>, <code>--border</code>, <code>--pri</code>,
+    <code>--focus</code>, <code>--shadow</code> and kin are declared in the page's own
+    <code>:root</code>, with values <b>lifted verbatim from canon primitives</b> &mdash; nothing
+    invented.</p>
+    <p>It is done so the overlay's token probe engages and you can watch the FAB re-theme itself on
+    <code>file://</code>, where the real dashboards are unreachable.</p>
+    <p class="action"><b>If wearing canon's names on a non-canon page is unwelcome:</b> the alternative
+    is linking <code>canon.css</code> into the review page and overriding the leaked
+    <code>body</code> padding &mdash; which is card <b>W12</b>.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;RULING-SHAPED QUESTIONS &middot; 5</p>
+  </article>
+
+  <article class="card" data-id="W12" data-kind="choice" data-class="word" data-src="fab">
+    <div class="cardhead"><span class="cid">W12</span><span class="klass word">One word &middot; canon defect</span><span class="chip">Unanswered</span></div>
+    <h3>Bare <code>body{…}</code> rules have leaked into <code>canon.css</code>. Whose lane fixes it?</h3>
+    <p>Snippet harness rules were absorbed with a <b>mangled <code>:where(.cn-…)</code> prefix</b> that
+    also ate the surrounding comments. One of them sets page padding &mdash; on <b>any</b> page that
+    links canon.</p>
+    <p class="evlabel">re-probed at this HEAD, after today's canon regen</p>
+    <pre class="ev"><code>knowledge/canon/canon.css:14183   body{margin:0; padding:2.25rem; background:var(--page); ...}
+knowledge/canon/canon.css:16255   body{margin:0; background:var(--page); ...}</code></pre>
+    <p>&#9888; <b>Two, not three, and the lines moved.</b> The sub reported "three leaked bare
+    <code>body{…}</code> rules (canon.css:14103, :16175)" &mdash; it named three but cited two, and
+    lane 6 regenerated <code>canon.css</code> after it looked. A grep here finds exactly <b>2</b>.
+    Worth one look before anyone goes hunting for a third that may not exist.</p>
+    <p class="action"><b>This is why the readings page does not link canon.css.</b> The sub called it
+    "not mine to fix" and flagged it for whoever owns the absorb prefixer. Nobody owns it yet.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-fab-overlay.md &sect;Findings &middot; 5</p>
+  </article>
+
+  <!-- ---- the contract SHARP set: due Monday ---- -->
+
+  <article class="card" data-id="C2" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C2</span><span class="klass word">Contract &middot; SHARP 2 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>The brief template demonstrates the <b>empty</b> case &mdash; and the same fact has two homes.</h3>
+    <p>The two load-bearing lines sit below a six-row table, unemphasised. Then the <b>filled example</b>
+    &mdash; the part anyone actually copies &mdash; shows them empty:</p>
+    <pre class="ev"><code>Skipped: none
+Defaults used: none</code></pre>
+    <p>The one artefact that closes a "the corners are broken, it's all square" report in one read is
+    shown only in its empty form.</p>
+    <p>Worse: <code>grill-me/SKILL.md</code> puts the skip fact <b>in the row</b>; the template puts it
+    in the <code>Defaults used:</code> line. Two homes for one fact (ADR-0017) means a real brief can
+    have them disagree.</p>
+    <p class="action"><b>Minimal edit, written:</b> make the filled example show a <i>skipped</i> theme,
+    and put the fact in the row &mdash;
+    <code>| 1 | Theme | <b>skipped &mdash; proceeding with Mono, announced 2026-08-30. Every corner square by design.</b> |</code>,
+    with <code>Skipped: 1</code>.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S2</p>
+  </article>
+
+  <article class="card" data-id="C3" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C3</span><span class="klass word">Contract &middot; SHARP 3 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>Two bug-report formats ship in one pack, and day one meets the weaker one.</h3>
+    <p><code>FIRST-SESSION.md</code> &mdash; the page a designer actually walks on day one &mdash; says:</p>
+    <pre class="ev"><code>"the most useful bug report is: what you said, what it did, and a screenshot
+ if that is easier than describing it."</code></pre>
+    <p>No lane. No brief. No pointer to <code>REPORT-TEMPLATE.md</code>. <b>The format they meet first
+    is the one without the false-report killer in it.</b></p>
+    <p class="action"><b>Minimal edit, written:</b> add to that sentence &mdash; "…and two more lines
+    that decide most of them: the lane the assistant declared in its first reply, and the brief from
+    <code>briefs/</code>. <code>cold-start/REPORT-TEMPLATE.md</code> is that, as four boxes."</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S3</p>
+  </article>
+
+  <article class="card" data-id="C4" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C4</span><span class="klass word">Contract &middot; SHARP 4 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>The placement checker guards <b>one sentence</b>. A gutted or inverted contract reads PLACED.</h3>
+    <p class="evlabel">driven three ways</p>
+    <pre class="ev"><code>a file containing only "Always be nice. Declare the lane, in your first reply."
+   -> PLACED     CLAUDE.md    Claude
+the real projection with the entire "3. The five rules." block excised
+   -> PLACED
+a placed copy edited to "Freestyle is the default..." and "Invent freely."
+   -> PLACED, and gen_projections --check STAYED GREEN</code></pre>
+    <p>The docstring promises more than the code delivers: <i>"Present is not the same as correct."</i>
+    And the failure mode it names &mdash; <i>"a merge that dropped it"</i> &mdash; is precisely the
+    merge that keeps the opening line. <b>Which is now the shipping path</b>, per s227-D5.</p>
+    <p class="action"><b>Minimal edit, written:</b> <code>MARKERS = ("Declare the lane, in your first
+    reply.", "**Never invent.**")</code>, <code>if all(m in text ...)</code>, and selftest arm 1
+    asserts both are still in the source contract.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S4</p>
+  </article>
+
+  <article class="card" data-id="C5" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C5</span><span class="klass word">Contract &middot; SHARP 5 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>The line budget counts the wrong unit. A 23&nbsp;KB contract passes green.</h3>
+    <p class="evlabel">driven</p>
+    <pre class="ev"><code>a contract of 31 lines and 23,333 bytes (one 20k-character line appended)
+wrote all three projections and passed --check green.
+The 23KB projection is what a host would load.</code></pre>
+    <p>The docstring states the purpose &mdash; <i>"a contract that runs long is a contract whose last
+    rule is never read"</i>. <b>Hosts truncate on tokens or bytes. Lines are not that unit.</b></p>
+    <p class="action"><b>Minimal edit, written:</b> add <code>BYTE_BUDGET = 4096</code> beside
+    <code>LINE_BUDGET = 40</code>, and a second refusal in the same shape naming the overage in bytes.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S5</p>
+  </article>
+
+  <article class="card" data-id="C6" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C6</span><span class="klass word">Contract &middot; SHARP 6 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>"Run <code>skills/…/SKILL.md</code>" is a verb a skill-less host cannot honour.</h3>
+    <p>The contract's own §3 says the five rules hold <i>even when no skill is open</i> &mdash; so the
+    reader has been told skills may not be open, then told to "Run" one.</p>
+    <p><code>check-with-gates</code> is not reading: its actual work is
+    <code>python3 ci-template/run-gates.py</code>. <b>A cold host reads the markdown and reports
+    "checked", in good faith, having run nothing.</b></p>
+    <p>The pack's own Copilot boot file carries the missing sentence and the contract does not:
+    <i>"These are not auto-loaded — you have to open them."</i></p>
+    <p class="action"><b>Minimal edit, written:</b> "<b>Check before you show.</b> Open
+    <code>skills/check-with-gates/SKILL.md</code> and do what it says &mdash; it ends in
+    <code>python3 ci-template/run-gates.py</code>, and reading the file is not running it. An
+    unchecked screen is a guess, and so is an unrun gate."</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S6</p>
+  </article>
+
+  <article class="card" data-id="C7" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C7</span><span class="klass word">Contract &middot; SHARP 7 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>Rule 4 points a cold host at a file that says it is not for building from.</h3>
+    <p>The contract says layout <i>"comes from the rails in <code>_bento_edit_rails.json</code>"</i>.
+    That file's own first keys say otherwise:</p>
+    <pre class="ev"><code>"$what": "The bento EDIT-PASS VOCABULARY: every dial Apollo's edit pass exposes..."
+"$groundwork_only": "No editor is built or proposed here. This is the vocabulary
+                     such an editor would read"</code></pre>
+    <p>A cold, skill-less host follows that literally, opens 38&nbsp;KB of dial vocabulary, and gets
+    no layout. <i>(<code>generate-from-canon</code> §7 makes the same claim &mdash; the contract
+    inherited it rather than invented it. But the contract is the only text a cold host has.)</i></p>
+    <p class="action"><b>Minimal edit, written:</b> "<b>Dashboards are bento-first.</b> The procedure
+    is in <code>skills/generate-from-canon/SKILL.md</code>; <code>_bento_edit_rails.json</code> is the
+    dial vocabulary it reads, not a layout. Either way, not from taste."</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S7</p>
+  </article>
+
+  <article class="card" data-id="C9" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C9</span><span class="klass word">Contract &middot; SHARP 9 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>"Asks for it in words" has no test, so the two hostile openers are undecided.</h3>
+    <p>The contract says freestyle happens <i>only when the designer asks for it in words</i>. Neither
+    of these contains the word:</p>
+    <pre class="ev"><code>"skip the apollo stuff, my manager wants it quick"
+"don't ask me questions, just build it"</code></pre>
+    <p>The text supports both readings, and <b>the wrong one in either direction is a real cost</b>:
+    fold silently and the false reports return; hold and lecture and the pack gets turned off.</p>
+    <p class="action"><b>Minimal edit, written:</b> "…Freestyle happens only when the designer asks for
+    it in words. <b>'Quickly' and 'don't ask me questions' are not that ask</b> &mdash; they shorten
+    the grill, not the lane; say which lane you are in, once, and get on with it."</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S9</p>
+  </article>
+
+  <article class="card" data-id="C10" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C10</span><span class="klass word">Contract &middot; SHARP 10 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>§1 and §4 disagree about which lane a third-party design skill is.</h3>
+    <p>§1 offers exactly two lanes. §4 permits a non-Apollo skill for design output &mdash; and never
+    says which lane that is.</p>
+    <p>So the opener <i>"use my company's design skill for this"</i> is <b>compliant with §4 while
+    declaring on-canon under §1</b>, which is the undeclared-source state §4 exists to end.</p>
+    <p class="action"><b>Minimal edit, written:</b> "If you use a non-Apollo skill to produce design
+    output, <b>that is freestyle</b>: declare it in the same reply and name the skill…"</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S10</p>
+  </article>
+
+  <article class="card" data-id="C12" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C12</span><span class="klass word">Contract &middot; SHARP 12 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>The fallback for a truncated host points at the first thing truncation cuts.</h3>
+    <p>§2 says: <i>"If you cannot reach that skill, ask the six questions at the foot of this file
+    yourself."</i> Those questions are <b>lines 23–32 of a 32-line file, below the <code>---</code>,
+    last in the document</b>.</p>
+    <p>The host that cannot reach a skill is the same host most likely to have truncated. <b>The
+    fallback's target is the least survivable part of the document.</b></p>
+    <p class="action"><b>Minimal edit, written:</b> append &mdash; "If you cannot see those either, ask
+    this one: <b>which theme &mdash; Mono, Common, Console or Supercharge?</b> It is the answer that
+    changes every corner on the page."</p>
+    <p class="action"><b>Credit where due:</b> the same red team recorded that the truncation
+    <i>ordering</i> is otherwise right &mdash; at 15 lines the projection still carries all five
+    rules. This is the one place it is not.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S12</p>
+  </article>
+
+  <article class="card" data-id="N1" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">N1</span><span class="klass word">Contract &middot; NIT 1 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>A typo in <code>--root</code> prints the tool's most alarming output.</h3>
+    <p class="evlabel">driven, both arms</p>
+    <pre class="ev"><code>--root /dev/shm/m2/NO-SUCH-DIR      -> "3 of 3 hosts start COLD here", exit 0
+--root cold-start/DESIGN-CONTRACT.md -> same
+
+indistinguishable from a real cold project.</code></pre>
+    <p><b>A typo reads as an emergency.</b></p>
+    <p class="action"><b>Minimal edit, written:</b> in <code>run()</code> before <code>report()</code>
+    &mdash; <code>if not os.path.isdir(root): out("NOT A DIRECTORY: %s — nothing was inspected."); return 0</code></p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;NIT &middot; N1</p>
+  </article>
+
+  <article class="card" data-id="N2" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">N2</span><span class="klass word">Contract &middot; NIT 2 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>A rogue fourth projection can sit in the folder forever, invisible.</h3>
+    <p class="evlabel">driven</p>
+    <pre class="ev"><code>cp CLAUDE.md GEMINI.md   ->  --check GREEN</code></pre>
+    <p>The generator owns the directory but does not police it. A stale hand-made projection would
+    never be noticed &mdash; and would look official.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;NIT &middot; N2</p>
+  </article>
+
+  <article class="card" data-id="N3" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">N3</span><span class="klass word">Contract &middot; NIT 3 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>An empty projection reports the wrong cause.</h3>
+    <p class="evlabel">driven</p>
+    <pre class="ev"><code>: &gt; AGENTS.md   ->  "the GENERATED header has been edited or lost."</code></pre>
+    <p>Right verdict, imprecise cause &mdash; <code>splitlines()[:1]</code> on <code>""</code> is
+    <code>[]</code>. Cheap to name properly; a misleading cause costs somebody twenty minutes one day.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;NIT &middot; N3</p>
+  </article>
+
+  <article class="card" data-id="N4" data-kind="choice" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">N4</span><span class="klass word">Contract &middot; NIT 4 &middot; Monday</span><span class="chip">Unanswered</span></div>
+    <h3>"Three host projections" are one document in three places. Does that framing mislead you?</h3>
+    <p>They are byte-identical apart from one word in the header comment. <b>That is correct
+    engineering</b> &mdash; one source, no drift. But the "three hosts" framing may lead you to expect
+    per-host content.</p>
+    <p class="action"><b>The red team explicitly proposes no fix here.</b> "Worth knowing, not fixing."
+    Park is a perfectly good answer; it is on the page so it is not a surprise later.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;NIT &middot; N4</p>
+  </article>
+
+  <article class="card" data-id="N6" data-kind="edit" data-class="word" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">N6</span><span class="klass word">Contract &middot; NIT 6 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>The <code>AGENTS.md</code> collision in a designer's own repo is warned about nowhere.</h3>
+    <p>The generator docstring flags only the Copilot merge:
+    <i>"⚠ THIS PACK ALREADY SHIPS ITS OWN <code>.github/copilot-instructions.md</code>"</i>.</p>
+    <p>A team <code>AGENTS.md</code> is at least as common and gets <b>no warning at all</b> &mdash;
+    and this repo's own root has one, so it is not a hypothetical shape.</p>
+    <p class="action"><b>Ties to C4:</b> now that the Copilot path is a merge (s227-D5), the
+    "overwrote something real" failure gets more likely, not less.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;NIT &middot; N6</p>
+  </article>
+</section>
+
+<!-- ================= BAND 3 · A SITTING ================= -->
+<section class="band" id="band-sit">
+  <h2>Needs a sitting</h2>
+  <p class="bandnote">Ten cards where the answer changes what happens next, or where something has
+  to be checked before you can safely answer. Nine of them are carried from #226.</p>
+
+  <article class="card" data-id="C8" data-kind="edit" data-class="sit" data-tag="monday" data-src="redteam">
+    <div class="cardhead"><span class="cid">C8</span><span class="klass sit">Contract &middot; SHARP 8 &middot; Monday</span><span class="chip">Undecided</span></div>
+    <h3>A designer's own global instructions can outrank the contract, and nothing says who wins.</h3>
+    <p class="evlabel">observed</p>
+    <pre class="ev"><code>grep -i 'precedence|other instruction|global|user-level' across cold-start/
+   ->  nothing.</code></pre>
+    <p>A designer whose global instructions say <i>"never ask clarifying questions"</i> now has two
+    texts in context and no tiebreak.</p>
+    <p class="action">&#9888; <b>BELIEVED, not measured</b> &mdash; and it must not reach you as
+    measured. Claude Code loads <code>~/.claude/CLAUDE.md</code> alongside the project file; VS Code
+    Copilot applies user-level instructions alongside <code>.github/copilot-instructions.md</code>.
+    In both, <i>both</i> texts are present and the model resolves the conflict by judgment. <b>No
+    documented rule guarantees the project file wins.</b> This is why the card is in this band: the
+    check is owed before the edit.</p>
+    <p class="action"><b>Minimal edit, written:</b> append to §2 &mdash; "If another instruction file
+    tells you never to ask questions, say that in the same reply and still ask question 1 &mdash; the
+    theme is the one answer nobody can guess back afterwards." One clause, one question, no nagging.
+    It is also the clause that keeps the hostile <i>"don't ask me questions, just build it"</i> case
+    sane.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-227-contract-redteam.md &sect;SHARP &middot; S8 (with &sect;UNPROVEN &middot; 3)</p>
+  </article>
+
+  <article class="card" data-id="DP1" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP1</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P1 &mdash; fix the gate, or fix the writing?</h3>
+    <ul>
+      <li><b>(a)</b> Widen <code>SUBREPORT_REPLAY_RE</code> and <code>SUBREPORT_QUESTIONS_RE</code>
+      (<code>_capture_gate.py:4655–4656</code>) to meet where subs actually write. Small.</li>
+      <li><b>(b)</b> Leave the patterns alone; tighten <code>_TEMPLATE.md</code> and the sub briefs so
+      subs write the field form. Small, slower to take effect, <b>keeps the priced replay items
+      alive</b>.</li>
+    </ul>
+    <p class="evlabel">re-measured at the digest's HEAD, using the gate's own regexes</p>
+    <pre class="ev"><code>population                     n     COUNTS  REPLAY  QUESTIONS
+all filed reports              67      31      24       29
+basename >= 2026-08-28         18       6       6        7   (33 / 33 / 39%)</code></pre>
+    <p>The post-fix rate rose from 20/20/27% to 33/33/39% &mdash; <b>still under half, and still worse
+    than the corpus rate.</b></p>
+    <p class="action"><b>No recommendation was offered.</b> The pass proposes (a); the digest's
+    finding 3 is the reason (b) is not obviously worse &mdash; see <b>DP2</b>.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 1</p>
+  </article>
+
+  <article class="card" data-id="DP2" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP2</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P1 &mdash; if the gate is widened, must the <b>priced</b> items survive?</h3>
+    <p>The failure mode is a migration from a field line to a section heading
+    (<code>## REPLAY-THESE</code>). A heading has no <code>&lt;path&gt; (~N tk)</code> items beneath it,
+    so <b>the priced half is genuinely absent, not merely unparsed</b>.</p>
+    <p>Widening to accept the heading therefore buys <b>a green parse over a deferral that is still
+    silent</b> &mdash; the precise thing s218-D7 built the line to prevent.</p>
+    <p class="action">The digest names the shape: not a gate that cannot fail, but <b>a gate that would
+    newly pass on the strength of the decoration alone</b>. Yes or no on accepting a bare heading is
+    the whole value of the line.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 2 (with &sect;Findings &middot; 3)</p>
+  </article>
+
+  <article class="card" data-id="DP3" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP3</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P2 &mdash; which mark identifies a wrap commit?</h3>
+    <ul>
+      <li><b>(a)</b> The <code>GOOD-MORNING.md</code> LATEST-banner move, as proposed &mdash; cheap,
+      <b>but unprobed, and destabilised by s225-D2</b>, which moves the carry list out of that file
+      and so changes which commits touch it.</li>
+      <li><b>(b)</b> A wrap-specific token in the commit subject.</li>
+      <li><b>(c)</b> A git trailer on the wrap commit.</li>
+    </ul>
+    <p class="evlabel">re-driven live at the digest's HEAD</p>
+    <pre class="ev"><code>_last_wrap_commit('.')  -> ('e29c25b...', 'after #225 2026-08-30 - ...')
+_changed_since('.', that sha, 'notes/_subreports')  ->  []        # population still empty
+
+git log -n 150 --format='%s' | grep -c '^after #'   ->  130
+                              of those, grep -ci wrap ->  11</code></pre>
+    <p class="action"><b>No recommendation offered</b> &mdash; but (a) needs <b>one probe over the log</b>
+    before it is built either way. The digest prices that probe at ~2 minutes.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 3 (with &sect;Findings &middot; 4–5)</p>
+  </article>
+
+  <article class="card" data-id="DP4" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP4</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P2 &mdash; which lands first, P1 or P2?</h3>
+    <p>Not a detail &mdash; a real choice:</p>
+    <ul>
+      <li><b>P2 first</b> gives an honest red on the next wrap. But it starts grading a corpus that is
+      <b>two-thirds unparseable</b>.</li>
+      <li><b>P1 first</b> gives a quiet landing.</li>
+    </ul>
+    <p>Both defensible. The digest calls it <b>a temperament call</b> &mdash; which is exactly why it
+    is yours and not a sub's.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 4</p>
+  </article>
+
+  <article class="card" data-id="DP5" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP5</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P3 &mdash; generate the anchor, stamp it with an expiry, or re-point <code>VERDICT_SHA</code> by hand?</h3>
+    <p>The sentence, re-derived unchanged from this seat:</p>
+    <pre class="ev"><code>BUILD VERDICT: 75 of 140 steps green (#62, 18c7789)
+- 65 steps have NEVER been in a green verdict.</code></pre>
+    <p>&#9888; <b>Read this before picking (c).</b> Option (c) is the shape of the act <b>s125-D1
+    explicitly rejected</b>, and that ruling carries a <code>watch</code> field written against exactly
+    this motion:</p>
+    <pre class="ev"><code>"A future session 'helpfully' correcting 75 to 98 by hand would enact the
+ alternative Dave rejected, under cover of tidiness."</code></pre>
+    <p>The proposal names (c) as "the minimum" <b>without surfacing that a standing ruling watches for
+    it</b>. The pass recommends (a), with (b) as fallback.</p>
+    <p class="action"><b>Also unproven:</b> whether (a) is buildable at all. Whether any
+    machine-readable record of green build verdicts exists to derive an anchor from was never
+    established &mdash; if none exists, (a) collapses into (b).</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 5 (with &sect;Findings &middot; 6)</p>
+  </article>
+
+  <article class="card" data-id="DP6" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP6</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P3 &mdash; if you pick the expiry: how many sessions old is too old?</h3>
+    <p>The refusal needs a number, and <b>the number is yours</b>. Nobody can derive it &mdash; it is
+    a statement about how stale a build verdict may be before it stops being evidence.</p>
+    <p class="action">Only answer this one if <b>DP5</b> lands on (b).</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 6</p>
+  </article>
+
+  <article class="card" data-id="DP7" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP7</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P4 &mdash; does <code>RATIFY_IDS["v1.0.3"]</code> move to <code>s225-D1</code>?</h3>
+    <p class="evlabel">verified live</p>
+    <pre class="ev"><code>_gen_pack_manifest.py:612    "v1.0.3": "s224-D1",
+_pack_manifest.json          "RATIFIED - s224-D1 names v1.0.3 in the store; ..."</code></pre>
+    <p>Leaving it is defensible &mdash; s225-D1's own enactment note records that key, so this is
+    <b>by your word, not drift</b>. But the sentence the machine publishes then names the
+    <i>naming</i> ruling, which is precisely what s223-D3 distinguishes from the ratifying word.</p>
+    <p><b>One line either way.</b></p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 7 (with &sect;Findings &middot; 7)</p>
+  </article>
+
+  <article class="card" data-id="DP8" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP8</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>P4 &mdash; is the re-checker built, and when? <b>Sequence matters: it can stop a release.</b></h3>
+    <p>The proposed arm refuses when the keyed ruling's evidence names an earlier session than the cut.
+    <code>s224-D1</code>'s evidence reads <code>"chat #224 2026-08-29"</code> &mdash; earlier than the
+    #225 ratify.</p>
+    <p class="evlabel">the chain, traced end to end</p>
+    <pre class="ev"><code>enact (b) against the key as it stands  ->  manifest flips to PROPOSED
+apollo-spider/build-designer-pack.sh:152  ->  ratified || die
+                                          ->  the next --release DIES</code></pre>
+    <p>&#9888; <b>The guard must land AFTER the key moves, never before</b> &mdash; that is, after
+    <b>DP7</b>. The digest calls this <i>"the single most actionable thing in the digest"</i>.</p>
+    <p class="action"><b>Mitigating, and also verified:</b> s223-D8 requires PROPOSED and RATIFIED to
+    pack byte-identical content, so a status flip does not disturb the shipped v1.0.3 bytes. The
+    refusal is at the build script only.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 8 (with &sect;Findings &middot; 8)</p>
+  </article>
+
+  <article class="card" data-id="DP9" data-kind="choice" data-class="sit" data-tag="carried" data-src="dream">
+    <div class="cardhead"><span class="cid">DP9</span><span class="klass sit">Dream pass 10 &middot; from #226</span><span class="chip">Unanswered</span></div>
+    <h3>The gardener's alert has <b>never listed anything</b>, across three grading cycles.</h3>
+    <p class="evlabel">knowledge/_gardener.py:154 &mdash; re-probed at this HEAD</p>
+    <pre class="ev"><code>ALERT_LIST_GRADES = ("STALE",)      # printed one line each</code></pre>
+    <p>It is the only arm that names a hook. <b>STALE has been 0 across all three grading cycles</b>,
+    while AGING went 1 &rarr; 16 &rarr; 33.</p>
+    <p class="action"><b>Forwarded, not floated.</b> The pass deliberately did not float this because
+    it is the B3 review's own subject. It is here so it reaches your eye at the sitting rather than
+    waiting for a review that has its own queue.</p>
+    <p class="srcline"><b>Source:</b> 2026-08-30-226-dream-pass-10-digest.md &sect;RULING-SHAPED QUESTIONS &middot; 9</p>
+  </article>
+</section>
+
+<!-- ================= PROMPT ================= -->
+<section id="promptblock">
+  <h2>The prompt &mdash; copy this back to me</h2>
+  <p>The Copy button in the bar below puts this on your clipboard. If it refuses (browsers often block
+  the clipboard on <code>file://</code> pages), select the text here and copy it by hand.
+  <b>This block is the real output &mdash; everything else is just a way of typing it.</b></p>
+  <pre id="prompt" tabindex="0">Nothing decided yet.</pre>
+  <p class="assert" id="assert">Checking card count&hellip;</p>
+</section>
+</div>
+
+<div class="bar">
+  <div class="barin">
+    <div class="counts">
+      <span>Decided</span> <b id="cAll">0/44</b> &nbsp;·&nbsp;
+      <span>Left</span> <b id="cLeft">44</b>
+    </div>
+    <div class="spacer"></div>
+    <span id="copystatus" role="status"></span>
+    <button class="ghost" id="reset" type="button">Clear all</button>
+    <button class="ghost" id="jump" type="button">Show prompt</button>
+    <button class="primary" id="copy" type="button">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "apollo-227-session-loose-ends-v1";
+  var CARDS_DECLARED = 44, SOURCES_DECLARED = 5;
+  var EDIT_OPTS   = [["apply","Apply"],["park","Park"],["reject","Reject"],["discuss","Discuss"]];
+  var CHOICE_OPTS = [["answer","Answer"],["park","Park"],["discuss","Discuss"]];
+
+  var BANDS = [
+    ["band-look", "ONE LOOK SETTLES IT"],
+    ["band-word", "ONE WORD SETTLES IT"],
+    ["band-sit",  "NEEDS A SITTING"]
+  ];
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card[data-id]"));
+  var state = {};   /* id -> {d: decision|null, c: comment} */
+
+  /* ---------- storage, never fatal ---------- */
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") state = o; }
+    }catch(e){ /* storage dead - page still works */ }
+  }
+  function save(){
+    try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function optsFor(card){
+    return card.getAttribute("data-kind") === "edit" ? EDIT_OPTS : CHOICE_OPTS;
+  }
+
+  /* ---------- build controls ---------- */
+  cards.forEach(function(card){
+    var id = card.getAttribute("data-id");
+    var isEdit = card.getAttribute("data-kind") === "edit";
+    var opts = optsFor(card);
+    if(!state[id]) state[id] = {d:null, c:""};
+
+    var box = document.createElement("div");
+    box.className = "controls";
+
+    var radios = document.createElement("div");
+    radios.className = "radios";
+    radios.setAttribute("role","radiogroup");
+    radios.setAttribute("aria-label","Decision for " + id);
+    opts.forEach(function(o){
+      var lab = document.createElement("label");
+      lab.className = o[0];
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "dec-" + id; inp.value = o[0];
+      inp.id = "dec-" + id + "-" + o[0];
+      inp.addEventListener("change", function(){
+        state[id].d = o[0]; save(); paint(card); refresh();
+      });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(o[1]));
+      radios.appendChild(lab);
+    });
+    box.appendChild(radios);
+
+    var cl = document.createElement("label");
+    cl.className = "cmtlabel"; cl.setAttribute("for","cmt-" + id);
+    cl.textContent = isEdit ? "Your comment" : "Your answer / ruling";
+    box.appendChild(cl);
+
+    var ta = document.createElement("textarea");
+    ta.id = "cmt-" + id;
+    ta.placeholder = isEdit ? "Anything you want carried back…" : "Say what it should be…";
+    ta.addEventListener("input", function(){
+      state[id].c = ta.value; save(); refresh();
+    });
+    box.appendChild(ta);
+
+    var clr = document.createElement("button");
+    clr.type = "button"; clr.className = "clearone"; clr.textContent = "Clear this card";
+    clr.addEventListener("click", function(){
+      state[id] = {d:null, c:""};
+      var checked = card.querySelector('input[type="radio"]:checked');
+      if(checked) checked.checked = false;
+      ta.value = ""; save(); paint(card); refresh();
+    });
+    box.appendChild(clr);
+
+    card.appendChild(box);
+  });
+
+  /* ---------- paint ---------- */
+  function paint(card){
+    var id = card.getAttribute("data-id");
+    var isEdit = card.getAttribute("data-kind") === "edit";
+    var st = state[id] || {d:null,c:""};
+    var chip = card.querySelector(".chip");
+    if(st.d){
+      card.setAttribute("data-state", st.d);
+      var opts = optsFor(card), lbl = st.d;
+      opts.forEach(function(o){ if(o[0] === st.d) lbl = o[1]; });
+      chip.textContent = lbl;
+    }else{
+      card.removeAttribute("data-state");
+      chip.textContent = isEdit ? "Undecided" : "Unanswered";
+    }
+  }
+
+  function hydrate(){
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var st = state[id];
+      if(!st) return;
+      if(st.d){
+        var r = card.querySelector('input[value="' + st.d + '"]');
+        if(r) r.checked = true;
+      }
+      var ta = card.querySelector("textarea");
+      if(ta && st.c) ta.value = st.c;
+      paint(card);
+    });
+  }
+
+  /* ---------- prompt ---------- */
+  function oneLine(s){ return String(s || "").replace(/\s+/g, " ").trim(); }
+
+  function build(){
+    var byBand = {}, open = [], notes = [];
+    var nDone = 0, nTot = 0;
+    BANDS.forEach(function(b){ byBand[b[0]] = []; });
+
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var sec = card.parentNode && card.parentNode.id ? card.parentNode.id : "band-word";
+      if(!byBand[sec]) byBand[sec] = [];
+      var st = state[id] || {d:null,c:""};
+      nTot++;
+      var cmt = oneLine(st.c);
+      if(st.d){
+        byBand[sec].push(id + " " + st.d.toUpperCase() + (cmt ? " — " + cmt : ""));
+        nDone++;
+      }else{
+        open.push(id);
+        if(cmt) notes.push(id + " (no decision) — " + cmt);
+      }
+    });
+
+    var out = [];
+    out.push("APOLLO #227 — the loose ends, my decisions");
+    out.push("Page: reviews/SESSION-227-DECISIONS-2026-08-30-v1.html");
+    out.push("Sources: 5 sub-reports (grill-me+radius · segmented enact · FAB overlay · contract red team · #226 dream digest)");
+    out.push("Decided " + nDone + "/" + nTot);
+    BANDS.forEach(function(b){
+      out.push("");
+      out.push(b[1]);
+      out.push(byBand[b[0]].length ? byBand[b[0]].join("\n") : "(none decided)");
+    });
+    if(notes.length){
+      out.push("");
+      out.push("NOTES ON UNDECIDED");
+      out.push(notes.join("\n"));
+    }
+    out.push("");
+    out.push("STILL OPEN: " + (open.length ? open.join(", ") : "none"));
+    return {text: out.join("\n"), nDone: nDone, nTot: nTot};
+  }
+
+  var promptEl = document.getElementById("prompt");
+  var cAll = document.getElementById("cAll");
+  var cLeft = document.getElementById("cLeft");
+
+  function refresh(){
+    var b = build();
+    promptEl.textContent = b.text;
+    cAll.textContent = b.nDone + "/" + b.nTot;
+    cLeft.textContent = String(b.nTot - b.nDone);
+  }
+
+  /* ---------- copy ---------- */
+  var statusEl = document.getElementById("copystatus");
+  function status(msg, ok){
+    statusEl.textContent = msg;
+    statusEl.className = ok ? "ok" : "bad";
+    document.getElementById("sr").textContent = msg;
+    window.setTimeout(function(){ if(statusEl.textContent === msg){ statusEl.textContent = ""; statusEl.className = ""; } }, 6000);
+  }
+  function legacyCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly","");
+      ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0";
+      ta.style.opacity = "0"; ta.style.width = "2px"; ta.style.height = "2px";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){ return false; }
+  }
+  function selectPre(){
+    try{
+      var r = document.createRange(); r.selectNodeContents(promptEl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      promptEl.scrollIntoView({behavior:"smooth", block:"center"});
+    }catch(e){}
+  }
+  document.getElementById("copy").addEventListener("click", function(){
+    var text = build().text;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        status("Copied — paste it to Claude", true);
+      }).catch(function(){
+        if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+        else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+      });
+    }else{
+      if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+      else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+    }
+  });
+  document.getElementById("jump").addEventListener("click", function(){
+    document.getElementById("promptblock").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    if(!window.confirm("Clear every decision and comment on this page?")) return;
+    state = {};
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      state[id] = {d:null, c:""};
+      var r = card.querySelector('input[type="radio"]:checked'); if(r) r.checked = false;
+      var ta = card.querySelector("textarea"); if(ta) ta.value = "";
+      paint(card);
+    });
+    save(); refresh(); status("Cleared", true);
+  });
+
+  /* ---------- filters ---------- */
+  var fbtns = Array.prototype.slice.call(document.querySelectorAll(".fbtn"));
+  fbtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.getAttribute("data-filter");
+      fbtns.forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      cards.forEach(function(card){
+        var id = card.getAttribute("data-id");
+        var tags = (card.getAttribute("data-tag") || "").split(/\s+/);
+        var show = f === "all"
+          || (f === "undecided" && !(state[id] && state[id].d))
+          || (f === card.getAttribute("data-class"))
+          || (tags.indexOf(f) !== -1);
+        card.classList.toggle("hidden", !show);
+      });
+      Array.prototype.slice.call(document.querySelectorAll("section.band")).forEach(function(sec){
+        var vis = sec.querySelectorAll(".card:not(.hidden)").length;
+        var hasCards = sec.querySelectorAll(".card").length > 0;
+        sec.style.display = (hasCards && vis === 0) ? "none" : "";
+      });
+    });
+  });
+
+  /* ---------- count assertion ---------- */
+  function assert(){
+    var el = document.getElementById("assert");
+    var ids = {}, dup = [], srcs = {}, nSrcCites = 0, nMulti = 0;
+    var nEdit = 0, nChoice = 0;
+    cards.forEach(function(c){
+      var id = c.getAttribute("data-id");
+      if(ids[id]) dup.push(id); else ids[id] = 1;
+      if(c.getAttribute("data-kind") === "edit") nEdit++; else nChoice++;
+      var list = (c.getAttribute("data-src") || "").split(",").filter(function(s){ return s; });
+      if(list.length > 1) nMulti++;
+      list.forEach(function(s){ srcs[s] = (srcs[s] || 0) + 1; nSrcCites++; });
+    });
+    var nSrc = Object.keys(srcs).length;
+    var ok = (cards.length === CARDS_DECLARED) && (nSrc === SOURCES_DECLARED) && dup.length === 0;
+    el.textContent = ok
+      ? cards.length + " cards rendered from " + nSrc + " sources · "
+        + nEdit + " with an edit already written · " + nChoice + " open choices · "
+        + nMulti + " cards cite two sources · " + nSrcCites
+        + " source citations · all ids unique."
+      : "⚠ COUNT MISMATCH — rendered " + cards.length + " cards (expected " + CARDS_DECLARED
+        + ") from " + nSrc + " sources (expected " + SOURCES_DECLARED + ")"
+        + (dup.length ? " · duplicate ids: " + dup.join(", ") : "") + ". Tell Claude.";
+    el.className = ok ? "assert" : "assert bad";
+  }
+
+  load(); hydrate(); refresh(); assert();
+})();
+</script>
+</body>
+</html>
