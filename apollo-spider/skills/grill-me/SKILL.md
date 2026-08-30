@@ -1,13 +1,16 @@
 ---
 name: grill-me
-description: Ask the six questions that decide how a piece of Apollo work will look, before any of it gets built — theme first, then light/dark, density, brand assets, data and constraints. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new design project or a new design task, and always before generate-from-canon builds anything, whenever briefs/ holds no current brief for that task. Use this on openings like “new design project”, “I’m starting a new screen”, “make this look like our brand”, “use our brand colours”, “which theme should we use”, “what do you need from me before you build”, “here’s a new product area” — and skip it, silently, when a current brief already exists.
+description: Grill the brief before anything gets built — six standard questions that decide how a piece of Apollo work will look (theme first, then light/dark, density, brand assets, data and constraints), then open discovery, one question at a time, until the brief is exhausted. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new design project or a new design task, and always before generate-from-canon builds anything, whenever briefs/ holds no current brief for that task. Use this on openings like “new design project”, “I’m starting a new screen”, “make this look like our brand”, “use our brand colours”, “which theme should we use”, “what do you need from me before you build”, “here’s a new product area” — and skip it, silently, when a current brief already exists.
 ---
 
 # Grill me
 
-Six questions, asked once, at the start. They take about two minutes and they decide
-things that are expensive to change later — the first of them decides whether your
-corners are round.
+Two movements, at the start of the work. First, **six standard questions** — about two
+minutes, and they decide things that are expensive to change later; the first of them
+decides whether your corners are round. Then, **discovery**: keep asking, one question at
+a time, until the brief is exhausted — until there is nothing material left that the
+build would otherwise have to guess. There is no fixed number of discovery questions,
+deliberately: a cap would end the questioning at the cap, not at the brief.
 
 Skip any of them. Skip all of them. What this skill will **not** do is quietly pick for
 you and say nothing: a skipped question is written down as *skipped*, and where a default
@@ -129,6 +132,27 @@ Say them plainly. This is the question that saves the most rework.
 
 ---
 
+## Then exhaust the brief — discovery
+
+The six questions cover how the work will *look*. Discovery covers what the work *is*,
+and it is the half that finds the things nobody thought to say. After question six (or
+after a partial skip), keep going:
+
+- **One question at a time.** Never a list, never a form. Each answer is allowed to
+  change what you ask next — that is the point of asking one at a time.
+- **Each question must earn its place.** Ask it only if the answer would change what gets
+  built: who is this for and what do they do with it? what's the one thing it must make
+  obvious? what happens when the numbers are bad? what does the user do next? is there an
+  existing screen this replaces, and what was wrong with it? what's the worst real content
+  this has to survive?
+- **The stopping test:** could you now state every choice the build is about to make,
+  precisely, without guessing? While the answer is no, there is still a question worth
+  asking. When the answer is yes, **stop** — an exhausted brief is the goal, not a long
+  interrogation. Say you're done and read the brief back in a few lines.
+- **The skip hatch never closes.** *"That's enough"*, *"just build it"*, or a shrug ends
+  discovery on the spot, recorded as `discovery ended by designer after N questions` —
+  and everything already answered still counts.
+
 ## Save the answers
 
 Write the answers to a small file in the project:
@@ -144,6 +168,10 @@ Use the shape in `brief-template.md`, beside this file. Rules for it:
 - **One line per answer.** It is a note, not a document.
 - **Every one of the six appears**, in order, including the skipped ones — written as
   `skipped` with the date, so a gap is visible rather than absent.
+- **Discovery gets its own short section** below the six: one line per question-and-answer,
+  in the order asked, ending with either `brief exhausted` or `discovery ended by designer
+  after N questions`. This section is where most of a build's judgment calls get their
+  provenance.
 - **Record what was actually said**, in the designer's own words where they said
   something specific. Don't tidy an answer into a category it didn't quite fit.
 - **If the theme was skipped**, the brief records `skipped — proceeding with Mono
