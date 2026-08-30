@@ -11,6 +11,26 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+★ **SIXTH STRATUM 2026-08-30 (#227) — THE VM DISK IS FULL AND THE ANSWER IS: NOTHING RENDER-SHAPED
+EVER TOUCHES VM DISK AGAIN.** The VM hit 100% (dead sessions' orphaned scratch, undeletable — see
+`_RUNBOOK-capture-ritual.md` step 4c); pip is dead (`/tmp` ENOSPC) and apt needs root. The working
+recipe, OBSERVED end-to-end today (RENDER OK, PNG read back by eye):
+
+```
+export PYTHONPATH=/var/tmp/pylibs                       # #220's orphaned playwright 1.62 — READABLE though undeletable
+export PLAYWRIGHT_BROWSERS_PATH=/var/tmp/pw-browsers-220  # #220's orphaned aarch64 chromium, same standing
+export LD_LIBRARY_PATH=<MOUNT>/outputs/syslibs/usr/lib/aarch64-linux-gnu
+# syslibs = dpkg -x of libxdamage1_*_arm64.deb (ports.ubuntu.com), extracted ON THE MOUNT — no root, ~12KB
+# the ONLY lib missing at #227; if more go missing: ldd headless_shell | grep "not found", one deb each
+```
+
+⚠ All three exports must ride in the SAME bash call as the render (nothing survives a call boundary),
+and launch() must NOT pass `env=` (it REPLACES the child env wholesale and the launch dies mute).
+⚠ The orphan dirs are ironically STABLE (nobody can delete them) — but if the VM is ever truly
+rebuilt, the CLASS FIX is the pattern above generalised: playwright wheels unzipped to the MOUNT,
+`PLAYWRIGHT_BROWSERS_PATH` pointed at a MOUNT dir, libs `dpkg -x`'d to the MOUNT. Zero VM bytes,
+which is also what stops this runbook needing a seventh stratum of this class.
+
 ⛔ **FIFTH STRATUM 2026-08-25 (#219) — `/var/tmp/chromelibs` IS NOW A HOLLOW SHELL, AND A HOLLOW LIB
 DIR FAILS LIKE A BROKEN RECIPE.** The `#136`/`#138` strata below name
 `/var/tmp/chromelibs/root/usr/lib/aarch64-linux-gnu` as the reusable foreign-session lib dir. As of
