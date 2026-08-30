@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dream pass 10 — four things to rule on</title>
+<!-- #226 digest page. DIGEST ONLY — nothing on this page is ruled, promoted or enacted.
+     Source: notes/_dream/2026-08-30-proposals.md (committed, status: floated, all four).
+     Every figure on this page was RE-MEASURED from this seat at HEAD e29c25b, not copied from
+     the proposals file — where my reading differs from the pass's, BOTH are shown and the
+     difference is named. Promotion is Dave's alone (derivation-governance). -->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+/* ===========================================================================
+   DIGEST PAGE — dream pass 10, one screen for the sitting. #226.
+   ⛔ EVERY var() CARRIES A LITERAL FALLBACK. A custom property that fails to
+   resolve renders silent black and no gate catches it.
+   ⛔ NEUTRAL HUES ONLY. No red, no yellow, no green anywhere on this page: the
+   two-red law and the mono error ink camp are untouched by it. Emphasis is
+   carried by WEIGHT and by RULE, never by colour.
+   ⛔ THE THEME ATTRIBUTE AND THE PAGE-CHROME TOKENS SIT ON THE SAME ELEMENT
+   (<body>), deliberately: a custom property is substituted where it is
+   DECLARED, so declaring --ink on <body> and flipping data-theme on a CHILD
+   would leave the light value resolved and paint black on black (#220's bug).
+   =========================================================================== */
+html,body{margin:0;}
+body{background:var(--background-default,#FFFFFF);}
+.cdl{
+  --page:      var(--background-default,#FFFFFF);
+  --surface-2: var(--surface-subtle,#F0F0F0);
+  --line:      var(--border-subtle,#E1E1E1);
+  --line-2:    var(--border-strong,#808080);
+  --ink:       var(--text-default,#1A1A1A);
+  --ink-2:     var(--text-secondary,#545454);
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  background:var(--page,#FFFFFF); color:var(--ink,#1A1A1A); -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.cdl *{box-sizing:border-box;}
+
+/* ---- head ---- */
+.dg-head{padding:var(--sp-6,32px) var(--sp-6,32px) var(--sp-5,24px);
+  border-bottom:1px solid var(--line,#E1E1E1);}
+.dg-head h1{margin:0 0 var(--sp-3,12px); color:var(--ink,#1A1A1A); max-width:26ch;}
+.dg-head p{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454); max-width:86ch;}
+.dg-head p b{color:var(--ink,#1A1A1A); font-weight:500;}
+.dg-kicker{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;
+  margin:0 0 var(--sp-3,12px); display:flex; align-items:center; gap:var(--sp-2,8px);}
+.dg-kicker::before{content:''; width:20px; height:1px; background:var(--line-2,#808080);}
+
+.dg-fence{border:1px solid var(--line-2,#808080); border-left-width:4px;
+  padding:var(--sp-3,12px) var(--sp-4,16px); margin:var(--sp-4,16px) 0 0; max-width:86ch;}
+.dg-fence p{margin:0; color:var(--ink,#1A1A1A);}
+
+/* ---- theme switch: this page must render in BOTH modes and be seen to ---- */
+.dg-modes{display:flex; gap:0; margin:var(--sp-4,16px) 0 0; border:1px solid var(--line-2,#808080);
+  width:max-content;}
+.dg-modes button{appearance:none; background:transparent; border:0;
+  border-right:1px solid var(--line-2,#808080); color:var(--ink-2,#545454);
+  padding:7px 16px; cursor:pointer; font:inherit;}
+.dg-modes button:last-child{border-right:0;}
+.dg-modes button[aria-pressed="true"]{background:var(--ink,#1A1A1A); color:var(--page,#FFFFFF);}
+
+main{padding:var(--sp-6,32px); max-width:1180px;}
+
+/* ---- the at-a-glance board ---- */
+.dg-board{margin:0 0 var(--sp-7,48px);}
+.dg-board h2{margin:0 0 var(--sp-3,12px); color:var(--ink,#1A1A1A);}
+.dg-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:var(--sp-3,12px); margin:var(--sp-4,16px) 0 0;}
+.dg-card{border:1px solid var(--line,#E1E1E1); border-top:3px solid var(--ink,#1A1A1A);
+  padding:var(--sp-4,16px); min-width:0;}
+.dg-card .dg-card-id{color:var(--ink-2,#545454); text-transform:uppercase;
+  letter-spacing:0.12em; margin:0 0 var(--sp-2,8px);}
+.dg-card h3{margin:0 0 var(--sp-2,8px); color:var(--ink,#1A1A1A);}
+.dg-card p{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454);}
+.dg-card p:last-child{margin:0;}
+.dg-card b{color:var(--ink,#1A1A1A); font-weight:500;}
+.dg-card--part{border-top-style:double; border-top-width:5px;}
+
+/* ---- proposal sections ---- */
+.dg-sec{margin:0 0 var(--sp-7,48px); border-top:1px solid var(--line-2,#808080);
+  padding-top:var(--sp-5,24px);}
+.dg-sec > h2{margin:0 0 var(--sp-3,12px); color:var(--ink,#1A1A1A); max-width:40ch;}
+.dg-sec h3{margin:var(--sp-5,24px) 0 var(--sp-2,8px); color:var(--ink,#1A1A1A);}
+.dg-sec p{margin:0 0 var(--sp-3,12px); color:var(--ink-2,#545454); max-width:84ch;}
+.dg-sec p b, .dg-lines b, .dg-note b{color:var(--ink,#1A1A1A); font-weight:500;}
+.dg-lead{color:var(--ink,#1A1A1A) !important; max-width:80ch;}
+.dg-tag{display:inline-block; border:1px solid var(--line-2,#808080);
+  padding:2px 8px; margin:0 0 var(--sp-3,12px); color:var(--ink-2,#545454);
+  text-transform:uppercase; letter-spacing:0.12em;}
+.dg-idline{color:var(--ink-2,#545454); margin:0 0 var(--sp-3,12px);}
+
+.dg-lines{margin:0 0 var(--sp-3,12px); padding:0; list-style:none; display:flex;
+  flex-direction:column; gap:7px;}
+.dg-lines li{max-width:84ch; color:var(--ink-2,#545454); padding-left:var(--sp-4,16px);
+  position:relative;}
+.dg-lines li::before{content:''; position:absolute; left:0; top:0.62em; width:8px; height:1px;
+  background:var(--line-2,#808080);}
+
+.dg-quote{border-left:3px solid var(--ink,#1A1A1A); padding:var(--sp-3,12px) var(--sp-4,16px);
+  margin:0 0 var(--sp-3,12px); max-width:84ch;}
+.dg-quote p{margin:0; color:var(--ink,#1A1A1A);}
+.dg-quote .dg-attrib{margin-top:6px; color:var(--ink-2,#545454);}
+
+.dg-note{border:1px solid var(--line,#E1E1E1); border-left-width:4px;
+  border-left-color:var(--line-2,#808080);
+  padding:var(--sp-3,12px) var(--sp-4,16px); margin:var(--sp-4,16px) 0 0; max-width:86ch;}
+.dg-note p{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454);}
+.dg-note p:last-child{margin:0;}
+.dg-note--hard{border-color:var(--ink,#1A1A1A); border-left-width:5px;}
+.dg-note--hard p{color:var(--ink,#1A1A1A);}
+
+/* ---- the measured bars: plain, neutral, labelled in words ---- */
+.dg-bars{margin:var(--sp-3,12px) 0 var(--sp-4,16px); max-width:640px;
+  border-top:1px solid var(--line,#E1E1E1);}
+.dg-bar{display:grid; grid-template-columns:minmax(120px,30%) 1fr minmax(84px,auto);
+  gap:var(--sp-3,12px); align-items:center; padding:9px 0;
+  border-bottom:1px solid var(--line,#E1E1E1);}
+.dg-bar-lbl{color:var(--ink-2,#545454); min-width:0; overflow-wrap:anywhere;}
+.dg-bar-track{background:var(--surface-2,#F0F0F0); height:14px; min-width:0;
+  border:1px solid var(--line,#E1E1E1); position:relative;}
+.dg-bar-fill{background:var(--ink,#1A1A1A); height:100%; display:block;}
+.dg-bar-fill--ghost{background:transparent; border-right:1px solid var(--line-2,#808080);
+  background-image:repeating-linear-gradient(45deg,transparent 0 4px,var(--line-2,#808080) 4px 5px);}
+.dg-bar-num{color:var(--ink,#1A1A1A); text-align:right; font-variant-numeric:tabular-nums;}
+
+.dg-scroll{overflow-x:auto;}
+.dg-table{width:100%; border-collapse:collapse; margin:var(--sp-3,12px) 0 var(--sp-4,16px);
+  min-width:520px;}
+.dg-table th, .dg-table td{border-bottom:1px solid var(--line,#E1E1E1);
+  padding:9px 10px; text-align:left; vertical-align:top; overflow-wrap:anywhere;
+  color:var(--ink-2,#545454);}
+.dg-table thead th{color:var(--ink-2,#545454); text-transform:uppercase;
+  letter-spacing:0.08em; font-weight:500; border-bottom:1px solid var(--line-2,#808080);}
+.dg-table td:first-child, .dg-table tbody th{color:var(--ink,#1A1A1A); font-weight:500;
+  text-align:left;}
+
+.dg-code{border:1px solid var(--line,#E1E1E1); background:var(--surface-2,#F0F0F0);
+  padding:var(--sp-3,12px); overflow-x:auto; margin:var(--sp-3,12px) 0; max-width:100%;}
+.dg-code pre{margin:0; white-space:pre; color:var(--ink,#1A1A1A);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px;
+  line-height:20px;}
+
+/* ---- the ordering strip for P4 ---- */
+.dg-strip{border:1px solid var(--line,#E1E1E1); margin:var(--sp-3,12px) 0 var(--sp-4,16px);
+  max-width:840px;}
+.dg-strip-row{display:grid; grid-template-columns:minmax(96px,14%) minmax(140px,26%) 1fr;
+  gap:0; border-bottom:1px solid var(--line,#E1E1E1); align-items:stretch;}
+.dg-strip-row:last-child{border-bottom:0;}
+.dg-strip-row > div{padding:10px var(--sp-3,12px); min-width:0; overflow-wrap:anywhere;
+  border-left:1px solid var(--line,#E1E1E1); color:var(--ink-2,#545454);}
+.dg-strip-row > div:first-child{border-left:0; color:var(--ink,#1A1A1A);}
+.dg-strip-row--now{background:var(--surface-2,#F0F0F0);}
+.dg-strip-row--now > div{color:var(--ink,#1A1A1A);}
+
+.dg-ask{border:1px solid var(--ink,#1A1A1A); padding:var(--sp-4,16px);
+  margin:var(--sp-4,16px) 0 0; max-width:86ch;}
+.dg-ask p:first-child{margin:0 0 var(--sp-2,8px); color:var(--ink,#1A1A1A);
+  text-transform:uppercase; letter-spacing:0.12em;}
+.dg-ask ol{margin:0; padding-left:1.25em; color:var(--ink-2,#545454);
+  display:flex; flex-direction:column; gap:7px;}
+.dg-ask li{max-width:80ch;}
+.dg-ask b{color:var(--ink,#1A1A1A); font-weight:500;}
+
+.dg-foot{border-top:1px solid var(--line-2,#808080); padding-top:var(--sp-4,16px);
+  color:var(--ink-2,#545454); max-width:96ch;}
+.dg-foot p{margin:0 0 var(--sp-2,8px);}
+.dg-foot b{color:var(--ink,#1A1A1A); font-weight:500;}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:0.92em;
+  overflow-wrap:anywhere;}
+@media (max-width:640px){
+  main{padding:var(--sp-4,16px);}
+  .dg-head{padding:var(--sp-5,24px) var(--sp-4,16px);}
+  .dg-bar{grid-template-columns:1fr; gap:5px;}
+  .dg-bar-num{text-align:left;}
+  .dg-strip-row{grid-template-columns:1fr;}
+  .dg-strip-row > div{border-left:0; border-top:1px solid var(--line,#E1E1E1);}
+  .dg-strip-row > div:first-child{border-top:0;}
+}
+</style>
+</head>
+<body data-theme="light" class="cdl">
+
+<header class="dg-head">
+  <p class="dg-kicker t-cm-legal">Dream pass 10 &middot; 30 August 2026 &middot; digest for the sitting</p>
+  <h1 class="t-ed-heading-2">Four things the dreamer found. None of them is decided.</h1>
+  <p class="t-ed-body">The pass ran at 07:10 this morning and floated four proposals. This page is the reading of them: what each one says in a sentence, what enacting it would actually change, what it costs, what could go wrong, and whether anything you have already ruled answers part of it.</p>
+  <p class="t-ed-body-small">Three of the four are about <b>instruments that cannot report</b> &mdash; a gate whose population is empty, two regexes that no longer match the reports they grade, a sentence every cold session reads that the project itself has already contradicted. The fourth is about <b>provenance on the release</b>, and you have already answered half of it.</p>
+  <div class="dg-fence">
+    <p class="t-ed-body-small"><b>Nothing here is ruled, promoted or enacted.</b> Every proposal still reads <code>status: floated</code> in <code>notes/_dream/2026-08-30-proposals.md</code>. No file was changed to build this page, no generator was run, no ruling was written. Promotion is yours alone.</p>
+  </div>
+  <div class="dg-modes t-cm-ctl-14" id="dg-modes" role="group" aria-label="Light or dark">
+    <button type="button" data-mode="light" aria-pressed="true">Light</button>
+    <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================ AT A GLANCE ============================ -->
+<section class="dg-board">
+  <p class="dg-kicker t-cm-legal">At a glance</p>
+  <h2 class="t-ed-heading-4">The four, in the order the pass ranked them</h2>
+  <p class="t-ed-body-small">Ranked by how widespread the defect is, not by how much it matters to you. Read them in any order &mdash; but the first two are one knot: fixing the second is what would let anyone <em>see</em> the first.</p>
+  <div class="dg-cards">
+
+    <article class="dg-card">
+      <p class="dg-card-id t-cm-legal">First &middot; <code>P1</code> &middot; open</p>
+      <h3 class="t-ed-body">Sub-reports no longer fit their own parser</h3>
+      <p class="t-ed-body-small">Two of the three machine-read lines you required at&nbsp;#218 are being written as headings instead of fields, so the gate cannot read them.</p>
+      <p class="t-ed-body-small"><b>Two lines of regex</b> &mdash; but read the trap first.</p>
+    </article>
+
+    <article class="dg-card">
+      <p class="dg-card-id t-cm-legal">Second &middot; <code>P2</code> &middot; open</p>
+      <h3 class="t-ed-body">&ldquo;When was the last wrap?&rdquo; answers with the wrong commit</h3>
+      <p class="t-ed-body-small">It matches the prefix the commit script documents as the <em>non</em>-wrap shape, so it finds the newest commit of any kind. Two checks are looking at an empty list.</p>
+      <p class="t-ed-body-small"><b>Two lines plus one test arm.</b></p>
+    </article>
+
+    <article class="dg-card">
+      <p class="dg-card-id t-cm-legal">Third &middot; <code>P3</code> &middot; open</p>
+      <h3 class="t-ed-body">The first sentence every cold session reads is superseded</h3>
+      <p class="t-ed-body-small">&ldquo;75 of 140 steps green&rdquo; &mdash; your own committed record calls that figure a sandbox artefact and gives 126 of 128 instead.</p>
+      <p class="t-ed-body-small"><b>Three options, and one of them is the act you already forbade.</b></p>
+    </article>
+
+    <article class="dg-card dg-card--part">
+      <p class="dg-card-id t-cm-legal">Fourth &middot; <code>P4</code> &middot; part-answered</p>
+      <h3 class="t-ed-body">The release gate reads a ruling from the day before your word</h3>
+      <p class="t-ed-body-small">Your ratify word is now in the store (<code>s225-D1</code>, this morning), which closes half of it. The gate still points elsewhere, and the re-checker was never built.</p>
+      <p class="t-ed-body-small"><b>One key move, then one guard &mdash; in that order.</b></p>
+    </article>
+
+  </div>
+  <div class="dg-note">
+    <p class="t-ed-body-small"><b>What I checked, and what changed under me.</b> The pass measured against commit <code>48df9c6</code>. The tree has moved since &mdash; HEAD is now <code>e29c25b</code>, the #225 wrap commit &mdash; so every figure below was <b>re-measured from the current tree</b>, not copied. Where my number differs from the pass&rsquo;s, both are shown. All four findings survived the re-measurement.</p>
+  </div>
+</section>
+
+<!-- ============================ P1 ============================ -->
+<section class="dg-sec" id="p1">
+  <span class="dg-tag t-cm-legal">First finding &middot; open</span>
+  <h2 class="t-ed-heading-3">The reports your subs file no longer fit the parser you built for them &mdash; and it got worse after the last fix</h2>
+  <p class="dg-idline t-cm-legal"><code>P1</code> &middot; governed by <code>s218-D7</code> &middot; touches <code>knowledge/_capture_gate.py:4655&ndash;4656</code></p>
+
+  <p class="dg-lead t-ed-body">In one sentence: you ruled that every sub&rsquo;s filed report must carry three lines a machine can read &mdash; a counts line, a priced replay line, a questions heading &mdash; and roughly half of them now write those lines in a shape the machine skips over.</p>
+
+  <h3 class="t-ed-body">What you ruled</h3>
+  <div class="dg-quote">
+    <p class="t-ed-body">&ldquo;the FILE is sole authority; <b>stub figures are parsed from it, never retyped</b> &hellip; Stub carries a priced REPLAY-THESE line so deferral is declared.&rdquo;</p>
+    <p class="dg-attrib t-cm-legal">Your words, recorded at <code>s218-D7</code>, 25 August.</p>
+  </div>
+
+  <h3 class="t-ed-body">What the parse rate actually is</h3>
+  <p class="t-ed-body-small">Measured this session over every filed report in <code>notes/_subreports/</code> &mdash; 67 files, the skeleton excluded, using the gate&rsquo;s own three regexes. The bars show how many of the 67 the machine can read.</p>
+  <div class="dg-bars">
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Counts line</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:46.3%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">31 of 67</span>
+    </div>
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Replay line</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:35.8%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">24 of 67</span>
+    </div>
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Questions heading</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:43.3%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">29 of 67</span>
+    </div>
+  </div>
+  <p class="t-ed-body-small">Now the same three lines, restricted to the <b>18 reports filed since the #221 fix landed</b> on 28 August. This is the half that matters: it is the trend, not the backlog.</p>
+  <div class="dg-bars">
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Counts line, since the fix</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:33.3%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">6 of 18</span>
+    </div>
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Replay line, since the fix</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:33.3%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">6 of 18</span>
+    </div>
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Questions heading, since the fix</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:38.9%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">7 of 18</span>
+    </div>
+  </div>
+  <p class="t-ed-body-small">The pass read 64 files and got 28&nbsp;/&nbsp;21&nbsp;/&nbsp;26, and 3&nbsp;/&nbsp;3&nbsp;/&nbsp;4 among the 15 filed since the fix. Three more reports have landed since it ran; the picture is the same, marginally better, still under half.</p>
+
+  <h3 class="t-ed-body">It is not that the lines are missing &mdash; they are decorated</h3>
+  <p class="t-ed-body-small">Nearly every report carries the words. What has drifted is the <em>shape</em>. The newest reports write a section heading where the contract asked for a field:</p>
+  <div class="dg-code"><pre>WHAT THE GATE READS      REPLAY-THESE: notes/foo.md (~2,400 tk) · knowledge/bar.py (~900 tk)
+WHAT IS BEING WRITTEN    ## REPLAY-THESE
+                         ## 8. REPLAY-THESE
+                         COUNTS: findings 8 / ruling-shaped 4 / UNPROVEN 2</pre></div>
+
+  <h3 class="t-ed-body">What enacting it would change</h3>
+  <ul class="dg-lines">
+    <li class="t-ed-body-small">Two regexes in one file: <code>SUBREPORT_REPLAY_RE</code> and <code>SUBREPORT_QUESTIONS_RE</code> at <code>knowledge/_capture_gate.py:4655&ndash;4656</code>, widened to accept the same ordinary decoration &mdash; leading <code>#</code> or <code>**</code>, a numbered prefix &mdash; that the counts pattern beside them <b>already accepts</b>.</li>
+    <li class="t-ed-body-small">The parse rate re-measured in the same motion, so the figure is known rather than assumed.</li>
+    <li class="t-ed-body-small">Nothing else. Not the 67 filed reports &mdash; they are dated history and may not be edited (ADR-0017).</li>
+  </ul>
+
+  <h3 class="t-ed-body">What it costs</h3>
+  <p class="t-ed-body-small"><b>Small.</b> Two pattern edits, one re-measurement, one selftest read-back. This is the fix that was already written once, at #221, for the third regex &mdash; the two either side of it were never re-measured and never widened.</p>
+
+  <h3 class="t-ed-body">What could go wrong</h3>
+  <div class="dg-note dg-note--hard">
+    <p class="t-ed-body-small"><b>1. Widening the regex can make the report parse while the deferral stays silent.</b> This is the sharp one. <code>## REPLAY-THESE</code> as a heading has <em>no</em> <code>path (~N tk)</code> items under it &mdash; the priced half, the half that makes a deferral declared, is genuinely gone, not merely unread. Widen the pattern to accept the heading and you buy a green parse that certifies nothing. If this is enacted it needs the pattern to keep demanding the priced items, wherever they sit.</p>
+    <p class="t-ed-body-small"><b>2. It is tempting to widen the vocabulary too, and #221 deliberately refused that.</b> The comment beside the fix declines to loosen the field <em>names</em> or their order. A sub asked to &ldquo;make the reports parse&rdquo; will reach for that, and a gate that accepts any wording is not a gate.</p>
+    <p class="t-ed-body-small"><b>3. On its own, nobody will see the result.</b> The check that would report this number reads an empty population &mdash; that is the second finding. Enacted alone, this fix improves a figure no instrument prints.</p>
+    <p class="t-ed-body-small"><b>4. <code>SUBREPORT_CITE_BLOCKING</code> is not in scope.</b> Whether the citation check blocks a wrap or merely warns is your word, and the pass explicitly did not propose flipping it.</p>
+  </div>
+
+  <div class="dg-ask">
+    <p class="t-cm-legal">Your word would settle</p>
+    <ol>
+      <li class="t-ed-body-small"><b>Fix the gate, or fix the writing?</b> Widen the two patterns to meet where subs actually write &mdash; or leave the patterns alone and tighten the skeleton and briefs so subs write the field form. The pass proposes the first; the second is the one that keeps the priced replay items alive.</li>
+      <li class="t-ed-body-small"><b>If the gate is widened, must the priced items survive?</b> Accepting a bare <code>## REPLAY-THESE</code> heading with nothing priced under it, yes or no.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ P2 ============================ -->
+<section class="dg-sec" id="p2">
+  <span class="dg-tag t-cm-legal">Second finding &middot; open</span>
+  <h2 class="t-ed-heading-3">The thing that answers &ldquo;when was the last wrap?&rdquo; is looking for the wrong shape, so two checks have nothing to check</h2>
+  <p class="dg-idline t-cm-legal"><code>P2</code> &middot; touches <code>knowledge/_capture_gate.py:4657</code> and <code>:4669&ndash;4678</code> &middot; consumers at <code>:4386</code> and <code>:4710</code></p>
+
+  <p class="dg-lead t-ed-body">In one sentence: the detector matches commit subjects beginning <code>after&nbsp;#N</code> &mdash; which the commit script itself documents as the <b>non-wrap</b> shape &mdash; so it hands back the newest commit of any kind, and the two gates that ask it &ldquo;what has changed since the last wrap?&rdquo; get back an empty list every time.</p>
+
+  <h3 class="t-ed-body">The two shapes, from the authority</h3>
+  <div class="dg-quote">
+    <p class="t-ed-body">&ldquo;The prefix T3 generates has TWO legal shapes: <code>after #&lt;n&gt; &lt;date&gt; &mdash;</code> <b>(non-wrap)</b> and <code>#&lt;n&gt; &lt;date&gt; &mdash;</code> <b>(wrap)</b>.&rdquo;</p>
+    <p class="dg-attrib t-cm-legal"><code>knowledge/_git_commit.sh:138&ndash;139</code> &mdash; the script that generates the prefixes.</p>
+  </div>
+  <p class="t-ed-body-small">And the detector, one line: <code>WRAP_COMMIT_SUBJECT_RE = re.compile(r"^after\s+#\d+\b")</code>. It is named for the wrap shape and matches the other one.</p>
+
+  <h3 class="t-ed-body">How unspecific that is</h3>
+  <div class="dg-bars">
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">Commits it matches</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill" style="width:86.7%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">130 of 150</span>
+    </div>
+    <div class="dg-bar">
+      <span class="dg-bar-lbl t-ed-body-small">&hellip; of those, ones that mention a wrap</span>
+      <span class="dg-bar-track"><span class="dg-bar-fill dg-bar-fill--ghost" style="width:7.3%"></span></span>
+      <span class="dg-bar-num t-cm-figure-6">11 of 150</span>
+    </div>
+  </div>
+  <p class="t-ed-body-small">A pattern satisfied by 87% of the log will always return the newest commit. It is not <em>wrong</em> about wraps &mdash; real wrap commits do use both shapes &mdash; it is <b>not specific</b>, and any fix has to key on something other than the prefix.</p>
+
+  <h3 class="t-ed-body">The live consequence, run from this seat just now</h3>
+  <div class="dg-code"><pre>_last_wrap_commit('.')  →  ('e29c25b…', 'after #225 2026-08-30 — #225: v1.0.3 ratified and
+                             baked, and the carry list left the banner')
+_changed_since('.', &lt;that sha&gt;, 'notes/_subreports')  →  []</pre></div>
+  <p class="t-ed-body-small">The citation check&rsquo;s population is empty. <b>A check that cannot fail.</b> The pass got the same empty list at the previous HEAD; the tree has moved and it is still empty.</p>
+
+  <h3 class="t-ed-body">What enacting it would change</h3>
+  <ul class="dg-lines">
+    <li class="t-ed-body-small"><code>_last_wrap_commit</code> at <code>knowledge/_capture_gate.py:4669&ndash;4678</code> keys on a mark the wrap itself owns rather than a prefix both kinds share &mdash; the proposal&rsquo;s suggestion is that the wrap is the commit that moves <code>GOOD-MORNING.md</code>&rsquo;s LATEST banner, so a path-scoped log plus the existing subject match is roughly two lines.</li>
+    <li class="t-ed-body-small">One new arm in <code>selftest_subreport_citation</code> that plants an ordinary work commit <b>after</b> the wrap commit &mdash; the arm that would have caught this.</li>
+    <li class="t-ed-body-small">Nothing in <code>_git_commit.sh</code>. The two commit shapes are ruled and three other gates count them.</li>
+  </ul>
+
+  <h3 class="t-ed-body">What it costs</h3>
+  <p class="t-ed-body-small"><b>Small to build, noisy to land.</b> Two lines and a test arm. The noise is the point: see below.</p>
+
+  <h3 class="t-ed-body">What could go wrong</h3>
+  <div class="dg-note dg-note--hard">
+    <p class="t-ed-body-small"><b>1. The second consumer is the regen serial, and it has a history.</b> <code>regen_serial_check</code> at <code>:4386</code> uses the same start point. It is the ordered serial that cost about six CI reds at #210. Today it is looking at nothing. Give it a real population and it will start speaking &mdash; correctly, and probably loudly, on the first wrap after the change. That is the fix working, but it should not arrive as a surprise mid-wrap.</p>
+    <p class="t-ed-body-small"><b>2. The existing selftest is green and will stay green either way.</b> Its fixture plants the two commit shapes in the documented mapping, which the live log inverts. It proves the clause &mdash; &ldquo;a subject starting <code>after&nbsp;#</code> is found&rdquo; &mdash; and never the feature. Without the new arm, a fix here is unproven no matter how green the run is.</p>
+    <p class="t-ed-body-small"><b>3. Keying on the LATEST banner is a guess that needs probing before it is built.</b> If a non-wrap commit ever touches <code>GOOD-MORNING.md</code> &mdash; and the carry-list move ruled this morning at <code>s225-D2</code> changes what that file holds &mdash; the new key inherits the same non-specificity in a new costume. Worth one probe over the log before anyone writes it.</p>
+    <p class="t-ed-body-small"><b>4. Fixing this makes P1 visible, and P1 is currently failing.</b> Land P2 first and the citation check starts grading reports that are, by the first finding&rsquo;s measurement, about two-thirds unparseable. Order matters: either widen the patterns first, or expect the first honest report to be a red one.</p>
+  </div>
+
+  <div class="dg-ask">
+    <p class="t-cm-legal">Your word would settle</p>
+    <ol>
+      <li class="t-ed-body-small"><b>Which mark identifies a wrap?</b> The LATEST-banner move is the pass&rsquo;s suggestion, not a fact &mdash; a wrap-specific token in the subject, or a git trailer, are the alternatives, and one of them is cheaper to prove.</li>
+      <li class="t-ed-body-small"><b>P1 or P2 first?</b> P2 first gives an honest red; P1 first gives a quiet landing. Both are defensible and the choice is a temperament call, not a technical one.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ P3 ============================ -->
+<section class="dg-sec" id="p3">
+  <span class="dg-tag t-cm-legal">Third finding &middot; open</span>
+  <h2 class="t-ed-heading-3">The sentence every cold session reads first has been contradicted by this project&rsquo;s own record for six sessions</h2>
+  <p class="dg-idline t-cm-legal"><code>P3</code> &middot; the class <code>s125-D1</code> named &middot; touches <code>knowledge/_gen_chain.py:280</code>, <code>knowledge/_gen_schematic.py:354&ndash;360</code></p>
+
+  <p class="dg-lead t-ed-body">In one sentence: the chain banner still announces &ldquo;75 of 140 steps green &mdash; 65 steps have never been in a green verdict&rdquo;, and your own committed record from #218 calls that figure an artefact of a sandbox missing tiktoken, giving 126 of 128 instead.</p>
+
+  <h3 class="t-ed-body">The two sentences, side by side</h3>
+  <div class="dg-strip">
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">READ NOW</div>
+      <div class="t-ed-body-small">the chain banner, every cold session</div>
+      <div class="t-ed-body-small">&ldquo;BUILD VERDICT: <b>75 of 140 steps green</b> (#62, <code>18c7789</code>) &mdash; 65 steps have NEVER been in a green verdict.&rdquo; Re-derived from this seat today: <code>build_verdict_line()</code> still returns it verbatim.</div>
+    </div>
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">RECORDED</div>
+      <div class="t-ed-body-small"><code>_GM-ARCHIVE.md:123</code>, #218, commit <code>adb5130</code></div>
+      <div class="t-ed-body-small">&ldquo;<b>126/128 build steps green DRIVEN INDIVIDUALLY</b> &mdash; the 75/128 &lsquo;record&rsquo; was a tiktoken-less-sandbox artefact.&rdquo;</div>
+    </div>
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">AND</div>
+      <div class="t-ed-body-small"><code>notes/_briefs/2026-08-22-215-wrap-brief.md:32</code></div>
+      <div class="t-ed-body-small">&ldquo;CI: #413 GREEN on <code>e645df2</code>&rdquo; &mdash; and that commit has 128 steps. A green CI run at a 128-step commit cannot leave 65 steps never-green. Two independent contradictions, not one.</div>
+    </div>
+  </div>
+
+  <h3 class="t-ed-body">Why it cannot correct itself</h3>
+  <p class="t-ed-body-small">The two <em>counts</em> in that sentence are generated &mdash; that was <code>s125-D1</code>&rsquo;s whole point. The <b>anchor</b> was left typed: <code>VERDICT_SHA = "18c7789"</code>, with a comment defending the choice on the grounds that a SHA names a fixed historical event and so cannot go stale. True of the event. But the published sentence is not the event &mdash; it is the conclusion <em>&ldquo;no later green verdict exists&rdquo;</em>, and that is exactly the kind of claim that ages. Nothing re-checks it. It reaches three surfaces from one constant: the chain banner, <code>GOOD-MORNING.md</code> via the splice, and the rendered schematic page.</p>
+
+  <h3 class="t-ed-body">Three ways out, and they are not equal</h3>
+  <div class="dg-scroll">
+  <table class="dg-table">
+    <thead><tr><th scope="col">Option</th><th scope="col">What it does</th><th scope="col">Cost</th><th scope="col">Leaves the class&hellip;</th></tr></thead>
+    <tbody>
+      <tr><td>(a) Generate it</td><td class="t-ed-body-small">Derive the anchor from the newest commit carrying a recorded green verdict, instead of typing it.</td><td class="t-ed-body-small">Largest. Needs a machine-readable record of green verdicts to exist.</td><td class="t-ed-body-small">Closed.</td></tr>
+      <tr><td>(b) Expire it</td><td class="t-ed-body-small">Have <code>build_verdict_line()</code> refuse once the anchor is older than N sessions, rather than restate a superseded figure.</td><td class="t-ed-body-small">Moderate. The module&rsquo;s UNMEASURED refusal posture is already written and tested.</td><td class="t-ed-body-small">Closed, differently &mdash; it goes quiet rather than lying.</td></tr>
+      <tr><td>(c) Re-point it</td><td class="t-ed-body-small">Move <code>VERDICT_SHA</code> to <code>adb5130</code> and carry the 126/128 reading.</td><td class="t-ed-body-small">One line.</td><td class="t-ed-body-small">Open &mdash; and see the warning below.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="t-ed-body">What could go wrong</h3>
+  <div class="dg-note dg-note--hard">
+    <p class="t-ed-body-small"><b>1. Option (c) is the shape of the act you already refused, and a ruling stands watch over it.</b> <code>s125-D1</code>, in your words: <em>&ldquo;a value that has gone stale twice will go stale a third time, so the fix is not a fresher value but removing the human from the loop that produces it.&rdquo;</em> Its watch field says: <em>&ldquo;A future session &lsquo;helpfully&rsquo; correcting 75 to 98 by hand would enact the alternative Dave rejected, under cover of tidiness.&rdquo;</em> The re-stamp being proposed here is one level up &mdash; the anchor rather than the count &mdash; but it is the same motion. It should be picked knowingly or not at all.</p>
+    <p class="t-ed-body-small"><b>2. The replacement figure is itself a conclusion, not a machine record.</b> &ldquo;126/128 driven individually&rdquo; comes from a #218 seam note. Re-pointing the anchor to it swaps one inscribed conclusion for a fresher inscribed conclusion &mdash; which is precisely the debt <code>s129-D5</code> says must be triaged, not refreshed.</p>
+    <p class="t-ed-body-small"><b>3. Option (a) may discover there is nothing to derive from.</b> If no green verdict is recorded machine-readably, (a) collapses into (b). That is worth knowing before it is commissioned, and it is one probe.</p>
+    <p class="t-ed-body-small"><b>4. Settling it by running the build is barred.</b> The chain forbids partial runs of <code>_build_all.py</code>, the sandbox cannot complete one inside a call boundary, and a tiktoken-less run produces exactly the artefact reds that caused this in the first place.</p>
+  </div>
+
+  <div class="dg-ask">
+    <p class="t-cm-legal">Your word would settle</p>
+    <ol>
+      <li class="t-ed-body-small"><b>(a), (b) or (c)?</b> The pass recommends (a) and offers (b) as the fallback if nothing machine-readable exists. (c) is named as the minimum and flagged as leaving the class open.</li>
+      <li class="t-ed-body-small"><b>If (b): how old is too old?</b> The refusal needs a number of sessions, and that number is yours.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ P4 ============================ -->
+<section class="dg-sec" id="p4">
+  <span class="dg-tag t-cm-legal">Fourth finding &middot; half of it you already answered</span>
+  <h2 class="t-ed-heading-3">You did ratify v1.0.3. Until this morning the store could not show it &mdash; and the gate still points at the other ruling</h2>
+  <p class="dg-idline t-cm-legal"><code>P4</code> &middot; governed by <code>s223-D3</code> and <code>s219-D4(2)</code> &middot; part-answered by <code>s225-D1</code> &middot; touches <code>knowledge/_release/_gen_pack_manifest.py:612</code> and <code>:626&ndash;643</code></p>
+
+  <p class="dg-lead t-ed-body">In one sentence: you ruled that each cut needs your <em>fresh word</em> in the store before the pack may read RATIFIED, and v1.0.3&rsquo;s gate was keyed to a ruling made the day <em>before</em> you gave that word &mdash; your actual word surviving only as a comment in a Python file.</p>
+
+  <h3 class="t-ed-body">Nothing about the release is wrong. This is about provenance</h3>
+  <p class="t-ed-body-small">Said plainly, because it matters: <b>the gate held.</b> The key <code>"v1.0.3": "s224-D1"</code> entered the file at #225, <em>after</em> your word; the #224 wrap explicitly recorded the status as PROPOSED with no ruling keyed. You really did ratify. The defect is that the record could not demonstrate it, and the ordering guarantee rested on whoever typed the key rather than on the store.</p>
+
+  <h3 class="t-ed-body">What has changed since the pass ran &mdash; the ordering</h3>
+  <div class="dg-strip">
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">#224 &middot; 29 Aug</div>
+      <div class="t-ed-body-small"><code>s224-D1</code> ruled</div>
+      <div class="t-ed-body-small">Names the cut v1.0.3, patch-class, tier-1 port-back. This is the <em>naming</em> ruling. It is not the ratify word &mdash; <code>s223-D3</code> is explicit that the naming entry is not the word.</div>
+    </div>
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">#225 &middot; opener</div>
+      <div class="t-ed-body-small">You said &ldquo;Ratify &mdash; bake it&rdquo;</div>
+      <div class="t-ed-body-small">The word, given. At the time of the dream pass it existed only in a code comment and a transcript &mdash; neither is a receipt.</div>
+    </div>
+    <div class="dg-strip-row dg-strip-row--now">
+      <div class="t-cm-legal">TODAY</div>
+      <div class="t-ed-body-small"><code>s225-D1</code> is in the store</div>
+      <div class="t-ed-body-small">&ldquo;v1.0.3 IS RATIFIED &mdash; DAVE&rsquo;S FRESH WORD, IN THE STORE&rdquo;, and it says so about this very finding: <em>&ldquo;This entry also answers dream pass 10 P4&rsquo;s concern for THIS cut: the fresh ratify word lives in the store, not only in a generator comment.&rdquo;</em></div>
+    </div>
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">STILL OPEN</div>
+      <div class="t-ed-body-small">The gate reads <code>s224-D1</code></div>
+      <div class="t-ed-body-small">Verified this session: <code>RATIFY_IDS["v1.0.3"] = "s224-D1"</code>, and <code>_pack_manifest.json</code> publishes &ldquo;RATIFIED &mdash; <b>s224-D1</b> names v1.0.3 in the store&rdquo;. <code>s225-D1</code> records that key as the enactment, so this is by your word, not drift &mdash; but the sentence the machine publishes still names the naming ruling, not the word.</div>
+    </div>
+    <div class="dg-strip-row">
+      <div class="t-cm-legal">STILL OPEN</div>
+      <div class="t-ed-body-small">The re-checker was never built</div>
+      <div class="t-ed-body-small">The pass&rsquo;s second half &mdash; one arm in <code>ratification_status()</code> that refuses when the keyed ruling&rsquo;s own evidence names an earlier session than the cut it ratifies. Nothing asserts the ordering <code>s223-D3</code> exists to guarantee; it is still assumed.</div>
+    </div>
+  </div>
+
+  <h3 class="t-ed-body">What enacting the remainder would change</h3>
+  <ul class="dg-lines">
+    <li class="t-ed-body-small"><b>The key.</b> One line at <code>knowledge/_release/_gen_pack_manifest.py:612</code>, re-pointing v1.0.3 at <code>s225-D1</code>, then the manifest regenerated. The published status sentence then names the word.</li>
+    <li class="t-ed-body-small"><b>The guard.</b> One arm in <code>ratification_status()</code> at <code>:626&ndash;643</code>, which today checks only that the keyed id exists with status <code>ruled</code>.</li>
+    <li class="t-ed-body-small">Nothing about the zip. Not unbaked, not re-cut, not changed.</li>
+  </ul>
+
+  <h3 class="t-ed-body">What it costs</h3>
+  <p class="t-ed-body-small"><b>Small &mdash; but it is two steps in a required order, and reversing them stops a release.</b></p>
+
+  <h3 class="t-ed-body">What could go wrong</h3>
+  <div class="dg-note dg-note--hard">
+    <p class="t-ed-body-small"><b>1. Build the guard before moving the key and the next bake refuses.</b> This is not hypothetical, and I traced it: <code>s224-D1</code>&rsquo;s evidence reads &ldquo;chat #224 2026-08-29&rdquo; &mdash; an earlier session than the #225 ratify. The proposed arm would therefore refuse the key exactly as it stands today; the manifest flips to PROPOSED; and <code>apollo-spider/build-designer-pack.sh:152</code> is <code>ratified || die</code>. So the guard must land <em>after</em> the key moves, never before. Order is the whole risk here.</p>
+    <p class="t-ed-body-small"><b>2. Moving the key touches an ADR-0017 surface.</b> The comment block above <code>RATIFY_IDS</code> says rows are <em>added</em> there, never moved &mdash; written about the historical rows. Whether re-pointing v1.0.3 counts as a move or a correction is a judgement, and it is yours, not a sub&rsquo;s.</p>
+    <p class="t-ed-body-small"><b>3. The published zip is unaffected either way.</b> <code>s223-D8</code> requires PROPOSED and RATIFIED to pack byte-identical content, and the selftest asserts it. A status change does not disturb the v1.0.3 bytes; the only thing that moves is what the build script will allow next time.</p>
+    <p class="t-ed-body-small"><b>4. The rule is broader than this cut.</b> <code>s225-D1</code> answers P4 <em>for v1.0.3</em>, by its own wording. The next cut inherits the same shape: a naming ruling, then a word, and nothing yet enforcing that the second exists.</p>
+  </div>
+
+  <div class="dg-ask">
+    <p class="t-cm-legal">Your word would settle</p>
+    <ol>
+      <li class="t-ed-body-small"><b>Does the key move to <code>s225-D1</code>?</b> Your ruling this morning recorded the key as <code>s224-D1</code> in its enactment note, so leaving it is a defensible reading &mdash; but then the sentence the pack publishes names the naming ruling rather than the word, which is the thing <code>s223-D3</code> distinguishes.</li>
+      <li class="t-ed-body-small"><b>Is the guard built, and when?</b> If yes, it must be sequenced after the key move, or the next <code>--release</code> dies.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ CLEARED ============================ -->
+<section class="dg-sec" id="cleared">
+  <span class="dg-tag t-cm-legal">Also in the pass, and not asking for anything</span>
+  <h2 class="t-ed-heading-4">Nine things the dreamer checked and closed &mdash; two of them worth your eye anyway</h2>
+  <p class="t-ed-body-small">The pass records nine checked-clear items so the next pass does not re-open them. Most are housekeeping: the ruling store is committed and clean at 279 entries; the dirty tree was exactly the four declared paths and none were touched; the wiring validator reports 50 gate scripts, 48 wired, 2 declared exempt, 0 failures; the forgotten-document class is green at 153 documents, 0 unrowed. Two are not housekeeping:</p>
+  <ul class="dg-lines">
+    <li class="t-ed-body-small"><b>The memory-grade alert has never once fired.</b> <code>ALERT_LIST_GRADES = ("STALE",)</code> is the only arm that names a hook, and STALE has been <b>0 in all three grading cycles</b>. Meanwhile AGING has gone 1 &rarr; 16 &rarr; 33 over those cycles &mdash; and the pass is careful that this is a decay curve of <em>file edit recency</em>, not of claim truth, because the age is computed from the file&rsquo;s mtime. Filed as an observation for the B3 review, deliberately not floated as a proposal, because it is that review&rsquo;s own subject.</li>
+    <li class="t-ed-body-small"><b>#225 was never titled.</b> The session list shows it as &ldquo;Good morning&rdquo;, while the chain instructed a title. Not floated &mdash; the remedy is a keystroke of yours, not a repo step &mdash; but the cost was real: the pass had to identify the window that ratified and baked v1.0.3 by reading it.</li>
+  </ul>
+</section>
+
+<footer class="dg-foot">
+  <p class="t-ed-body-small"><b>Where this comes from.</b> <code>notes/_dream/2026-08-30-proposals.md</code>, committed, all four proposals <code>status: floated</code>. This digest re-measured every figure against the working tree at HEAD <code>e29c25b</code> rather than reproducing the pass&rsquo;s own numbers; where the two differ, both are shown above.</p>
+  <p class="t-ed-body-small"><b>What was not done, stated plainly.</b> No proposal was enacted, promoted or marked ruled. <code>knowledge/_rulings.json</code>, <code>GOOD-MORNING.md</code>, <code>_CARRIES.md</code> and <code>dist/</code> were not touched. No generator and no build was run. No commit was made. Two files were written: this page and the filed report at <code>notes/_subreports/2026-08-30-226-dream-pass-10-digest.md</code>.</p>
+  <p class="t-ed-body-small"><b>Declared unproven.</b> Whether the LATEST-banner key in P2 is actually wrap-specific is untested &mdash; it is the proposal&rsquo;s suggestion, and it needs one probe over the log before anyone builds on it. Whether any machine-readable record of green build verdicts exists, which decides whether P3(a) is buildable at all, was not established. The consequences replayed for P1 and P2 are reasoned from the code as read, not driven.</p>
+</footer>
+
+</main>
+
+<script>
+/* Light and dark are both real here: canon redefines --background-default, --text-default and the
+   rest under [data-theme="dark"], and this page's own tokens alias those on the SAME element, so
+   the flip re-resolves cleanly. Nothing else on the page depends on script. */
+(function(){
+  var box = document.getElementById('dg-modes');
+  if(!box) return;
+  box.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if(!b) return;
+    document.body.setAttribute('data-theme', b.dataset.mode);
+    Array.prototype.forEach.call(box.querySelectorAll('button'), function(x){
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+  });
+})();
+</script>
+</body>
+</html>

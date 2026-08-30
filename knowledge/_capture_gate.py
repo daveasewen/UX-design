@@ -3045,6 +3045,50 @@ _RECEIPT_SESSION_RE = re.compile(r"#\d{1,4}\b")
 _RECEIPT_INSCRIPTION_RE = re.compile(r"s\d{2,4}-D\d+|`[^`]+\.(?:py|md|json|css|html|sh)[^`]*`"
                                      r"|\b[0-9a-f]{7,40}\b")
 _RESIDUAL_LINE_RE = re.compile(r"^>?\s*\*\*residual\s*→\s*#(\d+)", re.I)
+# ★ s225-D2 (#225, Dave's): the carry lists LEFT the GM banners for `_CARRIES.md`; both GM
+# residual lines are now POINTERS carrying this marker. From #226 the gate FOLLOWS the pointer
+# (re-pointed here per the owed item GM:34 names) — before this, it read the pointer lines
+# themselves, found ~nothing aged, and reported a clean-looking `0 aged carries`, which is the
+# silent state [[roll-pointer-is-not-an-absence]] this resolver exists to make loud.
+_POINTER_MARKER_RE = re.compile(r"THIS LINE IS A POINTER", re.I)
+CARRIES_FILE = "_CARRIES.md"
+
+
+def _resolve_residual_pointer(repo, line, fails, notes):
+    """Follow a POINTER residual line into `_CARRIES.md`; return the line to grade.
+
+    A non-pointer line returns unchanged — pre-s225-D2 banners (and every archived fixture)
+    still grade in place. A pointer that resolves to NOTHING appends a FAIL and returns None:
+    an unreachable carry set means the s188-D2 invariant cannot be measured, and this gate is
+    BLOCKING — it refuses by name rather than passing on an absence
+    [[measuring-tool-must-not-guess]].
+    """
+    if not _POINTER_MARKER_RE.search(line):
+        return line
+    m = re.search(r"\*\*residual\s*→\s*#(\d+):?\*\*", line)
+    if not m:
+        fails.append("2c carry gate: a POINTER residual line names no `#N` — it cannot be "
+                     "resolved into `%s`, so the carry set is UNREACHABLE. Refused, never "
+                     "silently clean." % CARRIES_FILE)
+        return None
+    n = m.group(1)
+    path = os.path.join(repo, CARRIES_FILE)
+    if not os.path.exists(path):
+        fails.append("2c carry gate: residual → #%s is a POINTER but `%s` does not exist — "
+                     "the carry set is UNREACHABLE. A pointer that resolves to nothing is "
+                     "the failure this gate exists for, not an absence." % (n, CARRIES_FILE))
+        return None
+    with open(path, encoding="utf-8") as f:
+        for ln in f:
+            if ("**residual → #%s:**" % n) in ln and not _POINTER_MARKER_RE.search(ln):
+                notes.append("2c carry gate: residual → #%s resolved from its GM pointer "
+                             "into `%s` (the s225-D2 home) — pairing runs on the REAL list."
+                             % (n, CARRIES_FILE))
+                return ln
+    fails.append("2c carry gate: residual → #%s is a POINTER but `%s` has no matching "
+                 "`**residual → #%s:**` list line — the carry set is UNREACHABLE (refused, "
+                 "never silently clean)." % (n, CARRIES_FILE, n))
+    return None
 
 
 def _carry_norm(seg):
@@ -3149,6 +3193,13 @@ def carry_wording_check(repo):
         notes.append("2c carry gate: one of the two banners has no `**residual → #N:**` line — "
                      "UNMEASURED. The roll-claim check (T2 #77) grades that line's presence; "
                      "this gate refuses to invent a carry set from prose.")
+        return fails, notes
+
+    # ★ s225-D2 re-point (#226): a residual line that is a POINTER is followed into
+    # `_CARRIES.md` and the REAL list graded; an unresolvable pointer is a FAIL above.
+    latest_line = _resolve_residual_pointer(repo, latest_line, fails, notes)
+    prior_line = _resolve_residual_pointer(repo, prior_line, fails, notes)
+    if latest_line is None or prior_line is None:
         return fails, notes
 
     latest_items = _carry_items(latest_line)
@@ -8557,6 +8608,59 @@ def selftest_carry_gate():
         if f_ or not any("UNMEASURED" in x for x in n_):
             failures.append(f"carry gate: banners with no residual line must DECLARE "
                             f"unmeasured: fails={f_} notes={n_}")
+
+    # (C7) POINTER MODE — s225-D2 moved the lists to `_CARRIES.md` and left POINTERS on both
+    #      GM banners; the #225 wrap measured the gate going quiet on exactly that shape.
+    #      Each bite is again a PAIR with its control, and the resolver's refusals are driven
+    #      too — a pointer to nothing must be a FAIL, never a clean-looking `0 aged carries`.
+    PTR = ("⛔ **THIS LINE IS A POINTER, NOT THE LIST** — the set lives at `_CARRIES.md` "
+           "§ `## residual → #%d`")
+
+    def run_ptr(latest_item, prior_item=WAS, carries=True, sections=(190, 189)):
+        with tempfile.TemporaryDirectory() as td:
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_carry_gm([PTR % 190], [PTR % 189]))
+            if carries:
+                body = []
+                if 190 in sections:
+                    body.append("> **residual → #190:** " + latest_item)
+                if 189 in sections:
+                    body.append("> **residual → #189:** " + prior_item)
+                with open(os.path.join(td, CARRIES_FILE), "w", encoding="utf-8") as f:
+                    f.write("# carries\n\n## residual → #190\n\n%s\n" % "\n\n".join(body))
+            return carry_wording_check(td)
+
+    # (C7a) CONTROL — unchanged carry aged +1, lists in _CARRIES.md ⇒ silent pass, resolver
+    #        notes name the crossing, and the pair is COUNTED (a `0 aged carries` here is the
+    #        #225 blindness reborn behind the resolver).
+    f_, n_ = run_ptr(WAS.replace("[3]", "[4]"))
+    if f_:
+        failures.append(f"carry gate (pointer): an UNCHANGED carry aged +1 across files was "
+                        f"refused: {f_}")
+    if not any("resolved from its GM pointer" in x for x in n_):
+        failures.append(f"carry gate (pointer): the resolver left no note naming the "
+                        f"crossing: {n_}")
+    if not any("1 paired" in x or "paired into LATEST" in x for x in n_):
+        failures.append(f"carry gate (pointer): the resolved pair was not counted — the gate "
+                        f"is quiet behind the pointer, the exact #225 blindness: {n_}")
+
+    # (C7b) REWORDED IN _CARRIES.md, NO RECEIPT ⇒ REFUSED — the invariant crossed files intact.
+    f_, _ = run_ptr("⚠ **THE MONDAY SLOT IS UNSCHEDULED [4]** — no scheduler row exists for it")
+    if not any("WITHOUT A RETRACTION RECEIPT" in x for x in f_):
+        failures.append(f"carry gate (pointer): a reworded carry behind the pointer was NOT "
+                        f"refused — s188-D2 did not survive the s225-D2 move: {f_}")
+
+    # (C7c) POINTER, NO _CARRIES.md AT ALL ⇒ FAIL naming UNREACHABLE. Control: (C7a).
+    f_, _ = run_ptr(WAS.replace("[3]", "[4]"), carries=False)
+    if not any("UNREACHABLE" in x for x in f_):
+        failures.append(f"carry gate (pointer): a pointer with no {CARRIES_FILE} must FAIL "
+                        f"naming the unreachable set, never pass on an absence: {f_}")
+
+    # (C7d) POINTER WHOSE SECTION IS MISSING ⇒ FAIL naming UNREACHABLE. Control: (C7a).
+    f_, _ = run_ptr(WAS.replace("[3]", "[4]"), sections=(189,))
+    if not any("UNREACHABLE" in x for x in f_):
+        failures.append(f"carry gate (pointer): a pointer whose `residual → #N` list line is "
+                        f"absent from {CARRIES_FILE} must FAIL by name: {f_}")
     return failures
 
 

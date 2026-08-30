@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The wrapper diet — four readings, side by side (#226)</title>
+<style>
+  :root{
+    --bg:#FAFAF8; --panel:#FFFFFF; --ink:#1A1A1A; --ink-2:#5A5A56; --line:#E2E1DC;
+    --red:#DA1A00; --green:#0B7A3B; --amber:#8A5A00; --code:#F4F3EF; --hi:#FFF8E1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141413; --panel:#1C1C1A; --ink:#EDEDE8; --ink-2:#A3A29C; --line:#33322E;
+      --red:#F6604C; --green:#5FD08A; --amber:#E3B341; --code:#232320; --hi:#2B2718;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141413; --panel:#1C1C1A; --ink:#EDEDE8; --ink-2:#A3A29C; --line:#33322E;
+    --red:#F6604C; --green:#5FD08A; --amber:#E3B341; --code:#232320; --hi:#2B2718;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:40px 24px 96px}
+  h1{font-size:32px;line-height:1.15;letter-spacing:-.02em;margin:0 0 6px}
+  .sub{color:var(--ink-2);margin:0 0 28px;font-size:15px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:44px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+  h3{font-size:15px;margin:22px 0 8px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+  p{margin:0 0 12px;max-width:78ch}
+  code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;
+       background:var(--code);padding:1px 5px;border-radius:4px}
+  .lede{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:8px}
+  .lede p{margin:0 0 10px}
+  .lede p:last-child{margin:0}
+  .big{font-size:15px}
+  .red{color:var(--red);font-weight:650}
+  .green{color:var(--green);font-weight:650}
+  .amber{color:var(--amber);font-weight:650}
+  .muted{color:var(--ink-2)}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);font-weight:600}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace}
+  tr.total td{border-top:2px solid var(--ink);font-weight:700;border-bottom:none}
+  .cols{display:grid;grid-template-columns:repeat(4,minmax(280px,1fr));gap:16px;margin-top:8px}
+  @media (max-width:1100px){.cols{grid-template-columns:repeat(2,minmax(260px,1fr))}}
+  @media (max-width:680px){.cols{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column}
+  .card.win{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+  .card.dead{opacity:.86}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+       border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--ink-2);margin-bottom:10px}
+  .card h4{margin:0 0 4px;font-size:17px;letter-spacing:-.01em}
+  .card .what{color:var(--ink-2);font-size:13.5px;margin:0 0 14px;min-height:3.2em}
+  .stat{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:5px 0;border-bottom:1px dotted var(--line)}
+  .stat b{font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace;font-weight:650}
+  .verdict{margin-top:12px;font-size:13.5px;line-height:1.45}
+  .verdict div{padding:3px 0}
+  .spec{margin-top:12px;background:var(--code);border-radius:8px;padding:10px 12px;
+        font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.45;
+        white-space:pre-wrap;word-break:break-word;max-height:250px;overflow:auto;color:var(--ink)}
+  .loses{margin-top:12px;font-size:13.5px}
+  .loses b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px}
+  ul{margin:0 0 12px;padding-left:20px;max-width:78ch}
+  li{margin:0 0 7px}
+  .note{background:var(--hi);border-left:3px solid var(--amber);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0;max-width:80ch}
+  .bar{display:flex;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line);margin:6px 0 2px}
+  .bar span{display:block;font-size:10.5px;line-height:26px;color:#fff;text-align:center;white-space:nowrap}
+  .s1{background:#4A6FA5}.s2{background:#7BA05B}.s3{background:#C25E4A}
+  .legend{font-size:12px;color:var(--ink-2);margin-bottom:18px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 12px;vertical-align:middle;font-style:normal}
+  footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>The wrapper diet — four readings, side by side</h1>
+<p class="sub">Session #226 · pricing lane · every figure measured with <code>_capture_gate.measure_tokens</code>,
+the repo's own instrument · unit: <b>tiktoken cl100k_base tape</b> (see the unit note at the foot) ·
+nothing in this page has been enacted.</p>
+
+<div class="lede">
+  <p class="big"><b>The one-sentence finding: the wrapper is not prose. It is your open-work list.</b></p>
+  <p>Of the <b>13,061 tape</b> that <code>_gen_chain.py</code> adds around the chain slice,
+  <b>12,555 (96.1%)</b> is the generated <span class="hi">⬛ OPEN WORK</span> block — and
+  <b>11,407</b> of that is the 125 rows of your own open items, printed in full with their close
+  conditions. The banner, the title line and the footer — all the ratified guidance prose put
+  together — come to <b>506 tape</b>.</p>
+  <p>So the trim #225 proposed ("cut &gt;9,000 tape of the generator's prose") <b>cannot be done:
+  there is only 506 tape of prose to cut.</b> The real lever is whether the chain prints your
+  worklist's <i>bodies</i> or a <i>pointer</i> to them — which is a decision about what a cold
+  session should know at boot, not a decision about writing style. That is what the four columns
+  below ask you to point at.</p>
+</div>
+
+<h2>Where the 13,061 tape actually sits</h2>
+<div class="bar">
+  <span class="s1" style="width:2.5%" title="banner + title + footer 506">506</span>
+  <span class="s2" style="width:10.8%" title="MINE ids + fixed prose 1,148">1,148</span>
+  <span class="s3" style="width:86.7%" title="Dave's 125 rows in full 11,407">11,407 — your 125 rows, in full</span>
+</div>
+<p class="legend"><i class="s1"></i>banner + title + footer (all the guidance prose)
+<i class="s2"></i>OPEN WORK headings, counts, debt note, 140 "mine" ids
+<i class="s3"></i>Dave's 125 rows: id + title + close condition</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Block the generator emits</th><th class="num">tape</th><th class="num">bytes</th>
+  <th class="num">lines</th><th>What it is</th></tr></thead>
+  <tbody>
+    <tr><td><code>BANNER</code> — the "this file is the whole contract" header</td><td class="num">331</td><td class="num">1,192</td><td class="num">19</td><td>Do-not-hand-edit comment (144) · "do not open GM to check" (90) · "everything else is retrieval" + the search command (95)</td></tr>
+    <tr><td><code>title_block</code> — YOU ARE #N / TITLE THIS CHAT</td><td class="num">62</td><td class="num">227</td><td class="num">6</td><td>The forward title, hoisted above the banners at #73</td></tr>
+    <tr><td>separator between head and body</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td>a newline</td></tr>
+    <tr><td>separator between GM slice and LS delta</td><td class="num">2</td><td class="num">7</td><td class="num">1</td><td><code>\n\n---\n\n</code></td></tr>
+    <tr><td><b><code>state_block()</code> — ⬛ OPEN WORK</b></td><td class="num"><b>12,555</b></td><td class="num"><b>46,046</b></td><td class="num"><b>141</b></td><td><b>96.1% of the wrapper</b>, broken out below</td></tr>
+    <tr><td class="muted">↳ heading line</td><td class="num muted">24</td><td class="num muted">—</td><td class="num muted">3</td><td class="muted">## ⬛ OPEN WORK — GENERATED from <code>_state.json</code></td></tr>
+    <tr><td class="muted">↳ counts line (347 items · 265 live · …)</td><td class="num muted">34</td><td class="num muted">—</td><td class="num muted">1</td><td class="muted">every figure computed from the store</td></tr>
+    <tr><td class="muted">↳ "no number here was typed" provenance note</td><td class="num muted">69</td><td class="num muted">—</td><td class="num muted">1</td><td class="muted">the #86/#85 receipt, restated on every boot</td></tr>
+    <tr><td class="muted">↳ DECLARED DEBT paragraph</td><td class="num muted">89</td><td class="num muted">—</td><td class="num muted">1</td><td class="muted">14 unconditioned inherited items</td></tr>
+    <tr><td class="muted">↳ <b>DAVE'S rows — 125 × (id + title + closes_when)</b></td><td class="num muted"><b>11,407</b></td><td class="num muted">—</td><td class="num muted">125</td><td class="muted">avg 91 tape/row, median 85, fattest <code>W-85</code> at 193</td></tr>
+    <tr><td class="muted">↳ MINE — 140 ids only, one line</td><td class="num muted">878</td><td class="num muted">—</td><td class="num muted">2</td><td class="muted">already pointer-shaped: bodies live in the store</td></tr>
+    <tr><td class="muted">↳ store-gate line</td><td class="num muted">26</td><td class="num muted">—</td><td class="num muted">1</td><td class="muted">PASS/FAIL + where the bodies are</td></tr>
+    <tr><td><code>FOOTER</code> — the fixed-point sentence</td><td class="num">113</td><td class="num">426</td><td class="num">10</td><td>the one figure that is the size of the file containing it</td></tr>
+    <tr class="total"><td>WRAPPER, measured as file − slice</td><td class="num">13,061</td><td class="num">—</td><td class="num">—</td><td>blocks sum to 13,064; the 3-tape gap is tokenizer sub-additivity across joins, not a missing block</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>The four readings — point at one</h2>
+<p>Chain slice (the part no candidate touches): <b>9,803 tape</b> = GM header+★LATEST 7,171 + LS ⏱ LATEST delta 2,632.
+<code>GOOD-MORNING.md</code> whole: <b>40,957 tape</b>. The floor the ratio bite asserts: chain file &lt; 40% of GM.
+The M10 verdicts below were <b>driven</b> — <code>_capture_gate._warns_for()</code> on real fixtures with each
+candidate's block substituted — not argued from arithmetic.</p>
+
+<div class="cols">
+
+  <div class="card dead">
+    <span class="tag">Column A</span>
+    <h4>Do nothing</h4>
+    <p class="what">Ship #226 as it stands. Both reds are live today; neither is blocking, both are loud.</p>
+    <div class="stat"><span>wrapper</span><b>13,061</b></div>
+    <div class="stat"><span>chain file</span><b>22,864</b></div>
+    <div class="stat"><span>chain ÷ GM</span><b class="red">55.82%</b></div>
+    <div class="verdict">
+      <div><span class="red">✗</span> ratio bite (<code>_gen_chain --selftest</code>) — <b>RED today</b></div>
+      <div><span class="red">✗</span> M10 "ordinary chain must not warn"</div>
+      <div><span class="red">✗</span> M10 "fat §A/§C must not warn the chain"</div>
+      <div><span class="red">✗</span> #70/#71 non-catch (cascades off the ratio bite)</div>
+      <div><span class="green">✓</span> M10 "fat banner must warn"</div>
+      <div><span class="green">✓</span> M10 unit bite (file &gt; slice)</div>
+    </div>
+    <div class="loses"><b>A cold session loses</b>Nothing. It keeps paying 12,555 tape to read a
+    worklist it can fetch in one command, and the two selftests keep crying wolf.</div>
+    <div class="spec">> **DAVE'S (125) — 125 with a ratified `closes_when`, 0 with NONE:**
+> - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…** — *closes when:* Dave's sign-off eye
+> - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call…** — *closes when:* Dave ratifies or reverses
+> …123 more rows, each id + title + close condition…</div>
+  </div>
+
+  <div class="card dead">
+    <span class="tag">Column B</span>
+    <h4>Prose diet<br><span class="muted" style="font-size:13px;font-weight:400">(the #225 proposal, priced)</span></h4>
+    <p class="what">Cut the banner to four lines, drop the title's parenthetical, shorten the footer to one sentence. OPEN WORK untouched.</p>
+    <div class="stat"><span>wrapper</span><b>12,803 <span class="muted">(−258)</span></b></div>
+    <div class="stat"><span>chain file</span><b>22,606</b></div>
+    <div class="stat"><span>chain ÷ GM</span><b class="red">55.19%</b></div>
+    <div class="verdict">
+      <div><span class="red">✗</span> ratio bite — still RED, misses by 15.2 points</div>
+      <div><span class="red">✗</span> M10 "ordinary chain must not warn"</div>
+      <div><span class="red">✗</span> M10 "fat §A/§C must not warn"</div>
+      <div><span class="red">✗</span> #70/#71 non-catch</div>
+      <div><span class="green">✓</span> M10 "fat banner must warn"</div>
+      <div><span class="green">✓</span> M10 unit bite</div>
+    </div>
+    <div class="loses"><b>A cold session loses</b>The five sessions' worth of hard-won warnings —
+    <i>why</i> not to open GM to check, the retrieval-not-a-reading-list rule, the unit sentence's
+    provenance. <b>Buys 258 tape and fixes neither red.</b> This column exists to show the lever is dead.</div>
+    <div class="spec">&lt;!-- GENERATED by knowledge/_gen_chain.py — DO NOT HAND-EDIT. … --&gt;
+
+# The read chain — everything a cold session must read, and nothing else
+
+> **GENERATED, and it is the whole contract:** GM's header + ★ LATEST banner, plus
+> `_LIVE-STATE.md`'s ⏱ LATEST delta (CUT #33, Dave). **Read this and you have read the chain.**
+> ⚠ Do NOT open `GOOD-MORNING.md` to "check" — it is 40,957 real and the rest is retrieval surface.
+> ★ Everything else: `python3 knowledge/_memento_search.py "&lt;q&gt;"` → `--fetch &lt;id&gt;`.</div>
+  </div>
+
+  <div class="card win">
+    <span class="tag">Column C</span>
+    <h4>OPEN WORK becomes a pointer</h4>
+    <p class="what">Counts, debt note and store-gate stay. Dave's 125 items print as <b>ids only</b> — exactly the shape the 140 "mine" items already use. Bodies one <code>_state.py</code> call away.</p>
+    <div class="stat"><span>wrapper</span><b>2,326 <span class="muted">(−10,735)</span></b></div>
+    <div class="stat"><span>chain file</span><b>12,129</b></div>
+    <div class="stat"><span>chain ÷ GM</span><b class="green">29.61%</b></div>
+    <div class="verdict">
+      <div><span class="green">✓</span> ratio bite — GREEN, 10.4 points of headroom</div>
+      <div><span class="green">✓</span> M10 "ordinary chain must not warn"</div>
+      <div><span class="green">✓</span> M10 "fat §A/§C must not warn"</div>
+      <div><span class="green">✓</span> #70/#71 non-catch — clears with the ratio</div>
+      <div><span class="green">✓</span> M10 "fat banner must warn"</div>
+      <div><span class="green">✓</span> M10 unit bite <span class="muted">(in CI; see pitfall 3)</span></div>
+      <div class="muted" style="padding-top:6px"><b>All four of today's red selftest lines clear.</b></div>
+    </div>
+    <div class="loses"><b>A cold session loses</b>The titles. It boots knowing <i>how many</i> items
+    are open and <i>which ids</i>, but not <i>what they are</i> without a fetch. Losing the close
+    conditions costs little (they are near-uniform: "Dave ratifies or reverses"). Losing the titles
+    is the real price — the worklist stops being skimmable at boot.</div>
+    <div class="spec">> **347 items · 265 live · 125 Dave's · 140 mine · 333 carry a stated close condition · **14 UNCONDITIONED**.**
+> ⚠ **DECLARED DEBT — 14 inherited items have NO close condition…** **Each needs Dave's word.**
+>
+> **DAVE'S (125), ids only — titles and close conditions are in the store, not here:** `G15` · `G16` · `W-104` · `W-109` · `W-112` · `W-114` · `W-116` · …
+>
+> **MINE (140), ids only:** `W-0b` · `W-01` · `W-02` · …
+>
+> ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.</div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Column D</span>
+    <h4>Titles stay, close conditions go</h4>
+    <p class="what">Dave's items keep <code>id + title</code>, one line each. The close condition — the long half — moves to retrieval.</p>
+    <div class="stat"><span>wrapper</span><b>7,117 <span class="muted">(−5,944)</span></b></div>
+    <div class="stat"><span>chain file</span><b>16,920</b></div>
+    <div class="stat"><span>chain ÷ GM</span><b class="red">41.31%</b></div>
+    <div class="verdict">
+      <div><span class="red">✗</span> ratio bite — misses the floor by <b>1.31 points ≈ 537 tape</b></div>
+      <div><span class="green">✓</span> M10 "ordinary chain must not warn"</div>
+      <div><span class="green">✓</span> M10 "fat §A/§C must not warn"</div>
+      <div><span class="green">✓</span> M10 "fat banner must warn"</div>
+      <div><span class="green">✓</span> M10 unit bite</div>
+    </div>
+    <div class="loses"><b>A cold session loses</b>Only the close conditions. The worklist stays
+    skimmable — you still see what is open without a fetch. <b>Clears the two M10 negative-control
+    bites, but the ratio bite stays red — and because <code>_capture_gate</code>'s #70/#71 bite runs
+    <code>_gen_chain.selftest()</code> and demands rc 0, a red ratio keeps a second failure alive
+    too. D leaves 2 of today's 4 red lines standing.</b></div>
+    <div class="spec">> **DAVE'S (125) — id + title; close conditions are in the store, one fetch away:**
+> - `G15` **DV-D13 donut centre figure + st.visible[id]=true release wiring…**
+> - `G16` **The _proforma/_DATAVIZ-DECISIONS.md:567 enactment call (agent's, not…**
+> - `W-104` **#215 taxonomy research v2 — Carbon deep-dive, 135-component ladder map…**
+> …122 more, one line each…</div>
+  </div>
+
+</div>
+
+<div class="note">
+  <b>D′ — the variant that gets D over the line, measured.</b> Take column D and also point the
+  <b>MINE</b> line at the store (<code>_state.py --mine</code>) instead of printing 140 ids, and drop
+  the "no number here was typed" provenance sentence. Chain file <b>16,057</b>, wrapper <b>6,254</b>,
+  ratio <b>39.20% — GREEN</b>. ⚠ But it clears the floor by <b>0.80 points ≈ 328 tape ≈ 7 more of your
+  items</b>. It is green the way a bumper is a parking space. Column C clears it by 10.4 points.
+</div>
+
+<h2>What each cut could break — replayed, not hand-waved</h2>
+
+<h3>1 · The M10 selftest bites are a two-sided vice: too fat fails, too thin also fails</h3>
+<p>The two red bites today (<code>_capture_gate.py --selftest</code>, build step 13) are the
+<i>negative controls</i>: "an ordinary chain warned — the budget fires on everything" and "a fat §A/§C
+warned the CHAIN — the re-point did not take". They fail because
+<b><code>state_block()</code> ignores its repo argument</b> — it reads the live
+<code>knowledge/_state.json</code> by absolute path — so every temp-dir fixture, whose whole GM is
+214–347 tape, gets the production 125-row worklist stapled to it and lands at <b>13,232 tape</b>,
+past the 10,000 block-candidate. But the very next bite requires a fat banner <i>to</i> warn. Driven:
+with a ~336-tape wrapper the fat-banner fixture lands at 6,545 — <b>under the 7,700 warn — and that
+bite flips red.</b> Columns C (8,376) and D (13,167) both stay above it.</p>
+<p><b>So the wrapper has a floor as well as a ceiling: roughly 1,670 to 7,486 tape.</b> Below the
+floor the fat-banner bite dies; above the ceiling the two negative controls that are red today come
+back. C at 2,326 has ~650 tape of floor margin. <b>D at 7,117 has only ~370 tape of ceiling margin —
+about eight more of your items, at 44.6 tape per title row, and D re-breaks the very bites it was
+picked to fix.</b> D is a fix with an expiry date. C is not.</p>
+
+<h3>2 · The M10 budget is ADVISORY — no candidate makes the live chain "pass" it</h3>
+<p><code>CHAIN_BUDGET_TK = (7700, 10000)</code> and the live chain file is 22,864. Even column C
+lands at 12,129 — <b>still over the block-candidate</b>, so the "OVER THE BLOCK-CANDIDATE" warn keeps
+firing on the real repo. It is a warn, by Dave's #18 ruling, and a bite asserts it may never reach
+FAILS. <b>Do not let a wrapper cut be sold as "M10 goes green" — it green-lights the selftest's
+fixtures, not the live budget.</b></p>
+
+<h3>2b · The ratio red is not one red — it cascades into the skipped-wrap net</h3>
+<p><code>_capture_gate.py --selftest</code> runs <code>_gen_chain.selftest()</code> and fails if it
+is not green: <i>"#70/#71 non-catch: <code>_gen_chain.py --selftest</code> is NOT green — the
+regime's only net for a skipped wrap (the stale-title bite, one session late) is broken."</i>
+So today's four red lines are <b>three M10-family failures in <code>_capture_gate --selftest</code>
+plus the one ratio bite in <code>_gen_chain --selftest</code></b>, and every one of them traces to the
+same wrapper. <b>Only column C clears all four.</b> Column D leaves the ratio bite and the #70/#71
+cascade standing.</p>
+
+<h3>3 · The negative wrapper — a measurement defect the fat wrapper is currently hiding</h3>
+<p>Proven here by single-variable isolation. On the fat-banner fixture the slice measures
+<b>9,107 <code>real</code></b> and the whole file — which <i>contains</i> the slice — measures
+<b>6,554 <code>tiktoken cl100k_base</code></b>, so the generator prints
+<code>wrapper -2,553</code>. Cause: <code>_gauge_tokens.count()</code> returns
+<code>"real"</code> on any <b>cache hit</b> in <code>knowledge/.token-cache.json</code>, and this
+environment cannot reach the API at all, so <i>fresh</i> text silently falls to tiktoken. Two
+instruments, one sentence. Re-run with <code>CAPTURE_GATE_NO_REAL=1</code> (the CI shape) and it
+resolves: slice 6,070, file 6,574, wrapper +504. <b>Today's 13,061-tape wrapper masks this by
+swamping it. A leaner wrapper unmasks it — locally only.</b> The M10 UNIT BITE ("the FILE figure does
+not exceed the SLICE") is one fixture away from firing on any machine holding that cache.</p>
+
+<h3>4 · Cold-boot orientation is the real thing being traded</h3>
+<p>The <code>state_block()</code> docstring says the block is <b>ADD now, CUT at the swap</b> —
+duplication accepted deliberately while the hand-authored presence index still reaches the chain
+through <code>chain_parts</code>. Cutting the bodies is the swap it always anticipated; that is
+column C's licence, and it is Dave's to grant. <b>What is lost is real:</b> a cold session that reads
+125 ids and no titles cannot triage without a second call. Column D keeps the triage and misses the
+floor; column C clears the floor and loses the triage.</p>
+
+<h3>5 · Two more consequences worth naming before anyone cuts</h3>
+<ul>
+  <li><b>Every gate that parses the chain reads the OPEN WORK heading, not the rows.</b> The bites
+  assert the <i>heading</i> is computed and that the block declares a refusal rather than an empty
+  worklist. None of them parse a row. Removing bodies does not blind a bite — but
+  <code>_gen_chain.py</code>'s own "OPEN WORK: NOT RENDERED" refusal path must survive the edit.</li>
+  <li><b>The chain is shipped inside every Gumdrop pack</b>, where <code>_state.json</code> is the
+  designer's, not yours. A pointer block ships better than 125 rows of Apollo's private worklist —
+  an argument <i>for</i> C that has nothing to do with the ratio.</li>
+</ul>
+
+<h2>The unit, stated plainly</h2>
+<p>Every number on this page is <b>tiktoken cl100k_base tape</b>, taken from
+<code>_capture_gate.measure_tokens</code> — the same call the generator's fixed point and
+<code>read_chain_tk</code> use. No second counter was written.
+⚠ <b>The chain calls these numbers <code>real</code> and they are not.</b> The footer on disk stamps
+<code>22,864 real</code>; the very command that byte-matched it prints
+<code>FILE 22,864 tiktoken cl100k_base</code>. The unit word comes from
+<code>measurement_tier()</code>, which probes with the one-character string <code>"x"</code> — a
+cache hit, so it answers <code>real</code> — while every real-sized measurement falls to tiktoken.
+This is <code>W-273</code>'s "<code>_tier_probe()</code> lies", found again from the other end.
+<b>It does not change the ranking of the four columns; it does mean the exact percentages would move
+on a machine that can reach the API.</b></p>
+
+<footer>
+Built #226 · pricing lane, nothing enacted · measurements re-runnable:
+<code>python3 knowledge/_gen_chain.py --check</code> ·
+<code>python3 knowledge/_gen_chain.py --selftest</code> ·
+full report at <code>notes/_subreports/2026-08-30-226-wrapper-diet-pricing.md</code>
+</footer>
+
+</div>
+</body>
+</html>
