@@ -225,6 +225,57 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    a clean run. Measured before it was wired: 11 un-receipted rewordings across the ten wraps
    archived before #189, every sampled one a carry truncated as it aged, dropping the evidence
    pointer it was born with.*
+   ⛔ **THE CARRY SET DOES NOT GO ON THE BANNER ANY MORE — IT GOES IN `_CARRIES.md`, AND THE
+   BANNER GETS A POINTER + A PROBEABLE COUNT. RULED `s225-D2` (Dave, #225).**
+   *The measurement that forced it: at #225 the carry line was **24,873 tape — 89.3% of the whole
+   ★ LATEST banner**, and because `_gen_chain.py` slices that banner OUT of GM to build `_CHAIN.md`
+   the line sat on **BOTH SIDES** of that generator's chain/GM ratio. The ratio read **52.5%**
+   against a **`<40%`** floor and took CI red at build step 13. Dave's word: "the chain carry list
+   moves to its own generated home with receipts; the banner carries a pointer + count."*
+   **WHAT A WRAP DOES NOW, in place of re-typing the list onto the banner:**
+   - **(i) Write the session's whole carry set into `_CARRIES.md`** as a new `## residual → #N`
+     section, **NEWEST FIRST**, mirroring `_GM-ARCHIVE.md`. Everything 2c already demands still
+     binds, unchanged and in that file: **AGES +1 · WORDING UNCHANGED · a retraction STRUCK with
+     its `s188-D2` receipt · nothing dropped for being old.** ⛔ **The home changed; the rules did
+     not.** If a carry line already stands on the banner, **MOVE it — `python3
+     knowledge/_gm_move.py --ops <ops.json>`, one `{"op": "move"}`, byte-identical, receipt on
+     stdout — never a copy-then-delete and never a hand-edit.** (`_CARRIES.md` already exists, so
+     the mover's "NEVER creates a file" rule is satisfied; if it is ever absent, **STOP** — write
+     its contract header first.)
+   - **(ii) Put ONE pointer line on the banner**, at line start, keeping the `> **residual → #N:**`
+     home form — **three gates and one generator find the hand-off by that prefix and a pointer
+     that drops it silently breaks all four**. The line carries, in this order: the **⬛ top item's
+     headline** (⚠ **`_gen_titles.py` derives NEXT-TITLE from the first ⬛ bullet's bolded clause on
+     this line — it is the ONE piece of the carry set that must stay on the banner, and
+     `title_generation_check()` is BLOCKING**) · the **path** `_CARRIES.md` and its section · the
+     **retrieval id** `carries:residual-<N>` · the **count** · and **the command that recomputes
+     the count**, because a typed count is a claim and this one gets probed
+     [[roll-pointer-is-not-an-absence]]. The count's ONE definition is the gate's own:
+     `_capture_gate._carry_items()`. Copy the #225 pointer line's shape verbatim; do not invent a
+     second form.
+   - **(iii) Re-stamp `size:` (step 2, which already runs LAST).** Moving the carry set takes tens
+     of thousands of tape out of GM in one line; the stamp is graded against the gate's own
+     measurement at 10% tolerance and would fail loudly on the old figure.
+   ⚠ **DECLARED, NOT DISCOVERED LATER — `carry_wording_check()` ABOVE IS NOW BLIND, AND IT GOES
+   QUIET RATHER THAN LOUD.** It pairs `[N]`→`[N+1]` between the **GOOD-MORNING.md** ★ PRIOR and
+   ★ LATEST residual lines. With both lists in `_CARRIES.md` there is nothing on those two lines to
+   pair: at #225 it still says *"NOTHING PAIRED — ⛔ THAT IS NOT A PASS"* because the PRIOR banner
+   still holds #224's list, but from #226 both sides are empty and it reports a clean-looking
+   `0 aged carries`. ⛔ **Re-pointing it at `_CARRIES.md`'s two newest sections is OWED and is not
+   done** — [[instrument-without-a-consumer]]; scope, the exact change and the reason it was not
+   made in the same motion are in `notes/_subreports/2026-08-30-225-carries-home.md`. Until it
+   lands, **the `s188-D2` invariant is prose again, and a wrap must hold it by hand.**
+   ⛔ **AND THE RATIO THIS MOVE FIXED WILL COME BACK RED AT #226 — MEASURED, NOT FEARED.** The
+   `<40%` assertion divides the WHOLE `_CHAIN.md` file by the WHOLE of GM, and **12,741 tape of
+   that file is `_gen_chain.py`'s own wrapper — a FIXED cost, in the numerator only, that no edit
+   to GM or `_LIVE-STATE.md` can move** (the generator says so itself in the warn it prints).
+   After this move GM reads **62,569** and the chain **21,346 → 34.1%**. At the next wrap the
+   #224 ★ PRIOR banner (**27,210 tape**, most of it its own carry line) rolls to `_GM-ARCHIVE.md`
+   and GM falls to **≈38,700** while the chain barely moves: **≈55%, RED again.** ⛔ **A leaner GM
+   makes this ratio WORSE, which is the whole trouble with it** — so do NOT reach for the carry
+   move a second time, and do NOT touch the `0.40`: that is Dave's constant. The remaining lever
+   inside the machinery is the **wrapper** itself. Priced and open — see
+   `notes/_subreports/2026-08-30-225-carries-home.md` § RULING-SHAPED QUESTIONS.
    ★ **The circled numerals number THIS session's new items only; carried items are identified by
    age** (`s183-D1`, dream pass 8 P3 — prose form; carried blocks arrive with their own ①–⑦ and
    collide with the session's, so the age bracket `s128-D2` defines is the durable identifier).

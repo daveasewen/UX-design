@@ -1,6 +1,8 @@
 # Runbook — the context gauge (knowing when to stop)
 
-*Memento — Gumdrop v1.0.0, for VS Code + GitHub Copilot.*
+*Memento — Gumdrop v1.0.3, for VS Code + GitHub Copilot.*
+<!-- The version above is STAMPED at bake from the pack manifest's carries.version (s225-D3).
+     Do not hand-edit it; a hand-typed version is what shipped the v1.0.0/v1.0.2 disagreement. -->
 
 ## The problem, honestly
 

@@ -328,6 +328,13 @@ def build_records():
     parse_gm_ls(records, errors)
     parse_sections(records, errors, "_GM-ARCHIVE.md", "gm-archive", "gm-archive-section")
     parse_sections(records, errors, "_LIVE-STATE-ARCHIVE.md", "ls-archive", "ls-archive-section")
+    # ★ s225-D2 (#225) — THE CARRY SETS ARE A RETRIEVAL SURFACE OR THEY ARE NOTHING. The carry
+    # list left the ★ LATEST banner because it sat on BOTH sides of `_gen_chain.py`'s chain/GM
+    # ratio (24,873 tape, 89.3% of the banner). A pointer a session cannot FETCH would be a
+    # drop dressed as a move [[roll-pointer-is-not-an-absence]] — the banner names
+    # `carries:residual-<N>`, and this line is what makes that id resolve. Sectioned per wrap
+    # (`## residual → #N`), exactly like the two archives above.
+    parse_sections(records, errors, "_CARRIES.md", "carries", "carries-section")
     parse_sections(records, errors, "notes/_MEMENTO-DECISIONS.md", "ledger", "ledger-section")
     parse_gauge(records, errors)
     parse_file_per_record(records, errors, "notes/_briefs/*.md", "brief", "brief")
@@ -342,8 +349,8 @@ def build_records():
         return None, errors
     kinds = {r["kind"] for r in records}
     expected = {"gm-section", "ls-section", "gm-archive-section", "ls-archive-section",
-                "ledger-section", "gauge-block", "brief", "dream", "runbook-section", "lane",
-                "component-meta", "pattern-node", "context-node"}
+                "carries-section", "ledger-section", "gauge-block", "brief", "dream",
+                "runbook-section", "lane", "component-meta", "pattern-node", "context-node"}
     missing = expected - kinds
     if missing:
         return None, [f"source class contributed ZERO records: {sorted(missing)} — refuse "

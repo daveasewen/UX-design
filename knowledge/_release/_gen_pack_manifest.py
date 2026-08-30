@@ -1746,22 +1746,35 @@ def build_manifest(sha, probe):
         pack=PACK_NAME,
         slug=PACK_SLUG,
         version=VERSION,
-        # The cut of Memento inside this pack has its OWN identity and its own version line
-        # (s219-D8). It is stamped here, in the pack README and in PROVENANCE.json — the three
-        # places the pack states where it came from — and NOWHERE inside memento-package/, which
-        # is the repo's own machinery and not this release's to sign.
+        # The cut of Memento inside this pack has its OWN identity (s219-D8) and this line is
+        # its one home. It reaches the pack README and PROVENANCE.json — the places the pack
+        # states where it came from — and, since s225-D3, every Gumdrop version literal INSIDE
+        # the cut as well: the bake stamps them over the stage rather than trusting what was
+        # typed into `apollo-spider/gumdrop/`. (The narrower "and NOWHERE inside
+        # memento-package/" that stood here was true of v1.0.0 and became the #224 defect the
+        # moment a literal was typed in there anyway.)
         # ⚠ #219 seam 9, on N3's HANDOFF 1. This line USED to read "machinery only, no record",
         # which s219-D5(Q1) made FALSE the moment the empty stores and the starter chain joined
         # the cut. It is stated in three places (here, _PACK.json, the pack README) and all
         # three were corrected together — a pack whose own provenance line contradicts its own
         # contents is the [[gate-dont-patch]] class, so `cut/no-record-claim-is-dead` below
         # greps for the dead phrasing in this file AND in the bake script.
+        # ⛔ s225-D3 SUPERSEDES THE OLD CLOSING SENTENCE. It read "Its version line is its own;
+        # the pack's version does not move it" — a claim the pack could not keep. Arm 5 of
+        # `_gate_pack_docs.py` measured the cost at #225: three hand-typed
+        # `Memento — Gumdrop v1.0.0` literals shipped inside v1.0.2, whose own README (generated
+        # from `carries.version`) said v1.0.2. Put to Dave, he ruled *"we are at 1.03"* — the cut
+        # versions WITH the pack, one version story, single-sourced from THIS line. The bake
+        # stamps every Gumdrop literal in the stage from it (`build-designer-pack.sh`), so the
+        # sentence below is now something the machinery enforces rather than something it hopes.
         carries=dict(name=MEMENTO_CUT_NAME, version=MEMENTO_CUT_VERSION,
                      what="A clean cut of Memento: the machinery, plus a cold start whose "
                           "record is EMPTY on purpose — an empty task store and an empty "
                           "rulings store with the shapes already right, and a starter "
-                          "_CHAIN.md that the first wrap replaces. Its version line is its "
-                          "own; the pack's version does not move it."),
+                          "_CHAIN.md that the first wrap replaces. Its version moves WITH the "
+                          "pack (s225-D3): every Gumdrop version line in the cut is stamped "
+                          "from this one, so the pack cannot disagree with itself about what "
+                          "it carries."),
         status=ratification_status(),
         commit=sha,
         commit_date=commit_date(sha),

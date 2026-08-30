@@ -184,6 +184,73 @@ dryrun|release)
   # under `set -e` rather than defaulting to a version nobody chose.
   MEM_NAME="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["name"])' "$MANIFEST")"
   MEM_VERSION="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["carries"]["version"])' "$MANIFEST")"
+  MEM_WHAT_JSON="$(python3 -c 'import json,sys;print(json.dumps(json.load(open(sys.argv[1]))["carries"]["what"], ensure_ascii=False))' "$MANIFEST")"
+
+  # ---- s225-D3 — THE CARRIED CUT'S VERSION IS STAMPED INTO THE STAGE, NEVER TYPED IN IT -------
+  #
+  # ⛔ WHAT #224 SHIPPED. Three `Memento — Gumdrop v1.0.0` literals rode inside the v1.0.2 pack
+  # — two runbook headers and `memento-package/_state.json`'s `built_by` — beside a README that
+  # said v1.0.2, because those three were hand-typed inside the cut while the README's copy was
+  # already read from the manifest. Arm 5 of `_gate_pack_docs.py` caught it at #225; Dave ruled:
+  # *"we are at 1.03"* — the Gumdrop cut versions WITH the pack, one version story, and EVERY
+  # Gumdrop version literal derives from `carries.version`. This block is that derivation.
+  #
+  # WHY HERE AND IN THIS SHAPE. It is the same move the block above already makes for the README
+  # and PROVENANCE — "It is now READ from the manifest the generator wrote (ADR-0017, one home).
+  # A missing key dies loud under `set -e` rather than defaulting to a version nobody chose." The
+  # only difference is that those two files are WRITTEN by this script, and these three come out
+  # of the commit via `git archive`, so the derivation has to be a rewrite over the stage.
+  #
+  # ⛔ DETERMINISM IS INTACT, AND SO IS THE HEADER'S RULE. The replacement value comes from the
+  # COMMITTED manifest, never from today — same commit + same manifest still produces a
+  # byte-identical zip, and the stamp is IDEMPOTENT. It is also byte-NEUTRAL whenever the repo is
+  # in sync, which is what keeps `--check`'s blob-fidelity arm green: that arm compares every
+  # shipped path to the commit's blob, and only files the stamp actually MOVES can disagree with
+  # it. So a moved byte is not silent — each one prints a DRIFT line naming the file, both
+  # versions, and the consequence. Fix the drift at its source (the repo copy), do not tolerate
+  # the line.
+  #
+  # SCOPE IS THE PRESENCE, NOT THE THREE KNOWN FILES [[gate-inside-the-growth-loop]]: the sweep
+  # reads every staged text file, so a Gumdrop literal typed into a NEW document tomorrow is
+  # derived too rather than becoming the fourth instance of #224. `_state.json` is JSON and
+  # carries no comment marker of its own — the two runbook headers carry one, this block is the
+  # address for all three, and the stamped JSON is re-parsed here so a broken stamp dies loud.
+  python3 - "$STAGE" "$MEM_VERSION" <<'PY'
+import json, os, re, sys
+stage, want = sys.argv[1], sys.argv[2]
+# The same spelling family arm 5 of _gate_pack_docs.py sweeps (GUMDROP_RE): em dash, en dash or
+# hyphen, so a stamp can never be narrower than the gate that grades it.
+RE = re.compile(r"(Memento\s*[—–\-]\s*Gumdrop\s+v)(\d+\.\d+\.\d+)")
+carry, moved = 0, []
+for root, dirs, files in os.walk(stage):
+    dirs.sort()
+    for name in sorted(files):
+        p = os.path.join(root, name)
+        try:
+            src = open(p, encoding="utf-8").read()
+        except (UnicodeDecodeError, OSError):
+            continue                       # binary (the vendored encoder blob) — nothing to stamp
+        if "Gumdrop" not in src:
+            continue
+        out, k = RE.subn(lambda m: m.group(1) + want.lstrip("v"), src)
+        if not k:
+            continue
+        carry += 1
+        rel = os.path.relpath(p, stage)
+        if out != src:
+            was = sorted({"v" + m.group(2) for m in RE.finditer(src)})
+            open(p, "w", encoding="utf-8").write(out)
+            moved.append((rel, ", ".join(was)))
+        if p.endswith(".json"):
+            with open(p, encoding="utf-8") as fh:
+                json.load(fh)               # a stamp that breaks the JSON dies here, not later
+print("carried-cut version stamped from the manifest: %s — %d staged file(s) carry the literal, "
+      "%d rewritten" % (want, carry, len(moved)))
+for rel, was in moved:
+    print("  ⚠ DRIFT: %s typed %s and was stamped to %s. Its committed blob no longer matches "
+          "what ships, so `--check` will name this path until the repo copy is synced."
+          % (rel, was, want))
+PY
 
   # ⛔ #223, s223-D8 — THE PACKED MANIFEST SHIPS STATUS-FREE, AND THE STAMP IS TAKEN OVER IT.
   # The manifest used to be `cp`'d in whole and its sha stamped below from the REPO-SIDE file.
@@ -197,6 +264,9 @@ dryrun|release)
   python3 "$GEN" --pack-copy "$STAGE/_MANIFEST.json"
   MAN_SHA="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$STAGE/_MANIFEST.json")"
 
+  # `carries.what` used to be TYPED here as a twin of the generator's sentence — the same defect
+  # the version had, one register up. It is READ from the manifest now (ADR-0017, one home), and
+  # emitted JSON-escaped so a sentence with a quote or a backslash in it cannot break the file.
   cat > "$STAGE/PROVENANCE.json" <<JSON
 {
   "pack": "$PACKNAME",
@@ -205,7 +275,7 @@ dryrun|release)
   "carries": {
     "name": "$MEM_NAME",
     "version": "$MEM_VERSION",
-    "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version line is its own — the pack's version does not move it."
+    "what": $MEM_WHAT_JSON
   },
   "commit": "$COMMIT",
   "commit_date": "$COMMIT_DATE",
@@ -282,8 +352,9 @@ between two packs is a real difference and can be audited.
   driven against those shapes before shipping — and a starter \`_CHAIN.md\` that explains the
   first move and is replaced the first time you wrap. Nothing in it is anyone else's history.
   Your project grows its own memory from nothing, which is the point: the shapes are machinery,
-  the contents are your record. Its version line is its own — this pack's version does not move
-  it, and a later Apollo release may carry the same Gumdrop or a newer cut.
+  the contents are your record. Its version moves WITH this pack (\`s225-D3\`): the cut in your
+  hands is **$MEM_NAME $MEM_VERSION**, and every Gumdrop version line inside the pack is stamped
+  from that one figure, so nothing in here can disagree with it about what you are holding.
 - \`memento-package/_encoder-cache/\` — the \`cl100k_base\` encoder data, vendored so token
   measurement works with no download and no environment variable. Its README says what it is,
   what it mirrors, its sha256 and its licence.
