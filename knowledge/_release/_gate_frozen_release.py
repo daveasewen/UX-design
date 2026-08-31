@@ -109,7 +109,20 @@ SURFACES = [
     # `content_sha256` while `version` stood still, which is precisely the shape the laundering
     # arm calls a laundered edit. The gate would have refused its own release. Moved with the
     # bake, in the same commit as the content, exactly as the _README says.
-    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.2",
+    # ⛔ #228 — IT WENT STALE ANYWAY, AND SILENTLY, WHICH IS THE FINDING. At this cut the literal
+    # still read `v1.0.2` while the ledger JSON read `v1.0.3`: the #225 bake moved the JSON and
+    # left this line behind. Because `seed()` takes the version from HERE, the first `--seed` of
+    # the v1.0.4 bake DOWNGRADED the recorded row v1.0.3 -> v1.0.2 — a ledger that says a shipped
+    # release is an older one than it is, written by the very instrument that exists to stop
+    # exactly that. Caught by reading the seed's own printed table against the file it had just
+    # rewritten, not by any gate: no arm compares this literal to the manifest's VERSION, and the
+    # laundering arm cannot see it because it keys on `content_sha256` alone.
+    # ⬛ THE PERMANENT FIX IS DAVE'S AND IS PRICED, NOT TAKEN: this is a fourth version home
+    # (generator, build script — fixed this session — ledger literal, ledger JSON) and the real
+    # remedy is to derive it from the manifest's `version` the way the build script now does, or
+    # to add an arm that fails when the two disagree. Deriving it would make the gate read the
+    # thing it audits, which is a design decision, not a tidy [[gate-dont-patch]].
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.4",
      "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
      "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
      "machinery that cuts the release and stay editable. The surface is the DIRECTORY, so it "
