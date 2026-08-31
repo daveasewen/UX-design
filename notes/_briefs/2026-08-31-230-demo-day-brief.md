@@ -27,6 +27,24 @@ rails", Discover/Create/Craft/Dispatch), never gate/token mechanics.
 > And, same session: "look it should just be created from the components … i've already
 > explained this."
 
+> And his #227 framing, re-given by him at #230 because it kept sliding out of the
+> conversation: "The test was done on one short prompt without using any skills. And then
+> further prompts refined it, but anything written was created by Sol, so every error that
+> didn't follow the rules was because of this, how might we encode the rules if I go in with
+> a cold prompt or brief, and how do we also trigger the grill me (with a skip) in this
+> usecase."
+
+**What that #227 line already produced (receipts):** it birthed the cold-start lane —
+`DESIGN-CONTRACT.md` encodes the rules for a cold prompt, and grill-me's *When to run this*
+was retuned in the same lane (`notes/_subreports/2026-08-30-227-cold-start-contract.md`,
+"retuned 7"); both shipped in v1.0.4.
+
+**What it changes for every open question:** his artefact's deviations from canon are SOL'S
+RULE-BREAKING, not Dave's design intent — no skills were loaded, so nothing in that file is
+an implicit ruling. Any finding phrased as a "dave-improvement" or "needs Dave's word" is
+re-screened before it reaches him: the question is always *"is this a look you actually
+want, or Sol's improvisation?"* — a pointing exercise, never a design essay per card.
+
 **The mechanism, restated so it cannot drift:** the demo dashboard is ASSEMBLED FROM THE
 COMPONENTS — the shipped contract's own words (`apollo-spider/cold-start/DESIGN-CONTRACT.md`,
 in v1.0.4): *"Copy the markup. Component HTML comes from `knowledge/snippets/`, never from
