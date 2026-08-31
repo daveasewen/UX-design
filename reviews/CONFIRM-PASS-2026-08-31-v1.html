@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monday confirmation pass — #227</title>
+<!-- CONFIRMATION PASS for the answers Dave gave on reviews/SESSION-227-DECISIONS-2026-08-30-v1.html
+     last night. Those answers are FLOATED, not rulings. This page restates each clean-set answer in
+     ONE line beside a picture of what it does, and asks only: wave it through, or flinch.
+     Renders are REAL: Chromium + the built canon.css + the real HSBC face (render-verify runbook
+     § SIXTH STRATUM). Mocks are throwaway files in assets/227-confirm/scratch/ — nothing in canon,
+     snippets, tokens or skills was edited to make this page. -->
+<style>
+:root{
+  --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#6e6e6e;
+  --page:#f4f3f1; --card:#ffffff; --line:#dcd9d4; --line-2:#eceae6;
+  --code-bg:#f7f6f4;
+  --accent:#1d4ed8;
+  --ok:#1f6b3a; --flinch:#DA1A00; --amber:#8a5a00;
+  --chip-ok:#e6f2ea; --chip-flinch:#fbe7e4; --chip-amber:#fbf1dc;
+  --focus:#1d4ed8;
+  --shot-bg:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#ececea; --ink-2:#b4b2ae; --ink-3:#8e8c88;
+    --page:#141413; --card:#1e1e1c; --line:#3a3835; --line-2:#2b2a28;
+    --code-bg:#191918;
+    --accent:#8fb0ff;
+    --ok:#68c08c; --flinch:#F6604C; --amber:#e0b45c;
+    --chip-ok:#1d2d24; --chip-flinch:#33201d; --chip-amber:#2e2718;
+    --focus:#8fb0ff;
+    --shot-bg:#f4f3f1;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; padding:0 0 120px; background:var(--page); color:var(--ink);
+  font:400 17px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  letter-spacing:.005em}
+.wrap{max-width:900px; margin:0 auto; padding:0 20px}
+a{color:var(--accent)}
+
+header.top{padding:44px 0 6px}
+.eyebrow{font-size:13px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+h1{font-size:34px; line-height:1.2; margin:0 0 12px; letter-spacing:-.015em}
+.lede{font-size:19px; line-height:1.6; color:var(--ink-2); margin:0 0 6px; max-width:58ch}
+.lede b{color:var(--ink)}
+
+.how{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:24px 0 4px}
+.how h2{font-size:14px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+.how p{margin:0 0 9px; max-width:62ch; font-size:16px}
+.how p:last-child{margin-bottom:0}
+.how b{font-weight:650}
+
+.counter{position:sticky; top:0; z-index:6; background:var(--page); padding:14px 0 10px;
+  border-bottom:1px solid var(--line-2); margin:26px 0 0; display:flex; gap:14px; align-items:baseline; flex-wrap:wrap}
+.counter .n{font:650 19px/1 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+.counter .lbl{font-size:14px; color:var(--ink-3)}
+.counter button{font:500 14px/1 inherit; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  border-radius:8px; padding:9px 13px; cursor:pointer}
+.counter button:hover{border-color:var(--ink-3)}
+
+section.row{background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:20px 22px 18px; margin:18px 0 0}
+section.row[data-state="confirm"]{border-color:var(--ok)}
+section.row[data-state="flinch"]{border-color:var(--flinch)}
+section.row[data-state="keep"]{border-color:var(--ok)}
+section.row[data-state="concentric"]{border-color:var(--ok)}
+section.row[data-state="discuss"]{border-color:var(--flinch)}
+section.row.conflict{border:2px solid var(--amber); background:linear-gradient(0deg,var(--card),var(--card))}
+section.row.grey{opacity:.72; background:transparent; border-style:dashed}
+
+.rowhead{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; margin:0 0 10px}
+.num{font:650 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-3);
+  border:1px solid var(--line); border-radius:6px; padding:6px 8px}
+.id{font:650 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.06em;
+  background:var(--code-bg); border-radius:6px; padding:6px 8px; color:var(--ink-2)}
+.chip{margin-left:auto; font:600 12px/1 ui-sans-serif,-apple-system,sans-serif; letter-spacing:.05em;
+  text-transform:uppercase; border-radius:999px; padding:7px 12px; background:var(--code-bg); color:var(--ink-3)}
+section.row[data-state="confirm"] .chip,
+section.row[data-state="keep"] .chip,
+section.row[data-state="concentric"] .chip{background:var(--chip-ok); color:var(--ok)}
+section.row[data-state="flinch"] .chip,
+section.row[data-state="discuss"] .chip{background:var(--chip-flinch); color:var(--flinch)}
+
+.answer{font-size:21px; line-height:1.45; margin:0 0 6px; max-width:56ch; font-weight:600; letter-spacing:-.008em}
+.said{font-size:14px; color:var(--ink-3); margin:0 0 14px; letter-spacing:.04em; text-transform:uppercase}
+.gloss{font-size:16px; line-height:1.55; color:var(--ink-2); margin:0 0 14px; max-width:62ch}
+.gloss code{font:400 14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--code-bg); padding:2px 5px; border-radius:4px}
+
+.shot{margin:6px 0 14px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--shot-bg)}
+.shot img{display:block; width:100%; height:auto}
+.shot .cap{font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-3);
+  padding:9px 12px; border-top:1px solid var(--line-2); background:var(--card)}
+
+ul.ten{margin:4px 0 14px; padding:0; list-style:none}
+ul.ten li{font-size:15px; line-height:1.5; margin:0 0 7px; padding-left:64px; text-indent:-64px; max-width:70ch; color:var(--ink-2)}
+ul.ten li b{display:inline-block; width:56px; text-indent:0; font:650 13px/1.5 ui-monospace,Menlo,monospace; color:var(--ink)}
+ul.plain{margin:4px 0 14px; padding-left:20px}
+ul.plain li{font-size:15px; line-height:1.55; margin:0 0 6px; color:var(--ink-2)}
+
+.flag{border-left:3px solid var(--amber); background:var(--chip-amber); border-radius:0 8px 8px 0;
+  padding:11px 14px; margin:0 0 14px; font-size:15px; line-height:1.55; color:var(--ink)}
+.flag b{color:var(--amber)}
+.verdict{border-left:3px solid var(--ok); background:var(--chip-ok); border-radius:0 8px 8px 0;
+  padding:11px 14px; margin:0 0 14px; font-size:15px; line-height:1.55; color:var(--ink)}
+.verdict b{color:var(--ok)}
+.ph{border-left:3px solid var(--ink-3); background:var(--code-bg); border-radius:0 8px 8px 0;
+  padding:11px 14px; margin:0; font:400 14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-2)}
+
+.controls{border-top:1px solid var(--line-2); margin:14px -22px -18px; padding:14px 22px 18px}
+.verbs{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 12px}
+.verbs label{display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  border:1px solid var(--line); border-radius:9px; padding:11px 15px; font-size:16px; font-weight:550;
+  background:var(--card)}
+.verbs label:hover{border-color:var(--ink-3)}
+.verbs label:has(input:checked){border-width:2px; padding:10px 14px}
+.verbs label.confirm:has(input:checked),
+.verbs label.keep:has(input:checked),
+.verbs label.concentric:has(input:checked){border-color:var(--ok); background:var(--chip-ok); color:var(--ok)}
+.verbs label.flinch:has(input:checked),
+.verbs label.discuss:has(input:checked){border-color:var(--flinch); background:var(--chip-flinch); color:var(--flinch)}
+.verbs input{width:17px; height:17px; accent-color:var(--focus); margin:0}
+.cmtlabel{display:block; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 6px}
+textarea{width:100%; min-height:56px; resize:vertical; font:400 16px/1.5 inherit; color:var(--ink);
+  background:var(--page); border:1px solid var(--line); border-radius:8px; padding:10px 12px}
+textarea:focus, .verbs input:focus-visible, button:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.clearone{margin-top:10px; font:500 13px/1 inherit; border:1px solid var(--line); background:transparent;
+  color:var(--ink-3); border-radius:7px; padding:8px 11px; cursor:pointer}
+
+.promptblock{margin:34px 0 0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px}
+.promptblock h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 8px}
+.promptblock p{font-size:16px; color:var(--ink-2); margin:0 0 14px; max-width:62ch}
+pre#prompt{white-space:pre-wrap; word-break:break-word; background:var(--code-bg); border:1px solid var(--line-2);
+  border-radius:8px; padding:14px 16px; font:400 14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--ink); margin:0 0 12px; max-height:340px; overflow:auto}
+.acts{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.acts button{font:600 16px/1 inherit; border:1px solid var(--ink); background:var(--ink); color:var(--page);
+  border-radius:9px; padding:13px 18px; cursor:pointer}
+.acts button.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+#copystatus{font-size:14px}
+#copystatus.ok{color:var(--ok)} #copystatus.bad{color:var(--flinch)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+footer.foot{margin:30px 0 0; font:400 13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-3)}
+@media (max-width:640px){
+  h1{font-size:27px} .answer{font-size:19px} body{font-size:16px}
+  section.row{padding:16px 16px 14px} .controls{margin:14px -16px -14px; padding:14px 16px}
+  ul.ten li{padding-left:0; text-indent:0} ul.ten li b{display:block; width:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Apollo &middot; session #227 &middot; Monday confirmation pass</p>
+  <h1>Fresh eyes on last night's answers</h1>
+  <p class="lede">You answered all 44 cards and said you were <b>not 100%</b>. So nothing has been
+    enacted. Below is the clean set &mdash; your answer restated in one line, with a picture of what it
+    does. <b>Wave it through, or flinch.</b> A flinch moves it to discuss; it costs nothing.</p>
+</header>
+
+<div class="how">
+  <h2>Ten minutes, twelve rows</h2>
+  <p><b>Every line below is your answer, not a new proposal.</b> If the line matches what you meant,
+    press Confirm and move on.</p>
+  <p><b>One row disagrees with itself</b> &mdash; row 7, in amber. You said two things about large that
+    cannot both be true. It has three buttons instead of two.</p>
+  <p><b>Three rows are just for your information</b> &mdash; rows 10, 11 and 12 have no buttons.</p>
+  <p>Copy the prompt at the bottom and paste it back. <b>That paste is the only durable output.</b>
+    Your answers are saved in this browser, so a refresh is safe.</p>
+</div>
+
+<div class="counter">
+  <span class="n" id="cAll">0/9</span>
+  <span class="lbl">confirmed &middot; <b id="cLeft">9</b> left</span>
+  <button type="button" id="jump">Go to the prompt</button>
+  <button type="button" id="reset">Clear everything</button>
+</div>
+
+<!-- ============================ ROW 1 ============================ -->
+<section class="row" data-id="C-SET" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">1</span><span class="id">C2&ndash;C8 &middot; C10 &middot; C12 &middot; N1</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">Apply the red team's 10 written contract edits.</p>
+  <p class="said">You said: Apply &times; 10</p>
+  <p class="gloss">Every one of these has the edit already written out. Applying them is transcription,
+    not design. They are the Monday cut's apply-or-park set.</p>
+  <ul class="ten">
+    <li><b>C2</b> The brief template's filled example shows a <i>skipped</i> theme, and the skip fact lives in the table row &mdash; one home, not two.</li>
+    <li><b>C3</b> Day one's bug-report sentence gains the two lines that decide most reports: the declared lane, and the brief.</li>
+    <li><b>C4</b> The placement checker checks <i>two</i> markers, so a gutted or inverted contract fails instead of reading PLACED.</li>
+    <li><b>C5</b> A byte budget (4096) sits beside the line budget, so a 23&nbsp;KB contract can no longer pass green.</li>
+    <li><b>C6</b> "Check before you show" now tells a skill-less host that reading the file is not running the gate.</li>
+    <li><b>C7</b> Rule 4 points at the generate-from-canon skill; the rails file is named as dial vocabulary, not a layout.</li>
+    <li><b>C8</b> If another instruction file says never ask questions, say so in the same reply and still ask the theme question.</li>
+    <li><b>C10</b> A non-Apollo design skill is <i>freestyle</i>, declared in the same reply, with the skill named.</li>
+    <li><b>C12</b> The truncation fallback gains the one question that survives being cut: which theme.</li>
+    <li><b>N1</b> A typo'd <code>--root</code> prints "NOT A DIRECTORY" instead of "3 of 3 hosts start COLD here".</li>
+  </ul>
+  <div class="flag"><b>One caveat inside this ten.</b> C8's premise is <b>believed, not measured</b> &mdash;
+    that a designer's own global instructions can outrank the contract. Confirming C8 confirms the
+    <i>clause</i>; the check is still owed before it ships. Flinch if you want that check first.</div>
+</section>
+
+<!-- ============================ ROW 2 ============================ -->
+<section class="row" data-id="W8" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">2</span><span class="id">W8</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">The token generator gets a real <code>--check</code>, and stops writing when you give it an unknown flag.</p>
+  <p class="said">You said: Apply</p>
+  <p class="gloss">Today, passing <code>--check</code> to <code>gen_canon_tokens.py</code> silently
+    <i>rewrites</i> canon.css. It was harmless when it happened &mdash; byte-identical &mdash; but a
+    checking flag that writes is the write-by-default class the help-gate exists to stop.</p>
+</section>
+
+<!-- ============================ ROW 3 ============================ -->
+<section class="row" data-id="L8" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">3</span><span class="id">L8</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">The search field's rounding moves to the boxed variant only. The underline variant stays a straight line.</p>
+  <p class="said">You said: only the boxed one</p>
+  <div class="shot">
+    <img src="assets/227-confirm/l8-search-radius.png"
+         alt="Two panels, Apollo Console light. Left, today: the boxed search field is rounded and the underline field's stroke curves up at both ends. Right, proposed: the boxed field is still rounded and the underline is a straight line.">
+    <p class="cap">Apollo Console &middot; light &middot; real canon.css. Left is today &mdash; look at the ends of the underline.</p>
+  </div>
+  <p class="gloss">Two snippets, one declaration each, then a regenerate. Precedent runs the other way
+    (Dropdown and Input-fields both round their underline constructions), so this is you overruling a
+    precedent on the eye &mdash; which is exactly the sort of thing this pass is for.</p>
+</section>
+
+<!-- ============================ ROW 4 ============================ -->
+<section class="row" data-id="L1-L2" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">4</span><span class="id">L1 + L2</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">The FAB is reading B &mdash; a hot corner. The zone is 72&nbsp;px, and the button wears the canon settings icon.</p>
+  <p class="said">You said: B &middot; hot corner &middot; settings icon</p>
+  <div class="shot">
+    <img src="assets/227-confirm/l1l2-fab-corner-b.png"
+         alt="Bottom-right corner of the banking dashboard. A red circular button with a white gear icon has faded in, sitting inside a faint red corner bracket marking the 72 by 72 pixel hot zone.">
+    <p class="cap">Reading B, pointer in the corner. The faint bracket is the 72&nbsp;px zone; the 56&nbsp;px button sits inside it.</p>
+  </div>
+  <div class="flag"><b>72&nbsp;px stands unless you give a number.</b> It is a proposal, reasoned not
+    measured &mdash; about 1.3&times; the button it reveals, so the pointer never has to leave the zone
+    to reach it. Any other number is one config value: <code>data-corner="N"</code>. Put it in the box
+    if you want a different one.</div>
+</section>
+
+<!-- ============================ ROW 5 ============================ -->
+<section class="row" data-id="L4" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">5</span><span class="id">L4</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">Console's small thumbs are right: xs thumb 4, s thumb 6.</p>
+  <p class="said">You said: yes, they look right</p>
+  <div class="shot">
+    <img src="assets/227-confirm/l4-console-xs-s.png"
+         alt="Two specimen cards, Apollo Console light. XS before and after: thumb radius 0 becomes 4 and the height grows from 24 to 28. S before and after: thumb radius 2 becomes 6.">
+    <p class="cap">Apollo Console &middot; light &middot; the built canon atom. BEFORE is git HEAD, AFTER is the working tree.</p>
+  </div>
+  <p class="gloss">This is the one thing no gate could answer &mdash; the arithmetic was already proven.
+    Nobody had seen a rendered pixel of it when you answered last night. Now you have.</p>
+</section>
+
+<!-- ============================ ROW 6 ============================ -->
+<section class="row" data-id="L3-m" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">6</span><span class="id">L3 &middot; medium</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">Concentric extends to medium: its thumb goes from 4 to 8.</p>
+  <p class="said">You said: concentric for m too</p>
+  <div class="shot">
+    <img src="assets/227-confirm/l3-m-concentric.png"
+         alt="Medium segmented control, Apollo Console light, twice. Left, today: thumb radius 4, noticeably tighter than the track. Right, if concentric extends: thumb radius 8, following the track's curve.">
+    <p class="cap">Apollo Console &middot; light &middot; throwaway mock, real canon atom. Nothing minted.</p>
+  </div>
+  <p class="gloss">Your two changes met at medium: the padding dropped to 2, but concentric came back at
+    xs and s only. So the dial now sits <i>further</i> from concentric at m than before you moved the
+    padding. Extending is one constant and a re-mint.</p>
+</section>
+
+<!-- ============================ ROW 7 ============================ -->
+<section class="row conflict" data-id="L3-l" data-verbs="keep-concentric-discuss">
+  <div class="rowhead"><span class="num">7</span><span class="id">L3 &middot; large</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">You said two things about large that cannot both be true.</p>
+  <p class="said">You said: "large stays" &mdash; and also "concentric for l too"</p>
+  <div class="flag"><b>These disagree.</b> Large is untouched today at thumb 6. Concentric moves it to
+    8. So "large stays" and "concentric for l" are two different pictures &mdash; below.</div>
+  <div class="shot">
+    <img src="assets/227-confirm/l3-l-concentric.png"
+         alt="Large segmented control, Apollo Console light, twice. Left, today: thumb radius 6. Right, if concentric extends: thumb radius 8.">
+    <p class="cap">Apollo Console &middot; light &middot; throwaway mock, real canon atom. Left is what "large stays" means.</p>
+  </div>
+  <p class="gloss">Three buttons here, not two. Nothing is assumed either way.</p>
+</section>
+
+<!-- ============================ ROW 8 ============================ -->
+<section class="row" data-id="W5" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">8</span><span class="id">W5</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">Rename the code key <code>legacy</code> to <code>common</code> &mdash; after Tuesday, as its own lane, and with the old key still working.</p>
+  <p class="said">You said: reconcile them, but not this week</p>
+  <p class="gloss">Designers read <b>Common</b>; the code says <code>legacy</code>. Every place the two
+    names meet today carries a parenthetical to reconcile them.</p>
+  <div class="verdict"><b>Why the alias matters.</b> Canon keys its whole cascade on
+    <code>data-apollo-theme="legacy"</code>. If the new key simply replaced the old one, every page a
+    designer has already saved &mdash; and every page that ships in the pack &mdash; would lose its
+    theme the moment canon updated. With both keys live, nothing that exists breaks, and new work uses
+    the name you actually say out loud.</div>
+</section>
+
+<!-- ============================ ROW 9 ============================ -->
+<section class="row" data-id="W2" data-verbs="confirm-flinch">
+  <div class="rowhead"><span class="num">9</span><span class="id">W2</span><span class="chip">Not confirmed</span></div>
+  <p class="answer">Keep the chart-toolbar radius fix wide &mdash; all thirteen charts, not just the line chart.</p>
+  <p class="said">You said: keep it wide</p>
+  <div class="shot">
+    <img src="assets/227-confirm/w2-chart-toolbar.png"
+         alt="A chart toolbar in Apollo Console light: Monthly / Year to date segmented control, Target line, Last year, Copy data (CSV) button and a View as table disclosure, all with matching rounded corners.">
+    <p class="cap">Apollo Console &middot; light &middot; the real chart toolbar. Copy data (CSV) and View as table are the two the fix touched.</p>
+  </div>
+  <div class="verdict"><b>Checked against your no-radii-on-lines principle: all thirteen are safe.</b>
+    Every element the fix touches is a control someone presses &mdash; 40 of them across the 13 chart
+    snippets, and every single one is a button ("Copy data (CSV)") or a disclosure summary ("View as
+    table"). <b>Not one is a decorative line, rule or divider.</b> Your principle does not bite here,
+    so the wide fix stands.</div>
+  <p class="gloss">Fixing only the line chart would have made one chart round and the other twelve
+    square &mdash; a new inconsistency in place of an old one.</p>
+</section>
+
+<!-- ============================ ROW 10 ============================ -->
+<section class="row grey" data-id="W6">
+  <div class="rowhead"><span class="num">10</span><span class="id">W6</span><span class="chip">For information</span></div>
+  <p class="answer">The four review pages get their store rows at the wrap. Nothing for you to do.</p>
+  <p class="said">You said: yes, mint them &mdash; and it is the conductor's act, not yours</p>
+  <ul class="plain">
+    <li>reviews/SEGMENTED-RULING-2026-08-30-v1.html</li>
+    <li>reviews/FAB-READINGS-2026-08-30-v1.html</li>
+    <li>reviews/DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html</li>
+    <li>reviews/SESSION-227-DECISIONS-2026-08-30-v1.html</li>
+  </ul>
+  <p class="gloss">A document with no store row is invisible to every later retrieval. This page will
+    want one too.</p>
+</section>
+
+<!-- ============================ ROW 11 ============================ -->
+<section class="row grey" data-id="W3">
+  <div class="rowhead"><span class="num">11</span><span class="id">W3</span><span class="chip">Coming later today</span></div>
+  <p class="answer">The five zero-inset toggles are not being decided here &mdash; two readings are being rendered for you to point at.</p>
+  <p class="said">You said: show me both</p>
+  <p class="gloss">Table, Template-dashboard, Template-list-index, Template-report and View-options each
+    re-declare the segmented rule with <i>no</i> inset. Give them a 2&nbsp;px inset and they become the
+    same case as the six already repaired; or a zero-inset thumb gets minted. Both will be drawn, side
+    by side, and you point.</p>
+  <p class="ph">CONDUCTOR &mdash; replace with the link when the page lands:<br>
+    reviews/ZERO-INSET-READINGS-2026-08-31-v1.html &nbsp;(not yet published)</p>
+</section>
+
+<!-- ============================ ROW 12 ============================ -->
+<section class="row grey" data-id="CI">
+  <div class="rowhead"><span class="num">12</span><span class="id">push &middot; CI</span><span class="chip">For information</span></div>
+  <p class="answer">Where the repo stands this morning.</p>
+  <p class="ph">CONDUCTOR &mdash; fill after CI reads back:<br>
+    push: &lt;sha&gt; &middot; CI: &lt;green | red, with the gate named&gt; &middot; read back at &lt;time&gt;<br>
+    <i>(placeholder &mdash; nothing here has been verified yet)</i></p>
+</section>
+
+<!-- ============================ PROMPT ============================ -->
+<div class="promptblock" id="promptblock">
+  <h2>Copy this back to me</h2>
+  <p>This is the only durable output. Rows with no button are not in it &mdash; they are information.</p>
+  <pre id="prompt"></pre>
+  <div class="acts">
+    <button type="button" id="copy">Copy the prompt</button>
+    <button type="button" class="ghost" id="top">Back to the top</button>
+    <span id="copystatus"></span>
+  </div>
+  <p class="sr" id="sr" role="status" aria-live="polite"></p>
+</div>
+
+<footer class="foot">
+  reviews/CONFIRM-PASS-2026-08-31-v1.html &middot; session #227 lane 10<br>
+  Renders are real: Chromium + the built canon.css + the real HSBC face. Row 3, 6 and 7 pictures come
+  from throwaway mocks in assets/227-confirm/scratch/ &mdash; no canon, snippet, token or skill file
+  was edited to make this page.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "apollo-227-confirm-pass-v1";
+
+  var VERBSETS = {
+    "confirm-flinch": [["confirm","Confirm"],["flinch","Flinch → discuss"]],
+    "keep-concentric-discuss": [["keep","Keep large as-is"],["concentric","Go concentric"],["discuss","Discuss"]]
+  };
+  var SERIAL = {confirm:"CONFIRM", flinch:"FLINCH", keep:"KEEP-LARGE", concentric:"CONCENTRIC", discuss:"DISCUSS"};
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("section.row[data-verbs]"));
+  var state = {};
+
+  function load(){
+    try{ var raw = window.localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") state = o; }
+    }catch(e){}
+  }
+  function save(){ try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  rows.forEach(function(row){
+    var id = row.getAttribute("data-id");
+    var opts = VERBSETS[row.getAttribute("data-verbs")] || VERBSETS["confirm-flinch"];
+    if(!state[id]) state[id] = {d:null, c:""};
+
+    var box = document.createElement("div");
+    box.className = "controls";
+
+    var verbs = document.createElement("div");
+    verbs.className = "verbs";
+    verbs.setAttribute("role","radiogroup");
+    verbs.setAttribute("aria-label","Decision for " + id);
+    opts.forEach(function(o){
+      var lab = document.createElement("label");
+      lab.className = o[0];
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "v-" + id; inp.value = o[0];
+      inp.addEventListener("change", function(){ state[id].d = o[0]; save(); paint(row); refresh(); });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(o[1]));
+      verbs.appendChild(lab);
+    });
+    box.appendChild(verbs);
+
+    var cl = document.createElement("label");
+    cl.className = "cmtlabel"; cl.setAttribute("for","c-" + id);
+    cl.textContent = "Anything you want to say (optional)";
+    box.appendChild(cl);
+
+    var ta = document.createElement("textarea");
+    ta.id = "c-" + id;
+    ta.placeholder = "…";
+    ta.addEventListener("input", function(){ state[id].c = ta.value; save(); refresh(); });
+    box.appendChild(ta);
+
+    var clr = document.createElement("button");
+    clr.type = "button"; clr.className = "clearone"; clr.textContent = "Clear this row";
+    clr.addEventListener("click", function(){
+      state[id] = {d:null, c:""};
+      var ck = row.querySelector('input[type="radio"]:checked'); if(ck) ck.checked = false;
+      ta.value = ""; save(); paint(row); refresh();
+    });
+    box.appendChild(clr);
+
+    row.appendChild(box);
+  });
+
+  function paint(row){
+    var id = row.getAttribute("data-id");
+    var opts = VERBSETS[row.getAttribute("data-verbs")] || VERBSETS["confirm-flinch"];
+    var st = state[id] || {d:null,c:""};
+    var chip = row.querySelector(".chip");
+    if(st.d){
+      row.setAttribute("data-state", st.d);
+      var lbl = st.d;
+      opts.forEach(function(o){ if(o[0] === st.d) lbl = o[1]; });
+      chip.textContent = lbl.replace(" → discuss","");
+    }else{
+      row.removeAttribute("data-state");
+      chip.textContent = "Not confirmed";
+    }
+  }
+
+  function hydrate(){
+    rows.forEach(function(row){
+      var id = row.getAttribute("data-id"), st = state[id];
+      if(!st) return;
+      if(st.d){ var r = row.querySelector('input[value="' + st.d + '"]'); if(r) r.checked = true; }
+      var ta = row.querySelector("textarea"); if(ta && st.c) ta.value = st.c;
+      paint(row);
+    });
+  }
+
+  function oneLine(s){ return String(s || "").replace(/\s+/g," ").trim(); }
+
+  function build(){
+    var lines = [], open = [], nDone = 0, nTot = 0;
+    rows.forEach(function(row){
+      var id = row.getAttribute("data-id");
+      var st = state[id] || {d:null,c:""};
+      var cmt = oneLine(st.c);
+      nTot++;
+      if(st.d){
+        lines.push(id + " " + (SERIAL[st.d] || st.d.toUpperCase()) + (cmt ? " — " + cmt : ""));
+        nDone++;
+      }else{
+        open.push(id);
+        if(cmt) lines.push(id + " (no verb) — " + cmt);
+      }
+    });
+    var out = [];
+    out.push("APOLLO #227 — Monday confirmation pass");
+    out.push("Page: reviews/CONFIRM-PASS-2026-08-31-v1.html");
+    out.push("Confirming last night's FLOATED answers on SESSION-227-DECISIONS-2026-08-30-v1.html");
+    out.push("Confirmed " + nDone + "/" + nTot);
+    out.push("");
+    out.push(lines.length ? lines.join("\n") : "(nothing confirmed yet)");
+    out.push("");
+    out.push("STILL OPEN: " + (open.length ? open.join(", ") : "none"));
+    return {text: out.join("\n"), nDone: nDone, nTot: nTot};
+  }
+
+  var promptEl = document.getElementById("prompt");
+  var cAll = document.getElementById("cAll"), cLeft = document.getElementById("cLeft");
+  function refresh(){
+    var b = build();
+    promptEl.textContent = b.text;
+    cAll.textContent = b.nDone + "/" + b.nTot;
+    cLeft.textContent = String(b.nTot - b.nDone);
+  }
+
+  var statusEl = document.getElementById("copystatus");
+  function status(msg, ok){
+    statusEl.textContent = msg;
+    statusEl.className = ok ? "ok" : "bad";
+    document.getElementById("sr").textContent = msg;
+    window.setTimeout(function(){ if(statusEl.textContent === msg){ statusEl.textContent=""; statusEl.className=""; } }, 6000);
+  }
+  function legacyCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly","");
+      ta.style.position="fixed"; ta.style.top="0"; ta.style.left="0";
+      ta.style.opacity="0"; ta.style.width="2px"; ta.style.height="2px";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){ return false; }
+  }
+  function selectPre(){
+    try{
+      var r = document.createRange(); r.selectNodeContents(promptEl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      promptEl.scrollIntoView({behavior:"smooth", block:"center"});
+    }catch(e){}
+  }
+  document.getElementById("copy").addEventListener("click", function(){
+    var text = build().text;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ status("Copied — paste it to Claude", true); })
+        .catch(function(){ if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+          else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); } });
+    }else{
+      if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+      else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+    }
+  });
+  document.getElementById("jump").addEventListener("click", function(){
+    document.getElementById("promptblock").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById("top").addEventListener("click", function(){
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    if(!window.confirm("Clear every answer on this page?")) return;
+    state = {};
+    rows.forEach(function(row){
+      var id = row.getAttribute("data-id");
+      state[id] = {d:null, c:""};
+      var r = row.querySelector('input[type="radio"]:checked'); if(r) r.checked = false;
+      var ta = row.querySelector("textarea"); if(ta) ta.value = "";
+      paint(row);
+    });
+    save(); refresh(); status("Cleared", true);
+  });
+
+  load(); hydrate(); refresh();
+})();
+</script>
+</body>
+</html>

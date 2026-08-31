@@ -26,6 +26,9 @@ export LD_LIBRARY_PATH=<MOUNT>/outputs/syslibs/usr/lib/aarch64-linux-gnu
 
 ⚠ All three exports must ride in the SAME bash call as the render (nothing survives a call boundary),
 and launch() must NOT pass `env=` (it REPLACES the child env wholesale and the launch dies mute).
+⚠ `TMPDIR=/dev/shm` TOO (#227 lane 10): with `/` at 100%, playwright ENOSPCs inside launch() on
+mkdtemp and reports it as a LAUNCH failure — "chromium is broken" is the disk being full. /dev/shm
+is per-bash-call, so the export rides in the same call like the others.
 ⚠ The orphan dirs are ironically STABLE (nobody can delete them) — but if the VM is ever truly
 rebuilt, the CLASS FIX is the pattern above generalised: playwright wheels unzipped to the MOUNT,
 `PLAYWRIGHT_BROWSERS_PATH` pointed at a MOUNT dir, libs `dpkg -x`'d to the MOUNT. Zero VM bytes,

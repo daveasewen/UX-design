@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="console"><head><meta charset="utf-8">
+<title>L8 mock &mdash; search radius, base rule vs boxed-only (THROWAWAY, s227 confirm pass)</title>
+<!-- THROWAWAY MOCK for reviews/CONFIRM-PASS-2026-08-31-v1.html row L8. Markup COPIED VERBATIM from
+     knowledge/snippets/Search-field.reference.html; geometry is the BUILT canon.css under
+     data-apollo-theme="console". Nothing is re-drawn. The PROPOSED panel adds ONE override that
+     reproduces the effect of moving the declaration from .search to .search.boxed. NOT A MINT. -->
+<link rel="stylesheet" href="/sessions/serene-hopeful-pasteur/mnt/UX-design/knowledge/canon/canon.css">
+<link rel="stylesheet" href="/sessions/serene-hopeful-pasteur/mnt/UX-design/knowledge/canon/type.css">
+<style>
+ body{margin:0;padding:22px;background:#ffffff;color:#1a1a1a;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ .row{display:flex;gap:26px;align-items:flex-start}
+ .panel{flex:1 1 0;min-width:0;padding:16px 18px 18px;border:1px solid #ccc;box-sizing:border-box;background:#fff}
+ .panel.prop{border-color:#DA1A00}
+ .tag{display:block;font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;margin:0 0 4px;opacity:.55}
+ .panel.prop .tag{opacity:1;color:#DA1A00}
+ .what{font:400 12px/1.35 ui-monospace,Menlo,monospace;margin:0 0 16px;opacity:.75;min-height:2.7em}
+ .stack{display:flex;flex-direction:column;gap:20px}
+ .cap{font:400 11px/1.3 ui-monospace,Menlo,monospace;opacity:.6;margin:0 0 6px}
+ /* PROPOSED: the declaration moves off the base rule onto .boxed */
+ .prop .cn-search-field .search{border-radius:0}
+ .prop .cn-search-field .search.boxed{border-radius:var(--border-radius-control)}
+</style></head><body data-theme="light">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-clear" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg><div class="row"><div class="panel cur"><span class="tag">TODAY (as built)</span><p class="what">radius on the base .search rule &mdash;<br>BOTH variants round (8px in console)</p><div class="cn-search-field"><div class="stack">
+    <div>
+      <p class="cap">Boxed (full border)</p>
+      <div class="search boxed">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="Statements">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Underline</p>
+      <div class="search">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+  </div></div></div><div class="panel prop"><span class="tag">PROPOSED (L8)</span><p class="what">radius on .search.boxed only &mdash;<br>underline stays a straight line</p><div class="cn-search-field"><div class="stack">
+    <div>
+      <p class="cap">Boxed (full border)</p>
+      <div class="search boxed">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="Statements">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Underline</p>
+      <div class="search">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+  </div></div></div></div></body></html>

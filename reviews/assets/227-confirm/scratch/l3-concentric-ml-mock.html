@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="console"><head><meta charset="utf-8">
+<title>L3 mock &mdash; concentric at m and l (THROWAWAY, s227 confirm pass)</title>
+<!-- THROWAWAY MOCK for reviews/CONFIRM-PASS-2026-08-31-v1.html rows 6 and 7. Specimen construction
+     COPIED VERBATIM from reviews/SEGMENTED-RULING-2026-08-30-v1.html (the canon .cn-segmented-control
+     atom under the BUILT canon.css, four vars re-declared inline). Nothing re-drawn, nothing minted.
+     TODAY values are the console tokens at this HEAD; CONCENTRIC thumb = track - track padding. -->
+<link rel="stylesheet" href="/sessions/serene-hopeful-pasteur/mnt/UX-design/knowledge/canon/canon.css">
+<link rel="stylesheet" href="/sessions/serene-hopeful-pasteur/mnt/UX-design/knowledge/canon/type.css">
+<style>
+ body{margin:0;padding:20px;background:#fff;color:#1a1a1a;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+ .pair{width:640px;padding:16px 18px;border:1px solid #ccc;box-sizing:border-box;background:#fff;margin:0 0 22px}
+ .scale{font:600 13px ui-monospace,Menlo,monospace;letter-spacing:.08em;margin:0 0 14px;overflow:hidden}
+ .law{float:right;font-weight:400;opacity:.55;text-transform:uppercase;font-size:10px;letter-spacing:.1em}
+ .ba{display:flex;gap:26px;align-items:flex-start}
+ .col{flex:1 1 0;min-width:0}
+ .tag{display:block;font:600 9px ui-monospace,Menlo,monospace;letter-spacing:.12em;opacity:.5;margin-bottom:10px}
+ .tag.now{opacity:1;color:#DA1A00}
+ .col code{display:block;margin-top:10px;font-size:10px;opacity:.7;font-family:ui-monospace,Menlo,monospace;line-height:1.4}
+ .arith{font:12px ui-monospace,Menlo,monospace;margin:12px 0 0;opacity:.85}
+</style></head><body data-theme="light">
+<div class="pair" id="pm"><div class="scale">M &mdash; medium<span class="law">console &middot; light</span></div><div class="ba"><div class="col"><span class="tag">TODAY &mdash; tuned dial</span><div class="cn-segmented-control" style="--seg-h-m:44px;--seg-pad-m:2px;--seg-rad-m:10px;--seg-thumb-m:4px"><div class="seg m" role="group" aria-label="today"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">One</button><button type="button" aria-pressed="false">Two</button></div></div><code>h 44 &middot; pad 2<br>track 10 &middot; thumb 4</code></div><div class="col"><span class="tag now">IF CONCENTRIC EXTENDS</span><div class="cn-segmented-control" style="--seg-h-m:44px;--seg-pad-m:2px;--seg-rad-m:10px;--seg-thumb-m:8px"><div class="seg m" role="group" aria-label="concentric"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">One</button><button type="button" aria-pressed="false">Two</button></div></div><code>h 44 &middot; pad 2<br>track 10 &middot; thumb 8</code></div></div><p class="arith">concentric: track 10 &minus; track padding 2 = thumb 8 &nbsp;(today&rsquo;s 4 is the tuned dial)</p></div><div class="pair" id="pl"><div class="scale">L &mdash; large<span class="law">console &middot; light</span></div><div class="ba"><div class="col"><span class="tag">TODAY &mdash; tuned dial</span><div class="cn-segmented-control" style="--seg-h-l:48px;--seg-pad-l:4px;--seg-rad-l:12px;--seg-thumb-l:6px"><div class="seg l" role="group" aria-label="today"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">One</button><button type="button" aria-pressed="false">Two</button></div></div><code>h 48 &middot; pad 4<br>track 12 &middot; thumb 6</code></div><div class="col"><span class="tag now">IF CONCENTRIC EXTENDS</span><div class="cn-segmented-control" style="--seg-h-l:48px;--seg-pad-l:4px;--seg-rad-l:12px;--seg-thumb-l:8px"><div class="seg l" role="group" aria-label="concentric"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">One</button><button type="button" aria-pressed="false">Two</button></div></div><code>h 48 &middot; pad 4<br>track 12 &middot; thumb 8</code></div></div><p class="arith">concentric: track 12 &minus; track padding 4 = thumb 8 &nbsp;(today&rsquo;s 6 is the tuned dial)</p></div><script>
+    function moveInd(seg){ var ind=seg.querySelector('.ind'); if(!ind) return;
+      var a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+      var sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+    function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+    document.querySelectorAll('.seg').forEach(function(seg){
+      seg.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){
+        seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed', String(x===b));}); moveInd(seg); }); });
+    });
+    addEventListener('resize', placeAll);
+    addEventListener('load', placeAll);
+    placeAll();
+</script>
+</body></html>

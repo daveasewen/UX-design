@@ -1,0 +1,25 @@
+from playwright.sync_api import sync_playwright
+U="file:///sessions/serene-hopeful-pasteur/mnt/UX-design/reviews/CONFIRM-PASS-2026-08-31-v1.html"
+with sync_playwright() as p:
+    b=p.chromium.launch()
+    pg=b.new_page(viewport={'width':1000,'height':1100},device_scale_factor=1)
+    errs=[]; pg.on('console', lambda m: errs.append(m.type+':'+m.text[:160]) if m.type=='error' else None)
+    pg.on('pageerror', lambda e: errs.append('PAGEERROR:'+str(e)[:200]))
+    pg.goto(U); pg.wait_for_timeout(900)
+    print("CONSOLE ERRORS:", errs)
+    print("rows total:", pg.eval_on_selector_all('section.row','e=>e.length'))
+    print("controlled:", pg.eval_on_selector_all('section.row[data-verbs]','e=>e.length'))
+    print("counter:", pg.inner_text('#cAll'))
+    print("imgs broken:", pg.evaluate("()=>[...document.images].filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.getAttribute('src'))"))
+    print("row7 verbs:", pg.eval_on_selector_all('section.row[data-id="L3-l"] .verbs label','e=>e.map(x=>x.textContent)'))
+    # drive it
+    pg.check('section.row[data-id="C-SET"] input[value="confirm"]')
+    pg.fill('#c-L8','make it square then')
+    pg.check('section.row[data-id="L8"] input[value="flinch"]')
+    pg.check('section.row[data-id="L3-l"] input[value="concentric"]')
+    pg.wait_for_timeout(200)
+    print("counter after:", pg.inner_text('#cAll'))
+    print("--- PROMPT ---"); print(pg.inner_text('#prompt'))
+    print("horiz overflow:", pg.evaluate("()=>document.documentElement.scrollWidth>document.documentElement.clientWidth"))
+    pg.screenshot(path='scratch/verify-light-top.png', clip={'x':0,'y':0,'width':1000,'height':1100})
+    b.close()
