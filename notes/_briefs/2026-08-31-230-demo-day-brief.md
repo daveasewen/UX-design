@@ -18,6 +18,20 @@ test run took ~5 rounds of fettling to reach. Audience register: internal — pr
 capability, roadmap. ⚠ Public-positioning fence applies: abstract framing ("lovable on
 rails", Discover/Create/Craft/Dispatch), never gate/token mechanics.
 
+## ⛔ PREMISE CORRECTION — Dave, #230 (2026-08-31), verbatim
+
+> "the design I provided shouldn't be regarded as 'good' apart from visually good, it is
+> what I want to get to as soon as possible but the code will be a mess because it was vibed
+> without using the design skill initially. It was just a prompt with a few rounds after."
+
+**What this changes:** `dashboards/international-banking-dashboard.canon.html` is the VISUAL
+standard only. Its code is explicitly disowned — nothing in it is ported, copied, or treated
+as an example. "Reach Dave's result" = reach THAT LOOK via the clean path (canon tokens,
+components, the regen serial). The regen-diff's "8 dave-improvements" are visual intents
+canon lacks, to be implemented canon-side from scratch, never lifted from his file. The
+same fence applies to the 8 GPT-modified files in his pack copy: treat as findings, re-derive
+any fix properly.
+
 ## The evidence base (do not rebuild any of it)
 
 - **His test run** (2026-08-29, corp machine, Copilot/GPT-Sol, cold, no skills):
