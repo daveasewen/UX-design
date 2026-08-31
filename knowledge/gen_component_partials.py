@@ -21,6 +21,13 @@ Registry: knowledge/component-types.json (ONE registry, both halves — ADR-0013
                   .declarations — substrings the consumer's CSS must contain
     $manifestBinds  var -> token path bindings every member's #token-manifest must carry
   component-type/<group>/$members/<Name>: {role:"source"} | {selector:".their-control"}
+    $scan         MEMBERSHIP COMPLETENESS (#229) — {selectors:[…], $exempt:{Name: reason}}.
+                  A partial group holds its MEMBERS identical and is blind to a snippet that
+                  grows the same control and never joins; that blindness shipped four square
+                  segmented controls for three sessions (#227 A1's hand sweep missed them).
+                  With $scan, every snippet declaring a live CSS rule on one of the selectors
+                  must be a member or carry a reasoned exemption — fail-loud both ways, and
+                  both staleness directions (rotted exemption / stale member) too.
 
 Markers (single-line comments, inside <style>):
   source atom:  /* ===== PARTIAL <name> START ... ===== */   CSS   /* ===== PARTIAL <name> END ===== */
@@ -56,7 +63,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
-import json, os, re, sys
+import glob, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
@@ -373,6 +380,100 @@ def check_caches(reg):
                                  f"!= alias target {node['$alias']} = {want}")
     return fails
 
+# ------------------------------------------------------------------ membership scan (#229)
+# THE SECOND HALF OF A PARTIAL GROUP, and the half the first three recurrences needed.
+#
+# A $partials group holds its MEMBERS byte-identical — and is completely blind to a snippet that
+# grows the same control and never joins. That blindness is not hypothetical: #227's A1 sweep
+# repaired the segmented radii in eight snippets BY HAND and missed four, which then rendered a
+# square track, thumb AND hover in every rounded theme until Dave saw it at #229. A hand sweep is
+# an instrument nobody is obliged to run twice; this one runs on every build.
+#
+# A group opts in with a "$scan": {selectors: [...], $exempt: {snippet: reason}} block. Every
+# snippet declaring a LIVE CSS RULE on one of those selectors must be a registered member or carry
+# a reasoned exemption. Fail-loud in both directions, and in BOTH staleness directions too: an
+# exemption whose file no longer declares the selector refuses (a rotted exemption hides the next
+# real one), and a member that declares no such rule refuses (a stale registry entry).
+#
+# ⛔ WHAT IT CANNOT SEE, stated so nobody mistakes green for correct: it is a TEXT scan of the
+# snippet's CSS. It proves MEMBERSHIP, never geometry — it cannot tell you a thumb's inset is
+# wrong, that two boxes are not actually coincident, or that a token's value is bad. Only a render
+# and an eye do that.
+STYLE_RE       = re.compile(r'<style[^>]*>(.*?)</style>', re.S)
+CSS_COMMENT_RE = re.compile(r'/\*.*?\*/', re.S)
+RULE_SEL_RE    = re.compile(r'([^{}]+)\{')
+
+def declares_selector(html, selectors):
+    """Which of `selectors` this document declares a LIVE CSS RULE on.
+
+    ⛔ Read from the COMMENT-MASKED copy (#211 lane R6 discipline): a `<style>` block sitting
+    inside an HTML comment is dead CSS and must not enrol a file in a group. CSS comments are
+    stripped separately — the ds-008 lesson: prose naming a selector is not a rule (Data-grid's
+    header says `.seg` is a blast radius it must not join, and it must not be enrolled for saying
+    so). Only SELECTOR position counts, so `.seg` inside a JS string or in markup is invisible;
+    word-boundary matching keeps `.dgseg` and `.seg-x` out.
+    """
+    found = set()
+    for m in STYLE_RE.finditer(live_text(html)):
+        css = CSS_COMMENT_RE.sub("", m.group(1))
+        for sel in RULE_SEL_RE.findall(css):
+            for s in selectors:
+                if s not in found and re.search(re.escape(s) + r'(?![\w-])', sel):
+                    found.add(s)
+    return found
+
+def scan_hits(selectors):
+    """{snippet name: [selectors it declares]} across every snippet in the tree."""
+    hits = {}
+    for path in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
+        got = declares_selector(open(path).read(), selectors)
+        if got:
+            hits[os.path.basename(path)[:-len(".reference.html")]] = sorted(got)
+    return hits
+
+def check_scan(gname, g, hits=None):
+    """Membership completeness for one group. `hits` injectable so the selftest can drive the
+    logic on a fixture without the live tree."""
+    scan = g.get("$scan")
+    if not scan:
+        return []
+    sels = scan.get("selectors") or []
+    if not sels:
+        return [f"{gname}/$scan: no selectors declared — a scan with nothing to look for cannot "
+                f"fail, and an instrument that cannot fail is not one"]
+    exempt = scan.get("$exempt") or {}
+    if not isinstance(exempt, dict):
+        return [f'{gname}/$scan: "$exempt" must be an object {{snippet: reason}}']
+    members = set(g.get("$members") or {})
+    fails = []
+    both = sorted(members & set(exempt))
+    if both:
+        fails.append(f"{gname}/$scan: {both} are BOTH registered members and exempt — the two "
+                     f"declarations contradict")
+    for n, why in sorted(exempt.items()):
+        if not (isinstance(why, str) and why.strip()):
+            fails.append(f'{gname}/$scan: $exempt["{n}"] has no reason — an exemption without a '
+                         f"stated reason is indistinguishable from the drift this scan exists to catch")
+    if hits is None:
+        hits = scan_hits(sels)
+    for name, got in sorted(hits.items()):
+        if name in members or name in exempt:
+            continue
+        fails.append(f"{gname}/$scan: {name} declares {got} but is NOT a member of the `{gname}` "
+                     f"group and carries no $exempt entry. A control outside its group drifts "
+                     f"silently — this is the #227 missed-sweep class, measured. Register it "
+                     f"(AUTO-PARTIAL markers + requires.vars + manifest binds), or add a $exempt "
+                     f"entry saying why it is not one of these.")
+    for name in sorted(members):
+        if name not in hits:
+            fails.append(f"{gname}/$scan: member {name} declares none of {sels} — a member that "
+                         f"carries no such rule is a stale registry entry")
+    for name in sorted(exempt):
+        if name not in hits:
+            fails.append(f"{gname}/$scan: $exempt names {name}, which declares none of {sels} any "
+                         f"more — a rotted exemption hides the next real one; remove it")
+    return fails
+
 # ------------------------------------------------------------------ main pass
 def run(write):
     reg = load_registry()
@@ -380,6 +481,7 @@ def run(write):
     fails += check_caches(reg)
     for gname, g in groups(reg).items():
         members = g.get("$members", {})
+        fails += check_scan(gname, g)          # #229 — membership completeness, before injection
         for pname, partial in (g.get("$partials") or {}).items():
             source = partial["source"]
             root_sel = partial["rootSelector"]
@@ -793,6 +895,70 @@ def selftest():
     if lm is None or filled[lm.start(2):lm.end(2)] != "\nX\n  ":
         fails.append("live_match lost a REAL AUTO-PARTIAL payload span (mask over-reached, or "
                      "the group span stopped addressing the original bytes)")
+    # 5h. #229 — THE MEMBERSHIP SCAN. Every arm below is a MUTATION: the gate must go red on a
+    #     planted defect and stay green on the control. An instrument that has never failed has
+    #     never been tested [[instrument-without-a-consumer]].
+    #  (i) declares_selector: a real rule counts; prose, dead CSS and a near-miss class do not
+    live_css = '<style>\n.seg{border:1px solid red;}\n.seg .ind{width:0;}\n</style>'
+    if declares_selector(live_css, [".seg"]) != {".seg"}:
+        fails.append("declares_selector missed a REAL .seg rule (the scan would enrol nobody)")
+    if declares_selector('<style>/* .seg{border:0} in prose */\n.x{color:red}</style>', [".seg"]):
+        fails.append("declares_selector enrolled a file for naming .seg inside a CSS COMMENT "
+                     "(ds-008 class) — Data-grid's header says .seg is a blast radius it must "
+                     "NOT join, and would be enrolled for saying so")
+    if declares_selector('<!-- ' + live_css + ' -->', [".seg"]):
+        fails.append("declares_selector read a <style> block sitting inside an HTML comment as "
+                     "live CSS (#211 lane R6 class)")
+    if declares_selector('<style>.dgseg{x:1} .seg-x{y:2}</style>', [".seg"]):
+        fails.append("declares_selector matched .dgseg / .seg-x — word-boundary matching is gone, "
+                     "and Data-grid's deliberately namespaced control would be dragged in")
+    if declares_selector('<script>document.querySelectorAll(".seg")</script>', [".seg"]):
+        fails.append("declares_selector matched a .seg string in JS — only SELECTOR position in a "
+                     "<style> block may enrol a file")
+    if declares_selector('<style>@media (min-width:40em){ .seg .ind{transition:none;} }</style>',
+                         [".seg"]) != {".seg"}:
+        fails.append("declares_selector missed a rule nested in an @media block (View-options' "
+                     "reduced-motion .seg .ind rule is exactly this shape)")
+    #  (ii) the gate's logic, driven on a fixture (hits injected — no live tree needed)
+    fixture = {"$members": {"A": {"role": "source"}, "B": {"selector": ".seg"}},
+               "$scan": {"selectors": [".seg"], "$exempt": {"C": "a stated reason"}}}
+    hits_ok = {"A": [".seg"], "B": [".seg"], "C": [".seg"]}
+    if check_scan("g", fixture, hits_ok):
+        fails.append("membership scan failing on a clean fixture: %s"
+                     % "; ".join(check_scan("g", fixture, hits_ok)))
+    #      an UNREGISTERED control must go red — the #227 missed-sweep class itself
+    got = check_scan("g", fixture, dict(hits_ok, D=[".seg"]))
+    if not any("D declares" in f and "NOT a member" in f for f in got):
+        fails.append("membership scan did NOT catch an unregistered .seg (the whole point: this "
+                     "is the defect that shipped square controls for three sessions)")
+    #      a BLANK exemption reason must go red
+    blank = {"$members": fixture["$members"],
+             "$scan": {"selectors": [".seg"], "$exempt": {"C": "   "}}}
+    if not any("has no reason" in f for f in check_scan("g", blank, hits_ok)):
+        fails.append("membership scan accepted an exemption with no stated reason")
+    #      member AND exempt at once must go red
+    both = {"$members": dict(fixture["$members"], C={"selector": ".seg"}),
+            "$scan": fixture["$scan"]}
+    if not any("BOTH registered members and exempt" in f for f in check_scan("g", both, hits_ok)):
+        fails.append("membership scan accepted a snippet that is both a member and exempt")
+    #      a ROTTED exemption (file no longer declares the selector) must go red
+    if not any("rotted exemption" in f
+               for f in check_scan("g", fixture, {"A": [".seg"], "B": [".seg"]})):
+        fails.append("membership scan accepted an exemption whose file no longer declares the "
+                     "selector — a rotted exemption hides the next real one")
+    #      a STALE member (registered, declares nothing) must go red
+    if not any("stale registry entry" in f
+               for f in check_scan("g", fixture, {"A": [".seg"], "C": [".seg"]})):
+        fails.append("membership scan accepted a member that declares none of its selectors")
+    #      a group with no $scan is untouched; a $scan with no selectors refuses
+    if check_scan("g", {"$members": {}}, {}):
+        fails.append("check_scan invented failures for a group that declares no $scan")
+    if not check_scan("g", {"$members": {}, "$scan": {"selectors": []}}, {}):
+        fails.append("a $scan with no selectors was accepted — an instrument that cannot fail")
+    #  (iii) the LIVE registry must pass its own scan (same posture as arm 6 below)
+    live_scan = [x for gn, gg in groups(load_registry()).items() for x in check_scan(gn, gg)]
+    if live_scan:
+        fails.append("live registry membership scan failing: %s" % "; ".join(live_scan))
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)

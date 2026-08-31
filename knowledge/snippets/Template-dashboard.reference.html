@@ -191,6 +191,7 @@
     --spark-base-alpha:.10;
     /* shape — semantic radius tiers (ADR-0010). Mono/Legacy square; console forks via canon.css. */
     --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
+    --seg-rad-s:0; --seg-thumb-s:0;   /* Segmented-control.reference.html, verbatim (s229) */
     --press-travel:2; --press-darken:0.94;              /* Button B-D7 press physics */
     --target-min:44px;                                  /* Layout-utilities — target/min */
     --l-margin:16px; --l-gutter:16px;                   /* Layout-utilities — layout/app/margin+gutter */
@@ -216,6 +217,7 @@
     --data-grid:#484848; --grid-alpha:1;
     --spark-base-alpha:.16;   /* see the light block — W-59 collision rename */
     --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
+    --seg-rad-s:0; --seg-thumb-s:0;   /* Segmented-control.reference.html, verbatim (s229) */
     --press-travel:2; --press-darken:0.94;
     --target-min:44px;
     --l-margin:16px; --l-gutter:16px;
@@ -354,7 +356,24 @@
      ⚠ `.seg button` is a type.css blast radius (it is appended to `.t-cm-caption` AND to
      `.t-cm-slot`), so joining this class is how the switcher gets its type and its 20px slot
      WITHOUT a declaration here. That is the intended route, not a coincidence. ---- */
-  .seg{position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
+  /* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
   .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--move), width var(--move);}
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
@@ -363,6 +382,19 @@
   .seg button[aria-pressed="true"]{color:var(--on-sel);}
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
   .seg svg{width:16px; height:16px; fill:currentColor;}
+  /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+  /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .seg{border-radius:var(--seg-rad);}
+  .seg .ind{border-radius:var(--seg-thumb);}
+  .seg button{border-radius:var(--seg-thumb);}
+  /* ===== AUTO-PARTIAL seg-concentric END ===== */
   @media (prefers-reduced-motion: reduce){ .seg .ind{ transition:none !important; } }
 
   /* ============================================================================================
@@ -907,6 +939,8 @@
             "--quat-hover": "button/quaternary/background/hover",
             "--sel": "secondary/background/default",
             "--on-sel": "text/on-inverse",
+            "--seg-rad-s": "border-radius/segmented-container/s",
+            "--seg-thumb-s": "border-radius/segmented-thumb/s",
             "--up": "rag/success",
             "--down": "rag/error",
             "--spark-up": "rag/success-ink",

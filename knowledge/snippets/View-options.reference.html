@@ -19,12 +19,32 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF;
+    /* ---- Segmented-control.reference.html, verbatim (s229) ---- */
+    --seg-rad-s:0; --seg-thumb-s:0; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A;
+    --seg-rad-s:0; --seg-thumb-s:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   /* segmented switcher with a SLIDING selected-fill */
-  .seg{position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
+  /* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
   .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--ease), width var(--ease);}                         /* the active fill that slides */
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
@@ -35,6 +55,19 @@
   .seg button[aria-pressed="true"]{color:var(--on-sel);}                     /* fill now comes from the sliding .ind behind */
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
   .seg svg{width:16px; height:16px; fill:currentColor;}
+  /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+  /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .seg{border-radius:var(--seg-rad);}
+  .seg .ind{border-radius:var(--seg-thumb);}
+  .seg button{border-radius:var(--seg-thumb);}
+  /* ===== AUTO-PARTIAL seg-concentric END ===== */
 
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
@@ -54,7 +87,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "View options",
-    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default" },
+    "vars": { "--seg-rad-s": "border-radius/segmented-container/s", "--seg-thumb-s": "border-radius/segmented-thumb/s", "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
       { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },

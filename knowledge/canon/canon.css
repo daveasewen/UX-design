@@ -3726,6 +3726,8 @@
 .cn-view-options{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --surface: var(--tertiary-background-default);
   --hover: var(--tertiary-background-hover);
   --sel: var(--secondary-background-default);
@@ -3740,7 +3742,24 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-view-options) :is(button, :where(.cn-view-options) a, :where(.cn-view-options) label, :where(.cn-view-options) span, :where(.cn-view-options) small, :where(.cn-view-options) strong, :where(.cn-view-options) em, :where(.cn-view-options) b, :where(.cn-view-options) i, :where(.cn-view-options) th, :where(.cn-view-options) td, :where(.cn-view-options) dt, :where(.cn-view-options) dd, :where(.cn-view-options) li, :where(.cn-view-options) figcaption, :where(.cn-view-options) legend, :where(.cn-view-options) caption, :where(.cn-view-options) summary, :where(.cn-view-options) output, :where(.cn-view-options) time, :where(.cn-view-options) input[type=text], :where(.cn-view-options) input[type=search], :where(.cn-view-options) input[type=email], :where(.cn-view-options) input[type=tel], :where(.cn-view-options) input[type=url], :where(.cn-view-options) input[type=password], :where(.cn-view-options) input[type=number], :where(.cn-view-options) input:not([type]), :where(.cn-view-options) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* segmented switcher with a SLIDING selected-fill */
-:where(.cn-view-options) .seg{position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
+/* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+:where(.cn-view-options) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
 :where(.cn-view-options) .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--ease), width var(--ease);}
 /* the active fill that slides */
@@ -3754,6 +3773,19 @@
 /* fill now comes from the sliding .ind behind */
 :where(.cn-view-options) .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
 :where(.cn-view-options) .seg svg{width:16px; height:16px; fill:currentColor;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-view-options) .seg{border-radius:var(--seg-rad);}
+:where(.cn-view-options) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-view-options) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 :where(.cn-view-options) .seg .ind{transition:none !important;}
@@ -7285,18 +7317,30 @@
      thumb radii are geometrically correct for this construction. */
 :where(.cn-chart-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
 :where(.cn-chart-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    transition:left var(--ease), width var(--ease);}
 :where(.cn-chart-bar) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-bar) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-chart-bar) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-bar) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
 :where(.cn-chart-bar) .seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-bar) .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
 :where(.cn-chart-bar) .seg.sm button{padding:0 8px;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-chart-bar) .seg{border-radius:var(--seg-rad);}
+:where(.cn-chart-bar) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-chart-bar) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 :where(.cn-chart-bar) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 :where(.cn-chart-bar) .dv-off{display:none !important;}
@@ -8324,22 +8368,35 @@
 :where(.cn-chart-combo) .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
 :where(.cn-chart-combo) .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
 /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
-:where(.cn-chart-combo) .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
+:where(.cn-chart-combo) .dv-toggle-seg{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
     padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
     /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
        segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
        Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
-       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
-    border-radius:var(--seg-rad-xs);}
-:where(.cn-chart-combo) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
-    border-radius:var(--seg-thumb-xs);}
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source.
+       s229: BOTH radii moved into the group's injected block below; this rule now only
+       SELECTS the xs scale into the shared locals. */}
+:where(.cn-chart-combo) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
 :where(.cn-chart-combo) .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-combo) .dv-toggle-seg button{border-radius:var(--seg-thumb-xs); position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
+:where(.cn-chart-combo) .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-combo) .dv-toggle-seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-combo) .dv-toggle-seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
 :where(.cn-chart-combo) .dv-toggle-seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-chart-combo) .dv-toggle-seg{border-radius:var(--seg-rad);}
+:where(.cn-chart-combo) .dv-toggle-seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-chart-combo) .dv-toggle-seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 :where(.cn-chart-combo) .dv-off{display:none !important;}
 /* baked-variant switching — geometry generated, never computed */
 :where(.cn-chart-combo) .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
@@ -8499,18 +8556,30 @@
      thumb radii are geometrically correct for this construction. */
 :where(.cn-chart-donut) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
 :where(.cn-chart-donut) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    transition:left var(--ease), width var(--ease);}
 :where(.cn-chart-donut) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-donut) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-chart-donut) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-donut) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
 :where(.cn-chart-donut) .seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-donut) .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
 :where(.cn-chart-donut) .seg.sm button{padding:0 8px;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-chart-donut) .seg{border-radius:var(--seg-rad);}
+:where(.cn-chart-donut) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-chart-donut) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 :where(.cn-chart-donut) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 /* The pre-DV-D11 legend chrome (.dv-legend / .dv-legbtn / .dv-quiet) was DELETED here on
@@ -8940,18 +9009,18 @@
 /* single TOGGLES (Target line · Last year) = LITERALLY single-cell segmented controls (Dave
      2026-07-24): 2px inset + 1px frame, the fill FLOATS in the gutter — the view switch's exact
      construction, one cell. ON = fill shows (aria-pressed, via :has); OFF = empty framed cell. */
-:where(.cn-chart-line) .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
+:where(.cn-chart-line) .dv-toggle-seg{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
     padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
     /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
        segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
        Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
-       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
-    border-radius:var(--seg-rad-xs);}
-:where(.cn-chart-line) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
-    border-radius:var(--seg-thumb-xs);}
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source.
+       s229: BOTH radii moved into the group's injected block below; this rule now only
+       SELECTS the xs scale into the shared locals. */}
+:where(.cn-chart-line) .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
 :where(.cn-chart-line) .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-line) .dv-toggle-seg button{border-radius:var(--seg-thumb-xs); position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
+:where(.cn-chart-line) .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-line) .dv-toggle-seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-line) .dv-toggle-seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
@@ -8970,19 +9039,31 @@
      thumb radii are geometrically correct for this construction. */
 :where(.cn-chart-line) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
 :where(.cn-chart-line) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    transition:left var(--ease), width var(--ease);}
 /* active fill — floats in the 2px inset, slides */
 :where(.cn-chart-line) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-line) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-chart-line) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-line) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
 :where(.cn-chart-line) .seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-line) .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
 :where(.cn-chart-line) .seg.sm button{padding:0 8px;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-chart-line) :is(.seg, :where(.cn-chart-line) .dv-toggle-seg){border-radius:var(--seg-rad);}
+:where(.cn-chart-line) :is(.seg, :where(.cn-chart-line) .dv-toggle-seg) .ind{border-radius:var(--seg-thumb);}
+:where(.cn-chart-line) :is(.seg, :where(.cn-chart-line) .dv-toggle-seg) button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 /* HIT AREA — invisible ::before target ≥44 so the compact segment still meets the HSBC 44 default. */
 :where(.cn-chart-line) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
@@ -9137,18 +9218,30 @@
      thumb radii are geometrically correct for this construction. */
 :where(.cn-chart-pie) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
 :where(.cn-chart-pie) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    transition:left var(--ease), width var(--ease);}
 :where(.cn-chart-pie) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-chart-pie) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-chart-pie) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
 :where(.cn-chart-pie) .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
 :where(.cn-chart-pie) .seg button[aria-pressed="true"]{color:var(--page);}
 :where(.cn-chart-pie) .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
 :where(.cn-chart-pie) .seg.sm button{padding:0 8px;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-chart-pie) .seg{border-radius:var(--seg-rad);}
+:where(.cn-chart-pie) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-chart-pie) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 :where(.cn-chart-pie) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 /* DV-D11 LEGEND MODEL — runs on canon/dv-legend.js, copied verbatim from the donut. */
@@ -11536,8 +11629,8 @@
      inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
      thumb radii are geometrically correct for this construction. */
 :where(.cn-filter-toolbar-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
-    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top; border-radius:var(--seg-rad);}
-:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
 :where(.cn-filter-toolbar-bar) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-filter-toolbar-bar) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
@@ -11546,8 +11639,7 @@
      Segmented-control.reference.html itself — canon/type.css already binds `.seg.sm button` (12/500)
      and `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9); every instance in this file's
      markup carries an explicit `.sm`/`.md` size class, so the composite always resolves. */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-filter-toolbar-bar) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-filter-toolbar-bar) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text); cursor:pointer; transition:color var(--ease);}
 :where(.cn-filter-toolbar-bar) .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
 :where(.cn-filter-toolbar-bar) .seg button[aria-pressed="true"]{color:var(--on-sel);}
@@ -11557,6 +11649,19 @@
 :where(.cn-filter-toolbar-bar) .seg.md button{height:32px; padding:0 12px;}
 :where(.cn-filter-toolbar-bar) .seg.icons button{padding:0; width:44px;}
 :where(.cn-filter-toolbar-bar) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit); min-height:var(--hit); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-filter-toolbar-bar) .seg{border-radius:var(--seg-rad);}
+:where(.cn-filter-toolbar-bar) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-filter-toolbar-bar) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 /* ===== Tags.reference.html, verbatim (dismissible + applied-filters bar) ===== */
 /* .tag's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-caption` (14/400, exact match)
      instead of the raw font (Tags.reference.html itself still carries this raw declaration —
@@ -14426,13 +14531,11 @@
      derivation (s200-D1) is that the disk carries concrete numbers and the CSS only READS them. */
 :where(.cn-segmented-control) .seg{--seg-pad:var(--seg-pad-s); --seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-inset:var(--seg-inset-s);
     position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad);
-    border:1px solid var(--border); background:var(--surface); border-radius:var(--seg-rad); vertical-align:top;}
+    border:1px solid var(--border); background:var(--surface); vertical-align:top;}
 :where(.cn-segmented-control) .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0;
-    border-radius:var(--seg-thumb);
     transition:left var(--ease), width var(--ease);}
 /* the active fill — floats in the minted inset, slides */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-segmented-control) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-segmented-control) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
@@ -14444,6 +14547,32 @@
 /* fill comes from the sliding .ind behind */
 :where(.cn-segmented-control) .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
 :where(.cn-segmented-control) .seg svg{width:16px; height:16px; fill:currentColor;}
+/* ===== THE CONCENTRIC CONTRACT — the source PARTIAL block (s229, ADR-0013) =====
+     ⛔ THIS IS THE ONLY PLACE THE SEGMENTED CONTROL'S RADII ARE AUTHORED, in this file and in
+     every member of the `segmented` group. Injected verbatim into each consumer between its
+     AUTO-PARTIAL markers by gen_component_partials.py, selector-mapped per member.
+
+     WHY IT EXISTS (RCA, three recurrences): the control's CSS was copy-pasted into twelve
+     snippets with no shared block, so every repair had to be re-applied N times by hand and any
+     box missed stayed missed. #227's A1 sweep repaired the track+thumb in eight files and missed
+     four entirely; #229's F1 found the BUTTON — a box that only paints in :hover/:focus — absent
+     from all twelve. Both were the same class: N hand-maintained copies of one geometry contract.
+
+     THE THREE BOXES ARE ONE CONCENTRIC FAMILY. The track is the outer box; the thumb and the
+     button are geometrically the SAME box (both fill the track's content box), so they read the
+     SAME minted local — concentric by construction, never a literal, never independently chosen.
+     Binding the button on its BASE rule (not on :hover) is deliberate: hover, focus-visible and
+     any future state all inherit the corner from the box itself.
+
+     The locals (--seg-rad / --seg-thumb) are SCALE-SELECTED by each member's own rules; this
+     block never names a scale, which is what lets one text serve the atom's four-scale grammar,
+     the charts' `s`/`xs` pair and the toolbars' single scale alike. ⛔ NEVER hardcode a radius
+     here: mint-time derivation (s200-D1) puts concrete numbers on disk; the CSS only READS them. */
+/* ===== PARTIAL seg-concentric START (segmented) ===== */
+:where(.cn-segmented-control) .seg{border-radius:var(--seg-rad);}
+:where(.cn-segmented-control) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-segmented-control) .seg button{border-radius:var(--seg-thumb);}
+/* ===== PARTIAL seg-concentric END ===== */
 /* ===== SIZE, TIER 1 — THE MINTED SCALE GRAMMAR (s201-D1, dimension-first) =====
      `--seg-h-*` is the TOTAL OUTER height (border box), so the track carries it and the buttons
      fill it — no calc, no derivation, nothing to drift. box-sizing is set explicitly on .seg
@@ -16520,6 +16649,8 @@
   --quat-hover: var(--button-quaternary-background-hover);
   --sel: var(--secondary-background-default);
   --on-sel: var(--text-on-inverse);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --up: var(--rag-success);
   --down: var(--rag-error);
   --spark-up: var(--rag-success-ink);
@@ -16687,7 +16818,24 @@
      ⚠ `.seg button` is a type.css blast radius (it is appended to `.t-cm-caption` AND to
      `.t-cm-slot`), so joining this class is how the switcher gets its type and its 20px slot
      WITHOUT a declaration here. That is the intended route, not a coincidence. ---- */
-:where(.cn-template-dashboard) .seg{position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
+/* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+:where(.cn-template-dashboard) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
 :where(.cn-template-dashboard) .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--move), width var(--move);}
 :where(.cn-template-dashboard) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
@@ -16696,6 +16844,19 @@
 :where(.cn-template-dashboard) .seg button[aria-pressed="true"]{color:var(--on-sel);}
 :where(.cn-template-dashboard) .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
 :where(.cn-template-dashboard) .seg svg{width:16px; height:16px; fill:currentColor;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-template-dashboard) .seg{border-radius:var(--seg-rad);}
+:where(.cn-template-dashboard) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-template-dashboard) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 @media (prefers-reduced-motion: reduce){
 :where(.cn-template-dashboard) .seg .ind{transition:none !important;}
 }
@@ -17751,6 +17912,8 @@
   --quat-hover: var(--button-quaternary-background-hover);
   --sel: var(--secondary-background-default);
   --on-sel: var(--text-on-inverse);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --success: var(--rag-success);
   --warning: var(--rag-warning);
   --error: var(--rag-error);
@@ -17820,7 +17983,24 @@
 :where(.cn-template-list-index) .btn.quaternary{background:transparent; color:var(--quat-label);}
 :where(.cn-template-list-index) .btn.quaternary:hover{background:var(--quat-hover);}
 :where(.cn-template-list-index) .btn svg{width:16px; height:16px; fill:currentColor; flex:none;}
-:where(.cn-template-list-index) .seg{position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
+/* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+:where(.cn-template-list-index) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
 :where(.cn-template-list-index) .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--move), width var(--move);}
 :where(.cn-template-list-index) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
@@ -17829,6 +18009,19 @@
 :where(.cn-template-list-index) .seg button[aria-pressed="true"]{color:var(--on-sel);}
 :where(.cn-template-list-index) .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
 :where(.cn-template-list-index) .seg svg{width:16px; height:16px; fill:currentColor;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-template-list-index) .seg{border-radius:var(--seg-rad);}
+:where(.cn-template-list-index) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-template-list-index) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 @media (prefers-reduced-motion: reduce){
 :where(.cn-template-list-index) .seg .ind{transition:none !important;}
 }
@@ -18177,6 +18370,8 @@
   --quat-hover: var(--button-quaternary-background-hover);
   --sel: var(--secondary-background-default);
   --on-sel: var(--text-on-inverse);
+  --seg-rad-s: var(--border-radius-segmented-container-s);
+  --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --up: var(--rag-success);
   --down: var(--rag-error);
   --spark-up: var(--rag-success-ink);
@@ -18303,7 +18498,24 @@
 :where(.cn-template-report) .btn.quaternary:hover{background:var(--quat-hover);}
 :where(.cn-template-report) .btn svg{width:16px; height:16px; fill:currentColor; flex:none;}
 /* ---- the period switcher — View-options `.seg`, via Template-dashboard ---- */
-:where(.cn-template-report) .seg{position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
+/* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
+     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
+     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
+     every theme including Console, on any page carrying this component's scope class rather than
+     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
+     F1 repaired the button in those eight and could not reach here. The permanent fix is the
+     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
+     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
+     without joining. This rule only SELECTS the scale into the shared locals.
+     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
+     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
+     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
+     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
+     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
+     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
+     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
+:where(.cn-template-report) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+    position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
 :where(.cn-template-report) .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
     transition:left var(--move), width var(--move);}
 :where(.cn-template-report) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
@@ -18312,6 +18524,19 @@
 :where(.cn-template-report) .seg button[aria-pressed="true"]{color:var(--on-sel);}
 :where(.cn-template-report) .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
 :where(.cn-template-report) .seg svg{width:16px; height:16px; fill:currentColor;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-template-report) .seg{border-radius:var(--seg-rad);}
+:where(.cn-template-report) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-template-report) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 @media (prefers-reduced-motion: reduce){
 :where(.cn-template-report) .seg .ind{transition:none !important;}
 }
@@ -18713,16 +18938,15 @@
      inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
      thumb radii are geometrically correct for this construction. */
 :where(.cn-template-settings) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
-    position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top; border-radius:var(--seg-rad);}
+    position:relative; display:inline-flex; padding:2px; border:1px solid var(--fborder); background:var(--surface); vertical-align:top;}
 :where(.cn-template-settings) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0;
-    transition:left var(--tset-move), width var(--tset-move); border-radius:var(--seg-thumb);}
+    transition:left var(--tset-move), width var(--tset-move);}
 /* the active fill — floats in the 2px inset, slides */
 :where(.cn-template-settings) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-template-settings) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
 /* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
-/* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-:where(.cn-template-settings) .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+:where(.cn-template-settings) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
@@ -18738,6 +18962,19 @@
 :where(.cn-template-settings) .seg.sm button{height:28px; padding:0 8px;}
 :where(.cn-template-settings) .seg.md button{height:32px; padding:0 12px;}
 :where(.cn-template-settings) .seg.lg button{height:36px; padding:0 16px;}
+/* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+/* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+:where(.cn-template-settings) .seg{border-radius:var(--seg-rad);}
+:where(.cn-template-settings) .seg .ind{border-radius:var(--seg-thumb);}
+:where(.cn-template-settings) .seg button{border-radius:var(--seg-thumb);}
+/* ===== AUTO-PARTIAL seg-concentric END ===== */
 :where(.cn-template-settings) .seg button::before{content:""; position:absolute; z-index:0;
     min-width:var(--target-min); min-height:var(--target-min); width:100%; height:100%;
     top:50%; left:50%; transform:translate(-50%,-50%);}
@@ -23993,6 +24230,8 @@
   --error-tint: #EECDC9;
   --info: #5A85C1;
   --info-tint: #D1DDEE;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #D2E8DA;
   --up: #5DAC7B;
@@ -24009,6 +24248,8 @@
   --error-tint: #60231C;
   --info: #5A85C1;
   --info-tint: #364963;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #355441;
   --up: #5DAC7B;
@@ -24068,6 +24309,8 @@
   --error-tint: #EECDC9;
   --info: #5A85C1;
   --info-tint: #D1DDEE;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #D2E8DA;
   --warning: #D5990B;
@@ -24082,6 +24325,8 @@
   --error-tint: #60231C;
   --info: #5A85C1;
   --info-tint: #364963;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #355441;
   --warning: #D5990B;
@@ -24096,6 +24341,8 @@
   --error-tint: #EECDC9;
   --info: #5A85C1;
   --info-tint: #D1DDEE;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #D2E8DA;
   --up: #5DAC7B;
@@ -24112,6 +24359,8 @@
   --error-tint: #60231C;
   --info: #5A85C1;
   --info-tint: #364963;
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
   --success: #5DAC7B;
   --success-tint: #355441;
   --up: #5DAC7B;
@@ -24267,6 +24516,15 @@
 [data-apollo-theme="console"][data-theme="dark"] .cn-video-player,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-video-player{
   --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-view-options{
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-view-options,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-view-options{
+  --seg-rad-s: 8px;
+  --seg-thumb-s: 6px;
 }
 
 /* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (143 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */

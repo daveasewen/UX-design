@@ -81,12 +81,10 @@
      derivation (s200-D1) is that the disk carries concrete numbers and the CSS only READS them. */
   .seg{--seg-pad:var(--seg-pad-s); --seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-inset:var(--seg-inset-s);
     position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad);
-    border:1px solid var(--border); background:var(--surface); border-radius:var(--seg-rad); vertical-align:top;}
+    border:1px solid var(--border); background:var(--surface); vertical-align:top;}
   .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0;
-    border-radius:var(--seg-thumb);
     transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the minted inset, slides */
-  /* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-  .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
@@ -96,6 +94,33 @@
   .seg button[aria-pressed="true"]{color:var(--on-sel);}                      /* fill comes from the sliding .ind behind */
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
   .seg svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ===== THE CONCENTRIC CONTRACT — the source PARTIAL block (s229, ADR-0013) =====
+     ⛔ THIS IS THE ONLY PLACE THE SEGMENTED CONTROL'S RADII ARE AUTHORED, in this file and in
+     every member of the `segmented` group. Injected verbatim into each consumer between its
+     AUTO-PARTIAL markers by gen_component_partials.py, selector-mapped per member.
+
+     WHY IT EXISTS (RCA, three recurrences): the control's CSS was copy-pasted into twelve
+     snippets with no shared block, so every repair had to be re-applied N times by hand and any
+     box missed stayed missed. #227's A1 sweep repaired the track+thumb in eight files and missed
+     four entirely; #229's F1 found the BUTTON — a box that only paints in :hover/:focus — absent
+     from all twelve. Both were the same class: N hand-maintained copies of one geometry contract.
+
+     THE THREE BOXES ARE ONE CONCENTRIC FAMILY. The track is the outer box; the thumb and the
+     button are geometrically the SAME box (both fill the track's content box), so they read the
+     SAME minted local — concentric by construction, never a literal, never independently chosen.
+     Binding the button on its BASE rule (not on :hover) is deliberate: hover, focus-visible and
+     any future state all inherit the corner from the box itself.
+
+     The locals (--seg-rad / --seg-thumb) are SCALE-SELECTED by each member's own rules; this
+     block never names a scale, which is what lets one text serve the atom's four-scale grammar,
+     the charts' `s`/`xs` pair and the toolbars' single scale alike. ⛔ NEVER hardcode a radius
+     here: mint-time derivation (s200-D1) puts concrete numbers on disk; the CSS only READS them. */
+  /* ===== PARTIAL seg-concentric START (segmented) ===== */
+  .seg{border-radius:var(--seg-rad);}
+  .seg .ind{border-radius:var(--seg-thumb);}
+  .seg button{border-radius:var(--seg-thumb);}
+  /* ===== PARTIAL seg-concentric END ===== */
 
   /* ===== SIZE, TIER 1 — THE MINTED SCALE GRAMMAR (s201-D1, dimension-first) =====
      `--seg-h-*` is the TOTAL OUTER height (border box), so the track carries it and the buttons

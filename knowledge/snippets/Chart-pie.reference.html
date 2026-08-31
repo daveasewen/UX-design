@@ -169,17 +169,29 @@
      thumb radii are geometrically correct for this construction. */
   .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
-    border:1px solid var(--line); background:transparent; vertical-align:top; border-radius:var(--seg-rad);}
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
   .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
-    transition:left var(--ease), width var(--ease); border-radius:var(--seg-thumb);}
+    transition:left var(--ease), width var(--ease);}
   .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}   /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
-  /* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-  .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
   .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
   .seg button[aria-pressed="true"]{color:var(--page);}
   .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
   .seg.sm button{padding:0 8px;}
+  /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+  /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .seg{border-radius:var(--seg-rad);}
+  .seg .ind{border-radius:var(--seg-thumb);}
+  .seg button{border-radius:var(--seg-thumb);}
+  /* ===== AUTO-PARTIAL seg-concentric END ===== */
   .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 

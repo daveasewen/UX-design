@@ -266,22 +266,36 @@
   .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
 
   /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
-  .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
+  .dv-toggle-seg{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);
+    position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
     padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;
     /* s227 canon-gap B6: the single-cell toggle IS the segmented atom's construction, so it takes the
        segmented atom's OWN shape pair (container + floating thumb) at the xs scale the chart bar uses.
        Without these two the toggle stayed square in every rounded theme while its neighbours rounded —
-       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source. */
-    border-radius:var(--seg-rad-xs);}
-  .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);
-    border-radius:var(--seg-thumb-xs);}
+       repaired by hand in a real page (2026-08-30) before it was repaired here, at the source.
+       s229: BOTH radii moved into the group's injected block below; this rule now only
+       SELECTS the xs scale into the shared locals. */
+    }
+  .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
   .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
-  /* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
-  .dv-toggle-seg button{border-radius:var(--seg-thumb-xs); position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
+  .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
     border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
   .dv-toggle-seg button[aria-pressed="true"]{color:var(--page);}
   .dv-toggle-seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
   .dv-toggle-seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+  /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
+     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
+     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+  /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
+/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .dv-toggle-seg{border-radius:var(--seg-rad);}
+  .dv-toggle-seg .ind{border-radius:var(--seg-thumb);}
+  .dv-toggle-seg button{border-radius:var(--seg-thumb);}
+  /* ===== AUTO-PARTIAL seg-concentric END ===== */
 
   .dv-off{display:none !important;}          /* baked-variant switching — geometry generated, never computed */
   .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
