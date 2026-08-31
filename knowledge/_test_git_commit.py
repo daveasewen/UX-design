@@ -163,6 +163,13 @@ def build_fixture(root, script_text, banner):
     # class (#188 doc-row, #191 showroom), and this time the W-33 detector caught it as a red arm
     # in CI run #355 rather than a human noticing 14 arms crashing [[a-crash-is-not-a-fail]].
     write(os.path.join(know, "_build_graph_mention_map.py"), STUB_MENTION_MAP)
+    # #228: the scratch-hygiene probe was wired into _git_commit.sh's --wrap seam THIS session
+    # (Dave: "wire both"). FOURTH occurrence of the blind-harness class (#188 doc-row, #191
+    # showroom, #208 mention-map) — and, as at #208, the W-33 detector caught it as a red arm
+    # rather than a human noticing crashes [[a-crash-is-not-a-fail]]. Caught locally this time,
+    # before the push, because the survey was re-run after the wiring instead of before it.
+    write(os.path.join(know, "_gate_scratch_hygiene.py"),
+          STUB_TMPL.format(var="STUB_SCRATCH_HYGIENE_EXIT", name="_gate_scratch_hygiene.py"))
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
     # The gate's SECOND half asks whether the map differs from HEAD but is unstaged. That
     # question only has a meaningful answer if the map is a TRACKED file, so the fixture commits
@@ -194,6 +201,7 @@ def build_fixture(root, script_text, banner):
         "STUB_SESSION_EXIT": "0",
         "STUB_DOC_ROWS_EXIT": "0",
         "STUB_SHOWROOM_EXIT": "0",
+        "STUB_SCRATCH_HYGIENE_EXIT": "0",
         "STUB_MENTION_MAP_STALE": "0",
         "STUB_MENTION_MAP_REGEN_EXIT": "0",
         # marker lives inside .git so a regeneration never registers as a dirty working path
@@ -392,6 +400,44 @@ def arm_spine_consumer_wrap_blocks(script_text):
         if not staged_empty(root):
             return False, "something was staged despite spine-writer refusal"
         return True, ""
+
+
+def arm_scratch_hygiene_advisory_on_wrap(script_text):
+    """#228 — the scratch-hygiene probe RUNS on --wrap and NEVER blocks, even red.
+
+    The #192 lesson in the doc-row arm's own docstring is the reason this exists: *"a stub
+    existed for this gate since #191 but NOTHING drove it, so STUB_DOC_ROWS_EXIT was never once
+    non-zero — the stub made the arms RUN, not the gate TESTED."* So this arm drives the stub
+    NON-ZERO and asserts the commit lands anyway. That is the whole content of the posture:
+    the gate is ADVISORY at birth and promotion is ⬛ Dave's, so a red probe blocking a wrap
+    would be the defect, not the proof.
+
+    BOTH DIRECTIONS, or it says nothing: it is also asserted ABSENT from a non-wrap commit —
+    a mid-session commit is a correct state to hold scratch in, and a probe that ran there
+    would be reporting litter the session is still using.
+    """
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        env["STUB_SCRATCH_HYGIENE_EXIT"] = "1"
+        before = head_hash(root)
+        rc, out = run_commit(root, env, ["--reconciled", "--wrap", "msg.txt"] + STAGE_PATHS)
+        if rc != 0:
+            return False, "a RED advisory probe BLOCKED a --wrap commit (exit %d); out tail: %s" % (rc, out[-400:])
+        if "STUB _gate_scratch_hygiene.py" not in out:
+            return False, "the probe was not driven on --wrap; out tail: %s" % out[-400:]
+        if "scratch hygiene (ADVISORY" not in out:
+            return False, "the advisory label was not printed; out tail: %s" % out[-400:]
+        if head_hash(root) == before:
+            return False, "HEAD did not advance — the wrap commit did not land"
+    with tempfile.TemporaryDirectory() as root2:
+        env2 = build_fixture(root2, script_text, BANNER_PRIMARY)
+        env2["STUB_SCRATCH_HYGIENE_EXIT"] = "1"
+        rc2, out2 = run_commit(root2, env2, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc2 != 0:
+            return False, "a non-wrap commit failed (exit %d); out tail: %s" % (rc2, out2[-400:])
+        if "STUB _gate_scratch_hygiene.py" in out2:
+            return False, "the probe ran on a NON-wrap commit — it is wrap-only by design"
+    return True, ""
 
 
 def arm_gen_chain_refusal(script_text):
@@ -934,6 +980,7 @@ ARMS = [
     ("showroom_gate_refusal_and_ack_s191D1", arm_showroom_gate_refusal),
     ("mention_map_stale_regenerates_and_refuses_208", arm_mention_map_stale_regenerates_and_refuses),
     ("mention_map_regenerated_not_staged_208", arm_mention_map_regenerated_not_staged),
+    ("scratch_hygiene_advisory_on_wrap_228", arm_scratch_hygiene_advisory_on_wrap),
     ("harness_stub_coverage_W33", arm_harness_stub_coverage),
     ("MUTATION_harness_stub_detector_bites_W33", mutation_harness_stub_detector_bites),
 ]
