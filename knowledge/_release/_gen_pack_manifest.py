@@ -280,7 +280,23 @@ PHOTOGRAPHY_ADDITIONS = (
 # + helpers/data/ci-template)"*. Letting a new gate in raises 55 to 56 with nobody deciding
 # anything [[dont-launder-a-premise-into-a-ruling]]. The roster stays at 55 and whether this
 # gate should ship is asked, not assumed.
-RELEASE_SIDE_GATES = {"_gate_pack_imports.py"}
+# ⛔ #228 — A SECOND NAME, ON THE BLOCK ABOVE'S OWN INSTRUCTION, AND IT IS A HOLD, NOT A RULING.
+# `_gate_scratch_hygiene.py` was born at #227 and sits at `knowledge/`, so the glob below claimed
+# it the first time a manifest was generated at a commit that contains it — THIS cut. Measured,
+# not inferred: regenerating at ddc7821 moved the gates group 58 -> 59 with `_gate_scratch_hygiene.py`
+# as the single addition, and NOBODY DECIDED THAT. Which is precisely what the paragraph above
+# says must not happen: *"Letting a new gate in raises 55 to 56 with nobody deciding anything …
+# The roster stays at 55 and whether this gate should ship is asked, not assumed."* The ruled
+# figure for this lineage is 58 (`s223-D6`, superseding `s219-D9`'s 55 for the v1.0.2 cut), so
+# the roster is HELD at 58 here and the question goes to Dave rather than into a frozen zip.
+# WHAT THE GATE IS, so the question can be answered without re-deriving it: it probes the COWORK
+# SANDBOX VM's disk — `/var/tmp` and `/tmp` entries by POSIX owner (`pwd.getpwuid`), against the
+# fact that the VM persists across sessions while each session is a throwaway Linux user. A
+# designer who unzips this pack has no Cowork VM and no throwaway user; the gate would ship, be
+# counted in the roster, and have nothing to say — word for word the argument the block above
+# makes for `_gate_pack_imports.py`. ⬛ REVERSING THIS IS ONE LINE AND IT IS DAVE'S: delete the
+# name, regenerate, and the roster reads 59.
+RELEASE_SIDE_GATES = {"_gate_pack_imports.py", "_gate_scratch_hygiene.py"}
 
 _PHOTO_SPECIMEN = []
 
