@@ -3148,10 +3148,15 @@
     transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
     /* s227 canon-gap B5: the field bound NO radius, so in a rounded theme it sat square beside the
        dropdown trigger and the filter chips on the same toolbar row — both of which bind
-       border-radius/control. Bound on the BASE rule (not on .boxed) so the underline and boxed
-       variants take the same shape, exactly as Dropdown's .trigger and Input-fields' .uctrl input
-       — the other two underline-construction controls — already do. */
-    border-radius:var(--border-radius-control);}
+       border-radius/control.
+       ⛔ L8 (#228, Dave on the confirm pass: "only the boxed one"): the radius is bound on the
+       BOXED VARIANT ONLY, and the base rule stays square. B5 put it on the base rule so the
+       underline and boxed variants took the same shape, following Dropdown's .trigger and
+       Input-fields' .uctrl input; Dave overruled that precedent ON THE EYE. An underline is a
+       straight line — rounding its ends bends the stroke and nothing else, which is what he saw
+       in the render. The boxed variant is a box and takes the control radius like any other box.
+       The binding itself is unchanged: --border-radius-control still resolves per theme on this
+       component, it is now only CONSUMED by .boxed. */}
 :where(.cn-search-field) .search .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--icon); margin:0 12px 0 2px;}
 :where(.cn-search-field) .search .mag svg{width:20px; height:20px; fill:currentColor;}
 :where(.cn-search-field) .search input{flex:1; min-width:0; height:100%; border:0; background:var(--bg); color:var(--text); /* type: t-cm-label (bound in canon/type.css - T-D9/T-D12) */ outline:none;}
@@ -3162,7 +3167,7 @@
 :where(.cn-search-field) .search:focus-within{box-shadow:inset 0 -2px 0 var(--border-active);}
 :where(.cn-search-field) .search input:focus-visible{outline:none;}
 /* BOXED (full border) — matches the boxed Input field: active = border/active + 4px bottom-stroke + page fill */
-:where(.cn-search-field) .search.boxed{border:1px solid var(--border); padding:0 8px;}
+:where(.cn-search-field) .search.boxed{border:1px solid var(--border); padding:0 8px; border-radius:var(--border-radius-control);}
 :where(.cn-search-field) .search.boxed:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
 /* CLEAR (×) — present ONLY when the field has a value (hidden while the placeholder shows) */
 :where(.cn-search-field) .clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
@@ -22293,8 +22298,8 @@
   --border-radius-segmented-container-m: 10px;
   --border-radius-segmented-container-s: 8px;
   --border-radius-segmented-container-xs: 6px;
-  --border-radius-segmented-thumb-l: 6px;
-  --border-radius-segmented-thumb-m: 4px;
+  --border-radius-segmented-thumb-l: 8px;
+  --border-radius-segmented-thumb-m: 8px;
   --border-radius-segmented-thumb-s: 6px;
   --border-radius-segmented-thumb-xs: 4px;
   --border-radius-surface: 20px;
@@ -23285,8 +23290,8 @@
   --seg-rad-m: 10px;
   --seg-rad-s: 8px;
   --seg-rad-xs: 6px;
-  --seg-thumb-l: 6px;
-  --seg-thumb-m: 4px;
+  --seg-thumb-l: 8px;
+  --seg-thumb-m: 8px;
   --seg-thumb-s: 6px;
   --seg-thumb-xs: 4px;
 }
@@ -23304,8 +23309,8 @@
   --seg-rad-m: 10px;
   --seg-rad-s: 8px;
   --seg-rad-xs: 6px;
-  --seg-thumb-l: 6px;
-  --seg-thumb-m: 4px;
+  --seg-thumb-l: 8px;
+  --seg-thumb-m: 8px;
   --seg-thumb-s: 6px;
   --seg-thumb-xs: 4px;
 }

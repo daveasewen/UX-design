@@ -5,7 +5,7 @@
   "$status": "MIXED REGISTER \u2014 the FORMULAE are RULED (s201-D4 card padding, s202-D2 segmented thumb) and the INPUTS are read from the minted token store. This file remains a DERIVATION RECORD, not canon: minting is still a separate, Dave-authorised act (s200-D1 clause a, mint-time only).",
   "$ruledFormulae": [
     "card padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4 (#201)",
-    "segmented thumb = max(container - X, 0) \u2014 s201-D5's SHAPE, invariant. X is PER SCALE: the track PADDING at scales ['xs', 's'] (CONCENTRIC \u2014 Dave's ruling #227, 2026-08-30, restoring s200-D1 clause (c) for the two small sizes), and the tuned dial 6 at every other scale (s202-D2, #202, unchanged). Squares stay square under both laws."
+    "segmented thumb = max(container - X, 0) \u2014 s201-D5's SHAPE, invariant. X is PER SCALE: the track PADDING at scales ['xs', 's', 'm', 'l'] (CONCENTRIC \u2014 Dave's ruling #227, 2026-08-30, restoring s200-D1 clause (c); widened to all four scales at s227-D7 on the Monday confirm pass), and the tuned dial 6 at every other scale (s202-D2, #202) \u2014 a branch no shipped scale now reaches. Squares stay square under both laws."
   ],
   "$decidesNothing": [
     "which values get MINTED, and for which themes \u2014 Dave's act, never this script's",
@@ -13,7 +13,7 @@
   ],
   "$superseded": {
     "derived_radius_floor_2": "PROPOSED floor of 2 for derived thumb radii \u2014 SUPERSEDED by the max(container - X, 0) shape. Never applied; recorded so the retirement is legible.",
-    "thumb_derives_from_padding": "\u26a0 PARTIALLY UN-SUPERSEDED. History: the thumb radius originally derived from the track padding (s200-D1 clause c, s201-D5); s202-D2 (#202) replaced that input with the tuned dial 6, and console's concentric 4/6/6/8 became 0/2/4/6 in the same motion. Dave's ruling #227 (2026-08-30) RESTORES the concentric input at scales ['xs', 's'] \u2014 he said the dial had it 'continually wrong' on the two small sizes, because a flat subtraction eats a small radius whole (6 - 6 = 0, a square thumb in a rounded track). The dial survives at m and l.",
+    "thumb_derives_from_padding": "\u26a0 PARTIALLY UN-SUPERSEDED. History: the thumb radius originally derived from the track padding (s200-D1 clause c, s201-D5); s202-D2 (#202) replaced that input with the tuned dial 6, and console's concentric 4/6/6/8 became 0/2/4/6 in the same motion. Dave's ruling #227 (2026-08-30) RESTORES the concentric input at the two small sizes \u2014 he said the dial had it 'continually wrong' there, because a flat subtraction eats a small radius whole (6 - 6 = 0, a square thumb in a rounded track). s227-D7 then widened it to scales ['xs', 's', 'm', 'l'], so the supersession is now TOTAL for the shipped set and the dial survives only as the law for a scale outside it.",
     "scale_set_small_medium_large": "the padding-first small/medium/large scale set (paddings 2/4/6) was RETIRED at s201-D1 and is no longer emitted anywhere in this file."
   },
   "$mintedState": {
@@ -26,7 +26,9 @@
     "segmented_thumb_dial": 6,
     "segmented_concentric_scales": [
       "xs",
-      "s"
+      "s",
+      "m",
+      "l"
     ],
     "segmented_scale_order": [
       "xs",
@@ -35,7 +37,7 @@
       "l"
     ]
   },
-  "$concentricOpenQuestion": "RULING-SHAPED, NOT SETTLED \u2014 for Dave. #227 changed TWO things that meet at scale `m`: the track padding dropped 4 -> 2, and the concentric law came back at xs/s only. Console `m` therefore now reads track 10, padding 2, thumb 4 (dial) where concentric would give 8 \u2014 the dial sits 4px further from concentric than it did before the padding moved. Scale `l` reads track 12, padding 4, thumb 6 (dial) vs concentric 8. Dave said only the two small sizes were wrong, so nothing was changed at m/l; extending SEGMENTED_CONCENTRIC_SCALES to all four is one constant away if he wants it.",
+  "$concentricOpenQuestion": "CLOSED \u2014 RULED s227-D7 (2026-08-30), confirmed by Dave beside a real render on the Monday confirm pass. The question was whether the concentric law, restored at xs/s at #227, should also cover m and l; #227 had moved m's track padding 4 -> 2 in the same session, which left the dial 4px further from concentric at m than before. Dave: 'concentric for m too', and the amber conflict row for l resolved the same way. SEGMENTED_CONCENTRIC_SCALES is now all four: console m thumb 4 -> 8 (track 10 - padding 2), console l thumb 6 -> 8 (track 12 - padding 4). Kept here rather than deleted so the derivation record still carries why the scope moved.",
   "$inputs": [
     "knowledge/tokens/layout.json (border-radius family + segmented-container scales)",
     "knowledge/tokens/spacing.json (padding/segmented-control scales)",
@@ -54,9 +56,9 @@
         "segmented-container/xs": 6,
         "segmented-thumb/xs": 4,
         "segmented-container/m": 10,
-        "segmented-thumb/m": 4,
+        "segmented-thumb/m": 8,
         "segmented-container/l": 12,
-        "segmented-thumb/l": 6,
+        "segmented-thumb/l": 8,
         "segmented-container/s": 8,
         "segmented-thumb/s": 6
       },
@@ -146,48 +148,48 @@
           "$squareNote": null
         },
         "m": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 2,
           "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/m)",
           "container_radius": 10,
           "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/m)",
           "container_role_radius": 20,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": 4,
-          "thumb_radius": 4,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 10 - tuned dial 6 = thumb 4",
+          "thumb_subtrahend": 2,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": 8,
+          "thumb_radius": 8,
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 10 - track padding 2 = thumb 8",
           "inputs": {
             "container_radius": 10,
-            "dial": 6
+            "padding": 2
           },
-          "$paddingIsAnInput": "padding 2 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": false,
           "$squareNote": null
         },
         "l": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 4,
           "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/l)",
           "container_radius": 12,
           "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/l)",
           "container_role_radius": 20,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": 6,
-          "thumb_radius": 6,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 12 - tuned dial 6 = thumb 6",
+          "thumb_subtrahend": 4,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": 8,
+          "thumb_radius": 8,
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 12 - track padding 4 = thumb 8",
           "inputs": {
             "container_radius": 12,
-            "dial": 6
+            "padding": 4
           },
-          "$paddingIsAnInput": "padding 4 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 4 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": false,
           "$squareNote": null
         }
@@ -279,50 +281,50 @@
           "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "m": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 2,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 2,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -2,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 2 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 2
           },
-          "$paddingIsAnInput": "padding 2 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "l": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 4,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 4,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -4,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 4 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 4
           },
-          "$paddingIsAnInput": "padding 4 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 4 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 4, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     },
@@ -412,50 +414,50 @@
           "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "m": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 2,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 2,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -2,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 2 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 2
           },
-          "$paddingIsAnInput": "padding 2 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "l": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 4,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 4,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -4,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 4 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 4
           },
-          "$paddingIsAnInput": "padding 4 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 4 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 4, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     },
@@ -546,53 +548,53 @@
           "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "m": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 2,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/m (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/m (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 2,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -2,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 2 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 2
           },
-          "$paddingIsAnInput": "padding 2 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 2, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         },
         "l": {
-          "$ruled": "s202-D2 (#202, Dave, 2026-08-18), unchanged by #227",
-          "$law": "tuned dial",
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
           "padding": 4,
           "$paddingStatus": "READ FROM STORE (spacing.json padding/segmented-control/l (base, s202-D1))",
           "container_radius": 0,
           "$containerStatus": "READ FROM STORE (layout.json border-radius/segmented-container/l (base, s202-D1))",
           "container_role_radius": 0,
           "thumb_dial": 6,
-          "thumb_subtrahend": 6,
-          "thumb_subtrahend_name": "tuned dial",
-          "thumb_radius_raw": -6,
+          "thumb_subtrahend": 4,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": -4,
           "thumb_radius": 0,
-          "formula": "thumb = max(container_radius - 6, 0)",
-          "arithmetic": "track 0 - tuned dial 6 = thumb 0",
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 0 - track padding 4 = thumb 0",
           "inputs": {
             "container_radius": 0,
-            "dial": 6
+            "padding": 4
           },
-          "$paddingIsAnInput": "padding 4 is carried here as the control's real spacing token only; at this scale s202-D2's tuned dial is the subtrahend",
+          "$paddingIsAnInput": "padding 4 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
           "$square": true,
-          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 6, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
+          "$squareNote": "container radius is 0 (square theme: mono / legacy / supercharge, base set minted s202-D1): max(0 - 4, 0) = 0 \u2014 squares stay square, s201-D5 shape, and the #227 concentric law lands on the same 0 (max(0 - padding, 0) = 0), so no square theme moves. No floor is applied; the old PROPOSED floor of 2 is SUPERSEDED."
         }
       }
     }
   },
-  "$generatedAt": "2026-08-30T16:50:16+00:00"
+  "$generatedAt": "2026-08-31T09:00:25+00:00"
 }

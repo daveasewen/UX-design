@@ -89,10 +89,19 @@ SEGMENTED_THUMB_DIAL = 6
 # SQUARE thumb inside a rounded track. s is 8; 8 - 6 = 2, near-square. Concentric subtracts
 # the padding (2), so the inner corner stays parallel to the outer one at every size.
 #
-# SCOPE IS DELIBERATELY THE TWO SMALL SCALES, Dave's own words. m and l keep the dial until
-# he rules otherwise; ⚠ see $concentricOpenQuestion in the emitted proposal — with m's padding
-# now 2px (#227) the dial leaves m 4px further from concentric than it was.
-SEGMENTED_CONCENTRIC_SCALES = ("xs", "s")
+# SCOPE IS ALL FOUR SCALES — RULED s227-D7 (#227, 2026-08-30, confirmed by Dave on the
+# Monday confirm pass beside a real render: "concentric for m too", and the amber conflict row
+# resolved the same way for l). It was the two small scales when #227 opened, because those
+# were the two Dave named; the $concentricOpenQuestion this constant used to carry asked
+# whether the other two should follow, and he answered yes. Effect at mint: console m thumb
+# 4 -> 8 (track 10 - padding 2), console l thumb 6 -> 8 (track 12 - padding 4). xs and s are
+# unmoved — they were already concentric. mono / legacy / supercharge stay 0 at every scale:
+# max(0 - anything, 0) = 0 under both laws.
+#
+# SEGMENTED_THUMB_DIAL is now UNREACHED by any scale in the shipped set. It is kept, not
+# deleted: it is the s202-D2 ruling's constant, the `otherwise` branch is still the law for
+# any scale outside this tuple, and thumb_inputs() still names it in the audit trail.
+SEGMENTED_CONCENTRIC_SCALES = ("xs", "s", "m", "l")
 
 # The scale set is READ FROM THE TOKEN STORE (s201-D1 dimension-first grammar xs/s/m/l;
 # the padding-first small/medium/large set is RETIRED and must never be emitted again).
@@ -438,9 +447,10 @@ def build():
             "card padding = max(radius, 8) snapped to 2px — RULED s201-D4 (#201)",
             "segmented thumb = max(container - X, 0) — s201-D5's SHAPE, invariant. X is "
             "PER SCALE: the track PADDING at scales %s (CONCENTRIC — Dave's ruling #227, "
-            "2026-08-30, restoring s200-D1 clause (c) for the two small sizes), and the tuned "
-            "dial %d at every other scale (s202-D2, #202, unchanged). Squares stay square "
-            "under both laws." % (list(SEGMENTED_CONCENTRIC_SCALES), SEGMENTED_THUMB_DIAL),
+            "2026-08-30, restoring s200-D1 clause (c); widened to all four scales at s227-D7 "
+            "on the Monday confirm pass), and the tuned dial %d at every other scale (s202-D2, "
+            "#202) — a branch no shipped scale now reaches. Squares stay square under both "
+            "laws." % (list(SEGMENTED_CONCENTRIC_SCALES), SEGMENTED_THUMB_DIAL),
         ],
         "$decidesNothing": [
             "which values get MINTED, and for which themes — Dave's act, never this script's",
@@ -457,9 +467,11 @@ def build():
                 "the track padding (s200-D1 clause c, s201-D5); s202-D2 (#202) replaced that "
                 "input with the tuned dial %d, and console's concentric 4/6/6/8 became 0/2/4/6 "
                 "in the same motion. Dave's ruling #227 (2026-08-30) RESTORES the concentric "
-                "input at scales %s — he said the dial had it 'continually wrong' on the two "
-                "small sizes, because a flat subtraction eats a small radius whole (6 - 6 = 0, "
-                "a square thumb in a rounded track). The dial survives at m and l."
+                "input at the two small sizes — he said the dial had it 'continually wrong' "
+                "there, because a flat subtraction eats a small radius whole (6 - 6 = 0, a "
+                "square thumb in a rounded track). s227-D7 then widened it to scales %s, so "
+                "the supersession is now TOTAL for the shipped set and the dial survives only "
+                "as the law for a scale outside it."
                 % (SEGMENTED_THUMB_DIAL, list(SEGMENTED_CONCENTRIC_SCALES))),
             "scale_set_small_medium_large": (
                 "the padding-first small/medium/large scale set (paddings 2/4/6) was RETIRED at "
@@ -484,14 +496,14 @@ def build():
             "segmented_scale_order": list(SEGMENTED_SCALE_ORDER),
         },
         "$concentricOpenQuestion": (
-            "RULING-SHAPED, NOT SETTLED — for Dave. #227 changed TWO things that meet at scale "
-            "`m`: the track padding dropped 4 -> 2, and the concentric law came back at xs/s "
-            "only. Console `m` therefore now reads track 10, padding 2, thumb 4 (dial) where "
-            "concentric would give 8 — the dial sits 4px further from concentric than it did "
-            "before the padding moved. Scale `l` reads track 12, padding 4, thumb 6 (dial) vs "
-            "concentric 8. Dave said only the two small sizes were wrong, so nothing was "
-            "changed at m/l; extending SEGMENTED_CONCENTRIC_SCALES to all four is one constant "
-            "away if he wants it."),
+            "CLOSED — RULED s227-D7 (2026-08-30), confirmed by Dave beside a real render on the "
+            "Monday confirm pass. The question was whether the concentric law, restored at xs/s "
+            "at #227, should also cover m and l; #227 had moved m's track padding 4 -> 2 in the "
+            "same session, which left the dial 4px further from concentric at m than before. "
+            "Dave: 'concentric for m too', and the amber conflict row for l resolved the same "
+            "way. SEGMENTED_CONCENTRIC_SCALES is now all four: console m thumb 4 -> 8 "
+            "(track 10 - padding 2), console l thumb 6 -> 8 (track 12 - padding 4). Kept here "
+            "rather than deleted so the derivation record still carries why the scope moved."),
         "$inputs": [
             "knowledge/tokens/layout.json (border-radius family + segmented-container scales)",
             "knowledge/tokens/spacing.json (padding/segmented-control scales)",
@@ -709,10 +721,16 @@ def selftest():
     #   (1) the thumb tracks the DIAL, not the padding;
     #   (2) padding is no longer an input at all (varying it cannot move the result).
     # (a) THE DIAL BRANCH — m, l, and any unscaled call. Padding must stay inert HERE.
+    # s227-D7 widened the concentric scope to ALL FOUR shipped scales, so there may be no
+    # shipped scale left on the dial branch. That does NOT retire the branch — it is still the
+    # law for `scale=None` (the unscaled call) and for any scale outside the tuple — so the
+    # proof falls back to the unscaled call rather than reporting a failure. Losing the proof
+    # because the scope moved would be an instrument that quietly stops measuring.
     dial_scale = next((sc for sc in SEGMENTED_SCALE_ORDER
                        if sc not in SEGMENTED_CONCENTRIC_SCALES), None)
-    if dial_scale is None:
-        failures.append("no dial-governed scale left to prove the s202-D2 branch on")
+    dial_note = "the unscaled call — no shipped scale is on the dial branch (s227-D7)"
+    if dial_scale is not None:
+        dial_note = "scale %s" % dial_scale
     for cont, expect in [(6, 0), (8, 2), (10, 4), (12, 6), (0, 0), (4, 0)]:
         got = thumb_radius(cont, None, dial_scale)
         if got != expect:
@@ -720,10 +738,11 @@ def selftest():
                             "(dial %d)" % (cont, dial_scale, got, expect, SEGMENTED_THUMB_DIAL))
     for pad in (0, 2, 4, 6, 20):
         if thumb_radius(10, pad, dial_scale) != thumb_radius(10, None, dial_scale):
-            failures.append("padding fed the thumb radius at DIAL scale %s: padding %d moved "
-                            "the result — s202-D2 keeps padding inert at m/l" % (dial_scale, pad))
-    print("SELFTEST: s202-D2 dial proof ran at scale %s (dial=%d; padding inert THERE)."
-          % (dial_scale, SEGMENTED_THUMB_DIAL))
+            failures.append("padding fed the thumb radius on the DIAL branch (%s): padding %d "
+                            "moved the result — s202-D2 keeps padding inert there"
+                            % (dial_note, pad))
+    print("SELFTEST: s202-D2 dial proof ran at %s (dial=%d; padding inert THERE)."
+          % (dial_note, SEGMENTED_THUMB_DIAL))
 
     # (b) THE CONCENTRIC BRANCH — #227. Padding must be LIVE here, and it must be the
     #     only subtrahend: the same track with two paddings must give two answers.

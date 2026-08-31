@@ -10,6 +10,15 @@ Var naming = token path with the mode leaf (light/dark) stripped, joined by '-'.
   semantic-colour.json  primary/background/hover/{light,dark} -> --primary-background-hover
   colour.json           color/red/60                          -> --color-red-60
 Light values populate :root; dark values populate [data-theme="dark"].
+
+    python3 knowledge/canon/gen_canon_tokens.py             # mint the token layer
+    python3 knowledge/canon/gen_canon_tokens.py --check      # verify in sync — WRITES NOTHING
+    python3 knowledge/canon/gen_canon_tokens.py --selftest   # the atom-preserve bites
+
+⛔ ANY OTHER ARGUMENT REFUSES (rc=2) rather than falling through to the write path. Until
+W8 (#228) this dispatcher tested only for `--selftest`, so `--check` silently re-minted
+canon.css — harmlessly, because the output was byte-identical, which is exactly why it went
+unnoticed. A checking flag that writes is the #158 write-by-default class.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -209,7 +218,7 @@ def harvest_atoms(span):
         (root_atoms if marker.group(1) else between_atoms).append(text)
     return root_atoms, between_atoms
 
-def main():
+def main(check=False):
     root_lines, dark_lines = [], []
     seen_root, seen_dark = {}, {}
     summary = []
@@ -299,12 +308,32 @@ def main():
                      token_css, existing, flags=re.S)
     else:
         new = token_css + "\n\n" + existing
+
+    if check:
+        # W8 / s227 Q6 — a CHECKING flag MUST NOT WRITE. Before this arm existed, every
+        # flag but --selftest fell through to the write path, so `--check` silently
+        # rewrote canon.css. Byte-identical output made it harmless and invisible; that is
+        # the #158 write-by-default class, and this is its close.
+        if new == existing:
+            print("gen_canon_tokens --check OK — canon.css token layer is in sync "
+                  f"({len(seen_root)} root vars, {len(seen_dark)} dark overrides). "
+                  "Nothing written.")
+            return 0
+        print("gen_canon_tokens --check: canon.css token layer has DRIFTED from "
+              "knowledge/tokens/*.json.")
+        print("  The AUTO-GENERATED TOKENS span does not match what the tokens render to —")
+        print("  a token changed and canon was not re-minted, or the span was hand-edited.")
+        print("  Fix: python3 knowledge/canon/gen_canon_tokens.py")
+        print("  Nothing was written by this check.")
+        return 1
+
     open(CANON_CSS, "w").write(new)
 
     print("Generated token layer:")
     print("\n".join(summary))
     print(f"\n  TOTAL: {len(seen_root)} root vars, {len(seen_dark)} dark overrides")
     print(f"  Wrote {CANON_CSS}")
+    return 0
 
 def selftest():
     """3 bites: harvest finds atoms · rebuilt span keeps them · a dropped atom REFUSES."""
@@ -334,11 +363,39 @@ def selftest():
     missing = [nm for nm in re.findall(r"===== TOKENS (\S+) START", span)
                if f"===== TOKENS {nm} START" not in rebuilt_missing]
     assert missing == ["mark-carriers"], "bite 3 FAIL: absence not detected"
-    print("gen_canon_tokens selftest OK (3 bites: harvest · preserve · refusal)")
+
+    # bite 4 (W8) — --check MUST NOT WRITE. Driven against the real canon.css: mtime and
+    # bytes before and after. A checking flag is only a check if the file is untouched;
+    # asserting the branch from the source is what let the old behaviour survive unseen.
+    if os.path.exists(CANON_CSS):
+        st_before = os.stat(CANON_CSS)
+        bytes_before = open(CANON_CSS, "rb").read()
+        rc = main(check=True)
+        st_after = os.stat(CANON_CSS)
+        assert open(CANON_CSS, "rb").read() == bytes_before, \
+            "bite 4 FAIL: --check CHANGED canon.css — a checking flag that writes"
+        assert st_after.st_mtime == st_before.st_mtime, \
+            "bite 4 FAIL: --check touched canon.css (mtime moved) even if the bytes matched"
+        assert rc in (0, 1), f"bite 4 FAIL: --check returned {rc!r}, expected 0 or 1"
+    print("gen_canon_tokens selftest OK (4 bites: harvest · preserve · refusal · --check writes nothing)")
+
+KNOWN_FLAGS = ("--check", "--selftest")
 
 if __name__ == "__main__":
     import sys
+    # W8 / s227 Q6 — UNKNOWN FLAGS REFUSE, THEY DO NOT WRITE. This dispatcher used to test
+    # only for --selftest, so every other argument — `--check`, `--dry-run`, a typo — fell
+    # through to the write path. A generator that writes when asked to check is the
+    # write-by-default class the help gate exists to stop; the help gate does not cover
+    # argument dispatch, so it is closed here.
+    _unknown = [a for a in sys.argv[1:] if a not in KNOWN_FLAGS]
+    if _unknown:
+        print("gen_canon_tokens: unknown argument(s) %s — nothing was written." % ", ".join(_unknown),
+              file=sys.stderr)
+        print("  Known flags: %s (no flag = write the token layer)." % ", ".join(KNOWN_FLAGS),
+              file=sys.stderr)
+        sys.exit(2)
     if "--selftest" in sys.argv:
         selftest()
     else:
-        main()
+        sys.exit(main(check="--check" in sys.argv))
