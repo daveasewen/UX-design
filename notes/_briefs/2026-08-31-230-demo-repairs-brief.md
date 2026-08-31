@@ -6,6 +6,7 @@ Contract: fix the four findings below from `notes/_subreports/2026-08-31-230-reh
 
 **Dave's ruling tonight, verbatim, BANKED for cold-seat inscription (#231, s214-D1):**
 > "use this as teh default logo 'masterbrand-light-colour'"
+> and, minutes later: "use this for dark mode masterbrand-dark-colour"
 Context: the rehearsal found a cold builder copies the literal HSBC text wordmark silently
 while twelve masterbrand SVGs ship unbound; his target wears the hexagon. His ruling: the
 masthead binds `masterbrand-light-colour` by default; the builder asks only when the brief
@@ -24,11 +25,10 @@ names a different brand.
    the ask into the auto-loaded surface + `generate-from-canon/SKILL.md` in the contract's
    own vocabulary; skip-friendly like grill-me. It must be REACHABLE cold (the rehearsal's
    column A) — prove by re-driving that column's beat.
-3. **Logo — enact Dave's default.** Bind `masterbrand-light-colour` as the masthead default
-   in the snippet/meta/skill chain (source snippets, full ordered serial after). If dark
-   chrome mechanically requires the dark sibling, wire the theme pair and DECLARE it in the
-   report; if that pairing needs a design word, enact light-colour only and raise the dark
-   half as a RULING-SHAPED question. The ask-only-if-another-brand behaviour goes with fix 2's
+3. **Logo — enact Dave's defaults, BOTH ruled.** Bind `masterbrand-light-colour` as the
+   masthead default on light chrome and `masterbrand-dark-colour` on dark chrome, in the
+   snippet/meta/skill chain (source snippets, full ordered serial after). The theme pair is
+   HIS WORD, not a mechanical inference — no ruling-shaped question remains on it. The ask-only-if-another-brand behaviour goes with fix 2's
    surface.
 4. **F6 — run-gates must pass on a clean pack.** `ci-template/run-gates.py` red on a pristine
    install (23 orphan gates from repo wiring a pack does not have) would print FAIL on stage.
