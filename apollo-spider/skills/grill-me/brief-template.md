@@ -28,14 +28,14 @@ Task: Treasury overview dashboard for corporate international banking, internal 
 
 | # | question | answer |
 |---|---|---|
-| 1 | Theme | Console — "it should feel like the newer product, softer" |
+| 1 | Theme | **skipped — proceeding with Mono, announced 2026-08-30. Every corner square by design.** |
 | 2 | Light, dark or both | Both |
 | 3 | Density and width | Compact; wide desktop, people have it open all day |
 | 4 | Brand assets | Logo in `assets/brand/`; no photography |
 | 5 | Data | Real — 12 payments in `data/payments.csv` |
 | 6 | Fixed and off-limits | Keyboard-only must work end to end. Don't invent components; don't animate the figures |
 
-Skipped: none
-Defaults used: none
+Skipped: 1
+Defaults used: Q1 skipped — Mono, announced before the build started
 
 Notes: Amounts stay in their own currency, no conversion in the row.

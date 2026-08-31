@@ -75,13 +75,14 @@ as a first boot and follow Arm 0.
 
 ## The skills, and when to reach for one
 
-⚠ **These are not auto-loaded — you have to open them.** The five files under `skills/` are written
+⚠ **These are not auto-loaded — you have to open them.** The six files under `skills/` are written
 instructions, not extensions. When a request matches one of the rows below, **read that `SKILL.md`
 first and then follow it.** Each is also available as a slash command (`/generate-from-canon` and so
 on) via the prompt files in `.github/prompts/`.
 
 | when the request is… | open |
 |---|---|
+| starting a new design task — the six questions that decide how it will look | `skills/grill-me/SKILL.md` |
 | build a screen or component from the design system, without inventing anything | `skills/generate-from-canon/SKILL.md` |
 | the system is missing something and we need a new pattern that still fits | `skills/draft-a-new-pattern/SKILL.md` |
 | does this conform? where has it drifted from the system? | `skills/check-against-design-system/SKILL.md` |

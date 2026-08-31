@@ -16,7 +16,9 @@ what separate the two, which is why they are here and why they are short.
 **2. What lane was declared.**
 
 > Look at the assistant's *first* reply in that conversation. Did it say **on-canon** or
-> **freestyle**? Paste the line. If it said neither, write **"nothing declared"** — that is
+> **freestyle**? Paste the line — and the next sentence too, if it said it could not reach
+> the skills. An "on-canon" build that could not open a skill is the same as no rules at all,
+> and that is the second most useful answer here. If it said neither, write **"nothing declared"** — that is
 > the single most useful answer in this whole template.
 
 **3. What the brief says.**

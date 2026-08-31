@@ -373,4 +373,6 @@ and why, and will not have written anything. That is the design: a silent succes
 verify is worse than a noisy refusal you can read.
 
 If a message does not make sense, the most useful bug report is: what you said, what it did,
-and a screenshot if that is easier than describing it. Do not worry about diagnosing it.
+a screenshot — and two more lines that decide most of them: the lane the assistant declared
+in its first reply, and the brief from `briefs/`. `cold-start/REPORT-TEMPLATE.md` is that, as
+four boxes. Do not worry about diagnosing it.

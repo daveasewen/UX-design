@@ -24,11 +24,15 @@ file. A hand-edit of one word anywhere in a projection is red. That is the point
 header asks for the source to be edited, and this is what makes the ask enforceable
 rather than decorative.
 
-TWO REFUSALS, both deliberate:
+THREE REFUSALS, all deliberate:
 
   * THE LINE BUDGET. The contract may not exceed 40 lines. Hosts truncate and readers
     skim; a contract that runs long is a contract whose last rule is never read. Depth
     belongs in the skills. Over budget, this script writes NOTHING and says by how much.
+
+  * THE BYTE BUDGET. 4096 bytes, because bytes are what a host actually truncates on and
+    lines are not. Forty 20,000-character lines is inside the line budget and is not a
+    short contract. Same refusal shape: nothing written, the overage named.
 
   * NO SILENT WRITE FROM A STALE SOURCE. Rendering is one function used by the writer,
     the checker and the selftest, so they cannot disagree about what correct looks like.
@@ -37,11 +41,14 @@ TWO REFUSALS, both deliberate:
 `cold-start/projections/`. Getting them to the paths above in a designer's own project is
 a separate step, and `verify_placement.py` beside this file is what reports on it.
 
-⚠ THIS PACK ALREADY SHIPS ITS OWN `.github/copilot-instructions.md` (the Memento boot
-rules). The projection here is the DESIGN contract, a different document with a different
-job. Whether the two are merged in the shipped pack or kept apart is a placement
-decision, not this generator's to make — it owns `cold-start/projections/` and nothing
-else.
+⚠ THE COPILOT PROJECTION IS A MERGE, AND THAT IS THE POINT. This pack ships its own
+`.github/copilot-instructions.md` (the Memento boot rule, the operating rules, the skills
+table, the pointer to the `.github/prompts/` slash commands) and Copilot reads exactly that
+path. A standalone design-contract projection at the same path could only arrive by
+destroying it — so the copilot projection is GENERATED FROM BOTH SOURCES: the design
+contract first, then `---`, then the pack's own boot file verbatim. One generated file, two
+sources, nothing lost when a designer puts it in place. Edit either source and regenerate;
+never hand-edit the merged projection. (Ruled #227, s227-D5 / red-team B2.)
 
 ⚠ NO `_helpgate` IMPORT. The repo's shared help gate resolves by walking up for
 `_helpgate.py`; from `cold-start/` that walk finds nothing in the repo and nothing in an
@@ -66,6 +73,7 @@ PROJECTIONS_DIR = "projections"
 
 # The contract's hard budget. Front-loaded and short, or it does not get read.
 LINE_BUDGET = 40
+BYTE_BUDGET = 4096   # what a host actually truncates on; 40 long lines is not "short"
 
 # key -> (path under projections/, host name, path a designer must place it at)
 HOSTS = (
@@ -75,8 +83,19 @@ HOSTS = (
      "GitHub Copilot", ".github/copilot-instructions.md"),
 )
 
+# The SECOND source, and only the copilot host merges it: the pack's own boot file, which
+# lives at the same path Copilot reads. Relative to this script, so it resolves identically
+# in the repo and in an unzipped pack. See the merge note in the docstring.
+MERGE_HOSTS = {"copilot"}
+MERGE_SOURCE_REL = os.path.join("..", ".github", "copilot-instructions.md")
+MERGE_JOIN = "\n\n---\n\n"
+
 HEADER_FMT = ("<!-- GENERATED from cold-start/{source} for {host} — edit the source, not this "
               "file: python3 cold-start/gen_projections.py -->")
+
+MERGED_HEADER_FMT = ("<!-- GENERATED for {host} by MERGING cold-start/{source} with this pack's "
+                     "own .github/copilot-instructions.md — edit either SOURCE, never this "
+                     "file: python3 cold-start/gen_projections.py -->")
 
 
 # ---------------------------------------------------------------- rendering (one function)
@@ -92,21 +111,45 @@ def read_source(base=HERE):
             "REFUSED: %s is %d lines, %d over the %d-line budget. A contract that runs long "
             "is one whose last rule never gets read — cut it, or move the depth into a skill. "
             "Nothing was written." % (SOURCE_NAME, n, n - LINE_BUDGET, LINE_BUDGET))
+    nb = len(text.encode("utf-8"))
+    if nb > BYTE_BUDGET:
+        raise RuntimeError(
+            "REFUSED: %s is %d bytes, %d over the %d-byte budget. Hosts truncate on bytes, "
+            "not on lines — a contract inside the line budget can still be too long to "
+            "survive one. Cut it, or move the depth into a skill. Nothing was written."
+            % (SOURCE_NAME, nb, nb - BYTE_BUDGET, BYTE_BUDGET))
     return text
 
 
-def render(host_name, source_text):
+def read_merge_source(base=HERE):
+    """The pack's own copilot boot file — the second source of the merged projection."""
+    path = os.path.normpath(os.path.join(base, MERGE_SOURCE_REL))
+    if not os.path.exists(path):
+        raise RuntimeError(
+            "no boot file at %s — the copilot projection is a MERGE of the design contract "
+            "and this pack's own Copilot instructions, and half of it is missing. Nothing "
+            "was written." % path)
+    return open(path, encoding="utf-8").read()
+
+
+def render(host_name, source_text, merge_text=None):
     """The bytes a projection must contain. The ONLY definition of correct."""
-    header = HEADER_FMT.format(host=host_name, source=SOURCE_NAME)
-    return header + "\n\n" + source_text.lstrip("\n")
+    fmt = MERGED_HEADER_FMT if merge_text is not None else HEADER_FMT
+    header = fmt.format(host=host_name, source=SOURCE_NAME)
+    body = source_text.lstrip("\n")
+    if merge_text is not None:
+        body = body.rstrip("\n") + MERGE_JOIN + merge_text.lstrip("\n")
+    return header + "\n\n" + body
 
 
 def expected(base=HERE):
     """{absolute projection path: expected text} for every host."""
     src = read_source(base)
+    merged = read_merge_source(base) if MERGE_HOSTS else None
     out = {}
-    for _key, rel, host_name, _place in HOSTS:
-        out[os.path.join(base, PROJECTIONS_DIR, rel)] = render(host_name, src)
+    for key, rel, host_name, _place in HOSTS:
+        extra = merged if key in MERGE_HOSTS else None
+        out[os.path.join(base, PROJECTIONS_DIR, rel)] = render(host_name, src, extra)
     return out
 
 
@@ -150,6 +193,11 @@ def selftest():
     try:
         base = os.path.join(tmp, "cold-start")
         shutil.copytree(HERE, base, ignore=shutil.ignore_patterns("__pycache__"))
+        # the second source lives one level up from cold-start/ in both the repo and the
+        # unzipped pack — the throwaway tree has to carry it too, or the merge cannot render.
+        merge_src = os.path.normpath(os.path.join(base, MERGE_SOURCE_REL))
+        os.makedirs(os.path.dirname(merge_src), exist_ok=True)
+        shutil.copyfile(os.path.normpath(os.path.join(HERE, MERGE_SOURCE_REL)), merge_src)
         write(base)
 
         # 1. a freshly written tree is green
@@ -198,11 +246,54 @@ def selftest():
             fails.append("the over-budget refusal WROTE — it must touch nothing")
         open(src, "w", encoding="utf-8").write(keep)
 
-        # 7. the real source in this repo is inside its budget
+        # 7. the real source in this repo is inside BOTH budgets
         try:
             read_source(HERE)
         except RuntimeError as e:
             fails.append("the shipped contract is over budget: %s" % e)
+
+        # 8. a source inside the LINE budget but over the BYTE budget REFUSES. One long
+        #    line is what the line count cannot see, and it is what a host truncates on.
+        before = open(victim, encoding="utf-8").read()
+        open(src, "w", encoding="utf-8").write(keep.rstrip("\n") + "\n" + ("x" * (BYTE_BUDGET * 2)) + "\n")
+        try:
+            write(base)
+            fails.append("a 2x-over-BYTE-budget contract was PROJECTED instead of refused")
+        except RuntimeError as e:
+            if "byte budget" not in str(e):
+                fails.append("the over-byte refusal did not name the byte budget: %s" % e)
+        if open(victim, encoding="utf-8").read() != before:
+            fails.append("the over-byte refusal WROTE — it must touch nothing")
+        open(src, "w", encoding="utf-8").write(keep)
+        write(base)
+
+        # 9. the copilot projection really is the MERGE, and drift in EITHER source is red.
+        cop = os.path.join(base, PROJECTIONS_DIR, HOSTS[2][1])
+        cop_text = open(cop, encoding="utf-8").read()
+        if "MERGING" not in cop_text.splitlines()[0]:
+            fails.append("the copilot projection does not carry the merged header")
+        boot_head = open(merge_src, encoding="utf-8").read().splitlines()[0]
+        if boot_head not in cop_text:
+            fails.append("the copilot projection does not carry the pack's own boot file — "
+                         "placing it would still destroy the boot rules (red-team B2)")
+        keep_boot = open(merge_src, encoding="utf-8").read()
+        open(merge_src, "w", encoding="utf-8").write(
+            keep_boot.replace("Read the chain only", "Read whatever you like", 1))
+        if not any("DRIFTED" in f for f in check(base)):
+            fails.append("an edit to the SECOND source did NOT make the merged projection red")
+        open(merge_src, "w", encoding="utf-8").write(keep_boot)
+        if check(base):
+            fails.append("restoring the second source did not return the tree to green")
+
+        # 10. a MISSING second source refuses loudly rather than silently un-merging.
+        os.rename(merge_src, merge_src + ".moved")
+        try:
+            check(base)
+            fails.append("a missing boot file did not refuse — the merge half-vanished quietly")
+        except RuntimeError as e:
+            if "MERGE" not in str(e).upper():
+                fails.append("the missing-boot-file refusal did not name the merge: %s" % e)
+        os.rename(merge_src + ".moved", merge_src)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return fails
@@ -216,7 +307,7 @@ def main():
             for f in fails:
                 print("  X " + f)
             sys.exit(1)
-        print("gen_projections selftest OK — 7 arm(s), drift planted and seen.")
+        print("gen_projections selftest OK — 10 arm(s), drift planted and seen.")
         return
 
     try:

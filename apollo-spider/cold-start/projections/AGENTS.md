@@ -4,17 +4,17 @@
 
 **1. Declare the lane, in your first reply.** Before you build, say which one you are in: *on-canon* — working through the design skills in `skills/` — or *freestyle*. On-canon is the default. Freestyle happens only when the designer asks for it in words. Never change lanes silently; if you cannot reach the skills, say so plainly and follow the five rules below by hand.
 
-**2. Grill first.** At the start of a new project or a new design task, look in `briefs/`. If there is no current brief for this task, run `skills/grill-me/SKILL.md` before you build — the theme question first. If you cannot reach that skill, ask the six questions at the foot of this file yourself. The designer may skip any question, or all of them. Record every skip in the brief beside the default it causes, and say that default out loud before anything is built.
+**2. Grill first.** At the start of a new project or a new design task, look in `briefs/`. If there is no current brief for this task, run `skills/grill-me/SKILL.md` before you build — the theme question first. If you cannot reach that skill, ask the six questions at the foot of this file yourself. If you cannot see those either, ask this one: **which theme — Mono, Common, Console or Supercharge?** It is the answer that changes every corner on the page. The designer may skip any question, or all of them. Record every skip in the brief beside the default it causes, and say that default out loud before anything is built.
 
 **3. The five rules.** These hold even when no skill is open.
 
 - **Never invent.** No new component, variant, colour or icon. If the system does not have it, stop and name the gap. Improvising is the failure this contract exists to prevent.
 - **Copy the markup.** Component HTML comes from `knowledge/snippets/`, never from memory.
 - **Ask the theme, never assume it.** Four themes ship and they disagree about corner shape. A guess gets every corner on the page wrong.
-- **Dashboards are bento-first.** Layout comes from the rails in `knowledge/_render/_bento_edit_rails.json`, not from taste.
-- **Check before you show.** Run `skills/check-with-gates/SKILL.md` before you put a screen in front of anyone. An unchecked screen is a guess.
+- **Dashboards are bento-first.** The procedure is in `skills/generate-from-canon/SKILL.md`; `knowledge/_render/_bento_edit_rails.json` is the dial vocabulary it reads, not a layout. Either way, not from taste.
+- **Check before you show.** Open `skills/check-with-gates/SKILL.md` and do what it says — it ends in `python3 ci-template/run-gates.py`, and reading the file is not running it. An unchecked screen is a guess, and so is an unrun gate.
 
-**4. Scope.** This contract governs design and UI output in this project. Other work may use whatever skills suit it. If you use a non-Apollo skill to produce design output, say so in the same reply — an undeclared source is what turns a design problem into an unreadable bug report.
+**4. Scope.** This contract governs design and UI output in this project. Other work may use whatever skills suit it. If you use a non-Apollo skill to produce design output, that is freestyle: declare it in the same reply and name the skill — an undeclared source is what turns a design problem into an unreadable bug report.
 
 **5. When something looks wrong**, fill in `cold-start/REPORT-TEMPLATE.md`. Name the lane you declared. Most reports turn out to be a lane nobody declared.
 

@@ -44,10 +44,13 @@ if __name__ == "__main__" and ("-h" in sys.argv[1:] or "--help" in sys.argv[1:])
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCE = os.path.join(HERE, "DESIGN-CONTRACT.md")
 
-# The phrase that says "the contract is in this file". It is the contract's first
-# instruction, so a file carrying it carries the part that matters most. --selftest asserts
-# it is still present in DESIGN-CONTRACT.md, so a reword cannot silently blind this check.
-MARKER = "Declare the lane, in your first reply."
+# The phrases that say "the contract is in this file". One is the contract's first
+# instruction; the other opens the five rules. BOTH are required, because a merge that keeps
+# the opening line and drops the rules is exactly the failure this check exists for — one
+# marker read PLACED for a gutted contract, and for an inverted one. --selftest asserts both
+# are still present in DESIGN-CONTRACT.md, so a reword cannot silently blind this check.
+MARKERS = ("Declare the lane, in your first reply.",   # §1 — the lane
+           "**Never invent.**")                        # §3 — the rules block
 
 HOSTS = (
     ("Claude", "CLAUDE.md"),
@@ -69,11 +72,16 @@ def inspect(root):
         except OSError as e:
             rows.append((host, rel, "no-contract", "could not be read: %s" % e))
             continue
-        if MARKER in text:
+        absent = [m for m in MARKERS if m not in text]
+        if not absent:
             rows.append((host, rel, "placed", "carries the contract"))
-        else:
+        elif len(absent) == len(MARKERS):
             rows.append((host, rel, "no-contract",
                          "the file exists but the design contract is not in it"))
+        else:
+            rows.append((host, rel, "no-contract",
+                         "the file carries part of the contract but not all of it — missing: "
+                         + " / ".join(repr(m) for m in absent)))
     return rows
 
 
@@ -97,7 +105,10 @@ def report(root, out=print):
         out("")
         out("  Copy the projections into place:")
         for host, rel, state, _detail in rows:
-            if state != "placed":
+            if state == "no-contract":
+                out("    MERGE cold-start/projections/%s INTO %s — do not overwrite it, that "
+                    "file may already carry other rules" % (rel, rel))
+            elif state != "placed":
                 out("    cold-start/projections/%s  ->  %s" % (rel, rel))
         out("")
         out("  If a host is one you do not use, this warning is a fact, not a fault.")
@@ -108,9 +119,13 @@ def selftest():
     fails = []
     if not os.path.exists(SOURCE):
         fails.append("no DESIGN-CONTRACT.md beside this script")
-    elif MARKER not in open(SOURCE, encoding="utf-8").read():
-        fails.append("MARKER is NOT in DESIGN-CONTRACT.md — the contract was reworded and this "
-                     "check now reports 'no contract' for a correctly placed file. Update MARKER.")
+    else:
+        src_text = open(SOURCE, encoding="utf-8").read()
+        for m in MARKERS:
+            if m not in src_text:
+                fails.append("MARKER %r is NOT in DESIGN-CONTRACT.md — the contract was reworded "
+                             "and this check now reports 'no contract' for a correctly placed "
+                             "file. Update MARKERS." % m)
 
     tmp = tempfile.mkdtemp(prefix="verify-placement-selftest-")
     try:
@@ -151,12 +166,38 @@ def selftest():
         if code != 0:
             fails.append("the advisory run exited %r on a cold project — it must always be 0"
                          % code)
+
+        # 5. a gutted contract — the opening line kept, the rules block dropped — must NOT
+        #    read as placed. This is the merge the docstring names, and one marker missed it.
+        gutted = os.path.join(tmp, "gutted")
+        os.makedirs(gutted, exist_ok=True)
+        open(os.path.join(gutted, "CLAUDE.md"), "w", encoding="utf-8").write(
+            "# rules\nAlways be nice. %s\n" % MARKERS[0])
+        row = [r for r in inspect(gutted) if r[1] == "CLAUDE.md"][0]
+        if row[2] != "no-contract":
+            fails.append("a contract with the lane line but no rules block read as %r — that "
+                         "is the merge this check exists to catch" % row[2])
+
+        # 6. a --root that is not a directory must say so, not report a cold project. Driven
+        #    both ways: a path that does not exist, and a path to a real FILE.
+        for bad in (os.path.join(tmp, "NO-SUCH-DIR"), SOURCE):
+            lines = []
+            code = run(bad, out=lines.append)
+            if code != 0 or not any("NOT A DIRECTORY" in ln for ln in lines):
+                fails.append("--root %s did not report NOT A DIRECTORY (rc=%r): %r"
+                             % (bad, code, lines[:2]))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return fails
 
 
 def run(root, out=print):
+    # A typo'd --root must not print the tool's most alarming output. Without this, both a
+    # non-existent path and a path to a FILE produce a confident "3 of 3 hosts start COLD
+    # here" — indistinguishable from a real cold project.
+    if not os.path.isdir(root):
+        out("NOT A DIRECTORY: %s — nothing was inspected." % root)
+        return 0
     report(root, out=out)
     return 0
 
@@ -169,7 +210,7 @@ def main():
             for f in fails:
                 print("  X " + f)
             sys.exit(1)
-        print("verify_placement selftest OK — 4 arm(s).")
+        print("verify_placement selftest OK — 6 arm(s).")
         return
     root = os.getcwd()
     if "--root" in sys.argv:
