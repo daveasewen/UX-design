@@ -85,7 +85,8 @@
   .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0;
     border-radius:var(--seg-thumb);
     transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the minted inset, slides */
-  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  /* s229 F1 — THE STATE BOX IS A BOX TOO. The hover fill (and the focus ring) paint the BUTTON, which is geometrically the SAME box as the sliding thumb (both fill the track's content box), yet only the thumb read the minted radius. On console that put a SQUARE hover highlight behind a rounded thumb; on mono/legacy/supercharge the token is 0 so nothing moves. Bound to the SAME minted local the thumb uses - concentric by construction, never a literal. */
+  .seg button{border-radius:var(--seg-thumb); position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
     /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
        (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */

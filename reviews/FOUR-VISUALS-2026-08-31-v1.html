@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four repairs, as pixels — #228 · L8 · s227-D7 · the FAB face · the hot corner</title>
+
+<!-- =================================================================================
+     WHAT THIS PAGE IS
+     Four things were repaired at #228 and none of them has ever been LOOKED AT. This
+     page renders all four live, from the real artefacts, so they can be judged by eye.
+
+     WHERE EVERY SPECIMEN COMES FROM — nothing here is re-drawn:
+       · the styling is the BUILT knowledge/canon/canon.css, linked below, reached
+         through the generated .cn-search-field / .cn-segmented-control scopes and
+         [data-apollo-theme]. Exactly the path a real Apollo page takes.
+       · the MARKUP is lifted verbatim from
+             knowledge/snippets/Search-field.reference.html
+             knowledge/snippets/Segmented-control.reference.html
+         and kept in two <template> blocks at the bottom of the body. Every cell in the
+         spread is a clone of that one template, which is what makes the eight cells
+         provably identical to each other and to the reference.
+       · the FAB is the REAL knowledge/_render/apollo-fab.js, loaded as a script. Its
+         face, its icon, its reveal rules and its 72 px corner are its own, not a
+         description of them.
+       · the page chrome (bars, panels, type) uses canon's own SEMANTIC ALIAS layer
+         (--page/--surface/--text/--muted/--border/--focus/--font/--ease, canon.css
+         "SEMANTIC ALIASES"), so nothing below re-invents a colour. That alias layer is
+         also what apollo-fab.js probes for at mount, which is why the FAB inherits this
+         page's theme on file:// instead of falling back to its hard neutral pair.
+
+     THE PAGE SCAFFOLD follows reviews/FAB-READINGS-2026-08-30-v1.html (#227): sticky
+     control bar, live controllers, contained FAB panes, plain-language notes. The one
+     deliberate change is that the chrome reads canon's aliases from the linked
+     stylesheet rather than inlining copies of them — the alias layer is present here
+     because canon.css is present here.
+     ================================================================================= -->
+
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+
+<style>
+  /* ---------------------------------------------------------------------------------
+     REVIEW-PAGE CHROME. Layout only. Every colour is a canon alias resolved from the
+     linked canon.css — no hex is authored on this page.
+     --------------------------------------------------------------------------------- */
+  html,body{margin:0;padding:0}
+  body{background:var(--page); color:var(--text); font-family:var(--font);
+       -webkit-font-smoothing:antialiased;}
+
+  /* Chrome blocks. They carry data-theme so the page's own light/dark control moves
+     them; the SPREAD sections below carry their own pinned data-theme and are never
+     stamped by that control. */
+  .chrome{background:var(--surface); color:var(--text);
+          border-bottom:1px solid var(--border);
+          transition:background var(--ease), color var(--ease);}
+
+  header.bar{position:sticky; top:0; z-index:60;
+    padding:14px 20px; display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center;}
+  .bar h1{font-size:17px; font-weight:500; margin:0; letter-spacing:-.01em}
+  .bar .sub{font-size:12.5px; color:var(--muted); margin:3px 0 0; line-height:1.5}
+  .bar code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .spacer{flex:1 1 auto}
+
+  .ctl{display:flex; align-items:center; gap:6px; font-size:13px}
+  .ctl > span{color:var(--muted)}
+  .ctl button{font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); cursor:pointer; margin-left:-1px;}
+  .ctl button:first-of-type{margin-left:0}
+  .ctl button[aria-pressed="true"]{background:var(--text); color:var(--surface); border-color:var(--text)}
+  .ctl button:focus-visible{outline:2px solid var(--focus); outline-offset:1px; position:relative; z-index:1}
+
+  .wrap{padding:18px 20px; max-width:112ch}
+  .wrap p{margin:0 0 10px; font-size:14px; line-height:1.62}
+  .wrap p:last-child{margin:0}
+  .wrap strong{font-weight:500}
+  .wrap code, .cell code, .readout code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .wrap ol{margin:8px 0 0; padding-left:20px; font-size:14px; line-height:1.62}
+  .wrap ol li{margin:0 0 6px}
+
+  /* --- specimen framing -------------------------------------------------------------- */
+  section.spec{border-bottom:1px solid var(--border)}
+  .spec-head{padding:20px 20px 14px; background:var(--surface); color:var(--text);
+             border-bottom:1px solid var(--border);
+             transition:background var(--ease), color var(--ease);}
+  .spec-head .kicker{display:block; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 5px}
+  .spec-head h2{margin:0; font-size:19px; font-weight:500; letter-spacing:-.01em}
+  .spec-head p{margin:8px 0 0; font-size:14px; line-height:1.6; max-width:104ch}
+  .spec-head p.thin{color:var(--muted); font-size:13px}
+  .spec-head b{font-weight:500}
+
+  /* --- the four-theme × two-mode spread ---------------------------------------------- */
+  .spread-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px;
+               background:var(--border); border-top:1px solid var(--border)}
+  .cell{padding:20px; min-width:0;
+        background:var(--background-default); color:var(--text-default);}
+  .cell .cellhead{display:flex; align-items:baseline; gap:10px; margin:0 0 16px}
+  .cell .cellhead h3{margin:0; font-size:14px; font-weight:500}
+  .cell .cellhead .mode{font-size:11px; letter-spacing:.09em; text-transform:uppercase; opacity:.62}
+  /* The cloned template is used in TWO places — the spread cells and the FAB stages —
+     so its layout rules are scoped to both. Without the .stage arm the stage clones
+     fall back to bare defaults and overflow the pane. */
+  .cell .lab, .stage .lab{font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+             opacity:.62; margin:0 0 7px}
+  .cell .row, .stage .row{display:flex; flex-wrap:wrap; gap:18px 24px; align-items:flex-end}
+  .cell .item, .stage .item{min-width:0}
+  /* the cloned reference markup brings its own demo chrome — hide the snippet's own
+     headings and notes, the cell supplies its labels */
+  .cell .section-head-row, .cell .demo-note, .cell .cap,
+  .stage .section-head-row, .stage .demo-note, .stage .cap{display:none}
+  .cell .stack{gap:20px; max-width:320px}
+  .stage .stack{gap:14px; max-width:300px; margin-top:20px}
+
+  /* --- FAB panes ---------------------------------------------------------------------- */
+  .fabgrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px;
+           background:var(--border); border-top:1px solid var(--border)}
+  .fabpane{background:var(--surface); color:var(--text); display:flex; flex-direction:column;
+           transition:background var(--ease), color var(--ease);}
+  .fabpane .ph{padding:14px 16px; border-bottom:1px solid var(--border)}
+  .fabpane .ph h3{margin:0; font-size:14px; font-weight:500}
+  .fabpane .ph p{margin:7px 0 0; font-size:12.5px; line-height:1.55}
+  .fabpane .ph p.q{color:var(--muted)}
+  .fabpane .ph b{font-weight:500}
+  /* THE FAB'S CONTAINER. position:relative makes the overlay absolute INSIDE this box
+     rather than fixed to the viewport, so two instances sit side by side without
+     fighting, and the "corner" is this box's bottom-right. On a real page it is fixed
+     and the corner is the viewport's. */
+  .stage{position:relative; height:400px; overflow:hidden; background:var(--page);
+         border-top:1px solid var(--border); padding:22px;}
+  .stage .stagenote{font-size:12px; color:var(--muted); margin:0 0 18px; line-height:1.5}
+  .stage .arrow{position:absolute; right:96px; bottom:26px; font-size:12px; color:var(--muted);
+                text-align:right; max-width:170px; line-height:1.45; pointer-events:none}
+
+  /* --- live readouts ------------------------------------------------------------------ */
+  .readout{padding:18px 20px 26px; background:var(--surface); color:var(--text);
+           transition:background var(--ease), color var(--ease);}
+  .readout h3{margin:0 0 4px; font-size:13px; font-weight:500}
+  .readout p{margin:0 0 12px; font-size:12.5px; color:var(--muted); line-height:1.55; max-width:104ch}
+  .readout .scroll{overflow-x:auto}
+  table.rd{border-collapse:collapse; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+           font-size:12px; min-width:640px}
+  table.rd th, table.rd td{padding:5px 14px 5px 0; text-align:left; border-bottom:1px solid var(--border);
+                           white-space:nowrap}
+  table.rd th{font-weight:500; color:var(--muted)}
+  table.rd td.v{font-variant-numeric:tabular-nums}
+  /* Verdict ink. The BACKGROUND-KEYED pair, not the RAG fill tokens: rag/error-ink is the
+     two-red law (s151-D1) — #DA1A00 on light, #F6604C on dark — and rag/success-ink is its
+     green mirror (s155-D1) — #137F3C / #66CC8D. Both are declared in canon.css on :root and
+     on [data-theme="dark"], so they re-resolve with each chrome block's own mode. */
+  .ok{color:var(--rag-success-ink); font-weight:700}
+  .bad{color:var(--rag-error-ink); font-weight:700}
+  tr.bad-row td{background:var(--err-tint)}
+
+  footer.legend{padding:18px 20px 34px; font-size:13px; line-height:1.68; color:var(--muted);
+                background:var(--surface); transition:background var(--ease), color var(--ease);}
+  footer.legend strong{color:var(--text); font-weight:500}
+  footer.legend ul{margin:8px 0 14px; padding-left:19px}
+  footer.legend code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+
+  @media (max-width:1080px){
+    .spread-grid{grid-template-columns:1fr}
+    .fabgrid{grid-template-columns:1fr}
+    .stage{height:360px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important; animation-duration:.01ms !important}
+  }
+</style>
+</head>
+<body class="canon">
+
+<!-- Icon sprite — lifted verbatim from knowledge/snippets/Search-field.reference.html.
+     Real HSBC library glyphs via <symbol> + <use> (icon-source rule). Declared once for
+     the whole document; every cloned search field references these two symbols. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+  <symbol id="ic-clear" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="bar chrome" data-chrome>
+  <div>
+    <h1>Four repairs, as pixels</h1>
+    <p class="sub">#228 · <code>L8</code> the straight underline · <code>s227-D7</code> the concentric thumb ·
+      the library icon on the FAB face · the hot-corner reveal —
+      all four live, none previously rendered</p>
+  </div>
+  <div class="spacer"></div>
+
+  <div class="ctl" role="group" aria-label="Page chrome mode">
+    <span>Page chrome</span>
+    <button type="button" data-mode="light" aria-pressed="true">Light</button>
+    <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Corner zone hint">
+    <span>Corner</span>
+    <button type="button" id="hintToggle" aria-pressed="false">Show the 72&nbsp;px zone</button>
+  </div>
+
+  <div class="ctl" role="group" aria-label="Reset and re-measure">
+    <button type="button" id="resetAttrs">Reset page attributes</button>
+    <button type="button" id="remeasure">Re-measure</button>
+  </div>
+</header>
+
+<div class="wrap chrome" data-chrome>
+  <p><strong>What is being asked.</strong> Nothing on this page is a proposal. All four are already
+    in canon; the question is only whether they look right. Say so per row, and say plainly if one
+    does not.</p>
+  <ol>
+    <li><strong>The underline stays straight.</strong> The radius now lives on the boxed variant only.
+      In console — the one rounded theme — the box takes a corner and the underline keeps its ends.</li>
+    <li><strong>The thumb is concentric at m and l.</strong> Console only. The other three themes are
+      square at every scale, on purpose.</li>
+    <li><strong>The FAB wears a library icon</strong>, not a hand-drawn gear.</li>
+    <li><strong>The FAB hides until you go to the corner.</strong> That is now the default everywhere.</li>
+  </ol>
+  <p class="sub" style="color:var(--muted); font-size:12.5px; margin-top:12px">
+    <strong>One thing to know before you touch the FAB.</strong> Its <b>Theme</b> buttons write
+    <code>data-apollo-theme</code> onto this page's <code>&lt;html&gt;</code> — that is the overlay
+    working correctly. But canon has no <code>mono</code> block (mono <em>is</em> the base), so a theme
+    set at the root inherits down into the four pinned columns below and will round corners that are
+    meant to be square. That is canon's cascade, not a defect in the spread. <b>Reset page attributes</b>
+    puts it back, and the measured table at the foot of each specimen always tells you the truth about
+    what is actually resolving.
+  </p>
+</div>
+
+
+<!-- =================================================================================
+     SPECIMEN 1 — L8. The underline stays straight.
+     ================================================================================= -->
+<section class="spec" id="spec-l8">
+  <div class="spec-head chrome" data-chrome>
+    <span class="kicker">Specimen 1 · L8 · #228</span>
+    <h2>The underline stays straight; only the box takes a corner</h2>
+    <p>Two search fields, the same component, side by side in every theme and both modes.
+      <b>Top: the boxed variant.</b> <b>Below it: the plain underline.</b> The radius binding is
+      unchanged — <code>--border-radius-control</code> still resolves per theme on this component —
+      it is now only <em>consumed</em> by <code>.search.boxed</code>:
+      <code>:where(.cn-search-field) .search.boxed{border-radius:var(--border-radius-control)}</code>.
+      The base <code>.search</code> rule declares no radius at all.</p>
+    <p class="thin">#227's canon-gap B5 had put the radius on the base rule, following Dropdown's
+      <code>.trigger</code> and Input-fields' <code>.uctrl input</code>. Dave overruled that precedent
+      on the eye: an underline is a straight line, and rounding its ends bends the stroke and nothing
+      else. Console is the only theme where the difference is visible, because it is the only theme
+      with a non-zero control radius — that column is the one to look at.</p>
+  </div>
+  <div class="spread-grid" id="grid-search"></div>
+  <div class="readout chrome" data-chrome>
+    <h3>Measured, live, from this page</h3>
+    <p><code>getComputedStyle().borderTopLeftRadius</code> on each field as it is actually rendering
+      right now. Expected from canon: the underline is <code>0px</code> in every theme; the box is
+      <code>0px</code> except console, where it is <code>8px</code>. If a number disagrees, the number
+      is the fact.</p>
+    <div class="scroll"><table class="rd" id="rd-search"></table></div>
+  </div>
+</section>
+
+
+<!-- =================================================================================
+     SPECIMEN 2 — s227-D7. Concentric thumbs at m and l.
+     ================================================================================= -->
+<section class="spec" id="spec-seg">
+  <div class="spec-head chrome" data-chrome>
+    <span class="kicker">Specimen 2 · s227-D7 · #228</span>
+    <h2>The sliding thumb is concentric with its track at every scale</h2>
+    <p>All four minted scales — <code>xs</code> 24 · <code>s</code> 36 · <code>m</code> 44 ·
+      <code>l</code> 48 — in all four themes and both modes. <b>Console at m and l is the new thing:</b>
+      <code>--border-radius-segmented-thumb-m: 8px</code> and <code>-l: 8px</code>, which is each
+      track's own radius minus its inset padding (10&nbsp;−&nbsp;2 and 12&nbsp;−&nbsp;4). Before the
+      repair both were 0 and the thumb sat square inside a rounded track.</p>
+    <p class="thin">Mono, Legacy and Supercharge are square at every scale, by ruling (s201-D5): the
+      concentric pair is minted under <code>[data-apollo-theme="console"]</code> only. <b>If you see a
+      rounded thumb in any column but console, that is a fault — say so, and it gets fixed at source
+      rather than on this page.</b> Click a segment: the thumb slides, and the corner travels with it.</p>
+  </div>
+  <div class="spread-grid" id="grid-seg"></div>
+  <div class="readout chrome" data-chrome>
+    <h3>Measured, live, from this page</h3>
+    <p>Track radius and thumb radius per scale, as rendered. Expected from canon:
+      console <code>6/8/10/12</code> outside and <code>4/6/8/8</code> inside; every other theme
+      <code>0</code> on both, at every scale.</p>
+    <div class="scroll"><table class="rd" id="rd-seg"></table></div>
+  </div>
+</section>
+
+
+<!-- =================================================================================
+     SPECIMENS 3 + 4 — the live FAB. Same file, two mounts.
+     ================================================================================= -->
+<section class="spec" id="spec-fab">
+  <div class="spec-head chrome" data-chrome>
+    <span class="kicker">Specimens 3 &amp; 4 · #228</span>
+    <h2>The overlay: what is on its face, and how it arrives</h2>
+    <p>Both panes below load the same real file, <code>knowledge/_render/apollo-fab.js</code>. Nothing
+      is excerpted or re-drawn. Each pane is the FAB's container, so its "corner" is that box's
+      bottom-right rather than the window's — on a real page the layer is fixed and the corner is the
+      viewport's.</p>
+    <p class="thin">Both panes hold a copy of the same two reference components, so the FAB's
+      <b>Inspect</b> switch has something real to name when you hover it.</p>
+  </div>
+
+  <div class="fabgrid">
+    <div class="fabpane chrome" data-chrome>
+      <div class="ph">
+        <h3>Specimen 3 — the library icon on the face</h3>
+        <p><b>The button is visible in this pane and nowhere else.</b> Reveal is forced to
+          <code>always</code> here, purely so the face can be looked at without hunting for it; the
+          shipped default is the pane on the right.</p>
+        <p class="q">The glyph is <code>knowledge/assets/icons/global-controls/settings.svg</code>,
+          copied byte for byte from the library — its 18×18 viewBox, its single evenodd path, its
+          <code>currentColor</code> fill, scaled into the 24&nbsp;px box by the overlay's own CSS. What
+          it replaced was a hand-drawn gear nobody had reviewed, in a pack whose first rule is never to
+          invent an icon. Zoom in on it; that is the whole question.</p>
+        <p class="q">The disc itself is <code>button/primary/background/default</code> of whatever theme
+          the host page is wearing — ink here, because this page is mono and mono's primary action is
+          ink, not red. Switch the FAB's own Theme to <b>Common</b> and it goes red. That is the overlay
+          inheriting the page, not a colour choice made in the overlay.</p>
+      </div>
+      <div class="stage" id="stageIcon">
+        <p class="stagenote">Bottom-right, always present.</p>
+        <div class="mountpoint" data-clone="both"></div>
+      </div>
+    </div>
+
+    <div class="fabpane chrome" data-chrome>
+      <div class="ph">
+        <h3>Specimen 4 — the hot-corner reveal (the default)</h3>
+        <p><b>Move your mouse into the bottom-right corner of this pane.</b> Nothing is drawn until the
+          pointer enters a <b>72&nbsp;px&nbsp;×&nbsp;72&nbsp;px</b> zone there; then the button fades in.
+          Move away and it fades out again. On a touch screen there is no hover, so a <b>tap in that
+          same corner</b> reveals it.</p>
+        <p class="q">This pane is mounted with <em>no</em> reveal option at all, so it is showing the
+          file's own defaults: <code>REVEAL_DEFAULT='hotcorner'</code> (it was <code>always</code>)
+          and <code>CORNER_DEFAULT=72</code>. Those live values are read back in the strip below.
+          <b>Show the 72&nbsp;px zone</b> in the top bar draws the corner so you can see where it is.
+          The zone is measured from pointer coordinates, never a hit-testing box, so nothing sitting
+          under that corner is ever intercepted.</p>
+      </div>
+      <div class="stage" id="stageCorner">
+        <p class="stagenote">Hidden until the pointer reaches the corner.</p>
+        <div class="mountpoint" data-clone="both"></div>
+        <p class="arrow">the corner is here&nbsp;&nbsp;↘</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="readout chrome" data-chrome>
+    <h3>Read back from the loaded file, live</h3>
+    <p>Not quoted from the source — read off <code>window.ApolloFAB</code> and off the two mounted
+      instances after they mounted.</p>
+    <div class="scroll"><table class="rd" id="rd-fab"></table></div>
+  </div>
+</section>
+
+
+<footer class="legend chrome" data-chrome>
+  <strong>Provenance, and what this page is not.</strong>
+  <ul>
+    <li><strong>Nothing is ruled here.</strong> All four repairs are already in canon; this page only
+      renders them. Anything that looks wrong is a defect report, not a decision.</li>
+    <li><strong>The spread is pinned, the chrome is not.</strong> Each of the eight cells carries its
+      own <code>data-apollo-theme</code> and <code>data-theme</code>, so the light/dark control in the
+      bar moves only the page's own chrome and the two FAB panes. The FAB's <em>own</em> Theme buttons
+      do write to <code>&lt;html&gt;</code>, which is the one thing that can disturb the columns —
+      <b>Reset page attributes</b> undoes it.</li>
+    <li><strong>Sources.</strong> Markup: <code>knowledge/snippets/Search-field.reference.html</code>,
+      <code>knowledge/snippets/Segmented-control.reference.html</code>. Styling:
+      <code>knowledge/canon/canon.css</code> + <code>knowledge/canon/type.css</code>, linked, not
+      copied. Overlay: <code>knowledge/_render/apollo-fab.js</code>, loaded.</li>
+    <li><strong>On <code>file://</code></strong> the overlay cannot fetch its component map, so the
+      inspector names each component from its <code>cn-*</code> class alone. That is the default-safe
+      path, not a failure. Served over HTTP it also gives category, purpose and token verdict.</li>
+  </ul>
+  Build notes and anything unproven: <code>notes/_subreports/2026-08-31-229-four-visuals-review.md</code>.
+</footer>
+
+
+<!-- =================================================================================
+     TEMPLATES — the reference markup, verbatim. Cloned into every cell above so that
+     all eight cells are provably the same specimen. Do not edit these by hand: re-copy
+     them from the snippet.
+     ================================================================================= -->
+
+<!-- from knowledge/snippets/Search-field.reference.html, <div class="stack"> block,
+     verbatim except that the boxed field is placed first (it is the one that changes)
+     and the two <p class="cap"> captions are replaced by the cell's own labels. -->
+<template id="tpl-search">
+  <div class="cn-search-field">
+    <div class="stack">
+      <div>
+        <p class="lab">.search.boxed &mdash; takes the control radius</p>
+        <div class="search boxed">
+          <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+          <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="Statements">
+          <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+        </div>
+      </div>
+      <div>
+        <p class="lab">.search &mdash; underline, no radius bound</p>
+        <div class="search">
+          <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+          <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
+          <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- from knowledge/snippets/Segmented-control.reference.html — the four minted-scale
+     groups (xs/s/m/l), verbatim, each wrapped in the generated .cn-segmented-control
+     scope so canon.css reaches it. -->
+<template id="tpl-seg">
+  <div class="row">
+    <div class="item">
+      <p class="lab">xs &middot; 24</p>
+      <div class="cn-segmented-control"><div class="seg xs" role="group" aria-label="Density">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" aria-pressed="true">Low</button>
+        <button type="button" aria-pressed="false">High</button>
+      </div></div>
+    </div>
+    <div class="item">
+      <p class="lab">s &middot; 36</p>
+      <div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Period">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" aria-pressed="true">Monthly</button>
+        <button type="button" aria-pressed="false">Year to date</button>
+      </div></div>
+    </div>
+    <div class="item">
+      <p class="lab">m &middot; 44</p>
+      <div class="cn-segmented-control"><div class="seg m" role="group" aria-label="View as">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" aria-pressed="true">List</button>
+        <button type="button" aria-pressed="false">Grid</button>
+        <button type="button" aria-pressed="false">Table</button>
+      </div></div>
+    </div>
+    <div class="item">
+      <p class="lab">l &middot; 48</p>
+      <div class="cn-segmented-control"><div class="seg l" role="group" aria-label="Range">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" aria-pressed="true">Day</button>
+        <button type="button" aria-pressed="false">Week</button>
+        <button type="button" aria-pressed="false">Month</button>
+      </div></div>
+    </div>
+  </div>
+</template>
+
+<script src="../knowledge/_render/apollo-fab.js" data-auto="off"></script>
+<script>
+(function(){
+  'use strict';
+
+  var THEMES = [
+    ['mono',        'Mono (base)'],
+    ['legacy',      'Legacy'],
+    ['console',     'Apollo Console'],
+    ['supercharge', 'Supercharge']
+  ];
+  var MODES = ['light','dark'];
+  var SCALES = ['xs','s','m','l'];
+
+  var tplSearch = document.getElementById('tpl-search');
+  var tplSeg    = document.getElementById('tpl-seg');
+
+  /* ---- build the two spreads: one cell per theme x mode, each a clone of the template --- */
+  function buildSpread(gridId, tpl){
+    var grid = document.getElementById(gridId);
+    THEMES.forEach(function(t){
+      MODES.forEach(function(m){
+        var cell = document.createElement('section');
+        cell.className = 'cell';
+        cell.setAttribute('data-apollo-theme', t[0]);
+        cell.setAttribute('data-theme', m);
+        var head = document.createElement('div');
+        head.className = 'cellhead';
+        head.innerHTML = '<h3>' + t[1] + '</h3><span class="mode">' + m + '</span>';
+        cell.appendChild(head);
+        cell.appendChild(tpl.content.cloneNode(true));
+        grid.appendChild(cell);
+      });
+    });
+  }
+  buildSpread('grid-search', tplSearch);
+  buildSpread('grid-seg', tplSeg);
+
+  /* ---- the reference's own behaviour scripts, copied verbatim ------------------------- */
+
+  /* Search-field.reference.html: clear button empties the field + refocuses; CSS re-hides
+     it once empty (the placeholder shows again). */
+  document.querySelectorAll('.search .clear').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var inp = btn.parentNode.querySelector('input'); inp.value=''; inp.focus();
+    });
+  });
+
+  /* Segmented-control.reference.html: SLIDING INDICATOR, one handler for every .seg. */
+  function moveInd(seg){ var ind=seg.querySelector('.ind'); if(!ind) return;
+    var a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+    var sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+    ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+  function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+  document.querySelectorAll('.seg').forEach(function(seg){
+    seg.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){
+      seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+      moveInd(seg); }); });
+  });
+  addEventListener('resize', placeAll);
+  placeAll();
+  /* widths depend on the loaded face, so re-place once the webfont has settled */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeAll); }
+
+  /* ---- FAB panes: put a real specimen in each stage, then mount ---------------------- */
+  document.querySelectorAll('.mountpoint[data-clone="both"]').forEach(function(mp){
+    mp.appendChild(tplSeg.content.cloneNode(true));
+    mp.appendChild(tplSearch.content.cloneNode(true));
+  });
+  placeAll();
+
+  var META = '../knowledge/_render/apollo-fab-meta.json';
+
+  /* Specimen 3 — reveal forced to 'always' so the FACE is simply there to look at. */
+  var fabIcon = ApolloFAB.mount({
+    reveal: 'always',
+    container: document.getElementById('stageIcon'),
+    metaUrl: META, label: 'face'
+  });
+
+  /* Specimen 4 — NO reveal and NO cornerSize passed: this instance is showing the file's
+     own defaults, which is the thing being reviewed. */
+  var fabCorner = ApolloFAB.mount({
+    container: document.getElementById('stageCorner'),
+    metaUrl: META, label: 'hot corner'
+  });
+
+  /* ---- controls ---------------------------------------------------------------------- */
+
+  var modeBtns = document.querySelectorAll('[data-mode]');
+  function setChromeMode(m){
+    document.querySelectorAll('[data-chrome]').forEach(function(n){ n.setAttribute('data-theme', m); });
+    /* the stages live inside the panes, so the FAB layer inherits the alias set from there */
+    Array.prototype.forEach.call(modeBtns, function(x){
+      x.setAttribute('aria-pressed', String(x.dataset.mode === m));
+    });
+    [fabIcon, fabCorner].forEach(function(f){ f.applyTokenMode(); });
+  }
+  Array.prototype.forEach.call(modeBtns, function(b){
+    b.addEventListener('click', function(){ setChromeMode(b.dataset.mode); });
+  });
+  setChromeMode('light');
+
+  var hint = document.getElementById('hintToggle'), hintOn = false;
+  hint.addEventListener('click', function(){
+    hintOn = !hintOn;
+    hint.setAttribute('aria-pressed', String(hintOn));
+    fabCorner.setHint(hintOn);
+  });
+
+  document.getElementById('resetAttrs').addEventListener('click', function(){
+    [document.documentElement, document.body].forEach(function(n){
+      n.removeAttribute('data-apollo-theme');
+      n.removeAttribute('data-theme');
+    });
+    measure();
+  });
+
+  /* ---- live measurement -------------------------------------------------------------- */
+
+  function r(el){ return el ? getComputedStyle(el).borderTopLeftRadius : '—'; }
+  function verdict(actual, expected){
+    var ok = (parseFloat(actual) === parseFloat(expected));
+    return '<span class="' + (ok ? 'ok' : 'bad') + '">' + (ok ? 'as canon' : 'DIFFERS') + '</span>';
+  }
+
+  function measureSearch(){
+    var rows = ['<tr><th>theme</th><th>mode</th><th>.search (underline)</th><th>expected</th>' +
+                '<th>.search.boxed</th><th>expected</th><th></th></tr>'];
+    document.querySelectorAll('#grid-search .cell').forEach(function(cell){
+      var t = cell.getAttribute('data-apollo-theme'), m = cell.getAttribute('data-theme');
+      var plain = r(cell.querySelector('.search:not(.boxed)'));
+      var boxed = r(cell.querySelector('.search.boxed'));
+      var expPlain = '0px';
+      var expBoxed = (t === 'console') ? '8px' : '0px';
+      var bad = parseFloat(plain) !== parseFloat(expPlain) || parseFloat(boxed) !== parseFloat(expBoxed);
+      rows.push('<tr' + (bad ? ' class="bad-row"' : '') + '><td>' + t + '</td><td>' + m +
+        '</td><td class="v">' + plain + '</td><td class="v">' + expPlain +
+        '</td><td class="v">' + boxed + '</td><td class="v">' + expBoxed + '</td><td>' +
+        (bad ? '<span class="bad">DIFFERS</span>' : '<span class="ok">as canon</span>') + '</td></tr>');
+    });
+    document.getElementById('rd-search').innerHTML = rows.join('');
+  }
+
+  var EXP_TRACK = { console: {xs:'6px', s:'8px',  m:'10px', l:'12px'} };
+  var EXP_THUMB = { console: {xs:'4px', s:'6px',  m:'8px',  l:'8px'}  };
+
+  function measureSeg(){
+    var head = '<tr><th>theme</th><th>mode</th>';
+    SCALES.forEach(function(s){ head += '<th>' + s + ' track / thumb</th>'; });
+    head += '<th></th></tr>';
+    var rows = [head];
+    document.querySelectorAll('#grid-seg .cell').forEach(function(cell){
+      var t = cell.getAttribute('data-apollo-theme'), m = cell.getAttribute('data-theme');
+      var bad = false, tds = '';
+      SCALES.forEach(function(s){
+        var seg = cell.querySelector('.seg.' + s);
+        var track = r(seg);
+        var thumb = r(seg ? seg.querySelector('.ind') : null);
+        var eT = (EXP_TRACK[t] && EXP_TRACK[t][s]) || '0px';
+        var eH = (EXP_THUMB[t] && EXP_THUMB[t][s]) || '0px';
+        var cellBad = parseFloat(track) !== parseFloat(eT) || parseFloat(thumb) !== parseFloat(eH);
+        if (cellBad) { bad = true; }
+        tds += '<td class="v">' + track + ' / ' + thumb +
+               (cellBad ? ' <span class="bad">≠ ' + eT + ' / ' + eH + '</span>' : '') + '</td>';
+      });
+      rows.push('<tr' + (bad ? ' class="bad-row"' : '') + '><td>' + t + '</td><td>' + m + '</td>' +
+        tds + '<td>' + (bad ? '<span class="bad">DIFFERS</span>' : '<span class="ok">as canon</span>') +
+        '</td></tr>');
+    });
+    document.getElementById('rd-seg').innerHTML = rows.join('');
+  }
+
+  function measureFab(){
+    var faceSvg = fabIcon.btn ? fabIcon.btn.querySelector('svg') : null;
+    var pathCount = faceSvg ? faceSvg.querySelectorAll('path').length : 0;
+    var viewBox = faceSvg ? faceSvg.getAttribute('viewBox') : '—';
+    var rows = [
+      '<tr><th>what</th><th>value</th><th>expected</th><th></th></tr>',
+      row('ApolloFAB.version', ApolloFAB.version, '1.0.1-228'),
+      row('default reveal (instance mounted with no reveal option)', fabCorner.reveal, 'hotcorner'),
+      row('ApolloFAB.CORNER_DEFAULT', String(ApolloFAB.CORNER_DEFAULT), '72'),
+      row('specimen-4 cornerSize (inherited)', String(fabCorner.cornerSize), '72'),
+      row('specimen-3 reveal (forced, for looking at the face)', fabIcon.reveal, 'always'),
+      row('face &lt;svg&gt; viewBox', viewBox, '0 0 18 18'),
+      row('face &lt;svg&gt; path count', String(pathCount), '1'),
+      row('token mode (canon aliases found on this page?)', fabCorner.tokenMode, 'canon'),
+      row('z-index of the layer', String(ApolloFAB.Z_DEFAULT), '2147483000')
+    ];
+    document.getElementById('rd-fab').innerHTML = rows.join('');
+  }
+  function row(k, v, exp){
+    var ok = String(v) === String(exp);
+    return '<tr' + (ok ? '' : ' class="bad-row"') + '><td>' + k + '</td><td class="v">' + v +
+      '</td><td class="v">' + exp + '</td><td>' +
+      (ok ? '<span class="ok">as canon</span>' : '<span class="bad">DIFFERS</span>') + '</td></tr>';
+  }
+
+  function measure(){ measureSearch(); measureSeg(); measureFab(); }
+  document.getElementById('remeasure').addEventListener('click', measure);
+  measure();
+  /* re-measure when anything changes the root attributes — e.g. the FAB's own Theme
+     buttons — so the table can never quietly disagree with the pixels. */
+  new MutationObserver(function(){ measure(); }).observe(document.documentElement,
+    { attributes:true, attributeFilter:['data-apollo-theme','data-theme'] });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(measure); }
+})();
+</script>
+
+</body>
+</html>

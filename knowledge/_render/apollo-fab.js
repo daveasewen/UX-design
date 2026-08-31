@@ -103,6 +103,12 @@
     '  --af-font:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;',
     '  --af-ease:140ms cubic-bezier(.4,0,.2,1);',
     '  --af-size:56px; --af-gap:16px;',
+    /* s229 F2 — the face adopts the CANON Fab component's geometry (knowledge/snippets/
+       Fab.reference.html): 56px target, 24px glyph, corners on border-radius/control. There is
+       NO round variant in the reference — its header flags a circular FAB as a DEVIATION from
+       the angular rule (B-D7) that was 'flagged not taken'. The hardcoded 50% was therefore an
+       un-ruled deviation, not a variant. No-canon leg = the reference's own base value (0). */
+    '  --af-radius:0;',
     '  position:fixed; inset:0; pointer-events:none; z-index:var(--af-z);',
     '  font-family:var(--af-font); color:var(--af-text);',
     '  -webkit-font-smoothing:antialiased;',
@@ -125,6 +131,7 @@
     '  --af-shadow:var(--shadow,#00000033); --af-focus:var(--focus,#305A85);',
     '  --af-font:var(--font,"Univers Next HSBC","Helvetica Neue",Arial,sans-serif);',
     '  --af-ease:var(--ease,140ms cubic-bezier(.4,0,.2,1));',
+    '  --af-radius:var(--border-radius-control,0);',
     '}',
     '.apollo-fab.af-contained{position:absolute;}',
     /* --- the button ------------------------------------------------------------- */
@@ -132,7 +139,7 @@
     '  position:absolute; right:var(--af-gap); bottom:var(--af-gap);',
     '  width:var(--af-size); height:var(--af-size);',
     '  display:inline-flex; align-items:center; justify-content:center;',
-    '  padding:0; border:0; border-radius:50%; cursor:pointer;',
+    '  padding:0; border:0; border-radius:var(--af-radius); cursor:pointer;',
     '  background:var(--af-pri); color:var(--af-on-pri);',
     '  box-shadow:0 0 16px 0 var(--af-shadow);',
     '  pointer-events:auto; font:inherit;',
