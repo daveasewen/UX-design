@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**135 snippet(s)** · **0 failure(s)** · **286 warning(s)** · **664 note(s)**
+**136 snippet(s)** · **0 failure(s)** · **287 warning(s)** · **671 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1310 control(s)** and **239 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1323 control(s)** and **245 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -965,6 +965,16 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
 - 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
 - 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
+
+## Template-dashboard-bento
+- 🟡 warn — `button#themeBtn` — autox36 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `a.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-caption.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-dashboard
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined

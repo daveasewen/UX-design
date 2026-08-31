@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 135 snippet(s) (97 verified-bespoke). Library glyphs indexed: 750.
+**0 UNKNOWN path(s)** across 136 snippet(s) (97 verified-bespoke). Library glyphs indexed: 750.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -123,24 +123,25 @@
 | 115 | Template-auth | 5 | 5 | 0 | 0 | yes | ✅ verified |
 | 116 | Template-confirmation | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 117 | Template-create-edit | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 118 | Template-dashboard | 13 | 13 | 0 | 0 | yes | ✅ verified |
-| 119 | Template-detail | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 120 | Template-empty | 5 | 5 | 0 | 0 | yes | ✅ verified |
-| 121 | Template-error | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 122 | Template-list-index | 25 | 13 | 12 | 0 | yes | ✅ verified · 12 bespoke |
-| 123 | Template-report | 9 | 9 | 0 | 0 | yes | ✅ verified |
-| 124 | Template-settings | 6 | 4 | 2 | 0 | yes | ✅ verified · 2 bespoke |
-| 125 | Template-wizard | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 126 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 127 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
-| 128 | Timeline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 129 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 130 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
-| 131 | Transaction-row | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 132 | Transfer-list | 11 | 4 | 7 | 0 | — | ✅ verified · 7 bespoke |
-| 133 | Tree | 2 | 2 | 0 | 0 | yes | ✅ verified |
-| 134 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 135 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 118 | Template-dashboard-bento | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 119 | Template-dashboard | 13 | 13 | 0 | 0 | yes | ✅ verified |
+| 120 | Template-detail | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 121 | Template-empty | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 122 | Template-error | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 123 | Template-list-index | 25 | 13 | 12 | 0 | yes | ✅ verified · 12 bespoke |
+| 124 | Template-report | 9 | 9 | 0 | 0 | yes | ✅ verified |
+| 125 | Template-settings | 6 | 4 | 2 | 0 | yes | ✅ verified · 2 bespoke |
+| 126 | Template-wizard | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 127 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 128 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
+| 129 | Timeline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 130 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 131 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
+| 132 | Transaction-row | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 133 | Transfer-list | 11 | 4 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 134 | Tree | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 135 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 136 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
 
 ## UNKNOWN detail
 

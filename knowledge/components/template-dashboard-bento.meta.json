@@ -1,0 +1,229 @@
+{
+  "name": "Template dashboard (bento)",
+  "category": "template",
+  "purpose": "A PAGE-SCALE ORGANISM for an overview screen BUILT ON THE BENTO GRAMMAR: a masthead, a page header lock-up, and one dashboard-role bento wall whose tiles are themselves bentos - the bento-of-bentos s217-D2/D3 describe. It answers the same question as Template dashboard ('how are things, and what needs me?') and differs in ONE thing: its layout is canon's .c-bento structural component rather than a Layout-utilities grid. It exists because the #230 rehearsal measured that `grep -rl '\\.c-bento' knowledge/snippets/` returned ZERO files, so a cold builder told to copy component markup had nothing to copy for a bento dashboard.",
+  "$status": "PROPOSED #231 (2026-08-31), lane W-326, under notes/_briefs/2026-08-31-231-bento-snippet-brief.md. ⛔ NOT GATED, NOT RULED, NOT REGISTERED - absent from CATEGORIES, MIGRATED_SNIPPETS, component-types.json and _rulings.json. It IS projected into canon.css and showroom/ because gen_canon_components.py and gen_showroom.py glob every snippet; that is the serial's own behaviour, not a registration. Dave's eye is owed. Full report: notes/_subreports/2026-08-31-231-bento-snippet.md; decision surface: reviews/BENTO-SNIPPET-2026-08-31-v1.html.",
+  "$artefactClass": "The Layer-2 artefact class is itself a PROPOSED convention, stated once in the brief: Layer-2 rows have no ruled artefact form, so each ships in the SAME grammar as the component library — knowledge/snippets/<Name>.reference.html + knowledge/components/<slug>.meta.json with a `layer` field — because the one grammar keeps every existing gate watching these files for free, where a parallel pipeline would be born ungated. Dave may re-home the class.",
+  "$cardinalRule": "COMPOSE, NEVER RE-DRAW, and here that is literal: every region is a byte-identical SPLICE from a file already on disk, cut by an extractor and sha256-stamped in the report's borrow ledger. The bento grammar itself is spliced from canon.css's AUTO-BENTO block; the modules come from Template-dashboard.reference.html; the masthead from App-shell-top-nav.reference.html.",
+  "props": [
+    {
+      "name": "groups",
+      "type": "array",
+      "$note": "PROPOSED. Three sub-bentos are drawn (KPI board, chart, position rail) because three is the smallest number that shows a full-width group AND a side-by-side pair. HOW MANY groups a dashboard has, and what belongs in each, is a product decision and is Dave's."
+    },
+    {
+      "name": "mainSpacing",
+      "type": "enum",
+      "values": [
+        "1",
+        "2",
+        "4",
+        "16",
+        "24",
+        "40"
+      ],
+      "default": "40",
+      "$note": "The s219-D1(4) ruled spacing rail, six stops. 40 is mono's ruled dashboard default. The edit pass picks among stops; a free value is not reachable and widening the set is a ruling."
+    },
+    {
+      "name": "subSpacing",
+      "type": "enum",
+      "values": [
+        "1",
+        "2",
+        "4",
+        "16",
+        "24",
+        "40"
+      ],
+      "default": "4",
+      "$note": "Same rail. 4 is mono's ruled dashboard sub default (s219-D1(5))."
+    },
+    {
+      "name": "keylines",
+      "type": "enum",
+      "values": [
+        "off",
+        "on"
+      ],
+      "default": "off",
+      "$note": "s219-D2(4): OFF on every dashboard in every theme. The switch is available in edit mode per s219-D1(2), but the ON construction is not drawn here - see $bentoGrammar.keylines."
+    },
+    {
+      "name": "chart",
+      "type": "component",
+      "$note": "PROPOSED. Chart-bar's COLUMN specimen, spliced. The chart is NOT made fluid: without Chart-bar's fit engine a width:100% SVG scales its own text and strokes, which is the banned physics _RUNBOOK-render-verify.md records. It scrolls inside its module."
+    },
+    {
+      "name": "rail",
+      "type": "array",
+      "$note": "PROPOSED. A Summary of balances plus a needs-attention list of Status-indicator chips, stacked inside their own sub-bento."
+    }
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "use": "The drawn page at six columns: one full-width KPI group of four modules, then a chart group beside a position group."
+    },
+    {
+      "name": "banded",
+      "use": "The wall's own container queries re-column it at 1100 / 820 / 520 CONTAINER px to 3 / 2 / 1. Every group becomes a single column and every module a full row. That is canon's compiled behaviour, not a variant this file declares."
+    }
+  ],
+  "tokens": {
+    "bento": "layout/bento/gutter + /outer-padding + /row-unit and border-radius/container are manifest-bound; layout/bento/columns and layout/bento/packing are NOT - see $tokenGaps.",
+    "surfaces": "surface/subtle (the page ground, s219-D1 pageBg: grey - LIGHT only, see $awaitingDave) · tertiary/background/default (every module) · table/header/background (the demo bar)",
+    "ink": "text/default everywhere; secondary ink is text/default at alpha/60, the source components' own idiom",
+    "lines": "border/subtle · divider/border/section (the masthead rule and the header rule)",
+    "controls": "button/primary/* · button/tertiary/* · button/quaternary/* · form/border/default · form/background/pressed · focus/ring · target/min (44) for every masthead action and the KPI table affordance",
+    "brand": "primary/border/default on the masthead mark slot; the mark itself is the official masterbrand SVG pair (s230-D2), <img>-referenced, never inlined and never set in type",
+    "status": "rag/success + rag/warning + rag/error + rag/information with their tints - chip only, never a figure",
+    "delta": "rag/success + rag/error as the KPI ARROW FILL seat only, inherited verbatim from Stat-card via Kpi-tile where it is already flagged as Dave's. NOT resolved here.",
+    "dataviz": "data/series/1 + data/series/3 + data/axis/color + data/axis/alpha + data/grid/color + data/grid/alpha, and the sparkline ink seats rag/success-ink + rag/error-ink + text/default. ALL are declared in BOTH theme blocks - [[dangling-dataviz-var-renders-silent-black]]."
+  },
+  "relationships": {
+    "livesInside": [
+      "A navigation shell - though this file draws its own masthead, which Template dashboard does not",
+      "Business banking overview screens",
+      "Treasury and account overview screens"
+    ],
+    "mustNotNeighbour": [
+      "A second dashboard template on the same page - a page has one overview",
+      "A Layer-2 shell rendered INSIDE it"
+    ],
+    "commonPatterns": [
+      "account overview",
+      "business banking landing",
+      "treasury dashboard",
+      "bento dashboard"
+    ],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "landmarks": "One <header> masthead, one <main>. The wall and each sub-bento are labelled regions (aria-label on the .c-bento and on each group section).",
+    "headingOrder": "One <h1> (the page title). Module titles are <h2>/<h3>. .t-cm-section-label is a TYPE class and never substitutes for a heading element.",
+    "colourIsNeverAlone": "Every RAG chip carries its word; the dot is decorative and aria-hidden. Sparkline trend is declared as data-trend as well as coloured. (1.4.1)",
+    "reducedMotion": "Every borrowed region brings its own prefers-reduced-motion override, plus the page-level kill. (2.3.3)",
+    "reflow": "The wall is its own container (canon puts container-type:inline-size on .c-bento), so the bands answer the WALL, not the window. Proven by DRIVING - see the report's render section.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.1.1",
+      "2.3.3",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "theBrandMark": "The masterbrand pair is two <img> elements, one per mode, the hidden one display:none so assistive tech reads exactly one. Both carry alt=\"HSBC\". The idiom is Template-auth.reference.html's (s230-D2)."
+  },
+  "antiPatterns": [
+    "Do not hand-edit the AUTO-BENTO block inside this file. canon.css is its ONE home; edit the token store, re-run canon/gen_canon_bento.py, re-splice.",
+    "Do not write a bento instance dial as a bare class. Canon's bento-of-bentos carve-out weighs (0,4,0) because :has() takes its most specific argument, so .tpl-wall{--bento-gutter:40px} at (0,1,0) loses SILENTLY at one spacing in one theme with every gate green. Declare instance dials at (0,4,0) or above.",
+    "Do not set --bento-gutter with a style=\"\" attribute. An inline custom property is invisible to every instrument that reads the stylesheet against the document (canon says so in as many words).",
+    "Do not invent a span. Only 6 and 3 are square at every compiled band without the mint-time squaring pass. A data-c=\"2\" tile leaves one column empty at the 3-column band, and no gate sees it.",
+    "Do not re-draw an atom inside a template. If a region here diverges from its source, that is a defect, not a variant - the #202 lesson.",
+    "Do not copy a source component's raw font: declaration, and do not copy View-options' .seg button{height:40px} - it is off the 28/36/44/48 ramp and this file omits the switcher for that reason.",
+    "Do not host a source component's JavaScript engine here. The only script on the page is demo chrome."
+  ],
+  "tokenValidation": {
+    "date": "2026-08-31",
+    "against": "knowledge/tokens/ via gen_snippet_tokens.py (manifest var -> token path -> hex, both modes; 0 values projected, i.e. every minted value already equalled its token) and _validate_snippets.py, plus the whole ordered regen serial and its determinism --check passes.",
+    "result": "PASS on the snippet gate (136 snippets, 0 failures), coverage (136/136), icons (0 UNKNOWN, 7/7 matched), radius, no-hardcode, DTCG, grid, type composites and a11y (0 failures). The four-theme legs (console / legacy / supercharge) are rendered from the projected .cn-template-dashboard-bento canon block, not from this file alone - see the report for exactly which theme paths were DRIVEN and which are UNPROVEN.",
+    "$method": "Every gate below was RUN at #231 and its own last line is quoted in notes/_subreports/2026-08-31-231-bento-snippet.md. A green gate means THAT PROBE RAN; it does not mean the tree is clean [[green-tests-cannot-see-scope]].",
+    "gates": [
+      "see notes/_subreports/2026-08-31-231-bento-snippet.md §GATES - the quoted last line of each run, plus the whole ordered regen serial and its four determinism --check passes"
+    ]
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "s230-D1 beat 3, measured PARTIAL at the #230 rehearsal (F4): grep -rl '\\.c-bento' knowledge/snippets/ returned 0 files.",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Template-dashboard-bento.reference.html",
+    "$builtAt": "#231, 2026-08-31, lane W-326 (Opus sub)"
+  },
+  "$foundByLooking": [
+    "⛔ THE MASTHEAD'S THREE VARS WERE BOUND AND NEVER DECLARED, AND THE PROJECTOR CAUGHT IT, NOT THE EYE. The first cut spliced App-shell-top-nav's masthead CSS and bound --rule / --pressed / --indicator in the manifest but declared none of them in the theme blocks. gen_snippet_tokens.py refused with three named warnings. Undeclared, border-bottom:1px solid var(--rule) resolves to currentColor and color:var(--indicator) to nothing - the [[dangling-dataviz-var-renders-silent-black]] class one store over. Fixed before any gate ran.",
+    "⚠ 'grep -l canon/canon.css knowledge/snippets/*.reference.html' RETURNS 110 FILES AND IS A FALSE PROBE. Every snippet carries the string inside its AUTO-TOKENS provenance comment. The TRUE probe is grep -l 'href=\"../canon/canon.css\"' -> 0 of 137. The whole shape of this file turned on that distinction: 110 would have said 'link canon.css like everyone else', 0 says 'no snippet ever has'.",
+    "⚠ role_defaults_219.py --table IS THE ONLY HOME OF THE TWELVE SHIPPED DEFAULTS AND IT PRINTS ITS OWN SUPERSESSIONS. The dashboard row for mono reads mainSpacing=40 subSpacing=4 keylines=off pageBg=grey bentoBg=transparent. Read, not remembered.",
+    "⛔ THE RULED DARK PAGE GROUND COLLIDES WITH THE MODULE SURFACE. surface/subtle dark = #1F1F1F = tertiary/background/default dark, byte-identical: 1.00:1. See $awaitingDave."
+  ],
+  "$layer": "2 Template",
+  "$layerNote": "⚠ THE BRIEF ASKS FOR A `layer` FIELD; THE SCHEMA FORBIDS IT, AND THE SCHEMA WINS. meta.schema.json allows only `$`-prefixed additional root keys, so the itinerary's layer value is carried as `$layer`. Declared rather than smuggled: if Dave wants a first-class `layer` field for the Layer-2 artefact class, that is a SCHEMA change and is his, not a worker lane's.",
+  "$composes": [
+    "component:kpi-tile",
+    "component:stat-card",
+    "component:chart-bar",
+    "component:summary",
+    "component:status-indicator",
+    "component:layout-utilities",
+    "component:breadcrumbs",
+    "component:headers",
+    "component:button",
+    "component:navigations",
+    "component:app-shell-top-nav"
+  ],
+  "$composesNote": "⚠ `relationships` is a CLOSED shape in meta.schema.json (livesInside · mustNotNeighbour · commonPatterns · triggeredBy) and has no seat for 'the components this organism is assembled from'. ⬛ THAT IS A REAL GAP FOR LAYER 2 and it is named, not worked around silently: composition is the defining edge of a template, and the graph cannot currently express it. The list is carried as `$composes` so it is readable and greppable but does not pretend to be a graph edge. Adding a `composes` edge type is a schema change and is Dave's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-dashboard-bento.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:business-banking-overview-screens",
+        "$note": "Business banking overview screens"
+      },
+      {
+        "ref": "context:treasury-and-account-overview-screens",
+        "$note": "Treasury and account overview screens"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:account-overview"
+      },
+      {
+        "ref": "pattern:business-banking-landing"
+      },
+      {
+        "ref": "pattern:treasury-dashboard"
+      },
+      {
+        "ref": "pattern:bento-dashboard"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A second dashboard template on the same page - a page has one overview"
+      },
+      {
+        "ref": null,
+        "$note": "A Layer-2 shell rendered INSIDE it"
+      }
+    ]
+  },
+  "$bentoGrammar": {
+    "role": "dashboard (s217-D3) - the theme radius sits on each inner bento's CONTAINER, tiles stay square.",
+    "structure": "A bento-of-bentos. Canon detects it STRUCTURALLY with :has(> .c-bento__grid > .c-bento) and hands the OUTER wall the open gutter while the inner walls stay tight - there is no second role name.",
+    "mainSpacing": "40px - mono's s219-D1 shipped default, read off knowledge/_render/role_defaults_219.py --table, not typed from memory.",
+    "subSpacing": "4px - mono's s219-D1 shipped default.",
+    "keylines": "OFF. s219-D2(4) rules keylines off by default on EVERY dashboard in every theme; the 4px gutter shows the wall ground through. The keylines-ON construction (s217-D8 'hug the modules' + s218-D1's per-band corner radii) is ADDRESSED, NOT COPIED - its corner assignment is minted per responsive band by gen_bento_matrix_217.corner_rules(), and hand-copying ~36 selectors here would be a third home for a generated fact.",
+    "pageBg": "grey (s219-D1) - bound to surface/subtle in LIGHT (#F0F0F0). The DARK leg is DECLARED-PROVISIONAL and is Dave's, see $awaitingDave.",
+    "bentoBg": "transparent (s219-D1) - the wall paints nothing; the modules paint tertiary/background/default.",
+    "spans": "ONLY data-c=\"6\" and data-c=\"3\". The squaring pass (s217-D3/D7) is a MINT-TIME rewrite and a static snippet cannot run it, so the spans are chosen from the one set that is square at every compiled band: canon clamps any data-c above the live column count, so 6 is a full row at 6/3/2/1 columns and 3 is a half row at 6 and a full row at 3/2/1. Every wall holds an even number of 3s. Orphans are impossible by construction."
+  },
+  "$awaitingDave": [
+    "THE DARK PAGE GROUND. s219-D1 rules pageBg: grey. surface/subtle's dark leg is #1F1F1F, which is BYTE-IDENTICAL to tertiary/background/default (#1F1F1F) - the module surface - so the ruled token paints wall and modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN. This file ships #1A1A1A (background/default) as a manifest driftAllow with the reason recorded, which is the s220-D1 'alignment by lift' SHAPE applied to a ground it does not govern. Three readings are rendered side by side on reviews/BENTO-SNIPPET-2026-08-31-v1.html. NOT RULED HERE.",
+    "WHETHER A SNIPPET MAY LINK canon.css. No snippet does (TRUE probe: grep -l 'href=\"../canon/canon.css\"' knowledge/snippets/*.reference.html -> 0 of 137), so a snippet using a canon STRUCTURAL component must COPY the generated block. This file carries a declared copy of canon.css's AUTO-BENTO block, and gen_canon_components then re-projects that copy back into canon.css under .cn-template-dashboard-bento - measured +8KB of duplicated bento rules inside canon.css. Linking canon.css, or teaching the projector to skip canon-owned selectors, are both convention changes and both Dave's.",
+    "WHETHER THE OTHER THREE THEMES' DASHBOARD DEFAULTS BELONG IN A SNIPPET. Snippets are single-theme by convention (mono); s219-D1's dashboard mainSpacing/subSpacing differ per theme (40/4 mono, 24/4 legacy, 40/4 console, 24/2 supercharge). Only mono's pair is minted here; the other three are ADDRESSED at role_defaults_219.py rather than typed into a second home."
+  ],
+  "$tokenGaps": [
+    "layout/bento/columns CANNOT be manifest-bound today: gen_snippet_tokens._unitless() does not know the path, so resolve('layout/bento/columns','light') returns the STRING '6px' and grid-template-columns:repeat(6px,...) is invalid CSS. MEASURED, not inferred. The value is declared as a literal 6 with this note; the one-line fix (add the path to _unitless) is priced in the report, not applied - it is a shared generator and the class fix is the build-PM's.",
+    "layout/bento/packing CANNOT be manifest-bound either: s217-D4 stores 'row dense' under $extensions rather than $value, so resolve() raises KeyError. That is the RULED storage shape, not a defect; the literal is declared with the ruling named."
+  ]
+}

@@ -365,6 +365,10 @@
 ## Template-create-edit.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Template-dashboard-bento.reference.html — ✅ PASS
+- 🟡 Template-dashboard-bento.reference.html: ALLOWED drift --wall-ground (dark) = #1A1A1A (token surface/subtle = #1F1F1F) — s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling.
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Template-dashboard.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
