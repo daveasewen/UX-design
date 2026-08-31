@@ -13,8 +13,8 @@
 
    HOW TO WEAR IT
      <script src="../knowledge/_render/apollo-fab.js"
-             data-reveal="always"      <!-- always | hotcorner | summon -->
-             data-corner="72"          <!-- corner-zone edge in px (hotcorner/summon)  -->
+             data-reveal="hotcorner"   <!-- always | hotcorner | summon — DEFAULT hotcorner -->
+             data-corner="72"          <!-- corner-zone edge in px (hotcorner/summon), default 72 -->
              data-meta="apollo-fab-meta.json"></script>
    Auto-mounts on DOMContentLoaded unless data-auto="off". Programmatic:
      var fab = ApolloFAB.mount({ reveal:'hotcorner', frame:someIframe, container:pane });
@@ -62,9 +62,18 @@
 
   if (global.ApolloFAB && global.ApolloFAB.version) { return; }
 
-  var VERSION = '1.0.0-227';
+  var VERSION = '1.0.1-228';
   var Z_DEFAULT = 2147483000;   /* pitfall 2 — above every sticky/masthead we ship */
-  var CORNER_DEFAULT = 72;      /* PROPOSED, not ruled. Dave's number to set.       */
+
+  /* L1/L2 — RULED by Dave on the #227 confirm pass, row 4: reading B, hot corner, and the
+     canon settings icon on the button face. Reveal was 'always' while the three readings
+     were being decided; it is now 'hotcorner' everywhere the config does not say otherwise.
+     72 is his number too — the confirm card put it as "72 px stands unless you give a
+     number" and he gave none. It is ~1.3x the 56 px button it reveals, so the pointer never
+     has to leave the zone to reach it. Any other number is still one config value away:
+     data-corner="N". */
+  var REVEAL_DEFAULT = 'hotcorner';
+  var CORNER_DEFAULT = 72;
   var STYLE_ID = 'apollo-fab-style';
 
   /* THEMES — [attribute value, button label].
@@ -225,10 +234,19 @@
     '}'
   ].join('\n');
 
+  /* THE BUTTON FACE — knowledge/assets/icons/global-controls/settings.svg, COPIED BYTE FOR
+     BYTE from the library (its 18x18 viewBox, its single evenodd path, its currentColor
+     fill). Dave, #227 confirm pass row 4: "use an icon from the library though". The glyph
+     that stood here was hand-drawn — a gear nobody had reviewed, in a pack whose first rule
+     is "never invent an icon". `settings` is the library's own name for it, and the same
+     file Template-settings.reference.html already uses for its settings affordance.
+     ⛔ Do not redraw or re-path this. If the library icon changes, re-copy it.
+     The root `fill="none"` is dropped so the CSS `fill:currentColor` on `.af-btn svg` is
+     what colours it; the path keeps its own currentColor. 18x18 is scaled to the 24px box
+     by that same CSS rule. */
   var GLYPH =
-    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-    '<path d="M12 8.4a3.6 3.6 0 1 0 0 7.2a3.6 3.6 0 0 0 0-7.2Zm0 5.9a2.3 2.3 0 1 1 0-4.6a2.3 2.3 0 0 1 0 4.6Z"/>' +
-    '<path d="M20.6 13.5l-1.7-.5a7 7 0 0 0 0-2l1.7-.5a.8.8 0 0 0 .5-1l-.6-1.7a.8.8 0 0 0-1-.5l-1.7.6a7 7 0 0 0-1.4-1.4l.6-1.7a.8.8 0 0 0-.5-1L14.8 2a.8.8 0 0 0-1 .5l-.5 1.7a7 7 0 0 0-2 0L10.8 2.5a.8.8 0 0 0-1-.5L8.1 2.6a.8.8 0 0 0-.5 1l.6 1.7a7 7 0 0 0-1.4 1.4L5.1 6a.8.8 0 0 0-1 .5l-.6 1.7a.8.8 0 0 0 .5 1l1.7.5a7 7 0 0 0 0 2l-1.7.5a.8.8 0 0 0-.5 1l.6 1.7a.8.8 0 0 0 1 .5l1.7-.6a7 7 0 0 0 1.4 1.4l-.6 1.7a.8.8 0 0 0 .5 1l1.7.6a.8.8 0 0 0 1-.5l.5-1.7a7 7 0 0 0 2 0l.5 1.7a.8.8 0 0 0 1 .5l1.7-.6a.8.8 0 0 0 .5-1l-.6-1.7a7 7 0 0 0 1.4-1.4l1.7.6a.8.8 0 0 0 1-.5l.6-1.7a.8.8 0 0 0-.5-1Zm-3 .8a5.7 5.7 0 0 1-1.7 2.1l-.5.4l.6 1.7l-.5.2l-.6-1.7l-.6.2a5.7 5.7 0 0 1-2.6 0l-.6-.2l-.6 1.7l-.5-.2l.6-1.7l-.5-.4a5.7 5.7 0 0 1-1.7-2.1l-.3-.5l-1.7.6l-.2-.5l1.7-.6l-.1-.6a5.7 5.7 0 0 1 0-2.4l.1-.6l-1.7-.6l.2-.5l1.7.6l.3-.5a5.7 5.7 0 0 1 1.7-2.1l.5-.4l-.6-1.7l.5-.2l.6 1.7l.6-.2a5.7 5.7 0 0 1 2.6 0l.6.2l.6-1.7l.5.2l-.6 1.7l.5.4a5.7 5.7 0 0 1 1.7 2.1l.3.5l1.7-.6l.2.5l-1.7.6l.1.6a5.7 5.7 0 0 1 0 2.4l-.1.6l1.7.6l-.2.5l-1.7-.6Z"/>' +
+    '<svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">' +
+    '<path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/>' +
     '</svg>';
 
   /* --------------------------------------------------------------------------------- */
@@ -304,7 +322,7 @@
     return {
       src: s.src || '',
       auto: d.auto !== 'off',
-      reveal: d.reveal || 'always',
+      reveal: d.reveal || REVEAL_DEFAULT,
       cornerSize: d.corner ? parseInt(d.corner, 10) : CORNER_DEFAULT,
       metaUrl: d.meta || null,
       zIndex: d.z ? parseInt(d.z, 10) : Z_DEFAULT
@@ -324,7 +342,7 @@
 
   function Fab(options) {
     var o = options || {};
-    this.reveal = ({ always: 1, hotcorner: 1, summon: 1 })[o.reveal] ? o.reveal : 'always';
+    this.reveal = ({ always: 1, hotcorner: 1, summon: 1 })[o.reveal] ? o.reveal : REVEAL_DEFAULT;
     this.cornerSize = typeof o.cornerSize === 'number' && o.cornerSize > 0 ? o.cornerSize : CORNER_DEFAULT;
     this.zIndex = typeof o.zIndex === 'number' ? o.zIndex : Z_DEFAULT;
     this.metaUrl = o.metaUrl || defaultMetaUrl();

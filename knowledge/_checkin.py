@@ -769,6 +769,139 @@ def selftest_block(path: str, fill: dict) -> int:
     return 0
 
 
+# ---------------------------------------------------------------- DISK PREFLIGHT (#228)
+# ⛔ WHY THIS IS IN THE OPENER READING AND NOT A SEPARATE TOOL. The sandbox VM disk PERSISTS
+# across sessions and has NO live garbage collection; each session runs as a throwaway Linux
+# user, and `/var/tmp` is sticky, so scratch left by a dead session is PERMANENTLY undeletable
+# from inside the VM. At 100% the sandbox cannot even create its user — `useradd: No space
+# left on device` — and NO SESSION CAN BOOT. That happened at #227 and again at #228, twice in
+# two days, and both times the first symptom was a tool failing for a reason that read as
+# something else entirely (playwright's `mkdtemp` surfacing as `BrowserType.launch: ENOSPC`).
+#
+# A number nobody looks at until it is 100% is not an instrument. The check-in is the ONE
+# thing that is law at the opener ([[checkin-is-mandatory-not-optional]]), so the reading rides
+# a run that happens anyway — the same argument that wired the B3 grade alerts here. It is
+# deliberately NOT a flag: an opt-in preflight is one nobody runs, and the point is to see the
+# number on the way UP, while the litter can still be removed by the session that owns it
+# (which is what `knowledge/_gate_scratch_hygiene.py` does at the wrap).
+#
+# ⚠ ADVISORY. It reports and warns; it never blocks and it never exits non-zero. A full disk
+# is not a reason to refuse a check-in — it is a reason to say so, loudly and by name.
+DISK_MOUNTS = ("/", "/sessions")
+DISK_WARN_PCT = 90          # PICKED, not derived: the point past which a boot is at risk.
+DISK_WARN_PREFIX = "  ⛔ DISK"
+
+
+def disk_reading(mounts=DISK_MOUNTS) -> list[dict]:
+    """[{mount, pct, free_kb, available|reason}] — `df` percent-used per mount.
+
+    UNKNOWN IS NEVER DEFAULTED [[feedback-measuring-tool-must-not-guess]]: a mount that does
+    not exist, or a statvfs that raises, is reported as unavailable WITH its reason. It is
+    never silently dropped and never counted as 0%."""
+    rows = []
+    for m in mounts:
+        try:
+            st = os.statvfs(m)
+        except OSError as e:
+            rows.append({"mount": m, "pct": None, "free_kb": None,
+                         "available": False, "reason": f"{type(e).__name__}: {e}"})
+            continue
+        total = st.f_blocks * st.f_frsize
+        # `df`'s own definition: used against the size the UNPRIVILEGED user can reach
+        # (used + available), not the raw total — reserved blocks are not free space here.
+        avail = st.f_bavail * st.f_frsize
+        used = total - st.f_bfree * st.f_frsize
+        denom = used + avail
+        pct = (used / denom * 100.0) if denom else None
+        rows.append({"mount": m, "pct": pct, "free_kb": avail // 1024,
+                     "available": pct is not None,
+                     "reason": None if pct is not None else "zero-sized filesystem"})
+    return rows
+
+
+def disk_lines(rows, warn_pct: int = DISK_WARN_PCT) -> list[str]:
+    """The printable block. The WARNING line is separate from the reading lines and names
+    the mount — a warning that does not say WHICH disk is a warning nobody can act on."""
+    out = ["  DISK         VM scratch, percent used (no live GC — at 100% no session boots):"]
+    hot = []
+    for r in rows:
+        if not r["available"]:
+            out.append(f"    {r['mount']:<10} {'UNREADABLE':>9}  ⛔ {r['reason']}")
+            continue
+        out.append(f"    {r['mount']:<10} {r['pct']:>8.1f}%  {r['free_kb']:,} KB free")
+        if r["pct"] >= warn_pct:
+            hot.append(r)
+    for r in hot:
+        out.append(f"{DISK_WARN_PREFIX} {r['mount']} IS {r['pct']:.1f}% FULL (>= {warn_pct}%) — "
+                   f"only {r['free_kb']:,} KB left.")
+    if hot:
+        out.append("               The VM has no live GC and scratch from DEAD sessions is "
+                   "UNDELETABLE.")
+        out.append("               Clear this session's own scratch NOW, while it still owns it: "
+                   "`python3 knowledge/_gate_scratch_hygiene.py`.")
+        out.append("               ⛔ At 100% the sandbox cannot create its user and NO session "
+                   "boots (#227, #228).")
+    return out
+
+
+# ---------------------------------------------- #228's mutation test (`--selftest-disk`)
+# Same contract as the compaction arms below: the CONTROL is an arm, because a clause that
+# warned unconditionally would satisfy every other arm [[mutation-tests-the-clause-not-the-feature]].
+def selftest_disk() -> int:
+    arms: list[tuple[str, str, bool, str]] = []
+
+    def drive(name: str, rows, expect_warn: bool, expect_in: str | None = None) -> None:
+        lines = disk_lines(rows)
+        warned = any(ln.startswith(DISK_WARN_PREFIX) for ln in lines)
+        good = warned == expect_warn
+        if good and expect_in:
+            good = any(expect_in in ln for ln in lines)
+        arms.append((name, "WARN" if expect_warn else "no warning", good,
+                     "\n".join(lines)))
+
+    def row(mount, pct, free_kb=1000):
+        return {"mount": mount, "pct": pct, "free_kb": free_kb,
+                "available": True, "reason": None}
+
+    drive("control: both mounts cool", [row("/", 48.8), row("/sessions", 66.0)], False)
+    drive("(a) / at the threshold warns", [row("/", 90.0), row("/sessions", 10.0)], True, "/ IS 90.0%")
+    drive("(b) /sessions alone warns, and is NAMED",
+          [row("/", 12.0), row("/sessions", 97.3)], True, "/sessions IS 97.3%")
+    drive("(c) 89.9% does NOT warn — the threshold is >=, not ~",
+          [row("/", 89.9), row("/sessions", 89.9)], False)
+    drive("(d) both hot warn SEPARATELY, one line each",
+          [row("/", 99.0), row("/sessions", 99.0)], True, "/sessions IS 99.0%")
+    drive("(e) an UNREADABLE mount is named, never counted as 0%",
+          [{"mount": "/nope", "pct": None, "free_kb": None,
+            "available": False, "reason": "FileNotFoundError: /nope"}], False, "UNREADABLE")
+
+    # (f) the REAL reading must parse — a shape test on live statvfs, not a fixture.
+    real = disk_reading()
+    real_ok = (len(real) == len(DISK_MOUNTS)
+               and all(("pct" in r and "mount" in r and "available" in r) for r in real))
+    arms.append(("(f) the live reading has the declared shape", "shape", real_ok,
+                 repr(real)))
+
+    print("DISK PREFLIGHT (#228) — MUTATION TESTS")
+    print(f"  threshold {DISK_WARN_PCT}% · mounts {list(DISK_MOUNTS)}")
+    for name, expect, good, got in arms:
+        verdict = "PASS" if good else "⛔ FAIL"
+        print(f"  {verdict:<7} {name:<52} expect {expect}")
+        if not good:
+            print(f"          got:\n{got}")
+    failed = [a for a in arms if not a[2]]
+    if failed:
+        print(f"  ⛔ {len(failed)} arm(s) did not behave as specified — the clause is NOT proven.")
+        return 1
+    print(f"  ✅ {len(arms)}/{len(arms)} arms behaved as specified: the control warns about")
+    print("     NOTHING, and every hot mount is named in its own warning line.")
+    print()
+    print("  LIVE READING (what the opener would print right now):")
+    for ln in disk_lines(real):
+        print("  " + ln)
+    return 0
+
+
 # ---------------------------------------------- s186-D1 Q5's mutation test (`--selftest-compaction`)
 # ⛔ A GREEN THAT CANNOT FAIL IS AN ASSERTION [[six-beat-ladder-ruled]]. Every arm below DRIVES the
 # REAL `read_fill()` on a REAL jsonl file written to a temp dir — not a hand-built dict — so the
@@ -861,6 +994,10 @@ def main() -> int:
     ap.add_argument("--selftest-compaction", action="store_true",
                     help="Drive the fired-compaction declared event's mutation tests (s186-D1 "
                          "Q5: control + 4 arms). Exit 1 if any arm does not behave as specified.")
+    ap.add_argument("--selftest-disk", action="store_true",
+                    help="Drive the disk-preflight warning's mutation tests (#228: control + 6 "
+                         "arms, plus the live reading). Exit 1 if any arm does not behave as "
+                         "specified.")
     ap.add_argument("--max-age", type=int, default=BLOCK_MAX_AGE_S,
                     help=f"Seconds a block may be old before --verify-block rejects it "
                          f"(default {BLOCK_MAX_AGE_S}; PICKED, not derived).")
@@ -877,6 +1014,9 @@ def main() -> int:
                          "convenience: skipping it means the seam has NO graded block and the "
                          "next brief has nothing legitimate to carry.")
     args = ap.parse_args()
+
+    if args.selftest_disk:
+        return selftest_disk()
 
     if args.selftest_compaction:
         return selftest_compaction()
@@ -971,6 +1111,11 @@ def main() -> int:
                      "#82/#83 (c); breakdown: tape/cl100k (D1: UNVERIFIED proxy), SHAPE "
                      "ONLY, does NOT sum to the headline, NEVER scaled to match it"),
             "kind": "throughput, cumulative — NOT a fill reading",
+            "disk": disk_reading(),
+            "disk_warn_pct": DISK_WARN_PCT,
+            "disk_unit": ("percent of the space an unprivileged user can reach (used against "
+                          "used+available, `df`'s own definition) — NOT a context reading; "
+                          "the VM disk persists across sessions and has no live GC (#228)"),
         }, indent=2))
         return 0
 
@@ -984,6 +1129,12 @@ def main() -> int:
     _ce = compaction_event(fill)
     if _ce:
         print(_ce)
+    # ── DISK PREFLIGHT (#228) — at the HEAD, beside freshness, because it is a PREFLIGHT:
+    # it says whether the environment this reading is being taken in can still function.
+    # Above MEASURED on purpose — a session that cannot boot tomorrow needs to know before
+    # it reads its own token arithmetic. Advisory: it never changes the exit code.
+    for _dl in disk_lines(disk_reading()):
+        print(_dl)
     print()
     print(f"  MEASURED     {real_measured:>9,} {real_method}  (conversation half, ONE call — the headline)")
     print()

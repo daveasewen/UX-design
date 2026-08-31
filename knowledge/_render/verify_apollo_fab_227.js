@@ -231,6 +231,25 @@ ok('C: one corner tap is inert', f3.layer.getAttribute('data-revealed') === 'fal
 hostDoc.fire('pointerdown', { clientX: 1180, clientY: 780 });
 ok('C: double corner tap summons (the touch fallback)', f3.layer.getAttribute('data-revealed') === 'true');
 
+/* L1/L2 (#228) — THE RULED DEFAULTS, driven with NO config at all. Every arm above names
+   its reveal explicitly, so all of them stayed green while the default was still 'always';
+   a ruling that only lives in a constant is a ruling no test can see. */
+const f3d = ApolloFAB.mount({});
+ok('DEFAULT reveal is hotcorner (L1, ruled #227 row 4)',
+   f3d.reveal === 'hotcorner' && f3d.layer.getAttribute('data-reveal') === 'hotcorner');
+ok('DEFAULT corner zone is 72px (L2)', f3d.cornerSize === 72);
+ok('DEFAULT mount starts HIDDEN — the hot corner is what shows it',
+   f3d.layer.getAttribute('data-revealed') === 'false');
+hostDoc.fire('pointermove', { clientX: 1180, clientY: 780 });
+ok('DEFAULT mount reveals from the corner with no config',
+   f3d.layer.getAttribute('data-revealed') === 'true');
+ok('the button face is the LIBRARY settings icon, not a hand-drawn one (18x18 viewBox, '
+   + 'evenodd path from global-controls/settings.svg)',
+   f3d.btn.innerHTML.indexOf('viewBox="0 0 18 18"') !== -1
+   && f3d.btn.innerHTML.indexOf('M16.376 6.992C16.208') !== -1
+   && f3d.btn.innerHTML.indexOf('M12 8.4a3.6') === -1);
+f3d.destroy();
+
 /* ---- 5 ------------------------------------------------------------------- */
 console.log('\n[5] token probe on a page that DOES carry canon vars');
 hostDoc._surfaceVar = ' #FFFFFF ';

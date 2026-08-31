@@ -506,15 +506,37 @@ def groups():
                               # silently ships one file short [[forgotten-document-class]].
                               or p.startswith("apollo-spider/.vscode/"))),
 
+        # ⛔ #228, red-team B1. THE WHOLE COLD-START DELIVERABLE WAS SHIPPING NOWHERE. No group
+        # claimed `apollo-spider/cold-start/`, there is no unclaimed-path check in this
+        # generator, and so the drop was SILENT: `--manifest` went green and Dave's go/no-go
+        # page showed nothing missing. Seven files — the contract, its three host projections,
+        # the generator that keeps them byte-identical, the placement checker and the four-box
+        # problem report — none of them reached a designer. A NAMED group rather than widening
+        # `gumdrop`: that is what puts it on Dave's page, and what makes a future silent drop
+        # visible. Placed BEFORE `skills` on the same ordering argument `gumdrop` records for
+        # itself — it matches only its own prefix, so it can swallow nothing.
+        dict(key="cold-start", group="cold-start", title="The cold-start design contract",
+             plain="The one-page contract every host reads before it builds — the source, the "
+                   "three host projections, the generator that keeps them byte-identical, the "
+                   "placement checker, and the four-box problem report.",
+             match=lambda p: p.startswith("apollo-spider/cold-start/")),
+
         # #219 seam 7, on R3's Q1: the skills group ships R3's OWN five, not v2's four. Until this
         # was repointed the pack shipped v2's skills and none of the refreshed set — the whole
         # point of s219-D4(4). ⚠ FUNCTION OF THE COMMIT like every other path: at a commit before
         # apollo-spider/skills/ is tracked this claims NOTHING and the group is empty.
+        # ⛔ #228, red-team S11: `brief-template.md` joins the match. The old rule claimed only
+        # `*/SKILL.md`, so a companion file BESIDE a skill could be claimed by nothing — and
+        # grill-me/SKILL.md ships a line telling the designer to "use the shape in
+        # `brief-template.md`, beside this file", pointing at a file that was not in the pack.
         dict(key="skills", group="skills", title="Skills",
-             plain="The five Spider skills: four refreshed against this knowledge base and the new "
-                   "gate-runner that runs the packed gates on a designer's own work.",
+             plain="The six Spider skills: four refreshed against this knowledge base, the "
+                   "gate-runner that runs the packed gates on a designer's own work, and the "
+                   "grill that asks the six questions before a build starts (with the brief "
+                   "template it writes into).",
              match=lambda p: p.startswith("apollo-spider/skills/")
-                             and p.endswith("/SKILL.md")),
+                             and (p.endswith("/SKILL.md")
+                                  or p.endswith("/brief-template.md"))),
     ]
 
 
@@ -1984,10 +2006,23 @@ GROUP_LEAD = {
         "cannot measure."),
     "skills": (
         "The skills",
-        "Five, and they are written. Four rewritten against this knowledge base — the "
+        "Six, and they are written. Four rewritten against this knowledge base — the "
         "library is 135 components now, not 40, and the red law they quoted was three "
-        "rulings out of date. The fifth is new: the gate-runner that actually runs the "
-        "packed gates on a designer's own work, and reads the verdicts back honestly."),
+        "rulings out of date. The fifth is the gate-runner that actually runs the "
+        "packed gates on a designer's own work, and reads the verdicts back honestly. The "
+        "sixth is the grill: the six questions that decide how a build will look, asked "
+        "before it starts, with the brief template it writes the answers into."),
+    # #228, red-team B1. Its own lead for the same measured reason gumdrop's says: this is
+    # a bare subscript at render, so a group declared without a lead takes the page down.
+    "cold-start": (
+        "The contract every host reads first",
+        "The failure this closes is quiet and expensive: an assistant starts cold — no "
+        "skill open, one short prompt — improvises a screen, and a bug gets filed against "
+        "a design system that was never consulted. This is the one page that stops it, "
+        "plus the machinery that keeps it honest. One source, projected byte-for-byte into "
+        "the file each host actually reads; a checker that says whether it is really in "
+        "place; and a four-box problem report whose second box asks the question that "
+        "sorts most reports in one read — which lane did the assistant declare?"),
 }
 
 # The order the group cards render in — the THIRD copy of the group set, hoisted at #219
@@ -1999,7 +2034,10 @@ GROUP_LEAD = {
 # Bitten both directions in the selftest, plus the lede correspondence — the prose says
 # "the last two are Memento … and the day-one walk-in", so the order must END with that
 # pair. [[green-tests-cannot-see-scope]] [[no-gate-parses-the-artefact]]
-GROUP_ORDER = ["engine-canon", "gates", "runbooks", "library", "skills",
+# ⚠ #228: `cold-start` is placed BEFORE `skills` and NOT at the end — the lede prose says
+# "the last two are Memento … and the day-one walk-in", so that pair must stay last. It sits
+# beside skills because that is what it is: the page a host reads before it reaches one.
+GROUP_ORDER = ["engine-canon", "gates", "runbooks", "library", "cold-start", "skills",
                "memento-clean-cut", "gumdrop"]
 
 

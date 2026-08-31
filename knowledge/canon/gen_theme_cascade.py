@@ -255,6 +255,7 @@ def load_themes():
     out = []
     for key, t in sorted(reg["themes"].items(), key=lambda kv: kv[1].get("order", 99)):
         entry = {"key": key, "attr": t.get("attr") or key.replace("apollo-", ""),
+                 "attrAliases": list(t.get("attrAliases") or []),
                  "label": t.get("label", key), "status": t.get("status"), "overrides": {},
                  "marks": {}, "guards": {}}
         # s157-D2: the named-palette tier projects BEFORE the override set, so a shared
@@ -382,6 +383,33 @@ def _guard_tail(gd, comments, note, indent="  "):
         lines.append(line)
     return lines
 
+def theme_attrs(theme):
+    """Every attribute value this theme answers to — the canonical one FIRST.
+
+    s227-D8(a), the W5 SAFE PATH. Designers say "Common"; the code key is `legacy`, and
+    every place the two names meet has carried a parenthetical to reconcile them. The full
+    rename is its own lane (s227-D8(c), post-Sept-1) because canon keys its whole cascade on
+    `[data-apollo-theme="legacy"]` — swapping the key would strip the theme off every page a
+    designer has already saved, and off every page in the shipped pack, the moment canon
+    updated. An ALIAS breaks nothing: both keys are emitted, the old one first and unchanged,
+    so existing pages keep resolving and new work can use the name Dave actually says.
+    Declared in tokens/themes/_themes.json as `attrAliases`, so this is a registry fact and
+    not a special case buried in an emitter."""
+    return [theme["attr"]] + list(theme.get("attrAliases") or [])
+
+
+def sel_group(theme, *tails):
+    """A selector LIST covering every alias × every tail. `tails` are the strings that follow
+    the attribute selector, e.g. ('', ' .cn-button') or ('[data-theme="dark"] .cn-x',
+    ' [data-theme="dark"] .cn-x'). Aliases multiply the list, they never replace an entry —
+    the canonical selector is always present, verbatim, and always first."""
+    out = []
+    for tail in tails:
+        for key in theme_attrs(theme):
+            out.append('[data-apollo-theme="%s"]%s' % (key, tail))
+    return ",\n".join(out)
+
+
 def theme_block(theme, manifests):
     """Full canon.css cascade for one theme ('' for the base theme)."""
     ov = theme["overrides"]
@@ -406,12 +434,11 @@ def theme_block(theme, manifests):
         vn = f"--mark-{normalize(status)}"
         root_light[vn] = {"light": vals["light"]}
         root_dark[vn] = {"dark": vals["dark"]}
-    lines.append(f'[data-apollo-theme="{a}"]{{')
+    lines.append(sel_group(theme, "") + "{")
     lines.append(_decls(root_light, "light"))
     lines.append("}")
     if root_dark:
-        lines.append(f'[data-apollo-theme="{a}"][data-theme="dark"],')
-        lines.append(f'[data-apollo-theme="{a}"] [data-theme="dark"]{{')
+        lines.append(sel_group(theme, '[data-theme="dark"]', ' [data-theme="dark"]') + "{")
         lines.append(_decls(root_dark, "dark"))
         lines.append("}")
     # COMPONENT tier (projected-literal re-binding)
@@ -434,15 +461,15 @@ def theme_block(theme, manifests):
             tail_light = _guard_tail(gd, comments, g.get("$noteLight"))
             tail_dark = _guard_tail(gd, comments, None)
         sel = f".cn-{slug}"
-        lines.append(f'[data-apollo-theme="{a}"] {sel}{{')
+        lines.append(sel_group(theme, " " + sel) + "{")
         lines.append(_decls(hits, "light", comments=comments))
         lines += tail_light
         lines.append("}")
         for r in (g.get("rules") or []):
             lines += _comment_lines(r["$note"], "")
-            lines.append(f'[data-apollo-theme="{a}"] {r["selector"]}{{{r["body"]}}}')
-        lines.append(f'[data-apollo-theme="{a}"][data-theme="dark"] {sel},')
-        lines.append(f'[data-apollo-theme="{a}"] [data-theme="dark"] {sel}{{')
+            lines.append(sel_group(theme, " " + r["selector"]) + "{" + r["body"] + "}")
+        lines.append(sel_group(theme, '[data-theme="dark"] ' + sel,
+                               ' [data-theme="dark"] ' + sel) + "{")
         lines.append(_decls(hits, "dark", comments=comments))
         lines += tail_dark
         lines.append("}")
@@ -502,9 +529,7 @@ def snippet_theme_css(manifest_vars, slug=None):
         elif gd:
             tail_light = _guard_tail(gd, comments, g.get("$noteLight"))
             tail_dark = _guard_tail(gd, comments, None)
-        a = t["attr"]
-        css.append(f'[data-apollo-theme="{a}"] [data-theme="light"],')
-        css.append(f'[data-apollo-theme="{a}"][data-theme="light"]{{')
+        css.append(sel_group(t, ' [data-theme="light"]', '[data-theme="light"]') + "{")
         css.append(_decls(hits, "light", comments=comments))
         css += tail_light
         css.append("}")
@@ -513,9 +538,8 @@ def snippet_theme_css(manifest_vars, slug=None):
             sel = r["selector"]
             if slug and sel.startswith(f".cn-{slug} "):
                 sel = sel[len(f".cn-{slug} "):]          # the snippet doc IS the component
-            css.append(f'[data-apollo-theme="{a}"] {sel}{{{r["body"]}}}')
-        css.append(f'[data-apollo-theme="{a}"] [data-theme="dark"],')
-        css.append(f'[data-apollo-theme="{a}"][data-theme="dark"]{{')
+            css.append(sel_group(t, " " + sel) + "{" + r["body"] + "}")
+        css.append(sel_group(t, ' [data-theme="dark"]', '[data-theme="dark"]') + "{")
         css.append(_decls(hits, "dark", comments=comments))
         css += tail_dark
         css.append("}")
@@ -685,7 +709,7 @@ def selftest():
                 if f"{v}: {n['value']};" not in block:
                     fails.append(f'{t["key"]}: guard {v} for .cn-{slug} not emitted')
             for r in (g.get("rules") or []):
-                if f'[data-apollo-theme="{t["attr"]}"] {r["selector"]}{{{r["body"]}}}' not in block:
+                if sel_group(t, " " + r["selector"]) + "{" + r["body"] + "}" not in block:
                     fails.append(f'{t["key"]}: guard rule {r["selector"]} not emitted')
     #     The RULED SET, named here so deleting a guard cannot delete its own check
     #     (a check derived only from the data can never fail): s149-D1 is MONO ONLY, so
@@ -701,8 +725,39 @@ def selftest():
                 fails.append(f"{key}: s149-D1 mono-only tab-badge guard {v} missing")
         if "--error-atom" not in ((gs.get("selection-controls") or {}).get("declarations") or {}):
             fails.append(f"{key}: s151-D1 --error-atom no-op guard missing")
-        if f'[data-apollo-theme="{a}"] .cn-tabs{{' not in block:
+        if sel_group(themes[key], " .cn-tabs") + "{" not in block:
             fails.append(f"{key}: no .cn-tabs block to carry the badge guards")
+    # 4c-alias. s227-D8(a) THE THEME-KEY ALIAS IS ADDITIVE — proven on the built CSS, in
+    #     both directions. The whole safety argument for shipping an alias instead of the
+    #     rename is "nothing existing breaks", and an alias that quietly REPLACED the old
+    #     key would satisfy every other check in this file while breaking every saved page.
+    # comments carry the canonical key too (each theme's own `/* ---- Label [attr] ---- */`
+    # banner), and a comment is not a selector — count on the CSS only.
+    block_sel_only = re.sub(r"/\*.*?\*/", "", block, flags=re.S)
+    for t in themes.values():
+        aliases = list(t.get("attrAliases") or [])
+        if not aliases:
+            continue
+        canon_sel = '[data-apollo-theme="%s"]' % t["attr"]
+        if canon_sel not in block:
+            fails.append(f'{t["key"]}: the CANONICAL key {t["attr"]!r} vanished from the '
+                         "cascade — an alias must ADD a key, never replace one")
+        for al in aliases:
+            alias_sel = '[data-apollo-theme="%s"]' % al
+            if alias_sel not in block:
+                fails.append(f'{t["key"]}: alias {al!r} is declared in _themes.json but '
+                             "emits no selector — the alias is decoration")
+            if block_sel_only.count(alias_sel) != block_sel_only.count(canon_sel):
+                fails.append(
+                    f'{t["key"]}: alias {al!r} appears {block_sel_only.count(alias_sel)} '
+                    f'time(s) against {block_sel_only.count(canon_sel)} for {t["attr"]!r} — '
+                    "every rule the "
+                    "canonical key reaches must be reachable by the alias too, or a page "
+                    "using the new name renders half-themed")
+        # and the canonical selector must still come FIRST in its own group, so a reader
+        # (and every literal grep in the repo) still finds the shape it has always found
+        if not block.count(canon_sel + ",\n" + '[data-apollo-theme="%s"]' % aliases[0]):
+            fails.append(f'{t["key"]}: the canonical key is not first in the selector group')
     # 4d. #158 GUARDS PARITY — the standalone-snippet export must carry the SAME guards.
     #     Before #158 it did not: theme_block() folded them into canon.css while
     #     snippet_theme_css() still emitted the PRE-GUARD projection, so every showroom
@@ -720,7 +775,7 @@ def selftest():
             for r in (g.get("rules") or []):
                 sel = r["selector"]
                 sel = sel[len(f".cn-{slug} "):] if sel.startswith(f".cn-{slug} ") else sel
-                if f'[data-apollo-theme="{t["attr"]}"] {sel}{{{r["body"]}}}' not in snip:
+                if sel_group(t, " " + sel) + "{" + r["body"] + "}" not in snip:
                     fails.append(f'{t["key"]}: guard rule {sel} missing from snippet_theme_css')
             if snippet_theme_css(mans[slug]) == snip:
                 fails.append(f'{t["key"]}: snippet guards for {slug} are a NO-OP '
