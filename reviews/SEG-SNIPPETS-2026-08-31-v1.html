@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The four fixed segmented snippets, as pixels &mdash; #230 &middot; plus the two exempt members</title>
+
+<!-- =================================================================================
+     WHAT THIS PAGE IS
+     #227 repaired eight snippets by hand and MISSED FOUR. #229 found the four and did
+     not touch them. They have now been fixed, at source, through the `segmented`
+     PARTIAL group - and nobody has LOOKED at them. This page renders all four live so
+     they can be judged by eye, and puts the two reasoned $exempt members beside them
+     as decision cards.
+
+     WHERE EVERY SPECIMEN COMES FROM - nothing here is re-drawn:
+       - the MARKUP is spliced VERBATIM out of the six reference snippets by a
+         balanced-tag extractor (outputs/_gen-230/build.py) and kept in the <template>
+         blocks at the bottom of the body. Every cell is a clone of that one template,
+         which is what makes the eight cells provably identical to each other and to
+         the reference file.
+       - the STYLE is the BUILT knowledge/canon/canon.css, linked below, reached
+         through the generated .cn-* scopes and [data-apollo-theme]/[data-theme].
+         Exactly the path a real Apollo page takes. NO component CSS and NO radius is
+         authored on this page - see the one v-added rule in the style block, which
+         paints a hover BACKGROUND and nothing else.
+       - the page chrome uses canon's own SEMANTIC ALIAS layer, so nothing below
+         re-invents a colour.
+
+     THE PAGE SCAFFOLD follows reviews/FOUR-VISUALS-2026-08-31-v2.html (#229).
+     ================================================================================= -->
+
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+
+<style>
+  /* ---------------------------------------------------------------------------------
+     REVIEW-PAGE CHROME. Layout only. Every colour is a canon alias resolved from the
+     linked canon.css - no hex is authored on this page.
+     --------------------------------------------------------------------------------- */
+  html,body{margin:0;padding:0}
+  body{background:var(--page); color:var(--text); font-family:var(--font);
+       -webkit-font-smoothing:antialiased;}
+
+  .chrome{background:var(--surface); color:var(--text);
+          border-bottom:1px solid var(--border);
+          transition:background var(--ease), color var(--ease);}
+
+  header.bar{position:sticky; top:0; z-index:60;
+    padding:14px 20px; display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center;}
+  .bar h1{font-size:17px; font-weight:500; margin:0; letter-spacing:-.01em}
+  .bar .sub{font-size:12.5px; color:var(--muted); margin:3px 0 0; line-height:1.5}
+  .bar code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .spacer{flex:1 1 auto}
+
+  .ctl{display:flex; align-items:center; gap:6px; font-size:13px}
+  .ctl > span{color:var(--muted)}
+  .ctl button{font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); cursor:pointer; margin-left:-1px;}
+  .ctl button:first-of-type{margin-left:0}
+  .ctl button[aria-pressed="true"]{background:var(--text); color:var(--surface); border-color:var(--text)}
+  .ctl button:focus-visible{outline:2px solid var(--focus); outline-offset:1px; position:relative; z-index:1}
+
+  /* the block is a THEMED chrome surface, so it must span the page; the measure is
+     capped on its children instead, or dark mode leaves a light gutter beside it. */
+  .wrap{padding:18px 20px}
+  .wrap > *{max-width:112ch}
+  .wrap p{margin:0 0 10px; font-size:14px; line-height:1.62}
+  .wrap p:last-child{margin:0}
+  .wrap strong, .wrap b{font-weight:500}
+  .wrap code, .cell code, .readout code, .spec-head code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px}
+  .wrap ol, .wrap ul{margin:8px 0 10px; padding-left:20px; font-size:14px; line-height:1.62}
+  .wrap li{margin:0 0 6px}
+
+  nav.toc{padding:0 20px 18px; font-size:13px; display:flex; flex-wrap:wrap; gap:8px 14px}
+  nav.toc a{color:var(--text); text-decoration:none; border-bottom:1px solid var(--border); padding-bottom:2px}
+  nav.toc a:hover{border-bottom-color:var(--text)}
+
+  /* --- specimen framing -------------------------------------------------------------- */
+  /* scroll-margin keeps the sticky bar from covering a section the TOC jumped to */
+  section.spec{border-bottom:1px solid var(--border); scroll-margin-top:104px}
+  .spec-head{padding:20px 20px 14px; background:var(--surface); color:var(--text);
+             border-bottom:1px solid var(--border);
+             transition:background var(--ease), color var(--ease);}
+  .spec-head .kicker{display:block; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 5px}
+  .spec-head h2{margin:0; font-size:19px; font-weight:500; letter-spacing:-.01em}
+  .spec-head p{margin:8px 0 0; font-size:14px; line-height:1.6; max-width:104ch}
+  .spec-head p.thin, .spec-head p.src{color:var(--muted); font-size:13px}
+  .spec-head b{font-weight:500}
+  .spec-head blockquote.why{margin:14px 0 0; padding:12px 14px; border-left:3px solid var(--border);
+    background:var(--page); font-size:13px; line-height:1.62; max-width:104ch; color:var(--text)}
+  .spec-head blockquote.why b{font-weight:500}
+  section.spec.exempt .spec-head .kicker{color:var(--text)}
+
+  /* --- the four-theme x two-mode spread ---------------------------------------------- */
+  .spread-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px;
+               background:var(--border); border-top:1px solid var(--border)}
+  .cell{padding:20px; min-width:0;
+        background:var(--background-default); color:var(--text-default);}
+  .cell .cellhead{display:flex; align-items:baseline; gap:10px; margin:0 0 16px}
+  .cell .cellhead h3{margin:0; font-size:14px; font-weight:500}
+  .cell .cellhead .mode{font-size:11px; letter-spacing:.09em; text-transform:uppercase; opacity:.62}
+  .spread-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cell .stack{display:flex; flex-direction:column; gap:18px; align-items:flex-start}
+  /* the tab-bar lozenge is a FULL-WIDTH mobile control: at its natural shrink-to-fit
+     width the four 24px glyphs collide. Give the scope box the width, and let the
+     snippet's own max-width:420px on .tabbar-pills do the capping it already does. */
+  .cell .cn-tab-bar{width:100%}
+  /* the calibration row - three controls side by side, baselines aligned at the bottom */
+  .calrow{display:flex; flex-wrap:wrap; gap:26px 30px; align-items:flex-end}
+  .calitem{min-width:0}
+  .callab{margin:0 0 9px; font-size:11.5px; line-height:1.45; opacity:.72; max-width:24ch}
+  .callab b{font-weight:500; opacity:1}
+  .calitem:nth-child(2) .callab{opacity:1; font-weight:500}
+
+  /* --- live readouts ------------------------------------------------------------------ */
+  .readout{padding:18px 20px 26px; background:var(--surface); color:var(--text);
+           transition:background var(--ease), color var(--ease);}
+  .readout h3{margin:0 0 4px; font-size:13px; font-weight:500}
+  .readout p{margin:0 0 12px; font-size:12.5px; color:var(--muted); line-height:1.55; max-width:104ch}
+  .readout p b{font-weight:500; color:var(--text)}
+  .readout .scroll{overflow-x:auto}
+  table.rd{border-collapse:collapse; font-size:12.5px; min-width:520px}
+  table.rd th, table.rd td{text-align:left; padding:6px 14px 6px 0; border-bottom:1px solid var(--border);
+    white-space:nowrap; font-weight:400}
+  table.rd th{color:var(--muted); font-size:11px; letter-spacing:.06em; text-transform:uppercase}
+  table.rd td.num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  table.rd td.tag, table.rd span.tag{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+  table.rd tr.rounded td.num{font-weight:500}
+
+  /* --- decision cards ------------------------------------------------------------------ */
+  .decision{margin-top:22px; border:1px solid var(--border); background:var(--page); padding:16px 18px 18px}
+  .decision h3{margin:0 0 4px; font-size:14px; font-weight:500}
+  .decision p.dp{margin:0 0 14px; font-size:12.5px; color:var(--muted); line-height:1.55; max-width:104ch}
+  .opts{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+  @media (max-width: 1000px){ .opts{grid-template-columns:1fr} }
+  label.opt{display:flex; gap:10px; padding:13px 14px; border:1px solid var(--border);
+    background:var(--surface); cursor:pointer; align-items:flex-start;
+    transition:border-color var(--ease), background var(--ease)}
+  label.opt:hover{border-color:var(--text)}
+  label.opt:has(input:checked){border-color:var(--text); border-width:2px; padding:12px 13px}
+  label.opt input{margin:3px 0 0; flex:none}
+  .optbody{display:flex; flex-direction:column; gap:7px; min-width:0}
+  .optname{font-size:13.5px; font-weight:500; line-height:1.35}
+  .optgist{font-size:12.5px; line-height:1.55}
+  .optcost, .opttell{font-size:12px; line-height:1.55; color:var(--muted)}
+  .optcost b, .opttell b{font-weight:500; color:var(--text)}
+  .verdict{margin:14px 0 0; font-size:12.5px; color:var(--muted)}
+  .verdict.set{color:var(--text)}
+
+  footer.foot{padding:22px 20px 40px}
+  footer.foot > *{max-width:112ch}
+  footer.foot p{margin:0 0 10px; font-size:13px; line-height:1.62; color:var(--muted)}
+  footer.foot b{font-weight:500; color:var(--text)}
+
+  @media (max-width: 860px){
+    .spread-grid{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important; animation-duration:.01ms !important}
+  }
+
+  /* ===== THE FORCED HOVER - the ONE added rule ================================
+     A real :hover cannot be held open for a still image, so one unpressed segment
+     per control is marked .fh and given canon's OWN hover background - var(--hover),
+     the same custom property canon's own rule reads, resolved inside each .cn-*
+     scope. NOTHING about the CORNER is authored here: the radius on that box comes
+     from canon's `.seg button{border-radius:var(--seg-thumb)}`, which IS the repair
+     under review. Hover the neighbouring segments with a real pointer and they
+     behave identically - that was driven with a synthetic pointer and photographed.
+     ------------------------------------------------------------------------- */
+  body.demo-hover .cell .seg button.fh{ background:var(--hover); }
+</style>
+</head>
+<body class="canon demo-hover">
+
+<!-- Icon sprite - <symbol> definitions spliced VERBATIM from the snippets' own sprites
+     (icon-source rule: real HSBC library glyphs). Declared once for the whole document. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-list" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+  <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z"/></symbol>
+  <symbol id="ic-cards" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.973 9.195L9.555 10.181C9.753 10.529 9.905 10.895 10.008 11.273L11 11.674V13.326L10.008 13.727C9.906 14.105 9.754 14.471 9.555 14.819L9.973 15.805L8.805 16.973L7.819 16.555C7.471 16.754 7.105 16.905 6.727 17.008L6.326 18H4.674L4.273 17.008C3.895 16.906 3.529 16.754 3.181 16.555L2.195 16.973L1.027 15.805L1.445 14.819C1.246 14.471 1.094 14.105 0.992 13.727L0 13.326V11.674L0.992 11.273C1.094 10.895 1.246 10.529 1.445 10.181L1.027 9.195L2.195 8.027L3.181 8.445C3.529 8.246 3.895 8.095 4.273 7.992L4.674 7H6.326L6.727 7.992C7.105 8.095 7.471 8.247 7.819 8.445L8.805 8.027L9.973 9.195ZM2.108 12.5C2.108 14.373 3.627 15.892 5.5 15.892C7.373 15.892 8.892 14.373 8.892 12.5C8.892 10.627 7.373 9.108 5.5 9.108C3.627 9.108 2.108 10.627 2.108 12.5Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H16.5C17.325 0 18 0.675 18 1.5V10.5C18 11.325 17.325 12 16.5 12H11.975C11.944 11.588 11.873 11.187 11.768 10.8H16.5C16.663 10.8 16.8 10.663 16.8 10.5V4.2H4.2V6.131C3.784 6.215 3.383 6.34 3 6.5V1.5C3 0.675 3.675 0 4.5 0ZM4.2 3H16.8V1.5C16.8 1.337 16.663 1.2 16.5 1.2H4.5C4.337 1.2 4.2 1.337 4.2 1.5V3Z"/><path d="M15 6H12V7.2H15V6Z"/></symbol>
+  <symbol id="ic-pay" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.064 6.352C10.347 6.352 10.356 7.003 10.359 7.218L11.559 7.2C11.544 6.092 10.807 5.353 9.6 5.188V4H8.4V5.216C7.207 5.431 6.44 6.226 6.44 7.337C6.44 8.831 7.782 9.247 8.499 9.47L9.14 9.675C10.097 9.972 10.359 10.185 10.359 10.663C10.359 11.577 9.27 11.648 8.936 11.648C7.653 11.648 7.644 10.997 7.641 10.782L6.44 10.8C6.456 11.908 7.193 12.647 8.399 12.812V14H9.599V12.784C10.792 12.569 11.558 11.774 11.558 10.663C11.558 9.169 10.216 8.753 9.495 8.528L8.859 8.325C7.902 8.028 7.64 7.815 7.64 7.337C7.641 6.423 8.73 6.352 9.064 6.352Z"/></symbol>
+  <symbol id="ic-insight" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1685 3.936C13.8355 1.785 11.5295 0.5 9.00147 0.5C6.47047 0.5 4.16347 1.786 2.83047 3.94C2.14747 5.045 2.03447 6.434 2.52947 7.657L5.10647 14.028V15.369L7.23847 17.5H10.7635L12.8955 15.369V14.028L15.4725 7.653C15.9665 6.43 15.8535 5.04 15.1685 3.936ZM11.6955 14.872L10.2665 16.3H7.73547L6.30647 14.872V13.5H11.6955V14.872ZM8.20047 12.3V6.729C8.20047 6.288 8.55947 5.929 9.00047 5.929C9.44147 5.929 9.80047 6.288 9.80047 6.729V12.3H8.20047ZM14.3595 7.204L12.2995 12.3H11.0005V6.729C11.0005 5.625 10.1045 4.729 9.00047 4.729C7.89547 4.729 7.00047 5.624 7.00047 6.729V12.3H5.70247L3.64147 7.207C3.28947 6.337 3.36847 5.352 3.85047 4.572C4.96347 2.773 6.88947 1.7 9.00147 1.7C11.1115 1.7 13.0355 2.772 14.1485 4.568C14.6325 5.348 14.7115 6.333 14.3595 7.204Z"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></symbol>
+</svg>
+
+<header class="bar chrome" data-chrome>
+  <div>
+    <h1>The four fixed segmented snippets &mdash; and the two that opted out</h1>
+    <p class="sub">#230 &middot; W-307&rsquo;s close condition &middot; specimens spliced from the reference files, styled by the built <code>canon.css</code></p>
+  </div>
+  <div class="spacer"></div>
+  <div class="ctl"><span>Page chrome</span>
+    <button type="button" id="chrome-light" aria-pressed="true">Light</button>
+    <button type="button" id="chrome-dark" aria-pressed="false">Dark</button>
+  </div>
+  <div class="ctl"><span>Held hover</span>
+    <button type="button" id="hoverToggle" aria-pressed="true">On</button>
+  </div>
+  <div class="ctl">
+    <button type="button" id="remeasure">Re-measure</button>
+  </div>
+</header>
+
+<div class="wrap chrome" data-chrome>
+  <p><b>What you are being asked to look at.</b> #227 swept the segmented radius defect through the
+  knowledge base by hand and repaired eight files. It missed four. #229 found the four, named them as
+  the highest-value item on its ruling list, and deliberately did not touch them &mdash; the fix moves
+  container and thumb pixels you had not seen. Those four are now repaired at source, and the repair
+  arrives through the <code>segmented</code> partial group rather than by hand, so the three radius
+  declarations are <b>injected from the atom</b> and a membership scan fails the build if a snippet
+  grows a <code>.seg</code> rule without joining. <b>Nothing on this page is a description of that.
+  It is the built CSS, rendering.</b></p>
+
+  <p><b>What "fixed" means, in one line.</b> In Mono, Legacy and Supercharge the minted radius is
+  <code>0</code>, so these controls look exactly as they always did &mdash; that is the ruling
+  (<code>s201-D5</code>), not an oversight. <b>Only Console mints a corner</b>: 8&nbsp;px on the track,
+  6&nbsp;px on the thumb and on the hover/focus box. So the whole question your eye is being asked is
+  in the two Console cells of each spread, and the other six cells are the control that proves nothing
+  leaked.</p>
+
+  <p><b>The hover box is the subtle half.</b> The box that paints on <code>:hover</code> and
+  <code>:focus-visible</code> is geometrically the <i>same box</i> as the sliding thumb, but it only
+  exists in a state &mdash; which is why no static render and no gate ever contained it. The
+  <b>Held&nbsp;hover</b> switch above holds one unpressed segment open per control so you can see its
+  corner in a still image. The switch paints a background and nothing else; the corner it reveals is
+  canon&rsquo;s.</p>
+
+  <p><b>And two components said no.</b> <code>Table</code> and <code>Tab-bar</code> both declare a
+  rule on <code>.seg</code> and both carry a written exemption from the membership scan. They are at
+  the bottom of this page, rendered as they stand today, each with the three-way choice laid out.
+  <b>Those two are the only decisions here.</b> The four repairs above are enacted; your eye is the
+  check on them, not the gate.</p>
+</div>
+
+<div class="wrap chrome" data-chrome id="hovervis">
+  <p><b>One thing to know before you judge the dark cells.</b> The corner is correct in dark &mdash; it
+  measures 6&nbsp;px, same as light. But the <i>fill</i> that carries it is very nearly the same colour as
+  the track it sits on, so in dark mode you may not be able to see the hover state at all, let alone its
+  shape. That is not something #229 or #230 changed; the hover fill has always been
+  <code>tertiary/background/hover</code>. It is measured live below because it affects what your eye can
+  actually report on this page.</p>
+  <div class="scroll"><table class="rd" id="rd-hovervis"></table></div>
+  <p style="margin-top:12px">If the dark rows read as invisible to you, the <b>light</b> Console cell and
+  the zoomed real-hover images in the report are the honest place to judge the corner &mdash; and the
+  visibility of the hover state itself becomes a separate question worth its own look.</p>
+</div>
+
+<nav class="toc chrome" data-chrome>
+  <a href="#sec-view-options">1 &middot; View options</a>
+  <a href="#sec-template-dashboard">2 &middot; Template &mdash; dashboard</a>
+  <a href="#sec-template-list-index">3 &middot; Template &mdash; list index</a>
+  <a href="#sec-template-report">4 &middot; Template &mdash; report</a>
+  <a href="#sec-calibration">Calibration &middot; 42&nbsp;px vs the ramp</a>
+  <a href="#sec-table">$exempt &middot; Table</a>
+  <a href="#sec-tab-bar">$exempt &middot; Tab-bar</a>
+</nav>
+
+
+<section class="spec" id="sec-view-options">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Fixed at #230 &mdash; specimen 1 of 4</span>
+    <h2>View&nbsp;options</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/View-options.reference.html</code>; every pixel of style from the built <code>knowledge/canon/canon.css</code> via <code>.cn-view-options</code>.</p>
+    <p>The whole atom as a standalone component &mdash; a two-segment list/grid switcher, the smallest surface in the set.</p>
+    <p class="thin">This file <b>re-declared <code>.seg</code> locally and declared no radius at all</b> &mdash; no <code>--seg-rad</code>, no <code>--seg-thumb</code>, no manifest binding. Track, sliding thumb and the hover/focus box were <b>all square in every theme, Console included</b>. #227&rsquo;s hand sweep repaired eight files and missed this one; #229&rsquo;s F1 could not reach it. It is now a member of the <code>segmented</code> partial group, so the three radii are <b>injected from the atom</b> rather than re-typed here.</p>
+  </div>
+  <div class="spread-grid" id="grid-view-options" data-tpl="tpl-view-options"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; <code>border-radius</code>, computed, per cell</h3>
+    <p>Track = the <code>.seg</code> frame. Thumb = the sliding <code>.ind</code>. Hover&nbsp;box = an <b>unpressed</b> <code>button</code>&rsquo;s own computed radius, so this column is honest with the hover switch <b>off</b>. Concentric means thumb sits inside track by the minted dial, not that the two numbers match.</p>
+    <div class="scroll"><table class="rd" id="rd-view-options"></table></div>
+  </div>
+</section>
+
+<section class="spec" id="sec-template-dashboard">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Fixed at #230 &mdash; specimen 2 of 4</span>
+    <h2>Template&nbsp;&mdash;&nbsp;dashboard</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/Template-dashboard.reference.html</code>; every pixel of style from the built <code>knowledge/canon/canon.css</code> via <code>.cn-template-dashboard</code>.</p>
+    <p>Two controls in one page: the reporting-period switcher in the toolbar and the list/cards <i>View&nbsp;as</i> switcher lower down. Both are shown.</p>
+    <p class="thin">Same defect, same repair, and the only member in the set carrying <b>two</b> segmented controls &mdash; so it is also the check that the injected contract reaches every instance in a file, not just the first one.</p>
+  </div>
+  <div class="spread-grid" id="grid-template-dashboard" data-tpl="tpl-template-dashboard"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; <code>border-radius</code>, computed, per cell</h3>
+    <p>Track = the <code>.seg</code> frame. Thumb = the sliding <code>.ind</code>. Hover&nbsp;box = an <b>unpressed</b> <code>button</code>&rsquo;s own computed radius, so this column is honest with the hover switch <b>off</b>. Concentric means thumb sits inside track by the minted dial, not that the two numbers match.</p>
+    <div class="scroll"><table class="rd" id="rd-template-dashboard"></table></div>
+  </div>
+</section>
+
+<section class="spec" id="sec-template-list-index">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Fixed at #230 &mdash; specimen 3 of 4</span>
+    <h2>Template&nbsp;&mdash;&nbsp;list&nbsp;index</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/Template-list-index.reference.html</code>; every pixel of style from the built <code>knowledge/canon/canon.css</code> via <code>.cn-template-list-index</code>.</p>
+    <p>The table/list view switcher that sits above the data grid.</p>
+    <p class="thin">Same defect, same repair. Icons plus a label, so the segment boxes are wider than View-options&rsquo; &mdash; useful for judging whether one corner radius reads consistently across very different segment widths.</p>
+  </div>
+  <div class="spread-grid" id="grid-template-list-index" data-tpl="tpl-template-list-index"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; <code>border-radius</code>, computed, per cell</h3>
+    <p>Track = the <code>.seg</code> frame. Thumb = the sliding <code>.ind</code>. Hover&nbsp;box = an <b>unpressed</b> <code>button</code>&rsquo;s own computed radius, so this column is honest with the hover switch <b>off</b>. Concentric means thumb sits inside track by the minted dial, not that the two numbers match.</p>
+    <div class="scroll"><table class="rd" id="rd-template-list-index"></table></div>
+  </div>
+</section>
+
+<section class="spec" id="sec-template-report">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Fixed at #230 &mdash; specimen 4 of 4</span>
+    <h2>Template&nbsp;&mdash;&nbsp;report</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/Template-report.reference.html</code>; every pixel of style from the built <code>knowledge/canon/canon.css</code> via <code>.cn-template-report</code>.</p>
+    <p>A three-segment reporting-period switcher with the middle segment selected.</p>
+    <p class="thin">Same defect, same repair. The <b>only</b> one in the set where the pressed segment sits <i>between</i> two others, so both of the thumb&rsquo;s ends are interior &mdash; the case where a wrong thumb radius would be most obvious and, equally, where a right one is hardest to see.</p>
+  </div>
+  <div class="spread-grid" id="grid-template-report" data-tpl="tpl-template-report"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; <code>border-radius</code>, computed, per cell</h3>
+    <p>Track = the <code>.seg</code> frame. Thumb = the sliding <code>.ind</code>. Hover&nbsp;box = an <b>unpressed</b> <code>button</code>&rsquo;s own computed radius, so this column is honest with the hover switch <b>off</b>. Concentric means thumb sits inside track by the minted dial, not that the two numbers match.</p>
+    <div class="scroll"><table class="rd" id="rd-template-report"></table></div>
+  </div>
+</section>
+
+<section class="spec" id="sec-calibration">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Calibration &mdash; a question the numbers raised, put in pixels</span>
+    <h2>The repaired controls are 42&nbsp;px tall and read the <b>s</b> radii. The atom&rsquo;s <b>s</b> is 36&nbsp;px.</h2>
+    <p class="src">All three specimens spliced verbatim: the outer two from <code>knowledge/snippets/Segmented-control.reference.html</code>, the middle one from <code>View-options.reference.html</code>.</p>
+    <p>The minted ramp has four rungs &mdash; <code>xs</code>&nbsp;28, <code>s</code>&nbsp;36, <code>m</code>&nbsp;44, <code>l</code>&nbsp;48 &mdash; and Console mints a container/thumb pair for each: <b>6/4</b>, <b>8/6</b>, <b>10/8</b>, <b>12/8</b>. All four repaired snippets bind the <b><code>s</code></b> pair, so they take <b>8/6</b>. But their button is <code>height:40px</code> inside a 1&nbsp;px frame, which puts the control at <b>42&nbsp;px</b> &mdash; six pixels above the <code>s</code> rung and two below <code>m</code>.</p>
+    <p class="thin">Nothing here is broken and nothing is proposed. The binding is consistent, the partial is doing its job, and the number on the box is exactly the number in the store. The question is only whether a 42&nbsp;px control should wear the 36&nbsp;px rung&rsquo;s corner or the 44&nbsp;px rung&rsquo;s. Below, in Console, is what each looks like. <b>The middle control is what shipped.</b></p>
+    <p><b>A second difference is visible in the same picture, and it is not a defect either.</b> The atom carries a <b>2&nbsp;px track padding</b>, so its thumb floats inside the frame with a visible gap all round. All four repaired files are <b>flush</b> &mdash; no padding, the thumb inset only by the 1&nbsp;px border. The minted pair is a <i>tuned dial</i> (container &minus;&nbsp;2, <code>s202-D2</code>), not a strict derivation, so a flush thumb lands about a pixel under exact concentricity and an inset one about a pixel over. That is the same tolerance the eight files repaired at #227 already ship, and the snippets say so in their own headers. <b>Adopting the atom&rsquo;s 2&nbsp;px inset here would move pixels, and it was flagged not taken.</b> Look at the gap around the black thumb in the outer two against the middle one.</p>
+  </div>
+  <div class="spread-grid two" id="grid-calibration" data-tpl="tpl-calibration" data-themes="console"></div>
+  <div class="readout" data-chrome>
+    <h3>The three, measured</h3>
+    <p>Height is the control&rsquo;s own border-box. Track and thumb are computed radii.</p>
+    <div class="scroll"><table class="rd" id="rd-calibration"></table></div>
+  </div>
+</section>
+
+<section class="spec exempt" id="sec-table">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Reasoned <code>$exempt</code> &mdash; awaiting your ruling</span>
+    <h2>Table &mdash; the demo-harness switcher</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/Table.reference.html</code>; style from <code>canon.css</code> via <code>.cn-table</code>.</p>
+    <p>The snippet&rsquo;s own <i>header type</i> variant switcher. The file labels it &ldquo;demo controls&rdquo;.</p>
+    <blockquote class="why"><b>The exemption reason on file</b>, from <code>knowledge/component-types.json</code> &rarr; <code>segmented.$scan.$exempt</code>:<br>DEMO-HARNESS CHROME, and a different construction. Table&rsquo;s <code>.seg</code> is the snippet&rsquo;s own headerType variant switcher &mdash; the file labels it &ldquo;demo controls&rdquo; &mdash; built the pre-atom way: inter-segment <code>border-left</code> dividers, no sliding <code>.ind</code>, active state by background and <code>disabled</code>. The atom&rsquo;s construction explicitly abandoned the divider, and injecting a thumb radius into a control with no thumb, plus a button radius onto divider-separated segments, would round interior corners against their dividers. FOUND BY THIS SWEEP AT s229 and reported, NOT fixed: it renders square in every theme, which is a real if minor gap, and it is Dave&rsquo;s call whether demo chrome follows the theme at all.</blockquote>
+  </div>
+  <div class="spread-grid" id="grid-table" data-tpl="tpl-table" data-exempt="1"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; as it stands today</h3>
+    <p>These numbers are what the component ships <b>now</b>, unchanged by anything in #229 or #230.</p>
+    <div class="scroll"><table class="rd" id="rd-table"></table></div>
+    
+  <div class="decision">
+    <h3>Decision &mdash; this one is yours</h3>
+    <p class="dp">Nothing below is enacted by choosing it. The card records the shape of the choice and what each branch would move; the change itself is a separate lane.</p>
+    <div class="opts">
+    <label class="opt" for="opt-table-join">
+      <input type="radio" name="dec-table" id="opt-table-join" value="join">
+      <span class="optbody">
+        <span class="optname">Join the segmented group</span>
+        <span class="optgist">Register <code>Table</code> as a member; the three injected radii start arriving from the atom, so this switcher rounds in Console with everything else.</span>
+        <span class="optcost"><b>What moves:</b> Interior corners round <b>against the <code>border-left</code> dividers</b> &mdash; there is no thumb here, so the thumb radius lands on nothing and the button radius rounds segment boxes that are still butted together. Visible in Console light and dark. Would likely need the dividers dropped too, which is a second, larger change.</span>
+        <span class="opttell"><b>Pick this if:</b> you think every <code>.seg</code> in the KB should look like one control, and you are willing to pay for the divider rework.</span>
+      </span>
+    </label>
+    <label class="opt" for="opt-table-stay">
+      <input type="radio" name="dec-table" id="opt-table-stay" value="stay">
+      <span class="optbody">
+        <span class="optname">Stay exempt</span>
+        <span class="optgist">Leave the registry entry as it stands. The scan keeps passing because the exemption is reasoned; the switcher stays square in all four themes.</span>
+        <span class="optcost"><b>What moves:</b> Nothing. This is what the pixels above already show.</span>
+        <span class="opttell"><b>Pick this if:</b> you read this as demo scaffolding rather than product surface &mdash; chrome that exists to drive the specimen, not to be shipped.</span>
+      </span>
+    </label>
+    <label class="opt" for="opt-table-restyle">
+      <input type="radio" name="dec-table" id="opt-table-restyle" value="restyle">
+      <span class="optbody">
+        <span class="optname">Restyle it as a real segmented control</span>
+        <span class="optgist">Rebuild the harness switcher on the atom&rsquo;s construction: one frame, no dividers, a sliding <code>.ind</code>, then join the group.</span>
+        <span class="optcost"><b>What moves:</b> The control changes shape and gains motion in <b>every</b> theme, not just Console. Largest of the three, and it touches a file nobody is currently reviewing.</span>
+        <span class="opttell"><b>Pick this if:</b> you want the KB to contain no pre-atom segmented constructions at all, on the grounds that a reader copying from <code>Table</code> copies the old pattern.</span>
+      </span>
+    </label></div>
+    <p class="verdict" id="verdict-table">Nothing selected.</p>
+  </div>
+  </div>
+</section>
+
+<section class="spec exempt" id="sec-tab-bar">
+  <div class="spec-head" data-chrome>
+    <span class="kicker">Reasoned <code>$exempt</code> &mdash; awaiting your ruling</span>
+    <h2>Tab-bar &mdash; the mobile pill</h2>
+    <p class="src">Specimen spliced verbatim from <code>knowledge/snippets/Tab-bar.reference.html</code>; style from <code>canon.css</code> via <code>.cn-tab-bar</code>.</p>
+    <p>The mobile navigation lozenge. A 56&nbsp;px track with <code>border-radius:999px</code> on both the track and the sliding indicator, <code>&lt;a class="seg__item"&gt;</code> anchors rather than buttons, and no <code>aria-pressed</code>.</p>
+    <blockquote class="why"><b>The exemption reason on file</b>, from <code>knowledge/component-types.json</code> &rarr; <code>segmented.$scan.$exempt</code>:<br>NOT the segmented atom. Tab-bar&rsquo;s <code>.seg</code> is the MOBILE PILL nav lozenge &mdash; 56px track, <code>border-radius:999px</code> on both track and indicator, <code>.seg__item</code> anchors rather than buttons, no <code>aria-pressed</code>. The atom&rsquo;s own header records the split: &ldquo;the rounded PILL shape is NOT a seg variant (Dave 2026-07-24) &mdash; reserved for a MOBILE tab-bar alternative&rdquo;. Joining would flatten a deliberately round control onto the square themes&rsquo; 0. The NAME COLLISION is the real finding and is left standing, not silently absorbed: two different atoms both call their track <code>.seg</code>. Flagged for Dave at #229, not decided here.</blockquote>
+  </div>
+  <div class="spread-grid" id="grid-tab-bar" data-tpl="tpl-tab-bar" data-exempt="1"></div>
+  <div class="readout" data-chrome>
+    <h3>Read off the live render &mdash; as it stands today</h3>
+    <p>These numbers are what the component ships <b>now</b>, unchanged by anything in #229 or #230.</p>
+    <div class="scroll"><table class="rd" id="rd-tab-bar"></table></div>
+    
+  <div class="decision">
+    <h3>Decision &mdash; this one is yours</h3>
+    <p class="dp">Nothing below is enacted by choosing it. The card records the shape of the choice and what each branch would move; the change itself is a separate lane.</p>
+    <div class="opts">
+    <label class="opt" for="opt-tab-bar-join">
+      <input type="radio" name="dec-tab-bar" id="opt-tab-bar-join" value="join">
+      <span class="optbody">
+        <span class="optname">Join the segmented group</span>
+        <span class="optgist">Register <code>Tab-bar</code> as a member; the injected radii replace the two <code>999px</code> literals.</span>
+        <span class="optcost"><b>What moves:</b> The lozenge <b>stops being a lozenge in Mono, Legacy and Supercharge</b> &mdash; those themes mint 0, so a deliberately round mobile control becomes a square bar. Console would land on 8/6&nbsp;px. This is the most visible change on this page.</span>
+        <span class="opttell"><b>Pick this if:</b> you have changed your mind about 2026-07-24 and want the pill to follow the theme ramp like everything else.</span>
+      </span>
+    </label>
+    <label class="opt" for="opt-tab-bar-stay">
+      <input type="radio" name="dec-tab-bar" id="opt-tab-bar-stay" value="stay">
+      <span class="optbody">
+        <span class="optname">Stay exempt</span>
+        <span class="optgist">Leave the registry entry. The pill keeps its <code>999px</code>, and the exemption text carries your 2026-07-24 ruling as its reason.</span>
+        <span class="optcost"><b>What moves:</b> Nothing. The <b>name collision</b> stays too: two unrelated atoms both call their track <code>.seg</code>, and the membership scan has to carry a written exemption forever to tell them apart.</span>
+        <span class="opttell"><b>Pick this if:</b> the pill is a settled, deliberate deviation and you would rather pay the naming confusion than flatten it.</span>
+      </span>
+    </label>
+    <label class="opt" for="opt-tab-bar-restyle">
+      <input type="radio" name="dec-tab-bar" id="opt-tab-bar-restyle" value="restyle">
+      <span class="optbody">
+        <span class="optname">Rename, then stay exempt</span>
+        <span class="optgist">Keep the round geometry, but give the lozenge its own class &mdash; <code>.pill</code> / <code>.navpill</code> &mdash; so it stops colliding with the segmented atom&rsquo;s selector.</span>
+        <span class="optcost"><b>What moves:</b> No pixels move. The snippet&rsquo;s CSS, its canon scope and its JS all rename; the membership scan then never sees it, so the exemption entry can be deleted rather than maintained.</span>
+        <span class="opttell"><b>Pick this if:</b> you want the geometry kept and the ambiguity removed &mdash; the collision is the finding, not the shape.</span>
+      </span>
+    </label></div>
+    <p class="verdict" id="verdict-tab-bar">Nothing selected.</p>
+  </div>
+  </div>
+</section>
+
+<footer class="foot chrome" data-chrome>
+  <p><b>Provenance.</b> Markup spliced verbatim from the six <code>knowledge/snippets/*.reference.html</code>
+  files by <code>outputs/_gen-230/build.py</code>; style entirely from <code>knowledge/canon/canon.css</code>
+  through the generated <code>.cn-*</code> scopes. The one rule this page adds paints a hover
+  <i>background</i> on a marked segment and authors no geometry.</p>
+  <p><b>What this page does not do.</b> It rules nothing, changes nothing and closes nothing. The
+  radio buttons on the two decision cards are a local scratchpad for your eye &mdash; they write to
+  nothing and persist nowhere.</p>
+</footer>
+
+<template id="tpl-view-options">
+  <div class="cn-view-options">
+<div class="seg" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg>List</button>
+    <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z"/></svg>Grid</button>
+  </div>
+  </div>
+</template>
+
+<template id="tpl-template-dashboard">
+  <div class="cn-template-dashboard">
+<div class="seg" role="group" aria-label="Reporting period">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="false">7 days</button>
+            <button type="button" aria-pressed="true">30 days</button>
+            <button type="button" aria-pressed="false">12 months</button>
+          </div>
+<div class="seg" role="group" aria-label="View as">
+              <span class="ind" aria-hidden="true"></span>
+              <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-list"/></svg>Table</button>
+              <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpi-table"/></svg>Cards</button>
+            </div>
+  </div>
+</template>
+
+<template id="tpl-template-list-index">
+  <div class="cn-template-list-index">
+<div class="seg" role="group" aria-label="View as">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-grid"/></svg>Table</button>
+            <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-list"/></svg>List</button>
+          </div>
+  </div>
+</template>
+
+<template id="tpl-template-report">
+  <div class="cn-template-report">
+<div class="seg" role="group" aria-label="Reporting period">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="false">This month</button>
+            <button type="button" aria-pressed="true">Last quarter</button>
+            <button type="button" aria-pressed="false">Year to date</button>
+          </div>
+  </div>
+</template>
+
+<template id="tpl-table">
+  <div class="cn-table">
+<div class="seg" role="group" aria-label="Header type">
+    <button type="button" data-mode="both"   aria-pressed="true"  disabled>Row + column</button>
+    <button type="button" data-mode="row"     aria-pressed="false">Column only</button>
+    <button type="button" data-mode="column"  aria-pressed="false">Row only</button>
+  </div>
+  </div>
+</template>
+
+<template id="tpl-tab-bar">
+  <div class="cn-tab-bar">
+<div class="tabbar-pills">
+    <nav class="seg" aria-label="Primary">
+      <span class="ind" aria-hidden="true"></span>
+      <a class="seg__item" href="#" aria-current="page" aria-label="Home"><svg aria-hidden="true"><use href="#ic-home"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Cards"><svg aria-hidden="true"><use href="#ic-cards"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Payments"><svg aria-hidden="true"><use href="#ic-pay"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Insights"><svg aria-hidden="true"><use href="#ic-insight"/></svg></a>
+    </nav>
+    <a class="menu-fab" href="#" aria-label="Menu"><svg aria-hidden="true"><use href="#ic-menu"/></svg></a>
+  </div>
+  </div>
+</template>
+
+<template id="tpl-calibration">
+  <div class="calrow">
+    <div class="calitem"><p class="callab">the atom &middot; <code>.seg.s</code> &mdash; 36&nbsp;px</p>
+      <div class="cn-segmented-control">
+<div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div>
+      </div></div>
+    <div class="calitem"><p class="callab">View options as repaired &mdash; 42&nbsp;px, reads the <b>s</b> radii</p>
+      <div class="cn-view-options">
+<div class="seg" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg>List</button>
+    <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z"/></svg>Grid</button>
+  </div>
+      </div></div>
+    <div class="calitem"><p class="callab">the atom &middot; <code>.seg.m</code> &mdash; 44&nbsp;px</p>
+      <div class="cn-segmented-control">
+<div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div>
+      </div></div>
+  </div>
+</template>
+
+<script>
+(function(){
+  'use strict';
+
+  var THEMES = [
+    ['mono',        'Mono (base)'],
+    ['legacy',      'Legacy'],
+    ['console',     'Apollo Console'],
+    ['supercharge', 'Supercharge']
+  ];
+  var MODES = ['light','dark'];
+
+  /* ---- build every spread: one cell per theme x mode, each a clone of one template ---- */
+  document.querySelectorAll('.spread-grid').forEach(function(grid){
+    var tpl = document.getElementById(grid.getAttribute('data-tpl'));
+    var only = grid.getAttribute('data-themes');
+    (only ? THEMES.filter(function(t){ return t[0] === only; }) : THEMES).forEach(function(t){
+      MODES.forEach(function(m){
+        var cell = document.createElement('section');
+        cell.className = 'cell';
+        cell.setAttribute('data-apollo-theme', t[0]);
+        cell.setAttribute('data-theme', m);
+        var head = document.createElement('div');
+        head.className = 'cellhead';
+        head.innerHTML = '<h3>' + t[1] + '</h3><span class="mode">' + m + '</span>';
+        cell.appendChild(head);
+        var stack = document.createElement('div');
+        stack.className = 'stack';
+        stack.appendChild(tpl.content.cloneNode(true));
+        cell.appendChild(stack);
+        grid.appendChild(cell);
+      });
+    });
+  });
+
+  /* Mark ONE unpressed, enabled segment per control so its hover state can be held open
+     for a still image. The LAST one is used so a normal segment always sits beside it. */
+  document.querySelectorAll('.cell .seg').forEach(function(seg){
+    var un = seg.querySelectorAll('button:not([aria-pressed="true"]):not([disabled])');
+    if (un.length) { un[un.length - 1].classList.add('fh'); }
+  });
+
+  /* ---- the references' OWN behaviour, copied verbatim ------------------------------- */
+
+  /* the sliding indicator, one handler for every .seg that has one */
+  function moveInd(seg){
+    var ind = seg.querySelector(':scope > .ind'); if(!ind) return;
+    var a = seg.querySelector('button[aria-pressed="true"], .seg__item[aria-current="page"]');
+    if(!a) return;
+    ind.style.left = a.offsetLeft + 'px';
+    ind.style.width = a.offsetWidth + 'px';
+  }
+  function placeAll(){ document.querySelectorAll('.cell .seg').forEach(moveInd); }
+  document.querySelectorAll('.cell .seg').forEach(function(seg){
+    seg.querySelectorAll('button:not([disabled])').forEach(function(b){
+      b.addEventListener('click', function(){
+        seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+        moveInd(seg); measure();
+      });
+    });
+    seg.querySelectorAll('.seg__item').forEach(function(a){
+      a.addEventListener('click', function(e){ e.preventDefault();
+        seg.querySelectorAll('.seg__item').forEach(function(x){
+          if (x===a) { x.setAttribute('aria-current','page'); } else { x.removeAttribute('aria-current'); }
+        });
+        moveInd(seg);
+      });
+    });
+  });
+  addEventListener('resize', placeAll);
+  placeAll();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function(){ placeAll(); measure(); }); }
+
+  /* ---- controls ---------------------------------------------------------------------- */
+  var cl = document.getElementById('chrome-light'), cd = document.getElementById('chrome-dark');
+  /* Stamp the chrome blocks ONLY - never <html>. canon defines the light palette on
+     :root and overrides it under [data-theme="dark"]; there is no [data-theme="light"]
+     block to override BACK. So a light-pinned cell nested inside a dark ancestor would
+     inherit dark and silently lie about which mode it is showing. This is the pattern
+     reviews/FOUR-VISUALS-2026-08-31-v2.html uses, for the same reason. */
+  function setChrome(mode){
+    document.querySelectorAll('[data-chrome]').forEach(function(n){
+      n.setAttribute('data-theme', mode);
+    });
+    cl.setAttribute('aria-pressed', String(mode==='light'));
+    cd.setAttribute('aria-pressed', String(mode==='dark'));
+  }
+  cl.addEventListener('click', function(){ setChrome('light'); });
+  cd.addEventListener('click', function(){ setChrome('dark'); });
+  setChrome('light');
+
+  var hb = document.getElementById('hoverToggle');
+  hb.addEventListener('click', function(){
+    var on = document.body.classList.toggle('demo-hover');
+    hb.setAttribute('aria-pressed', String(on));
+    hb.textContent = on ? 'On' : 'Off';
+  });
+
+  /* ---- the readouts: computed radii, read off the live boxes ------------------------- */
+  function px(v){ return (v || '').trim() || '\u2014'; }
+  function radiiOf(seg){
+    var ind = seg.querySelector(':scope > .ind');
+    var btn = seg.querySelector('button:not([aria-pressed="true"]):not([disabled])');
+    var anchor = seg.querySelector('.seg__item:not([aria-current])');
+    var box = seg.getBoundingClientRect();
+    return {
+      track: px(getComputedStyle(seg).borderTopLeftRadius),
+      thumb: ind ? px(getComputedStyle(ind).borderTopLeftRadius) : 'no thumb',
+      hover: btn ? px(getComputedStyle(btn).borderTopLeftRadius)
+                 : (anchor ? 'no hover fill' : '\u2014'),
+      h: Math.round(box.height), w: Math.round(box.width)
+    };
+  }
+  function verdict(sid, r){
+    if (sid === 'tab-bar')  return '999px in EVERY theme \u2014 not from the ramp';
+    if (sid === 'table')    return 'square in every theme \u2014 never joined the ramp';
+    return parseFloat(r.track) > 0 ? 'rounds with the theme \u2014 the repair'
+                                   : 'square \u2014 as minted (s201-D5)';
+  }
+  function measureGrid(sid){
+    var grid = document.getElementById('grid-'+sid), t = document.getElementById('rd-'+sid);
+    if(!grid || !t) return;
+    var rows = ['<tr><th>Theme</th><th>Mode</th><th>Height</th><th>Track</th><th>Thumb</th>' +
+                '<th>Hover / focus box</th><th></th></tr>'];
+    grid.querySelectorAll('.cell').forEach(function(cell){
+      cell.querySelectorAll('.seg').forEach(function(seg, i){
+        var r = radiiOf(seg);
+        var lbl = seg.getAttribute('aria-label') || '';
+        var round = parseFloat(r.track) > 0;
+        rows.push('<tr class="' + (round?'rounded':'') + '">' +
+          '<td>' + cell.getAttribute('data-apollo-theme') + (lbl ? ' <span class="tag">' + lbl + '</span>' : '') + '</td>' +
+          '<td>' + cell.getAttribute('data-theme') + '</td>' +
+          '<td class="num">' + r.h + 'px</td>' +
+          '<td class="num">' + r.track + '</td>' +
+          '<td class="num">' + r.thumb + '</td>' +
+          '<td class="num">' + r.hover + '</td>' +
+          '<td class="tag">' + verdict(sid, r) + '</td></tr>');
+      });
+    });
+    t.innerHTML = rows.join('');
+  }
+  function measureCalibration(){
+    var grid = document.getElementById('grid-calibration'), t = document.getElementById('rd-calibration');
+    if(!grid || !t) return;
+    var rows = ['<tr><th>Mode</th><th>Specimen</th><th>Rung</th><th>Height</th><th>Track</th><th>Thumb</th><th></th></tr>'];
+    grid.querySelectorAll('.cell').forEach(function(cell){
+      cell.querySelectorAll('.calitem').forEach(function(it){
+        var seg = it.querySelector('.seg'); if(!seg) return;
+        var r = radiiOf(seg);
+        var isVO = !!it.querySelector('.cn-view-options');
+        var rung = isVO ? 's (bound)' : (seg.classList.contains('s') ? 's' : 'm');
+        var name = isVO ? 'View options (repaired)' : ('the atom &middot; .seg.' + rung);
+        rows.push('<tr class="' + (isVO?'rounded':'') + '">' +
+          '<td>' + cell.getAttribute('data-theme') + '</td>' +
+          '<td>' + name + '</td>' +
+          '<td class="tag">' + rung + '</td>' +
+          '<td class="num">' + r.h + 'px</td>' +
+          '<td class="num">' + r.track + '</td>' +
+          '<td class="num">' + r.thumb + '</td>' +
+          '<td class="tag">' + (isVO ? 's radii on an off-rung height' : 'on its rung') + '</td></tr>');
+      });
+    });
+    t.innerHTML = rows.join('');
+  }
+  /* How VISIBLE is the hover state itself? The radius is right in every theme; this asks
+     whether the fill carrying it can be told from the track behind it. WCAG relative
+     luminance, computed live off the two painted boxes - no colour is authored here. */
+  function lum(c){
+    var p = (c.match(/\d+/g) || [0,0,0]).map(Number).map(function(v){
+      v /= 255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+    return 0.2126*p[0] + 0.7152*p[1] + 0.0722*p[2];
+  }
+  function ratio(a,b){ var x=lum(a), y=lum(b);
+    return ((Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)).toFixed(2); }
+  function measureHoverVis(){
+    var t = document.getElementById('rd-hovervis'); if(!t) return;
+    var rows = ['<tr><th>Theme</th><th>Mode</th><th>Track</th><th>Hover fill</th>' +
+                '<th>Contrast</th><th></th></tr>'];
+    document.querySelectorAll('#grid-view-options .cell').forEach(function(cell){
+      var seg = cell.querySelector('.seg'), btn = seg.querySelector('button.fh');
+      if(!btn) return;
+      var track = getComputedStyle(seg).backgroundColor;
+      var hov   = getComputedStyle(btn).backgroundColor;
+      var r = ratio(track, hov);
+      rows.push('<tr class="' + (parseFloat(r) < 1.1 ? '' : 'rounded') + '">' +
+        '<td>' + cell.getAttribute('data-apollo-theme') + '</td>' +
+        '<td>' + cell.getAttribute('data-theme') + '</td>' +
+        '<td class="num">' + track + '</td>' +
+        '<td class="num">' + hov + '</td>' +
+        '<td class="num">' + r + ':1</td>' +
+        '<td class="tag">' + (parseFloat(r) < 1.1 ? 'all but invisible'
+                            : parseFloat(r) < 1.2 ? 'faint but readable'
+                            : 'readable') + '</td></tr>');
+    });
+    t.innerHTML = rows.join('');
+  }
+
+  var IDS = ['view-options','template-dashboard','template-list-index','template-report','table','tab-bar'];
+  function measure(){ IDS.forEach(measureGrid); measureCalibration(); measureHoverVis(); }
+  measure();
+  document.getElementById('remeasure').addEventListener('click', function(){ placeAll(); measure(); });
+
+  /* ---- decision cards: a local scratchpad, writes to nothing -------------------------- */
+  ['table','tab-bar'].forEach(function(sid){
+    var v = document.getElementById('verdict-'+sid);
+    document.querySelectorAll('input[name="dec-'+sid+'"]').forEach(function(r){
+      r.addEventListener('change', function(){
+        var lbl = r.closest('.opt').querySelector('.optname').textContent;
+        v.textContent = 'Leaning: ' + lbl + '. (Local only \u2014 nothing is recorded by this page.)';
+        v.classList.add('set');
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

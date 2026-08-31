@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo triage — #230</title>
+<style>
+:root{
+  --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#6e6e6e;
+  --page:#f4f3f1; --card:#ffffff; --line:#dcd9d4; --line-2:#eceae6;
+  --code-bg:#f7f6f4; --code-ink:#2a2a2a;
+  --accent:#1d4ed8;
+  --adopt:#1f6b3a; --park:#8a5a00; --reject:#DA1A00; --discuss:#1d4ed8;
+  --chip-adopt:#e6f2ea; --chip-park:#fbf1dc; --chip-reject:#fbe7e4; --chip-discuss:#e6ecfb;
+  --focus:#1d4ed8;
+  --defect:#8a2b12; --gap:#2a5b8a; --improve:#4a3b8a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#ececea; --ink-2:#b4b2ae; --ink-3:#8e8c88;
+    --page:#141413; --card:#1e1e1c; --line:#3a3835; --line-2:#2b2a28;
+    --code-bg:#191918; --code-ink:#d6d4d0;
+    --accent:#8fb0ff;
+    --adopt:#68c08c; --park:#e0b45c; --reject:#F6604C; --discuss:#8fb0ff;
+    --chip-adopt:#1d2d24; --chip-park:#2e2718; --chip-reject:#33201d; --chip-discuss:#1c2233;
+    --focus:#8fb0ff;
+    --defect:#e59a80; --gap:#8fc0e8; --improve:#b8aaf0;
+  }
+}
+/* GRADE COLOURS ALIAS THE SHELL'S EXISTING TOKENS — no new hexes, the two-red law untouched
+   (red stays for OVERRIDE and for a count mismatch only). */
+:root{
+  --g-reached:var(--adopt); --g-today:var(--accent); --g-word:var(--park); --g-nonblock:var(--ink-3);
+  --chip-reached:var(--chip-adopt); --chip-today:var(--chip-discuss); --chip-word:var(--chip-park);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; padding:0 0 132px;
+  background:var(--page); color:var(--ink);
+  font:400 17px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  letter-spacing:.005em;
+}
+.wrap{max-width:900px; margin:0 auto; padding:0 20px}
+
+/* ---------- masthead ---------- */
+header.top{padding:44px 0 8px}
+.eyebrow{font-size:13px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+h1{font-size:34px; line-height:1.2; margin:0 0 12px; letter-spacing:-.015em}
+.lede{font-size:19px; line-height:1.6; color:var(--ink-2); margin:0 0 18px; max-width:60ch}
+.src{font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3); word-break:break-all}
+
+.how{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:22px 0 8px}
+.how h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+.how ol{margin:0; padding-left:22px}
+.how li{margin:0 0 8px; max-width:64ch}
+.how li:last-child{margin-bottom:0}
+.warn{color:var(--reject); font-weight:600}
+
+/* ---------- headline set ---------- */
+.headline{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--g-today);
+  border-radius:10px; padding:20px 22px; margin:26px 0 8px}
+.headline h2{font-size:22px; margin:0 0 6px; letter-spacing:-.01em}
+.headline p{color:var(--ink-2); max-width:64ch; margin:0 0 14px}
+ol.order{margin:0; padding-left:22px}
+ol.order li{margin:0 0 12px; max-width:66ch}
+ol.order li:last-child{margin-bottom:0}
+ol.order b{font-weight:700}
+.px{display:inline-block; font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.04em; text-transform:uppercase; border-radius:999px; padding:5px 10px;
+  background:var(--code-bg); border:1px solid var(--line-2); color:var(--ink-3); margin-right:6px}
+.px.low{color:var(--adopt)} .px.med{color:var(--park)} .px.eye{color:var(--discuss)}
+
+/* ---------- filters ---------- */
+.filters{display:flex; flex-wrap:wrap; gap:8px; margin:26px 0 6px; position:sticky; top:0; z-index:5;
+  background:var(--page); padding:12px 0; border-bottom:1px solid var(--line-2)}
+.fbtn{font:500 14px/1 inherit; color:var(--ink-2); background:var(--card); border:1px solid var(--line);
+  border-radius:999px; padding:9px 14px; cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink)}
+.fbtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+
+/* ---------- sections ---------- */
+section.band{margin:40px 0 0}
+section.band > h2{font-size:24px; line-height:1.3; margin:0 0 6px; letter-spacing:-.01em}
+section.band > p.bandnote{color:var(--ink-2); margin:0 0 20px; max-width:62ch}
+
+/* ---------- cards ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--line);
+  border-radius:10px; padding:22px 22px 18px; margin:0 0 18px}
+.card[data-grade="reached"]{border-left-color:var(--g-reached)}
+.card[data-grade="today"]{border-left-color:var(--g-today)}
+.card[data-grade="word"]{border-left-color:var(--g-word)}
+.card[data-grade="nonblock"]{border-left-color:var(--g-nonblock)}
+.card.hidden{display:none}
+
+.cardhead{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin:0 0 10px}
+.cid{font:700 15px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:.02em;
+  background:var(--code-bg); border:1px solid var(--line-2); border-radius:6px; padding:6px 9px}
+.klass{font-size:12px; letter-spacing:.07em; text-transform:uppercase; font-weight:700}
+.klass.defect{color:var(--defect)} .klass.gap{color:var(--gap)} .klass.improve{color:var(--improve)}
+.klass.question{color:var(--accent)} .klass.port{color:var(--discuss)}
+.grade{margin-left:auto; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  border-radius:999px; padding:5px 11px; border:1px solid transparent}
+.card[data-grade="reached"] .grade{background:var(--chip-reached); color:var(--g-reached)}
+.card[data-grade="today"] .grade{background:var(--chip-today); color:var(--g-today)}
+.card[data-grade="word"] .grade{background:var(--chip-word); color:var(--g-word)}
+.card[data-grade="nonblock"] .grade{background:var(--code-bg); color:var(--ink-3); border-color:var(--line-2)}
+
+.card h3{font-size:20px; line-height:1.4; margin:0 0 12px; max-width:58ch; letter-spacing:-.005em}
+.card p{margin:0 0 12px; max-width:64ch}
+.card ul{margin:0 0 12px; padding-left:22px; max-width:64ch}
+.card li{margin:0 0 6px}
+strong{font-weight:650}
+
+pre.ev{background:var(--code-bg); border:1px solid var(--line-2); border-radius:8px;
+  padding:12px 14px; margin:0 0 12px; overflow-x:auto;
+  font:400 13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+.evlabel{font:600 12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink-3);
+  letter-spacing:.04em; margin:0 0 6px; text-transform:none}
+.action{border-left:3px solid var(--line); padding:2px 0 2px 14px; margin:0 0 14px; color:var(--ink-2); max-width:62ch}
+.action b{color:var(--ink); font-weight:650}
+.store{border-left:3px solid var(--g-reached); padding:2px 0 2px 14px; margin:0 0 14px; color:var(--ink-2); max-width:62ch}
+.store b{color:var(--ink); font-weight:650}
+.tbl{width:100%; border-collapse:collapse; margin:0 0 14px; font-size:15px; display:block; overflow-x:auto}
+.tbl th,.tbl td{border-bottom:1px solid var(--line-2); padding:8px 12px 8px 0; text-align:left; vertical-align:top}
+.tbl th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+code{font:400 .92em/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:var(--code-bg);
+  border:1px solid var(--line-2); border-radius:4px; padding:1px 5px}
+pre.ev code{background:none; border:0; padding:0; font-size:inherit}
+
+/* ---------- controls ---------- */
+.controls{border-top:1px solid var(--line-2); margin-top:16px; padding-top:16px}
+.radios{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px}
+.radios label{display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-weight:550; font-size:15px;
+  background:var(--page)}
+.radios input{margin:0; width:17px; height:17px; accent-color:var(--accent)}
+.radios label:has(input:checked){border-color:currentColor; font-weight:700}
+.radios label.agree:has(input:checked){color:var(--adopt); background:var(--chip-adopt)}
+.radios label.override:has(input:checked){color:var(--reject); background:var(--chip-reject)}
+.radios label.discuss:has(input:checked){color:var(--discuss); background:var(--chip-discuss)}
+.radios input:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
+.cmtlabel{display:block; font-size:14px; font-weight:600; color:var(--ink-3); margin:0 0 6px}
+textarea{width:100%; min-height:64px; resize:vertical; font:400 16px/1.55 inherit; color:var(--ink);
+  background:var(--page); border:1px solid var(--line); border-radius:8px; padding:11px 13px}
+textarea:focus-visible{outline:2px solid var(--focus); outline-offset:1px; border-color:var(--focus)}
+.clearone{background:none; border:0; color:var(--ink-3); font:500 13px inherit; cursor:pointer;
+  padding:8px 0 0; text-decoration:underline}
+
+/* ---------- prompt block ---------- */
+#promptblock{margin:48px 0 0}
+#promptblock h2{font-size:24px; margin:0 0 8px}
+#promptblock p{color:var(--ink-2); max-width:64ch; margin:0 0 16px}
+pre#prompt{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px;
+  white-space:pre-wrap; word-break:break-word; overflow-x:auto; max-height:520px; overflow-y:auto;
+  font:400 14px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--code-ink)}
+
+/* ---------- footer bar ---------- */
+.bar{position:fixed; left:0; right:0; bottom:0; z-index:10; background:var(--card);
+  border-top:1px solid var(--line); box-shadow:0 -2px 14px rgba(0,0,0,.07)}
+.barin{max-width:900px; margin:0 auto; padding:14px 20px; display:flex; flex-wrap:wrap;
+  align-items:center; gap:14px}
+.counts{font-size:15px; font-weight:600; line-height:1.4}
+.counts span{color:var(--ink-3); font-weight:500}
+.spacer{flex:1 1 auto}
+button.primary{font:650 16px/1 inherit; color:var(--page); background:var(--ink); border:1px solid var(--ink);
+  border-radius:8px; padding:13px 20px; cursor:pointer}
+button.ghost{font:550 15px/1 inherit; color:var(--ink-2); background:transparent; border:1px solid var(--line);
+  border-radius:8px; padding:13px 16px; cursor:pointer}
+button:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+#copystatus{font-size:14px; font-weight:600; min-width:1px}
+#copystatus.ok{color:var(--adopt)} #copystatus.bad{color:var(--reject)}
+.assert{font-size:13px; color:var(--ink-3); padding:10px 0 0; border-top:1px solid var(--line-2); margin-top:34px}
+.assert.bad{color:var(--reject); font-weight:700}
+#sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap}
+@media (max-width:620px){
+  h1{font-size:28px} .lede{font-size:17px} .card{padding:18px 16px 14px} .card h3{font-size:18px}
+  .barin{padding:12px 16px; gap:10px} button.primary,button.ghost{flex:1 1 auto}
+}
+</style>
+</head>
+<body>
+<div id="sr" aria-live="polite"></div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Apollo · session #230 · demo triage</p>
+  <h1>What stands between a cold seat and your dashboard — tomorrow</h1>
+  <p class="lede">Every finding and every question from the #227 diff, re-checked against the repo
+  as it stands today and against the rulings store, then graded on one axis: has the pipeline
+  already caught up, can it be safely adopted today, does it need your design word, or is it real
+  but not in the demo's way. The blue set is the headline.</p>
+  <p class="src">Sources: notes/_subreports/2026-08-30-227-dashboard-regen-diff.md &middot;
+  reviews/DASHBOARD-DIFF-DECISIONS-2026-08-30-v1.html &middot;
+  notes/_subreports/2026-08-29-224-copilot-forensics.md &sect; GPT'S CODE<br>
+  35 cards &middot; the original 32 &middot; plus 3 port-back candidates from your pack copy</p>
+
+  <div class="how">
+    <h2>How this works</h2>
+    <ol>
+      <li><b>Each card carries a grade</b> — my recommendation, not a decision. Reached cold /
+      Adoptable today / Needs your word / Not a demo blocker.</li>
+      <li><b>You answer the grade</b>: Agree, Override, or Discuss — and the comment is the useful part.</li>
+      <li><b>Copy the prompt</b> at the end and paste it to me. <span class="warn">That paste is the
+      only durable output.</span> Answers are saved in this browser; a cleared cache loses them.</li>
+      <li><b>Ten cards say "you already ruled this."</b> Each one names the ruling id. If a store
+      citation is wrong, that is the most valuable thing you can tell me on this page.</li>
+    </ol>
+  </div>
+
+  <div class="headline">
+    <h2>The adoptable-today set, in order</h2>
+    <p>Six work items across seven cards. Every one either enacts a ruling you have already made,
+    corrects a contradiction inside the shipped pack, or repairs a defect measured in the source.
+    <b>None of them needs a design decision from you.</b> Ordered by what the room will see.</p>
+    <ol class="order">
+      <li><span class="px low">Docs only · no serial</span><b>T1 — the theme contract in SKILL.md
+      step 3.</b> The pack now asks which theme, then two steps later tells the generator the answer
+      has nowhere to go. This is the mechanism that produced the mono regen. <a href="#B13">B13</a></li>
+      <li><span class="px med">Canon + snippet + meta · full serial</span><b>T2 — bind the radius on
+      the toolbar's search box.</b> Enacts <code>s227-D7</code> L8, which only half-landed. It is the
+      search field in your payments toolbar. <a href="#B5">B5</a> + <a href="#P2">P2</a></li>
+      <li><span class="px med">Canon generator · full serial · wide</span><b>T3 — bind a radius on
+      <code>.dv-vt</code> and <code>.dv-tbl-toggle</code>.</b> The two you missed in your own file:
+      "Copy data (CSV)" and "View as table" are still square beside three rounded neighbours.
+      <a href="#B6">B6</a></li>
+      <li><span class="px eye">JS only · needs an eye on a render</span><b>T4 — the chart tooltip is
+      broken on every composed page, including yours.</b> Measured here, not inherited. GPT's fix is
+      the right one. <a href="#P3">P3</a></li>
+      <li><span class="px low">One gate file · no serial</span><b>T5 — stop the screen gate wiping
+      its own record.</b> If the seat gates its dashboard live, six other subjects vanish from a
+      tracked file on camera. <a href="#B14">B14</a> + <a href="#Q-B14">Q-B14</a></li>
+      <li><span class="px low">One JSON key</span><b>T6 — the search-field contract gains its radius
+      key.</b> Step 2 tells the generator to read the contract; the contract is silent. Land it with
+      T2 or it promises what canon does not bind. <a href="#P2">P2</a></li>
+    </ol>
+  </div>
+</header>
+
+<nav class="filters" aria-label="Filter cards">
+  <button class="fbtn" data-filter="all" aria-pressed="true">All 35</button>
+  <button class="fbtn" data-filter="undecided" aria-pressed="false">Unanswered</button>
+  <button class="fbtn" data-filter="g-today" aria-pressed="false">Adoptable today 7</button>
+  <button class="fbtn" data-filter="g-reached" aria-pressed="false">Reached cold 10</button>
+  <button class="fbtn" data-filter="g-word" aria-pressed="false">Needs your word 9</button>
+  <button class="fbtn" data-filter="g-nonblock" aria-pressed="false">Not a blocker 9</button>
+</nav>
+
+<!-- ================= ADOPTABLE TODAY ================= -->
+<section class="band" id="band-today">
+  <h2>Adoptable today</h2>
+  <p class="bandnote">Ruled, mechanical or measured. Priced against the full ordered regen serial —
+  ramp first, index last — because a change that skips the serial is a patch.</p>
+
+  <article class="card" data-id="B13" id="B13" data-grade="today" data-class="gap">
+    <div class="cardhead"><span class="cid">B13</span><span class="klass gap">Canon gap · T1</span><span class="grade">Adoptable today</span></div>
+    <h3>The pack asks you which theme, and then tells the generator the answer has nowhere to go.</h3>
+    <p>This is the one I would fix first, and it has changed since #227 — for the better in one place
+    and not at all in the other, which is what makes it sharp now.</p>
+    <p><b>What v1.0.4 fixed.</b> <code>cold-start/DESIGN-CONTRACT.md</code> makes the theme question
+    mandatory and first; <code>skills/grill-me/SKILL.md</code> asks it; and
+    <code>generate-from-canon/SKILL.md</code> gained a <b>step 0</b>. All three are inside
+    <code>Apollo-Spider-v1.0.4.zip</code>, verified.</p>
+    <p class="evlabel">Apollo-Spider-v1.0.4/skills/generate-from-canon/SKILL.md — step 0</p>
+    <pre class="ev"><code>0. **Brief first.** … ask **one** question before you build — *which theme?* …
+   **mono makes every radius zero by design**, so a mono build is radius-blind …
+   Never pick a theme silently.</code></pre>
+    <p><b>What it did not fix.</b> Two steps later, the same shipped file:</p>
+    <p class="evlabel">…same file — step 3</p>
+    <pre class="ev"><code>3. **Compose.** … Root element (or `&lt;body&gt;`) gets `class="canon"` plus **one**
+   theme attribute: `data-theme="light"` or `data-theme="dark"`. That is the whole
+   contract — it is what `canon.css` actually selects on, and it is what
+   `knowledge/_RUNBOOK-compose-from-canon.md` § Compose a screen says.</code></pre>
+    <p class="evlabel">knowledge/_RUNBOOK-compose-from-canon.md:39</p>
+    <pre class="ev"><code>1. Root element gets `class="canon"`; theme via `data-theme="light|dark"` on it (or `&lt;body&gt;`).</code></pre>
+    <p>Measured at HEAD: <code>data-theme</code> carries only <code>dark</code> (1,142 rules) and
+    <code>light</code> (2). The four themes live on <code>data-apollo-theme</code> —
+    <code>common</code> 412 · <code>legacy</code> 413 · <code>console</code> 366 ·
+    <code>supercharge</code> 414 — and mono is the attribute-less default. Rule 5 of the same file
+    gets it right (<code>data-apollo-theme="mono" data-theme="light"</code>). Step 3 then defers to a
+    runbook that contradicts rule 5.</p>
+    <p><b>So the demo's own headline breaks itself.</b> The seat asks "which theme?", you say
+    "Console", and the composition step tells it the whole contract is <code>data-theme</code> — where
+    console cannot land. It ships mono. Mono resolves every radius token to <code>0</code>, which is
+    exactly the page the #227 regen produced.</p>
+    <p class="action"><b>Price.</b> Two prose edits: SKILL.md step 3 (~4 lines) and
+    <code>_RUNBOOK-compose-from-canon.md:39</code> (1 line). <b>No canon, no tokens, no snippets —
+    no serial at all.</b> ⚠ Three copies of SKILL.md exist (<code>apollo-spider/skills/</code>,
+    <code>designer-skills-v1/</code>, <code>designer-skills-v2/</code>) and their hashes differ; the
+    v1.0.4 zip carries the <code>apollo-spider/skills/</code> copy. Fix the one the bake reads and
+    check the others in the same motion.</p>
+    <p class="action"><b>One rider while you are in there.</b> DESIGN-CONTRACT says the four themes
+    are <b>Mono, Common, Console, Supercharge</b>; SKILL rule 5 says <b>legacy</b>. Under
+    <code>s227-D8</code> the alias is additive so both resolve and nothing breaks — but you will say
+    a theme name out loud in the room, and the pack should say the same one back.</p>
+  </article>
+
+  <article class="card" data-id="B5" id="B5" data-grade="today" data-class="gap">
+    <div class="cardhead"><span class="cid">B5</span><span class="klass gap">Canon gap · T2</span><span class="grade">Adoptable today</span></div>
+    <h3>You already ruled the search radius. It landed on one of the two sites.</h3>
+    <p class="store"><b>Store.</b> <code>s227-D7</code> (2026-08-31), confirm pass: <i>"L8 search
+    radius moves to the boxed variant only, underline stays straight."</i> This is not an open
+    question — it is an enactment gap against a live ruling.</p>
+    <p>At HEAD, one site has it and one does not:</p>
+    <p class="evlabel">knowledge/canon/canon.css:3170 and :11580</p>
+    <pre class="ev"><code>:where(.cn-search-field) .search.boxed{border:1px solid var(--border); padding:0 8px;
+                                       border-radius:var(--border-radius-control);}   ✅
+
+:where(.cn-filter-toolbar-bar) .search.boxed{border:1px solid var(--border); padding:0 8px;}  ⛔</code></pre>
+    <p><b>The one that is missing is the one in your dashboard.</b> The payments filter toolbar's
+    search sits on a single row beside its neighbours, and both of those bind the radius inside the
+    very same block:</p>
+    <p class="evlabel">canon.css:11397, 11439 — same scope, neighbours on the same row</p>
+    <pre class="ev"><code>… .dd .trigger{… border-radius:var(--border-radius-control); …}
+… .tag       {… border-radius:var(--border-radius-control); …}</code></pre>
+    <p>In console that is an 8px dropdown and 8px chips flanking a square box. It is in your file
+    too — the pipeline reproduced canon faithfully and canon was wrong.</p>
+    <p class="action"><b>Price.</b> One declaration, mirrored into
+    <code>knowledge/snippets/Filter-toolbar-bar.reference.html</code>. ⛔ <b>Not a hand edit to
+    canon.css</b> — check where the <code>.cn-search-field</code> site was written and put this in
+    the same source. Then the full ordered serial: canon generator selftest → canon write →
+    <code>gen_snippet_tokens.py --check</code> → <code>gen_theme_cascade.py --check</code> →
+    <code>gen_showroom.py</code> → <code>gen_thumbs.py</code> → <code>gen_library_214.py</code>.</p>
+    <p class="action"><b>Risk.</b> The ruling says <b>boxed variant only</b>. The gate-glob-scope
+    rule applies: the change must not reach the underline variant. That is the whole risk, and it is
+    checkable before the edit.</p>
+  </article>
+
+  <article class="card" data-id="B6" id="B6" data-grade="today" data-class="gap">
+    <div class="cardhead"><span class="cid">B6</span><span class="klass gap">Canon gap · T3</span><span class="grade">Adoptable today</span></div>
+    <h3>Half of this is fixed at source. The half you missed in your own file is still square.</h3>
+    <p><b>Fixed since #227.</b> <code>.dv-toggle-seg</code> and its <code>.ind</code> now take the
+    segmented atom's shape pair, injected from one source rather than hand-written per chart:</p>
+    <p class="evlabel">canon.css — AUTO-PARTIAL seg-concentric block, chart-line and chart-combo</p>
+    <pre class="ev"><code>/* INJECTED from Segmented-control.reference.html (partial "seg-concentric") … */
+:where(.cn-chart-combo) .dv-toggle-seg{border-radius:var(--seg-rad);}
+:where(.cn-chart-combo) .dv-toggle-seg .ind{border-radius:var(--seg-thumb);}</code></pre>
+    <p class="store"><b>Store.</b> <code>s229-D3</code> — you chose the structural fix over the
+    validator: <i>"fix the class the other solution is a patch not a solution."</i> Enacted the same
+    day: 12 members, 36 radius rules from one atom, membership sweep wired into the build, 12/12
+    mutation arms.</p>
+    <p><b>Still live.</b> The two boxes beside it bind no radius anywhere in canon:</p>
+    <p class="evlabel">canon.css — the shared rule, repeated across 13 chart scopes</p>
+    <pre class="ev"><code>:where(.cn-chart-bar) .dv-tbl-toggle, :where(.cn-chart-bar) .dv-vt{
+    position:relative; height:var(--control-h); box-sizing:border-box;
+    display:inline-flex; align-items:center; …}          ← no border-radius
+
+grep -c 'dv-vt[^{]*{[^}]*border-radius'  →  0</code></pre>
+    <p>So in console your chart toolbar still reads, left to right: rounded switch → rounded
+    "Target line" → rounded "Last year" → <b>square "Copy data (CSV)"</b> → <b>square "View as
+    table"</b>. Five controls on one row, two of them the odd ones out. It is the most visible
+    remaining inconsistency on the artefact you are demoing.</p>
+    <p class="action"><b>Price.</b> These are buttons, not segmented controls — they take
+    <code>--border-radius-control</code>, like the <code>.dd .trigger</code> they sit next to. ⛔
+    <b>They are not seg-concentric members</b>, so this does not ride the s229-D3 group; check the
+    group's <code>$scan</code> membership before editing so the two mechanisms do not collide. The
+    13 scopes are generated from one place, so it is one edit at the generator, then the full serial
+    as in B5.</p>
+    <p class="action"><b>Risk — the highest of the six.</b> 13 chart scopes × 4 themes × light/dark.
+    A mint assert proves values, never consumption: this one wants an eye on a rendered chart
+    toolbar, not just a green gate.</p>
+  </article>
+
+  <article class="card" data-id="P3" id="P3" data-grade="today" data-class="port">
+    <div class="cardhead"><span class="cid">P3</span><span class="klass port">Port-back · T4</span><span class="grade">Adoptable today</span></div>
+    <h3>The chart tooltip matches no CSS on any composed page — including yours. GPT found it; here is why.</h3>
+    <p>GPT's <code>dv-behaviour.js</code> change (re-parent the tooltip into the active
+    <code>cn-chart-*</code> host) has <b>not</b> landed at HEAD. It reads like a refactor. It is not.
+    Measured here:</p>
+    <p class="evlabel">knowledge/canon/canon.css — all 28 .dv-tip rules</p>
+    <pre class="ev"><code>:where(.cn-chart-bar) .dv-tip{position:fixed; z-index:9; background:var(--page);
+    color:var(--ink); border:1px solid var(--pop-border,var(--line)); …
+    border-radius:var(--border-radius-surface); padding:8px 12px; opacity:0; …}
+:where(.cn-chart-bar) .dv-tip.on{opacity:1;}
+
+grep '.dv-tip' canon.css | grep -v ':where(.cn-'   →  (nothing)
+grep -c '#dvTip' canon.css                          →  0</code></pre>
+    <p class="evlabel">knowledge/canon/dv-behaviour.js:100-104</p>
+    <pre class="ev"><code>var dvTip = document.createElement('div');
+dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';
+document.body.appendChild(dvTip);          ← outside every .cn-chart-* scope</code></pre>
+    <p><b>One tip element, appended to <code>&lt;body&gt;</code>; 28 rules, every one of them scoped
+    to a chart ancestor it does not have.</b> Nothing matches — not the positioning, not the ground,
+    not the border, not <code>.on</code>. It renders as an unstyled text fragment in normal flow at
+    the foot of the document, on every hover.</p>
+    <p>And it is on both files. <code>international-banking-dashboard.canon.html</code> — yours —
+    and <code>.regen-v1.html</code> both link <code>dv-behaviour.js</code>, and neither carries a
+    local <code>.dv-tip</code> rule. The reason nobody caught it: the reference snippet has an
+    <b>unscoped</b> copy at <code>Chart-line.reference.html:350</code>, so the standalone showroom
+    page looks perfect and every composed page does not.</p>
+    <p class="action"><b>Price — two routes, and I recommend the paired answer.</b>
+    <b>Tactical, for tomorrow:</b> GPT's route — <code>tipAt(text, x, y, source)</code> re-parents
+    into the live chart host, ~6 lines of JS, no canon change, no serial. <b>Permanent, for a later
+    lane:</b> canon carries one unscoped <code>#dvTip</code> / <code>.dv-tip</code> rule and the 28
+    scoped copies retire — otherwise 28 dead rules stay on disk looking correct.</p>
+    <p class="action"><b>Risk — this is the one item that cannot be settled from source.</b>
+    <code>position:fixed</code> is not clipped by <code>overflow:hidden</code> alone, but it <i>is</i>
+    clipped if any ancestor establishes a containing block. The dashboard role sets
+    <code>overflow:hidden</code> on the container — and your own harness carries
+    <code>.dashboard-tile{…overflow:visible}</code>, which reads like someone who hit exactly this.
+    <b>Drive a hover on a real chart inside a dashboard bento before shipping it.</b></p>
+  </article>
+
+  <article class="card" data-id="B14" id="B14" data-grade="today" data-class="gap">
+    <div class="cardhead"><span class="cid">B14</span><span class="klass gap">Canon gap · T5</span><span class="grade">Adoptable today</span></div>
+    <h3>Running the skill's own step 5 wipes the standing gate record for every other screen.</h3>
+    <p>Still live at HEAD, unchanged:</p>
+    <p class="evlabel">knowledge/_validate_screen.py:81</p>
+    <pre class="ev"><code>open(os.path.join(HERE, "_SCREEN-GATE.md"), "w").write("\n".join(report) + "\n")</code></pre>
+    <p><code>knowledge/_SCREEN-GATE.md</code> currently holds <b>7 subjects</b> (the #227 restore
+    held). SKILL.md step 5 tells every user of the skill to run this command — <i>"A draft you
+    haven't gated is a claim, not a result"</i> — and doing so replaces all seven with whatever was
+    just gated.</p>
+    <p><b>Why it is a demo item and not housekeeping.</b> If the seat gates its dashboard live, six
+    subjects disappear from a tracked file while the room watches, and the working tree carries a
+    26-line deletion nobody asked for.</p>
+    <p class="action"><b>Price.</b> ~15 lines in one gate file: write
+    <code>knowledge/_screen-gate/&lt;subject&gt;.md</code> per subject rather than replacing the
+    whole file. <b>No serial</b> — this is a gate, not a generator.</p>
+    <p class="action"><b>Shape.</b> Per-subject files, not append: this is an ADR-0017 write-once
+    violation in miniature — one file holding live facts for seven subjects — and appending
+    re-creates it in slow motion.</p>
+  </article>
+
+  <article class="card" data-id="Q-B14" id="Q-B14" data-grade="today" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B14</span><span class="klass question">Question · from B14</span><span class="grade">Adoptable today</span></div>
+    <h3>Should the gate append per-subject rather than replacing the whole file?</h3>
+    <p class="store"><b>Store checked, per item: nothing.</b> No ruling touches
+    <code>_validate_screen.py</code> or the screen-gate file. This one is genuinely yours — but it is
+    a shape question with an obvious answer under a rule you have already made.</p>
+    <p><b>Recommendation:</b> per-subject files (<code>knowledge/_screen-gate/&lt;subject&gt;.md</code>),
+    on the ADR-0017 write-once precedent. Append is the option that looks cheapest and re-creates
+    the same defect as an ever-growing file. One word from you and T5 is unblocked.</p>
+    <p class="action"><b>If you would rather not spend a word on it today:</b> the safe stopgap is a
+    line in SKILL.md step 5 telling the reader to restore the file afterwards. That is a patch and
+    you have ruled on patches — so I am not proposing it, only naming it so the choice is yours.</p>
+  </article>
+
+  <article class="card" data-id="P2" id="P2" data-grade="today" data-class="port">
+    <div class="cardhead"><span class="cid">P2</span><span class="klass port">Port-back · T6</span><span class="grade">Adoptable today</span></div>
+    <h3>The search-field contract does not mention radius. Step 2 tells the generator to read it.</h3>
+    <p>GPT added <code>"radius": "border-radius/control"</code> to
+    <code>knowledge/components/search-field.meta.json</code>. At HEAD that key is still absent —
+    <code>grep radius</code> on the meta returns nothing.</p>
+    <p>SKILL step 2 is <i>"Read the contract — <code>knowledge/components/&lt;slug&gt;.meta.json</code>"</i>.
+    A generator that does exactly what it is told learns nothing about the field's shape. The meta is
+    the surface a cold seat actually reads, and it is silent on the one property that was wrong.</p>
+    <p class="action"><b>Price.</b> One JSON key. Serial: whatever regenerates the showroom entry —
+    <code>gen_showroom.py</code> → <code>gen_thumbs.py</code> → <code>gen_library_214.py</code>.</p>
+    <p class="action"><b>Land it with B5/T2, not separately.</b> On its own the contract promises a
+    radius canon does not bind in the toolbar scope — the two halves are one change.</p>
+  </article>
+</section>
+
+<!-- ================= REACHED COLD ALREADY ================= -->
+<section class="band" id="band-reached">
+  <h2>Reached cold already</h2>
+  <p class="bandnote">The pipeline has caught up since the diff was written, or you ruled it and the
+  card did not know. Nothing to adopt. <b>Each card names the receipt</b> — if a citation is wrong,
+  that is the most useful correction on this page.</p>
+
+  <article class="card" data-id="A1" id="A1" data-grade="reached" data-class="defect">
+    <div class="cardhead"><span class="cid">A1</span><span class="klass defect">Generation defect</span><span class="grade">Reached cold</span></div>
+    <h3>The segmented control's radius binding is repaired at source, in a third way neither option anticipated.</h3>
+    <p>At #227 the consumer scopes re-declared <code>.seg</code> without a radius and shadowed the
+    atom's binding away. At HEAD they select the ruled scale into shared locals and the radius is
+    injected from one atom:</p>
+    <p class="evlabel">canon.css — the repair, present in 10 .cn-* scopes</p>
+    <pre class="ev"><code>/* A1 REPAIR (#227) — this file RE-DECLARES `.seg`, which used to shadow the segmented
+   atom's radius bindings away … The atom's own construction is copied verbatim:
+   scale-selected locals, repointed by the size class. ⛔ NEVER hardcode a radius here */
+:where(.cn-chart-line) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); …}
+:where(.cn-chart-line) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}</code></pre>
+    <p>Measured: 10 scopes carry <code>--seg-rad</code> locals; 6 carry the named A1 REPAIR comment;
+    <code>.cn-view-options</code>, <code>.cn-chart-bar</code>, <code>.cn-chart-donut</code>,
+    <code>.cn-chart-pie</code>, <code>.cn-filter-toolbar-bar</code>,
+    <code>.cn-template-dashboard</code>, <code>.cn-template-list-index</code>,
+    <code>.cn-template-report</code> among them.</p>
+    <p class="store"><b>Store.</b> <code>s229-D2</code> — the four radius-less <code>.seg</code>
+    snippets, <i>"lets get this fixed"</i>. <code>s229-D3</code> — <i>"fix the class the other
+    solution is a patch not a solution"</i>: a segmented PARTIAL group in
+    <code>gen_component_partials.py</code>, 12 members, 36 rules from one atom, membership sweep in
+    the build, 12/12 mutation arms including your exact defect planted and caught.</p>
+    <p class="action"><b>Nothing to adopt.</b> Two <code>$exempt</code> entries remain ruling-shaped
+    and yours — the Table demo-harness switcher and the Tab-bar mobile pill — but neither is in the
+    demo's path.</p>
+  </article>
+
+  <article class="card" data-id="Q-A1" id="Q-A1" data-grade="reached" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A1</span><span class="klass question">Question · from A1</span><span class="grade">Reached cold</span></div>
+    <h3>Stop re-declaring <code>.seg</code>, or put the wrapper in the two references?</h3>
+    <p><b>Neither — and you already picked the third.</b> The re-declarations stayed (they carry real
+    construction) and no wrapper was added to the references. Instead the radius block is generated
+    into every consumer scope from one source, and drift fails the build.</p>
+    <p class="store"><b>Store.</b> <code>s229-D3</code>. Presenting this as open would be putting a
+    settled ruling back as an option.</p>
+  </article>
+
+  <article class="card" data-id="A2" id="A2" data-grade="reached" data-class="defect">
+    <div class="cardhead"><span class="cid">A2</span><span class="klass defect">Generation defect</span><span class="grade">Reached cold</span></div>
+    <h3>The Procedure now asks which theme — first, mandatorily, with the default said out loud.</h3>
+    <p>Closed by the v1.0.4 cold-start group. Verified <b>inside the shipped zip</b>, not just in the
+    working tree:</p>
+    <p class="evlabel">unzip -l Apollo-Spider-v1.0.4.zip</p>
+    <pre class="ev"><code>3897  Apollo-Spider-v1.0.4/cold-start/DESIGN-CONTRACT.md
+10342  Apollo-Spider-v1.0.4/skills/grill-me/SKILL.md
+ …    Apollo-Spider-v1.0.4/skills/generate-from-canon/SKILL.md  (step 0 present)</code></pre>
+    <p>DESIGN-CONTRACT §2: <i>"If you cannot see those either, ask this one: which theme — Mono,
+    Common, Console or Supercharge? It is the answer that changes every corner on the page."</i>
+    And it goes further than the card asked — <i>"If another instruction file tells you never to ask
+    questions, say that in the same reply and still ask question 1."</i></p>
+    <p class="store"><b>Store.</b> <code>s227-D6</code> (<i>"Yes — cut it Monday"</i>) scoped the cut
+    to the cold-start contract; <code>s228-D4</code> ratified v1.0.4.</p>
+    <p class="action"><b>Read B13 next.</b> A2 is closed at the asking end and still broken at the
+    landing end — the seat now asks the question and step 3 gives the answer nowhere to go. That is
+    the whole of B13, and it is why B13 is first in the adoptable set.</p>
+  </article>
+
+  <article class="card" data-id="Q-A2" id="Q-A2" data-grade="reached" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A2</span><span class="klass question">Question · from A2</span><span class="grade">Reached cold</span></div>
+    <h3>A required opening question, and a per-project default a generator reads?</h3>
+    <p><b>First half: shipped.</b> Step 0 + DESIGN-CONTRACT + grill-me, all three in v1.0.4.</p>
+    <p><b>Second half: answered a different way.</b> There is no per-project theme constant, and
+    there does not need to be one — grill-me writes the answer to
+    <code>briefs/&lt;date&gt;-&lt;task&gt;-grill.md</code> and step 0 opens that folder before it
+    builds. The brief <i>is</i> the recorded default, and it records skips beside the defaults they
+    cause.</p>
+    <p class="action"><b>Residual, named:</b> if <code>briefs/</code> is empty and the designer
+    declines the question, mono is still taken — but it is now taken <i>out loud</i>, which was the
+    actual complaint. I would not spend a ruling on this before tomorrow.</p>
+  </article>
+
+  <article class="card" data-id="B7" id="B7" data-grade="reached" data-class="gap">
+    <div class="cardhead"><span class="cid">B7</span><span class="klass gap">Canon gap</span><span class="grade">Reached cold</span></div>
+    <h3>You diagnosed the square thumb yourself, the same day, and ruled the fix. The card's measurement is stale.</h3>
+    <p>#227 measured console's <code>--border-radius-segmented-thumb-xs</code> at <code>0</code> — a
+    square thumb inside a 6px track — and called it "the pair he is looking at". At HEAD:</p>
+    <p class="evlabel">canon.css — [data-apollo-theme="console"]</p>
+    <pre class="ev"><code>--border-radius-segmented-container-xs: 6px;   --border-radius-segmented-thumb-xs: 4px;
+--border-radius-segmented-container-s:  8px;   --border-radius-segmented-thumb-s:  6px;
+--border-radius-segmented-container-m: 10px;   --border-radius-segmented-thumb-m:  8px;
+--border-radius-segmented-container-l: 12px;   --border-radius-segmented-thumb-l:  8px;</code></pre>
+    <p class="store"><b>Store — twice.</b> <code>s227-D4</code>, your words: <i>"the inner radii is
+    just not right for console on the two small sizes, and I got fed up of it continually wrong,
+    especially as we had a way of calculating it, thats why I dropped it."</i> Enacted the same
+    session: the tuned dial was the cause (6−6=0), and it is now scoped —
+    <code>SEGMENTED_CONCENTRIC_SCALES=('xs','s')</code>, thumb = track − padding. Then
+    <code>s227-D7</code>: <i>"L4 console xs 4 / s 6 stand"</i>, with m and l moved to concentric.
+    HEAD matches that ruling exactly.</p>
+    <p class="action"><b>Residual, mechanical, not a design word.</b> A stale comment survives beside
+    the ruled values — canon.css still says <i>"ordinal map sm→xs, PROPOSED not ruled"</i> — and
+    <code>segmented-control.meta.json</code>'s <code>variants</code> still list the legacy
+    <code>label-square-md / sm / lg / icons</code> family rather than the ruled xs/s/m/l scale. A
+    generator reading the contract still cannot find the ruled scale. Worth a later lane; not
+    tomorrow.</p>
+  </article>
+
+  <article class="card" data-id="Q-B7" id="Q-B7" data-grade="reached" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B7</span><span class="klass question">Question · from B7</span><span class="grade">Reached cold</span></div>
+    <h3>Is the xs thumb <code>0</code> correct, or should <code>.seg.sm</code> move onto <code>s</code>?</h3>
+    <p><b>Answered — the premise is gone.</b> The xs thumb is not <code>0</code> any more; it is
+    <code>4</code>, by derivation, from your own tuner export.</p>
+    <p class="store"><b>Store.</b> <code>s227-D4</code> + <code>s227-D7</code>. This is exactly the
+    #229 miss the brief warns about, so it is worth saying plainly: <b>had this page put Q-B7 to you
+    as open, it would have asked you to re-decide something you decided on 30 and 31 August.</b>
+    <code>reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html</code> has been overtaken.</p>
+    <p class="action"><b>What is still genuinely open</b> is the narrow half: the ordinal map from
+    the legacy size classes (<code>sm/md/lg</code>) onto the ruled scale, which canon still labels
+    PROPOSED. It is a naming question inside a contract, it changes no pixel that you have not
+    already ruled, and it is not in the demo's path.</p>
+  </article>
+
+  <article class="card" data-id="Q-B4" id="Q-B4" data-grade="reached" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B4</span><span class="klass question">Question · from B4</span><span class="grade">Reached cold</span></div>
+    <h3>The bento gutter — rails <code>4</code>, canon <code>1px</code>, your <code>2px</code>: which is it?</h3>
+    <p><b>All three, and they are not the same dial.</b> The card reads three numbers as one
+    disagreement. They sit at three different levels of a grammar you have already ruled:</p>
+    <table class="tbl">
+      <tr><th>number</th><th>what it actually is</th><th>ruled by</th></tr>
+      <tr><td><code>--layout-bento-gutter</code> 0 / 24px</td><td>the theme's <b>outer wall</b> gutter — mono and supercharge 0, common/legacy and console 24</td><td><code>s217-D2</code></td></tr>
+      <tr><td><code>--bento-gutter:1px</code></td><td>the <b>dashboard role's</b> tile spacing at the flush stop, on the role block</td><td><code>s217-D2</code> / <code>s217-D3</code></td></tr>
+      <tr><td>rails <code>subSpacing: 4</code></td><td>console's <b>sub-bento</b> spacing default, from your own #219 tuner export</td><td><code>s219-D1</code>(3)(5)</td></tr>
+      <tr><td>your <code>2px</code></td><td>a hand value — on the ruled stop set, but not console's ruled sub default</td><td>—</td></tr>
+    </table>
+    <p class="store"><b>Store.</b> <code>s217-D2</code> (per-theme gutters, "gutter is the only
+    divergence"); <code>s217-D3</code> (dashboard: radius on the inner bento's container, tiles at
+    1px); <code>s219-D1</code>(4) the ruled stop set <code>{1, 2, 4, 16, 24, 40}</code> — the edit
+    pass picks among stops, never free values; <code>s219-D1</code>(5) the dashboard's two-dial split
+    <code>main 24/40/40/24</code>, <code>sub 4/4/4/2</code>.</p>
+    <p class="action"><b>Nothing to rule.</b> The residual is a binding gap, not a value question,
+    and it lives on card B4 — the rails' dial <i>names</i> resolve to nothing in canon.css. That is
+    mechanical and it is not a demo blocker.</p>
+  </article>
+
+  <article class="card" data-id="C3" id="C3" data-grade="reached" data-class="improve">
+    <div class="cardhead"><span class="cid">C3</span><span class="klass improve">Your improvement</span><span class="grade">Reached cold</span></div>
+    <h3><code>--bento-gutter:2px</code> on the wall — "nil in code, one number to rule".</h3>
+    <p>The number is ruled, and it is not 2. Console's dashboard sub-spacing default is
+    <code>4</code>, from your own tuner export, transcribed at
+    <code>notes/_receipts/2026-08-25-219-role-defaults-exports.md</code> and ruled as the shipped
+    default by <code>s219-D1</code>(3).</p>
+    <p><b>2px is legal</b> — it is on the ruled stop set — but as an <i>edit-pass pick</i>, not as a
+    canon default. Which is precisely the distinction <code>s219-D1</code>(1) exists to draw: a role
+    setting closes as a default <i>plus</i> the option set, not as one value.</p>
+    <p class="action"><b>Nothing to back-port.</b> Your 2px was you using the edit pass by hand,
+    correctly, on a page that had no edit pass.</p>
+  </article>
+
+  <article class="card" data-id="C5" id="C5" data-grade="reached" data-class="improve">
+    <div class="cardhead"><span class="cid">C5</span><span class="klass improve">Your improvement</span><span class="grade">Reached cold</span></div>
+    <h3>Your two chart-toolbar radius declarations landed at source, wider than you wrote them.</h3>
+    <p>Your harness carried <code>.cn-chart-line .dv-toggle-seg{border-radius:…container-xs}</code>
+    and its <code>.ind</code>. Canon now carries the same pair, injected from the segmented atom,
+    across the group's members — and canon.css says so in its own comment:</p>
+    <p class="evlabel">canon.css — inside the .dv-toggle-seg rule</p>
+    <pre class="ev"><code>/* s227 canon-gap B6: … Without these two the toggle stayed square in every rounded
+   theme while its neighbours rounded — repaired by hand in a real page (2026-08-30)
+   before it was repaired here, at the source. */</code></pre>
+    <p class="store"><b>Store.</b> <code>s229-D3</code>. Your hand patch is now the system's
+    behaviour and it reaches charts you never opened.</p>
+    <p class="action"><b>The half you missed is card B6</b> — <code>.dv-vt</code> and
+    <code>.dv-tbl-toggle</code>, still square. That is T3 in the adoptable set.</p>
+  </article>
+
+  <article class="card" data-id="P1" id="P1" data-grade="reached" data-class="port">
+    <div class="cardhead"><span class="cid">P1</span><span class="klass port">Port-back</span><span class="grade">Reached cold</span></div>
+    <h3>GPT's search-field <code>.boxed</code> radius — one of its two sites is already in canon.</h3>
+    <p>GPT's copy changed <code>.search.boxed</code> at two sites plus the two snippets. At HEAD the
+    <code>.cn-search-field</code> site carries <code>border-radius:var(--border-radius-control)</code>
+    and <code>Search-field.reference.html</code> mirrors it.</p>
+    <p class="store"><b>Store.</b> <code>s227-D7</code> L8 — <i>"search radius moves to the boxed
+    variant only, underline stays straight"</i>. Your ruling and GPT's edit are the same change; the
+    ruling is the authority and it arrived independently.</p>
+    <p class="action"><b>The second site did not land</b> and it is the one in your dashboard — that
+    is card B5, T2 in the adoptable set. Nothing further to port from this file.</p>
+  </article>
+</section>
+
+<!-- ================= NEEDS YOUR DESIGN WORD ================= -->
+<section class="band" id="band-word">
+  <h2>Needs your design word</h2>
+  <p class="bandnote">Genuinely open after a per-item store check. ⛔ <b>Do not enact any of these
+  before the demo</b> — each one changes something the room will be looking at, and none of them has
+  an answer that can be derived from a ruling.</p>
+
+  <article class="card" data-id="B2" id="B2" data-grade="word" data-class="gap">
+    <div class="cardhead"><span class="cid">B2</span><span class="klass gap">Canon gap</span><span class="grade">Needs your word</span></div>
+    <h3>A dashboard tile still has no ground in canon — but the structure you ruled is a keyline, and the shipped default turns it off.</h3>
+    <p>Confirmed still true at HEAD: <code>grep 'bm-tile|bm-card|bm-wall|bm-inner' canon.css → 0</code>.
+    The dashboard role supplies the gutter and withholds the ground, deliberately:</p>
+    <p class="evlabel">canon.css:1166 — the role block, with its own comment</p>
+    <pre class="ev"><code>.c-bento[data-bento-role="dashboard"]{
+  --bento-radius:var(--border-radius-container);
+  --bento-gutter:1px;
+  overflow:hidden;   /* the clip is what makes the container radius read at all */ }
+
+/* ⛔ THERE IS NO `border-radius:0` RULE FOR DASHBOARD TILES, DELIBERATELY … */</code></pre>
+    <p><b>The reframe, and it narrows the question a long way.</b> You have already ruled how a
+    dashboard tile expresses itself, and it is not a background:</p>
+    <p class="store"><b>Store.</b> <code>s217-D8</code> — <i>"the keylines should stay, but they
+    should go round tight to the modules not run down the middle of the spacing"</i>: every tile
+    wears its own 1px keyline. <code>s218-D1</code> — <i>"each tile must have it's own keyline, but
+    the radii should only apply to the 4 corners of each sub bento"</i>, signed off on the live
+    explorer, <i>"Yay it works. very happy with this."</i> And <code>s219-D1</code>(3): the twelve
+    tuner exports are the shipped defaults — in which <b>dashboard keylines are OFF</b>.</p>
+    <p>So the flat field the regen produced is your own ruled default, rendered faithfully. Which
+    turns B2 from "canon is missing a declaration" into a much smaller question:</p>
+    <p class="action"><b>The question, as narrowly as I can put it:</b> does a dashboard tile get a
+    ground (<code>--surface-raised</code>, as you wrote by hand) — <b>or</b> is the demo's answer
+    simply to turn on the keylines you already ruled? <b>Keylines-on costs nothing in canon</b>; it
+    is an existing edit-pass dial, available in every theme and role per <code>s219-D1</code>(2).
+    A tile ground is a canon change that alters every dashboard bento that exists and drags C4
+    behind it.</p>
+    <p class="action"><b>⚠ Consequence if you adopt the ground.</b> One canon rule, one rails
+    <code>tileSurface</code> dial and its default, a regression pass over the gallery and display
+    types which deliberately have no tile ground — and C4 becomes mandatory the same day, because
+    every bordered component inside a now-grounded tile double-borders.</p>
+  </article>
+
+  <article class="card" data-id="C1" id="C1" data-grade="word" data-class="improve">
+    <div class="cardhead"><span class="cid">C1</span><span class="klass improve">Your improvement</span><span class="grade">Needs your word</span></div>
+    <h3><code>.dashboard-tile{padding:24px; background:var(--surface-raised); min-width:0; overflow:visible}</code></h3>
+    <p>The single biggest visual difference between your file and the regen, and B2 is its gap. Four
+    declarations, and the last one is a clue nobody has read yet.</p>
+    <p><b><code>overflow:visible</code> is not tidiness.</b> The dashboard role sets
+    <code>overflow:hidden</code> on the container, and something inside your charts needed to paint
+    outside its box. See P3 — the chart tooltip. I would not port this rule without deciding P3
+    first, because if P3 lands the tooltip's home changes and this declaration's job changes with it.</p>
+    <p class="action"><b>Price, unchanged from #227 and confirmed here:</b> one canon rule on
+    <code>.c-bento[data-bento-role="dashboard"] &gt; .c-bento__grid &gt; .c-bento__tile</code>, one
+    rails <code>tileSurface</code> dial + default, a regression pass over the roles that deliberately
+    have none. <b>Medium, and it changes every existing dashboard bento.</b></p>
+    <p class="action"><b>Recommendation: not before the demo.</b> If the tiles need to read as
+    separate tomorrow, turn keylines on — ruled, free, reversible.</p>
+  </article>
+
+  <article class="card" data-id="C4" id="C4" data-grade="word" data-class="improve">
+    <div class="cardhead"><span class="cid">C4</span><span class="klass improve">Your improvement</span><span class="grade">Needs your word</span></div>
+    <h3>The double border — a component that owns a border, inside a tile that now owns a ground.</h3>
+    <p>Your two repairs: <code>.dashboard-stat-tile .stat-card{padding:24px; border:none}</code> and
+    <code>.dashboard-tile .cn-list-items ul.list{border:none}</code>.</p>
+    <p><b>This card has no independent life.</b> It exists only if C1 is adopted — the moment tiles
+    have a ground, every bordered component inside one needs a flush variant. If keylines answer B2
+    instead, C4 does not arise in that form.</p>
+    <p class="action"><b>Price if it arrives:</b> a <code>flush</code> / <code>bare</code> variant on
+    stat-card and list-items — 2 metas, 2 snippets, 2 canon blocks, plus the variant-naming question,
+    which is yours. <b>Medium.</b></p>
+    <p class="action"><b>⚠ Under SKILL step 3</b> your <code>.dashboard-tile .cn-list-items ul.list</code>
+    rule is formally out of canon — it redefines a <code>.cn-*</code> class locally. That is not a
+    criticism of the rule; it is the measurement that says canon could not express it.</p>
+  </article>
+
+  <article class="card" data-id="B3" id="B3" data-grade="word" data-class="gap">
+    <div class="cardhead"><span class="cid">B3</span><span class="klass gap">Canon gap</span><span class="grade">Needs your word</span></div>
+    <h3>320px rows are not an accident — you ruled them. Your own dashboard overrides them.</h3>
+    <p class="evlabel">canon.css:539, 1091</p>
+    <pre class="ev"><code>--layout-bento-row-unit: 320px;
+grid-auto-rows:var(--bento-row-unit);   /* ⚠ FIXED rows */</code></pre>
+    <p class="store"><b>Store.</b> <code>s217-D2</code>: <i>"ALL other parameters shared across the
+    four themes — 6 columns, outer padding 0, <b>row unit 320px</b>, dense packing on …"</i>. The
+    value is ruled, from your own tuner exports.</p>
+    <p>And in your dashboard you overrode it twice —
+    <code>--bento-row-unit:minmax(148px,auto)</code> on the wall and <code>auto</code> on the stats
+    band. So the ruled default does not survive contact with a stats band, which is a finding about
+    the ruling, not about the generator.</p>
+    <p class="action"><b>⚠ Canon warns, and it is measured, not cautious.</b> <code>canon.css:1090-1092</code>
+    records that intrinsic rows kill the span vocabulary — MEASURED at #217 on the Foundations
+    photography bento. A silent flip is not available.</p>
+  </article>
+
+  <article class="card" data-id="C2" id="C2" data-grade="word" data-class="improve">
+    <div class="cardhead"><span class="cid">C2</span><span class="klass improve">Your improvement</span><span class="grade">Needs your word</span></div>
+    <h3><code>--bento-row-unit:minmax(148px,auto)</code> and <code>auto</code>.</h3>
+    <p>Small in code, heavy in governance — and B3 is why. You are overriding a value you ruled, on
+    the two walls where 320px is plainly wrong (a stats band is not 320px tall).</p>
+    <p class="action"><b>The honest shape</b> is a <code>rowUnit</code> dial on the stops rail rather
+    than a default change — and <code>s219-D1</code>(2) already rules that <i>all</i> dials are
+    available in edit mode in every theme and role, so a dial is arguably licensed and only the
+    default is contested. <b>Your eye is owed on whether 320 is simply wrong for a dashboard.</b></p>
+  </article>
+
+  <article class="card" data-id="Q-B3" id="Q-B3" data-grade="word" data-class="question">
+    <div class="cardhead"><span class="cid">Q-B3</span><span class="klass question">Question · from B3</span><span class="grade">Needs your word</span></div>
+    <h3>A <code>rowUnit</code> dial on the stops rail, or a different default for the dashboard role?</h3>
+    <p class="store"><b>Store checked, per item.</b> <code>s217-D2</code> rules the <i>value</i>
+    (320px, shared across the four themes). <code>s219-D1</code>(2) rules that all dials are
+    available in edit mode. <b>Neither rules whether row unit is a dial.</b> Genuinely open.</p>
+    <p class="action"><b>Recommendation, offered not assumed:</b> a dial, with 320 kept as the
+    default — that keeps the span vocabulary's guarantee intact for everything already built, and
+    lets a stats band say so for itself. But this is exactly the kind of thing where a mocked pair of
+    readings beats a paragraph, and there is no time to draw them before tomorrow.</p>
+  </article>
+
+  <article class="card" data-id="B8" id="B8" data-grade="word" data-class="gap">
+    <div class="cardhead"><span class="cid">B8</span><span class="klass gap">Canon gap</span><span class="grade">Needs your word</span></div>
+    <h3>The masthead logo is a text wordmark, and there is no light/dark mark swap. Yours does not swap either.</h3>
+    <p>Unchanged at HEAD: <code>grep -c '\.logo img' canon.css → 0</code>. The reference ships
+    <code>&lt;span class="logo" aria-label="HSBC"&gt;HSBC&lt;/span&gt;</code>, so a by-the-book build
+    renders the word. The real marks exist —
+    <code>knowledge/assets/logos/hexagon-{light,dark}-{colour,mono}.svg</code> — and nothing composes
+    them.</p>
+    <p><b>The gap bit you too.</b> Your <code>&lt;img src="…hexagon-light-colour.svg"&gt;</code> is
+    pinned to the light mark and does not swap in dark mode. If the demo touches the theme toggle,
+    that is what the room sees.</p>
+    <p class="store"><b>Store checked, per item: nothing on logo composition or mark swapping.</b>
+    Canon's only light/dark mark swap lives inside <code>.cn-template-auth</code> via
+    <code>data-mode</code>, and SKILL step 3 explicitly says <code>data-mode</code> is a
+    component-level attribute that must not go on the root. So there is no precedent to copy.</p>
+    <p class="action"><b>Two decisions, not one.</b> (a) the <code>.logo img</code> composition —
+    small, and it could ship today if that were all; (b) the swap mechanism — no precedent, and
+    inventing one at speed is how a pattern gets set by accident. <b>The safe demo answer is to
+    avoid the dark toggle on the masthead, and rule (b) properly afterwards.</b></p>
+  </article>
+
+  <article class="card" data-id="C6" id="C6" data-grade="word" data-class="improve">
+    <div class="cardhead"><span class="cid">C6</span><span class="klass improve">Your improvement</span><span class="grade">Needs your word</span></div>
+    <h3><code>.cn-navigations .dashboard-logo img{width:42px}</code> plus the 56px slot.</h3>
+    <p>The composition half of B8, written by hand. Porting it is small-medium: a <code>.logo img</code>
+    rule in canon plus a Navigations snippet update.</p>
+    <p class="action"><b>What blocks it is the half you did not write.</b> Porting the composition
+    without the swap ships a masthead that is pinned to one mode by design rather than by oversight
+    — which is worse, because then it is canon's fault. The two land together or not at all.</p>
+  </article>
+
+  <article class="card" data-id="C8" id="C8" data-grade="word" data-class="improve">
+    <div class="cardhead"><span class="cid">C8</span><span class="klass improve">Your improvement</span><span class="grade">Needs your word</span></div>
+    <h3><code>@media(max-width:520px){.cn-navigations .main{display:none}…}</code></h3>
+    <p>The masthead has no responsive collapse, so you hid the nav. That is a stopgap and you would
+    not ship it as canon.</p>
+    <p class="action"><b>The real fix is a Navigations component change</b> — a menu button and a
+    flyout — and the component already carries the flyout machinery, so it is assembly rather than
+    invention. <b>Medium.</b> Not a demo item unless the demo is driven at a narrow width, which it
+    should not be.</p>
+    <p class="action"><b>⚠ Consequence of porting the stopgap:</b> hiding primary navigation below
+    520px is an accessibility posture, not a layout tweak, and it would become the system's answer
+    for every screen. Worth a proper decision rather than a back-port.</p>
+  </article>
+</section>
+
+<!-- ================= NOT A DEMO BLOCKER ================= -->
+<section class="band" id="band-nonblock">
+  <h2>Not a demo blocker</h2>
+  <p class="bandnote">All real, several important. None of them stands between a cold seat and your
+  dashboard tomorrow, and each would cost more than the day has.</p>
+
+  <article class="card" data-id="B1" id="B1" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B1</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>There is still no snippet and no meta for the bento — the thing the whole page is built out of.</h3>
+    <p>Re-run at HEAD, unchanged: <code>ls knowledge/snippets/ | grep -ci bento → 0</code> and
+    <code>ls knowledge/components/ | grep -ci 'bento|foundation' → 0</code>.</p>
+    <p>SKILL rule 2 — <i>"Copy the snippet, don't re-draw it"</i> — is unsatisfiable for the bento,
+    so a cold seat must assemble the markup by reading <code>canon.css</code>. That is precisely the
+    hand-rolling the rule exists to prevent, and it is the largest structural gap on this page.</p>
+    <p class="action"><b>Why it is not tomorrow.</b> Authoring a reference snippet plus a meta for a
+    foundation is a component-scaffold lane with its own gates, not an afternoon. ⚠ And it is the
+    one item where the demo carries real narrative risk: if a stakeholder asks "so where does the
+    layout come from?", the honest answer is <i>canon.css source</i>.</p>
+  </article>
+
+  <article class="card" data-id="B12" id="B12" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B12</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>The composed-screen gate cannot tell a usable page from an unusable one.</h3>
+    <p>Same <code>PASS ✅</code>, same three-line body, same 12× <code>dv-marker</code> warning, on a
+    hand-polished 38.8KB page and an unstyled 45.6KB one. It checks compose-legality, icon provenance
+    and a11y. It has no check for whether a tile has a ground, whether a bordered control binds a
+    radius, whether a fixed row swallows its content, or whether the page renders at all.</p>
+    <p class="action"><b>This is the reason the whole diff exists</b>, and it is a gate-design lane —
+    the first gate should parse the artefact in the consumer's grammar. Real, expensive, and nothing
+    a cold seat trips over tomorrow.</p>
+  </article>
+
+  <article class="card" data-id="B4" id="B4" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B4</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>The rails' dial names still bind to nothing in the stylesheet.</h3>
+    <p>Unchanged at HEAD:
+    <code>grep -c 'mainSpacing|subSpacing|bentoBg|keylines' canon.css → 0</code>. The rails declare
+    that generation <i>"ships the minted defaults only — every generated instance lands on canon"</i>,
+    and there is no class, attribute or custom property for a generator to write in order to do it.</p>
+    <p class="action"><b>The values are ruled</b> (see Q-B4). What is missing is the binding, and
+    that is mechanical work of medium size — the vocabulary in the manifest has to become something
+    canon selects on. ⚠ Until it does, every "ships the defaults" claim is enacted by hand or not at
+    all, which is what both files did.</p>
+  </article>
+
+  <article class="card" data-id="C7" id="C7" data-grade="nonblock" data-class="improve">
+    <div class="cardhead"><span class="cid">C7</span><span class="klass improve">Your improvement</span><span class="grade">Not a blocker</span></div>
+    <h3><code>.dashboard-root{background:var(--surface-subtle)}</code> — the rails' <code>pageBg: grey</code>, enacted by hand.</h3>
+    <p class="store"><b>Store.</b> <code>s219-D3</code>(4): <i>"PAGEBG LEAVES THE BENTO GRAMMAR"</i>
+    — page background is a page-level designer decision with its own small rail. So the intent is
+    ruled; the landing place is not built. Same class as B4.</p>
+    <p class="action"><b>Price:</b> one page-level utility (a <code>.c-page-grey</code> or an
+    attribute) so <code>page_rail</code> has somewhere to land. Small. Land it with B4's binding work
+    rather than alone.</p>
+  </article>
+
+  <article class="card" data-id="A3" id="A3" data-grade="nonblock" data-class="defect">
+    <div class="cardhead"><span class="cid">A3</span><span class="klass defect">Generation defect</span><span class="grade">Not a blocker</span></div>
+    <h3>The references carry inline styles rule 3 forbids and rule 2 tells you to copy — and the fix is bigger than it looks.</h3>
+    <p><b>Premise correction, measured here.</b> #227 concluded canon has no visually-hidden utility,
+    from <code>grep '^\.c-' canon.css</code>. That grep could not see it. Canon carries
+    <code>.sr-only</code> <b>40 times</b> — once inside each of 40 component scopes — in two
+    different variants:</p>
+    <p class="evlabel">canon.css — .sr-only, component-scoped, 40 sites, two recipes</p>
+    <pre class="ev"><code>:where(.cn-avatar-group) .sr-only{position:absolute; width:1px; height:1px;
+    padding:0; margin:-4px; overflow:hidden; …}
+:where(.cn-calendar)     .sr-only{position:absolute; width:1px; height:1px;
+    margin:-1px; padding:0; border:0; …}
+
+grep '.sr-only' canon.css | grep -v ':where(.cn-'   →  (nothing unscoped)</code></pre>
+    <p>So a <code>.c-sr-only</code> is a <b>de-duplication of 40 existing sites</b>, not the addition
+    of a missing one — and the two recipes disagree, so promoting it means picking one.</p>
+    <p class="action"><b>That reprices Q-A3 upward, not down.</b> It looked like adding a utility;
+    it is a 40-site consolidation with a value decision inside it. Right thing to do, wrong week.</p>
+  </article>
+
+  <article class="card" data-id="Q-A3" id="Q-A3" data-grade="nonblock" data-class="question">
+    <div class="cardhead"><span class="cid">Q-A3</span><span class="klass question">Question · from A3</span><span class="grade">Not a blocker</span></div>
+    <h3>Add a <code>.c-sr-only</code> utility and clean the two references?</h3>
+    <p class="store"><b>Store checked, per item: nothing.</b> Open — but see A3: the answer is no
+    longer a simple yes, because canon already has the recipe forty times in two forms.</p>
+    <p class="action"><b>What I would ask you when it comes up</b> is not "add it?" but "which
+    recipe" — <code>margin:-4px</code> or <code>margin:-1px</code> — because the promotion has to
+    pick one and 40 scopes inherit the choice. Not a question for the day before a demo.</p>
+  </article>
+
+  <article class="card" data-id="B9" id="B9" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B9</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>There is no page-width container.</h3>
+    <p><code>.c-screen</code> is <code>width:390px</code> — a mobile frame — and no desktop page
+    container exists among the <code>.c-*</code> utilities. Both files invented one in harness: yours
+    <code>padding:0 24px 24px</code> on a flex stack, the regen
+    <code>max-width:1280px; margin-inline:auto</code>. The rails name the page <i>ground</i> but not
+    the page <i>measure</i>, and bind neither.</p>
+    <p class="action"><b>Invisible in the demo</b> — harness is legal under step 3, and both answers
+    look fine. It matters for consistency across screens, which is a later conversation.</p>
+  </article>
+
+  <article class="card" data-id="B10" id="B10" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B10</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>Canon breaches its own type rule, and two different things are called "summary".</h3>
+    <p class="evlabel">canon.css:999-1000 — still present at HEAD</p>
+    <pre class="ev"><code>.c-summary__k{ color:var(--muted); font:400 16px/1.4 var(--font); }
+.c-summary__v{ color:var(--text); font:500 16px/1.4 var(--font); … }</code></pre>
+    <p>Raw <code>font-size</code> / <code>font-weight</code> / <code>line-height</code> rather than a
+    <code>.t-cm-*</code> composite — inside canon. And the naming collision is real: the
+    <code>summary</code> <b>component</b> is in the index (the regen used it); this <b>utility</b> is
+    in no index and the compose runbook recommends it (you used it). Index and runbook send a
+    generator to different objects.</p>
+    <p class="store"><b>Store.</b> <code>s119-D1</code> — the type-composite gate is a
+    <b>shrink-only ratchet</b>: enforce against new violations, existing debt may only shrink. So
+    this is standing debt inside the ratchet, not a new breach.</p>
+    <p class="action"><b>Not a blocker</b>, but it is the sharpest example of B12 — a green gate on a
+    file that breaks a rule written in the same repo.</p>
+  </article>
+
+  <article class="card" data-id="B11" id="B11" data-grade="nonblock" data-class="gap">
+    <div class="cardhead"><span class="cid">B11</span><span class="klass gap">Canon gap</span><span class="grade">Not a blocker</span></div>
+    <h3>Nothing says how to get an icon into a self-contained page — and nothing says to link the chart behaviour either.</h3>
+    <p>SKILL rule 8 says icons are real assets from <code>knowledge/assets/icons/</code>. 659 SVGs on
+    disk. Neither the skill nor the compose runbook says whether to inline a <code>&lt;symbol&gt;</code>
+    sprite, reference by path, or use <code>&lt;img&gt;</code>. Both files independently landed on the
+    same answer — an inline sprite with <code>&lt;use href="#…"&gt;</code> — which is good evidence the
+    convention is real and simply unwritten.</p>
+    <p class="action"><b>A sibling found while checking P3, worth writing down here:</b>
+    <code>grep 'dv-behaviour' </code> across <code>_RUNBOOK-compose-from-canon.md</code> and
+    <code>SKILL.md</code> returns <b>nothing</b> — yet both files link
+    <code>knowledge/canon/dv-behaviour.js</code>, because the reference snippet does. The same
+    unwritten-convention class, on the file that turns out to carry the P3 defect.</p>
+  </article>
+</section>
+
+<!-- ================= WHAT THIS PAGE DID NOT DO ================= -->
+<section class="band" id="band-U">
+  <h2>Declared — what this triage did not do</h2>
+  <p class="bandnote">So nothing here reads as more certain than it is.</p>
+  <div class="how">
+    <ol>
+      <li><b>Nothing was rendered.</b> Every claim is read from source — CSS text, token values,
+      selector scope, JSON, and the shipped zip's own bytes — quoted with file and line so it is
+      re-checkable. <b>No pixel was measured.</b> P3 and B6 are the two items that most want an eye
+      on a render before they ship.</li>
+      <li><b>No gate was run and no generator was driven.</b> The prices quoted for the serial are
+      the documented shape of the ordered serial (ramp first, index last), not a timed measurement.
+      A planning estimate is not a measurement.</li>
+      <li><b>Store coverage is per-item, and it is a search, not a proof.</b> Every card marked
+      "needs your word" was searched in <code>knowledge/_rulings.json</code> (296 rulings) before
+      being called open, and the searches that found something are cited on the card. An unrun search
+      is indistinguishable from an absent record — so if you know of a ruling I have not cited,
+      that correction outranks everything else on this page.</li>
+      <li><b>No git operation ran</b>, so "landed since #227" is read from the working tree at HEAD,
+      not from history. Where I say something changed, the evidence is the current file content.</li>
+      <li><b>Nothing was adopted, ruled, enacted or committed.</b> This page is a decision surface.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= PROMPT ================= -->
+<section id="promptblock">
+  <h2>The prompt — copy this back to me</h2>
+  <p>The Copy button in the bar below puts this on your clipboard. If it refuses (browsers often block the
+  clipboard on <code>file://</code> pages), select the text here and copy it by hand. <b>This block is the
+  real output — everything else is just a way of typing it.</b></p>
+  <pre id="prompt" tabindex="0">Nothing answered yet.</pre>
+  <p class="assert" id="assert">Checking card count…</p>
+</section>
+</div>
+
+<div class="bar">
+  <div class="barin">
+    <div class="counts">
+      <span>Cards</span> <b id="cAll">0/35</b> &nbsp;·&nbsp;
+      <span>Adoptable set</span> <b id="cToday">0/7</b>
+    </div>
+    <div class="spacer"></div>
+    <span id="copystatus" role="status"></span>
+    <button class="ghost" id="reset" type="button">Clear all</button>
+    <button class="ghost" id="jump" type="button">Show prompt</button>
+    <button class="primary" id="copy" type="button">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "apollo-230-demo-triage-v1";
+  var TOTAL_DECLARED = 35, TODAY_DECLARED = 7;
+  var GRADE_LABEL = {reached:"Reached cold", today:"Adoptable today",
+                     word:"Needs your word", nonblock:"Not a blocker"};
+  var OPTS = [["agree","Agree"],["override","Override"],["discuss","Discuss"]];
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card[data-id]"));
+  var state = {};   /* id -> {d: verdict|null, c: comment} */
+
+  /* ---------- storage, never fatal ---------- */
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") state = o; }
+    }catch(e){ /* storage dead — page still works */ }
+  }
+  function save(){
+    try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* ---------- build controls ---------- */
+  cards.forEach(function(card){
+    var id = card.getAttribute("data-id");
+    if(!state[id]) state[id] = {d:null, c:""};
+
+    var box = document.createElement("div");
+    box.className = "controls";
+
+    var radios = document.createElement("div");
+    radios.className = "radios";
+    radios.setAttribute("role","radiogroup");
+    radios.setAttribute("aria-label","Your answer to the grade for " + id);
+    OPTS.forEach(function(o){
+      var lab = document.createElement("label");
+      lab.className = o[0];
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "v-" + id; inp.value = o[0];
+      inp.id = "v-" + id + "-" + o[0];
+      inp.addEventListener("change", function(){
+        state[id].d = o[0]; save(); refresh();
+      });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(o[1]));
+      radios.appendChild(lab);
+    });
+    box.appendChild(radios);
+
+    var cl = document.createElement("label");
+    cl.className = "cmtlabel"; cl.setAttribute("for","cmt-" + id);
+    cl.textContent = "Your comment";
+    box.appendChild(cl);
+
+    var ta = document.createElement("textarea");
+    ta.id = "cmt-" + id;
+    ta.placeholder = "If you override, say what the grade should be…";
+    ta.addEventListener("input", function(){
+      state[id].c = ta.value; save(); refresh();
+    });
+    box.appendChild(ta);
+
+    var clr = document.createElement("button");
+    clr.type = "button"; clr.className = "clearone"; clr.textContent = "Clear this card";
+    clr.addEventListener("click", function(){
+      state[id] = {d:null, c:""};
+      var checked = card.querySelector('input[type="radio"]:checked');
+      if(checked) checked.checked = false;
+      ta.value = ""; save(); refresh();
+    });
+    box.appendChild(clr);
+
+    card.appendChild(box);
+  });
+
+  function hydrate(){
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var st = state[id];
+      if(!st) return;
+      if(st.d){
+        var r = card.querySelector('input[value="' + st.d + '"]');
+        if(r) r.checked = true;
+      }
+      var ta = card.querySelector("textarea");
+      if(ta && st.c) ta.value = st.c;
+    });
+  }
+
+  /* ---------- prompt ---------- */
+  function oneLine(s){ return String(s || "").replace(/\s+/g, " ").trim(); }
+
+  function build(){
+    var agreed = [], overridden = [], discuss = [], open = [], notes = [];
+    var nAns = 0, nToday = 0, totToday = 0;
+
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      var g  = card.getAttribute("data-grade");
+      var st = state[id] || {d:null,c:""};
+      if(g === "today") totToday++;
+      var cmt = oneLine(st.c);
+      if(st.d){
+        nAns++;
+        if(g === "today") nToday++;
+        var line = id + " [" + GRADE_LABEL[g] + "] " + st.d.toUpperCase() + (cmt ? " — " + cmt : "");
+        if(st.d === "agree") agreed.push(line);
+        else if(st.d === "override") overridden.push(line);
+        else discuss.push(line);
+      }else{
+        open.push(id);
+        if(cmt) notes.push(id + " (no answer) — " + cmt);
+      }
+    });
+
+    var out = [];
+    out.push("APOLLO #230 — demo triage, my answers");
+    out.push("Page: reviews/DEMO-TRIAGE-2026-08-31-v1.html");
+    out.push("Report: notes/_subreports/2026-08-31-230-demo-triage.md");
+    out.push("Answered " + nAns + "/" + cards.length + " cards · adoptable-today set " + nToday + "/" + totToday);
+    out.push("");
+    out.push("OVERRIDDEN — the grade is wrong");
+    out.push(overridden.length ? overridden.join("\n") : "(none)");
+    out.push("");
+    out.push("DISCUSS");
+    out.push(discuss.length ? discuss.join("\n") : "(none)");
+    out.push("");
+    out.push("AGREED");
+    out.push(agreed.length ? agreed.join("\n") : "(none)");
+    if(notes.length){
+      out.push("");
+      out.push("NOTES ON UNANSWERED");
+      out.push(notes.join("\n"));
+    }
+    out.push("");
+    out.push("UNANSWERED: " + (open.length ? open.join(", ") : "none"));
+    return {text: out.join("\n"), nAns: nAns, nToday: nToday, totToday: totToday};
+  }
+
+  var promptEl = document.getElementById("prompt");
+  var cAll = document.getElementById("cAll");
+  var cToday = document.getElementById("cToday");
+
+  function refresh(){
+    var b = build();
+    promptEl.textContent = b.text;
+    cAll.textContent = b.nAns + "/" + cards.length;
+    cToday.textContent = b.nToday + "/" + b.totToday;
+  }
+
+  /* ---------- copy ---------- */
+  var statusEl = document.getElementById("copystatus");
+  function status(msg, ok){
+    statusEl.textContent = msg;
+    statusEl.className = ok ? "ok" : "bad";
+    document.getElementById("sr").textContent = msg;
+    window.setTimeout(function(){ if(statusEl.textContent === msg){ statusEl.textContent = ""; statusEl.className = ""; } }, 6000);
+  }
+  function legacyCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly","");
+      ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0";
+      ta.style.opacity = "0"; ta.style.width = "2px"; ta.style.height = "2px";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return !!ok;
+    }catch(e){ return false; }
+  }
+  function selectPre(){
+    try{
+      var r = document.createRange(); r.selectNodeContents(promptEl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      promptEl.scrollIntoView({behavior:"smooth", block:"center"});
+    }catch(e){}
+  }
+  document.getElementById("copy").addEventListener("click", function(){
+    var text = build().text;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        status("Copied — paste it to Claude", true);
+      }).catch(function(){
+        if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+        else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+      });
+    }else{
+      if(legacyCopy(text)) status("Copied — paste it to Claude", true);
+      else { selectPre(); status("Copy blocked — text selected below, press Cmd/Ctrl+C", false); }
+    }
+  });
+  document.getElementById("jump").addEventListener("click", function(){
+    document.getElementById("promptblock").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    if(!window.confirm("Clear every answer and comment on this page?")) return;
+    state = {};
+    cards.forEach(function(card){
+      var id = card.getAttribute("data-id");
+      state[id] = {d:null, c:""};
+      var r = card.querySelector('input[type="radio"]:checked'); if(r) r.checked = false;
+      var ta = card.querySelector("textarea"); if(ta) ta.value = "";
+    });
+    save(); refresh(); status("Cleared", true);
+  });
+
+  /* ---------- filters ---------- */
+  var fbtns = Array.prototype.slice.call(document.querySelectorAll(".fbtn"));
+  fbtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.getAttribute("data-filter");
+      fbtns.forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      cards.forEach(function(card){
+        var id = card.getAttribute("data-id");
+        var show = f === "all"
+          || (f === "undecided" && !(state[id] && state[id].d))
+          || (f === "g-" + card.getAttribute("data-grade"));
+        card.classList.toggle("hidden", !show);
+      });
+      Array.prototype.slice.call(document.querySelectorAll("section.band")).forEach(function(sec){
+        var vis = sec.querySelectorAll(".card:not(.hidden)").length;
+        var hasCards = sec.querySelectorAll(".card").length > 0;
+        sec.style.display = (hasCards && vis === 0) ? "none" : "";
+      });
+    });
+  });
+
+  /* ---------- count assertion ---------- */
+  function assert(){
+    var el = document.getElementById("assert");
+    var tally = {reached:0, today:0, word:0, nonblock:0};
+    var ids = {}, dup = [], ungraded = [];
+    cards.forEach(function(c){
+      var id = c.getAttribute("data-id");
+      var g  = c.getAttribute("data-grade");
+      if(ids[id]) dup.push(id); else ids[id] = 1;
+      if(tally.hasOwnProperty(g)) tally[g]++; else ungraded.push(id);
+    });
+    var ok = (cards.length === TOTAL_DECLARED) && (tally.today === TODAY_DECLARED)
+             && dup.length === 0 && ungraded.length === 0;
+    el.textContent = ok
+      ? cards.length + "/" + TOTAL_DECLARED + " cards rendered · reached cold " + tally.reached
+        + " · adoptable today " + tally.today + " · needs your word " + tally.word
+        + " · not a blocker " + tally.nonblock
+        + " · all ids unique · matches the report's COUNTS line."
+      : "⚠ COUNT MISMATCH — rendered " + cards.length + " cards (expected " + TOTAL_DECLARED
+        + "), adoptable-today " + tally.today + " (expected " + TODAY_DECLARED + ")"
+        + (dup.length ? " · duplicate ids: " + dup.join(", ") : "")
+        + (ungraded.length ? " · ungraded: " + ungraded.join(", ") : "") + ". Tell Claude.";
+    el.className = ok ? "assert" : "assert bad";
+  }
+
+  load(); hydrate(); refresh(); assert();
+})();
+</script>
+</body>
+</html>
