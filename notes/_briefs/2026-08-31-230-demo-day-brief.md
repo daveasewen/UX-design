@@ -24,6 +24,17 @@ rails", Discover/Create/Craft/Dispatch), never gate/token mechanics.
 > what I want to get to as soon as possible but the code will be a mess because it was vibed
 > without using the design skill initially. It was just a prompt with a few rounds after."
 
+> And, same session: "look it should just be created from the components … i've already
+> explained this."
+
+**The mechanism, restated so it cannot drift:** the demo dashboard is ASSEMBLED FROM THE
+COMPONENTS — the shipped contract's own words (`apollo-spider/cold-start/DESIGN-CONTRACT.md`,
+in v1.0.4): *"Copy the markup. Component HTML comes from `knowledge/snippets/`, never from
+memory"* · *"Never invent. If the system does not have it, stop and name the gap"* ·
+*"Dashboards are bento-first."* Every rehearsal grade and every triage adoption serves THAT
+path. A gap between the components and his target look is closed IN THE COMPONENTS, never by
+freestyle markup.
+
 **What this changes:** `dashboards/international-banking-dashboard.canon.html` is the VISUAL
 standard only. Its code is explicitly disowned — nothing in it is ported, copied, or treated
 as an example. "Reach Dave's result" = reach THAT LOOK via the clean path (canon tokens,
