@@ -48,7 +48,7 @@ download and no environment variable to set.** The `pip install` line above is f
 package itself, which still comes from PyPI; the *data* it would otherwise fetch is already here.
 
 Open **this pack's folder** as your VS Code workspace (File → Open Folder → the unzipped
-`Apollo-Spider-v1.0.4` directory). Copilot reads `.github/copilot-instructions.md` from a
+`Apollo-Spider-v1.0.5` directory). Copilot reads `.github/copilot-instructions.md` from a
 workspace automatically, and that file is what tells it how to behave here.
 
 Quick check that everything landed — **both lines, before you start**:

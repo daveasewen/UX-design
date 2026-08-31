@@ -110,13 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.4"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.5"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.4"
+MEMENTO_CUT_VERSION = "v1.0.5"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -661,22 +661,30 @@ RATIFY_IDS = {
                             # ADDED, never moved" line above still stands as the DEFAULT: this
                             # row moved on Dave's explicit word, which is the only thing that
                             # may move one.
-    "v1.0.4": "s227-D6",    # #227, Dave's word 'Yes — cut it Monday' (2026-08-30), given on
-                            # the #227 decision surface and naming THIS version in its own
-                            # `ruled` line ("v1.0.4 CUT AUTHORIZED for Monday 2026-08-31"),
-                            # with its scope enumerated and its condition — the red-team
-                            # repairs landing green — discharged by the #228 repair lane.
-                            # ⚠ DECLARED, NOT SMOOTHED, because s228-D1 sharpens exactly this
-                            # question: s227-D6 is an AUTHORISATION, and for v1.0.3 a LATER,
-                            # more specific ratifying word existed (s225-D1) and is what the
-                            # row now cites. No later word exists for v1.0.4 — s227-D6 is the
-                            # only ruling in the store that carries Dave's release word for
-                            # this version, and it says in its own body that "ratification
-                            # mechanics at the cut follow the standing release machinery
-                            # (RATIFY_IDS + manifest regen + dry-run byte-match)". It is
-                            # keyed here on that basis. ⬛ IF DAVE GIVES A FRESH RATIFYING
-                            # WORD AT THIS BAKE, THIS ROW IS THE ONE TO REPOINT — the same
-                            # move s228-D1 just made, and his alone to call.
+    "v1.0.4": "s228-D4",    # #228, Dave's word ratifying v1.0.4 at its bake. ⛔ MOVED from
+                            # s227-D6 by s228-D4 itself, at the v1.0.5 cut (#230), which is
+                            # the v1.0.3 pattern exactly: s228-D4's own `ruled` line says
+                            # "RATIFY_IDS moves to this id at the NEXT cut, per the v1.0.3
+                            # pattern" — the key moves when the NEXT manifest is generated,
+                            # never by re-baking a zip that has already shipped. The v1.0.4
+                            # zip in dist/ was cut against s227-D6 and its bytes are frozen
+                            # history; this row is the ledger catching up, not a re-cut.
+                            # WHY IT HAD TO MOVE: s227-D6 is an AUTHORISATION ("Yes — cut it
+                            # Monday"), s228-D4 is the RATIFYING WORD, and s223-D3's whole
+                            # distinction is between the ruling that NAMES a cut and the word
+                            # that RATIFIES it. #228 keyed s227-D6 here and flagged it as a
+                            # declared judgment for exactly this reason; the flag is now
+                            # discharged. ⚠ THE "rows are ADDED, never moved" line above still
+                            # stands as the DEFAULT: this row moved on Dave's explicit word,
+                            # which is the only thing that may move one.
+    # ⛔ v1.0.5 HAS NO ROW, AND THAT IS THE POINT — NOT AN OMISSION. #230 cut it for the demo
+    # and STOPPED at PROPOSED per its brief: "THE BAKE IS PROPOSED, NOT RATIFIED, until Dave's
+    # fresh word in chat." There is no ruling in the store carrying his release word for
+    # v1.0.5 — the #230 lane searched and found none — so keying anything here would be
+    # inventing the word the gate exists to wait for. `ratification_status()` therefore returns
+    # PROPOSED and `--release` refuses (build-designer-pack.sh: `ratified || die`), which is
+    # the machine doing its job. ⬛ WHEN DAVE RATIFIES, add the row keyed to THAT ruling id —
+    # a fresh RATIFYING word, not the authorisation that named the cut.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")

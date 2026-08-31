@@ -19,8 +19,8 @@ Change one of these and the listed number of components is affected. Use before 
 | `text/secondary` | 38 | Account card, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
 | `border/subtle` | 37 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `tertiary/background/hover` | 35 | Accordion, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
+| `border-radius/control` | 34 | Amount input, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `divider/border/section` | 34 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
-| `border-radius/control` | 33 | Amount input, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `elevation/functional` | 29 | Account selector, App shell — nav rail, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Card-header-lockup… |
 | `form/border/default` | 29 | Account card, Account selector, App shell — split, Cascader, Combobox, Command palette… |
 | `rag/success` | 29 | Account card, Amount input, Bar chart, Button, Card-header-lockup, Confirmation… |
@@ -33,7 +33,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `text/` | 111 |
 | `background/` | 73 |
 | `tertiary/` | 63 |
-| `border-radius/` | 61 |
+| `border-radius/` | 62 |
 | `icon/` | 48 |
 | `rag/` | 47 |
 | `form/` | 43 |
