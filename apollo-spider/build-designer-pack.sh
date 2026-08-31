@@ -35,8 +35,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$ROOT/knowledge/_release/_gen_pack_manifest.py"
 MANIFEST="$ROOT/knowledge/_release/_pack_manifest.json"
-VERSION="v1.0.3"
-PACKNAME="Apollo-Spider-${VERSION}"
+# ⛔ #228 — VERSION AND PACKNAME ARE NOT TYPED HERE ANY MORE. They are derived from the
+# manifest, in the dryrun|release branch, once the manifest has been proved to be the one for
+# the commit being baked. See the block there for the measurement that forced this.
 DIST="$ROOT/apollo-spider/dist"
 
 MODE=""
@@ -146,6 +147,30 @@ dryrun|release)
     || die "the manifest was generated at ${MAN_COMMIT:0:12}, you asked to bake ${COMMIT:0:12}.
          Re-run --manifest. (The manifest IS the ship list; baking a different commit against it
          is exactly the stale-copy-list defect this release shape exists to end.)"
+
+  # ---- #228 — THE PACK'S OWN VERSION IS READ FROM THE MANIFEST, NEVER TYPED HERE ------------
+  #
+  # ⛔ WHAT THIS SCRIPT DID UNTIL NOW, MEASURED AT THIS CUT. `VERSION="v1.0.3"` was hand-typed at
+  # the head of the file, 75 lines above the generator it is supposed to follow. At the v1.0.4
+  # bump the generator moved and this literal did not, so the FIRST dry-run of the cut staged
+  # v1.0.4 content, wrote a v1.0.4 README and a v1.0.4 PROVENANCE, and named the zip
+  # `Apollo-Spider-v1.0.3.zip` — a pack that disagrees with itself about which release it is, and
+  # a filename a designer would read as the previous cut. Caught by reading the dry-run's own
+  # output line, not by a gate.
+  #
+  # THIS IS THE #220 AND s225-D3 LESSON A THIRD TIME, IN THE ONE PLACE THAT HAD NOT LEARNED IT.
+  # The block below already says it for the carried cut: *"It is now READ from the manifest the
+  # generator wrote (ADR-0017, one home). A missing key dies loud under `set -e` rather than
+  # defaulting to a version nobody chose."* The pack's OWN version deserved the same rule and
+  # kept its literal because nothing ever compared the two.
+  #
+  # WHY HERE AND NOT AT THE TOP OF THE FILE: the read is only legal once the manifest has been
+  # proved to be the one for THIS commit — the check immediately above. Deriving it earlier would
+  # read whatever manifest happens to be on disk, which is the stale-copy-list defect wearing the
+  # version's clothes. `--manifest`, `--check` and `--selftest` never use these two variables, so
+  # nothing outside this branch loses anything.
+  VERSION="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "$MANIFEST")"
+  PACKNAME="Apollo-Spider-${VERSION}"
 
   if [ "$MODE" = release ]; then
     require_clean
