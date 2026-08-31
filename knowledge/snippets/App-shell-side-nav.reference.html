@@ -173,6 +173,19 @@
   .sh-appbar{display:flex; align-items:center; gap:16px; min-height:56px; padding:0 8px 0 16px;
     background:var(--panel); border-bottom:1px solid var(--rule); flex:none; z-index:2;}
   .sh-logo{color:var(--indicator); flex:none; margin-right:auto;}
+  /* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
+     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
+     and "use this for dark mode masterbrand-dark-colour". Until #230 this shell set the mark as
+     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
+     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
+     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
+     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
+     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
+     would land UNKNOWN, indistinguishable from an invented mark. */
+  .sh-logo{display:inline-flex; align-items:center;}
+  .sh-mark{height:28px; width:auto; display:block;}
+  [data-theme="light"] .sh-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .sh-mark[data-mode="light"]{display:none;}
   .sh-actions{display:flex; gap:8px; flex:none;}
   .sh-actions button, .sh-menu{width:var(--target-min); height:var(--target-min); border:0;
     background:transparent; color:var(--icon); cursor:pointer; display:inline-flex;
@@ -370,7 +383,7 @@
           <button class="sh-menu" type="button" aria-expanded="false" aria-controls="sheet-wide" aria-label="Open main menu" data-menu="shell-wide">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <div class="sh-actions">
             <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
             <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-profile"/></svg></button>
@@ -487,7 +500,7 @@
           <button class="sh-menu" type="button" aria-expanded="false" aria-controls="sheet-rail" aria-label="Open main menu" data-menu="shell-rail">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <div class="sh-actions">
             <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
           </div>
@@ -580,7 +593,7 @@
           <button class="sh-menu" type="button" aria-expanded="false" aria-controls="sheet-phone" aria-label="Open main menu" data-menu="shell-phone">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <div class="sh-actions">
             <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
           </div>
@@ -697,7 +710,7 @@
       "THREE RAIL RULES ARE NEW AND THEY ARE ADDITIONS TO Sidebar-nav's SET, NOT EDITS OF IT: .is-rail .sn-group-toggle{justify-content:center;padding:0}, .is-rail .sn-group-toggle .sc{display:none}, .is-rail .sn-sub{display:none}. Sidebar-nav's own rail specimen has no collapsible GROUP in it, so its rail rules never had to say what happens to one. Probe, run: grep -c 'is-rail .sn-group-toggle' knowledge/snippets/Sidebar-nav.reference.html -> 0. A rail whose group toggle still reserved room for a chevron and a sub-list would be a rail with a hole in it. PROPOSED #210 - and it is arguably a gap in the GATED parent, which this lane did not edit.",
       "BREAKPOINTS ARE SPECIMEN CHOICES. 1040cqi and 720cqi are this file's. No breakpoint scale exists in knowledge/tokens/layout.json (probed, absent). A shell that ships needs one and it is Dave's.",
       "THE DRAWER CARRIES THE SAME NAV, NOT A DIFFERENT ONE. The sheet's content is the .sn column unmodified. A navigation that changes its own contents when it becomes a drawer is teaching the user two maps of one building.",
-      "THE BRAND MARK IS A STAND-IN. Row 86 is ASSET-ONLY: 12 official SVGs under knowledge/assets/logos/ and no component binds them; grep -rl 'assets/logos' knowledge/snippets/ -> 0 of 108 pre-existing snippets. Navigations' text wordmark stands in and the gap is NAMED. The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
+      "THE BRAND MARK IS BOUND (CLOSED #230, Dave's word). Row 86's ASSET-ONLY verdict is SPENT: this masthead now <img>-references knowledge/assets/logos/masterbrand-light-colour.svg on light chrome and masterbrand-dark-colour.svg on dark, which is Dave's ruling verbatim — \"use this as teh default logo 'masterbrand-light-colour'\" and \"use this for dark mode masterbrand-dark-colour\". What it replaced was a LITERAL TEXT wordmark, and the #230 rehearsal measured its cost: a cold builder obeying 'copy the markup' shipped HSBC set in type, silently, against a target artefact wearing the hexagon, and never asked. The <img> idiom is Template-auth.reference.html's, adopted rather than invented — inlining was rejected there on a measurement (_validate_icons.py byte-matches inline paths against assets/icons/ only, so an inlined logo reads UNKNOWN, indistinguishable from an invented mark). The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
       "44px MIN HIT AREA enforced by hand - no gate reads target/min for hit area. Every nav link, group toggle, collapse toggle, menu button, app-bar action and skip link is >= 44px, in the rail as well as expanded. MEASURED in a real browser; figures in the receipt.",
       "NO RAG VALUE IS PAINTED ANYWHERE. The only red is primary/border/default on the current-location bar, which is Sidebar-nav's own approved mark. Two-red law (s151-D1) and mono error ink camp (s149-D1) untouched.",
       "CARRIED, NOT RE-MEASURED: Sidebar-nav's own meta records that the red current-location bar measures 3.89 light / 2.73 dark against tertiary/background/hover in SUPERCHARGE and FAILS there, which is why the bar is never declared as a contrastPair and why the SHAPE carrier does the work. That figure is Sidebar-nav's, quoted, NOT re-measured at #210. It applies to this shell unchanged because the bar is the same bar.",

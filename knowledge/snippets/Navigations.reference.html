@@ -75,6 +75,19 @@
   body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .masthead{display:flex; align-items:center; gap:28px; height:64px; padding:0 2rem; background:var(--surface); border-bottom:1px solid var(--rule);}
   .logo{font-weight:500; font-size:20px; color:var(--logo); letter-spacing:-.01em;}
+  /* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
+     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
+     and "use this for dark mode masterbrand-dark-colour". Until #230 this file set the mark as
+     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
+     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
+     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
+     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
+     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
+     would land UNKNOWN, indistinguishable from an invented mark. */
+  .logo{display:inline-flex; align-items:center;}
+  .logo-mark{height:28px; width:auto; display:block;}
+  [data-theme="light"] .logo-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .logo-mark[data-mode="light"]{display:none;}
   nav.main{display:flex; gap:4px; margin-right:auto;}
   nav.main a{padding:0 12px; height:64px; display:inline-flex; align-items:center; color:var(--text); text-decoration:none; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */}
   nav.main a:hover{background:var(--hover);}
@@ -159,7 +172,7 @@
     </svg>
 
     <header class="masthead">
-    <span class="logo" aria-label="HSBC">HSBC</span>
+    <span class="logo"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
     <nav class="main" aria-label="Primary">
       <a href="#" aria-current="page">Accounts</a><a href="#">Payments</a><a href="#">Cards</a><a href="#">Support</a>
     </nav>

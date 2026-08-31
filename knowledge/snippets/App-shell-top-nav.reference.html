@@ -22,8 +22,10 @@
       divider/border/section rule, `nav.main a` 64px tall with 12px side padding, current item
       marked `box-shadow: inset 0 -3px 0` in primary red, 44x44 action buttons.
     · THE BRAND WORDMARK — Navigations.reference.html's `<span class="logo" aria-label="HSBC">`,
-      structure verbatim. ⚠ ITS TYPE IS RE-KEYED, see THE TYPE DIVERGENCE below, and ⚠ SEE
-      $decision-2: the OFFICIAL masterbrand assets exist and NOTHING binds them.
+      structure verbatim — ✅ #230: the mark is now the OFFICIAL masterbrand asset,
+      <img>-referenced (masterbrand-light-colour on light chrome, masterbrand-dark-colour
+      on dark, Dave's ruling), not the literal text wordmark this line used to describe.
+      $decision-2 is CLOSED; see the claim table at the foot of the file.
     · THE BREADCRUMB TRAIL — Breadcrumbs.reference.html, verbatim: `<nav aria-label="Breadcrumb">`
       + `<ol>` + the "/" text separator + `a.crumb` underline-at-3px-offset thickening to 2px on
       hover + the inset-underline focus shape + `aria-current="page"` on the last crumb.
@@ -195,6 +197,19 @@
   .sh-masthead{display:flex; align-items:center; gap:28px; min-height:64px; padding:0 32px;
     background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
   .sh-logo{color:var(--indicator); flex:none;}
+  /* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
+     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
+     and "use this for dark mode masterbrand-dark-colour". Until #230 this shell set the mark as
+     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
+     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
+     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
+     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
+     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
+     would land UNKNOWN, indistinguishable from an invented mark. */
+  .sh-logo{display:inline-flex; align-items:center;}
+  .sh-mark{height:28px; width:auto; display:block;}
+  [data-theme="light"] .sh-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .sh-mark[data-mode="light"]{display:none;}
   .sh-nav{display:flex; gap:4px; margin-right:auto;}
   .sh-nav a{padding:0 12px; min-height:64px; display:inline-flex; align-items:center;
     color:var(--text); text-decoration:none;}
@@ -384,7 +399,7 @@
           <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-inline" aria-label="Open main menu" data-menu="shell-inline">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <nav class="sh-nav" aria-label="Primary">
             <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
             <a class="t-cm-button" href="#">Payments</a>
@@ -445,7 +460,7 @@
         <div class="sh-scrim" data-scrim="shell-inline"></div>
         <div class="sh-sheet" id="sheet-inline" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-inline">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>
@@ -474,7 +489,7 @@
           <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-stacked" aria-label="Open main menu" data-menu="shell-stacked">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <nav class="sh-nav" aria-label="Primary">
             <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
             <a class="t-cm-button" href="#">Payments</a>
@@ -549,7 +564,7 @@
         <div class="sh-scrim" data-scrim="shell-stacked"></div>
         <div class="sh-sheet" id="sheet-stacked" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-stacked">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>
@@ -578,7 +593,7 @@
           <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-narrow" aria-label="Open main menu" data-menu="shell-narrow">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
           </button>
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <nav class="sh-nav" aria-label="Primary">
             <a class="t-cm-button" href="#" aria-current="page">Accounts</a>
             <a class="t-cm-button" href="#">Payments</a>
@@ -625,7 +640,7 @@
         <div class="sh-scrim" data-scrim="shell-narrow"></div>
         <div class="sh-sheet" id="sheet-narrow" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-narrow">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>
@@ -686,7 +701,7 @@
       "COMPOSED, NOT DRAWN. Masthead geometry + the current-item inset red bar + the 44x44 action buttons are Navigations.reference.html verbatim. The breadcrumb atom is Breadcrumbs.reference.html verbatim (slash separator, 3px underline offset thickening to 2px, inset-underline focus). The slim legal bar and the a.lnk atom are Footer.reference.html verbatim. The bone shape kit is Skeleton-loader.reference.html verbatim. The off-canvas scrim/sheet/inert mechanics are Drawer.reference.html verbatim, mirrored to the left edge. NO PARENT FILE WAS EDITED.",
       "THE TYPE DIVERGENCE, DECLARED. Navigations writes font-weight:500 + font-size:20px on .logo; Breadcrumbs writes font:400 14px/1.5 on nav ol and font-weight:500 on [aria-current]. Those are the raw declarations TYPE-002 counts, so copying them verbatim would drive the type gate red on this file. Geometry is copied; type arrives through canon/type.css composites applied in the MARKUP (the T-D14 route, the Footer #204 precedent). Ratchet contribution: 0. Neither parent was edited - their raw declarations are the build-PM's to retire.",
       "THE SKELETON DIVERGENCE, AND IT IS SEMANTIC. Skeleton-loader's bones carry role=status + aria-busy=true + a visually-hidden 'Loading content', because a skeleton IS a loading announcement. A shell specimen is not loading. Copying the loader verbatim would make every shell announce a load that never completes. The SHAPE KIT is copied; the ANNOUNCEMENT is not - the content region is aria-hidden placeholder furniture, exactly what the GATED Sidebar-nav does with its own .sn-canvas bars. Two approved artefacts disagreed and the gated one won. PROPOSED #210, Dave's eye owed.",
-      "THE BRAND MARK IS A STAND-IN AND THE GAP IS REAL. Itinerary row 86 says 'Official asset; needed for shells/auth screens' and its derived verdict is ASSET-ONLY: 12 SVGs exist under knowledge/assets/logos/ (masterbrand, masterbrand-identifier, hexagon; light/dark x colour/mono) and NO component binds them. Probe, run: grep -rl 'assets/logos' knowledge/snippets/ -> ZERO of 108 snippets. So this shell uses the only approved masthead brand in the corpus - Navigations' text wordmark on primary/border/default - and NAMES the gap rather than embedding an asset with no precedent. The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
+      "THE BRAND MARK IS BOUND (CLOSED #230, Dave's word). Row 86's ASSET-ONLY verdict is SPENT: this masthead now <img>-references knowledge/assets/logos/masterbrand-light-colour.svg on light chrome and masterbrand-dark-colour.svg on dark, which is Dave's ruling verbatim — \"use this as teh default logo 'masterbrand-light-colour'\" and \"use this for dark mode masterbrand-dark-colour\". What it replaced was a LITERAL TEXT wordmark, and the #230 rehearsal measured its cost: a cold builder obeying 'copy the markup' shipped HSBC set in type, silently, against a target artefact wearing the hexagon, and never asked. The <img> idiom is Template-auth.reference.html's, adopted rather than invented — inlining was rejected there on a measurement (_validate_icons.py byte-matches inline paths against assets/icons/ only, so an inlined logo reads UNKNOWN, indistinguishable from an invented mark). The Apollo crescent is an anonymity mark only (Dave #86) and appears nowhere.",
       "BREAKPOINTS ARE SPECIMEN CHOICES, NOT RULED VALUES. 900cqi and 600cqi are this file's, chosen so the collapse is legible. Probe, run: python3 -c \"import json;d=json.load(open('knowledge/tokens/layout.json'));print([k for k in json.dumps(d).split('\\\"') if 'breakpoint' in k.lower()])\" -> no breakpoint scale exists in the store. A shell that ships needs one and it is Dave's.",
       "CONTAINER QUERIES, NEVER VIEWPORT QUERIES (s210-D3). The width is the container's: a shell dropped into a narrow panel must collapse on the panel. The third specimen is a 392px CONTAINER at a 1180px viewport and it collapses - that is the proof, and it is why the two forms above can sit on the same page as the narrow one.",
       "THE TRAIL DROPS ANCESTORS, IT DOES NOT ELLIPSE THEM. At <600cqi the breadcrumb keeps the LAST ancestor plus the current page. A '...' form was rejected: a trail whose parent is hidden behind a disclosure is a trail that has stopped doing its job on the one device where going back matters most. PROPOSED #210.",

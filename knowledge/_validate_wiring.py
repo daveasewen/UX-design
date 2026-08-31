@@ -37,6 +37,11 @@ import re
 import sys
 from pathlib import Path
 
+# #230 F6 — the ruled third verdict, from its one home. `_could_not_ask.py` sits beside this file
+# in `knowledge/` and SHIPS in the pack (it is in the gates group's helper closure), so this
+# import resolves on both sides of the release boundary.
+import _could_not_ask as cna  # noqa: E402 - after the help gate's path insert, by necessity
+
 HERE = Path(__file__).resolve().parent
 BUILD = HERE / "_build_all.py"
 SELF = "_validate_wiring.py"
@@ -118,6 +123,52 @@ def population() -> list[str]:
 
 def read(p: Path) -> str:
     return p.read_text(encoding="utf-8") if p.exists() else ""
+
+
+# ★★ #230 F6 — THE PACK-CONTEXT REFUSAL. THIS GATE GRADES THE SOURCE REPO'S WIRING, AND AN
+# INSTALLED PACK HAS NONE OF IT.
+#
+# WHAT WAS MEASURED (#230 rehearsal, F6). A pristine `Apollo-Spider-v1.0.5` unzip, running the
+# command the design contract itself ends on — `python3 ci-template/run-gates.py` — printed
+# `37 pass · 1 FAIL` and exited 1. The single FAIL was this gate, and every one of its 25
+# findings was the same fact said 25 ways: `⛔ ORPHAN: _validate_grid.py exists on disk and
+# NOTHING RUNS IT` (×23), plus a DANGLING EXEMPTION and a DANGLING ARM for two files the pack
+# does not ship. Nothing was wrong with the pack. The gate was reading `_build_all.STEPS`,
+# `_git_commit.sh` and `gates.yml` — three files that exist ONLY in the design system's own
+# repo — finding all three empty via `read()`'s `else ""`, and concluding that 23 correctly
+# shipped gates were orphans.
+#
+# ⛔ THIS IS #173 EXACTLY — "a gate that CANNOT PASS in one environment"
+# [[gate-cannot-pass-in-one-environment]] — and it was shipping as RUNNABLE. `read()`'s empty
+# string is a silent WIDENING: absent wiring text is indistinguishable from wiring text that
+# names nothing, so the gate went confidently red about a question it had not been able to ask.
+#
+# THE FIX IS THE CONDITION, NOT THE INSTANCE [[gate-dont-patch]]. The gate does not ask "am I in
+# a pack" and it does not read an env var — that would be the #173 lie in a new shape, and
+# `_could_not_ask.py`'s own docstring forbids it by name. It asks the only honest question:
+# CAN I REACH ANY WIRING SURFACE AT ALL? If every one of them is absent, the population on disk
+# cannot be graded against anything, and the honest verdict is the ruled third one — exit 77,
+# `COULD-NOT-ASK:`, the missing input named. If even ONE surface is readable the gate grades
+# normally, so the repo run is untouched and a repo that lost its `gates.yml` still goes
+# LOUDER (bite 9), never quieter.
+#
+# ⚠ AND IT MUST STILL BITE. A refusal that swallowed the gate's purpose would be worse than the
+# red it cures, so this arm is mutation-proven in BOTH directions — bites 10 and 10b below.
+#
+# ⚠ THE DOWNSTREAM CONSEQUENCE, STATED: `_gen_pack_manifest.classify()` puts an exit-77 refusal
+# that names an unshipped repo path into REPO-BOUND (s223-D5 clause 1, narrowed at s223-D6), and
+# REPO-BOUND gates DO NOT SHIP. So at the next `--manifest` probe this gate stops riding in the
+# pack at all, which is where it always belonged. Until that re-probe the shipped manifest still
+# lists it RUNNABLE, and `ci-template/run-gates.py` counts the 77 as a could-not-ask and prints
+# it in full — loud, never a silent pass.
+WIRING_SURFACES = (("knowledge/_build_all.py", lambda: BUILD),
+                   ("knowledge/_git_commit.sh", lambda: COMMIT_SH),
+                   (".github/workflows/gates.yml", lambda: CI_YML))
+
+
+def reachable_surfaces() -> list[str]:
+    """The wiring surfaces this run can actually READ. Empty means the question is unaskable."""
+    return [label for label, get in WIRING_SURFACES if get().exists()]
 
 
 # ⛔ AN IMPORT IS NOT AN INVOCATION — AND THIS GATE PROVED IT ON ITS AUTHOR, MID-REPAIR.
@@ -219,6 +270,16 @@ def check(build_text: str, disk: list[str],
 
 
 def run() -> int:
+    # #230 F6 — the pack-context refusal. See WIRING_SURFACES above for the measurement.
+    if not reachable_surfaces():
+        return cna.refuse(
+            SELF,
+            "knowledge/_build_all.py does not exist here, and neither does "
+            "knowledge/_git_commit.sh nor .github/workflows/gates.yml. All three are the WIRING "
+            "SURFACES this gate grades, they exist only in the design system's own source repo, "
+            "and an installed pack does not carry them. Without one of them every gate on disk "
+            "reads as an ORPHAN, which would be a confident verdict about a question that was "
+            "never asked. Run this gate from the source repo, where the proof is reachable.")
     build_text, commit_text, ci_text = read(BUILD), read(COMMIT_SH), read(CI_YML)
     disk = population()
     arms = arm_names()
@@ -252,6 +313,16 @@ def run() -> int:
 
 
 def selftest() -> int:
+    # #230 F6 — the selftest itself is repo-bound: it opens `_build_all.py` unguarded on its
+    # first line, which is why the v1.0.5 probe recorded `'selftest': 'crashed'` beside this
+    # gate's verdict. A crash is not a fail [[a-crash-is-not-a-fail]]; it is the same unaskable
+    # question as `run()`'s, and it gets the same honest answer rather than a traceback.
+    if not reachable_surfaces():
+        return cna.refuse(
+            SELF + " --selftest",
+            "knowledge/_build_all.py does not exist here — the selftest mutates the REAL wiring "
+            "text to prove the gate bites, and there is no wiring text to mutate outside the "
+            "design system's own source repo.")
     build_text = BUILD.read_text(encoding="utf-8")
     commit_text, ci_text = read(COMMIT_SH), read(CI_YML)
     disk = population()
@@ -346,7 +417,65 @@ def selftest() -> int:
         if not read(p):
             fails.append(f"bite 9 FAILED: wiring surface {label} is unreadable at {p} — the gate "
                          f"would go quietly narrower, not louder")
-    print(f"wiring selftest: 13 bites · {len(fails)} failure(s)")
+    # ── #230 BITES 10–10c: the pack-context refusal, driven in BOTH directions ──────────────
+    # ⛔ THE THING UNDER TEST IS `run()` ITSELF, not a predicate. A bite that asserted
+    # `reachable_surfaces() == []` would prove the helper and nothing about the gate's exit code
+    # [[mutation-tests-the-clause-not-the-feature]] — so the mutation TAKES THE INPUT AWAY and
+    # the real entry point is driven over it.
+    import contextlib
+    import io as _io
+
+    def _drive_run_with(build, commit, ci):
+        """run(), with the three wiring surfaces repointed. Returns (rc, output)."""
+        global BUILD, COMMIT_SH, CI_YML
+        keep = (BUILD, COMMIT_SH, CI_YML)
+        BUILD, COMMIT_SH, CI_YML = build, commit, ci
+        buf = _io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                rc = run()
+        finally:
+            BUILD, COMMIT_SH, CI_YML = keep
+        return rc, buf.getvalue()
+
+    gone = HERE / "_no_such_wiring_surface_230"
+    # bite 10 — every surface taken away: the gate must REFUSE (77 + the marker), never red.
+    rc10, out10 = _drive_run_with(gone / "_build_all.py", gone / "_git_commit.sh", gone / "gates.yml")
+    if rc10 != cna.EXIT:
+        fails.append(f"bite 10 FAILED: with all three wiring surfaces absent the gate exited "
+                     f"{rc10}, not {cna.EXIT}. That is the #230 F6 defect — 23 shipped gates "
+                     f"called ORPHANs because the question could not be asked.")
+    if cna.reason_in(out10) is None:
+        fails.append("bite 10 FAILED: the refusal carried no `COULD-NOT-ASK:` line — the exit "
+                     "code buckets it, the line is what a human reads")
+    # bite 10b — THE OTHER DIRECTION, and the one that stops the refusal swallowing the gate.
+    # ONE surface back is enough: the gate must grade again, and a planted orphan must still red.
+    rc10b, out10b = _drive_run_with(gone / "_build_all.py", gone / "_git_commit.sh", CI_YML)
+    if rc10b == cna.EXIT:
+        fails.append("bite 10b FAILED: one readable wiring surface was still treated as "
+                     "unaskable — the refusal has widened past its condition and now hides "
+                     "real orphans")
+    # bite 10c — THE REAL, UNMUTATED TREE is not refusing. Without this control, bites 10/10b
+    # could both pass on a repo whose gate never grades anything at all.
+    if not reachable_surfaces():
+        fails.append("bite 10c FAILED (control): this source repo reaches NO wiring surface, so "
+                     "the gate is refusing on its own tree and every bite above is theatre")
+    # bite 10d — ⛔ THE DOWNSTREAM CLAUSE, driven not asserted. The refusal is only correct if
+    # the release classifier reads it as REPO-BOUND; classified NEEDS-DEP it would ship anyway
+    # and tell a designer to `pip install` the repo [[instrument-without-a-consumer]].
+    try:
+        sys.path.insert(0, str(HERE / "_release"))
+        import _gen_pack_manifest as _gpm  # noqa: E402 - repo-side, and this arm is repo-bound
+        verdict, why = _gpm.classify(rc10, out10, "", set())
+        if verdict != "REPO-BOUND":
+            fails.append(f"bite 10d FAILED: the release classifier reads this refusal as "
+                         f"{verdict} ({why}), not REPO-BOUND. A NEEDS-DEP refusal SHIPS, and no "
+                         f"`pip install` can produce knowledge/_build_all.py.")
+    except ImportError as e:
+        fails.append(f"bite 10d COULD NOT RUN: {e} — the downstream clause is UNPROVEN, not "
+                     f"green [[feedback-check-ran-never-reached-plan]]")
+
+    print(f"wiring selftest: 17 bites · {len(fails)} failure(s)")
     for f in fails:
         print(f"  ⛔ {f}")
     return 1 if fails else 0

@@ -186,6 +186,19 @@
   .sh-masthead{display:flex; align-items:center; gap:16px; min-height:56px; padding:0 32px;
     background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
   .sh-logo{color:var(--text); flex:none; margin-right:auto;}
+  /* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
+     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
+     and "use this for dark mode masterbrand-dark-colour". Until #230 this shell set the mark as
+     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
+     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
+     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
+     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
+     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
+     would land UNKNOWN, indistinguishable from an invented mark. */
+  .sh-logo{display:inline-flex; align-items:center;}
+  .sh-mark{height:28px; width:auto; display:block;}
+  [data-theme="light"] .sh-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .sh-mark[data-mode="light"]{display:none;}
   /* ⚠ THE BRAND IS INK HERE, NOT primary/border/default. In a masthead full of navigation the
      red wordmark is the anchor; on a sign-in screen with nothing else on the band it becomes the
      loudest thing on a page whose only job is a form. Declared as a divergence from
@@ -302,7 +315,7 @@
         <a class="sh-skip t-cm-button" href="#main-auth">Skip to main content</a>
 
         <header class="sh-masthead">
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <button class="sh-exit" type="button" aria-label="Leave sign in and return to the public site">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             <span class="lbl t-cm-button">Exit</span>
@@ -348,7 +361,7 @@
         <a class="sh-skip t-cm-button" href="#main-task">Skip to main content</a>
 
         <header class="sh-masthead">
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <button class="sh-exit" type="button" aria-label="Save this payment and return to Accounts">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
             <span class="lbl t-cm-button">Save and exit</span>
@@ -407,7 +420,7 @@
         <a class="sh-skip t-cm-button" href="#main-narrow">Skip to main content</a>
 
         <header class="sh-masthead">
-          <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+          <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
           <button class="sh-exit" type="button" aria-label="Save this payment and return to Accounts">
             <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
             <span class="lbl t-cm-button">Save and exit</span>

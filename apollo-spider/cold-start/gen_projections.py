@@ -15,8 +15,8 @@ Three files saying the same thing is three files that drift. So there is ONE sou
 `DESIGN-CONTRACT.md`, beside this script — and the three are GENERATED from it, byte for
 byte, each carrying a header that says where to edit instead.
 
-    python3 cold-start/gen_projections.py            # write the projections
-    python3 cold-start/gen_projections.py --check     # verify in sync (build gate)
+    python3 cold-start/gen_projections.py            # write the projections AND place the hosts
+    python3 cold-start/gen_projections.py --check     # verify both sets in sync (build gate)
     python3 cold-start/gen_projections.py --selftest  # plant drift, prove --check sees it
 
 --check is BYTE-DERIVED: it renders what each projection should be and compares the whole
@@ -37,18 +37,51 @@ THREE REFUSALS, all deliberate:
   * NO SILENT WRITE FROM A STALE SOURCE. Rendering is one function used by the writer,
     the checker and the selftest, so they cannot disagree about what correct looks like.
 
-⚠ THE PROJECTIONS ARE TEMPLATES, NOT PLACEMENT. They are written into
-`cold-start/projections/`. Getting them to the paths above in a designer's own project is
-a separate step, and `verify_placement.py` beside this file is what reports on it.
+★★ #230 F1 — THIS SCRIPT NOW PLACES, NOT JUST PROJECTS. THE MEASUREMENT THAT FORCED IT.
 
-⚠ THE COPILOT PROJECTION IS A MERGE, AND THAT IS THE POINT. This pack ships its own
-`.github/copilot-instructions.md` (the Memento boot rule, the operating rules, the skills
-table, the pointer to the `.github/prompts/` slash commands) and Copilot reads exactly that
-path. A standalone design-contract projection at the same path could only arrive by
-destroying it — so the copilot projection is GENERATED FROM BOTH SOURCES: the design
-contract first, then `---`, then the pack's own boot file verbatim. One generated file, two
-sources, nothing lost when a designer puts it in place. Edit either source and regenerate;
-never hand-edit the merged projection. (Ruled #227, s227-D5 / red-team B2.)
+The #230 rehearsal drove the pack's own pass condition from a cold seat and the sharpest
+finding was that THE DESIGN CONTRACT WAS IN NO FILE A COLD COPILOT SEAT AUTO-LOADS. Three of
+five beats had no instruction to fire from on a pristine unzip. The projections existed. The
+checker existed, agreed unprompted — `⚠ 3 of 3 hosts start COLD here` — and exited 0. Nothing
+in the install path ran it. That is [[instrument-without-a-consumer]] with the instrument
+already built and the consumer never written, and this docstring used to say so approvingly:
+
+    ⚠ THE PROJECTIONS ARE TEMPLATES, NOT PLACEMENT … Getting them to the paths above in a
+    designer's own project is a separate step.
+
+Kept above, in the correction rather than smoothed away, because it is what a reader needs to
+see has CHANGED. It was true of a designer's own project and it was quietly ALSO true of the
+pack itself, which is a different and much worse fact: the pack shipped a contract it did not
+follow. Two arms fix it, and both are generated:
+
+  * PACK-ROOT PLACEMENT (`PLACE_ROOT_REL` + the fourth column of `HOSTS`). The three real host files at the pack root are now
+    GENERATED OUTPUTS of this script — `CLAUDE.md`, `AGENTS.md` and
+    `.github/copilot-instructions.md`. A pristine unzip is contract-carrying out of the box,
+    and `--check` is byte-derived over them exactly as it is over the projections, so a
+    contract edit that is not regenerated is red rather than silently stranding the hosts.
+  * A BUILD-TIME CONSUMER THAT REDS. `verify_placement.py --require` exits non-zero on a cold
+    host (the bare designer-facing run stays advisory and exit-0, which is its whole contract),
+    and `build-designer-pack.sh` runs BOTH `--check` and `--require` over the STAGE before it
+    zips. A checker nobody runs proved nothing; this one stops a cut.
+
+`cold-start/projections/` still exists and still means what it always meant: TEMPLATES for a
+DESIGNER'S OWN project, which this script cannot reach. Both sets render through the same
+`render()`, so the template and the placed file cannot disagree about what correct looks like.
+
+⚠ THE COPILOT HOST IS A MERGE, AND THAT IS THE POINT. Copilot reads exactly
+`.github/copilot-instructions.md`, and this pack has its own rules to put there (the Memento
+boot rule, the operating rules, the skills table, the pointer to the `.github/prompts/` slash
+commands). A standalone design-contract file at that path could only arrive by destroying
+them — so the copilot host is GENERATED FROM BOTH SOURCES: the design contract first, then
+`---`, then the pack's boot rules verbatim. One generated file, two sources, nothing lost.
+(Ruled #227, s227-D5 / red-team B2.)
+
+⛔ AND THE SECOND SOURCE MOVED, #230, FOR A REASON WORTH STATING. It used to be
+`../.github/copilot-instructions.md` — the very path the merged file now OCCUPIES. Generating a
+file from itself would fold the contract in again on every run until the byte budget blew. The
+boot rules therefore live in `cold-start/COPILOT-BOOT.md` as a plain source beside the
+contract, and `.github/copilot-instructions.md` is a pure output. Edit either SOURCE and
+regenerate; never hand-edit the placed file.
 
 ⚠ NO `_helpgate` IMPORT. The repo's shared help gate resolves by walking up for
 `_helpgate.py`; from `cold-start/` that walk finds nothing in the repo and nothing in an
@@ -83,19 +116,24 @@ HOSTS = (
      "GitHub Copilot", ".github/copilot-instructions.md"),
 )
 
-# The SECOND source, and only the copilot host merges it: the pack's own boot file, which
-# lives at the same path Copilot reads. Relative to this script, so it resolves identically
-# in the repo and in an unzipped pack. See the merge note in the docstring.
+# The SECOND source, and only the copilot host merges it: the pack's own boot rules. It sits
+# BESIDE this script (#230 — it used to be the output path itself; see the docstring), so it
+# resolves identically in the repo and in an unzipped pack.
 MERGE_HOSTS = {"copilot"}
-MERGE_SOURCE_REL = os.path.join("..", ".github", "copilot-instructions.md")
+MERGE_SOURCE_REL = "COPILOT-BOOT.md"
 MERGE_JOIN = "\n\n---\n\n"
+
+# #230 F1 — WHERE THE PLACED FILES GO. The pack root is one level up from `cold-start/`, in the
+# repo and in an unzipped pack alike (the bake flattens `apollo-spider/` to the root, so these
+# same three paths are what a designer's unzip actually contains).
+PLACE_ROOT_REL = ".."
 
 HEADER_FMT = ("<!-- GENERATED from cold-start/{source} for {host} — edit the source, not this "
               "file: python3 cold-start/gen_projections.py -->")
 
-MERGED_HEADER_FMT = ("<!-- GENERATED for {host} by MERGING cold-start/{source} with this pack's "
-                     "own .github/copilot-instructions.md — edit either SOURCE, never this "
-                     "file: python3 cold-start/gen_projections.py -->")
+MERGED_HEADER_FMT = ("<!-- GENERATED for {host} by MERGING cold-start/{source} with "
+                     "cold-start/COPILOT-BOOT.md — edit either SOURCE, never this file: "
+                     "python3 cold-start/gen_projections.py -->")
 
 
 # ---------------------------------------------------------------- rendering (one function)
@@ -143,13 +181,22 @@ def render(host_name, source_text, merge_text=None):
 
 
 def expected(base=HERE):
-    """{absolute projection path: expected text} for every host."""
+    """{absolute path: expected text} for every host, TEMPLATE and PLACED alike.
+
+    #230 F1. Both sets come out of one `render()` call per host, so the template a designer
+    copies and the file this pack actually ships cannot drift apart — and `--check`, `write()`
+    and `selftest()` all read this one dict, which is what stops them disagreeing about what
+    correct looks like.
+    """
     src = read_source(base)
     merged = read_merge_source(base) if MERGE_HOSTS else None
+    place_root = os.path.normpath(os.path.join(base, PLACE_ROOT_REL))
     out = {}
-    for key, rel, host_name, _place in HOSTS:
+    for key, rel, host_name, place_rel in HOSTS:
         extra = merged if key in MERGE_HOSTS else None
-        out[os.path.join(base, PROJECTIONS_DIR, rel)] = render(host_name, src, extra)
+        text = render(host_name, src, extra)
+        out[os.path.join(base, PROJECTIONS_DIR, rel)] = text          # the TEMPLATE
+        out[os.path.join(place_root, place_rel)] = text               # the PLACED host file
     return out
 
 
@@ -168,10 +215,14 @@ def write(base=HERE):
 
 
 def check(base=HERE):
-    """[] when every projection matches the source byte for byte."""
+    """[] when every projection AND every placed host file matches the source byte for byte."""
     fails = []
+    place_root = os.path.normpath(os.path.join(base, PLACE_ROOT_REL))
     for path, text in expected(base).items():
-        rel = os.path.relpath(path, base)
+        # Name the file the way its reader thinks of it: templates relative to cold-start/,
+        # placed hosts relative to the pack root. `../CLAUDE.md` names nothing anyone looks for.
+        rel = (os.path.relpath(path, base) if path.startswith(os.path.join(base, PROJECTIONS_DIR))
+               else os.path.relpath(path, place_root) + "  (PLACED host file)")
         if not os.path.exists(path):
             fails.append("%s is MISSING — run the generator." % rel)
             continue
@@ -193,11 +244,10 @@ def selftest():
     try:
         base = os.path.join(tmp, "cold-start")
         shutil.copytree(HERE, base, ignore=shutil.ignore_patterns("__pycache__"))
-        # the second source lives one level up from cold-start/ in both the repo and the
-        # unzipped pack — the throwaway tree has to carry it too, or the merge cannot render.
+        # #230: the second source now lives INSIDE cold-start/, so copytree carries it and the
+        # throwaway tree needs no special handling. `tmp/` plays the pack root, which is where
+        # the placed host files land — the whole placement arm is exercised inside the sandbox.
         merge_src = os.path.normpath(os.path.join(base, MERGE_SOURCE_REL))
-        os.makedirs(os.path.dirname(merge_src), exist_ok=True)
-        shutil.copyfile(os.path.normpath(os.path.join(HERE, MERGE_SOURCE_REL)), merge_src)
         write(base)
 
         # 1. a freshly written tree is green
@@ -294,6 +344,56 @@ def selftest():
             if "MERGE" not in str(e).upper():
                 fails.append("the missing-boot-file refusal did not name the merge: %s" % e)
         os.rename(merge_src + ".moved", merge_src)
+
+        # ── #230 F1 ARMS 11–14: PLACEMENT. The projections were never the problem. ─────────
+        # 11. the three PLACED host files really exist at the pack root, and each carries the
+        #     contract. This is the arm whose absence was the demo-blocker: everything below it
+        #     was already green while a pristine pack auto-loaded nothing.
+        placed = [os.path.join(tmp, place) for _k, _r, _h, place in HOSTS]
+        for p in placed:
+            if not os.path.exists(p):
+                fails.append("PLACEMENT: %s was not written to the pack root — a cold seat "
+                             "auto-loads this path and would find nothing (#230 F1)"
+                             % os.path.relpath(p, tmp))
+                continue
+            body = open(p, encoding="utf-8").read()
+            for marker in ("Declare the lane, in your first reply.", "**Never invent.**"):
+                if marker not in body:
+                    fails.append("PLACEMENT: %s does not carry %r — placed is not the same as "
+                                 "correct" % (os.path.relpath(p, tmp), marker))
+        # 12. a DELETED placed host is red. `--check` must police the pack root, not only
+        #     projections/ — otherwise a lost host file is invisible until a designer meets it.
+        gone = placed[0]
+        keep_placed = open(gone, encoding="utf-8").read()
+        os.remove(gone)
+        if not any("MISSING" in f and "PLACED" in f for f in check(base)):
+            fails.append("a DELETED placed host file did NOT go red — --check is still only "
+                         "looking at cold-start/projections/")
+        open(gone, "w", encoding="utf-8").write(keep_placed)
+        # 13. a hand-edited placed host is red, in the same byte-derived way a projection is.
+        open(gone, "w", encoding="utf-8").write(
+            keep_placed.replace("Never invent", "Sometimes invent", 1))
+        if not any("DRIFTED" in f and "PLACED" in f for f in check(base)):
+            fails.append("a hand-edited PLACED host file did NOT go red")
+        open(gone, "w", encoding="utf-8").write(keep_placed)
+        # 14. ⛔ THE SELF-GENERATION TRAP, bitten. The copilot host is BOTH a merge output and
+        #     was once the merge's own input. If the second source ever points back at the
+        #     output again, a second run folds the contract in twice — so the arm is not "does
+        #     it look right", it is: WRITE TWICE, AND THE BYTES MUST NOT MOVE.
+        cop_placed = os.path.join(tmp, HOSTS[2][3])
+        before = open(cop_placed, encoding="utf-8").read()
+        write(base)
+        write(base)
+        after = open(cop_placed, encoding="utf-8").read()
+        if after != before:
+            fails.append("the placed copilot host is NOT idempotent — the merge is reading its "
+                         "own output, and every run folds the contract in again")
+        if after.count("Declare the lane, in your first reply.") != 1:
+            fails.append("the placed copilot host carries the contract %d times, not once — the "
+                         "merge has eaten its own output"
+                         % after.count("Declare the lane, in your first reply."))
+        if check(base):
+            fails.append("the tree is not green at the end of the placement arms: %s" % check(base))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return fails
@@ -307,7 +407,7 @@ def main():
             for f in fails:
                 print("  X " + f)
             sys.exit(1)
-        print("gen_projections selftest OK — 10 arm(s), drift planted and seen.")
+        print("gen_projections selftest OK — 14 arm(s), drift planted and seen.")
         return
 
     try:
@@ -320,16 +420,19 @@ def main():
                     print("  X " + f)
                 print("  Fix the SOURCE, then: python3 cold-start/gen_projections.py")
                 sys.exit(1)
-            print("gen_projections --check OK — %d projection(s) in sync with cold-start/%s."
-                  % (len(HOSTS), SOURCE_NAME))
+            print("gen_projections --check OK — %d projection(s) and %d PLACED host file(s) in "
+                  "sync with cold-start/%s." % (len(HOSTS), len(HOSTS), SOURCE_NAME))
             return
         wrote, same = write()
         for p in wrote:
-            print("wrote %s" % os.path.relpath(p, HERE))
+            print("wrote %s" % os.path.relpath(p, os.path.normpath(os.path.join(HERE, ".."))))
         if not wrote:
-            print("gen_projections: no change (%d projection(s) already in sync)." % len(same))
+            print("gen_projections: no change (%d file(s) already in sync — %d projection(s) + "
+                  "%d PLACED host file(s))." % (len(same), len(HOSTS), len(HOSTS)))
         else:
-            print("gen_projections: %d written, %d unchanged." % (len(wrote), len(same)))
+            print("gen_projections: %d written, %d unchanged (templates in "
+                  "cold-start/projections/, PLACED host files at the pack root)."
+                  % (len(wrote), len(same)))
     except RuntimeError as e:
         print(str(e), file=sys.stderr)
         sys.exit(2)

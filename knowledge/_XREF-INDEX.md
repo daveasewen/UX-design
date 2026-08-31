@@ -99,7 +99,7 @@
 | Rating | mol | 3 | focus/ring, border/default, text/default | 1.4.1, 2.1.1, 2.5.8, 4.1.2, 4.1.3 | — |  |
 | Reorder | ato | 3 | icon/default, rag/success, background/hover | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | icons |  |
 | Scatter plot | org | 4 | background/default, series/1, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
-| Search field | mol | 13 | background/default, border/subsection, elevation/functional, background/default… | 1.3.5, 1.4.10, 1.4.4, 2.4.11, 2.4.7, 3.3.2, 4.1.2 | forms, icons | 1 |
+| Search field | mol | 14 | background/default, border-radius/control, border/subsection, elevation/functional… | 1.3.5, 1.4.10, 1.4.4, 2.4.11, 2.4.7, 3.3.2, 4.1.2 | forms, icons | 1 |
 | Section-heading-lockup | org | 5 | background/default, text/default, text/secondary | 1.3.1, 1.4.10, 2.4.6, 2.4.7 | — |  |
 | Secure entry | mol | 4 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Segmented control | ato | 10 | focus/ring, border/default, icon/default, background/default… | 1.4.1, 2.1.1, 2.3.3, 2.5.8, 4.1.2 | — |  |

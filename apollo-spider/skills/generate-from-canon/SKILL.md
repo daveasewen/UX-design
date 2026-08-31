@@ -80,9 +80,36 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    (chords) and which exclude each other. Generation ships the defaults — you do not have
    to decide anything up front. If a layout question isn't answered there, it's a Gap.
    Spacing picks from the ruled stops `{1, 2, 4, 16, 24, 40}`, never a free value.
+7a. **Dashboards are bento-first, or you ask.** The rails are the *dial vocabulary*; this
+    is the *layout choice*, and it is not yours to make silently. When the request is a
+    dashboard — an overview, a landing screen, a wall of panels — say this, in your own
+    reply, before you build:
+
+    > **dashboard bento — is that right?**
+
+    Then go bento-first unless the designer says otherwise. **A skip is a yes**, exactly
+    as in `grill-me`: a shrug never counts as a no, and you never wait for permission to
+    proceed. Bento-first means the wall is `.c-bento` / `.c-bento__grid` /
+    `.c-bento__tile` from `knowledge/canon/canon.css`, with the dashboard role's defaults
+    read from `_bento_edit_rails.json` and `showroom/_foundations/bento.html` as the
+    worked example. ⚠ There is no bento snippet in `knowledge/snippets/` yet, so the
+    bento wall is the one place rule 2 sends you to canon and the foundation page instead
+    — say so in the used/missing note; do not treat it as licence to invent elsewhere.
+    ⚠ `Template-dashboard.reference.html` is `.l-grid`-based, not bento. It is a
+    legitimate non-bento dashboard and it is **not** the answer to "build me a dashboard"
+    unless the designer answered the question above with a no.
 8. **Icons are real assets only** — from `knowledge/assets/icons/`. Never draw a glyph.
    If a shape is genuinely custom, mark it `<svg data-bespoke="why">` so it reads as a
    decision rather than an invention.
+8a. **The mark is the masterbrand, and it is already bound.** Mastheads carry
+    `knowledge/assets/logos/masterbrand-light-colour.svg` on light chrome and
+    `masterbrand-dark-colour.svg` on dark. This is the DEFAULT and it needs no question —
+    the shell and navigation snippets bind both files already, so rule 2 (copy the
+    snippet) gets it right on its own. **Ask only when the brief names a different
+    brand**, and then stop and treat it as a Gap: never re-key the mark, never set a
+    wordmark in type, never draw one. The other ten files in `knowledge/assets/logos/`
+    (hexagon, masterbrand-identifier, and the mono treatments) are chosen deliberately or
+    not at all — `showroom/_foundations/logos.html` shows the set.
 9. **Honour `antiPatterns` and `relationships`** from each component's meta —
    `mustNotNeighbour` in particular.
 10. **Cover the states**: default / hover / pressed / focus / disabled / loading / error /

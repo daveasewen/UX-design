@@ -19,6 +19,20 @@ with a line starting `COULD-NOT-ASK:` when it cannot reach something it needs �
 browser, a file you have not created yet. That is a refusal, not a failure: it is printed in
 full and counted separately, and it does not fail the build. A gate that FAILS does.
 
+PACK CONTEXT, AND WHY THE RUNNER STATES IT (#230 F6). This runner is used in two places that
+look identical and are not: an INSTALLED PACK (`_MANIFEST.json` present, no `knowledge/
+_build_all.py`) and the design system's OWN SOURCE REPO. Some gates grade the repo's build
+wiring, which an installed pack simply does not have. Before this was said out loud, a pristine
+pack ran the command the design contract itself ends on and printed `37 pass · 1 FAIL`, exit 1 —
+23 correctly shipped gates reported as orphans because the gate reading `_build_all.STEPS` found
+no such file and read the silence as "nothing runs them". Nothing was wrong with the pack.
+
+The runner now names which context it is in, and a gate that REFUSES for a repo resource is
+counted as could-not-ask and PRINTED IN FULL — never a silent pass, and never a FAIL about the
+pack instead of about your work. A gate the manifest measured RUNNABLE that then refuses in a
+pack is called out by name at the foot of the run: its verdict wants re-measuring at the next
+cut, and saying so is the runner's job, not the reader's.
+
 A BASELINE, IF YOU NEED ONE. Some gates may already be red on the day you adopt the pack —
 existing debt in the design system or in your project. `--write-baseline` records exactly which
 gates are red today; `--baseline` then fails the build only on gates that were NOT red then. It
@@ -88,6 +102,29 @@ def find_pack(start):
             return d
         d = os.path.dirname(d)
     return None
+
+
+def pack_context(pack):
+    """('pack'|'source-repo'|'unknown', one sentence saying how it was decided).
+
+    ⛔ DECIDED ON WHAT IS REACHABLE, NEVER ON AN ENV VAR. `_could_not_ask.py`'s convention
+    forbids keying behaviour on "am I in CI" for the reason that applies here too: it makes the
+    reading a function of the runner's identity rather than of what the runner can see, and the
+    first honest environment to set the variable gets the wrong answer. Two observable facts
+    decide it — the manifest a bake writes, and the build orchestrator only the source repo has.
+    """
+    manifest = os.path.exists(os.path.join(pack, "_MANIFEST.json"))
+    build_all = os.path.exists(os.path.join(pack, "knowledge", "_build_all.py"))
+    if build_all:
+        return "source-repo", ("knowledge/_build_all.py is here, so this is the design system's "
+                               "own repo — repo-wiring gates can ask their question")
+    if manifest:
+        return "pack", ("_MANIFEST.json is here and knowledge/_build_all.py is not, so this is "
+                        "an INSTALLED PACK. Gates that grade the source repo's build wiring "
+                        "cannot ask their question here and will REFUSE (could-not-ask), which "
+                        "is printed in full and is not a failure of your work.")
+    return "unknown", ("neither _MANIFEST.json nor knowledge/_build_all.py is here — the runner "
+                       "does not know which context this is and will not guess")
 
 
 def gates_from_manifest(pack, want_browser):
@@ -167,8 +204,10 @@ def main():
         gates = gates_by_glob(pack, a.browser)
         source = "a file scan (no _MANIFEST.json in the pack)"
 
+    context, why = pack_context(pack)
     print("Apollo gates — %d to run, from %s" % (len(gates), source))
     print("pack: %s" % pack)
+    print("context: %s — %s" % (context.upper(), why))
     if a.list:
         for name, _, argv in gates:
             print("  " + name + ("  " + " ".join(argv) if argv else ""))
@@ -247,6 +286,27 @@ def main():
         print("\nRefusals in full — each one names what it could not reach:")
         for name, reason in refused:
             print("  %s\n    %s" % (name, reason))
+    # #230 F6 — THE STALE-VERDICT CALLOUT. A gate the manifest MEASURED as RUNNABLE that then
+    # refuses in a pack is not a mystery to leave for the reader: its shipped verdict is out of
+    # date and the next `--manifest` probe will reclassify it REPO-BOUND (s223-D5/D6), at which
+    # point it stops shipping. Saying so is what keeps this a scoped, DECLARED skip rather than a
+    # silent one [[instrument-without-a-consumer]].
+    if refused and context == "pack":
+        declared = {}
+        try:
+            with open(os.path.join(pack, "_MANIFEST.json"), encoding="utf-8") as f:
+                for g in json.load(f).get("groups", []):
+                    for v in g.get("verdicts", []):
+                        declared[v["gate"]] = v["verdict"]
+        except (OSError, ValueError, KeyError):
+            declared = {}
+        stale = [n for n, _ in refused if declared.get(n) == "RUNNABLE"]
+        if stale:
+            print("\n  ⚠ %d gate(s) the manifest measured RUNNABLE refused in this pack: %s"
+                  % (len(stale), ", ".join(stale)))
+            print("    Their shipped verdict is stale, not their refusal. Each one is REPO-BOUND "
+                  "here and wants re-measuring at the next cut. Your work was not graded by "
+                  "them, and nothing above pretended it was.")
     if failed:
         print("\nFailures:")
         for name, tail in failed:

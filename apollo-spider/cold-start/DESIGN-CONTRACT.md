@@ -9,7 +9,7 @@
 - **Never invent.** No new component, variant, colour or icon. If the system does not have it, stop and name the gap. Improvising is the failure this contract exists to prevent.
 - **Copy the markup.** Component HTML comes from `knowledge/snippets/`, never from memory.
 - **Ask the theme, never assume it.** Four themes ship and they disagree about corner shape. A guess gets every corner on the page wrong.
-- **Dashboards are bento-first.** The procedure is in `skills/generate-from-canon/SKILL.md`; `knowledge/_render/_bento_edit_rails.json` is the dial vocabulary it reads, not a layout. Either way, not from taste.
+- **Dashboards are bento-first, or ask.** Say *"dashboard bento — is that right?"* and go bento unless told otherwise; a skip is a yes. The procedure is in `skills/generate-from-canon/SKILL.md`; `knowledge/_render/_bento_edit_rails.json` is the dial vocabulary it reads, not a layout. Never from taste.
 - **Check before you show.** Open `skills/check-with-gates/SKILL.md` and do what it says — it ends in `python3 ci-template/run-gates.py`, and reading the file is not running it. An unchecked screen is a guess, and so is an unrun gate.
 
 **4. Scope.** This contract governs design and UI output in this project. Other work may use whatever skills suit it. If you use a non-Apollo skill to produce design output, that is freestyle: declare it in the same reply and name the skill — an undeclared source is what turns a design problem into an unreadable bug report.
@@ -23,7 +23,7 @@
 1. **Which theme** — Mono, Common, Console or Supercharge? *Skipped: the build uses Mono, whose corners are square by design, and says so before it starts.*
 2. **Light, dark, or both?** Both is the usual answer and costs nothing.
 3. **How dense, and how wide?** Comfortable or compact; phone, tablet, laptop, wide desktop, or a fixed width.
-4. **Any brand assets?** Logos, photography, product names, a colour someone will insist on, a typeface already chosen. "None" and "not yet" are both answers.
+4. **Any brand assets?** Logos, photography, product names, a colour someone will insist on, a typeface already chosen. "None" and "not yet" are both answers. *Skipped: mastheads carry the HSBC masterbrand.*
 5. **Real data or placeholder?** Real content changes layouts that tidy placeholder text never tested.
 6. **Anything fixed, or anything off-limits?** Accessibility commitments, mandated patterns, and anything the designer wants left alone.
 

@@ -198,6 +198,19 @@
     display:flex; align-items:center; gap:28px; min-height:var(--masthead-h); padding:0 32px;
     background:var(--surface); border-bottom:1px solid var(--rule); flex:none;}
   .sh-logo{color:var(--indicator); flex:none;}
+  /* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
+     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
+     and "use this for dark mode masterbrand-dark-colour". Until #230 this shell set the mark as
+     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
+     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
+     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
+     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
+     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
+     would land UNKNOWN, indistinguishable from an invented mark. */
+  .sh-logo{display:inline-flex; align-items:center;}
+  .sh-mark{height:28px; width:auto; display:block;}
+  [data-theme="light"] .sh-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .sh-mark[data-mode="light"]{display:none;}
   .sh-nav{display:flex; gap:4px; margin-right:auto;}
   .sh-nav a{padding:0 12px; min-height:var(--masthead-h); display:inline-flex; align-items:center;
     color:var(--text); text-decoration:none;}
@@ -385,7 +398,7 @@
             <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-full" aria-label="Open main menu" data-menu="shell-full">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
             </button>
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <nav class="sh-nav" aria-label="Primary">
               <a class="t-cm-button" href="#" aria-current="page">Personal</a>
               <a class="t-cm-button" href="#">Business</a>
@@ -498,7 +511,7 @@
         <div class="sh-scrim" data-scrim="shell-full"></div>
         <div class="sh-sheet" id="sheet-full" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-full">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>
@@ -527,7 +540,7 @@
             <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-short" aria-label="Open main menu" data-menu="shell-short">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
             </button>
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <nav class="sh-nav" aria-label="Primary">
               <a class="t-cm-button" href="#" aria-current="page">Personal</a>
               <a class="t-cm-button" href="#">Business</a>
@@ -594,7 +607,7 @@
         <div class="sh-scrim" data-scrim="shell-short"></div>
         <div class="sh-sheet" id="sheet-short" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-short">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>
@@ -622,7 +635,7 @@
             <button class="sh-close sh-menu" type="button" aria-expanded="false" aria-controls="sheet-narrow" aria-label="Open main menu" data-menu="shell-narrow">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg>
             </button>
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <nav class="sh-nav" aria-label="Primary">
               <a class="t-cm-button" href="#" aria-current="page">Personal</a>
               <a class="t-cm-button" href="#">Business</a>
@@ -679,7 +692,7 @@
         <div class="sh-scrim" data-scrim="shell-narrow"></div>
         <div class="sh-sheet" id="sheet-narrow" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
           <div class="sh-sheet-head">
-            <span class="sh-logo t-ed-heading-4" aria-label="HSBC">HSBC</span>
+            <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
             <button class="sh-close" type="button" aria-label="Close main menu" data-close="shell-narrow">
               <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>
             </button>

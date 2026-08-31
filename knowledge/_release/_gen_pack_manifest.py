@@ -535,11 +535,26 @@ def groups():
         # `gumdrop`: that is what puts it on Dave's page, and what makes a future silent drop
         # visible. Placed BEFORE `skills` on the same ordering argument `gumdrop` records for
         # itself — it matches only its own prefix, so it can swallow nothing.
+        # ★★ #230 F1 WIDENED THIS GROUP TO THE PLACED HOSTS, AND WHY IT HAD TO.
+        # #228 fixed the group's ABSENCE. The #230 rehearsal then measured what the group's
+        # PRESENCE was worth to a cold seat: nothing. Everything above shipped — the contract,
+        # the projections, the generator, the checker — and a pristine unzip still auto-loaded
+        # none of it, because `cold-start/projections/` is not a path any host reads. The three
+        # files a host DOES read now exist at the pack root as GENERATED OUTPUTS of
+        # `gen_projections.py`, and they must ride in the cut or the fix ships nowhere.
+        # ⚠ `.github/copilot-instructions.md` is deliberately NOT claimed here — `gumdrop` above
+        # already claims `apollo-spider/.github/` whole and claiming it twice is a collision. It
+        # is the same generated file either way; only the group card it appears on differs.
         dict(key="cold-start", group="cold-start", title="The cold-start design contract",
              plain="The one-page contract every host reads before it builds — the source, the "
-                   "three host projections, the generator that keeps them byte-identical, the "
-                   "placement checker, and the four-box problem report.",
-             match=lambda p: p.startswith("apollo-spider/cold-start/")),
+                   "pack's own Copilot boot rules, the generator that places the contract into "
+                   "the three auto-load host files and keeps them byte-identical, the placement "
+                   "checker (`--require` is what this bake blocks on), the three projection "
+                   "templates for a designer's own project, the PLACED `CLAUDE.md` and "
+                   "`AGENTS.md`, and the four-box problem report.",
+             match=lambda p: (p.startswith("apollo-spider/cold-start/")
+                              or p == "apollo-spider/CLAUDE.md"
+                              or p == "apollo-spider/AGENTS.md")),
 
         # #219 seam 7, on R3's Q1: the skills group ships R3's OWN five, not v2's four. Until this
         # was repointed the pack shipped v2's skills and none of the refreshed set — the whole

@@ -198,6 +198,31 @@ dryrun|release)
   echo "staging from commit ${COMMIT:0:12} via git archive…"
   python3 "$GEN" --stage "$STAGE" --commit "$COMMIT"
 
+  # ---- ★★ #230 F1 — THE COLD-HOST GATE. BLOCKING, AND IT GRADES THE STAGE. ------------------
+  #
+  # ⛔ WHAT THE #230 REHEARSAL MEASURED. A pristine v1.0.5 unzip auto-loaded NONE of the design
+  # contract: `.github/copilot-instructions.md` carried no lane rule, no grill rule, no
+  # bento-first rule, no copy-the-markup rule, and there was no CLAUDE.md or AGENTS.md at all.
+  # Three of the pack's five pass beats had nothing to fire from. `cold-start/verify_placement.py`
+  # said so, unprompted and correctly — `⚠ 3 of 3 hosts start COLD here` — AND EXITED 0, and no
+  # step of this bake ran it. The checker existed; the consumer did not
+  # [[instrument-without-a-consumer]]. This is the consumer.
+  #
+  # TWO QUESTIONS, BOTH BLOCKING, AND THEY ARE NOT THE SAME QUESTION:
+  #   --check     are the placed hosts BYTE-DERIVED from cold-start/DESIGN-CONTRACT.md? (catches
+  #               a hand-edit, and a contract edit that was never regenerated)
+  #   --require   does each host FILE actually carry the contract's markers? (catches a merge
+  #               that dropped it, and a host file that never got written at all)
+  # A pack can pass either alone and still be cold, so both run.
+  #
+  # ⚠ THEY GRADE `$STAGE`, NOT THE REPO. The bytes that ship come out of the COMMIT via
+  # `git archive`; a repo-side check would grade the working tree and let a stale commit bake a
+  # cold pack [[premise-ages-faster-than-rule]]. Both scripts are run FROM the stage, over the
+  # stage, so what is measured is exactly what a designer unzips.
+  echo "cold-host gate — is the shipped pack contract-carrying? (BLOCKING, #230 F1)…"
+  python3 "$STAGE/cold-start/gen_projections.py" --check
+  python3 "$STAGE/cold-start/verify_placement.py" --require --root "$STAGE"
+
   # ---- provenance, stamped from the COMMIT (never from today) --------------------------------
   COMMIT_DATE="$(git -C "$ROOT" show -s --format=%cI "$COMMIT")"
   N_FILES="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["totals"]["files"])' "$MANIFEST")"

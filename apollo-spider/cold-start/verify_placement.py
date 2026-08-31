@@ -24,13 +24,37 @@ Three states per host, and the middle one is the one worth having a script for:
               or a merge that dropped it). Present is not the same as correct, and this is
               the failure a "does the file exist" check reads as a pass.
 
-⚠ THIS IS ADVISORY AND ALWAYS EXITS 0. It reports; it never blocks and it never writes.
-Not every project uses every host, and a missing CLAUDE.md in a Copilot-only shop is a
+⚠ THE BARE RUN IS ADVISORY AND ALWAYS EXITS 0. It reports; it never blocks and it never
+writes. Not every project uses every host, and a missing CLAUDE.md in a Copilot-only shop is a
 fact rather than a fault. Read the warnings and decide.
 
-The one exception is `--selftest`, which is the build-time arm rather than the designer's
-run: it plants each state in a throwaway directory and fails loud if the check cannot see
-it. A checker nobody has watched go red has proved nothing.
+★★ `--require` IS THE BUILD-TIME ARM, AND #230 IS WHY IT EXISTS.
+
+    python3 cold-start/verify_placement.py --require --root <dir>   # exit 1 on any cold host
+
+The #230 rehearsal ran this script on a pristine `Apollo-Spider-v1.0.5` unzip. It printed,
+unprompted and correctly:
+
+    NO RULES   CLAUDE.md                       Claude — no file at this path
+    NO RULES   AGENTS.md                       AGENTS.md agent hosts — no file at this path
+    NO RULES   .github/copilot-instructions.md GitHub Copilot — the file exists but the design
+                                               contract is not in it
+    ⚠ 3 of 3 hosts start COLD here.
+
+…and exited 0, and nothing in the install path ran it at all. Three of the pack's five pass
+beats had no instruction to fire from, and the instrument that could have said so had no
+consumer [[instrument-without-a-consumer]]. The advisory exit is right for a DESIGNER'S
+project and wrong for a BAKE, so the two runs are now different commands: the designer's is
+unchanged, and `--require` is what `build-designer-pack.sh` calls over the staged pack before
+it zips. A pack whose own hosts are cold no longer becomes a release.
+
+⚠ ADVISORY AND BLOCKING ARE THE SAME READING. `--require` does not re-implement the check —
+it runs `inspect()` and refuses on the same rows the bare run prints. Two copies of a test
+drift; one reading with two exit policies cannot.
+
+`--selftest` plants each state in a throwaway directory and fails loud if the check cannot see
+it — including BOTH exit policies, driven rather than asserted. A checker nobody has watched go
+red has proved nothing.
 """
 import os
 import shutil
@@ -186,19 +210,65 @@ def selftest():
             if code != 0 or not any("NOT A DIRECTORY" in ln for ln in lines):
                 fails.append("--root %s did not report NOT A DIRECTORY (rc=%r): %r"
                              % (bad, code, lines[:2]))
+
+        # ── #230 F1 ARMS 7–10: `--require`, the BUILD-TIME arm, driven in both directions ────
+        # ⛔ THE ENTRY POINT IS WHAT IS BITTEN, NOT A PREDICATE. `run()` is called and its EXIT
+        # CODE is read [[mutation-tests-the-clause-not-the-feature]] — the defect being fenced
+        # is precisely a check that reported correctly and returned 0.
+        # 7. a cold project must RED under --require (the exact #230 rehearsal state)
+        if run(empty, out=quiet, require=True) == 0:
+            fails.append("--require passed on a project where 3 of 3 hosts start COLD. That is "
+                         "the #230 F1 defect exactly: the check was always right and always "
+                         "exited 0, so nothing in the install path could act on it.")
+        # 8. and the CONTROL: the same tree with the projections placed must GO GREEN, or arm 7
+        #    is passing because --require can never pass at all.
+        if run(tmp, out=quiet, require=True) != 0:
+            fails.append("--require failed on a tree where every host carries the contract — a "
+                         "build gate that cannot go green blocks every cut and teaches its "
+                         "readers to skip it")
+        # 9. the advisory run on that SAME cold tree must still exit 0. The designer-facing
+        #    contract is unchanged, and this is what proves the two policies did not merge.
+        if run(empty, out=quiet) != 0:
+            fails.append("the bare advisory run stopped exiting 0 — --require has leaked into "
+                         "the designer's run, which is not what the docstring promises")
+        # 10. a bad --root REDS under --require. A build gate that shrugs at a mistyped stage
+        #     path passes every cut without inspecting anything.
+        if run(os.path.join(tmp, "NO-SUCH-DIR"), out=quiet, require=True) == 0:
+            fails.append("--require passed on a root it could not inspect — the most confident "
+                         "kind of nothing")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return fails
 
 
-def run(root, out=print):
+def run(root, out=print, require=False):
     # A typo'd --root must not print the tool's most alarming output. Without this, both a
     # non-existent path and a path to a FILE produce a confident "3 of 3 hosts start COLD
     # here" — indistinguishable from a real cold project.
+    #
+    # ⛔ #230: UNDER `--require`, A BAD ROOT IS A FAILURE, NOT A FACT. The advisory run is
+    # allowed to shrug at a path it cannot inspect; a build gate that shrugged would pass every
+    # cut whose stage path was mistyped, which is the most confident kind of nothing. Same
+    # reading, different consequence — and the consequence is named in the line.
     if not os.path.isdir(root):
         out("NOT A DIRECTORY: %s — nothing was inspected." % root)
+        if require:
+            out("⛔ --require: a build gate cannot pass on a root it could not inspect.")
+            return 1
         return 0
-    report(root, out=out)
+    rows = report(root, out=out)
+    if require:
+        cold = [r for r in rows if r[2] != "placed"]
+        if cold:
+            out("")
+            out("⛔ --require: %d of %d hosts would start COLD in this tree, so this is not a "
+                "shippable pack." % (len(cold), len(rows)))
+            out("   The contract is GENERATED into these paths — run "
+                "`python3 cold-start/gen_projections.py` and bake again. Do not hand-paste: the "
+                "placed files are byte-derived and `gen_projections.py --check` will red on it.")
+            return 1
+        out("")
+        out("✅ --require: all %d hosts carry the contract." % len(rows))
     return 0
 
 
@@ -210,7 +280,7 @@ def main():
             for f in fails:
                 print("  X " + f)
             sys.exit(1)
-        print("verify_placement selftest OK — 6 arm(s).")
+        print("verify_placement selftest OK — 10 arm(s).")
         return
     root = os.getcwd()
     if "--root" in sys.argv:
@@ -219,7 +289,7 @@ def main():
             print("--root needs a directory. Reporting on the current one instead.")
         else:
             root = sys.argv[i + 1]
-    sys.exit(run(root))
+    sys.exit(run(root, require="--require" in sys.argv))
 
 
 if __name__ == "__main__":

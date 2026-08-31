@@ -1,4 +1,4 @@
-<!-- GENERATED for GitHub Copilot by MERGING cold-start/DESIGN-CONTRACT.md with this pack's own .github/copilot-instructions.md — edit either SOURCE, never this file: python3 cold-start/gen_projections.py -->
+<!-- GENERATED for GitHub Copilot by MERGING cold-start/DESIGN-CONTRACT.md with cold-start/COPILOT-BOOT.md — edit either SOURCE, never this file: python3 cold-start/gen_projections.py -->
 
 # Design contract — read this before you build anything in this project
 
@@ -11,7 +11,7 @@
 - **Never invent.** No new component, variant, colour or icon. If the system does not have it, stop and name the gap. Improvising is the failure this contract exists to prevent.
 - **Copy the markup.** Component HTML comes from `knowledge/snippets/`, never from memory.
 - **Ask the theme, never assume it.** Four themes ship and they disagree about corner shape. A guess gets every corner on the page wrong.
-- **Dashboards are bento-first.** The procedure is in `skills/generate-from-canon/SKILL.md`; `knowledge/_render/_bento_edit_rails.json` is the dial vocabulary it reads, not a layout. Either way, not from taste.
+- **Dashboards are bento-first, or ask.** Say *"dashboard bento — is that right?"* and go bento unless told otherwise; a skip is a yes. The procedure is in `skills/generate-from-canon/SKILL.md`; `knowledge/_render/_bento_edit_rails.json` is the dial vocabulary it reads, not a layout. Never from taste.
 - **Check before you show.** Open `skills/check-with-gates/SKILL.md` and do what it says — it ends in `python3 ci-template/run-gates.py`, and reading the file is not running it. An unchecked screen is a guess, and so is an unrun gate.
 
 **4. Scope.** This contract governs design and UI output in this project. Other work may use whatever skills suit it. If you use a non-Apollo skill to produce design output, that is freestyle: declare it in the same reply and name the skill — an undeclared source is what turns a design problem into an unreadable bug report.
@@ -25,13 +25,15 @@
 1. **Which theme** — Mono, Common, Console or Supercharge? *Skipped: the build uses Mono, whose corners are square by design, and says so before it starts.*
 2. **Light, dark, or both?** Both is the usual answer and costs nothing.
 3. **How dense, and how wide?** Comfortable or compact; phone, tablet, laptop, wide desktop, or a fixed width.
-4. **Any brand assets?** Logos, photography, product names, a colour someone will insist on, a typeface already chosen. "None" and "not yet" are both answers.
+4. **Any brand assets?** Logos, photography, product names, a colour someone will insist on, a typeface already chosen. "None" and "not yet" are both answers. *Skipped: mastheads carry the HSBC masterbrand.*
 5. **Real data or placeholder?** Real content changes layouts that tidy placeholder text never tested.
 6. **Anything fixed, or anything off-limits?** Accessibility commitments, mandated patterns, and anything the designer wants left alone.
 
 For questions 2 to 6 there is no silent default: if an answer is skipped and the work needs one, say what you are falling back to before you build, and write it in the brief as a fallback rather than as a choice.
 
 ---
+
+<!-- SOURCE FILE. This is the pack's own Copilot boot rules, and it is one of the TWO sources of the generated `.github/copilot-instructions.md` (the other is `cold-start/DESIGN-CONTRACT.md`). Edit here, then run `python3 cold-start/gen_projections.py`. -->
 
 # Copilot instructions — Apollo, and Memento
 
@@ -96,6 +98,15 @@ as a first boot and follow Arm 0.
   it.
 - **Never invent a component, a variant, a colour or an icon.** If the design system does not have
   it, say so and flag the gap. The skills below exist to make that the easy path.
+- **Dashboards are bento-first, or you ask.** When the request is a dashboard, put the question in
+  your own first reply — **"dashboard bento — is that right?"** — and then go bento-first unless
+  the designer says otherwise. A skip is a yes; you never wait for permission to proceed. The
+  procedure is rule 7a of `skills/generate-from-canon/SKILL.md`.
+- **The masthead mark is the masterbrand, and it is already bound.** Light chrome takes
+  `knowledge/assets/logos/masterbrand-light-colour.svg`, dark chrome takes
+  `masterbrand-dark-colour.svg`. Copying a shell or navigation snippet gets this right on its own.
+  Ask only when the brief names a different brand — and then name it as a gap rather than setting
+  a wordmark in type or drawing a mark.
 - **Never hand-edit a generated file.** `memento-package/_CHAIN.md` is generated from
   `GOOD-MORNING.md` and `_LIVE-STATE.md`. `memento-package/_rulings.json` is written only by
   `_inscribe_ruling.py`. `memento-package/_state.json` is written only through `_state.py`. Anything
