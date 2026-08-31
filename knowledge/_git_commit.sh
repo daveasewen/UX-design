@@ -407,6 +407,35 @@ else
   fi
 fi
 
+# scratch-hygiene probe — WIRED #228 (Dave: "wire both"), on the recommendation the #228 repair
+# lane filed as its ruling-shaped item 2 (notes/_subreports/2026-08-31-228-repair-lane.md).
+#
+# WHY HERE AND NOWHERE ELSE. `_gate_scratch_hygiene.py` was a WIRING ORPHAN — built #227, run by
+# nothing, so `_validate_wiring.py` was red on it by name [[instrument-without-a-consumer]]. Its
+# own docstring names the one moment it can act: *"THE ONLY MOMENT SCRATCH CAN BE CLEANED IS
+# WHILE ITS OWNER STILL EXISTS"* — the sandbox VM disk persists across sessions but each session
+# is a throwaway Linux user, so a scratch file that outlives its session becomes a PERMANENT
+# squatter (#227 boot: 100% full, 3.2G of dead-session orphans, five `useradd: No space left on
+# device` failures before a host restart). `_build_all.STEPS` is the wrong home — a build step
+# asks a question about the TREE, and this asks one about the RUNNER, at the last moment anyone
+# can answer it. The wrap commit IS that moment.
+#
+# ⛔ WRAP ONLY, AND ADVISORY, DELIBERATELY. The gate is advisory at birth and returns 0 always
+# (promotion to blocking is Dave's — derivation governance, on the #220 pack-imports precedent;
+# ⚠ that gate is NOT NAMED IN FULL here, deliberately — `_validate_wiring.py` reads this file as
+# a bare substring search, so writing its filename in a comment would mark an UNWIRED gate as
+# wired and turn its standing exemption into a STALE EXEMPTION failure. Measured, not guessed:
+# naming it here did exactly that on the first draft of this block.)
+# A mid-session commit is a CORRECT state to hold scratch in: the session is still
+# using it. So this runs on `--wrap` and prints; it never blocks, and `|| true` says so out loud
+# rather than relying on the gate's exit code staying 0 forever. It does NOT pass `--clean`:
+# deleting a worker's live scratch out from under it at wrap time is a bigger risk than the
+# litter, and the list is the deliverable — the wrap can act on it.
+if [ "$WRAP" -eq 1 ]; then
+  echo "— scratch hygiene (ADVISORY, #228 wiring — the list is for the wrap to act on):"
+  python3 knowledge/_gate_scratch_hygiene.py || true
+fi
+
 # T3 #77-D2 — single-source the commit headline from the GM ★ LATEST banner (handoff-testing-
 # regime plan, RULED #77). Kills the "found only in the commit message" class (#72/#76): the
 # banner becomes the one source and a finding that exists only in the msgfile is unwritable.

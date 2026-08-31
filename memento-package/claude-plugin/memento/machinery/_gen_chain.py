@@ -466,11 +466,20 @@ def state_block():
     # only thing that ever catches it [[enactment-register-adr-0016]].
     n_cond = sum(1 for i in dave if i["closes_when"])
     n_un = len(dave) - n_cond
+    # ★ READING C, RULED s227-D2 (Dave, 2026-08-30, on the #226 wrapper-diet decision surface):
+    # Dave's rows print as IDS ONLY — the shape MINE always used. The per-row title +
+    # closes_when loop that stood here carried 11,407 of the wrapper's 13,061 tape (96.1% of
+    # the wrapper was this block) and held the chain÷GM ratio at 55.82% RED plus a selftest
+    # cascade (fixtures inherited the production worklist via the repo-blind _state.load()
+    # default — finding 5 of notes/_subreports/2026-08-30-226-wrapper-diet-pricing.md).
+    # Measured through build()'s own fixed point: C = wrapper 2,326 · ratio 29.61% GREEN ·
+    # 0 red lines. Bodies and close conditions did not move — they live in the store, and the
+    # line below names the command. ⚠ The safe band for the wrapper is ~1,670–7,486 tape
+    # (report finding 7): a further "while we're here" BANNER trim spends C's FLOOR margin.
     out.append(f">\n> **DAVE'S ({len(dave)}) — {n_cond} with a ratified `closes_when`, "
-               f"{n_un} with NONE:**\n")
-    for i in sorted(dave, key=lambda x: (x["closes_when"] is None, x["id"])):
-        cw = i["closes_when"] or "⛔ **none stated — cannot close until you name one**"
-        out.append(f"> - `{i['id']}` **{i['title']}** — *closes when:* {cw}\n")
+               f"{n_un} with NONE — ids only (s227-D2): bodies + close conditions are in the "
+               f"store, never here:** "
+               f"{ids(sorted(dave, key=lambda x: (x['closes_when'] is None, x['id'])))}\n")
     out.append(f">\n> **MINE ({len(mine)}), ids only — bodies are in the store, not here:** "
                f"{ids(mine)}\n")
     out.append(f">\n> ⚠ store gate: **{'PASS' if ok else 'FAIL'}**"
@@ -865,6 +874,11 @@ def selftest():
         for _k in _envs:
             os.environ[_k] = "1"
         sys.modules["tiktoken"] = None
+        # ⚠ W-273 S1 (#227): the tier-probe verdict is HELD PER PROCESS now, so an arm that
+        # degrades the instrument mid-process must clear the hold — it is simulating a
+        # different process state, and the clear is part of the simulation (fourth site of the
+        # same class as the CAPTURE_GATE_NO_REAL note above).
+        cg._PROBE_VERDICT = None
         try:
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf):
@@ -881,6 +895,7 @@ def selftest():
             del sys.modules["tiktoken"]
             for _k, _v in saved_envs.items():
                 os.environ.pop(_k, None) if _v is None else os.environ.__setitem__(_k, _v)
+            cg._PROBE_VERDICT = None   # W-273 S1: restored instrument is a new state too
         # instrument restored — the SAME tree (untouched by any of the above) must report FRESH
         # again, proving the refusal above was the instrument and not a side effect on the tree.
         bite("instrument restored — the SAME fresh tree reports FRESH again, unharmed",

@@ -514,6 +514,25 @@ jobs:
       - name: Build-script selftest — the release refusals, driven (BLOCKING)
         run: bash apollo-spider/build-designer-pack.sh --selftest
 
+      # ---- SIXTH ENTRY, 2026-08-31 (#228, Dave: "wire both"). AN ADDITION; nothing above is
+      # found false. `apollo-spider/cold-start/gen_projections.py` derives THREE host boot files
+      # — `CLAUDE.md`, `AGENTS.md` and (per s227-D5) the MERGED `.github/copilot-instructions.md`
+      # — from one source, `cold-start/DESIGN-CONTRACT.md`, so the three cannot drift apart and
+      # be believed separately. It shipped with a byte-derived `--check`, and the #227 red team
+      # plus the #228 repair lane both re-confirmed that NOTHING IN THE REPO REFERENCED IT: a
+      # drift guard with no consumer is decoration [[instrument-without-a-consumer]], and the
+      # thing it guards is the FIRST file a designer's assistant reads on a cold machine.
+      # BLOCKING, per the posture split above: this is mechanical determinism — same source in,
+      # same three projections out, no environment input anywhere in it — which is exactly the
+      # class the fourth entry says BLOCKS. It reads only committed files, so unlike the pack
+      # audits it has no legitimate refusal and no 77 wrapper is written for one; if it ever
+      # grows one, give it the same `rc=77` shape the steps above use rather than
+      # `continue-on-error`, which is a different mechanism and would hide a real drift.
+      # ⚠ Home is the `release` job, not `gates`: the projections are a PACK surface, and this
+      # sits with the other instruments that grade what ships.
+      - name: Cold-start projections in sync — one contract, three host boot files (BLOCKING; #228)
+        run: python3 apollo-spider/cold-start/gen_projections.py --check
+
       # ADVISORY, and it must stay so. A manifest generated at an older commit than HEAD means a
       # pack cut now would ship older content. That is a real fact and NOT a defect — cutting
       # from an older commit is a legitimate choice, and ⬛ WHEN TO RE-CUT IS DAVE'S (s219-D4(2)).

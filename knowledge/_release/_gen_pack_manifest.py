@@ -110,9 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.3"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.4"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
-MEMENTO_CUT_VERSION = "v1.0.3"
+# ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
+# version literal in the tree and in the stage derives from this constant via the manifest's
+# `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
+# with VERSION above; it is not an independent lineage.
+MEMENTO_CUT_VERSION = "v1.0.4"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -631,10 +635,32 @@ RATIFY_IDS = {
                             # v1.0.1 has no row and never will: it was cut at #220, before the
                             # re-key existed, under v1.0.0's inherited word — the defect s223-D3
                             # names. Rows are ADDED here, never moved (ADR-0017, one home).
-    "v1.0.3": "s224-D1",    # #225, Dave's word 'Ratify — bake it' (2026-08-29), given at the
-                            # opener against the s224-D1 store entry (tier-1 port-back cut);
-                            # per s223-D3 the ratify check is re-keyed PER CUT and this ruling
-                            # IS the store entry --release requires.
+    "v1.0.3": "s225-D1",    # #225, Dave's word 'Ratify — bake it' (2026-08-29). ⛔ MOVED from
+                            # s224-D1 by s228-D1 (#228, Dave: "move the key to s225-D1 is
+                            # good"). s224-D1 AUTHORISED cutting the tier-1 port-back patch;
+                            # s225-D1 is the RATIFYING WORD for v1.0.3, and s223-D3's whole
+                            # distinction is between the ruling that names a cut and the word
+                            # that ratifies it. The published "RATIFIED — <id> names v1.0.3"
+                            # sentence was citing the wrong kind of ruling. ⚠ THE "rows are
+                            # ADDED, never moved" line above still stands as the DEFAULT: this
+                            # row moved on Dave's explicit word, which is the only thing that
+                            # may move one.
+    "v1.0.4": "s227-D6",    # #227, Dave's word 'Yes — cut it Monday' (2026-08-30), given on
+                            # the #227 decision surface and naming THIS version in its own
+                            # `ruled` line ("v1.0.4 CUT AUTHORIZED for Monday 2026-08-31"),
+                            # with its scope enumerated and its condition — the red-team
+                            # repairs landing green — discharged by the #228 repair lane.
+                            # ⚠ DECLARED, NOT SMOOTHED, because s228-D1 sharpens exactly this
+                            # question: s227-D6 is an AUTHORISATION, and for v1.0.3 a LATER,
+                            # more specific ratifying word existed (s225-D1) and is what the
+                            # row now cites. No later word exists for v1.0.4 — s227-D6 is the
+                            # only ruling in the store that carries Dave's release word for
+                            # this version, and it says in its own body that "ratification
+                            # mechanics at the cut follow the standing release machinery
+                            # (RATIFY_IDS + manifest regen + dry-run byte-match)". It is
+                            # keyed here on that basis. ⬛ IF DAVE GIVES A FRESH RATIFYING
+                            # WORD AT THIS BAKE, THIS ROW IS THE ONE TO REPOINT — the same
+                            # move s228-D1 just made, and his alone to call.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
@@ -3009,9 +3035,20 @@ def selftest():
     # Moved v1.0.0 -> v1.0.1 at the #220 bake, v1.0.1 -> v1.0.2 at #223 (s223-D2), and
     # v1.0.2 -> v1.0.3 at #224 (s224-D1), each time in the same edit as MEMENTO_CUT_VERSION
     # itself.
+    # ⛔ #228 — THE VERSION HALF OF THAT FIXTURE IS NOW A RULE, NOT A LITERAL, and the change is
+    # s225-D3's, not a convenience. Dave ruled ONE VERSION STORY: the Gumdrop cut versions WITH
+    # the pack. A hand-moved literal here asserts the opposite — that the two lineages are
+    # independent and merely happen to agree — so it went red at this cut for the one shape the
+    # ruling says can never be wrong (v1.0.4 == v1.0.4). The NAME stays a typed fixture, because
+    # renaming the carried cut IS an independent decision and s219-D8 is what this bite guards.
+    # The version is now asserted against VERSION, which makes the bite STRONGER: a bump of one
+    # without the other is exactly the #224 disagreement (a pack whose README and whose runbook
+    # headers name different Gumdrop versions), and it now fails here instead of at arm 5 of the
+    # pack-docs gate, one whole release later.
     bite("naming/memento-cut-is-named", (MEMENTO_CUT_NAME, MEMENTO_CUT_VERSION),
-         ("Memento — Gumdrop", "v1.0.3"),
-         "the cut inside the pack carries its own identity (s219-D8)")
+         ("Memento — Gumdrop", VERSION),
+         "the cut inside the pack carries its own identity (s219-D8) and versions WITH the "
+         "pack (s225-D3) — one version story, so this may never be a hand-typed literal")
     for q in OPEN_QUESTIONS:
         bite("questions/has-body:%s" % q["id"], len(q["body"].strip()) > 40, True)
         bite("questions/two-or-more-options:%s" % q["id"], len(q["options"]) >= 2, True,
