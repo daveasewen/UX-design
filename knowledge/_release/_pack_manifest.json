@@ -4,8 +4,8 @@
     "version": "v1.0.5",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version moves WITH the pack (s225-D3): every Gumdrop version line in the cut is stamped from this one, so the pack cannot disagree with itself about what it carries."
   },
-  "commit": "97d7b865623e0426134d840193373ec9727ad07a",
-  "commit_date": "2026-08-31T18:41:41+01:00",
+  "commit": "9c329a179188d35817d14ffd5a51030dcadf78b1",
+  "commit_date": "2026-08-31T19:42:53+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,7 +101,7 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 8 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "97d7b865623e0426134d840193373ec9727ad07a",
+    "commit": "9c329a179188d35817d14ffd5a51030dcadf78b1",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -146,6 +146,10 @@
       {
         "gate": "_validate_standing_instructions.py",
         "why": "crashed: AssertionError: must discover the git runbook"
+      },
+      {
+        "gate": "_validate_wiring.py",
+        "why": "refuses for knowledge/_build_all.py, a repo resource the pack does not ship — not a dependency the designer can install"
       }
     ],
     "timeout_s": 25
@@ -206,7 +210,7 @@
       "title": "Tokens"
     },
     {
-      "bytes": 1441036,
+      "bytes": 1445706,
       "files": 139,
       "group": "engine-canon",
       "key": "engine-canon.components",
@@ -355,7 +359,7 @@
       "title": "Component contracts"
     },
     {
-      "bytes": 3932555,
+      "bytes": 3947733,
       "files": 137,
       "group": "engine-canon",
       "key": "engine-canon.snippets",
@@ -502,7 +506,7 @@
       "title": "Reference markup"
     },
     {
-      "bytes": 2058995,
+      "bytes": 2068825,
       "files": 12,
       "group": "engine-canon",
       "key": "engine-canon.canon",
@@ -1390,7 +1394,7 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 912612,
+      "bytes": 894014,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
@@ -1399,10 +1403,10 @@
       "counts": {
         "empty_population": 4,
         "needs_dep": 3,
-        "repo_bound": 8,
-        "runnable": 38
+        "repo_bound": 9,
+        "runnable": 37
       },
-      "files": 58,
+      "files": 57,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1460,7 +1464,6 @@
         "knowledge/_validate_token_tiers.py",
         "knowledge/_validate_type_blast_radius.py",
         "knowledge/_validate_type_composites.py",
-        "knowledge/_validate_wiring.py",
         "knowledge/chart-intents.json",
         "knowledge/component-types.json",
         "knowledge/gen_snippet_tokens.py"
@@ -1634,12 +1637,12 @@
           "gate": "_validate_descender_computed.py",
           "invocation": "",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "why": "playwright install chromium"
         },
         {
           "gate": "_validate_dtcg.py",
@@ -1699,12 +1702,12 @@
           "gate": "_validate_hit_area.py",
           "invocation": "--all",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "why": "playwright install --with-deps chromium"
         },
         {
           "gate": "_validate_icons.py",
@@ -1847,12 +1850,12 @@
           "gate": "_validate_state_contrast.py",
           "invocation": "",
           "population": "",
-          "selftest": "crashed",
+          "selftest": "red",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright"
+          "why": "playwright install chromium"
         },
         {
           "gate": "_validate_state_snap.py",
@@ -1912,10 +1915,12 @@
           "gate": "_validate_wiring.py",
           "invocation": "",
           "population": "",
-          "selftest": "crashed",
-          "third_party": [],
-          "verdict": "RUNNABLE",
-          "why": "ran, verdict FAIL (exit 1) — a verdict is a run"
+          "selftest": "red",
+          "third_party": [
+            "_gen_pack_manifest"
+          ],
+          "verdict": "REPO-BOUND",
+          "why": "refuses for knowledge/_build_all.py, a repo resource the pack does not ship — not a dependency the designer can install"
         }
       ]
     },
@@ -1941,7 +1946,7 @@
       "title": "Runbooks"
     },
     {
-      "bytes": 14126193,
+      "bytes": 14147181,
       "files": 288,
       "group": "library",
       "key": "library.showroom",
@@ -2415,7 +2420,7 @@
       "title": "Memento Claude plugin"
     },
     {
-      "bytes": 1986791,
+      "bytes": 1992050,
       "files": 24,
       "group": "gumdrop",
       "key": "gumdrop",
@@ -2449,11 +2454,14 @@
       "title": "Memento — Gumdrop cold start"
     },
     {
-      "bytes": 52163,
-      "files": 7,
+      "bytes": 83180,
+      "files": 10,
       "group": "cold-start",
       "key": "cold-start",
       "paths": [
+        "apollo-spider/AGENTS.md",
+        "apollo-spider/CLAUDE.md",
+        "apollo-spider/cold-start/COPILOT-BOOT.md",
         "apollo-spider/cold-start/DESIGN-CONTRACT.md",
         "apollo-spider/cold-start/REPORT-TEMPLATE.md",
         "apollo-spider/cold-start/gen_projections.py",
@@ -2462,11 +2470,11 @@
         "apollo-spider/cold-start/projections/CLAUDE.md",
         "apollo-spider/cold-start/verify_placement.py"
       ],
-      "plain": "The one-page contract every host reads before it builds — the source, the three host projections, the generator that keeps them byte-identical, the placement checker, and the four-box problem report.",
+      "plain": "The one-page contract every host reads before it builds — the source, the pack's own Copilot boot rules, the generator that places the contract into the three auto-load host files and keeps them byte-identical, the placement checker (`--require` is what this bake blocks on), the three projection templates for a designer's own project, the PLACED `CLAUDE.md` and `AGENTS.md`, and the four-box problem report.",
       "title": "The cold-start design contract"
     },
     {
-      "bytes": 47392,
+      "bytes": 49413,
       "files": 7,
       "group": "skills",
       "key": "skills",
@@ -2604,23 +2612,23 @@
   "totals": {
     "by_group": {
       "cold-start": {
-        "bytes": 52163,
-        "files": 7
+        "bytes": 83180,
+        "files": 10
       },
       "engine-canon": {
-        "bytes": 10593750,
+        "bytes": 10623428,
         "files": 1158
       },
       "gates": {
-        "bytes": 912612,
-        "files": 58
+        "bytes": 894014,
+        "files": 57
       },
       "gumdrop": {
-        "bytes": 1986791,
+        "bytes": 1992050,
         "files": 24
       },
       "library": {
-        "bytes": 27996535,
+        "bytes": 28017523,
         "files": 374
       },
       "memento-clean-cut": {
@@ -2632,14 +2640,14 @@
         "files": 11
       },
       "skills": {
-        "bytes": 47392,
+        "bytes": 49413,
         "files": 7
       }
     },
-    "bytes": 41977749,
-    "files": 1659,
-    "pack_bytes": 42004406,
-    "pack_files": 1661
+    "bytes": 42048114,
+    "files": 1661,
+    "pack_bytes": 42074771,
+    "pack_files": 1663
   },
   "version": "v1.0.5"
 }
