@@ -54,9 +54,12 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    chart-label, ctl-12/14/16), `.t-ed-*` for editorial (display-1/2, heading-1…4, body,
    body-small, caption). 31 in all. Never a raw `font-size` / `font-weight` /
    `line-height`.
-5. **Pick a theme and say which.** Four ship: **mono** (the baseline), **legacy**,
-   **console**, **supercharge**. Set them on the root element:
-   `class="canon" data-apollo-theme="mono" data-theme="light"`. The theme registry is
+5. **Pick a theme and say which.** Four ship: **mono** (the baseline), **common**,
+   **console**, **supercharge** — the same four names the cold-start `DESIGN-CONTRACT.md`
+   asks about, so the pack says back the name the designer said. (`legacy` is the older
+   key for **common** and still resolves — `s227-D8` made the alias additive — but new
+   work emits `common`.) Set them on the root element:
+   `class="canon" data-apollo-theme="common" data-theme="light"`. The theme registry is
    `knowledge/tokens/themes/_themes.json`, and it records which colours belong to which
    theme. A colour from another theme's set is a leak, not a choice.
 6. **Colour is meaning, and the reds are keyed to their background.**
@@ -104,10 +107,17 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 2. **Read the contract.** `knowledge/components/<slug>.meta.json` — variants, states,
    antiPatterns, relationships.
 3. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. Root
-   element (or `<body>`) gets `class="canon"` plus **one** theme attribute:
-   `data-theme="light"` or `data-theme="dark"`. That is the whole contract — it is what
-   `canon.css` actually selects on, and it is what
-   `knowledge/_RUNBOOK-compose-from-canon.md` § Compose a screen says. (`data-mode` is a
+   element (or `<body>`) gets `class="canon"` plus **two** attributes — the theme and the
+   mode: `data-apollo-theme="common|console|supercharge"` **and** `data-theme="light"` or
+   `data-theme="dark"`. They are different dials and `canon.css` selects on both:
+   `data-apollo-theme` carries the four themes, `data-theme` carries light/dark only.
+   **The answer to step 0's theme question lands on `data-apollo-theme`.** `data-theme`
+   has nowhere to put it, so a build that sets `data-theme` alone is a MONO build — and
+   mono makes every radius token `0`. Mono is the attribute-less baseline: canon has no
+   `data-apollo-theme="mono"` block, so mono is `data-theme` on its own (writing
+   `data-apollo-theme="mono"` is legal and self-documenting — it simply selects nothing).
+   Same contract as step 5 and as
+   `knowledge/_RUNBOOK-compose-from-canon.md` § Compose a screen. (`data-mode` is a
    component-level attribute, not a theme one: in `canon.css` it appears only inside
    `.cn-template-auth`, swapping a light/dark logo mark. Do not put it on the root.) Drop each component in as
    its scope class + the snippet's own markup — `<div class="cn-button"><button class="btn

@@ -11577,7 +11577,12 @@
 :where(.cn-filter-toolbar-bar) .search:hover{background:var(--hover);}
 :where(.cn-filter-toolbar-bar) .search:focus-within{box-shadow:inset 0 -2px 0 var(--border-active);}
 :where(.cn-filter-toolbar-bar) .search input:focus-visible{outline:none;}
-:where(.cn-filter-toolbar-bar) .search.boxed{border:1px solid var(--border); padding:0 8px;}
+/* BOXED (full border) — s227-D7 L8: "search radius moves to the boxed variant only, underline
+     stays straight." The reuse above borrows Search-field's boxed variant, so it takes the same
+     radius; only HALF the ruling had landed (the .cn-search-field site had it, this one did not),
+     which left a square box between an 8px dropdown and 8px chips on one toolbar row. The
+     underline `.search` above is deliberately untouched — that is the other half of the ruling. */
+:where(.cn-filter-toolbar-bar) .search.boxed{border:1px solid var(--border); padding:0 8px; border-radius:var(--border-radius-control);}
 :where(.cn-filter-toolbar-bar) .search.boxed:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
 :where(.cn-filter-toolbar-bar) .clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
 :where(.cn-filter-toolbar-bar) .clear svg{width:12px; height:12px; fill:currentColor;}

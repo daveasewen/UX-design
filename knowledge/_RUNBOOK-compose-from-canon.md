@@ -36,7 +36,12 @@ screen cannot silently drift because it has no component CSS of its own.
 
 ## Compose a screen
 
-1. Root element gets `class="canon"`; theme via `data-theme="light|dark"` on it (or `<body>`).
+1. Root element gets `class="canon"`, and **two** attributes on it (or `<body>`): the theme,
+   `data-apollo-theme="common|console|supercharge"`, and the mode, `data-theme="light|dark"`.
+   They are different dials — canon selects on both. `data-theme` cannot carry a theme, so a
+   root with `data-theme` alone is a **mono** build (mono is the attribute-less baseline; every
+   radius token is `0` there). `legacy` is the older key for `common` and still resolves
+   (`s227-D8`), but new work emits `common`.
 2. `<link rel="stylesheet" href="../canon/canon.css">`.
 3. Drop in each component as **its scope class + the snippet's own markup**, e.g.
    `<div class="cn-button"><button class="btn primary full">…</button></div>` or

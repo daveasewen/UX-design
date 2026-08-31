@@ -624,7 +624,10 @@
   dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
   dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
   document.body.appendChild(dvTip);
-  function tipAt(text, x, y) {
+  function tipAt(text, x, y, src) {
+    /* #230 T4 — .dv-tip is cn-chart-scoped: re-home, then write */
+    var h = src.closest('[class*=cn-chart-]') || document.body;
+    if (dvTip.parentNode !== h) { h.appendChild(dvTip); }
     dvTip.textContent = text; dvTip.classList.add('on');
     var r = dvTip.getBoundingClientRect();
     if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
@@ -634,14 +637,14 @@
   function tipHide() { dvTip.classList.remove('on'); }
   document.addEventListener('pointermove', function (e) {
     var el = e.target.closest && e.target.closest('[data-tip]');
-    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14); }
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14, el); }
     else { tipHide(); }
   });
   document.addEventListener('focusin', function (e) {
     var el = e.target.closest && e.target.closest('[data-tip]');
     if (!el) { return; }
     var b = el.getBoundingClientRect();
-    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40, el);
   });
   document.addEventListener('focusout', function () { tipHide(); });
 
