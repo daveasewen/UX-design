@@ -10,6 +10,21 @@ get to my result quicker" · "We need to get this done, it is a priority … I n
 it. No mistakes, lets do everything right, slow is smooth and smooth is fast" · "the
 presentation is the priority, but fix any dependencies first i want it to run smooth".
 
+## ★ THE GOAL — Dave, #230, verbatim (this outranks every other framing in this file)
+
+> "I want to build a dashboard during the demo and I want it built as I would expect it to
+> be built the Sol example is good as far as structure and design but it wont be a good
+> example of the html code. I need thsi to be built from canon properly as we have always
+> wanted, I Either expect it would use the dashboard bento or it will ask if that is right."
+
+**The pass condition, made checkable:** a dashboard prompt during the demo produces a build
+that (1) declares the on-canon lane, (2) EITHER goes bento-first by default OR asks Dave
+"dashboard bento — is that right?" before building, (3) copies component markup from
+`knowledge/snippets/` with canon tokens — zero invented markup, and (4) lands structure and
+design in the direction of the Sol example while sharing none of its code. Grill-me (with
+skip) fires where the contract says it should. Anything short of that is the finding, not a
+failure to hide.
+
 ## What the demo is
 
 The W-304 cold-start acceptance shape, live, in front of internal stakeholders: a dashboard
