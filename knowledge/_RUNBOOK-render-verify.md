@@ -11,6 +11,35 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+★★ **SEVENTH STRATUM 2026-09-01 (#233) — THE VM WAS REBUILT, THE #227 ORPHAN FARMS NO LONGER EXIST,
+AND THE SIXTH STRATUM'S RECIPE THEREFORE RESOLVES TO NOTHING.** Measured at this session's seat:
+**disk 55%** (not 100%), and **`/var/tmp/pylibs` and `/var/tmp/pw-browsers-220` are GONE**. ⛔ **So
+the SIXTH STRATUM's two exports below now point at absent directories — a `PYTHONPATH` /
+`PLAYWRIGHT_BROWSERS_PATH` that resolves to nothing fails like a broken recipe, exactly as the
+FIFTH STRATUM's hollow lib dir did** [[premise-ages-faster-than-rule]]. **Read the SIXTH STRATUM as
+HISTORY of a specific VM, not as today's recipe.** The class fix it predicted is what actually
+works, and it was OBSERVED END-TO-END TODAY (RENDER OK, PNGs read back by eye):
+
+```
+pip install playwright                                    # works again — the disk has room
+python3 -m playwright install chromium-headless-shell     # → ~/.cache/ms-playwright/chromium_headless_shell-1234
+                                                          #   exits NON-ZERO on host-requirements — documented, not a failure
+ldd <...>/headless_shell | grep "not found"               # today: ONLY libXdamage.so.1
+apt-get download libxdamage1 && dpkg -x <deb> <MOUNT>/outputs/syslibs
+export LD_LIBRARY_PATH=<MOUNT>/outputs/syslibs/usr/lib/aarch64-linux-gnu
+export TMPDIR=/dev/shm                                    # SAME bash call as the render, always
+```
+
+⚠ **`TMPDIR=/dev/shm` stays mandatory even at 55%** — it costs nothing and it is the difference
+between a real launch failure and an ENOSPC misreported as *“chromium is broken”* (#227's finding,
+unchanged). ⚠ **Everything still rides in ONE bash call** (nothing survives a call boundary) and
+`launch()` still must NOT pass `env=`. ⚠ **`/var/tmp` IS A TRAP, NOT A CACHE** — this stratum exists
+because the previous one banked two `/var/tmp` paths as durable and a VM rebuild deleted them
+silently. ★ **THE DURABLE HALF IS THE MOUNT:** libs `dpkg -x`'d to `<MOUNT>/outputs/syslibs` survive
+a rebuild; anything on VM disk does not. ⛔ **PROVENANCE: this recipe is the CONDUCTOR'S observed
+run at #233, recorded from his report; it was NOT re-driven by the wrap sub that wrote it down**
+[[enactment-register-adr-0016]].
+
 ★ **SIXTH STRATUM 2026-08-30 (#227) — THE VM DISK IS FULL AND THE ANSWER IS: NOTHING RENDER-SHAPED
 EVER TOUCHES VM DISK AGAIN.** The VM hit 100% (dead sessions' orphaned scratch, undeletable — see
 `_RUNBOOK-capture-ritual.md` step 4c); pip is dead (`/tmp` ENOSPC) and apt needs root. The working
