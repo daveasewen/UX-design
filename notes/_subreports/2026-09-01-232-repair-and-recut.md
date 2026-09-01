@@ -432,3 +432,419 @@ measurement from context spend `[[measure-dont-convert-units]]`. Wall-clock spen
 three items: the survey driven once over 140 steps in three ranged runs, `_detect_retrieval
 --selftest` driven twice (79 arms each), and `_build_blast_radius.py` regenerating 136 components.
 **Phase 2 has not started and its cost is not in this line.**
+
+---
+
+## PHASE-2
+
+*Status: **THE RE-CUT IS DONE AND THE COLD COLUMN IS GREEN — MEASURED, NOT PREDICTED.** The full
+tail ran in the briefed order at `ff1b2f5`; two dry-run twins are byte-identical; `--check` is
+GREEN; and `ci-template/run-gates.py` on a pristine twin stage reads **37 pass · 0 FAIL · 0
+could-not-ask, exit 0**. The bake is still **PROPOSED**. No git operation of any kind was performed.*
+
+**enacted 8 · found-by-doing 3 · ruling-shaped 1 · UNPROVEN 3 · release-half reds 2 → 1 (`[118]`
+CLOSED by the conductor's commit; `[136]` stands, as declared)**
+
+### ✅ THE HEADLINE — THE `exit 1` THE RE-STAGE FILED IS NOW `exit 0`, AND IT WAS MEASURED
+
+Driven inside the pristine twin-B stage — the exact tree the zip is built from, untouched by
+`--check` — with the pack's own runner, the command the design contract ends on:
+
+```
+python3 ci-template/run-gates.py     →  37 pass · 0 FAIL · 0 could-not-ask     exit 0
+```
+
+The two gates that produced the re-stage's `35 pass · 2 FAIL · exit 1` both report green **from
+inside the pack**, in their own words:
+
+| gate | verdict in the cold column, verbatim |
+|---|---|
+| `_validate_token_forks.py` | `GATE GREEN: no UNDECLARED fork.` — **103 fork(s) stand and are declared in the ledger** (graded 103 forks) |
+| `_validate_type_blast_radius.py` | `✅ type-binding blast-radius gate passed (27 appended selector(s), corpus 138 files).` |
+
+⚠ **The corpus number differs by design and is not a discrepancy.** Repo-side the same gate reads
+**corpus 150 files**; inside the pack it reads **138**, because the pack ships a subset of the
+snippet/pro-forma corpus. Both are green. Quoted from two runs, not reconciled by arithmetic
+`[[measure-dont-convert-units]]`.
+
+⚠ **This column is one step BETTER than #230's, not merely equal to it.** `#230` left
+`37 pass · 0 FAIL · 1 could-not-ask, exit 0`; this reads **0 could-not-ask**. I did not chase the
+mechanism of the CNA that closed and I do not claim one — it is stated as a measured difference,
+not an achievement of this lane.
+
+---
+
+## COUNTS — PHASE 2
+
+| | re-stage (at `9cd4b23`) | this re-cut (at `ff1b2f5`) |
+|---|---|---|
+| version | v1.0.5 | **v1.0.5 — unmoved** |
+| manifest commit | `9cd4b2315433` | **`ff1b2f531f93`** |
+| ship list | 1,664 files · 42,355,750 B · sha256 `14f9197c8ed17569` | **1,664 files · 42,359,437 B · sha256 `00e8f67995609c21`** |
+| membership | — | **1,664 → 1,664 — ZERO paths added, ZERO removed** |
+| staged tree / zip entries | 1,669 | **1,669 — unmoved** |
+| pack totals | — | 1,666 pack files · 42,386,094 pack bytes |
+| **zip sha256** | `92f5e10ea2cf60fc…620e69f8` | **`9fb07fa2f0dc0ade56298ea2cc8d8864e25b9b586e3dc1573192ca81593e437b`** |
+| **zip bytes** | 20,073,139 | **20,073,815** (`+676 B`) |
+| dry-run byte-match | GREEN | ✅ **GREEN** — two dry-runs into two directories, `cmp` over the whole file, rc=0 |
+| `--check <twinA> --commit ff1b2f5` | GREEN @`9cd4b23` | ✅ **`CHECK GREEN — matches the manifest at ff1b2f531f93`** |
+| **cold `run-gates.py` on the twin stage** | **35 pass · 2 FAIL · 0 CNA, exit 1** | ✅ **37 pass · 0 FAIL · 0 CNA, exit 0** |
+| `_gate_release_audit.py --check` | GREEN @old commit | ✅ **GREEN — byte-identical to a fresh generation at `ff1b2f531f93`** |
+| `_gate_release_audit.py --selftest` | rc=1, PRE-BAKE arm | **rc=1, 10 bites 1 fail — the SAME PRE-BAKE arm, `[136]`** |
+| `_gate_frozen_release.py` | rc=0 | **rc=0, `PASS — 3 arm(s) asked, no frozen surface moved`** |
+| status | `PROPOSED` | **`PROPOSED — no ruling is keyed to v1.0.5 yet`** (read from the manifest, never typed) |
+| `manifest.ratified` | — | **`None`** |
+| `RATIFY_IDS["v1.0.4"]` | `s228-D4` | **`s228-D4` — UNMOVED** |
+| `RATIFY_IDS["v1.0.5"]` | absent | **STILL ABSENT — no key touched** |
+| gates-group roster | 57 | **57 — UNMOVED** |
+| `engine-canon` group | — | 1,160 files |
+| `library` group | — | 375 files |
+| `dist/` | ends at v1.0.4 | **UNCHANGED — ends at v1.0.4, no v1.0.5** |
+
+**No git operation of any kind was performed.** No `_rulings.json` write, no W-row, no state write,
+no memory write, no roster edit, no membership change, no `--release`, no push, no ratification
+claim, no canon/snippet edit, no threshold moved.
+
+### THE MEMBERSHIP DID NOT MOVE — measured, not assumed
+
+The re-stage added three paths (the bento family). **This re-cut adds none and removes none:**
+1,664 → 1,664. The ship-list sha256 moved (`14f9197c…` → `00e8f679…`) and the byte total moved by
+**+3,687 B** for one reason only — the four phase-1 repairs are *content* changes to paths that were
+already members. Confirmed present in the zip's own namelist, by path, not by count:
+
+```
+IN   Apollo-Spider-v1.0.5/knowledge/snippets/Template-dashboard-bento.reference.html
+IN   Apollo-Spider-v1.0.5/knowledge/_TOKEN-FORK-LEDGER.json          ← edit 2 reached the pack
+IN   Apollo-Spider-v1.0.5/knowledge/canon/_type-bindings.json        ← edit 3 reached the pack
+IN   Apollo-Spider-v1.0.5/knowledge/tokens/_blast-radius.json        ← edit 4 reached the pack
+IN   Apollo-Spider-v1.0.5/skills/generate-from-canon/SKILL.md        ← edit 1 reached the pack
+```
+
+⚠ **Note the staged path of edit 1:** it ships as **`skills/generate-from-canon/SKILL.md`**, not
+`apollo-spider/skills/…` — the bake re-roots it. That is the fifth independent confirmation that
+`apollo-spider/skills/…` was the right file and `designer-skills-v2/…` was not (phase-1 finding ①):
+**the briefed path has no image in the zip at all.**
+
+---
+
+## ENACTED — 8, in the briefed order
+
+**A · `--probe --commit ff1b2f5`** — rc=0, **49.7 s**. Mandatory: `--manifest` refuses when the
+probe's commit differs. Probe written at `ff1b2f531f93d6081eeef05fbac4d536d78d80a0`; `repo_bound`
+list holds **9** gates, unmoved from the re-stage.
+
+**B · `--manifest --commit ff1b2f5`** — rc=0, 10.2 s. `commit ff1b2f531f93 · files 1664 ·
+bytes 42359437 · sha256 00e8f67995609c21`.
+
+**C · Dry-run twin A** — rc=0, 8.4 s, into `…/recut232/twinA`. **sha256
+`9fb07fa2f0dc0ade56298ea2cc8d8864e25b9b586e3dc1573192ca81593e437b`, 20,073,815 bytes, 1,669
+entries.** The pack-docs gate ran inside the bake and exited **0 (ADVISORY, 218 findings)** — the
+same advisory shape as the re-stage, not blocking, and its three COUNTS findings are pre-existing
+(see found-by-doing ③).
+
+**D · `--page reviews/RELEASE-SPIDER-2026-08-26-v1.html --zip-bytes 20073815 --zip-sha 9fb07fa2…`**
+— rc=0, 136,252 bytes written. Driven **explicitly**, with real figures measured from C, not typed.
+
+**E · `_make_review.py` overlay re-injected** — rc=0. The #219 finding is still live: every `--page`
+write strips the review pair's stamps and the tool prints its own `NEXT:` line saying so. Re-injected
+**twice** — once after D, once after the twin-B bake re-ran `--page` on its way out (see
+found-by-doing ①).
+
+**F · Dry-run twin B** — rc=0, 7.8 s, into a **different** directory. **Identical sha256, identical
+20,073,815 bytes.**
+
+**G · `cmp twinA/…zip twinB/…zip`** — **rc=0, byte-identical over the whole 20,073,815-byte file.**
+Not a hash comparison: a byte comparison.
+
+**H · `--check twinA/Apollo-Spider-v1.0.5.zip --commit ff1b2f5`** — rc=0:
+`CHECK GREEN — … matches the manifest at ff1b2f531f93`.
+
+Then the cold column on the **twin-B** stage (the one `--check` never touched): **exit 0**.
+
+### THE PAGE CARRIES THE NEW FINGERPRINT AND NOTHING CARRIES THE OLD ONE
+
+```
+reviews/RELEASE-SPIDER-2026-08-26-v1.html          9fb07fa2 ×1   92f5e10e ×0   136,528 B
+reviews/RELEASE-SPIDER-2026-08-26-v1.REVIEW.html   9fb07fa2 ×1   92f5e10e ×0   162,764 B
+```
+
+Repo-wide (`.git` and `_to_delete/` excluded), the **only** files still naming `92f5e10e` are the two
+subreports that record it as history and `knowledge/_state.json`. ⬛ **`_state.json` is the
+conductor's** — I performed no state write. The page renders the size as **`20.1 MB`**, so the digit
+string `20073815` does not appear in it; that is the page's own formatting, checked rather than
+assumed `[[unmatched-grep-is-not-an-absence]]`.
+
+---
+
+## THE PROVING ZIP — REPLACED AT THE DURABLE HOME, BOTH FINGERPRINTS STATED
+
+| | |
+|---|---|
+| **OLD** (superseded) | `92f5e10ea2cf60fc27854eab009214414fb8132b798430fc46f16865620e69f8` · 20,073,139 bytes — a bake of a tree with **none** of the five phase-1 repairs, whose cold column exits **1** |
+| **NEW** (in place now) | `9fb07fa2f0dc0ade56298ea2cc8d8864e25b9b586e3dc1573192ca81593e437b` · 20,073,815 bytes — cold column exits **0** |
+
+Placed at both homes, and **all three copies verified identical by `sha256sum`, not by trust**:
+
+1. `/Users/daviewen/Documents/Claude/Projects/UX-design/Apollo-Spider-v1.0.5-PROVING.zip`
+   — the **durable** home on Dave's own disk. `git check-ignore -v` → `.gitignore:40:*.zip`, so it
+   still cannot be swept into any commit, including `git add -A`.
+2. `<Cowork session outputs>/Apollo-Spider-v1.0.5.zip` — **this copy dies with the session**; it is
+   the one to hand Dave in-session. Home 1 is the one that survives (`s191-D2`, and the #230
+   vanishing receipt in the predecessor report).
+
+⛔ **`apollo-spider/dist/` was not written to and still ends at v1.0.4.** A zip there is committable
+by the gitignore exception, and putting one there is `--release`'s act, not this lane's.
+
+---
+
+## FOUND BY DOING, NOT BRIEFED — 3
+
+### ① `build-designer-pack.sh --dry-run` RUNS `--page` ITSELF, WITH REAL FIGURES, AT THE END OF EVERY BAKE
+
+The brief orders `--page` **before** the twins. The script does not permit that reading literally:
+`--page` needs `--zip-bytes` and `--zip-sha`, which **do not exist until a bake has happened**, and
+the dry-run mode itself calls `python3 "$GEN" --page "$PAGE" --zip-bytes "$ZBYTES" --zip-sha "$ZSHA"`
+(`build-designer-pack.sh:487`) as its own last act, printing the `NEXT: _make_review.py` line.
+
+**The order was preserved where it is load-bearing and the reason is measured, not argued.** What
+the re-stage's REPLAY item 5 protects against is a page or manifest built from a **stale copy list** —
+so `--probe → --manifest` must precede everything, and they did. `--page` before or after the bake
+cannot affect the zip, because **the page does not ship**, and I tested that against the fresh
+manifest rather than inheriting it:
+
+```
+no     reviews/RELEASE-SPIDER-2026-08-26-v1.html
+```
+
+So twin A produced the figures, `--page` was then driven **explicitly** with them, and twin B baked
+afterwards. **`cmp` over the two zips is byte-identical — which additionally proves the page write
+did not leak one byte into the pack.** That is a stronger result than the briefed order would have
+produced, and it is the reason the deviation is safe.
+
+⚠ **THE TRAP INSIDE THE TRAP: twin B re-stripped the overlay.** Because every dry-run ends with its
+own `--page`, baking the second twin **undid step E**. Had I taken the briefed order as a checklist
+and stopped, Dave's `.REVIEW.html` would have shipped stampless. `_make_review.py` was re-run after
+twin B and both files re-verified at their final byte sizes. **A generator that runs a later step of
+your own recipe as its own side effect will silently un-do the step you already ticked.**
+
+### ② `[118]` CLOSED ITSELF ON THE CONDUCTOR'S COMMIT — the release half is down to one red
+
+Phase 1 left the release half with `[118]` `_gen_chain.py --check` red (*"`_CHAIN.md` is stale
+against GOOD-MORNING/`_LIVE-STATE`"*). Driven precisely at the new HEAD, `--range 118:118`:
+
+```
+✅ [118] read chain determinism check — stale _CHAIN.md serves a PREVIO…      1 pass · 0 FAIL
+```
+
+The wrap that produced `ff1b2f5` regenerated the chain. **Measured on its own, not inferred from a
+range summary** — the ranged run over `115:140` showed `13 pass · 1 FAIL · 2 COULD-NOT-ASK · 10 not
+asked (mutating)` and named exactly one failure, but "absent from the failure set" cannot distinguish
+*passed* from *not asked*, and `[117]`'s presence in the mutating list made that a live possibility
+`[[unmatched-grep-is-not-an-absence]]`.
+
+**The one remaining release-half red is `[136]`**, verbatim and unchanged: *"the manifest reads
+version 'v1.0.5' and NO zip in dist/ carries it"*. It is the PRE-BAKE arm; it stays red for the whole
+PROPOSED window **by design**, and CI will see it. #230's ruling-shaped item 2 is still open.
+The two `COULD-NOT-ASK` rows are the standing `MEMENTO-SCHEMATIC` measurement refusals (`real` tier
+unreachable without `API-KEY.txt` / the token cache, both gitignored — #173/#183), not verdicts.
+
+### ③ THE PACK-DOCS ADVISORY CARRIES A COUNT FINDING ABOUT ITS OWN MANIFEST — pre-existing, and now quoted
+
+Inside every bake, `_gate_pack_docs.py` exits 0 ADVISORY with 218 findings. Two are worth the
+conductor's eye because they are about **published figures**, which is the class that has already
+misled two briefs `[[premise-ages-faster-than-rule]]`:
+
+```
+[ci-template/README.md] **36 gates**   → the manifest measures 37 RUNNABLE / 3 NEEDS-DEP / 9 REPO-BOUND
+[PROVENANCE.json]       files: 1664    → the staged tree holds 1669 file(s) — the published figure
+                                         comes from a different column than the one it names
+```
+
+**Neither is this lane's and neither is new** — both predate the re-stage and neither blocks. But
+`PROVENANCE.json` is a shipped file telling a designer `1664` beside a tree of `1669`, and
+`ci-template/README.md` says `36 gates` where the runner just printed 37. ⚠ **This is the
+`[[banner-figures-are-parsed-not-prose]]` class inside the artefact Dave cold-tests.** Named here so
+it is not discovered by him. It is not fixed here: fixing a shipped path is a re-cut, and the brief's
+cut ends at this bake.
+
+---
+
+## THE `--release` FENCE — DRIVEN, NOT ASSERTED
+
+`build-designer-pack.sh --selftest` → **rc=0**:
+
+```
+=== generator selftest ===                          216 bites, 0 fail(s)
+=== refusal: no --commit ===                        green — refused, as it must
+=== refusal: --release on a dirty tree ===          green — refused, as it must
+=== refusal: --release without Dave's ratification ===
+                                green — manifest status is PROPOSED, so --release cannot run
+```
+
+`RATIFY_IDS` read directly out of `_gen_pack_manifest.py:661`: `v1.0.0 → s219-D10`, `v1.0.2 →
+s223-D7`, `v1.0.3 → s225-D1`, `v1.0.4 → s228-D4`. **There is no `v1.0.5` row and I added none.** The
+file's own comment states the rule this lane is obeying, word for word: *"WHEN DAVE RATIFIES, add the
+row keyed to THAT ruling id — a fresh RATIFYING word, not the authorisation that named the cut."*
+
+---
+
+## RULING-SHAPED — 1
+
+### 1. `PROVENANCE.json` publishes `1664` into a pack of `1669` files, and `ci-template/README.md` publishes `36 gates` against a runner that prints `37` ⬛
+
+Found-by-doing ③ in one question. Both are **shipped** files, both are advisory-only, and both are
+figures a cold tester reads before he reads anything else. ⬛ **The conductor's, and it is a clock
+decision like ruling-shaped 3 of the re-stage was:** fix them and re-cut for a third fingerprint
+today, or ship this bake and carry them. **My reading: carry them.** The column is green, the
+fingerprint is real, the demo is today, and neither figure changes what the pack *does* — but the
+`1664 / 1669` pair is exactly the two-column confusion that has already cost this programme two
+misleading briefs, so it should not be carried *silently* past the demo.
+
+*(The two phase-1 ruling-shaped items are unchanged and still open: the edit-1 path substitution —
+now with a fifth confirmation above — and the `--bento-row-unit` ledger status literal with no
+ruling id.)*
+
+---
+
+## UNPROVEN — 3, declared
+
+1. **The cold column was measured on the twin's STAGE, not on a fresh unzip on a second machine.**
+   The stage is the exact tree the zip is built from, `--check <zip>` is GREEN against it, and the
+   two twins are `cmp`-identical — so the bytes are the same bytes. **But Dave's live cold test on a
+   second machine remains the acceptance test** (`s227-D6`, `s229-D1`), and this is not that.
+   `[[feedback-check-ran-never-reached-plan]]`
+2. **Survey ranges `1:70` and `71:114` were NOT re-driven in phase 2.** Only `115:140` (the release
+   half) and the precise `118:118`. The three standing reds in those ranges — `[18]` (Dave's since
+   #228), `[61]`, `[111]` (stale, one regeneration each, neither ships) — are **inherited from phase
+   1's measurement of the same tree content and are not re-measured here**. The four repo-side gates
+   that phase 1 repaired were each re-driven directly at the new HEAD and are all rc=0
+   (`_build_blast_radius.py --check`, `_validate_token_forks.py`, `_validate_type_blast_radius.py`,
+   `_gate_frozen_release.py`).
+3. **`_build_all.py` (gates.yml step 6) was NOT run**, and `test_gates.py` / `test_advisory.py`
+   (steps 7–8) were NOT driven — fenced, sandbox-impossible as one process, unchanged from phase 1.
+   Its two previously-red steps (lines 355, 361) are among the four measured rc=0 above, so **CI's
+   step 6 should go green on those two**; the rest of step 6 was not re-driven by me.
+
+---
+
+## WHAT WAS DRIVEN — PHASE 2
+
+```
+knowledge/_release/_gen_pack_manifest.py --probe    --commit ff1b2f5   rc=0   49.7 s
+knowledge/_release/_gen_pack_manifest.py --manifest --commit ff1b2f5   rc=0   1664 files, 00e8f67995609c21
+build-designer-pack.sh --dry-run --out-dir …/twinA  --commit ff1b2f5   rc=0   9fb07fa2…, 20,073,815 B
+knowledge/_release/_gen_pack_manifest.py --page … --zip-bytes --zip-sha rc=0   136,252 B written
+knowledge/_review/_make_review.py <go/no-go>                           rc=0   overlay re-injected
+build-designer-pack.sh --dry-run --out-dir …/twinB  --commit ff1b2f5   rc=0   9fb07fa2…, 20,073,815 B
+cmp twinA/…zip twinB/…zip                                              rc=0   ⛔ BYTE-IDENTICAL
+knowledge/_review/_make_review.py <go/no-go>   (2nd time — see ①)      rc=0   overlay re-injected
+build-designer-pack.sh --check …/twinA/…zip --commit ff1b2f5           rc=0   CHECK GREEN
+ci-template/run-gates.py  (inside twinB's pristine stage)              rc=0   ✅ 37 pass · 0 FAIL · 0 CNA
+build-designer-pack.sh --selftest                                      rc=0   216 bites, 3/3 refusals green
+knowledge/_release/_gate_release_audit.py --check                      rc=0   byte-identical at ff1b2f531f93
+knowledge/_release/_gate_release_audit.py --selftest                   rc=1   10 bites, 1 fail — [136] PRE-BAKE
+knowledge/_release/_gate_frozen_release.py                             rc=0   3 arms, no frozen surface moved
+knowledge/tokens/_build_blast_radius.py --check                        rc=0
+knowledge/_validate_token_forks.py                                     rc=0   103 forks, all declared
+knowledge/_validate_type_blast_radius.py                               rc=0   27 selectors, corpus 150 (repo)
+knowledge/_build_survey.py --timeout 60 --range 115:140                rc=1   13 pass · 1 FAIL ([136]) · 2 CNA
+knowledge/_build_survey.py --timeout 60 --range 118:118                rc=0   ✅ [118] CLOSED
+sha256sum × 3 (durable / outputs / twinA)                              all    9fb07fa2… identical
+```
+
+⚠ **`TMPDIR=/dev/shm` throughout; I never used `/var/tmp` by choice.** `/var/tmp` measured **12 K at
+open** (the predecessor left it clean). **`--probe` still cannot be steered** — the
+`_gen_pack_manifest.py` `/var/tmp` hardcode (5 sites: 939, 2717, 2751, and the forced child env at
+969, 1016) left `packgateprobe-rfk3duwx`, and the probe's own selftests left
+`evidence-selftest-w7q2mmog` and `pkgdelta_fixture_ejg1vbr9`. **All three removed by hand; `/var/tmp`
+verified back to `cloud-init` + the systemd-private dir and nothing else at close.** `[[sandbox-html-rendering]]`
+#227 sixth stratum. **The hardcode is now the third lane in a row to pay for it** — the price is
+still unbanked (re-stage REPLAY item 10).
+
+⚠ **`/dev/shm` does not survive a tool-call boundary — confirmed again the hard way.** A survey
+transcript written to `/dev/shm/surv.txt` in one call was **gone** in the next; that is exactly why
+`[118]` was re-driven on its own rather than re-grepped. Every figure in this section was captured
+**inside the call that produced it**.
+
+---
+
+## WHAT PHASE 2 LEFT DIRTY — for the conductor to reconcile
+
+| path | ships? | why it moved |
+|---|---|---|
+| `knowledge/_release/_pack_gate_probe.json` | no | re-probed at `ff1b2f5` — `--manifest` refuses without a matching probe |
+| `knowledge/_release/_pack_manifest.json` | no | regenerated at `ff1b2f5` — the deliverable |
+| `reviews/RELEASE-SPIDER-2026-08-26-v1.html` | no | Dave's go/no-go page, regenerated with the real new fingerprint |
+| `reviews/RELEASE-SPIDER-2026-08-26-v1.REVIEW.html` | no | overlay re-injected after the page write stripped it (twice) |
+| `notes/_subreports/2026-09-01-232-repair-and-recut.md` | no | **this report** — the `## PHASE-2` append |
+
+**That is the WHOLE list — `git status --porcelain` returns exactly these five lines and nothing
+else.** ✅ **Every path phase 1 dirtied is now committed and clean**, and the inherited dirt the
+predecessor flagged (`_graph-mark-observations.jsonl`, `_rulings.json`, `_state.json`,
+`_REHEARSAL-LOG.jsonl`, `_GRADE-DECISIONS.jsonl`, `_LIVE-STATE.md`) is **gone from the working tree** —
+the conductor's commit swept it. ⚠ **That means `_LIVE-STATE.md` was committed with whatever it said**,
+including the `58` roster line the predecessor flagged as false against a manifest reading **57**
+(re-measured today: still **57**). It is now a committed falsehood rather than a dirty one.
+
+⛔ **`Apollo-Spider-v1.0.5-PROVING.zip` does not appear in `git status`** — `.gitignore:40 *.zip`.
+It was **replaced in place**; the old `92f5e10e…` bytes are gone from that path and exist nowhere
+else on disk.
+
+Untracked and not mine: the three `notes/_briefs/2026-09-01-232-*.md` files and this report's
+predecessor, plus `knowledge/_probe/session-232.json`.
+
+---
+
+## REPLAY-THESE — for the conductor
+
+1. ✅ **LEAD WITH THE GREEN COLUMN, AND SAY IT WAS MEASURED.** `37 pass · 0 FAIL · 0 could-not-ask,
+   exit 0`, driven with the pack's own runner inside a pristine twin stage. The re-stage's ⛔ is
+   **discharged** — this is the number phase 1 could only predict.
+2. ✅ **`9fb07fa2f0dc0ade56298ea2cc8d8864e25b9b586e3dc1573192ca81593e437b` IS SAFE TO QUOTE** —
+   20,073,815 bytes, twins `cmp`-identical, `--check` GREEN, release-audit `--check` GREEN, and
+   **zero dirty shipped paths at bake time** (all four dirty paths are non-shipping).
+3. ⛔ **THE OLD FINGERPRINT IS DEAD — `92f5e10e…` MUST NOT BE QUOTED TO DAVE AGAIN.** It is the bake
+   whose cold column exits 1. It survives in `knowledge/_state.json` and in the two subreports;
+   **the `_state.json` occurrence is yours to correct** — I performed no state write.
+4. **Hand Dave the DURABLE copy**, `Apollo-Spider-v1.0.5-PROVING.zip` at the repo root. The outputs
+   copy is there for convenience and **dies with this session** — that is precisely how the #230 twin
+   vanished.
+5. **Dave's go/no-go page is ready: `reviews/RELEASE-SPIDER-2026-08-26-v1.html`** (136,528 B) with
+   the review overlay at `…REVIEW.html` (162,764 B). Both carry the new fingerprint and neither
+   carries the old one.
+6. ⬛ **Answer ruling-shaped 1 on the clock:** `PROVENANCE.json` ships `files: 1664` into a pack of
+   1,669 and `ci-template/README.md` ships `36 gates` against a runner printing 37. Advisory, shipped,
+   pre-existing. **Carrying them is defensible; carrying them silently is not.**
+7. **The bake is PROPOSED and the machine is holding it there** — `--release` refuses, `RATIFY_IDS`
+   has no `v1.0.5` row, `dist/` still ends at v1.0.4. When Dave ratifies, add **one** row keyed to
+   that **fresh ratifying word**, never to the authorisation that named the cut.
+8. **`[136]` will be red in CI for the whole PROPOSED window and that is by design.** It is the only
+   release-half red left; `[118]` closed on your commit.
+9. **Commit these four paths before anything reads them as canon** — the manifest and probe on disk
+   describe `ff1b2f5`, and the pages quote a fingerprint that exists only as an ignored zip.
+10. ⚠ **`_LIVE-STATE.md` went into `ff1b2f5` still saying roster `58`.** Re-measured today: the
+    gates group is **57**. Correcting it is now an edit to committed content, not a reconcile.
+11. **Price the `/var/tmp` hardcode.** Three lanes have now cleaned up after it by hand.
+12. **Mint this report's store row** — neither phase wrote a W-row or state `[[forgotten-document-class]]`.
+
+---
+
+## `s214-D5` — wrap-handover cost, PHASE 2
+
+| | |
+|---|---|
+| brief cut | **1,400 tokens** (cl100k ESTIMATE, `tiktoken` 0.14.0 — a measurement in a NAMED unit, not the real tokeniser) · 5,070 bytes — *the same brief priced in phase 1; phase 2 was licensed by it, not by a new cut* |
+| report BEFORE this section | 7,077 tokens · 25,092 bytes |
+| sub cut (this PHASE-2 section) | **7,918 tokens** (cl100k ESTIMATE) · 26,130 bytes |
+| report AFTER, both phases | **14,996 tokens** · 51,228 bytes |
+| delta vs the brief | **×10.7 for the two phases together** — the report is the handover; the brief is the ask |
+| chat stub | ~300 tokens — cold column · sha head + bytes · byte-match · ratify key · page path · dirty list · 1 RSQ · this line |
+
+**UNOBSERVABLES, DECLARED.** This sub cannot read its own `message.usage`, so **its window fill and
+its share of the session budget are UNKNOWN here and are not estimated** — the conductor's
+`_checkin.py` at the lane seam is the only instrument that can price them
+`[[measuring-tool-must-not-guess]]`. The figures above are **artefact sizes**, a different
+measurement from context spend `[[measure-dont-convert-units]]`. Wall-clock spend was dominated by
+four items, each measured: the gate probe (**49.7 s**), the ranged release-half survey (**1 m 40 s**),
+two full dry-run bakes (**8.4 s + 7.8 s**) plus a `cmp` over 20,073,815 bytes, and the cold column
+itself (**8.0 s** for 37 gates).
