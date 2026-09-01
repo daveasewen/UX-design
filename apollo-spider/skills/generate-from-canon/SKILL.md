@@ -89,12 +89,19 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 
     Then go bento-first unless the designer says otherwise. **A skip is a yes**, exactly
     as in `grill-me`: a shrug never counts as a no, and you never wait for permission to
-    proceed. Bento-first means the wall is `.c-bento` / `.c-bento__grid` /
-    `.c-bento__tile` from `knowledge/canon/canon.css`, with the dashboard role's defaults
-    read from `_bento_edit_rails.json` and `showroom/_foundations/bento.html` as the
-    worked example. ⚠ There is no bento snippet in `knowledge/snippets/` yet, so the
-    bento wall is the one place rule 2 sends you to canon and the foundation page instead
-    — say so in the used/missing note; do not treat it as licence to invent elsewhere.
+    proceed. Bento-first means you **splice the snippet**, not re-draw the wall: start
+    from `knowledge/snippets/Template-dashboard-bento.reference.html` and edit it down to
+    the brief. Rule 2 applies here like everywhere else — hand-rolling a bento wall from
+    `showroom/_foundations/bento.html` or straight from canon invents defects. The
+    snippet's own scope is `.cn-template-dashboard-bento` over `.c-bento` /
+    `.c-bento__grid` / `.c-bento__tile`; the dashboard role's dials read from
+    `_bento_edit_rails.json`, and `showroom/_foundations/bento.html` stays the worked
+    example you read, not the thing you copy.
+    ⚠ **If the request is not dashboard-shaped and no template snippet fits, ask.** Do
+    not reach for a template that is merely close, and do not compose a template's worth
+    of screen out of loose components without saying that is what you are doing.
+    <!-- W-333 (banked, #232): this routing step lives here for now. Its permanent home —
+         routing off the knowledge graph rather than off a skill rule — is Dave's to rule. -->
     ⚠ `Template-dashboard.reference.html` is `.l-grid`-based, not bento. It is a
     legitimate non-bento dashboard and it is **not** the answer to "build me a dashboard"
     unless the designer answered the question above with a no.

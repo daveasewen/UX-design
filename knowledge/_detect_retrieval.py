@@ -44,9 +44,13 @@ GRADES, per component family the built file ATTEMPTS:
   NO-VERDICT  fewer than --min-shingles belonging shingles — NAMED, never defaulted to a
               pass ([[measuring-tool-must-not-guess]]).
 
-⛔ THE THRESHOLD IS NOT THIS FILE'S TO CHOOSE. The defaults below are PLACEHOLDERS carried
-so the script runs; where SPLICED ends and PARAPHRASE begins is Dave's dial, put to him on
-`reviews/DETECTOR-READINGS-2026-08-31-v1.html`. Change them only on his word.
+⛔ THE THRESHOLD IS NOT THIS FILE'S TO CHOOSE, AND ONE OF THE TWO IS NOW RULED.
+`--threshold-spliced` is RULED at 0.90 by `s232-D1` (2026-09-01, dial B), on the readings
+put to Dave on `reviews/DETECTOR-READINGS-2026-08-31-v1.html`. The value did not move —
+0.90 was already the carried default — but it is no longer a placeholder: it is his word,
+and it changes only on another one.
+`--threshold-absent` (0.55) is STILL A PLACEHOLDER and still awaits him. s232-D1 ruled
+where SPLICED ends; where PARAPHRASE ends and ABSENT begins was not put and is not ruled.
 
 EVERYTHING IS DERIVED AT RUN TIME from `knowledge/snippets/*.reference.html` — the family
 list, the canon class vocabulary, the distinctive ("own") classes and the shingle
@@ -62,8 +66,8 @@ REFUSALS are loud, named and non-zero ([[a-crash-is-not-a-fail]]):
 USAGE
   python3 knowledge/_detect_retrieval.py <built.html> [more.html ...] [options]
     --snippets DIR          default: <this file's dir>/snippets
-    --threshold-spliced F   default 0.90   (PLACEHOLDER — Dave's dial)
-    --threshold-absent F    default 0.55   (PLACEHOLDER — Dave's dial)
+    --threshold-spliced F   default 0.90   (RULED s232-D1, 2026-09-01 — dial B)
+    --threshold-absent F    default 0.55   (PLACEHOLDER — Dave's dial, still unruled)
     --min-shingles N        default 8
     --df-own N              default 3   a class is a family's OWN if <= N snippets carry it
     --evidence N            default 6   missed-shingle lines printed per family
@@ -91,9 +95,9 @@ from _htmlmask import mask_comments   # the ONE comment mask (#211) — a class 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_SNIPPETS = os.path.join(HERE, "snippets")
 
-# ⛔ PLACEHOLDERS. Dave's dial — see the docstring and the readings page.
-T_SPLICED = 0.90
-T_ABSENT = 0.55
+# Dave's dials — see the docstring and the readings page.
+T_SPLICED = 0.90        # RULED s232-D1 (2026-09-01, dial B). Not a placeholder. His word moves it.
+T_ABSENT = 0.55         # ⛔ STILL A PLACEHOLDER — not put to him, not ruled.
 MIN_SHINGLES = 8
 DF_OWN = 3
 ANC_K = 3               # element + 2 canon ancestors
@@ -534,8 +538,8 @@ def print_text(report, evidence_n):
     print("scope   %s · %d elements · %d structural shingles"
           % (report["scope"], report["elements"], report["built_shingles"]))
     t = report["thresholds"]
-    print("dial    SPLICED >= %.2f · PARAPHRASE >= %.2f · min-shingles %d   "
-          "(PLACEHOLDERS — Dave's to rule)" % (t["spliced"], t["absent"], t["min_shingles"]))
+    print("dial    SPLICED >= %.2f (RULED s232-D1) · PARAPHRASE >= %.2f (PLACEHOLDER — Dave's "
+          "to rule) · min-shingles %d" % (t["spliced"], t["absent"], t["min_shingles"]))
     if not report["families"]:
         print("  NO FAMILY ATTEMPTED — nothing graded. This is not a pass.")
         return
