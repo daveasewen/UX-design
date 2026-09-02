@@ -5271,6 +5271,39 @@
    "commit 1dea10e - the #233 wrap that proposed a validator arm and a provenance receipt the gate checks"
   ],
   "status": "ruled"
+ },
+ {
+  "id": "s235-D1",
+  "ruled": "THE RECEIPT IS KEYED ON A CONTENT HASH, NOT A FILENAME OR SLUG - the provenance receipt a generated page carries identifies its source snippet by a content hash of the spliced region (the #231 borrow-ledger precedent), because filenames and slugs can be renamed without the page changing; filename/slug/pack version may ride along in the receipt for the human reader but the gate COMPARES on the hash",
+  "date": "2026-09-02",
+  "by": "Dave",
+  "says": "Dave at #235 opener, on rC Q1 (the receipt identity key: filename / slug / content hash): 'I'd go with your recommendation' - the recommendation being content hash 'since filenames and slugs can be renamed without the page changing'. rC's priced cost accepted with it: the hash changes on every regen serial, so a receipt is valid against the pack version it was minted from, never across cuts. Extends s234-D6 (the gate parses the receipt first) and names its key.",
+  "governs": [
+   "knowledge/_validate_screen.py",
+   "notes/_briefs/2026-09-02-234-v106-brief.md"
+  ],
+  "evidence": [
+   "chat #235 2026-09-02 - Dave's 'I'd go with your recommendation', quoting the gate-name + identity-key line, quoted in says",
+   "commit 0f77b1a - the #234 wrap that inscribed s234-D6 and filed rC with Q1 open"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s235-D2",
+  "ruled": "THE NEW L1 GATE IS NAMED _validate_receipt.py - the module _validate_screen.py <path> chains into first, which parses the page's provenance receipt, diffs the receipt against its source snippet (keyed by content hash, s235-D1) and checks the declared behaviour address is loaded by the page; _validate_behaviour.py stays what ADR-0015 made it",
+  "date": "2026-09-02",
+  "by": "Dave",
+  "says": "Dave at #235 opener, closing the 'new gate NAME owed' item on s234-D6 and the v1.0.6 brief L1: '_validate_receipt.py it is'. Recommended because the name says what the gate reads first, and no file by that name existed (find at inscription: _validate_screen.py and _validate_behaviour.py present, _validate_receipt.py absent).",
+  "governs": [
+   "knowledge/_validate_receipt.py",
+   "knowledge/_validate_screen.py",
+   "notes/_briefs/2026-09-02-234-v106-brief.md"
+  ],
+  "evidence": [
+   "chat #235 2026-09-02 - Dave's '_validate_receipt.py it is', quoted in says",
+   "commit 0f77b1a - the #234 wrap that inscribed s234-D6 with the gate name left owed"
+  ],
+  "status": "ruled"
  }
 ]
 }

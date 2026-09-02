@@ -4,6 +4,12 @@ Composed-screen pipeline runner — puts a *.canon.html screen through the SAME 
 snippets pass, instead of trusting a hand audit. "Verification = enforcement."
 
 Runs, on each composed screen:
+  0. receipt      — _validate_receipt (s235-D2): PARSE the page's #provenance-receipt FIRST,
+                    re-hash every spliced region against it (s235-D1 — the key is a content
+                    hash of the page's own bytes) and check the declared behaviour address is
+                    loaded. s234-D6: "the gate's first act is to PARSE it, so invention is a
+                    comparison, not a judgement." ⚠ RATCHET POSTURE, and it is NOT ruled —
+                    see THE RECEIPT STEP below.
   1. compose      — _validate_compose checks (rogue hex, no .c-/.cn- redefinition, classes
                     resolve, no native/accent-color control reinvention)
   2. icon-source  — _validate_icons logic: every inline <svg> path must byte-match the
@@ -15,7 +21,20 @@ Runs, on each composed screen:
 Exits non-zero if any gate fails. Writes ONE record per subject —
 `_screen-gate/<subject>.md` — plus `_SCREEN-GATE.md`, an index rebuilt from that directory
 (#230 T5: the old wholesale rewrite meant gating one screen erased the record of every other).
-Usage:  python3 _validate_screen.py [--render] [path ...]   (default: _fitness-test/*.canon.html)
+THE RECEIPT STEP — WHAT BLOCKS, AND WHAT IS STILL OWED (#235 L1, W-344)
+  A page that CARRIES a receipt is held to it: a region whose bytes no longer hash to the
+  receipt is a hard FAIL, here and standalone. That is the whole point, and it bites today.
+  A page that carries NO receipt reports `UNPROVEN:NO-RECEIPT` and does NOT block — because
+  every screen in this repo predates the receipt, and a step that reds the entire existing
+  population on the day it lands is [[gate-cannot-pass-in-one-environment]], not enforcement.
+  ⛔ THE POSTURE IS A BUILD JUDGMENT, NOT A RULING. s234-D6 rules that the gate parses the
+  receipt first; it does not say when a missing receipt starts blocking. `--receipt-strict`
+  (or APOLLO_RECEIPT_STRICT=1) flips NO-RECEIPT to blocking TODAY, so the switch exists
+  before the ruling does. Standalone `_validate_receipt.py` always exits non-zero on
+  NO-RECEIPT — the downgrade lives only in this chained step, and prints itself.
+
+Usage:  python3 _validate_screen.py [--render] [--receipt-strict] [path ...]
+        (default: _fitness-test/*.canon.html)
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -29,6 +48,29 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 icons = importlib.import_module("_validate_icons")
 a11y  = importlib.import_module("_validate_a11y")
+receipt = importlib.import_module("_validate_receipt")     # step 0 (s235-D2)
+
+
+def gate_receipt(path, strict):
+    """Step 0 — the provenance receipt. Returns (lines, blocking_fails).
+
+    NO-RECEIPT is the one verdict this chained step may downgrade, and only to
+    `UNPROVEN:` — never to silence and never into the green (ADR-0016: CLAIMED is not a
+    soft PROVEN, so an unmeasured page must SAY it is unmeasured). Everything else — a
+    region that no longer hashes, a region the receipt forgot, a behaviour address the page
+    does not load — blocks."""
+    lines, fails, unproven = receipt.check(path)
+    if fails == ["NO-RECEIPT"] and not strict:
+        return (["- receipt: UNPROVEN:NO-RECEIPT — this page carries no #provenance-receipt, "
+                 "so nothing about its provenance was measured. Mint one with "
+                 "`python3 knowledge/gen_provenance_receipt.py --mint <path>`; "
+                 "run with --receipt-strict to make this block."], [])
+    out = ["- receipt: " + ("✅ " + str(len([l for l in lines if l.startswith("- ✅")]))
+                            + " region(s) re-hashed and matched"
+                            if not fails else "❌ " + ", ".join(sorted(set(fails))))]
+    out += ["  " + l for l in lines if l.startswith("FAIL")]
+    out += ["  " + u for u in unproven]
+    return out, fails
 
 def gate_icons(html):
     lib = icons.build_library()
@@ -84,6 +126,8 @@ def write_index():
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     render = "--render" in sys.argv
+    receipt_strict = ("--receipt-strict" in sys.argv
+                      or os.environ.get("APOLLO_RECEIPT_STRICT") == "1")
     files = args or sorted(glob.glob(os.path.join(HERE, "_fitness-test", "*.canon.html")))
     report = ["# Composed-screen gate — full pipeline on *.canon.html\n"]
     subjects = {}          # name -> its own lines (its own home)
@@ -93,6 +137,9 @@ def main():
         html = open(path, encoding="utf-8").read()
         lines = []
         report.append(f"## {name}")
+        # 0. receipt (s235-D2) — parsed FIRST, before any judgement-shaped check
+        rl, rf = gate_receipt(path, receipt_strict)
+        lines += rl
         # 1. compose
         cf = gate_compose(path)
         lines.append("- compose: " + ("✅" if not cf else "❌ " + "; ".join(cf)))
@@ -104,9 +151,9 @@ def main():
         _, af, aw, *_rest = a11y.check(path)
         lines.append("- a11y: " + ("✅" if not af else "❌ " + "; ".join(af)) +
                      (f"  (warn: {'; '.join(aw)})" if aw else ""))
-        if cf or icf or af:
+        if cf or icf or af or rf:
             ok = False
-        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af) else "FAIL ❌"))
+        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf) else "FAIL ❌"))
         subjects[name] = lines
         report += lines[1:]
     if render:

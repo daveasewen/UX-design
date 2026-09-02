@@ -1,0 +1,35 @@
+{
+ "$what": "COMPOSITION SPEC for knowledge/gen_provenance_receipt.py --compose. Every region below is a byte-identical cut from the named snippet; nothing here authors markup. Regenerate with:  python3 knowledge/gen_provenance_receipt.py --compose dashboards/international-banking-dashboard.regen-v2-receipt.spec.json -o dashboards/international-banking-dashboard.regen-v2-receipt.html",
+ "$scope": "⚠ NOT a replacement for international-banking-dashboard.regen-v1.html. That page is the #227 full regen (11 components, hand-composed by the generate-from-canon skill, no receipt). This is the RECEIPT-BEARING cut of the same dashboard's core parts, built to DRIVE _validate_receipt.py on a real generated artefact (s234-D6 lane L1, W-344). The component list is a subset of regen-v1's own USED ledger.",
+ "$scriptField": "Left to the generator. It reads AUTO-BEHAVIOUR names out of the snippet and resolves them in component-types.json $behaviour. meta `behaviour` prose is NOT read as an address — typing it is s234-D5 (L2).",
+ "title": "Global treasury overview — receipt-bearing regen (v2)",
+ "pack": "1.0.5",
+ "theme": "light",
+ "regions": [
+  {"snippet": "Page-header-lockup", "kind": "style"},
+  {"snippet": "Stat-card", "kind": "style"},
+  {"snippet": "Chart-line", "kind": "style"},
+  {"snippet": "List-items", "kind": "style"},
+  {"snippet": "Pagination", "kind": "style"},
+
+  {"snippet": "Page-header-lockup", "select": ".ph", "kind": "markup",
+   "region": "Page-header-lockup#markup",
+   "variant": "arrangement A", "props": {"eyebrow": true, "actions": true}},
+  {"snippet": "Stat-card", "select": ".stat-card", "kind": "markup",
+   "region": "Stat-card#markup",
+   "variant": "figure-4 display", "props": {"delta": "up"}},
+  {"snippet": "Chart-line", "select": ".dv", "kind": "markup",
+   "region": "Chart-line#markup",
+   "variant": "line", "props": {"animate": true, "legend": true}},
+  {"snippet": "List-items", "select": ".list", "kind": "markup",
+   "region": "List-items#markup",
+   "variant": "row + avatar + status + amount", "props": {}},
+  {"snippet": "Pagination", "select": ".pg", "kind": "markup",
+   "region": "Pagination#markup", "variant": "numbered", "props": {}},
+
+  {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-behaviour",
+   "region": "Chart-line#behaviour"},
+  {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-legend",
+   "region": "Chart-line#legend-behaviour"}
+ ]
+}

@@ -45,6 +45,7 @@ shown.
 | your question | run |
 |---|---|
 | **Is this screen I composed sound?** — hex, local redefinitions, undefined classes, invented icons, reduced-motion, target size, all in one pass | `python3 knowledge/_validate_screen.py path/to/your-screen.html` |
+| **Did I really retrieve this, or rebuild it from memory?** — step 0 of the screen gate: re-hashes every spliced region against the page's own provenance receipt, so invention is a comparison and not a judgement | `python3 knowledge/_validate_receipt.py path/to/your-screen.html` |
 | **Have I hardcoded spacing, radius or border width?** | `python3 knowledge/_validate_no_hardcode.py` |
 | **Is my motion in CSS where it belongs, not in JS?** | `python3 knowledge/_validate_css_governed.py` |
 | **Is every border-radius token-bound?** | `python3 knowledge/_validate_radius.py` |
