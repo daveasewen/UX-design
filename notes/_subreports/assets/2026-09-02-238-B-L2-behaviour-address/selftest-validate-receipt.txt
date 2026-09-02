@@ -1,0 +1,36 @@
+  ✅ A  faithful splice -> PASS | unproven=2
+  ✅ B  ONE BYTE changed inside the region -> HASH-MISMATCH | unproven=1
+  ✅ C  no receipt at all -> NO-RECEIPT
+  ✅ D  receipt present but not JSON -> RECEIPT-UNPARSEABLE
+  ✅ E  receipted region absent from the page -> REGION-MISSING | unproven=1
+  ✅ F  page splices a region the receipt never mentions -> REGION-UNRECEIPTED | unproven=2
+  ✅ G  behaviour declared, not loaded -> BEHAVIOUR-NOT-LOADED | unproven=2
+  ✅ H  behaviour declared AND inlined -> PASS | unproven=2
+  ✅ I  retrievalSet null is UNPROVEN, not a pass and not a fail -> PASS | unproven=2
+  ✅ J  meta TYPED, script null (passive) — a positive 'no script', never a fail -> PASS | unproven=1
+  ✅ K  meta address PRESENT (#script) and the page carries the snippet's script VERBATIM -> PASS | unproven=1
+  ✅ L  meta address PRESENT and the page carries NO script -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ M  meta address PRESENT and the page carries a ONE-BYTE tampered copy -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ N  meta address PRESENT and the page carries a whitespace-shifted copy (bytes are the key) -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ N2 …and the page carries the script as application/json (data, not executable) -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ O  meta address PRESENT (file form) and the page loads it with <script src> -> PASS | unproven=1
+  ✅ O2 meta address PRESENT (file form) and the page inlines an AUTO-BEHAVIOUR demo block -> PASS | unproven=1
+  ✅ O3 meta address PRESENT (file form) and the page loads nothing -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ P  meta address WRONG — names a file that does not exist -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+  ✅ Q  meta address WRONG — outside the grammar (node-id form) -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+  ✅ Q2 meta address WRONG — #script on the component's own snippet, which does not exist -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+  ✅ Q3 meta address WRONG — #script on the component's own snippet, which has no inline executable script -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+  ✅ R  receipt `script` DISAGREES with the meta (the copy drifted from the home) -> BEHAVIOUR-ADDRESS-DISAGREES | unproven=1
+  ✅ R2 receipt `script` AGREES with the meta — no double jeopardy -> PASS | unproven=1
+  ✅ S  meta PROSE (pre-s234-D5) — UNPROVEN:behaviour-address, not a pass and not a fail -> PASS | unproven=2
+  ✅ T  meta with NO behaviour key — UNPROVEN too (meta:NONE) -> PASS | unproven=2
+  ✅ U  meta partial UNREGISTERED in component-types.json -> BEHAVIOUR-PARTIAL-UNREGISTERED | unproven=1
+  ✅ V  meta partial REGISTERED and the page carries no AUTO-BEHAVIOUR block of that name -> BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ W  meta partial REGISTERED and the page carries the AUTO-BEHAVIOUR demo-b block -> PASS | unproven=1
+  ✅ X  #script on a snippet whose only script is an AUTO-BEHAVIOUR payload resolves to nothing -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+  ✅ X2 …and with an unloaded partial declared too, BOTH defects are named (no first-obstacle-only) -> BEHAVIOUR-ADDRESS-UNRESOLVABLE,BEHAVIOUR-NOT-LOADED | unproven=1
+  ✅ Y  meta address WRONG — a #script pointing at ANOTHER component's snippet is FOREIGN, even when the page carries that other script -> BEHAVIOUR-ADDRESS-FOREIGN | unproven=1
+  ✅ Y2 …but the OWN snippet named in another case is not foreign (case-insensitive stems) -> PASS | unproven=1
+  ✅ Z  inline_scripts ignores a commented-out <script> and keeps the live one, raw bytes
+  ✅ Z2 #script on a snippet whose only <script> sits inside an HTML comment resolves to nothing -> BEHAVIOUR-ADDRESS-UNRESOLVABLE | unproven=1
+SELFTEST: PASS ✅

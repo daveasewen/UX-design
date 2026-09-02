@@ -1,0 +1,32 @@
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+400 ESCAPED   red   after-write           1/1/1   0        0/0/0  resolvedBy-without-any-quote
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+401 ESCAPED   red   after-write           1/1/1   0        0/0/0  sources-id-swapped-to-another-row
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+402 ESCAPED   red   after-write           1/1/1   0        0/0/0  duplicate-polarity-body-under-new-id
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+403 ESCAPED   red   as-is                 0/0/0   0        0/0/0  polarities.json-is-a-symlink-outside-the-home
+                                names=[] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+---------------------------------------------------------------------
+verdicts: ESCAPED 4 · arms 4
+  [401] pl-04 derived with r1_id=tn-02 factory_default='Nothing is removed without a named destination; progressive disclosure only where Q3 densi'
+  [402] edges after the duplicate: {'edges': 23, 'polarities_with_edges': 19, 'polarities_without_edges': 12, 'parties_not_edgeable': 17}
+
+== ARGV: flags that contradict each other
+  --add-polarity FILE --dry-run --write : rc=0 polarities.json changed=True  (a dry run that writes)
+  --check --write                        : rc=0 _generated changed=True  (a check that writes)
+
+== SELFTEST cleanup: P pitfall 9 says 'the tempdir is removed on every path'
+  --selftest --brain <absent>: rc=1 traceback=True leftover tempdirs=['/dev/shm/polarity-selftest-geuh1dip']
+  (the rmtree at the end of selftest() is not in a finally: an exception before the table skips it)
+
+== CONTROL: --selftest on the LIVE home (read-only over knowledge/brain; copies under /dev/shm)
+  rc=0 :: ['arms 55 · red arms 45 (went red by name 45/45) · green arms 7 · no-fire/77 arms 3 · failures 0', '✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal']
+
+== 'A gate that is not a consumer of every commit is not a gate' — where does a raw `git commit` go?
+  .git/hooks live entries (non-.sample): []
+  hook lines mentioning the polarity gate: []

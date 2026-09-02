@@ -612,6 +612,24 @@ STEPS = [
     ("pack ship-list drift — how far behind HEAD the manifest is (ADVISORY, ⬛ re-cutting is "
      "Dave's) (#219)",
      "_release/_gate_release_audit.py", ["--drift"]),
+    # ── #238 lane P · THE POLARITY GATE (s238-D7) ──────────────────────────────────────────────
+    # APPENDED, never inserted (the note at #193 above: step indices are quoted elsewhere). A CHECK,
+    # not a regen: it reads knowledge/brain/ (the polarity home, s238-D1) and knowledge/_rulings.json,
+    # both of which no step in the regen serial writes, so its position against that serial is
+    # free and it sits last. Five refusals (dangling ref · untyped link · judgement field · authored
+    # edge file · typed status), then a CONTENT freshness check of the three derived files under
+    # knowledge/brain/_generated/ (status with a clock, s238-D3; edges, a derived view, s238-D1;
+    # the s238-D5 defaults declaration). Routed GATE like its --check siblings: red + remedy at the
+    # end, never a silent pass. The selftest is ABORT, like every sibling selftest here: a refusal
+    # that has stopped biting is a silent instrument. The same `--check` runs at the commit seam
+    # (_git_commit.sh), which is what makes it a consumer of every commit (s238-D7's last sentence).
+    # ⚠ The route rows land in the SAME edit as these two entries (the (a)-class omission, recorded
+    # four times above).
+    ("polarity gate — five refusals + content-fresh derived status/edges/declaration "
+     "(BLOCKING, s238-D7, built #238)",
+     "_validate_polarities.py", ["--check"]),
+    ("polarity gate selftest — control + every refusal arm on a copy of the real rows (s238-D7)",
+     "_validate_polarities.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -983,6 +1001,19 @@ ROUTE_ROWS = [
      "\n❌ governs matcher selftest failed (exit {code}) — the ruling-to-path matcher that "
      "`_capture_gate.py --selftest` runs as its trigger-index arm ([12]/[13]) is broken or too "
      "loose. Run: python3 knowledge/_governs.py --selftest"),
+    # ── #238 lane P · the polarity gate's two rows, landing in the SAME edit as its STEPS entries.
+    # The label strings are ROUTING JOIN KEYS duplicated verbatim in STEPS — never edit one alone.
+    ("polarity gate — five refusals + content-fresh derived status/edges/declaration "
+     "(BLOCKING, s238-D7, built #238)", GATE,
+     "\n❌ polarity gate failed (exit {code}) — a polarity node in knowledge/brain/polarities.json "
+     "carries a ref that does not resolve, an untyped link, a judgement field, a typed status, or "
+     "an authored file sits at a generated path — OR the derived files under "
+     "knowledge/brain/_generated/ are stale against the home. The refusal is NAMED in the output "
+     "above (R1..R5 / STALE-GENERATED / MISSING-GENERATED). Fix the node, or for staleness run: "
+     "python3 knowledge/_validate_polarities.py --write   (s238-D7; the same --check runs at the "
+     "commit seam)"),
+    ("polarity gate selftest — control + every refusal arm on a copy of the real rows (s238-D7)",
+     ABORT, None),
 ]
 
 

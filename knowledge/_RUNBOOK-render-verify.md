@@ -11,6 +11,62 @@ Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** i
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.
 
+★★ **EIGHTH STRATUM 2026-09-02 (#238, lane M) — THREE STRATA DIED OF ONE CLASS: A STORED ARTEFACT WHOSE
+ABSOLUTE PATH RESOLVES TO NOTHING AT THE SEAT THAT READS IT. THE FIX IS PER-SEAT GENERATION IN THE SAME
+CALL, ASSERTED BEFORE ANY LAUNCH — `source knowledge/_render/seat_env.sh`.** *(Addition only; the seven
+strata below stand as history. The brief for this stratum called it the "seventh" — the file already
+carried #233's seventh, so this is the eighth; ordinal corrected, nothing else.)* The causes, all one shape:
+1. **FIFTH STRATUM (#219): a lib dir that still exists but is HOLLOW** — `ls -A` empty, and the launch
+   reads as *"recipe broken"*.
+2. **Lane T finding 11 (#237): the stored `outputs/_render-env-229/fonts.conf` bakes ANOTHER seat's mount**
+   into `<cachedir>` and `<dir>` (`/sessions/determined-affectionate-euler/…`). Measured today: **all three
+   stored confs** (`_render-env-229`, `-230`, `-231`) each carry a **different** seat name
+   (`determined-affectionate-euler` / `gracious-inspiring-wozniak` / `gifted-kind-allen`) — **0/3 resolve at
+   this seat** (`wonderful-adoring-euler`, from `pwd`).
+3. **NEW (#238): the same env's font FARM is symlinks with ABSOLUTE foreign-seat targets.** `ls` shows 10
+   links; `[ -e ]` resolves **0/10** here. A conf pointed at that farm would expose 0 HSBC faces and fall
+   back SILENTLY — the #138 "green that cannot fail" shape, in reverse (the page renders in a stock face and
+   looks fine). *(Its `.uuid.TMP-*` stray is #138's fontconfig marker, harmless inside gitignored `outputs/`.)*
+
+**Why it recurs:** the seat name is IN the mount path and changes every session, and **`/dev/shm` is
+per-call** (measured: a marker written in one bash call is absent in the next). So the seat-bound half
+(`fonts.conf`, the farm, fccache) can only ever be **generated in the render call**, and only seat-FREE
+bytes (`pylibs`, `pw-browsers`, `chromelibs`) may be reused from the mount — and those are **asserted, never
+trusted by name** (`ls -A` not hollow → `ldd | grep -c "not found"` = 0 → `import playwright`), the fifth
+stratum's order: *ls, then ldd, never a launch attempt as the first probe*.
+
+**The recipe, OBSERVED end-to-end TODAY at this seat** (`_REVIEW-tensions-schema-2026-09-02-v1.html`,
+1440 light 5.5 s and 390 dark 3.8 s, both PNGs read back by eye, `#238` lane M report):
+```bash
+cd <repo> && export TMPDIR=/dev/shm
+source knowledge/_render/seat_env.sh        # [<durable env dir>]  default: outputs/_render-env-229
+#  → SEAT_ENV: OK seat=wonderful-adoring-euler shell=…/headless_shell faces=10/404 farm=10/10 libs=2 conf=/dev/shm/render-<seat>/fonts.conf
+python3 <driver.py> …                       # SAME call · executable_path=$RENDER_SHELL · launch() never passes env=
+```
+`seat_env.sh` derives the seat from the repo mount (`/sessions/<seat>/…`, `$HOME` fallback); writes the
+#138 conf BODY (cachedir first, the farm, the `<include>`) plus a fresh farm under `$TMPDIR/render-<seat>/`;
+asserts **10/10 farm links resolve**, fontconfig sees **≥10 HSBC faces AND more than the farm** (the include
+is live — 404 here); exports `PYTHONPATH PLAYWRIGHT_BROWSERS_PATH LD_LIBRARY_PATH FONTCONFIG_FILE TMPDIR
+RENDER_SHELL RENDER_SEAT`. Any failed assertion prints **`SEAT_ENV: FAIL <which>`** and returns 1 —
+mutation-proven today: a hollow lib dir → `FAIL … (fifth-stratum shape)`; an absent env dir → `FAIL envdir
+absent`. *(The farm assertion is guarded by construction — links are made from files that exist — so it was
+not mutated; declared.)* ⚠ **`fc-list : family` DEDUPES identical family strings** (10 files → 6 lines):
+count full patterns, `fc-list | grep -c HSBC_MtUnivers_Latin`, as #138 did — the first draft of the
+assertion failed on its own instrument, not on the env.
+
+**Canvas probe at this seat, both renders** (40px `Handgloves 12345`): `HSBC_MtUnivers_Latin` **346.88** ·
+`"Univers Next HSBC"` **346.88** · `"Univers Next for HSBC"` **346.88** · `DejaVu Sans` 375.39 · nonexistent
+301.07 — the #138 table to two decimals (347/375/301). `document.fonts.check` was recorded (`true`) and NOT
+used as evidence. The review page's own body stack (`"Helvetica Neue",Helvetica,Arial,sans-serif`) resolves
+to **Liberation Sans** (333.59, a unique width-match; `"Helvetica Neue"` alone falls to the default 301.07) —
+closes lane T's "which face" UNPROVEN, at this seat. **Tree asserted after each render:** `.uuid` count in the
+TTF dir = 0 (the farm is in `/dev/shm`, so fontconfig's marker lands there, not in the repo).
+
+⛔ **Provenance (ADR-0016): DRIVEN at this seat by the lane that wrote it.** The SEVENTH stratum's
+`pip install playwright` / `playwright install` lines were **NOT** re-run — `pylibs` and `pw-browsers` were
+REUSED from `outputs/_render-env-229` and asserted. ⬛ **UNPROVEN:** the recipe on a mount with no
+`_render-env-*` at all (price: the seventh stratum's four install lines, one call).
+
 ★★ **SEVENTH STRATUM 2026-09-01 (#233) — THE VM WAS REBUILT, THE #227 ORPHAN FARMS NO LONGER EXIST,
 AND THE SIXTH STRATUM'S RECIPE THEREFORE RESOLVES TO NOTHING.** Measured at this session's seat:
 **disk 55%** (not 100%), and **`/var/tmp/pylibs` and `/var/tmp/pw-browsers-220` are GONE**. ⛔ **So

@@ -1,0 +1,16 @@
+check_routes(): 142 steps, STEPS ↔ ROUTE_ROWS join total
+the two polarity rows are the LAST two STEPS entries (appended):
+  [141] route=gate     args=['--check']
+  [142] route=abort    args=['--selftest']
+one slicer — _gen_chain._steps_in: (142, 142) · schematic build_rows: 142
+
+-- driving the two entries in the build's own subprocess form, real home --
+  [polarity gate — five refusals + content-fres…] rc=0 route=gate :: ✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+  [polarity gate selftest — control + every ref…] rc=0 route=abort :: ✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal
+
+-- the gate entry on a MUTATED COPY (typed status on pl-01) via POLARITY_BRAIN_DIR --
+  rc=1 -> the build would print the GATE remedy; the gate named:
+    ⛔ REFUSED (R5-TYPED-STATUS) — pl-01: key 'status' — status is DERIVED with a clock (s238-D3), never typed on a node
+  remedy (first 200 chars): ❌ polarity gate failed (exit 1) — a polarity node in knowledge/brain/polarities.json carries a ref that does not resolve, an untyped link, a judgement field, a typed status, or an authored file sits a
+
+✓ build wiring proven: join total · appended last · green on the real home · red + GATE remedy on the mutant

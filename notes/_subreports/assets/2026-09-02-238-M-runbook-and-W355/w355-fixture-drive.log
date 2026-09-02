@@ -1,0 +1,67 @@
+— control script written: W-355 blocks stripped, 745 → 706 lines
+— fixture HEAD: 8ad6562 post-wrap state of #238
+=== CONTROL (unfixed script) — the deadlock must reproduce BOTH ways ===
+ARM 1 [control: SESSION_N=238 alone → R3] rc=1 expect=RED got=RED needle_seen=yes HEAD=held verdict=PASS
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ✗ _session.py REFUSED for declared session #238 — its named witnesses are printed directly above and it owns the diagnosis. This is the #86 defect class: the 
+ARM 2 [control: SESSION_ACK alone → T3 s130-D3] rc=1 expect=RED got=RED needle_seen=yes HEAD=held verdict=PASS
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness gap DECLARED, not clean: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      | T3 REFUSES (s130-D3): non-wrap commit with no SESSION_N — there is no current-session source to generate a subject from, and inheriting the on-disk ★ LATEST b
+      | ✗ T3 headline generation REFUSED (reason printed above) — s130-D3: a subject is generated from a current-session source or not at all; a stale on-disk banner 
+=== FIXED script — the declared form ===
+ARM 3 [fixed: SESSION_N=238 + SESSION_ACK (wrapped seat)] rc=0 expect=GREEN got=GREEN needle_seen=yes HEAD=advanced→26cb165 verdict=PASS
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness: gap DECLARED for #238 (W-355 declared form; the refusal it covers is printed above) — post-wrap handoff for #239 is the file being committe
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness gap DECLARED, not clean: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      | subject: after #238 2026-09-02 — post-wrap handoff for #239 (arm 3)
+      | files:   _HANDOFF-239-x.md 
+ARM 4 [fixed: SESSION_N=238 alone, overtake still on disk → R3 still RED] rc=1 expect=RED got=RED needle_seen=yes HEAD=held verdict=PASS
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ✗ _session.py REFUSED for declared session #238 — its named witnesses are printed directly above and it owns the diagnosis. This is the #86 defect class: the 
+ARM 5 [fixed: SESSION_N=239 + SESSION_ACK (next seat)] rc=0 expect=GREEN got=GREEN needle_seen=yes HEAD=advanced→6010f8e verdict=PASS
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness: gap DECLARED for #239 (W-355 declared form; the refusal it covers is printed above) — post-wrap handoff for #239 is the file being committe
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness gap DECLARED, not clean: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      | subject: after #239 2026-09-02 — post-wrap handoff for #239 (arm 5)
+      | files:   work.txt 
+ARM 6 [fixed: --wrap SESSION_N=239 + ACK, banner #238 → T3 still refuses] rc=1 expect=RED got=RED needle_seen=yes HEAD=held verdict=PASS
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness: gap DECLARED for #239 (W-355 declared form; the refusal it covers is printed above) — post-wrap handoff for #239 is the file being committe
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness gap DECLARED, not clean: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+ARM 7 [fixed: --wrap SESSION_N=238 + ACK → lands from the banner] rc=0 expect=GREEN got=GREEN needle_seen=yes HEAD=advanced→4eab12d verdict=PASS
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness: gap DECLARED for #238 (W-355 declared form; the refusal it covers is printed above) — post-wrap handoff for #239 is the file being committe
+      | ⛔ DECLARED GAP — PASSES BECAUSE IT WAS DECLARED, NOT BECAUSE IT IS CLEAN.
+      |    reason given: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      |    R3 CHAIN OVERTAKEN — _HANDOFF-239-*.md exists but the chain routes you to #239. A handoff outranks the chain; read it before trusting anything above.
+      | ⚠ session witness gap DECLARED, not clean: post-wrap handoff for #239 is the file being committed (W-355 declared form)
+      | subject: #238 2026-09-02 — ✅ **W-355 FIXTURE**
+      | files:   work2.txt 
+=== fixture log ===
+  4eab12d #238 2026-09-02 — ✅ **W-355 FIXTURE**
+  6010f8e after #239 2026-09-02 — post-wrap handoff for #239 (arm 5)
+  26cb165 after #238 2026-09-02 — post-wrap handoff for #239 (arm 3)
+  8ad6562 post-wrap state of #238
+=== cleanup ===
+leftover dirs: 0 · git processes: 0
+0 · locks: 0

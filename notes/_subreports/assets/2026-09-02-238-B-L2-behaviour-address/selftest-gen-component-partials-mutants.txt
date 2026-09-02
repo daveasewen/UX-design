@@ -1,0 +1,14 @@
+== mutant 1: block inserted BEFORE #token-manifest instead of after
+gen_component_partials SELFTEST FAIL:
+  X behaviour-manifest not placed BESIDE #token-manifest (after it, before the script)
+== mutant 2: orphan refusal removed
+gen_component_partials SELFTEST FAIL:
+  X an orphaned #behaviour-manifest (meta no longer typed) was not refused
+== mutant 3: prose leaks into the block
+gen_component_partials SELFTEST FAIL:
+  X behaviour-manifest leaked prose — only the address fields travel
+== mutant 4: anchor located RAW (commented-out manifest accepted)
+gen_component_partials SELFTEST FAIL:
+  X a snippet whose only #token-manifest is inside an HTML comment was accepted as an anchor
+== control: unmutated
+gen_component_partials selftest OK

@@ -170,6 +170,12 @@ def build_fixture(root, script_text, banner):
     # before the push, because the survey was re-run after the wiring instead of before it.
     write(os.path.join(know, "_gate_scratch_hygiene.py"),
           STUB_TMPL.format(var="STUB_SCRATCH_HYGIENE_EXIT", name="_gate_scratch_hygiene.py"))
+    # #238 lane P: the polarity gate (s238-D7) was wired into _git_commit.sh's pre-staging seam in
+    # the SAME edit as this stub — the blind-harness class (#188, #191, #208, #228) is not getting a
+    # fifth instance. Its arm (polarity_gate_refusal_and_ack_s238D7) drives the stub non-zero and
+    # through the POLARITY_ACK hatch, so the stub makes the arms RUN *and* the gate TESTED.
+    write(os.path.join(know, "_validate_polarities.py"),
+          STUB_TMPL.format(var="STUB_POLARITY_EXIT", name="_validate_polarities.py"))
     write(os.path.join(root, "pystubs", "tiktoken.py"), FAKE_TIKTOKEN)
     # The gate's SECOND half asks whether the map differs from HEAD but is unstaged. That
     # question only has a meaningful answer if the map is a TRACKED file, so the fixture commits
@@ -202,6 +208,7 @@ def build_fixture(root, script_text, banner):
         "STUB_DOC_ROWS_EXIT": "0",
         "STUB_SHOWROOM_EXIT": "0",
         "STUB_SCRATCH_HYGIENE_EXIT": "0",
+        "STUB_POLARITY_EXIT": "0",          # #238 lane P — the s238-D7 gate's stub, green at rest
         "STUB_MENTION_MAP_STALE": "0",
         "STUB_MENTION_MAP_REGEN_EXIT": "0",
         # marker lives inside .git so a regeneration never registers as a dirty working path
@@ -949,6 +956,301 @@ def mutation_declare_dirt_match_widened(script_text):
     return True, "went RED as required: %s" % detail
 
 
+# ---------------- W-355 (#238 lane M) — the post-wrap handoff DEADLOCK and its DECLARED form ----
+# These arms run the REAL knowledge/_session.py (+ its _helpgate.py), NOT the STUB_SESSION_EXIT
+# stub: the deadlock lives in the interplay of _session.py's R3 (handoff_max >= gm_title), the
+# shell's SESSION_N / SESSION_ACK branches, and T3's s130-D3 refusal — a forced exit code cannot
+# reproduce it [[mutation-tests-the-clause-not-the-feature]]. The fixture is the disk state a
+# wrapped seat leaves behind: GM banner #238 with the TITLE line minting #239, _SESSIONS.jsonl
+# carrying #238's boot AND wrap (so R2 is silent), a fake _CHAIN.md, and — the file under test —
+# an untracked _HANDOFF-239-x.md named for staging. The CONTROL is the script with its two W-355
+# blocks stripped (the pre-#238 shell): it must deadlock BOTH ways before the fix counts.
+
+REAL_SESSION_PY = os.path.join(HERE, "_session.py")
+REAL_HELPGATE_PY = os.path.join(HERE, "_helpgate.py")
+W355_BANNER = ("> ## ★ LATEST — 2026-09-02 (Wed **#238**, FABLE sub — ✅ **W-355 FIXTURE**)\n\n"
+               "**TITLE THE NEXT CHAT →** `#239 — next session`\n")
+W355_HANDOFF = "_HANDOFF-239-x.md"
+W355_ACK = "post-wrap handoff for #239 is the file being committed (W-355 declared form)"
+W355_MSG_LINE1 = "post-wrap handoff for #239"
+W355_MSG = W355_MSG_LINE1 + "\n\nbody: " + W355_ACK + "\n"
+W355_MARK = {1: "# ── W-355 DECLARED FORM (1/2)", 2: "# ── W-355 DECLARED FORM (2/2)"}
+W355_EXPECT_NONWRAP = "after #%s %s — " + W355_MSG_LINE1
+W355_EXPECT_WRAP = "#238 2026-09-02 — ✅ **W-355 FIXTURE**"
+
+
+def w355_strip(script_text, blocks=(1, 2)):
+    """The script WITHOUT the named W-355 block(s). Each block runs from its marker comment to the
+    first column-0 `fi` after it. Fails LOUD if a marker is missing or the strip left a trace."""
+    for b in blocks:
+        if W355_MARK[b] not in script_text:
+            raise RuntimeError("mutation target not found — W-355 block %d marker moved: %r"
+                               % (b, W355_MARK[b]))
+    out, skipping = [], False
+    for line in script_text.splitlines(keepends=True):
+        if any(line.startswith(W355_MARK[b]) for b in blocks):
+            skipping = True
+        if skipping:
+            if line.rstrip("\n") == "fi":
+                skipping = False
+            continue
+        out.append(line)
+    stripped = "".join(out)
+    if 'if [ -n "${SESSION_N:-}" ]; then' not in stripped:
+        raise RuntimeError("w355_strip ate the original session chain — the strip is wrong")
+    if blocks == (1, 2) and "SESSION_N_HELD" in stripped:
+        raise RuntimeError("w355_strip left SESSION_N_HELD behind — the strip is wrong")
+    return stripped
+
+
+def build_fixture_w355(root, script_text, handoff=True):
+    """build_fixture + the REAL _session.py/_helpgate.py + post-wrap #238 disk state, committed,
+    so the only dirty path is the handoff (when asked for). Returns env with NO session vars."""
+    env = build_fixture(root, script_text, W355_BANNER)
+    know = os.path.join(root, "knowledge")
+    for src, dst in ((REAL_SESSION_PY, "_session.py"), (REAL_HELPGATE_PY, "_helpgate.py")):
+        with open(src, encoding="utf-8") as f:
+            write(os.path.join(know, dst), f.read())
+    write(os.path.join(know, "_SESSIONS.jsonl"),
+          '{"n": 238, "event": "boot", "ts": "2026-09-02T09:00:00"}\n'
+          '{"n": 238, "event": "wrap", "ts": "2026-09-02T15:00:00"}\n')
+    write(os.path.join(root, "_CHAIN.md"), "# _CHAIN.md (fixture) — routes the reader to #239\n")
+    for cmd in (["git", "add", "-A"], ["git", "commit", "-q", "-m", "post-wrap state of #238"]):
+        rc, out = sh(cmd, cwd=root)
+        if rc != 0:
+            raise RuntimeError("w355 fixture setup failed at %r: %s" % (cmd, out))
+    if handoff:
+        write(os.path.join(root, W355_HANDOFF), "# handoff for #239 (fixture)\n")
+    write(os.path.join(root, "msg.txt"), W355_MSG)
+    env.pop("SESSION_N", None)
+    env.pop("SESSION_ACK", None)
+    return env
+
+
+def _w355_run(root, env, args, session_n=None, ack=None):
+    e = dict(env)
+    if session_n is not None:
+        e["SESSION_N"] = str(session_n)
+    if ack is not None:
+        e["SESSION_ACK"] = ack
+    return run_commit(root, e, args)
+
+
+def arm_w355_deadlock_reproduced_on_unfixed_script(script_text):
+    """CONTROL — the pre-#238 shell deadlocks BOTH ways. GREEN only if both halves are RED with
+    their named causes and nothing moved: R3 with SESSION_N; T3 s130-D3 with SESSION_ACK alone."""
+    unfixed = w355_strip(script_text)
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, unfixed)
+        before = head_hash(root)
+        rc1, out1 = _w355_run(root, env, ["--reconciled", "msg.txt", W355_HANDOFF], session_n=238)
+        if rc1 == 0 or "R3 CHAIN OVERTAKEN" not in out1:
+            return False, "half 1 (SESSION_N alone) did not refuse on R3; rc=%d tail: %s" % (rc1, out1[-400:])
+        rc2, out2 = _w355_run(root, env, ["--reconciled", "msg.txt", W355_HANDOFF], ack=W355_ACK)
+        if rc2 == 0 or "non-wrap commit with no SESSION_N" not in out2:
+            return False, "half 2 (SESSION_ACK alone) did not refuse at T3; rc=%d tail: %s" % (rc2, out2[-400:])
+        if head_hash(root) != before or not staged_empty(root):
+            return False, "the deadlocked runs moved HEAD or left something staged"
+        return True, "both halves RED: R3 with SESSION_N · T3 s130-D3 with SESSION_ACK alone"
+
+
+def _w355_lands(script_text, session_n):
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, script_text)
+        before = head_hash(root)
+        rc, out = _w355_run(root, env, ["--reconciled", "msg.txt", W355_HANDOFF],
+                            session_n=session_n, ack=W355_ACK)
+        if rc != 0:
+            return False, "exit %d; tail: %s" % (rc, out[-500:])
+        if "R3 CHAIN OVERTAKEN" not in out or "DECLARED GAP" not in out:
+            return False, "the covered refusal is not on the record; tail: %s" % out[-400:]
+        if "W-355 declared form" not in out:
+            return False, "the declared-form line did not print; tail: %s" % out[-400:]
+        if head_hash(root) == before:
+            return False, "HEAD did not advance"
+        expect = W355_EXPECT_NONWRAP % (session_n, TODAY)
+        subj = head_subject(root)
+        if subj != expect:
+            return False, "subject %r != %r" % (subj, expect)
+        rc, names = sh(["git", "show", "--name-only", "--format=", "HEAD"], cwd=root)
+        if W355_HANDOFF not in names:
+            return False, "the handoff is not in the commit: %r" % names
+        return True, ""
+
+
+def arm_w355_declared_form_lands_from_wrapped_seat(script_text):
+    """SESSION_N=238 (the seat that wrapped: declared == banner) + SESSION_ACK → the handoff commits."""
+    return _w355_lands(script_text, 238)
+
+
+def arm_w355_declared_form_lands_from_next_seat(script_text):
+    """SESSION_N=239 (the next seat: declared == title) + SESSION_ACK → the same handoff commits."""
+    return _w355_lands(script_text, 239)
+
+
+def arm_w355_r3_still_refuses_without_ack(script_text):
+    """The check is NOT removed: SESSION_N alone, handoff present → R3 refuses, nothing staged."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, script_text)
+        before = head_hash(root)
+        rc, out = _w355_run(root, env, ["--reconciled", "msg.txt", W355_HANDOFF], session_n=238)
+        if rc == 0:
+            return False, "SESSION_N alone LANDED over a real overtake — R3 has been removed"
+        if "R3 CHAIN OVERTAKEN" not in out or "_session.py REFUSED for declared session #238" not in out:
+            return False, "refusal cause not named; tail: %s" % out[-400:]
+        if head_hash(root) != before or not staged_empty(root):
+            return False, "HEAD moved or something staged despite the refusal"
+        return True, ""
+
+
+def arm_w355_declared_form_does_not_bypass_T3_wrap(script_text):
+    """--wrap with SESSION_N=239 + SESSION_ACK, banner says #238 → the seam passes DECLARED, then
+    T3's s130-D3 banner assertion still REFUSES. The declared form covers the witness, not T3."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, script_text)
+        before = head_hash(root)
+        rc, out = _w355_run(root, env, ["--reconciled", "--wrap", "msg.txt", W355_HANDOFF],
+                            session_n=239, ack=W355_ACK)
+        if rc == 0:
+            return False, "a --wrap whose banner names another session LANDED under the declared form"
+        if "DECLARED GAP" not in out:
+            return False, "the seam did not pass declared first; tail: %s" % out[-400:]
+        if "T3 REFUSES (s130-D3)" not in out or "banner says #238" not in out:
+            return False, "T3's banner assertion did not fire; tail: %s" % out[-400:]
+        if head_hash(root) != before:
+            return False, "HEAD advanced"
+        return True, ""
+
+
+def arm_w355_wrap_with_next_handoff_lands(script_text):
+    """--wrap with SESSION_N=238 + SESSION_ACK (the wrap itself carrying _HANDOFF-239) → lands,
+    subject derived from the banner as before and verified against the declared session."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, script_text)
+        before = head_hash(root)
+        rc, out = _w355_run(root, env, ["--reconciled", "--wrap", "msg.txt", W355_HANDOFF],
+                            session_n=238, ack=W355_ACK)
+        if rc != 0:
+            return False, "exit %d; tail: %s" % (rc, out[-500:])
+        if head_hash(root) == before:
+            return False, "HEAD did not advance"
+        subj = head_subject(root)
+        if subj != W355_EXPECT_WRAP:
+            return False, "subject %r != %r" % (subj, W355_EXPECT_WRAP)
+        return True, ""
+
+
+def arm_w355_ordinary_commit_unaffected(script_text):
+    """No handoff on disk, SESSION_N alone → the plain branch runs ("session witness agrees") and
+    the commit lands: the addition changes nothing for a commit that never needed it."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture_w355(root, script_text, handoff=False)
+        write(os.path.join(root, "work2.txt"), "ordinary dirty work\n")
+        before = head_hash(root)
+        rc, out = _w355_run(root, env, ["--reconciled", "msg.txt", "work2.txt"], session_n=238)
+        if rc != 0:
+            return False, "exit %d; tail: %s" % (rc, out[-500:])
+        if "session witness agrees (#238)" not in out:
+            return False, "the plain branch did not run; tail: %s" % out[-400:]
+        if "W-355 declared form" in out:
+            return False, "the declared-form line printed on a run that never set SESSION_ACK"
+        if head_hash(root) == before:
+            return False, "HEAD did not advance"
+        return True, ""
+
+
+def mutation_w355_declared_form_removed_bites(script_text):
+    """Both W-355 blocks stripped → the landing arm must go RED (the fix is load-bearing)."""
+    ok, detail = arm_w355_declared_form_lands_from_wrapped_seat(w355_strip(script_text))
+    if ok:
+        return False, "the landing arm stayed GREEN with the W-355 blocks stripped — harness cannot fail"
+    return True, "went RED as required: %s" % detail[:160]
+
+
+def mutation_w355_restore_removed_bites(script_text):
+    """Only block (2/2) stripped → SESSION_N is never restored, T3 refuses the non-wrap commit:
+    the restore half is load-bearing on its own, not decoration."""
+    ok, detail = arm_w355_declared_form_lands_from_wrapped_seat(w355_strip(script_text, blocks=(2,)))
+    if ok:
+        return False, "the landing arm stayed GREEN with the restore block stripped — harness cannot fail"
+    if "non-wrap commit with no SESSION_N" not in detail:
+        return False, "went RED for the wrong reason (expected T3 s130-D3): %s" % detail[:200]
+    return True, "went RED at T3 as required (SESSION_N never restored)"
+
+
+# ---------------- #238 lane P — the polarity gate at the seam (s238-D7) ----------------------------
+
+def arm_polarity_gate_refusal_and_ack(script_text):
+    """s238-D7 (#238 lane P) — the polarity gate BLOCKS pre-stage when red, is SEEN to run on the
+    happy path (with `--check`, the same argv the build step passes), and its POLARITY_ACK hatch
+    passes the SAME red gate through DECLARED, named in the output. The stub is driven non-zero
+    here so the gate is TESTED, not merely RUN [[green-tests-cannot-see-scope]]; the gate's own
+    verdict honesty is proven by `_validate_polarities.py --selftest` (42 red arms), not here."""
+    with tempfile.TemporaryDirectory() as root:
+        env = build_fixture(root, script_text, BANNER_PRIMARY)
+        before = head_hash(root)
+        # 1 — SEEN to run, green, with --check, on an ordinary commit
+        rc0, out0 = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc0 != 0:
+            return False, "green polarity stub blocked the commit (exit %d); out tail: %s" % (rc0, out0[-400:])
+        if "STUB _validate_polarities.py args=['--check']" not in out0:
+            return False, "the gate was not invoked with --check on the happy path; out tail: %s" % out0[-400:]
+        if "— polarity gate green" not in out0:
+            return False, "polarity gate (s238-D7) did not announce itself on the happy path; out tail: %s" % out0[-400:]
+        # 2 — RED blocks: nothing staged, HEAD unmoved, refusal NAMED
+        write(os.path.join(root, "work.txt"), "second dirty edit\n")
+        after_first = head_hash(root)
+        env["STUB_POLARITY_EXIT"] = "1"
+        rc, out = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc == 0:
+            return False, "red polarity gate did NOT block the commit"
+        if "polarity gate REFUSED (s238-D7)" not in out:
+            return False, "polarity refusal message missing; out tail: %s" % out[-400:]
+        if not staged_empty(root):
+            return False, "staged despite the polarity refusal"
+        if head_hash(root) != after_first:
+            return False, "HEAD advanced despite the polarity refusal"
+        # 3 — declared passes, silent fails: the ACK hatch lets the SAME red gate through, NAMED
+        env["POLARITY_ACK"] = "fixture-declared gap (#238 lane P arm)"
+        rc2, out2 = run_commit(root, env, ["--reconciled", "msg.txt"] + STAGE_PATHS)
+        if rc2 != 0:
+            return False, "POLARITY_ACK did not pass the red gate (exit %d); out tail: %s" % (rc2, out2[-400:])
+        if "polarity gate: DECLARED GAP — fixture-declared gap (#238 lane P arm)" not in out2:
+            return False, "the declared gap was not NAMED in the output; out tail: %s" % out2[-400:]
+        if "STUB _validate_polarities.py" in out2:
+            return False, "the gate ran under the ACK hatch — the hatch must DECLARE, not re-ask"
+        if head_hash(root) == after_first:
+            return False, "commit did not land under the declared-gap hatch"
+        if before == after_first:
+            return False, "the first (green) commit did not land"
+        return True, ""
+
+
+def mutation_polarity_gate_block_removed(script_text):
+    """The seam consumer can be deleted silently unless something bites: strip the polarity block
+    from a COPY of the script and prove the arm goes RED (the gate is no longer a consumer of
+    every commit — s238-D7's last sentence)."""
+    marker = "# ── POLARITY GATE — s238-D7"
+    if marker not in script_text:
+        raise RuntimeError("mutation target not found — the polarity gate block marker moved")
+    out, skipping = [], False
+    for line in script_text.splitlines(keepends=True):
+        if line.startswith(marker):
+            skipping = True
+        if skipping:
+            if line.rstrip("\n") == "fi":
+                skipping = False
+            continue
+        out.append(line)
+    mutated = "".join(out)
+    if "_validate_polarities.py" in mutated:
+        raise RuntimeError("the strip left the polarity invocation behind — the mutation is wrong")
+    ok, detail = arm_polarity_gate_refusal_and_ack(mutated)
+    if ok:
+        return False, "arm_polarity_gate_refusal_and_ack stayed GREEN with the seam block deleted — harness cannot fail"
+    return True, "went RED as required: %s" % detail
+
+
 ARMS = [
     ("happy_path_commit_lands", arm_happy_path),
     ("nonwrap_headline_after_prefix_78D3", arm_nonwrap_prefix),
@@ -983,6 +1285,19 @@ ARMS = [
     ("scratch_hygiene_advisory_on_wrap_228", arm_scratch_hygiene_advisory_on_wrap),
     ("harness_stub_coverage_W33", arm_harness_stub_coverage),
     ("MUTATION_harness_stub_detector_bites_W33", mutation_harness_stub_detector_bites),
+    # #238 lane P — the polarity gate at the seam (s238-D7): driven red + hatch, and its block bites
+    ("polarity_gate_refusal_and_ack_s238D7", arm_polarity_gate_refusal_and_ack),
+    ("MUTATION_polarity_gate_block_removed_bites_s238D7", mutation_polarity_gate_block_removed),
+    # W-355 (#238 lane M) — real _session.py in the fixture; control first, then the declared form
+    ("w355_deadlock_reproduced_on_unfixed_script_CONTROL", arm_w355_deadlock_reproduced_on_unfixed_script),
+    ("w355_declared_form_lands_from_wrapped_seat", arm_w355_declared_form_lands_from_wrapped_seat),
+    ("w355_declared_form_lands_from_next_seat", arm_w355_declared_form_lands_from_next_seat),
+    ("w355_r3_still_refuses_without_ack", arm_w355_r3_still_refuses_without_ack),
+    ("w355_declared_form_does_not_bypass_T3_wrap", arm_w355_declared_form_does_not_bypass_T3_wrap),
+    ("w355_wrap_with_next_handoff_lands", arm_w355_wrap_with_next_handoff_lands),
+    ("w355_ordinary_commit_unaffected", arm_w355_ordinary_commit_unaffected),
+    ("MUTATION_w355_declared_form_removed_bites", mutation_w355_declared_form_removed_bites),
+    ("MUTATION_w355_restore_removed_bites", mutation_w355_restore_removed_bites),
 ]
 
 

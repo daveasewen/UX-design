@@ -298,6 +298,25 @@ else
   echo "— showroom sync gate: DECLARED GAP — $SHOWROOM_ACK"
 fi
 
+# ── POLARITY GATE — s238-D7 (#238 lane P): the five refusals, AT THE COMMIT SEAM ─────────────
+# "A gate that is not a consumer of every commit is not a gate" (s238-D7's last sentence). The
+# same `--check` runs as a _build_all.py STEPS entry; it runs HERE because the commit is where a
+# dangling party, an untyped link, a judgement field, a typed status or an authored edge file in
+# knowledge/brain/ turns DURABLE — and where a stale derived file (knowledge/brain/_generated/,
+# status with a clock per s238-D3) would be committed against a moved home. Refusals are NAMED by
+# the gate itself (R1..R5 / STALE-GENERATED / MISSING-GENERATED); this line owns only the
+# consequence — nothing staged. It regenerates NOTHING (a stale derived file is the author's to
+# re-derive with `--write` and NAME in the reconciliation, P5). Declared-gap hatch POLARITY_ACK,
+# spelled like its neighbours (declared passes, silent fails). Harness: _test_git_commit.py stubs
+# `_validate_polarities.py` (STUB_POLARITY_EXIT) and drives it non-zero + through the hatch.
+if [ -z "${POLARITY_ACK:-}" ]; then
+  python3 knowledge/_validate_polarities.py --check ||
+    fail "polarity gate REFUSED (s238-D7) — the refusal is NAMED directly above and the gate owns the diagnosis (a node in knowledge/brain/polarities.json fails one of the five refusals, or knowledge/brain/_generated/ is stale — for staleness run: python3 knowledge/_validate_polarities.py --write, then NAME the regenerated files in your --reconciled list). Or re-run with POLARITY_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— polarity gate green (_validate_polarities.py --check passed, s238-D7)"
+else
+  echo "— polarity gate: DECLARED GAP — $POLARITY_ACK"
+fi
+
 # ── MENTION-MAP FRESHNESS GATE — the [110] re-stale CLASS, 3rd recurrence (#208) ──────────────
 # ⛔ THE CLASS, NOT THE INSTANCE. `knowledge/_graph-mention-map.json` is derived from
 # `_decision-graph.json` + `_memento-index.json`, which are themselves derived from the corpus.
@@ -344,6 +363,35 @@ fi
 # generates about itself, so it is the only thing here that can disagree with GM.
 # WARN/--wrap split, matching #74-D1 and #78-D2: an absent --session is visible mid-session and
 # BLOCKING on the final commit, so existing mid-session call sites keep working unchanged.
+# ── W-355 DECLARED FORM (1/2) — SESSION_N + SESSION_ACK TOGETHER (#238 lane M; store row W-355) ──
+# THE DEADLOCK (reproduced #236 ×2 and at the #237 opener; fixture-proven #238, harness arms
+# `w355_*` in _test_git_commit.py): a post-wrap `_HANDOFF-<n+1>-*.md` could be committed through
+# this script from NEITHER seat. With SESSION_N, `_session.py --declare` fires R3 CHAIN OVERTAKEN
+# on the very file being committed (handoff_max ≥ gm_title is BY DESIGN at boot — it makes the
+# next seat READ the handoff). Without SESSION_N the chain below reaches its SESSION_ACK branch —
+# but T3 then REFUSES a non-wrap commit with no SESSION_N (s130-D3), and a --wrap commit is refused
+# at this very seam. The two hatches were mutually exclusive, so the only exit was a raw
+# `git commit` — the workaround a gate with no legal form invites (P5's lesson, again).
+# THE FIX ADDS A DECLARED FORM; IT REMOVES NO CHECK. `_session.py` has ALWAYS accepted
+# `--declare N --acknowledge "<why>"` together (its selftest arm "a declared gap is MARKED, not
+# silently clean" drives exactly that); only this shell never passed both. When BOTH are set: the
+# witness is checked WITH the declared session, the refusal (R3, or any other) passes DECLARED and
+# is printed on the record — never silently — and SESSION_N stays in hand for T3, so every s130-D3
+# assertion still stands (a --wrap banner naming another session is refused AFTER this passes —
+# harness arm w355_declared_form_does_not_bypass_T3_wrap). SESSION_N ALONE still refuses a real
+# overtake (arm w355_r3_still_refuses_without_ack): the silent path stays closed.
+# ⚠ MECHANICS, BY ADDITION: the chain below is UNCHANGED. This block hands it its SESSION_ACK-only
+# branch by parking SESSION_N in SESSION_N_HELD; block (2/2) directly after the chain restores it
+# before T3. The chain's own `--acknowledge` re-run is `|| true` and prints the matching DECLARED
+# line. ⚠ The record is this run's stdout — the same standing as DOC_ROW_ACK / SHOWROOM_ACK /
+# SESSION_ACK alone — so put the reason in the msgfile BODY too; the commit then carries it.
+if [ -n "${SESSION_N:-}" ] && [ -n "${SESSION_ACK:-}" ]; then
+  python3 knowledge/_session.py --declare "$SESSION_N" --acknowledge "$SESSION_ACK" ||
+    fail "_session.py REFUSED even with SESSION_N=#$SESSION_N AND SESSION_ACK declared — its witnesses are printed directly above and it owns the diagnosis (a corrupt knowledge/_SESSIONS.jsonl is the one cause an acknowledgement cannot cover). Nothing has been staged."
+  echo "⚠ session witness: gap DECLARED for #$SESSION_N (W-355 declared form; the refusal it covers is printed above) — $SESSION_ACK"
+  SESSION_N_HELD="$SESSION_N"
+  unset SESSION_N
+fi
 if [ -n "${SESSION_N:-}" ]; then
   python3 knowledge/_session.py --declare "$SESSION_N" ||
     fail "_session.py REFUSED for declared session #$SESSION_N — its named witnesses are printed directly above and it owns the diagnosis. This is the #86 defect class: the boot path and the running session disagree about who you are, and a commit made now certifies the WRONG session. Fix the cause, or re-run with SESSION_ACK=\"<real reason>\" to pass it as a DECLARED gap (declared passes, silent fails). Nothing has been staged."
@@ -356,6 +404,16 @@ elif [ "$WRAP" -eq 1 ]; then
 else
   echo "⚠ no SESSION_N declared — visible, not blocking on a mid-session commit (#89)."
   echo "  The session's FINAL commit must declare it, where absence BLOCKS."
+fi
+# ── W-355 DECLARED FORM (2/2) — restore the declared session for T3 (#238 lane M) ─────────────
+# SESSION_N was parked by block (1/2) only so the unchanged chain above would take its
+# SESSION_ACK branch. T3 (s130-D3) needs it back: a non-wrap subject is GENERATED from it and a
+# --wrap subject is VERIFIED against it. `export`, not a bare assignment — `unset` drops the
+# export attribute the caller's `SESSION_N=<n> bash …` gave it (no Python consumer reads it from
+# the environment today — measured #238 — but the restore must not be the thing that changes that).
+if [ -n "${SESSION_N_HELD:-}" ]; then
+  export SESSION_N="$SESSION_N_HELD"
+  unset SESSION_N_HELD
 fi
 
 # wrap-gate consumer — RULED #74-D1 (the WARN/--wrap split; the wiring was #73's deliberate

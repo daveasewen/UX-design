@@ -1,0 +1,146 @@
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+ 10 CAUGHT    red   after-write           1/1/1   1            -  ref-case-party-pr-Fitts
+                                names=['R1-DANGLING'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-DANGLING) — pl-01.parties[2]: 'pr-Fitts' resolves to nothing — not a principles.json row, not a stubs.json stub, not a knowledge/_ruling
+ 11 CAUGHT    red   after-write           1/1/1   1            -  ref-case-link-S116-D1
+                                names=['R1-DANGLING'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-DANGLING) — pl-01.links[1]: 'S116-D1' is not a knowledge/_rulings.json id
+ 12 CAUGHT    red   after-write           1/1/1   1            -  ref-case-link-s116-d1-lower
+                                names=['R1-DANGLING'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-DANGLING) — pl-01.links[1]: 's116-d1' is not a knowledge/_rulings.json id
+ 20 CAUGHT    red   after-write           1/1/1   1            -  stub-phrase-empty
+                                names=['R1-UNDECLARED-STUB', 'S-STUB-SHAPE'] must=S-STUB-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-STUB-SHAPE) — stubs[15]: phrase must be a non-empty string
+ 21 CAUGHT    red   after-write           1/1/1   1            -  stub-phrase-whitespace-only
+                                names=['R1-UNDECLARED-STUB', 'S-STUB-SHAPE'] must=S-STUB-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-STUB-SHAPE) — stubs[15]: phrase must be a non-empty string
+ 22 ESCAPED   red   after-write           0/0/0   0        0/0/0  stub-phrase-zero-width-space-only
+                                names=[] must=S-STUB-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                note: EDGE: an effectively empty phrase
+ 30 ESCAPED   red   after-write           1/1/1   0        0/0/0  link-to-s200-D2-superseded-in-prose
+                                names=['STALE-GENERATED'] must=R1-SUPERSEDED untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+                                note: store-vocabulary escape: supersession lives in prose for 4 of 5 supersessions
+ 31 ESCAPED   red   after-write           1/1/1   0        0/0/0  link-resolvedBy-gauge-band-status-open
+                                names=['STALE-GENERATED'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+                                note: the derived status would flip pl-03 open -> resolved on an item the store calls open
+ 32 ESCAPED   red   after-write           1/1/1   0        0/0/0  link-resolvedBy-s182-D1-PARKED
+                                names=['STALE-GENERATED'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+ 40 CAUGHT    red   after-write           1/1/1   1            -  role-SIDE_A-uppercase
+                                names=['S-ROLE'] must=S-ROLE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ROLE) — pl-01.parties[0].role: 'SIDE_A' is not one of ['side_a', 'side_b', 'side_c']
+ 41 CAUGHT    red   after-write           1/1/1   1            -  role-trailing-space
+                                names=['S-ROLE'] must=S-ROLE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ROLE) — pl-01.parties[0].role: 'side_a ' is not one of ['side_a', 'side_b', 'side_c']
+ 42 MISNAMED  red   after-write           1/1/1   1            -  role-null
+                                names=['S-SCHEMA'] must=S-ROLE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.parties[0].role: expected string, got NoneType
+                                note: expect S-ROLE or S-SCHEMA; a null role is outside every vocabulary
+ 43 CAUGHT    red   after-write           1/1/1   1            -  role-missing-key
+                                names=['S-SCHEMA'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.parties[0].role: required key 'role' is missing
+ 44 CRASH     red   after-write           1/1/1   1            -  role-object-unhashable
+                                names=[] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                note: code: roles = {p.get('role') ...} hashes the value BEFORE the schema verdict is read
+ 50 CAUGHT    red   after-write           1/1/1   1            -  same-principle-twice-different-roles
+                                names=['S-DUP-PARTY'] must=S-DUP-PARTY untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-DUP-PARTY) — pl-01.parties[2]: 'pr-jakobs-law' appears twice on one node
+ 51 CAUGHT    red   after-write           1/1/1   1            -  same-principle-both-sides-a-and-b
+                                names=['S-DUP-PARTY'] must=S-DUP-PARTY untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-DUP-PARTY) — pl-01.parties[2]: 'pr-jakobs-law' appears twice on one node
+ 60 CAUGHT    red   as-is                 1/1/1   1            -  gen-status-hand-edit-same-length
+                                names=['R4-AUTHORED-GENERATED'] must=R4-AUTHORED-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/polarity-status.json: content_sha256 does not match its own body — the file was HAND-EDITED after gener
+ 61 CAUGHT    red   as-is                 1/1/1   0        0/0/0  gen-status-hand-edit-with-recomputed-sha
+                                names=['STALE-GENERATED'] must=STALE-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+ 62 CAUGHT    red   as-is                 1/1/1   1            -  gen-edges-hand-edit-same-length
+                                names=['R4-AUTHORED-GENERATED'] must=R4-AUTHORED-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/polarity-edges.json: content_sha256 does not match its own body — the file was HAND-EDITED after genera
+ 63 CAUGHT    red   as-is                 1/1/1   1            -  gen-txt-hand-edit-same-length
+                                names=['R4-AUTHORED-GENERATED'] must=R4-AUTHORED-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/defaults-declaration.txt: content_sha256 does not match its own body — HAND-EDITED after generation (s2
+ 70 ESCAPED   red   as-is                 0/0/0   0        0/0/0  gen-generated_at-in-the-future
+                                names=[] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                note: the sha excludes generated_at; --check re-derives AT the on-disk clock, so any clock string is its own oracle
+ 71 ESCAPED   red   as-is                 0/0/0   0        0/0/0  gen-generated_at-is-banana
+                                names=[] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                note: no shape check on generated_at
+ 72 CAUGHT    red   as-is                 1/1/1   1            -  gen-header-text-edited
+                                names=['R4-AUTHORED-GENERATED'] must=R4-AUTHORED-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/polarity-status.json lacks the header 'GENERATED — do not hand-edit (knowledge/_validate_polarities.py 
+ 80 CAUGHT    red   after-write           1/1/1   1            -  smuggle-note-as-object
+                                names=['S-SCHEMA'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.parties[0].note: expected string, got dict
+                                note: expect a schema type refusal; the NAME is S-SCHEMA not R3
+ 81 CAUGHT    red   after-write           1/1/1   1            -  smuggle-sources-item-extra-key
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.sources[0].judgement: key 'judgement' is not in the schema (allowed: ['id', 'path'])
+ 82 ESCAPED   red   after-write           0/0/0   0        0/0/0  smuggle-top-level-$migration-nested-verdicts
+                                names=[] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                note: $migration / $description are allowed top-level keys with UNVALIDATED content
+ 83 ESCAPED   red   after-write           0/0/0   0        0/0/0  smuggle-top-level-$description-replaced-by-500-words
+                                names=[] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                note: $description is free text of any length
+ 84 CAUGHT    red   after-write           1/1/1   1            -  smuggle-4th-top-level-key-$notes
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — polarities.json top level: unexpected key '$notes'
+ 85 CAUGHT    red   after-write           1/1/1   1            -  smuggle-link-extra-key-reason
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.links[0].reason: key 'reason' is not in the schema (allowed: ['quote', 'ref', 'type'])
+ 90 CAUGHT    red   after-write           1/1/1   1            -  confusable-party-ref-cyrillic-s
+                                names=['S-ID'] must=S-ID untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ID) — pl-28.parties[2].ref: 'pr-information-sсent' does not match ^[A-Za-z0-9][A-Za-z0-9._-]*$
+ 91 CAUGHT    red   after-write           1/1/1   1            -  confusable-link-ref-cyrillic-s116
+                                names=['S-ID'] must=S-ID untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ID) — pl-01.links[1].ref: 'ѕ116-D1' does not match ^[A-Za-z0-9][A-Za-z0-9._-]*$
+ 92 CAUGHT    red   after-write           1/1/1   1            -  confusable-stub-id-cyrillic
+                                names=['R1-UNDECLARED-STUB', 'S-STUB-SHAPE'] must=S-STUB-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-STUB-SHAPE) — stubs[15]: id 'st-brand-pаlette' must match ^st-[a-z0-9]+(?:-[a-z0-9]+)*$
+ 93 ESCAPED   red   after-write           1/1/1   0        0/0/0  confusable-sources-id-breaks-the-oracle
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+                                note: quote-laundering by breaking the node's own source pointer
+100 GREEN-OK  green after-write           1/1/1   0        0/0/0  row31-no-stub-fictional-source
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+                                note: green by the letter; the receipt is unverified
+101 CAUGHT    red   after-write           1/1/1   1            -  row31-party-is-a-phrase-not-a-stub
+                                names=['R1-DANGLING'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-DANGLING) — pl-32.parties[1]: 'dense-financial-tables' resolves to nothing — not a principles.json row, not a stubs.json stub, not a kno
+102 CAUGHT    red   after-write           1/1/1   1            -  row31-party-is-an-undeclared-st
+                                names=['R1-UNDECLARED-STUB'] must=R1-UNDECLARED-STUB untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-UNDECLARED-STUB) — pl-33.parties[1]: 'st-not-declared-anywhere' is spelled like a stub but is not declared in stubs.json
+103 CAUGHT    red   after-write           1/1/1   1            -  row31-id-one-digit-pl-1
+                                names=['S-ID'] must=S-ID untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ID) — pl-1.id: 'pl-1' does not match ^pl-[0-9]{2,}$
+104 CAUGHT    red   after-write           1/1/1   1            -  row31-duplicates-pl-01-id
+                                names=['S-DUP-ID'] must=S-DUP-ID untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-DUP-ID) — polarities[30]: duplicate polarity id 'pl-01'
+110 ESCAPED   red   after-write           1/1/1   0        0/0/0  schema-minItems-2-to-1-plus-one-party-row
+                                names=['STALE-GENERATED'] must=S-MIN-PARTIES untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+                                note: the schema is an unguarded loosening surface: no sha pin, no floor in code
+111 ESCAPED   red   after-write           1/1/1   0        0/0/0  schema-enum-widened-fifth-type-relatedTo
+                                names=['STALE-GENERATED'] must=R2-UNKNOWN-TYPE untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+112 ESCAPED   red   after-write           0/0/0   0        0/0/0  schema-party-additionalProperties-true-plus-why
+                                names=[] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,False)
+113 CAUGHT    red   after-write           1/1/1   1            -  schema-node-additionalProperties-true-plus-verdict
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01: key 'verdict' — a node carries no free-text judgement of any name; its only judgement is a typed link (s238-D7
+114 MISNAMED  red   after-write           1/1/1   1            -  schema-quote-maxWords-raised-to-150
+                                names=['R3-QUOTE-NOT-VERBATIM'] must=R3-QUOTE-TOO-LONG untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-QUOTE-NOT-VERBATIM) — pl-01.links[0].quote: 'The law IS a Von Restorff budget with a legal contrast floor'… is not a verbatim substring 
+                                note: the quote is verbatim-checked so it must still be a substring; the 3x repeat is NOT a substring — expect R3-QUOTE-NOT-VERBATIM instead if maxWords is bypassed
+120 GREEN-OK  green after-write           1/1/1   0        0/0/0  links-empty-array
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+121 CAUGHT    red   after-write           1/1/1   1            -  links-key-missing
+                                names=['S-SCHEMA'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.links: required key 'links' is missing
+---------------------------------------------------------------------
+verdicts: CAUGHT 28 · CRASH 1 · ESCAPED 12 · GREEN-OK 2 · MISNAMED 2 · arms 45

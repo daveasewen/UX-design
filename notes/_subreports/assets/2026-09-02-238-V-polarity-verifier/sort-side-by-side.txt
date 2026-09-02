@@ -1,0 +1,42 @@
+T sort re-run == filed tension-sort.json (whole file): True
+T file keys: ['$description', 'generated', 'lane', 'rules', 'counts', 'rows']
+T per-row buckets found: 30
+row    237-T                  gate (P)               same?
+tn-01  open                   open                   
+tn-02  open                   open                   
+tn-03  open                   open                   
+tn-04  open                   open                   
+tn-05  open                   open                   
+tn-06  open                   open                   
+tn-07  resolved               resolved               
+tn-08  open                   open                   
+tn-09  open                   open                   
+tn-10  open                   open                   
+tn-11  open                   open                   
+tn-12  open                   open                   
+tn-13  open                   open                   
+tn-14  open                   open                   
+tn-15  settled-by-obligation  settled-by-obligation  
+tn-16  settled-by-obligation  settled-by-obligation  
+tn-17  resolved               resolved               
+tn-18  open                   open                   
+tn-19  settled-by-obligation  settled-by-obligation  
+tn-20  settled-by-obligation  settled-by-obligation  
+tn-21  open                   open                   
+tn-22  open                   resolved               <-- DIFF
+tn-23  open                   open                   
+tn-24  open                   open                   
+tn-25  settled-by-obligation  settled-by-obligation  
+tn-26  open                   open                   
+tn-27  resolved               resolved               
+tn-28  open                   open                   
+tn-29  settled-by-obligation  settled-by-obligation  
+tn-30  open                   open                   
+DIFFS: [('tn-22', 'open', 'resolved')]
+gate counts {'settled-by-obligation': 6, 'resolved': 4, 'open': 20} | T counts see rows
+
+RECOUNT of s238-D6's parenthetical: obligation rows ['tn-15', 'tn-16', 'tn-19', 'tn-20', 'tn-25', 'tn-29'] n= 6
+non-obligation rows whose apollo_touch names ANY ruling id: ['tn-01', 'tn-02', 'tn-07', 'tn-08', 'tn-11', 'tn-14', 'tn-17', 'tn-22', 'tn-27'] n= 9
+naive sort = 6 · 9 · 15   <- the 6·9·15 quoted in s238-D6 (T finding 2 sensitivity: every touch id read as a resolution)
+typed sort  = 6 · 4 · 20   resolved rows ['tn-07', 'tn-17', 'tn-22', 'tn-27']
+rows the naive reading would close that the typed reading leaves open: ['tn-01', 'tn-02', 'tn-08', 'tn-11', 'tn-14']

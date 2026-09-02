@@ -1,0 +1,79 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-fogg (R1 row 21). Tier vocabulary is R1's own (safe now / pointer-only; 'facts, not text' is R1's qualifier for peer-reviewed primaries); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 21,
+    "id": "fam-fogg",
+    "name": "Fogg Behavior Model (B=MAP)",
+    "steward": "BJ Fogg / Stanford Behavior Design Lab (website); ACM (the 2009 paper)",
+    "r1_licence_field_as_filed": "UNPROVEN: not captured",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)"
+  },
+  "primary_source": {
+    "url": "https://behaviormodel.org/ (website) · https://doi.org/10.1145/1541948.1541999 (the peer-reviewed primary: Fogg 2009, 'A behavior model for persuasive design', Persuasive '09, ACM)",
+    "what_it_is_our_words": "Two homes. The website is the steward's own statement of the model and carries no notice of any kind in the text this fetcher returned. The paper is the citable primary and is an ACM publication; ACM's Crossref record names ACM's copyright policy as its licence, and the paper's single reference points back to BehaviorModel.org."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://behaviormodel.org/",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK — text only, no header block",
+      "http_as_demonstrated": "content returned but the tool showed no Content-Type line for this page (it did for every other OK fetch in this lane) — recorded as-is",
+      "size": "NOT MEASURED — short page: the model, B=MAP, 'The simplest explanation' quote, training and contact blocks, postal address",
+      "probe_for_licence": "read in full; 0 occurrences of ©, 'copyright', 'licen', 'permission', 'rights'. The page ends with an email and a P.O. Box. Whether a footer notice exists in the rendered page but was dropped by this fetcher is UNPROVEN.",
+      "note": "The page states 'over 1,200 academic publications reference the Fogg Behavior Model'; Crossref (attempt 2) shows is-referenced-by-count 1569 for the 2009 paper alone."
+    },
+    {
+      "n": 2,
+      "url": "https://api.crossref.org/works/10.1145/1541948.1541999",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: application/json'; status ok",
+      "size": "NOT MEASURED — one Crossref work record",
+      "probe_for_licence": "record field 'license' = [{content-version: vor, start 2009-04-26, URL: https://www.acm.org/publications/policies/copyright_policy#Background}]; publisher 'ACM'; title 'A behavior model for persuasive design'; event 'Persuasive 2009'; is-referenced-by-count 1569; the single reference reads 'For a growing resource … related to the FBM see www.BehaviorModel.org'"
+    },
+    {
+      "n": 3,
+      "url": "https://www.acm.org/publications/policies/copyright_policy",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED — resolved URL line only",
+      "http_as_demonstrated": "NOT SEEN",
+      "size": "0 characters of body",
+      "failure_verbatim": "the entire response was the single line 'https://www.acm.org/publications/policies/copyright_policy'",
+      "note": "This is the URL the Crossref licence field names. Its text could not be read in this lane."
+    },
+    {
+      "n": 4,
+      "url": "https://authors.acm.org/author-resources/author-rights",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned (no Content-Type line shown)",
+      "size": "NOT MEASURED — full page: Choose / Post / Distribute / Reuse / Create / Retain",
+      "probe_for_licence": "read in full. It describes AUTHORS' rights (self-archiving, reuse of own work, revisions). It grants nothing to third parties. Under 'Choose': authors either give ACM exclusive publishing rights while retaining copyright, or pay for open access and may then display a Creative Commons licence. The 2009 paper's Crossref record carries the copyright-policy URL, not a CC URL, so it is the former."
+    }
+  ],
+  "licence": {
+    "found": "PARTLY — the paper's licence is identified (ACM copyright policy) but its text was not readable; the website has no notice",
+    "name": "Paper: ACM copyright / exclusive publishing licence (Version of Record, 2009-04-26). Website: NONE STATED.",
+    "read_from": "Crossref record 'license' field (the pointer) + ACM Author Rights page (the shape of ACM's arrangement); the copyright policy text itself FAILED to fetch",
+    "quote_le_15_words": "retain copyright of their work while providing ACM with exclusive publishing rights",
+    "quote_word_count": 12,
+    "quote_locus": "ACM Author Rights, 'Choose' — the arrangement that applies when a record carries the copyright-policy URL rather than a CC URL",
+    "grants_our_words": "Nothing to us. ACM's arrangement gives authors reuse and posting rights; third parties get no grant on this page. The website grants nothing because it says nothing.",
+    "forbids_our_words": "Reproducing the paper's text without ACM permission; reproducing the website's text without the steward's permission (absence of a notice is not permission).",
+    "ai_clause": "none seen on the pages reached"
+  },
+  "tier_PROPOSED": "safe now (facts, not text) — R1's own posture for peer-reviewed primaries — via the 2009 ACM paper; the website is pointer-only",
+  "permits_us": "paraphrase — the model's content (three elements must converge: motivation, ability, prompt; B=MAP) as facts in Apollo's words, cited by DOI; names-only for anything from behaviormodel.org; no verbatim paper text",
+  "why_our_words": "Same posture as Fitts or Cowan in R1's register: the finding is citable, the prose is the publisher's. The website adds nothing a node needs that the paper does not, and it carries no licence, so it should be the pointer and the DOI the source. This is a STUDIED-grade family in s237-D1 terms and the licence risk of holding it as facts is the same as for every other primary already in 'safe now'.",
+  "cheap_route_to_lift": "Not needed for facts-only. For website text: bj@bjfogg.com is on the page. Price: one email.",
+  "unproven": [
+    "The text of ACM's copyright policy (#Background) — the URL the Crossref licence field names — FAILED in this fetcher. What ACM permits third parties without a fee (e.g. short quotation) is therefore not quoted here. Price: one browser-client fetch (~2K).",
+    "Whether behaviormodel.org's rendered page carries a footer notice this fetcher dropped (the response had no header block, unlike every other page). Price: one browser-client fetch (~1K).",
+    "Whether 'Fogg Behavior Model' or 'Fogg Behavior Design' is a registered mark — not checked; a node NAME that uses the term is a name, not a trade use, but this lane does not rule on it."
+  ],
+  "pitfalls": [
+    {"what": "The website's short 'simplest explanation' sentence is quotable and memorable; a generator will want to emit it verbatim. It has no licence behind it. Hold the family at facts-in-our-words.", "owner": "P2 membership rule author"},
+    {"what": "R1 tensions 9 and 19 pair persuasion nodes with DSA Art. 25; Fogg is a persuasion model. The legal fence matters more than the licence here — a Fogg node without its DSA pair is the bigger liability.", "owner": "obligation-node linking (s238-D6 typed links)"}
+  ]
+}

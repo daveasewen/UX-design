@@ -52,6 +52,21 @@ more, so declare every behaviour you actually consume, or [] if you consume none
 throughout: an absent key REFUSES · unknown names REFUSE · a non-consuming member carrying the
 behaviour's markers REFUSES (declared-away payload present is a defect, not a warning).
 
+BEHAVIOUR MANIFEST (s234-D5, #238 lane B — the L2 half of the v1.0.6 brief): the META is the one
+home of a component's behaviour ADDRESS (`knowledge/components/<slug>.meta.json` `behaviour`,
+typed — an object carrying `script`), and this generator DERIVES a declared block into the
+snippet, BESIDE #token-manifest and never inside it (the receipt-mint precedent):
+  <script type="application/json" id="behaviour-manifest">{ "$generated": …, "component": …,
+    "script": <address|null>, "partial": <name|null>, "events": […], "fallback": <text|null> }</script>
+so an agent that copies the snippet copies the address with the markup, and
+`_validate_receipt.py` (which OWNS the address grammar and resolver — imported here, never
+re-implemented) reads the META to check a composed page loads it. The pass is a RATCHET: a meta
+whose `behaviour` is still prose emits nothing and fails nothing; a snippet carrying a block its
+meta does not type is STALE and refuses (the block is derived, so an orphan is a copy with no
+home); an address that does not resolve refuses. Same --check sync gate, byte-exact.
+0 of 136 metas are typed at the time of writing — the 20 prose values are a PROPOSAL for Dave's
+eye (notes/_subreports/assets/2026-09-02-238-B-L2-behaviour-address/behaviour-migration.json).
+
 Usage:
   python3 knowledge/gen_component_partials.py             # inject/refresh all consumers
   python3 knowledge/gen_component_partials.py --check     # verify in sync + contracts (build gate)
@@ -340,6 +355,123 @@ def check_contracts(name, html, partial, src_html, extra=None):
         if mv.get(var) != path:
             fails.append(f"{name}: #token-manifest must bind {var} -> {path} (has: {mv.get(var)})")
     return fails
+
+# ------------------------------------------------------------------ behaviour manifest (s234-D5)
+# #238 lane B (L2). The address grammar, the resolver and the meta reader live in the GATE
+# (`_validate_receipt.py`) and are imported — the same direction the receipt mint takes. One
+# parse, two users; a drift between what this emits and what the gate reads is not expressible.
+import _validate_receipt as VR    # noqa: E402  (help_gate is a no-op on import — #218 W-92)
+
+BMANIFEST_ID = "behaviour-manifest"
+BMANIFEST_RE = re.compile(r'<script[^>]*id="%s"[^>]*>(.*?)</script>' % BMANIFEST_ID, re.S)
+
+
+def behaviour_manifest_block(slug, meta_rel, typed):
+    """The DERIVED block. Deterministic (no clock) so re-generation is idempotent and --check is
+    byte-exact. Only the address fields travel — the prose stays in the meta under $note."""
+    doc = {
+        "$generated": ("by knowledge/gen_component_partials.py from %s `behaviour` (s234-D5 — the meta "
+                       "is the one home). DO NOT hand-edit: edit the meta and regenerate." % meta_rel),
+        "component": "component:%s" % slug,
+        "script": typed.get("script"),
+        "partial": typed.get("partial"),
+        "events": list(typed.get("events") or []),
+        "fallback": typed.get("fallback"),
+    }
+    return ('<script type="application/json" id="%s">\n  %s\n  </script>'
+            % (BMANIFEST_ID, json.dumps(doc, indent=2, ensure_ascii=False).replace("\n", "\n  ")))
+
+
+def inject_behaviour_manifest(html, block):
+    """-> (new_html, status). status: in-sync | replaced | injected | no-anchor.
+    ⛔ Both the anchor (#token-manifest) and an existing block are LOCATED LIVE — a manifest
+    sitting inside an HTML comment is not the document's manifest (#211 lane R6) — and the
+    splice is on the ORIGINAL bytes at that span."""
+    m = live_match(BMANIFEST_RE, html)
+    if m:
+        if html[m.start():m.end()] == block:
+            return html, "in-sync"
+        return html[:m.start()] + block + html[m.end():], "replaced"
+    a = live_match(MANIFEST_RE, html)
+    if not a:
+        return html, "no-anchor"
+    # match the indentation the manifest itself sits at, so the block reads as its sibling
+    line_start = html.rfind("\n", 0, a.start()) + 1
+    pad = html[line_start:a.start()]
+    pad = pad if pad.strip() == "" else ""
+    return html[:a.end()] + "\n" + pad + block + html[a.end():], "injected"
+
+
+def behaviour_manifest_fails(slug, typed, meta_rel):
+    """The META side, refused before anything is written: an address that resolves to nothing,
+    a partial the registry does not know. (Shape is the schema's business — meta.schema.json.)"""
+    fails = []
+    addr = typed.get("script")
+    if addr is not None:
+        foreign = VR.foreign_script_address(addr, slug)
+        kind, parts, err = VR.resolve_address(addr)
+        if foreign:
+            fails.append("behaviour-manifest/%s: %s declares script `%s`, which is ANOTHER component's snippet "
+                         "(%s) — a #script address names the component's own snippet; shared behaviour is a "
+                         "registered partial" % (slug, meta_rel, addr, foreign))
+        elif err:
+            fails.append("behaviour-manifest/%s: %s declares script `%s`, which %s" % (slug, meta_rel, addr, err))
+    partial = typed.get("partial")
+    if partial is not None:
+        reg = VR.registered_partials()
+        if not isinstance(partial, str) or partial not in reg:
+            fails.append("behaviour-manifest/%s: %s declares partial %r, which component-types.json does not "
+                         "register under $behaviour (has: %s)" % (slug, meta_rel, partial, sorted(reg) or "none"))
+    return fails
+
+
+def run_behaviour_manifests(write):
+    """-> (fails, out_of_sync, injected). Walks every meta; typed ⇒ derive + sync; prose/none ⇒
+    the snippet must carry NO block (an orphaned derived block is stale by definition)."""
+    fails, out_of_sync, injected = [], [], 0
+    comp = os.path.join(VR.ROOT, "components")
+    if not os.path.isdir(comp):
+        return fails, out_of_sync, injected
+    for mp in sorted(glob.glob(os.path.join(comp, "*.meta.json"))):
+        fn = os.path.basename(mp)
+        if fn.startswith("EXAMPLE"):
+            continue
+        slug = fn[:-len(".meta.json")]
+        meta_rel = os.path.relpath(mp, os.path.dirname(VR.ROOT))
+        meta = VR.load_meta(mp)
+        typed = VR.typed_behaviour(meta)
+        sp = VR.snippet_file(slug)
+        if typed is None:
+            if sp:
+                html = open(sp, encoding="utf-8").read()
+                if live_match(BMANIFEST_RE, html):
+                    fails.append("behaviour-manifest/%s: %s carries a #behaviour-manifest block but %s has no "
+                                 "TYPED behaviour (%s) — the block is DERIVED and has no home: type the meta, "
+                                 "or remove the block" % (slug, os.path.relpath(sp, os.path.dirname(VR.ROOT)),
+                                                          meta_rel, VR.behaviour_state(meta)))
+            continue
+        if not sp:
+            fails.append("behaviour-manifest/%s: %s is typed but no snippet %s.reference.html exists "
+                         "(case-insensitive) to carry the block" % (slug, meta_rel, slug))
+            continue
+        mf = behaviour_manifest_fails(slug, typed, meta_rel)
+        if mf:
+            fails += mf
+            continue
+        html = open(sp, encoding="utf-8").read()
+        block = behaviour_manifest_block(slug, meta_rel, typed)
+        new_html, status = inject_behaviour_manifest(html, block)
+        if status == "no-anchor":
+            fails.append("behaviour-manifest/%s: %s has no live #token-manifest for the block to sit beside"
+                         % (slug, os.path.relpath(sp, os.path.dirname(VR.ROOT))))
+            continue
+        if status != "in-sync":
+            out_of_sync.append("%s (behaviour-manifest)" % os.path.basename(sp)[:-len(".reference.html")])
+            if write:
+                open(sp, "w", encoding="utf-8").write(new_html)
+                injected += 1
+    return fails, out_of_sync, injected
+
 
 # ------------------------------------------------------------------ registry cache gate
 def _resolve_semantic(path):
@@ -658,6 +790,13 @@ def run(write):
                 if write and new_html != html:
                     open(mp, "w").write(new_html)
                 injected += inj_count[0]
+    # ---- behaviour manifests (s234-D5, #238 lane B): derived from the META, not the registry —
+    # the one home of the address is knowledge/components/<slug>.meta.json. See the block above
+    # run_behaviour_manifests for the ratchet posture (prose metas emit nothing, orphans refuse).
+    bf, bo, bi = run_behaviour_manifests(write)
+    fails += bf
+    out_of_sync += bo
+    injected += bi
     return fails, out_of_sync, injected
 
 # ------------------------------------------------------------------ selftest
@@ -959,6 +1098,119 @@ def selftest():
     live_scan = [x for gn, gg in groups(load_registry()).items() for x in check_scan(gn, gg)]
     if live_scan:
         fails.append("live registry membership scan failing: %s" % "; ".join(live_scan))
+    # 5i. s234-D5 (#238 lane B) — THE BEHAVIOUR MANIFEST. Every arm is a MUTATION on a temporary
+    #     knowledge tree: the pass must emit for a TYPED meta, stay silent for PROSE, refuse an
+    #     orphaned block, refuse an unresolvable address, refuse an unregistered partial, sit
+    #     BESIDE #token-manifest (never inside, never before), be idempotent, and never anchor
+    #     on a manifest inside an HTML comment.
+    import tempfile as _tf
+    _root = _tf.mkdtemp()
+    for d in ("snippets", "components", "canon"):
+        os.makedirs(os.path.join(_root, d))
+    _saved_root = VR.ROOT
+    VR.ROOT = _root
+    try:
+        _snip = os.path.join(_root, "snippets", "Demo.reference.html")
+        _meta = os.path.join(_root, "components", "demo.meta.json")
+        _base_html = ('<html><body><p class="x">hi</p>\n'
+                      '  <script type="application/json" id="token-manifest">\n  {"vars":{}}\n  </script>\n'
+                      '  <script>\n    window.demo = 1;\n  </script>\n</body></html>')
+        open(_snip, "w").write(_base_html)
+        json.dump({"component-type": {"g": {"$behaviour": {"demo-b": {"source": "canon/demo.js"}}}}},
+                  open(os.path.join(_root, "component-types.json"), "w"))
+        open(os.path.join(_root, "canon", "demo.js"), "w").write("1;")
+        def _meta_is(b):
+            m = {"name": "Demo", "category": "atom", "purpose": "t", "provenance": {}}
+            if b is not None:
+                m["behaviour"] = b
+            json.dump(m, open(_meta, "w"))
+        #  (i) PROSE meta → nothing emitted, nothing failed (the ratchet's quiet side)
+        _meta_is({"keyboard": "arrows move"})
+        f, o, i = run_behaviour_manifests(True)
+        if f or o or i or BMANIFEST_RE.search(open(_snip).read()):
+            fails.append("behaviour-manifest emitted or failed for a PROSE meta (must be silent): %s %s %s" % (f, o, i))
+        # (ii) TYPED meta → block injected BESIDE #token-manifest, AFTER it, before the script
+        _typed = {"script": "knowledge/snippets/Demo.reference.html#script", "partial": None,
+                  "events": ["click"], "fallback": None}
+        _meta_is(_typed)
+        f, o, i = run_behaviour_manifests(False)
+        if f or o != ["Demo (behaviour-manifest)"] or i:
+            fails.append("--check did not report the missing block as out-of-sync: %s %s %s" % (f, o, i))
+        f, o, i = run_behaviour_manifests(True)
+        got = open(_snip).read()
+        bm = BMANIFEST_RE.search(got)
+        tm = MANIFEST_RE.search(got)
+        if f or i != 1 or not bm:
+            fails.append("behaviour-manifest not injected for a TYPED meta: %s %s %s" % (f, o, i))
+        elif not (tm.end() < bm.start() < got.index("<script>\n    window.demo")):
+            fails.append("behaviour-manifest not placed BESIDE #token-manifest (after it, before the script)")
+        elif json.loads(bm.group(1)).get("script") != _typed["script"] or json.loads(bm.group(1)).get("events") != ["click"]:
+            fails.append("behaviour-manifest carries the wrong address fields: %s" % bm.group(1))
+        elif "keyboard" in bm.group(1):
+            fails.append("behaviour-manifest leaked prose — only the address fields travel")
+        # (iii) idempotent: a second run is in-sync, byte-exact
+        f, o, i = run_behaviour_manifests(True)
+        if f or o or i or open(_snip).read() != got:
+            fails.append("behaviour-manifest re-generation is not idempotent: %s %s %s" % (f, o, i))
+        # (iv) the meta changes → --check goes out of sync → regeneration REPLACES (never duplicates)
+        _meta_is(dict(_typed, events=["click", "keydown"]))
+        f, o, i = run_behaviour_manifests(False)
+        if o != ["Demo (behaviour-manifest)"]:
+            fails.append("a changed meta did not put the block out of sync")
+        run_behaviour_manifests(True)
+        if len(BMANIFEST_RE.findall(open(_snip).read())) != 1:
+            fails.append("re-generation duplicated the block instead of replacing it")
+        #  (v) ORPHAN: meta reverts to prose while the snippet still carries the block → refuse
+        _meta_is({"keyboard": "arrows move"})
+        f, o, i = run_behaviour_manifests(False)
+        if not any("no home" in x for x in f):
+            fails.append("an orphaned #behaviour-manifest (meta no longer typed) was not refused")
+        # (vi) UNRESOLVABLE address → refuse, write nothing
+        open(_snip, "w").write(_base_html)
+        _meta_is(dict(_typed, script="knowledge/canon/ghost.js"))
+        f, o, i = run_behaviour_manifests(True)
+        if not any("does not exist" in x for x in f) or BMANIFEST_RE.search(open(_snip).read()):
+            fails.append("an unresolvable address was not refused, or a block was written anyway: %s" % f)
+        _meta_is(dict(_typed, script="Demo.js"))
+        f, o, i = run_behaviour_manifests(True)
+        if not any("grammar" in x for x in f):
+            fails.append("an address outside the grammar was not refused: %s" % f)
+        # (vi-b) FOREIGN #script (another component's snippet) → refuse; own stem in another
+        #        case → accepted (the SKILL's case-insensitive slug rule)
+        open(os.path.join(_root, "snippets", "Other.reference.html"), "w").write(
+            '<html><body><script type="application/json" id="token-manifest">{}</script><script>2;</script></body></html>')
+        _meta_is(dict(_typed, script="knowledge/snippets/Other.reference.html#script"))
+        f, o, i = run_behaviour_manifests(True)
+        if not any("ANOTHER component" in x for x in f):
+            fails.append("a #script address naming ANOTHER component's snippet was not refused: %s" % f)
+        _meta_is(dict(_typed, script="knowledge/snippets/DEMO.reference.html#script"))
+        f, o, i = run_behaviour_manifests(True)
+        if f:
+            fails.append("the component's OWN snippet named in another case was refused as foreign: %s" % f)
+        # (vii) UNREGISTERED partial → refuse; registered → emitted
+        _meta_is(dict(_typed, partial="ghost-partial"))
+        f, o, i = run_behaviour_manifests(True)
+        if not any("does not register" in x for x in f):
+            fails.append("an unregistered partial was not refused: %s" % f)
+        _meta_is(dict(_typed, script="knowledge/canon/demo.js", partial="demo-b"))
+        f, o, i = run_behaviour_manifests(True)
+        if f or i != 1:
+            fails.append("a registered partial with a file address was refused: %s" % f)
+        # (viii) no live #token-manifest → refuse (nothing to sit beside); a COMMENTED-OUT manifest
+        #        is not an anchor (#211 lane R6 class)
+        open(_snip, "w").write('<html><body><!-- <script type="application/json" id="token-manifest">{}</script> -->'
+                               '<script>1</script></body></html>')
+        _meta_is(_typed)
+        f, o, i = run_behaviour_manifests(True)
+        if not any("no live #token-manifest" in x for x in f):
+            fails.append("a snippet whose only #token-manifest is inside an HTML comment was accepted as an anchor")
+        # (ix) the block itself is data, not a script: inline_scripts must not count it
+        open(_snip, "w").write(_base_html)
+        run_behaviour_manifests(True)
+        if len(VR.inline_scripts(open(_snip).read())) != 1:
+            fails.append("the #behaviour-manifest block was counted as an executable inline script")
+    finally:
+        VR.ROOT = _saved_root
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)

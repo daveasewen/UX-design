@@ -1,0 +1,51 @@
+  [301] demoted pr-wcag-1-4-3 (a party of pl-15) from L to C
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+300 ESCAPED   red   after-write           1/1/1   0        0/0/0  quote-oracle-repointed-to-itself-8-words
+                                names=['STALE-GENERATED'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+301 ESCAPED   red   after-write           1/1/1   0        0/0/0  register-obligation-demoted-L-to-C
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+310 ESCAPED   red   after-write           0/0/0   0        0/0/0  schema-sources-additionalProperties-true-plus-judgement
+                                names=[] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,False)
+311 ESCAPED   red   after-write           1/1/1   0        0/0/0  schema-sources-minItems-0-plus-no-sources-plus-paraphrase
+                                names=['STALE-GENERATED'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+312 ESCAPED   red   after-write           0/0/0   0        0/0/0  schema-note-maxWords-500-plus-64-word-note
+                                names=[] must=R3-NOTE-TOO-LONG untouched(as-is)=True write(homes,gen)untouched=(True,False)
+---------------------------------------------------------------------
+verdicts: ESCAPED 5 · arms 5
+
+== --selftest (build step [142], ABORT) on the accepted + re-derived mutants of 310/311/312
+  310-schema-sources-additionalProperties-true-plus-judgement: selftest rc=0 :: arms 55 · red arms 45 (went red by name 45/45) · green arms 7 · no-fire/77 arms 3 · failures 0
+  311-schema-sources-minItems-0-plus-no-sources-plus-paraphrase: selftest rc=1 :: arms 55 · red arms 45 (went red by name 44/45) · green arms 7 · no-fire/77 arms 3 · failures 1
+      23  FAIL    red        0  -      R3 link quote PARAPHRASED (not verbatim in the source row)
+  312-schema-note-maxWords-500-plus-64-word-note: selftest rc=1 :: arms 55 · red arms 45 (went red by name 44/45) · green arms 7 · no-fire/77 arms 3 · failures 1
+      20  FAIL    red        0  -      R3 judgement smuggled into a party `note` (16 words)
+
+== THE WRITER DOOR (--add-polarity / --add-stub) on copies
+  [320] GREEN-OK  rc=0 (expect 1) homes changed=['polarities.json'] :: writer-description-contains-quoted-polarities :: ✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+  [321] GREEN-OK  rc=0 (expect 0) homes changed=['polarities.json'] :: writer-append-into-empty-array :: ✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+  [322] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-duplicate-id-pl-01 :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/wonderful-adoring-euler/mnt/outputs/v238/arms/322-writer-duplicate-id-pl-01/brain (not
+  [323] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-duplicate-stub-id :: ⛔ POLARITY GATE REFUSED — 16 refusal(s) over /sessions/wonderful-adoring-euler/mnt/outputs/v238/arms/323-writer-duplicate-stub-id/brain (not
+  [324] ESCAPED   rc=0 (expect 0) homes changed=['polarities.json'] :: writer-accepts-unverifiable-quote ::   quotes 22: verbatim against their source rows — 21 verified, 1 UNVERIFIED (declared, not passed)
+  [325] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-entry-is-a-list :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/wonderful-adoring-euler/mnt/outputs/v238/arms/325-writer-entry-is-a-list/brain (nothin
+  [326] GREEN-OK  rc=0 (expect 0) homes changed=['polarities.json'] :: writer-on-2-space-indented-file :: mixed indent: '\n  "parties": [\n   {\n    "ref": "pr-fitts",\n    "role": "sid'
+  [327] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-typed-status-refused-control :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/wonderful-adoring-euler/mnt/outputs/v238/arms/327-writer-typed-status-refused-control/
+  [328] ESCAPED   rc=0 (expect 1) homes changed=['stubs.json'] :: writer-stub-zwsp-phrase :: ✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+
+== DOOR ASYMMETRY 1: the home is ABSENT (POLARITY_BRAIN_DIR -> a path that does not exist)
+  A CLI   rc=77 :: COULD-NOT-ASK: /sessions/wonderful-adoring-euler/mnt/outputs/v238/no-such-home/polarities.json — the polarity home /sess
+  B BUILD rc=77 -> _build_all.main() treats 77 as 'COULD-NOT-ASK — declared refusal, build continues' (its own words, line ~1352); route=gate
+  C SEAM  rc=1 :: ['✗ polarity gate REFUSED (s238-D7) — the refusal is NAMED directly above and the gate owns the diagnosis (a node in knowledge/brain/polarities.json fails one of the five refusals, or knowledge/brain/_generated/ is stale — for staleness run: python3 knowledge/_validate_polarities.py --write, then NAME the regenerated files in your --reconciled list). Or re-run with POLARITY_ACK="<real reason>" to pass it as a DECLARED gap. Nothing has been staged.']
+
+== DOOR ASYMMETRY 2: POLARITY_BRAIN_DIR at the seam — a fake-repo stand-in whose knowledge/brain/ is DIRTY
+  (a) seam block in the fake repo, no env:                 rc=1 names=['R5-TYPED-STATUS']  (proves the stand-in: the tree's brain IS dirty)
+  (b) same, POLARITY_BRAIN_DIR=<a clean copy elsewhere>:   rc=0 names=[] :: — polarity gate green (_validate_polarities.py --check passed, s238-D7)
+      the ONLY trace of the redirect on the record: ['polarity gate (s238-D7): home /sessions/wonderful-adoring-euler/mnt/outputs/v238/brain-real · rows 30 · parties 68 (prin', '  RULE EDGES: for each polarity, for each unordered pair of parties on DIFFERENT sides whose refs both resolve to princi']
+  (c) same, POLARITY_ACK=lazy (the spelled hatch):         rc=0 :: ['— polarity gate: DECLARED GAP — lazy']
+
+== BUILD door on a CRASH arm: what the GATE remedy claims vs what the output names
+  rc=1 names=[] traceback=True
+  remedy text the build prints: ❌ polarity gate failed (exit 1) — a polarity node in knowledge/brain/polarities.json carries a ref that does not resolve, an untyped link, a judgement field, a typed status, or an authored file sits at a generated path — OR the derived files under knowledge/brain/_generated/ are stale against the home. The refusal is NAMED in th

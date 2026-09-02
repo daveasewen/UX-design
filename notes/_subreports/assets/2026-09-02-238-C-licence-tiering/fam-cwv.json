@@ -1,0 +1,67 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-cwv (R1 row 17). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 17,
+    "id": "fam-cwv",
+    "name": "Core Web Vitals / Interaction to Next Paint (INP)",
+    "steward": "Google / web.dev (Chrome team)",
+    "r1_licence_field_as_filed": "UNPROVEN: no licence statement captured (site is CC BY 4.0 by convention — NOT verified here)",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)",
+    "related_receipt": "notes/_subreports/assets/2026-09-02-237-G-gap-discharge/inp-threshold.json — lane G's 200/500 ms thresholds, read off a browser render"
+  },
+  "primary_source": {
+    "url": "https://web.dev/articles/inp",
+    "what_it_is_our_words": "The metric's defining article. Its licence is a sentence in the page's own footer, which points to the Google Developers Site Policies for the details and exclusions."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://web.dev/articles/inp",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html; charset=utf-8'; page states 'Published: May 06, 2022, Last updated: September 2, 2025' and footer 'Last updated 2025-09-02 UTC'",
+      "size": "NOT MEASURED — full article including the 'What is a good INP score?' thresholds, the quiz, and the footer licence sentence",
+      "probe_for_licence": "footer sentence present verbatim: 'Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License. For details, see the Google Developers Site Policies.'",
+      "note": "Unlike lane G's experience at #237 (JS-rendered, needed a browser), this fetcher returned the thresholds in text: 'below or at 200 milliseconds' good, 'above 200 … below or at 500' needs improvement, 'above 500' poor, at the 75th percentile. Same figures as lane G's inp-threshold.json — a second, independent client agreeing."
+    },
+    {
+      "n": 2,
+      "url": "https://developers.google.com/terms/site-policies",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; footer 'Last updated 2025-08-06 UTC'",
+      "size": "NOT MEASURED — full policy page: the two notice forms, 'What is not licensed?', 'Attribution' with three prescribed paragraphs",
+      "probe_for_licence": "read in full. The page's own 'Page Summary' block at the top was NOT used as the source (it is a summary — brief pitfall 1); quotes below are from the body."
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "Creative Commons Attribution 4.0 (content) + Apache 2.0 (code samples) — Google Developers Site Policies",
+    "read_from": "the licence sentence on the primary page's own footer + the Site Policies body it points to",
+    "quote_le_15_words": "the content of this page is licensed under the Creative Commons Attribution 4.0 License",
+    "quote_word_count": 14,
+    "quote_locus": "web.dev/articles/inp footer (verbatim, same sentence reproduced on the Site Policies page)",
+    "second_quote_le_15_words": "Google's trademarks and other brand features are not included in this license",
+    "second_quote_word_count": 12,
+    "second_quote_locus": "Site Policies, 'What is not licensed?'",
+    "third_quote_le_15_words": "images, audio or video material, or a link to content on a different webpage",
+    "third_quote_word_count": 14,
+    "third_quote_locus": "Site Policies, 'What is not licensed?' — such content 'is not covered by the license, unless specifically noted'",
+    "grants_our_words": "Copy, modify, translate and reuse the page text, with attribution to Google in the prescribed form and a link back to the source page; code samples under Apache 2.0.",
+    "forbids_our_words": "Using Google brand features; treating images, video or linked content as licensed; omitting the attribution paragraph.",
+    "attribution_form_required_our_words": "For exact reproduction, a paragraph stating that portions are reproduced from work created and shared by Google under CC BY 4.0, plus a link to the source page; a parallel paragraph for modified versions.",
+    "ai_clause": "none in the notice or the policies"
+  },
+  "tier_PROPOSED": "safe now",
+  "permits_us": "reproduce — text verbatim with the prescribed attribution paragraph and a link back; paraphrase — permitted, with the 'modifications based on' form of the paragraph; NOT the diagrams/SVGs (images excluded)",
+  "why_our_words": "R1 guessed CC BY 'by convention' and was right, but a guess is not a receipt; this lane has the sentence from the page and the exclusions from the policy. The thing to remember is the images: the INP threshold diagram is an image and is outside the licence even though the numbers in the text are inside it.",
+  "cheap_route_to_lift": "Not needed.",
+  "unproven": [
+    "Whether every web.dev page carries the same footer — only /articles/inp was fetched in this lane; R1 also cites /articles/vitals (fetched at #236, licence not captured then). 'Except as otherwise noted' means a per-page check on import. Price: one fetch per page imported."
+  ],
+  "pitfalls": [
+    {"what": "The threshold figures live in text (licensed) AND in an SVG (not licensed). A node that embeds the diagram breaches; a node that states the numbers does not.", "owner": "P2 membership rule author; generator's asset-import path"},
+    {"what": "The attribution is a specific paragraph plus a link, not a bare 'Source: Google'. A generator that emits CWV text into a client deliverable owes that paragraph on the deliverable.", "owner": "generator's attribution field"},
+    {"what": "'Last updated 2025-09-02' — thresholds and definitions can move (the page keeps a changelog). A node without a fetch date will drift.", "owner": "source-register maintainer (R1 idea 13, expiry policy)"}
+  ]
+}

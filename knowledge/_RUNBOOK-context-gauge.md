@@ -378,6 +378,24 @@ session, closing #216's carry ⑤ ("announced but uninscribed").**
   passes, a SILENT one fails.
 - Derivation and pitfalls: `notes/_briefs/2026-08-21-214-context-territory-strategy-v1.md` (row `W-99x`).
 
+### ★ MEASURED, NOT RULED — A LANE IS PRICED AT ITS RETURN, NOT ITS LAUNCH (#237 · #238 datapoints; homed here by ADDITION at the #238 wrap's 2f EXIT CHECK)
+
+*provenance: 238 · 2026-09-02 · status: observed.* Two consecutive post-mortems (`notes/_GAUGE-LOG.md`
+§ `#### 2026-09-02 #237` and `#### 2026-09-02 #238`) carry the same measurement, and a lesson that lives
+only in a dated block does not count as homed (ritual step 2f EXIT CHECK) — so it is written here, once:
+
+- **#237:** lane T was launched at **~185K** FILL; its RETURN — the stub, the REPLAY-THESE read, the
+  reconcile — landed the conductor at **204,725 real**, inside the `s214-D1` band. *A lane launched past
+  the advisory returns INTO the band.*
+- **#238:** six lanes went out from an opener FILL of **103,211**; the five reconciled in-window put the
+  conductor at **198,667 real** — **~19K of conductor FILL per lane, all-in** (n=5, measured, not derived).
+
+⇒ **A delegation decision is priced at its RETURN, not at its launch.** Launching a sub is nearly free in
+FILL [[delegation-cost-inversion-110]]; the return is not, and the advisory prices the launch. ⛔ **This
+section moves NO constant, band, floor, advisory or stop line** — it records two datapoints so the next
+reader COUNTS them instead of re-discovering them; what to do about them is Dave's, at the `s208-D1` /
+`s214-D4` re-base sittings.
+
 ### ★★ THE THIRD TIER — the weekly allowance is PERISHABLE, and it inverts the objective
 
 **⚠ CORRECTION, inscribed as loudly as the claim it replaces (2026-07-27, same window).** This section

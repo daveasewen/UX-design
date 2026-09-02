@@ -1,0 +1,67 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-norman (R1 row 32). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 32,
+    "id": "fam-norman",
+    "name": "Norman's principles (affordance → signifier, feedback, mapping, constraint)",
+    "steward": "Don Norman / jnd.org (the essay); ACM Interactions (first publication, 2008); Basic Books (The Design of Everyday Things — not fetched)",
+    "r1_licence_field_as_filed": "UNPROVEN: no licence statement in fetched text",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)",
+    "grade_context": "R1 finding 7: Norman replaced his most-quoted use of 'affordance' with 'signifier' — the register needs an author_revised field"
+  },
+  "primary_source": {
+    "url": "https://jnd.org/signifiers-not-affordances/",
+    "what_it_is_our_words": "The author's own copy of his 2008 ACM Interactions column, on his site. It carries TWO rights statements: an ACM permission paragraph inside the article (author's version, personal use, non-commercial redistribution with the paragraph included) and a site-wide footer licence (CC BY-NC 4.0). Both are non-commercial.",
+    "revision_receipt_le_15_words": "Forget affordances: what people need, and what design must provide, are signifiers",
+    "revision_receipt_word_count": 12
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://jnd.org/signifiers-not-affordances/",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html; charset=UTF-8'; published 2008-11-17, modified 2023-03-16 (page meta)",
+      "size": "NOT MEASURED — full essay, references, site footer",
+      "probe_for_licence": "two hits. (1) In-article paragraph after the author bio: 'This is the author's version of the work. It is posted here by permission of ACM for your personal use. It may be redistributed for non-commercial use only, provided this paragraph is included.' (2) Site footer: 'jnd.org © 2023. Licensed under the Creative Commons Attribution, Non Commercial 4.0 International License.' R1's tag-stripping fetch reported none — the footer sentence is plain text, so the miss is UNPROVEN as to cause."
+    },
+    {
+      "n": 2,
+      "url": "https://creativecommons.org/licenses/by-nc/4.0/legalcode.en",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; full legal code Sections 1-8",
+      "size": "NOT MEASURED — full legal code",
+      "probe_for_licence": "Section 1(i) NonCommercial definition and Section 2(a)(1) grant read; the legal code was fetched rather than the deed (brief pitfall 1)"
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "Site: CC BY-NC 4.0. Article: ACM author-version permission — personal use; non-commercial redistribution only, with the paragraph included.",
+    "read_from": "the article's own permission paragraph + the site footer sentence + the CC BY-NC 4.0 legal code",
+    "quote_le_15_words": "It may be redistributed for non-commercial use only, provided this paragraph is included",
+    "quote_word_count": 13,
+    "quote_locus": "in-article ACM permission paragraph",
+    "second_quote_le_15_words": "not primarily intended for or directed towards commercial advantage or monetary compensation",
+    "second_quote_word_count": 12,
+    "second_quote_locus": "CC BY-NC 4.0 legal code, Section 1(i), the definition of NonCommercial",
+    "third_quote_le_15_words": "reproduce and Share the Licensed Material, in whole or in part, for NonCommercial purposes only",
+    "third_quote_word_count": 15,
+    "third_quote_locus": "CC BY-NC 4.0 legal code, Section 2(a)(1)(A)",
+    "grants_our_words": "Non-commercial copying and adaptation with attribution (site licence); non-commercial redistribution of the author's version with its paragraph (ACM permission).",
+    "forbids_our_words": "Any use primarily directed at commercial advantage — which a bank's design-generation asset is. The ACM paragraph is narrower still: 'personal use'.",
+    "ai_clause": "none"
+  },
+  "tier_PROPOSED": "pointer-only",
+  "permits_us": "names-only — the concept NAMES (signifier, affordance, feedback, mapping, constraint) and the FACT of the 2008 revision, with a pointer to the essay and the ACM citation (Interactions 15(6), 2008); no essay text in node text",
+  "why_our_words": "Same shape as Laws of UX, which R1 already put in pointer-only for its NC clause: a non-commercial licence is a licence Apollo cannot use. The concepts are Norman's vocabulary and the field's; a node can name them and point. The essay's sentences cannot travel into a commercial deliverable under either notice.",
+  "cheap_route_to_lift": "jnd.org lists a contact page (consulting-and-talks); ACM permissions for the Interactions column would be a second ask. Price: two messages; the ACM one is a paid republication request in the usual case.",
+  "unproven": [
+    "The Design of Everyday Things (Basic Books) — the book that carries feedback/mapping/constraint at length — was not fetched; its terms are a publisher's. R1 lists it under 'books, not fetchable pages'. Price: n/a — treat as pointer.",
+    "Why R1's fetch saw no licence: the footer sentence is plain text; either the 2026 page differs from the 2026-09-02 #236 fetch (unlikely, same day) or the tag-stripping filter dropped the footer block. Not re-run with R1's method. Price: one curl in the sandbox (~0.5K) — not worth it; the licence is now evidenced."
+  ],
+  "pitfalls": [
+    {"what": "The word 'signifier' is doing double duty in Apollo's own vocabulary risk (R1 finding 1 flagged 'gestalt'); 'affordance' is used loosely across the repo's prose. Importing Norman's names without the s202-class collision check invites false retrievals.", "owner": "conductor — the 'gestalt' collision check should include 'affordance'/'signifier' (grep cost ~0.3K)"},
+    {"what": "Two notices with different scopes on one page: a generator that reads the footer (CC BY-NC) and misses the in-article ACM paragraph will redistribute the author's version without the paragraph, breaching the narrower notice even in a non-commercial context.", "owner": "generator's licence field — store BOTH notice strings for this family"}
+  ]
+}

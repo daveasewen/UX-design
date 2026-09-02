@@ -1,0 +1,20 @@
+# DRIVE I — L1 intact — one byte inside a markup region still reds HASH-MISMATCH beside the L2 checks
+# fixture: /dev/shm/l2fix (rebuilt by fixture_build.py in this call)
+$ python3 knowledge/_validate_receipt.py dashboards/l2-fixture.html
+## dashboards/l2-fixture.html
+  - pack: 1.0.5 (REPORTED, not enforced — s235-D1: a receipt is valid against the pack it was minted from)
+  - ✅ Date-picker#style (style, 12694 bytes)
+  - ✅ Textarea#style (style, 6873 bytes)
+  - ✅ Stat-card#style (style, 2761 bytes)
+  - ✅ Date-picker#markup (markup, 2152 bytes) · behaviour knowledge/snippets/Date-picker.reference.html#script LOADED (Date-picker#script[0] inlined verbatim as page script #1, 8488 bytes; meta knowledge/components/date-picker.meta.json)
+  - ✅ Textarea#markup (markup, 716 bytes) · behaviour knowledge/snippets/Textarea.reference.html#script LOADED (Textarea#script[0] inlined verbatim as page script #2, 958 bytes; meta knowledge/components/textarea.meta.json)
+  FAIL:HASH-MISMATCH — `Stat-card#markup` (Stat-card) does not match its receipt — first differing byte at offset 0 of the region, near …Xdiv class="stat-card" role=…. receipt sha256:f6b1a03f9002… / page sha256:e0dd16f8790e…
+  - ✅ Date-picker#script (script, 8499 bytes)
+  - ✅ Textarea#script (script, 975 bytes)
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+  verdict: FAIL:HASH-MISMATCH (+1 UNPROVEN)
+
+RESULT: FAIL ❌
+rc=1
+# EXPECT rc=1 and: ['FAIL:HASH-MISMATCH', 'RESULT: FAIL']
+# VERDICT: as expected ✅

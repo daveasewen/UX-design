@@ -1,0 +1,53 @@
+== gate mutant 1: PAGE side compares after whitespace normalisation (bytes no longer the key)
+  ❌ N  meta address PRESENT and the page carries a whitespace-shifted copy (bytes are the key) -> 
+SELFTEST: FAIL ❌
+== gate mutant 2: META side removed — an address outside the grammar is passed through
+  ❌ Q  meta address WRONG — outside the grammar (node-id form) -> BEHAVIOUR-NOT-LOADED | unprove
+SELFTEST: FAIL ❌
+== gate mutant 3: PAGE side always true
+  ❌ L  meta address PRESENT and the page carries NO script -> PASS | unproven=1
+  ❌ M  meta address PRESENT and the page carries a ONE-BYTE tampered copy -> PASS | unproven=1
+  ❌ N  meta address PRESENT and the page carries a whitespace-shifted copy (bytes are the key) -> 
+  ❌ N2 …and the page carries the script as application/json (data, not executable) -> PASS | unp
+SELFTEST: FAIL ❌
+== gate mutant 4: the receipt/meta DISAGREES check removed
+  ❌ R  receipt `script` DISAGREES with the meta (the copy drifted from the home) -> PASS | unprove
+SELFTEST: FAIL ❌
+== gate mutant 5: the meta is not read at all (typed_behaviour always None) — L1 behaviour only
+  ❌ L  meta address PRESENT and the page carries NO script -> PASS | unproven=2
+  ❌ M  meta address PRESENT and the page carries a ONE-BYTE tampered copy -> PASS | unproven=2
+  ❌ N  meta address PRESENT and the page carries a whitespace-shifted copy (bytes are the key) -> 
+  ❌ N2 …and the page carries the script as application/json (data, not executable) -> PASS | unp
+  ❌ O3 meta address PRESENT (file form) and the page loads nothing -> PASS | unproven=2
+  ❌ P  meta address WRONG — names a file that does not exist -> PASS | unproven=2
+  ❌ Q  meta address WRONG — outside the grammar (node-id form) -> PASS | unproven=2
+  ❌ Q2 meta address WRONG — #script on the component's own snippet, which does not exist -> PASS
+  ❌ Q3 meta address WRONG — #script on the component's own snippet, which has no inline executab
+  ❌ R  receipt `script` DISAGREES with the meta (the copy drifted from the home) -> BEHAVIOUR-NOT-
+  ❌ R2 receipt `script` AGREES with the meta — no double jeopardy -> BEHAVIOUR-NOT-LOADED | unpr
+  ❌ U  meta partial UNREGISTERED in component-types.json -> PASS | unproven=2
+  ❌ V  meta partial REGISTERED and the page carries no AUTO-BEHAVIOUR block of that name -> PASS |
+  ❌ X  #script on a snippet whose only script is an AUTO-BEHAVIOUR payload resolves to nothing -> 
+  ❌ X2 …and with an unloaded partial declared too, BOTH defects are named (no first-obstacle-onl
+  ❌ Y  meta address WRONG — a #script pointing at ANOTHER component's snippet is FOREIGN, even w
+  ❌ Z2 #script on a snippet whose only <script> sits inside an HTML comment resolves to nothing ->
+SELFTEST: FAIL ❌
+== gate mutant 6: the partial registry check removed
+  ❌ U  meta partial UNREGISTERED in component-types.json -> BEHAVIOUR-NOT-LOADED | unproven=1
+SELFTEST: FAIL ❌
+== gate mutant 7: inline_scripts reads RAW (a commented-out script counts)
+  ❌ Z  inline_scripts read a <script> inside an HTML comment as live, or lost the live one: [('dea
+  ❌ Z2 #script on a snippet whose only <script> sits inside an HTML comment resolves to nothing ->
+SELFTEST: FAIL ❌
+== gate mutant 8: the FOREIGN rule removed (a #script may point at any snippet)
+  ❌ Y  meta address WRONG — a #script pointing at ANOTHER component's snippet is FOREIGN, even w
+SELFTEST: FAIL ❌
+== gate mutant 9: case-SENSITIVE own-stem comparison (the SKILL says case-insensitive)
+  ❌ Y2 …but the OWN snippet named in another case is not foreign (case-insensitive stems) -> BEH
+SELFTEST: FAIL ❌
+== gate mutant 10: the UNPROVEN line for prose/none metas dropped (silent gap)
+  ❌ S  meta PROSE (pre-s234-D5) — UNPROVEN:behaviour-address, not a pass and not a fail -> PASS 
+  ❌ T  meta with NO behaviour key — UNPROVEN too (meta:NONE) -> PASS | unproven=1
+SELFTEST: FAIL ❌
+== control: unmutated
+SELFTEST: PASS ✅

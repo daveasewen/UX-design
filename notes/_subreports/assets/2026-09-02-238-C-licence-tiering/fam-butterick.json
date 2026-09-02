@@ -1,0 +1,68 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-butterick (R1 row 19). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 19,
+    "id": "fam-butterick",
+    "name": "Butterick's Practical Typography",
+    "steward": "Matthew Butterick (web book; paperback by O'Connor's / Thomson Reuters)",
+    "r1_licence_field_as_filed": "UNPROVEN: no licence statement in fetched text",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)",
+    "context": "R1 Finding 6 — the brief's '45–75' was recalled; the fetched page says '45–90 characters or 2–3 alphabets'"
+  },
+  "primary_source": {
+    "url": "https://practicaltypography.com/line-length.html",
+    "what_it_is_our_words": "One chapter of a web book. The chapter page carries no notice; the book's terms are on a dedicated Legal page linked from the book's front matter."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://practicaltypography.com/line-length.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html'",
+      "size": "NOT MEASURED — full chapter",
+      "probe_for_licence": "read in full; no ©, no 'copyright', no 'licen', no 'permission' on the chapter page. The text is set with soft hyphens (U+00AD), which is why a naive grep for words can miss them — searched by eye.",
+      "rule_receipt_le_15_words": "45–90 characters or 2–3 alphabets"
+    },
+    {
+      "n": 2,
+      "url": "WebSearch: site:practicaltypography.com copyright \"all rights reserved\" OR license OR \"how to pay for this book\"",
+      "tool": "WebSearch",
+      "outcome": "OK — result list only",
+      "note": "Located https://practicaltypography.com/legal.html. The search tool's prose paraphrase of the legal page was NOT used as the source — the page was fetched (attempt 3)."
+    },
+    {
+      "n": 3,
+      "url": "https://practicaltypography.com/legal.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; title 'Legal | Butterick's Practical Typography'",
+      "size": "NOT MEASURED — full page: Legal, Privacy, and Shelley's 'Ozymandias'",
+      "probe_for_licence": "read in full; the first three sentences are the licence"
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "All rights reserved (© 2010–26 Matthew Butterick); written permission required; U.S. fair use excepted",
+    "read_from": "the licence text itself, https://practicaltypography.com/legal.html",
+    "quote_le_15_words": "No part of this book may be reproduced without written permission from me",
+    "quote_word_count": 13,
+    "quote_note": "soft hyphens (U+00AD) removed from the quoted words; the page renders 're-pro-duced' with discretionary hyphens",
+    "second_quote_le_15_words": "Reproductions that qualify as fair use under U.S. copyright law do not require permission",
+    "second_quote_word_count": 14,
+    "grants_our_words": "Nothing beyond fair use (a U.S. doctrine; Apollo's clients are UK/EU, where the nearer concept is fair dealing and narrower).",
+    "forbids_our_words": "Reproducing any part of the book without written permission.",
+    "ai_clause": "none seen"
+  },
+  "tier_PROPOSED": "pointer-only",
+  "permits_us": "names-only — the rule's NAME and its figures as facts ('45–90 characters', '2–3 alphabets') with a pointer to the chapter; the chapter's sentences stay out of node text; ≤15-word quotes rest on fair use/fair dealing, which the notice acknowledges but does not widen",
+  "why_our_words": "The clearest all-rights-reserved notice among the thirteen, with an email address for permission. Numbers are not expression, so a node can say '45–90 characters' and point; it cannot carry Butterick's prose. R1's finding 6 already treats the figures as the thing worth holding.",
+  "cheap_route_to_lift": "One email to mb@mbtype.com — the notice invites requests. Price: one email. Note the author's stated economics: the book is reader-funded and he says so on the legal page; a request from a commercial user should expect to be asked to pay.",
+  "unproven": [
+    "Whether the paperback edition (O'Connor's / Thomson Reuters) carries different terms — not fetched; irrelevant unless a node cites the print edition."
+  ],
+  "pitfalls": [
+    {"what": "'Fair use' on the page is a U.S. doctrine. A UK bank's asset cannot rely on it; UK fair dealing for quotation is narrower and needs acknowledgement. Treat the ≤15-word quote as the ceiling, not a floor.", "owner": "Dave's counsel — a one-line house rule on quotation length would settle it for every family"},
+    {"what": "The figures (45–90, 2–3 alphabets) have no primary study behind them (R1 finding 6). A pointer node inherits that thinness; grade stays PRACTISED.", "owner": "principle-register maintainer"}
+  ]
+}

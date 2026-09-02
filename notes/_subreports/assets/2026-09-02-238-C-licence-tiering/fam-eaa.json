@@ -1,0 +1,116 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-eaa (R1 row 9). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 9,
+    "id": "fam-eaa",
+    "name": "European Accessibility Act — Directive (EU) 2019/882",
+    "steward": "European Parliament and Council (the act); European Commission DG EMPL (the page R1 fetched); Publications Office (EUR-Lex / Official Journal)",
+    "r1_licence_field_as_filed": "EU reuse policy (not quoted from page)",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip) — lane P: 'The EAA is legal-grade and is not named'",
+    "grade_context": "R1 grade L; enters as an OBLIGATION node under s237-D2, and as part of 'the legal set' that s237-D4 orders first — so its tier decides whether the legal set is whole."
+  },
+  "primary_source": {
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32019L0882",
+    "what_it_is_our_words": "The authentic text is the Official Journal edition on EUR-Lex. Its licence is not on the act; it is the EU's reuse regime: Commission Decision 2011/833/EU, applied to EUR-Lex content by the EUR-Lex legal notice, with EU-owned web content additionally under CC BY 4.0 per the Commission's legal notice.",
+    "note": "The Directive text itself was NOT re-fetched in this lane — R1 fetched the DG EMPL page at #236 (fetch-receipts slug 'eaa', 171,551 bytes OK). This lane's job was the licence, which lives elsewhere."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED — chrome only, body absent",
+      "http_as_demonstrated": "content returned with 'Content-Type: text/html; charset=UTF-8' and title 'Legal notice - EUR-Lex', but the returned text ends at the page's toolbar ('Help · Export PDF · Print') with none of the notice body",
+      "size": "NOT MEASURED — header, nav, experimental-features dialog and breadcrumb only",
+      "failure_verbatim": "the returned text ends with '- [Help](https://eur-lex.europa.eu/content/help.html \"Help\") - [Export PDF](…) - Print -' and nothing after it",
+      "note": "Same class as lane G's EUR-Lex findings at #237: the sandbox fetcher does not get EUR-Lex bodies; a browser client does (lane G rendered 418,837 characters of the DSA from the same host)."
+    },
+    {
+      "n": 2,
+      "url": "https://commission.europa.eu/legal-notice_en",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; Drupal 11 page; full body including 'Copyright notice' section",
+      "size": "NOT MEASURED — full page, sections: Disclaimer · Use of artificial intelligence in content creation · External link disclaimer · Privacy policy · Copyright notice",
+      "probe_for_licence": "the 'Copyright notice' section read in full: names Commission Decision of 12 December 2011 (CELEX 32011D0833) as the reuse policy and licenses EU-owned website content under CC BY 4.0"
+    },
+    {
+      "n": 3,
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011D0833",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED — resolved URL line only",
+      "http_as_demonstrated": "NOT SEEN — no status line, no headers",
+      "size": "0 characters of document body",
+      "failure_verbatim": "the entire response was the single line 'https://eur-lex.europa.eu/legal-content/EN/TXT?uri=CELEX:32011D0833'",
+      "note": "REPRODUCES #236 R1 (HTTP 202, zero bytes) and #237 lane G attempt 2 exactly."
+    },
+    {
+      "n": 4,
+      "url": "WebSearch: EUR-Lex legal notice copyright \"reuse\" \"Decision 2011/833/EU\" Official Journal texts",
+      "tool": "WebSearch",
+      "outcome": "OK — result list only",
+      "note": "Used ONLY to locate candidate URLs (the EUR-Lex 'Reuse EUR-Lex content' help page and the legislation.gov.uk copy of the Decision). The search tool's prose summary of the EUR-Lex notice was NOT used as a licence source — brief pitfall 1."
+    },
+    {
+      "n": 5,
+      "url": "https://eur-lex.europa.eu/content/help/data-reuse/reuse-contents-eurlex-details.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED — chrome only, body absent",
+      "http_as_demonstrated": "content returned with title 'Reuse EUR-Lex content - EUR-Lex'; meta-description present ('You can reuse EUR-Lex data, free of charge, subject to copyright conditions'); body absent",
+      "size": "NOT MEASURED — header, nav, breadcrumb, toolbar only",
+      "failure_verbatim": "the returned text ends with '- [Export PDF](…) - Print -' and nothing after it",
+      "note": "The meta-description is the page's own summary line, not the notice text; it is recorded here as what the page SAYS ABOUT ITSELF and is not used as the licence quote."
+    },
+    {
+      "n": 6,
+      "url": "https://www.legislation.gov.uk/eudn/2011/833",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED on first attempt — HTTP 429 at the fetch TOOL (Cowork web_fetch rate limit), not at the host",
+      "http_as_demonstrated": "429 rate_limit_error returned by the tool wrapper: 'Cowork web_fetch rate limit exceeded'",
+      "size": "0",
+      "failure_verbatim": "The web fetch API is rate limited (HTTP 429). Immediate retries will fail -- stop and report the failure in your findings.",
+      "note": "Waited (three receipt files were written in the interval), then retried once as attempt 7."
+    },
+    {
+      "n": 7,
+      "url": "https://www.legislation.gov.uk/eudn/2011/833",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html;charset=utf-8'; meta-DC.publisher 'King's Printer of Acts of Parliament'; meta-DC.source names the EUR-Lex CELEX:32011D0833 snapshot",
+      "size": "NOT MEASURED — the whole Decision: 14 recitals, Articles 1-14, footnotes, and the site footer",
+      "probe_for_licence": "Articles 2, 3, 4 and 6 read in full. Footer read: the site itself declares it reuses EUR-Lex content 'under the terms of the Commission Decision 2011/833/EU' — a government reuser applying the Decision to legal texts, which is the corroboration this lane could not get from EUR-Lex directly."
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "EU reuse regime — Commission Decision 2011/833/EU (reuse of Commission documents), with EU-owned web content under CC BY 4.0 per the Commission legal notice",
+    "read_from": "the Decision's own text (legislation.gov.uk King's Printer copy, derived from EUR-Lex on IP completion day, unamended) + the Commission legal notice 'Copyright notice' section",
+    "quote_le_15_words": "for commercial or non-commercial purposes under the conditions laid down in Article 6",
+    "quote_word_count": 13,
+    "quote_locus": "Decision 2011/833/EU, Article 4(a)",
+    "second_quote_le_15_words": "the obligation for the reuser to acknowledge the source of the documents",
+    "second_quote_word_count": 12,
+    "second_quote_locus": "Decision 2011/833/EU, Article 6(2)(a); 6(2)(b) adds 'not to distort the original meaning or message'",
+    "third_quote_le_15_words": "reuse is allowed, provided appropriate credit is given and changes are indicated",
+    "third_quote_word_count": 12,
+    "third_quote_locus": "commission.europa.eu/legal-notice_en, Copyright notice (CC BY 4.0 sentence)",
+    "corroboration_quote_le_15_words": "content derived from EUR-Lex, reused under the terms of the Commission Decision 2011/833/EU",
+    "corroboration_quote_word_count": 13,
+    "corroboration_locus": "legislation.gov.uk site footer",
+    "grants_our_words": "Reuse for any purpose, commercial included, free, without asking, on two conditions: name the source and do not distort the meaning. Web content the EU owns is additionally CC BY 4.0.",
+    "forbids_our_words": "Distorting the text; reuse 'calculated to deceive or to defraud' (Art. 2(4)); logos, names and trademarks are excluded (Art. 2(2)(a)); third-party-rights material is excluded (Art. 2(2)(b)).",
+    "ai_clause": "none in the Decision; the Commission notice has an AI section but it is about the Commission's OWN use of AI in content creation, not a restriction on reusers"
+  },
+  "tier_PROPOSED": "safe now",
+  "permits_us": "reproduce — verbatim Directive text with the source acknowledged and the meaning undistorted; paraphrase likewise (changes indicated)",
+  "why_our_words": "The legal set that s237-D4 puts first was missing its one directive. The reuse regime is explicit and the conditions are two: credit and fidelity. That makes the EAA the same tier as DSA Article 25 and the EDPB guidelines, which R1 already put in 'safe now' on the same policy.",
+  "unproven": [
+    "The EUR-Lex legal notice's OWN sentence applying the Decision to legislative texts (acts of the Parliament and Council are not, strictly, 'Commission documents'). Three routes to EUR-Lex failed in this fetcher; the legislation.gov.uk footer and Decision recital 7 ('the full corpus of Union law freely available online') corroborate but are not the notice. Price: one browser-client render of https://eur-lex.europa.eu/content/legal-notice/legal-notice.html — lane G proved that route at #237 (~2K tokens).",
+    "R1's UNPROVEN 3 (the 28 June 2025 application date) is untouched by this lane — not a licence question."
+  ],
+  "pitfalls": [
+    {"what": "Fidelity is a licence CONDITION here, not a nicety: an obligation node that paraphrases the EAA into something it does not say breaches Art. 6(2)(b) as well as misleading a client.", "owner": "obligation-node author; a diff-against-source check on obligation nodes would catch it"},
+    {"what": "'Source acknowledged' must survive the generation chain — a generated screen brief that quotes the EAA without the source line loses the grant.", "owner": "generator's attribution field"},
+    {"what": "The fetcher/host mismatch will recur for every EUR-Lex family: anyone re-verifying the DSA, EAA or EDPB from the sandbox will get an empty body and may write 'blocked'. The runbook answer is lane G's: use the browser client.", "owner": "conductor — one line in the render/fetch runbook"}
+  ]
+}

@@ -1,0 +1,21 @@
+# DRIVE C — address WRONG — meta names knowledge/canon/nope.js (no such file)
+# fixture: /dev/shm/l2fix (rebuilt by fixture_build.py in this call)
+$ python3 knowledge/_validate_receipt.py dashboards/l2-fixture.html
+## dashboards/l2-fixture.html
+  - pack: 1.0.5 (REPORTED, not enforced — s235-D1: a receipt is valid against the pack it was minted from)
+  - ✅ Date-picker#style (style, 12694 bytes)
+  - ✅ Textarea#style (style, 6873 bytes)
+  - ✅ Stat-card#style (style, 2761 bytes)
+  FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE — `Date-picker#markup`: meta knowledge/components/date-picker.meta.json declares script `knowledge/canon/nope.js`, which names a file that does not exist (<FIXTURE>/knowledge/canon/nope.js)
+  - ✅ Textarea#markup (markup, 716 bytes) · behaviour knowledge/snippets/Textarea.reference.html#script LOADED (Textarea#script[0] inlined verbatim as page script #2, 958 bytes; meta knowledge/components/textarea.meta.json)
+  - ✅ Stat-card#markup (markup, 452 bytes) · behaviour NO-BEHAVIOUR-DECLARED · meta:NONE
+  - ✅ Date-picker#script (script, 8499 bytes)
+  - ✅ Textarea#script (script, 975 bytes)
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+  UNPROVEN:behaviour-address — 1 with meta:NONE (Stat-card#markup): no typed behaviour address (s234-D5), so whether the page must load a script for these regions was NOT measured; typing the meta's `behaviour` (the L2 migration proposal) would prove it
+  verdict: FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE (+2 UNPROVEN)
+
+RESULT: FAIL ❌
+rc=1
+# EXPECT rc=1 and: ['FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE — `Date-picker#markup`', 'names a file that does not exist', 'RESULT: FAIL']
+# VERDICT: as expected ✅

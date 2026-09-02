@@ -1,0 +1,68 @@
+====================================================================================================
+_validate_polarities.py --selftest — every arm drives gate() on a copy of the REAL rows
+====================================================================================================
+  #  result  expect    rc  named  arm
+  1  PASS    green      0  -      CONTROL: the real 30 rows, untouched
+  2  PASS    red        1  yes    R1 dangling PARTY ref (pr-does-not-exist)
+  3  PASS    red        1  yes    R1 dangling LINK ref (s999-D9)
+  4  PASS    red        1  yes    R1 link to a SUPERSEDED ruling (s129-D1, real store)
+  5  PASS    red        1  yes    R1 PARTY that is a superseded ruling (s129-D1)
+  6  PASS    red        1  yes    R1 SELF-PARTY (pl-01 lists itself)
+  7  PASS    red        1  yes    R1 CIRCULAR polarity→polarity LINK (pl-01 → pl-02)
+  8  PASS    red        1  yes    R1 CIRCULAR polarity as a PARTY of another (pl-02 on pl-01)
+  9  PASS    red        1  yes    R1 link to a PRINCIPLE id (wrong register)
+ 10  PASS    red        1  yes    R1 undeclared STUB (st-not-declared)
+ 11  PASS    red        1  yes    R1 a declared stub REMOVED from stubs.json (pl-05's party dangles)
+ 12  PASS    red        1  yes    R1 homoglyph ref (Cyrillic а in pr-jakobs-law) — non-ASCII id
+ 13  PASS    red        1  yes    R2 UNTYPED link (type key absent)
+ 14  PASS    red        1  yes    R2 UNKNOWN (fifth) link type `relatedTo`
+ 15  PASS    red        1  yes    R2 link type wrong case `ResolvedBy`
+ 16  PASS    red        1  yes    R2 link type empty string
+ 17  PASS    red        1  yes    R3 judgement field `how_it_resolves` on a node
+ 18  PASS    red        1  yes    R3 judgement field of ANOTHER name (`verdict`)
+ 19  PASS    red        1  yes    R3 judgement smuggled into a link `quote` (16 words)
+ 20  PASS    red        1  yes    R3 judgement smuggled into a party `note` (16 words)
+ 21  PASS    red        1  yes    R3 judgement field inside a PARTY object (`why`)
+ 22  PASS    red        1  yes    R3 stub with a third key (`rationale`)
+ 23  FAIL    red        0  -      R3 link quote PARAPHRASED (not verbatim in the source row)
+        rc=0 named=False crashed=False untouched=True ::  of them, not on demand.  open 20 · declared 0 · UNPROVEN 20 (conservative side not carried as data)
+          ✓ _generated/polarity-status.json fresh (generated_at 2026-09-02T15:55:43Z, content byte-identical)
+          ✓ _generated/polarity-edges.json fresh (generated_at 2026-09-02T15:55:43Z, content byte-identical)
+          ✓ _generated/defaults-declaration.txt fresh (generated_at 2026-09-02T15:55:43Z, content byte-identical)
+        ✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+        
+ 24  PASS    red        1  yes    R4 AUTHORED file at the generated path (no header)
+ 25  PASS    red        1  yes    R4 generated file HAND-EDITED under its header (self-sha breaks)
+ 26  PASS    red        1  yes    R4 AUTHORED edge file beside the homes (knowledge/brain/edges.json)
+ 27  PASS    red        1  yes    R4 STRAY second shape beside the homes (polarities-v2.json)
+ 28  PASS    red        1  yes    R4 AUTHORED file INSIDE _generated/ beside the derived three
+ 29  PASS    red        1  yes    R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)
+ 30  PASS    red        1  yes    R5 typed `status` on a node
+ 31  PASS    red        1  yes    R5 typed status under another spelling (`derivedStatus`)
+ 32  PASS    red        1  yes    S 1 party (minItems 2)
+ 33  PASS    red        1  yes    S DUPLICATE party (same ref twice on pl-01)
+ 34  PASS    red        1  yes    S DUPLICATE polarity id
+ 35  PASS    red        1  yes    S unicode polarity id (fullwidth digit)
+ 36  PASS    red        1  yes    S party role outside the enum (`side_d`)
+ 37  PASS    red        1  yes    S ONE-SIDED: every party on side_a (no pull)
+ 38  PASS    red        1  yes    S mediating_variable empty
+ 39  PASS    red        1  yes    S sources missing
+ 40  PASS    red        1  yes    S polarities.json does not parse
+ 41  PASS    red        1  yes    FRESHNESS: home edited, generated files not re-derived → STALE
+ 42  PASS    red        1  yes    FRESHNESS: a generated file deleted → MISSING
+ 43  PASS    red        1  yes    WRITE: --write on a refused home writes NOTHING (hashes equal)
+ 44  PASS    green      0  yes    WRITE: stale → --write → fresh (rc 1 → 0 → 0)
+ 45  PASS    green      0  yes    WRITE: determinism — two writes differ only in generated_at
+ 46  PASS    green      0  yes    ADD-POLARITY: dry-run leaves bytes; --write = original + one span; 31 rows; gate green after
+ 47  PASS    red        1  yes    ADD-POLARITY: an entry with a typed status is REFUSED by name, nothing written
+ 48  PASS    green      0  yes    ADD-STUB: good stub appended textually; 3-key stub REFUSED (S-STUB-SHAPE)
+ 49  PASS    nofire     1  -      BITE-THE-BITE: with minItems removed from the SCHEMA the 1-party refusal does NOT fire — the schema file drives the check
+ 50  PASS    red        1  yes    SCHEMA: a keyword this gate does not implement (maxItems) is REFUSED, never silently ignored
+ 51  PASS    green      0  yes    CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant (via --brain AND via POLARITY_BRAIN_DIR)
+ 52  PASS    red        2  yes    CLI: bare and unknown argv refuse with rc 2 (argv contract, #208 class)
+ 53  PASS    77        77  yes    COULD-NOT-ASK: home directory absent → rc 77 + marker naming the path (pack classifier reads it as REPO-BOUND)
+ 54  PASS    77        77  yes    COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a real refusal is STILL rc 1 first (the refusal path is not swallowed)
+ 55  PASS    green      0  yes    WIRING: STEPS has --check + --selftest rows; _git_commit.sh invokes --check on a live line; the seam harness stubs it
+----------------------------------------------------------------------------------------------------
+arms 55 · red arms 45 (went red by name 44/45) · green arms 7 · no-fire/77 arms 3 · failures 1
+✗ selftest FAILED — 1 arm(s)

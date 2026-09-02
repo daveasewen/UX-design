@@ -194,3 +194,30 @@ If the instrument is itself uncommitted, `git diff --name-only` cannot tell them
 Restore stripped files with `git show HEAD:<path> > <path>` — the delete-guard blocks `git checkout`'s
 unlink (`Operation not permitted`), and `git status` itself can strand `index.lock` if its call is
 reaped (clear per step 0 above).
+
+## The session seam — `SESSION_N`, `SESSION_ACK`, and the post-wrap handoff (added 2026-09-02, #238 lane M — `W-355`)
+
+*(Addition only. This runbook never documented the seam the script has carried since #89; the
+declared form below is what `W-355` was missing.)* The script asks `_session.py` who you are:
+
+- **`SESSION_N=<n>`** — the running session. **Mandatory on `--wrap`** and on every non-wrap commit
+  in practice, because T3 (`s130-D3`) GENERATES the subject from it (`after #<n> <date> — …`) and
+  refuses without it. `_session.py --declare <n>` then checks every witness (GM banner, TITLE line,
+  `_HANDOFF-*` files, `_SESSIONS.jsonl`) and REFUSES on R1–R4 with the cause named.
+- **`SESSION_ACK="<real reason>"`** — the declared-gap hatch (declared passes, silent fails).
+- **`SESSION_N` + `SESSION_ACK` TOGETHER — the `W-355` DECLARED FORM (#238).** Before #238 the two were
+  mutually exclusive in the shell, and a post-wrap `_HANDOFF-<n+1>-*.md` could be committed from
+  NEITHER seat: with `SESSION_N`, R3 CHAIN OVERTAKEN fires on the very file being committed (a
+  handoff numbered at-or-past the TITLE line is *meant* to make the next seat read it); without it, T3
+  refuses. Now, when both are set, the witness is checked WITH the declared session, the refusal is
+  printed and passes DECLARED, and T3 keeps its session. Nothing was removed: `SESSION_N` alone still
+  refuses a real overtake, and a `--wrap` whose banner names another session is still refused by T3
+  through the declared form. Proof: `python3 knowledge/_test_git_commit.py --selftest --only w355`
+  (9 arms; the CONTROL reproduces the deadlock on the script with the blocks stripped).
+  ```bash
+  SESSION_N=238 SESSION_ACK="post-wrap handoff for #239 is the file being committed" \
+    bash knowledge/_git_commit.sh --reconciled <fresh msgfile> _HANDOFF-239-<slug>.md
+  ```
+  ⚠ The record is the run's stdout — **write the reason into the msgfile body too**, so the commit
+  carries it. ⚠ The acknowledgement covers whatever `_session.py` refused (R2/R4 included), exactly as
+  `SESSION_ACK` alone always has; it is a declaration, not a filter — the reason must be REAL.

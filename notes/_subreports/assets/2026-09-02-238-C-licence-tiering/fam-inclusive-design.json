@@ -1,0 +1,70 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-inclusive-design (R1 row 14). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 14,
+    "id": "fam-inclusive-design",
+    "name": "Inclusive Design Principles",
+    "steward": "Henny Swan, Ian Pouncey, Heydon Pickering, Léonie Watson (contributors); posters by Barclays Access",
+    "r1_licence_field_as_filed": "UNPROVEN: no licence statement in fetched text",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)"
+  },
+  "primary_source": {
+    "url": "https://inclusivedesignprinciples.info/",
+    "what_it_is_our_words": "The principles' own site: seven principles, each with a one-line statement, a full description and examples, in seven languages. The licence is not a sentence on the page — it is a Creative Commons badge in the footer linking to a CC deed."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://inclusivedesignprinciples.info/",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html; charset=utf-8'",
+      "size": "NOT MEASURED — full page: intro, seven principles with descriptions and examples, footer",
+      "probe_for_licence": "footer contains exactly one licence signal: an image whose src is https://i.creativecommons.org/l/by-sa/2.0/uk/88x31.png (the CC BY-SA 2.0 UK badge) wrapped in a link whose href is https://creativecommons.org/licenses/by-sa/4.0/deed.en (the CC BY-SA 4.0 deed). There is no licence SENTENCE and no copyright line. R1's fetch (curl + tag-stripping) would have dropped both the image and the href, which is why R1 filed UNPROVEN.",
+      "note": "Badge version (2.0 UK) and link version (4.0) disagree. Both are Attribution-ShareAlike; the permissions are the same in kind and the attribution/ShareAlike conditions differ only in wording between versions."
+    },
+    {
+      "n": 2,
+      "url": "WebSearch: \"inclusivedesignprinciples.info\" github repository license Swan Pouncey Pickering Watson",
+      "tool": "WebSearch",
+      "outcome": "OK — result list only; no repository URL surfaced",
+      "note": "Looked for a LICENSE file in a source repository to turn the href into a sentence. Not found by this search; not pursued further."
+    },
+    {
+      "n": 3,
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/legalcode.en",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; full legal code, Sections 1-8",
+      "size": "NOT MEASURED — full legal code",
+      "probe_for_licence": "Section 2(a)(1) (grant) and Section 3(a)-(b) (Attribution, ShareAlike) read in full. The legal code was fetched rather than the deed the href points to, because the deed is a summary (brief pitfall 1)."
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "Creative Commons Attribution-ShareAlike — 4.0 International by the href; 2.0 UK by the badge image",
+    "read_from": "the licence text itself (CC BY-SA 4.0 legal code, Sections 2 and 3); the APPLICATION of that licence to the site rests on a badge + href, not a sentence",
+    "quote_le_15_words": "reproduce and Share the Licensed Material, in whole or in part",
+    "quote_word_count": 11,
+    "quote_locus": "CC BY-SA 4.0 legal code, Section 2(a)(1)(A)",
+    "second_quote_le_15_words": "must be a Creative Commons license with the same License Elements, this version or later",
+    "second_quote_word_count": 15,
+    "second_quote_locus": "Section 3(b)(1) — the ShareAlike condition on Adapted Material",
+    "grants_our_words": "Copy the principles verbatim, in whole or in part, and adapt them — for any purpose, commercial included — provided we credit the creators, link the licence, and mark changes.",
+    "forbids_our_words": "Sharing an ADAPTATION under any licence other than BY-SA (same elements, this version or later). Verbatim reproduction does not trigger ShareAlike; adaptation that is shared does.",
+    "ai_clause": "none in CC BY-SA 4.0"
+  },
+  "tier_PROPOSED": "safe now (with a ShareAlike rider)",
+  "permits_us": "reproduce — verbatim node text with attribution; paraphrase — permitted, but a paraphrase is Adapted Material and if it is Shared (emitted into a client deliverable) that adapted text must carry BY-SA",
+  "why_our_words": "The most generous licence among the thirteen, and R1 had it as UNPROVEN only because a tag-stripping fetch cannot see a badge. The one thing to design for is ShareAlike: a graph node that quotes the principle verbatim with credit is clean; a generator that rewrites it and ships the rewrite into a bank's brief has made Adapted Material and owes BY-SA on that passage. Verbatim-plus-credit is the cheaper posture.",
+  "cheap_route_to_lift": "Not needed for reproduction. To settle the 2.0-UK-versus-4.0 question and get a sentence instead of a badge: one message to any of the four contributors (links on the page). Price: one message.",
+  "unproven": [
+    "Which BY-SA version the licensor intended — the badge says 2.0 UK, the href says 4.0. This lane treats the href as operative (it is the element a reader follows) and records the disagreement. Price: one contributor message.",
+    "Whether the illustrated posters (Barclays Access) are under the same licence — the poster zip was not fetched. Only the page text is tiered here."
+  ],
+  "pitfalls": [
+    {"what": "ShareAlike is contagious to adapted passages: a generator that 'improves' the wording of an inclusive-design node and emits it makes BY-SA text inside a proprietary deliverable. The membership rule should mark this family reproduce-verbatim-preferred.", "owner": "P2 membership rule author; generator's licence field (a per-family 'adapt?' flag)"},
+    {"what": "A badge is not a sentence. If the site ever swaps the footer, the licence signal vanishes with no diff in any text a fetcher stores. Keep the fetch date on the node.", "owner": "source-register maintainer"},
+    {"what": "Attribution under 3(a)(1) needs creator names, a licence link and a change indication — three fields, not one string.", "owner": "generator's attribution field design"}
+  ]
+}

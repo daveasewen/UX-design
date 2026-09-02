@@ -1,0 +1,64 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-iso9241 (R1 row 6). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 6,
+    "id": "fam-iso9241",
+    "name": "ISO 9241 series (ergonomics of human-system interaction: -110, -11, -210)",
+    "steward": "ISO TC 159/SC 4; copyright ISO",
+    "r1_licence_field_as_filed": "ISO copyright, paywalled — only the abstract page was fetched",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)",
+    "related_receipt": "notes/_subreports/assets/2026-09-02-237-G-gap-discharge/iso-9241-110-addendum.json — lane G's seven principle names, taken from Molich's page which reproduces DRAFT text 'with permission' from Danish Standards. That permission is Molich's, not ours."
+  },
+  "primary_source": {
+    "url": "https://www.iso.org/copyright.html",
+    "what_it_is_our_words": "ISO's own copyright page, which is the licence statement for everything on iso.org and for every ISO publication. Read in full; it is short. Its footer block (repeated on every iso.org page) adds an AI clause."
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://www.iso.org/copyright.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; tool header block reports 'Content-Type: text/html;charset=UTF-8'; meta-pubdate 20230505",
+      "size": "NOT MEASURED — full page text returned (three body paragraphs + site chrome + footer)",
+      "probe_for_licence": "read in full in-context; the body is three paragraphs under 'Copyright' and the footer is '© All Rights Reserved' plus two paragraphs, one of which is the AI clause"
+    },
+    {
+      "n": 2,
+      "url": "https://www.iso.org/open-data.html",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; meta-pubdate 20250325",
+      "size": "NOT MEASURED — full page text returned: three datasets, each with a licence row",
+      "probe_for_licence": "each dataset's 'License' row read: all three say ODC Attribution License (ODC-By) v1.0. The deliverables dataset's data model was read field by field: id, deliverableType, supplementType, reference, title, publicationDate, edition, icsCode, ownerCommittee, currentStage, replaces, replacedBy, languages, pages, scope. No field carries body text of a standard."
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "ISO copyright — all rights reserved; written permission for any use; explicit AI/ML prohibition. Exception: ISO Open Data metadata under ODC-By v1.0.",
+    "read_from": "the licence text itself: https://www.iso.org/copyright.html body + footer; https://www.iso.org/open-data.html dataset licence rows",
+    "quote_le_15_words": "Any use, including reproduction requires our written permission",
+    "quote_word_count": 8,
+    "ai_clause": "PRESENT — iso.org footer, every page: with the sole exception of ISO Open Data, no ISO content may be used for machine learning or AI, including to train models or to prompt AI tools to generate responses",
+    "ai_clause_quote_le_15_words": "prompt or otherwise enable artificial intelligence or similar tools to generate responses",
+    "ai_clause_quote_word_count": 12,
+    "ai_clause_our_words": "With the sole exception of the Open Data page, ISO says no ISO content may be used for machine learning or AI, naming both training and prompting a tool to generate responses. A designer's-brain node that a generator reads is prompting. This is the only family among the thirteen with a clause aimed squarely at what Apollo's chain does.",
+    "open_data_quote_le_15_words": "welcome to share, adapt and create from the datasets as long as ISO is attributed",
+    "open_data_quote_word_count": 15,
+    "grants_our_words": "Under ODC-By: the deliverable's reference (e.g. 'ISO 9241-110:2020'), its title, publication date, edition, committee, status, and the scope/abstract paragraph — with attribution in the form the page's attribution tool produces.",
+    "forbids_our_words": "Everything else: the body of any standard, the recommendation text, and any use of iso.org content to prompt an AI tool."
+  },
+  "tier_PROPOSED": "pointer-only",
+  "permits_us": "names-only, and narrowly: reference + title + scope/abstract from ISO Open Data (ODC-By, attributed). Nothing from the body of the standard, and nothing from iso.org pages, may sit in a node a generator reads.",
+  "why_our_words": "ISO is the strictest of the thirteen. Its metadata is genuinely open and is enough for a pointer node that says what the standard is and where it lives. Its body is closed, and its AI clause closes the door R1 left ajar ('purchase the standard'): buying a copy grants reading, not prompting. Lane G's seven principle names came through a third party's permission and are the one thing here this lane cannot tier by itself.",
+  "cheap_route_to_lift": "None cheap. A written licence from ISO (copyright@iso.org) or a national member body covering AI use — price unknown, and the clause suggests the answer is structured as a paid licence, if at all.",
+  "unproven": [
+    "Whether the seven principle NAMES of ISO 9241-110:2020 (short phrases such as 'Suitability for the user's tasks') are 'ISO content' under the AI clause. Lane G holds them via Molich's licensed draft reproduction. This lane does not rule; Dave's counsel does. Price: one legal opinion, or a written answer from copyright@iso.org.",
+    "The exact scope text for ISO 9241-110:2020, -11:2018 and -210:2019 was NOT pulled from the Open Data dataset in this lane (the dataset files are Parquet/JSONL/CSV downloads, ~one fetch each; not attempted because the download was not needed to tier the family). Price: three dataset row lookups."
+  ],
+  "pitfalls": [
+    {"what": "The AI clause makes 'buy the standard' a false remedy for ISO — a purchased PDF's text still may not be used to prompt a generator. Any plan line that prices ISO as 'purchase, then import' is wrong.", "owner": "plan v2 author; P2 membership rule"},
+    {"what": "ODC-By requires attribution in a stated form; a pointer node that carries the ISO reference without the attribution string breaches the one licence ISO does grant.", "owner": "generator's licence/attribution field"},
+    {"what": "Lane G's seven names are already in the repo. If they are imported as node text before the UNPROVEN above is settled, the brain holds ISO content a generator reads.", "owner": "Dave (import decision, s237-D4)"}
+  ]
+}

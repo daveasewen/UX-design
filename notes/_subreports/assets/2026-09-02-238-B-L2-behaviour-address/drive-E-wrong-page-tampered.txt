@@ -1,0 +1,21 @@
+# DRIVE E — address WRONG on the PAGE side — one token edited inside the copied script ('keydown'→'keyup')
+# fixture: /dev/shm/l2fix (rebuilt by fixture_build.py in this call)
+$ python3 knowledge/_validate_receipt.py dashboards/l2-fixture.html
+## dashboards/l2-fixture.html
+  - pack: 1.0.5 (REPORTED, not enforced — s235-D1: a receipt is valid against the pack it was minted from)
+  - ✅ Date-picker#style (style, 12694 bytes)
+  - ✅ Textarea#style (style, 6873 bytes)
+  - ✅ Stat-card#style (style, 2761 bytes)
+  FAIL:BEHAVIOUR-NOT-LOADED — `Date-picker#markup`: meta knowledge/components/date-picker.meta.json declares script `knowledge/snippets/Date-picker.reference.html#script`, and the page does not load it — the page carries 2 inline executable script(s), none hashing to Date-picker#script[0] (8488 bytes); page script #1 diverges from it at byte 74 of 8480 and shares 99% of its bytes, near …addEventListener('keyup', e => { if (e.key ==… — an edited copy, not the snippet's script
+  - ✅ Textarea#markup (markup, 716 bytes) · behaviour knowledge/snippets/Textarea.reference.html#script LOADED (Textarea#script[0] inlined verbatim as page script #2, 958 bytes; meta knowledge/components/textarea.meta.json)
+  - ✅ Stat-card#markup (markup, 452 bytes) · behaviour NO-BEHAVIOUR-DECLARED · meta:NONE
+  FAIL:HASH-MISMATCH — `Date-picker#script` (Date-picker) does not match its receipt — region is 8497 bytes now; the receipt was minted over different bytes. receipt sha256:c229d2a997e7… / page sha256:e8c6b3b65353…
+  - ✅ Textarea#script (script, 975 bytes)
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+  UNPROVEN:behaviour-address — 1 with meta:NONE (Stat-card#markup): no typed behaviour address (s234-D5), so whether the page must load a script for these regions was NOT measured; typing the meta's `behaviour` (the L2 migration proposal) would prove it
+  verdict: FAIL:BEHAVIOUR-NOT-LOADED,HASH-MISMATCH (+2 UNPROVEN)
+
+RESULT: FAIL ❌
+rc=1
+# EXPECT rc=1 and: ['FAIL:HASH-MISMATCH — `Date-picker#script`', 'FAIL:BEHAVIOUR-NOT-LOADED — `Date-picker#markup`', 'diverges from it at byte', 'RESULT: FAIL']
+# VERDICT: as expected ✅

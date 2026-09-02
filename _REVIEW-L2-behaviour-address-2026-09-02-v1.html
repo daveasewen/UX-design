@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>#238-B — The behaviour address</title>
+<style>
+:root{
+  --accent:#DA1A00;            /* s151-D1 two-red law: red ink ON WHITE */
+  --ink:#000000; --bg:#FFFFFF;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g5:#9B9B9B; --g6:#767676; --g7:#545454; --g8:#333333;
+  --rule:var(--g2); --panel:#F3F3F3;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px; --gut:2rem;
+  --mono:ui-monospace,Menlo,"SF Mono",Consolas,monospace;
+}
+html[data-theme="dark"]{
+  --accent:#F6604C;            /* s151-D1: everything-else red */
+  --ink:#FFFFFF; --bg:#0E0E0E;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g5:#7A7A7A; --g6:#9A9A9A; --g7:#B8B8B8; --g8:#D8D8D8;
+  --rule:#2A2A2A; --panel:#161616;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16px; line-height:1.75; font-weight:400; overflow-x:hidden}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 var(--gut)}
+nav{position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex; align-items:center; gap:var(--s3); min-height:54px}
+.brand{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap}
+.navlinks{display:flex; gap:var(--s3); margin-left:auto; flex-wrap:wrap}
+.navlinks a{font-size:14px; color:var(--g6); text-decoration:none; letter-spacing:.04em}
+.navlinks a:hover{color:var(--ink)}
+button.tt{font:inherit; font-size:12px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; background:none; color:var(--ink); border:0; border-bottom:1px solid var(--accent); padding:4px 0; cursor:pointer; white-space:nowrap; margin-left:auto}
+.navlinks + button.tt{margin-left:0}
+h1{font-size:clamp(2.4rem,6vw,5.25rem); font-weight:300; line-height:1.02; letter-spacing:0; margin:0}
+h2{font-size:clamp(1.6rem,3.4vw,2.6875rem); font-weight:400; line-height:1.14; margin:0 0 var(--s3)}
+h3{font-size:1.1875rem; font-weight:500; line-height:1.2; margin:0 0 var(--s2)}
+h4{font-size:14px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2); max-width:68ch}
+.lede{font-size:1.1875rem; line-height:1.6}
+.label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3)}
+.label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent); flex:none}
+.muted{color:var(--g7)}
+.small{font-size:14px; line-height:1.6}
+.mono{font-family:var(--mono); font-size:13px}
+code{font-family:var(--mono); font-size:.88em; background:var(--g1); padding:1px 4px; overflow-wrap:anywhere}
+b,strong{font-weight:700}
+a{color:var(--ink)}
+section{padding:var(--s7) 0; border-bottom:1px solid var(--rule)}
+section.tight{padding:var(--s5) 0}
+section.band{background:var(--panel)}
+.hdr{display:grid; grid-template-columns:2fr 1fr; gap:var(--s6); align-items:end}
+.meta dt{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--g6); margin-top:var(--s2)}
+.meta dd{margin:0; font-size:14px; overflow-wrap:anywhere}
+.flag{display:inline-block; font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; border:1px solid var(--accent); color:var(--accent); padding:3px 9px; margin-bottom:var(--s3)}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--s4)}
+.stat{background:var(--bg); padding:var(--s3)}
+.stat .n{font-size:clamp(2rem,4.4vw,2.6875rem); font-weight:200; line-height:1; display:block}
+.stat .k{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--g6); display:block; margin-top:var(--s1)}
+.stat.hi .n{color:var(--accent)}
+.dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start}
+.idx{font-size:clamp(3rem,7vw,5.25rem); font-weight:200; line-height:.9; color:var(--g5); display:block}
+.dim>*, .pair>*, .cards>*, .stats>*, .hdr>*, .col>*, .card>*, .item>*{min-width:0}
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; min-width:0}
+table{border-collapse:collapse; width:100%; min-width:640px; font-size:14px; line-height:1.5}
+th,td{text-align:left; vertical-align:top; padding:10px 14px 10px 0; border-bottom:1px solid var(--rule)}
+th{font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; color:var(--g6); white-space:nowrap}
+td.id,th.id{font-family:var(--mono); white-space:nowrap; padding-right:var(--s3)}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--s3)}
+.col{background:var(--bg); padding:var(--s3)}
+.col.n{background:var(--panel)}
+.colhead{font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; margin-bottom:var(--s2); padding-bottom:var(--s1); border-bottom:1px solid var(--rule)}
+.colhead.a{color:var(--g7)}
+.colhead.b{color:var(--accent)}
+pre{font-family:var(--mono); font-size:12px; line-height:1.5; margin:0 0 var(--s2); background:var(--g1); padding:var(--s2); overflow-x:auto; border-left:2px solid var(--g3); white-space:pre; min-width:0; max-width:100%}
+html[data-theme="dark"] pre{background:#111}
+.prose{font-size:14px; line-height:1.6; margin:0; overflow-wrap:anywhere}
+dl.prose dt{font-family:var(--mono); font-size:12px; color:var(--g6); margin-top:var(--s2)}
+dl.prose dt:first-child{margin-top:0}
+dl.prose dd{margin:2px 0 0}
+.fld{display:grid; grid-template-columns:88px 1fr; gap:var(--s2); font-size:13px; line-height:1.55; padding:var(--s1) 0; border-top:1px solid var(--rule)}
+.fld .fk{font-family:var(--mono); color:var(--g6)}
+.fld .fv{display:flex; flex-direction:column; gap:4px; min-width:0}
+.chip{display:inline-block; font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:1px 7px; border:1px solid var(--g3); color:var(--g7); align-self:flex-start}
+.chip.m{border-color:var(--g8); color:var(--ink)}
+.chip.u{border-color:var(--accent); color:var(--accent)}
+.qt{font-style:normal}
+.pr{color:var(--g7); overflow-wrap:anywhere}
+.cand{background:var(--panel); padding:var(--s1) var(--s2); border-left:2px solid var(--accent)}
+.item{padding:var(--s5) 0; border-top:1px solid var(--rule); scroll-margin-top:64px}
+section{scroll-margin-top:56px}
+.item:first-of-type{border-top:0}
+.ihead{display:flex; align-items:baseline; gap:var(--s3); flex-wrap:wrap}
+.ihead h3{margin:0}
+.kind{font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding:2px 8px; border:1px solid var(--g3); color:var(--g7)}
+.kind.scripted{border-color:var(--g8); color:var(--ink)}
+.flagline{font-size:14px; border-left:2px solid var(--accent); padding-left:var(--s2); margin-top:var(--s2)}
+.measline{margin-top:var(--s2); overflow-wrap:anywhere}
+.ctl{display:flex; flex-wrap:wrap; gap:var(--s1); margin:var(--s3) 0}
+.ctl button{font:inherit; font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; background:none; color:var(--g7); border:1px solid var(--g3); padding:6px 12px; cursor:pointer}
+.ctl button[aria-pressed="true"]{color:var(--ink); border-color:var(--ink)}
+.item[hidden]{display:none}
+.cards{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule)}
+.card{background:var(--bg); padding:var(--s3)}
+.card .n{font-size:12px; font-weight:500; letter-spacing:.12em; color:var(--accent); display:block; margin-bottom:var(--s1)}
+.card h3{font-size:16px; margin-bottom:var(--s1)}
+.card p{font-size:14px; line-height:1.55; margin:0 0 var(--s1)}
+.own{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--g6)}
+.qq{border-top:1px solid var(--rule); padding-top:var(--s3); margin-top:var(--s4)}
+.qq:first-of-type{border-top:0; margin-top:0}
+.qq .num{font-size:12px; letter-spacing:.12em; color:var(--accent); font-weight:500}
+.rec{border-left:2px solid var(--accent); padding-left:var(--s2); margin-top:var(--s2); font-size:15px}
+.note{background:var(--panel); padding:var(--s3); border-left:2px solid var(--g3); font-size:14px; line-height:1.6}
+.note p:last-child{margin-bottom:0}
+ol,ul{padding-left:1.15rem; max-width:68ch}
+li{margin-bottom:var(--s1); font-size:15px; line-height:1.6}
+footer{padding:var(--s5) 0 var(--s7); font-size:13px; color:var(--g6)}
+footer p{max-width:none; overflow-wrap:anywhere}
+@media (max-width:900px){
+  .hdr,.dim{grid-template-columns:1fr; gap:var(--s4)}
+  .pair,.cards{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .fld{grid-template-columns:1fr; gap:2px}
+  :root{--s7:3.5rem; --s6:2.5rem; --gut:1.25rem}
+  .navlinks{display:none}
+}
+@media (prefers-color-scheme:dark){
+  html:not([data-theme="light"]){
+    --accent:#F6604C; --ink:#FFFFFF; --bg:#0E0E0E;
+    --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g5:#7A7A7A; --g6:#9A9A9A; --g7:#B8B8B8; --g8:#D8D8D8;
+    --rule:#2A2A2A; --panel:#161616;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">#238 · Lane B</span>
+    <span class="navlinks">
+      <a href="#answer">Answer</a>
+      <a href="#shape">The shape</a>
+      <a href="#twenty">The 20</a>
+      <a href="#proof">Proof</a>
+      <a href="#l1">L1's three</a>
+      <a href="#mine">This lane's</a>
+      <a href="#risk">Consequences</a>
+    </span>
+    <button class="tt" id="tt" type="button">Dark</button>
+  </div>
+</nav>
+
+<section id="top">
+  <div class="wrap">
+    <span class="flag">Proposed — no meta was written</span>
+    <div class="hdr">
+      <div>
+        <p class="label">The behaviour address · s234-D5</p>
+        <h1>Prose becomes<br>an address</h1>
+      </div>
+      <dl class="meta">
+        <dt>Session</dt><dd>#238 · 2026-09-02 · lane B (L2 of the v1.0.6 brief)</dd>
+        <dt>Data</dt><dd>the 20 <code>behaviour</code> values in <code>knowledge/components/*.meta.json</code>, unedited, beside probes on their 20 snippets</dd>
+        <dt>Binding rulings</dt><dd class="mono">s234-D5 · s235-D1 · s235-D2</dd>
+        <dt>Register</dt><dd>Every value below is <b>proposed</b>. The metas are untouched until you say so (v1.0.6 brief, line 47).</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="answer">
+  <div class="wrap">
+    <p class="label">The answer, before the argument</p>
+    <div class="dim">
+      <div><span class="idx">01</span></div>
+      <div>
+        <h2>Twenty metas describe behaviour in words. None says where the script is. A typed address does — and the machinery to read it is built and bites.</h2>
+        <p class="lede">Six of the twenty say <b>passive — no states</b>, and their snippets agree (no script). Fourteen carry a real inline <code>&lt;script&gt;</code> that the prose describes but never names. The proposal types all twenty: <code>script</code> · <code>partial</code> · <code>events</code> · <code>fallback</code>, with the old prose kept verbatim under <code>$note</code>. Nothing is deleted.</p>
+        <p>Fourteen have one honest gap: <b>what the component does with JavaScript off</b>. No prose settles it, so those <code>fallback</code> values are <code>null</code>, marked <code>$unproven</code>, with a candidate reading shown for your eye and kept out of the proposal.</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="n">20</span><span class="k">metas with behaviour</span></div>
+      <div class="stat"><span class="n">6</span><span class="k">passive · script null</span></div>
+      <div class="stat"><span class="n">14</span><span class="k">carry a script</span></div>
+      <div class="stat hi"><span class="n">14</span><span class="k">with an unproven field</span></div>
+      <div class="stat"><span class="n">12</span><span class="k">fields settled by prose</span></div>
+      <div class="stat"><span class="n">54</span><span class="k">fields settled by a probe</span></div>
+      <div class="stat hi"><span class="n">14</span><span class="k">fields unproven (all fallback)</span></div>
+      <div class="stat"><span class="n">35</span><span class="k">gate arms green · 10 mutants caught</span></div>
+    </div>
+    <p class="small muted" style="margin-top:var(--s3)">Bases: <b>prose</b> = the meta's own words, quoted · <b>measured</b> = a probe on the reviewed snippet (script count, bytes, listeners) · <b>UNPROVEN</b> = neither. The address itself is never in the prose (the s234-D5 census: “addressing the script in none”), so <code>script</code> is settled by measurement wherever a script exists.</p>
+  </div>
+</section>
+
+<section id="shape" class="band">
+  <div class="wrap">
+    <p class="label">The shape</p>
+    <div class="dim">
+      <div><span class="idx">02</span></div>
+      <div>
+        <h2>One object, four fields, three legal address forms.</h2>
+        <pre>"behaviour": {
+  "script":   null | "knowledge/&lt;path&gt;.js" | "knowledge/snippets/&lt;Slug&gt;.reference.html#script",
+  "partial":  null | "&lt;name registered in component-types.json $behaviour&gt;",
+  "events":   ["click", "keydown", …],        // OPTIONAL — rC Q3 is open
+  "fallback": "what it does with JS off" | null, // null = not declared (unproven), never "none"
+  "$note":    … the old prose, verbatim …,
+  "$unproven": ["fallback"]                    // only when a field is null for want of evidence
+}</pre>
+        <ol>
+          <li><b><code>script: null</code> is a positive statement</b> — “this component carries no script.” It is never “unknown”.</li>
+          <li><b><code>#script</code> means the snippet's own inline script</b>, outside any <code>AUTO-BEHAVIOUR</code> markers, matched byte-for-byte (the s235-D1 posture: the bytes are the key). It must name the component's <b>own</b> snippet — shared behaviour is a registered partial, never a pointer into another component's file.</li>
+          <li><b><code>fallback: null</code> means undeclared.</b> A passive component says it in words: “identical — the component carries no script”.</li>
+          <li><b>The meta is the one home.</b> <code>gen_component_partials.py</code> derives a <code>#behaviour-manifest</code> block into the snippet beside <code>#token-manifest</code>; <code>_validate_receipt.py</code> reads the meta and checks the page loads what it names. Neither copies the other.</li>
+        </ol>
+        <div class="pair">
+          <div class="col n">
+            <div class="colhead a">(b) Node-id grammar — not taken</div>
+            <pre>"script": "snippet:Date-picker.reference.html#script"</pre>
+            <p class="small">Matches the KG edge grammar (<code>component:</code> · <code>snippet:</code> · <code>ruling:</code>). But the receipt's <code>script</code> field and the registry's <code>source</code> already use repo paths (<code>knowledge/canon/dv-behaviour.js</code>) — two grammars for one field, and a file address has no node-id prefix.</p>
+          </div>
+          <div class="col">
+            <div class="colhead b">(a) Path + fragment — proposed</div>
+            <pre>"script": "knowledge/snippets/Date-picker.reference.html#script"
+"script": "knowledge/canon/dv-behaviour.js"</pre>
+            <p class="small">One grammar with the receipt and the registry; <code>os.path.isfile</code> resolves the file half, and <code>#script</code> is the only fragment. The schema refuses (b) on sight (schema arm: “node-id grammar” goes red).</p>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--s2)">Schema change, by addition: a <code>behaviourAddress</code> definition and a discriminated <code>behaviour</code> property (an object carrying <code>script</code> must be an address; anything else is the pre-s234-D5 prose, legal during migration, closed later by a ratchet gate — never by the schema). All 136 live metas still validate; the 20 proposals validate; 21 schema arms behave (15 red, 6 green). Diff: <code>notes/_subreports/assets/2026-09-02-238-B-L2-behaviour-address/meta.schema.proposed.diff</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="twenty">
+  <div class="wrap">
+    <p class="label">The twenty, side by side</p>
+    <div class="dim">
+      <div><span class="idx">03</span></div>
+      <div>
+        <h2>Old on the left, proposed on the right. Every field says where it came from.</h2>
+        <p>Read the chips: <span class="chip p">prose</span> the meta's own words · <span class="chip m">measured</span> a probe on the snippet · <span class="chip u">unproven</span> nothing settles it. A candidate reading sits in a red-ruled box and is <b>not in the proposal</b>.</p>
+        <div class="ctl" role="group" aria-label="Filter the twenty">
+          <button type="button" data-f="all" aria-pressed="true">All 20</button>
+          <button type="button" data-f="passive" aria-pressed="false">Passive · 6</button>
+          <button type="button" data-f="scripted" aria-pressed="false">Carry a script · 14</button>
+          <button type="button" data-f="unproven" aria-pressed="false">With an unproven field · 14</button>
+        </div>
+      </div>
+    </div>
+    <div id="items">
+<article class="item" data-tags="passive" id="m-account-card">
+  <div class="ihead">
+    <h3>Account card <span class="mono muted">account-card</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/account-card.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>passive</dt><dd>REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“drafted as a passive display card (no states)”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“drafted as a passive display card (no states)”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Account-card.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  <p class="flagline">REVIEW is open in the prose itself: &#x27;Decide whether an INTERACTIVE variant is needed&#x27; — the proposal types TODAY&#x27;s card (passive); an interactive variant would be a second meta or a variant, Dave&#x27;s.</p>
+</article>
+<article class="item" data-tags="passive" id="m-action-bar">
+  <div class="ihead">
+    <h3>Action bar <span class="mono muted">action-bar</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/action-bar.meta.json · old value is a JSON string</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <p class="prose">Passive layout container — no states of its own; the Button atom inside carries hover/pressed/focus.</p>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive layout container — no states of its own”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive layout container — no states of its own”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Action-bar.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-amount-input">
+  <div class="ihead">
+    <h3>Amount input <span class="mono muted">amount-input</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/amount-input.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>typing</dt><dd>Digits, comma, dot accepted while typing; everything else stripped on input.</dd><dt>blur</dt><dd>Value normalises: en-GB grouping + exactly two decimals; group gains is-completed (value weight 500).</dd><dt>focus</dt><dd>is-completed lifts while editing.</dd><dt>keypad</dt><dd>inputmode=decimal brings the numeric keypad on touch.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Amount-input.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;blur&quot;,
+    &quot;focus&quot;,
+    &quot;input&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (1,845 bytes; sha256:31f21b61e07e…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (keydown, mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: blur ← “blur: Value normalises: en-GB grouping + exactly two decimals;”; focus ← “focus: is-completed lifts while editing.”; input ← “everything else stripped on input.”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“inputmode=decimal brings the numeric keypad on touch”</span><span class="cand"><b>Candidate reading, for your eye only:</b> A native text input: `inputmode=decimal` still brings the numeric keypad (an attribute, not script); no character stripping, no en-GB grouping, no two-decimal normalisation, no is-completed weight.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Amount-input.reference.html · inline executable scripts 1 (1,845 bytes) · AUTO-BEHAVIOUR none · listeners blur, focus, input · page-level modality tracker present (keydown, mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-anchor-nav">
+  <div class="ihead">
+    <h3>Anchor nav <span class="mono muted">anchor-nav</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/anchor-nav.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>scrollspy</dt><dd>IntersectionObserver rooted on the scroll container, rootMargin &#x27;-56px 0px -55% 0px&#x27;, threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.</dd><dt>jump</dt><dd>Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.</dd><dt>motion</dt><dd>standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Anchor-nav.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (1,435 bytes; sha256:91ad2a77f0ff…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality; the script also uses IntersectionObserver, which is an OBSERVER, not a DOM event, and is not listed</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Real fragment links plus scroll-margin-top on each section”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Fragment links still jump (they are real `href=&quot;#…&quot;` links with scroll-margin-top); the current mark stays where the markup authored it and never moves.</span><span class="pr">measured hint: the snippet&#x27;s own script comment: &#x27;The authored aria-current in the markup is the no-JS answer; this only ever moves it.&#x27; (Anchor-nav.reference.html, first line of the inline script)</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Anchor-nav.reference.html · inline executable scripts 1 (1,435 bytes) · AUTO-BEHAVIOUR none · listeners none</p>
+  
+</article>
+<article class="item" data-tags="passive" id="m-badge">
+  <div class="ihead">
+    <h3>Badge <span class="mono muted">badge</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/badge.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>appearing</dt><dd>If a badge already exists when a page is navigated to, it should be included in the page load. If created after load, it may appear with subtle animated motion to attract attention (see the relevant toolkits for motion).</dd><dt>passive</dt><dd>Badges are passive indicators — they notify but are not themselves interactive controls; the element they attach to is the actionable target.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Badges are passive indicators — they notify but are not themselves interactive controls”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Badges are passive indicators — they notify but are not themselves interactive controls”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Badge.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  <p class="flagline">&#x27;may appear with subtle animated motion&#x27; is a MOTION note (CSS), not a script — `motion` is the field for it, not `behaviour`.</p>
+</article>
+<article class="item" data-tags="scripted unproven" id="m-calendar">
+  <div class="ihead">
+    <h3>Calendar <span class="mono muted">calendar</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/calendar.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>keyboard</dt><dd>One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week&#x27;s edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker&#x27;s model, deliberately.</dd><dt>select</dt><dd>Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.</dd><dt>outOfMonthDays</dt><dd>Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.</dd><dt>disabledDays</dt><dd>Rendered as disabled buttons; the roving stop is kept off them.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Calendar.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;keydown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (6,470 bytes; sha256:f92bf1e5aa9f…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: keydown ← “keyboard: One tab stop (roving tabindex).”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="cand"><b>Candidate reading, for your eye only:</b> The month grid renders (server-authored buttons); nothing selects, nothing pages, no live-region announcement.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Calendar.reference.html · inline executable scripts 1 (6,470 bytes) · AUTO-BEHAVIOUR none · listeners click, keydown · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-command-palette">
+  <div class="ihead">
+    <h3>Command palette <span class="mono muted">command-palette</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/command-palette.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>open</dt><dd>A shortcut opens it. THE CHORD IS NOT RULED — the specimen shows Ctrl+K, and the platform-correct pairing (Ctrl on Windows, Command on macOS) plus whether the product claims that chord at all is PROPOSED #203, Dave&#x27;s.</dd><dt>keyboard</dt><dd>Up/Down move the highlight and wrap; Enter commits the highlighted option; Esc closes and returns focus to the opener; Tab is not used to move within the list.</dd><dt>results</dt><dd>Grouped, group order fixed, groups with no results omitted. Ranking is application business and is not specified here.</dd><dt>motion</dt><dd>standard ease only (160ms cubic-bezier(.4,0,.2,1)); a prefers-reduced-motion block neutralises every transition.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Command-palette.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;focusin&quot;,
+    &quot;input&quot;,
+    &quot;keydown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (8,910 bytes; sha256:066a29c54ae5…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: keydown ← “keyboard: Up/Down move the highlight and wrap;”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="cand"><b>Candidate reading, for your eye only:</b> Cannot open — the opener is a keyboard chord handled in script. A page relying on it needs a visible route to the same commands.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Command-palette.reference.html · inline executable scripts 1 (8,910 bytes) · AUTO-BEHAVIOUR none · listeners click, focusin, input, keydown</p>
+  
+</article>
+<article class="item" data-tags="passive" id="m-confirmation">
+  <div class="ihead">
+    <h3>Confirmation <span class="mono muted">confirmation</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/confirmation.meta.json · old value is a JSON string</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <p class="prose">Passive panel — no states of its own; the Button atom inside carries hover/pressed/focus. Full-width actions, so buttons use press-only physics (no hover-grow).</p>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive panel — no states of its own”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive panel — no states of its own”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Confirmation.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-date-picker">
+  <div class="ihead">
+    <h3>Date picker <span class="mono muted">date-picker</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/date-picker.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>open</dt><dd>Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.</dd><dt>keyboard</dt><dd>Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.</dd><dt>select</dt><dd>Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.</dd><dt>validation</dt><dd>On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with &#x27;Enter a real date, like …&#x27; (ctkn-020 &#x27;Enter…&#x27; + 3.3.3 suggestion). Error lifts as soon as the value re-validates.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Date-picker.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;blur&quot;,
+    &quot;click&quot;,
+    &quot;input&quot;,
+    &quot;keydown&quot;,
+    &quot;pointerdown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (8,488 bytes; sha256:5974bdb34b4a…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: blur ← “validation: On blur (not while the panel is open): empty = no error;”; click ← “open: Tail button only (aria-haspopup=dialog + aria-expanded);”; input ← “Typing NEVER opens the panel.”; keydown ← “keyboard: Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button.”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Typing NEVER opens the panel.”</span><span class="cand"><b>Candidate reading, for your eye only:</b> The text input works as a native field (DD/MM/YYYY typed by hand); the tail button does nothing and the panel never opens; no on-blur validation message.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Date-picker.reference.html · inline executable scripts 1 (8,488 bytes) · AUTO-BEHAVIOUR none · listeners blur, click, input, keydown, pointerdown · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-date-range-picker">
+  <div class="ihead">
+    <h3>Date-range picker <span class="mono muted">date-range-picker</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/date-range-picker.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>protocol</dt><dd>No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.</dd><dt>open</dt><dd>Either tail button (aria-haspopup=dialog); the view seeds from that field&#x27;s value (else start, else today); focus returns to the opening button on close.</dd><dt>keyboard</dt><dd>Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.</dd><dt>validation</dt><dd>Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — &#x27;Enter an end date after the start date.&#x27; Errors lift on re-validation or on a valid calendar pick.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Date-range-picker.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;blur&quot;,
+    &quot;click&quot;,
+    &quot;keydown&quot;,
+    &quot;pointerdown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (11,239 bytes; sha256:33ce69fe235f…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: blur ← “validation: Per-field DD/MM/YYYY on blur;”; click ← “open: Either tail button (aria-haspopup=dialog);”; keydown ← “keyboard: Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Per-field DD/MM/YYYY on blur”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Both fields work as native text inputs; neither tail button opens a panel; no pair validation.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Date-range-picker.reference.html · inline executable scripts 1 (11,239 bytes) · AUTO-BEHAVIOUR none · listeners blur, click, keydown, pointerdown · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="passive" id="m-eyebrow">
+  <div class="ihead">
+    <h3>Eyebrow <span class="mono muted">eyebrow</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/eyebrow.meta.json · old value is a JSON string</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <p class="prose">Passive display label — no states.</p>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive display label — no states.”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive display label — no states.”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Eyebrow.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-file-upload">
+  <div class="ihead">
+    <h3>File upload <span class="mono muted">file-upload</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/file-upload.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>staging</dt><dd>Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.</dd><dt>remove</dt><dd>Per-row 24px close (36px extended hit target); removal announced via the polite live region.</dd><dt>announcements</dt><dd>Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3).</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/File-upload.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;change&quot;,
+    &quot;click&quot;,
+    &quot;drop&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (5,520 bytes; sha256:53b68f85eaf0…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (keydown, mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: change ← “staging: Drop or browse stages files (acd-019: nothing auto-submits);”; click ← “remove: Per-row 24px close (36px extended hit target);”; drop ← “staging: Drop or browse stages files (acd-019: nothing auto-submits);”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Drop or browse stages files (acd-019: nothing auto-submits)”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Browse still works if the control wraps a native `&lt;input type=file&gt;`; nothing stages, no progress bar, no remove, no announcements.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: File-upload.reference.html · inline executable scripts 1 (5,520 bytes) · AUTO-BEHAVIOUR none · listeners change, click, drop · page-level modality tracker present (keydown, mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-form-layout">
+  <div class="ihead">
+    <h3>Form layout <span class="mono muted">form-layout</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/form-layout.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>validation</dt><dd>Validate on submit; per-field errors + summary together. A field&#x27;s error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.</dd><dt>masking</dt><dd>Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern).</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Form-layout.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;input&quot;,
+    &quot;submit&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (3,278 bytes; sha256:d5433657f86e…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (keydown, mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: click ← “summary links focus their field.”; input ← “A field&#x27;s error lifts as soon as its value re-validates (input event).”; submit ← “validation: Validate on submit;”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Validate on submit; per-field errors + summary together.”</span><span class="cand"><b>Candidate reading, for your eye only:</b> The form submits natively; no per-field errors or summary from script, no sort-code masking. Whether native constraint validation stands in is a markup question (required/pattern attributes), not settled here.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Form-layout.reference.html · inline executable scripts 1 (3,278 bytes) · AUTO-BEHAVIOUR none · listeners click, input, submit · page-level modality tracker present (keydown, mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-secure-entry">
+  <div class="ihead">
+    <h3>Secure entry <span class="mono muted">secure-entry</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/secure-entry.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>advance</dt><dd>Focus moves to the next cell on fill; backspace on an empty cell steps back and clears.</dd><dt>paste</dt><dd>A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).</dd><dt>verify</dt><dd>Checked when all cells are filled; group gains is-done or is-error; cells carry aria-invalid on failure.</dd><dt>resend</dt><dd>Disabled for 30s; the wait counter is visible text beside the button.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Secure-entry.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;input&quot;,
+    &quot;keydown&quot;,
+    &quot;paste&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (4,241 bytes; sha256:33bb8f35791c…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: keydown ← “backspace on an empty cell steps back and clears.”; paste ← “paste: A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“autocomplete=one-time-code invites OS autofill”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Six independent inputs; no auto-advance, no paste distribution, no verify state; `autocomplete=one-time-code` (an attribute) still invites OS autofill.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Secure-entry.reference.html · inline executable scripts 1 (4,241 bytes) · AUTO-BEHAVIOUR none · listeners click, input, keydown, paste · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-stepper">
+  <div class="ihead">
+    <h3>Stepper <span class="mono muted">stepper</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/stepper.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>advance</dt><dd>Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel&#x27;s heading. Last step relabels Next→Confirm.</dd><dt>back</dt><dd>Back button or any completed dot returns to that step (values retained); Back disabled on step 1.</dd><dt>collapse</dt><dd>Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.</dd><dt>announcements</dt><dd>A persistent sr-only aria-live region announces every step change (&#x27;Step n of m: name&#x27;) — whichever rendering is visible (Progress-tracker pattern).</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Stepper.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;input&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (4,332 bytes; sha256:a6a537d8334e…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (keydown, mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: click ← “advance: Next validates the current step;”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Same container-query breakpoint as Progress-tracker (520px)”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Whichever panel the markup authors as current is the only one shown; Next/Back do nothing; no announcements. The dots↔track collapse is a container query (CSS) and still works.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Stepper.reference.html · inline executable scripts 1 (4,332 bytes) · AUTO-BEHAVIOUR none · listeners click, input · page-level modality tracker present (keydown, mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="passive" id="m-summary">
+  <div class="ihead">
+    <h3>Summary <span class="mono muted">summary</span></h3>
+    <span class="kind passive">no script</span>
+  </div>
+  <p class="small muted">knowledge/components/summary.meta.json · old value is a JSON string</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <p class="prose">Passive display list — no states.</p>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: null,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [],
+  &quot;fallback&quot;: &quot;identical — the component carries no script&quot;,
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive display list — no states.”</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip p">prose</span><span class="qt">“Passive display list — no states.”</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Summary.reference.html · inline executable scripts 0 · AUTO-BEHAVIOUR none · listeners none</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-tab-bar">
+  <div class="ihead">
+    <h3>Tab-bar <span class="mono muted">tab-bar</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/tab-bar.meta.json · old value is a JSON string</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <p class="prose">Each item is a native &lt;a&gt; (focusable, keyboard-operable). The current item is marked with aria-current=&#x27;page&#x27; so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.</p>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Tab-bar.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;resize&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (1,485 bytes; sha256:7483148c633f…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (none present) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Each item is a native &lt;a&gt; (focusable, keyboard-operable).”</span><span class="cand"><b>Candidate reading, for your eye only:</b> Navigation works — each item is a native `&lt;a&gt;`; the authored `aria-current` stands; the sliding pill does not move.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Tab-bar.reference.html · inline executable scripts 1 (1,485 bytes) · AUTO-BEHAVIOUR none · listeners click, resize</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-textarea">
+  <div class="ihead">
+    <h3>Textarea <span class="mono muted">textarea</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/textarea.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>resize</dt><dd>vertical only (horizontal resize breaks the layout grid); disabled turns resize off.</dd><dt>counter</dt><dd>n/max updates on input; is-warn (weight 500) at ≥90%; aria-live region announces remaining at 90% and at the limit.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Textarea.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;input&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (958 bytes; sha256:b3d11ee69ee1…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (keydown, mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: input ← “counter: n/max updates on input;”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“vertical only (horizontal resize breaks the layout grid)”</span><span class="cand"><b>Candidate reading, for your eye only:</b> A native textarea: vertical resize is CSS and still holds; no counter, no warn weight, no announcement.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Textarea.reference.html · inline executable scripts 1 (958 bytes) · AUTO-BEHAVIOUR none · listeners input · page-level modality tracker present (keydown, mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-time-picker">
+  <div class="ihead">
+    <h3>Time picker <span class="mono muted">time-picker</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/time-picker.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>open</dt><dd>Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).</dd><dt>keyboard</dt><dd>ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.</dd><dt>select</dt><dd>Writes HH:MM, clears any error, closes, returns focus.</dd><dt>validation</dt><dd>On blur: empty = no error; malformed or impossible times (25:70) error with &#x27;Enter a time in 24-hour format, like 14:30.&#x27; Error lifts as soon as the value re-validates.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Time-picker.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;blur&quot;,
+    &quot;click&quot;,
+    &quot;input&quot;,
+    &quot;keydown&quot;,
+    &quot;pointerdown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (4,705 bytes; sha256:b99e6f288dc2…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: blur ← “validation: On blur: empty = no error;”; click ← “open: Tail button only (aria-haspopup=listbox);”; input ← “Typing NEVER opens the list (acd-019).”; keydown ← “keyboard: ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="qt">“Typing NEVER opens the list (acd-019).”</span><span class="cand"><b>Candidate reading, for your eye only:</b> The text input works as a native field (HH:MM typed by hand); the tail button does nothing; no on-blur validation.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Time-picker.reference.html · inline executable scripts 1 (4,705 bytes) · AUTO-BEHAVIOUR none · listeners blur, click, input, keydown, pointerdown · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article>
+<article class="item" data-tags="scripted unproven" id="m-tree">
+  <div class="ihead">
+    <h3>Tree <span class="mono muted">tree</span></h3>
+    <span class="kind scripted">carries a script</span>
+  </div>
+  <p class="small muted">knowledge/components/tree.meta.json · old value is a JSON object</p>
+  <div class="pair">
+    <div class="col n">
+      <div class="colhead a">Old — the prose, kept verbatim under <code>$note</code></div>
+      <dl class="prose"><dt>keyboard</dt><dd>ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.</dd><dt>pointer</dt><dd>Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.</dd><dt>visibility</dt><dd>&#x27;Visible&#x27; is computed as offsetParent !== null, which is exactly the question &#x27;is any ancestor collapsed&#x27;, rather than a parallel model that can drift from the DOM.</dd><dt>lazy</dt><dd>First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree&#x27;s item set.</dd></dl>
+    </div>
+    <div class="col">
+      <div class="colhead b">Proposed — typed address (not written)</div>
+      <pre>{
+  &quot;script&quot;: &quot;knowledge/snippets/Tree.reference.html#script&quot;,
+  &quot;partial&quot;: null,
+  &quot;events&quot;: [
+    &quot;click&quot;,
+    &quot;keydown&quot;
+  ],
+  &quot;fallback&quot;: null,
+  &quot;$unproven&quot;: [
+    &quot;fallback&quot;
+  ],
+  &quot;$note&quot;: &quot;… the prose on the left, verbatim …&quot;
+}</pre>
+      <div class="fld"><span class="fk">script</span><span class="fv"><span class="chip m">measured</span><span class="pr">snippet carries 1 executable inline &lt;script&gt; (5,621 bytes; sha256:1e537d5a2f1a…), 0 AUTO-BEHAVIOUR, 0 &lt;script src&gt;; the prose describes this script&#x27;s behaviour and names no address (s234-D5 census: &#x27;addressing the script in none&#x27;)</span></span></div><div class="fld"><span class="fk">partial</span><span class="fv"><span class="chip m">measured</span><span class="pr">0 AUTO-BEHAVIOUR marker pairs in the snippet; the component-types.json $behaviour registry has 3 names (dv-behaviour, dv-legend, dv-donut-sweep), all dataviz — none apply</span></span></div><div class="fld"><span class="fk">events</span><span class="fv"><span class="chip m">measured</span><span class="pr">addEventListener names in the snippet&#x27;s inline script, EXCLUDING the page-level modality tracker (mousedown, touchstart) — window-level keydown/mousedown/touchstart writing document.documentElement.dataset.modality</span><span class="pr">prose corroborates: click ← “pointer: Clicking the twisty toggles the branch.”; keydown ← “keyboard: ONE tab stop for the whole tree (roving tabindex).”</span><span class="pr">rC Q3 open — field floated</span></span></div><div class="fld"><span class="fk">fallback</span><span class="fv"><span class="chip u">UNPROVEN</span><span class="cand"><b>Candidate reading, for your eye only:</b> Every branch renders in whatever open/closed state the markup authors; no keyboard model, no expand/collapse, no lazy load.</span><span class="pr">what would prove it: a JS-off render of the snippet (rA resilience criterion: GOV.UK / USWDS &#x27;CSS on, JS off&#x27;), or Dave&#x27;s word on the candidate</span></span></div>
+    </div>
+  </div>
+  <p class="small muted measline">snippet: Tree.reference.html · inline executable scripts 1 (5,621 bytes) · AUTO-BEHAVIOUR none · listeners click, keydown · page-level modality tracker present (mousedown, touchstart), excluded</p>
+  
+</article></div>
+  </div>
+</section>
+
+<section id="proof" class="band">
+  <div class="wrap">
+    <p class="label">Proof, on a real page</p>
+    <div class="dim">
+      <div><span class="idx">04</span></div>
+      <div>
+        <h2>Driven on a fixture copy — never the live tree — with the brief's three arms and nine more.</h2>
+        <p>A copy of <code>knowledge/</code> under <code>/dev/shm</code> took the proposed schema and the 20 typed objects; the generator injected 20 <code>#behaviour-manifest</code> blocks (only those 20 snippets differ from the live tree, and <code>--check</code> is green again); L1's mint composed one page from Date-picker, Textarea and Stat-card with the two scripts spliced verbatim. Then the gate was driven, and its inputs mutated:</p>
+        <div class="scroll"><table>
+          <thead><tr><th class="id">Arm</th><th>What was planted</th><th class="id">Result</th><th>Verdict</th></tr></thead>
+          <tbody><tr><td class="id">A</td><td>address PRESENT — Date-picker + Textarea typed, page carries both scripts verbatim; Stat-card meta:NONE</td><td class="id">rc=0</td><td>as expected</td></tr><tr><td class="id">B</td><td>address ABSENT from the page — Date-picker&#x27;s script removed and the receipt re-minted</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">C</td><td>address WRONG — meta names knowledge/canon/nope.js (no such file)</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">C2</td><td>…and the GENERATOR refuses the same meta (the derived block cannot be minted from a bad address)</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">D</td><td>address WRONG — meta points at Textarea&#x27;s #script (which the page DOES carry): FOREIGN</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">D2</td><td>…and the GENERATOR refuses it too</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">E</td><td>address WRONG on the PAGE side — one token edited inside the copied script (&#x27;keydown&#x27;→&#x27;keyup&#x27;)</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">F</td><td>the receipt&#x27;s `script` for Date-picker#markup says dv-behaviour.js; the meta says #script — DISAGREES</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">G</td><td>the snippet&#x27;s #behaviour-manifest hand-edited (events changed) — --check reports it out of sync</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">G2</td><td>meta reverted to PROSE while the snippet still carries the derived block — orphan refused</td><td class="id">rc=1</td><td>as expected</td></tr><tr><td class="id">H</td><td>Textarea&#x27;s meta says script:null (passive) — noted as meta:NO-SCRIPT, not a fail</td><td class="id">rc=0</td><td>as expected</td></tr><tr><td class="id">I</td><td>L1 intact — one byte inside a markup region still reds HASH-MISMATCH beside the L2 checks</td><td class="id">rc=1</td><td>as expected</td></tr></tbody>
+        </table></div>
+        <p class="small muted" style="margin-top:var(--s2)">12 of 12 as expected. Each transcript is a file: <code>notes/_subreports/assets/2026-09-02-238-B-L2-behaviour-address/drive-*.txt</code>. Beside them: 35 gate self-test arms green with 10 gate mutants caught, and 4 generator mutants caught. The live regen serial is untouched: 0 metas are typed today, so the pass emits nothing and <code>--check</code> on the live tree is OK.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="l1">
+  <div class="wrap">
+    <p class="label">The three questions L1 left behind</p>
+    <div class="dim">
+      <div><span class="idx">05</span></div>
+      <div>
+        <h2>Carried, not ruled. Options priced, one recommendation each.</h2>
+
+        <div class="qq">
+          <p class="num">L1 question 1</p>
+          <h3>When does a missing receipt start blocking?</h3>
+          <p>Today the chained step reports <code>UNPROVEN:NO-RECEIPT</code> and does not block; <code>--receipt-strict</code> blocks now. Flipping the default reds <b>7 of 7</b> screens in the default population (re-measured on the fixture today: 7 × <code>UNPROVEN:NO-RECEIPT</code>, <code>RESULT: PASS</code>).</p>
+          <ol>
+            <li>(a) leave advisory until pages are re-minted — cheap, the ADR-0013 ratchet posture;</li>
+            <li>(b) block now and mint receipts onto all 7 — but those pages were hand-composed, so their “spliced regions” would be invented, the exact defect the gate exists to catch;</li>
+            <li>(c) block for new pages only, by date or folder — needs a rule about which, and folder globs are what s234-D6 refused to widen.</li>
+          </ol>
+          <p class="rec"><b>Recommend (a) now, (b) by regeneration later</b> — same as L1. What this lane adds: the behaviour-address step is a <b>second</b> ratchet under the first, and it needs its own date — see this lane's question 3.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">L1 question 2</p>
+          <h3>What does a composed page do about CSS?</h3>
+          <p>Splicing snippet <code>&lt;style&gt;</code> verbatim carries hex into the page and reds <code>_validate_compose</code>; hand-writing CSS passes compose but cannot carry a receipt. <b>Reproduced on this lane's fixture: 98 hex colours, compose ❌</b>, while the receipt step (with the new behaviour check) was ✅ on the same page.</p>
+          <ol>
+            <li>(a) the composer projects theme values through <code>gen_snippet_tokens</code>'s resolution instead of copying the block — real work; the CSS region becomes a derived artefact whose hash still holds;</li>
+            <li>(b) composed pages link <code>canon/canon.css</code> — 0 of 136 snippets have ever done it;</li>
+            <li>(c) exempt spliced style regions from the hex check — a loosened gate.</li>
+          </ol>
+          <p class="rec"><b>Recommend (a)</b>, as a lane of its own. Until it lands, a page is composable or provable, not both.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">L1 question 3</p>
+          <h3>Should <code>dashboards/*.html</code> be permanent subjects of the screen-gate index?</h3>
+          <p>Running the chain minted two dashboard rows into <code>_SCREEN-GATE.md</code> beside the seven fitness screens. This lane <b>did not add a third</b>: the chain was driven on the fixture copy, so the live index is unchanged.</p>
+          <ol>
+            <li>(a) keep — one home per subject is the gate's design (#230 T5);</li>
+            <li>(b) drop the two rows before commit — the index stays the fitness-test roll;</li>
+            <li>(c) a second index for composed pages — one more generated surface to keep honest.</li>
+          </ol>
+          <p class="rec"><b>Recommend (a)</b> — a gate that forgets what it gated is the read-chain staleness class; if the roll must stay small, that is a rule about subjects, not about the index.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mine" class="band">
+  <div class="wrap">
+    <p class="label">This lane's questions</p>
+    <div class="dim">
+      <div><span class="idx">06</span></div>
+      <div>
+        <h2>Five things the proposal had to choose, put back to you.</h2>
+
+        <div class="qq">
+          <p class="num">Question 1</p>
+          <h3>The address grammar — (a) path + fragment or (b) node-id?</h3>
+          <p>Shown side by side under <a href="#shape">The shape</a>. The schema pattern, the resolver and the generator all encode (a); switching to (b) is one pattern and one regex.</p>
+          <p class="rec"><b>Recommend (a)</b> — one grammar with the receipt and the registry.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 2</p>
+          <h3><code>partial</code> — one name, or a list?</h3>
+          <p>The brief's shape is a single id. Measured today: <b>14 dataviz snippets carry registry partials, 9 of them two or three</b> (Chart-donut: dv-behaviour · dv-donut-sweep · dv-legend), and none of their 14 metas has a <code>behaviour</code> key at all. For the 20 in scope <code>partial</code> is null everywhere, so the shape does not bite yet.</p>
+          <ol>
+            <li>(a) keep the singular now; widen when the dataviz population is typed;</li>
+            <li>(b) <code>string | string[] | null</code> today, by addition;</li>
+            <li>(c) rename to <code>partials: []</code>.</li>
+          </ol>
+          <p class="rec"><b>Recommend (b)</b> — the widening is free now and forced later; the 14 dataviz metas are then a mechanical second migration (registry → meta), priced at ~2K tokens.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 3</p>
+          <h3>When does a PROSE meta start blocking the gate?</h3>
+          <p>Today a region whose meta is prose (or has no <code>behaviour</code>) is one <code>UNPROVEN:behaviour-address</code> line, never red. After you ratify the 20, the honest next ratchet is: a meta with a <code>behaviour</code> key that is still prose blocks. 0 metas would go red the day the 20 land.</p>
+          <p class="rec"><b>Recommend: block prose <code>behaviour</code> the same day the 20 are written</b> (a <code>--behaviour-strict</code> switch exists in spirit — one flag, ~300 tokens). Metas with <b>no</b> <code>behaviour</code> key stay UNPROVEN until rC Q3 and the dataviz migration settle what “none” means.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 4</p>
+          <h3><code>events</code> — is the field wanted at all? (rC Q3, still yours)</h3>
+          <p>The brief's shape includes it; rC Q3 is open. The proposal fills it from the snippet's <code>addEventListener</code> names (the page-level modality tracker excluded) and marks the whole field floated. The schema makes it optional.</p>
+          <p class="rec"><b>Recommend keeping it, optional, measured never authored</b> — it is the line a developer wiring the page reads first, and a generator can mint it from the snippet so nobody types it.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 5</p>
+          <h3>The 14 candidate <code>fallback</code> readings — accept, reject, or render?</h3>
+          <p>Each is one sentence in a red-ruled box. What would prove them is a JS-off render of each snippet (rA's resilience criterion), ~3K tokens for the set, or your word.</p>
+          <p class="rec"><b>Recommend the render</b> — a candidate promoted on my reading alone is the “likeliest reading” pitfall the brief named.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rule2a">
+  <div class="wrap">
+    <p class="label">Rule 2a, proposed text — not written into the pack</p>
+    <div class="dim">
+      <div><span class="idx">07</span></div>
+      <div>
+        <h2>Beside rule 2, never re-wording it.</h2>
+        <pre>2a. **Copy the script address with the markup; author no JS.** Every snippet whose
+    component carries behaviour declares its ADDRESS in `knowledge/components/&lt;slug&gt;.meta.json`
+    (`behaviour.script`) and carries the same address in a `#behaviour-manifest` block beside
+    `#token-manifest`. Take the snippet's own `&lt;script&gt;` (or its `AUTO-BEHAVIOUR` block)
+    verbatim — the bytes are the key — and carry the address into the page's receipt. Never
+    write a handler yourself, never paraphrase the script, never point at another component's
+    script: shared behaviour is a registered partial. `fallback` says what the component does
+    with JavaScript off; if it is null, say so in the Gaps list rather than inventing one.
+    `_validate_receipt.py` reads the meta and checks the page loads what it names.</pre>
+        <p class="small muted">Rule 2's sentence is untouched (header-wins-over-audit); 2a sits beside it as 8a sits beside 8. v1.0.5 is held and no version is bumped by this page.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="risk" class="band">
+  <div class="wrap">
+    <p class="label">Consequences, replayed</p>
+    <div class="dim">
+      <div><span class="idx">08</span></div>
+      <div>
+        <h2>What could go wrong with what was built, and who owns each.</h2>
+      </div>
+    </div>
+    <div class="cards" style="margin-top:var(--s4)">
+      <div class="card"><span class="n">01</span><h3>A `#script` address rots when a snippet gains a second script</h3><p>`#script` denotes every inline executable script outside AUTO-BEHAVIOUR markers. A second script changes the resolved set; the gate then demands both and a page carrying one goes red with a named hint.</p><p class="own">owner: the snippet author; caught by the generator's --check</p></div>
+      <div class="card"><span class="n">02</span><h3>A whitespace-shifted copy is red</h3><p>By design (s235-D1). An agent that re-indents the script fails BEHAVIOUR-NOT-LOADED with the hint “matches after whitespace normalisation — copy verbatim”. If that reads as friction, it is a ruling about the key, not a bug.</p><p class="own">owner: Dave (the key)</p></div>
+      <div class="card"><span class="n">03</span><h3>The L1 mint has no `kind: script`</h3><p>`gen_provenance_receipt.py --compose` splices markup, style and AUTO-BEHAVIOUR blocks, not a snippet's plain inline script. The fixture spliced by hand; the mint needs one more kind (~1K tokens) or composed pages cannot carry the 14 scripts receipted.</p><p class="own">owner: L1's file, next lane</p></div>
+      <div class="card"><span class="n">04</span><h3>The mint's `$scriptNote` goes stale</h3><p>It says meta behaviour is untyped prose. Once the 20 are typed the note is false for 20 snippets; the mint should read the meta through the gate's resolver (one import, ~500 tokens).</p><p class="own">owner: L1's file, next lane</p></div>
+      <div class="card"><span class="n">05</span><h3>`partial` is singular; the dataviz population is not</h3><p>Typing Chart-donut needs three names. Question 2 above.</p><p class="own">owner: Dave</p></div>
+      <div class="card"><span class="n">06</span><h3>The regen serial, if the 20 are applied</h3><p>Writing the 20 metas puts 20 snippets out of sync until `gen_component_partials.py` runs — whole serial per wave, ramp first, index last (#210). Never `_build_all.py` from a sub.</p><p class="own">owner: the conductor at apply time</p></div>
+      <div class="card"><span class="n">07</span><h3>Candidate readings look like values</h3><p>They sit in a red-ruled box and in `provenance`, never in `proposed`. A copy-paste of the box into a meta is the “likeliest reading” defect.</p><p class="own">owner: whoever applies the migration</p></div>
+      <div class="card"><span class="n">08</span><h3>A gate that is not a consumer of every commit is not a gate</h3><p>The new checks run inside `_validate_receipt.py`, which `_validate_screen.py` chains and `--check` reads — but only pages that carry a receipt reach them. Until L1's question 1 flips, the population under this gate is one fixture and one dashboard.</p><p class="own">owner: Dave (the blocking date)</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>#238 lane B · derived from <code>notes/_subreports/assets/2026-09-02-238-B-L2-behaviour-address/behaviour-migration.json</code> · schema fragment, diff, drives and self-tests in the same directory · report at <code>notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md</code></p>
+    <p>Everything on this page is <b>proposed</b>. No meta was written, no ruling inscribed, no pack version bumped.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('tt'), r=document.documentElement;
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches){r.setAttribute('data-theme','dark');}
+  function sync(){b.textContent = r.getAttribute('data-theme')==='dark' ? 'Light' : 'Dark';}
+  sync();
+  b.addEventListener('click',function(){ r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); sync(); });
+  var ctl=document.querySelectorAll('.ctl button'), items=document.querySelectorAll('.item');
+  ctl.forEach(function(btn){ btn.addEventListener('click',function(){
+    var f=btn.getAttribute('data-f');
+    ctl.forEach(function(x){ x.setAttribute('aria-pressed', x===btn ? 'true' : 'false'); });
+    items.forEach(function(it){ it.hidden = !(f==='all' || it.getAttribute('data-tags').split(' ').indexOf(f)>=0); });
+  }); });
+})();
+</script>
+</body>
+</html>

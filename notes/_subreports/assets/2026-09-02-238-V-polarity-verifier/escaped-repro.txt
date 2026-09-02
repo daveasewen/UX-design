@@ -1,0 +1,90 @@
+#238-V — EVERY ESCAPED ROW WITH ITS REPRODUCING COMMAND (machinery price, s172-D3)
+
+Two ways to reproduce. (1) THE HARNESS: re-seat the two constants REPO and V at the top of _v_attack.py, then
+`python3 _wave1.py` (arms 10-121), `_wave2.py` (200-258), `_wave3.py` (300-329 + door asymmetries), `_wave4.py`
+(400-403 + argv + cleanup + live selftest); each arm leaves <V>/arms/<nn>-<slug>/{brain,brain-w,doors.txt} and
+the table prints the verdict. (2) STANDALONE, per row below: from the repo root,
+    cp -r knowledge/brain $T            (T = any scratch dir; the mount at this seat refuses rm, use mv)
+    <mutation — the python3 -c line given>
+    python3 knowledge/_validate_polarities.py --write --brain $T ; echo write-rc=$?
+    python3 knowledge/_validate_polarities.py --check --brain $T ; echo check-rc=$?
+An ESCAPED row is one where the decisive door returns rc 0 (after-write for a home mutation; as-is for a generated /
+stray-file mutation, where --check on $T directly is the probe). M = `python3 -c "import json,sys;p='$T/polarities.json';o=json.load(open(p));`
+… `;json.dump(o,open(p,'w'),indent=1,ensure_ascii=False)"` — the middle is the mutation; S = same over stubs.json;
+K = same over schema/polarity.schema.json; G = same over _generated/<file>.
+
+GRADE: RULED = defeats the letter of a ruled refusal/property (s238-D1/D3/D6/D7); PROMISED = defeats a promise the
+gate/schema/report makes that no ruling states; UNRULED = nothing ruled either way — the adversary's reading, an observation.
+
+ #   grade     arm / what passed                                         mutation (standalone)
+---  --------  --------------------------------------------------------  --------------------------------------------------------------------
+ 22  PROMISED  stub whose phrase is one U+200B (visually empty)           S: o['stubs'].append({'id':'st-zwsp','phrase':'​'})
+ 30  RULED     resolvedBy s200-D2 — superseded in s200-D3's PROSE,        M: o['polarities'][2]['links'].append({'type':'resolvedBy','ref':'s200-D2'})
+               no superseded_by field → "live"; pl-03 derives resolved
+ 31  RULED     resolvedBy gauge-band — status "still open" → resolved     M: …append({'type':'resolvedBy','ref':'gauge-band'})
+ 32  RULED     resolvedBy s182-D1 — status PARKED → resolved              M: …append({'type':'resolvedBy','ref':'s182-D1'})
+ 70  PROMISED  generated_at 2099-01-01 on all three derived files → fresh G: sed 's/"generated_at": "2026-09-02T/"generated_at": "2099-01-01T/' (json) + 'generated_at: 2026' → 2099 (txt); then --check
+ 71  PROMISED  generated_at "banana" → fresh                               G: polarity-status.json generated_at → "banana"; then --check
+ 82  PROMISED  $migration.verdicts = {pl-01: "Jakob wins in Apollo …"}     M: o['$migration']['verdicts']={'pl-01':'Jakob wins in Apollo — Von Restorff only for chrome.'}
+ 83  PROMISED  $description replaced by 500 words of verdict               M: o['$description']=' '.join(['Aesthetics must win over usability …']*32)
+ 93  PROMISED  sources[0].id 'tn-0１' (fullwidth 1) → pl-01's quote         M: o['polarities'][0]['sources'][0]['id']='tn-0１'
+               UNVERIFIED (declared) → GREEN
+110  RULED     schema minItems 2→1 + pl-01 with ONE party                  K: s['properties']['parties']['minItems']=1 ; M: o['polarities'][0]['parties']=o['polarities'][0]['parties'][:1]
+               (caught one build later by [142] arms 32+37; the seam lets it through)
+111  RULED     schema enum + 'relatedTo' + a relatedTo link (fifth type)   K: s['properties']['links']['items']['properties']['type']['enum'].append('relatedTo') ; M: …links.append({'type':'relatedTo','ref':'s116-D1'})
+               (caught one build later by [142] arm 14; the seam lets it through)
+112  RULED     schema parties.items.additionalProperties true + party.why  K: s['properties']['parties']['items']['additionalProperties']=True ; M: o['polarities'][0]['parties'][0]['why']='because Jakob wins in Apollo'
+               (caught one build later by [142] arm 21; the seam lets it through)
+210  RULED     .edges.json (authored edge list) at brain top → skipped     printf '{"edges":[{"from":"pr-fitts","to":"pr-hick"}]}\n' > $T/.edges.json ; --check
+211  RULED     _generated/.authored-edges.json → skipped                   printf '{"edges":[]}\n' > $T/_generated/.authored-edges.json ; --check
+212  RULED     _generated/.polarity-edges.json.tmp (half-written) → skipped printf '{"edges":[1]}\n' > $T/_generated/.polarity-edges.json.tmp ; --check
+213  RULED     schema/edges.json (authored edge list) → schema/ unlisted   printf '{"edges":[{"from":"pr-fitts","to":"pr-hick"}]}\n' > $T/schema/edges.json ; --check
+214  PROMISED  schema/polarity.schema.v2.json (second schema) → unlisted   printf '{"minItems":1}\n' > $T/schema/polarity.schema.v2.json ; --check
+216  RULED     __pycache__/edges.json → skipped by name                    mkdir $T/__pycache__ ; printf '{"edges":[]}\n' > $T/__pycache__/edges.json ; --check
+220  PROMISED  pl-01 sources → knowledge/_rulings.json#s238-D7 and quote   M: o['polarities'][0]['sources']=[{'path':'knowledge/_rulings.json','id':'s238-D7'}]; o['polarities'][0]['links'][0]['quote']='A gate that is not a consumer of every commit is not a gate'
+               = 13 words OF THE RULING → "verified"
+222  PROMISED  P arm 23's paraphrase + sources.path → nowhere → UNVERIFIED M: o['polarities'][0]['sources'][0]['path']='notes/no-such-file.json'; o['polarities'][0]['links'][0]['quote']='the two-red law is a Von Restorff budget'
+223  PROMISED  resolvedBy s116-D1 with quote "" → verified; pl-01 resolved M: o['polarities'][0]['links'].append({'type':'resolvedBy','ref':'s116-D1','quote':''})
+224  PROMISED  resolvedBy s116-D1 with quote "the" → verified; resolved    M: …append({'type':'resolvedBy','ref':'s116-D1','quote':'the'})
+230  RULED     party.note = 14-word verdict (not verbatim, ≤15 words)      M: o['polarities'][0]['parties'][0]['note']='Jakob must always win in Apollo because Dave rules by eye and prefers familiarity'
+231  RULED     party.note = 44 visible words joined by U+200B → 1 "word"   M: o['polarities'][0]['parties'][0]['note']='​'.join(['Jakob','must','always','win','in','Apollo','because','Dave','rules','by','eye']*4)
+232  RULED     mediating_variable = 300-word verdict (no maxWords)         M: o['polarities'][0]['mediating_variable']=' '.join(['Jakob wins and Von Restorff loses …']*20)
+233  RULED     sources[0].id = 300-word verdict on pl-04 (no bound)        M: o['polarities'][3]['sources'][0]['id']=' '.join(['aesthetics wins over usability in Apollo, always.']*30)
+234  PROMISED  stub phrase = 15-word verdict declared as a party           S: o['stubs'].append({'id':'st-dense-tables-win','phrase':'dense financial tables must always beat whitespace in Apollo because Dave prefers density everywhere'})
+241  UNRULED   principles.json statement rewritten ("Fitts is wrong …")    python3 -c over principles.json: p['principles'][0]['statement']='Fitts is wrong and Apollo ignores it.'
+243  UNRULED   pl-16: resolvedBy s116-D1 AND challengedBy s116-D1          M: o['polarities'][15]['links'].append({'type':'challengedBy','ref':'s116-D1'})
+244  UNRULED   all 30 rows deleted → 0·0·0 after --write                   M: o['polarities']=[]
+245  UNRULED   all 21 links deleted → 6·0·24 after --write                 M: [n.__setitem__('links',[]) for n in o['polarities']]
+246  PROMISED  $migration.sha256 = 64 zeros → nothing checks it            M: o['$migration']['sha256']='0'*64
+247  PROMISED  $migration.from = a path that does not exist                M: o['$migration']['from']='notes/does-not-exist.json'
+300  PROMISED  pl-01 sources → knowledge/brain/polarities.json#pl-01 and   M: o['polarities'][0]['sources']=[{'path':'knowledge/brain/polarities.json','id':'pl-01'}]; o['polarities'][0]['links'][0]['quote']=' '.join(o['polarities'][0]['mediating_variable'].split()[:8])
+               quote = 8 words of its own mediating_variable → "verified"
+301  UNRULED   principles.json pr-wcag-1-4-3 grade L→C → pl-15 leaves      python3 -c over principles.json: grade of pr-wcag-1-4-3 = 'C' ; sort 6·4·20 → 5·5·20, no refusal
+               settled-by-obligation (s237-D2 defeated by a letter edit)
+310  RULED     schema sources.items.additionalProperties true + judgement  K: s['properties']['sources']['items']['additionalProperties']=True ; M: o['polarities'][0]['sources'][0]['judgement']='Jakob wins in Apollo; …'
+               → TOTAL escape: --check green AND --selftest green (55/55)
+311  PROMISED  schema sources.minItems 0 + sources [] + paraphrased quote  K: s['properties']['sources']['minItems']=0 ; M: o['polarities'][0]['sources']=[]; …links[0]['quote']='the two-red law is a Von Restorff budget'
+               (caught one build later by [142] arm 23; the seam lets it through)
+312  PROMISED  schema note.maxWords 500 + a 64-word note                   K: s['properties']['parties']['items']['properties']['note']['maxWords']=500 ; M: …parties[0]['note']=' '.join(['Jakob wins in Apollo because Dave prefers familiar chrome.']*8)
+               (caught one build later by [142] arm 20; the seam lets it through)
+400  PROMISED  resolvedBy s116-D1 with NO quote at all → pl-01 resolved    M: o['polarities'][0]['links'].append({'type':'resolvedBy','ref':'s116-D1'})
+401  PROMISED  pl-04 sources[0].id → 'tn-02' → status row copies tn-02's   M: o['polarities'][3]['sources'][0]['id']='tn-02'
+               factory_default/ask_when onto pl-04
+402  UNRULED   pl-01's body duplicated under id pl-31 → edges 22→23        M: o['polarities'].append(dict(o['polarities'][0],id='pl-31'))
+403  PROMISED  polarities.json replaced by a symlink to a file outside the mv $T/polarities.json $T/../moved.json ; ln -s $T/../moved.json $T/polarities.json ; --check → 0
+               home → every door green; a commit would carry the symlink
+324  PROMISED  WRITER: --add-polarity of an entry whose quote has no       entry: links=[{'type':'resolvedBy','ref':'s116-D1','quote':'this quote exists nowhere'}], sources=[{'path':'selftest','id':'x'}]
+               reachable source → "1 UNVERIFIED (declared, not passed)" and WRITTEN   python3 knowledge/_validate_polarities.py --add-polarity e.json --write --brain $T → rc 0, 31 rows
+328  PROMISED  WRITER: --add-stub of the U+200B phrase → written           python3 knowledge/_validate_polarities.py --add-stub s.json --write --brain $T → rc 0
+ D1  PROMISED  BUILD DOOR: home absent (POLARITY_BRAIN_DIR=/nowhere) →     POLARITY_BRAIN_DIR=/nowhere python3 knowledge/_validate_polarities.py --check → rc 77 →
+               rc 77 → _build_all.main(): "COULD-NOT-ASK — declared refusal, build continues"; the seam blocks (rc 1 via `|| fail`)
+ D2  PROMISED  SEAM DOOR: POLARITY_BRAIN_DIR=<clean copy> while the tree's  bash <seam block> with cwd = a repo whose knowledge/brain/ is dirty and env POLARITY_BRAIN_DIR=<clean copy>
+               knowledge/brain/ is dirty → "— polarity gate green"; the only trace is the gate's own `home <path>` line;   (door-asymmetry-seam-redirect.txt)
+               no "DECLARED GAP" line — a silent hatch beside the spelled POLARITY_ACK
+ A1  PROMISED  ARGV: --add-polarity FILE --dry-run --write → WRITES         python3 knowledge/_validate_polarities.py --add-polarity e.json --dry-run --write --brain $T → rc 0, file changed
+ A2  PROMISED  ARGV: --check --write → WRITES                               python3 knowledge/_validate_polarities.py --check --write --brain $T → rc 0, _generated rewritten
+
+TOTAL ESCAPED: 48 (harness 42 + writer 2 + doors 2 + argv 2) · RULED 16 · PROMISED 26 · UNRULED 6
+  RULED   : 30 31 32 110 111 112 210 211 212 213 216 230 231 232 233 310
+  PROMISED: 22 70 71 82 83 93 214 220 222 223 224 234 246 247 300 311 312 400 401 403 324 328 D1 D2 A1 A2
+  UNRULED : 241 243 244 245 301 402

@@ -1,0 +1,33 @@
+## 1. the live population against the PROPOSED schema (by-addition: nothing may go red)
+  ✅ 136 metas validate against the LIVE schema (control)
+  ✅ 136/136 metas validate against the PROPOSED schema
+  ✅ the 20 prose `behaviour` values take the LEGACY branch (still legal during migration)
+## 2. the 20 PROPOSED typed objects, each in place of its prose, on a COPY of the meta
+  ✅ 20/20 proposed objects validate
+  · note: 20/20 proposed objects ALSO pass the LIVE schema (it types behaviour as object|array|string) — the schema change is what makes the SHAPE checkable, not what makes the object legal
+## 3. mutation arms — each planted defect must go RED against the proposed schema
+  ✅ GREEN control — the proposed object as proposed
+  ✅ RED   script: wrong grammar (a bare filename) — behaviour/script: 'Date-picker.js' does not match '^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$'
+  ✅ RED   script: node-id grammar (snippet:… — the OTHER candidate grammar, refused by (a)) — behaviour/script: 'snippet:Date-picker.reference.html#script' does not match '^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$'
+  ✅ RED   script: fragment other than #script — behaviour/script: 'knowledge/snippets/Date-picker.reference.html#script:2' does not match '^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#s
+  ✅ RED   script: a .css file — behaviour/script: 'knowledge/canon/canon.css' does not match '^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$'
+  ✅ GREEN script: key deleted (typed object without its discriminator falls to LEGACY — see note)
+  ✅ RED   partial: key deleted — behaviour: 'partial' is a required property
+  ✅ RED   partial: not a registry-shaped name (uppercase) — behaviour/partial: 'DV-Behaviour' does not match '^[a-z][a-z0-9-]*$'
+  ✅ RED   fallback: key deleted — behaviour: 'fallback' is a required property
+  ✅ RED   fallback: empty string (null is the honest form, '' is a dodge) — behaviour/fallback: '' is too short
+  ✅ RED   events: not an array — behaviour/events: 'click' is not of type 'array'
+  ✅ RED   events: duplicate entries — behaviour/events: ['click', 'click'] has non-unique elements
+  ✅ RED   events: a non-DOM-shaped name — behaviour/events/0: 'Click Me' does not match '^[a-z][a-z0-9]*$'
+  ✅ GREEN events: key deleted (OPTIONAL — rC Q3 is open)
+  ✅ RED   an extra prose key beside the typed fields (the prose must live under $note) — behaviour: 'keyboard' does not match any of the regexes: '^\\$'
+  ✅ RED   $unproven: names a field that does not exist — behaviour/$unproven/0: 'motion' is not one of ['script', 'partial', 'events', 'fallback']
+  ✅ RED   $note: a number — behaviour/$note: 7 is not of type 'object', 'array', 'string'
+  ✅ GREEN script null + fallback null (passive-but-undeclared is LEGAL by schema; the gate/ratchet owns it)
+  ✅ GREEN legacy prose control — a plain string still validates
+  ✅ GREEN legacy prose (string) validates during migration
+  ✅ RED   behaviour: a number is neither prose nor an address
+
+NOTE on the `script`-deleted arm: the discriminator is the `script` key, so a typed object with no `script` is read as LEGACY prose and stays green here. That is the price of keeping the prose legal during migration; it closes when the legacy branch is retired (Dave's), and until then the GENERATOR refuses a #behaviour-manifest for a meta without `script` and the gate reports it UNPROVEN.
+
+SCHEMA ARMS: PASS ✅

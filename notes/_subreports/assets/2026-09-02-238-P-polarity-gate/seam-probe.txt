@@ -1,0 +1,26 @@
+== extracted seam block: 18 lines, live lines:
+if [ -z "${POLARITY_ACK:-}" ]; then
+  python3 knowledge/_validate_polarities.py --check ||
+    fail "polarity gate REFUSED (s238-D7) — the refusal is NAMED directly above and the gate owns the diagnosis (a node in knowledge/brain/polarities.json fails one of the five refusals, or knowledge/brain/_generated/ is stale — for staleness run: python3 knowledge/_validate_polarities.py --write, then NAME the regenerated files in your --reconciled list). Or re-run with POLARITY_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— polarity gate green (_validate_polarities.py --check passed, s238-D7)"
+else
+  echo "— polarity gate: DECLARED GAP — $POLARITY_ACK"
+fi
+
+== (a) real home
+— polarity gate green (_validate_polarities.py --check passed, s238-D7)
+SEAM-BLOCK-EXIT-0
+rc=0
+
+== (b) mutated copy (untyped link on pl-03) via POLARITY_BRAIN_DIR
+⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/wonderful-adoring-euler/tmp/p238-seam-52/brain (nothing written):
+   ⛔ REFUSED (R2-UNTYPED) — pl-03.links[0].type: required key 'type' is missing
+✗ polarity gate REFUSED (s238-D7) — the refusal is NAMED directly above and the gate owns the diagnosis (a node in knowledge/brain/polarities.json fails one of the five refusals, or knowledge/brai
+rc=1
+
+== (c) the same mutant under the DECLARED hatch
+— polarity gate: DECLARED GAP — probe: declared gap
+SEAM-BLOCK-EXIT-0
+rc=0
+
+✓ seam block proven both ways + hatch: (a) rc 0 · (b) rc 1 named · (c) rc 0 declared

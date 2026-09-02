@@ -1,0 +1,91 @@
+{
+  "provenance": "#238 lane C · 2026-09-02 · licence receipt for R1 family fam-android-targets (R1 row 18). Tier vocabulary is R1's own (safe now / pointer-only); every tier here is PROPOSED, not ruled.",
+  "family": {
+    "r1_row": 18,
+    "id": "fam-android-targets",
+    "name": "Android / Material touch-target guidance (48 dp)",
+    "steward": "Google — Android Developers (developer.android.com); Android Accessibility Help (support.google.com); Material Design (m3.material.io)",
+    "r1_licence_field_as_filed": "UNPROVEN: not captured",
+    "r1_tier_as_filed": "not tiered (plan v1 §2.2 chip)",
+    "touchpoint": "R1 §5a row 10 — s114-D3 / s114-D5 hit-area rulings cite 'Android 48dp ≈ 9 mm'"
+  },
+  "primary_source": {
+    "url": "https://developer.android.com/guide/topics/ui/accessibility/apps",
+    "what_it_is_our_words": "Google's developer documentation page that states the rule in its own words ('at least 48dpx48dp') and whose footer binds it to the site's Content License. R1's URL (the Help Center page) states the same rule plus the millimetre conversion but carries no licence — so this lane moved the family's licence anchor to the developer page, and records the Help Center page as unlicensed.",
+    "rule_receipt_le_15_words": "touch target size, of at least 48dpx48dp. Larger is even better",
+    "rule_receipt_word_count": 11,
+    "page_last_updated_as_stated": "2026-07-21 UTC"
+  },
+  "fetches": [
+    {
+      "n": 1,
+      "url": "https://support.google.com/accessibility/android/answer/7101858",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; 'Content-Type: text/html; charset=UTF-8'; canonical …?hl=en",
+      "size": "NOT MEASURED — full Help Center article: Implementation (View / Compose), Design, Testing",
+      "probe_for_licence": "footer links are 'Privacy Policy' and 'Terms of Service' (Google Accounts TOS) only. No CC sentence, no content-licence link. The page itself defers to 'the Material Design Accessibility guidelines' as the source of the 48dp figure.",
+      "note": "R1's quote ('A touch target of 48x48dp results in a physical size of about 9mm') is on this page, verbatim, in the Design section — so the 9 mm sentence is Help Center text with no stated licence."
+    },
+    {
+      "n": 2,
+      "url": "https://developer.android.com/license",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; title 'Content License | Android Developers'; meta-robots noindex",
+      "size": "NOT MEASURED — full licence page: two content categories, Terms of Use, Restrictions, Attribution with prescribed paragraphs, Documentation Licenses list",
+      "probe_for_licence": "read in full; this IS the licence text"
+    },
+    {
+      "n": 3,
+      "url": "https://developer.android.com/guide/topics/ui/accessibility/apps",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http_as_demonstrated": "content returned; footer 'Last updated 2026-07-21 UTC'",
+      "size": "NOT MEASURED — full guide page",
+      "probe_for_licence": "footer sentence present: 'Content and code samples on this page are subject to the licenses described in the Content License.' — links to /license (attempt 2). The 48dp sentence is in the section 'Use large, simple controls'."
+    },
+    {
+      "n": 4,
+      "url": "https://m3.material.io/foundations/accessible-design/accessibility-basics",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED — resolved URL line only",
+      "http_as_demonstrated": "NOT SEEN — no status line, no headers, no body",
+      "size": "0 characters of body",
+      "failure_verbatim": "the entire response was the single line 'https://m3.material.io/foundations/accessible-design/accessibility-basics'",
+      "note": "Same failure class as EUR-Lex in this fetcher, and the same result R1 got at #236 on two material.io routes (fetch-receipts slugs 'material', 'material2': JS-rendered, no usable text). The URL was a guess at the target-size page; a browser client is the route lane G proved for this class. Material's licence is therefore NOT tiered in this lane."
+    }
+  ],
+  "licence": {
+    "found": true,
+    "name": "Android Developers Content License — documentation (including code) under Apache 2.0; all other site content under CC BY 2.5; trademarks and linked content excluded",
+    "read_from": "the licence text itself, https://developer.android.com/license, plus the footer sentence on the primary page that binds the page to it",
+    "quote_le_15_words": "the documentation on this site, including any code shown in it, is made available",
+    "quote_word_count": 14,
+    "quote_continuation_note": "…'to you under the Apache 2.0 license' — the sentence continues; the ≤15-word cap cuts it, the file records the continuation here rather than paraphrasing it into the quote",
+    "second_quote_le_15_words": "All other content on this site … is licensed under the Creative Commons Attribution 2.5",
+    "second_quote_word_count": 15,
+    "second_quote_note": "15 counts the ellipsis as a token; ellipsis marks the clause 'except the license documents themselves and as otherwise noted', omitted to fit the cap",
+    "third_quote_le_15_words": "content linked from a page on this site is not covered by the license",
+    "third_quote_word_count": 14,
+    "third_quote_locus": "Restrictions",
+    "grants_our_words": "Copy, quote, modify and translate the documentation text and code under Apache 2.0 (keep the licence notice with any redistribution); other site content under CC BY 2.5 with the site's prescribed attribution paragraph and a link back.",
+    "forbids_our_words": "Google/Android brand features; anything linked from the page (videos, decks) unless noted; dropping the notice/attribution.",
+    "which_category_the_primary_page_falls_in": "The guide page is documentation, so Apache 2.0 governs it. The page's own footer does not say which of the two categories it is in; this lane reads 'guide' pages as documentation and flags the reading below.",
+    "ai_clause": "none"
+  },
+  "tier_PROPOSED": "safe now (the developer.android.com half); the Help Center page and Material remain UNPROVEN and are not relied on",
+  "permits_us": "reproduce — the 48dp rule sentence and surrounding guidance, with the Apache 2.0 notice (or, if the page is read as CC BY 2.5, the prescribed attribution paragraph and link back); paraphrase likewise. The '≈ 9 mm' conversion sentence is Help Center text — cite it as a pointer or derive the millimetres yourself.",
+  "why_our_words": "R1 could not capture a licence because the URL it used has none. The same rule, in Google's own developer documentation, sits under a licence page that exists precisely to let people copy it. The one wrinkle is which of the two categories a guide page falls in (Apache 2.0 for documentation, CC BY 2.5 for the rest); both permit reproduction with attribution, so the tier does not turn on it — only the notice string does.",
+  "cheap_route_to_lift": "Not needed for the rule. For Material's own licence: one browser-client fetch of the m3.material.io target-size page (lane G's route). Price: ~2K tokens.",
+  "unproven": [
+    "Material Design's licence for its guideline text — not reached by this fetcher (attempt 4) nor by R1's two attempts. Price: one browser render.",
+    "The Help Center page's licence — none stated; Google's Terms of Service apply to the service and grant no reproduction right that this lane could quote. The '≈ 9 mm' sentence therefore has no licence receipt. Price: none needed if the node states 48 dp and lets the reader convert.",
+    "Whether the guide page is 'documentation' (Apache 2.0) or 'other content' (CC BY 2.5) under the Content License's two categories — the footer binds the page to the licence page without saying which. Either way reproduction with attribution is permitted; the notice string differs."
+  ],
+  "pitfalls": [
+    {"what": "s114-D3/D5's rulings cite '48dp ≈ 9 mm'. The 9 mm half comes from an unlicensed Help Center page. If a generator reproduces that sentence verbatim into a client brief, the receipt behind it is thinner than the rest of the family. State 48 dp; convert in Apollo's own words.", "owner": "whoever writes the touch-target node; R1 §5a row 10 owner"},
+    {"what": "Apache 2.0 attaches a notice-retention duty (Section 4) to redistributed text; a node that carries the sentence must carry the notice or the attribution paragraph, not a bare URL.", "owner": "generator's licence/attribution field"},
+    {"what": "Material is the page Google itself names as the source, and it is the one page nobody has fetched. A future lane may find a different figure or a different licence there.", "owner": "conductor — one browser-client fetch when the family is imported"}
+  ]
+}

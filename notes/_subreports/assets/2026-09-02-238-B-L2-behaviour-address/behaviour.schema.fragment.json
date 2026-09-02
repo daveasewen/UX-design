@@ -1,0 +1,28 @@
+{
+  "$comment": "PROPOSED — #238 lane B, enacting s234-D5. NOT APPLIED to knowledge/components/meta.schema.json (schema changes are Dave's: notes/_briefs/2026-09-02-234-v106-brief.md:47). Two edits, both BY ADDITION: (1) add definitions.behaviourAddress; (2) replace properties.behaviour (today: {\"description\": \"optional behavioural notes\", \"type\": [\"object\", \"array\", \"string\"]}, line 197) with the discriminated form below. apply_schema.py in this directory applies both to a COPY and refuses if either anchor is not found exactly once.",
+  "definitions": {
+    "behaviourAddress": {
+      "description": "s234-D5 (Dave, #234): `behaviour` promoted from optional prose notes to a TYPED OBJECT carrying the script/partial ADDRESS. The meta is the ONE HOME (s234-D4/D5: generation chain, never copy chain): gen_component_partials.py DERIVES a #behaviour-manifest block into the snippet beside #token-manifest, and _validate_receipt.py reads THIS object to check that a composed page loads what the meta declares. `script` GRAMMAR — three forms, nothing else resolves: null = the component carries NO script (a POSITIVE declaration, never 'unknown'); `knowledge/<path>.js` = a hand-authored source file, the component-types.json $behaviour form (e.g. knowledge/canon/dv-behaviour.js); `knowledge/snippets/<Slug>.reference.html#script` = the snippet's own inline executable <script> element(s) outside any AUTO-BEHAVIOUR markers. `partial` = the AUTO-BEHAVIOUR name registered under component-types.json $behaviour that the snippet carries, else null. `events` = DOM event names as passed to addEventListener — FLOATED: rC Q3 (#234, 'is an events field wanted at all?') is OPEN and Dave's, so the key is OPTIONAL and its shape is proposed, not ruled. `fallback` = what the component does with CSS on and JS off (rA resilience criterion, GOV.UK/USWDS); null = NOT DECLARED (an honest UNPROVEN), never 'none' — a passive component says so in words ('identical — the component carries no script'). `$note` keeps the pre-s234-D5 prose VERBATIM (by-addition migration, ADR-0017 archive-never-delete). `$unproven` names the fields whose value is null because neither the prose nor a probe settles them. Existence of the addressed file/script is NOT a schema question — the generator and the gate resolve it (gate the presence, not the shape).",
+      "type": "object",
+      "required": ["script", "partial", "fallback"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "script": { "type": ["string", "null"], "pattern": "^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$" },
+        "partial": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9-]*$" },
+        "events": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*$" }, "uniqueItems": true },
+        "fallback": { "type": ["string", "null"], "minLength": 1 },
+        "$note": { "type": ["object", "array", "string"] },
+        "$unproven": { "type": "array", "items": { "enum": ["script", "partial", "events", "fallback"] }, "uniqueItems": true }
+      }
+    }
+  },
+  "properties": {
+    "behaviour": {
+      "description": "s234-D5: the behaviour ADDRESS (typed — #/definitions/behaviourAddress), OR, during migration only, the pre-s234-D5 prose notes (object|array|string). The discriminator is the `script` key: an object carrying `script` MUST validate as a behaviourAddress; anything else is LEGACY prose, permitted now and closed later by a ratchet gate, never by this schema (the s140-D1 staging posture: permit now, enforce by gate later). By-addition: the migration moves the prose under $note, so once the 20 prose values are migrated the legacy branch has no population and can be retired by a ruling.",
+      "if": { "type": "object", "required": ["script"] },
+      "then": { "$ref": "#/definitions/behaviourAddress" },
+      "else": { "type": ["object", "array", "string"] }
+    }
+  }
+}

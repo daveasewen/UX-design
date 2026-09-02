@@ -1,0 +1,40 @@
+==========================================================================
+RULE R-OBLIGATION : >=1 party id has principle-register grade 'L' (= OBLIGATION,
+                    s237-D1) -> bucket 'settled-by-obligation'. PRECEDENCE FIRST
+                    (s237-D2: no principle can outrank an obligation).
+RULE R-RESOLVED   : how_it_resolves cites s<N>-D<N> present in _rulings.json
+                    -> bucket 'resolved-here'.
+RULE R-OPEN       : complement of the two above.
+==========================================================================
+settled-by-obligation    n= 6  tn-15, tn-16, tn-19, tn-20, tn-25, tn-29
+resolved-here            n= 3  tn-07, tn-17, tn-27
+open                     n=21  tn-01, tn-02, tn-03, tn-04, tn-05, tn-06, tn-08, tn-09, tn-10, tn-11, tn-12, tn-13, tn-14, tn-18, tn-21, tn-22, tn-23, tn-24, tn-26, tn-28, tn-30
+TOTAL 30
+
+--- OVERLAP: obligation-bucket rows that ALSO cite a ruling (obligation wins) ---
+  tn-15 obligation parties ['pr-wcag-1-4-3'] + cites ['s151-D1']
+  tn-16 obligation parties ['pr-wcag-2-5-5'] + cites ['s234-D3', 's116-D1']
+
+--- TRIPLES (side_c present) ---
+  tn-03 open parties: 3
+
+--- PARTY IDS NOT IN THE PRINCIPLE REGISTER (probe, not a defect claim) ---
+  tn-15 pr-two-red-law
+  tn-28 pr-info-scent
+  count: 2
+
+--- CITED RULING IDS ABSENT FROM _rulings.json ---
+  none — every cited id resolves.
+
+--- X-LITERAL DISAGREEMENTS (register grade vs literal token in party string) ---
+  tn-19 R-OBLIGATION= True X-LITERAL= False []
+  tn-25 R-OBLIGATION= True X-LITERAL= False []
+
+--- QUOTED `ruled` LINE FOR EVERY CITED RULING (<=15 words) ---
+  s116-D1: "Data marks are held to the 24x24 WCAG 2.5.8 dense-case MINIMUM - exempt from the" …
+  s151-D1: "THE TWO-RED LAW, background-keyed, FIRM - Dave verbatim: 'we have two reds ... red ink" …
+  s234-D3: "THE FACTORY'S ACCESSIBILITY TARGET IS WCAG 2.2 AA PLUS THREE CHEAP AAA - 2.4.10 section" …
+  s202-D1: "THE SQUARE THEMES INHERIT CONSOLE'S TUNED SEGMENTED DIMENSIONS, AND THE MINT IS BASE-TIER. Dave ruled" …
+  s234-D6: "THE QUALITY RUBRIC BINDS TO THE ARTEFACT THROUGH THE ONE PATH-TAKING GATE - _validate_screen.py <path>" …
+
+WROTE /sessions/wonderful-adoring-euler/mnt/outputs/v238/sort/tension-sort.json

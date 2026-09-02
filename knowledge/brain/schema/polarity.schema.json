@@ -1,0 +1,73 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "apollo:knowledge/brain/schema/polarity.schema.json",
+ "title": "Polarity node — the one home (s238-D1)",
+ "description": "A polarity is a permanent pull between two (or more) true things that is managed, never solved (s238-D4). It is a hyper-relational NODE with N typed parties and typed out-links to rulings; pairwise edges are DERIVED for consumers, never authored (s238-D1). This schema carries NO status field (s238-D3 / s237-D9: settled-by-obligation / resolved / open is derived at build time with a clock) and NO free-text judgement field of any name (s238-D7 refusal 3): the node's only judgement is a typed link to a knowledge/_rulings.json id. `additionalProperties: false` at every level is what makes refusals 3 and 5 structural rather than a list of banned words. Enforced by knowledge/_validate_polarities.py, which READS this file (the consumer's grammar) and never re-types its rules.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["id", "parties", "mediating_variable", "links", "sources"],
+ "properties": {
+  "id": {
+   "type": "string",
+   "pattern": "^pl-[0-9]{2,}$",
+   "description": "pl-NN. The rename tension -> polarity happened before generation (s238-D4); the former tn-NN id is kept under sources[].id, never as an alias here."
+  },
+  "parties": {
+   "type": "array",
+   "minItems": 2,
+   "description": "The things being pulled. Every ref MUST resolve against the live registers: a principle or obligation row in knowledge/brain/principles.json, a ruling id in knowledge/_rulings.json, or a declared stub in knowledge/brain/stubs.json (s238-D1; refusal 1). A party's KIND (principle / obligation / ruling / stub) is DERIVED from where the ref resolves — an obligation is a register row whose grade is L (s237-D1, s237-D2) — and is never typed here. The same ref may not appear twice on one node; a node may not be its own party; another polarity may not be a party.",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["ref", "role"],
+    "properties": {
+     "ref": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$", "description": "ASCII id of a principle / obligation (pr-…), a ruling (as spelled in _rulings.json) or a stub (st-…)."},
+     "role": {"type": "string", "enum": ["side_a", "side_b", "side_c"], "description": "Which side of the pull the party stands on. Parties on the SAME side pull together (lane T finding 4: tn-19's three persuasion principles are one side) and produce no derived edge between them."},
+     "note": {"type": "string", "maxWords": 15, "description": "A verbatim gloss carried from the source row (e.g. the parenthetical after a principle id). At most 15 words — a note is a receipt, not a place for a judgement (refusal 3)."}
+    }
+   }
+  },
+  "mediating_variable": {
+   "type": "string",
+   "minLength": 1,
+   "description": "The variable that decides which party wins in a given case — the thing that is MANAGED. Descriptive, carried from the source row."
+  },
+  "links": {
+   "type": "array",
+   "description": "Typed out-links to rulings ONLY (s238-D6: 'RULING LINKS ON A POLARITY ARE TYPED … the generator refuses an untyped one'). The four types and what each asserts, with the subject named because two of them are worded from the ruling's side: resolvedBy — the POLARITY is settled in this house by the ruling (its route is the ruling; lane T's R-RESOLVED); explainedBy — the RULING is explained by this polarity's principles (the s237-D5 relation: one-directional and advisory; a principle may explain a ruling and can never overturn one); challengedBy — the RULING is challenged by this polarity (advisory; the ruling stands until Dave rules; lane T finding 2 names tn-11 and tn-14); touches — the polarity and the ruling are adjacent and nothing stronger is claimed (the least claim; it never closes an open question). A fifth type is NOT ruled and is refused (refusal 2). A link to a principle, a stub or another polarity is refused (refusal 1): parties carry principles; edges are derived.",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["type", "ref"],
+    "properties": {
+     "type": {"type": "string", "enum": ["resolvedBy", "explainedBy", "challengedBy", "touches"]},
+     "ref": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$", "description": "A ruling id present in knowledge/_rulings.json and not superseded (a ruling carrying `superseded_by` is not live: point at its successor)."},
+     "quote": {"type": "string", "maxWords": 15, "description": "The <=15-word verbatim quote that justifies the TYPE — a receipt, not a judgement (refusal 3)."}
+    }
+   }
+  },
+  "sources": {
+   "type": "array",
+   "minItems": 1,
+   "description": "Where the row came from: the frozen register row that keeps the words this node does not carry (the_pull, how_it_resolves — ADR-0017: the node points, the source keeps the words).",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["path", "id"],
+    "properties": {
+     "path": {"type": "string", "minLength": 1, "description": "Repo-relative path of the source register."},
+     "id": {"type": "string", "minLength": 1, "description": "The row id inside that register (e.g. tn-01)."}
+    }
+   }
+  }
+ },
+ "x-vocabulary": "`maxWords` is a house keyword (a standard validator ignores it; knowledge/_validate_polarities.py enforces it). Everything else is draft 2020-12 core: type · required · additionalProperties · properties · items · enum · pattern · minItems · minLength.",
+ "x-refusals": {
+  "description": "The five refusals of s238-D7, named as the validator prints them. Listed here so the schema and the gate cannot describe two different contracts; the enforcement lives in knowledge/_validate_polarities.py.",
+  "R1": "a party or link ref that does not resolve against the live registers (sub-forms: R1-DANGLING · R1-SUPERSEDED · R1-SELF-PARTY · R1-CIRCULAR · R1-WRONG-REGISTER · R1-UNDECLARED-STUB)",
+  "R2": "an untyped link (sub-forms: R2-UNTYPED · R2-UNKNOWN-TYPE)",
+  "R3": "a judgement text field of any name on a node (sub-forms: R3-JUDGEMENT-FIELD · R3-QUOTE-TOO-LONG · R3-NOTE-TOO-LONG)",
+  "R4": "an authored edge file — pairwise edges exist only under _generated/ with a content-freshness check (sub-forms: R4-AUTHORED-GENERATED · R4-AUTHORED-EDGES · R4-STRAY-FILE)",
+  "R5": "a typed status on a node (R5-TYPED-STATUS)"
+ }
+}
