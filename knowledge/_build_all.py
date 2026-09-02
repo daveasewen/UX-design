@@ -625,6 +625,13 @@ STEPS = [
     # (_git_commit.sh), which is what makes it a consumer of every commit (s238-D7's last sentence).
     # ⚠ The route rows land in the SAME edit as these two entries (the (a)-class omission, recorded
     # four times above).
+    # #239 lane F (V finding 10 D1): an ABSENT home used to be rc 77 here, which the loop above
+    # reads as COULD-NOT-ASK and walks past — so a deleted knowledge/brain/ (or a redirect to
+    # nowhere) let the build continue. The gate now returns rc 1 (S-SHAPE, named) whenever the
+    # live store knowledge/_rulings.json is present — i.e. in the SOURCE repo — and keeps 77 only
+    # for a shipped pack (no store, no home; the pack classifier still reads REPO-BOUND). The
+    # discriminator is the store, not `knowledge/` itself, which the pack ships in part. Nothing
+    # in the generic loop changed; the verdict moved into the gate, where the 77 was minted.
     ("polarity gate — five refusals + content-fresh derived status/edges/declaration "
      "(BLOCKING, s238-D7, built #238)",
      "_validate_polarities.py", ["--check"]),
@@ -1009,7 +1016,8 @@ ROUTE_ROWS = [
      "carries a ref that does not resolve, an untyped link, a judgement field, a typed status, or "
      "an authored file sits at a generated path — OR the derived files under "
      "knowledge/brain/_generated/ are stale against the home. The refusal is NAMED in the output "
-     "above (R1..R5 / STALE-GENERATED / MISSING-GENERATED). Fix the node, or for staleness run: "
+     "above (R1..R5 / S-* / SCHEMA-* / STALE-GENERATED / MISSING-GENERATED — since #239 a crash "
+     "inside the gate is also named, S-SHAPE). Fix the node, or for staleness run: "
      "python3 knowledge/_validate_polarities.py --write   (s238-D7; the same --check runs at the "
      "commit seam)"),
     ("polarity gate selftest — control + every refusal arm on a copy of the real rows (s238-D7)",

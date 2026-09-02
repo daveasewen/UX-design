@@ -1,0 +1,120 @@
+  [301] demoted pr-wcag-1-4-3 (a party of pl-15) from L to C
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+300 CAUGHT    red   after-write           1/1/1   1            -  quote-oracle-repointed-to-itself-8-words
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'knowledge/brain/polarities.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-2
+301 ESCAPED   red   after-write           1/1/1   0        0/0/0  register-obligation-demoted-L-to-C
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+310 CAUGHT    red   after-write           1/1/1   1            -  schema-sources-additionalProperties-true-plus-judgement
+                                names=['R3-JUDGEMENT-FIELD', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 c96aa6842e712ad4… is not the pinned 42f845036705db1b… — a schema edit must move S
+311 CAUGHT    red   after-write           1/1/1   1            -  schema-sources-minItems-0-plus-no-sources-plus-paraphrase
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SCHEMA', 'S-SOURCE', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 1964d0fb86536ce6… is not the pinned 42f845036705db1b… — a schema edit must move S
+312 CAUGHT    red   after-write           1/1/1   1            -  schema-note-maxWords-500-plus-64-word-note
+                                names=['R3-JUDGEMENT-FIELD', 'R3-NOTE-TOO-LONG', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=R3-NOTE-TOO-LONG untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 648062f2f56840cb… is not the pinned 42f845036705db1b… — a schema edit must move S
+---------------------------------------------------------------------
+verdicts: CAUGHT 4 · ESCAPED 1 · arms 5
+
+== --selftest (build step [142], ABORT) on the accepted + re-derived mutants of 310/311/312
+  310-schema-sources-additionalProperties-true-plus-judgement: selftest rc=1 :: arms 125 · red arms 113 (went red by name 102/113) · green arms 10 · no-fire/77 arms 2 · new #239 arms 72 · failures 21
+      1  FAIL    green      1  -      CONTROL: the real 30 rows, untouched
+      8  FAIL    green      1  -      V31-control: the SAME ruling as `touches` is fine — only a resolvedBy closes (#239 Q1)
+      48  FAIL    green      1  -      V400-control: a `touches` with no quote stays legal (#239 Q3)
+      56  FAIL    red        1  -      R4 AUTHORED file at the generated path (no header)
+      57  FAIL    red        1  -      R4 generated file HAND-EDITED under its header (self-sha breaks)
+      61  FAIL    red        1  -      R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)
+      71  FAIL    green      1  -      Q6 `.DS_Store` with Finder's magic bytes is IGNORED, declared (#239 Q6)
+      99  FAIL    red        1  yes    SCHEMA description-only edit — the sha PIN alone fires (#239 Q2 (b))
+      103  FAIL    red        1  yes    BITE-THE-BITE (#239 re-cut): schema TIGHTENED to minItems 3 with the pin moved — the r
+      104  FAIL    red        1  -      V70 R4 generated_at in 2099 on all three derived files — a future clock is a hand edit
+      105  FAIL    red        1  -      V71 R4 generated_at "banana" (#239 Q4)
+      106  FAIL    red        1  -      Q4 R4 generated_at before the R1 asset's date (1999) (#239 Q4)
+      107  FAIL    red        1  -      Q4 R4 one file's clock moved one second — the three clocks must agree (#239 Q4)
+      108  FAIL    red        1  -      FRESHNESS: home edited, generated files not re-derived → STALE
+      109  FAIL    red        1  -      FRESHNESS: a generated file deleted → MISSING
+      112  FAIL    green      1  yes    WRITE: stale → --write → fresh (rc 1 → 0 → 0)
+      113  FAIL    green      1  yes    WRITE: determinism — two writes differ only in generated_at
+      114  FAIL    green      1  yes    ADD-POLARITY: pl-30 dropped then re-added as pl-31 — dry-run leaves bytes; --write = o
+      117  FAIL    green      1  yes    ADD-STUB: a verbatim phrase appended textually; 3-key stub REFUSED (S-STUB-SHAPE); V32
+      118  FAIL    green      1  yes    CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant (via --brain AND
+      123  FAIL    77         1  -      COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a real refusal is S
+  311-schema-sources-minItems-0-plus-no-sources-plus-paraphrase: selftest rc=1 :: arms 125 · red arms 113 (went red by name 96/113) · green arms 10 · no-fire/77 arms 2 · new #239 arms 72 · failures 27
+      1  FAIL    green      1  -      CONTROL: the real 30 rows, untouched
+      8  FAIL    green      1  -      V31-control: the SAME ruling as `touches` is fine — only a resolvedBy closes (#239 Q1)
+      30  FAIL    red        1  -      V230 R3 party note that is a 14-word verdict, not verbatim in the source row (#239 Q5)
+      33  FAIL    red        1  -      V232b R3 mediating_variable rewritten (short, not verbatim in the source row) (#239 Q5)
+      43  FAIL    red     None  -      V222 R3 paraphrase + source pointer broken (path → nowhere): UNVERIFIABLE is refused (#
+      44  FAIL    red     None  -      V93 S-ID sources[0].id with a fullwidth digit (tn-0１) — the pointer cannot be laundered
+      48  FAIL    green      1  -      V400-control: a `touches` with no quote stays legal (#239 Q3)
+      56  FAIL    red        1  -      R4 AUTHORED file at the generated path (no header)
+      57  FAIL    red        1  -      R4 generated file HAND-EDITED under its header (self-sha breaks)
+      61  FAIL    red        1  -      R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)
+      71  FAIL    green      1  -      Q6 `.DS_Store` with Finder's magic bytes is IGNORED, declared (#239 Q6)
+      85  FAIL    red     None  -      V251 S sources[0].path is an int — named, no crash (#239 Q7)
+      94  FAIL    red     None  -      V310 SCHEMA sources.items.additionalProperties true + a `judgement` on a source (V's TO
+      99  FAIL    red        1  yes    SCHEMA description-only edit — the sha PIN alone fires (#239 Q2 (b))
+      103  FAIL    red        1  yes    BITE-THE-BITE (#239 re-cut): schema TIGHTENED to minItems 3 with the pin moved — the r
+      104  FAIL    red        1  -      V70 R4 generated_at in 2099 on all three derived files — a future clock is a hand edit
+      105  FAIL    red        1  -      V71 R4 generated_at "banana" (#239 Q4)
+      106  FAIL    red        1  -      Q4 R4 generated_at before the R1 asset's date (1999) (#239 Q4)
+      107  FAIL    red        1  -      Q4 R4 one file's clock moved one second — the three clocks must agree (#239 Q4)
+      108  FAIL    red        1  -      FRESHNESS: home edited, generated files not re-derived → STALE
+      109  FAIL    red        1  -      FRESHNESS: a generated file deleted → MISSING
+      112  FAIL    green      1  yes    WRITE: stale → --write → fresh (rc 1 → 0 → 0)
+      113  FAIL    green      1  yes    WRITE: determinism — two writes differ only in generated_at
+      114  FAIL    green      1  yes    ADD-POLARITY: pl-30 dropped then re-added as pl-31 — dry-run leaves bytes; --write = o
+      117  FAIL    green      1  yes    ADD-STUB: a verbatim phrase appended textually; 3-key stub REFUSED (S-STUB-SHAPE); V32
+      118  FAIL    green      1  yes    CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant (via --brain AND
+      123  FAIL    77         1  -      COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a real refusal is S
+  312-schema-note-maxWords-500-plus-64-word-note: selftest rc=1 :: arms 125 · red arms 113 (went red by name 102/113) · green arms 10 · no-fire/77 arms 2 · new #239 arms 72 · failures 21
+      1  FAIL    green      1  -      CONTROL: the real 30 rows, untouched
+      8  FAIL    green      1  -      V31-control: the SAME ruling as `touches` is fine — only a resolvedBy closes (#239 Q1)
+      48  FAIL    green      1  -      V400-control: a `touches` with no quote stays legal (#239 Q3)
+      56  FAIL    red        1  -      R4 AUTHORED file at the generated path (no header)
+      57  FAIL    red        1  -      R4 generated file HAND-EDITED under its header (self-sha breaks)
+      61  FAIL    red        1  -      R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)
+      71  FAIL    green      1  -      Q6 `.DS_Store` with Finder's magic bytes is IGNORED, declared (#239 Q6)
+      99  FAIL    red        1  yes    SCHEMA description-only edit — the sha PIN alone fires (#239 Q2 (b))
+      103  FAIL    red        1  yes    BITE-THE-BITE (#239 re-cut): schema TIGHTENED to minItems 3 with the pin moved — the r
+      104  FAIL    red        1  -      V70 R4 generated_at in 2099 on all three derived files — a future clock is a hand edit
+      105  FAIL    red        1  -      V71 R4 generated_at "banana" (#239 Q4)
+      106  FAIL    red        1  -      Q4 R4 generated_at before the R1 asset's date (1999) (#239 Q4)
+      107  FAIL    red        1  -      Q4 R4 one file's clock moved one second — the three clocks must agree (#239 Q4)
+      108  FAIL    red        1  -      FRESHNESS: home edited, generated files not re-derived → STALE
+      109  FAIL    red        1  -      FRESHNESS: a generated file deleted → MISSING
+      112  FAIL    green      1  yes    WRITE: stale → --write → fresh (rc 1 → 0 → 0)
+      113  FAIL    green      1  yes    WRITE: determinism — two writes differ only in generated_at
+      114  FAIL    green      1  yes    ADD-POLARITY: pl-30 dropped then re-added as pl-31 — dry-run leaves bytes; --write = o
+      117  FAIL    green      1  yes    ADD-STUB: a verbatim phrase appended textually; 3-key stub REFUSED (S-STUB-SHAPE); V32
+      118  FAIL    green      1  yes    CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant (via --brain AND
+      123  FAIL    77         1  -      COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a real refusal is S
+
+== THE WRITER DOOR (--add-polarity / --add-stub) on copies
+  [320] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-description-contains-quoted-polarities :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/arms/320-writer-description-contains-quoted-polar
+  [321] FALSE-RED rc=1 (expect 0) homes changed=[] :: writer-append-into-empty-array :: ⛔ the gate REFUSED the home as it would stand after this append (rc 1) — see the refusals above. File untouched.
+  [322] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-duplicate-id-pl-01 :: ⛔ POLARITY GATE REFUSED — 2 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/arms/322-writer-duplicate-id-pl-01/brain (nothing
+  [323] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-duplicate-stub-id :: ⛔ POLARITY GATE REFUSED — 2 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/arms/323-writer-duplicate-stub-id/brain (nothing 
+  [324] CAUGHT    rc=1 (expect 0) homes changed=[] :: writer-accepts-unverifiable-quote :: ⛔ the gate REFUSED the home as it would stand after this append (rc 1) — see the refusals above. File untouched.
+  [325] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-entry-is-a-list :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/arms/325-writer-entry-is-a-list/brain (nothing wr
+  [326] FALSE-RED rc=1 (expect 0) homes changed=[] :: writer-on-2-space-indented-file :: mixed indent: 'an be nodes; some can only be POINTERS with an access note."'
+  [327] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-typed-status-refused-control :: ⛔ POLARITY GATE REFUSED — 2 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/arms/327-writer-typed-status-refused-control/brai
+  [328] CAUGHT    rc=1 (expect 1) homes changed=[] :: writer-stub-zwsp-phrase :: ⛔ the gate REFUSED the home as it would stand after this append (rc 1) — see the refusals above. File untouched.
+
+== DOOR ASYMMETRY 1: the home is ABSENT (POLARITY_BRAIN_DIR -> a path that does not exist)
+  A CLI   rc=1 :: ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /sessions/keen-serene-johnson/mnt/outputs/f239/no-such-home (nothing written
+  B BUILD rc=1 -> _build_all.main() treats 77 as 'COULD-NOT-ASK — declared refusal, build continues' (its own words, line ~1352); route=gate
+  C SEAM  rc=1 :: ['✗ polarity gate REFUSED (s238-D7) on the REDIRECTED home /sessions/keen-serene-johnson/mnt/outputs/f239/no-such-home — the refusal is NAMED directly above. Nothing has been staged.']
+
+== DOOR ASYMMETRY 2: POLARITY_BRAIN_DIR at the seam — a fake-repo stand-in whose knowledge/brain/ is DIRTY
+  (a) seam block in the fake repo, no env:                 rc=1 names=['R5-TYPED-STATUS']  (proves the stand-in: the tree's brain IS dirty)
+  (b) same, POLARITY_BRAIN_DIR=<a clean copy elsewhere>:   rc=1 names=['R5-TYPED-STATUS'] :: ✗ polarity gate REFUSED (s238-D7) on the TREE'S OWN knowledge/brain/ (the redirect above passed, the commit's home does not) — the refusal is NAMED di
+      the ONLY trace of the redirect on the record: ['polarity gate (s238-D7): home /sessions/keen-serene-johnson/mnt/outputs/f239/brain-real · rows 30 · parties 68 (principl', '  RULE EDGES: for each polarity, for each unordered pair of parties on DIFFERENT sides whose refs both resolve to princi', "✗ polarity gate REFUSED (s238-D7) on the TREE'S OWN knowledge/brain/ (the redirect above passed, the commit's home does "]
+  (c) same, POLARITY_ACK=lazy (the spelled hatch):         rc=0 :: ['— polarity gate: DECLARED GAP — lazy']
+
+== BUILD door on a CRASH arm: what the GATE remedy claims vs what the output names
+  rc=1 names=['S-ONE-SIDED', 'S-SCHEMA'] traceback=False
+  remedy text the build prints: ❌ polarity gate failed (exit 1) — a polarity node in knowledge/brain/polarities.json carries a ref that does not resolve, an untyped link, a judgement field, a typed status, or an authored file sits at a generated path — OR the derived files under knowledge/brain/_generated/ are stale against the home. The refusal is NAMED in th

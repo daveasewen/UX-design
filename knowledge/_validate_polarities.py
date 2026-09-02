@@ -9,23 +9,62 @@ THE HOME (s238-D1, declared #238-P — the P1 plan names no path, so it is `know
                                     s237-D1 names are DERIVED here, never re-typed there)
   knowledge/brain/polarities.json   the 30 polarity nodes — N typed parties, typed out-links
   knowledge/brain/stubs.json        declared stubs: a party that is a phrase, not a register node
-  knowledge/brain/schema/polarity.schema.json   the consumer's grammar — READ by this gate
+  knowledge/brain/schema/polarity.schema.json   the consumer's grammar — READ by this gate,
+                                    PINNED by sha256 and by the floors below (#239 lane F)
   knowledge/brain/_generated/       polarity-status.json · polarity-edges.json ·
                                     defaults-declaration.txt — GENERATED, content-fresh-checked
 
 THE FIVE REFUSALS (s238-D7), each LOUD, NAMED, rc != 0, NOTHING WRITTEN:
-  R1  a party or link ref that does not resolve against the live registers
-      (R1-DANGLING · R1-SUPERSEDED · R1-SELF-PARTY · R1-CIRCULAR · R1-WRONG-REGISTER ·
-       R1-UNDECLARED-STUB)
-  R2  an untyped link (R2-UNTYPED · R2-UNKNOWN-TYPE — a fifth type is NOT ruled, refused)
+  R1  a party or link ref that does not resolve against the LIVE registers
+      (R1-DANGLING — nothing there, or (#239) a resolvedBy whose target's status text says
+       OPEN / PARKED / DEFERRED / FORKED · R1-SUPERSEDED — the `superseded_by` field or (#239)
+       supersession written in the store's prose · R1-SELF-PARTY · R1-CIRCULAR ·
+       R1-WRONG-REGISTER · R1-UNDECLARED-STUB)
+  R2  an untyped link (R2-UNTYPED — key absent, null, or a link that is not an object ·
+      R2-UNKNOWN-TYPE — a fifth type is NOT ruled, refused)
   R3  a judgement text field of any name on a node — the only judgement is a typed link to a
-      knowledge/_rulings.json id (R3-JUDGEMENT-FIELD · R3-QUOTE-TOO-LONG · R3-NOTE-TOO-LONG)
+      knowledge/_rulings.json id (R3-JUDGEMENT-FIELD — also (#239) a note / mediating_variable /
+      stub phrase that is not VERBATIM in the frozen register, and free text at the top level ·
+      R3-QUOTE-TOO-LONG · R3-NOTE-TOO-LONG · R3-QUOTE-NOT-VERBATIM — also (#239) an empty,
+      under-floor or UNVERIFIABLE quote · R3-QUOTE-MISSING — (#239) a resolvedBy with no quote)
   R4  an authored edge file — pairwise edges exist only under _generated/ with a content-
-      freshness check (R4-AUTHORED-GENERATED · R4-AUTHORED-EDGES · R4-STRAY-FILE)
+      freshness check (R4-AUTHORED-GENERATED — also (#239) a clock that is not ISO-8601 UTC, in
+      the future, before the R1 asset, or differing across the three files · R4-AUTHORED-EDGES ·
+      R4-STRAY-FILE — (#239) every entry at every level is listed: dotfiles, schema/, _generated/,
+      __pycache__, *.tmp, symlinks, a file where a directory should be)
   R5  a typed status (R5-TYPED-STATUS) — status is DERIVED with a clock (s238-D3, s237-D9)
 Plus the schema refusals the same grammar implies (S-PARSE · S-SHAPE · S-ID · S-MIN-PARTIES ·
-S-ROLE · S-DUP-ID · S-DUP-PARTY · S-STUB-SHAPE · S-DUP-STUB) and the freshness verdicts
-(MISSING-GENERATED · STALE-GENERATED, remedy: --write).
+S-ROLE · S-DUP-ID · S-DUP-PARTY · S-STUB-SHAPE · S-DUP-STUB · S-ONE-SIDED · S-SCHEMA ·
+S-FORMAT-CHAR · S-SOURCE · S-RECEIPT · SCHEMA-PIN-MISMATCH · SCHEMA-LOOSENED ·
+SCHEMA-KEYWORD-UNSUPPORTED) and the freshness verdicts (MISSING-GENERATED · STALE-GENERATED,
+remedy: --write). A CRASH IS NOT A FAIL: any exception inside the gate is caught and NAMED
+(S-SHAPE, with the exception class and the JSON path it was walking) — the build and the seam
+promise "the refusal is NAMED above", and it is.
+
+#239 LANE F — THE CLASSES V FOUND, CLOSED (V = notes/_subreports/2026-09-02-238-V-polarity-verifier.md):
+  Q1  "live" for R1 is more than one field: a resolvedBy to a ruling superseded in PROSE, or
+      whose status says OPEN/PARKED/DEFERRED/FORKED, is refused (V's (b); (c) a machine `state`
+      field in the store is RULING-SHAPED and not built here).
+  Q2  the schema is PINNED: its sha256 (SCHEMA_SHA256) and the floors of the five refusals
+      (SCHEMA_FLOORS) live in code; a schema that loosens a floor is refused AND the floor is
+      applied regardless; a schema may only tighten.
+  Q3  the quote oracle is not the node's to name: sources[].path must be on SOURCE_ALLOW (the
+      frozen R1 register), sources[].id must be a row in it, every frozen row is claimed by
+      exactly one node (the migration receipt, verified), and a resolvedBy needs a VERIFIED quote.
+  Q4  the clock is checked: ISO-8601 UTC, not in the future (skew CLOCK_SKEW_S), not before the
+      R1 asset's date, identical across the three derived files.
+  Q5  free text is bounded and verified: note / mediating_variable / stub phrase verbatim from
+      the frozen register; $description and $migration shape-fixed; sources[].id/path patterned;
+      any Unicode Cf/Cc/Co character in any string refused (S-FORMAT-CHAR); words are counted
+      with those characters as separators.
+  Q6  the home is a closed directory at EVERY level: dotfiles, schema/, _generated/, __pycache__,
+      *.tmp and symlinks are listed and refused; `.DS_Store` is ignored ONLY when its bytes carry
+      the Finder magic (a JSON file wearing that name is refused).
+  Q7  crashes are named (S-SHAPE catch-all, S-PARSE on a bad byte, hash-guarded memberships).
+  Q8  the two hatches: an absent home in the SOURCE repo (knowledge/_rulings.json present) is
+      a refusal (rc 1), not COULD-NOT-ASK; 77 stays for a shipped pack (no store, no home). The
+      seam's POLARITY_BRAIN_DIR redirect is DECLARED and the tree's own home is gated too.
+  argv the flags are a contract: --dry-run with --write, or --check with --write, is rc 2.
 
 DERIVED, WITH A CLOCK (s238-D3): every generated file carries `generated_at` and a
 `content_sha256` over its body. `--check` re-derives with the ON-DISK clock and compares BYTES
@@ -44,7 +83,8 @@ must pass on the resulting text BEFORE a byte is written. A refusal leaves every
 
 CONSUMERS (a gate without a consumer is not a gate — s238-D7's last sentence):
   knowledge/_build_all.py STEPS      `--check` (GATE) and `--selftest` (ABORT), appended
-  knowledge/_git_commit.sh           `--check` before staging (POLARITY_ACK declares a gap)
+  knowledge/_git_commit.sh           `--check` before staging (POLARITY_ACK declares a gap;
+                                     POLARITY_BRAIN_DIR is DECLARED and the tree's home still gated)
   knowledge/_test_git_commit.py      the seam harness stubs + drives this gate's line
 
 Usage:
@@ -63,6 +103,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+import copy
 import datetime
 import hashlib
 import io
@@ -74,6 +115,7 @@ import subprocess
 import sys
 import tempfile
 import traceback
+import unicodedata
 
 import _could_not_ask as cna  # noqa: E402 - after the help gate's path insert
 
@@ -85,12 +127,27 @@ OPEN_DEFAULTS_REL = "notes/_subreports/assets/2026-09-02-237-T-tensions-schema/o
 OPEN_DEFAULTS = os.path.join(REPO, OPEN_DEFAULTS_REL)
 T_SORT_FIGURE = ("6 · 3 · 21", "notes/_subreports/assets/2026-09-02-237-T-tensions-schema/tension-sort.json")
 
+# Q3 (#239): THE SOURCE ALLOW-LIST — where a node's words may come from. Today the frozen R1
+# register only (ADR-0017); a second register is RULING-SHAPED (Dave's), not this file's.
+R1_TENSIONS_REL = "notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json"
+SOURCE_ALLOW = (R1_TENSIONS_REL,)
+
 HOME_FILES = ("principles.json", "polarities.json", "stubs.json")
-SCHEMA_REL = os.path.join("schema", "polarity.schema.json")
+SCHEMA_NAME = "polarity.schema.json"
+SCHEMA_REL = os.path.join("schema", SCHEMA_NAME)
 GEN_DIR = "_generated"
 GEN_FILES = ("polarity-status.json", "polarity-edges.json", "defaults-declaration.txt")
 GEN_HEADER = "GENERATED — do not hand-edit (knowledge/_validate_polarities.py --write)"
 ALLOWED_TOP = set(HOME_FILES) | {"schema", GEN_DIR}
+TOP_KEYS = ("$description", "$migration", "polarities")
+MIGRATION_KEYS = ("from", "sha256", "by", "receipts")
+DSSTORE_MAGIC = b"\x00\x00\x00\x01Bud1"     # Finder's own file, gitignored — ignored ONLY by its bytes
+
+# FLOATED figures (#239 lane F, declared in the report; Dave's to move):
+DESCRIPTION_MAX_WORDS = 120   # polarities.json $description (the real one is 100 words)
+RECEIPT_MAX_WORDS = 60        # each $migration.receipts[] line (the real longest is ~45)
+CLOCK_FMT = "%Y-%m-%dT%H:%M:%SZ"
+CLOCK_SKEW_S = 3600           # a generated_at this far ahead of now is a hand edit (V's Q4)
 
 # s237-D1 — the five grade names. DERIVED from the ruling id quoted here; principles.json keeps
 # the R1 letters and is never re-typed (s234-D1: generation chain, never copy chain).
@@ -98,11 +155,77 @@ GRADE_NAMES = {"A": "REPLICATED", "B": "STUDIED", "C": "PRACTISED", "D": "DEBUNK
 OBLIGATION_GRADE = "L"
 
 STUB_ID = re.compile(r"^st-[a-z0-9]+(?:-[a-z0-9]+)*$")
-ASCII_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
-POLARITY_ID = re.compile(r"^pl-[0-9]{2,}$")
+ASCII_ID_PAT = r"^[A-Za-z0-9][A-Za-z0-9._-]*$"
+ASCII_ID = re.compile(ASCII_ID_PAT)
+POLARITY_ID_PAT = r"^pl-[0-9]{2,}$"
+POLARITY_ID = re.compile(POLARITY_ID_PAT)
+SOURCE_PATH_PAT = r"^[A-Za-z0-9_][A-Za-z0-9_./-]*$"
+LINK_TYPES = ("resolvedBy", "explainedBy", "challengedBy", "touches")
+ROLES = ("side_a", "side_b", "side_c")
+NOT_LIVE = re.compile(r"\b(OPEN|PARKED|DEFERRED|FORKED)\b", re.I)
+SEP_CATEGORIES = {"Cf", "Cc", "Zs", "Zl", "Zp"}        # word separators for words()
+BAD_CATEGORIES = {"Cf", "Co"}                          # + Cc except \t \n \r: refused in any string
+
 SCHEMA_KEYWORDS = {"$schema", "$id", "title", "description", "type", "additionalProperties",
                    "required", "properties", "items", "enum", "pattern", "minItems", "minLength",
-                   "maxWords", "x-refusals", "x-vocabulary"}
+                   "maxWords", "minWords", "x-refusals", "x-vocabulary"}
+
+# Q2 (#239): THE PIN. sha256 of knowledge/brain/schema/polarity.schema.json — a schema edit must
+# move this constant in the same commit (V's Q2 (b)); SCHEMA_FLOORS below is (c).
+SCHEMA_SHA256 = "42f845036705db1baadd9ff3d6c9636a499f3de07d3574e6a2a5179721bdfc66"
+# THE FLOORS: (pointer into the schema, keyword, kind, floor). kind: min = the schema's value must
+# be >= floor · max = <= floor · eq = == floor · keys = `properties` has EXACTLY these keys ·
+# superset = `required` carries at least these. A looser schema is SCHEMA-LOOSENED and the floor
+# is applied to the data regardless; a tighter one is honoured (the schema still drives the check).
+SCHEMA_FLOORS = (
+    ("", "type", "eq", "object"),
+    ("", "additionalProperties", "eq", False),
+    ("", "required", "superset", ["id", "parties", "mediating_variable", "links", "sources"]),
+    ("", "properties", "keys", ["id", "parties", "mediating_variable", "links", "sources"]),
+    ("properties.id", "type", "eq", "string"),
+    ("properties.id", "pattern", "eq", POLARITY_ID_PAT),
+    ("properties.parties", "type", "eq", "array"),
+    ("properties.parties", "minItems", "min", 2),
+    ("properties.parties.items", "type", "eq", "object"),
+    ("properties.parties.items", "additionalProperties", "eq", False),
+    ("properties.parties.items", "required", "superset", ["ref", "role"]),
+    ("properties.parties.items", "properties", "keys", ["ref", "role", "note"]),
+    ("properties.parties.items.properties.ref", "type", "eq", "string"),
+    ("properties.parties.items.properties.ref", "pattern", "eq", ASCII_ID_PAT),
+    ("properties.parties.items.properties.role", "type", "eq", "string"),
+    ("properties.parties.items.properties.role", "enum", "eq", list(ROLES)),
+    ("properties.parties.items.properties.note", "type", "eq", "string"),
+    ("properties.parties.items.properties.note", "maxWords", "max", 15),
+    ("properties.mediating_variable", "type", "eq", "string"),
+    ("properties.mediating_variable", "minLength", "min", 1),
+    ("properties.mediating_variable", "maxWords", "max", 25),
+    ("properties.links", "type", "eq", "array"),
+    ("properties.links.items", "type", "eq", "object"),
+    ("properties.links.items", "additionalProperties", "eq", False),
+    ("properties.links.items", "required", "superset", ["type", "ref"]),
+    ("properties.links.items", "properties", "keys", ["type", "ref", "quote"]),
+    ("properties.links.items.properties.type", "type", "eq", "string"),
+    ("properties.links.items.properties.type", "enum", "eq", list(LINK_TYPES)),
+    ("properties.links.items.properties.ref", "type", "eq", "string"),
+    ("properties.links.items.properties.ref", "pattern", "eq", ASCII_ID_PAT),
+    ("properties.links.items.properties.quote", "type", "eq", "string"),
+    ("properties.links.items.properties.quote", "minWords", "min", 3),
+    ("properties.links.items.properties.quote", "maxWords", "max", 15),
+    ("properties.sources", "type", "eq", "array"),
+    ("properties.sources", "minItems", "min", 1),
+    ("properties.sources.items", "type", "eq", "object"),
+    ("properties.sources.items", "additionalProperties", "eq", False),
+    ("properties.sources.items", "required", "superset", ["path", "id"]),
+    ("properties.sources.items", "properties", "keys", ["path", "id"]),
+    ("properties.sources.items.properties.path", "type", "eq", "string"),
+    ("properties.sources.items.properties.path", "minLength", "min", 1),
+    ("properties.sources.items.properties.path", "maxWords", "max", 1),
+    ("properties.sources.items.properties.path", "pattern", "eq", SOURCE_PATH_PAT),
+    ("properties.sources.items.properties.id", "type", "eq", "string"),
+    ("properties.sources.items.properties.id", "minLength", "min", 1),
+    ("properties.sources.items.properties.id", "maxWords", "max", 1),
+    ("properties.sources.items.properties.id", "pattern", "eq", ASCII_ID_PAT),
+)
 
 
 class Refused(Exception):
@@ -122,19 +245,41 @@ def sha256_text(s):
 
 
 def words(s):
-    return len(str(s).split())
+    """Word count with every Unicode format/control/space character as a separator (Q5: an
+    invisible join cannot make 44 words count as one)."""
+    return len("".join(" " if unicodedata.category(ch) in SEP_CATEGORIES else ch
+                       for ch in str(s)).split())
+
+
+def bad_chars(s):
+    """[(offset, codepoint, name)] of the characters refused in any string of the home."""
+    out = []
+    for i, ch in enumerate(s):
+        cat = unicodedata.category(ch)
+        if cat in BAD_CATEGORIES or (cat == "Cc" and ch not in "\t\n\r"):
+            out.append((i, ord(ch), unicodedata.name(ch, cat)))
+    return out
 
 
 def now_clock():
-    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.datetime.now(datetime.timezone.utc).strftime(CLOCK_FMT)
+
+
+def rel(path):
+    return os.path.relpath(path, REPO) if path.startswith(REPO) else path
 
 
 # ============================================================================================
 # LOADING — parse in the consumer's grammar (JSON), every failure NAMED
 # ============================================================================================
 def read_text(path):
-    with open(path, encoding="utf-8") as f:
-        return f.read()
+    with open(path, "rb") as f:
+        raw = f.read()
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as e:
+        raise Refused("S-PARSE", f"{rel(path)} is not UTF-8: {e.reason} at byte {e.start} — the home is "
+                                 f"parsed in the consumer's grammar and a byte outside it is refused")
 
 
 def parse_json(text, what):
@@ -153,16 +298,17 @@ def load_home(brain, overrides=None):
         path = os.path.join(brain, name)
         if name in overrides:
             text = overrides[name]
-        elif os.path.exists(path):
+        elif os.path.isfile(path):
             text = read_text(path)
         else:
             raise Refused("S-SHAPE", f"{name} is absent from the home {brain}")
         home["text"][name] = text
         home["obj"][name] = parse_json(text, name)
     schema_path = os.path.join(brain, SCHEMA_REL)
-    if not os.path.exists(schema_path):
+    if not os.path.isfile(schema_path):
         raise Refused("S-SHAPE", f"schema absent: {schema_path}")
-    home["schema"] = parse_json(read_text(schema_path), "polarity.schema.json")
+    home["schema_text"] = read_text(schema_path)
+    home["schema"] = parse_json(home["schema_text"], SCHEMA_NAME)
     if not os.path.exists(RULINGS):
         raise Refused("S-SHAPE", f"knowledge/_rulings.json absent at {RULINGS}")
     rulings = parse_json(read_text(RULINGS), "_rulings.json")
@@ -172,13 +318,124 @@ def load_home(brain, overrides=None):
     for r in rulings["rulings"]:
         if isinstance(r, dict) and isinstance(r.get("id"), str):
             home["rulings"][r["id"]] = r
+    home["prose_superseded"] = prose_supersessions(home["rulings"])
     return home
 
 
+def _ruling_prose(r):
+    return " ".join(str(r.get(k, "")) for k in ("status", "ruled", "says"))
+
+
+def prose_supersessions(rulings):
+    """Q1 (#239): {ruling id: 'by whom / how'} for every ruling the STORE'S PROSE calls
+    superseded — the `superseded_by` field is on 1 of 328 rows, the word is on more. Two
+    readings: (a) another ruling's status/ruled/says says `supersedes … <id>`; (b) the ruling's
+    own `status` field says `superseded`. FLOATED as a reading, declared in the #239-F report."""
+    out = {}
+    for rid, r in rulings.items():
+        if re.search(r"\bsuperseded\b", str(r.get("status", "")), re.I):
+            out[rid] = f"its own status says superseded: {str(r.get('status'))[:90]!r}"
+    for yid, y in rulings.items():
+        prose = _ruling_prose(y)
+        for m in re.finditer(r"\bsupersed(?:es|ing)\b[^.;]{0,80}?\b([A-Za-z]+[0-9]*-[A-Za-z0-9]+)\b", prose):
+            target = m.group(1)
+            if target in rulings and target != yid and target not in out:
+                out[target] = f"{yid} says {m.group(0)[:90]!r}"
+    return out
+
+
+def load_register():
+    """The frozen R1 register (Q3's oracle): (rows_by_id, row_text_by_id, raw_bytes, generated_date)."""
+    path = os.path.join(REPO, R1_TENSIONS_REL)
+    if not os.path.isfile(path):
+        raise Refused("S-SOURCE", f"the frozen R1 register {R1_TENSIONS_REL} does not exist here — every "
+                                  f"node's words are verified against it (ADR-0017); restore it")
+    with open(path, "rb") as f:
+        raw = f.read()
+    try:
+        obj = json.loads(raw.decode("utf-8"))
+    except Exception as e:  # noqa: BLE001
+        raise Refused("S-SOURCE", f"{R1_TENSIONS_REL} does not parse: {type(e).__name__}: {e}")
+    rows = obj.get("tensions") if isinstance(obj, dict) else None
+    if not isinstance(rows, list):
+        raise Refused("S-SOURCE", f"{R1_TENSIONS_REL} has no `tensions` list")
+    by_id, texts = {}, {}
+    for r in rows:
+        if isinstance(r, dict) and isinstance(r.get("id"), str):
+            by_id[r["id"]] = r
+            texts[r["id"]] = " ".join(str(v) for v in r.values() if isinstance(v, str))
+    gen = obj.get("generated") if isinstance(obj, dict) else None
+    return by_id, texts, raw, (gen if isinstance(gen, str) else None)
+
+
 # ============================================================================================
-# THE SCHEMA — a small reader of draft-2020-12 core + the house `maxWords`. It REFUSES a
-# keyword it does not implement, so a schema edit can never be silently half-enforced.
+# THE SCHEMA — a small reader of draft-2020-12 core + the house `maxWords`/`minWords`. It REFUSES
+# a keyword it does not implement, refuses a schema that LOOSENS a pinned floor (and applies the
+# floor regardless), and refuses a schema whose sha256 has moved without the pin (Q2, #239).
 # ============================================================================================
+def _walk_schema(schema, pointer):
+    cur = schema
+    for step in [s for s in pointer.split(".") if s]:
+        if not isinstance(cur, dict) or step not in cur:
+            return None
+        cur = cur[step]
+    return cur if isinstance(cur, dict) else None
+
+
+def schema_pin_and_floors(schema_text, schema):
+    """(fails, effective_schema). The effective schema is the on-disk one with every loosened
+    floor put back, so the data-level refusal still fires by its own name."""
+    fails = []
+    if sha256_text(schema_text) != SCHEMA_SHA256:
+        fails.append(("SCHEMA-PIN-MISMATCH",
+                      f"schema/{SCHEMA_NAME} sha256 {sha256_text(schema_text)[:16]}… is not the pinned "
+                      f"{SCHEMA_SHA256[:16]}… — a schema edit must move SCHEMA_SHA256 in "
+                      f"knowledge/_validate_polarities.py in the same commit (#239 lane F, V's Q2)"))
+    if not isinstance(schema, dict):
+        return fails + [("S-SCHEMA", f"schema/{SCHEMA_NAME} is not an object")], {"type": "object"}
+    eff = copy.deepcopy(schema)
+    for pointer, kw, kind, floor in SCHEMA_FLOORS:
+        node = _walk_schema(eff, pointer)
+        where = f"schema{('.' + pointer) if pointer else ''}.{kw}"
+        if node is None:
+            fails.append(("S-SCHEMA", f"{where}: the schema has no object at {pointer!r} — malformed"))
+            continue
+        have = node.get(kw)
+        loose = False
+        if kw == "pattern" and isinstance(have, str):
+            try:
+                re.compile(have)
+            except re.error as e:
+                fails.append(("S-SCHEMA", f"{where}: {have!r} is not a valid regex ({e}) — malformed schema"))
+        if kind == "eq":
+            loose = have != floor
+            if have is not None and type(have) is not type(floor):
+                fails.append(("S-SCHEMA", f"{where}: {have!r} is a {type(have).__name__} where this gate reads a "
+                                          f"{type(floor).__name__} (e.g. a `type` list) — malformed schema"))
+        elif kind == "min":
+            loose = not isinstance(have, int) or isinstance(have, bool) or have < floor
+        elif kind == "max":
+            loose = not isinstance(have, int) or isinstance(have, bool) or have > floor
+        elif kind == "superset":
+            loose = not isinstance(have, list) or not set(floor) <= set(have)
+        elif kind == "keys":
+            loose = not isinstance(have, dict) or set(have) != set(floor)
+        if loose:
+            fails.append(("SCHEMA-LOOSENED",
+                          f"{where}: {have!r} loosens the pinned floor {floor!r} (s238-D7; #239 lane F, "
+                          f"V's Q2) — a schema may only tighten; the floor is applied regardless"))
+            if kind == "keys":
+                node[kw] = {k: v for k, v in (have.items() if isinstance(have, dict) else [])
+                            if k in floor}
+                for k in floor:
+                    node[kw].setdefault(k, {})
+            elif kind == "superset":
+                node[kw] = sorted(set(floor) | (set(have) if isinstance(have, list) else set()))
+            else:
+                node[kw] = floor
+    return fails, eff
+
+
 def schema_keywords_supported(schema, path="schema"):
     if isinstance(schema, dict):
         for k, v in schema.items():
@@ -186,7 +443,9 @@ def schema_keywords_supported(schema, path="schema"):
                 raise Refused("SCHEMA-KEYWORD-UNSUPPORTED",
                               f"{path}.{k}: this gate does not implement that keyword — implement "
                               f"it or remove it; an ignored keyword is an unenforced rule")
-            if k in ("properties",):
+            if k == "properties":
+                if not isinstance(v, dict):
+                    raise Refused("S-SCHEMA", f"{path}.properties is not an object (malformed schema)")
                 for pk, pv in v.items():
                     schema_keywords_supported(pv, f"{path}.properties.{pk}")
             elif k == "items":
@@ -194,71 +453,90 @@ def schema_keywords_supported(schema, path="schema"):
 
 
 def schema_validate(inst, schema, path, out):
-    """Append (keyword, path, detail) for every violation. Pure."""
+    """Append (keyword, path, detail, instance) for every violation. Pure."""
+    if not isinstance(schema, dict):
+        out.append(("schema", path, "the schema node here is not an object", inst))
+        return
     t = schema.get("type")
     if t == "object":
         if not isinstance(inst, dict):
-            out.append(("type", path, f"expected object, got {type(inst).__name__}"))
+            out.append(("type", path, f"expected object, got {type(inst).__name__}", inst))
             return
         props = schema.get("properties", {})
+        if not isinstance(props, dict):
+            out.append(("schema", path, "`properties` is not an object", inst))
+            return
         for r in schema.get("required", []):
             if r not in inst:
-                out.append(("required", f"{path}.{r}", f"required key {r!r} is missing"))
+                out.append(("required", f"{path}.{r}", f"required key {r!r} is missing", None))
         if schema.get("additionalProperties") is False:
             for k in inst:
                 if k not in props:
                     out.append(("additionalProperties", f"{path}.{k}",
-                                f"key {k!r} is not in the schema (allowed: {sorted(props)})"))
+                                f"key {k!r} is not in the schema (allowed: {sorted(props)})", inst[k]))
         for k, v in inst.items():
             if k in props:
                 schema_validate(v, props[k], f"{path}.{k}", out)
     elif t == "array":
         if not isinstance(inst, list):
-            out.append(("type", path, f"expected array, got {type(inst).__name__}"))
+            out.append(("type", path, f"expected array, got {type(inst).__name__}", inst))
             return
         if "minItems" in schema and len(inst) < schema["minItems"]:
-            out.append(("minItems", path, f"{len(inst)} item(s), minimum {schema['minItems']}"))
+            out.append(("minItems", path, f"{len(inst)} item(s), minimum {schema['minItems']}", inst))
         if "items" in schema:
             for i, v in enumerate(inst):
                 schema_validate(v, schema["items"], f"{path}[{i}]", out)
     elif t == "string":
         if not isinstance(inst, str):
-            out.append(("type", path, f"expected string, got {type(inst).__name__}"))
+            out.append(("type", path, f"expected string, got {type(inst).__name__}", inst))
             return
         if "enum" in schema and inst not in schema["enum"]:
-            out.append(("enum", path, f"{inst!r} is not one of {schema['enum']}"))
-        if "pattern" in schema and not re.search(schema["pattern"], inst):
-            out.append(("pattern", path, f"{inst!r} does not match {schema['pattern']}"))
+            out.append(("enum", path, f"{inst!r} is not one of {schema['enum']}", inst))
+        if "pattern" in schema:
+            try:
+                ok = re.search(schema["pattern"], inst) is not None
+            except re.error as e:
+                out.append(("schema", path, f"schema pattern {schema['pattern']!r} is not a valid "
+                                            f"regex ({e}) — malformed schema", inst))
+                ok = True
+            if not ok:
+                out.append(("pattern", path, f"{inst[:60]!r} does not match {schema['pattern']}", inst))
         if "minLength" in schema and len(inst) < schema["minLength"]:
-            out.append(("minLength", path, f"shorter than {schema['minLength']}"))
+            out.append(("minLength", path, f"shorter than {schema['minLength']}", inst))
         if "maxWords" in schema and words(inst) > schema["maxWords"]:
-            out.append(("maxWords", path, f"{words(inst)} words, maximum {schema['maxWords']}"))
+            out.append(("maxWords", path, f"{words(inst)} words, maximum {schema['maxWords']}", inst))
+        if "minWords" in schema and words(inst) < schema["minWords"]:
+            out.append(("minWords", path, f"{words(inst)} word(s), minimum {schema['minWords']}", inst))
     elif t is not None:
-        out.append(("type", path, f"schema type {t!r} is not one this gate reads"))
+        out.append(("schema", path, f"schema type {t!r} is not one this gate reads", inst))
 
 
-def name_violation(kw, path, detail):
+def name_violation(kw, path, detail, inst=None):
     """Map a schema violation to the refusal NAME s238-D7 / the schema's x-refusals promise."""
     leaf = path.rsplit(".", 1)[-1]
     if kw == "additionalProperties":
         if "status" in leaf.lower():
             return "R5-TYPED-STATUS"
         return "R3-JUDGEMENT-FIELD"
-    if kw == "required" and leaf == "type" and ".links[" in path:
-        return "R2-UNTYPED"
-    if kw == "enum" and leaf == "type" and ".links[" in path:
+    if kw == "type" and re.search(r"\.links\[\d+\]$", path):
+        return "R2-UNTYPED"             # a link that is not an object carries no type at all
+    if leaf == "type" and ".links[" in path:
+        if kw == "required" or (kw == "type" and inst is None):
+            return "R2-UNTYPED"
         return "R2-UNKNOWN-TYPE"
     if kw == "maxWords" and leaf == "quote":
         return "R3-QUOTE-TOO-LONG"
+    if kw == "minWords" and leaf == "quote":
+        return "R3-QUOTE-NOT-VERBATIM"  # an under-floor quote is not a receipt (Q3)
     if kw == "maxWords" and leaf == "note":
         return "R3-NOTE-TOO-LONG"
-    if kw == "pattern" and leaf == "ref":
-        return "S-ID"
-    if kw == "pattern" and leaf == "id":
+    if kw == "maxWords":
+        return "R3-JUDGEMENT-FIELD"     # mediating_variable, sources[].id/path: a paragraph is a judgement
+    if kw == "pattern" and leaf in ("ref", "id", "path"):
         return "S-ID"
     if kw == "minItems" and leaf == "parties":
         return "S-MIN-PARTIES"
-    if kw == "enum" and leaf == "role":
+    if leaf == "role" and (kw == "enum" or (kw == "type" and inst is None)):
         return "S-ROLE"
     return "S-SCHEMA"
 
@@ -266,48 +544,123 @@ def name_violation(kw, path, detail):
 # ============================================================================================
 # THE REFUSALS
 # ============================================================================================
+def _sniff_edges(path):
+    """True when a JSON file carries a top-level key ending in `edges` (an authored edge list)."""
+    try:
+        obj = json.loads(read_text(path))
+    except Exception:  # noqa: BLE001
+        return False
+    return isinstance(obj, dict) and any(isinstance(k, str) and k.lower().endswith("edges") for k in obj)
+
+
+def _is_finder_dsstore(path):
+    try:
+        with open(path, "rb") as f:
+            return f.read(len(DSSTORE_MAGIC)) == DSSTORE_MAGIC
+    except OSError:
+        return False
+
+
 def check_home_dir(brain):
-    """R4 — the home is a CLOSED directory: three homes, the schema, the generated dir.
-    Any other file is a second stored shape (s238-D1) or an authored edge list."""
-    fails = []
+    """R4 — the home is a CLOSED directory AT EVERY LEVEL (Q6, #239): three homes, the schema dir
+    with exactly one schema, the generated dir with only the derived three. Every entry is listed
+    — dotfiles, __pycache__, *.tmp, symlinks — and anything else is a second stored shape (s238-D1)
+    or an authored edge list. Returns (fails, notes)."""
+    fails, notes = [], []
     if not os.path.isdir(brain):
         raise Refused("S-SHAPE", f"home directory absent: {brain}")
+
+    def stray(where, path, name, inside_generated=False):
+        if os.path.islink(path):
+            fails.append(("R4-STRAY-FILE", f"{where} is a SYMLINK — the home is a closed directory of "
+                                           f"regular files; a commit would carry the link, not the words"))
+            return
+        if os.path.isdir(path):
+            fails.append(("R4-STRAY-FILE", f"{where}/ is a directory that is not part of the home "
+                                           f"(delete it; __pycache__ and the like included)"))
+            return
+        if name == ".DS_Store" and _is_finder_dsstore(path):
+            notes.append(f"{where} ignored — Finder metadata by its bytes (gitignored, never read)")
+            return
+        edges = os.path.isfile(path) and _sniff_edges(path)
+        if inside_generated:
+            fails.append(("R4-STRAY-FILE", f"{where} is not one of the derived files ({', '.join(GEN_FILES)}) — "
+                                           f"nothing under the generated path may be authored (s238-D7 refusal 4)"))
+            if edges:
+                fails.append(("R4-AUTHORED-EDGES", f"{where} carries an `edges` key — pairwise edges are "
+                                                   f"DERIVED (s238-D1); delete it and run --write"))
+            return
+        if edges:
+            fails.append(("R4-AUTHORED-EDGES", f"{where} carries an `edges` key outside a derived file — "
+                                               f"pairwise edges are DERIVED (s238-D1); delete it and run --write"))
+            return
+        fails.append(("R4-STRAY-FILE", f"{where} is not one of the homes ({', '.join(HOME_FILES)}), "
+                                       f"schema/{SCHEMA_NAME} or {GEN_DIR}/ — a second stored shape for the "
+                                       f"same concept is refused (s238-D1); dotfiles and *.tmp included"))
+
     for name in sorted(os.listdir(brain)):
-        if name.startswith(".") or name == "__pycache__":
-            continue
-        if name in ALLOWED_TOP:
-            continue
         path = os.path.join(brain, name)
-        if name.endswith(".json") and os.path.isfile(path):
-            try:
-                obj = json.loads(read_text(path))
-            except Exception:
-                obj = None
-            if isinstance(obj, dict) and any(k.lower().endswith("edges") for k in obj):
-                fails.append(("R4-AUTHORED-EDGES",
-                              f"{name} carries an `edges` key outside {GEN_DIR}/ — pairwise edges "
-                              f"are DERIVED (s238-D1); delete it and run --write"))
+        if os.path.islink(path):
+            stray(name, path, name)
+            continue
+        if name in HOME_FILES:
+            if not os.path.isfile(path):
+                fails.append(("R4-STRAY-FILE", f"{name} is not a regular file"))
+            continue
+        if name == "schema":
+            if not os.path.isdir(path):
+                fails.append(("R4-STRAY-FILE", f"schema is not a directory"))
                 continue
-        fails.append(("R4-STRAY-FILE",
-                      f"{name} is not one of the homes ({', '.join(HOME_FILES)}), schema/ or "
-                      f"{GEN_DIR}/ — a second stored shape for the same concept is refused (s238-D1)"))
-    # the generated dir is CLOSED too: a hand-written file sitting beside the three derived ones
-    # would wear the generated path's authority (refusal 4) without ever being derived
-    gen_dir = os.path.join(brain, GEN_DIR)
-    if os.path.isdir(gen_dir):
-        for name in sorted(os.listdir(gen_dir)):
-            if name.startswith(".") or name in GEN_FILES:
+            seen = sorted(os.listdir(path))
+            for sub in seen:
+                if sub == SCHEMA_NAME and os.path.isfile(os.path.join(path, sub)) \
+                        and not os.path.islink(os.path.join(path, sub)):
+                    continue
+                stray(f"schema/{sub}", os.path.join(path, sub), sub)
+            continue
+        if name == GEN_DIR:
+            if not os.path.isdir(path):
+                fails.append(("R4-STRAY-FILE", f"{GEN_DIR} is a file, not the derived directory — "
+                                               f"delete it and run --write"))
+                fails.append(("MISSING-GENERATED", f"{GEN_DIR}/{' · '.join(GEN_FILES)} are absent because "
+                                                   f"{GEN_DIR} is not a directory — run --write once it is"))
                 continue
-            fails.append(("R4-STRAY-FILE",
-                          f"{GEN_DIR}/{name} is not one of the derived files ({', '.join(GEN_FILES)}) — "
-                          f"nothing under the generated path may be authored (s238-D7 refusal 4)"))
-    return fails
+            for sub in sorted(os.listdir(path)):
+                sp = os.path.join(path, sub)
+                if sub in GEN_FILES and os.path.isfile(sp) and not os.path.islink(sp):
+                    continue
+                stray(f"{GEN_DIR}/{sub}", sp, sub, inside_generated=True)
+            continue
+        stray(name, path, name)
+    return fails, notes
 
 
-def check_stubs(stubs_obj):
+def check_strings(obj, where, fails):
+    """Q5 — no invisible / format / control character in ANY string of the home."""
+    if isinstance(obj, str):
+        bad = bad_chars(obj)
+        if bad:
+            i, cp, nm = bad[0]
+            fails.append(("S-FORMAT-CHAR", f"{where}: U+{cp:04X} ({nm}) at offset {i}"
+                                           f"{' (+%d more)' % (len(bad) - 1) if len(bad) > 1 else ''} — "
+                                           f"an invisible character is refused in every string of the home "
+                                           f"(it hides words from every count and every eye)"))
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            check_strings(k, f"{where}.<key {k[:30]!r}>", fails)
+            check_strings(v, f"{where}.{k}", fails)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            check_strings(v, f"{where}[{i}]", fails)
+
+
+def check_stubs(stubs_obj, register_text):
     fails = []
     if not isinstance(stubs_obj, dict) or not isinstance(stubs_obj.get("stubs"), list):
         return [("S-SHAPE", "stubs.json must be an object with a `stubs` list")]
+    for k in stubs_obj:
+        if k not in ("$description", "stubs"):
+            fails.append(("R3-JUDGEMENT-FIELD", f"stubs.json top level: unexpected key {k!r}"))
     seen_ids, seen_phrases = set(), set()
     for i, s in enumerate(stubs_obj["stubs"]):
         where = f"stubs[{i}]"
@@ -315,19 +668,29 @@ def check_stubs(stubs_obj):
             fails.append(("S-STUB-SHAPE", f"{where}: a stub is EXACTLY {{id, phrase}} and nothing "
                                           f"else (got {sorted(s) if isinstance(s, dict) else type(s).__name__})"))
             continue
-        if not isinstance(s["id"], str) or not STUB_ID.match(s["id"]):
-            fails.append(("S-STUB-SHAPE", f"{where}: id {s['id']!r} must match {STUB_ID.pattern}"))
-        if not isinstance(s["phrase"], str) or not s["phrase"].strip():
-            fails.append(("S-STUB-SHAPE", f"{where}: phrase must be a non-empty string"))
-        elif words(s["phrase"]) > 15:
-            fails.append(("R3-JUDGEMENT-FIELD", f"{where}: phrase is {words(s['phrase'])} words — a "
-                                                f"stub is a phrase, not a paragraph (max 15)"))
-        if s.get("id") in seen_ids:
-            fails.append(("S-DUP-STUB", f"{where}: duplicate stub id {s['id']!r}"))
-        if s.get("phrase") in seen_phrases:
-            fails.append(("S-DUP-STUB", f"{where}: duplicate stub phrase {s['phrase']!r}"))
-        seen_ids.add(s.get("id"))
-        seen_phrases.add(s.get("phrase"))
+        sid, phrase = s["id"], s["phrase"]
+        if not isinstance(sid, str) or not STUB_ID.match(sid):
+            fails.append(("S-STUB-SHAPE", f"{where}: id {sid!r} must be a string matching {STUB_ID.pattern}"))
+        if not isinstance(phrase, str) or words(phrase) == 0:
+            fails.append(("S-STUB-SHAPE", f"{where}: phrase must be a non-empty string with at least one "
+                                          f"visible word"))
+        else:
+            if words(phrase) > 15:
+                fails.append(("R3-JUDGEMENT-FIELD", f"{where}: phrase is {words(phrase)} words — a "
+                                                    f"stub is a phrase, not a paragraph (max 15)"))
+            if register_text is not None and phrase not in register_text:
+                fails.append(("R3-JUDGEMENT-FIELD", f"{where}: phrase {phrase[:60]!r} is not VERBATIM in "
+                                                    f"the frozen R1 register — a stub is a phrase the "
+                                                    f"register already says (s238-D1); a phrase nothing can "
+                                                    f"check is a judgement (Q5, #239)"))
+        if isinstance(sid, str):
+            if sid in seen_ids:
+                fails.append(("S-DUP-STUB", f"{where}: duplicate stub id {sid!r}"))
+            seen_ids.add(sid)
+        if isinstance(phrase, str):
+            if phrase in seen_phrases:
+                fails.append(("S-DUP-STUB", f"{where}: duplicate stub phrase {phrase!r}"))
+            seen_phrases.add(phrase)
     return fails
 
 
@@ -348,30 +711,84 @@ def check_principles(pr_obj):
     return fails, reg
 
 
-def check_polarities(home):
+def check_migration_receipt(pol, register_raw):
+    """Q5/Q3 — $description and $migration are SHAPE-FIXED and the receipt is VERIFIED, not decorative."""
+    fails = []
+    desc = pol.get("$description")
+    if not isinstance(desc, str) or words(desc) == 0:
+        fails.append(("R3-JUDGEMENT-FIELD", "polarities.json $description must be a non-empty string"))
+    elif words(desc) > DESCRIPTION_MAX_WORDS:
+        fails.append(("R3-JUDGEMENT-FIELD", f"polarities.json $description is {words(desc)} words, maximum "
+                                            f"{DESCRIPTION_MAX_WORDS} (FLOATED, #239) — a header, not an essay"))
+    mig = pol.get("$migration")
+    if not isinstance(mig, dict):
+        return fails + [("S-RECEIPT", "polarities.json $migration must be an object {from, sha256, by, receipts}")]
+    if set(mig) != set(MIGRATION_KEYS):
+        extra = sorted(set(mig) - set(MIGRATION_KEYS))
+        fails.append(("R3-JUDGEMENT-FIELD" if extra else "S-RECEIPT",
+                      f"polarities.json $migration keys {sorted(mig)} are not exactly {list(MIGRATION_KEYS)} — "
+                      f"a receipt is shape-fixed; a nested map under it is a judgement field by another door"))
+    if mig.get("from") != R1_TENSIONS_REL:
+        fails.append(("S-RECEIPT", f"$migration.from {str(mig.get('from'))[:80]!r} is not the frozen R1 register "
+                                   f"{R1_TENSIONS_REL} (the only source on the allow-list, Q3 #239)"))
+    elif register_raw is not None and mig.get("sha256") != sha256_bytes(register_raw):
+        fails.append(("S-RECEIPT", f"$migration.sha256 {str(mig.get('sha256'))[:16]}… does not match the frozen "
+                                   f"register's bytes ({sha256_bytes(register_raw)[:16]}…) — the receipt is "
+                                   f"verified, not decorative"))
+    by = mig.get("by")
+    if not isinstance(by, str) or not re.match(SOURCE_PATH_PAT, by):
+        # the generator's NAME is provenance prose, patterned like a path; the data lineage that is
+        # verified is `from` + `sha256` above (a stand-in repo need not carry the generator)
+        fails.append(("S-RECEIPT", f"$migration.by {str(by)[:80]!r} is not a repo-relative path shape"))
+    rec = mig.get("receipts")
+    if not isinstance(rec, list) or not all(isinstance(x, str) for x in rec):
+        fails.append(("S-RECEIPT", "$migration.receipts must be a list of strings"))
+    else:
+        for i, x in enumerate(rec):
+            if words(x) > RECEIPT_MAX_WORDS:
+                fails.append(("R3-JUDGEMENT-FIELD", f"$migration.receipts[{i}] is {words(x)} words, maximum "
+                                                    f"{RECEIPT_MAX_WORDS} (FLOATED, #239)"))
+    return fails
+
+
+def check_polarities(home, register):
     """R1 · R2 · R3 · R5 and the schema refusals over polarities.json. Returns (fails, resolved)
     where resolved[pl-id] = list of party dicts with a DERIVED `kind` (+ `grade`)."""
     fails = []
+    rows_by_id, row_texts, register_raw, _ = register
     pol = home["obj"]["polarities.json"]
-    schema = home["schema"]
+    sfails, schema = schema_pin_and_floors(home["schema_text"], home["schema"])
+    fails += sfails
     schema_keywords_supported(schema)
     if not isinstance(pol, dict) or not isinstance(pol.get("polarities"), list):
-        return [("S-SHAPE", "polarities.json must be an object with a `polarities` list")], {}
+        return fails + [("S-SHAPE", "polarities.json must be an object with a `polarities` list")], {}
     for k in pol:
-        if k not in ("$description", "$migration", "polarities"):
+        if k not in TOP_KEYS:
             fails.append(("R3-JUDGEMENT-FIELD", f"polarities.json top level: unexpected key {k!r}"))
-    st_fails = check_stubs(home["obj"]["stubs.json"])
+    fails += check_migration_receipt(pol, register_raw)
+    check_strings(pol, "polarities.json", fails)
+    check_strings(home["obj"]["stubs.json"], "stubs.json", fails)
+    check_strings(home["obj"]["principles.json"], "principles.json", fails)
+    all_rows_text = " \n ".join(row_texts.values())
+    st_fails = check_stubs(home["obj"]["stubs.json"], all_rows_text)
     fails += st_fails
-    stubs = {s.get("id") for s in home["obj"]["stubs.json"].get("stubs", [])
-             if isinstance(s, dict)} if not st_fails else set()
-    pr_fails, register = check_principles(home["obj"]["principles.json"])
+    # only a stub named in a refusal stops being a party target — one bad stub must not make the
+    # other fourteen dangle (a one-fault, seventeen-refusal read was noise, #239)
+    bad_stub_ix = {int(m.group(1)) for _, d in st_fails for m in [re.match(r"stubs\[(\d+)\]", d)] if m}
+    stubs = {s.get("id") for i, s in enumerate(home["obj"]["stubs.json"].get("stubs", []))
+             if isinstance(s, dict) and isinstance(s.get("id"), str) and i not in bad_stub_ix} \
+        if isinstance(home["obj"]["stubs.json"], dict) and isinstance(home["obj"]["stubs.json"].get("stubs"), list) else set()
+    pr_fails, reg = check_principles(home["obj"]["principles.json"])
     fails += pr_fails
     rulings = home["rulings"]
+    prose_sup = home["prose_superseded"]
     nodes = pol["polarities"]
-    pol_ids = [n.get("id") for n in nodes if isinstance(n, dict)]
+    pol_ids = [n.get("id") for n in nodes if isinstance(n, dict) and isinstance(n.get("id"), str)]
     pol_id_set = set(pol_ids)
     seen = set()
     resolved = {}
+    claims = {}          # frozen row id -> [node ids]
+    props = schema.get("properties", {})
     for i, node in enumerate(nodes):
         where = f"polarities[{i}]"
         if not isinstance(node, dict):
@@ -383,7 +800,7 @@ def check_polarities(home):
         seen.add(nid)
         # R5 / R3 BEFORE the schema walk, so the refusal is named precisely, not "extra key"
         for k in node:
-            if k not in schema.get("properties", {}):
+            if k not in props:
                 if "status" in k.lower():
                     fails.append(("R5-TYPED-STATUS", f"{nid}: key {k!r} — status is DERIVED with a "
                                                      f"clock (s238-D3), never typed on a node"))
@@ -393,13 +810,29 @@ def check_polarities(home):
                                                         f"judgement is a typed link (s238-D7)"))
         viol = []
         schema_validate(node, schema, nid, viol)
-        for kw, path, detail in viol:
+        for kw, path, detail, inst in viol:
             if kw == "additionalProperties" and path.count(".") == 1:
                 continue    # already named above at node level
-            fails.append((name_violation(kw, path, detail), f"{path}: {detail}"))
+            fails.append((name_violation(kw, path, detail, inst), f"{path}: {detail}"))
+        # Q3 — the SOURCE pointers: on the allow-list, a real row, claimed once
+        sources = node.get("sources") if isinstance(node.get("sources"), list) else []
+        hays = []
+        for j, s in enumerate(sources):
+            if not isinstance(s, dict) or not isinstance(s.get("path"), str) or not isinstance(s.get("id"), str):
+                continue      # named by the schema walk
+            sw = f"{nid}.sources[{j}]"
+            if s["path"] not in SOURCE_ALLOW:
+                fails.append(("S-SOURCE", f"{sw}.path {s['path'][:80]!r} is not on the source allow-list "
+                                          f"{list(SOURCE_ALLOW)} — a node may not name its own oracle (Q3, "
+                                          f"#239); a second register is Dave's"))
+            elif s["id"] not in rows_by_id:
+                fails.append(("S-SOURCE", f"{sw}.id {s['id'][:40]!r} is not a row of {s['path']}"))
+            else:
+                claims.setdefault(s["id"], []).append(nid)
+                hays.append(row_texts[s["id"]])
         # R1 — every ref resolves against the LIVE registers
         parties = node.get("parties") if isinstance(node.get("parties"), list) else []
-        roles = {p.get("role") for p in parties if isinstance(p, dict)}
+        roles = {p.get("role") for p in parties if isinstance(p, dict) and isinstance(p.get("role"), str)}
         if len(parties) >= 2 and len(roles) < 2:
             fails.append(("S-ONE-SIDED", f"{nid}: every party stands on {sorted(roles)} — a polarity is "
                                          f"a pull between two true things (s238-D4); parties must span "
@@ -414,6 +847,12 @@ def check_polarities(home):
             if ref in seen_refs:
                 fails.append(("S-DUP-PARTY", f"{pw}: {ref!r} appears twice on one node"))
             seen_refs.add(ref)
+            # Q5 — a note is a VERBATIM gloss from the node's source row, or it is a judgement
+            note = p.get("note")
+            if isinstance(note, str) and hays and not any(note in h for h in hays):
+                fails.append(("R3-JUDGEMENT-FIELD", f"{pw}.note {note[:60]!r} is not a verbatim substring of "
+                                                    f"the node's source row — a note that the register does "
+                                                    f"not say is a judgement wearing a gloss (Q5, #239)"))
             if not ASCII_ID.match(ref):
                 kinds.append(None)
                 continue          # named by the schema pattern walk (S-ID)
@@ -425,8 +864,8 @@ def check_polarities(home):
                                              f"of a polarity is not ruled (s238-D1 parties are "
                                              f"principle / obligation / ruling / stub)"))
                 kinds.append(None)
-            elif ref in register:
-                g = register[ref].get("grade")
+            elif ref in reg:
+                g = reg[ref].get("grade")
                 kinds.append({"ref": ref, "role": p.get("role"),
                               "kind": "obligation" if g == OBLIGATION_GRADE else "principle",
                               "grade": g, "grade_name": GRADE_NAMES.get(g)})
@@ -451,15 +890,21 @@ def check_polarities(home):
                                              f"principles.json row, not a stubs.json stub, not a "
                                              f"knowledge/_rulings.json id"))
                 kinds.append(None)
+        # Q5 — the mediating variable is CARRIED from the source row, verbatim
+        mv = node.get("mediating_variable")
+        if isinstance(mv, str) and hays and not any(mv in h for h in hays):
+            fails.append(("R3-JUDGEMENT-FIELD", f"{nid}.mediating_variable {mv[:60]!r} is not a verbatim "
+                                                f"substring of the node's source row — descriptive text the "
+                                                f"register does not say is a judgement (Q5, #239)"))
         links = node.get("links") if isinstance(node.get("links"), list) else []
         seen_links = set()
-        party_refs = {p.get("ref") for p in parties if isinstance(p, dict)}
         for j, l in enumerate(links):
             if not isinstance(l, dict) or not isinstance(l.get("ref"), str):
-                continue
+                continue      # named by the schema walk (R2-UNTYPED for a non-object link)
             ref = l["ref"]
             lw = f"{nid}.links[{j}]"
-            key = (l.get("type"), ref)
+            ltype = l.get("type") if isinstance(l.get("type"), str) else None
+            key = (ltype, ref)
             if key in seen_links:
                 fails.append(("S-DUP-PARTY", f"{lw}: duplicate link {key!r}"))
             seen_links.add(key)
@@ -469,77 +914,80 @@ def check_polarities(home):
                 fails.append(("R1-CIRCULAR", f"{lw}: {ref!r} is a polarity — a polarity→polarity "
                                              f"link is not ruled; pairwise edges are DERIVED, "
                                              f"never authored (s238-D1)"))
-            elif ref in register or ref in stubs or ref.startswith("st-") or ref.startswith("pr-"):
+            elif ref in reg or ref in stubs or ref.startswith("st-") or ref.startswith("pr-"):
                 fails.append(("R1-WRONG-REGISTER", f"{lw}: {ref!r} is a principle/stub id — links "
                                                    f"are RULING links (s238-D6); principles are "
                                                    f"parties, not link targets"))
             elif ref in rulings:
-                if rulings[ref].get("superseded_by"):
+                r = rulings[ref]
+                if r.get("superseded_by"):
                     fails.append(("R1-SUPERSEDED", f"{lw}: ruling {ref!r} is superseded by "
-                                                   f"{rulings[ref]['superseded_by']!r} — not live; "
+                                                   f"{r['superseded_by']!r} — not live; "
                                                    f"point at the successor"))
+                elif ltype == "resolvedBy":
+                    # Q1 (#239): "live" is more than one field — a resolvedBy CLOSES a polarity
+                    if ref in prose_sup:
+                        fails.append(("R1-SUPERSEDED", f"{lw}: ruling {ref!r} is superseded in the store's "
+                                                       f"PROSE ({prose_sup[ref]}) — not live for a resolvedBy; "
+                                                       f"point at the successor or type it `touches`"))
+                    m = NOT_LIVE.search(str(r.get("status", "")))
+                    if m:
+                        fails.append(("R1-DANGLING", f"{lw}: ruling {ref!r} does not resolve against the LIVE "
+                                                     f"register (sub-form NOT-LIVE): its status text says "
+                                                     f"{m.group(1)!r} ({str(r.get('status'))[:70]!r}) — a "
+                                                     f"resolvedBy may cite only a settled ruling; type it "
+                                                     f"`touches` or wait for Dave (Q1, #239)"))
             else:
                 fails.append(("R1-DANGLING", f"{lw}: {ref!r} is not a knowledge/_rulings.json id"))
-            if ref in party_refs:
-                # ADVISORY, not a refusal: R1's own rows (pl-15, pl-16) put a ruling on one side AND
-                # cite it as the route. Whether that is one fact or two is Dave's (report Q).
-                pass
-        # R3 — a quote must be VERBATIM from the node's own source row: a paraphrase is a judgement
-        # wearing quote marks. Verified where the source is reachable; declared UNVERIFIED where not.
-        fails += check_quotes_verbatim(nid, node)
+        # R3 — quotes are RECEIPTS: verbatim from the node's source row on the allow-list; a
+        # resolvedBy needs one (Q3, #239). Verified, never "declared UNVERIFIED and passed".
+        fails += check_quotes_verbatim(nid, links, hays)
         resolved[nid] = kinds
+    # Q3 — the migration receipt is a BIJECTION: every frozen row is claimed by exactly one node
+    for rid, owners in sorted(claims.items()):
+        if len(owners) > 1:
+            fails.append(("S-SOURCE", f"frozen row {rid!r} is claimed by {owners} — one row, one node "
+                                      f"(the r1_id pointer drives the derived status; two claimants would "
+                                      f"copy one row's defaults onto another)"))
+    unclaimed = sorted(set(rows_by_id) - set(claims))
+    if unclaimed and not any(n == "S-SHAPE" for n, _ in fails):
+        fails.append(("S-SOURCE", f"frozen row(s) {unclaimed[:6]}{'…' if len(unclaimed) > 6 else ''} "
+                                  f"({len(unclaimed)}) are claimed by no node — the migration is one row, "
+                                  f"one node ($migration is its receipt); retiring a polarity has no "
+                                  f"legal form yet (Dave's)"))
     return fails, resolved
 
 
-_SOURCE_CACHE = {}
 QUOTE_NOTES = []
 
 
-def _source_row_text(path_rel, row_id):
-    """All string values of the dict whose `id` == row_id inside the JSON at path_rel, joined;
-    None when the file is unreachable / not JSON / the id is absent."""
-    key = (path_rel, row_id)
-    if key in _SOURCE_CACHE:
-        return _SOURCE_CACHE[key]
-    text = None
-    path = os.path.join(REPO, path_rel)
-    if os.path.isfile(path):
-        try:
-            obj = json.loads(read_text(path))
-        except Exception:
-            obj = None
-        stack = [obj]
-        while stack and text is None:
-            cur = stack.pop()
-            if isinstance(cur, dict):
-                if cur.get("id") == row_id:
-                    text = " ".join(str(v) for v in cur.values() if isinstance(v, str))
-                    break
-                stack.extend(cur.values())
-            elif isinstance(cur, list):
-                stack.extend(cur)
-    _SOURCE_CACHE[key] = text
-    return text
-
-
-def check_quotes_verbatim(nid, node):
+def check_quotes_verbatim(nid, links, hays):
     fails = []
-    links = node.get("links") if isinstance(node.get("links"), list) else []
-    sources = node.get("sources") if isinstance(node.get("sources"), list) else []
-    quoted = [(j, l) for j, l in enumerate(links) if isinstance(l, dict) and isinstance(l.get("quote"), str)]
-    if not quoted:
-        return fails
-    hays = [t for t in (_source_row_text(s.get("path"), s.get("id")) for s in sources
-                        if isinstance(s, dict)) if t is not None]
-    if not hays:
-        QUOTE_NOTES.append((len(quoted), f"{nid}: {len(quoted)} quote(s) UNVERIFIED — no source row "
-                                         f"reachable at {[s.get('path') for s in sources if isinstance(s, dict)]}"))
-        return fails
-    for j, l in quoted:
-        q = l["quote"]
+    for j, l in enumerate(links):
+        if not isinstance(l, dict):
+            continue
+        q = l.get("quote")
+        lw = f"{nid}.links[{j}]"
+        if q is None:
+            if l.get("type") == "resolvedBy":
+                fails.append(("R3-QUOTE-MISSING", f"{lw}: a resolvedBy carries no quote — it CLOSES the "
+                                                  f"polarity and needs a verbatim receipt from the source "
+                                                  f"row (Q3, #239); touches may stay quote-free"))
+            continue
+        if not isinstance(q, str):
+            continue      # named by the schema walk
+        if words(q) == 0:
+            fails.append(("R3-QUOTE-NOT-VERBATIM", f"{lw}.quote is empty — an empty receipt is found in "
+                                                   f"every text and justifies nothing"))
+            continue
+        if not hays:
+            fails.append(("R3-QUOTE-NOT-VERBATIM", f"{lw}.quote {q[:50]!r}… cannot be verified — no source "
+                                                   f"row on the allow-list is reachable for {nid}; an "
+                                                   f"unverifiable quote is not a receipt (Q3, #239)"))
+            continue
         if not any(q in h for h in hays):
             fails.append(("R3-QUOTE-NOT-VERBATIM",
-                          f"{nid}.links[{j}].quote: {q[:60]!r}… is not a verbatim substring of the "
+                          f"{lw}.quote: {q[:60]!r}… is not a verbatim substring of the "
                           f"node's source row — a paraphrase is a judgement wearing quote marks"))
     return fails
 
@@ -595,6 +1043,13 @@ def render_txt(body_lines, generated_at):
             f"---\n{body}")
 
 
+def _first_source_id(node):
+    s = node.get("sources")
+    if isinstance(s, list) and s and isinstance(s[0], dict) and isinstance(s[0].get("id"), str):
+        return s[0]["id"]
+    return None
+
+
 def derive(home, resolved, defaults, defaults_sha, generated_at):
     """Return {filename: text} for the three generated files, at the given clock."""
     nodes = home["obj"]["polarities.json"]["polarities"]
@@ -616,7 +1071,7 @@ def derive(home, resolved, defaults, defaults_sha, generated_at):
         else:
             status = "open"
         counts[status] += 1
-        r1_id = node["sources"][0]["id"] if node.get("sources") else None
+        r1_id = _first_source_id(node)
         row = {"id": nid, "r1_id": r1_id, "status_derived": status,
                "obligation_parties": obl, "resolving_links": resolving,
                "parties": kinds, "links": node.get("links", []),
@@ -707,8 +1162,34 @@ def derive(home, resolved, defaults, defaults_sha, generated_at):
 # ============================================================================================
 # FRESHNESS — content, never mtime; hand-written is a different verdict from stale
 # ============================================================================================
-def read_generated(brain, name):
-    """(generated_at, self_ok, text) or raises Refused MISSING / R4-AUTHORED-GENERATED."""
+def check_clock(name, gen_at, floor_date):
+    """Q4 (#239): the clock is a CLOCK — ISO-8601 UTC, not in the future, not before the R1 asset."""
+    if not isinstance(gen_at, str):
+        raise Refused("R4-AUTHORED-GENERATED", f"{GEN_DIR}/{name}: generated_at is not a string — hand-written")
+    try:
+        t = datetime.datetime.strptime(gen_at, CLOCK_FMT).replace(tzinfo=datetime.timezone.utc)
+    except ValueError:
+        raise Refused("R4-AUTHORED-GENERATED", f"{GEN_DIR}/{name}: generated_at {gen_at[:40]!r} is not an "
+                                               f"ISO-8601 UTC clock ({CLOCK_FMT}) — a derived file carries a "
+                                               f"clock (s238-D3); this one was hand-written")
+    now = datetime.datetime.now(datetime.timezone.utc)
+    if (t - now).total_seconds() > CLOCK_SKEW_S:
+        raise Refused("R4-AUTHORED-GENERATED", f"{GEN_DIR}/{name}: generated_at {gen_at} is in the future "
+                                               f"(now {now.strftime(CLOCK_FMT)}, skew allowed {CLOCK_SKEW_S}s) "
+                                               f"— a clock nobody could have derived at was hand-written")
+    if floor_date:
+        try:
+            fl = datetime.datetime.strptime(floor_date[:10], "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc)
+        except ValueError:
+            fl = None
+        if fl and t < fl:
+            raise Refused("R4-AUTHORED-GENERATED", f"{GEN_DIR}/{name}: generated_at {gen_at} is before the "
+                                                   f"R1 asset's own date {floor_date} — nothing could derive "
+                                                   f"from a register that did not exist yet")
+
+
+def read_generated(brain, name, floor_date=None):
+    """(generated_at, text) or raises Refused MISSING / R4-AUTHORED-GENERATED."""
     path = os.path.join(brain, GEN_DIR, name)
     if not os.path.exists(path):
         raise Refused("MISSING-GENERATED", f"{GEN_DIR}/{name} is absent — run: python3 "
@@ -732,6 +1213,7 @@ def read_generated(brain, name):
                                                    f"its own body — the file was HAND-EDITED after "
                                                    f"generation (s238-D7 refusal 4); delete it and run "
                                                    f"--write")
+        check_clock(name, gen_at, floor_date)
         return gen_at, text
     lines = text.split("\n")
     if len(lines) < 4 or lines[0] != GEN_HEADER or not lines[1].startswith("generated_at: ") \
@@ -744,17 +1226,20 @@ def read_generated(brain, name):
         raise Refused("R4-AUTHORED-GENERATED", f"{GEN_DIR}/{name}: content_sha256 does not match its "
                                                f"own body — HAND-EDITED after generation (s238-D7 "
                                                f"refusal 4); delete it and run --write")
-    return lines[1][len("generated_at: "):], text
+    gen_at = lines[1][len("generated_at: "):]
+    check_clock(name, gen_at, floor_date)
+    return gen_at, text
 
 
-def freshness(brain, home, resolved, defaults, defaults_sha):
-    fails, notes = [], []
+def freshness(brain, home, resolved, defaults, defaults_sha, floor_date=None):
+    fails, notes, clocks = [], [], {}
     for name in GEN_FILES:
         try:
-            gen_at, on_disk = read_generated(brain, name)
+            gen_at, on_disk = read_generated(brain, name, floor_date)
         except Refused as r:
             fails.append((r.name, r.detail))
             continue
+        clocks[name] = gen_at
         fresh, *_ = derive(home, resolved, defaults, defaults_sha, gen_at)
         if fresh[name] != on_disk:
             fails.append(("STALE-GENERATED", f"{GEN_DIR}/{name} does not match a fresh derivation "
@@ -762,6 +1247,9 @@ def freshness(brain, home, resolved, defaults, defaults_sha):
                                              f"python3 knowledge/_validate_polarities.py --write"))
         else:
             notes.append(f"{GEN_DIR}/{name} fresh (generated_at {gen_at}, content byte-identical)")
+    if len(clocks) == len(GEN_FILES) and len(set(clocks.values())) > 1:
+        fails.append(("R4-AUTHORED-GENERATED", f"the three derived files carry different clocks {clocks} — "
+                                               f"--write stamps them together; one was hand-edited"))
     return fails, notes
 
 
@@ -774,30 +1262,55 @@ def print_refusals(fails, brain):
         print(f"   ⛔ REFUSED ({name}) — {detail}")
 
 
-def gate(brain, write=False, overrides=None, quiet=False):
-    """The whole contract. Returns rc. Prints. Never raises on a refusal."""
-    say = (lambda *a, **k: None) if quiet else print
-    fails = []
-    QUOTE_NOTES.clear()
-    _SOURCE_CACHE.clear()
-    if not os.path.isdir(brain):
-        # #173 / #193 — the honest third verdict: the INPUT is not here (a shipped pack does not
-        # carry knowledge/brain/), so the question is unaskable, not failed. Spelled so the pack
-        # classifier's `_unshipped_subject` reads it as REPO-BOUND (a "does not exist" + the path).
-        return cna.refuse(os.path.join(os.path.relpath(brain, REPO) if brain.startswith(REPO) else brain,
-                                       "polarities.json"),
-                          f"the polarity home {os.path.relpath(brain, REPO) if brain.startswith(REPO) else brain}/ "
-                          f"does not exist here — knowledge/brain/ is a repo resource a shipped pack does "
-                          f"not carry, so the five refusals cannot be asked. Run from the source repo.")
+def source_repo_here():
+    """Q8 (#239): the SOURCE repo carries the live store; a shipped pack never does (it is on the
+    pack's excluded list). This is the honest discriminator — not `knowledge/`, which the pack ships."""
+    return os.path.isfile(RULINGS)
+
+
+def run_checks(brain, overrides=None):
+    """Everything before freshness: (fails, home, resolved, register, dir_notes). Every crash
+    inside is NAMED (Q7): S-SHAPE with the exception class — a crash is not a fail."""
+    fails, notes, home, resolved, register = [], [], None, {}, None
     try:
-        fails += check_home_dir(brain)
+        df, notes = check_home_dir(brain)
+        fails += df
         home = load_home(brain, overrides)
-        pf, resolved = check_polarities(home)
+        register = load_register()
+        pf, resolved = check_polarities(home, register)
         fails += pf
     except Refused as r:
         fails.append((r.name, r.detail))
-        print_refusals(fails, brain)
-        return 1
+    except Exception as e:  # noqa: BLE001 — Q7: the catch-all names the crash instead of printing it
+        tb = traceback.extract_tb(e.__traceback__)
+        site = f"{os.path.basename(tb[-1].filename)}:{tb[-1].lineno} in {tb[-1].name}" if tb else "?"
+        fails.append(("S-SHAPE", f"the gate could not finish reading {rel(brain)}: {type(e).__name__}: "
+                                 f"{str(e)[:120]} (at {site}) — an input of a shape this gate does not "
+                                 f"read; a crash is not a fail, so it is named here"))
+    return fails, home, resolved, register, notes
+
+
+def gate(brain, write=False, overrides=None, quiet=False):
+    """The whole contract. Returns rc. Prints. Never raises on a refusal."""
+    say = (lambda *a, **k: None) if quiet else print
+    QUOTE_NOTES.clear()
+    if not os.path.isdir(brain):
+        if source_repo_here():
+            # Q8 (#239): in the SOURCE repo an absent home is a MUTATION (a deleted knowledge/brain/
+            # or a redirect to nowhere), never an environment fact — a refusal, rc 1, named.
+            print_refusals([("S-SHAPE", f"home directory {rel(brain)} does not exist — this is the source "
+                                        f"repo (knowledge/_rulings.json is here), so an absent home is a "
+                                        f"mutation, not COULD-NOT-ASK (Q8, #239): restore knowledge/brain/ "
+                                        f"or point --brain / POLARITY_BRAIN_DIR at a real home")], brain)
+            return 1
+        # #173 / #193 — the honest third verdict: the INPUT is not here (a shipped pack does not
+        # carry knowledge/brain/), so the question is unaskable, not failed. Spelled so the pack
+        # classifier's `_unshipped_subject` reads it as REPO-BOUND (a "does not exist" + the path).
+        return cna.refuse(os.path.join(rel(brain), "polarities.json"),
+                          f"the polarity home {rel(brain)}/ does not exist here — knowledge/brain/ is a repo "
+                          f"resource a shipped pack does not carry, so the five refusals cannot be asked. "
+                          f"Run from the source repo.")
+    fails, home, resolved, register, dir_notes = run_checks(brain, overrides)
     if fails:
         print_refusals(fails, brain)
         return 1
@@ -809,16 +1322,21 @@ def gate(brain, write=False, overrides=None, quiet=False):
                           f"from {OPEN_DEFAULTS_REL}, which does not exist here (it lives outside "
                           f"knowledge/; a shipped pack does not carry it). Freshness is UNASKED, not "
                           f"passed. Run from the source repo.")
+    floor_date = register[3]
     nodes = home["obj"]["polarities.json"]["polarities"]
     if write:
         texts, counts, kinds, n_edges, n_open = derive(home, resolved, defaults, defaults_sha, now_clock())
         gen_dir = os.path.join(brain, GEN_DIR)
+        if os.path.exists(gen_dir) and not os.path.isdir(gen_dir):
+            print_refusals([("R4-STRAY-FILE", f"{GEN_DIR} exists and is not a directory — nothing is blown "
+                                              f"away; delete it and run --write")], brain)
+            return 1
         os.makedirs(gen_dir, exist_ok=True)
         # an AUTHORED file at a generated path is refused even by --write: nothing is blown away
         for name in GEN_FILES:
             if os.path.exists(os.path.join(gen_dir, name)):
                 try:
-                    read_generated(brain, name)
+                    read_generated(brain, name, floor_date)
                 except Refused as r:
                     if r.name == "R4-AUTHORED-GENERATED":
                         fails.append((r.name, r.detail))
@@ -830,27 +1348,25 @@ def gate(brain, write=False, overrides=None, quiet=False):
             with open(tmp, "w", encoding="utf-8") as f:
                 f.write(texts[name])
             os.replace(tmp, os.path.join(gen_dir, name))
-        say(f"WROTE {len(GEN_FILES)} generated file(s) under {os.path.relpath(gen_dir, REPO)}/ "
+        say(f"WROTE {len(GEN_FILES)} generated file(s) under {rel(gen_dir)}/ "
             f"(generated_at {json.loads(texts['polarity-status.json'])['generated_at']})")
-    ff, notes = freshness(brain, home, resolved, defaults, defaults_sha)
+    ff, notes = freshness(brain, home, resolved, defaults, defaults_sha, floor_date)
     _, counts, kinds, n_edges, n_open = derive(home, resolved, defaults, defaults_sha, "clock-held")
     n_links = sum(len(n.get("links", [])) for n in nodes)
     by_type = {}
     for n in nodes:
         for l in n.get("links", []):
             by_type[l["type"]] = by_type.get(l["type"], 0) + 1
-    say(f"polarity gate (s238-D7): home {os.path.relpath(brain, REPO) if brain.startswith(REPO) else brain} · "
+    say(f"polarity gate (s238-D7): home {rel(brain)} · "
         f"rows {len(nodes)} · parties {sum(kinds.values())} "
         f"(principle {kinds['principle']} · obligation {kinds['obligation']} · ruling {kinds['ruling']} · "
         f"stub {kinds['stub']}) · stubs declared {len(home['obj']['stubs.json']['stubs'])} · "
         f"links {n_links} by type " + " ".join(f"{k}={v}" for k, v in sorted(by_type.items()))
         + " · refusals asked: R1 R2 R3 R4 R5 — none fired")
     n_quotes = sum(1 for n in nodes for l in n.get("links", []) if isinstance(l.get("quote"), str))
-    n_unverified = sum(c for c, _ in QUOTE_NOTES)
-    say(f"  quotes {n_quotes}: verbatim against their source rows — {n_quotes - n_unverified} verified, "
-        f"{n_unverified} UNVERIFIED (declared, not passed)")
-    for _c, qn in QUOTE_NOTES:
-        say(f"  ⚠ {qn}")
+    say(f"  quotes {n_quotes}: verbatim against their source rows in {R1_TENSIONS_REL} — {n_quotes} verified "
+        f"(an unverifiable quote is refused, never declared — Q3 #239) · schema pinned {SCHEMA_SHA256[:12]}… "
+        f"+ {len(SCHEMA_FLOORS)} floors · receipt $migration verified")
     for k, v in STATUS_RULES.items():
         say(f"  RULE {k}: {v}")
     say(f"  status derived: settled-by-obligation {counts['settled-by-obligation']} · resolved "
@@ -859,6 +1375,8 @@ def gate(brain, write=False, overrides=None, quiet=False):
     say(f"  edges derived: {n_edges}")
     say(f"  {DECLARE_RULE}  open {n_open} · declared 0 · UNPROVEN {n_open} (conservative side not "
         f"carried as data)")
+    for n in dir_notes:
+        say(f"  ⚠ {n}")
     for n in notes:
         say(f"  ✓ {n}")
     if ff:
@@ -915,8 +1433,11 @@ def add_entry(brain, which, entry, write):
     """which ∈ {'polarity','stub'}. Returns rc; prints the proof or the refusal."""
     fname, key = ("polarities.json", "polarities") if which == "polarity" else ("stubs.json", "stubs")
     path = os.path.join(brain, fname)
-    original = read_text(path)
+    if not os.path.isfile(path):
+        print(f"⛔ REFUSED (S-SHAPE) — {rel(path)} does not exist. Nothing written.")
+        return 1
     try:
+        original = read_text(path)
         new_text, at, span = compose_append(original, key, entry)
     except Refused as r:
         print(f"⛔ REFUSED ({r.name}) — {r.detail}. File untouched.")
@@ -960,7 +1481,7 @@ def add_entry(brain, which, entry, write):
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(new_text)
     os.replace(tmp, path)
-    print(f"WROTE {os.path.relpath(path, REPO)}; regenerating the derived files:")
+    print(f"WROTE {rel(path)}; regenerating the derived files:")
     return gate(brain, write=True)
 
 
@@ -971,14 +1492,13 @@ def _only_stale(brain, overrides):
     old = sys.stdout
     sys.stdout = buf
     try:
-        home = load_home(brain, overrides)
-        pf, resolved = check_polarities(home)
-        if pf or check_home_dir(brain):
+        fails, home, resolved, register, _ = run_checks(brain, overrides)
+        if fails:
             return False
         defaults, sha = open_defaults_rows()
-        ff, _ = freshness(brain, home, resolved, defaults, sha)
-        return all(n == "STALE-GENERATED" for n, _ in ff)
-    except Exception:
+        ff, _ = freshness(brain, home, resolved, defaults, sha, register[3])
+        return bool(ff) and all(n == "STALE-GENERATED" for n, _ in ff)
+    except Exception:  # noqa: BLE001
         return False
     finally:
         sys.stdout = old
@@ -987,8 +1507,11 @@ def _only_stale(brain, overrides):
 # ============================================================================================
 # SELFTEST — control + one arm per refusal + extras, ALL driven through gate() (the same entry
 # point the build and the commit seam call) on a COPY of the REAL rows. Every arm must go RED
-# by its NAME; a crash is not a fail.
+# by its NAME; a crash is not a fail. Arms marked V<n> replay lane V's #238 attacks (#239 lane F).
 # ============================================================================================
+ZWSP = "\u200b"
+
+
 def _copy_brain(src, dst):
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", ".*.tmp"))
 
@@ -998,6 +1521,12 @@ def _mutate_json(path, fn):
     fn(obj)
     with open(path, "w", encoding="utf-8") as f:
         f.write(json.dumps(obj, indent=1, ensure_ascii=False) + "\n")
+
+
+def _rewrite(path, fn):
+    t = read_text(path)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(fn(t))
 
 
 def _run_gate_captured(brain, write=False, overrides=None):
@@ -1020,39 +1549,79 @@ def _tree_hashes(root):
     for dp, _dn, fns in os.walk(root):
         for fn in fns:
             p = os.path.join(dp, fn)
+            if os.path.islink(p):
+                out[os.path.relpath(p, root)] = "link:" + os.readlink(p)
+                continue
             with open(p, "rb") as f:
                 out[os.path.relpath(p, root)] = sha256_bytes(f.read())
     return out
 
 
 def selftest(real_brain):
+    if not os.path.isdir(real_brain):
+        print(f"⛔ REFUSED (S-SHAPE) — --selftest needs a real home to copy; {rel(real_brain)} does not exist")
+        return 1
     results = []          # (n, arm, expected, rc, named?, ok, note)
     tmp_root = tempfile.mkdtemp(prefix="polarity-selftest-", dir="/dev/shm" if os.path.isdir("/dev/shm") else None)
+    try:
+        _selftest_arms(real_brain, tmp_root, results)
+    finally:
+        shutil.rmtree(tmp_root, ignore_errors=True)     # V finding 16: on EVERY path
+    print("=" * 100)
+    print("_validate_polarities.py --selftest — every arm drives gate() on a copy of the REAL rows")
+    print("=" * 100)
+    print(f"{'#':>3}  {'result':6}  {'expect':6}  {'rc':>4}  {'named':5}  arm")
+    fails = 0
+    for n, name, expect, rc, named, ok, note in results:
+        if not ok:
+            fails += 1
+        print(f"{n:>3}  {'PASS' if ok else 'FAIL':6}  {expect:6}  {str(rc):>4}  {('yes' if named else '-'):5}  {name}")
+        if note and (not ok or note.startswith("SKIPPED")):
+            print("        " + note.replace("\n", "\n        "))
+    red_arms = [r for r in results if r[2] == "red"]
+    red_ok = [r for r in red_arms if r[5]]
+    green_arms = [r for r in results if r[2] == "green"]
+    new_arms = [r for r in results if r[1].startswith("V") or "(#239" in r[1]]
+    print("-" * 100)
+    print(f"arms {len(results)} · red arms {len(red_arms)} (went red by name {len(red_ok)}/{len(red_arms)}) · "
+          f"green arms {len(green_arms)} · no-fire/77 arms {len(results) - len(red_arms) - len(green_arms)} · "
+          f"new #239 arms {len(new_arms)} · failures {fails}")
+    if fails:
+        print(f"✗ selftest FAILED — {fails} arm(s)")
+        return 1
+    print("✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal")
+    return 0
 
-    def arm(name, expect, mutate, must_name=None, write=False):
+
+def _selftest_arms(real_brain, tmp_root, results):
+    global SCHEMA_SHA256, RULINGS, OPEN_DEFAULTS, check_stubs   # moved in-process by four arms, restored in finally
+
+    def arm(name, expect, mutate, must_name=None, write=False, must_not=None):
         """Copy the REAL brain, apply `mutate(copy_dir)`, drive gate(--check) on it."""
         n = len(results) + 1
-        d = os.path.join(tmp_root, f"arm{n:02d}")
+        d = os.path.join(tmp_root, f"arm{n:03d}")
         _copy_brain(real_brain, d)
-        before = _tree_hashes(d)
         try:
             mutate(d)
-        except Exception as e:
-            results.append((n, name, expect, None, False, False, f"mutation setup crashed: {e}"))
+        except Exception as e:  # noqa: BLE001
+            results.append((n, name, expect, None, False, False, f"mutation setup crashed: {e!r}"))
             return
         after_mut = _tree_hashes(d)
         rc, out = _run_gate_captured(d, write=write)
         after = _tree_hashes(d)
-        crashed = "TRACEBACK" in out
-        named = bool(must_name) and (f"REFUSED ({must_name})" in out or must_name in out)
+        crashed = "TRACEBACK" in out or "Traceback (most recent" in out
+        names = set(re.findall(r"REFUSED \(([A-Za-z0-9-]+)\)", out))
+        wanted = [must_name] if isinstance(must_name, str) else list(must_name or [])
+        named = bool(wanted) and all(w in names for w in wanted)
+        unwanted = must_not in names if must_not else False
         if expect == "green":
-            ok = rc == 0 and not crashed
+            ok = rc == 0 and not crashed and not unwanted
             note = "" if ok else out[-600:]
         else:
             untouched = (after == after_mut)
-            ok = (rc == 1) and named and not crashed and untouched
-            note = ("" if ok else f"rc={rc} named={named} crashed={crashed} untouched={untouched} :: "
-                                  + out[-500:])
+            ok = (rc == 1) and named and not crashed and untouched and not unwanted
+            note = ("" if ok else f"rc={rc} named={named} (names={sorted(names)} wanted={wanted}) "
+                                  f"crashed={crashed} untouched={untouched} :: " + out[-500:])
         results.append((n, name, expect, rc, named, ok, note))
         return d
 
@@ -1061,6 +1630,20 @@ def selftest(real_brain):
 
     def stubs(fn):
         return lambda d: _mutate_json(os.path.join(d, "stubs.json"), fn)
+
+    def schema(fn):
+        return lambda d: _mutate_json(os.path.join(d, SCHEMA_REL), fn)
+
+    def both(*fns):
+        return lambda d: [f(d) for f in fns]
+
+    def wfile(relpath, text, mode="w"):
+        def _w(d):
+            p = os.path.join(d, relpath)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, mode, **({} if "b" in mode else {"encoding": "utf-8"})) as f:
+                f.write(text)
+        return _w
 
     # ---- CONTROL ------------------------------------------------------------------------------
     arm("CONTROL: the real 30 rows, untouched", "green", lambda d: None)
@@ -1073,6 +1656,7 @@ def selftest(real_brain):
         pol(lambda o: o["polarities"][0]["links"].append({"type": "touches", "ref": "s999-D9"})),
         "R1-DANGLING")
     rulings_now = json.loads(read_text(RULINGS))["rulings"]
+    store = {r["id"]: r for r in rulings_now if isinstance(r, dict) and isinstance(r.get("id"), str)}
     superseded = [r["id"] for r in rulings_now if isinstance(r, dict) and r.get("superseded_by")]
     if superseded:
         arm(f"R1 link to a SUPERSEDED ruling ({superseded[0]}, real store)", "red",
@@ -1085,6 +1669,32 @@ def selftest(real_brain):
         results.append((len(results) + 1, "R1 superseded ruling arm", "red", None, False, False,
                         "no ruling in knowledge/_rulings.json carries `superseded_by` — the arm cannot "
                         "be driven on real data; UNPROVEN, not passed"))
+    # V30 — superseded in PROSE only (no field); V31/V32 — status text OPEN/PARKED/…; both real-store
+    prose = prose_supersessions(store)
+    prose_only = sorted(k for k in prose if not store[k].get("superseded_by"))
+    if prose_only:
+        tgt = "s200-D2" if "s200-D2" in prose_only else prose_only[0]
+        arm(f"V30 R1 resolvedBy a ruling superseded in the store's PROSE only ({tgt}) (#239 Q1)", "red",
+            pol(lambda o: o["polarities"][2]["links"].append(
+                {"type": "resolvedBy", "ref": tgt, "quote": "Chart hover latency and skeleton states"})),
+            "R1-SUPERSEDED")
+    else:
+        results.append((len(results) + 1, "V30 R1 prose-superseded arm", "red", None, False, False,
+                        "no ruling is superseded in prose without the field — UNPROVEN, not passed"))
+    not_live = sorted(k for k, r in store.items() if NOT_LIVE.search(str(r.get("status", "")))
+                      and not r.get("superseded_by") and k not in prose)
+    if not_live:
+        tgt2 = "gauge-band" if "gauge-band" in not_live else not_live[0]
+        arm(f"V31 R1 resolvedBy a ruling whose status says OPEN/PARKED/DEFERRED/FORKED ({tgt2}) (#239 Q1)", "red",
+            pol(lambda o: o["polarities"][2]["links"].append(
+                {"type": "resolvedBy", "ref": tgt2, "quote": "Chart hover latency and skeleton states"})),
+            "R1-DANGLING")
+        arm(f"V31-control: the SAME ruling as `touches` is fine — only a resolvedBy closes (#239 Q1)", "green",
+            both(pol(lambda o: o["polarities"][2]["links"].append({"type": "touches", "ref": tgt2})),
+                 lambda d: _run_gate_captured(d, write=True)))
+    else:
+        results.append((len(results) + 1, "V31 R1 not-live arm", "red", None, False, False,
+                        "no ruling's status carries OPEN/PARKED/DEFERRED/FORKED — UNPROVEN, not passed"))
     arm("R1 SELF-PARTY (pl-01 lists itself)", "red",
         pol(lambda o: o["polarities"][0]["parties"].append({"ref": "pl-01", "role": "side_b"})),
         "R1-SELF-PARTY")
@@ -1114,6 +1724,13 @@ def selftest(real_brain):
     arm("R2 UNTYPED link (type key absent)", "red",
         pol(lambda o: o["polarities"][0]["links"].append({"ref": "s116-D1"})),
         "R2-UNTYPED")
+    arm("V200 R2 UNTYPED link that is a bare string (#239 misnamed→named)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append("s116-D1")), "R2-UNTYPED")
+    arm("V201 R2 UNTYPED link with type null (#239 misnamed→named)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append({"type": None, "ref": "s116-D1"})), "R2-UNTYPED")
+    arm("V202 R2 link type is a LIST — named, no crash (#239 Q7)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append({"type": ["touches"], "ref": "s116-D1"})),
+        "R2-UNKNOWN-TYPE")
     arm("R2 UNKNOWN (fifth) link type `relatedTo`", "red",
         pol(lambda o: o["polarities"][0]["links"].append({"type": "relatedTo", "ref": "s116-D1"})),
         "R2-UNKNOWN-TYPE")
@@ -1147,13 +1764,96 @@ def selftest(real_brain):
     arm("R3 link quote PARAPHRASED (not verbatim in the source row)", "red",
         pol(lambda o: o["polarities"][0]["links"][0].__setitem__("quote", "the two-red law is a Von Restorff budget")),
         "R3-QUOTE-NOT-VERBATIM")
+    arm("V230 R3 party note that is a 14-word verdict, not verbatim in the source row (#239 Q5)", "red",
+        pol(lambda o: o["polarities"][0]["parties"][0].__setitem__(
+            "note", "Jakob must always win in Apollo because Dave rules by eye and prefers familiarity")),
+        "R3-JUDGEMENT-FIELD")
+    arm("V231 R3 note of 44 visible words joined by U+200B — counted AND the character refused (#239 Q5)", "red",
+        pol(lambda o: o["polarities"][0]["parties"][0].__setitem__(
+            "note", ZWSP.join(["Jakob", "must", "always", "win", "in", "Apollo", "because", "Dave", "rules", "by", "eye"] * 4))),
+        ["R3-NOTE-TOO-LONG", "S-FORMAT-CHAR"])
+    arm("V232 R3 mediating_variable of 300 words (#239 Q5: maxWords 25 FLOATED + verbatim)", "red",
+        pol(lambda o: o["polarities"][0].__setitem__(
+            "mediating_variable", " ".join(["Jakob wins and Von Restorff loses in every Apollo review."] * 30))),
+        "R3-JUDGEMENT-FIELD")
+    arm("V232b R3 mediating_variable rewritten (short, not verbatim in the source row) (#239 Q5)", "red",
+        pol(lambda o: o["polarities"][0].__setitem__("mediating_variable", "Jakob wins, always")),
+        "R3-JUDGEMENT-FIELD")
+    arm("V233 R3 sources[0].id that is a 300-word verdict (#239 Q5: patterned + maxWords 1)", "red",
+        pol(lambda o: o["polarities"][3]["sources"][0].__setitem__(
+            "id", " ".join(["aesthetics wins over usability in Apollo, always."] * 30))),
+        ["S-ID", "R3-JUDGEMENT-FIELD"])
+    arm("V234 R3 stub phrase that is a 15-word verdict — not verbatim in the register (#239 Q5)", "red",
+        stubs(lambda o: o["stubs"].append({"id": "st-dense-tables-win",
+                                           "phrase": "dense financial tables must always beat whitespace in "
+                                                     "Apollo because Dave prefers density everywhere"})),
+        "R3-JUDGEMENT-FIELD")
+    arm("V22 R3/S stub whose phrase is one U+200B (visually empty) (#239 Q5)", "red",
+        stubs(lambda o: o["stubs"].append({"id": "st-zwsp", "phrase": ZWSP})),
+        ["S-STUB-SHAPE", "S-FORMAT-CHAR"])
+    arm("V82 R3 $migration gains a nested `verdicts` map (#239 Q5: shape-fixed)", "red",
+        pol(lambda o: o["$migration"].__setitem__("verdicts", {"pl-01": "Jakob wins in Apollo"})),
+        "R3-JUDGEMENT-FIELD")
+    arm("V83 R3 $description replaced by 500 words of verdict (#239 Q5: maxWords FLOATED)", "red",
+        pol(lambda o: o.__setitem__("$description", " ".join(["Aesthetics must win over usability."] * 100))),
+        "R3-JUDGEMENT-FIELD")
+    arm("V246 S-RECEIPT $migration.sha256 = 64 zeros — the receipt is verified (#239 Q5)", "red",
+        pol(lambda o: o["$migration"].__setitem__("sha256", "0" * 64)), "S-RECEIPT")
+    arm("V247 S-RECEIPT $migration.from = a path that does not exist (#239 Q5)", "red",
+        pol(lambda o: o["$migration"].__setitem__("from", "notes/does-not-exist.json")), "S-RECEIPT")
+
+    # ---- Q3 — THE QUOTE ORACLE ----------------------------------------------------------------
+    arm("V220 R3 sources repointed at _rulings.json + 13 words OF THE RULING as the quote (#239 Q3)", "red",
+        pol(lambda o: (o["polarities"][0].__setitem__("sources", [{"path": "knowledge/_rulings.json", "id": "s238-D7"}]),
+                       o["polarities"][0]["links"][0].__setitem__("quote", "A gate that is not a consumer of every commit is not a gate"))),
+        ["S-SOURCE", "R3-QUOTE-NOT-VERBATIM"])
+    arm("V300 R3 sources repointed at polarities.json itself + its own words as the quote (#239 Q3)", "red",
+        pol(lambda o: (o["polarities"][0].__setitem__("sources", [{"path": "knowledge/brain/polarities.json", "id": "pl-01"}]),
+                       o["polarities"][0]["links"][0].__setitem__("quote", " ".join(o["polarities"][0]["mediating_variable"].split()[:8])))),
+        ["S-SOURCE", "R3-QUOTE-NOT-VERBATIM"])
+    arm("V222 R3 paraphrase + source pointer broken (path → nowhere): UNVERIFIABLE is refused (#239 Q3)", "red",
+        pol(lambda o: (o["polarities"][0]["sources"][0].__setitem__("path", "notes/no-such-file.json"),
+                       o["polarities"][0]["links"][0].__setitem__("quote", "the two-red law is a Von Restorff budget"))),
+        ["S-SOURCE", "R3-QUOTE-NOT-VERBATIM"])
+    arm("V93 S-ID sources[0].id with a fullwidth digit (tn-0１) — the pointer cannot be laundered (#239 Q3)", "red",
+        pol(lambda o: o["polarities"][0]["sources"][0].__setitem__("id", "tn-0１")),
+        ["S-ID", "R3-QUOTE-NOT-VERBATIM"])
+    arm("V223 R3 resolvedBy with quote \"\" (#239 Q3)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append({"type": "resolvedBy", "ref": "s116-D1", "quote": ""})),
+        "R3-QUOTE-NOT-VERBATIM")
+    arm("V224 R3 resolvedBy with the one-word quote \"the\" (#239 Q3: minWords 3 FLOATED)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append({"type": "resolvedBy", "ref": "s116-D1", "quote": "the"})),
+        "R3-QUOTE-NOT-VERBATIM")
+    arm("V400 R3 resolvedBy with NO quote at all — a resolvedBy needs a receipt (#239 Q3)", "red",
+        pol(lambda o: o["polarities"][0]["links"].append({"type": "resolvedBy", "ref": "s116-D1"})),
+        "R3-QUOTE-MISSING")
+    arm("V400-control: a `touches` with no quote stays legal (#239 Q3)", "green",
+        both(pol(lambda o: o["polarities"][0]["links"].append({"type": "touches", "ref": "s116-D1"})),
+             lambda d: _run_gate_captured(d, write=True)))
+    arm("V401 S-SOURCE pl-04's source id swapped to tn-02 — one row, one node (#239 Q3)", "red",
+        pol(lambda o: o["polarities"][3]["sources"][0].__setitem__("id", "tn-02")), "S-SOURCE")
+    arm("V402 S-SOURCE pl-01's body duplicated under pl-31 — the row is claimed twice (#239 Q3)", "red",
+        pol(lambda o: o["polarities"].append(dict(o["polarities"][0], id="pl-31"))), "S-SOURCE")
+    arm("V244 S-SOURCE all 30 rows deleted — 30 frozen rows claimed by no node (#239 Q3)", "red",
+        pol(lambda o: o.__setitem__("polarities", [])), "S-SOURCE")
+    arm("V225 S-SOURCE a source path outside the repo (/etc/hostname) (#239 Q3)", "red",
+        pol(lambda o: o["polarities"][0]["sources"].append({"path": "/etc/hostname", "id": "x"})),
+        ["S-ID", "S-SOURCE"])
+
+    # ---- Q5 — FORMAT CHARACTERS EVERYWHERE ------------------------------------------------------
+    arm("S-FORMAT-CHAR a soft hyphen (U+00AD) inside a party ref (#239 Q5)", "red",
+        pol(lambda o: o["polarities"][0]["parties"][0].__setitem__("ref", "pr-jakobs\u00ad-law")),
+        "S-FORMAT-CHAR")
+    arm("S-FORMAT-CHAR a right-to-left override (U+202E) in $description (#239 Q5)", "red",
+        pol(lambda o: o.__setitem__("$description", o["$description"] + "\u202e")), "S-FORMAT-CHAR")
+    arm("S-FORMAT-CHAR a NUL (U+0000) in a stub phrase (#239 Q5)", "red",
+        stubs(lambda o: o["stubs"][0].__setitem__("phrase", o["stubs"][0]["phrase"] + "\x00")), "S-FORMAT-CHAR")
 
     # ---- R4 -----------------------------------------------------------------------------------
-    def authored_edges_at_generated_path(d):
-        with open(os.path.join(d, GEN_DIR, "polarity-edges.json"), "w", encoding="utf-8") as f:
-            f.write(json.dumps({"edges": [{"from": "pr-fitts", "to": "pr-hick"}]}, indent=1) + "\n")
     arm("R4 AUTHORED file at the generated path (no header)", "red",
-        authored_edges_at_generated_path, "R4-AUTHORED-GENERATED")
+        wfile(os.path.join(GEN_DIR, "polarity-edges.json"),
+              json.dumps({"edges": [{"from": "pr-fitts", "to": "pr-hick"}]}, indent=1) + "\n"),
+        "R4-AUTHORED-GENERATED")
 
     def hand_edited_generated(d):
         p = os.path.join(d, GEN_DIR, "polarity-status.json")
@@ -1163,31 +1863,54 @@ def selftest(real_brain):
             f.write(json.dumps(obj, indent=1, ensure_ascii=False) + "\n")
     arm("R4 generated file HAND-EDITED under its header (self-sha breaks)", "red",
         hand_edited_generated, "R4-AUTHORED-GENERATED")
-
-    def authored_edges_beside_homes(d):
-        with open(os.path.join(d, "edges.json"), "w", encoding="utf-8") as f:
-            f.write(json.dumps({"edges": []}) + "\n")
     arm("R4 AUTHORED edge file beside the homes (knowledge/brain/edges.json)", "red",
-        authored_edges_beside_homes, "R4-AUTHORED-EDGES")
-
-    def stray_file(d):
-        with open(os.path.join(d, "polarities-v2.json"), "w", encoding="utf-8") as f:
-            f.write("{}\n")
-    arm("R4 STRAY second shape beside the homes (polarities-v2.json)", "red", stray_file, "R4-STRAY-FILE")
-
-    def stray_inside_generated(d):
-        with open(os.path.join(d, GEN_DIR, "polarity-edges-extra.json"), "w", encoding="utf-8") as f:
-            f.write(json.dumps({"edges": []}) + "\n")
+        wfile("edges.json", json.dumps({"edges": []}) + "\n"), "R4-AUTHORED-EDGES")
+    arm("R4 STRAY second shape beside the homes (polarities-v2.json)", "red",
+        wfile("polarities-v2.json", "{}\n"), "R4-STRAY-FILE")
     arm("R4 AUTHORED file INSIDE _generated/ beside the derived three", "red",
-        stray_inside_generated, "R4-STRAY-FILE")
+        wfile(os.path.join(GEN_DIR, "polarity-edges-extra.json"), json.dumps({"edges": []}) + "\n"),
+        "R4-STRAY-FILE")
 
     def txt_hand_edited(d):
-        p = os.path.join(d, GEN_DIR, "defaults-declaration.txt")
-        t = read_text(p).replace("Defaults used:\n", "Defaults used:\n  pl-01 — converge on mechanism\n")
-        with open(p, "w", encoding="utf-8") as f:
-            f.write(t)
+        _rewrite(os.path.join(d, GEN_DIR, "defaults-declaration.txt"),
+                 lambda t: t.replace("Defaults used:\n", "Defaults used:\n  pl-01 — converge on mechanism\n"))
     arm("R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)", "red",
         txt_hand_edited, "R4-AUTHORED-GENERATED")
+    # V's six open edges of the closed directory (Q6)
+    arm("V210 R4 dotfile `.edges.json` at the brain top — dotfiles are LISTED (#239 Q6)", "red",
+        wfile(".edges.json", json.dumps({"edges": [{"from": "pr-fitts", "to": "pr-hick"}]}) + "\n"),
+        "R4-AUTHORED-EDGES")
+    arm("V211 R4 dotfile inside _generated/ (#239 Q6)", "red",
+        wfile(os.path.join(GEN_DIR, ".authored-edges.json"), json.dumps({"edges": []}) + "\n"),
+        "R4-STRAY-FILE")
+    arm("V212 R4 a half-written `.polarity-edges.json.tmp` inside _generated/ (#239 Q6)", "red",
+        wfile(os.path.join(GEN_DIR, ".polarity-edges.json.tmp"), '{"edges": [1]}\n'), "R4-STRAY-FILE")
+    arm("V213 R4 an authored edge list under schema/ — schema/ is LISTED (#239 Q6)", "red",
+        wfile(os.path.join("schema", "edges.json"), json.dumps({"edges": [{"from": "pr-fitts", "to": "pr-hick"}]}) + "\n"),
+        "R4-AUTHORED-EDGES")
+    arm("V214 R4 a second schema under schema/ — exactly one schema (#239 Q6)", "red",
+        wfile(os.path.join("schema", "polarity.schema.v2.json"), '{"minItems": 1}\n'), "R4-STRAY-FILE")
+    arm("V216 R4 __pycache__/ under the home (#239 Q6)", "red",
+        wfile(os.path.join("__pycache__", "edges.json"), json.dumps({"edges": []}) + "\n"), "R4-STRAY-FILE")
+
+    def symlink_home(d):
+        p = os.path.join(d, "polarities.json")
+        shutil.move(p, os.path.join(d, "..", f"moved-{os.path.basename(d)}.json"))
+        os.symlink(os.path.join(d, "..", f"moved-{os.path.basename(d)}.json"), p)
+    arm("V403 R4 polarities.json replaced by a SYMLINK to a file outside the home (#239 Q6)", "red",
+        symlink_home, "R4-STRAY-FILE")
+
+    def gen_is_a_file(d):
+        shutil.move(os.path.join(d, GEN_DIR), os.path.join(d, "..", f"gen-{os.path.basename(d)}"))
+        with open(os.path.join(d, GEN_DIR), "w", encoding="utf-8") as f:
+            f.write("authored\n")
+    arm("V217 R4 _generated is a FILE — named at --check (#239 Q6/Q7)", "red", gen_is_a_file, "R4-STRAY-FILE")
+    arm("V217w R4 _generated is a FILE — --write refuses by name, no crash, nothing written (#239 Q7)", "red",
+        gen_is_a_file, "R4-STRAY-FILE", write=True)
+    arm("Q6 `.DS_Store` with Finder's magic bytes is IGNORED, declared (#239 Q6)", "green",
+        wfile(".DS_Store", DSSTORE_MAGIC + b"\x00" * 32, mode="wb"))
+    arm("Q6 a JSON edge list wearing the name `.DS_Store` is refused (#239 Q6)", "red",
+        wfile(".DS_Store", json.dumps({"edges": []}) + "\n"), "R4-AUTHORED-EDGES")
 
     # ---- R5 -----------------------------------------------------------------------------------
     arm("R5 typed `status` on a node", "red",
@@ -1208,6 +1931,18 @@ def selftest(real_brain):
         pol(lambda o: o["polarities"][0].__setitem__("id", "pl-0１")), "S-ID")
     arm("S party role outside the enum (`side_d`)", "red",
         pol(lambda o: o["polarities"][0]["parties"][0].__setitem__("role", "side_d")), "S-ROLE")
+    arm("V42 S party role null — named S-ROLE (#239 misnamed→named)", "red",
+        pol(lambda o: o["polarities"][0]["parties"][0].__setitem__("role", None)), "S-ROLE")
+    arm("V44 S party role is an OBJECT — named, no crash (#239 Q7)", "red",
+        pol(lambda o: o["polarities"][0]["parties"][0].__setitem__("role", {"side": "a"})), "S-SCHEMA")
+    arm("V203 S party ref is a LIST — named, no crash (#239 Q7)", "red",
+        pol(lambda o: o["polarities"][0]["parties"].append({"ref": ["pr-fitts"], "role": "side_c"})), "S-SCHEMA")
+    arm("V204 S stub id is a LIST — named, no crash (#239 Q7)", "red",
+        stubs(lambda o: o["stubs"].append({"id": ["st-x"], "phrase": "x"})), "S-STUB-SHAPE")
+    arm("V250 S sources item without `path` on a node with a quote — named, no crash (#239 Q7)", "red",
+        pol(lambda o: o["polarities"][0].__setitem__("sources", [{"id": "tn-01"}])), "S-SCHEMA")
+    arm("V251 S sources[0].path is an int — named, no crash (#239 Q7)", "red",
+        pol(lambda o: o["polarities"][0]["sources"][0].__setitem__("path", 5)), "S-SCHEMA")
     arm("S ONE-SIDED: every party on side_a (no pull)", "red",
         pol(lambda o: [p.__setitem__("role", "side_a") for p in o["polarities"][0]["parties"]]),
         "S-ONE-SIDED")
@@ -1217,6 +1952,93 @@ def selftest(real_brain):
         pol(lambda o: o["polarities"][0].__delitem__("sources")), "S-SCHEMA")
     arm("S polarities.json does not parse", "red",
         lambda d: open(os.path.join(d, "polarities.json"), "a").write("{"), "S-PARSE")
+    arm("V252 S polarities.json carries one non-UTF-8 byte — S-PARSE, no traceback (#239 Q7)", "red",
+        lambda d: open(os.path.join(d, "polarities.json"), "wb").write(
+            open(os.path.join(d, "polarities.json"), "rb").read().replace(b"pr-jakobs-law", b"pr-jakobs-l\xe1w", 1)),
+        "S-PARSE")
+
+    # ---- Q2 — THE SCHEMA IS PINNED: sha + floors; a loosening is refused AND the floor still bites
+    arm("V110 SCHEMA parties.minItems 2→1 + a one-party row: LOOSENED named, S-MIN-PARTIES still fires (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"]["parties"].__setitem__("minItems", 1)),
+             pol(lambda o: o["polarities"][0].__setitem__("parties", o["polarities"][0]["parties"][:1]))),
+        ["SCHEMA-LOOSENED", "S-MIN-PARTIES", "SCHEMA-PIN-MISMATCH"])
+    arm("V111 SCHEMA enum widened with a fifth type + a relatedTo link (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"]["links"]["items"]["properties"]["type"]["enum"].append("relatedTo")),
+             pol(lambda o: o["polarities"][0]["links"].append({"type": "relatedTo", "ref": "s116-D1"}))),
+        ["SCHEMA-LOOSENED", "R2-UNKNOWN-TYPE"])
+    arm("V112 SCHEMA parties.items.additionalProperties true + a `why` on a party (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"]["parties"]["items"].__setitem__("additionalProperties", True)),
+             pol(lambda o: o["polarities"][0]["parties"][0].__setitem__("why", "because Jakob wins in Apollo"))),
+        ["SCHEMA-LOOSENED", "R3-JUDGEMENT-FIELD"])
+    arm("V310 SCHEMA sources.items.additionalProperties true + a `judgement` on a source (V's TOTAL escape) (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"]["sources"]["items"].__setitem__("additionalProperties", True)),
+             pol(lambda o: o["polarities"][0]["sources"][0].__setitem__("judgement", "Jakob wins in Apollo"))),
+        ["SCHEMA-LOOSENED", "R3-JUDGEMENT-FIELD"])
+    arm("V311 SCHEMA sources.minItems 0 + sources [] + a paraphrased quote (#239 Q2/Q3)", "red",
+        both(schema(lambda s: s["properties"]["sources"].__setitem__("minItems", 0)),
+             pol(lambda o: (o["polarities"][0].__setitem__("sources", []),
+                            o["polarities"][0]["links"][0].__setitem__("quote", "the two-red law is a Von Restorff budget")))),
+        ["SCHEMA-LOOSENED", "R3-QUOTE-NOT-VERBATIM"])
+    arm("V312 SCHEMA note.maxWords 500 + a 64-word note (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"]["parties"]["items"]["properties"]["note"].__setitem__("maxWords", 500)),
+             pol(lambda o: o["polarities"][0]["parties"][0].__setitem__(
+                 "note", " ".join(["Jakob wins in Apollo because Dave prefers familiar chrome."] * 8)))),
+        ["SCHEMA-LOOSENED", "R3-NOTE-TOO-LONG"])
+    arm("V113 SCHEMA root additionalProperties true + a `verdict` on a node (#239 Q2)", "red",
+        both(schema(lambda s: s.__setitem__("additionalProperties", True)),
+             pol(lambda o: o["polarities"][0].__setitem__("verdict", "Jakob wins"))),
+        ["SCHEMA-LOOSENED", "R3-JUDGEMENT-FIELD"])
+    arm("SCHEMA a new property `verdict` ADDED to the schema + used on a node — the key set is pinned (#239 Q2)", "red",
+        both(schema(lambda s: s["properties"].__setitem__("verdict", {"type": "string"})),
+             pol(lambda o: o["polarities"][0].__setitem__("verdict", "Jakob wins"))),
+        ["SCHEMA-LOOSENED", "R3-JUDGEMENT-FIELD"])
+    arm("SCHEMA description-only edit — the sha PIN alone fires (#239 Q2 (b))", "red",
+        schema(lambda s: s.__setitem__("title", "Polarity node (edited)")),
+        "SCHEMA-PIN-MISMATCH", must_not="SCHEMA-LOOSENED")
+    arm("V256 SCHEMA `properties` is a list — named S-SCHEMA, no crash (#239 Q7)", "red",
+        schema(lambda s: s.__setitem__("properties", [])), "S-SCHEMA")
+    arm("V257 SCHEMA id.pattern is an invalid regex — named S-SCHEMA, no crash (#239 Q7)", "red",
+        schema(lambda s: s["properties"]["id"].__setitem__("pattern", "^pl-[")), "S-SCHEMA")
+    arm("SCHEMA: a keyword this gate does not implement (maxItems) is REFUSED, never silently ignored", "red",
+        schema(lambda s: s["properties"]["parties"].__setitem__("maxItems", 9)), "SCHEMA-KEYWORD-UNSUPPORTED")
+    # BITE THE BITE, re-cut (#239): the schema still DRIVES the check — a TIGHTER schema is honoured.
+    # The pin is moved in-process to the mutant's sha (the same act a real commit must perform).
+    kept_pin = SCHEMA_SHA256
+    d_t = os.path.join(tmp_root, "schema-tightened")
+    _copy_brain(real_brain, d_t)
+    _mutate_json(os.path.join(d_t, SCHEMA_REL), lambda s: s["properties"]["parties"].__setitem__("minItems", 3))
+    try:
+        SCHEMA_SHA256 = sha256_text(read_text(os.path.join(d_t, SCHEMA_REL)))
+        rc_t, out_t = _run_gate_captured(d_t)
+    finally:
+        SCHEMA_SHA256 = kept_pin
+    ok = rc_t == 1 and "S-MIN-PARTIES" in out_t and "SCHEMA-LOOSENED" not in out_t and "TRACEBACK" not in out_t
+    results.append((len(results) + 1, "BITE-THE-BITE (#239 re-cut): schema TIGHTENED to minItems 3 with the pin "
+                                      "moved — the real 2-party rows are refused S-MIN-PARTIES: the schema still "
+                                      "drives; only loosening is refused", "red", rc_t, "S-MIN-PARTIES" in out_t,
+                    ok, "" if ok else out_t[-400:]))
+
+    # ---- Q4 — THE CLOCK ------------------------------------------------------------------------
+    def future_clock(d):
+        for n in ("polarity-status.json", "polarity-edges.json"):
+            _rewrite(os.path.join(d, GEN_DIR, n), lambda t: re.sub(r'"generated_at": "\d{4}', '"generated_at": "2099', t, 1))
+        _rewrite(os.path.join(d, GEN_DIR, "defaults-declaration.txt"), lambda t: re.sub(r"generated_at: \d{4}", "generated_at: 2099", t, 1))
+    arm("V70 R4 generated_at in 2099 on all three derived files — a future clock is a hand edit (#239 Q4)", "red",
+        future_clock, "R4-AUTHORED-GENERATED")
+    arm("V71 R4 generated_at \"banana\" (#239 Q4)", "red",
+        lambda d: _rewrite(os.path.join(d, GEN_DIR, "polarity-status.json"),
+                           lambda t: re.sub(r'"generated_at": "[^"]*"', '"generated_at": "banana"', t, 1)),
+        "R4-AUTHORED-GENERATED")
+    arm("Q4 R4 generated_at before the R1 asset's date (1999) (#239 Q4)", "red",
+        lambda d: [_rewrite(os.path.join(d, GEN_DIR, n), lambda t: re.sub(r'"generated_at": "\d{4}', '"generated_at": "1999', t, 1))
+                   for n in ("polarity-status.json", "polarity-edges.json")]
+        + [_rewrite(os.path.join(d, GEN_DIR, "defaults-declaration.txt"), lambda t: re.sub(r"generated_at: \d{4}", "generated_at: 1999", t, 1))],
+        "R4-AUTHORED-GENERATED")
+    arm("Q4 R4 one file's clock moved one second — the three clocks must agree (#239 Q4)", "red",
+        lambda d: _rewrite(os.path.join(d, GEN_DIR, "polarity-edges.json"),
+                           lambda t: re.sub(r'"generated_at": "([^"]*)(\d)Z"',
+                                            lambda m: f'"generated_at": "{m.group(1)}{(int(m.group(2)) + 1) % 10}Z"', t, 1)),
+        "R4-AUTHORED-GENERATED")
 
     # ---- FRESHNESS -----------------------------------------------------------------------------
     def stale(d):
@@ -1226,6 +2048,24 @@ def selftest(real_brain):
     arm("FRESHNESS: home edited, generated files not re-derived → STALE", "red", stale, "STALE-GENERATED")
     arm("FRESHNESS: a generated file deleted → MISSING", "red",
         lambda d: os.remove(os.path.join(d, GEN_DIR, "polarity-edges.json")), "MISSING-GENERATED")
+
+    # ---- Q7 — THE CATCH-ALL, proven by mutation: a check that RAISES is named, never a traceback
+    kept_cs = check_stubs
+
+    def exploding(*a, **k):
+        raise TypeError("selftest: a deliberate crash inside the gate")
+    d_x = os.path.join(tmp_root, "crash")
+    _copy_brain(real_brain, d_x)
+    try:
+        check_stubs = exploding
+        rc_x, out_x = _run_gate_captured(d_x)
+    finally:
+        check_stubs = kept_cs
+    ok = rc_x == 1 and "REFUSED (S-SHAPE)" in out_x and "TypeError" in out_x and "TRACEBACK" not in out_x \
+        and "Traceback (most recent" not in out_x
+    results.append((len(results) + 1, "Q7 (#239): a check that RAISES inside gate() is NAMED S-SHAPE with its "
+                                      "exception class — a crash is not a fail", "red", rc_x,
+                    "REFUSED (S-SHAPE)" in out_x, ok, "" if ok else out_x[-400:]))
 
     # ---- WRITE PATH ----------------------------------------------------------------------------
     d_w = os.path.join(tmp_root, "write-refused")
@@ -1258,12 +2098,15 @@ def selftest(real_brain):
                     "green", rc4, True, ok, "" if ok else "bodies differ"))
 
     # ---- THE TEXTUAL WRITER (--add-*) ------------------------------------------------------------
+    # Q3 makes every frozen row claimed, so the green ADD arm first DROPS pl-30 (no --write) and
+    # re-adds its row as pl-31: the append is proven textual and the gate is green after. A brand-
+    # new polarity needs a second register on the allow-list — RULING-SHAPED, reported by #239-F.
     d_a = os.path.join(tmp_root, "add-polarity")
     _copy_brain(real_brain, d_a)
-    good = {"id": "pl-99", "parties": [{"ref": "pr-fitts", "role": "side_a"},
-                                       {"ref": "pr-hick", "role": "side_b"}],
-            "mediating_variable": "selftest only", "links": [], "sources": [{"path": "selftest", "id": "x"}]}
+    _mutate_json(os.path.join(d_a, "polarities.json"), lambda o: o["polarities"].pop())
     orig = read_text(os.path.join(d_a, "polarities.json"))
+    last = json.loads(read_text(os.path.join(real_brain, "polarities.json")))["polarities"][-1]
+    good = dict(last, id="pl-31")
     buf, old = io.StringIO(), sys.stdout
     sys.stdout = buf
     try:
@@ -1280,11 +2123,12 @@ def selftest(real_brain):
         p += 1
     s = len(orig) - p
     recon_ok = (len(new) > len(orig) and new[:p] + new[len(new) - s:] == orig
-                and len(json.loads(new)["polarities"]) == 31 and json.loads(new)["polarities"][-1] == good)
+                and len(json.loads(new)["polarities"]) == 30 and json.loads(new)["polarities"][-1] == good)
     rc_chk, _ = _run_gate_captured(d_a)
     ok = rc_dry == 0 and untouched and rc_wr == 0 and recon_ok and rc_chk == 0
-    results.append((len(results) + 1, "ADD-POLARITY: dry-run leaves bytes; --write = original + one span; "
-                                      "31 rows; gate green after", "green", rc_chk, True, ok,
+    results.append((len(results) + 1, "ADD-POLARITY: pl-30 dropped then re-added as pl-31 — dry-run leaves bytes; "
+                                      "--write = original + one span; 30 rows; gate green after (#239: every "
+                                      "frozen row is claimed)", "green", rc_chk, True, ok,
                     "" if ok else f"dry={rc_dry} untouched={untouched} wr={rc_wr} recon={recon_ok} chk={rc_chk} :: {buf.getvalue()[-400:]}"))
 
     d_b = os.path.join(tmp_root, "add-polarity-refused")
@@ -1302,74 +2146,105 @@ def selftest(real_brain):
                                       "nothing written", "red", rc_bad, "R5-TYPED-STATUS" in buf.getvalue(), ok,
                     "" if ok else buf.getvalue()[-400:]))
 
-    d_c = os.path.join(tmp_root, "add-stub")
-    _copy_brain(real_brain, d_c)
-    orig_c = read_text(os.path.join(d_c, "stubs.json"))
+    d_u = os.path.join(tmp_root, "add-polarity-unverifiable")
+    _copy_brain(real_brain, d_u)
+    orig_u = _tree_hashes(d_u)
+    unver = {"id": "pl-91", "parties": [{"ref": "pr-fitts", "role": "side_a"}, {"ref": "pr-hick", "role": "side_b"}],
+             "mediating_variable": "target count",
+             "links": [{"type": "resolvedBy", "ref": "s116-D1", "quote": "this quote exists nowhere"}],
+             "sources": [{"path": "selftest", "id": "x"}]}
     buf, old = io.StringIO(), sys.stdout
     sys.stdout = buf
     try:
-        rc_st = add_entry(d_c, "stub", {"id": "st-selftest-phrase", "phrase": "a selftest phrase"}, write=True)
+        rc_u = add_entry(d_u, "polarity", unver, write=True)
+    finally:
+        sys.stdout = old
+    ok = rc_u == 1 and "S-SOURCE" in buf.getvalue() and "R3-QUOTE-NOT-VERBATIM" in buf.getvalue() \
+        and _tree_hashes(d_u) == orig_u
+    results.append((len(results) + 1, "V324 ADD-POLARITY: an entry whose quote has no reachable source is REFUSED "
+                                      "(S-SOURCE + R3-QUOTE-NOT-VERBATIM), nothing written (#239 Q3)", "red", rc_u,
+                    "S-SOURCE" in buf.getvalue(), ok, "" if ok else buf.getvalue()[-400:]))
+
+    d_c = os.path.join(tmp_root, "add-stub")
+    _copy_brain(real_brain, d_c)
+    orig_c = read_text(os.path.join(d_c, "stubs.json"))
+    orig_c_hash = _tree_hashes(d_c)
+    buf, old = io.StringIO(), sys.stdout
+    sys.stdout = buf
+    try:
+        # a phrase the frozen register SAYS (tn-15's side_b carries it) — Q5: a stub is verbatim
+        rc_st = add_entry(d_c, "stub", {"id": "st-brand-colours", "phrase": "Brand colours frequently fail contrast"}, write=True)
         rc_st_bad = add_entry(d_c, "stub", {"id": "st-bad", "phrase": "x", "why": "y"}, write=True)
+        rc_st_z = add_entry(d_c, "stub", {"id": "st-zwsp", "phrase": ZWSP}, write=True)
     finally:
         sys.stdout = old
     new_c = read_text(os.path.join(d_c, "stubs.json"))
     ok = (rc_st == 0 and len(json.loads(new_c)["stubs"]) == len(json.loads(orig_c)["stubs"]) + 1
-          and rc_st_bad == 1 and "S-STUB-SHAPE" in buf.getvalue())
-    results.append((len(results) + 1, "ADD-STUB: good stub appended textually; 3-key stub REFUSED (S-STUB-SHAPE)",
-                    "green", rc_st, True, ok, "" if ok else buf.getvalue()[-400:]))
-
-    # ---- BITE THE BITE: the SCHEMA drives the check — loosen it and the 1-party arm must stay GREEN
-    d_m = os.path.join(tmp_root, "schema-mutant")
-    _copy_brain(real_brain, d_m)
-    _mutate_json(os.path.join(d_m, SCHEMA_REL), lambda s: s["properties"]["parties"].pop("minItems"))
-    _mutate_json(os.path.join(d_m, "polarities.json"),
-                 lambda o: o["polarities"][0].__setitem__("parties", o["polarities"][0]["parties"][:1]))
-    rc_m, out_m = _run_gate_captured(d_m)
-    # (it goes STALE, because the edges/status change with one party gone — but NOT S-MIN-PARTIES)
-    ok = "S-MIN-PARTIES" not in out_m and "TRACEBACK" not in out_m
-    results.append((len(results) + 1, "BITE-THE-BITE: with minItems removed from the SCHEMA the 1-party "
-                                      "refusal does NOT fire — the schema file drives the check", "nofire",
-                    rc_m, False, ok, "" if ok else out_m[-300:]))
-    d_k = os.path.join(tmp_root, "schema-unknown-keyword")
-    _copy_brain(real_brain, d_k)
-    _mutate_json(os.path.join(d_k, SCHEMA_REL), lambda s: s["properties"]["parties"].__setitem__("maxItems", 9))
-    rc_k, out_k = _run_gate_captured(d_k)
-    ok = rc_k == 1 and "SCHEMA-KEYWORD-UNSUPPORTED" in out_k
-    results.append((len(results) + 1, "SCHEMA: a keyword this gate does not implement (maxItems) is REFUSED, "
-                                      "never silently ignored", "red", rc_k, ok, ok, "" if ok else out_k[-300:]))
+          and rc_st_bad == 1 and "S-STUB-SHAPE" in buf.getvalue()
+          and rc_st_z == 1 and "S-FORMAT-CHAR" in buf.getvalue()
+          and len(json.loads(read_text(os.path.join(d_c, "stubs.json")))["stubs"]) == len(json.loads(orig_c)["stubs"]) + 1)
+    results.append((len(results) + 1, "ADD-STUB: a verbatim phrase appended textually; 3-key stub REFUSED (S-STUB-SHAPE); "
+                                      "V328 the U+200B phrase REFUSED (S-FORMAT-CHAR), nothing written", "green",
+                    rc_st, True, ok, "" if ok else buf.getvalue()[-500:]))
 
     # ---- CLI: the SAME entry point via subprocess, rc observed from the process --------------
     d_cli = os.path.join(tmp_root, "cli-red")
     _copy_brain(real_brain, d_cli)
     _mutate_json(os.path.join(d_cli, "polarities.json"),
                  lambda o: o["polarities"][0]["links"].append({"ref": "s116-D1"}))
-    r_green = subprocess.run([sys.executable, os.path.abspath(__file__), "--check", "--brain", real_brain],
-                             capture_output=True, text=True)
-    r_red = subprocess.run([sys.executable, os.path.abspath(__file__), "--check", "--brain", d_cli],
-                           capture_output=True, text=True)
-    r_env = subprocess.run([sys.executable, os.path.abspath(__file__), "--check"],
-                           capture_output=True, text=True, env=dict(os.environ, POLARITY_BRAIN_DIR=d_cli))
+    me = os.path.abspath(__file__)
+    r_green = subprocess.run([sys.executable, me, "--check", "--brain", real_brain], capture_output=True, text=True)
+    r_red = subprocess.run([sys.executable, me, "--check", "--brain", d_cli], capture_output=True, text=True)
+    r_env = subprocess.run([sys.executable, me, "--check"], capture_output=True, text=True,
+                           env=dict(os.environ, POLARITY_BRAIN_DIR=d_cli))
     ok = (r_green.returncode == 0 and r_red.returncode == 1 and "R2-UNTYPED" in r_red.stdout
           and r_env.returncode == 1 and "R2-UNTYPED" in r_env.stdout)
     results.append((len(results) + 1, "CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant "
                                       "(via --brain AND via POLARITY_BRAIN_DIR)", "green", r_green.returncode,
                     True, ok, "" if ok else (r_green.stdout + r_red.stdout + r_env.stdout)[-500:]))
-    r_bare = subprocess.run([sys.executable, os.path.abspath(__file__)], capture_output=True, text=True)
-    r_junk = subprocess.run([sys.executable, os.path.abspath(__file__), "--wat"], capture_output=True, text=True)
+    r_bare = subprocess.run([sys.executable, me], capture_output=True, text=True)
+    r_junk = subprocess.run([sys.executable, me, "--wat"], capture_output=True, text=True)
     ok = r_bare.returncode == 2 and r_junk.returncode == 2 and "REFUSED" in (r_junk.stdout + r_junk.stderr)
     results.append((len(results) + 1, "CLI: bare and unknown argv refuse with rc 2 (argv contract, #208 class)",
                     "red", r_junk.returncode, ok, ok, "" if ok else (r_bare.stdout + r_junk.stdout + r_junk.stderr)[-300:]))
+    # V A1/A2 — contradictory KNOWN flags are a contract violation too (#239)
+    d_av = os.path.join(tmp_root, "argv")
+    _copy_brain(real_brain, d_av)
+    ep = os.path.join(tmp_root, "entry.json")
+    with open(ep, "w", encoding="utf-8") as f:
+        json.dump(good, f)
+    h0 = _tree_hashes(d_av)
+    r_a1 = subprocess.run([sys.executable, me, "--add-polarity", ep, "--dry-run", "--write", "--brain", d_av],
+                          capture_output=True, text=True)
+    r_a2 = subprocess.run([sys.executable, me, "--check", "--write", "--brain", d_av], capture_output=True, text=True)
+    r_a3 = subprocess.run([sys.executable, me, "--check", "--selftest", "--brain", d_av], capture_output=True, text=True)
+    ok = (r_a1.returncode == 2 and r_a2.returncode == 2 and r_a3.returncode == 2 and _tree_hashes(d_av) == h0
+          and "REFUSED (argv)" in r_a1.stderr and "REFUSED (argv)" in r_a2.stderr)
+    results.append((len(results) + 1, "V-A1/A2 CLI: `--dry-run --write`, `--check --write`, `--check --selftest` refuse "
+                                      "rc 2 and write nothing (#239 argv contract)", "red", r_a1.returncode, ok, ok,
+                    "" if ok else (r_a1.stderr + r_a2.stderr + r_a3.stderr)[-400:]))
 
-    # ---- THE THIRD VERDICT (#193): take the INPUT away → 77 + COULD-NOT-ASK, never 1, never 0 ----
-    r77 = subprocess.run([sys.executable, os.path.abspath(__file__), "--check", "--brain",
-                          os.path.join(tmp_root, "no-such-home")], capture_output=True, text=True)
-    ok = r77.returncode == cna.EXIT and r77.stdout.startswith(cna.MARKER) and "does not exist" in r77.stdout
-    results.append((len(results) + 1, "COULD-NOT-ASK: home directory absent → rc 77 + marker naming the path "
-                                      "(pack classifier reads it as REPO-BOUND)", "77", r77.returncode, ok, ok,
-                    "" if ok else r77.stdout[-300:] + r77.stderr[-300:]))
+    # ---- THE THIRD VERDICT (#193) vs THE SOURCE-REPO MUTATION (#239 Q8) ------------------------
+    r_abs = subprocess.run([sys.executable, me, "--check", "--brain", os.path.join(tmp_root, "no-such-home")],
+                           capture_output=True, text=True)
+    ok = r_abs.returncode == 1 and "REFUSED (S-SHAPE)" in r_abs.stdout and "does not exist" in r_abs.stdout \
+        and cna.MARKER not in r_abs.stdout
+    results.append((len(results) + 1, "V-D1 (#239 Q8): home ABSENT in the SOURCE repo (the store is here) → rc 1 "
+                                      "S-SHAPE, never 77 — the build and the seam both stop", "red", r_abs.returncode,
+                    "REFUSED (S-SHAPE)" in r_abs.stdout, ok, "" if ok else r_abs.stdout[-300:] + r_abs.stderr[-300:]))
+    # the pack shape: NO store → 77 + COULD-NOT-ASK naming the path (pack classifier reads REPO-BOUND)
+    kept_r = RULINGS
+    try:
+        RULINGS = os.path.join(tmp_root, "no-such-rulings.json")
+        rc77, out77 = _run_gate_captured(os.path.join(tmp_root, "no-such-home"))
+    finally:
+        RULINGS = kept_r
+    ok = rc77 == cna.EXIT and out77.startswith(cna.MARKER) and "does not exist" in out77
+    results.append((len(results) + 1, "COULD-NOT-ASK: home absent AND no store (a shipped pack) → rc 77 + marker "
+                                      "naming the path (pack classifier reads it as REPO-BOUND)", "77", rc77, ok, ok,
+                    "" if ok else out77[-300:]))
     # the declaration source (a notes/ asset) taken away: refusals still asked FIRST (a real red
     # stays red), then 77 on a clean home — proven by pointing OPEN_DEFAULTS at nothing in-process
-    global OPEN_DEFAULTS
     kept = OPEN_DEFAULTS
     try:
         OPEN_DEFAULTS = os.path.join(tmp_root, "no-such-open-tensions.json")
@@ -1387,6 +2262,12 @@ def selftest(real_brain):
     results.append((len(results) + 1, "COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a "
                                       "real refusal is STILL rc 1 first (the refusal path is not swallowed)",
                     "77", rc_a, ok, ok, "" if ok else f"rc {rc_a}/{rc_b} :: {out_a[-200:]} :: {out_b[-200:]}"))
+    # the selftest's own cleanup path (V finding 16): an absent home is a named refusal, no tempdir left
+    r_sa = subprocess.run([sys.executable, me, "--selftest", "--brain", os.path.join(tmp_root, "no-such-home")],
+                          capture_output=True, text=True)
+    ok = r_sa.returncode == 1 and "REFUSED (S-SHAPE)" in r_sa.stdout and "Traceback" not in r_sa.stderr
+    results.append((len(results) + 1, "SELFTEST on an absent home refuses by name, no traceback (#239, V finding 16)",
+                    "red", r_sa.returncode, "REFUSED (S-SHAPE)" in r_sa.stdout, ok, "" if ok else r_sa.stdout[-200:] + r_sa.stderr[-200:]))
 
     # ---- WIRING PRESENCE (declared skip when a surface is unreachable) --------------------------
     build = os.path.join(HERE, "_build_all.py")
@@ -1399,92 +2280,82 @@ def selftest(real_brain):
                       and "python3 knowledge/_validate_polarities.py --check" in ln]
         ok_s = len(seam_lines) >= 1
         ok_h = 'write(os.path.join(know, "_validate_polarities.py")' in ht
-        ok = ok_b and ok_s and ok_h
+        # V-D2 (#239 Q8): the seam DECLARES a POLARITY_BRAIN_DIR redirect and still gates the tree's own home
+        ok_d2 = ("polarity gate: REDIRECTED to" in st_ and "unset POLARITY_BRAIN_DIR" in st_)
+        ok = ok_b and ok_s and ok_h and ok_d2
         results.append((len(results) + 1, "WIRING: STEPS has --check + --selftest rows; _git_commit.sh invokes "
-                                          "--check on a live line; the seam harness stubs it", "green",
-                        0 if ok else 1, True, ok, "" if ok else f"build={ok_b} seam={ok_s} harness={ok_h}"))
+                                          "--check on a live line, DECLARES a POLARITY_BRAIN_DIR redirect and gates the "
+                                          "tree's own home (V-D2, #239); the seam harness stubs it", "green",
+                        0 if ok else 1, True, ok, "" if ok else f"build={ok_b} seam={ok_s} harness={ok_h} d2={ok_d2}"))
     else:
         results.append((len(results) + 1, "WIRING presence", "green", 0, True, True,
                         "SKIPPED (declared): a wiring surface is not on disk here — not a pass, not a fail"))
 
-    # ---- THE TABLE ------------------------------------------------------------------------------
-    shutil.rmtree(tmp_root, ignore_errors=True)
-    print("=" * 100)
-    print("_validate_polarities.py --selftest — every arm drives gate() on a copy of the REAL rows")
-    print("=" * 100)
-    print(f"{'#':>3}  {'result':6}  {'expect':6}  {'rc':>4}  {'named':5}  arm")
-    fails = 0
-    for n, name, expect, rc, named, ok, note in results:
-        if not ok:
-            fails += 1
-        print(f"{n:>3}  {'PASS' if ok else 'FAIL':6}  {expect:6}  {str(rc):>4}  {('yes' if named else '-'):5}  {name}")
-        if note and (not ok or note.startswith("SKIPPED")):
-            print("        " + note.replace("\n", "\n        "))
-    red_arms = [r for r in results if r[2] == "red"]
-    red_ok = [r for r in red_arms if r[5]]
-    green_arms = [r for r in results if r[2] == "green"]
-    print("-" * 100)
-    print(f"arms {len(results)} · red arms {len(red_arms)} (went red by name {len(red_ok)}/{len(red_arms)}) · "
-          f"green arms {len(green_arms)} · no-fire/77 arms {len(results) - len(red_arms) - len(green_arms)} · "
-          f"failures {fails}")
-    if fails:
-        print(f"✗ selftest FAILED — {fails} arm(s)")
-        return 1
-    print("✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal")
-    return 0
-
 
 # ============================================================================================
-# ARGV — a contract, not a membership test (#208 class): unknown tokens refuse, rc 2
+# ARGV — a contract, not a membership test (#208 class): unknown tokens refuse, rc 2; and so do
+# contradictory KNOWN ones (#239: `--dry-run --write` wrote, `--check --write` wrote)
 # ============================================================================================
 FLAGS = {"--check": 0, "--write": 0, "--selftest": 0, "--dry-run": 0,
          "--add-polarity": 1, "--add-stub": 1, "--brain": 1}
-USAGE = ("usage: --check | --write | --selftest | --add-polarity FILE [--dry-run|--write] | "
-         "--add-stub FILE [--dry-run|--write]   [--brain DIR]")
+USAGE = ("usage: --check | --write | --selftest | --add-polarity FILE (--dry-run|--write) | "
+         "--add-stub FILE (--dry-run|--write)   [--brain DIR]  — exactly one mode, never two")
+
+
+def _refuse_argv(msg):
+    print(f"⛔ REFUSED (argv) — {msg}. {USAGE}", file=sys.stderr)
+    return 2
 
 
 def main(argv):
     if not argv:
-        print(f"⛔ REFUSED (argv) — no arguments: this script writes files under --write and refuses to "
-              f"guess. {USAGE}", file=sys.stderr)
-        return 2
+        return _refuse_argv("no arguments: this script writes files under --write and refuses to guess")
     opts, i = {}, 0
     while i < len(argv):
         tok = argv[i]
         if tok not in FLAGS:
-            print(f"⛔ REFUSED (argv) — unknown argument {tok!r}. {USAGE}", file=sys.stderr)
-            return 2
+            return _refuse_argv(f"unknown argument {tok!r}")
+        if tok in opts:
+            return _refuse_argv(f"{tok} given twice")
         if FLAGS[tok]:
             if i + 1 >= len(argv):
-                print(f"⛔ REFUSED (argv) — {tok} needs a value. {USAGE}", file=sys.stderr)
-                return 2
+                return _refuse_argv(f"{tok} needs a value")
             opts[tok] = argv[i + 1]
             i += 2
         else:
             opts[tok] = True
             i += 1
+    adding = [k for k in ("--add-polarity", "--add-stub") if k in opts]
+    modes = [k for k in ("--check", "--write", "--selftest") if k in opts]
+    if adding:
+        if len(adding) > 1 or "--check" in opts or "--selftest" in opts:
+            return _refuse_argv(f"{' + '.join(sorted(adding + [m for m in modes if m != '--write']))} contradict "
+                                f"each other — one mode per run")
+        if ("--dry-run" in opts) == ("--write" in opts):
+            return _refuse_argv("--add-* needs EXACTLY one of --dry-run or --write, stated (a dry run that "
+                                "writes is the #239 V-A1 defect)")
+    else:
+        if "--dry-run" in opts:
+            return _refuse_argv("--dry-run belongs to --add-polarity / --add-stub only")
+        if len(modes) != 1:
+            return _refuse_argv(f"{' + '.join(modes) if modes else 'nothing to do'} — exactly one of --check / "
+                                f"--write / --selftest (a check that writes is the #239 V-A2 defect)")
     brain = opts.get("--brain") or os.environ.get("POLARITY_BRAIN_DIR") or DEFAULT_BRAIN
     brain = os.path.abspath(brain)
     if "--selftest" in opts:
         return selftest(brain)
-    if "--add-polarity" in opts or "--add-stub" in opts:
+    if adding:
         which = "polarity" if "--add-polarity" in opts else "stub"
-        src = opts.get("--add-polarity") or opts.get("--add-stub")
-        if "--write" not in opts and "--dry-run" not in opts:
-            print("⛔ REFUSED (argv) — --add-* needs --dry-run or --write, stated.", file=sys.stderr)
-            return 2
+        src = opts[adding[0]]
         try:
             entry = json.loads(read_text(src))
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"⛔ REFUSED (S-PARSE) — {src}: {e}", file=sys.stderr)
             return 2
         return add_entry(brain, which, entry, write="--write" in opts)
     if "--write" in opts:
         return gate(brain, write=True)
-    if "--check" in opts:
-        return gate(brain, write=False)
-    print(f"⛔ REFUSED (argv) — nothing to do. {USAGE}", file=sys.stderr)
-    return 2
+    return gate(brain, write=False)
 
 
 if __name__ == "__main__":

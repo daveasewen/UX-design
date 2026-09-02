@@ -1,0 +1,14 @@
+V's 7 green controls after the fix (harness verdicts from wave1/2/3 logs) and the legal analogue of each:
+  120 links-empty-array ............................ GREEN-OK (unchanged)
+  100 row31 with a FICTIONAL source path ........... FALSE-RED by Q3 (S-SOURCE) — V's own basis: 'the receipt is unverified'
+  225 sources.path = /etc/hostname ................. FALSE-RED by Q3 (S-ID + S-SOURCE) — V's basis: 'an absolute path escapes the repo'
+  235 orphan stub 'an orphan phrase' ............... FALSE-RED by Q5 (R3-JUDGEMENT-FIELD: not verbatim) — the ORPHAN-ness is still legal, see (a)
+  248 all-stub node with sources path 'x' .......... FALSE-RED by Q3 (S-SOURCE) — the all-stub shape is still legal, see (b)
+  321 writer into an empty array, source 'selftest'  FALSE-RED by Q3 (S-SOURCE + 29 unclaimed rows) — see (d)
+  326 writer on a 2-space file, source 'selftest' .. FALSE-RED by Q3 (S-SOURCE) — the format tolerance is still there, see (c)
+
+(a) orphan stub with a VERBATIM phrase (tn-15's words): --write rc=0 names=[]  -> GREEN (an unreferenced stub stays legal; V's observation stands)
+(b) a node whose parties are two STUBS, on a real row (tn-30, verbatim mediating_variable): --write rc=0 names=[]  -> GREEN
+(c) writer on a 2-SPACE-indented file, legal entry: rc=0 rows=30 names=[]  -> GREEN (mixed indent tolerated, as V found — unchanged)
+(d) writer into an EMPTY array: rc=1 names=['S-SOURCE']  -> RED by design: 29 frozen rows unclaimed (the receipt is a bijection) — RULING-SHAPED: retiring rows needs a legal form
+(e) a BRAND-NEW polarity citing a register not on the allow-list: dry-run rc=1 names=['S-SOURCE']  -> RED by design — RULING-SHAPED (a second register is Dave's)

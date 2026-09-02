@@ -1,0 +1,137 @@
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+200 CAUGHT    red   after-write           1/1/1   1            -  link-bare-string
+                                names=['R2-UNTYPED'] must=R2-UNTYPED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R2-UNTYPED) — pl-01.links[1]: expected object, got str
+201 CAUGHT    red   after-write           1/1/1   1            -  link-type-null
+                                names=['R2-UNTYPED'] must=R2-UNTYPED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R2-UNTYPED) — pl-01.links[1].type: expected string, got NoneType
+202 CAUGHT    red   after-write           1/1/1   1            -  link-type-is-a-list
+                                names=['R2-UNKNOWN-TYPE'] must=R2-UNKNOWN-TYPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R2-UNKNOWN-TYPE) — pl-01.links[1].type: expected string, got list
+                                note: code: key = (l.get('type'), ref) is hashed for the duplicate check before the schema verdict is read
+203 CAUGHT    red   after-write           1/1/1   1            -  party-ref-is-a-list
+                                names=['S-SCHEMA'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.parties[2].ref: expected string, got list
+                                note: code: party_refs = {p.get('ref') ...} hashes the value
+204 CAUGHT    red   after-write           1/1/1   1            -  stub-id-is-a-list
+                                names=['S-STUB-SHAPE'] must=S-STUB-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-STUB-SHAPE) — stubs[15]: id ['st-x'] must be a string matching ^st-[a-z0-9]+(?:-[a-z0-9]+)*$
+                                note: code: s.get('id') in seen_ids hashes the value
+210 CAUGHT    red   as-is                 1/1/1   1            -  hidden-dotfile-edges-at-brain-top
+                                names=['R4-AUTHORED-EDGES'] must=R4-AUTHORED-EDGES untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-EDGES) — .edges.json carries an `edges` key outside a derived file — pairwise edges are DERIVED (s238-D1); delete it and run --
+211 CAUGHT    red   as-is                 1/1/1   1            -  hidden-dotfile-inside-_generated
+                                names=['R4-AUTHORED-EDGES', 'R4-STRAY-FILE'] must=R4-STRAY-FILE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — _generated/.authored-edges.json is not one of the derived files (polarity-status.json, polarity-edges.json, defaults-decla
+212 CAUGHT    red   as-is                 1/1/1   1            -  leftover-tmp-inside-_generated
+                                names=['R4-AUTHORED-EDGES', 'R4-STRAY-FILE'] must=R4-STRAY-FILE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — _generated/.polarity-edges.json.tmp is not one of the derived files (polarity-status.json, polarity-edges.json, defaults-d
+213 CAUGHT    red   as-is                 1/1/1   1            -  authored-edges-under-schema-dir
+                                names=['R4-AUTHORED-EDGES'] must=R4-AUTHORED-EDGES untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-AUTHORED-EDGES) — schema/edges.json carries an `edges` key outside a derived file — pairwise edges are DERIVED (s238-D1); delete it and 
+214 CAUGHT    red   as-is                 1/1/1   1            -  second-schema-under-schema-dir
+                                names=['R4-STRAY-FILE'] must=R4-STRAY-FILE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — schema/polarity.schema.v2.json is not one of the homes (principles.json, polarities.json, stubs.json), schema/polarity.sch
+215 CAUGHT    red   as-is                 1/1/1   1            -  subdir-edges-at-brain-top
+                                names=['R4-STRAY-FILE'] must=R4-STRAY-FILE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — edges/ is a directory that is not part of the home (delete it; __pycache__ and the like included)
+216 CAUGHT    red   as-is                 1/1/1   1            -  pycache-dir-carrying-edges
+                                names=['R4-STRAY-FILE'] must=R4-STRAY-FILE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — __pycache__/ is a directory that is not part of the home (delete it; __pycache__ and the like included)
+217 CAUGHT    red   as-is                 1/1/1   1            -  generated-dir-is-a-file
+                                names=['MISSING-GENERATED', 'R4-STRAY-FILE'] must=MISSING-GENERATED untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — .gen-moved/ is a directory that is not part of the home (delete it; __pycache__ and the like included)
+220 CAUGHT    red   after-write           1/1/1   1            -  quote-oracle-repointed-to-_rulings.json
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'knowledge/_rulings.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-pr
+                                note: the quote is verbatim — from s238-D7's text, not from tn-01
+221 CAUGHT    red   after-write           1/1/1   1            -  quote-oracle-repointed-to-itself
+                                names=['R3-QUOTE-NOT-VERBATIM', 'R3-QUOTE-TOO-LONG', 'S-SOURCE'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-QUOTE-TOO-LONG) — pl-01.links[0].quote: 22 words, maximum 15
+222 CAUGHT    red   after-write           1/1/1   1            -  quote-paraphrased-AND-source-pointer-broken
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'notes/no-such-file.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-pr
+223 CAUGHT    red   after-write           1/1/1   1            -  quote-empty-string
+                                names=['R3-QUOTE-NOT-VERBATIM'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-QUOTE-NOT-VERBATIM) — pl-01.links[1].quote: 0 word(s), minimum 3
+                                note: also moves the sort: pl-01 open -> resolved
+224 CAUGHT    red   after-write           1/1/1   1            -  quote-one-word-the
+                                names=['R3-QUOTE-NOT-VERBATIM'] must=R3-QUOTE-NOT-VERBATIM untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-QUOTE-NOT-VERBATIM) — pl-01.links[1].quote: 1 word(s), minimum 3
+225 FALSE-RED green after-write           1/1/1   1            -  sources-path-absolute-outside-repo
+                                names=['S-ID', 'S-SOURCE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ID) — pl-01.sources[1].path: '/etc/hostname' does not match ^[A-Za-z0-9_][A-Za-z0-9_./-]*$
+230 CAUGHT    red   after-write           1/1/1   1            -  note-is-a-14-word-judgement
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.parties[0].note 'Jakob must always win in Apollo because Dave rules by eye an' is not a verbatim substring of t
+231 CAUGHT    red   after-write           1/1/1   1            -  note-40-words-joined-by-zero-width-spaces
+                                names=['R3-JUDGEMENT-FIELD', 'R3-NOTE-TOO-LONG', 'S-FORMAT-CHAR'] must=R3-NOTE-TOO-LONG untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-FORMAT-CHAR) — polarities.json.polarities[0].parties[0].note: U+200B (ZERO WIDTH SPACE) at offset 5 (+42 more) — an invisible character i
+232 CAUGHT    red   after-write           1/1/1   1            -  mediating_variable-300-word-judgement
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.mediating_variable: 280 words, maximum 25
+233 CAUGHT    red   after-write           1/1/1   1            -  sources-id-300-word-judgement
+                                names=['R3-JUDGEMENT-FIELD', 'S-ID', 'S-SOURCE'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-ID) — pl-04.sources[0].id: "aesthetics wins over usability in Apollo, always, by Dave's " does not match ^[A-Za-z0-9][A-Za-z0-9._-]*$
+234 CAUGHT    red   after-write           1/1/1   1            -  stub-phrase-15-word-judgement
+                                names=['R3-JUDGEMENT-FIELD'] must=R3-JUDGEMENT-FIELD untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — stubs[15]: phrase 'dense financial tables must always beat whitespace in Apollo' is not VERBATIM in the frozen R1 reg
+235 FALSE-RED green after-write           1/1/1   1            -  orphan-stub-declared-never-used
+                                names=['R3-JUDGEMENT-FIELD'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — stubs[15]: phrase 'an orphan phrase' is not VERBATIM in the frozen R1 register — a stub is a phrase the register alre
+240 SETUP-CRASH red   after-write                                   register-obligation-demoted-L-to-C  :: mutation setup crashed: PermissionError(1, 'Operation not permitted')
+241 ESCAPED   red   after-write           0/0/0   0        0/0/0  register-statement-rewritten
+                                names=[] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+242 CAUGHT    red   after-write           1/1/1   1            -  register-principle-removed-that-is-a-party
+                                names=['R1-DANGLING'] must=R1-DANGLING untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R1-DANGLING) — pl-01.parties[0]: 'pr-jakobs-law' resolves to nothing — not a principles.json row, not a stubs.json stub, not a knowledge/_r
+243 ESCAPED   red   after-write           1/1/1   0        0/0/0  same-ruling-resolvedBy-AND-challengedBy
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+244 CAUGHT    red   after-write           1/1/1   1            -  all-30-rows-deleted
+                                names=['S-SOURCE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — frozen row(s) ['tn-01', 'tn-02', 'tn-03', 'tn-04', 'tn-05', 'tn-06']… (30) are claimed by no node — the migration is one row, o
+245 ESCAPED   red   after-write           1/1/1   0        0/0/0  all-21-links-deleted
+                                names=['STALE-GENERATED'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (STALE-GENERATED) — _generated/polarity-status.json does not match a fresh derivation (content compared at its own clock 2026-09-02T15:18:55
+246 CAUGHT    red   after-write           1/1/1   1            -  $migration-sha256-garbage
+                                names=['S-RECEIPT'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-RECEIPT) — $migration.sha256 0000000000000000… does not match the frozen register's bytes (a3b120288e448d5b…) — the receipt is verified, 
+247 CAUGHT    red   after-write           1/1/1   1            -  $migration-from-nonexistent
+                                names=['S-RECEIPT'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-RECEIPT) — $migration.from 'notes/does-not-exist.json' is not the frozen R1 register notes/_subreports/assets/2026-09-02-236-R1-principle
+248 FALSE-RED green after-write           1/1/1   1            -  node-all-parties-are-stubs
+                                names=['S-SOURCE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — pl-40.sources[0].path 'x' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensio
+250 CAUGHT    red   after-write           1/1/1   1            -  sources-item-without-path-plus-a-quote
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SCHEMA', 'S-SOURCE'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.sources[0].path: required key 'path' is missing
+                                note: code: _source_row_text(None, ...) -> os.path.join(REPO, None)
+251 CAUGHT    red   after-write           1/1/1   1            -  sources-path-is-an-int
+                                names=['R3-QUOTE-NOT-VERBATIM', 'S-SCHEMA', 'S-SOURCE'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SCHEMA) — pl-01.sources[0].path: expected string, got int
+252 CAUGHT    red   after-write           1/1/1   1            -  polarities.json-invalid-utf8-byte
+                                names=['S-PARSE'] must=S-PARSE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-PARSE) — /sessions/keen-serene-johnson/mnt/outputs/f239/arms/252-polarities.json-invalid-utf8-byte/brain-w/polarities.json is not UTF-8: 
+253 CAUGHT    red   after-write           1/1/1   1            -  polarities.json-utf8-bom
+                                names=['S-PARSE'] must=S-PARSE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-PARSE) — polarities.json does not parse as JSON: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)
+254 CAUGHT    red   after-write           1/1/1   1            -  stubs.json-is-a-list
+                                names=['R1-UNDECLARED-STUB', 'S-SHAPE'] must=S-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SHAPE) — stubs.json must be an object with a `stubs` list
+255 CAUGHT    red   after-write           1/1/1   1            -  principles-list-is-a-dict
+                                names=['R1-DANGLING', 'S-SHAPE'] must=S-SHAPE untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SHAPE) — principles.json must be an object with a `principles` list
+256 CAUGHT    red   after-write           1/1/1   1            -  schema-properties-is-a-list
+                                names=['S-SCHEMA', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 a9e28f22f205dea8… is not the pinned 42f845036705db1b… — a schema edit must move S
+                                note: code: for pk, pv in v.items()
+257 CAUGHT    red   after-write           1/1/1   1            -  schema-pattern-invalid-regex
+                                names=['S-SCHEMA', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 1d9b6528102184e8… is not the pinned 42f845036705db1b… — a schema edit must move S
+258 CAUGHT    red   after-write           1/1/1   1            -  schema-type-is-a-list
+                                names=['S-SCHEMA', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH'] must=S-SCHEMA untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 f9de4108eb3cc98e… is not the pinned 42f845036705db1b… — a schema edit must move S
+---------------------------------------------------------------------
+verdicts: CAUGHT 36 · ESCAPED 3 · FALSE-RED 3 · SETUP-CRASH 1 · arms 43

@@ -1,0 +1,33 @@
+  # verdict   exp   decisive        as-is A/B/C   W  after A/B/C  arm
+---------------------------------------------------------------------
+400 CAUGHT    red   after-write           1/1/1   1            -  resolvedBy-without-any-quote
+                                names=['R3-QUOTE-MISSING'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-QUOTE-MISSING) — pl-01.links[1]: a resolvedBy carries no quote — it CLOSES the polarity and needs a verbatim receipt from the source row
+401 CAUGHT    red   after-write           1/1/1   1            -  sources-id-swapped-to-another-row
+                                names=['R3-JUDGEMENT-FIELD', 'S-SOURCE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-04.parties[0].note 'beauty raises perceived usability' is not a verbatim substring of the node's source row — a no
+402 CAUGHT    red   after-write           1/1/1   1            -  duplicate-polarity-body-under-new-id
+                                names=['S-SOURCE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,True)
+                                first: ⛔ REFUSED (S-SOURCE) — frozen row 'tn-01' is claimed by ['pl-01', 'pl-31'] — one row, one node (the r1_id pointer drives the derived status; two claim
+403 CAUGHT    red   as-is                 1/1/1   0        0/0/0  polarities.json-is-a-symlink-outside-the-home
+                                names=['R4-STRAY-FILE'] must=None untouched(as-is)=True write(homes,gen)untouched=(True,False)
+                                first: ⛔ REFUSED (R4-STRAY-FILE) — polarities.json is a SYMLINK — the home is a closed directory of regular files; a commit would carry the link, not the wor
+---------------------------------------------------------------------
+verdicts: CAUGHT 4 · arms 4
+  [401] pl-04 derived with r1_id=tn-04 factory_default='A beauty pass never stands in for the mechanical rubric; when evaluating, the look is a co'
+  [402] edges after the duplicate: {'edges': 22, 'polarities_with_edges': 18, 'polarities_without_edges': 12, 'parties_not_edgeable': 17}
+
+== ARGV: flags that contradict each other
+  --add-polarity FILE --dry-run --write : rc=2 polarities.json changed=False  (a dry run that writes)
+  --check --write                        : rc=2 _generated changed=False  (a check that writes)
+
+== SELFTEST cleanup: P pitfall 9 says 'the tempdir is removed on every path'
+  --selftest --brain <absent>: rc=1 traceback=False leftover tempdirs=[]
+  (the rmtree at the end of selftest() is not in a finally: an exception before the table skips it)
+
+== CONTROL: --selftest on the LIVE home (read-only over knowledge/brain; copies under /dev/shm)
+  rc=0 :: ['arms 125 · red arms 113 (went red by name 113/113) · green arms 10 · no-fire/77 arms 2 · new #239 arms 72 · failures 0', '✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal']
+
+== 'A gate that is not a consumer of every commit is not a gate' — where does a raw `git commit` go?
+  .git/hooks live entries (non-.sample): []
+  hook lines mentioning the polarity gate: []

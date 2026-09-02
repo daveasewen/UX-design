@@ -10,7 +10,7 @@ Each kind of knowledge is stored in the representation that suits how it's queri
 
 | Layer | Representation | Lives in | How the pipeline uses it |
 |---|---|---|---|
-| **Components** | Component graph — one `*.meta.json` node per component (props, variants, token bindings, relationships, anti-patterns, a11y, token-validation, provenance) | `components/` (136 metas — count registered as ASSERT-009, re-tested not repeated) | Look up a component's contract before generating code; traverse `relationships` edges |
+| **Components** | Component graph — one `*.meta.json` node per component (props, variants, token bindings, relationships, anti-patterns, a11y, token-validation, provenance) | `components/` (137 metas — count registered as ASSERT-009, re-tested not repeated) | Look up a component's contract before generating code; traverse `relationships` edges |
 | **Tokens** | DTCG-style store with intent descriptions; semantic tokens carry `light`+`dark` modes | `tokens/` (7 stores) | Resolve a binding to a value; check dark-mode coverage; drive the Sutherland migration |
 | **Compliance** | Knowledge graph — rule → component → check → WCAG SC → EN 301 549 clause | `compliance/` (35 rules) | Given a component, list its WCAG 2.2 AA obligations + automatable checks |
 | **Guidelines** | RAG over Markdown (brand, voice, patterns, platform, a11y) | `guidelines/` (23 docs) | Retrieve prose guidance at generation time |
