@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The designer's brain — programme plan v1</title>
+<style>
+/* ============================================================
+   THE DESIGNER'S BRAIN — PROGRAMME PLAN v1
+   Swiss / International Style. Accent = Apollo's two-red law
+   (s151-D1): #DA1A00 on white, #F6604C on dark. Mono only.
+   Self-contained: no external scripts, no external fonts.
+   ============================================================ */
+
+:root{
+  --accent:#DA1A00;          /* 5.09:1 on white — AA */
+  --ink:#111111;
+  --ink-2:#333333;
+  --ink-3:#545454;
+  --ink-4:#6B6B6B;           /* 5.33:1 on white */
+  --bg:#FFFFFF;
+  --bg-2:#F3F3F3;
+  --bg-3:#EDEDED;
+  --rule:#DCDCDC;
+  --rule-2:#C6C6C6;
+  --ok:#0B6B3A;
+
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem;
+  --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1180px;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --accent:#F6604C;        /* 6.0:1 on #121212 */
+    --ink:#EDEDED;
+    --ink-2:#D4D4D4;
+    --ink-3:#BBBBBB;
+    --ink-4:#9C9C9C;         /* 6.7:1 on #121212 */
+    --bg:#121212;
+    --bg-2:#1B1B1B;
+    --bg-3:#232323;
+    --rule:#333333;
+    --rule-2:#454545;
+    --ok:#5FBF8B;
+  }
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; font-weight:400;
+  line-height:1.75; letter-spacing:0;
+}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4);}
+@media (max-width:640px){ .wrap{padding:0 var(--s2);} }
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  border-bottom:1px solid var(--rule);
+}
+nav .wrap{display:flex; align-items:center; gap:var(--s3); min-height:54px; flex-wrap:wrap;}
+nav .mark{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap;}
+nav .links{display:flex; gap:var(--s2); flex-wrap:wrap; margin-left:auto;}
+nav a{
+  color:var(--ink-4); text-decoration:none; font-size:12px; font-weight:500;
+  letter-spacing:.06em; text-transform:uppercase; padding:2px 0;
+}
+nav a:hover, nav a:focus{color:var(--ink); outline:none; border-bottom:1px solid var(--accent);}
+
+/* ---------- section scaffolding ---------- */
+section{border-top:1px solid var(--rule); padding:var(--s6) 0; scroll-margin-top:64px;}
+section:first-of-type{border-top:none;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+.label{
+  font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:var(--s1);
+  margin:0 0 var(--s3) 0;
+}
+.label::before{content:""; display:inline-block; width:20px; height:1px; background:var(--accent); flex:none;}
+h1{font-size:clamp(2.4rem,6.2vw,4.4rem); line-height:1.03; font-weight:400; letter-spacing:-.01em; margin:0 0 var(--s3);}
+h2{font-size:clamp(1.5rem,3.4vw,2.125rem); line-height:1.15; font-weight:500; letter-spacing:-.01em; margin:0 0 var(--s2);}
+h3{font-size:1.1875rem; line-height:1.25; font-weight:500; margin:var(--s4) 0 var(--s2);}
+h4{font-size:.875rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin:var(--s3) 0 var(--s1); color:var(--ink-2);}
+p{margin:0 0 var(--s2); max-width:74ch;}
+.lede{font-size:1.1875rem; line-height:1.55; font-weight:400; max-width:66ch;}
+
+/* the one-line answer that opens every section */
+.answer{
+  border-left:2px solid var(--accent);
+  padding:var(--s1) 0 var(--s1) var(--s2);
+  margin:0 0 var(--s4);
+  font-size:1.0625rem; line-height:1.55; max-width:78ch;
+}
+.answer strong{font-weight:700;}
+
+.grid-2{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+.grid-half{display:grid; grid-template-columns:1fr 1fr; gap:var(--s5); align-items:start;}
+@media (max-width:900px){ .grid-2,.grid-half{grid-template-columns:1fr; gap:var(--s4);} }
+
+.idx{
+  font-size:clamp(2.6rem,6vw,4rem); line-height:1; font-weight:200;
+  color:var(--rule-2); display:block; margin-bottom:var(--s1);
+}
+
+/* ---------- lists ---------- */
+ol,ul{margin:0 0 var(--s3); padding-left:1.35em; max-width:78ch;}
+li{margin:0 0 var(--s2);}
+ol.decisions{list-style:decimal; }
+ol.decisions > li{padding-left:.2em;}
+ul.tight li, ol.tight li{margin-bottom:var(--s1);}
+.opts{list-style:none; padding-left:0; margin:var(--s1) 0 0;}
+.opts li{margin:0 0 4px; padding-left:1.6em; text-indent:-1.6em; font-size:.9375rem; color:var(--ink-2);}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 var(--s3); border-bottom:1px solid var(--rule);}
+table{border-collapse:collapse; width:100%; min-width:640px; font-size:.8125rem; line-height:1.5;}
+table.wide{min-width:1000px;}
+th,td{text-align:left; vertical-align:top; padding:9px 14px 9px 0; border-bottom:1px solid var(--rule);}
+th{
+  font-size:.6875rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-2); border-bottom:1px solid var(--ink-3); white-space:nowrap;
+}
+td:last-child, th:last-child{padding-right:0;}
+tbody tr:hover td{background:var(--bg-2);}
+td.num{font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--ink-4);}
+caption{caption-side:bottom; text-align:left; font-size:.75rem; color:var(--ink-4); padding-top:var(--s1); line-height:1.5;}
+
+code,.mono{font-family:var(--mono); font-size:.86em; letter-spacing:0;}
+code{background:var(--bg-2); padding:1px 4px;}
+.k{font-family:var(--mono); font-size:.78rem; color:var(--ink-4); white-space:nowrap;}
+
+/* ---------- chips / flags ---------- */
+.chip{
+  display:inline-block; font-size:.6875rem; font-weight:700; letter-spacing:.09em;
+  text-transform:uppercase; padding:2px 6px; border:1px solid var(--rule-2); color:var(--ink-2);
+  white-space:nowrap;
+}
+.chip-a{border-color:var(--accent); color:var(--accent);}
+.chip-l{border-color:var(--ink-2); color:var(--ink); background:var(--bg-2);}
+
+/* ---------- stats ---------- */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin:var(--s5) 0 0;}
+.stat{background:var(--bg); padding:var(--s3) var(--s2) var(--s3) 0;}
+.stat b{display:block; font-size:clamp(2rem,4.6vw,2.6875rem); font-weight:200; line-height:1; letter-spacing:-.01em;}
+.stat span{display:block; font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-4); margin-top:var(--s1);}
+@media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} }
+
+/* ---------- grade bar ---------- */
+.bars{margin:var(--s2) 0 var(--s3); max-width:760px;}
+.bar-row{display:grid; grid-template-columns:190px 1fr 46px; gap:var(--s2); align-items:center; margin-bottom:10px;}
+.bar-row .bn{font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2);}
+.bar-track{background:var(--bg-3); height:16px; position:relative;}
+.bar-fill{background:var(--ink); height:16px;}
+.bar-fill.acc{background:var(--accent);}
+.bar-row .bv{font-family:var(--mono); font-size:.8125rem; text-align:right; font-variant-numeric:tabular-nums;}
+@media (max-width:640px){ .bar-row{grid-template-columns:120px 1fr 40px; gap:var(--s1);} }
+
+/* ---------- notice bands ---------- */
+.band{background:var(--bg-2); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:var(--s3) 0;}
+.notice{border:1px solid var(--accent); padding:var(--s2) var(--s3); margin:0 0 var(--s4); max-width:80ch;}
+.notice p{margin:0; font-size:.9375rem;}
+.notice .h{font-size:.6875rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:6px;}
+
+/* ---------- diagram ---------- */
+figure{margin:0;}
+.figframe{border:1px solid var(--rule); padding:var(--s3); overflow-x:auto; background:var(--bg);}
+.figframe svg{display:block; min-width:760px; width:100%; height:auto;}
+figcaption{font-size:.75rem; color:var(--ink-4); line-height:1.6; padding-top:var(--s2); max-width:80ch;}
+
+.svg-box{fill:none; stroke:var(--ink-3); stroke-width:1;}
+.svg-box-acc{fill:none; stroke:var(--accent); stroke-width:1.5;}
+.svg-box-soft{fill:none; stroke:var(--rule-2); stroke-width:1; stroke-dasharray:4 3;}
+.svg-t{fill:var(--ink); font-family:var(--sans); font-size:10.5px;}
+.svg-t-b{fill:var(--ink); font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.04em;}
+.svg-t-a{fill:var(--accent); font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.04em;}
+.svg-t-s{fill:var(--ink-4); font-family:var(--sans); font-size:9.5px;}
+.svg-line{stroke:var(--ink-3); stroke-width:1.25; fill:none;}
+.svg-dash{stroke:var(--ink-4); stroke-width:1; fill:none; stroke-dasharray:5 4;}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--rule); padding:var(--s5) 0 var(--s6); color:var(--ink-4); font-size:.8125rem;}
+footer p{max-width:80ch;}
+hr.rule{border:none; border-top:1px solid var(--rule); margin:var(--s5) 0;}
+.src{font-size:.75rem; color:var(--ink-4); margin-top:var(--s2); font-family:var(--mono); line-height:1.7;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="mark">Apollo · Plan v1</span>
+    <span class="links">
+      <a href="#s0">0 Answer</a>
+      <a href="#s1">1 Goal</a>
+      <a href="#s2">2 Found</a>
+      <a href="#s3">3 Phases</a>
+      <a href="#s4">4 Map</a>
+      <a href="#s5">5 Pitfalls</a>
+      <a href="#s6">6 External</a>
+      <a href="#s7">7 Ideas</a>
+      <a href="#s8">8 Rulings</a>
+      <a href="#s9">9 Unproven</a>
+      <a href="#s10">10 Receipts</a>
+    </span>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== 0 ==================== -->
+<section id="s0">
+  <div class="wrap">
+    <p class="label">Programme plan · session #236 · 2026-09-02</p>
+    <h1>The designer's&nbsp;brain</h1>
+    <p class="lede">A plan for putting design principles, laws and legal requirements into Apollo's
+      knowledge graph — assembled from two filed research reports, so that Apollo can <em>defend</em>
+      a choice and not only make one.</p>
+
+    <div class="notice">
+      <span class="h">Nothing on this page is ruled</span>
+      <p>Every recommendation below is attributed to the report that made it — “R1 recommends…”,
+      “R2 recommends…”. Twelve questions are open and they are Dave's; they are collected in
+      <a href="#s8" style="color:inherit">section 8</a>. This page describes a proposed schema; it does not
+      create one, and no knowledge-graph file is touched by it.</p>
+    </div>
+
+    <h2>The answer, in three lines</h2>
+    <ol class="decisions">
+      <li><strong>What was found.</strong> R1 surveyed 32 source families and wrote 145 principles in
+        its own words, then graded every one: <strong>6 A · 28 B · 75 C · 9 D · 27 L</strong>. Three findings
+        drive the plan — grade <strong>L (legal) is a different species</strong> and cannot lose an argument to a
+        heuristic (R1 finding 3); the <strong>contradictions are dense and mostly unmediated in public</strong>,
+        30 of them mapped with their mediating variable (R1 §3, finding 5); and <strong>Apollo has already
+        resolved several by eye</strong> — <code>s217-D8</code>, <code>s116-D1</code>, <code>s151-D1</code> — so the graph would
+        document judgement Dave already has (R1 finding 10).
+        <span class="src">R1 §1, §2, §3, §4 · notes/_subreports/2026-09-02-236-R1-principles-survey.md</span></li>
+
+      <li><strong>What is proposed.</strong> A <strong>graded, fenced, tensioned principle layer in the KG</strong>,
+        GENERATED into its consumers rather than copied. R1 recommends the grade as a first-class field
+        (Q1a) and grade L as its own node type (Q2b); R2 found that the SDLC playbook's proudest structure
+        is a <strong>copy chain</strong> and therefore recommends borrowing its deterministic tier — hooks, bands,
+        the advisory/deterministic pairing — and not its artefact ladder (R2 Q1b, collision 1, against
+        <code>s234-D1</code>).
+        <span class="src">R1 RULING-SHAPED Q1/Q2 · R2 §4 collision 1 · R2 RULING-SHAPED Q1</span></li>
+
+      <li><strong>What is Dave's.</strong> <strong>Twelve ruling-shaped questions</strong> — R1's six and R2's six —
+        set out with their options and each report's recommendation in section 8. P0 of the programme is
+        answering them; every phase except P6a waits on that.
+        <span class="src">R1 RULING-SHAPED Q1–Q6 · R2 RULING-SHAPED Q1–Q6 · brief §3</span></li>
+    </ol>
+
+    <div class="stats">
+      <div class="stat"><b>145</b><span>Principles written</span></div>
+      <div class="stat"><b>32</b><span>Source families</span></div>
+      <div class="stat"><b>30</b><span>Tensions mediated</span></div>
+      <div class="stat"><b>12</b><span>Rulings owed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+  <div class="wrap">
+    <div class="grid-2">
+      <div>
+        <span class="idx">01</span>
+        <p class="label">Goal worked back</p>
+        <h2>What a node must carry</h2>
+      </div>
+      <div>
+        <p class="answer">Working back from <strong>“Apollo defends a choice, not just makes one”</strong>, the
+          research says a principle node needs <strong>eight fields</strong> — and a node missing any one of them
+          cannot support a defence.</p>
+
+        <ol class="decisions">
+          <li><strong>Our-words statement.</strong> Every one of the 145 rows is written in the lane's own words,
+            ≤25 words, machine-checked with 0 violations. This is also what makes a licensed source usable at all.
+            <span class="src">R1 §2 · assets/…/principle-register.json field <code>statement</code></span></li>
+          <li><strong>Grade.</strong> R1 recommends the evidence grade as a first-class field so retrieval can rank
+            and refuse (Q1a) — “a graph without it will let Parkinson's Law outrank Fitts”. R1 states plainly that
+            the letters A/B/C/D/L are the conductor's working labels and the <em>names</em> are Dave's.
+            <span class="src">R1 RULING-SHAPED Q1 · field <code>grade</code>, <code>grade_alt</code>, <code>grade_reason</code></span></li>
+          <li><strong>Scope conditions.</strong> Fitts is derived from “rapid aimed movement… tapping and disc-transfer
+            tasks, not reading or decision tasks” — the condition is the difference between a law and a slogan.
+            <span class="src">R1 register field <code>scope_conditions</code></span></li>
+          <li><strong>Tension edges carrying the mediating variable.</strong> 30 tensions, each with the variable that
+            resolves it; 21 carry an Apollo touch. R1 leaves “edges or nodes?” explicitly undecided (Q4, no recommendation
+            — schema was fenced from that lane).
+            <span class="src">R1 §3 · assets/…/tensions.json field <code>mediating_variable</code> · R1 Q4</span></li>
+          <li><strong>Legal fence.</strong> R1 idea 3: pair every persuasion node with its legal node. Tension tn-19 is the
+            case — “the persuasion literature is a toolkit for exactly the behaviours Article 25 prohibits”.
+            <span class="src">R1 §5b idea 3 · tensions.json tn-19</span></li>
+          <li><strong><code>superseded_by</code> / <code>author_revised</code>.</strong> R1 finding 7: RFC 9413 walks back Postel;
+            NN/g's own page calls the F-pattern “bad for users and businesses”; Norman replaced affordance with signifier.
+            “The register needs this field or it will ship 1988 forever.”
+            <span class="src">R1 finding 7 · §5b idea 2</span></li>
+          <li><strong>Licence.</strong> R1 idea 5: the graph must know it may not emit text from a CC BY-NC-ND or proprietary
+            source. Tension tn-30 is licence-vs-generation chain.
+            <span class="src">R1 §5b idea 5 · §1 licence flags · tensions.json tn-30</span></li>
+          <li><strong>Expiry / re-check.</strong> R1 idea 13, citing <code>s129-D5</code> (conclusions are debt): “Cowan superseded
+            Miller in 2001 and the field did not notice for twenty years; a graph with no expiry will do the same.”
+            <span class="src">R1 §5b idea 13 · finding 8</span></li>
+        </ol>
+
+        <p><strong>Two fields already exist in the register and are not on the brief's list:</strong>
+          <code>known_misreadings</code> (Fitts “read as ‘make buttons big’… it predicts TIME, not preference”) and
+          <code>refutation_probe</code> (what was searched for to try to break the row). Both are populated across all
+          145 rows; whether they survive into the node shape is part of question 1's answer.
+          <span class="src">assets/2026-09-02-236-R1-principles-survey/principle-register.json</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+  <div class="wrap">
+    <span class="idx">02</span>
+    <p class="label">What the research found</p>
+    <h2>32 families, 145 principles — and the distribution <em>is</em> the finding</h2>
+    <p class="answer">Of 145 rows only <strong>6 are grade A</strong> against <strong>75 grade C</strong>: roughly
+      80% of what the field calls “laws” is expert consensus. Separately, <strong>27 rows are legal</strong>, which R1
+      argues is the single strongest reason to have the ladder in the graph at all.</p>
+
+    <h3>2.1 · The grade distribution</h3>
+    <div class="bars">
+      <div class="bar-row"><span class="bn">A · quantitative law</span><span class="bar-track"><span class="bar-fill acc" style="width:8%"></span></span><span class="bv">6</span></div>
+      <div class="bar-row"><span class="bn">B · replicated effect</span><span class="bar-track"><span class="bar-fill" style="width:37.3%"></span></span><span class="bv">28</span></div>
+      <div class="bar-row"><span class="bn">C · expert heuristic</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bv">75</span></div>
+      <div class="bar-row"><span class="bn">D · contested / folk</span><span class="bar-track"><span class="bar-fill" style="width:12%"></span></span><span class="bv">9</span></div>
+      <div class="bar-row"><span class="bn">L · legal requirement</span><span class="bar-track"><span class="bar-fill" style="width:36%"></span></span><span class="bv">27</span></div>
+    </div>
+    <p class="src">Bars scaled to the largest tier (C = 75). Counts read from
+      assets/2026-09-02-236-R1-principles-survey/principle-register.json (145 rows; A 6 · B 28 · C 75 · D 9 · L 27).
+      The ladder's own wording: A “quantitative law, replicated, predictive model” · B “replicated experimental effect” ·
+      C “expert heuristic, wide consensus, thin direct experiment” · D “contested, misapplied or folk” ·
+      L “legal or regulatory requirement, not a heuristic”. 38 rows carry an explicit alternative grade with its reason.</p>
+
+    <h3>2.2 · The source register (32 families)</h3>
+    <p>Licence tier is shown only where <strong>R1's ruling-shaped question 5</strong> names the family. R1's answer
+      lists <em>safe now</em> — GOV.UK (OGL), W3C/WCAG/APG/COGA, EN 301 549, FCA, DSA, EDPB and every peer-reviewed
+      primary — and <em>pointer-only</em> — Laws of UX (ND), NN/g, Baymard. Families it does not name are marked
+      <span class="chip">not tiered</span>: that is a gap in the evidence, not a judgement.
+      <strong>The tally is 16 safe-now, 3 pointer-only and 13 not tiered</strong> — so P2's membership rule, as R1 left it,
+      decides exactly half of the 32 families. The European Accessibility Act is one of the 13: it is legal-grade, but
+      R1's Q5 answer does not name it, so this page does not name it either.</p>
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>#</th><th>Family</th><th>Steward</th><th>Years</th><th>Kind</th><th>Items</th><th>Licence, as fetched</th><th>Tier (R1 Q5)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Laws of UX</td><td>Jon Yablonski</td><td class="num">2017–2026</td><td>law/effect catalogue (secondary)</td><td class="num">30</td><td>CC BY-NC-ND 4.0</td><td><span class="chip chip-a">Pointer-only</span></td></tr>
+          <tr><td class="num">2</td><td>Nielsen's 10 heuristics</td><td>Nielsen Norman Group</td><td class="num">1994–2020</td><td>expert heuristic set</td><td class="num">10</td><td>“All Rights Reserved”</td><td><span class="chip chip-a">Pointer-only</span></td></tr>
+          <tr><td class="num">3</td><td>Eight Golden Rules</td><td>Shneiderman / UMD</td><td class="num">1985–2016</td><td>expert heuristic set</td><td class="num">8</td><td>UNPROVEN: none in fetched text</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">4</td><td>First Principles of Interaction Design</td><td>Tognazzini (askTog)</td><td class="num">1978–2014</td><td>expert heuristic set</td><td class="num">20</td><td>“release for you to copy this post” notice (fragment)</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">5</td><td>GOV.UK Design Principles</td><td>UK GDS</td><td class="num">2012–2025</td><td>organisational principles</td><td class="num">11</td><td>Open Government Licence v3</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">6</td><td>ISO 9241 series (110 / 11 / 210)</td><td>ISO TC 159/SC 4</td><td class="num">1996–2020</td><td>international standard</td><td class="num">7 + defs + process</td><td>ISO copyright, paywalled</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">7</td><td>WCAG 2.2</td><td>W3C / WAI</td><td class="num">1999–2023</td><td>legal-grade standard</td><td class="num">4 / 13 / 87</td><td>W3C Document Licence</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">8</td><td>EN 301 549 V3.2.1</td><td>CEN / CENELEC / ETSI</td><td class="num">2014–2021</td><td>harmonised EU standard</td><td class="num">ch. 4–14</td><td>ETSI publication, free download</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">9</td><td>European Accessibility Act</td><td>EU / DG EMPL</td><td class="num">2019–2025</td><td>EU directive</td><td class="num">Annexes 1–3</td><td>EU reuse policy (not quoted)</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">10</td><td>FCA Consumer Duty (PRIN 2A)</td><td>UK FCA</td><td class="num">2022–2023</td><td>conduct rulebook</td><td class="num">4 outcomes + 3 obligations</td><td>FCA Handbook, Crown copyright (not quoted)</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">11</td><td>DSA Article 25</td><td>EU Reg. 2022/2065</td><td class="num">2022–2024</td><td>legal prohibition</td><td class="num">1</td><td>UNPROVEN: mirror site, none fetched</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">12</td><td>EDPB Guidelines 03/2022</td><td>European Data Protection Board</td><td class="num">2022–2023</td><td>regulatory guidance</td><td class="num">6 categories</td><td>EU reuse policy (not quoted)</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">13</td><td>Deceptive design taxonomy</td><td>Brignull / Testimonium Ltd</td><td class="num">2010–2026</td><td>ANTI-principles</td><td class="num">16</td><td>“©2026 Testimonium Ltd”</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">14</td><td>Inclusive Design Principles</td><td>Swan, Pouncey, Pickering, Watson</td><td class="num">2017–2026</td><td>expert principle set</td><td class="num">7</td><td>UNPROVEN: none in fetched text</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">15</td><td>ARIA Authoring Practices Guide</td><td>W3C / WAI</td><td class="num">2013–2026</td><td>implementation patterns</td><td class="num">~28</td><td>“Copyright © 2026 World Wide Web Consortium”</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">16</td><td>Making Content Usable (COGA)</td><td>W3C COGA Task Force</td><td class="num">2021</td><td>design objectives</td><td class="num">8 objectives / ~100 patterns</td><td>W3C Document Licence</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">17</td><td>Core Web Vitals / INP</td><td>Google web.dev</td><td class="num">2020–2026</td><td>measurable thresholds</td><td class="num">3</td><td>UNPROVEN: not captured</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">18</td><td>Android / Material touch targets</td><td>Google</td><td class="num">2014–2026</td><td>platform guideline</td><td class="num">1</td><td>UNPROVEN: not captured</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">19</td><td>Butterick's Practical Typography</td><td>Matthew Butterick</td><td class="num">2010–2026</td><td>typographic rules</td><td class="num">~40</td><td>UNPROVEN: none in fetched text</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">20</td><td>Baymard Institute</td><td>Baymard Institute</td><td class="num">2009–2026</td><td>proprietary empirical set</td><td class="num">700+</td><td>Proprietary / subscription</td><td><span class="chip chip-a">Pointer-only</span></td></tr>
+          <tr><td class="num">21</td><td>Fogg Behavior Model (B=MAP)</td><td>BJ Fogg / Stanford</td><td class="num">2009–2026</td><td>behavioural model</td><td class="num">3</td><td>UNPROVEN: not captured</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">22</td><td>Classic quantitative HCI models</td><td>peer-reviewed lit. (Crossref)</td><td class="num">1952–2013</td><td>quantitative laws</td><td class="num">6</td><td>n/a — bibliographic records</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">23</td><td>Cognitive-psychology primaries</td><td>peer-reviewed lit. (Crossref)</td><td class="num">1956–2001</td><td>replicated effects</td><td class="num">5</td><td>n/a — bibliographic records</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">24</td><td>Usability-method reliability lit.</td><td>Hertzum; Molich; Faulkner; Hornbæk</td><td class="num">2001–2008</td><td>meta-research</td><td class="num">4</td><td>n/a — bibliographic records</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">25</td><td>Information Foraging Theory</td><td>Pirolli &amp; Card (PARC)</td><td class="num">1999</td><td>predictive theory</td><td class="num">1</td><td>n/a — bibliographic record</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">26</td><td>Cognitive Dimensions of Notations</td><td>Green &amp; Petre / Green &amp; Blackwell</td><td class="num">1996</td><td>analytic framework</td><td class="num">14</td><td>n/a — bibliographic record</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">27</td><td>Situation awareness / workload</td><td>Endsley; Wickens</td><td class="num">1995–2002</td><td>applied cognitive theory</td><td class="num">2</td><td>n/a — bibliographic record</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">28</td><td>Technology Acceptance Model</td><td>Davis (MIS Quarterly)</td><td class="num">1989</td><td>replicated model</td><td class="num">2</td><td>n/a — bibliographic record</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">29</td><td>Graphical perception</td><td>Cleveland &amp; McGill (JASA)</td><td class="num">1984</td><td>encoding ranking</td><td class="num">1</td><td>n/a — bibliographic record</td><td><span class="chip chip-l">Safe now</span></td></tr>
+          <tr><td class="num">30</td><td>RFC 9413 Maintaining Robust Protocols</td><td>IETF / IAB</td><td class="num">2023</td><td>standards-body refutation</td><td class="num">1</td><td>IETF Trust (Copyright Notice present)</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">31</td><td>UIE / Center Centre</td><td>Porter / Spool</td><td class="num">2003–2026</td><td>empirical refutation</td><td class="num">1</td><td>“© 2026 Center Centre Inc”</td><td><span class="chip">not tiered</span></td></tr>
+          <tr><td class="num">32</td><td>Norman's principles</td><td>Don Norman / jnd.org</td><td class="num">1988–2013</td><td>expert set (self-corrected)</td><td class="num">6</td><td>UNPROVEN: none in fetched text</td><td><span class="chip">not tiered</span></td></tr>
+        </tbody>
+        <caption>Copied from assets/2026-09-02-236-R1-principles-survey/source-register.json (32 families) and
+          R1 §1. Ten of the 32 were not on the brief's candidate list. R1's method for finding them: follow the
+          refutation, follow the legal hook, and ask what Apollo's artefacts actually are.</caption>
+      </table>
+    </div>
+
+    <h3>2.3 · The nine grade-D rows — “famous but wrong”</h3>
+    <p>R1 finding 4: <strong>all nine D rows are famous.</strong> Six of the nine come from a single popularising
+      catalogue. R1's question 3 recommends they enter the graph anyway, as <em>inoculation</em> — nodes that fire
+      when someone cites the folk rule and carry the refutation with them.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Row id</th><th>Statement (R1's own words)</th><th>Family</th><th>Alternative grade, and why</th></tr></thead>
+        <tbody>
+          <tr><td class="k">pr-millers-law-menus</td><td>Menus and groups should hold seven plus or minus two items.</td><td>Laws of UX</td><td>—</td></tr>
+          <tr><td class="k">pr-three-click</td><td>Any content should be reachable within three clicks.</td><td>UIE / Center Centre</td><td>—</td></tr>
+          <tr><td class="k">pr-f-pattern</td><td>Users read pages in an F-shaped pattern, so put everything important along the F.</td><td>NN/g heuristics</td><td><strong>B as an observed reading behaviour.</strong> The observation replicates; the design rule drawn from it inverts the steward's meaning, so as a rule it is D.</td></tr>
+          <tr><td class="k">pr-doherty</td><td>System response under 400 ms makes people markedly more productive.</td><td>Laws of UX</td><td>—</td></tr>
+          <tr><td class="k">pr-choice-overload</td><td>More options make people less likely to choose and less happy with what they chose.</td><td>Laws of UX</td><td><strong>B under named moderators.</strong> The effect exists in specific conditions; as a general law it does not survive meta-analysis. Grade DOWN and name the moderators.</td></tr>
+          <tr><td class="k">pr-postels-law</td><td>Be conservative in what you send, liberal in what you accept.</td><td>RFC 9413 / robustness</td><td><strong>C for input-field tolerance specifically.</strong> The UI application is good practice; the general engineering law was demoted by the IETF.</td></tr>
+          <tr><td class="k">pr-pareto</td><td>Roughly 80 percent of effects come from 20 percent of causes, so optimise the vital few.</td><td>Laws of UX</td><td>—</td></tr>
+          <tr><td class="k">pr-occam</td><td>Among designs that work equally well, prefer the one with fewest assumptions.</td><td>Laws of UX</td><td>—</td></tr>
+          <tr><td class="k">pr-parkinsons</td><td>Work expands to fill the time available, so constrained time can improve completion.</td><td>Laws of UX</td><td>—</td></tr>
+        </tbody>
+        <caption>Copied row-for-row from principle-register.json where <code>grade == "D"</code> (9 rows).
+          R1 finding 4: “the fetched primaries either say something else (Miller), find no correlation (Porter),
+          cannot be retrieved at all (Doherty &amp; Thadhani 1982), or were meta-analysed to near zero (Scheibehenne 2010).”</caption>
+      </table>
+    </div>
+
+    <h3>2.4 · Five headline tensions</h3>
+    <p>Thirty were mapped; these five are the ones the phases below turn on. <strong>The mediating variable is the
+      product</strong> — not the verdict.</p>
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>#</th><th>Pulls against</th><th>Mediating variable</th><th>How it resolves</th><th>Apollo touch</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="k">tn-01</td>
+            <td>Jakob's Law ↔ Von Restorff</td>
+            <td><strong>Layer.</strong> Convention governs MECHANISM (where things are, how they behave); distinctiveness governs SIGNAL (which single element carries the moment). Also brand mandate.</td>
+            <td>Never trade them at the same layer. Diverge on signal, converge on mechanism. A brand that diverges on mechanism pays in error rate.</td>
+            <td><code>s151-D1</code> two-red law: one signal colour, background-keyed. The law <em>is</em> a Von Restorff budget with a legal contrast floor attached.</td>
+          </tr>
+          <tr>
+            <td class="k">tn-14</td>
+            <td>Miller's 7±2 ↔ Cowan's four chunks</td>
+            <td><strong>Neither applies.</strong> Both are recall-capacity claims and a visible menu is a recognition task.</td>
+            <td>Cite chunking (the mechanism) for grouping decisions and cite neither number for item counts. Use scanning cost instead.</td>
+            <td>Bento module counts (<code>s217-D2</code>/<code>s217-D5</code>) should be justified by grouping and scanning, NOT by 7±2.</td>
+          </tr>
+          <tr>
+            <td class="k">tn-19</td>
+            <td>DSA Art. 25 ↔ social proof · goal-gradient · loss aversion</td>
+            <td><strong>Truth and reversibility.</strong> A real count shown honestly is persuasion; a fabricated or non-reversible one is prohibited design.</td>
+            <td>Every persuasion node in the brain needs a paired legal node. Never let a B-grade effect be retrieved without its L-grade fence.</td>
+            <td>A concrete argument for the graph carrying grade L at all — the brain must know “wise” from “mandatory”.</td>
+          </tr>
+          <tr>
+            <td class="k">tn-25</td>
+            <td>Anti-preselection ↔ good defaults</td>
+            <td><strong>Consent vs convenience, and reversibility.</strong> A default on a data-protection choice is unlawful; a default on units or theme is a kindness.</td>
+            <td>Defaults are legal for preferences, prohibited for consent and for anything that costs the user money. Grade the SLOT, not the mechanism.</td>
+            <td>A generator that mints defaults needs this distinction encoded, or it will pre-tick a marketing consent by symmetry with a theme toggle.</td>
+          </tr>
+          <tr>
+            <td class="k">tn-27</td>
+            <td>Evaluator effect ↔ heuristic scores used as a rubric</td>
+            <td><strong>Mechanical vs inferential.</strong> Mechanical checks (contrast, target size, semantics) are reliable; judgement checks are not.</td>
+            <td>Rank on mechanical criteria and report judgement criteria as flagged observations, never as a score.</td>
+            <td><code>s234-D2</code> factory goal and <code>s234-D6</code> the one path-taking gate. R1 calls this the strongest reason the rubric must be split by check type.</td>
+          </tr>
+        </tbody>
+        <caption>Copied from assets/2026-09-02-236-R1-principles-survey/tensions.json (30 rows; ids tn-01, tn-14,
+          tn-19, tn-25, tn-27). 21 of the 30 carry an Apollo touch.</caption>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+  <div class="wrap">
+    <span class="idx">03</span>
+    <p class="label">Phases</p>
+    <h2>Seven phases, and the first one is Dave's</h2>
+    <p class="answer">P0 is <strong>answering the twelve questions</strong>; it blocks everything below except P6a.
+      P1–P4 run in order; <strong>P5 and P6 run parallel</strong> to them because neither touches the principle schema.</p>
+
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>Phase</th><th>Owner</th><th>Inputs</th><th>Output</th><th>Close condition</th><th>Report row</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>P0 · Rulings</strong></td>
+            <td><strong>Dave</strong></td>
+            <td>The 12 ruling-shaped questions with options and recommendations (section 8)</td>
+            <td>12 answers, inscribed by the one <code>_rulings.json</code> writer</td>
+            <td>All 12 answered. <strong>Blocks everything below except P6a.</strong></td>
+            <td class="k">R1 Q1–Q6 · R2 Q1–Q6</td>
+          </tr>
+          <tr>
+            <td><strong>P1 · Vocabulary + schema</strong></td>
+            <td>Factory (build lane)</td>
+            <td>P0 answers; R1 finding 1; the register's field list</td>
+            <td>Node types per Dave's P0 answers (principle / requirement / tension / anti-pattern); the “gestalt” collision resolved; a licence field with generator refusal; an expiry policy</td>
+            <td>Vocabulary decided and the schema written down; a false-retrieval probe on “gestalt” returns clean</td>
+            <td class="k">R1 finding 1 · ideas 2, 5, 7, 13 · R1 Q2, Q4</td>
+          </tr>
+          <tr>
+            <td><strong>P2 · Import wave 1</strong></td>
+            <td>Factory (generator)</td>
+            <td>P1 schema; source-register.json; principle-register.json</td>
+            <td>The legal set plus the A/B primaries, <strong>GENERATED from the registers by a generator</strong>, never hand-typed. Laws of UX / NN/g / Baymard enter as pointers only</td>
+            <td>Every imported node traces to a register row and a fetched receipt; no node carries text from a pointer-only family</td>
+            <td class="k">R1 Q5 (recommends legal set + A/B primaries first) · <code>s234-D1</code></td>
+          </tr>
+          <tr>
+            <td><strong>P3 · Explain Apollo's rulings</strong></td>
+            <td>Factory (build lane)</td>
+            <td>The 12 proposed touchpoints; P2 nodes</td>
+            <td>12 <code>explainedBy</code> links, <strong>one-directional and advisory</strong></td>
+            <td>A retrieval on a ruling returns its principle; a retrieval on a principle cannot overturn a ruling</td>
+            <td class="k">R1 §5a (12 touchpoints) · R1 Q6</td>
+          </tr>
+          <tr>
+            <td><strong>P4 · Consumers</strong></td>
+            <td>Factory (build lane)</td>
+            <td>P2 nodes; P3 links; the rubric <code>s234-D2</code>; <code>_validate_screen.py</code></td>
+            <td>Retrieval returns principle + fence + tension; the rubric split mechanical / inferential; an anti-pattern detector in <code>_validate_screen.py</code>; a recall-vs-fetch gate for numeric claims</td>
+            <td>Each consumer is DRIVEN on real data, not merely built (green tests cannot see scope)</td>
+            <td class="k">R1 idea 1 (split rubric) · tn-27 · idea 4 (detector) · idea 6 (recall-vs-fetch gate)</td>
+          </tr>
+          <tr>
+            <td><strong>P5 · Discover options</strong></td>
+            <td>Product</td>
+            <td>R2 §5's three sketches; the shipped <code>grill-me</code> skill</td>
+            <td>A decision on the first phase of a design task: <strong>B (grill) stays default</strong>; <strong>A (intent)</strong> offered only if it GENERATES the brief; <strong>C (pattern-first)</strong> as the research build</td>
+            <td>Dave rules menu-vs-sequence (R2 Q3) and, if A is taken, the generation is real rather than a convention (R2 Q1b)</td>
+            <td class="k">R2 §5 options A/B/C · R2 Q1, Q3</td>
+          </tr>
+          <tr>
+            <td><strong>P6 · Memento + deployment borrows</strong></td>
+            <td>Factory (Memento) / release</td>
+            <td>R2's borrow matrix, M and D columns — <strong>ADOPT and ADAPT cells only</strong></td>
+            <td>Six sub-items, listed below</td>
+            <td>Each sub-item's own close condition; P6a does not wait on P0</td>
+            <td class="k">R2 §2 matrix (M: 1 ADOPT / 9 ADAPT / 2 REJECT · D: 3 / 8 / 1)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>P6 in detail — six borrows, from the matrix's ADOPT/ADAPT cells</h3>
+    <ol class="decisions">
+      <li><strong>P6a · Hooks trial on two rules.</strong> R2 finding 6: Apollo has <strong>no hooks</strong> — <code>ls -a .claude/</code>
+        returns <code>.</code>, <code>..</code>, <code>agents</code>, and every deterministic rule fires at commit or CI time, never as the
+        agent acts. R2 recommends (a) <em>as a trial on two rules only</em> — <code>git add -A</code> and the skipped wrap — “because
+        the class it catches is the class that has cost the most sessions”. <strong>Not blocked by P0.</strong>
+        <span class="src">R2 matrix row 10/M · R2 Q4 · R2 finding 6 · R2 idea 1</span></li>
+      <li><strong>P6b · A band breach mints a row.</strong> R2 finding 7: the nearest structural rhyme to Memento in the whole
+        playbook is stage 6, not stage 1 — a deterministic detector with a rolling baseline and no model in the detection.
+        The named change is that a breach mints a register row, not only a wrap.
+        <span class="src">R2 matrix row 12/M · R2 idea 7</span></li>
+      <li><strong>P6c · “You may not edit the gate you are graded by.”</strong> R2's row 7/M: the loop exists (49 gates plus
+        <code>_checkin.py</code>); the clause that is <em>absent</em> is protection of the loop from the thing it grades. One wrap check.
+        <span class="src">R2 matrix row 7/M · R2 idea 6</span></li>
+      <li><strong>P6d · A severity vocabulary for reviews.</strong> <code>_REVIEW-SIGNOFF.md</code> (265KB) has no severity vocabulary,
+        so everything reads at one weight. R2 recommends taking REVIEW.md's <em>shape</em> only — named passes, an Important-vs-Nit
+        line, a nit cap, a do-not-report list. Depends on Dave ruling the passes.
+        <span class="src">R2 matrix row 9/M and 9/D · R2 idea 4</span></li>
+      <li><strong>P6e · Derived release-authorisation, so HELD is machine-readable.</strong> R2 collision 4: play 5's automatic
+        skill-version pickup, adopted as written, would ship a HELD version — v1.0.5 is held on Dave's word, recorded in
+        <code>_rulings.json</code> and nowhere a build can read it. R2 recommends <strong>deriving</strong> the authorisation file from the
+        store, never typing it, so it does not become a second home for one fact.
+        <span class="src">R2 matrix row 11/D · R2 Q5 · R2 collision 4</span></li>
+      <li><strong>P6f · Cold tests as an eval suite — mechanical arms only, after L2.</strong> R2 calls Q6 “genuinely two-sided”:
+        the cold test's value is that it is <em>cold</em>, and freezing it turns it into something the generator can be tuned against.
+        Its recommendation is (a) <strong>for the mechanical arms only</strong>, keeping Dave's eye unfrozen. Depends on the v1.0.6
+        behaviour contract (L2) landing first, so there is behaviour to assert.
+        <span class="src">R2 matrix row 8/D · R2 Q6 · R2 idea 2</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+  <div class="wrap">
+    <span class="idx">04</span>
+    <p class="label">Dependency map</p>
+    <h2>What blocks what</h2>
+    <p class="answer">One gate (P0), one chain (P1→P2→P3→P4), two parallel tracks (P5, P6), and
+      <strong>three external inputs</strong> that reach in from outside the programme.</p>
+
+    <figure>
+      <div class="figframe">
+        <svg viewBox="0 0 900 470" role="img" aria-labelledby="mapTitle mapDesc">
+          <title id="mapTitle">Dependency map of the designer's-brain programme</title>
+          <desc id="mapDesc">P0 Rulings gates the programme and feeds a horizontal spine into four sequential
+            phases: P1 Vocabulary and schema, P2 Import wave 1, P3 Explain Apollo's rulings, P4 Consumers.
+            Two dashed connections run from P0 down the outside to two parallel tracks: P5 Discover options and
+            P6 Memento and deployment borrows. A dashed band below carries three external inputs: the s234-D1
+            generation chain, which governs every artefact in P1 to P6; the licence tier from R1 question 5,
+            which sets P2 membership; and the v1.0.6 L2 behaviour address, which feeds P4's response budget
+            and P6f.</desc>
+
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <!-- P0 gate -->
+          <rect class="svg-box-acc" x="40" y="18" width="820" height="46"/>
+          <text class="svg-t-a" x="56" y="38">P0 · RULINGS — Dave answers the 12 ruling-shaped questions</text>
+          <text class="svg-t-s" x="56" y="54">Blocks everything below except P6a. Source: R1 Q1–Q6 · R2 Q1–Q6</text>
+
+          <!-- spine -->
+          <g style="color:var(--ink-3)">
+            <path class="svg-line" d="M450 64 L450 92"/>
+            <path class="svg-line" d="M130 92 L770 92"/>
+            <path class="svg-line" d="M130 92 L130 114" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M343 92 L343 114" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M556 92 L556 114" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M770 92 L770 114" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M220 162 L249 162" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M433 162 L462 162" marker-end="url(#ah)"/>
+            <path class="svg-line" d="M646 162 L675 162" marker-end="url(#ah)"/>
+          </g>
+
+          <!-- P1 -->
+          <rect class="svg-box" x="40" y="118" width="180" height="88"/>
+          <text class="svg-t-b" x="52" y="138">P1 · VOCABULARY</text>
+          <text class="svg-t-b" x="52" y="152">+ SCHEMA</text>
+          <text class="svg-t" x="52" y="170">gestalt collision</text>
+          <text class="svg-t" x="52" y="184">node types · licence</text>
+          <text class="svg-t" x="52" y="198">field · expiry policy</text>
+
+          <!-- P2 -->
+          <rect class="svg-box" x="253" y="118" width="180" height="88"/>
+          <text class="svg-t-b" x="265" y="138">P2 · IMPORT</text>
+          <text class="svg-t-b" x="265" y="152">WAVE 1</text>
+          <text class="svg-t" x="265" y="170">legal set + A/B</text>
+          <text class="svg-t" x="265" y="184">primaries, GENERATED</text>
+          <text class="svg-t" x="265" y="198">ND / proprietary = pointer</text>
+
+          <!-- P3 -->
+          <rect class="svg-box" x="466" y="118" width="180" height="88"/>
+          <text class="svg-t-b" x="478" y="138">P3 · EXPLAIN</text>
+          <text class="svg-t-b" x="478" y="152">APOLLO'S RULINGS</text>
+          <text class="svg-t" x="478" y="170">12 touchpoints as</text>
+          <text class="svg-t" x="478" y="184">one-directional,</text>
+          <text class="svg-t" x="478" y="198">advisory explainedBy</text>
+
+          <!-- P4 -->
+          <rect class="svg-box" x="680" y="118" width="180" height="88"/>
+          <text class="svg-t-b" x="692" y="138">P4 · CONSUMERS</text>
+          <text class="svg-t" x="692" y="158">retrieval + fence +</text>
+          <text class="svg-t" x="692" y="172">tension · rubric split</text>
+          <text class="svg-t" x="692" y="186">mechanical/inferential</text>
+          <text class="svg-t" x="692" y="200">· anti-pattern gate</text>
+
+          <!-- dashed risers to the parallel tracks -->
+          <g style="color:var(--ink-4)">
+            <path class="svg-dash" d="M40 41 L20 41 L20 286 L36 286" marker-end="url(#ah)"/>
+            <path class="svg-dash" d="M860 41 L880 41 L880 286 L864 286" marker-end="url(#ah)"/>
+          </g>
+
+          <!-- P5 -->
+          <rect class="svg-box" x="40" y="250" width="400" height="72"/>
+          <text class="svg-t-b" x="52" y="272">P5 · DISCOVER OPTIONS (R2 §5)</text>
+          <text class="svg-t" x="52" y="290">B grill stays default · A intent only if it GENERATES</text>
+          <text class="svg-t" x="52" y="306">the brief · C pattern-first is the research build</text>
+
+          <!-- P6 -->
+          <rect class="svg-box" x="460" y="250" width="400" height="72"/>
+          <text class="svg-t-b" x="472" y="272">P6 · MEMENTO + DEPLOYMENT BORROWS</text>
+          <text class="svg-t" x="472" y="290">a hooks trial · b band breach mints a row · c may not</text>
+          <text class="svg-t" x="472" y="306">edit your own gate · d severity · e derived HELD · f evals</text>
+
+          <text class="svg-t-s" x="460" y="338">P6a is exempt from the P0 gate — the hooks trial does not wait on a ruling.</text>
+
+          <!-- external band -->
+          <rect class="svg-box-soft" x="40" y="366" width="820" height="80"/>
+          <text class="svg-t-b" x="56" y="386">EXTERNAL INPUTS</text>
+          <text class="svg-t" x="56" y="404">s234-D1 · generation chain → every artefact in P1–P6 is GENERATED from the graph, never copied</text>
+          <text class="svg-t" x="56" y="420">Licence tier (R1 Q5) → P2 membership: safe-now families only; Laws of UX / NN/g / Baymard stay pointers</text>
+          <text class="svg-t" x="56" y="436">v1.0.6 L2 behaviour address → P4 response budget (R1 idea 11) · P6f cold-test eval suite (R2 Q6)</text>
+        </svg>
+      </div>
+      <figcaption>
+        <strong>Grammar of the map:</strong> a solid arrow means <em>blocks</em> — the target cannot start until the
+        source is done. A dashed line means <em>parallel and advisory</em> — informed by, not gated by. The dashed
+        band at the foot is not a phase: it holds three inputs that originate outside this programme and reach into it,
+        each naming its own target in the line. Sources: brief §3 and §4 · R1 Q5 · R2 §2 matrix · <code>s234-D1</code>.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+  <div class="wrap">
+    <span class="idx">05</span>
+    <p class="label">Pitfalls — consequences replayed</p>
+    <h2>Eleven ways this goes wrong</h2>
+    <p class="answer">Each line is <strong>cause → consequence → fence</strong>. Nine of the eleven already have a
+      fence proposed by one of the two reports; two (scope creep, window FILL) are governed by the plan itself.</p>
+
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>#</th><th>Cause</th><th>Consequence</th><th>Fence, and who proposed it</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Licensed wording copied into a bank's asset</td><td>A CC BY-NC-ND or proprietary source's text ships inside a commercial client deliverable</td><td>A licence field with <strong>generator refusal</strong> (R1 idea 5), plus the pointer-only tier (R1 Q5). tn-30 is the tension in the register.</td></tr>
+          <tr><td class="num">2</td><td>A heuristic graded as a law</td><td>It becomes a generator constraint and “a 1980s aphorism outranks Fitts” — 75 of 145 rows are grade C</td><td>The grade as a first-class field, so retrieval can rank and refuse (R1 recommends Q1a).</td></tr>
+          <tr><td class="num">3</td><td>Borrowing the playbook's artefact ladder</td><td>The COPY chain — spec restates intent, plan restates spec — re-opens the principle #234 was built on</td><td>Take the deterministic tier only (R2 Q1, recommends b — intent only if it GENERATES the brief). R2 collision 1 against <code>s234-D1</code>: “Never the same fact twice.”</td></tr>
+          <tr><td class="num">4</td><td>Vocabulary collision on “gestalt”</td><td>The word already means <em>Dave's eye</em> in <code>_FIXED-FLEX-CHARTER.md</code> (“residual gestalt = human”) and a vendor's name in <code>_memento-index.json</code>; importing Gestalt principles produces false retrievals</td><td>Resolve the collision before import (R1 idea 7; finding 1). One decision, in P1.</td></tr>
+          <tr><td class="num">5</td><td>Hallucinated citation — recall standing in for a fetch</td><td>The #236 brief itself said “45–75 characters” where the fetched steward page says <strong>“line length 45–90 characters or 2–3 alphabets”</strong>; neither figure has a primary study behind it</td><td>A recall-vs-fetch gate for numeric claims — any figure with no fetched receipt gets marked (R1 idea 6; finding 6).</td></tr>
+          <tr><td class="num">6</td><td>A principle overturning a ruling</td><td>The graph starts arguing with the house — Von Restorff against <code>s151-D1</code></td><td>Never. R1 recommends <code>explainedBy</code> be <strong>one-directional and advisory</strong> (Q6): “a principle may explain a ruling; a principle must never be able to overturn one.”</td></tr>
+          <tr><td class="num">7</td><td>An evaluator effect treated as a score</td><td>Trained evaluators reach substantially different findings from the same heuristic list, so a “ranked against solid UI/UX standards” number is not reliable</td><td>Split the rubric by check type — rank on mechanical, flag inferential (R1 idea 1; tn-27; Dave's own <code>s234-D6</code> “mechanical over inference”).</td></tr>
+          <tr><td class="num">8</td><td>No expiry on a principle node</td><td>1988 forever. Cowan's correction to Miller has been available since 2001 and is still not in the popular lists</td><td>An expiry / re-check policy (R1 idea 13, citing <code>s129-D5</code> conclusions-are-debt), plus <code>superseded_by</code> (idea 2).</td></tr>
+          <tr><td class="num">9</td><td>Automatic skill-version pickup</td><td>A HELD version ships — v1.0.5 waits on v1.0.6 by Dave's word, and no build can read that</td><td>A <strong>derived</strong> release-authorisation file the pack build reads (R2 Q5, recommends derive; R2 collision 4; P6e).</td></tr>
+          <tr><td class="num">10</td><td>Scope creep into building before P0</td><td>The schema gets decided by whoever builds first, and Dave's twelve questions arrive as a formality</td><td>P0 gates P1–P5 and all of P6 except P6a. This plan's own structure (brief §3).</td></tr>
+          <tr><td class="num">11</td><td>Fable quota and window FILL</td><td>The conducting session reached <strong>FILL 180K</strong> — past the advisory stop line — by the time this plan was briefed; judgement work at that fill is the expensive kind</td><td>Assemble, do not re-derive: this page is assembly of two filed reports, and the reports are the authority (brief header).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+  <div class="wrap">
+    <span class="idx">06</span>
+    <p class="label">Externalities</p>
+    <h2>Five forces this programme does not control</h2>
+    <p class="answer">Regulation reaches design <strong>directly</strong>, licences decide what may be stored at all,
+      positioning constrains what may be said in public, one human ruler binds the schedule, and the field itself
+      keeps revising the sources.</p>
+
+    <div class="grid-half">
+      <div>
+        <h4>1 · Regulation, arriving as a market driver</h4>
+        <p>R1 finding 9: the FCA's PRIN 2A names four outcomes — <em>“product governance, price and value, consumer
+          understanding and supporting consumers”</em>. Consumer understanding and consumer support are <strong>design
+          outcomes with an enforcement mechanism behind them</strong>, and Apollo's clients are exactly the firms bound
+          by them. DSA Article 25 prohibits interfaces that deceive; the European Accessibility Act sits behind
+          EN 301 549. Twenty-seven of the 145 rows are legal.
+          <span class="src">R1 finding 9 · §1 families 7–12 · principle-register.json grade L = 27</span></p>
+
+        <h4>2 · Licence owners</h4>
+        <p>Three families can only ever be pointers: Yablonski's Laws of UX (CC BY-NC-ND 4.0 — <em>no derivatives,
+          non-commercial</em>), NN/g (“All Rights Reserved”), Baymard (proprietary/subscription). Separately, the
+          SDLC playbook R2 read is Anthropic's copyrighted publication — R2 borrowed its <em>structure</em> and quoted
+          it in ≤15-word receipts, which is the same discipline the principle register uses.
+          <span class="src">R1 §1 licence flags · R1 Q5 · R2 §1</span></p>
+      </div>
+      <div>
+        <h4>3 · The positioning rule</h4>
+        <p>Apollo's public copy stays abstract and never describes gate or token mechanics. Anything from this
+          programme that reaches a client-facing surface — a claim about grades, a compliance harness, an eval
+          suite — is subject to that rule before it is subject to this plan.
+          <span class="src">standing positioning rule · echoed at R2 idea 10</span></p>
+
+        <h4>4 · One human ruler</h4>
+        <p>R2's non-transfer 1: the playbook routes every governance decision to a <em>different</em> person — seven
+          roles. Here they collapse onto one. R2's non-transfer 8 draws the consequence: the constraint is
+          <strong>Dave's eye</strong>, which “is not a process step waiting to be automated — it is the acceptance function
+          of the product”. <strong>Decision load, not tokens, is what binds this programme's schedule.</strong>
+          <span class="src">R2 §3 non-transfers 1 and 8</span></p>
+
+        <h4>5 · The field's own drift</h4>
+        <p>R1 finding 7: RFC 9413 (IETF, 2023) walks back Postel's robustness principle; NN/g's own page calls the
+          F-shaped pattern “bad for users and businesses”; Norman replaced his most-quoted use of “affordance” with
+          “signifier”; and Cowan's 2001 correction to Miller went unnoticed for twenty years (finding 8). Sources move
+          after import, which is why the expiry field is an externality and not a nicety.
+          <span class="src">R1 findings 7 and 8 · families 30, 32</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+  <div class="wrap">
+    <span class="idx">07</span>
+    <p class="label">Ideas backlog</p>
+    <h2>All 23 ideas — nothing dropped</h2>
+    <p class="answer">R1 surfaced <strong>13</strong> and R2 surfaced <strong>10</strong>, at Dave's standing instruction
+      (“and ideas for other tasks, lets not miss that”). Thirteen map onto a phase in section 3; <strong>ten are not
+      placed</strong> and are listed as backlog rather than quietly folded in.</p>
+
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>#</th><th>Idea</th><th>Depends on</th><th>Phase it would join</th><th>Source row</th></tr></thead>
+        <tbody>
+          <tr><td class="num">R1-1</td><td>Split the quality rubric by check type — mechanical scores, inferential only flags</td><td><code>s234-D6</code>'s path-taking gate; nothing new</td><td><strong>P4</strong></td><td class="k">R1 §5b idea 1 · tn-27</td></tr>
+          <tr><td class="num">R1-2</td><td>A <code>superseded_by</code> / <code>author_revised</code> field on any principle node</td><td>The node shape Dave rules</td><td><strong>P1</strong></td><td class="k">R1 §5b idea 2 · finding 7</td></tr>
+          <tr><td class="num">R1-3</td><td>Pair every persuasion node with its legal fence</td><td>Grade L existing as a distinct thing</td><td><strong>P1 → P2</strong></td><td class="k">R1 §5b idea 3 · tn-19</td></tr>
+          <tr><td class="num">R1-4</td><td>An anti-pattern detector in <code>_validate_screen.py</code> — preselected consent, hidden costs, obstruction, confirmshaming</td><td>The deceptive-design taxonomy entering as anti-nodes</td><td><strong>P4</strong></td><td class="k">R1 §5b idea 4</td></tr>
+          <tr><td class="num">R1-5</td><td>A licence field with generator refusal</td><td>The source register; blocks any Laws of UX or Baymard import</td><td><strong>P1 → P2</strong></td><td class="k">R1 §5b idea 5 · Q5</td></tr>
+          <tr><td class="num">R1-6</td><td>A “recall vs fetch” gate for numeric claims</td><td>Nothing</td><td><strong>P4</strong></td><td class="k">R1 §5b idea 6 · finding 6</td></tr>
+          <tr><td class="num">R1-7</td><td>Resolve the “gestalt” vocabulary collision before import</td><td>Nothing; costs one decision</td><td><strong>P1</strong></td><td class="k">R1 §5b idea 7 · finding 1</td></tr>
+          <tr><td class="num">R1-8</td><td>Replace click-count thinking with information scent in navigation patterns</td><td>Pirolli &amp; Card entering the graph</td><td>— backlog</td><td class="k">R1 §5b idea 8</td></tr>
+          <tr><td class="num">R1-9</td><td>A situation-awareness lens for the bento dashboard type — perceive / comprehend / project</td><td><code>s217-D5</code>'s type matrix</td><td>— backlog</td><td class="k">R1 §5b idea 9</td></tr>
+          <tr><td class="num">R1-10</td><td>Cleveland–McGill encoding ranking as a field on <code>chart-intents.json</code></td><td>The charts pillar owner</td><td>— backlog</td><td class="k">R1 §5b idea 10</td></tr>
+          <tr><td class="num">R1-11</td><td>A response budget in the behaviour contract — acknowledge ≤100 ms, plus a declared policy for showing work</td><td><code>s234-D5</code>'s behaviour address; the INP threshold is UNPROVEN (R1 UNPROVEN 5)</td><td><strong>P4</strong> (external edge: v1.0.6 L2)</td><td class="k">R1 §5b idea 11</td></tr>
+          <tr><td class="num">R1-12</td><td>A Consumer Duty comprehension harness — test whether people understood, not whether they liked it</td><td>Dave deciding it is in scope</td><td>— backlog (R1 calls it “the biggest unserved need for a bank client”)</td><td class="k">R1 §5b idea 12</td></tr>
+          <tr><td class="num">R1-13</td><td>An expiry / re-check policy for principle nodes</td><td>The node shape; <code>s129-D5</code></td><td><strong>P1</strong></td><td class="k">R1 §5b idea 13</td></tr>
+          <tr><td class="num">R2-1</td><td>A hook layer for the two rules that break most — <code>git add -A</code> and the skipped wrap, as <code>PreToolUse</code> hooks</td><td>Creating <code>.claude/settings.json</code>; nothing exists today</td><td><strong>P6a</strong></td><td class="k">R2 §6 idea 1 · Q4 · finding 6</td></tr>
+          <tr><td class="num">R2-2</td><td>Freeze Dave's cold tests as an eval suite over the pack</td><td>The v1.0.6 behaviour contract landing (L2)</td><td><strong>P6f</strong></td><td class="k">R2 §6 idea 2 · Q6</td></tr>
+          <tr><td class="num">R2-3</td><td>A release-authorisation file the pack build reads, so HELD is a state a machine sees</td><td>Nothing — one file plus a check in <code>build-designer-pack.sh</code></td><td><strong>P6e</strong></td><td class="k">R2 §6 idea 3 · Q5</td></tr>
+          <tr><td class="num">R2-4</td><td>A severity vocabulary for reviews — Important / Nit / do-not-report</td><td>Dave ruling the passes</td><td><strong>P6d</strong></td><td class="k">R2 §6 idea 4</td></tr>
+          <tr><td class="num">R2-5</td><td>Lane worktrees for v1.0.6 L1–L3</td><td>Nothing; retires the reconcile-by-hand class</td><td>— backlog</td><td class="k">R2 §6 idea 5 · matrix row 6/D</td></tr>
+          <tr><td class="num">R2-6</td><td>“You may not edit the gate you are graded by.”</td><td>Nothing; it is a wrap check</td><td><strong>P6c</strong></td><td class="k">R2 §6 idea 6 · matrix row 7/M</td></tr>
+          <tr><td class="num">R2-7</td><td>Close the gauge loop — a band breach mints a row, not only a wrap</td><td><code>_checkin.py</code>'s output shape</td><td><strong>P6b</strong></td><td class="k">R2 §6 idea 7 · matrix row 12/M</td></tr>
+          <tr><td class="num">R2-8</td><td>A visual feedback round for the product — screenshot vs the approved mock</td><td>The three browser gates already in the pack</td><td>— backlog</td><td class="k">R2 §6 idea 8 · matrix row 7/P</td></tr>
+          <tr><td class="num">R2-9</td><td>Ship a rails-file writer as a pack skill, so a designer's project gets its own <code>CLAUDE.md</code> / <code>AGENTS.md</code></td><td>Nothing</td><td>— backlog</td><td class="k">R2 §6 idea 9 · matrix row 4/P</td></tr>
+          <tr><td class="num">R2-10</td><td>Apollo's own “shifts” table — traditional design-system work vs AI-native — as pack framing</td><td>The standing positioning rule (public copy stays abstract)</td><td>— backlog</td><td class="k">R2 §6 idea 10</td></tr>
+        </tbody>
+        <caption>23 rows: R1's 13 (report §5b) and R2's 10 (report §6). Phase placement follows the brief's §3
+          description of each phase; where the brief does not place an idea it is marked “backlog” rather than assigned.</caption>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+  <div class="wrap">
+    <span class="idx">08</span>
+    <p class="label">Rulings owed — Dave's</p>
+    <h2>Twelve questions, in plain words</h2>
+    <p class="answer">Six from the principles survey and six from the playbook read. <strong>Each carries its
+      report's recommendation, and one (R1's Q4) has none</strong> — schema was fenced from that lane, so the report
+      declined to recommend rather than guess.</p>
+
+    <h3>From R1 — the principles survey</h3>
+    <ol class="decisions">
+      <li><strong>Does the evidence grade go into the graph at all?</strong>
+        <ul class="opts">
+          <li>(a) Yes — a first-class field on every principle node, so retrieval can rank and refuse.</li>
+          <li>(b) No — keep the grades in the report and import only what survives a manual cull.</li>
+        </ul>
+        <p><strong>R1 recommends (a)</strong>, because the grade is the product of that lane and a graph without it
+          “will let Parkinson's Law outrank Fitts”. R1 adds that the letters A/B/C/D/L are its own working labels
+          — <em>the names are Dave's</em>.
+          <span class="src">receipt: R1 RULING-SHAPED Q1</span></p></li>
+
+      <li><strong>Is “legal” a separate node type rather than a grade?</strong>
+        <ul class="opts">
+          <li>(a) A fifth rung on one ladder.</li>
+          <li>(b) A distinct “requirement” type that a principle can never outrank.</li>
+        </ul>
+        <p><strong>R1 recommends (b)</strong>: 27 rows are legal obligations, and the ladder metaphor implies they can
+          lose an argument. They cannot.
+          <span class="src">receipt: R1 RULING-SHAPED Q2 · finding 3</span></p></li>
+
+      <li><strong>Do the discredited “grade D” principles enter at all?</strong>
+        <ul class="opts">
+          <li>(a) Exclude them.</li>
+          <li>(b) Include them as <em>inoculation</em> — nodes whose purpose is to fire when someone cites the folk rule, carrying the refutation.</li>
+        </ul>
+        <p><strong>R1 recommends (b)</strong>: “someone will say ‘three clicks’ in a client meeting and the brain
+          should have Porter's data ready.”
+          <span class="src">receipt: R1 RULING-SHAPED Q3 · the 9 D rows in §2.3 above</span></p></li>
+
+      <li><strong>Are tensions edges or nodes?</strong>
+        <ul class="opts">
+          <li>(a) Typed edges between two principles, carrying the mediating variable.</li>
+          <li>(b) Their own node type — several tensions are triples, and several carry an Apollo ruling as the resolution.</li>
+        </ul>
+        <p><strong>R1 makes no recommendation.</strong> It states this is a schema question and schema was fenced
+          from that lane. <span class="chip chip-a">no recommendation</span>
+          <span class="src">receipt: R1 RULING-SHAPED Q4</span></p></li>
+
+      <li><strong>Which source families enter first?</strong>
+        <ul class="opts">
+          <li>Safe now — GOV.UK (OGL), W3C / WCAG / APG / COGA, EN 301 549, FCA, DSA, EDPB, and every peer-reviewed primary (facts, not text).</li>
+          <li>Pointer-only — Laws of UX (ND licence), NN/g, Baymard.</li>
+        </ul>
+        <p><strong>R1 recommends</strong> starting with the legal set plus the A/B primaries: “highest value, lowest
+          licence risk, smallest count.”
+          <span class="src">receipt: R1 RULING-SHAPED Q5 · source-register.json licence column</span></p></li>
+
+      <li><strong>Should Apollo's own rulings gain an <code>explainedBy</code> link to principles?</strong>
+        <ul class="opts">
+          <li>The 12 touchpoints in R1 §5a are proposals only; every id was confirmed present in <code>_rulings.json</code> by name.</li>
+        </ul>
+        <p><strong>R1 recommends yes, but one-directional and advisory</strong> — “a principle may explain a ruling;
+          a principle must never be able to overturn one. <code>s151-D1</code> outranks Von Restorff in this house.”
+          <span class="src">receipt: R1 RULING-SHAPED Q6 · §5a touchpoints 1–12</span></p></li>
+    </ol>
+
+    <h3>From R2 — the AI-native SDLC playbook</h3>
+    <ol class="decisions" start="7">
+      <li><strong>Does anything from the playbook's artefact chain enter Apollo at all?</strong>
+        <ul class="opts">
+          <li>(a) Nothing — take only the deterministic tier (hooks, bands, the advisory/deterministic pairing).</li>
+          <li>(b) One artefact only — the <em>intent</em>, and only if it GENERATES the brief rather than sitting beside it.</li>
+          <li>(c) The whole ladder, accepting the copy chain for the product even though the factory rejects it.</li>
+        </ul>
+        <p><strong>R2 recommends (b)</strong>, “because it is the only version that survives <code>s234-D1</code> — but the
+          generation has to be real, not a convention.”
+          <span class="src">receipt: R2 RULING-SHAPED Q1 · §4 collision 1</span></p></li>
+
+      <li><strong>Is a brief in <code>notes/_briefs/</code> history, or a live fact?</strong>
+        <ul class="opts">
+          <li>(a) History — frozen at write, like a sub-report; a departure lands in the filed report instead.</li>
+          <li>(b) Live — amendable in the same commit as the departure.</li>
+        </ul>
+        <p><strong>R2 recommends (a)</strong> for consistency with ADR-0017, with the departure recorded in the filed
+          report. R2 flags that the template rules <em>reports</em> are history and is silent on briefs — “this is Dave's
+          because it changes how every lane closes.”
+          <span class="src">receipt: R2 RULING-SHAPED Q2 · §4 collision 2</span></p></li>
+
+      <li><strong>Which first-phase option for a design task — and is it a menu or a sequence?</strong>
+        <ul class="opts">
+          <li>A — the intent route (the playbook's opening move, ported). Asks <em>what for</em>. ~10 minutes.</li>
+          <li>B — the grill route, already shipped in <code>apollo-spider/skills/grill-me/</code>. Asks <em>how it should look</em>.</li>
+          <li>C — the pattern-first route (not built). Asks <em>is this it</em>, by retrieving two or three real assemblies. ~5 minutes.</li>
+        </ul>
+        <p><strong>R2 recommends: B stays the default, A is offered when the designer cannot yet say what the thing
+          is for, C is the research build.</strong> It adds that “menu vs sequence is a product decision, not a research
+          one” — so that half is Dave's outright.
+          <span class="src">receipt: R2 RULING-SHAPED Q3 · §5 options A/B/C · finding 9</span></p></li>
+
+      <li><strong>Do hooks enter Memento at all?</strong>
+        <ul class="opts">
+          <li>(a) Yes — start with two <code>PreToolUse</code> hooks for the two most-breached rules.</li>
+          <li>(b) No — commit-time gating is the ruled posture, and a tool-call hook is a new enforcement surface with its own failure mode.</li>
+        </ul>
+        <p><strong>R2 recommends (a) as a trial on two rules only</strong>, “because the class it catches
+          (<code>git add -A</code>, the skipped wrap) is the class that has cost the most sessions.”
+          <span class="src">receipt: R2 RULING-SHAPED Q4 · finding 6</span></p></li>
+
+      <li><strong>Does <code>HELD</code> become machine-readable?</strong>
+        <ul class="opts">
+          <li>A release-authorisation file the pack build reads would make <code>s234-D1</code> checkable rather than remembered — cheap, but it creates a second home for a fact whose home is <code>_rulings.json</code>.</li>
+        </ul>
+        <p><strong>R2 recommends: derive it</strong> from the store, never type it.
+          <span class="src">receipt: R2 RULING-SHAPED Q5 · §4 collision 4</span></p></li>
+
+      <li><strong>Do Dave's cold tests become a frozen eval suite?</strong>
+        <ul class="opts">
+          <li>(a) Yes, after L2 lands.</li>
+          <li>(b) No — the cold test's value is that it is <em>cold</em>, and freezing it turns it into something the generator can be tuned against.</li>
+        </ul>
+        <p>R2 calls this <strong>“genuinely two-sided”</strong> and <strong>recommends (a) for the mechanical arms only</strong>,
+          keeping Dave's eye unfrozen.
+          <span class="src">receipt: R2 RULING-SHAPED Q6</span></p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+  <div class="wrap">
+    <span class="idx">09</span>
+    <p class="label">UNPROVEN register</p>
+    <h2>Eight declared gaps, each with the price of closing it</h2>
+    <p class="answer">R1 declared <strong>18</strong> UNPROVEN or CLAIMED items and R2 declared <strong>5</strong>.
+      The eight below are the ones that touch this plan; the rest are on the reports.
+      <strong>A declared gap passes; a silent one fails.</strong></p>
+
+    <div class="scroll">
+      <table class="wide">
+        <thead><tr><th>#</th><th>Kind</th><th>What is not established</th><th>Why it touches this plan</th><th>Price to prove</th></tr></thead>
+        <tbody>
+          <tr><td class="k">R1-1</td><td><span class="chip">UNPROVEN</span></td><td>ISO 9241-110's seven interaction principle <em>names</em> — the standard is paywalled; only title, date and edition were fetched</td><td>ISO is one of the 32 families and would otherwise be a P2 import candidate</td><td>Purchase the standard, or ~1 fetch of a licensed summary. <strong>R1: “Do not enter the names from memory.”</strong></td></tr>
+          <tr><td class="k">R1-4</td><td><span class="chip">UNPROVEN</span><br>(source authority)</td><td>DSA Article 25 text came from a <strong>mirror</strong> (<code>eu-digital-services-act.com</code>); EUR-Lex returned HTTP 202 with zero bytes to that agent</td><td>DSA 25 is the legal fence on every persuasion node (tn-19) and is in R1's “safe now” tier</td><td>1 fetch from a working EUR-Lex route</td></tr>
+          <tr><td class="k">R1-5</td><td><span class="chip">UNPROVEN</span></td><td>The INP “good” threshold (commonly stated as 200 ms) — not present in the fetched text; the table is JS-rendered</td><td>R1 idea 11's response budget in the behaviour contract depends on it — the P4 external edge</td><td>1 browser-rendered fetch</td></tr>
+          <tr><td class="k">R2-1</td><td><span class="chip">UNPROVEN</span></td><td>That the other twelve academy lessons match their blog sections. Two of fourteen were fetched and found equivalent; the rest are assumed</td><td>The borrow matrix is built on the blog text, so any lesson that diverges could move a cell</td><td>~12 fetches</td></tr>
+          <tr><td class="k">R2-2</td><td><span class="chip">UNPROVEN</span></td><td>What Dave actually watched. The blog and course link no video; a search surfaced a third-party explainer that was <strong>not</strong> opened and is not Anthropic's</td><td>If the source Dave saw was a different artefact, the read may have missed his reason for raising it</td><td>Dave names the link</td></tr>
+          <tr><td class="k">R2-3</td><td><span class="chip">UNPROVEN</span></td><td>That no hook layer exists anywhere on this machine. The probe covers the <strong>repo</strong> (<code>ls -a .claude/</code> → <code>agents</code> only); user-level and managed settings were not probed</td><td>P6a is premised on “Apollo has no hooks”</td><td>One <code>ls</code> — but outside that lane's fence</td></tr>
+          <tr><td class="k">R2-4</td><td><span class="chip">CLAIMED</span></td><td>That <code>apollo-spider/CLAUDE.md</code> and <code>AGENTS.md</code> play the rails-file role. Their <em>existence</em> is probed; their <em>contents</em> were not read</td><td>Matrix row 4 rests on it (the pack's rails file)</td><td>Re-read ~3–4K</td></tr>
+          <tr><td class="k">R2-5</td><td><span class="chip">UNPROVEN</span></td><td>Whether ADR-0017 itself covers <em>briefs</em>. The write-once statement quoted comes from <code>_TEMPLATE.md</code>, which speaks about <strong>reports</strong>; the ADR was located but not read</td><td>This is exactly what makes question 8 (R2 Q2) a question rather than a lookup</td><td>~1.5K</td></tr>
+        </tbody>
+        <caption>Copied from R1 “UNPROVEN / CLAIMED (ADR-0016) — 18 declared”, items 1, 4 and 5; and R2's five
+          declared items in full. R1's remaining 15 items sit on individual register rows and are listed in that report.</caption>
+      </table>
+    </div>
+
+    <p><strong>One more thing R1 states plainly and this plan carries forward:</strong> 41 citations were verified via
+      the Crossref API rather than by reading the paper. That is a <em>bibliographic</em> receipt — it proves the work
+      exists and is correctly attributed; it does <strong>not</strong> prove the paper says what the row says. Reading the
+      primaries for the 6 grade-A and highest-traffic grade-B rows is a real, priced follow-on: ~15 papers, most paywalled.
+      <span class="src">R1 UNPROVEN section, closing note</span></p>
+  </div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10" class="band">
+  <div class="wrap">
+    <span class="idx">10</span>
+    <p class="label">Receipts · technical</p>
+    <h2>Where every figure on this page came from</h2>
+    <p class="answer">Two filed reports and six asset files, all inside <code>notes/_subreports/</code>. Every count on
+      this page was <strong>read off those files in this lane</strong>, not retyped from the brief.</p>
+
+    <h4>Reports</h4>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Path</th><th>Bytes</th><th>What this page took from it</th></tr></thead>
+        <tbody>
+          <tr><td class="k">notes/_subreports/2026-09-02-236-R1-principles-survey.md</td><td class="num">36,896</td><td>Sections 0–2, 5–9: findings 1–10, §5a touchpoints, §5b ideas 1–13, ruling-shaped Q1–Q6, UNPROVEN 1/4/5</td></tr>
+          <tr><td class="k">notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md</td><td class="num">38,007</td><td>Sections 0, 3, 5–9: the borrow matrix totals, collisions 1–5, non-transfers 1 and 8, §5 options A/B/C, §6 ideas 1–10, Q1–Q6, all five UNPROVEN</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Asset files</h4>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Path</th><th>Bytes</th><th>Figure taken</th></tr></thead>
+        <tbody>
+          <tr><td class="k">assets/2026-09-02-236-R1-principles-survey/source-register.json</td><td class="num">21,945</td><td><strong>32</strong> families; the steward, years, kind, item count and licence string in §2.2</td></tr>
+          <tr><td class="k">assets/2026-09-02-236-R1-principles-survey/principle-register.json</td><td class="num">130,680</td><td><strong>145</strong> rows; grades <strong>A 6 · B 28 · C 75 · D 9 · L 27</strong> (counted); <strong>38</strong> rows with an alternative grade; the nine D rows quoted in §2.3; the ladder wording</td></tr>
+          <tr><td class="k">assets/2026-09-02-236-R1-principles-survey/tensions.json</td><td class="num">20,721</td><td><strong>30</strong> tensions; tn-01, tn-14, tn-19, tn-25, tn-27 quoted in full in §2.4</td></tr>
+          <tr><td class="k">assets/2026-09-02-236-R1-principles-survey/fetch-receipts.json</td><td class="num">23,863</td><td>43 URL attempts (13 failures enumerated) and 52 Crossref records — the basis for the UNPROVEN register</td></tr>
+          <tr><td class="k">assets/2026-09-02-236-R2-sdlc-playbook/borrow-matrix.json</td><td class="num">12,649</td><td><strong>12</strong> rows × 3 targets; totals <strong>M 1/9/2 · D 3/8/1 · P 2/4/6</strong> (read from the file's <code>totals</code> block)</td></tr>
+          <tr><td class="k">assets/2026-09-02-236-R2-sdlc-playbook/fetch-receipts.json</td><td class="num">3,335</td><td>Every URL retrieved and not retrieved, with the price of proving each</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Register rows</h4>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Row</th><th>Home</th><th>Title</th></tr></thead>
+        <tbody>
+          <tr><td class="k">W-347</td><td class="k">notes/_briefs/2026-09-02-236-R1-principles-survey-brief.md</td><td>#236 R1 BRIEF — the principles survey: sources, evidence grades, tension matrix; ONE Opus research sub</td></tr>
+          <tr><td class="k">W-348</td><td class="k">notes/_briefs/2026-09-02-236-R2-sdlc-playbook-brief.md</td><td>#236 R2 BRIEF — the AI-native SDLC playbook read + borrow matrix for Memento / deployments / Discover option; ONE Opus research sub</td></tr>
+        </tbody>
+        <caption>Both rows read from <code>knowledge/_state.json</code>; W-348 links W-347. Both are <code>state: open</code>,
+          opened at session 236, and each closes when its report is filed, its REPLAY-THESE is read, and the plan HTML
+          cites it by path — which is what this section does.</caption>
+      </table>
+    </div>
+
+    <h4>Counts, as copied</h4>
+    <p class="src">
+      R1 — families 32 · principles 145 · A/B/C/D/L 6/28/75/9/27 · grade_alt 38 · tensions 30 · touchpoints 12 ·
+      ideas 13 · findings 10 · ruling-shaped 6 · UNPROVEN 18<br>
+      R2 — practices 12 · M 1/9/2 · D 3/8/1 · P 2/4/6 · non-transfers 8 · collisions 5 · first-phase options 3 ·
+      ideas 10 · findings 14 · ruling-shaped 6 · UNPROVEN 5<br>
+      This page — sections 11 (0–10) · rulings owed 12 · ideas listed 23 · pitfalls 11 · externalities 5 · UNPROVEN carried 8
+    </p>
+
+    <h4>Provenance of this page</h4>
+    <p class="src">
+      Built in session #236, lane P, 2026-09-02 · brief: notes/_briefs/2026-09-02-236-P-plan-build-brief.md ·
+      filed report: notes/_subreports/2026-09-02-236-P-plan-build.md · design system: swiss-design-system skill ·
+      accent follows <code>s151-D1</code>, the two-red law: #DA1A00 on white (5.09:1), #F6604C on dark (6.0:1) ·
+      no external scripts, no external fonts, no network at view time.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>The designer's brain — programme plan v1.</strong> Assembled from two filed research reports, which
+      are the authority. Nothing on this page is ruled; twelve questions are Dave's. Session #236 · 2026-09-02.</p>
+    <p>Dated history (ADR-0017 / <code>s192-D1</code>): this file records the plan as it stood on the day it was written.</p>
+  </div>
+</footer>
+
+</body>
+</html>
