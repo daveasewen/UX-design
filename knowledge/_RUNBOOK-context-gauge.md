@@ -389,6 +389,18 @@ only in a dated block does not count as homed (ritual step 2f EXIT CHECK) — so
   the advisory returns INTO the band.*
 - **#238:** six lanes went out from an opener FILL of **103,211**; the five reconciled in-window put the
   conductor at **198,667 real** — **~19K of conductor FILL per lane, all-in** (n=5, measured, not derived).
+- **#239 — AND THE SAME QUESTION ASKED OF A ROUTE RATHER THAN A LANE** (homed here by ADDITION at the
+  #240 wrap's 2f EXIT CHECK; *provenance: 240 · 2026-09-02 · status: observed*): the `s203-D1` CI
+  read-back cost **≈55,692 real of conductor FILL** for ONE verdict and ONE blocker name — opener
+  **84,635 @ 4 turns** → post-read-back **140,327 @ 34 turns** (`notes/_GAUGE-LOG.md` § `#### 2026-09-02
+  #239`). The money went into the GitHub **Actions LIST view**, which answers a question nobody asked.
+  ⇒ **CAP THE ROUTE AT THE RUN PAGE PLUS ONE JS GREP for the first failing step.** ⛔ This is a route
+  price, not a lane price, and it moves no constant: a read-back is not optional (`s203-D1`), only its
+  route is.
+- **#240 — AND THE OTHER DIRECTION: A LANE NOT LAUNCHED BECAUSE THE ~19K DID NOT FIT** (*provenance: 240
+  · 2026-09-02 · status: observed*). At FILL **135,020 @ 21 turns** the #240 conductor declined to launch
+  the ruled boot-band lane and carried it to #241 instead. ★ **The n=5 figure above is what made that
+  decision arithmetic rather than instinct** — which is the whole point of writing it down.
 
 ⇒ **A delegation decision is priced at its RETURN, not at its launch.** Launching a sub is nearly free in
 FILL [[delegation-cost-inversion-110]]; the return is not, and the advisory prices the launch. ⛔ **This
