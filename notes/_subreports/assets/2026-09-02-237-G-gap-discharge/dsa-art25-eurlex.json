@@ -1,0 +1,76 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · discharges UNPROVEN 4 of notes/_subreports/2026-09-02-236-R1-principles-survey.md",
+  "gap": "R1-4 — DSA Article 25 text in the register came from a MIRROR (eu-digital-services-act.com). EUR-Lex returned HTTP 202 with zero bytes to the #236 agent. Source authority was the gap, not the meaning.",
+  "verdict": "DISCHARGED — text obtained from eur-lex.europa.eu itself, via a browser-rendered read.",
+  "instrument": "Regulation (EU) 2022/2065, CELEX 32022R2065 (Digital Services Act)",
+  "routes_tried_in_order": [
+    {
+      "n": 1,
+      "route": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065",
+      "tool": "mcp__workspace__web_fetch",
+      "result": "FAILED — response body empty. The fetcher returned the resolved URL line and nothing else: zero document bytes. This REPRODUCES the #236 failure on the same host."
+    },
+    {
+      "n": 2,
+      "route": "https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng",
+      "tool": "mcp__workspace__web_fetch",
+      "result": "FAILED (partial) — HTTP 200 with the page shell only: masthead, cookie/experimental-features chrome, breadcrumb, and the ELI metadata block. The document body was not in the returned text; the response ended at the Help/Print controls. Useful by-product: the ELI metadata confirmed date_document 2022-10-19, date_publication 2022-10-27."
+    },
+    {
+      "n": 3,
+      "route": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32022R2065",
+      "tool": "mcp__workspace__web_fetch",
+      "result": "FAILED — response body empty, same shape as route 1."
+    },
+    {
+      "n": 4,
+      "route": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065",
+      "tool": "Claude in Chrome — mcp__claude-in-chrome__navigate + javascript_tool (read-only: innerText slice, no clicks, no forms, no downloads)",
+      "result": "OK — the SAME URL that returned zero bytes to the sandbox fetcher rendered fully in the browser: document.body.innerText length 418,837 characters, document.title 'L_2022277EN.01000101.xml'.",
+      "read_utc": "2026-09-02T12:1xZ (same tab session as the INP read at 12:14:35Z)"
+    }
+  ],
+  "probe_note_worth_keeping": {
+    "our_words": "The first in-page search for 'Article 25' returned NOT FOUND on a document that plainly contains it. The separator is a non-breaking space (U+00A0), not a space. A plain indexOf on EUR-Lex article headings gives a false absence.",
+    "consequence": "Any future gate or probe that greps EUR-Lex rendered text for an article heading must allow \\s\\u00a0 between the word and the number, or it will report a live article as missing.",
+    "cross_ref": "unmatched-grep-is-not-an-absence"
+  },
+  "article_25": {
+    "heading_as_stated": "Article 25 — Online interface design and organisation",
+    "paragraph_1": {
+      "our_words": "Providers of online platforms are forbidden to design, organise or run their interfaces so as to deceive or manipulate users, or otherwise to materially distort or impair users' ability to make free and informed decisions.",
+      "receipt": "\"shall not design, organise or operate their online interfaces in a way that deceives\"",
+      "note_our_words": "The prohibition has TWO limbs, not one: deception/manipulation, AND material distortion or impairment of free and informed decision-making. The second limb is broader and does not require intent to deceive."
+    },
+    "paragraph_2": {
+      "our_words": "The paragraph-1 prohibition does not apply to practices already covered by the Unfair Commercial Practices Directive (2005/29/EC) or by the GDPR (Regulation (EU) 2016/679).",
+      "receipt": "\"The prohibition in paragraph 1 shall not apply to practices covered by Directive 2005/29/EC\"",
+      "note_our_words": "This is a carve-out that routes a practice to whichever instrument already governs it, so Article 25 is a residual prohibition rather than an overlapping one. The register's existing scope_conditions on pr-dsa25 ('Overlaps with, and defers to, GDPR and consumer law') is CORRECT and is now sourced."
+    },
+    "paragraph_3": {
+      "our_words": "The Commission may issue guidelines on how paragraph 1 applies to specific practices, and the Article names three examples: giving more prominence to certain choices; repeatedly re-asking a choice already made, especially via pop-ups that interfere with the experience; and making cancellation harder than sign-up.",
+      "receipt": "\"The Commission may issue guidelines on how paragraph 1 applies to specific practices\"",
+      "named_examples_our_words": [
+        "(a) weighting one choice more prominently than another when asking for a decision",
+        "(b) asking again for a choice already made, especially with interfering pop-ups",
+        "(c) making leaving harder than joining"
+      ],
+      "note_our_words": "These three are the only practices the Article itself names, and all three are design decisions a generator makes. (a) is visual weight, (b) is interruption, (c) is flow length."
+    }
+  },
+  "diff_against_the_mirror_r1_used": {
+    "mirror_url": "https://www.eu-digital-services-act.com/Digital_Services_Act_Article_25.html",
+    "mirror_receipt_r1_recorded": "\"shall not design, organise or operate their online interfaces in a way that deceives or manipulates\"",
+    "verdict": "SAME — the mirror's quoted fragment appears verbatim in the EUR-Lex text of paragraph 1. No wording difference was found in the fragment R1 relied on.",
+    "r1_register_statement": "Online platform interfaces must not deceive, manipulate, or impair users' ability to decide freely.",
+    "r1_statement_verdict": "STANDS — faithful to paragraph 1, and it already carries the second limb ('impair users' ability to decide freely') that the mirror fragment alone does not show.",
+    "what_is_NEW_relative_to_r1": "Paragraphs 2 and 3 were not in the register at all. R1 held only the paragraph-1 prohibition. The carve-out (para 2) and the three named example practices (para 3) are new material, and para 3's three examples are the most directly usable part of the Article for a design tool.",
+    "what_should_change_on_pr_dsa25": "The refutation_probe field currently reads 'UNPROVEN as to source authority: EUR-Lex returned HTTP 202 with zero bytes... Re-verify against EUR-Lex before any client-facing use.' That condition is now met. ⛔ NOT CHANGED BY THIS LANE — the register is #236 dated history and Dave rules what moves."
+  },
+  "eli_metadata_captured": {
+    "celex": "32022R2065",
+    "date_document": "2022-10-19",
+    "date_publication": "2022-10-27",
+    "source": "route 2's ELI meta block, which returned even though the body did not"
+  }
+}

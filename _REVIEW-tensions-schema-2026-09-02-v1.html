@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>#237-T — Tensions: edges or nodes</title>
+<style>
+:root{
+  --accent:#DA1A00;            /* s151-D1 two-red law: red ink ON WHITE */
+  --ink:#000000;
+  --bg:#FFFFFF;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g5:#9B9B9B; --g6:#767676; --g7:#545454; --g8:#333333;
+  --rule:var(--g2);
+  --panel:#F3F3F3;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px; --gut:2rem;
+  --mono:ui-monospace,Menlo,"SF Mono",Consolas,monospace;
+}
+html[data-theme="dark"]{
+  --accent:#F6604C;            /* s151-D1: everything-else red */
+  --ink:#FFFFFF;
+  --bg:#0E0E0E;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g5:#7A7A7A; --g6:#9A9A9A; --g7:#B8B8B8; --g8:#D8D8D8;
+  --rule:#2A2A2A;
+  --panel:#161616;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.75; font-weight:400;
+  overflow-x:hidden;
+}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 var(--gut)}
+
+/* ---------- nav ---------- */
+nav{position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex; align-items:center; gap:var(--s3); min-height:54px}
+.brand{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase}
+.navlinks{display:flex; gap:var(--s3); margin-left:auto; flex-wrap:wrap}
+.navlinks a{font-size:14px; color:var(--g6); text-decoration:none; letter-spacing:.04em}
+.navlinks a:hover{color:var(--ink)}
+button.tt{
+  font:inherit; font-size:12px; font-weight:500; letter-spacing:.06em; text-transform:uppercase;
+  background:none; color:var(--ink); border:0; border-bottom:1px solid var(--accent);
+  padding:4px 0; cursor:pointer; white-space:nowrap;
+}
+
+/* ---------- type ---------- */
+h1{font-size:clamp(2.4rem,6vw,5.25rem); font-weight:300; line-height:1.02; letter-spacing:0; margin:0}
+h2{font-size:clamp(1.6rem,3.4vw,2.6875rem); font-weight:400; line-height:1.14; margin:0 0 var(--s3)}
+h3{font-size:1.1875rem; font-weight:500; line-height:1.2; margin:0 0 var(--s2)}
+h4{font-size:14px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2); max-width:68ch}
+.lede{font-size:1.1875rem; line-height:1.6}
+.label{
+  font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);
+}
+.label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent); flex:none}
+.muted{color:var(--g7)}
+.small{font-size:14px; line-height:1.6}
+.mono{font-family:var(--mono); font-size:13px}
+code{font-family:var(--mono); font-size:.88em; background:var(--g1); padding:1px 4px}
+b,strong{font-weight:700}
+a{color:var(--ink)}
+
+section{padding:var(--s7) 0; border-bottom:1px solid var(--rule)}
+section.tight{padding:var(--s5) 0}
+
+/* ---------- header ---------- */
+.hdr{display:grid; grid-template-columns:2fr 1fr; gap:var(--s6); align-items:end}
+.meta dt{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--g6); margin-top:var(--s2)}
+.meta dd{margin:0; font-size:14px}
+.flag{
+  display:inline-block; font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+  border:1px solid var(--accent); color:var(--accent); padding:3px 9px; margin-bottom:var(--s3);
+}
+
+/* ---------- answer stats ---------- */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--s4)}
+.stat{background:var(--bg); padding:var(--s3)}
+.stat .n{font-size:clamp(2rem,4.4vw,2.6875rem); font-weight:200; line-height:1; display:block}
+.stat .k{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--g6); display:block; margin-top:var(--s1)}
+.stat.hi .n{color:var(--accent)}
+
+/* ---------- 1/3 : 2/3 dimension ---------- */
+.dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start}
+.idx{font-size:clamp(3rem,7vw,5.25rem); font-weight:200; line-height:.9; color:var(--g5); display:block}
+
+/* ---------- tables ---------- */
+/* a grid/flex child defaults to min-width:auto and therefore cannot shrink below its
+   content — that, not the tables, is what produced a 660px document at a 390px viewport.
+   Every grid child here is explicitly allowed to shrink so the scroll stays INSIDE .scroll */
+.dim>*, .pair>*, .cards>*, .stats>*, .hdr>*, .col>*, .card>*{min-width:0}
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; min-width:0}
+table{border-collapse:collapse; width:100%; min-width:640px; font-size:14px; line-height:1.5}
+th,td{text-align:left; vertical-align:top; padding:10px 14px 10px 0; border-bottom:1px solid var(--rule)}
+th{font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; color:var(--g6); white-space:nowrap}
+td.id,th.id{font-family:var(--mono); white-space:nowrap; padding-right:var(--s3)}
+tr.obl td.id{color:var(--accent)}
+
+/* ---------- the two readings ---------- */
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--s3)}
+.col{background:var(--bg); padding:var(--s3)}
+.col.n{background:var(--panel)}
+.colhead{font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; margin-bottom:var(--s2); padding-bottom:var(--s1); border-bottom:1px solid var(--rule)}
+.colhead.a{color:var(--g7)}
+.colhead.b{color:var(--accent)}
+pre{
+  font-family:var(--mono); font-size:12px; line-height:1.5; margin:0 0 var(--s2);
+  background:var(--g1); padding:var(--s2); overflow-x:auto; border-left:2px solid var(--g3);
+  white-space:pre; min-width:0; max-width:100%;
+}
+html[data-theme="dark"] pre{background:#111}
+.q{margin:0 0 var(--s2)}
+.q dt{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--g6); margin-top:var(--s2)}
+.q dd{margin:2px 0 0; font-size:14px; line-height:1.55}
+.verdict{border-top:1px solid var(--rule); margin-top:var(--s2); padding-top:var(--s2); font-size:14px}
+.verdict b{color:var(--accent)}
+
+/* ---------- consequences ---------- */
+.cards{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule)}
+.card{background:var(--bg); padding:var(--s3)}
+.card .n{font-size:12px; font-weight:500; letter-spacing:.12em; color:var(--accent); display:block; margin-bottom:var(--s1)}
+.card h3{font-size:16px; margin-bottom:var(--s1)}
+.card p{font-size:14px; line-height:1.55; margin:0 0 var(--s1)}
+.own{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--g6)}
+
+/* ---------- questions ---------- */
+.qq{border-top:1px solid var(--rule); padding-top:var(--s3); margin-top:var(--s4)}
+.qq:first-of-type{border-top:0}
+.qq .num{font-size:12px; letter-spacing:.12em; color:var(--accent); font-weight:500}
+.rec{border-left:2px solid var(--accent); padding-left:var(--s2); margin-top:var(--s2); font-size:15px}
+
+.note{background:var(--panel); padding:var(--s3); border-left:2px solid var(--g3); font-size:14px; line-height:1.6}
+.note p:last-child{margin-bottom:0}
+ul{padding-left:1.15rem; max-width:68ch}
+li{margin-bottom:var(--s1); font-size:15px; line-height:1.6}
+footer{padding:var(--s5) 0 var(--s7); font-size:13px; color:var(--g6)}
+
+@media (max-width:900px){
+  .hdr,.dim{grid-template-columns:1fr; gap:var(--s4)}
+  .pair,.cards{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  :root{--s7:3.5rem; --s6:2.5rem; --gut:1.25rem}
+  .navlinks{display:none}
+}
+@media (prefers-color-scheme:dark){
+  html:not([data-theme="light"]){
+    --accent:#F6604C; --ink:#FFFFFF; --bg:#0E0E0E;
+    --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g5:#7A7A7A; --g6:#9A9A9A; --g7:#B8B8B8; --g8:#D8D8D8;
+    --rule:#2A2A2A; --panel:#161616;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">#237 · Lane T</span>
+    <span class="navlinks">
+      <a href="#answer">Answer</a>
+      <a href="#sort">The sort</a>
+      <a href="#readings">Two readings</a>
+      <a href="#open">Open 21</a>
+      <a href="#risk">Consequences</a>
+      <a href="#ask">Your call</a>
+    </span>
+    <button class="tt" id="tt" type="button">Dark</button>
+  </div>
+</nav>
+
+<!-- ============ HEADER ============ -->
+<section id="top">
+  <div class="wrap">
+    <span class="flag">Floated — nothing here is ruled</span>
+    <div class="hdr">
+      <div>
+        <p class="label">Tensions as their own thing</p>
+        <h1>Edges<br>or nodes</h1>
+      </div>
+      <dl class="meta">
+        <dt>Session</dt><dd>#237 · 2026-09-02 · lane T</dd>
+        <dt>Data</dt><dd>R1's 30 tensions, unedited</dd>
+        <dt>Binding rulings</dt><dd class="mono">s237-D1 · s237-D2 · s237-D5 · s237-D9</dd>
+        <dt>Register</dt><dd>Every default below is <b>proposed</b>. None is set.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ANSWER ============ -->
+<section id="answer">
+  <div class="wrap">
+    <p class="label">The answer, before the argument</p>
+    <div class="dim">
+      <div><span class="idx">01</span></div>
+      <div>
+        <h2>Settling the 30 costs you nothing at the grill and 21 lines of declaration.</h2>
+        <p class="lede">Six of the thirty are settled by a legal obligation, so there is nothing to weigh.
+        Three are already answered by a ruling you made. The remaining twenty-one all take a
+        conservative standing answer the factory can reach on its own — <b>none of them needs a new
+        standard question</b>, and four ask one only when a named trigger fires.</p>
+        <p>The cost lands somewhere else, and it is the finding: <b>the "Defaults used:" line the grill
+        writes today was built for six answers and would carry twenty-one.</b> Question fatigue is not
+        the risk. Declaration fatigue is.</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="n">30</span><span class="k">tensions</span></div>
+      <div class="stat"><span class="n">6</span><span class="k">settled by obligation</span></div>
+      <div class="stat"><span class="n">3</span><span class="k">resolved in this house</span></div>
+      <div class="stat"><span class="n">21</span><span class="k">open</span></div>
+      <div class="stat hi"><span class="n">0</span><span class="k">new grill questions</span></div>
+      <div class="stat"><span class="n">4</span><span class="k">conditional asks</span></div>
+      <div class="stat"><span class="n">17</span><span class="k">default &amp; declare</span></div>
+      <div class="stat hi"><span class="n">21</span><span class="k">new declaration lines</span></div>
+    </div>
+    <p class="small muted" style="margin-top:var(--s3)">The brief set ~5 new questions as the point at which
+    this creates more problems than it solves. The derived figure is 0. That is only true because every
+    proposed default takes the conservative side and every ask is conditioned on an answer the grill
+    already collects.</p>
+  </div>
+</section>
+
+<!-- ============ THE SORT ============ -->
+<section id="sort">
+  <div class="wrap">
+    <p class="label">The sort — derived, not decided</p>
+    <div class="dim">
+      <div>
+        <span class="idx">02</span>
+        <h4 style="margin-top:var(--s3)">The rules that produced the buckets</h4>
+        <p class="small muted">Printed beside the count, and run over <code>tensions.json</code>.
+        A hand-sorted list would be the defect.</p>
+      </div>
+      <div>
+        <div class="note" style="margin-bottom:var(--s4)">
+          <p><b>R-OBLIGATION</b> — at least one party of the tension resolves to a principle whose
+          evidence grade is <code>L</code>, which <code>s237-D1</code> names <b>OBLIGATION</b>.
+          Applied <b>first</b>. → <b>6</b></p>
+          <p><b>R-RESOLVED</b> — the <code>how_it_resolves</code> prose cites a ruling id
+          <code>s&lt;N&gt;-D&lt;N&gt;</code> that is present in <code>_rulings.json</code>. → <b>3</b></p>
+          <p><b>R-OPEN</b> — the complement. → <b>21</b></p>
+        </div>
+
+        <h3>What "settled by an obligation" means</h3>
+        <p>An obligation is a rule written by someone outside this house — a WCAG success criterion,
+        a DSA article, an FCA rule. <code>s237-D2</code> makes it a node type that no principle can
+        outrank. So when one side of a tension is an obligation, <b>the tension is not a trade and
+        there is nothing to weigh</b>: the obligation wins by construction. What is left is not a
+        choice but a <b>route</b> — the mediating variable stops being the thing that decides the
+        winner and becomes the thing that decides how you comply. Brand does not lose to contrast;
+        brand changes size, weight or ground until it complies.</p>
+
+        <div class="scroll" style="margin-top:var(--s4)">
+        <table>
+          <thead><tr><th class="id">id</th><th>Obligation party</th><th>Its clause, quoted</th><th>The route, not the choice</th></tr></thead>
+          <tbody>
+            <tr class="obl"><td class="id">tn-15</td><td class="mono">pr-wcag-1-4-3</td><td>"Text must meet a minimum contrast ratio against its background."</td><td>Background-keyed colour. <code>s151-D1</code> resolves one semantic red to a different hex per ground.</td></tr>
+            <tr class="obl"><td class="id">tn-16</td><td class="mono">pr-wcag-2-5-5</td><td>"Pointer targets are at least 44 by 44 CSS pixels."</td><td>Split by object class and declare the exemption: <code>s234-D3</code> adopts, <code>s116-D1</code> fences data marks.</td></tr>
+            <tr class="obl"><td class="id">tn-19</td><td class="mono">pr-dsa25</td><td>"…must not deceive, manipulate, or impair users' ability to decide freely."</td><td>Persuasion may be used only where the thing shown is true and the action reversible.</td></tr>
+            <tr class="obl"><td class="id">tn-20</td><td class="mono">pr-fca-consumer-understanding</td><td>"Communications must equip customers to make effective, timely and properly informed decisions."</td><td>Layer disclosure at the decision moment; minimalism moves it, never removes it.</td></tr>
+            <tr class="obl"><td class="id">tn-25</td><td class="mono">pr-anti-preselection</td><td>"ANTI-PRINCIPLE: Pre-ticking an option the user did not choose."</td><td>Grade the slot. Defaults are legal on preferences, prohibited on consent and on anything that costs money.</td></tr>
+            <tr class="obl"><td class="id">tn-29</td><td class="mono">pr-wcag-2-4-13</td><td>"The focus indicator must meet minimum area and contrast requirements."</td><td>Focus is a first-class token from the start, never a retrofit.</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <h3 style="margin-top:var(--s5)">Resolved in this house — the tension points, it never restates</h3>
+        <p class="small">Each cited id was probed and is present in <code>_rulings.json</code>. Under
+        write-once (<code>ADR-0017</code>) the tension carries the <em>pointer</em>; the ruling keeps
+        the words.</p>
+        <div class="scroll">
+        <table>
+          <thead><tr><th class="id">id</th><th>Cited ruling</th><th>Its <code>ruled</code> line, first 15 words</th></tr></thead>
+          <tbody>
+            <tr><td class="id">tn-07</td><td class="mono">s116-D1</td><td>"Data marks are held to the 24x24 WCAG 2.5.8 dense-case MINIMUM - exempt from the …"</td></tr>
+            <tr><td class="id">tn-17</td><td class="mono">s202-D1</td><td>"THE SQUARE THEMES INHERIT CONSOLE'S TUNED SEGMENTED DIMENSIONS, AND THE MINT IS BASE-TIER. Dave ruled …"</td></tr>
+            <tr><td class="id">tn-27</td><td class="mono">s234-D6</td><td>"THE QUALITY RUBRIC BINDS TO THE ARTEFACT THROUGH THE ONE PATH-TAKING GATE - _validate_screen.py &lt;path&gt; …"</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div class="note" style="margin-top:var(--s4)">
+          <p><b>Two tensions are in both buckets, and the obligation takes them.</b>
+          <code>tn-15</code> has an obligation party <em>and</em> cites <code>s151-D1</code>;
+          <code>tn-16</code> has one <em>and</em> cites <code>s234-D3</code> and <code>s116-D1</code>.
+          By <code>s237-D2</code> the obligation cannot lose, so the ruling is not the settlement —
+          it is the <b>route</b> that satisfies the obligation. That is why R-OBLIGATION runs first.</p>
+        </div>
+
+        <div class="note" style="margin-top:var(--s3); border-left-color:var(--accent)">
+          <p><b>The sort is sensitive to its own rule, and this matters more than the counts.</b>
+          R-RESOLVED reads only <code>how_it_resolves</code>. If it also read the
+          <code>apollo_touch</code> field, six more tensions would close and the count would become
+          <b>6 · 9 · 15</b>.</p>
+          <p>Four of those six would close <em>wrongly</em>. <code>apollo_touch</code> conflates three
+          different links: <code>tn-22</code> and <code>tn-02</code> genuinely name a ruling that
+          resolves them, but <code>tn-01</code>'s <code>s151-D1</code> <em>explains</em> the tension
+          (<code>s237-D5</code>, advisory), <code>tn-14</code>'s and <code>tn-11</code>'s rulings are
+          <em>challenged by</em> the tension, and <code>tn-08</code>'s <code>s135-D1</code> says in
+          its own words that the shell is ruled and the routing rule is not. <b>A generator that reads
+          one link type where there are three would silently close four open questions.</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE TWO READINGS ============ -->
+<section id="readings">
+  <div class="wrap">
+    <p class="label">Two schema readings, same four tensions</p>
+    <div class="dim">
+      <div><span class="idx">03</span></div>
+      <div>
+        <h2>Rule this one by eye.</h2>
+        <p class="lede">Both readings are shown at the same depth on the same four rows: a triple, an
+        obligation-settled one, a ruling-resolved one, and an open one. Read the JSON, then read what
+        each of the four questions returns.</p>
+      </div>
+    </div>
+
+    <!-- shape evidence -->
+    <h3 style="margin-top:var(--s6)">First, the shape of the data itself</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Probe over all 30</th><th>Result</th><th>What it costs the edge reading</th></tr></thead>
+        <tbody>
+          <tr><td>Tensions where <b>every</b> side resolves to a registered principle</td><td><b>17</b> of 30</td><td>—</td></tr>
+          <tr><td>Tensions with at least one side that is <b>free text</b>, not a node</td><td><b>13</b> of 30</td><td>An edge needs a node at both ends. Thirteen have only one.</td></tr>
+          <tr><td>Tensions carrying only <b>one</b> registered principle</td><td><b>13</b></td><td>These produce <b>zero</b> edges.</td></tr>
+          <tr><td>Pairwise edges the 30 would produce</td><td><b>24</b></td><td>vs 30 nodes + 50 party links = 80 objects.</td></tr>
+          <tr><td>A side that is a <b>ruling</b>, not a principle (<code>tn-16</code>)</td><td><b>1</b></td><td><code>s116-D1</code> is one end of a tension.</td></tr>
+          <tr><td>A <code>pr-</code> id that resolves to nothing (<code>tn-28</code>)</td><td><code>pr-info-scent</code></td><td>Near-miss for <code>pr-information-scent</code> — a dangling end either way.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">Free-text sides include "information density on a dashboard", "four-theme
+    flexibility", "the generation chain", "using heuristic scores as a quality rubric". They are real
+    parties to a real pull — they are just not principles.</p>
+
+    <!-- tn-03 -->
+    <h3 style="margin-top:var(--s6)"><span class="mono">tn-03</span> — the only true triple</h3>
+    <p class="small muted">Doherty &lt;400 ms ↔ the labour illusion ↔ Nielsen's 0.1/1/10 s. Three sides, one pull.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="colhead a">Reading A — a tension is an EDGE</div>
+<pre>{ "type":"tension", "from":"pr-doherty",
+  "to":"pr-labour-illusion",
+  "mediating":"task criticality" }
+{ "type":"tension", "from":"pr-doherty",
+  "to":"pr-response-limits",
+  "mediating":"task criticality" }
+{ "type":"tension", "from":"pr-labour-illusion",
+  "to":"pr-response-limits",
+  "mediating":"task criticality" }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>One hop, native — the query the edge reading is built for.</dd>
+          <dt>Open questions for this task?</dt><dd>Three edges carry the same status. De-duplicate, or report the pull three times.</dd>
+          <dt>Ruling → tension link</dt><dd>An edge <em>property</em>, i.e. a string. Linking a ruling to an edge needs edges-on-edges.</dd>
+          <dt>What happens to a triple</dt><dd><b>It becomes three edges, each holding a copy of one sentence.</b></dd>
+        </dl>
+        <p class="verdict">A copy chain (<code>s234-D1</code>), and three places for the same rule to drift apart.</p>
+      </div>
+      <div class="col n">
+        <div class="colhead b">Reading B — a tension is a NODE</div>
+<pre>{ "id":"tn-03", "type":"tension",
+  "parties":[ "pr-doherty",
+              "pr-labour-illusion",
+              "pr-response-limits" ],
+  "mediating":"task criticality; is the
+     system working on my behalf?",
+  "resolution":"instant for direct
+     manipulation; show the work for
+     delegated judgement",
+  "status":"DERIVED" }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>Two hops: principle → tension → its other parties.</dd>
+          <dt>Open questions for this task?</dt><dd>Filter nodes on derived status. One row per pull.</dd>
+          <dt>Ruling → tension link</dt><dd>A first-class typed link from a node — and it can be typed <code>resolvedBy</code>, <code>explainedBy</code> or <code>touches</code>.</dd>
+          <dt>What happens to a triple</dt><dd><b>Nothing. Three parties on one node.</b></dd>
+        </dl>
+        <p class="verdict">One home for one sentence. <b>Arity is free.</b></p>
+      </div>
+    </div>
+
+    <!-- tn-19 -->
+    <h3 style="margin-top:var(--s5)"><span class="mono">tn-19</span> — four parties, settled by an obligation</h3>
+    <p class="small muted">DSA Article 25 ↔ social proof, goal-gradient, loss aversion. Four principles
+    across two <code>side_</code> fields — the second is a comma list crammed into one string.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="colhead a">Reading A — EDGE</div>
+<pre>// four parties -> six pairwise edges
+dsa25 — social-proof
+dsa25 — goal-gradient
+dsa25 — loss-aversion
+social-proof — goal-gradient   // NOT a tension
+social-proof — loss-aversion   // NOT a tension
+goal-gradient — loss-aversion  // NOT a tension</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>Fine here — but three of the six edges assert pulls that do not exist.</dd>
+          <dt>Open questions for this task?</dt><dd>Not open: settled. The verdict must be written onto three (or six) edges identically.</dd>
+          <dt>Ruling → tension link</dt><dd>The obligation is a <em>party</em>, so "the obligation wins" has no single place to live.</dd>
+          <dt>What happens to a triple</dt><dd><b>A list-in-a-string becomes a combinatorial fan.</b> Cut it to three and you lose that the three are one side.</dd>
+        </dl>
+        <p class="verdict">Six edges, three of them false, one verdict copied across all of them.</p>
+      </div>
+      <div class="col n">
+        <div class="colhead b">Reading B — NODE</div>
+<pre>{ "id":"tn-19", "type":"tension",
+  "sides":[
+    { "parties":["pr-dsa25"] },
+    { "parties":["pr-social-proof",
+                 "pr-goal-gradient",
+                 "pr-loss-aversion"] } ],
+  "mediating":"truth and reversibility",
+  "settledBy":"pr-dsa25",
+  "status":"DERIVED: obligation party
+     present (s237-D2)" }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>Two hops, as before.</dd>
+          <dt>Open questions for this task?</dt><dd>Excluded automatically — the status derives from the party's own type.</dd>
+          <dt>Ruling → tension link</dt><dd><code>settledBy</code> points at the obligation node. One place.</dd>
+          <dt>What happens to a triple</dt><dd><b>Sides are preserved.</b> Three persuasion principles stay one side, not three.</dd>
+        </dl>
+        <p class="verdict">The node keeps the shape of the argument. The edge reading loses the sides.</p>
+      </div>
+    </div>
+
+    <!-- tn-07 -->
+    <h3 style="margin-top:var(--s5)"><span class="mono">tn-07</span> — resolved by a ruling, and one side is not a principle</h3>
+    <p class="small muted">Fitts ↔ "information density on a dashboard". Resolved by <code>s116-D1</code>.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="colhead a">Reading A — EDGE</div>
+<pre>{ "type":"tension",
+  "from":"pr-fitts",
+  "to":"??? information density is
+        not a principle node" ,
+  "mediating":"object class",
+  "resolvedBy":"s116-D1"   // a string }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd><b>Nothing</b> — unless you first invent a node for "information density", which puts a non-principle in the principle graph. This is 13 of 30.</dd>
+          <dt>Open questions for this task?</dt><dd>N/A, resolved.</dd>
+          <dt>Ruling → tension link</dt><dd><code>resolvedBy</code> is a property holding a ruling id as text. Nothing checks it resolves; nothing distinguishes it from a ruling that merely touches.</dd>
+          <dt>What happens to a triple</dt><dd>N/A.</dd>
+        </dl>
+        <p class="verdict">The commonest query in the set returns nothing, for 13 of 30 rows.</p>
+      </div>
+      <div class="col n">
+        <div class="colhead b">Reading B — NODE</div>
+<pre>{ "id":"tn-07", "type":"tension",
+  "sides":[
+   { "parties":["pr-fitts"] },
+   { "parties":[],
+     "text":"information density on
+             a dashboard" } ],
+  "mediating":"object class: control
+     vs data mark",
+  "resolvedBy":{ "ruling":"s116-D1" },
+  "status":"DERIVED" }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>Returns <code>tn-07</code> with its free-text counterparty intact, and the ruling that settles it.</dd>
+          <dt>Open questions for this task?</dt><dd>Excluded — a resolved pointer exists.</dd>
+          <dt>Ruling → tension link</dt><dd>A typed link to the ruling node. The tension <b>points</b>; <code>s116-D1</code> keeps the words (<code>ADR-0017</code>).</dd>
+          <dt>What happens to a triple</dt><dd>N/A.</dd>
+        </dl>
+        <p class="verdict">A side may be a principle, a ruling, or a plain phrase. Only the node reading survives that.</p>
+      </div>
+    </div>
+
+    <!-- tn-08 -->
+    <h3 style="margin-top:var(--s5)"><span class="mono">tn-08</span> — open, and touched by a ruling that does <em>not</em> settle it</h3>
+    <p class="small muted">Flow ↔ visibility of system status. <code>s135-D1</code> ruled the notification
+    shell; R1's own note says the routing rule does not exist.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="colhead a">Reading A — EDGE</div>
+<pre>{ "type":"tension",
+  "from":"pr-flow", "to":"pr-nng-visibility",
+  "mediating":"interruption cost vs
+     information value",
+  "apolloTouch":"s135-D1"  }
+// one slot, three meanings:
+//   resolves? explains? merely touches?</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>N/A.</dd>
+          <dt>Open questions for this task?</dt><dd><b>At risk.</b> If the one ruling slot is read as "resolved", this open question disappears — and so do <code>tn-01</code>, <code>tn-11</code>, <code>tn-14</code>.</dd>
+          <dt>Ruling → tension link</dt><dd>One untyped property. <code>s237-D5</code> needs <code>explainedBy</code> to be a distinct, advisory, one-directional thing; a property cannot be.</dd>
+          <dt>What happens to a triple</dt><dd>N/A.</dd>
+        </dl>
+        <p class="verdict">This is the sensitivity finding made concrete: <b>four open questions closed by a schema shortcut.</b></p>
+      </div>
+      <div class="col n">
+        <div class="colhead b">Reading B — NODE</div>
+<pre>{ "id":"tn-08", "type":"tension",
+  "sides":[{"parties":["pr-flow"]},
+           {"parties":["pr-nng-visibility"]}],
+  "mediating":"interruption cost vs
+     information value",
+  "links":[ { "rel":"touches",
+              "ruling":"s135-D1",
+              "note":"shell ruled;
+                 routing rule is not" } ],
+  "status":"DERIVED: open" }</pre>
+        <dl class="q">
+          <dt>What pulls against Fitts?</dt><dd>N/A.</dd>
+          <dt>Open questions for this task?</dt><dd>Returns it, with its proposed default and its ask-when beside it.</dd>
+          <dt>Ruling → tension link</dt><dd>Typed: <code>resolvedBy</code> · <code>explainedBy</code> (<code>s237-D5</code>) · <code>touches</code> · <code>challenges</code>. Four link types, four meanings.</dd>
+          <dt>What happens to a triple</dt><dd>N/A.</dd>
+        </dl>
+        <p class="verdict">The link type is the thing that keeps an open question open.</p>
+      </div>
+    </div>
+
+    <!-- fair comparison -->
+    <h3 style="margin-top:var(--s6)">What each reading actually buys — both sides</h3>
+    <div class="pair">
+      <div class="col">
+        <div class="colhead a">Edges are better at</div>
+        <ul>
+          <li><b>The commonest query.</b> "What pulls against X" is one hop with no join.</li>
+          <li><b>Fewer objects.</b> 24 edges against 30 nodes plus 50 party links.</li>
+          <li><b>No second store.</b> No new retrievable node type means a tension can never be
+          quoted on its own as if it were a ruling — consequence (a) becomes structurally impossible
+          rather than merely mitigated.</li>
+          <li><b>No status field to maintain.</b> Nothing to let rot.</li>
+          <li><b>It fits 17 of the 30 exactly</b>, which is a real majority.</li>
+        </ul>
+      </div>
+      <div class="col n">
+        <div class="colhead b">Nodes are better at</div>
+        <ul>
+          <li><b>Arity.</b> One triple and one four-party row survive untouched; edges fan them to 3 and 6.</li>
+          <li><b>Parties that are not principles.</b> 13 of 30, including a ruling as a party.</li>
+          <li><b>Typed ruling links</b>, which <code>s237-D5</code> needs and which stop four open
+          questions being closed by accident.</li>
+          <li><b>Sides.</b> "Three persuasion principles against one article" stays one side against one.</li>
+          <li><b>One home for one sentence</b> — no copied mediating variable.</li>
+          <li><b>Cost:</b> a status field, which must be <em>derived</em> (<code>s237-D9</code>), never typed.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPEN 21 ============ -->
+<section id="open">
+  <div class="wrap">
+    <p class="label">The twenty-one open ones — factory mode</p>
+    <div class="dim">
+      <div>
+        <span class="idx">04</span>
+        <h4 style="margin-top:var(--s3)">How the last two columns were decided</h4>
+        <p class="small muted"><b>Knowable</b> is a keyword match of the mediating variable against
+        the grill's six questions, plus a named standing rule where the answer is a property of the
+        artefact or the pipeline rather than of the client.</p>
+        <p class="small muted"><b>Disposition</b> is a two-clause test: a conservative standing answer
+        exists <em>and</em> a wrong answer is recoverable in the edit pass. Both true → default and
+        declare. True but with a named trigger → conditional. Neither → a new grill question.</p>
+        <p class="small muted">Four rows are reached by no grill question at all —
+        <code>tn-08</code>, <code>tn-21</code>, <code>tn-22</code>, <code>tn-26</code> — and two of
+        those still default, because the answer lives in a ruling you already made
+        (<code>tn-22</code> → <code>s217-D8</code>) or in a check on the artefact.</p>
+      </div>
+      <div>
+        <div class="scroll">
+        <table>
+          <thead><tr><th class="id">id</th><th>Mediating variable</th><th>Proposed factory default</th><th>Known?</th><th>Ask when</th></tr></thead>
+          <tbody>
+            <tr><td class="id">tn-01</td><td>Layer; brand mandate</td><td>Converge on mechanism, diverge on signal — one brand moment per view.</td><td>Q4</td><td><b>Ask</b> if brand changes a mechanism, not a signal.</td></tr>
+            <tr><td class="id">tn-02</td><td>Who absorbs it</td><td>Nothing is removed without a named destination; disclosure only at comfortable density.</td><td>Q3+Q6</td><td>never</td></tr>
+            <tr><td class="id">tn-03</td><td>Task criticality</td><td>Acknowledge instantly and quietly; show the work only for real delegated computation.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-04</td><td>Who is measuring</td><td>A beauty pass never stands in for the mechanical rubric.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-05</td><td>Layer</td><td>Normalise at the surface, validate at the boundary, and show the normalisation.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-06</td><td>Measurement window</td><td>Polish is the last pass, never the first.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-08</td><td>Interruption cost</td><td>Nothing blocks; status accretes where the user chooses to look.</td><td><b>no</b></td><td><b>Ask</b> when an irreversible or time-critical event is named.</td></tr>
+            <tr><td class="id">tn-09</td><td>Whose interest</td><td>Real progress only. A minted head start is refused, not offered.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-10</td><td>Timing</td><td>No first-run tour; guidance in place at the moment of need.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-11</td><td>Regulatory context</td><td>Rank by expected cost, not frequency.</td><td>Q6</td><td><b>Ask</b> if Q6 was skipped and the screen handles money, eligibility, health or identity.</td></tr>
+            <tr><td class="id">tn-12</td><td>Removed or hidden?</td><td>Every removed element carries a named destination.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-13</td><td>Preference clarity</td><td>Curated set, full set one action away — not claimed as settled science.</td><td>Q3</td><td>never</td></tr>
+            <tr><td class="id">tn-14</td><td>Neither applies</td><td>Group by chunking; quote neither 7±2 nor 4 as a limit.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-18</td><td>Frequency per element</td><td>Show the current step; keep the rest reachable without recall.</td><td>Q3</td><td>never</td></tr>
+            <tr><td class="id">tn-21</td><td>Audience purpose</td><td>Rank encodings by accuracy; record the cost when brand overrides.</td><td><b>no</b></td><td><b>Ask</b> when a brand chart style lowers the encoding rank.</td></tr>
+            <tr><td class="id">tn-22</td><td>Strength order</td><td>Spacing and keylines never assert different groups — the keyline hugs the module.</td><td><b>no</b></td><td>never — <code>s217-D8</code> already enacted it.</td></tr>
+            <tr><td class="id">tn-23</td><td>Action consequence</td><td>Acknowledgement instant, quiet, always. Celebration proportional and rare.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-24</td><td>Cost of route two</td><td>Multiple entries, one model.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-26</td><td>Load type</td><td>Before removing, record what the user must now hold in their head.</td><td><b>no</b></td><td>never — a build-time check.</td></tr>
+            <tr><td class="id">tn-28</td><td>Has it structure?</td><td>An F-pattern reading is a diagnostic, never a layout target.</td><td>standing</td><td>never</td></tr>
+            <tr><td class="id">tn-30</td><td>Licence</td><td>The generator refuses to emit text from a no-derivatives or proprietary source.</td><td>standing</td><td>never — <code>s237-D4</code> already routes these.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="small muted" style="margin-top:var(--s3)">Every default in this table is
+        <b>proposed</b>. The four questions, in the designer's words, are in the filed report.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSEQUENCES ============ -->
+<section id="risk">
+  <div class="wrap">
+    <p class="label">More problems than we solve — replayed</p>
+    <div class="dim">
+      <div><span class="idx">05</span></div>
+      <div><h2>Eight ways this goes wrong, each with the thing that stops it.</h2></div>
+    </div>
+    <div class="cards" style="margin-top:var(--s4)">
+      <div class="card"><span class="n">A</span><h3>A second rulings store</h3>
+        <p>Thirty retrievable judgement objects beside 321 rulings is a place to look up "what does
+        Apollo think" that is not the rulings store.</p>
+        <p><b>Stops it:</b> point, never restate — the tension holds an id, the ruling holds the words
+        (<code>ADR-0017</code>); status is DERIVED, never typed (<code>s237-D9</code>); retrieval
+        returns the ruling first.</p>
+        <p class="own">Owner — whoever writes the retrieval layer</p></div>
+
+      <div class="card"><span class="n">B</span><h3>A default that pre-empts consent</h3>
+        <p><code>tn-25</code> is the live one. "Good defaults help people" and "never pre-tick" differ
+        by consent, not by mechanics — a generator that treats a marketing consent like a theme toggle
+        will pre-tick it by symmetry. DSA Article 25 is the line.</p>
+        <p><b>Stops it:</b> the derivation already puts <code>tn-25</code> in the <em>obligation</em>
+        bucket, so the factory is never allowed to default there. Grade the slot, not the mechanism.</p>
+        <p class="own">Owner — the generator's default-minting path</p></div>
+
+      <div class="card"><span class="n">C</span><h3>The grill grows by thirty</h3>
+        <p>The failure this lane was told to avoid.</p>
+        <p><b>Stops it:</b> ask-when. Derived count: <b>0</b> new standing questions, 4 conditional.
+        <b>But</b> the real growth landed on the other side — <b>21 default lines</b> in a
+        "Defaults used:" field designed for six. Cap that, or the declaration becomes the thing
+        nobody reads.</p>
+        <p class="own">Owner — the grill skill, unresolved</p></div>
+
+      <div class="card"><span class="n">D</span><h3>Split edges that disagree</h3>
+        <p><code>tn-03</code> becomes three edges and <code>tn-19</code> six, each carrying a copy of
+        one mediating variable. Copies drift.</p>
+        <p><b>Stops it:</b> the node reading, or — if edges win — one canonical edge with the others
+        generated from it, never hand-written.</p>
+        <p class="own">Owner — the schema decision itself</p></div>
+
+      <div class="card"><span class="n">E</span><h3>"Tension" and "default" already mean things</h3>
+        <p>Probe: 43 hits. In <code>s143-D1</code> four <code>$status</code> tension flags were
+        <b>downgraded from TENSION to CROSS-REFERENCE</b> — "they are not conflicts". In the usage
+        entities, a tension is an unreconciled disagreement between two source documents, queued for
+        settlement. R1's tensions are neither: they are permanent pulls between two true things.</p>
+        <p>"Default" carries two senses already — the shipped starting value inside a ruled option set
+        (<code>s219-D3</code>) and the grill's value-used-because-you-skipped. A factory default for a
+        tension would be a third.</p>
+        <p><b>Stops it:</b> pick different words before anything is generated. This is the
+        <code>s202</code> class and it costs one decision now, or a rebuild later.</p>
+        <p class="own">Owner — Dave, before P1</p></div>
+
+      <div class="card"><span class="n">F</span><h3>A default that contradicts the pack</h3>
+        <p>Probed against the shipped rules: <code>tn-22</code>'s default restates
+        <code>s217-D8</code> rather than contradicting it; <code>tn-15</code>/<code>tn-16</code> route
+        through <code>s151-D1</code> and <code>s116-D1</code> as the obligation's compliance path, not
+        against them.</p>
+        <p><b>Stops it:</b> no proposed default may restate a ruling — it must point. <b>Unproven:</b>
+        the 17 default-and-declare rows were checked against the rulings named in <code>tensions.json</code>,
+        not against every rule in <code>apollo-spider/</code>.</p>
+        <p class="own">Owner — a gate at generation time</p></div>
+
+      <div class="card"><span class="n">G</span><h3>An immortal open tension</h3>
+        <p>An open thing with no default and no ask-when never closes.</p>
+        <p><b>Stops it:</b> every one of the 21 rows carries a close condition — a default, or a named
+        trigger. "never" in the ask-when column means <em>closed by the default</em>, not
+        <em>unclosable</em>. A row with neither should fail the build.</p>
+        <p class="own">Owner — the tension generator</p></div>
+
+      <div class="card"><span class="n">H</span><h3>Hand-typed tensions are a copy chain</h3>
+        <p><code>s234-D1</code>: the graph is generated, never copied into.</p>
+        <p><b>Stops it:</b> name the generator. <code>tensions.json</code> is the source; the two
+        scripts in this lane's assets are the working shape of it — a sort keyed on the principle
+        register's own grade and on <code>_rulings.json</code> membership, re-derived on every build.
+        It already found a dangling party id (<code>pr-info-scent</code>) that a hand-typed import
+        would have carried in silently.</p>
+        <p class="own">Owner — the P1 build</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUESTIONS ============ -->
+<section id="ask">
+  <div class="wrap">
+    <p class="label">Ruling-shaped — your call, not this lane's</p>
+    <div class="dim">
+      <div><span class="idx">06</span></div>
+      <div>
+        <h2>Five decisions. Nothing below is decided.</h2>
+
+        <div class="qq">
+          <p class="num">Question 1</p>
+          <h3>Edges or nodes?</h3>
+          <p>(a) a typed edge between two principles, carrying the mediating variable ·
+             (b) its own node type with N parties and typed links out.</p>
+          <p class="rec"><b>Recommend (b), nodes</b> — because 13 of the 30 have a side that is not a
+          principle at all and would produce no edge, and because the single untyped ruling slot an
+          edge affords would silently close four open questions.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 2</p>
+          <h3>Who settles the open ones?</h3>
+          <p>(a) you sit down and rule 21 · (b) derived defaults, and you rule only the ask-when list ·
+             (c) derived defaults with no ruling at all until one bites.</p>
+          <p class="rec"><b>Recommend (b)</b> — it puts <b>4</b> decisions in front of you instead of
+          21, and the four are the ones where a wrong default is expensive.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 3</p>
+          <h3>Does "tension" keep its name?</h3>
+          <p>The word already means a downgradeable conflict flag in this house
+             (<code>s143-D1</code>) and an ingestion disagreement in the usage entities.</p>
+          <p class="rec"><b>Recommend renaming</b> — the <code>s202</code> "switch" case says a
+          vocabulary collision is cheapest to fix before anything is generated.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 4</p>
+          <h3>Does the declaration get a cap?</h3>
+          <p>21 default lines would join a "Defaults used:" field built for six. (a) declare all ·
+             (b) declare only the ones that bent away from the conservative side · (c) declare on demand.</p>
+          <p class="rec"><b>Recommend (b)</b> — a declaration nobody reads is the same failure as a
+          question nobody answers.</p>
+        </div>
+
+        <div class="qq">
+          <p class="num">Question 5</p>
+          <h3>Which field carries a ruling link?</h3>
+          <p><code>apollo_touch</code> currently mixes <em>resolves</em>, <em>explains</em>
+             (<code>s237-D5</code>), <em>challenges</em> and <em>merely touches</em>.</p>
+          <p class="rec"><b>Recommend typed links</b>, and a generator that refuses an untyped one —
+          the sort moves from 6·3·21 to 6·9·15 on this single choice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>#237 lane T · derived from <code>notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json</code>
+    · rules printed in <code>notes/_subreports/assets/2026-09-02-237-T-tensions-schema/</code>
+    · report at <code>notes/_subreports/2026-09-02-237-T-tensions-schema.md</code></p>
+    <p>Everything on this page is <b>floated</b>. No ruling was written and no state was changed.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('tt'), r=document.documentElement;
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches){r.setAttribute('data-theme','dark');}
+  function sync(){b.textContent = r.getAttribute('data-theme')==='dark' ? 'Light' : 'Dark';}
+  sync();
+  b.addEventListener('click',function(){
+    r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); sync();
+  });
+})();
+</script>
+</body>
+</html>

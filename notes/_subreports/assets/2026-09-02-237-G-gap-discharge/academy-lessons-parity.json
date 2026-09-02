@@ -1,0 +1,180 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · discharges UNPROVEN 1 of notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md",
+  "gap": "R2-1 — two of fourteen academy lessons were fetched at #236 and found equivalent to their blog sections; the other twelve were ASSUMED equivalent. The borrow matrix rests on that assumption.",
+  "verdict": "DISCHARGED — all twelve fetched and given a verdict.",
+  "method": {
+    "our_words": "Parity judged on MEANING, not bytes. The test applied to each lesson: would the borrow-matrix cell for this play read differently if this lesson, rather than the blog section, had been the source?",
+    "reference_used": "The blog play summaries in notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md §1 'The twelve plays' table, and the per-cell why-clauses in assets/2026-09-02-236-R2-sdlc-playbook/borrow-matrix.json",
+    "tool": "mcp__workspace__web_fetch, one URL per tool call (11 lessons); lesson 14 via Claude in Chrome after two aborted fetches",
+    "date": "2026-09-02, reads between ~12:05Z and ~12:17Z"
+  },
+  "totals": { "lessons_checked": 12, "equivalent": 11, "light_copy_edit": 0, "DIVERGES": 1 },
+  "headline": "No borrow-matrix cell is falsified by the twelve lessons. The one DIVERGES is the closing lesson, which is not a play and carries no cell. What the twelve DID turn up is a set of corrections to R2's §1 description of the course, and three cells that could move in Apollo's FAVOUR — all reported, none moved.",
+  "lessons": [
+    {
+      "lesson": 3, "slug": "requirements-and-design",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/requirements-and-design",
+      "blog_section": "Stage 2: Design — play 2 (borrow-matrix row P2)",
+      "verdict": "equivalent",
+      "our_words": "Same play: one prompted session turns an accepted intent.md into a spec.md constrained by the org's skills, with concerns flagged and routed to their policy owners before engineering sees it. Steps, roles and both measures line up with R2's play-2 row.",
+      "course_side_addition": {
+        "our_words": "The lesson names a front-end route the blog play summary does not: the product owner mocks the design in Claude Design (beta) straight from the intent.md, iterates on the mock, then exports it to Claude Code to build.",
+        "cell_it_could_move": "P2 / target P (the Discover option). R2's cell reads ADAPT — 'the generator reads the brief but produces no reviewable spec before pixels' — and proposes emitting a one-screen spec the designer accepts. The course describes an intent -> mock -> iterate -> export route that is a DIFFERENT shape from a written spec: the reviewable artefact is the mock, not a document.",
+        "honesty_marker": "UNPROVEN whether the blog carries this same sentence. R2 read 100% of the blog body but its one-line play-2 summary does not mention Claude Design, and absence from a summary is not absence from the source. Do not treat this as course-only without a blog re-read."
+      }
+    },
+    {
+      "lesson": 4, "slug": "plan-mode",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/plan-mode",
+      "blog_section": "Stage 3: Build — play 3 (row P3)",
+      "verdict": "equivalent",
+      "our_words": "Same play: start in plan mode, hand over intent.md and spec.md, demand files-order-tests, interrogate the plan, commit it as plan.md, and update plan.md in the same commit when implementation departs from it. R2's play-3 row and its M-cell change ('the wrap asserts each brief region against the filed report') sit correctly beside it.",
+      "correction_to_r2": {
+        "our_words": "R2 §1 states that four blog sections 'are NOT plays and have no course lesson', naming auto mode and the legacy-systems sidebar among them. BOTH are in this lesson, as trailing sections after 'How to measure it'.",
+        "receipt_auto_mode": "lesson heading 'Claude Code in auto mode'",
+        "receipt_legacy": "lesson heading 'Legacy systems and the source of truth'",
+        "matrix_effect": "None. No cell changes. This corrects a description in R2 §1, not a verdict."
+      },
+      "worth_carrying": {
+        "our_words": "The legacy-systems section states the one-source-of-truth rule explicitly and offers three configurations (repo as truth, legacy system as truth, linkage as the minimum bar). R2 already spotted that this is ADR-0017 arrived at independently; the lesson makes the three configurations explicit, and 'linkage as the minimum bar' is the weakest form ADR-0017 Rule 2 would accept.",
+        "receipt": "\"one system should be named the source of truth and the others hold a copy or a link\""
+      }
+    },
+    {
+      "lesson": 5, "slug": "claude-md",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/claude-md",
+      "blog_section": "Stage 3: Build — play 4 (row P4)",
+      "verdict": "equivalent",
+      "our_words": "Same play, and it carries verbatim the two clauses R2's P4 row turns on: the twice-wrong rule, and the under-a-page heuristic R2 proposed replacing with Memento's MEASURED boot band.",
+      "receipt_twice_wrong": "\"When Claude makes a mistake twice, the correction goes into CLAUDE.md\"",
+      "receipt_page_heuristic": "\"Keep it under a page, because Claude reads all of it at the start of a session\"",
+      "correction_to_r2": {
+        "our_words": "R2 §1 says every play has the same five parts (what changes · getting started · how to execute it · governance considerations · how to measure it). This lesson has FOUR: it has no 'What changes' table. So does lesson 6 and lesson 9 and lesson 11.",
+        "matrix_effect": "None. A description in R2 §1, not a verdict."
+      }
+    },
+    {
+      "lesson": 6, "slug": "skills-as-institutional-knowledge",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/skills-as-institutional-knowledge",
+      "blog_section": "Stage 3: Build — play 5 (row P5)",
+      "verdict": "equivalent",
+      "our_words": "Same play, and it carries the exact sentence R2 quoted for the blog: a skill is a control but an advisory one, and a policy that must always hold needs something deterministic behind it. R2's M-cell change (every skill rule that must hold names its gate) is the lesson's own argument.",
+      "receipt": "\"A skill is a control, though an advisory one.\"",
+      "correction_to_r2": {
+        "our_words": "R2 §1 lists 'hooks as build-time guardrails' as a blog section folded into play 10 with no course lesson. It is here, in lesson 6, as a trailing section — not in lesson 11.",
+        "receipt": "lesson heading 'Hooks as build-time guardrails'"
+      },
+      "cell_it_could_refine": {
+        "cell": "P10 / target M",
+        "our_words": "R2's M-cell for play 10 proposes expressing the two most-breached rules as PreToolUse hooks. This lesson splits hooks into two kinds and puts them in different places: build-phase hooks BLOCK, must be fast and scoped to the changed file, and heavier checks belong at commit or PR; hooks that ASK a human belong at deploy, because an approval prompt during build puts a person back on the critical path of every parallel session.",
+        "receipt": "\"build-phase hooks should be fast and scoped to the file that changed\"",
+        "consequence_for_apollo": "The two most-breached Memento rules (blind git add -A, the skipped wrap) are commit-time concerns, not per-edit ones. On the lesson's own taxonomy a PreToolUse hook is the right shape only if it BLOCKS silently and cheaply; if it would ask Dave anything, the lesson argues it belongs at the wrap gate where _capture_gate.py already lives. Reported, not ruled."
+      }
+    },
+    {
+      "lesson": 7, "slug": "parallel-sessions-and-subagents",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/parallel-sessions-and-subagents",
+      "blog_section": "Stage 3: Build — play 6 (row P6)",
+      "verdict": "equivalent",
+      "our_words": "Same play, same starting figure, same worktree isolation, same .claude/agents/ shape with name, when-to-use description and tool limits. R2's D-cell change (run v1.0.6 lanes in git worktrees) is exactly what the lesson prescribes.",
+      "receipt": "\"Two or three sessions is a sensible starting point.\"",
+      "note_our_words": "The lesson's stated ceiling is review capacity, not machine capacity — 'add sessions only while review is keeping up'. That is the same constraint Memento already enforces with the 3-window cap in delegation-inversion-ruled."
+    },
+    {
+      "lesson": 8, "slug": "give-claude-a-feedback-loop",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/give-claude-a-feedback-loop",
+      "blog_section": "Stage 4: Test — play 7 (row P7)",
+      "verdict": "equivalent",
+      "our_words": "Same play, and it carries verbatim the clause R2's M-cell turns on: the loop must be protected from the thing it grades.",
+      "receipt": "\"an agent fixing code must not be able to weaken the check\"",
+      "cell_it_could_move": {
+        "cell": "P7 / target P",
+        "our_words": "R2's P-cell reads ADAPT with the named change 'add a mock-diff round to the three browser gates', framed as Apollo's own addition. The lesson prescribes precisely that as step 5 of the play: for UI work, give Claude the mock and a browser or screenshot tool, then implement, screenshot, compare, adjust, with two or three rounds normal.",
+        "receipt": "\"Implement, screenshot, compare, and adjust. Two or three rounds is normal.\"",
+        "why_it_matters": "The cell could move from ADAPT-with-our-change to ADOPT-the-play-as-written, which is a stronger position: the visual loop stops being an Apollo invention and becomes the play we had not yet taken. Reported, not moved — Dave rules the matrix."
+      },
+      "second_distinction_worth_carrying": {
+        "our_words": "The lesson separates the feedback LOOP (runs throughout the task, as many times as needed) from the VERIFIER SUBAGENT (one final check in a fresh context so the verdict is not coloured by the assumptions that produced the work). Apollo runs the second under s204-D1 and the first as gates; the lesson says they are different instruments and both are wanted.",
+        "receipt": "\"the verdict is not colored by the assumptions that produced the code\""
+      }
+    },
+    {
+      "lesson": 9, "slug": "continuous-evals-in-ci",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/continuous-evals-in-ci",
+      "blog_section": "Stage 4: Test — play 8 (row P8)",
+      "verdict": "equivalent",
+      "our_words": "Same play: 20 to 50 real tasks with expected outcomes, run non-interactively in CI on a schedule and on any change to the agent's configuration, with configuration changes gated on the pass rate and every incident becoming a permanent eval. R2's M-cell change (trigger the memory/skill regression on any change to MEMORY.md or a skill) is the lesson's own trigger rule.",
+      "receipt_trigger": "\"on any change to CLAUDE.md, skills, or hooks, since that configuration steers the agent\"",
+      "bears_on_a_ruling_shaped_question": {
+        "question": "R2 RULING-SHAPED QUESTION 6 — do Dave's cold tests become a frozen eval suite?",
+        "our_words": "The lesson argues the opposite of freezing: an eval suite must be treated as LIVE, because as models improve, cases that once discriminated stop discriminating and new ones have to be added from ongoing monitoring.",
+        "receipt": "\"As models improve, cases that once discriminated stop doing so\"",
+        "handling": "⛔ Recorded as evidence for the question, NOT as an answer. R2 recommended (a) for the mechanical arms only, keeping Dave's eye unfrozen; this is the playbook's own reason that even the mechanical arms need a refresh policy. Dave rules."
+      }
+    },
+    {
+      "lesson": 10, "slug": "ai-in-the-pr-review-loop",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/ai-in-the-pr-review-loop",
+      "blog_section": "Stage 5: Deploy — play 9 (row P9)",
+      "verdict": "equivalent",
+      "our_words": "Same play, and the REVIEW.md shape R2's M-cell proposes borrowing is spelled out in the lesson exactly as R2 described it: named passes, an Important-versus-Nit definition, a nit cap, and a do-not-report list. R2's cell is confirmed, not merely plausible.",
+      "receipt_separation": "\"the agent that wrote the code has no way to approve it\"",
+      "receipt_shape": "\"Report at most five nits per review; summarize the rest as a count.\"",
+      "note_our_words": "The lesson also carries a monthly tuning step (rate findings, cap nit volume, exclude generated paths and anything CI already enforces) that R2's cell does not name. That is the maintenance half of the same borrow."
+    },
+    {
+      "lesson": 11, "slug": "hooks-as-approval-gates",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/hooks-as-approval-gates",
+      "blog_section": "Stage 5: Deploy — play 10 (row P10)",
+      "verdict": "equivalent",
+      "our_words": "Same play: hooks allow, ask or block as the agent acts; team hooks live in .claude/settings.json in Git and non-negotiable ones in managed settings the engineer cannot switch off; a block must explain itself and name the route to approval. R2's play-10 row stands.",
+      "receipt": "\"non-negotiable hooks go in managed settings owned by the platform or IT admin\"",
+      "course_side_detail": {
+        "our_words": "The lesson carries a long managed-settings example for a regulated enterprise with named keys and an explanation of each in control terms — permissions allow/deny, sandbox with failIfUnavailable, credentials denial for ~/.ssh and ~/.aws, allowManagedHooksOnly, disableSideloadFlags, strictKnownMarketplaces, allowManagedMcpServersOnly, requiredMinimumVersion.",
+        "honesty_marker": "UNPROVEN whether the blog carries the same key list. R2's §1 'Tooling it assumes' names 'managed/MDM settings', so the concept is in the blog; the key-by-key breakdown may be course-only or may not. Not established by this lane.",
+        "one_clause_that_bites": "allowManagedHooksOnly blocks hooks defined in user, project and local settings — including the lesson's own .claude/settings.json example. Any Apollo pack that shipped hooks to a regulated customer would be silently disabled under that setting unless the hooks were defined in the managed file. Relevant to P10 / target D."
+      }
+    },
+    {
+      "lesson": 12, "slug": "ci-cd-integration-and-deployment",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/ci-cd-integration-and-deployment",
+      "blog_section": "Stage 5: Deploy — play 11 (row P11)",
+      "verdict": "equivalent",
+      "our_words": "Same play, and it carries verbatim the governing sentence R2 quoted. Read-only judgment steps first, write steps behind existing gates, sandboxed execution with no standing production credentials, deployment exposed through MCP as an allowlist, autonomy tiered per environment, and rollback as the most rehearsed path.",
+      "receipt": "\"the agent may act up to the production gate and cannot pass it\"",
+      "note_our_words": "R2 rejected this row for Memento on the ground that Memento deploys nothing and the environment tiers have no referent. Nothing in the lesson disturbs that. The D-cell change (a release-authorisation file the build can read, so s234-D1's HELD is machine-checkable) rhymes with the lesson's production-gate hook, which reads a named authorisation before allowing the action."
+    },
+    {
+      "lesson": 13, "slug": "closing-the-loop-on-metrics",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-the-loop-on-metrics",
+      "blog_section": "Stage 6: Maintain — play 12 (row P12)",
+      "verdict": "equivalent",
+      "our_words": "Same play: a deterministic, version-controlled, unit-tested detection script with rolling baseline and Western-Electric-style rules; response tiers in bands.yaml at 1/2/3 sigma; the agent's diagnosis written as intent.md so the finding re-enters the loop. R2 called this the closest structural rhyme in the reading and named the missing half as a breach writing an artefact that re-enters the loop — which is exactly the lesson's step 5.",
+      "receipt": "\"detection stays entirely deterministic, with no model involved\"",
+      "correction_to_r2": {
+        "our_words": "R2 §1 lists two Stage-6 product sections with no course lesson: scheduled codebase scans, and Claude in a chat channel. The chat-channel one is here, as the trailing section 'Claude on call with Claude Tag'. Scheduled codebase scans was NOT seen in any of the twelve lessons.",
+        "tally": "Of R2's four 'no course lesson' sections, THREE have course homes (auto mode and legacy systems in lesson 4, build-time hook guardrails in lesson 6, Claude Tag in lesson 13). Only scheduled codebase scans remains unseen."
+      },
+      "worth_carrying": {
+        "our_words": "The lesson introduces something R2's play-12 row does not carry: between stages of the headless loop sits an independent confidence gate — either a deterministic check or an adversarial reviewing agent — that decides whether the previous stage's output continues or escalates to a human.",
+        "receipt": "\"an independent confidence gate between stages, a deterministic check or an adversarial reviewing agent\"",
+        "why_it_matters": "That is Apollo's own s204-D1 adversarial verifier, named as a stage-gating mechanism rather than a review seat. It is the one construct in the reading that Memento already has and the blog play summary did not surface."
+      }
+    },
+    {
+      "lesson": 14, "slug": "closing-thoughts-and-resources",
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-thoughts-and-resources",
+      "blog_section": "the blog's closing — NOT a play, so no borrow-matrix row",
+      "verdict": "DIVERGES",
+      "where": "The course's closing lesson does not carry the blog's closing line. It is course-specific prose about models and harnesses transforming the whole lifecycle while keeping human judgment central, followed by a fourteen-item platform-team resources list (admin decision map, settings precedence, server-managed settings, permissions, sandboxing, hooks, skills, plugins and private marketplaces, managed MCP, enterprise deployment, network configuration, OpenTelemetry monitoring, compliance API, security model).",
+      "receipt": "\"This transformation keeps human judgment central to the process\"",
+      "blog_line_absent": "R2 quoted the blog's closing as 'The loop keeps running. Human judgement stays above it.' A substring probe for 'loop keeps running' on the rendered lesson returned false.",
+      "matrix_cell_at_risk": "NONE. The closing is not a play and carries no cell. The divergence is real but inert for the borrow decision.",
+      "fetch_note": "This is the one lesson mcp__workspace__web_fetch could not retrieve — two attempts, both 'This operation was aborted'. Read via Claude in Chrome instead."
+    }
+  ],
+  "what_this_does_not_prove": {
+    "our_words": "Parity was judged against R2's SUMMARY of each blog section, not against a fresh read of the blog. Where a lesson carries something R2's summary does not mention, this lane cannot tell whether the blog also carries it. Two such cases are flagged inline (Claude Design in lesson 3, the managed-settings key list in lesson 11).",
+    "price_to_close": "One re-fetch of https://claude.com/blog/the-ai-native-sdlc-playbook and a targeted search for those two passages."
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · discharges the CLAIMED item of notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md",
+  "gap": "R2-4 — CLAIMED that apollo-spider/CLAUDE.md and AGENTS.md play the rails-file role. Their EXISTENCE was probed at #236 (ls listed both); their CONTENTS were not read.",
+  "verdict": "DISCHARGED — both read in full.",
+  "headline": "Both files exist, both are GENERATED projections of one source, and their bodies are byte-identical. They do NOT have the playbook's CLAUDE.md shape — no commands, no architecture, no mistakes-list. They are a design BEHAVIOUR CONTRACT wearing a rails file's filename.",
+  "files": [
+    {
+      "path": "apollo-spider/CLAUDE.md",
+      "bytes": 4180,
+      "lines": 33,
+      "generated": true,
+      "generator_receipt": "\"GENERATED from cold-start/DESIGN-CONTRACT.md for Claude — edit the source, not this file\"",
+      "generator_command": "python3 cold-start/gen_projections.py"
+    },
+    {
+      "path": "apollo-spider/AGENTS.md",
+      "bytes": 4195,
+      "lines": 33,
+      "generated": true,
+      "generator_receipt": "\"GENERATED from cold-start/DESIGN-CONTRACT.md for AGENTS.md agent hosts — edit the source, not this file\"",
+      "generator_command": "python3 cold-start/gen_projections.py"
+    },
+    {
+      "path": "apollo-spider/cold-start/DESIGN-CONTRACT.md",
+      "bytes": 4040,
+      "role": "THE SOURCE — the one home; the two files above are its projections. Named here because R2's row 4 treats CLAUDE.md and AGENTS.md as two artefacts; they are one artefact with two filenames."
+    }
+  ],
+  "identity_probe": {
+    "command": "diff <(tail -n +2 CLAUDE.md) <(tail -n +2 AGENTS.md)",
+    "result": "IDENTICAL from line 2 onward — no differences",
+    "our_words": "The only difference between the two files is the host named in the generated-from comment on line 1 ('for Claude' versus 'for AGENTS.md agent hosts'), which accounts for the 15-byte size gap. Everything a reading agent acts on is the same text twice.",
+    "consequence": "This is ADR-0017 done RIGHT, not a duplication defect: one home (DESIGN-CONTRACT.md), two generated addresses, a generator named in both headers. Worth saying plainly, because a naive audit would flag two identical files as a write-once violation."
+  },
+  "what_it_instructs_in_our_words": [
+    "Declare your lane in the first reply — on-canon (working through skills/) or freestyle. On-canon is the default; freestyle only when the designer asks in words; never switch silently.",
+    "Grill before building. Look in briefs/; if there is no current brief, run the grill skill, theme question first. If the skill is unreachable, ask the six questions by hand. If even those are unreachable, ask the one question that cannot be recovered later: which of the four themes.",
+    "Five rules that hold with no skill open: never invent a component/variant/colour/icon; copy markup from knowledge/snippets/ rather than memory; ask the theme rather than assume it; dashboards are bento-first or ask; check before you show, by RUNNING the gates.",
+    "Scope: the contract governs design and UI output in this project. Using a non-Apollo skill for design output is freestyle and must be declared with the skill named.",
+    "When something looks wrong, file cold-start/REPORT-TEMPLATE.md and name the lane you declared.",
+    "Six grill questions in fixed order — theme; light/dark/both; density and width; brand assets; real data or placeholder; anything fixed or off-limits — with 'skip' a real answer, a shrug counted as a skip, and every skip recorded beside the default it causes."
+  ],
+  "does_it_function_as_a_rails_file_for_a_generating_agent": {
+    "verdict": "PARTLY",
+    "receipt": "\"read this before you build anything in this project\"",
+    "what_it_does_carry_our_words": "It occupies the rails-file SLOT precisely: it is the file at the project root that a generating agent reads before acting, it is versioned, it is short (one page, matching the playbook's own heuristic), and it carries the conventions that must hold. Its five rules are exactly the playbook's 'things Claude gets wrong' category — 'never invent' and 'copy the markup, never from memory' are corrections distilled from repeated failures, which is the twice-wrong rule's output.",
+    "what_it_does_NOT_carry_our_words": "None of the playbook's other three CLAUDE.md sections. There is no Commands section (no build, test or lint command — it points at a skill that ends in a gate run, but never gives the command as a rails-file line). There is no Architecture section (no map of which directory does what). There is no separate mistakes list — the mistakes ARE the five rules, fused with the policy rather than listed as observed errors.",
+    "the_sharper_reading": "This file is closer to a BEHAVIOUR CONTRACT than to the playbook's rails file. It governs how the agent must behave (declare, ask, refuse to invent, run the check) rather than orienting it in the codebase. It is prose-enforced throughout: every clause is an instruction to a reader, and nothing in the file is machine-checked by the file itself."
+  },
+  "does_r2_matrix_row_4_stand": {
+    "row": "P4 — 'The CLAUDE.md', borrow-matrix.json rows[3]",
+    "M_cell": {
+      "r2_verdict": "ADAPT — 'no CLAUDE.md at the repo root (probe: ls -> No such file); AGENTS.md + MEMORY.md are the analogue'",
+      "stands": true,
+      "our_words": "Untouched by this read. The Memento cell is about the REPO ROOT, and the files read here are under apollo-spider/, a different location. The M-cell change (replace the playbook's under-a-page heuristic with the MEASURED boot band) is unaffected."
+    },
+    "D_cell": {
+      "r2_verdict": "ADAPT — 'the pack ships CLAUDE.md and AGENTS.md already; the pack's real gap is a behaviour contract, not a rails file'; change: 'nothing to add here — the effort belongs in L2 (behaviour address)'",
+      "stands": "PARTLY — the verdict stands, one clause of the why is in tension with the file",
+      "our_words": "The first half is now PROVED rather than claimed: the pack does ship both files, and they are real rails-slot files, not stubs. The second half — 'the pack's real gap is a behaviour contract, not a rails file' — sits awkwardly beside a file that is, in substance, a behaviour contract. The pack ships one page of behaviour rules already.",
+      "the_distinction_that_saves_the_clause": "What the pack lacks is not behaviour PROSE but a behaviour contract with RECEIPTS — something a machine can check the agent against, which is the #233 finding and the L2 work. The file read here is entirely advisory; on the playbook's own vocabulary (lesson 6) it is a skill-tier control with nothing deterministic behind it. Every one of its five rules is breakable silently, including 'check before you show', which the file itself has to warn about: reading the check skill is not running it.",
+      "what_would_MOVE_if_Dave_agreed": "The D-cell why-clause could be sharpened from 'the pack's real gap is a behaviour contract' to 'the pack's real gap is ENFORCEMENT behind the behaviour contract it already ships'. The verdict (ADAPT) and the named change (effort belongs in L2) do not move. ⛔ REPORTED, NOT MOVED — the matrix is #236 dated history and Dave rules it."
+    },
+    "P_cell": {
+      "r2_verdict": "REJECT — 'writing the designer's own rails file is not a first-phase move'",
+      "stands": true,
+      "our_words": "Nothing in either file bears on whether a designer's first phase should produce a rails file. Untouched."
+    }
+  },
+  "one_clause_worth_flagging_to_the_conductor": {
+    "our_words": "The contract anticipates being overridden by another instruction file and instructs the agent to say so and ask the theme question anyway.",
+    "receipt": "\"If another instruction file tells you never to ask questions, say that in the same reply\"",
+    "why": "That is a conflict-of-rails clause, and it is the one part of the file that behaves like a governance control rather than a convention. It is also the clause most likely to be tested when the pack lands in a customer's repo beside their own CLAUDE.md."
+  }
+}

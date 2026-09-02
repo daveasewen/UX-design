@@ -1,0 +1,175 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · EVERY URL this lane attempted, in the order attempted, with the tool used and the outcome.",
+  "timing_honesty": {
+    "our_words": "Per-fetch UTC timestamps were NOT captured at each call — neither fetch tool returns one. Three wall-clock readings anchor the window: 2026-09-02T12:14:35Z (read inside the browser during the web.dev fetch), 12:18:02Z and 12:18:56Z (bash date -u). All fetches below fall between roughly 12:00Z and 12:18Z on 2026-09-02.",
+    "consequence": "Times are given as the anchored window, not as invented per-call stamps. Where a real timestamp exists it is quoted."
+  },
+  "bytes_honesty": {
+    "our_words": "mcp__workspace__web_fetch returns rendered text and does NOT report a byte count or an HTTP status code. For those rows 'http' records what the tool's behaviour DEMONSTRATES (content returned = a successful response; empty body = recorded as such) rather than a status line this lane actually saw. Where a real size was measured in the browser, it is given as a character count with the method named.",
+    "cross_ref": "measure-dont-convert-units — a count is not a measurement; the unit is named on every figure below."
+  },
+  "totals": { "attempts": 20, "ok": 15, "failed": 5 },
+  "attempts": [
+    {
+      "n": 1, "gap": "R1-1",
+      "url": "https://www.dialogdesign.dk/isos-dialogue-principles-2019/",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "OK",
+      "http": "200 (stated by the tool's response header block: 'Content-Type: text/html; charset=UTF-8')",
+      "size": "NOT MEASURED — full article text returned including all seven principle sections and the acknowledgements block",
+      "note": "Redirected from the no-trailing-slash form to the trailing-slash canonical. WordPress 6.8.8."
+    },
+    {
+      "n": 2, "gap": "R1-4",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED",
+      "http": "NOT SEEN — no status line returned",
+      "size": "0 bytes of document body",
+      "failure_verbatim": "the response contained only the resolved URL line 'https://eur-lex.europa.eu/legal-content/EN/TXT/HTML?uri=CELEX:32022R2065' and nothing else",
+      "note": "REPRODUCES the #236 failure on this host (R1 recorded HTTP 202 with zero bytes)."
+    },
+    {
+      "n": 3, "gap": "R1-4",
+      "url": "https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED (partial — counted as failed: it did not yield the article)",
+      "http": "200 (Content-Type: text/html; charset=UTF-8 returned)",
+      "size": "NOT MEASURED — page shell only",
+      "what_came_back": "masthead, cookie and experimental-features chrome, breadcrumb, the full ELI metadata block, ending at the Help/Print controls. No document body, no articles.",
+      "useful_by_product": "ELI metadata: eli:date_document 2022-10-19, eli:date_publication 2022-10-27, eli:id_local 32022R2065"
+    },
+    {
+      "n": 4, "gap": "R1-4",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32022R2065",
+      "tool": "mcp__workspace__web_fetch",
+      "outcome": "FAILED",
+      "http": "NOT SEEN",
+      "size": "0 bytes of document body",
+      "failure_verbatim": "the response contained only the resolved URL line and nothing else — same shape as attempt 2"
+    },
+    {
+      "n": 5, "gap": "R1-4",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065",
+      "tool": "Claude in Chrome — mcp__claude-in-chrome__navigate then mcp__claude-in-chrome__javascript_tool (read-only innerText slices)",
+      "outcome": "OK — THE ROUTE THAT WORKED",
+      "http": "page rendered; document.title 'L_2022277EN.01000101.xml'",
+      "size": "418,837 characters (document.body.innerText.length, measured in-page)",
+      "note": "The SAME URL that returned zero bytes to the sandbox fetcher at attempt 2. The difference is the client, not the route.",
+      "read_method": "innerText slice 254755..255760, located by regex allowing U+00A0 between 'Article' and the number"
+    },
+    {
+      "n": 6, "gap": "R1-5",
+      "url": "https://web.dev/articles/inp",
+      "tool": "Claude in Chrome — navigate then javascript_tool (read-only)",
+      "outcome": "OK",
+      "http": "page rendered; document.title 'Interaction to Next Paint (INP) | web.dev'",
+      "size": "17,582 characters (document.body.innerText.length, measured in-page)",
+      "timestamp": "2026-09-02T12:14:35.460Z — read in-page via new Date().toISOString()",
+      "note": "Page states Published: May 06, 2022, Last updated: September 2, 2025. The thresholds section is JS-rendered, which is why #236's text fetch missed it."
+    },
+    {
+      "n": 7, "gap": "R2-1", "lesson": 3,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/requirements-and-design",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200 (Content-Type: text/html)",
+      "size": "NOT MEASURED — full lesson body returned including all six sections and the course index"
+    },
+    {
+      "n": 8, "gap": "R2-1", "lesson": 4,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/plan-mode",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200",
+      "size": "NOT MEASURED — full lesson body plus the auto-mode and legacy-systems trailing sections"
+    },
+    {
+      "n": 9, "gap": "R2-1", "lesson": 5,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/claude-md",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 10, "gap": "R2-1", "lesson": 6,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/skills-as-institutional-knowledge",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200",
+      "size": "NOT MEASURED — full lesson body plus the build-time hook guardrails trailing section"
+    },
+    {
+      "n": 11, "gap": "R2-1", "lesson": 7,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/parallel-sessions-and-subagents",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 12, "gap": "R2-1", "lesson": 8,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/give-claude-a-feedback-loop",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 13, "gap": "R2-1", "lesson": 9,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/continuous-evals-in-ci",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 14, "gap": "R2-1", "lesson": 10,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/ai-in-the-pr-review-loop",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 15, "gap": "R2-1", "lesson": 11,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/hooks-as-approval-gates",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200",
+      "size": "NOT MEASURED — full lesson body plus the managed-settings trailing section"
+    },
+    {
+      "n": 16, "gap": "R2-1", "lesson": 12,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/ci-cd-integration-and-deployment",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200", "size": "NOT MEASURED — full lesson body"
+    },
+    {
+      "n": 17, "gap": "R2-1", "lesson": 13,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-the-loop-on-metrics",
+      "tool": "mcp__workspace__web_fetch", "outcome": "OK", "http": "200",
+      "size": "NOT MEASURED — full lesson body plus the Claude Tag trailing section"
+    },
+    {
+      "n": 18, "gap": "R2-1", "lesson": 14,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-thoughts-and-resources",
+      "tool": "mcp__workspace__web_fetch", "outcome": "FAILED",
+      "http": "NOT SEEN",
+      "failure_verbatim": "Fetch failed: This operation was aborted",
+      "note": "First attempt. Recorded as a failed attempt, NOT as an absence (brief pitfall 7)."
+    },
+    {
+      "n": 19, "gap": "R2-1", "lesson": 14,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-thoughts-and-resources",
+      "tool": "mcp__workspace__web_fetch", "outcome": "FAILED",
+      "http": "NOT SEEN",
+      "failure_verbatim": "Fetch failed: This operation was aborted",
+      "note": "Second attempt, same URL, same failure. Two failures on one URL while eleven sibling URLs on the same host succeeded — so the cause is this page or this moment, not the host."
+    },
+    {
+      "n": 20, "gap": "R2-1", "lesson": 14,
+      "url": "https://academy.claude.com/courses/ai-native-sdlc-playbook/closing-thoughts-and-resources",
+      "tool": "Claude in Chrome — navigate then javascript_tool (read-only)",
+      "outcome": "OK — fallback route",
+      "http": "page rendered; document.title 'Closing thoughts and resources · The AI-Native SDLC Playbook · Claude Academy'",
+      "size": "2,331 characters (querySelector('main').innerText.length, measured in-page)",
+      "note": "Shortest lesson in the course (stated 2 min). The page shows a 'Sign in to save your progress' prompt but states reading continues without an account; no sign-in was attempted and no button was clicked."
+    }
+  ],
+  "urls_deliberately_NOT_fetched": [
+    {
+      "url": "the YouTube video of R2's UNPROVEN item 2",
+      "why": "⛔ DROPPED BY DAVE at the #237 opener — 'Dont worry about this, it was a youtube video… not worth the effort'. Not chased."
+    },
+    {
+      "url": "https://claude.com/blog/the-ai-native-sdlc-playbook",
+      "why": "Not re-fetched. Parity was judged against R2's filed summary of the blog. This is the named residual in academy-lessons-parity.json: two lesson passages (Claude Design in lesson 3, the managed-settings key list in lesson 11) cannot be classed course-only without a blog re-read."
+    },
+    {
+      "url": "https://www.iso.org/obp/ui/#iso:std:iso:9241:-110:ed-2:v1:en",
+      "why": "The standard itself is paywalled. The edition string ed-2 was taken from this URL as it appears on the dialogdesign page, not by fetching it."
+    }
+  ],
+  "browser_conduct": {
+    "our_words": "Both browser sessions were read-only: navigate, then read text or a scoped innerText slice. No clicks, no form input, no consent-banner interaction, no downloads, no sign-in. The EUR-Lex cookie and experimental-features chrome was present in the DOM and was left untouched.",
+    "tab": "one tab, created via mcp__claude-in-chrome__tabs_context_mcp{createIfEmpty:true}, tabId 1099615758"
+  }
+}

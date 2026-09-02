@@ -1,0 +1,115 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · discharges UNPROVEN 3 of notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md",
+  "gap": "R2-3 — 'that no hook layer exists anywhere on this machine'. #236 probed only the REPO (ls -a .claude/ -> agents only). User-level and managed settings were unprobed and outside that lane's fence.",
+  "verdict": "DISCHARGED as a probe — every named path has a stated result and none is left as 'not tried'. ⛔ RESIDUAL: the underlying claim is NOT proved for Dave's user-level filesystem, because the file tools refused that path. See residual block.",
+  "the_trap_this_probe_exists_to_avoid": {
+    "our_words": "This agent's bash shell is a Linux SANDBOX. Its $HOME is /sessions/dreamy-relaxed-noether, NOT /Users/daviewen. An 'ls ~/.claude' run in bash answers a question about the sandbox and says nothing whatever about Dave's Mac. Every row below names which filesystem it is on.",
+    "receipt": "bash reported HOME=/sessions/dreamy-relaxed-noether; 'ls -a ~/.claude' returned 'No such file or directory' for /sessions/dreamy-relaxed-noether/.claude",
+    "cross_ref": "memory hook: stale-mount-corroborates-a-stale-premise; brief pitfall 3"
+  },
+  "paths": [
+    {
+      "id": "a1",
+      "path": "/Users/daviewen/.claude/settings.json",
+      "filesystem": "DAVE'S MAC (macOS user home) — reachable only via the Read/Glob file tools, never via bash",
+      "tool_tried": "Read",
+      "reachable": false,
+      "exists": "UNKNOWN — not determinable by this lane",
+      "contains_hooks": "UNKNOWN",
+      "refusal_verbatim": "`/Users/daviewen/.claude/settings.json` is outside this session's connected folders, so Read can't reach it.",
+      "our_words": "REFUSED by the tool fence, not by the filesystem. The session has UX-design and the outputs folder connected; Dave's home directory is not connected, so the path is unreadable. The refusal was NOT escalated: the tool's own guidance says not to request system or application-internal directories, and requesting a directory would put a consent prompt in front of Dave that this lane was not asked to raise."
+    },
+    {
+      "id": "a2",
+      "path": "/Users/daviewen/.claude/settings.local.json",
+      "filesystem": "DAVE'S MAC",
+      "tool_tried": "Glob on /Users/daviewen with pattern .claude/** (covers this path and a3)",
+      "reachable": false,
+      "exists": "UNKNOWN",
+      "contains_hooks": "UNKNOWN",
+      "refusal_verbatim": "`/Users/daviewen` is outside this session's connected folders, so Glob can't reach it.",
+      "our_words": "Same fence, same refusal, from the other tool. Two different tools were tried; both refused for the same reason."
+    },
+    {
+      "id": "a3",
+      "path": "/Users/daviewen/.claude/hooks/",
+      "filesystem": "DAVE'S MAC",
+      "tool_tried": "Glob (same call as a2)",
+      "reachable": false,
+      "exists": "UNKNOWN",
+      "contains_hooks": "UNKNOWN",
+      "our_words": "Covered by the same refused Glob. Not tried a second way, because the fence is on the path prefix, not the pattern."
+    },
+    {
+      "id": "b",
+      "path": "/sessions/dreamy-relaxed-noether/mnt/.claude/",
+      "filesystem": "THE MOUNT — a projection of Claude's own data directory into the sandbox. NOT Dave's ~/.claude, and NOT the repo.",
+      "tool_tried": "mcp__workspace__bash — ls -a, then find",
+      "reachable": true,
+      "exists": true,
+      "contents": ["projects", "skills"],
+      "contains_hooks": false,
+      "probes_run": [
+        "find <b> -name 'settings*.json'  -> no output (no settings file of any kind under this tree)",
+        "find <b> -type d -name hooks     -> no output (no directory named hooks)",
+        "grep -rln '\"hooks\"' <b>/         -> exit 1, 0 lines"
+      ],
+      "our_words": "This tree holds thirteen skill directories and one projects directory. No settings file, no hooks directory, and no occurrence of the string \"hooks\" anywhere in it.",
+      "note": "The single entry under projects/ is named for Dave's Mac session path, which is what makes this tree look like a user-level config directory. It is not one: it carries no settings and no hooks."
+    },
+    {
+      "id": "c",
+      "path": "<repo>/.claude/  = /sessions/dreamy-relaxed-noether/mnt/UX-design/.claude/",
+      "filesystem": "THE REPO, inside the mount — the same tree the file tools see as /Users/daviewen/Documents/Claude/Projects/UX-design/.claude/",
+      "tool_tried": "mcp__workspace__bash — ls -a, find, grep",
+      "reachable": true,
+      "exists": true,
+      "contents": ["agents/dreamer.md (5,318 b)", "agents/opus-deep.md (724 b)", "agents/opus-fast.md (679 b)"],
+      "contains_hooks": false,
+      "probes_run": [
+        "find <c> -> exactly four entries: the dir, agents/, and the three agent .md files",
+        "grep -rn '\"hooks\"' <c>/ -> exit 1, 0 lines"
+      ],
+      "our_words": "R2's original probe REPRODUCES exactly: agents only, nothing else. No settings.json, no hooks directory, no hooks key.",
+      "honesty_note": "The first grep in this lane was piped into head, so the shell variable $? reported HEAD's exit status, not grep's. The probe was re-run without the pipe to capture grep's own exit code (1 = no match) and a line count (0). The receipt is the exit code and the count, not the earlier misleading one."
+    },
+    {
+      "id": "d",
+      "path": "the whole mount — /sessions/dreamy-relaxed-noether/mnt/**",
+      "filesystem": "THE MOUNT (repo + auto-memory + remote-plugins + outputs + uploads)",
+      "tool_tried": "mcp__workspace__bash — find",
+      "reachable": true,
+      "contains_hooks": false,
+      "probes_run": [
+        "find <mnt> -path '*/.claude/settings*' -> no output: there is NO .claude/settings file of any kind anywhere in the mount",
+        "find <mnt> -name 'settings*.json' -> three hits, ALL of them .vscode/settings.json (apollo-spider/, and two under _to_delete/). None is a Claude settings file.",
+        "grep -l '\"hooks\"' apollo-spider/.vscode/settings.json -> exit 1, no match"
+      ],
+      "our_words": "Widened from the two named directories to the entire mount, so the answer does not depend on guessing the right directory. Nothing in the mount defines a Claude hook."
+    },
+    {
+      "id": "e",
+      "path": "~/.claude in the SANDBOX = /sessions/dreamy-relaxed-noether/.claude",
+      "filesystem": "THE SANDBOX'S OWN HOME — the decoy path. Recorded so nobody later reads a sandbox ls as an answer about Dave's Mac.",
+      "tool_tried": "mcp__workspace__bash — ls -a ~/.claude",
+      "reachable": true,
+      "exists": false,
+      "contains_hooks": "n/a",
+      "result_verbatim": "ls: cannot access '/sessions/dreamy-relaxed-noether/.claude': No such file or directory",
+      "our_words": "Does not exist. This row proves only that the sandbox has no Claude config of its own; it is evidence about nothing else."
+    }
+  ],
+  "verdict_by_layer": {
+    "repo_layer": "PROVED ABSENT — no hooks. R2's finding stands, re-run and confirmed.",
+    "mount_and_skills_cache_layer": "PROVED ABSENT — no settings file, no hooks directory, no hooks key anywhere in the mount.",
+    "sandbox_layer": "PROVED ABSENT — no ~/.claude at all.",
+    "dave_user_level_layer": "NOT DETERMINED — refused by the tool fence.",
+    "managed_settings_layer": "NOT DETERMINED — a macOS managed-settings file lives outside both the repo and the mount and was not reachable by any tool available to this lane."
+  },
+  "residual": {
+    "claim_still_unproved": "That no hook layer exists at Dave's USER level (/Users/daviewen/.claude/) or in MANAGED settings.",
+    "named_failure": "Read and Glob both refuse /Users/daviewen/** — 'outside this session's connected folders'. Not a missing file, not a permission error on the filesystem: a session-scope fence.",
+    "price_to_prove": "Dave runs two commands in his own terminal and pastes the output: `ls -a ~/.claude/` and `grep -l '\"hooks\"' ~/.claude/settings.json ~/.claude/settings.local.json`. Costs him ten seconds and this lane nothing. ⛔ Do not close this by connecting his home directory to a session.",
+    "why_it_matters": "R2's P10 / target M cell asserts 'no hooks exist' as the ground for proposing PreToolUse hooks. That ground is now firm for three layers out of five. If a user-level hook layer did exist, the cell's proposal would be an ADD to an existing layer rather than the creation of a missing one — a different change, though not a different verdict."
+  }
+}

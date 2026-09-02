@@ -1,0 +1,75 @@
+{
+  "provenance": "#237 lane G · 2026-09-02 · discharges the final UNPROVEN of notes/_subreports/2026-09-02-236-R2-sdlc-playbook.md",
+  "gap": "R2-5 — whether ADR-0017 itself covers briefs. #236 quoted a write-once statement from notes/_subreports/_TEMPLATE.md, which speaks about REPORTS. The ADR was located but not read.",
+  "verdict_headline": "SILENT on briefs as a class. Covered BY IMPLICATION only by the general rules that bind any document.",
+  "file_read": {
+    "path": "docs/decisions/ADR-0017-write-once-live-facts.md",
+    "bytes": 4790,
+    "lines": 67,
+    "title": "WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen",
+    "status": "accepted (Dave, in-chat, 2026-08-17, #192)",
+    "date": "2026-08-17",
+    "read_in_full": true
+  },
+  "grep_counts": {
+    "probe": "grep -oi 'brief' <file> | wc -l",
+    "brief_case_insensitive": 0,
+    "_briefs": 0,
+    "notes/_briefs": 0,
+    "our_words": "The word 'brief' does not appear in ADR-0017 in any case or form. Neither does the directory notes/_briefs/. Three separate greps, all zero."
+  },
+  "the_adrs_own_class_list": {
+    "where": "Rule 3 — 'History is exempt and protected'",
+    "receipt": "\"ledger entries, ds-entries, decision-history dossiers, ratified records\"",
+    "our_words": "Rule 3 enumerates FOUR classes of dated period record that are frozen copies by design and must not be rewritten. A brief is not among them.",
+    "full_rule_in_our_words": "Dated period records are frozen copies by design, and rewriting them is falsification in the opposite direction from the one the ADR forbids elsewhere."
+  },
+  "the_other_rules_and_whether_they_reach_a_brief": [
+    {
+      "rule": 1,
+      "name": "One home per live fact",
+      "receipt": "\"Before writing a fact down, name its home.\"",
+      "reaches_a_brief": "YES, by implication — the rule is written about FACTS, not about document types, so it binds anything that writes a fact down, briefs included.",
+      "our_words": "A brief that states a live fact (a constant, a path, a status) rather than addressing its home is a Rule 1 violation on the rule's own terms, whether or not the ADR ever says the word 'brief'."
+    },
+    {
+      "rule": 2,
+      "name": "An address must have a resolver",
+      "receipt": "\"An address nothing resolves is the #145 binds gap — worse than a copy\"",
+      "reaches_a_brief": "YES, by implication — same reasoning; it constrains addresses wherever they are written."
+    },
+    {
+      "rule": 3,
+      "name": "History is exempt and protected",
+      "reaches_a_brief": "NOT SETTLED — this is the crux. The exemption is granted to four named classes and a brief is not one of them.",
+      "our_words": "This is where the silence bites. Briefs are dated and named like period records (notes/_briefs/2026-09-02-237-G-...), and in practice they are written once and not revised — but the ADR neither grants them the history exemption nor denies it. So the ADR does not answer whether a brief is frozen history or a live document."
+    },
+    {
+      "rule": 4,
+      "name": "Maps are generated and gated, never hand-kept",
+      "reaches_a_brief": "NOT DIRECTLY — a brief is not an inventory. It would bite only on a brief that contained a hand-kept map."
+    },
+    {
+      "rule": 5,
+      "name": "Consumer-first",
+      "receipt": "\"a new document lands with its store row (_state.add(), the doc-row gate, #188)\"",
+      "reaches_a_brief": "YES, by implication, and this is the strongest reach — it says A NEW DOCUMENT, without qualification. On its face a new brief lands with its store row.",
+      "our_words": "Rule 5 is the one clause that speaks about documents as documents rather than about facts. If any clause covers briefs, it is this one."
+    }
+  ],
+  "verdict": {
+    "answer": "SILENT — briefs are never named.",
+    "qualified_answer": "SILENT as a class; covered BY IMPLICATION for the live-fact rules (1, 2) and for document creation (5), because those rules are written about facts and documents in general rather than about an enumerated list of types. NOT covered for the history question: Rule 3's exemption is an enumeration of four classes, and a brief is not in it.",
+    "grep_count_stated": "0 occurrences of 'brief' (case-insensitive), 0 of '_briefs', 0 of 'notes/_briefs'.",
+    "why_this_is_exactly_what_makes_r2_question_2_a_question": "R2 asked whether briefs fall under write-once. The ADR gives two half-answers that point in opposite directions: Rule 5 says any new document lands with its store row (so a brief is a document the ADR governs), while Rule 3 hands the frozen-history protection only to four named classes (so a brief has not been granted it). A brief is therefore governed but unclassified."
+  },
+  "do_not_rule": {
+    "our_words": "⛔ This addendum states what the ADR says and does not say. It does NOT recommend which way Dave should rule, does not propose an amendment, and does not propose adding 'brief' to Rule 3's list. The brief for this lane is explicit that Dave has already ruled on this and no recommendation is wanted.",
+    "cross_ref": "brief § DO NOT RULE; feedback-dont-launder-a-premise-into-a-ruling"
+  },
+  "one_incidental_finding": {
+    "our_words": "The ADR names itself the one home of the write-once principle and forbids editing the _DS-IMPROVEMENTS.md drafting record to 'sync' with it.",
+    "receipt": "\"The ADR itself is now the ONE home of the principle.\"",
+    "why_it_matters_here": "It is the reason this lane wrote a NEW addendum folder rather than editing the #236 assets: the #236 reports are dated period records under Rule 3, and amending them to carry today's readings would be the falsification Rule 3 forbids."
+  }
+}
