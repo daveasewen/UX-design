@@ -1339,13 +1339,28 @@ def main() -> int:
             for _v in _out.get("verdicts", {}).values():
                 _k = _v.get("verdict", "?").split(" (")[0]
                 _t[_k] = _t.get(_k, 0) + 1
-            _flag = {"EXPIRED": "⛔ ", "UNKNOWN-AGE": "⚠ "}.get(_state, "")
-            print(f"  119-SWEEP   {_flag}{_state} — {_detail}; "
-                  + " · ".join(f"{_k} {_n}" for _k, _n in sorted(_t.items()))
-                  + f" (rechecked_at {_out.get('rechecked_at', '?')})")
-            if _state != "FRESH":
-                print("    ⇒ re-run `python3 knowledge/_recheck_119_sweep.py` — an expired verdict "
-                      "is a CONCLUSION PAST ITS DATE (s129-D5), not a green.")
+            # ★ `s241-D2` (D3 of the #241 ritual diet, on Dave's "apply"). THE EXPIRY NAG IS
+            # NOT PRINTED. It fired on EVERY check-in, 3-6 times a session, saying the same
+            # thing each time — `⛔ EXPIRED — 15 sessions old (limit 15) … UNPROBEABLE 20 ·
+            # WEAK-MATCH 1` — and 20 UNPROBEABLE + 1 WEAK-MATCH is not a verdict anyone can
+            # act on. A nag that repeats until it is ignored is worse than silence, because it
+            # trains the reader past the whole block.
+            # ⛔ WHAT IS **NOT** DONE HERE, AND IT MATTERS: the sweep is NOT retired, the
+            # sidecar is NOT deleted, `_recheck_119_sweep.py` is untouched, and this consumer
+            # still RUNS every check-in. Retiring the sweep is Dave's (lane D's ruling-shaped
+            # question 3) and no agent may take it by deleting the reminder.
+            # ⛔ WHAT THIS CUT CAN SILENTLY LOSE: an expiry nobody is told about is an expiry
+            # nobody re-runs. The state is still one command away and the command is named in
+            # the line below, which prints ONLY when the sweep has something ACTIONABLE — a
+            # verdict that is not UNPROBEABLE/WEAK-MATCH — or when its own probe breaks.
+            _actionable = {_k: _n for _k, _n in _t.items()
+                           if _k.upper() not in ("UNPROBEABLE", "WEAK-MATCH")}
+            if _actionable:
+                _flag = {"EXPIRED": "⛔ ", "UNKNOWN-AGE": "⚠ "}.get(_state, "")
+                print(f"  119-SWEEP   {_flag}{_state} — {_detail}; "
+                      + " · ".join(f"{_k} {_n}" for _k, _n in sorted(_actionable.items()))
+                      + f" (rechecked_at {_out.get('rechecked_at', '?')}) · full verdicts: "
+                        f"`python3 knowledge/_recheck_119_sweep.py`")
     except Exception as _e:  # noqa: BLE001 — loud + named, never silent
         print(f"  119-SWEEP   ⛔ CONSUMER DID NOT RUN ({type(_e).__name__}: "
               f"{' '.join(str(_e).split())[:220]}) — sweep verdicts UNKNOWN, not green.")

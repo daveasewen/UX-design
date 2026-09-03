@@ -458,6 +458,24 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      verbatim, so nothing is ever lost by writing the new one tight. The chain's generated footer is
      the measurement; quote it at the wrap. *(Half 2 of the pair — MEMORY.md compaction at owed
      openers — lives in the memory-compaction mechanics, not here.)*
+     ⚠ **AND QUOTE IT AFTER THE DECLARE-LAST `size:` STAMP, NOT BEFORE — the stamp is itself inside the
+     chain slice.** *(Homed here by ADDITION at the #241 wrap's 2f EXIT CHECK, from #239's lesson
+     re-observed at #240 inside a stratum that was about to roll into a dated home; provenance: 241 ·
+     2026-09-02 · status: observed.)* #240 measured `_CHAIN.md` at **11,074 tape** mid-wrap and at
+     **11,319** once the stamp landed — one wrap, two figures, and only the second is the one the next
+     session pays. ⇒ **A wrap that shortens its banner can still hand the next session a BIGGER chain
+     through its header**, so the `s214-D6` figure is RE-GENERATED after 2c/2d/2f and after the stamp,
+     and that final reading is the one the stratum carries. ⛔ **Related, declared at #240 and still NOT
+     repaired:** `grep -c 'BANNER-DISCIPLINE MEASUREMENT' notes/_GAUGE-LOG.md` and the newest ORDINAL
+     NAMED in that file disagree by two — the count is re-derivable, the naming is not. Report both; do
+     not invent a third.
+
+     ⛔ **`> **COMMIT STATE` IS NO LONGER A UNIQUE ANCHOR IN `GOOD-MORNING.md` — DRIVE `roll_2f` WITH THE
+     SESSION-QUALIFIED FORM `> **COMMIT STATE #<N>:**`.** *(Homed here by ADDITION at the #241 wrap's 2f
+     EXIT CHECK; measured at #240 and re-measured at #241 — `grep -c "^> \*\*COMMIT STATE" GOOD-MORNING.md`
+     reads **4**: the rolling stratum's, plus the three EXEMPT #40/#41/#42 blocks (Dave's #58 ruling).
+     Provenance: 241 · 2026-09-02 · status: observed.)* The bare anchor in the `roll_2f` example above
+     matches all four, and the mover REFUSES it — correctly, and loudly.
 
    - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
 

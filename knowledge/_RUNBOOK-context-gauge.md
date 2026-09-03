@@ -584,6 +584,46 @@ the numbers: two rules that replace every earlier treatment of the floor.
 **The numbers are Dave's and are re-dialled only by him — quote them from ★★ THE UNIT AND THE BUDGET,
 never from here, never from memory.**
 
+#### ✅ 2026-09-02 (#241) — AND THE FIRST-TURN TERM IS NOW **DERIVED**, NOT TYPED (`s240-D1`, `s240-D2`, `s241-D1`)
+
+*(ADDED, not a rewrite. Everything above stands as written — GM-D9's two rules are untouched and the
+four re-bases of the old constant stay in `knowledge/_gauge_tokens.py` as history.)*
+
+**What changed.** `BOOT_FIRSTTURN_TK` / `BOOT_FIRSTTURN_ERR` are **deleted**. Nothing grades against
+them. In their place:
+
+1. **`_gauge_tokens.derived_boot_band()`** computes the band **at check time** from the last
+   **n=7** first-turn `message.usage` readings in `notes/_GAUGE-LOG.md` — **mean ± the measured
+   spread** (sample standard deviation, n−1). ⚠ **One reading per SESSION, never per line:** a
+   stratum that states its own figure twice used to enter the window twice and push a real session
+   out of it (declared at the log's `boot-drift DECLARED #240` line, fixed at #241). **A step change
+   beyond the spread goes red; slow drift never needs a re-base, because there is no constant left
+   to re-base.** The figure Dave was shown before ruling: **75,672 ± 641** over #234–#240.
+   ⚠ **The RED LINE is `BOOT_BAND_SIGMA = 2×` the spread, and the multiplier was MEASURED, not
+   picked** — at 1× a purely linear drift of *any* slope reads red (the newest point sits 3d from
+   the mean against a 2.16d spread = 1.39σ), which would reinstate the very treadmill `s240-D1`
+   ends; at 2× a linear ramp is green and a one-session step of any size is 2.27σ and red. Both
+   directions are selftested. **The band is still reported as `mean ± spread`** — the statistic
+   Dave was shown — with the red line stated separately, never folded into it.
+2. **`_gauge_tokens.BOOT_CEILING_TK = 70,000`** — the ONE typed number left, **shrink-only, Dave's
+   to move**, the type-composites ratchet re-used. Set from the **first post-diet boot, measured
+   69,092 real at #241** (`s241-D1`; 77,000 was rejected as too high at #240). Graded **per reading**
+   by `_capture_gate.py::boot_constant_drift_check`, which fails **by name** — `boot-drift CEILING
+   BREACH` — on any post-diet reading above it. ⛔ **The remedy for a breach is to CUT THE BOOT, never
+   to raise the literal.** Readings from **#240 and earlier are PRE-DIET** and are not graded against
+   it (the #111-D2 clause, applied the other way); the gate names them rather than skipping silently.
+3. **The `boot-drift DECLARED` legal form is re-pointed.** #111-D1's asymmetry is unchanged — a
+   declared gap passes, a silent one fails — but the line now states what the gate computes and asks
+   for no re-base:
+
+   > `> **boot-drift DECLARED #<N> (<YYYY-MM-DD>):** newest <R> · derived band <M> ±<S> (n=<n>, #<first>–#<last>) · delta <+/-D> · ceiling <C> · DERIVED at check time per `s240-D1`; NOT a re-base and no constant was edited.`
+
+   ⚠ **The ~37 pre-`s240-D1` lines already in the gauge log are RATIFIED RECORD.** The gate still
+   recognises them, reports them as history, and **must never re-stamp them** to suit the new code.
+
+⚠ **`s208-D1`'s rider still binds:** a band that moves with the measurement is measurement honesty,
+never target acceptance. The boot-reduction work stays **open**.
+
 ### ★★ THE FLOOR IS NOT WILLPOWER — `N` × one unit, and the only lever (HOMED HERE #50)
 
 *(#50 ran a homing probe over `GOOD-MORNING.md`'s `size:` line before cutting it. This conclusion was

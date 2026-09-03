@@ -209,8 +209,10 @@ def build_record(session: int, staged: dict[str, str], *, boot_tk: int | None = 
         rec["unattributed_tk"] = boot_tk - boot_measured
         rec["floor_tk"] = boot_tk + additive
         rec["floor_note"] = ("boot first-turn + ADDITIVE components — the real cost before a "
-                             "word of work. Compare against `_gauge_tokens` BOOT_FIRSTTURN_TK "
-                             "(+ its chain line), never against a fill reading.")
+                             "word of work. Compare against `_gauge_tokens.derived_boot_band()` "
+                             "(+ its chain line) and against `BOOT_CEILING_TK`, never against a "
+                             "fill reading. ⚠ #241: the typed `BOOT_FIRSTTURN_TK` this note used "
+                             "to name is GONE — `s240-D1` made the band DERIVED at check time.")
         rec["unattributed_note"] = ("ARRIVED AT BY SUBTRACTION, NOT MEASURED. Dave #111-D3: "
                                     "'The drop has NOT been attributed to the residual. It has "
                                     "been assumed to be.' Do not rule on this number.")

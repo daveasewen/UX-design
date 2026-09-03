@@ -510,11 +510,23 @@ MEASURERS = {
     "_gauge_tokens.py": ("real",
         "count() returns (n, 'real') from the token-counting API; cl100k is the LABELLED "
         "fallback and `len(text)//4` was removed at #79-D1 in favour of MeasurementRefused."),
-    "_measure_tokenizer.py": ("calibration",
-        "#53's instrument — prints a tape|real|ratio|drift table. ⚠ 0 Python consumers, "
-        "flagged by #77's periphery inventory, re-probed #81 and STILL zero. It is the "
-        "reason #80 re-derived a ruling #54 had already made: an instrument ships WITH ITS "
-        "READER, and a measurement nothing re-reads decays into a rediscovery."),
+    # ⛔ `_measure_tokenizer.py` — ENTRY RETIRED `s241-D2` (D4 of the #241 ritual diet, on Dave's
+    # "apply"), and the FILE was `git rm`'d in the same motion, because this pin and that file
+    # only make sense together: leave the pin and the loop below FAILS ("it no longer exists");
+    # leave the file and the gate WARNS about a zombie at every wrap, forever. #53 built it, #77
+    # flagged it at zero Python consumers, #81 re-probed and found STILL zero, and every wrap
+    # since has printed that finding instead of acting on it. This is the project's own rule
+    # ([[instrument-without-a-consumer]]) applied to the project's own instrument.
+    # ⚠ THE PROBE, NAMED, so the deletion is falsifiable: `grep -rn "_measure_tokenizer" .`
+    # returns 0 import sites; the surviving hits are PROSE (`_governs.py` ×3 quote it as the
+    # cautionary tale, `notes/` records it, `knowledge/_rulings.json` names it in a ruling's
+    # file list). None of those executes it.
+    # ⛔ AND THE ONE CONSUMER THAT IS NOT AN IMPORT, DECLARED RATHER THAN SMOOTHED: entry 40 of
+    # `notes/_dream/_MEMORY-GRADES.json` grades a memory hook on "all 6 paths named in the hook
+    # FILE resolve (first: `knowledge/_measure_tokenizer.py`; probe: os.path.exists …)". That
+    # grade will DROP at the next dream pass. It is a path-resolution grade, not an importer,
+    # so this cut proceeds as briefed — but the hook wants re-pointing at the history that
+    # replaced it, and no agent may edit Dave's memory store to hide the consequence.
     "_capture_gate.py": ("real",
         "✅ #82-D1 (Dave): measure_tokens() tries gauge.count() FIRST and returns (n, 'real'); "
         "cl100k and the bytes divisor are kept UNTOUCHED beneath it as labelled fallbacks, so "
@@ -969,6 +981,31 @@ BANNER_BUDGET_FALLBACK_TK = (6400, 7800)   # used ONLY when the archive cannot b
 #   RESTAMPED REAL s212-D11 2026-08-21 (was (4000, 5000) cl100k; no artefact of its own — restated
 #   through the ruling-day floor arithmetic; path currently unreachable, n=211 >= BANNER_ARCHIVE_MIN_N;
 #   receipt notes/_receipts/2026-08-21-212-g9-ds023-remeasurement.md).
+# ★★ `s241-D2` — THE ★ LATEST BANNER'S OWN HARD CAP (S1 of the #241 ritual diet, Dave's
+# "apply" to the RECOMMENDED DEFAULT PACKAGE of
+# notes/_subreports/2026-09-02-241-lane-D-ritual-diet.md, option (a) of its ruling-shaped Q1).
+#
+# ⚠ THIS IS A DIFFERENT OBJECT FROM THE M8 REGION BUDGET ABOVE, and conflating them is the
+# whole reason a cap was needed. M8 measures `file top → DO-FIRST` — header + ★ LATEST + ★ PRIOR
+# together — and its cap is DERIVED from the archive, so it moves as banners lean out. It cannot
+# bound ONE banner, because two lean banners and one obese one measure the same. THIS bounds the
+# ★ LATEST banner ALONE, and it is PICKED, not derived: it is a contract about how much a wrap
+# may write, not a description of what wraps have written.
+# MEASURED at the moment of ruling (tiktoken cl100k, this tree, 2026-09-02): the #240 ★ LATEST
+# banner is 3,353 tape over 13 substantive lines — 2.8× the cap. Lane D measured the same 3,353
+# independently, and measured the ⏱ LATEST DELTA that duplicates it at 1,746.
+# ⛔ THE PITFALL, STATED WHERE THE NUMBER IS (lane D, Consequences (c)): a shorter banner can
+# silently lose the DECLARED GAP. The verbosity being cut is partly the honesty contract doing
+# its job — "a declared gap passes, a silent one fails" is enforced by PROSE, not by a field. A
+# banner written to 10 lines that drops its declarations has not obeyed this cap, it has evaded
+# it, and no gate here can tell the difference. That half is Dave's and the wrap author's.
+BANNER_LATEST_CAP_LINES = 10               # `s241-D2` — substantive lines (blank/`>`-only free)
+BANNER_LATEST_CAP_TK = 1200                # `s241-D2` — the ★ LATEST banner alone, cl100k
+# ⚠ EFFECTIVE FROM, not retroactive. Banners are RATIFIED RECORD: #49/#51/#153 all shaved
+# inscribed record to quiet a budget and that is the failure mode this project has already paid
+# for three times. A banner written BEFORE the cap warns and is left alone; a banner written
+# UNDER the cap fails. Same shape as `BOOT_CEILING_FROM_SESSION` (s240-D2), same reason.
+BANNER_LATEST_CAP_FROM_SESSION = 241       # `s241-D2` — #241's wrap is the first bound by it
 BANNER_ARCHIVE_MIN_N = 10                  # below this the median is not a measurement
 BANNER_HEADROOM_PCTL = 75                  # block admits two 75th-percentile banners
 
@@ -2336,6 +2373,49 @@ def check_budgets(repo):
         elif bill_of(banner_tk) > bw_bill:
             warns.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, cap "
                          f"~{bw_bill:,} bill — ritual step 2c")
+
+        # ---- ★ LATEST BANNER HARD CAP (`s241-D2`, S1). See the constant block for what this
+        # measures and why it is not M8. Bounded by DO-FIRST as well as by the next ★ PRIOR: a
+        # banner cannot run past the section that follows it, and a region that silently ran to
+        # EOF would make the cap fire on the whole file.
+        _lat_i = next((i for i, ln in enumerate(lines[:b_end])
+                       if BANNER_LATEST_RE.match(ln)), None)
+        if _lat_i is not None:
+            _lat_end = next((j for j in range(_lat_i + 1, b_end)
+                             if _BANNER_PRIOR_START_RE.match(lines[j])), b_end)
+            _lat_text = "\n".join(lines[_lat_i:_lat_end])
+            _lat_tk = measure_tokens(_lat_text)[0]
+            _lat_lines = [ln for ln in _lat_text.splitlines()
+                          if ln.strip() not in ("", ">")]
+            _lat_m = re.search(r"#(\d+)", lines[_lat_i])
+            _lat_sess = int(_lat_m.group(1)) if _lat_m else None
+            _over = []
+            if len(_lat_lines) > BANNER_LATEST_CAP_LINES:
+                _over.append(f"{len(_lat_lines)} substantive lines against a cap of "
+                             f"{BANNER_LATEST_CAP_LINES}")
+            if _lat_tk > BANNER_LATEST_CAP_TK:
+                _over.append(f"{_lat_tk:,} tape against a cap of "
+                             f"{BANNER_LATEST_CAP_TK:,}")
+            if _over:
+                _msg = (f"LATEST BANNER CAP (`s241-D2`: {BANNER_LATEST_CAP_LINES} lines / "
+                        f"{BANNER_LATEST_CAP_TK:,} tape, and the ⏱ LATEST DELTA is the sole "
+                        f"home for gauge / declared-skip / not-done detail): GOOD-MORNING.md's "
+                        f"★ LATEST banner is over by "
+                        + " and ".join(_over) + ". ")
+                if _lat_sess is not None and _lat_sess >= BANNER_LATEST_CAP_FROM_SESSION:
+                    fails.append(
+                        _msg + f"This banner is #{_lat_sess}, written AT OR AFTER the cap's "
+                        f"first bound session (#{BANNER_LATEST_CAP_FROM_SESSION}) — write it "
+                        f"under the cap. ⚠ Under the cap means SHORTER, never QUIETER: a "
+                        f"declared gap that is dropped to fit has evaded this cap, not met it.")
+                else:
+                    warns.append(
+                        _msg + f"PRE-CAP RECORD (banner "
+                        f"#{_lat_sess if _lat_sess is not None else '?'} < "
+                        f"#{BANNER_LATEST_CAP_FROM_SESSION}) — NOT a fail and NOT to be "
+                        f"rewritten. Ratified record is never shaved to quiet a budget "
+                        f"(#49/#51/#153 each did and each was wrong); the weight lands on the "
+                        f"NEXT banner, at authoring time.")
 
     # ---- M10, RE-POINTED #33 (referent) and again #48 (UNIT): the READ CHAIN is header +
     # ★ LATEST + the LS LATEST delta, and the thing MEASURED against the cap is the whole
@@ -3720,7 +3800,17 @@ def dofirst_index_present_check(repo):
     return fails, notes
 
 
-BOOT_DRIFT_WINDOW = 6          # how many of the most recent samples form the band
+# ⛔ #241 — `BOOT_DRIFT_WINDOW = 6` IS GONE. The window is no longer this module's to pick: it is
+# `s240-D1`'s n, and it lives beside the band it defines (`_gauge_tokens.BOOT_BAND_WINDOW = 7`),
+# read at check time. A second copy here is the copy-chain class the ruling exists to end.
+# ★ #241 — THE CEILING'S REGIME BOUNDARY, and it is DECLARED rather than smuggled.
+# `s240-D2` defines the ceiling as the first measured boot AFTER the #240 roster diet and
+# `s241-D1` fixes its value at 70,000 from that boot (69,092 at #241). Every reading in this log
+# from #240 and earlier is PRE-DIET — a different regime, the #111-D2 clause ("don't fit a
+# constant across a structural break") applied in the other direction. Grading those against a
+# post-diet ceiling would paint the log red for a condition that no longer exists, so they are
+# NOT graded against it — and they are NAMED in a note rather than silently skipped.
+BOOT_CEILING_FROM_SESSION = 241
 
 # ★★ #111-D1 (Dave) — THE LEGAL DECLARED-AND-PROCEED FORM.
 # Dave, #111, on being asked warn-vs-block: *"Keep it BLOCKING, but the gate as built has
@@ -3736,7 +3826,14 @@ BOOT_DRIFT_WINDOW = 6          # how many of the most recent samples form the ba
 # writing itself a pass — and it is failed separately and louder below.
 # ⚠ IT ALSO CANNOT GO STALE. It is matched against the CURRENT computation, so last
 # session's declaration cannot discharge this session's drift [[read-chain-is-where-staleness-is-free]].
-BOOT_DRIFT_DECL_RE = re.compile(
+# ⛔ #241 — THE LEGACY FORM. It names a `constant` that NO LONGER EXISTS (`s240-D1` retired
+# `BOOT_FIRSTTURN_TK`), so it can no longer discharge anything. It is kept, and kept MATCHING,
+# for exactly one reason: the ~30 lines already written in this shape across notes/_GAUGE-LOG.md
+# are RATIFIED RECORD. A parser that stopped recognising them would read them as MISMATCHED
+# declarations and fail the gate until a session re-stamped history to suit the new code — the
+# one outcome this log's whole discipline forbids. They are recognised, reported as HISTORY,
+# and never re-stamped [[read-chain-is-where-staleness-is-free]].
+BOOT_DRIFT_LEGACY_RE = re.compile(
     r"boot-drift\s+DECLARED\s+#(?P<sess>\d+)"
     r".{0,40}?mean\s+(?P<mean>[\d,]+)"
     r".{0,60}?constant\s+(?P<const>[\d,]+)\s*(?:±|\+/-)\s*(?P<err>[\d,]+)"
@@ -3744,15 +3841,44 @@ BOOT_DRIFT_DECL_RE = re.compile(
     r".{0,200}?refresh\s+PUT\s+TO\s+DAVE",
     re.I | re.S)
 
+# ★★ #241 — THE LIVE FORM, RE-POINTED AT THE DERIVED BAND (`s240-D1`).
+# It states what the gate now computes: the NEWEST reading, the band DERIVED from the last n
+# sessions, the delta between them, and the shrink-only CEILING it was also graded against.
+# ⚠ It carries no `constant` and asks for no `refresh` — there is nothing left to re-base, which
+# is the entire point of `s240-D1`. What it still does is the #111-D1 asymmetry, unchanged: a
+# DECLARED gap passes, a SILENT one fails, and a declaration whose figures do not match this
+# gate's own computation fails LOUDER than no declaration at all.
+BOOT_DRIFT_DECL_RE = re.compile(
+    r"boot-drift\s+DECLARED\s+#(?P<sess>\d+)"
+    r".{0,60}?newest\s+(?P<newest>[\d,]+)"
+    r".{0,80}?derived\s+band\s+(?P<mean>[\d,]+)\s*(?:±|\+/-)\s*(?P<err>[\d,]+)"
+    r".{0,40}?n\s*=\s*(?P<n>\d+)"
+    r".{0,80}?delta\s+(?P<delta>[+-]?[\d,]+)"
+    r".{0,80}?ceiling\s+(?P<ceiling>[\d,]+)",
+    re.I | re.S)
+
 BOOT_DRIFT_LEGAL_FORM = (
-    "> **boot-drift DECLARED #<N> (<YYYY-MM-DD>):** mean <M> · constant <C> ±<E> · "
-    "delta <+/-D> · refresh PUT TO DAVE, unruled.")
+    "> **boot-drift DECLARED #<N> (<YYYY-MM-DD>):** newest <R> · derived band <M> ±<S> "
+    "(n=<n>, #<first>–#<last>) · delta <+/-D> · ceiling <C> · DERIVED at check time per "
+    "`s240-D1`; NOT a re-base and no constant was edited.")
 
 
 def _parse_boot_drift_declarations(text):
-    """Every declared-drift entry in the gauge log, as dicts. Never raises."""
+    """Every LIVE (derived-band) declared-drift entry in the gauge log, as dicts. Never raises."""
     out = []
     for m in BOOT_DRIFT_DECL_RE.finditer(text):
+        try:
+            out.append({k: int(m.group(k).replace(",", "").replace("+", ""))
+                        for k in ("sess", "newest", "mean", "err", "n", "delta", "ceiling")})
+        except (ValueError, AttributeError):
+            continue
+    return out
+
+
+def _parse_legacy_boot_declarations(text):
+    """Every PRE-`s240-D1` declared-drift entry — reported as history, never graded."""
+    out = []
+    for m in BOOT_DRIFT_LEGACY_RE.finditer(text):
         try:
             out.append({k: int(m.group(k).replace(",", "").replace("+", ""))
                         for k in ("sess", "mean", "const", "err", "delta")})
@@ -3802,6 +3928,30 @@ BOOT_DELTA_TAIL_RE = re.compile(
     r"^[\s*_`,)\]]*(?:over|under|above|below|outside|out\s+of|past|beyond|off"
     r"|(?:higher|lower|more|less)\s+than|away\s+from|adrift)\b", re.I)
 
+# ★★ #241 — A STRAY `#N` LATER IN THE LINE IS NOT THE READING'S SESSION, AND UNTIL NOW IT WAS.
+#
+# THE CLASS: the ordinal was taken as `re.search(r"#(\d+)", line)` — the FIRST `#N` ANYWHERE in
+# the line, whether it labelled the reading or merely cited a ruling, another session, or a
+# worklist row. Two ways that bites, and #240's own declaration recorded BOTH live:
+#   · #239's `PREMISES WERE CHECKED` line restates its own boot (75,619) and cites `#238` in a
+#     later clause ⇒ the reading was filed under 238, OVERWRITING #238's real 75,336 and putting
+#     #239's ONE reading into the window TWICE. Declared at notes/_GAUGE-LOG.md's #240 line.
+#   · eleven `Context gauge at authoring:` lines restate their own session's boot and cite
+#     `#56-D1` (the UNIT ruling) ⇒ all eleven filed under session 56, one clobbering the next.
+# ⇒ THE ORDINAL NOW COMES FROM LABEL POSITION OR FROM THE ENCLOSING STRATUM, never from a
+# citation buried in prose. A `#N` counts as the label only if it sits in the line's opening
+# 60 characters AND before the boot figure it is supposed to label — which is exactly where
+# every reading shape in this log carries it (`**pre-flight #100 …:** boot …`,
+# `**post-mortem #239:** … boot …`, `> boot #95 = 65,657 real`). Otherwise the reading belongs
+# to the `#### <date> #N` stratum it is written inside, which is the honest default: a session's
+# own block is where a session's own boot is recorded.
+# ⚠ MEASURED DIFF ON THE LIVE LOG, not asserted: 105 readings parsed BEFORE and AFTER, 0 gained,
+# 0 lost, 14 re-attributed — the #239 line, the eleven `Context gauge` restatements, one #125
+# line and one unlabelled `**pre-flight:**` that had been filed under the -1 bucket. The window
+# the band is computed over changes by exactly one member: #238 gets its own 75,336 back.
+BOOT_STRATUM_RE = re.compile(r"^#{2,6}\s+\d{4}-\d{2}-\d{2}\s+#(\d+)\s*$")
+BOOT_LABEL_ORD_MAXCOL = 60     # how far into a line a `#N` may sit and still be its LABEL
+
 
 def _parse_boot_samples(text):
     """Pull boot samples out of the gauge log. Returns (good, refused, deltas).
@@ -3824,12 +3974,29 @@ def _parse_boot_samples(text):
     # Three consecutive sessions of evidence (#125, #126) sat in the log unread by the gate that
     # grades the constant they disagree with. An unmatched grep is not an absence
     # [[unmatched-grep-is-not-an-absence]]. Fix is the flag, not a second regex.
-    good, refused, deltas = [], [], []
+    rows, refused, deltas = _parse_boot_rows(text)
+    return [(r["session"], r["tk"]) for r in rows], refused, deltas
+
+
+def _parse_boot_rows(text):
+    """The same walk as `_parse_boot_samples`, with the PROVENANCE kept.
+
+    Returns `(rows, refused, deltas)` where each row is
+    `{session, tk, stratum, lineno, line}`. ONE implementation, two views — `s241-D2` needed to
+    know WHICH LINES produced a reading and a second walk here would be a second answer to the
+    same question, which is the drift class this file refuses everywhere else.
+    """
+    rows, refused, deltas = [], [], []
+    stratum = None                     # the `#### <date> #N` block currently being read (#241)
 
     def _num(s):
         return int(s.replace(",", "").replace("+", ""))
 
-    for ln in text.splitlines():
+    for _no, ln in enumerate(text.splitlines(), 1):
+        h = BOOT_STRATUM_RE.match(ln.strip())
+        if h:
+            stratum = int(h.group(1))
+            continue
         if "boot" not in ln.lower():
             continue
         line_deltas = []
@@ -3861,9 +4028,71 @@ def _parse_boot_samples(text):
         if not (10_000 <= tk <= 200_000):
             refused.append(ln.strip()[:110])
             continue
+        # ★ #241 — LABEL POSITION, THEN STRATUM, NEVER A CITATION. See BOOT_STRATUM_RE above.
         sm = re.search(r"#(\d+)", ln)
-        good.append((int(sm.group(1)) if sm else -1, tk))
-    return good, refused, deltas
+        if sm and sm.start() < BOOT_LABEL_ORD_MAXCOL and sm.start() < m.start(1):
+            sess = int(sm.group(1))
+        else:
+            sess = stratum if stratum is not None else -1
+        rows.append({"session": sess, "tk": tk, "stratum": stratum,
+                     "lineno": _no, "line": ln.strip()[:110]})
+    return rows, refused, deltas
+
+
+# ★★ `s241-D2` — ONE STRATUM, ONE FIRST-TURN FIGURE (S5 of the #241 ritual diet).
+#
+# THE DEFECT, IN #240's OWN WORDS AND ITS OWN BLOCK: a session stratum that states its
+# first-turn figure TWICE puts ONE reading into the band's window TWICE and pushes a real
+# session's reading out of it. `derived_boot_band()` already dedupes at the READER (first
+# reading per ordinal wins) — that is a shield, and a shield is not a fix: the log still says
+# two different things about one boot, and the next consumer to walk it without the dedupe
+# inherits the whole defect. THIS is the fix at the SOURCE: a stratum that says it twice fails
+# LOUD, by session number, with both lines quoted.
+#
+# ⛔ EFFECTIVE FROM `BOOT_DOUBLE_COUNT_FROM_SESSION`, AND THE REASON IS MEASURED, NOT TIMID:
+# 18 session ordinals in the live `notes/_GAUGE-LOG.md` already carry more than one reading
+# (110, 113, 118, 127, 169, 173, 174, 216-223, 225, 226, 239 — probe:
+# `Counter(s for s, _ in _parse_boot_samples(log)[0])`). A retroactive fail could never pass in
+# this repo, and a gate that cannot pass is a gate that gets routed around
+# [[gate-cannot-pass-in-one-environment]]. History is reported as a NOTE with its count; the
+# rule binds the strata written from #241 on, which are the ones anyone can still write
+# correctly. Same shape and same reason as `BOOT_CEILING_FROM_SESSION`.
+BOOT_DOUBLE_COUNT_FROM_SESSION = 241       # `s241-D2` — first stratum bound by the rule
+
+
+def boot_stratum_double_count_check(repo):
+    """(fails, notes) — a session may state its boot figure ONCE in notes/_GAUGE-LOG.md."""
+    fails, notes = [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log):
+        return fails, notes          # boot_constant_drift_check already fails loud on absence
+    with open(log, encoding="utf-8") as f:
+        rows, _refused, _deltas = _parse_boot_rows(f.read())
+    by_session = {}
+    for r in rows:
+        by_session.setdefault(r["session"], []).append(r)
+    dupes = {k: v for k, v in by_session.items() if len(v) > 1}
+    bound = {k: v for k, v in dupes.items() if k >= BOOT_DOUBLE_COUNT_FROM_SESSION}
+    legacy = sorted(k for k in dupes if k < BOOT_DOUBLE_COUNT_FROM_SESSION)
+    for sess in sorted(bound):
+        rs = bound[sess]
+        fails.append(
+            "boot double-count: session #%d states a first-turn figure %d times in "
+            "notes/_GAUGE-LOG.md (`s241-D2`: ONCE, in the `post-mortem #N:` line). One reading "
+            "counted twice displaces a real session from the derived band's window — %s. "
+            "Delete the restatement, or move the figure OUT of the boot vocabulary if it is a "
+            "comparison rather than a reading."
+            % (sess, len(rs),
+               " · ".join("line %d “%s…”" % (r["lineno"], r["line"][:70]) for r in rs)))
+    if legacy:
+        notes.append(
+            "boot double-count: %d PRE-RULE session ordinal(s) carry more than one reading "
+            "(#%s) and are NOT graded — `s241-D2` binds strata from #%d. They are held harmless "
+            "by `derived_boot_band()`'s one-reading-per-ordinal dedupe, which is a shield, not a "
+            "repair: the log still says two things about one boot."
+            % (len(legacy), ", #".join(str(x) for x in legacy),
+               BOOT_DOUBLE_COUNT_FROM_SESSION))
+    return fails, notes
 
 
 def boot_constant_drift_check(repo):
@@ -3892,26 +4121,36 @@ def boot_constant_drift_check(repo):
     re-fitting the number it is being graded against is the gate marking its own
     homework [[check-after-its-own-remedy]].
 
-    FAILS when the mean of the most recent BOOT_DRIFT_WINDOW samples sits further from
-    `BOOT_FIRSTTURN_TK` than `BOOT_FIRSTTURN_ERR` allows. Fails LOUD and NAMED if the
-    log cannot be parsed — a crash is not a fail [[a-crash-is-not-a-fail]], and neither
-    is a silent zero-sample pass.
+    ✅ #241, `s240-D1`/`s240-D2`/`s241-D1` — THERE IS NO CONSTANT LEFT TO GRADE AGAINST, and
+    that is the fix, not a loosening. This check now grades the NEWEST reading twice:
+      · against the BAND DERIVED at check time from the last `BOOT_BAND_WINDOW` sessions'
+        readings (mean ± sample spread) — a step change beyond the spread goes red, and slow
+        drift never needs a re-base because there is no constant to re-base; and
+      · against `BOOT_CEILING_TK`, the ONE typed number left — shrink-only, Dave's to move.
+        The ceiling is graded per READING, not against a mean: one boot over it fails by name.
+    The #111-D1 legal discharge is unchanged in principle and re-pointed in wording: a DECLARED
+    gap passes, a SILENT one fails, and a declaration that mis-states the figures fails louder
+    than none. Fails LOUD and NAMED if the log cannot be parsed — a crash is not a fail
+    [[a-crash-is-not-a-fail]], and neither is a silent zero-sample pass.
     """
     fails, notes = [], []
     log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
     if not os.path.exists(log):
-        fails.append("boot-drift: notes/_GAUGE-LOG.md is MISSING — the boot constant "
-                     "cannot be checked against anything. This is the #109 condition "
-                     "(a constant with no consumer), not a clean pass.")
+        fails.append("boot-drift: notes/_GAUGE-LOG.md is MISSING — the boot band is DERIVED "
+                     "from that file (`s240-D1`), so with it absent there is no band and "
+                     "nothing to check. This is the #109 condition (a rule with no "
+                     "consumer), not a clean pass.")
         return fails, notes
     try:
         sys.path.insert(0, HERE)
         import _gauge_tokens as gt
-        const, err = gt.BOOT_FIRSTTURN_TK, gt.BOOT_FIRSTTURN_ERR
+        ceiling, window, sigma = gt.BOOT_CEILING_TK, gt.BOOT_BAND_WINDOW, gt.BOOT_BAND_SIGMA
+        derive = gt.derived_boot_band
     except Exception as e:
-        fails.append(f"boot-drift: cannot read BOOT_FIRSTTURN_TK/_ERR from "
-                     f"_gauge_tokens.py ({e}) — the published constant is UNREADABLE, "
-                     f"so it is also unverifiable. Fix, never close blind.")
+        fails.append(f"boot-drift: cannot read BOOT_CEILING_TK / BOOT_BAND_WINDOW / "
+                     f"BOOT_BAND_SIGMA / derived_boot_band from _gauge_tokens.py ({e}) — the "
+                     f"ruled ceiling and the band's window are UNREADABLE, so they are also "
+                     f"unverifiable. Fix, never close blind.")
         return fails, notes
 
     with open(log, encoding="utf-8") as f:
@@ -3930,79 +4169,124 @@ def boot_constant_drift_check(repo):
         return fails, notes
     if len(samples) < 3:
         fails.append("boot-drift: only %d boot sample(s) found in notes/_GAUGE-LOG.md — "
-                     "too few to test the constant against. DECLARED, not passed."
+                     "too few to derive a band from. DECLARED, not passed."
                      % len(samples))
         return fails, notes
 
-    # newest wins per session, then chronological
-    by_session = {}
-    for sess, tk in samples:
-        by_session[sess] = tk
-    ordered = [tk for _, tk in sorted(by_session.items())]
-    recent = ordered[-BOOT_DRIFT_WINDOW:]
-    mean = sum(recent) / len(recent)
-    delta = mean - const
+    # ★ `s240-D1` — THE BAND IS DERIVED HERE, and by the ONE function that owns the arithmetic.
+    # The dedupe (one reading per SESSION, never per line) lives in `derived_boot_band` with the
+    # #240 finding it exists to kill; this gate does not re-implement it beside it.
+    band = derive(samples, n=window)
+    if band is None:
+        fails.append(
+            "boot-drift: fewer than n=%d SESSIONS carry a boot reading in "
+            "notes/_GAUGE-LOG.md, so `s240-D1`'s band cannot be derived — %d reading(s) "
+            "across %d session ordinal(s). DECLARED, not passed: a band that cannot be "
+            "computed is not a band that passed."
+            % (window, len(samples), len({s for s, _ in samples})))
+        return fails, notes
+    mean, spread, reads, sessions = band
+    newest, newest_sess = reads[-1], sessions[-1]
+    delta = newest - mean
 
-    notes.append("boot-drift: constant %s ±%s vs recent mean %s (n=%d, last %d sessions "
-                 "of %d parsed) — delta %+d"
-                 % (f"{const:,}", f"{err:,}", f"{mean:,.0f}", len(recent),
-                    len(recent), len(ordered), delta))
+    red_line = sigma * spread
+    notes.append(
+        "boot-drift: DERIVED band %s ±%s (`s240-D1`, n=%d sessions #%d–#%d: %s) · newest "
+        "#%d %s · delta %+d · red beyond ±%s (%g× the spread) · ceiling %s "
+        "(`s241-D1`, shrink-only)"
+        % (f"{mean:,.0f}", f"{spread:,.0f}", len(reads), sessions[0], sessions[-1],
+           " · ".join(f"{s:,}" for s in reads), newest_sess, f"{newest:,}", delta,
+           f"{red_line:,.0f}", sigma, f"{ceiling:,}"))
 
-    if abs(delta) > err:
-        drift_msg = (
-            "boot-drift: `_gauge_tokens.BOOT_FIRSTTURN_TK` = %s ±%s, but the last %d "
-            "measured boots average %s — drift %+d, OUTSIDE the constant's own error "
-            "bar. Samples: %s."
-            % (f"{const:,}", f"{err:,}", len(recent), f"{mean:,.0f}", delta,
-               " · ".join(f"{s:,}" for s in recent)))
+    # ---- ARM 1: THE CEILING. One typed number, graded per READING, LOUD and NAMED.
+    over = [(s, tk) for s, tk in zip(sessions, reads)
+            if s >= BOOT_CEILING_FROM_SESSION and tk > ceiling]
+    pre = [(s, tk) for s, tk in zip(sessions, reads)
+           if s < BOOT_CEILING_FROM_SESSION and tk > ceiling]
+    if pre:
+        notes.append(
+            "boot-drift: %d reading(s) in the window sit above the ceiling but are PRE-DIET "
+            "(session < #%d) and are NOT graded against it — %s. `s240-D2` sets the ceiling "
+            "from the FIRST POST-DIET boot; grading the old regime by it would be fitting a "
+            "constant across a structural break (#111-D2). Named, never silently skipped."
+            % (len(pre), BOOT_CEILING_FROM_SESSION,
+               " · ".join(f"#{s} {tk:,}" for s, tk in pre)))
+    if over:
+        fails.append(
+            "boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = %s and %d "
+            "post-diet reading(s) EXCEED it — %s. ⛔ `s240-D2`/`s241-D1` make this number "
+            "SHRINK-ONLY: boot may go DOWN past it and never up, and the remedy is to CUT "
+            "THE BOOT, never to raise the literal. Raising it is Dave's word alone and is "
+            "not a price a wrap may pay to unblock itself "
+            "[[gate-must-quote-what-it-forbids]]."
+            % (f"{ceiling:,}", len(over), " · ".join(f"#{s} {tk:,}" for s, tk in over)))
 
-        # ★ #111-D1 — is the drift DECLARED? Silence fails; an honest declaration passes.
-        with open(log, encoding="utf-8") as f:
-            decls = _parse_boot_drift_declarations(f.read())
-        matched = [d for d in decls
-                   if d["const"] == const and d["err"] == err
-                   and abs(d["mean"] - mean) <= 1 and abs(d["delta"] - delta) <= 1]
-        mismatched = [d for d in decls if d not in matched]
+    # ---- ARM 2: THE DERIVED BAND. Step change out, slow drift in — see BOOT_BAND_SIGMA.
+    if abs(delta) <= red_line:
+        return fails, notes
 
-        if matched:
-            d = matched[-1]
-            notes.append(
-                "%s ✅ DECLARED at #%d and DISCHARGED (#111-D1): the declaration states "
-                "the same mean, constant, error bar and delta this gate computed, and "
-                "records that the refresh is PUT TO DAVE and unruled. The drift is real "
-                "and is NOT hidden — that is the whole bar. ⚠ It is still UNFIXED: only "
-                "Dave's ruling on the constant closes it."
-                % (drift_msg, d["sess"]))
-        elif mismatched:
-            d = mismatched[-1]
-            fails.append(
-                "%s ⛔ A boot-drift declaration EXISTS (#%d) but its numbers do NOT match "
-                "this gate's computation — it states mean %s / constant %s ±%s / delta "
-                "%+d against a measured mean %s / constant %s ±%s / delta %+d. A "
-                "declaration that mis-states the drift is worse than none: it is a "
-                "session writing itself a pass. Correct the figures — do NOT widen the "
-                "error bar and do NOT edit the constant to fit "
-                "[[gate-must-quote-what-it-forbids]]."
-                % (drift_msg, d["sess"], f"{d['mean']:,}", f"{d['const']:,}",
-                   f"{d['err']:,}", d["delta"], f"{mean:,.0f}", f"{const:,}",
-                   f"{err:,}", delta))
-        else:
-            fails.append(
-                "%s ⛔ AND IT IS UNDECLARED. ⚠ This is the #109 defect recurring: the "
-                "constant is stale and only a measurement can correct it. Re-measure, "
-                "put the new figure to Dave, and update the constant — do NOT widen the "
-                "error bar to make this pass.\n"
-                "    ★ #111-D1 (Dave) — THERE IS A LEGAL WAY FORWARD AND THIS GATE OWES "
-                "IT TO YOU. You are not required to fix the drift to close your wrap; "
-                "you are required not to hide it. Add ONE line to notes/_GAUGE-LOG.md, "
-                "exactly this shape:\n"
-                "      %s\n"
-                "    filled with the figures above: mean %s · constant %s ±%s · delta "
-                "%+d. The declaration must MATCH what this gate computes — wrong figures "
-                "fail louder than none. Then this check passes and the constant refresh "
-                "goes to Dave as its OWN decision, not as the price of unblocking a wrap."
-                % (drift_msg, BOOT_DRIFT_LEGAL_FORM, f"{mean:,.0f}", f"{const:,}",
-                   f"{err:,}", delta))
+    drift_msg = (
+        "boot-drift: the newest boot reading (#%d, %s) sits %+d from the band DERIVED "
+        "from the last n=%d sessions (%s ±%s) — past the %g× red line of ±%s, i.e. a STEP "
+        "CHANGE rather than drift. Readings: %s."
+        % (newest_sess, f"{newest:,}", delta, len(reads), f"{mean:,.0f}",
+           f"{spread:,.0f}", sigma, f"{red_line:,.0f}",
+           " · ".join(f"{s:,}" for s in reads)))
+
+    # ★ #111-D1 — is the step DECLARED? Silence fails; an honest declaration passes.
+    with open(log, encoding="utf-8") as f:
+        log_text = f.read()
+    decls = _parse_boot_drift_declarations(log_text)
+    legacy = _parse_legacy_boot_declarations(log_text)
+    matched = [d for d in decls
+               if d["ceiling"] == ceiling and d["n"] == len(reads)
+               and abs(d["newest"] - newest) <= 1 and abs(d["mean"] - mean) <= 1
+               and abs(d["err"] - spread) <= 1 and abs(d["delta"] - delta) <= 1]
+    mismatched = [d for d in decls if d not in matched]
+    if legacy:
+        notes.append(
+            "boot-drift: %d PRE-`s240-D1` declaration(s) in the log state a `constant` that "
+            "no longer exists (newest #%d). They are RATIFIED RECORD, are read as HISTORY, "
+            "and are NOT re-stamped to suit this code — the gate does not rewrite the log "
+            "it grades [[read-chain-is-where-staleness-is-free]]."
+            % (len(legacy), legacy[-1]["sess"]))
+
+    if matched:
+        d = matched[-1]
+        notes.append(
+            "%s ✅ DECLARED at #%d and DISCHARGED (#111-D1): the declaration states the "
+            "same newest reading, derived band, window, delta and ceiling this gate "
+            "computed. The step is real and is NOT hidden — that is the whole bar."
+            % (drift_msg, d["sess"]))
+    elif mismatched:
+        d = mismatched[-1]
+        fails.append(
+            "%s ⛔ A boot-drift declaration EXISTS (#%d) but its numbers do NOT match this "
+            "gate's computation — it states newest %s / band %s ±%s (n=%d) / delta %+d / "
+            "ceiling %s against a computed newest %s / band %s ±%s (n=%d) / delta %+d / "
+            "ceiling %s. A declaration that mis-states the step is worse than none: it is "
+            "a session writing itself a pass. Correct the FIGURES — the band is derived, "
+            "so there is nothing to widen and nothing to re-base "
+            "[[gate-must-quote-what-it-forbids]]."
+            % (drift_msg, d["sess"], f"{d['newest']:,}", f"{d['mean']:,}", f"{d['err']:,}",
+               d["n"], d["delta"], f"{d['ceiling']:,}", f"{newest:,}", f"{mean:,.0f}",
+               f"{spread:,.0f}", len(reads), delta, f"{ceiling:,}"))
+    else:
+        fails.append(
+            "%s ⛔ AND IT IS UNDECLARED.\n"
+            "    ★ #111-D1 (Dave) — THERE IS A LEGAL WAY FORWARD AND THIS GATE OWES IT TO "
+            "YOU. You are not required to explain the step to close your wrap; you are "
+            "required not to hide it. Add ONE line to notes/_GAUGE-LOG.md, exactly this "
+            "shape:\n"
+            "      %s\n"
+            "    filled with the figures above: newest %s · derived band %s ±%s (n=%d, "
+            "#%d–#%d) · delta %+d · ceiling %s. The declaration must MATCH what this gate "
+            "computes — wrong figures fail louder than none. ⚠ And note what is NOT asked "
+            "for any more: no re-base, no refresh put to Dave, no constant edited. "
+            "`s240-D1` retired all three."
+            % (drift_msg, BOOT_DRIFT_LEGAL_FORM, f"{newest:,}", f"{mean:,.0f}",
+               f"{spread:,.0f}", len(reads), sessions[0], sessions[-1], delta,
+               f"{ceiling:,}"))
     return fails, notes
 
 
@@ -4999,6 +5283,9 @@ def wrap_checks(repo, today, lane=False):
         i_, n_ = boot_constant_drift_check(repo)  # ★ #110-D3 — the constant must still
         (fails if BOOT_DRIFT_BLOCKING else warns).extend(i_)   # match what is measured
         notes += n_
+        f_, n_ = boot_stratum_double_count_check(repo)  # ★ `s241-D2` (S5) — one stratum, one
+        fails += f_                                     # first-turn figure. BLOCKING at birth:
+        notes += n_                                     # #240 declared the defect live.
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
@@ -5128,8 +5415,106 @@ def _rehearsal_log_append(repo, entry):
         return f"⚠ REHEARSAL LOG NOT WRITTEN ({type(e).__name__}: {e}) — the fails-at-wrap-open series has a hole HERE, dated."
 
 
-def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse=False):
+# ─────────────────────────────────────────────────────────────────────────────────────────────
+# ★ `s241-D2` — THE WARN DELTA (D1 + S7 of the #241 ritual diet, on Dave's "apply").
+#
+# WHAT IT COSTS TODAY, MEASURED, NOT ASSUMED: one `--wrap` run printed 268 lines / 16,222 tape
+# (tiktoken cl100k over the captured stdout, 2026-09-02, this tree), of which the WARN block is
+# 17 items / 1,793 tape — and it is the SAME 17 every run, 59 `wrap-open` runs logged on
+# 2026-09-02 alone. Lane D's report priced the class; these figures are this lane's own.
+#
+# ⛔ THE PITFALL THIS SHAPE EXISTS TO AVOID — "a warn that stops being printed stops being
+# seen" (lane D, Consequences (e)). So NOTHING becomes invisible here: every warn's NAME prints
+# on every run. What the delta suppresses is the BODY of a warn that has not moved since the
+# previous logged run. New or changed ⇒ full text, always. No previous record ⇒ everything in
+# full, and it says so.
+#
+# ⚠ IDENTITY, NOT EQUALITY. Warn bodies carry live figures ("33,507 tape", "10 uncommitted
+# path(s)"), so keying on the exact string would mark every warn CHANGED every run and the
+# delta would save nothing while claiming to. The KEY normalises digit-runs to `#` over the
+# first WARN_SIG_KEY_CHARS characters; a second digest over the FULL text is what makes a moved
+# figure show up as CHANGED rather than silently unchanged. Both are stored, both are short:
+# the record grows by ~16 bytes per warn, not by the warn.
+WARN_SIG_KEY_CHARS = 80        # how much of a warn is its IDENTITY (s241-D2)
+WARN_NAME_CHARS = 56           # how much of an unchanged warn's name prints on the one-liner
+
+
+def _warn_sig(w):
+    """`(key8, full8)` — the stable identity of a warn and a digest of its exact wording."""
+    key = re.sub(r"\d[\d,]*", "#", w.strip())[:WARN_SIG_KEY_CHARS]
+    return (hashlib.sha1(key.encode("utf-8")).hexdigest()[:8],
+            hashlib.sha1(w.strip().encode("utf-8")).hexdigest()[:8])
+
+
+def _previous_rehearsal_record(repo):
+    """The last logged record that carries `warn_sigs`, or None. Read BEFORE this run appends.
+
+    ⚠ Returns None rather than {} on any failure — an unreadable log must make the printer fall
+    back to FULL output, never to a confident empty delta that hides every warn at once
+    [[a-crash-is-not-a-fail]].
+    """
+    path = os.path.join(repo, REHEARSAL_LOG)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding="utf-8") as f:
+            lines = f.read().splitlines()
+    except Exception:                                              # noqa: BLE001
+        return None
+    for ln in reversed(lines):
+        ln = ln.strip()
+        if not ln:
+            continue
+        try:
+            rec = json.loads(ln)
+        except Exception:                                          # noqa: BLE001
+            continue
+        if isinstance(rec, dict) and rec.get("warn_sigs"):
+            return rec
+    return None
+
+
+def _warn_delta_lines(warns, prev):
+    """(`full`, `oneliner`) — which warns print whole, and the one line naming the rest.
+
+    `full` is the list of warns to print verbatim (NEW or CHANGED, or everything when there is
+    no comparable record). `oneliner` is None when there is nothing to summarise.
+    """
+    if not warns:
+        return [], None
+    if not prev:
+        return list(warns), None
+    known = set(prev.get("warn_sigs") or [])
+    known_keys = {sig.split(":")[0] for sig in known}
+    full, unchanged = [], []
+    for w in warns:
+        k, d = _warn_sig(w)
+        if f"{k}:{d}" in known:
+            unchanged.append(w)
+        elif k in known_keys:
+            full.append("CHANGED SINCE " + str(prev.get("date", "?")) + " — " + w)
+        else:
+            full.append("NEW SINCE " + str(prev.get("date", "?")) + " — " + w)
+    if not unchanged:
+        return full, None
+    names = " · ".join(re.sub(r"\s+", " ", w.strip())[:WARN_NAME_CHARS] for w in unchanged)
+    # ⚠ A WARN THAT DISAPPEARED IS ALSO A MOVE, and the NEW/CHANGED split cannot show it — a
+    # dropped warn leaves no row to print. So the counts are stated whenever they differ. Losing
+    # a warn is usually good news; "usually" is not a reason to let it happen unannounced.
+    n_prev = prev.get("warns")
+    moved = ("" if n_prev is None or n_prev == len(warns) else
+             f" ⚠ THE SET MOVED: {n_prev} warn(s) at that record, {len(warns)} now.")
+    return full, (moved + (" " if moved else "")
+                  + f"{len(unchanged)} UNCHANGED warn(s) since the {prev.get('kind', '?')} record "
+                  f"of {prev.get('date', '?')} — NAMED, bodies suppressed (`s241-D2`); run "
+                  f"`python3 knowledge/_capture_gate.py --wrap --warns-full` for the bodies: "
+                  f"{names}")
+
+
+def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse=False,
+        warns_full=False):
     today = today or datetime.date.today()
+    prev_rec = None          # `s241-D2` — the warn-delta baseline; only wrap/rehearse set it
     if rehearse:
         mode = "wrap"    # SAME SEAM — the rehearsal IS a wrap-mode run, only classified + logged
         report = None
@@ -5251,11 +5636,17 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse
         # real wraps build the fails-at-wrap-open distribution #91-F5 ordered, and repeated
         # wrap lines within one session ARE the remediation-round count. Append-only, machine.
         heals, structural = classify_rehearsal(fails)
+        # ⚠ READ BEFORE THE APPEND, or the delta compares this run against ITSELF and every warn
+        # reads UNCHANGED for the wrong reason (`s241-D2`).
+        prev_rec = _previous_rehearsal_record(repo)
         log_err = _rehearsal_log_append(repo, {
             "date": today.isoformat(), "kind": "rehearse" if rehearse else "wrap-open",
             "fails": len(fails), "structural": len(structural),
             "heals_at_wrap": len(heals), "warns": len(warns),
             "structural_names": [s[:120] for s in structural],
+            # `s241-D2`: ~16 bytes per warn, and it is what makes NEW/CHANGED separable from
+            # "the same 17 as yesterday". Bodies are NOT logged — this is an index, not a copy.
+            "warn_sigs": ["%s:%s" % _warn_sig(w) for w in warns],
         })
         if log_err:
             warns.append(log_err)
@@ -5284,18 +5675,44 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse
         # TERSE BY DESIGN — the window pays for every printed line; the whole point of the
         # rehearsal is that the sandbox does the reading. Structural fails in full (they are
         # the deliverable), everything else as counts.
+        # ★ `s241-D2` (D1 of the #241 ritual diet). What this print already was, MEASURED before
+        # the change rather than inherited from the report that recommended it: the check-in's
+        # rehearsal block is 3 lines / ~180 tape, NOT the 130-line 7,534-tape dump lane D
+        # attributed to it — that figure is `--wrap`'s stdout (lane D's own probe ran
+        # `cg.run(mode="wrap")`, its line 102) and is S7's subject, not D1's. So D1's saving is
+        # NOT ~22,400/session; the honest number is in this lane's report. What was genuinely
+        # MISSING and is added here is the second half of D1's clause: the warn NAMES, whenever
+        # the warn set has moved since the last logged run. Until now a warn could appear,
+        # disappear or change wording between two rehearsals and the only trace was a count.
         for i in structural:
             print(f"  ⛔ STRUCTURAL {i}")
         for i in heals:
             print(f"  ▫️  heals-at-wrap: {i[:100]}")
+        moved, _same_line = _warn_delta_lines(warns, None if warns_full else prev_rec)
+        if prev_rec and moved:
+            print(f"  ⚠️  {len(moved)} warn(s) NEW or CHANGED since the "
+                  f"{prev_rec.get('kind', '?')} record of {prev_rec.get('date', '?')} — named "
+                  f"here because a moved warn that prints only as a count is invisible:")
+            for i in moved:
+                print(f"      · {re.sub(chr(10), ' ', i)[:160]}")
+        n_prev = (prev_rec or {}).get("warns")
+        drift = "" if n_prev is None else f" (was {n_prev} at the last logged run)"
         print(f"rehearsal [wrap-gate, early]: {len(structural)} STRUCTURAL fail(s) — fix NOW, "
-              f"cheap · {len(heals)} heals-at-wrap (ritual steps 1/2) · {len(warns)} warn(s) "
-              f"(run --wrap for bodies) · logged → {REHEARSAL_LOG}")
+              f"cheap · {len(heals)} heals-at-wrap (ritual steps 1/2) · {len(warns)} warn(s)"
+              f"{drift} (run --wrap for bodies) · logged → {REHEARSAL_LOG}")
         return 1 if structural else 0
     for i in fails:
         print(f"  ❌ FAIL {i}")
-    for i in warns:
+    # ★ `s241-D2` (S7 of the #241 ritual diet): NEW or CHANGED warns print in full; the ones
+    # that have not moved since the last logged run print as a count PLUS THEIR NAMES on one
+    # line. Nothing goes unseen — only the repeated bodies stop being paid for. `--warns-full`
+    # restores the old print in one flag, and the delta says which record it compared against,
+    # so the suppression can never be mistaken for a clean run.
+    _warn_full, _warn_one = _warn_delta_lines(warns, None if warns_full else prev_rec)
+    for i in _warn_full:
         print(f"  ⚠️  WARN {i}")
+    if _warn_one:
+        print(f"  ⚠️  WARNS {_warn_one}")
     for i in notes:
         print(f"  ▫️  {i}")
     print(f"capture gate [{mode}]: {len(scoped)} in scope · "
@@ -7985,20 +8402,44 @@ def selftest_boot_delta_parse():
         failures.append(f"boot parse: an out-of-range `boot 999` must still REFUSE — got "
                         f"good={g_} refused={r_} deltas={d_}")
 
-    # ---- THE ARITHMETIC ARM: drive the real check. Six readings ON the constant = green; the
-    # same log plus a fat delta line must STAY green, because the delta is not a sample.
+    # ---- THE STRATUM/ORDINAL ARM (#241). A reading citing another session LATER in the line
+    # must NOT be filed under that citation, and an unlabelled reading must fall to its stratum.
+    # Driven on the exact two shapes the live log carries.
+    strat = ("#### 2026-09-02 #401\n"
+             "> **post-mortem #401:** **boot 70,001 real** — the canonical figure\n"
+             "> **✅ AND THE PREMISES WERE CHECKED** … `_checkin.py` reads **boot 70,001**, "
+             "agreeing to the token, and the #400 stratum's lesson already has a home.\n"
+             "#### 2026-09-02 #402\n"
+             "> **pre-flight:** boot 70,002 real — no ordinal of its own\n")
+    g_, _r_, _d_ = _parse_boot_samples(strat)      # the ORDINALS are the subject — not `parse`
+    if sorted(g_) != [(401, 70001), (401, 70001), (402, 70002)]:
+        failures.append(f"boot ordinal (#241): a citation later in the line, or an unlabelled "
+                        f"reading, was mis-filed — got {sorted(g_)}, wanted both #401 readings "
+                        f"under 401 and the bare pre-flight under its #402 stratum")
+
+    # ---- THE ARITHMETIC ARM: drive the real check against the DERIVED band (`s240-D1`).
+    # n readings ON one figure ⇒ spread 0, delta 0 ⇒ green; the same log plus a fat delta line
+    # must STAY green, because the delta is not a sample. And one reading per SESSION, never per
+    # line: the same session stating its figure twice must not enter the window twice (#240).
     try:
         sys.path.insert(0, HERE)
         import _gauge_tokens as gt
-        const = gt.BOOT_FIRSTTURN_TK
+        window, ceiling = gt.BOOT_BAND_WINDOW, gt.BOOT_CEILING_TK
     except Exception as e:                                            # noqa: BLE001
         SELFTEST_REFUSALS.append(f"boot-delta arithmetic arm: _gauge_tokens unreadable ({e})")
         return failures
-    readings = "\n".join(f"> **pre-flight #{n}:** boot {const:,} real" for n in range(300, 306))
-    for extra, label in (("", "six readings on the constant"),
-                         (f"\n> ⚠ boot {const * 2:,} over the band, DECLARED", "…plus a DELTA"),
+    # ⚠ UNDER the ceiling on purpose — this arm tests the BAND arithmetic, and a fixture that
+    # also breached the ceiling would fail for the other reason and prove nothing about it.
+    flat = ceiling - 1_000
+    base = 300 + BOOT_CEILING_FROM_SESSION      # every fixture session is POST-diet
+    readings = "\n".join(f"> **pre-flight #{n}:** boot {flat:,} real"
+                         for n in range(base, base + window))
+    for extra, label in (("", f"{window} readings on one figure"),
+                         (f"\n> ⚠ boot {flat * 2:,} over the band, DECLARED", "…plus a DELTA"),
                          ("\n> ⚠ a boot drift of 99,999 was declared at the opener",
-                          "…plus a drift-of line")):
+                          "…plus a drift-of line"),
+                         (f"\n> **post-mortem #{base + window - 1}:** boot {flat:,} real",
+                          "…plus the SAME session's figure restated (#240 dedupe)")):
         with tempfile.TemporaryDirectory() as td:
             os.makedirs(os.path.join(td, "notes"))
             with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
@@ -8006,10 +8447,46 @@ def selftest_boot_delta_parse():
             f_, n_ = boot_constant_drift_check(td)
             if f_:
                 failures.append(f"boot-drift arithmetic ({label}): the gate FAILED on a log whose "
-                                f"only readings sit exactly on the constant — {f_[0][:150]}")
-            if extra and not any("state a DRIFT beside" in x for x in n_):
+                                f"readings are identical and under the ceiling — {f_[0][:150]}")
+            if extra and "post-mortem" not in extra and not any(
+                    "state a DRIFT beside" in x for x in n_):
                 failures.append(f"boot-drift arithmetic ({label}): the delta was skipped SILENTLY "
                                 f"— a number this gate declines to count must be named")
+    # ---- AND THE BAND MUST BITE ON A STEP, AND NOT ON DRIFT (`s240-D1`'s whole clause, driven
+    # in BOTH directions — a check proven only in the red direction has not been proven).
+    # SLOW DRIFT: each session +40 on a ~1,300 spread ⇒ inside the band ⇒ GREEN, no re-base.
+    drift_log = "\n".join(
+        f"> **pre-flight #{base + i}:** boot {flat - 600 + i * 200:,} real"
+        for i in range(window))
+    # STEP CHANGE: the same series, newest jumped 6,000 ⇒ outside the spread ⇒ RED.
+    step_log = "\n".join(
+        f"> **pre-flight #{base + i}:** "
+        f"boot {(flat - 600 + i * 200) - (6_000 if i == window - 1 else 0):,} real"
+        for i in range(window))
+    for src, want_red, label in ((drift_log, False, "slow drift"),
+                                 (step_log, True, "step change")):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "notes"))
+            with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+                f.write(src + "\n")
+            f_, _n_ = boot_constant_drift_check(td)
+            got_red = any("STEP CHANGE" in x for x in f_)
+            if got_red != want_red:
+                failures.append(
+                    f"boot-drift band (`s240-D1`, {label}): expected "
+                    f"{'RED' if want_red else 'GREEN'}, got fails={[x[:110] for x in f_]}")
+
+    # ---- AND THE CEILING MUST BITE, BY NAME. Same fixture, one reading over `BOOT_CEILING_TK`.
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write(readings
+                    + f"\n> **pre-flight #{base + window}:** boot {ceiling + 1:,} real\n")
+        f_, n_ = boot_constant_drift_check(td)
+        if not any("CEILING BREACH" in x for x in f_):
+            failures.append(f"boot-drift ceiling (`s241-D1`): a post-diet reading of "
+                            f"{ceiling + 1:,} did NOT fail the shrink-only ceiling by name — "
+                            f"fails={[x[:90] for x in f_]}")
     return failures
 
 
@@ -8839,11 +9316,15 @@ def _selftest_body():
 # test can assert them: `REFUSED (write-gate)` (the no-args leg, the project's own #158 marker)
 # and `REFUSED (argv contract)` (the unknown/ambiguous leg).
 CG_MODES = ("--build", "--wrap", "--rehearse", "--selftest")
-CG_MODIFIERS = ("--lane",)
+# `--warns-full` (s241-D2): the escape hatch for the D1/S7 warn delta — prints every warn
+# body even when it has not moved since the last logged run. It is a MODIFIER, never a mode:
+# the delta is the default because the default is what gets paid for 59 times a day.
+CG_MODIFIERS = ("--lane", "--warns-full")
 CG_FLAGS = CG_MODES + CG_MODIFIERS
 CG_USAGE = ("legal argv: `--build` (the ONLY writing mode — regenerates knowledge/_CAPTURE-GATE.md) "
             "· `--wrap [--lane]` (stdout only, S-D3) · `--rehearse [--lane]` (stdout + the "
-            "rehearsal log) · `--selftest` · `--help`")
+            "rehearsal log) · `--selftest` · `--warns-full` (modifier: unchanged "
+            "warns print their bodies too, `s241-D2`) · `--help`")
 ARGV_REFUSAL_MARKER = "REFUSED (argv contract)"
 
 # ★★ #221 — THE THIRD LEG OF THE #158 WRITE-BY-DEFAULT CLASS: A SELFTEST AIMED AT THE REAL FILE.
@@ -8936,9 +9417,9 @@ def main(argv):
     if "--rehearse" in argv:
         # #92: the wrap gate run EARLY, mid-window, where a fix is cheap. Same seam as --wrap;
         # only classification, terseness and the log differ. Consumer: _checkin.py.
-        return run(rehearse=True, lane=lane)
+        return run(rehearse=True, lane=lane, warns_full="--warns-full" in argv)
     if "--wrap" in argv:
-        return run(mode="wrap", lane=lane)
+        return run(mode="wrap", lane=lane, warns_full="--warns-full" in argv)
     return run(mode="build")     # `--build`, and ONLY `--build`, reaches the report writer
 
 

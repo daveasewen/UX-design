@@ -39,6 +39,7 @@ import hashlib
 import json
 import os
 import shutil
+import statistics
 import sys
 import tempfile
 import urllib.error
@@ -175,8 +176,98 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # system stops complaining"): a re-base is measurement honesty, never target acceptance.
 # The boot-reduction work (worklist item 24, the #110 boot-rent plan) stays OPEN, and the
 # next re-base proposal must arrive WITH a boot-reduction option priced beside it.
-BOOT_FIRSTTURN_TK = 56_749
-BOOT_FIRSTTURN_ERR = 1_154
+# ============================================================================================
+# ✅ #240/#241 — THE TYPED BAND IS RETIRED. `s240-D1`, `s240-D2`, `s241-D1`, ALL DAVE'S.
+# Everything above this line is HISTORY, untrimmed: four re-bases of ONE typed constant
+# (65,400 → 54,859 → 56,158 → 56,749), each honest, each falsified by the next measurement.
+# ⛔ `BOOT_FIRSTTURN_TK` and `BOOT_FIRSTTURN_ERR` ARE GONE — DELETED, not superseded-in-place.
+# Nothing in this repo grades against them any more; `derived_boot_band()` below is the
+# comparison and `BOOT_CEILING_TK` is the ratchet. A grep that finds those names now finds
+# only PROSE ABOUT HISTORY (`notes/`, `_DECISION-HISTORY/`, this comment) — never a live read.
+#
+# ★★ `s240-D1` — THE BAND IS DERIVED, NEVER TYPED. The gate computes it AT CHECK TIME from
+# the last n=7 first-turn `message.usage` readings in `notes/_GAUGE-LOG.md`: mean ± the
+# MEASURED SPREAD. A step change beyond the spread goes red; slow drift never needs a re-base
+# because there is no constant to re-base. Dave asked for the figure before committing, was
+# shown **75,672 ± 641** over #234–#240, and said *"okay do it, lets get this off our plate"*.
+# ⚠ THE SPREAD IS THE SAMPLE STANDARD DEVIATION (n−1), NOT the half-range of `s129-D1`/
+# `s171-D1`/`s208-D1`. That is not a preference — it is what reproduces the number Dave was
+# SHOWN: readings 75,206 · 75,294 · 75,198 · 76,915 · 75,336 · 75,619 · 76,138 give mean
+# 75,672.28 and `statistics.stdev` 640.7 → 641, where the half-range method would have said
+# 1,243. The statistic must be the one on which the ruling was taken [[measure-dont-convert-units]].
+#
+# ★★ `s240-D2` + `s241-D1` — ONE TYPED CEILING BESIDE IT, SHRINK-ONLY, DAVE'S TO MOVE.
+# A rolling band alone is a thermometer that follows the fever, so one absolute number stays
+# typed. `s240-D2` set its DEFINITION (the first measured first-turn boot after the #240 roster
+# diet — Figma removed, computer use off, MEMORY.md 21,064 → 12,454 B; 77,000 was REJECTED as
+# too high). `s241-D1` set its VALUE: the first post-diet boot measured **69,092 real** at #241
+# and Dave took the rounded option — *"2 is fine, but I still think this is getting excessive"*.
+# ⛔ SHRINK-ONLY, THE TYPE-COMPOSITES RATCHET RE-USED: this literal may be LOWERED by Dave and
+# never raised. There is no cheap in-process way to prove a literal never rose (the previous
+# value is not in the file), so the ratchet is enforced by REVIEW against this comment and by
+# `git log -p` on this line — stated here rather than pretended [[honest-refusal-needs-a-legal-form]].
+# The ceiling is graded per READING, not against the mean: one boot over 70,000 fails by name.
+# ⚠ `s208-D1`'s RIDER STILL BINDS: a band that moves with the measurement is measurement
+# honesty, never target acceptance. The boot-reduction work stays OPEN.
+#
+# ★ THE RED LINE IS 2× THE SPREAD, AND THAT MULTIPLIER WAS MEASURED, NOT PICKED.
+# `s240-D1` has TWO clauses — *"a step change beyond the spread goes red"* AND *"slow drift never
+# needs a re-base"* — and at 1σ the second one is false. Driven in `_capture_gate.py`'s selftest:
+#   · SLOW DRIFT, a linear ramp of d per session over n=7 — the newest reading sits 3d from the
+#     mean while the spread is 2.16d ⇒ 1.39σ ⇒ RED at 1σ FOR ANY SLOPE, which is exactly the
+#     standing re-base treadmill the ruling exists to end. It is 0.69× at 2σ ⇒ GREEN.
+#   · STEP CHANGE, one session jumped by S off a flat series — the newest sits 0.857S from the
+#     mean while the spread is 0.378S ⇒ 2.27σ ⇒ RED at 2σ FOR ANY STEP SIZE.
+# ⇒ 2.0 is the multiplier that satisfies BOTH clauses; 1.0 satisfies only one. The two arms are
+# selftested in both directions [[mutation-tests-the-clause-not-the-feature]].
+# ⚠ THE REPORTED BAND IS STILL `mean ± spread` — the statistic Dave was shown. The multiplier is
+# the RED LINE, stated separately and never folded into the spread [[measure-dont-convert-units]].
+BOOT_BAND_WINDOW = 7           # n, `s240-D1`'s proposed window — the figure Dave was shown
+BOOT_BAND_SIGMA = 2.0          # red beyond this many spreads — derived above, not picked
+BOOT_CEILING_TK = 70_000       # `s241-D1`, SHRINK-ONLY. Measured first post-diet boot: 69,092.
+
+
+def derived_boot_band(samples: list | None = None,
+                      n: int = BOOT_BAND_WINDOW,
+                      repo: str = REPO) -> tuple[float, float, list[int], list[int]] | None:
+    """`s240-D1`'s band, COMPUTED — returns `(mean, spread, samples, sessions)` or None.
+
+    `samples` is `[(session_ordinal, real_tokens)]` as `_capture_gate._parse_boot_samples`
+    returns it. Passing them in is the live path (the gate has already parsed the log and a
+    second parse would be a second answer); leaving it None makes this callable on its own,
+    at the cost of a LAZY import of the gate — lazy on purpose, because `_capture_gate`
+    imports THIS module and a module-level import either way would be a cycle.
+
+    ⛔ ONE READING PER SESSION ORDINAL, and the dedupe is the point, not a nicety. #240's own
+    declaration recorded the defect it exists to kill: a session stratum that states its
+    first-turn figure twice put that ONE reading into the window TWICE and pushed a real
+    session's reading out of it. The window is n SESSIONS, never n LINES. The FIRST reading
+    in file order wins per ordinal — inside a stratum the `post-mortem #N:` line is the
+    canonical first-turn figure and is written before any restatement of it.
+
+    Returns None (never a guess) when fewer than `n` sessions are on record — the caller
+    decides what an absent band means [[feedback-measuring-tool-must-not-guess]].
+    """
+    if samples is None:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from _capture_gate import _parse_boot_samples  # noqa: PLC0415 — see docstring
+        log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+        if not os.path.exists(log):
+            return None
+        with open(log, encoding="utf-8") as f:
+            samples, _refused, _deltas = _parse_boot_samples(f.read())
+    by_session: dict[int, int] = {}
+    for sess, tk in samples:
+        by_session.setdefault(sess, tk)      # FIRST wins — see docstring
+    ordered = sorted(by_session.items())
+    if len(ordered) < n:
+        return None
+    window = ordered[-n:]
+    reads = [tk for _s, tk in window]
+    mean = sum(reads) / len(reads)
+    spread = statistics.stdev(reads) if len(reads) > 1 else 0.0
+    return mean, spread, reads, [s for s, _tk in window]
+# ============================================================================================
 
 
 def _cache() -> dict:
@@ -292,19 +383,37 @@ def measure_boot(repo: str = REPO) -> dict:
     if os.path.exists(chain):
         with open(chain, encoding="utf-8") as f:
             disk, method = count(f.read())
+    # ✅ #241 — THE FIRST-TURN TERM IS NO LONGER A CONSTANT. It is `s240-D1`'s DERIVED band,
+    # recomputed here every call. When the log cannot supply n=7 sessions there is NO band and
+    # NO invented one: the ceiling stands in as a LABELLED UPPER BOUND, never as a measurement.
+    band = derived_boot_band(repo=repo)
+    if band is not None:
+        mean, spread, reads, sessions = band
+        firstturn, err = int(round(mean)), int(round(spread))
+        fmethod = (
+            "DERIVED — `s240-D1`: mean ± measured spread (sample stdev, n−1) of the last "
+            f"n={len(reads)} first-turn `message.usage` readings in notes/_GAUGE-LOG.md, one "
+            f"per SESSION (#{sessions[0]}–#{sessions[-1]}: "
+            + " · ".join(f"{r:,}" for r in reads)
+            + f"). Ceiling {BOOT_CEILING_TK:,} (`s240-D2`/`s241-D1`), shrink-only. Covers "
+              "system prompt + tool schemas + deferred-tool list + MCP instructions + "
+              "MEMORY.md + CLAUDE.md; its INTERNAL split is still `ds-025` item 1.")
+    else:
+        firstturn, err = BOOT_CEILING_TK, 0
+        fmethod = (
+            "⛔ NOT DERIVED — notes/_GAUGE-LOG.md yielded fewer than "
+            f"n={BOOT_BAND_WINDOW} session readings, so `s240-D1`'s band does NOT exist at "
+            f"this call. The figure shown is the SHRINK-ONLY CEILING {BOOT_CEILING_TK:,} "
+            "(`s241-D1`) standing in as an UPPER BOUND, LABELLED as one. It is not a "
+            "measurement and must not be quoted as the boot floor.")
     return {
         "chain": disk, "chain_method": method,
-        "firstturn": BOOT_FIRSTTURN_TK, "firstturn_err": BOOT_FIRSTTURN_ERR,
-        "firstturn_method": (
-            "MEASURED — `message.usage` first turn, RE-BASED #129 (`s129-D1`) to the "
-            "post-break plateau: ruled 54,859, n=7 observed 53,681–55,733 (n=7 mean 54,434, "
-            "published as evidence, NOT as the constant); err = half-range covering the "
-            "series. The pre-break n=5 constant was 65,400. Covers system "
-            "prompt + tool schemas + deferred-tool list + MCP instructions + MEMORY.md + "
-            "CLAUDE.md. Its INTERNAL split is what `ds-025` item 1 now means (MEMORY.md "
-            "8,470 lit at #109; 56,308 remainder still unsplit)."),
-        "total": disk + BOOT_FIRSTTURN_TK,
-        "err": BOOT_FIRSTTURN_ERR,
+        "firstturn": firstturn, "firstturn_err": err,
+        "firstturn_method": fmethod,
+        "band": band,
+        "ceiling": BOOT_CEILING_TK,
+        "total": disk + firstturn,
+        "err": err,
     }
 
 
@@ -352,6 +461,9 @@ def main() -> int:
     print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
           f"hard {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")
     print(f"  boot     {boot['total']:,} ± {boot['err']:,}")
+    over = "  ⛔ OVER" if boot["firstturn"] > boot["ceiling"] else "  ✅ under"
+    print(f"    ceiling  {boot['ceiling']:>8,}  first-turn, SHRINK-ONLY (`s241-D1`, Dave's "
+          f"to move){over}")
     print(f"    + chain   {boot['chain']:>8,}  {boot['chain_method']} — ADDITIVE, lands at turn 2")
     print(f"    first turn{boot['firstturn']:>8,}  ± {boot['firstturn_err']:,} — {boot['firstturn_method']}")
     print(f"  ⇒ room for job + wrap: ~{BUDGET_WORKING - boot['total']:,} tokens")
