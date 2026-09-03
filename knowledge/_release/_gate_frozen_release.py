@@ -122,7 +122,10 @@ SURFACES = [
     # remedy is to derive it from the manifest's `version` the way the build script now does, or
     # to add an arm that fails when the two disagree. Deriving it would make the gate read the
     # thing it audits, which is a design decision, not a tidy [[gate-dont-patch]].
-    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.4",
+    # #245 L5: v1.0.4 -> v1.0.6 with the v1.0.6 bake (v1.0.5 was never baked into dist/ — its
+    # manifest stood PROPOSED with no zip, the [136] red from #230 to #245). Same fourth-home
+    # caveat as above; bumped in the seed commit, read back from the printed table.
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.6",
      "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
      "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
      "machinery that cuts the release and stay editable. The surface is the DIRECTORY, so it "

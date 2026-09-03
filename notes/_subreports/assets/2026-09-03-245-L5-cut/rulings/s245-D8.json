@@ -1,0 +1,19 @@
+{
+ "id": "s245-D8",
+ "ruled": "THE NESTED TILE GRID'S ROW-HEIGHT MODEL IS THE FLOOR WITH `auto` AS ITS MAX: `.c-bento__tile.c-bento > .c-bento__grid { grid-auto-rows: minmax(var(--bento-row-unit), auto); }` - model 2 of `reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html`. Each row of a group grows to ITS OWN content and never below the rung; canon's shipped `1fr` max (which equalised a group's rows to its tallest content and lifted the outer row - L4 finding 6) is RETIRED. The ONE source is the template in `knowledge/canon/gen_canon_bento.py`; `knowledge/canon/canon.css`'s AUTO-BENTO block is regenerated from it, and the declared copy inside `knowledge/snippets/Template-dashboard-bento.reference.html` is re-spliced byte-identical (its `.cn-template-dashboard-bento` projection in canon.css follows from `gen_canon_components.py`). The OUTER wall grid of the dashboard role stays at `--bento-row-unit:auto` (L4 Q2 (a), no change). Dave's stated preference for 'the spacing on 3' is read with lane K's finding 1: under the floor a rung below content never paints, so what he prefers is CONTENT-SIZED rows - that preference is what s245-D9's ladder B enacts.",
+ "says": "Dave at #245, 2026-09-03, on `reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html` (three models per theme: 1 FIXED, 2 FLOOR minmax(unit,auto), 3 MIS-RUNG; L4's Q1 which model governs the nested tile grid and Q4 auto-or-1fr as the floor's max): 'Okay it's 2 but I do prefer the spacing on 3.' Those are his words and they are the ruling: model 2 is the FLOOR, and the page's model 2 IS the `auto` form (its toggle shows canon's `1fr` as the alternative), so Q4 resolves to (b) mint `auto` in the generator's template.",
+ "governs": [
+  "knowledge/canon/gen_canon_bento.py",
+  "knowledge/canon/canon.css",
+  "knowledge/snippets/Template-dashboard-bento.reference.html"
+ ],
+ "date": "2026-09-03",
+ "by": "Dave",
+ "status": "ruled",
+ "evidence": [
+  "chat #245 2026-09-03 - Dave: \"Okay it's 2 but I do prefer the spacing on 3.\", quoted in says",
+  "reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html - the surface put to Dave: 24 renders, model 2 = FLOOR minmax(unit,auto), the 1fr toggle",
+  "notes/_subreports/2026-09-03-245-L4-row-height-renders.md - L4's report: finding 6 (auto vs 1fr differ: rail 277.7/223.8 vs 277.7/277.7), Q1, Q4",
+  "commit 33062c1 - the tree that ships `minmax(var(--bento-row-unit),1fr)` at canon.css:1124 from gen_canon_bento.py's template"
+ ]
+}

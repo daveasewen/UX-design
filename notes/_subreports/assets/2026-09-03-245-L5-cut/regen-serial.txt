@@ -1,0 +1,110 @@
+$ python3 knowledge/gen_component_partials.py --check
+gen_component_partials --check OK — all AUTO-PARTIAL blocks in sync, contracts hold.
+rc=0
+
+$ python3 knowledge/gen_token_ramp.py
+gen_token_ramp: 0 file(s) synced (0 with block, 0 block-removed), 148 already in sync.
+rc=0
+
+$ python3 knowledge/canon/gen_canon_components.py
+generated 136 components -> .cn-<scope>
+components: Button, List-items, Cards, Headers, Navigations, Notifications, Modals, Input-fields, Progress-tracker, Badge, Links, Tags, Status-indicator, Avatar, Divider, Table, Tabs, Selection-controls, Search-field, Breadcrumbs, Pagination, Accordion, Tooltip, Quick-actions, Dropdown, Hero, Slider, Reorder, Countdown-timer, View-options, Video-player, Loading-indicator, Account-card, Account-selector, Action-bar, Alert, Amount-display, Amount-input, Anchor-nav, App-shell-doormat, App-shell-focused, App-shell-multi-column, App-shell-nav-rail, App-shell-side-nav, App-shell-split, App-shell-top-nav, Avatar-group, Back-to-top, Banner, CTA-lockup, Calendar, Card-header-lockup, Carousel, Cascader, Chart-bar, Chart-boxplot, Chart-bullet, Chart-butterfly-h, Chart-butterfly-v, Chart-candlestick, Chart-combo, Chart-donut, Chart-histogram, Chart-line, Chart-pie, Chart-scatter, Chart-sparkline, Chart-stacked-area, Combobox, Command-palette, Confirmation, Data-grid, Date-picker, Date-range-picker, Document-row, Drawer, Empty-state, Eyebrow, Fab, Feature-grid-lockup, File-upload, Filter-toolbar-bar, Footer-doormat-lockup, Footer, Form-layout, Hero-variants, Icon-button, Image-block, Kpi-tile, Layout-utilities, Limits-meter, Meter, Modal-lightbox, Multi-select, Page-header-lockup, Payment-card-visual, Popconfirm, Popover, Progress-bar, Qr-code, Range-slider, Rating, Runway-bar, Section-heading-lockup, Secure-entry, Segmented-control, Sidebar-nav, Skeleton-loader, Split-button, Splitter, Standing-order-mandate-row, Stat-card, Stats-band-lockup, Stepper, Summary, Tab-bar, Tags-input, Template-auth, Template-confirmation, Template-create-edit, Template-dashboard-bento, Template-dashboard, Template-detail, Template-empty, Template-error, Template-list-index, Template-report, Template-settings, Template-wizard, Textarea, Time-picker, Timeline, Toast, Transaction-row, Transfer-list, Tree
+rc=0
+
+$ python3 knowledge/canon/gen_canon_components.py --check
+gen_canon_components --check OK — 136 components in sync.
+rc=0
+
+$ python3 knowledge/canon/gen_canon_bento.py --check
+AUTO-BENTO in sync with tokens/layout.json (layout/bento).
+rc=0
+
+$ python3 knowledge/gen_snippet_tokens.py --check --quiet
+
+gen_snippet_tokens: 5015 manifest bindings across 136 snippets + 9 tranches; 0 value(s) would change; 0 canon.css literal(s) would change.
+OK — snippets + tranches + canon.css in sync with tokens.
+rc=0
+
+$ python3 knowledge/_validate_snippets.py
+snippet gate: 136 snippet(s), 0 failure(s)
+rc=0
+
+$ python3 knowledge/canon/gen_theme_cascade.py --check
+gen_theme_cascade --check OK — 230 override path(s), 392 component projection(s) in sync.
+rc=0
+
+$ python3 knowledge/gen_showroom.py
+gen_showroom: 136 page(s) -> showroom/ (1 written, 0 orphan(s) pruned; index owned by knowledge/_render/gen_library_214.py)
+rc=0
+
+$ python3 knowledge/gen_showroom.py --check
+gen_showroom --check OK — 136 page(s) + index in sync (index owned by knowledge/_render/gen_library_214.py).
+rc=0
+
+$ python3 knowledge/gen_showroom.py --selftest
+gen_showroom GATE — payload URL does not resolve in _selftest.reference.html:
+   ../canon/does-not-exist.css              -> /sessions/compassionate-dazzling-tesla/mnt/UX-design/knowledge/canon/does-not-exist.css (MISSING)
+   A relative URL in a snippet must point at a real file: the showroom
+   pane re-resolves it against showroom/ (srcdoc inherits the parent base URL).
+gen_showroom --selftest OK — 16 bites (rebase · fragments · absolutes · double-rebase fails loud · missing-target gate · query suffix · #98-D1 one-bar contract ×4 · embed mode ×5).
+rc=0
+
+e55922e004e7237adb1f340ff56fc81648eda7f86fec7d7e7b55d9d4a8265539  knowledge/_render/_bento_edit_rails.json
+$ python3 knowledge/_render/gen_bento_matrix_217.py --rails
+⬛ EDIT-PASS RAILS written: /sessions/compassionate-dazzling-tesla/mnt/UX-design/knowledge/_render/_bento_edit_rails.json
+   rail [1, 2, 4, 16, 24, 40] · 10 dial(s) · defaults gen_foundations_217.ROLE_DEFAULTS
+rc=0
+
+08784e86503c8e3a790059d3faca8189b6ab53fd577af0f66b25c06452093054  knowledge/_render/_bento_edit_rails.json
+ 1 file changed, 71 insertions(+), 1 deletion(-)
+groups [['component:kpi-tile'], ['component:stat-card']] declared 4 dashboard dials ['mainSpacing', 'subSpacing', 'keylines', 'bentoBg', 'grouping']
+$ python3 knowledge/_render/gen_foundations_217.py --check
+gen_foundations_217 --check: OUT OF SYNC — ['showroom/_foundations/bento-rails.html']
+Run: python3 knowledge/_render/gen_foundations_217.py
+rc=1
+
+$ python3 knowledge/_render/gen_foundations_217.py
+gen_foundations_217: 8 page(s) -> showroom/_foundations/ (1 written)
+   squaring pass (s219-D2 (2) — square is the gallery-role default in all four themes (widening s218-D6 (4), which scoped it to this wall)): squared — ladder (4, 3, 2, 1), rows 96 / 128 / 191 / 251, 4 tile(s) re-spanned
+   photography: 251 derivative(s), residual missing-file: none
+   logos:       12 variant(s), residual missing-file: none
+rc=0
+
+$ python3 knowledge/_render/gen_foundations_217.py --check
+gen_foundations_217 --check OK — 8 page(s) in sync.
+rc=0
+$ python3 knowledge/_render/gen_library_214.py --check
+gen_library_214 --check OK — 144 component(s), index + index.json + stub in sync.
+rc=0
+
+$ python3 knowledge/_render/gen_library_214.py
+   usage 'Other':     none
+   foundation page missing: none
+   missing thumbnail: 1 — template-dashboard-bento
+   no behaviour JS:   36 — account-card, action-bar, amount-display, app-shell-focused, avatar, badge, breadcrumbs, confirmation
+rc=0
+
+$ python3 knowledge/_render/gen_library_214.py --check
+gen_library_214 --check OK — 144 component(s), index + index.json + stub in sync.
+rc=0
+
+$ python3 knowledge/gen_dashboard.py --check
+gen_dashboard --check FAIL — dashboard/index.html is OUT OF SYNC with the stores or with a live gate result. Re-run `python3 knowledge/gen_dashboard.py`.
+rc=1
+
+$ python3 knowledge/gen_dashboard.py
+gen_dashboard — wrote dashboard/index.html (792739 bytes).
+rc=0
+
+$ python3 knowledge/gen_dashboard.py --check
+gen_dashboard --check OK — dashboard/index.html in sync.
+rc=0
+
+$ python3 knowledge/_build_memento_index.py
+memento index: 1997 records → knowledge/_memento-index.json (brief:181, carries-section:22, component-meta:138, context-node:218, dream:10, gauge-block:225, gm-archive-section:214, gm-section:20, lane:4, ledger-section:86, ls-archive-section:437, ls-section:11, pattern-node:375, runbook-section:56)
+rc=0
+
+$ python3 knowledge/_build_memento_index.py --check
+memento index --check: current (1997 records)
+rc=0
+

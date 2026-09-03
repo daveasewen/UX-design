@@ -1,0 +1,31 @@
+[1] rc=0 :: python3 knowledge/_release/_gate_frozen_release.py --check
+     
+     PASS — 3 arm(s) asked, no frozen surface moved.
+[2] rc=0 :: python3 knowledge/_release/_gate_frozen_release.py --selftest
+     selftest: 14 bites, 0 fail(s)
+[3] rc=0 :: python3 knowledge/_release/_gate_release_audit.py --check
+     PASS — the manifest at knowledge/_release/_pack_manifest.json is byte-identical to a fresh generation at ff1b2f531f93 (1664 files, sha256 00e8f67995609c21)
+[4] rc=1 :: python3 knowledge/_release/_gate_release_audit.py --selftest
+     selftest: 10 bites, 1 fail(s)
+       RED [pack/frozen-history-is-skipped-not-failed] with the current zip green, an older frozen zip must not turn the arm red (the pre-#220 category error); got rc=1
+[5] rc=1 :: python3 knowledge/_release/_gate_release_audit.py --pack
+     ❌ the manifest reads version 'v1.0.5' and NO zip in dist/ carries it (zips present: Apollo-Spider-v1.0.0.zip, Apollo-Spider-v1.0.1.zip, Apollo-Spider-v1.0.2.zip, Apollo-Spider-v1.0.3.zip, Apollo-Spider-v1.0.4.zip) — the manifest names a release nobody baked.
+[6] rc=0 :: python3 knowledge/_release/_gate_ci_template.py --check
+     
+     PASS — the template parses, ships what it calls, and hides nothing.
+[7] rc=0 :: python3 knowledge/_release/_gate_ci_template.py --selftest
+     selftest: 10 bites, 0 fail(s)
+=== generator selftest ===
+selftest: 216 bites, 0 fail(s)
+
+=== refusal: no --commit ===
+green — refused, as it must
+
+=== refusal: --release on a dirty tree ===
+green — refused, as it must
+
+=== refusal: --release without Dave's ratification ===
+green — manifest status is PROPOSED, so --release cannot run
+[8] rc=0
+gen_projections --check OK — 3 projection(s) and 3 PLACED host file(s) in sync with cold-start/DESIGN-CONTRACT.md.
+[9] rc=0

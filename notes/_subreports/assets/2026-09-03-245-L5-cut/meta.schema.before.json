@@ -1,0 +1,318 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "component_meta",
+  "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`. Reconciled 2026-06-18 to the authored canon: load-bearing fields (name/category/purpose/props/tokens/relationships/accessibility/antiPatterns/tokenValidation/provenance) are required and typed; `accessibility` is an open map of guidance strings (relatedSC is the typed array exception); `tokens` values may be a string or a nested object; `tokenValidation` is an open audit log; `$`-prefixed annotation keys are allowed anywhere.",
+  "type": "object",
+  "required": ["name", "category", "purpose", "provenance"],
+  "allOf": [
+    {
+      "$comment": "s210-D5 (Dave, #210, Option C of notes/_briefs/2026-08-20-210-meter-categorical-split-impacts-v1.md): THE ALIAS SEAT. A meta carrying `aliasOf` is a thin CATEGORY ALIAS — a selectable catalogue identity whose spec lives in another meta. It is required to be thin, and that is the SIZE FENCE the memo made a condition of Option C ('If the aliases are allowed to grow spec prose over time, C decays into B and inherits B's drift'). The alternative the memo priced — two more declared exemptions beside EXAMPLE-button.meta.json — was rejected in the memo's own words: 'an exemption list that grows is how a gate stops meaning anything'. Every other meta keeps the full required list exactly as before.",
+      "if": { "required": ["aliasOf"] },
+      "then": {
+        "required": ["name", "category", "purpose", "aliasOf", "provenance"],
+        "maxProperties": 14,
+        "not": {
+          "anyOf": [
+            { "required": ["props"] },
+            { "required": ["variants"] },
+            { "required": ["tokens"] },
+            { "required": ["antiPatterns"] },
+            { "required": ["accessibility"] },
+            { "required": ["tokenValidation"] },
+            { "required": ["dimensions"] },
+            { "required": ["motion"] },
+            { "required": ["responsive"] },
+            { "required": ["slots"] },
+            { "required": ["subComponents"] },
+            { "required": ["behaviour"] },
+            { "required": ["usage"] },
+            { "required": ["build"] },
+            { "required": ["graphicIndicator"] },
+            { "required": ["codeBindings"] }
+          ]
+        }
+      },
+      "else": {
+        "required": ["name", "category", "purpose", "props", "tokens", "relationships", "accessibility", "antiPatterns", "tokenValidation", "provenance"]
+      }
+    }
+  ],
+  "definitions": {
+    "tokenBinding": {
+      "description": "a token binding: either a prose string naming the bound token(s), or a nested group of bindings",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object", "additionalProperties": { "$ref": "#/definitions/tokenBinding" } }
+      ]
+    },
+    "bindsShape": {
+      "description": "s140-D1 (enacts s136-D1 axis A precondition): the spine token(s) a prop's visual values bind to. HYBRID shape, Dave's pick: a single token name, an array of token names, or an intent map (intent -> token name(s)). Intent vocabulary is UNRULED — an intent map is legal but its keys are open until a ratchet lane rules them. Presence is OPTIONAL at schema level (s140-D1 staging: permit now, enforce by gate later — the 'binds mandatory for visual props' clause of s136-D1 lands as a shrink-only gate, not here).",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        { "type": "object", "minProperties": 1,
+          "additionalProperties": { "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          ] } }
+      ]
+    },
+    "slotEntry": {
+      "description": "s140-D1 (enacts s136-D1 axis C): one contract-typed slot. accepts is BY TIER OR CAPABILITY ONLY — a child list has nowhere legal to go (additionalProperties:false on accepts is the mechanism). use is MANDATORY (Dave, s140-D1): every slot says why it exists.",
+      "type": "object",
+      "required": ["accepts", "use"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "accepts": {
+          "type": "object", "additionalProperties": false, "minProperties": 1,
+          "properties": {
+            "tier": { "type": "array", "items": { "enum": ["atom", "molecule", "organism", "template", "page"] }, "minItems": 1 },
+            "capability": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        "required": { "type": "boolean" },
+        "multiple": { "type": "boolean" },
+        "use": { "type": "string", "description": "one-line reason this slot exists" }
+      }
+    },
+    "edge": {
+      "description": "one typed edge in the KG parse layer (schema v2, s131-D2/s133-D1). ref is a node-id ('component:<stem>' | 'pattern:<slug>' | 'context:<slug>' | 'snippet:<filename>' | 'ruling:<sNNN-DN>') or null when unresolved without inventing a target; $note optionally carries the original prose this edge was migrated from.",
+      "type": "object",
+      "required": ["ref"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "type": ["string", "null"], "pattern": "^(component|pattern|context|snippet|ruling):.+$" },
+        "$note": { "type": "string" }
+      }
+    },
+    "behaviourAddress": {
+      "description": "s234-D5 (Dave, #234) + s245-D1 (grammar (a), #245): `behaviour` promoted from optional prose notes to a TYPED OBJECT carrying the script/partial ADDRESS. The meta is the ONE HOME (s234-D4/D5: generation chain, never copy chain): gen_component_partials.py DERIVES a #behaviour-manifest block into the snippet beside #token-manifest, and _validate_receipt.py reads THIS object to check that a composed page loads what the meta declares. `script` GRAMMAR — three forms, nothing else resolves: null = the component carries NO script (a POSITIVE declaration, never 'unknown'); `knowledge/<path>.js` = a hand-authored source file, the component-types.json $behaviour form (e.g. knowledge/canon/dv-behaviour.js); `knowledge/snippets/<Slug>.reference.html#script` = the snippet's own inline executable <script> element(s) outside any AUTO-BEHAVIOUR markers. `partial` = the AUTO-BEHAVIOUR name(s) registered under component-types.json $behaviour that the snippet carries — one name, a list of names (s245-D2: 9 of the 14 dataviz members carry 2-3), else null. `events` = DOM event names as passed to addEventListener — s245-D4: KEPT, OPTIONAL, generated from the snippet, never authored (rC Q3 answered). `fallback` = what the component does with CSS on and JS off (rA resilience criterion, GOV.UK/USWDS); null = NOT DECLARED (an honest UNPROVEN), never 'none' — a passive component says so in words ('identical — the component carries no script'). `$note` keeps the pre-s234-D5 prose VERBATIM (by-addition migration, ADR-0017 archive-never-delete). `$unproven` names the fields whose value is null because neither the prose nor a probe settles them. Existence of the addressed file/script is NOT a schema question — the generator and the gate resolve it (gate the presence, not the shape).",
+      "type": "object",
+      "required": [
+        "script",
+        "partial",
+        "fallback"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {}
+      },
+      "properties": {
+        "script": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$"
+        },
+        "partial": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*$"
+          },
+          "uniqueItems": true
+        },
+        "fallback": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "$note": {
+          "type": [
+            "object",
+            "array",
+            "string"
+          ]
+        },
+        "$unproven": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "script",
+              "partial",
+              "events",
+              "fallback"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "properties": {
+    "name": { "type": "string" },
+    "aliasOf": {
+      "description": "s210-D5 — the ALIAS SEAT. Present ONLY on a thin category alias: this meta is a selectable catalogue identity for one READING of another component, and holds no spec of its own. `component` is the node-id of the meta that owns the spec; `reading` is the category identity a selecting human or model is meant to understand (Dave, #210: 'the user, AI or User must understand the difference, even if it's only categorical'); `why` is the one sentence that says when you want this reading. Presence of this key switches the required-field set and applies the size fence (see the allOf at the head of this schema).",
+      "type": "object",
+      "required": ["component", "reading", "why"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "component": { "type": "string", "pattern": "^component:.+$" },
+        "reading": { "type": "string" },
+        "why": { "type": "string" }
+      }
+    },
+    "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
+    "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
+    "intent": { "description": "ADDRESS into knowledge/chart-intents.json — the analytical question this chart answers (comparison | change-over-time | distribution | relationship | composition). A word, or a list where the purpose genuinely spans two. OPTIONAL: charts carry it, other components do not. Resolver: knowledge/_validate_intent_resolve.py — an unknown word refuses. Values live ONCE in the store (ADR-0017); never redefine them here.", "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 }] },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "patternProperties": { "^\\$": {} },
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "values": { "type": "array", "items": { "type": "string" } },
+          "default": {},
+          "binds": { "$ref": "#/definitions/bindsShape" }
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "description": "optional — not every component has named variants",
+      "items": {
+        "type": "object",
+        "required": ["name", "use"],
+        "patternProperties": { "^\\$": {} },
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "use": { "type": "string", "description": "one-line reason this variant exists" }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "description": "token bindings by intent; value is a prose string or a nested group",
+      "additionalProperties": { "$ref": "#/definitions/tokenBinding" }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "graph edges",
+      "additionalProperties": false,
+      "properties": {
+        "livesInside": { "type": "array", "items": { "type": "string" } },
+        "mustNotNeighbour": { "type": "array", "items": { "type": "string" } },
+        "commonPatterns": { "type": "array", "items": { "type": "string" } },
+        "triggeredBy": { "type": "array", "items": { "type": "string" }, "description": "elements that activate this component (e.g. a tooltip's trigger)" }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "how the component behaves for AT. An open map of named guidance strings; relatedSC is the typed array of WCAG SCs this component must satisfy.",
+      "required": ["relatedSC"],
+      "properties": {
+        "relatedSC": { "type": "array", "items": { "type": "string" }, "description": "WCAG 2.2 SCs this component must satisfy (validated by _build_integrity.py)" }
+      },
+      "patternProperties": { "^\\$": {} },
+      "additionalProperties": { "type": "string" }
+    },
+    "antiPatterns": {
+      "type": "array",
+      "description": "explicit 'never do this' rules — the most load-bearing field. Prefix a string with REVIEW to mark it review-tier (see _CONFIDENCE.md).",
+      "items": { "type": "string" }
+    },
+    "tokenValidation": {
+      "type": "object",
+      "description": "audit log of this component's tokens against the store (deprecated-token usage, rebind targets, ignored primitives). Open shape.",
+      "required": ["date", "against", "result"],
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source"],
+      "patternProperties": { "^\\$": {} },
+      "additionalProperties": false,
+      "properties": {
+        "source": { "enum": ["figma", "code", "both", "gap-report", "proforma-promotion"], "description": "where the component's authority comes from. 'gap-report' = a candidate surfaced by a journey/gap report, not yet reconciled to a Figma node or code path (figma_node stays empty until a design owner binds it). 'proforma-promotion' = promoted from a reviewed _proforma artefact (near-canonical per ADR-0013 ruling 3); values are OBSERVED retrieval but remain provisional-agent until Dave's sign-off — added 2026-07-22 wave 2 for the Charts lane (conductor, unblocking worker D's C-Q4)." },
+        "figma_node": { "type": "string" },
+        "code_path": { "type": "string" }
+      }
+    },
+    "slots": {
+      "description": "s140-D1 (enacts s136-D1 axis C): contract-typed content injection. The ONLY new top-level key the three-axis model adds (s136-D1 clause C). Map of slot name -> slotEntry; OPTIONAL at schema level (staging: permit now, enforce by gate later).",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/slotEntry" },
+      "patternProperties": { "^\\$": {} }
+    },
+    "subComponents": { "description": "optional breakdown of internal parts", "type": ["object", "array"] },
+    "motion": { "description": "optional motion/interaction spec; per-part behaviour referencing motion/* tokens (duration, easing) + reduced-motion rule", "type": "object" },
+    "responsive": { "description": "optional reflow/adaptation spec (rubric Dim 11) — how the component adapts to available width: the responsive unit, breakpoint(s), stacking/full-width/reorder rules, verified down to 320px (WCAG 1.4.10). Added 2026-06-24 (Button promotion). Open shape.", "type": "object" },
+    "dimensions": {
+      "description": "optional geometry/measurement spec — the sizes a generator would otherwise have to invent (height, padding, indicator/border widths, gaps, target size). Values are px numbers or strings naming a layout/spacing token. Added 2026-06-19 (fitness-test fix #3). Open shape; prefer token references over raw numbers where a token exists.",
+      "type": "object"
+    },
+    "behaviour": {
+      "description": "s234-D5: the behaviour ADDRESS (typed — #/definitions/behaviourAddress), OR, during migration only, the pre-s234-D5 prose notes (object|array|string). The discriminator is the `script` key: an object carrying `script` MUST validate as a behaviourAddress; anything else is LEGACY prose, permitted by this schema but BLOCKED by the receipt gate since s245-D3 (#245: FAIL:BEHAVIOUR-PROSE in _validate_receipt.py step 4b) — the s140-D1 posture, gate not schema (the s140-D1 staging posture: permit now, enforce by gate later). By-addition: the migration moves the prose under $note, so once the 20 prose values are migrated the legacy branch has no population and can be retired by a ruling.",
+      "if": {
+        "type": "object",
+        "required": [
+          "script"
+        ]
+      },
+      "then": {
+        "$ref": "#/definitions/behaviourAddress"
+      },
+      "else": {
+        "type": [
+          "object",
+          "array",
+          "string"
+        ]
+      }
+    },
+    "usage": { "description": "optional usage notes", "type": ["object", "array", "string"] },
+    "build": { "description": "optional build/implementation notes", "type": ["object", "array", "string"] },
+    "graphicIndicator": { "description": "optional graphic/indicator notes", "type": ["object", "array", "string"] },
+    "codeBindings": {
+      "description": "optional hub-and-spoke map of this design component to consuming code libraries. HUB = the Figma node identity (provenance.figma_node) — the only library-independent key; never renamed. Each KEY here is one consuming library (a SPOKE), e.g. 'sutherland-react'; its value records that library's own component name + variant->prop mapping, which may differ from the Figma names (different libraries, built by different humans, use different conventions). RULES: never bind logic on a friendly/display name; never normalise names across libraries (map them through the node, not to a 'winner'); populate a spoke from Code Connect (get_code_connect_map), not by guessing; tag every unverified spoke with $status. Display names live per-variant ($displayName/$aliases) and are yours, so they are stable across all libraries. Procedure to add a new library: _RUNBOOK-onboard-code-library.md. Added 2026-06-22 (Dave decision).",
+      "type": "object"
+    },
+    "interactive": { "type": "boolean", "description": "optional — false marks a PASSIVE component (no hover/active/keyboard by design; e.g. Status-indicator, Divider, Badge, Loading-indicator). The prototype-grade scorer then credits AT via role/aria-live/label rather than a keyboard handler (decided 2026-06-22, rubric option A). Default true." },
+    "stateModel": { "enum": ["simple", "full"], "description": "optional — 'simple' declares the component genuinely has only default + hover/pressed + focus (no selected/checked/disabled/expanded/current by design, e.g. Tags). The prototype-grade scorer then credits the states signal when those applicable states are implemented (:hover + :active + :focus-visible), instead of requiring >=4 enumerated selectors it can never have (Decision C, 2026-06-24). Default = full." },
+    "edges": {
+      "description": "schema v2 (s131-D2 RULED #131 NOT ENACTED / s133-D1 RULED #133 scope widening) — the KG parse layer: typed, resolvable node references, additive alongside `relationships`/`$consumes`/`$reuses`/etc, which stay as-is (archive-never-delete, by-addition only). Each entry is {\"ref\": \"<node-id>\"|null, \"$note\": \"<optional original prose>\"}; ref is null where the source prose could not be resolved to a node without inventing one — flagged for Dave's-eye review, never guessed. Node-id grammar: 'component:<stem>' | 'pattern:<slug>' | 'context:<slug>' | 'snippet:<filename>' | 'ruling:<sNNN-DN>'. Mechanical batch (renderedBy, consumes, reuses, hasPart, partial, family, containedBy, usedInContext, commonPattern) generated by gen_kg_edges.py; mustNotNeighbour/triggeredBy carry ref:null + prose pending Dave's-eye; governedBy is reserved for the Dave's-eye batch (ruling attributions), not yet populated.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "containedBy": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "usedInContext": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "commonPattern": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "mustNotNeighbour": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "triggeredBy": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "consumes": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "reuses": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "hasPart": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "partial": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "family": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "renderedBy": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "governedBy": { "type": "array", "items": { "$ref": "#/definitions/edge" } }
+      }
+    }
+  },
+  "patternProperties": { "^\\$": {} },
+  "additionalProperties": false
+}
