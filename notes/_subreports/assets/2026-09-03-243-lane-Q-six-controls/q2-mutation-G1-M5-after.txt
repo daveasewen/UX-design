@@ -1,0 +1,43 @@
+gold script: mnt/UX-design/knowledge/_validate_polarities.py sha 96cdfb4414608662
+=== MUTATION G1 the driver DROPS $seed handling (check_receipt: has_seed forced False) — lane Q's G1, re-run for the new 225 arms
+104  FAIL    green      1  -      s240-D3 GREEN CONTROL: a NEW polarity born after R1 carries `$seed` = a real ruling id and NO `sources` — the legal form #239-F RULING-SHAPED 4 was missing (#242 lane P)
+106  FAIL    red        0  -      s240-D3 BREAK ARM: BOTH receipts on one node — its R1 `sources` AND a `$seed` (the receipt is ONE POINTER PER NODE) (#242)
+115  FAIL    green      0  yes    s240-D3 ADD-POLARITY (#242): a BRAND-NEW polarity with a `$seed` receipt is accepted by the writer (dry-run then --write), 31 rows, gate green after — #239-F green control (e), which had no legal form
+117  FAIL    green      1  -      100 LEGAL (#243 s243-D1): the SAME 31st row with `$seed` = s240-D3 in place of `sources` — --write green
+   ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /dev/shm/polarity-selftest-j54ultd6/arm117 (nothing written):
+   ⛔ REFUSED (S-SOURCE) — pl-31: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.json id that created it in `$seed`
+   
+119  FAIL    red        1  yes    225 TWO RECEIPTS (#243 s243-D1): the SAME pl-33 carrying the foreign `sources` AND `$seed` = s240-D3 — S-SOURCE (BOTH receipts: ONE POINTER PER NODE), nothing written
+   rc=1 named=True (names=['S-ID', 'S-SOURCE'] wanted=['S-SOURCE']) detailed=False (must_detail='carries BOTH') crashed=False untouched=True :: ⛔ POLARITY GATE REFUSED — 2 refusal(s) over /dev/shm/polarity-selftest-j54ultd6/arm119 (nothing written):
+   ⛔ REFUSED (S-ID) — pl-33.sources[0].path: '/etc/hostname' does not match ^[A-Za-z0-9_][A-Za-z0-9_./-]*$
+   ⛔ REFUSED (S-SOURCE) — pl-33.sources[0].path '/etc/hostname' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json'] — a node may not name its own oracle (Q3, #239); a second register is Dave's
+120  FAIL    green      1  -      225 LEGAL (#243 s243-D1): the SAME pl-33 reduced to ONE legal receipt — the foreign `sources` gone, `$seed` = s240-D3 — --write green
+   ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /dev/shm/polarity-selftest-j54ultd6/arm120 (nothing written):
+   ⛔ REFUSED (S-SOURCE) — pl-33: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.json id that created it in `$seed`
+   
+124  FAIL    green      1  -      248 LEGAL (#243 s243-D1): the SAME all-stub node with `$seed` = s240-D3 — --write green
+   ⛔ POLARITY GATE REFUSED — 1 refusal(s) over /dev/shm/polarity-selftest-j54ultd6/arm124 (nothing written):
+   ⛔ REFUSED (S-SOURCE) — pl-40: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.json id that created it in `$seed`
+   
+126  FAIL    green      1  -      321 LEGAL (#243 s243-D1): all 30 rows RETIRED (`retiredBy` = s240-D3) and --write green, then the writer appends the `$seed` node — 31 rows KEPT in polarities.json, no retired id in any row or byte under _generated/
+   rc=1 chk=0 rows=30 post=True retire_write_rc=[0] leaks_rows=[] leaks_bytes=[] :: olarity-selftest-j54ultd6/arm126 (nothing written):
+   ⛔ REFUSED (S-SOURCE) — pl-90: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.json id that created it in `$seed`
+   ⛔ the gate REFUSED the home as it would stand after this append (rc 1) — see the refusals above. File untouched.
+128  FAIL    green      1  -      326 LEGAL (#243 s243-D1): the SAME 2-space file, the SAME entry with `$seed` = s240-D3 — writer green, 31 rows, gate green after
+   rc=1 chk=0 rows=30 post=True  :: olarity-selftest-j54ultd6/arm128 (nothing written):
+   ⛔ REFUSED (S-SOURCE) — pl-90: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.json id that created it in `$seed`
+   ⛔ the gate REFUSED the home as it would stand after this append (rc 1) — see the refusals above. File untouched.
+arms 150 · red arms 128 (went red by name 126/128) · green arms 20 · no-fire/77 arms 2 · new #239 arms 72 · new #242 (s240-D3 receipt) arms 12 · new #243 (s243-D1 six controls) arms 13 · failures 9
+✗ selftest FAILED — 9 arm(s)
+   row:  52  PASS    red        1  yes    V225 S-SOURCE a source path outside the repo (/etc/hostname) (#239 Q3)
+   row: 118  PASS    red        1  yes    225 LITERAL (#243 s243-D1): a NEW node pl-33 whose ONLY receipt is the foreign path /etc/hostname (V225's receipt, verbatim) — S-ID + S-SOURCE (allow-list) at --write
+   row: 119  FAIL    red        1  yes    225 TWO RECEIPTS (#243 s243-D1): the SAME pl-33 carrying the foreign `sources` AND `$seed` = s240-D3 — S-SOURCE (BOTH receipts: ONE POINTER PER NODE), nothing written
+   row: 120  FAIL    green      1  -      225 LEGAL (#243 s243-D1): the SAME pl-33 reduced to ONE legal receipt — the foreign `sources` gone, `$seed` = s240-D3 — --write green
+   row: 122  PASS    green      0  -      235 LEGAL (#243 s243-D1), lane F's #239 form (a): an orphan stub — declared, never used — whose phrase is VERBATIM from ONE field of the first R1 row, read from the R
+rc=1
+restored mirror sha 96cdfb4414608662 == gold 96cdfb4414608662 | repo sha 96cdfb4414608662 (repo unchanged: True )
+
+Traceback (most recent call last):
+  File "/sessions/awesome-festive-hamilton/q2/_mutate_q2.py", line 39, in <module>
+    assert src.count(old) == 1, (label, src.count(old))
+AssertionError: ('M5 check_receipt silently accepts BOTH receipts (the BOTH clause disabled) — probe for 225 TWO RECEIPTS', 0)

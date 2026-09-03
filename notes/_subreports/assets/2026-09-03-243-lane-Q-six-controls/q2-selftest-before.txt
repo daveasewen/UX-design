@@ -1,0 +1,155 @@
+====================================================================================================
+_validate_polarities.py --selftest — every arm drives gate() on a copy of the REAL rows
+====================================================================================================
+  #  result  expect    rc  named  arm
+  1  PASS    green      0  -      CONTROL: the real 30 rows, untouched
+  2  PASS    red        1  yes    R1 dangling PARTY ref (pr-does-not-exist)
+  3  PASS    red        1  yes    R1 dangling LINK ref (s999-D9)
+  4  PASS    red        1  yes    R1 link to a SUPERSEDED ruling (s129-D1, real store)
+  5  PASS    red        1  yes    R1 PARTY that is a superseded ruling (s129-D1)
+  6  PASS    red        1  yes    V30 R1 resolvedBy a ruling superseded in the store's PROSE only (s200-D2) (#239 Q1)
+  7  PASS    red        1  yes    V31 R1 resolvedBy a ruling whose status says OPEN/PARKED/DEFERRED/FORKED (gauge-band) (#239 Q1)
+  8  PASS    green      0  -      V31-control: the SAME ruling as `touches` is fine — only a resolvedBy closes (#239 Q1)
+  9  PASS    red        1  yes    R1 SELF-PARTY (pl-01 lists itself)
+ 10  PASS    red        1  yes    R1 CIRCULAR polarity→polarity LINK (pl-01 → pl-02)
+ 11  PASS    red        1  yes    R1 CIRCULAR polarity as a PARTY of another (pl-02 on pl-01)
+ 12  PASS    red        1  yes    R1 link to a PRINCIPLE id (wrong register)
+ 13  PASS    red        1  yes    R1 undeclared STUB (st-not-declared)
+ 14  PASS    red        1  yes    R1 a declared stub REMOVED from stubs.json (pl-05's party dangles)
+ 15  PASS    red        1  yes    R1 homoglyph ref (Cyrillic а in pr-jakobs-law) — non-ASCII id
+ 16  PASS    red        1  yes    R2 UNTYPED link (type key absent)
+ 17  PASS    red        1  yes    V200 R2 UNTYPED link that is a bare string (#239 misnamed→named)
+ 18  PASS    red        1  yes    V201 R2 UNTYPED link with type null (#239 misnamed→named)
+ 19  PASS    red        1  yes    V202 R2 link type is a LIST — named, no crash (#239 Q7)
+ 20  PASS    red        1  yes    R2 UNKNOWN (fifth) link type `relatedTo`
+ 21  PASS    red        1  yes    R2 link type wrong case `ResolvedBy`
+ 22  PASS    red        1  yes    R2 link type empty string
+ 23  PASS    red        1  yes    R3 judgement field `how_it_resolves` on a node
+ 24  PASS    red        1  yes    R3 judgement field of ANOTHER name (`verdict`)
+ 25  PASS    red        1  yes    R3 judgement smuggled into a link `quote` (16 words)
+ 26  PASS    red        1  yes    R3 judgement smuggled into a party `note` (16 words)
+ 27  PASS    red        1  yes    R3 judgement field inside a PARTY object (`why`)
+ 28  PASS    red        1  yes    R3 stub with a third key (`rationale`)
+ 29  PASS    red        1  yes    R3 link quote PARAPHRASED (not verbatim in the source row)
+ 30  PASS    red        1  yes    V230 R3 party note that is a 14-word verdict, not verbatim in the source row (#239 Q5)
+ 31  PASS    red        1  yes    V231 R3 note of 44 visible words joined by U+200B — counted AND the character refused (#239 Q5)
+ 32  PASS    red        1  yes    V232 R3 mediating_variable of 300 words (#239 Q5: maxWords 25 FLOATED + verbatim)
+ 33  PASS    red        1  yes    V232b R3 mediating_variable rewritten (short, not verbatim in the source row) (#239 Q5)
+ 34  PASS    red        1  yes    V233 R3 sources[0].id that is a 300-word verdict (#239 Q5: patterned + maxWords 1)
+ 35  PASS    red        1  yes    V234 R3 stub phrase that is a 15-word verdict — not verbatim in the register (#239 Q5)
+ 36  PASS    red        1  yes    V22 R3/S stub whose phrase is one U+200B (visually empty) (#239 Q5)
+ 37  PASS    red        1  yes    V82 R3 $migration gains a nested `verdicts` map (#239 Q5: shape-fixed)
+ 38  PASS    red        1  yes    V83 R3 $description replaced by 500 words of verdict (#239 Q5: maxWords FLOATED)
+ 39  PASS    red        1  yes    V246 S-RECEIPT $migration.sha256 = 64 zeros — the receipt is verified (#239 Q5)
+ 40  PASS    red        1  yes    V247 S-RECEIPT $migration.from = a path that does not exist (#239 Q5)
+ 41  PASS    red        1  yes    V220 R3 sources repointed at _rulings.json + 13 words OF THE RULING as the quote (#239 Q3)
+ 42  PASS    red        1  yes    V300 R3 sources repointed at polarities.json itself + its own words as the quote (#239 Q3)
+ 43  PASS    red        1  yes    V222 R3 paraphrase + source pointer broken (path → nowhere): UNVERIFIABLE is refused (#239 Q3)
+ 44  PASS    red        1  yes    V93 S-ID sources[0].id with a fullwidth digit (tn-0１) — the pointer cannot be laundered (#239 Q3)
+ 45  PASS    red        1  yes    V223 R3 resolvedBy with quote "" (#239 Q3)
+ 46  PASS    red        1  yes    V224 R3 resolvedBy with the one-word quote "the" (#239 Q3: minWords 3 FLOATED)
+ 47  PASS    red        1  yes    V400 R3 resolvedBy with NO quote at all — a resolvedBy needs a receipt (#239 Q3)
+ 48  PASS    green      0  -      V400-control: a `touches` with no quote stays legal (#239 Q3)
+ 49  PASS    red        1  yes    V401 S-SOURCE pl-04's source id swapped to tn-02 — one row, one node (#239 Q3)
+ 50  PASS    red        1  yes    V402 S-SOURCE pl-01's body duplicated under pl-31 — the row is claimed twice (#239 Q3)
+ 51  PASS    red        1  yes    V244 S-SOURCE all 30 rows deleted — 30 frozen rows claimed by no node (#239 Q3)
+ 52  PASS    red        1  yes    V225 S-SOURCE a source path outside the repo (/etc/hostname) (#239 Q3)
+ 53  PASS    red        1  yes    S-FORMAT-CHAR a soft hyphen (U+00AD) inside a party ref (#239 Q5)
+ 54  PASS    red        1  yes    S-FORMAT-CHAR a right-to-left override (U+202E) in $description (#239 Q5)
+ 55  PASS    red        1  yes    S-FORMAT-CHAR a NUL (U+0000) in a stub phrase (#239 Q5)
+ 56  PASS    red        1  yes    R4 AUTHORED file at the generated path (no header)
+ 57  PASS    red        1  yes    R4 generated file HAND-EDITED under its header (self-sha breaks)
+ 58  PASS    red        1  yes    R4 AUTHORED edge file beside the homes (knowledge/brain/edges.json)
+ 59  PASS    red        1  yes    R4 STRAY second shape beside the homes (polarities-v2.json)
+ 60  PASS    red        1  yes    R4 AUTHORED file INSIDE _generated/ beside the derived three
+ 61  PASS    red        1  yes    R4 defaults-declaration.txt HAND-EDITED (a default declared by hand)
+ 62  PASS    red        1  yes    V210 R4 dotfile `.edges.json` at the brain top — dotfiles are LISTED (#239 Q6)
+ 63  PASS    red        1  yes    V211 R4 dotfile inside _generated/ (#239 Q6)
+ 64  PASS    red        1  yes    V212 R4 a half-written `.polarity-edges.json.tmp` inside _generated/ (#239 Q6)
+ 65  PASS    red        1  yes    V213 R4 an authored edge list under schema/ — schema/ is LISTED (#239 Q6)
+ 66  PASS    red        1  yes    V214 R4 a second schema under schema/ — exactly one schema (#239 Q6)
+ 67  PASS    red        1  yes    V216 R4 __pycache__/ under the home (#239 Q6)
+ 68  PASS    red        1  yes    V403 R4 polarities.json replaced by a SYMLINK to a file outside the home (#239 Q6)
+ 69  PASS    red        1  yes    V217 R4 _generated is a FILE — named at --check (#239 Q6/Q7)
+ 70  PASS    red        1  yes    V217w R4 _generated is a FILE — --write refuses by name, no crash, nothing written (#239 Q7)
+ 71  PASS    green      0  -      Q6 `.DS_Store` with Finder's magic bytes is IGNORED, declared (#239 Q6)
+ 72  PASS    red        1  yes    Q6 a JSON edge list wearing the name `.DS_Store` is refused (#239 Q6)
+ 73  PASS    red        1  yes    R5 typed `status` on a node
+ 74  PASS    red        1  yes    R5 typed status under another spelling (`derivedStatus`)
+ 75  PASS    red        1  yes    S 1 party (minItems 2)
+ 76  PASS    red        1  yes    S DUPLICATE party (same ref twice on pl-01)
+ 77  PASS    red        1  yes    S DUPLICATE polarity id
+ 78  PASS    red        1  yes    S unicode polarity id (fullwidth digit)
+ 79  PASS    red        1  yes    S party role outside the enum (`side_d`)
+ 80  PASS    red        1  yes    V42 S party role null — named S-ROLE (#239 misnamed→named)
+ 81  PASS    red        1  yes    V44 S party role is an OBJECT — named, no crash (#239 Q7)
+ 82  PASS    red        1  yes    V203 S party ref is a LIST — named, no crash (#239 Q7)
+ 83  PASS    red        1  yes    V204 S stub id is a LIST — named, no crash (#239 Q7)
+ 84  PASS    red        1  yes    V250 S sources item without `path` on a node with a quote — named, no crash (#239 Q7)
+ 85  PASS    red        1  yes    V251 S sources[0].path is an int — named, no crash (#239 Q7)
+ 86  PASS    red        1  yes    S ONE-SIDED: every party on side_a (no pull)
+ 87  PASS    red        1  yes    S mediating_variable empty
+ 88  PASS    red        1  yes    S sources missing — no receipt at all (s240-D3 re-cut of the #239 S-SCHEMA arm)
+ 89  PASS    red        1  yes    S polarities.json does not parse
+ 90  PASS    red        1  yes    V252 S polarities.json carries one non-UTF-8 byte — S-PARSE, no traceback (#239 Q7)
+ 91  PASS    red        1  yes    V110 SCHEMA parties.minItems 2→1 + a one-party row: LOOSENED named, S-MIN-PARTIES still fires (#239 Q2)
+ 92  PASS    red        1  yes    V111 SCHEMA enum widened with a fifth type + a relatedTo link (#239 Q2)
+ 93  PASS    red        1  yes    V112 SCHEMA parties.items.additionalProperties true + a `why` on a party (#239 Q2)
+ 94  PASS    red        1  yes    V310 SCHEMA sources.items.additionalProperties true + a `judgement` on a source (V's TOTAL escape) (#239 Q2)
+ 95  PASS    red        1  yes    V311 SCHEMA sources.minItems 0 + sources [] + a paraphrased quote (#239 Q2/Q3)
+ 96  PASS    red        1  yes    V312 SCHEMA note.maxWords 500 + a 64-word note (#239 Q2)
+ 97  PASS    red        1  yes    V113 SCHEMA root additionalProperties true + a `verdict` on a node (#239 Q2)
+ 98  PASS    red        1  yes    SCHEMA a new property `verdict` ADDED to the schema + used on a node — the key set is pinned (#239 Q2)
+ 99  PASS    red        1  yes    SCHEMA description-only edit — the sha PIN alone fires (#239 Q2 (b))
+100  PASS    red        1  yes    V256 SCHEMA `properties` is a list — named S-SCHEMA, no crash (#239 Q7)
+101  PASS    red        1  yes    V257 SCHEMA id.pattern is an invalid regex — named S-SCHEMA, no crash (#239 Q7)
+102  PASS    red        1  yes    SCHEMA: a keyword this gate does not implement (maxItems) is REFUSED, never silently ignored
+103  PASS    red        1  yes    BITE-THE-BITE (#239 re-cut): schema TIGHTENED to minItems 3 with the pin moved — the real 2-party rows are refused S-MIN-PARTIES: the schema still drives; only loosening is refused
+104  PASS    green      0  -      s240-D3 GREEN CONTROL: a NEW polarity born after R1 carries `$seed` = a real ruling id and NO `sources` — the legal form #239-F RULING-SHAPED 4 was missing (#242 lane P)
+105  PASS    red        1  yes    s240-D3 BREAK ARM: `$seed` names s999-D9, absent from knowledge/_rulings.json (#242)
+106  PASS    red        1  yes    s240-D3 BREAK ARM: BOTH receipts on one node — its R1 `sources` AND a `$seed` (the receipt is ONE POINTER PER NODE) (#242)
+107  PASS    red        1  yes    s240-D3 BREAK ARM: NEITHER receipt — a node with no `sources` and no `$seed` (#242)
+108  PASS    green      0  -      s240-D3 GREEN CONTROL: a node RETIRED by a real ruling id — it KEEPS its row and the derivation is re-run without it (#242)
+109  PASS    red        1  yes    s240-D3 BREAK ARM: a RETIRED node whose id still appears under _generated/ — R4-RETIRED-GENERATED by name, not just STALE (#242)
+110  PASS    red        1  yes    s240-D3 BREAK ARM: `retiredBy` names s999-D9, absent from knowledge/_rulings.json (#242)
+111  PASS    red        1  yes    s240-D3 BREAK ARM: `$seed` removed from the SCHEMA's properties — the key set is pinned, so the receipt cannot be legislated away by a schema edit (#242 Q2)
+112  PASS    red        1  yes    s240-D3 LEAK ARM (#242 lane P2, V2 finding 3): pl-02 retired → --write and its id is gone from every BYTE of all three generated files; replanted in the derivation's PROSE ONLY (self-consistent sha, invisible to the ROW check) → R4-RETIRED-GENERATED BY NAME. A retired id anywhere under _generated/ is a leak
+113  PASS    red        1  yes    s240-D3 FLOOR ARM (#242 lane P2, V2 finding 4): `sources` put BACK into the schema's `required` with the pin moved honestly — SCHEMA-LOOSENED by name (a schema may tighten a REFUSAL, never a PERMISSION), and the floor is APPLIED REGARDLESS, so the legal `$seed` node beside it is NOT S-SCHEMA
+114  PASS    green      0  yes    s240-D3 DROP-OUT PROOF (#242): pl-30 retired → --check names R4-RETIRED-GENERATED · --write regenerates · the node KEEPS its row in polarities.json and appears in NONE of the three generated files
+115  PASS    green      0  yes    s240-D3 ADD-POLARITY (#242): a BRAND-NEW polarity with a `$seed` receipt is accepted by the writer (dry-run then --write), 31 rows, gate green after — #239-F green control (e), which had no legal form
+116  PASS    red        1  yes    100 LITERAL (#243 s243-D1): V's 31st row (pr-fitts/pr-hick) cites a FICTIONAL R1 path notes/nowhere.json — the node names its own oracle; S-SOURCE at --write, nothing written — #239 Q3 stands
+117  PASS    green      0  -      100 LEGAL (#243 s243-D1): the SAME 31st row with `$seed` = s240-D3 in place of `sources` — --write green
+118  PASS    green      0  -      225 LEGAL (#243 s243-D1): a new node names ONE legal receipt (`$seed` = s240-D3) — --write green; PAIRED with V225 (the literal /etc/hostname receipt: S-ID + S-SOURCE) and the s240-D3 BOTH-receipts break arm (an R1 row AND a `$seed`: S-SOURCE)
+119  PASS    red        1  yes    235 LITERAL (#243 s243-D1): an orphan stub whose phrase is INVENTED ('an orphan phrase') — not verbatim in the R1 register; R3-JUDGEMENT-FIELD
+120  PASS    green      0  -      235 LEGAL (#243 s243-D1), lane F's #239 form (a): an orphan stub — declared, never used — whose phrase is VERBATIM from the first R1 row ('tn-01 pr-jakobs-law (work like') — green
+121  PASS    red        1  yes    248 LITERAL (#243 s243-D1): a node whose BOTH parties are declared stubs cites source path 'x' — S-SOURCE at --write, nothing written
+122  PASS    green      0  -      248 LEGAL (#243 s243-D1): the SAME all-stub node with `$seed` = s240-D3 — --write green
+123  PASS    red        1  yes    321 LITERAL (#243 s243-D1): all 30 rows DELETED, then the writer appends a `$seed` node — 30 frozen rows claimed by no node; S-SOURCE, file untouched
+124  PASS    green      0  -      321 LEGAL (#243 s243-D1): all 30 rows RETIRED (`retiredBy` = s240-D3) and --write green, then the writer appends the `$seed` node — 31 rows KEPT in polarities.json, no retired id in any row or byte under _generated/
+125  PASS    red        1  yes    326 LITERAL (#243 s243-D1): polarities.json re-indented to 2 spaces, the writer's entry cites 'selftest' as its source — S-SOURCE, file untouched
+126  PASS    green      0  -      326 LEGAL (#243 s243-D1): the SAME 2-space file, the SAME entry with `$seed` = s240-D3 — writer green, 31 rows, gate green after
+127  PASS    red        1  yes    V70 R4 generated_at in 2099 on all three derived files — a future clock is a hand edit (#239 Q4)
+128  PASS    red        1  yes    V71 R4 generated_at "banana" (#239 Q4)
+129  PASS    red        1  yes    Q4 R4 generated_at before the R1 asset's date (1999) (#239 Q4)
+130  PASS    red        1  yes    Q4 R4 one file's clock moved one second — the three clocks must agree (#239 Q4)
+131  PASS    red        1  yes    FRESHNESS: home edited, generated files not re-derived → STALE
+132  PASS    red        1  yes    FRESHNESS: a generated file deleted → MISSING
+133  PASS    red        1  yes    Q7 (#239): a check that RAISES inside gate() is NAMED S-SHAPE with its exception class — a crash is not a fail
+134  PASS    red        1  yes    WRITE: --write on a refused home writes NOTHING (hashes equal)
+135  PASS    green      0  yes    WRITE: stale → --write → fresh (rc 1 → 0 → 0)
+136  PASS    green      0  yes    WRITE: determinism — two writes differ only in generated_at
+137  PASS    green      0  yes    ADD-POLARITY: pl-30 dropped then re-added as pl-31 — dry-run leaves bytes; --write = original + one span; 30 rows; gate green after (#239: every frozen row is claimed)
+138  PASS    red        1  yes    ADD-POLARITY: an entry with a typed status is REFUSED by name, nothing written
+139  PASS    red        1  yes    V324 ADD-POLARITY: an entry whose quote has no reachable source is REFUSED (S-SOURCE + R3-QUOTE-NOT-VERBATIM), nothing written (#239 Q3)
+140  PASS    green      0  yes    ADD-STUB: a verbatim phrase appended textually; 3-key stub REFUSED (S-STUB-SHAPE); V328 the U+200B phrase REFUSED (S-FORMAT-CHAR), nothing written
+141  PASS    green      0  yes    CLI: `--check` rc 0 on the real home, rc 1 + R2-UNTYPED on the mutant (via --brain AND via POLARITY_BRAIN_DIR)
+142  PASS    red        2  yes    CLI: bare and unknown argv refuse with rc 2 (argv contract, #208 class)
+143  PASS    red        2  yes    V-A1/A2 CLI: `--dry-run --write`, `--check --write`, `--check --selftest` refuse rc 2 and write nothing (#239 argv contract)
+144  PASS    red        1  yes    V-D1 (#239 Q8): home ABSENT in the SOURCE repo (the store is here) → rc 1 S-SHAPE, never 77 — the build and the seam both stop
+145  PASS    77        77  yes    COULD-NOT-ASK: home absent AND no store (a shipped pack) → rc 77 + marker naming the path (pack classifier reads it as REPO-BOUND)
+146  PASS    77        77  yes    COULD-NOT-ASK: declaration source absent → 77 on a clean home, but a real refusal is STILL rc 1 first (the refusal path is not swallowed)
+147  PASS    red        1  yes    SELFTEST on an absent home refuses by name, no traceback (#239, V finding 16)
+148  PASS    green      0  yes    WIRING: STEPS has --check + --selftest rows; _git_commit.sh invokes --check on a live line, DECLARES a POLARITY_BRAIN_DIR redirect and gates the tree's own home (V-D2, #239); the seam harness stubs it
+----------------------------------------------------------------------------------------------------
+arms 148 · red arms 126 (went red by name 126/126) · green arms 20 · no-fire/77 arms 2 · new #239 arms 72 · new #242 (s240-D3 receipt) arms 12 · new #243 (s243-D1 six controls) arms 11 · failures 0
+✓ selftest OK — control green; every refusal arm red by its name; nothing written on refusal

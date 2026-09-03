@@ -92,6 +92,13 @@ SHAPED 4. Retirement is ADDITIVE to the birth receipt, not a second one (declare
               (the superset floor passes) and silently makes every `$seed` node S-SCHEMA. The new
               `excludes` floor kind pins it: a schema may tighten a REFUSAL, never a PERMISSION.
 
+#243 LANE Q — THE SIX CONTROLS ARE PERMANENT (s243-D1, Dave, 2026-09-03). #239 Q3 STANDS: a node
+may not name its own oracle. Lane F's six green controls in the LITERAL shape (100, 225, 248, 321,
+326, and 235's invented phrase) are CORRECTLY refused and stay red; their s240-D3 legal forms — the
+receipt is the ruling id (`$seed`) that made the node, or rows are RETIRED (`retiredBy`) rather than
+deleted — are named GREEN arms in --selftest, each PAIRED with its literal shape as a RED arm by
+refusal name. Shapes are lane P's (#242) verbatim; nothing reinvented. Out of scope: 241/243/245/301.
+
 DERIVED, WITH A CLOCK (s238-D3): every generated file carries `generated_at` and a
 `content_sha256` over its body. `--check` re-derives with the ON-DISK clock and compares BYTES
 (never mtime — the `index_freshness_check` discipline); a file lacking the header or failing its
@@ -1790,11 +1797,12 @@ def selftest(real_brain):
     green_arms = [r for r in results if r[2] == "green"]
     new_arms = [r for r in results if r[1].startswith("V") or "(#239" in r[1]]
     p242_arms = [r for r in results if "#242" in r[1] or r[1].startswith("s240-D3")]
+    p243_arms = [r for r in results if "#243" in r[1] or "s243-D1" in r[1]]
     print("-" * 100)
     print(f"arms {len(results)} · red arms {len(red_arms)} (went red by name {len(red_ok)}/{len(red_arms)}) · "
           f"green arms {len(green_arms)} · no-fire/77 arms {len(results) - len(red_arms) - len(green_arms)} · "
           f"new #239 arms {len(new_arms)} · new #242 (s240-D3 receipt) arms {len(p242_arms)} · "
-          f"failures {fails}")
+          f"new #243 (s243-D1 six controls) arms {len(p243_arms)} · failures {fails}")
     if fails:
         print(f"✗ selftest FAILED — {fails} arm(s)")
         return 1
@@ -1805,8 +1813,11 @@ def selftest(real_brain):
 def _selftest_arms(real_brain, tmp_root, results):
     global SCHEMA_SHA256, RULINGS, OPEN_DEFAULTS, check_stubs   # moved in-process by four arms, restored in finally
 
-    def arm(name, expect, mutate, must_name=None, write=False, must_not=None):
-        """Copy the REAL brain, apply `mutate(copy_dir)`, drive gate(--check) on it."""
+    def arm(name, expect, mutate, must_name=None, write=False, must_not=None, must_detail=None):
+        """Copy the REAL brain, apply `mutate(copy_dir)`, drive gate(--check) on it.
+        `must_detail` (#243 Q2, V3 finding 1): a red arm may also pin the CLAUSE — a substring of the
+        refusal's detail text — so a family name shared by several clauses cannot mask the loss of
+        the one the arm was written for."""
         n = len(results) + 1
         d = os.path.join(tmp_root, f"arm{n:03d}")
         _copy_brain(real_brain, d)
@@ -1828,8 +1839,10 @@ def _selftest_arms(real_brain, tmp_root, results):
             note = "" if ok else out[-600:]
         else:
             untouched = (after == after_mut)
-            ok = (rc == 1) and named and not crashed and untouched and not unwanted
+            detailed = (must_detail is None) or (must_detail in out)
+            ok = (rc == 1) and named and detailed and not crashed and untouched and not unwanted
             note = ("" if ok else f"rc={rc} named={named} (names={sorted(names)} wanted={wanted}) "
+                                  f"detailed={detailed} (must_detail={must_detail!r}) "
                                   f"crashed={crashed} untouched={untouched} :: " + out[-500:])
         results.append((n, name, expect, rc, named, ok, note))
         return d
@@ -2373,6 +2386,178 @@ def _selftest_arms(real_brain, tmp_root, results):
                                       "gate green after — #239-F green control (e), which had no legal form",
                     "green", rc_seed_chk, True, ok,
                     "" if ok else f"dry={rc_seed_dry} wr={rc_seed} chk={rc_seed_chk} n={n_after} :: {buf.getvalue()[-400:]}"))
+
+    # ---- s243-D1 (#243 lane Q) — THE SIX CONTROLS, PORTED. #239 Q3 stands: a node may not name its
+    # own oracle. Lane F (#239) wrote six green controls in the LITERAL shape (100, 225, 248, 321,
+    # 326, and 235's invented phrase); lane P (#242) drove each LITERALLY (red, correctly) and in its
+    # s240-D3 LEGAL FORM (green) — notes/_subreports/assets/2026-09-03-242-lane-P-polarity-receipt/
+    # _drive_six_controls.py. Dave ruled (s243-D1) the legal forms are PERMANENT NAMED GREEN ARMS here,
+    # each PAIRED with its literal shape as a RED arm by refusal name. Every shape below is lane P's
+    # verbatim (V's own, from lane F's _wave{1,2,3}.py); nothing is reinvented. 120 (links-empty-array)
+    # was never red and needs no pair. 225's literal shape is ALREADY the named red arm V225 above
+    # (S-ID + S-SOURCE) and its two-receipts shape is the s240-D3 BOTH-receipts break arm — neither
+    # is duplicated; the 225 green arm names both. The writer arms (321, 326) drive add_entry(), the
+    # entry point V attacked, not gate() — a refusal must leave every byte as the mutation left it.
+    Q = "(#243 s243-D1)"
+    # #243 Q2 (V3 finding 1): the S-SOURCE family names seven clauses; the three LITERAL arms below
+    # pin the one s243-D1 says STANDS — the Q3 allow-list — by its detail text, so removing that
+    # clause alone FAILS them instead of letting the row-exists clause answer in its place.
+    ALLOW_CLAUSE = "is not on the source allow-list"
+    V_PARTIES = [{"ref": "pr-fitts", "role": "side_a"}, {"ref": "pr-hick", "role": "side_b"}]
+    NEW31 = {"id": "pl-31", "parties": copy.deepcopy(V_PARTIES), "mediating_variable": "target count",
+             "links": [], "sources": [{"path": "notes/nowhere.json", "id": "tn-31"}]}
+    NEW31_SEED = dict({k: v for k, v in NEW31.items() if k != "sources"}, **{"$seed": SEED_RULING})
+    GOOD = {"id": "pl-90", "parties": copy.deepcopy(V_PARTIES), "mediating_variable": "target count",
+            "links": [], "sources": [{"path": "selftest", "id": "x"}]}
+    GOOD_SEED = dict({k: v for k, v in GOOD.items() if k != "sources"}, **{"$seed": SEED_RULING})
+    ALLSTUB = {"id": "pl-40",
+               "parties": [{"ref": "st-brand-palette", "role": "side_a"},
+                           {"ref": "st-consistency-of-investment-across-a-journey", "role": "side_b"}],
+               "mediating_variable": "x", "links": [], "sources": [{"path": "x", "id": "y"}]}
+    ALLSTUB_SEED = dict({k: v for k, v in ALLSTUB.items() if k != "sources"}, **{"$seed": SEED_RULING})
+    _real_ids = {n["id"] for n in _real_pol}
+
+    def writer_arm(name, expect, prep, entry, must_name=None, want_rows=None, post=None, must_detail=None):
+        """arm(), but the driver is THE WRITER (add_entry --write) — the entry point 321 and 326
+        attacked. Red: rc 1, named, no crash, every byte as prep() left it. Green: rc 0, the gate
+        green after, the row count as expected, and post(d) -> (ok, note) if given."""
+        n = len(results) + 1
+        d = os.path.join(tmp_root, f"arm{n:03d}")
+        _copy_brain(real_brain, d)
+        try:
+            prep(d)
+        except Exception as e:  # noqa: BLE001
+            results.append((n, name, expect, None, False, False, f"mutation setup crashed: {e!r}"))
+            return
+        before = _tree_hashes(d)
+        buf, old = io.StringIO(), sys.stdout
+        sys.stdout = buf
+        try:
+            try:
+                rc = add_entry(d, "polarity", copy.deepcopy(entry), write=True)
+            except Exception:           # a crash is not a fail — surface it as one, named
+                rc = -1
+                buf.write("TRACEBACK\n" + traceback.format_exc())
+        finally:
+            sys.stdout = old
+        out = buf.getvalue()
+        after = _tree_hashes(d)
+        crashed = "TRACEBACK" in out or "Traceback (most recent" in out
+        names = set(re.findall(r"REFUSED \(([A-Za-z0-9-]+)\)", out))
+        wanted = [must_name] if isinstance(must_name, str) else list(must_name or [])
+        named = bool(wanted) and all(w in names for w in wanted)
+        if expect == "green":
+            rows = len(json.loads(read_text(os.path.join(d, "polarities.json")))["polarities"])
+            rc_chk, out_chk = _run_gate_captured(d)
+            p_ok, p_note = post(d) if post else (True, "")
+            ok = rc == 0 and rc_chk == 0 and not crashed and (want_rows is None or rows == want_rows) and p_ok
+            note = "" if ok else (f"rc={rc} chk={rc_chk} rows={rows} post={p_ok} {p_note} :: "
+                                  f"{out[-400:]} :: {out_chk[-300:]}")
+        else:
+            untouched = after == before
+            detailed = (must_detail is None) or (must_detail in out)
+            ok = rc == 1 and named and detailed and not crashed and untouched
+            note = ("" if ok else f"rc={rc} named={named} (names={sorted(names)} wanted={wanted}) "
+                                  f"detailed={detailed} (must_detail={must_detail!r}) "
+                                  f"crashed={crashed} untouched={untouched} :: " + out[-500:])
+        results.append((n, name, expect, rc, named, ok, note))
+        return d
+
+    def reindent2(d):
+        p = os.path.join(d, "polarities.json")
+        _rewrite(p, lambda t: json.dumps(json.loads(t), indent=2, ensure_ascii=False) + "\n")
+
+    # 100 — row31-no-stub-fictional-source
+    arm(f"100 LITERAL {Q}: V's 31st row (pr-fitts/pr-hick) cites a FICTIONAL R1 path notes/nowhere.json "
+        f"— the node names its own oracle; S-SOURCE at --write, nothing written — #239 Q3 stands", "red",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(NEW31))), "S-SOURCE", write=True,
+        must_detail=ALLOW_CLAUSE)
+    arm(f"100 LEGAL {Q}: the SAME 31st row with `$seed` = {SEED_RULING} in place of `sources` — --write green",
+        "green", pol(lambda o: o["polarities"].append(copy.deepcopy(NEW31_SEED))), None, write=True)
+
+    # 225 — sources-path-absolute-outside-repo. #243 Q2 (V3 finding 3): lane Q's 225 LEGAL was
+    # `seed_node(id="pl-33")`, i.e. arm 104 under another id. Now the three drives of
+    # six-controls-s240-D3.txt § [225] run on ONE node of 225's own shape: pl-33 (pr-steering/pr-klm,
+    # parties no other arm uses) whose receipt IS V225's foreign one, `/etc/hostname`; then that node
+    # with the foreign receipt AND a `$seed`; then the same node reduced to the ONE legal receipt.
+    # V225 (row 0 + a SECOND, foreign receipt) and arm 106 (row 0's R1 row + `$seed`) stay as they are.
+    FOREIGN33 = {"id": "pl-33", "parties": [{"ref": "pr-steering", "role": "side_a"},
+                                            {"ref": "pr-klm", "role": "side_b"}],
+                 "mediating_variable": "target count", "links": [],
+                 "sources": [{"path": "/etc/hostname", "id": "x"}]}
+    FOREIGN33_BOTH = dict(copy.deepcopy(FOREIGN33), **{"$seed": SEED_RULING})
+    FOREIGN33_SEED = dict({k: v for k, v in FOREIGN33.items() if k != "sources"}, **{"$seed": SEED_RULING})
+    arm(f"225 LITERAL {Q}: a NEW node pl-33 whose ONLY receipt is the foreign path /etc/hostname (V225's "
+        f"receipt, verbatim) — S-ID + S-SOURCE (allow-list) at --write, nothing written", "red",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(FOREIGN33))), ["S-ID", "S-SOURCE"], write=True,
+        must_detail=ALLOW_CLAUSE)
+    arm(f"225 TWO RECEIPTS {Q}: the SAME pl-33 carrying the foreign `sources` AND `$seed` = {SEED_RULING} — "
+        f"S-SOURCE (BOTH receipts: ONE POINTER PER NODE), nothing written", "red",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(FOREIGN33_BOTH))), "S-SOURCE", write=True,
+        must_detail="carries BOTH")
+    arm(f"225 LEGAL {Q}: the SAME pl-33 reduced to ONE legal receipt — the foreign `sources` gone, "
+        f"`$seed` = {SEED_RULING} — --write green", "green",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(FOREIGN33_SEED))), None, write=True)
+
+    # 235 — orphan-stub-declared-never-used. #243 Q2 (V3 finding 2): the LEGAL phrase is read from the
+    # R1 FILE — not from load_register(), the gate's own haystack, which made the arm its own oracle —
+    # and it lies INSIDE ONE field (row 0's `the_pull`), so it is a register phrase, not a join artefact.
+    _r1_path = os.path.join(REPO, R1_TENSIONS_REL)
+    _r1_row0 = json.loads(read_text(_r1_path))["tensions"][0]
+    _verbatim4 = " ".join(_r1_row0["the_pull"].split()[:4])
+
+    def _orphan_verbatim_stub(d):
+        fields = [k for k, v in _r1_row0.items() if isinstance(v, str) and _verbatim4 in v]
+        if fields != ["the_pull"] or _verbatim4 not in read_text(_r1_path):
+            raise RuntimeError(f"{_verbatim4!r} is not inside exactly one field of R1 row 0 (fields={fields}) "
+                               f"— the arm's oracle is the FILE, not the gate")
+        _mutate_json(os.path.join(d, "stubs.json"),
+                     lambda o: o["stubs"].append({"id": "st-orphan-verbatim", "phrase": _verbatim4}))
+    arm(f"235 LITERAL {Q}: an orphan stub whose phrase is INVENTED ('an orphan phrase') — not verbatim in the "
+        f"R1 register; R3-JUDGEMENT-FIELD", "red",
+        stubs(lambda o: o["stubs"].append({"id": "st-orphan-phrase", "phrase": "an orphan phrase"})),
+        "R3-JUDGEMENT-FIELD")
+    arm(f"235 LEGAL {Q}, lane F's #239 form (a): an orphan stub — declared, never used — whose phrase is VERBATIM "
+        f"from ONE field of the first R1 row, read from the R1 FILE ({_verbatim4!r}) — green", "green",
+        _orphan_verbatim_stub)
+
+    # 248 — node-all-parties-are-stubs
+    arm(f"248 LITERAL {Q}: a node whose BOTH parties are declared stubs cites source path 'x' — S-SOURCE at "
+        f"--write, nothing written", "red",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(ALLSTUB))), "S-SOURCE", write=True,
+        must_detail=ALLOW_CLAUSE)
+    arm(f"248 LEGAL {Q}: the SAME all-stub node with `$seed` = {SEED_RULING} — --write green", "green",
+        pol(lambda o: o["polarities"].append(copy.deepcopy(ALLSTUB_SEED))), None, write=True)
+
+    # 321 — writer-append-into-empty-array (DELETED is refused; RETIRED is the legal form)
+    writer_arm(f"321 LITERAL {Q}: all 30 rows DELETED, then the writer appends a `$seed` node — 30 frozen rows "
+               f"claimed by no node; S-SOURCE, file untouched", "red",
+               pol(lambda o: o.__setitem__("polarities", [])), GOOD_SEED, "S-SOURCE")
+    _rc321 = []
+
+    def _retire_all_and_write(d):
+        _mutate_json(os.path.join(d, "polarities.json"),
+                     lambda o: [n.__setitem__("retiredBy", SEED_RULING) for n in o["polarities"]])
+        _rc321.append(_run_gate_captured(d, write=True)[0])
+
+    def _no_retired_id_generated(d):
+        leaks_rows = sorted(_real_ids & set().union(*(
+            generated_node_ids(n, read_text(os.path.join(d, GEN_DIR, n))) for n in GEN_FILES)))
+        leaks_bytes = sorted(i for i in _real_ids
+                             if any(id_in_raw_text(i, read_text(os.path.join(d, GEN_DIR, n))) for n in GEN_FILES))
+        ok = _rc321 == [0] and not leaks_rows and not leaks_bytes
+        return ok, f"retire_write_rc={_rc321} leaks_rows={leaks_rows} leaks_bytes={leaks_bytes}"
+    writer_arm(f"321 LEGAL {Q}: all 30 rows RETIRED (`retiredBy` = {SEED_RULING}) and --write green, then the "
+               f"writer appends the `$seed` node — 31 rows KEPT in polarities.json, no retired id in any "
+               f"row or byte under _generated/", "green",
+               _retire_all_and_write, GOOD_SEED, want_rows=31, post=_no_retired_id_generated)
+
+    # 326 — writer-on-2-space-indented-file (the format tolerance was never the thing refused)
+    writer_arm(f"326 LITERAL {Q}: polarities.json re-indented to 2 spaces, the writer's entry cites 'selftest' "
+               f"as its source — S-SOURCE, file untouched", "red", reindent2, GOOD, "S-SOURCE",
+               must_detail=ALLOW_CLAUSE)
+    writer_arm(f"326 LEGAL {Q}: the SAME 2-space file, the SAME entry with `$seed` = {SEED_RULING} — writer "
+               f"green, 31 rows, gate green after", "green", reindent2, GOOD_SEED, want_rows=31)
 
     # ---- Q4 — THE CLOCK ------------------------------------------------------------------------
     def future_clock(d):

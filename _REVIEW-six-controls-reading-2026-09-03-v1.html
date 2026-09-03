@@ -1,0 +1,114 @@
+<title>The Six Controls</title>
+<style>
+:root{
+  --accent:#DA1A00; --ink:#000; --ground:#fff;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g8:#333;
+  --ok:#1E7A3C; --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--accent:#F6604C;--ink:#F3F3F3;--ground:#111;--g1:#1B1B1B;--g2:#2A2A2A;--g3:#3A3A3A;--g6:#9B9B9B;--g8:#D7D8D6;--ok:#4FBF74}
+}
+:root[data-theme="dark"]{--accent:#F6604C;--ink:#F3F3F3;--ground:#111;--g1:#1B1B1B;--g2:#2A2A2A;--g3:#3A3A3A;--g6:#9B9B9B;--g8:#D7D8D6;--ok:#4FBF74}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 16px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:48px 32px 80px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 16px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+h1{font-size:43px;font-weight:300;line-height:1.1;margin:0 0 12px;letter-spacing:-.01em;text-wrap:balance;max-width:20ch}
+.lede{font-size:19px;font-weight:300;max-width:60ch;margin:0 0 48px;color:var(--g8)}
+hr{border:0;border-top:1px solid var(--g2);margin:0}
+section{padding:40px 0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g2);border:1px solid var(--g2)}
+.card{background:var(--ground);padding:24px;display:flex;flex-direction:column;gap:14px;min-height:100%}
+.card h3{margin:0;font-size:19px;font-weight:500;line-height:1.25}
+.card .who{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--g6)}
+.verdict{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.verdict::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.red{color:var(--accent)}.green{color:var(--ok)}
+pre{margin:0;padding:14px 16px;background:var(--g1);font:13px/1.5 var(--mono);overflow-x:auto;white-space:pre;border-left:2px solid var(--g3)}
+pre b{font-weight:600;color:var(--accent)}pre i{font-style:normal;font-weight:600;color:var(--ok)}
+.card p{margin:0;font-size:14px;color:var(--g8);line-height:1.5}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:32px;align-items:start}
+.num{font-size:84px;font-weight:100;line-height:1;color:var(--g3);font-variant-numeric:tabular-nums}
+.label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--g6);margin-top:8px}
+.opt h2{font-size:34px;font-weight:300;margin:0 0 10px;line-height:1.15;letter-spacing:-.01em}
+.opt p{max-width:62ch;margin:0 0 10px}
+.cost{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g2);border:1px solid var(--g2);margin-top:16px;max-width:62ch}
+.cost div{background:var(--ground);padding:12px 14px;font-size:14px}
+.cost div span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g6);margin-bottom:4px}
+.pick{border-left:2px solid var(--accent);padding-left:14px}
+.pick .label{color:var(--accent)}
+.foot{font-size:12px;color:var(--g6);font-family:var(--mono);margin-top:40px;line-height:1.7}
+@media (max-width:820px){.cards{grid-template-columns:1fr}.split{grid-template-columns:1fr;gap:12px}.num{font-size:57px}h1{font-size:34px}}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Polarity brain · receipt rule</p>
+  <h1>May a card vouch for itself?</h1>
+  <p class="lede">Every card in the brain carries one receipt: the register row it came from, or the ruling that created it. Six test cards were written pointing at a witness they invented. The gate refuses them. Your call is what that refusal should become.</p>
+
+  <hr>
+  <section>
+    <p class="eyebrow">Three receipts, side by side</p>
+    <div class="cards">
+      <div class="card">
+        <span class="who">A real card · pl-01</span>
+        <h3>Jakob's law ↔ Von Restorff</h3>
+        <span class="verdict green">Passes</span>
+        <pre>"sources": [{
+  "path": "…/R1-principles-survey/tensions.json",
+  "id": <i>"tn-01"</i>
+}]</pre>
+        <p>Points at a frozen row in the register you signed off at #236. Anyone can open it and find the card's birth.</p>
+      </div>
+      <div class="card">
+        <span class="who">Lazy control · 321 / 326</span>
+        <h3>Writer test, receipt "selftest"</h3>
+        <span class="verdict red">Refused — names its own witness</span>
+        <pre>"sources": [{
+  "path": <b>"selftest"</b>,
+  "id": <b>"x"</b>
+}]</pre>
+        <p>The witness exists only because the card says so. Nothing outside the card can confirm it. This is the shape the rule was written to stop.</p>
+      </div>
+      <div class="card">
+        <span class="who">Same control, legal form</span>
+        <h3>Writer test, receipt = the ruling</h3>
+        <span class="verdict green">Passes</span>
+        <pre>"$seed": <i>"s240-D3"</i></pre>
+        <p>Points at the ruling that made a card after the register was frozen. One line, already legal today. Four of the six go green this way; the sixth by retiring rows instead of deleting them.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+  <section class="split opt">
+    <div><div class="num">1</div><div class="label pick" style="border:0;padding:0">Recommended</div></div>
+    <div class="pick">
+      <h2>Leave them red.</h2>
+      <p>The refusal is correct. The legal form is the migration path; the six get rewritten whenever someone next touches them. Nothing to build.</p>
+      <div class="cost"><div><span>Rule</span>Unchanged</div><div><span>Cost</span>None today</div></div>
+    </div>
+  </section>
+  <hr>
+  <section class="split opt">
+    <div><div class="num">2</div><div class="label">Widen the rule</div></div>
+    <div>
+      <h2>Let a card cite a witness it names itself.</h2>
+      <p>Six test cards go green. Every future card may also invent its own witness, so the receipt stops proving anything.</p>
+      <div class="cost"><div><span>Rule</span>Weakened for all cards</div><div><span>Cost</span>A schema change + re-verify</div></div>
+    </div>
+  </section>
+  <hr>
+  <section class="split opt">
+    <div><div class="num">3</div><div class="label">Retire the six</div></div>
+    <div>
+      <h2>Drop them as controls.</h2>
+      <p>Clean gate, but the proof they were written to give — that a legitimate card gets through — is lost until someone writes new ones.</p>
+      <div class="cost"><div><span>Rule</span>Unchanged</div><div><span>Cost</span>Six proofs gone</div></div>
+    </div>
+  </section>
+  <hr>
+
+  <p class="foot">controls 120 · 235 already pass · 100 · 225 · 248 · 326 pass under $seed · 321 passes under retiredBy<br>#239 Q3 "a node may not name its own oracle" · s240-D3 enacted #242 · selftest 137 / 0 · polarities.json byte-untouched</p>
+</div>

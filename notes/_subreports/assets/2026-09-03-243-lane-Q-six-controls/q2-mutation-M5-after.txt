@@ -1,0 +1,17 @@
+gold script: mnt/UX-design/knowledge/_validate_polarities.py sha 96cdfb4414608662
+=== MUTATION M5 check_receipt silently accepts BOTH receipts (the BOTH clause disabled) — probe for 225 TWO RECEIPTS
+106  FAIL    red        0  -      s240-D3 BREAK ARM: BOTH receipts on one node — its R1 `sources` AND a `$seed` (the receipt is ONE POINTER PER NODE) (#242)
+119  FAIL    red        1  yes    225 TWO RECEIPTS (#243 s243-D1): the SAME pl-33 carrying the foreign `sources` AND `$seed` = s240-D3 — S-SOURCE (BOTH receipts: ONE POINTER PER NODE), nothing written
+   rc=1 named=True (names=['S-ID', 'S-SOURCE'] wanted=['S-SOURCE']) detailed=False (must_detail='carries BOTH') crashed=False untouched=True :: ⛔ POLARITY GATE REFUSED — 2 refusal(s) over /dev/shm/polarity-selftest-zo5de06b/arm119 (nothing written):
+   ⛔ REFUSED (S-ID) — pl-33.sources[0].path: '/etc/hostname' does not match ^[A-Za-z0-9_][A-Za-z0-9_./-]*$
+   ⛔ REFUSED (S-SOURCE) — pl-33.sources[0].path '/etc/hostname' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json'] — a node may not name its own oracle (Q3, #239); a second register is Dave's
+arms 150 · red arms 128 (went red by name 126/128) · green arms 20 · no-fire/77 arms 2 · new #239 arms 72 · new #242 (s240-D3 receipt) arms 12 · new #243 (s243-D1 six controls) arms 13 · failures 2
+✗ selftest FAILED — 2 arm(s)
+   row:  52  PASS    red        1  yes    V225 S-SOURCE a source path outside the repo (/etc/hostname) (#239 Q3)
+   row: 118  PASS    red        1  yes    225 LITERAL (#243 s243-D1): a NEW node pl-33 whose ONLY receipt is the foreign path /etc/hostname (V225's receipt, verbatim) — S-ID + S-SOURCE (allow-list) at --write
+   row: 119  FAIL    red        1  yes    225 TWO RECEIPTS (#243 s243-D1): the SAME pl-33 carrying the foreign `sources` AND `$seed` = s240-D3 — S-SOURCE (BOTH receipts: ONE POINTER PER NODE), nothing written
+   row: 120  PASS    green      0  -      225 LEGAL (#243 s243-D1): the SAME pl-33 reduced to ONE legal receipt — the foreign `sources` gone, `$seed` = s240-D3 — --write green
+   row: 122  PASS    green      0  -      235 LEGAL (#243 s243-D1), lane F's #239 form (a): an orphan stub — declared, never used — whose phrase is VERBATIM from ONE field of the first R1 row, read from the R
+rc=1
+restored mirror sha 96cdfb4414608662 == gold 96cdfb4414608662 | repo sha 96cdfb4414608662 (repo unchanged: True )
+
