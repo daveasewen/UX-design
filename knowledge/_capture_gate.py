@@ -575,6 +575,19 @@ MEASURERS = {
         "because that subtraction mixes units BY CONSTRUCTION. ⛔ Its tape figures are never "
         "summed with, scaled to, or compared against a `real` measurement "
         "[[measure-dont-convert-units]]."),
+    "_memory_cap_check.py": ("estimate-only",
+        "BUILT #244 lane C (the mechanised `MEMORY.md` cap), REGISTERED AT #244 lane V — ds-021 "
+        "(C) caught it unregistered on its first gate run, which is the birth-catch the bite "
+        "exists for. WHY 'estimate-only': cl100k tape of a non-repo file; never a real-token "
+        "claim. The file it grades is the Cowork auto-memory index resolved through the "
+        "`/sessions/*/mnt` glob, so it is OUTSIDE the repo and no `message.usage` figure can "
+        "ever be taken over it — the only reading available is a tiktoken cl100k TAPE count, "
+        "kept for SHAPE and DELTA (the `s243-D1` stub measured 1,502 tape against a "
+        "MEMORY_CAP_TAPE of 1,802). ⛔ Its tape figures are never summed with, scaled to, or "
+        "compared against a `real` measurement [[measure-dont-convert-units]]; the arm it "
+        "feeds (`memory_cap_check`) is ADVISORY (`MEMORY_CAP_BLOCKING = False`) precisely "
+        "because the graded file does not exist on a non-Cowork tree "
+        "[[gate-cannot-pass-in-one-environment]]."),
 }
 
 
@@ -3735,6 +3748,55 @@ def consult_receipt_probe(repo):
     return issues, notes
 
 
+# ★ #244 — THE MECHANISED `MEMORY.md` CAP, carried unbuilt from #242 and #243.
+# Lane F measured the pre-stub auto-memory index at 3,569 cl100k tape — the largest line of OURS
+# in a 70,710 boot — and `s243-D1` cut it to a stub. Nothing then stopped it regrowing, one hook
+# at a time, invisibly. `knowledge/_memory_cap_check.py` grades it; this is its wrap consumer, so
+# it is not a zombie instrument [[instrument-without-a-consumer]].
+#
+# ⛔ ADVISORY AT BIRTH. It appends to WARNS, never to FAILS. The tier lives at the one line below
+# and promotion to BLOCKING is DAVE'S WORD (the #111/#161/#163 pattern: warn, ratify, then flip).
+# ⚠ AND IT MUST STAY ADVISORY UNTIL THE ENV QUESTION IS ANSWERED: the file graded LIVES OUTSIDE
+# THE REPO (a Cowork mount), so on any tree that is not a live Cowork session there is nothing to
+# measure. A blocking check that cannot pass in one environment is the trap this repo already
+# named [[gate-cannot-pass-in-one-environment]] — so absence here is a DECLARED NOTE, never a
+# warn and never a fail, and the check is honest that it did not run.
+MEMORY_CAP_BLOCKING = False
+
+
+def memory_cap_check(repo):
+    """★ #244 — the auto-memory index must stay under its derived cap. Returns (warns, notes).
+
+    ⚠ UNIT: cl100k TAPE throughout [[measure-dont-convert-units]]. Never converted to real,
+    never summed with a `message.usage` figure. The cap and its provenance live in
+    `_memory_cap_check.py` (MEMORY_CAP_TAPE, derived #244 from a measured base) — ONE
+    implementation, imported, never a second copy here (the mover≠gate lesson).
+    """
+    warns, notes = [], []
+    sys.path.insert(0, HERE)
+    try:
+        import _memory_cap_check as mcc
+    except Exception as e:
+        return [f"memory-cap: `knowledge/_memory_cap_check.py` unimportable ({e}) — the check "
+                f"cannot run; fix it, never close blind"], notes
+    path, how = mcc.resolve_path()
+    if path is None:
+        # DECLARED, not zeroed, and not a warn: there is genuinely no index on this tree.
+        notes.append(f"memory-cap: DID NOT RUN — {how}. This is UNKNOWN, not a pass: the "
+                     f"auto-memory index is a Cowork surface outside this repo.")
+        return warns, notes
+    try:
+        m = mcc.measure(path)
+    except Exception as e:
+        return [f"memory-cap: {path} unreadable ({e}) — declared, never graded 0"], notes
+    over, line = mcc.grade(m)
+    if over:
+        warns.append(f"memory-cap ({'BLOCKING' if MEMORY_CAP_BLOCKING else 'ADVISORY'}): {line}")
+    else:
+        notes.append(f"memory-cap: {line} ({how}; cap provenance: {mcc.CAP_PROVENANCE})")
+    return warns, notes
+
+
 def lane_routing_check(repo):
     """O1′ #24 (ruled Dave, option-select ×4 all recommended): the eager GM §C·1 ROUTING
     line must AGREE with knowledge/_lanes.json — drift between the eager line and the
@@ -5242,6 +5304,11 @@ def wrap_checks(repo, today, lane=False):
     _cw, _cn = subreport_citation_check(repo)
     (fails if SUBREPORT_CITE_BLOCKING else warns).extend(_cw)
     notes += _cn
+    # ★ #244 — the mechanised `MEMORY.md` cap. ADVISORY AT BIRTH; tier at MEMORY_CAP_BLOCKING.
+    # Runs for LANE wraps too: every seat pays the index in its boot, lane or not.
+    _mw, _mn = memory_cap_check(repo)
+    (fails if MEMORY_CAP_BLOCKING else warns).extend(_mw)
+    notes += _mn
     targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
     if lane:
         targets = targets[:1]

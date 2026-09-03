@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radius tuner v1 &mdash; live corner dials, four themes (2026-09-03)</title>
+<!--
+  RADIUS / CORNER TUNER v1 — 2026-09-03, session #244 lane B.
+  §C·1 strand (d): "the live radius/corner tuner (Dave: return SOON)".
+
+  ### STATUS: A DECISION SURFACE. IT RULES NOTHING. ###
+  Nothing in knowledge/tokens/ was read-modify-written by the session that built this page.
+  Every number on the RIGHT of a slider is a CANDIDATE. The store values are printed beside
+  them, always, so a drift is visible rather than assumed. The RULING-SHAPED section at the
+  foot prints the current dial state verbatim and UNSCOPED — it is a thing to paste, not a
+  ruling; the scope (which theme, which components, mint vs inherit) is Dave's to say.
+
+  SELF-CONTAINED: knowledge/canon/type.css is INLINED VERBATIM below (load order preserved —
+  it must come before the specimen CSS, T-D9: `.btn` is bound by selector-list append and both
+  are specificity 0-1-0, so source order decides). No CDN, no <link>, no external script.
+
+  WHAT DRIVES WHAT (ADR-0010 shape tier, as it is on disk today):
+    border-radius/default          the theme's base radius
+    border-radius/control          buttons, inputs, chips/tags, selection boxes   (aliases default)
+    border-radius/surface          cards, dialogs, menus, banners, tables         (aliases default)
+    border-radius/indicator        status chips, progress tracks, kbd hints       (aliases default)
+    border-radius/container        outer wrappers that HOLD radiused things       (aliases default)
+    border-radius/segmented-container/{xs,s,m,l}   per-scale OUTER of the concentric pair
+    border-radius/segmented-thumb/{xs,s,m,l}       per-scale INNER of the concentric pair
+  A role that ALIASES default follows it; unlink the alias to dial the role on its own. That is
+  the real mechanism, not a tuner convenience — Console is the only theme that has unlinked any.
+
+  THE CONCENTRIC LAW (s200-D1 clause c as corrected by s202-D2, widened to all four scales by
+  s227-D7): thumb = max(container − padding, 0). Padding is a SPACING token (xs 2 · s 2 · m 2 ·
+  l 4) and is shown read-only here — this page does not tune spacing. The four minted Console
+  thumbs (4/6/8/8) are exactly what that law yields from the minted tracks (6/8/10/12), so the
+  derive switch reproduces the store rather than replacing it. s197 floors squares at zero:
+  mono/legacy/supercharge derive max(0 − pad, 0) = 0 and stay square.
+
+  s200-D1 clause (a) stands and is honoured here: derivation is a MINT-TIME mechanism, not a live
+  calc. The live derivation on this page exists so Dave can SEE the pair move together; whatever
+  he rules gets minted as concrete numbers by knowledge/gen_radius_derive.py, not computed at run
+  time in any shipped artefact.
+
+  SPECIMENS are lifted from knowledge/snippets/*.reference.html and their canon per-theme
+  projections (knowledge/canon/canon.css AUTO-THEMES), scoped under .cn-<component> exactly as
+  canon scopes them. Declared adaptations are listed in the "What is not faithful" panel.
+-->
+<style id="type-css">
+/* ===== knowledge/canon/type.css — INLINED VERBATIM (T-D9 load order: before specimen CSS) ===== */
+/* Apollo type composites — HAND-AUTHORED. Editorial + Component.
+   (The header said "generated 2026-07-17" for a day. Nothing has ever generated this file; the
+   line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
+   Metrics: cap 0.723em, descender 0.232em (Univers Next, USE_TYPO_METRICS off).
+   BRAND RULE: no light/ultra on body sizes (font-5/6/7 min regular 400; no dark step-up there). */
+:root{--uf:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;--cap:0.723;--desc:0.232;}
+/* ===== EDITORIAL — full line-height ===== */
+.t-ed-display-1{font-family:var(--uf);font-size:52px;line-height:60px;font-weight:250;}
+.t-ed-display-1 .em,.t-ed-display-1.em{font-weight:350;}
+.t-ed-display-2{font-family:var(--uf);font-size:40px;line-height:48px;font-weight:300;}
+.t-ed-display-2 .em,.t-ed-display-2.em{font-weight:400;}
+.t-ed-heading-1{font-family:var(--uf);font-size:32px;line-height:40px;font-weight:300;}
+.t-ed-heading-1 .em,.t-ed-heading-1.em{font-weight:400;}
+.t-ed-heading-2{font-family:var(--uf);font-size:28px;line-height:36px;font-weight:300;}
+.t-ed-heading-2 .em,.t-ed-heading-2.em{font-weight:400;}
+.t-ed-heading-3{font-family:var(--uf);font-size:24px;line-height:32px;font-weight:300;}
+.t-ed-heading-3 .em,.t-ed-heading-3.em{font-weight:400;}
+.t-ed-heading-4{font-family:var(--uf);font-size:20px;line-height:28px;font-weight:300;}
+.t-ed-heading-4 .em,.t-ed-heading-4.em{font-weight:400;}
+.t-ed-body{font-family:var(--uf);font-size:16px;line-height:24px;font-weight:400;}
+.t-ed-body .em,.t-ed-body.em{font-weight:500;}
+.t-ed-body-small{font-family:var(--uf);font-size:14px;line-height:20px;font-weight:400;}
+.t-ed-body-small .em,.t-ed-body-small.em{font-weight:500;}
+.t-ed-caption{font-family:var(--uf);font-size:12px;line-height:16px;font-weight:400;}
+.t-ed-caption .em,.t-ed-caption.em{font-weight:500;}
+
+/* ===== COMPONENT — TYPE and BOX are SEPARATE (T-D12 proposal, 2026-07-18) =====
+   BINDING MECHANISM (Dave ruling T-D9): components bind by being APPENDED TO THE SELECTOR LIST
+   of the composite they use. Plain CSS — no generator, no build step, no markup change.
+   LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
+   order decides. type.css MUST load BEFORE component CSS. Gated by _validate_type_composites.py.
+
+   WHY THE SPLIT (T-D11 evidence): the old `.t-cm` conflated two separable things, and binding it
+   to elements that were not already single-line controls handed them a LAYOUT change wearing a
+   type change's clothing - 13 of 21 files moved, 2 changed page height.
+
+     TYPE  = font-family / font-size / font-weight.        Safe to bind ANYWHERE.
+     BOX   = display / align-items / line-height / min-height / cap-trim.
+             Safe ONLY where the element is already shaped as a single-line control.
+
+   TWO LISTS, TWO QUESTIONS. Joining `.t-cm-<size>` answers "what does it look like"; joining
+   `.t-cm-slot` answers "is it a single-line control". An element may join the first without the
+   second - that is the whole point, and it is what makes the `/1` batch a genuine no-op.
+
+   The slot HEIGHT travels with the type via `--slot`, declared on each type composite. A custom
+   property is INERT unless something reads it, so a type-only binding carries no box consequence.
+
+   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers).
+   `display:inline-flex` + `align-items:center` is what optically centres the cap box in a taller
+   slot; an inline-block variant TOP-ALIGNS and is wrong. No padding is authored anywhere. */
+
+/* ---- TYPE - family, size, weight, and the slot height the box WOULD use ---- */
+.t-cm-figure-1{font-family:var(--uf);font-size:52px;font-weight:300;line-height:1;--slot:64px;}
+.t-cm-figure-2{font-family:var(--uf);font-size:40px;font-weight:300;line-height:1;--slot:48px;}
+/* figure-3 — 24px numeric display rung (ds-005 close-out, RULED Dave 2026-07-19: "add 24 to the ramp").
+   weight 500 PRESERVES the countdown numeral's shipped value (zero-visual-change enactment); figure-1/2 are
+   300 because large display reads light, a small numeric display needs the weight-up (weight is per-role in
+   the component composites, not monotonic — cf. heading 400 / section-label 500). First consumer: the
+   Countdown numeral, bound via the `.t-cm-figure-3` CLASS (bare `.num` can't be appended globally — it would
+   collide with `.cn-table td.num`). Multi-size 20/24/32 lands when the timer gains size variants. */
+.t-cm-figure-3{font-family:var(--uf);font-size:24px;font-weight:500;line-height:1;--slot:28px;}
+/* figure-4 — 32px display/amount rung (PREPARED 2026-07-19, awaiting Dave's vouch — promotes the
+   money-format token the Account-card $balance-type-finding flagged; 32 is on-ramp, apply_type_snap
+   maps 30->32). weight 400 matches .t-cm-heading (a 32px numeric display reads at book weight, not the
+   300 large-display uses). Carries font-variant-numeric:tabular-nums because this is the NUMERIC display
+   token — columns of money must align; figure-1/2/3 do not carry it yet (follow-up: add tabular-nums to
+   the whole figure family — they are all numeric displays). Ordinal name (4th figure added); by SIZE it
+   sits between figure-2/40 and figure-3/24. First consumer: Amount-display, bound via the CLASS. */
+.t-cm-figure-4{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;font-variant-numeric:tabular-nums;}
+/* figure-5 / figure-6 — 16px + 14px money/amount rungs (PREPARED 2026-07-19, awaiting Dave's vouch —
+   "number styles sized for money"). Same as label/caption in size+weight but they carry tabular-nums, so
+   inline + dense money amounts render as true numeric figures (columns align). Ordinal names continue the
+   figure family (5th/6th added); by SIZE they are the small end of the ramp. Consumer: Amount-display default+small. */
+.t-cm-figure-5{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+.t-cm-figure-6{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+/* chart-label / chart-value / chart-key — the DV-D08 chart text ladder (RULED Dave 2026-07-23, ledger
+   _proforma/_DATAVIZ-DECISIONS.md; settles the Q8 label-weight seam the bar audit surfaced). At the 12px
+   chart floor MEDIUM is the floor ("at 12 — medium is the floor"): labels · axis ticks · legend text ·
+   on-chart values = 12/500. chart-value carries tabular-nums (numeric columns/ticks align). Emphasis
+   channel = 700 (chart-key): legend letter-keys + on-chart keys — the kit's reviewed 400/600/700 ladder
+   maps onto the brand set {100,300,400,500,700}; 600 stays admitted NOWHERE. Supersedes both the kit's
+   400-label/600-value pair and the 07-22 uniform-500 snap. Bound via markup CLASS (T-D14 pattern — no
+   appended selectors, so no _type-bindings entry; the blast-radius gate tracks appended selectors only).
+   First consumers: Chart-* canon snippets (chart-revisit lane). Mini chart ramp 12–20 = PARKED. */
+.t-cm-chart-label{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-chart-value{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+.t-cm-chart-key{font-family:var(--uf);font-size:12px;font-weight:700;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+/* mini control ramp (T-D15, Dave 2026-07-24): label/control size variants 12/14/16.
+   Weight 500 at 12+14 (control), 400 at 16 (larger reads fine at regular — Dave's ruling).
+   Bound to the segmented-control atom sizes; any label/control class may adopt a step. */
+.t-cm-ctl-12,
+.seg.sm button{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-ctl-14,
+.seg.md button{font-family:var(--uf);font-size:14px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-ctl-16,
+.seg.lg button{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-heading{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;}
+.t-cm-section-label{font-family:var(--uf);font-size:20px;font-weight:500;line-height:1;--slot:24px;}
+.t-cm-label,
+.loader,
+.pg a, .pg .ctrl,
+.search input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-button,
+.btn,
+.action-bar .btn,
+.confirm .btn,
+.hero .cta,
+.nav button,
+.note.global .actions button,
+.qbtn,
+nav.main a{font-family:var(--uf);font-size:16px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-link{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-caption,
+.avatar,
+.badge,
+.eyebrow,
+.label,
+.seg button,
+.sim{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-tooltip{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-legal,
+.chip,
+.stateLabel,
+.status,
+.tabbar .tabbar__item,
+.time{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;--slot:16px;}
+
+/* ---- BOX - the slot. OPT-IN. Only for elements already shaped as single-line controls ---- */
+.t-cm-slot,
+.btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{display:inline-flex;align-items:center;min-height:var(--slot);}
+@supports (text-box-trim: trim-both){
+ .t-cm-slot,
+ .btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{text-box:trim-both cap alphabetic;}
+}
+@supports not (text-box-trim: trim-both){
+ .t-cm-slot::before,
+ .btn::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
+ .t-cm-slot::after,
+ .btn::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
+}
+
+/* ===== SPECIMEN CHROME — NOT a canon composite =====
+   .spec-h = the section-label headings inside reference/specimen docs ("Inline — dot + label").
+   Document structure (each is a real <h2>), styled as a small full-strength label. Deliberately
+   standalone, NOT joined to a type composite — specimen scaffolding is not product type. Full
+   strength by ruling (Dave 2026-07-18): no muting, no opacity fade (opacity is untokenised and
+   dodges the contrast gate). Replaces the former bare global `h2` binding (T-D13). */
+.spec-h{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;color:var(--text,#111);}
+
+/* ===== dark mode — step-up (-V2) on display+heading only; body stays regular ===== */
+[data-theme="dark"]{background:#1A1A1A;color:#fff;}  /* ds-033 / #108-D1 (Dave): dark bg = declared #1A1A1A token, enacted #196 */
+[data-theme="dark"] .t-ed-display-1{font-weight:300;}
+[data-theme="dark"] .t-ed-display-1 .em{font-weight:400;}
+[data-theme="dark"] .t-ed-display-2{font-weight:350;}
+[data-theme="dark"] .t-ed-display-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-1{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-1 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-2{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-3{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-3 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-4{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-4 .em{font-weight:500;}
+
+/* ===== end type.css ===== */
+</style>
+<style id="specimens">
+/* ============================================================================
+   SPECIMEN BASE — Apollo Mono (the base theme), lifted from the snippet corpus.
+   Each component keeps its OWN var namespace under .cn-<component>, which is how
+   canon.css scopes them; that is what stops --text/--surface colliding.
+   ============================================================================ */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+.cn-button,.cn-cards,.cn-tags,.cn-input-fields,.cn-status-indicator,.cn-banner,.cn-modals,.cn-segmented-control,.cn-container-shell{
+  --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease:160ms cubic-bezier(.4,0,.2,1);
+  --spring:300ms cubic-bezier(.5,1.6,.4,1);
+  --press:90ms cubic-bezier(0,0,.58,1);
+  --alpha-44:0.44; --alpha-48:0.48; --alpha-60:0.6; --alpha-68:0.68; --alpha-72:0.72; --alpha-84:0.84;
+  font-family:var(--font);
+}
+
+/* ---- Button (border-radius/control) ---------------------------------------- */
+.cn-button{ --h:44px; --pad-x:20px; --phys-size:120;
+  --pri-default:#1A1A1A; --pri-hover:#636363; --pri-pressed:#000000; --pri-disabled:#E1E1E1;
+  --pri-label:#FFFFFF; --pri-label-disabled:#9D9D9D; --pri-icon:#FFFFFF;
+  --sec-default:#626262; --sec-hover:#484848; --sec-pressed:#313131; --sec-disabled:#E1E1E1;
+  --sec-label:#FFFFFF; --sec-label-disabled:#9D9D9D;
+  --ter-hover:#F0F0F0; --ter-border:#1A1A1A; --ter-border-disabled:#E1E1E1;
+  --ter-label:#1A1A1A; --ter-label-disabled:#9D9D9D;
+  --quat-hover:#F0F0F0; --quat-label:#1A1A1A; --quat-label-disabled:#9D9D9D;
+  --success:#66CC8D; --success-fg:#000000; --page:#FFFFFF; --surface:#F0F0F0;
+  --border-radius-control:0; --press-travel:2; --press-darken:0.94; color:var(--ter-label);}
+[data-theme="dark"] .cn-button{
+  --pri-default:#FAFAFA; --pri-hover:#B2B2B2; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
+  --pri-label:#333333; --pri-label-disabled:#808080; --pri-icon:#333333;
+  --sec-default:#808080; --sec-hover:#9D9D9D; --sec-pressed:#B7B7B7; --sec-disabled:#484848;
+  --sec-label:#000000; --sec-label-disabled:#808080;
+  --ter-hover:#232323; --ter-border:#FFFFFF; --ter-border-disabled:#808080;
+  --ter-label:#FFFFFF; --ter-label-disabled:#808080;
+  --quat-hover:#232323; --quat-label:#FFFFFF; --quat-label-disabled:#808080;
+  --success:#66CC8D; --success-fg:#000000; --page:#1A1A1A; --surface:#232323;}
+.cn-button .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0;
+  border-radius:var(--border-radius-control); cursor:pointer; justify-content:center; gap:8px;
+  transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+.cn-button .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-button .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-button .btn:disabled:hover,.cn-button .btn.is-disabled:hover{transform:none; filter:none;}
+.cn-button .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
+.cn-button .btn.primary{background:var(--pri-default); color:var(--pri-label);}
+.cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) calc(var(--alpha-68) * 100%), var(--page));}
+.cn-button .btn:disabled{opacity:1;}
+.cn-button .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--pri-label-disabled); cursor:not-allowed;}
+.cn-button .btn.secondary{background:var(--sec-default); color:var(--sec-label);}
+.cn-button .btn.secondary:hover{background:var(--sec-hover);}
+.cn-button .btn.tertiary{background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);}
+.cn-button .btn.tertiary:hover{background:var(--ter-hover);}
+.cn-button .btn.quaternary{background:transparent; color:var(--quat-label);}
+.cn-button .btn.quaternary:hover{background:var(--quat-hover);}
+
+/* ---- Input fields (border-radius/control) ---------------------------------- */
+.cn-input-fields{
+  --field-bg-default:#FFFFFF00; --field-bg-hover:#F0F0F0; --border-default:#808080;
+  --border-active:#000000; --border-disabled:#E1E1E1; --text:#1A1A1A; --text-disabled:#E1E1E1;
+  --icon:#1A1A1A; --icon-disabled:#E1E1E1; --error:#F6604C; --success:#66CC8D;
+  --focus:#305A85; --page:#FFFFFF; --border-radius-control:0; color:var(--text);}
+[data-theme="dark"] .cn-input-fields{
+  --field-bg-default:#FFFFFF00; --field-bg-hover:#232323; --border-default:#808080;
+  --border-active:#FFFFFF; --border-disabled:#484848; --text:#FFFFFF; --text-disabled:#808080;
+  --icon:#FFFFFF; --icon-disabled:#808080; --error:#F6604C; --success:#66CC8D;
+  --focus:#4587A7; --page:#1A1A1A;}
+.cn-input-fields .field{max-width:340px;}
+.cn-input-fields .field + .field{margin-top:20px;}
+.cn-input-fields .lbl{display:flex; gap:8px; align-items:center; font:500 16px/24px var(--font); color:var(--text); margin:0 0 4px;}
+.cn-input-fields .box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+  border:1px solid var(--border-default); background:var(--field-bg-default);
+  border-radius:var(--border-radius-control); position:relative; color:var(--icon);
+  transition:border-color var(--ease), background var(--ease), box-shadow var(--ease);}
+.cn-input-fields .box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+  font:400 16px/24px var(--font); color:var(--text);}
+.cn-input-fields .box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-input-fields .box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-input-fields .box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-input-fields .box.s-active{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-input-fields .field.is-error .box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+[data-theme="dark"] .cn-input-fields .field.is-error .box{border-color:var(--error);}
+.cn-input-fields .field.is-disabled .box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-input-fields .field.is-disabled .box input{color:var(--text-disabled);}
+.cn-input-fields .field.is-disabled .lbl{color:var(--text-disabled);}
+.cn-input-fields .uctrl{position:relative; max-width:340px;}
+.cn-input-fields .uctrl input{width:100%; height:52px; padding:0 28px 0 2px; font:400 16px/52px var(--font);
+  color:var(--text); background:var(--field-bg-default); border:0; border-bottom:1px solid var(--border-default);
+  border-radius:var(--border-radius-control); outline:none;}
+
+/* ---- Tags / chips (border-radius/control) ---------------------------------- */
+.cn-tags{--border:#808080; --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --focus:#305A85;
+  --page:#FFFFFF; --border-radius-control:0; color:var(--text);}
+[data-theme="dark"] .cn-tags{--border:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323;
+  --focus:#4587A7; --page:#1A1A1A;}
+.cn-tags .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em;
+  border:1px solid var(--border); border-radius:var(--border-radius-control);
+  background:transparent; color:var(--text); font:400 14px/1 var(--font); max-width:100%;
+  white-space:nowrap; overflow:hidden; transition:background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
+.cn-tags .tag.link{cursor:pointer; text-decoration:none;}
+.cn-tags .tag.link:hover{background:var(--hover); transform:scale(1.05);}
+.cn-tags .tag .x{position:relative; display:inline-flex; font-size:inherit; width:1.54em; height:1.54em;
+  padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
+  align-items:center; justify-content:center; flex:0 0 auto;}
+.cn-tags .tag .x svg{width:.85em; height:.85em; fill:currentColor;}
+
+/* ---- Status indicator (border-radius/indicator + /control) ------------------ */
+.cn-status-indicator{
+  --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --neutral:#808080; --info:#78A7E8;
+  --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
+  --err-bg:#F6604C; --warn-bg:#E0A61F; --ok-bg:#66CC8D; --info-bg:#78A7E8;
+  --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
+  --surface:#F0F0F0; --label:#1A1A1A; --disabled:#E1E1E1; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF;
+  --border-radius-control:0; --border-radius-indicator:0; color:var(--label);}
+[data-theme="dark"] .cn-status-indicator{
+  --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --neutral:#FFFFFF; --info:#78A7E8;
+  --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
+  --surface:#1F1F1F; --label:#FFFFFF; --disabled:#808080; --divider:#808080; --focus:#4587A7; --page:#1A1A1A;}
+.cn-status-indicator .chips{display:flex; flex-wrap:wrap; gap:12px;}
+.cn-status-indicator .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+  border-radius:var(--border-radius-indicator); color:var(--label); white-space:nowrap;}
+.cn-status-indicator .chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.cn-status-indicator .chip.ok{background:var(--success-tint);} .cn-status-indicator .chip.warn{background:var(--warning-tint);}
+.cn-status-indicator .chip.err{background:var(--error-tint);}  .cn-status-indicator .chip.inf{background:var(--info-tint);}
+.cn-status-indicator .ok .dot{background:var(--success);} .cn-status-indicator .warn .dot{background:var(--warning);}
+.cn-status-indicator .err .dot{background:var(--error);}  .cn-status-indicator .inf .dot{background:var(--info);}
+.cn-status-indicator .cells{display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;}
+.cn-status-indicator .cell{display:inline-block; min-width:84px; text-align:center; padding:4px 12px;
+  border-radius:var(--border-radius-indicator); background:var(--fill); color:var(--ink);
+  white-space:nowrap; font:400 12px/16px var(--font);}
+.cn-status-indicator .cell.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
+.cn-status-indicator .cell.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
+.cn-status-indicator .cell.err{--fill:var(--err-bg); --ink:var(--on-light);}
+.cn-status-indicator .cell.inf{--fill:var(--info-bg); --ink:var(--on-info);}
+.cn-status-indicator .sim{padding:8px 16px; border:1px solid var(--neutral); background:transparent;
+  color:var(--label); cursor:pointer; border-radius:var(--border-radius-control); margin-top:12px;}
+.cn-status-indicator .sim:hover{border-color:var(--label);}
+
+/* ---- Cards (border-radius/surface) ----------------------------------------- */
+.cn-cards{--surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A;
+  --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-surface:0;
+  --checked:#000000; --ctrl-border:#808080; --pressed:#626262; --reverse:#FFFFFF; color:var(--text);}
+[data-theme="dark"] .cn-cards{--surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF;
+  --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A;
+  --checked:#FFFFFF; --ctrl-border:#808080; --pressed:#1A1A1A; --reverse:#FFFFFF;}
+.cn-cards .row{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;}
+.cn-cards .card{background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--border-radius-surface); display:flex; flex-direction:column;}
+.cn-cards .card.action{padding-top:12px;}
+.cn-cards .card.action .body{display:flex; gap:16px; padding:0 16px;}
+.cn-cards .card.action h3{margin:0 0 4px; font:500 16px/1.5 var(--font);}
+.cn-cards .card.action p{margin:0; font:400 14px/1.43 var(--font); color:var(--text);}
+.cn-cards .card.action .actions{display:flex; justify-content:flex-end; margin-top:8px;}
+.cn-cards .qbtn{appearance:none; border:0; background:transparent; height:44px; min-width:96px;
+  padding:0 20px; display:inline-flex; align-items:center; justify-content:center;
+  color:var(--text); cursor:pointer; transition:background var(--ease);}
+.cn-cards .qbtn:hover{background:var(--hover);}
+.cn-cards a.linkcard{display:flex; gap:16px; padding:16px; border-radius:var(--border-radius-surface);
+  background:var(--surface); border:1px solid var(--border); text-decoration:none; color:var(--text);
+  transition:background var(--ease);}
+.cn-cards a.linkcard:hover{background:var(--hover);}
+.cn-cards a.linkcard .ttl{font-weight:500; display:inline-flex; align-items:center; gap:4px;}
+.cn-cards a.linkcard .ttl .tip{color:var(--accent); display:inline-flex;}
+.cn-cards a.linkcard .ttl .tip svg{width:.85em; height:.85em; fill:currentColor;}
+.cn-cards a.linkcard p{margin:4px 0 0; font:400 14px/1.43 var(--font); color:var(--muted);}
+.cn-cards .card.opt{flex-direction:row; gap:12px; padding:16px; align-items:flex-start; cursor:pointer;}
+.cn-cards .card.opt .radio{width:22px; height:22px; flex:0 0 auto; border:2px solid var(--ctrl-border);
+  border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+.cn-cards .card.opt .radio .dot{width:12px; height:12px; border-radius:50%; background:var(--checked); transform:scale(1);}
+.cn-cards .card.opt h3{margin:0 0 4px; font:500 16px/1.4 var(--font);}
+.cn-cards .card.opt p{margin:0; font:400 14px/1.43 var(--font); color:var(--muted);}
+
+/* ---- Banner (border-radius/surface) ---------------------------------------- */
+.cn-banner{--err-bg:#F6604C; --warn-bg:#E0A61F; --ok-bg:#66CC8D; --info-bg:#78A7E8;
+  --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000; --on-info:#1A1A1A;
+  --text:#1A1A1A; --page:#FFFFFF; --border-radius-surface:0; --press-travel:2; --press-darken:0.94;
+  color:var(--text);}
+[data-theme="dark"] .cn-banner{--text:#FFFFFF; --page:#1A1A1A;}
+.cn-banner .banner.err{--fill:var(--err-bg); --ink:var(--on-light);}
+.cn-banner .banner.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
+.cn-banner .banner.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
+.cn-banner .banner.info{--fill:var(--info-bg); --ink:var(--on-info);}
+.cn-banner .banner{display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
+  background:var(--fill); color:var(--ink); border-radius:var(--border-radius-surface);
+  font:400 16px/24px var(--font);}
+.cn-banner .banner .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--ink);}
+.cn-banner .banner .ic svg{width:20px; height:20px; display:block; fill:currentColor;}
+.cn-banner .banner .main{flex:1 1 auto; min-width:0;}
+.cn-banner .banner .main p{margin:0;}
+.cn-banner .banner .x{position:relative; flex:none; display:inline-flex; width:24px; height:24px;
+  padding:0; border:0; background:transparent; color:inherit; cursor:pointer;
+  align-items:center; justify-content:center; border-radius:var(--border-radius-surface);}
+.cn-banner .banner .x svg{width:16px; height:16px; fill:currentColor;}
+.cn-banner .banner .x:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+
+/* ---- Modals (border-radius/surface + /control) ------------------------------ */
+.cn-modals{--surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033; --overlay:#00000080;
+  --text:#1A1A1A; --icon:#1A1A1A; --pri:#1A1A1A; --pri-hover:#636363; --on-pri:#FFFFFF;
+  --sec-bd:#000000; --sec-hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+  --border-radius-control:0; --border-radius-surface:0; --press-travel:2; --press-darken:0.94;
+  --phys-size:120; color:var(--text);}
+[data-theme="dark"] .cn-modals{--surface:#1F1F1F; --elev-bd:#808080; --shadow:#000000D9;
+  --text:#FFFFFF; --icon:#FFFFFF; --pri:#FAFAFA; --pri-hover:#B2B2B2; --on-pri:#333333;
+  --sec-bd:#808080; --sec-hover:#232323; --focus:#4587A7; --page:#1A1A1A;}
+.cn-modals .dialog{width:100%; max-width:400px; background:var(--surface); border:1px solid var(--elev-bd);
+  border-radius:var(--border-radius-surface); box-shadow:0 0 24px var(--shadow); padding:24px; position:relative;}
+.cn-modals .dialog h2{margin:0 0 12px; font:400 24px/1.2 var(--font);}
+.cn-modals .dialog p{margin:0 0 24px; font:400 16px/1.5 var(--font);}
+.cn-modals .dialog .close{position:absolute; top:16px; right:14px; width:36px; height:36px; border:0;
+  border-radius:var(--border-radius-control); background:transparent; color:var(--icon); cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;}
+.cn-modals .dialog .close svg{width:14px; height:14px; fill:currentColor;}
+.cn-modals .dialog .close:hover{background:var(--sec-hover);}
+.cn-modals .actions{display:flex; gap:12px; justify-content:flex-start;}
+.cn-modals .btn{height:44px; min-width:96px; padding:0 20px; border:0;
+  border-radius:var(--border-radius-control); cursor:pointer; justify-content:center;
+  transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-modals .btn.primary{background:var(--pri); color:var(--on-pri);}
+.cn-modals .btn.primary:hover{background:var(--pri-hover);}
+.cn-modals .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--sec-bd);}
+.cn-modals .btn.secondary:hover{background:var(--sec-hover);}
+
+/* ---- Segmented control (border-radius/segmented-container + -thumb) --------- */
+.cn-segmented-control{--surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF;
+  --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; --hit:44px;
+  --seg-h-xs:28px; --seg-h-s:36px; --seg-h-m:44px; --seg-h-l:48px;
+  --seg-pad-xs:2px; --seg-pad-s:2px; --seg-pad-m:2px; --seg-pad-l:4px;
+  --seg-rad-xs:0; --seg-rad-s:0; --seg-rad-m:0; --seg-rad-l:0;
+  --seg-thumb-xs:0; --seg-thumb-s:0; --seg-thumb-m:0; --seg-thumb-l:0;
+  --seg-inset-xs:8px; --seg-inset-s:12px; --seg-inset-m:16px; --seg-inset-l:20px; color:var(--text);}
+[data-theme="dark"] .cn-segmented-control{--surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF;
+  --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A;}
+.cn-segmented-control .seg{--seg-pad:var(--seg-pad-s); --seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
+  --seg-inset:var(--seg-inset-s); position:relative; display:inline-flex; box-sizing:border-box;
+  padding:var(--seg-pad); border:1px solid var(--border); background:var(--surface); vertical-align:top;
+  border-radius:var(--seg-rad);}
+.cn-segmented-control .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad);
+  left:var(--seg-pad); width:0; background:var(--sel); z-index:0; border-radius:var(--seg-thumb);
+  transition:left var(--ease), width var(--ease);}
+.cn-segmented-control .seg button{position:relative; z-index:1; display:inline-flex; align-items:center;
+  justify-content:center; gap:8px; height:32px; padding:0 12px; border:0; background:transparent;
+  color:var(--text); cursor:pointer; border-radius:var(--seg-thumb); transition:color var(--ease);}
+.cn-segmented-control .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
+.cn-segmented-control .seg button[aria-pressed="true"]{color:var(--on-sel);}
+.cn-segmented-control .seg.xs{--seg-h:var(--seg-h-xs); --seg-pad:var(--seg-pad-xs); --seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs); --seg-inset:var(--seg-inset-xs); height:var(--seg-h);}
+.cn-segmented-control .seg.s {--seg-h:var(--seg-h-s);  --seg-pad:var(--seg-pad-s);  --seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);  --seg-inset:var(--seg-inset-s);  height:var(--seg-h);}
+.cn-segmented-control .seg.m {--seg-h:var(--seg-h-m);  --seg-pad:var(--seg-pad-m);  --seg-rad:var(--seg-rad-m);  --seg-thumb:var(--seg-thumb-m);  --seg-inset:var(--seg-inset-m);  height:var(--seg-h);}
+.cn-segmented-control .seg.l {--seg-h:var(--seg-h-l);  --seg-pad:var(--seg-pad-l);  --seg-rad:var(--seg-rad-l);  --seg-thumb:var(--seg-thumb-l);  --seg-inset:var(--seg-inset-l);  height:var(--seg-h);}
+.cn-segmented-control .seg.xs button,.cn-segmented-control .seg.s button,
+.cn-segmented-control .seg.m button,.cn-segmented-control .seg.l button{height:100%; padding:0 var(--seg-inset);}
+.cn-segmented-control .segrow{display:flex; flex-direction:column; gap:14px; align-items:flex-start;}
+.cn-segmented-control .segcap{font:400 12px/1 var(--font); color:var(--text); opacity:var(--alpha-60);}
+
+/* ---- Container shell (border-radius/container) ------------------------------ */
+.cn-container-shell{--shell:#FFFFFF; --shell-bd:#E1E1E1; --tile:#F0F0F0; --text:#1A1A1A;
+  --border-radius-container:0; color:var(--text);}
+[data-theme="dark"] .cn-container-shell{--shell:#1F1F1F; --shell-bd:#808080; --tile:#2A2A2A; --text:#FFFFFF;}
+.cn-container-shell .shell{background:var(--shell); border:1px solid var(--shell-bd);
+  border-radius:var(--border-radius-container); padding:8px; display:grid;
+  grid-template-columns:repeat(3, 1fr); gap:1px; overflow:hidden; max-width:360px;}
+.cn-container-shell .tile{background:var(--tile); min-height:52px;}
+
+/* ============================================================================
+   PER-THEME PROJECTIONS — pasted from canon.css AUTO-THEMES (the generated
+   cascade), light block then dark block, in canon's own order. Radius values in
+   these blocks are the STORE state; the tuner overrides them with inline styles,
+   which always win.
+   ============================================================================ */
+[data-apollo-theme="legacy"] .cn-banner{--err-bg:#A8000B; --info-bg:#305A85; --ok-bg:#00847F; --on-info:#FFFFFF; --on-ok:#FFFFFF; --press-darken:1; --press-travel:0; --text:#333333; --warn-bg:#FFBB33;}
+[data-apollo-theme="legacy"] .cn-button{--press-darken:1; --press-travel:0; --pri-default:#DB0011; --pri-disabled:#E1E1E1; --pri-hover:#BA1110; --pri-icon:#FFFFFF; --pri-label:#FFFFFF; --pri-pressed:#000000; --quat-label:#333333; --success:#00847F; --success-fg:#FFFFFF; --ter-border-disabled:#D7D8D6; --ter-label:#333333;}
+[data-apollo-theme="legacy"] .cn-cards{--border:#D7D8D6; --muted:#545454; --text:#333333;}
+[data-apollo-theme="legacy"] .cn-input-fields{--error:#A8000B; --success:#00847F; --text:#333333;}
+[data-apollo-theme="legacy"] .cn-modals{--on-pri:#FFFFFF; --press-darken:1; --press-travel:0; --pri:#DB0011; --pri-hover:#BA1110; --text:#333333;}
+[data-apollo-theme="legacy"] .cn-segmented-control{--text:#333333;}
+[data-apollo-theme="legacy"] .cn-status-indicator{--err-bg:#A8000B; --error:#A8000B; --error-tint:#F9F2F3; --info:#305A85; --info-bg:#305A85; --info-tint:#EBEFF4; --label:#333333; --ok-bg:#00847F; --on-info:#FFFFFF; --on-ok:#FFFFFF; --success:#00847F; --success-tint:#E5F2F2; --warn-bg:#FFBB33; --warning:#FFBB33; --warning-tint:#FFF8EA;}
+[data-apollo-theme="legacy"] .cn-tags{--text:#333333;}
+[data-apollo-theme="console"] .cn-banner{--err-bg:#B92F1E; --info-bg:#5A85C1; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --warn-bg:#D5990B;}
+[data-apollo-theme="console"] .cn-button{--success:#5DAC7B;}
+[data-apollo-theme="console"] .cn-input-fields{--error:#B92F1E; --success:#5DAC7B;}
+[data-apollo-theme="console"] .cn-status-indicator{--err-bg:#B92F1E; --error:#B92F1E; --error-tint:#EECDC9; --info:#5A85C1; --info-bg:#5A85C1; --info-tint:#D1DDEE; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --success:#5DAC7B; --success-tint:#D2E8DA; --warn-bg:#D5990B; --warning:#D5990B; --warning-tint:#F2DEB1;}
+[data-apollo-theme="supercharge"] .cn-banner{--err-bg:#B92F1E; --info-bg:#5A85C1; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --on-light:#13110E; --page:#F7F6F4; --press-darken:1; --press-travel:0; --text:#13110E; --warn-bg:#D5990B;}
+[data-apollo-theme="supercharge"] .cn-button{--page:#F7F6F4; --press-darken:1; --press-travel:0; --pri-default:#13110E; --pri-disabled:#CDC8C6; --pri-hover:#493F39; --pri-label-disabled:#635750; --pri-pressed:#000000; --quat-hover:#DFDEDC; --quat-label:#13110E; --quat-label-disabled:#635750; --sec-default:#493F39; --sec-disabled:#CDC8C6; --sec-hover:#413934; --sec-label-disabled:#635750; --sec-pressed:#312C26; --success:#5DAC7B; --surface:#DFDEDC; --ter-border:#13110E; --ter-border-disabled:#CDC8C6; --ter-hover:#DFDEDC; --ter-label:#13110E; --ter-label-disabled:#635750;}
+[data-apollo-theme="supercharge"] .cn-cards{--border:#CDC8C6; --ctrl-border:#524842; --hover:#DFDEDC; --icon:#13110E; --muted:#13110E; --page:#F7F6F4; --pressed:#493F39; --reverse:#F7F6F4; --surface:#F7F6F4; --text:#13110E;}
+[data-apollo-theme="supercharge"] .cn-input-fields{--border-active:#000000; --border-default:#524842; --border-disabled:#CDC8C6; --error:#B92F1E; --field-bg-hover:#DFDEDC; --icon:#13110E; --icon-disabled:#CDC8C6; --page:#F7F6F4; --success:#5DAC7B; --text:#13110E; --text-disabled:#CDC8C6;}
+[data-apollo-theme="supercharge"] .cn-modals{--elev-bd:#FFFFFF00; --icon:#13110E; --page:#F7F6F4; --press-darken:1; --press-travel:0; --pri:#13110E; --pri-hover:#493F39; --sec-bd:#000000; --sec-hover:#DFDEDC; --surface:#F7F6F4; --text:#13110E;}
+[data-apollo-theme="supercharge"] .cn-segmented-control{--border:#524842; --hover:#DFDEDC; --icon:#13110E; --page:#F7F6F4; --surface:#F7F6F4; --text:#13110E;}
+[data-apollo-theme="supercharge"] .cn-status-indicator{--disabled:#CDC8C6; --divider:#CDC8C6; --err-bg:#B92F1E; --error:#B92F1E; --error-tint:#F1E0DC; --info:#5A85C1; --info-bg:#5A85C1; --info-tint:#D6E3EC; --label:#13110E; --neutral:#524842; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --on-light:#13110E; --page:#F7F6F4; --success:#5DAC7B; --success-tint:#DCEDE3; --surface:#DFDEDC; --warn-bg:#D5990B; --warning:#D5990B; --warning-tint:#F6E5CC;}
+[data-apollo-theme="supercharge"] .cn-tags{--border:#524842; --hover:#DFDEDC; --icon:#13110E; --page:#F7F6F4; --text:#13110E;}
+[data-apollo-theme="supercharge"] .cn-container-shell{--shell:#F7F6F4; --shell-bd:#CDC8C6; --tile:#DFDEDC; --text:#13110E;}
+
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-banner{--err-bg:#A8000B; --info-bg:#305A85; --ok-bg:#00847F; --on-info:#FFFFFF; --on-ok:#FFFFFF; --press-darken:1; --press-travel:0; --text:#FFFFFF; --warn-bg:#FFBB33;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-button{--press-darken:1; --press-travel:0; --pri-default:#DB0011; --pri-disabled:#484848; --pri-hover:#BA1110; --pri-icon:#FFFFFF; --pri-label:#FFFFFF; --pri-pressed:#FFFFFF; --quat-label:#FFFFFF; --success:#00847F; --success-fg:#FFFFFF; --ter-border-disabled:#404040; --ter-label:#FFFFFF;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-cards{--border:#404040; --muted:#9B9B9B; --text:#FFFFFF;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-input-fields{--error:#A8000B; --success:#00847F; --text:#FFFFFF;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-modals{--on-pri:#FFFFFF; --press-darken:1; --press-travel:0; --pri:#DB0011; --pri-hover:#BA1110; --text:#FFFFFF;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-segmented-control{--text:#FFFFFF;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-status-indicator{--err-bg:#A8000B; --error:#A8000B; --error-tint:#260005; --info:#305A85; --info-bg:#305A85; --info-tint:#000D1B; --label:#FFFFFF; --ok-bg:#00847F; --on-info:#FFFFFF; --on-ok:#FFFFFF; --success:#00847F; --success-tint:#001615; --warn-bg:#FFBB33; --warning:#FFBB33; --warning-tint:#221701;}
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-tags{--text:#FFFFFF;}
+[data-apollo-theme="console"] [data-theme="dark"] .cn-banner{--err-bg:#B92F1E; --info-bg:#5A85C1; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --warn-bg:#D5990B;}
+[data-apollo-theme="console"] [data-theme="dark"] .cn-button{--success:#5DAC7B;}
+[data-apollo-theme="console"] [data-theme="dark"] .cn-input-fields{--error:#B92F1E; --success:#5DAC7B;}
+[data-apollo-theme="console"] [data-theme="dark"] .cn-status-indicator{--err-bg:#B92F1E; --error:#B92F1E; --error-tint:#60231C; --info:#5A85C1; --info-bg:#5A85C1; --info-tint:#364963; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --success:#5DAC7B; --success-tint:#355441; --warn-bg:#D5990B; --warning:#D5990B; --warning-tint:#654D14;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-banner{--err-bg:#B92F1E; --info-bg:#5A85C1; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --on-light:#13110E; --page:#1A1A1A; --press-darken:1; --press-travel:0; --text:#F7F6F4; --warn-bg:#D5990B;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-button{--page:#1A1A1A; --press-darken:1; --press-travel:0; --pri-default:#F0EFED; --pri-disabled:#413934; --pri-hover:#806E65; --pri-label-disabled:#524842; --pri-pressed:#F7F6F4; --quat-hover:#2E2A25; --quat-label:#F7F6F4; --quat-label-disabled:#524842; --sec-default:#524842; --sec-disabled:#413934; --sec-hover:#635750; --sec-label-disabled:#524842; --sec-pressed:#806E65; --success:#5DAC7B; --surface:#2E2A25; --ter-border:#FFFFFF; --ter-border-disabled:#524842; --ter-hover:#2E2A25; --ter-label:#F7F6F4; --ter-label-disabled:#524842;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-cards{--border:#524842; --ctrl-border:#524842; --hover:#2E2A25; --icon:#F7F6F4; --muted:#F7F6F4; --page:#1A1A1A; --pressed:#13110E; --reverse:#F7F6F4; --surface:#2A2621; --text:#F7F6F4;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-input-fields{--border-active:#F7F6F4; --border-default:#524842; --border-disabled:#413934; --error:#B92F1E; --field-bg-hover:#2E2A25; --icon:#F7F6F4; --icon-disabled:#524842; --page:#1A1A1A; --success:#5DAC7B; --text:#F7F6F4; --text-disabled:#524842;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-modals{--elev-bd:#524842; --icon:#F7F6F4; --page:#1A1A1A; --press-darken:1; --press-travel:0; --pri:#F0EFED; --pri-hover:#806E65; --sec-bd:#524842; --sec-hover:#2E2A25; --surface:#2A2621; --text:#F7F6F4;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-segmented-control{--border:#524842; --hover:#2E2A25; --icon:#F7F6F4; --page:#1A1A1A; --surface:#2A2621; --text:#F7F6F4;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-status-indicator{--disabled:#524842; --divider:#524842; --err-bg:#B92F1E; --error:#B92F1E; --error-tint:#2C120D; --info:#5A85C1; --info-bg:#5A85C1; --info-tint:#092131; --label:#F7F6F4; --neutral:#FFFFFF; --ok-bg:#5DAC7B; --on-info:#FFFFFF; --on-light:#13110E; --page:#1A1A1A; --success:#5DAC7B; --success-tint:#12291D; --surface:#2A2621; --warn-bg:#D5990B; --warning:#D5990B; --warning-tint:#3C2C13;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-tags{--border:#524842; --hover:#2E2A25; --icon:#F7F6F4; --page:#1A1A1A; --text:#F7F6F4;}
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-container-shell{--shell:#2A2621; --shell-bd:#524842; --tile:#2E2A25; --text:#F7F6F4;}
+</style>
+<style id="chrome">
+/* ============================================================================
+   TUNER CHROME — page scaffolding. Not canon, not a component. Class prefix tn-
+   so nothing here can collide with a type.css selector-list append.
+   TWO-RED LAW (s151-D1): --tn-red is #DA1A00 on a white ground, #F6604C on every
+   other ground. The specimen panes redeclare it for their own ground.
+   ============================================================================ */
+:root{
+  --tn-font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --tn-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --tn-ink:#1A1A1A; --tn-mute:#626262; --tn-rule:#E1E1E1; --tn-faint:#F5F5F5;
+  --tn-bg:#FFFFFF; --tn-red:#DA1A00;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--tn-bg); color:var(--tn-ink); font-family:var(--tn-font);
+  -webkit-font-smoothing:antialiased;}
+.tn-masthead{border-bottom:1px solid var(--tn-ink); padding:28px 32px 20px;}
+.tn-kicker{font:500 11px/1 var(--tn-mono); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--tn-mute); margin:0 0 14px;}
+.tn-masthead h1{margin:0 0 10px; font:300 40px/44px var(--tn-font); letter-spacing:-.01em;}
+.tn-standfirst{margin:0; max-width:78ch; font:400 16px/24px var(--tn-font); color:var(--tn-ink);}
+.tn-flag{display:inline-block; margin-top:14px; padding:4px 10px; border:1px solid var(--tn-red);
+  color:var(--tn-red); font:500 11px/16px var(--tn-mono); letter-spacing:.08em; text-transform:uppercase;}
+
+.tn-layout{display:grid; grid-template-columns:392px minmax(0,1fr); align-items:start;}
+@media (max-width:1080px){ .tn-layout{grid-template-columns:1fr;} .tn-rail{position:static !important; border-right:0 !important; border-bottom:1px solid var(--tn-ink);} }
+
+.tn-rail{position:sticky; top:0; max-height:100vh; overflow-y:auto; padding:24px 24px 48px;
+  border-right:1px solid var(--tn-ink); background:var(--tn-bg);}
+.tn-rail h2, .tn-stage h2{font:500 11px/1 var(--tn-mono); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--tn-mute); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--tn-rule);}
+.tn-rail h2:first-child{margin-top:0;}
+
+.tn-themes{display:grid; grid-template-columns:1fr 1fr; gap:6px;}
+.tn-themes button{appearance:none; font:400 13px/1 var(--tn-font); padding:10px 8px; cursor:pointer;
+  border:1px solid var(--tn-rule); background:transparent; color:var(--tn-ink); text-align:left;}
+.tn-themes button:hover{background:var(--tn-faint);}
+.tn-themes button[aria-pressed="true"]{background:var(--tn-ink); color:#FFFFFF; border-color:var(--tn-ink);}
+
+.tn-dial{display:grid; grid-template-columns:1fr; gap:5px; padding:10px 0; border-bottom:1px solid var(--tn-rule);}
+.tn-dial .tn-dhead{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+.tn-dial .tn-name{font:400 13px/1.3 var(--tn-mono);}
+.tn-dial .tn-val{font:500 13px/1.3 var(--tn-mono); font-variant-numeric:tabular-nums;}
+.tn-dial .tn-sub{font:400 11px/1.4 var(--tn-mono); color:var(--tn-mute);}
+.tn-dial.is-drift .tn-val{color:var(--tn-red);}
+.tn-dial.is-drift .tn-name::after{content:" •"; color:var(--tn-red);}
+.tn-dial input[type=range]{width:100%; accent-color:var(--tn-ink); margin:0;}
+.tn-dial input[type=range]:disabled{opacity:.35;}
+.tn-link{display:flex; align-items:center; gap:6px; font:400 11px/1.4 var(--tn-mono); color:var(--tn-mute); cursor:pointer;}
+.tn-link input{accent-color:var(--tn-ink); margin:0;}
+
+.tn-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+.tn-actions button{appearance:none; font:500 13px/1 var(--tn-font); padding:11px 14px; cursor:pointer;
+  border:1px solid var(--tn-ink); background:var(--tn-ink); color:#FFFFFF;}
+.tn-actions button.ghost{background:transparent; color:var(--tn-ink);}
+.tn-actions button:hover{filter:brightness(1.15);}
+.tn-actions button.ghost:hover{background:var(--tn-faint); filter:none;}
+
+.tn-stage{padding:24px 32px 64px; min-width:0;}
+.tn-panes{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--tn-ink); border:1px solid var(--tn-ink);}
+@media (max-width:900px){ .tn-panes{grid-template-columns:1fr;} }
+.tn-pane{padding:22px; min-width:0;}
+.tn-pane[data-theme="light"]{background:#FFFFFF; color:#1A1A1A;}
+.tn-pane[data-theme="dark"]{background:#1A1A1A; color:#FFFFFF; --tn-red:#F6604C;}
+.tn-stage[data-apollo-theme="legacy"] .tn-pane[data-theme="light"]{color:#333333;}
+.tn-stage[data-apollo-theme="supercharge"] .tn-pane[data-theme="light"]{background:#F7F6F4; color:#13110E; --tn-red:#F6604C;}
+.tn-stage[data-apollo-theme="supercharge"] .tn-pane[data-theme="dark"]{background:#1A1A1A; color:#F7F6F4;}
+.tn-panelabel{font:500 11px/1 var(--tn-mono); letter-spacing:.12em; text-transform:uppercase;
+  opacity:.55; margin:0 0 18px;}
+.tn-spec{padding:16px 0; border-top:1px solid currentColor;}
+.tn-spec:first-of-type{border-top:0;}
+.tn-spec > .tn-speclabel{font:400 11px/1 var(--tn-mono); letter-spacing:.06em; opacity:.55; margin:0 0 12px; display:block;}
+.tn-spec .tn-role{font-weight:500; opacity:.85;}
+.tn-row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+
+.tn-readout{margin-top:32px;}
+table.tn-table{border-collapse:collapse; width:100%; font:400 12px/1.4 var(--tn-mono); font-variant-numeric:tabular-nums;}
+table.tn-table th{text-align:left; padding:8px 10px; border-bottom:1px solid var(--tn-ink); font-weight:500;
+  letter-spacing:.06em; text-transform:uppercase; font-size:10px; color:var(--tn-mute); white-space:nowrap;}
+table.tn-table td{padding:7px 10px; border-bottom:1px solid var(--tn-rule); vertical-align:top;}
+table.tn-table tr.is-drift td{background:#FFF6F4;}
+table.tn-table td.tn-drift{color:var(--tn-red); font-weight:500;}
+table.tn-table td.tn-same{color:var(--tn-mute);}
+
+.tn-ruling{margin-top:36px; border:1px solid var(--tn-ink);}
+.tn-ruling header{padding:14px 18px; border-bottom:1px solid var(--tn-ink); background:var(--tn-faint);}
+.tn-ruling header p{margin:6px 0 0; font:400 13px/20px var(--tn-font); color:var(--tn-ink); max-width:80ch;}
+.tn-ruling h2{margin:0; border:0; padding:0;}
+.tn-ruling pre{margin:0; padding:18px; font:400 12px/1.7 var(--tn-mono); white-space:pre-wrap;
+  word-break:break-word; background:#FFFFFF;}
+.tn-notes{margin-top:36px; max-width:86ch;}
+.tn-notes ul{margin:0; padding-left:18px;}
+.tn-notes li{font:400 14px/22px var(--tn-font); margin-bottom:8px;}
+.tn-notes code{font:400 12px/1 var(--tn-mono); background:var(--tn-faint); padding:1px 4px;}
+.tn-foot{margin-top:40px; padding-top:14px; border-top:1px solid var(--tn-ink);
+  font:400 12px/18px var(--tn-mono); color:var(--tn-mute); max-width:86ch;}
+</style>
+</head>
+<body>
+
+<header class="tn-masthead">
+  <p class="tn-kicker">Apollo &middot; review surface &middot; 2026-09-03 &middot; session #244 lane B</p>
+  <h1>Radius tuner</h1>
+  <p class="tn-standfirst">Every radius token in the shape tier, on a live dial, against real specimens, across all four
+  themes and both modes. Store values sit beside every dial, so a candidate that has drifted off canon
+  says so in red. The readout at the foot prints the current state as a table you can quote.</p>
+  <span class="tn-flag">Decision surface &mdash; rules nothing &middot; no token was changed to build it</span>
+</header>
+
+<div class="tn-layout">
+
+  <!-- ══════════════════ CONTROL RAIL ══════════════════ -->
+  <aside class="tn-rail">
+    <h2>Theme</h2>
+    <div class="tn-themes" id="themeSwitch" role="group" aria-label="Apollo theme">
+      <button type="button" data-theme-key="mono"        aria-pressed="true">Apollo Mono</button>
+      <button type="button" data-theme-key="legacy"      aria-pressed="false">Apollo Legacy</button>
+      <button type="button" data-theme-key="console"     aria-pressed="false">Apollo Console</button>
+      <button type="button" data-theme-key="supercharge" aria-pressed="false">Apollo Supercharge</button>
+    </div>
+    <p class="tn-sub" id="themeNote" style="font:400 11px/1.5 var(--tn-mono); color:var(--tn-mute); margin:10px 0 0;"></p>
+
+    <h2>Role tokens</h2>
+    <div id="roleDials"></div>
+
+    <h2>Segmented control &mdash; per scale</h2>
+    <p style="font:400 11px/1.5 var(--tn-mono); color:var(--tn-mute); margin:0 0 10px;">
+      Thumb derives concentrically: <span style="white-space:nowrap">max(container &minus; padding, 0)</span>.
+      Padding is a spacing token and is read-only here.
+    </p>
+    <div id="segDials"></div>
+
+    <div class="tn-actions">
+      <button type="button" class="ghost" id="btnReset">Reset to current tokens</button>
+      <button type="button" id="btnCopy">Copy export</button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════ STAGE ══════════════════ -->
+  <main class="tn-stage" id="stage" data-apollo-theme="mono">
+    <h2 id="stageHeading" style="margin-top:0;">Specimens</h2>
+    <div class="tn-panes">
+
+      <!-- ---------- LIGHT PANE ---------- -->
+      <section class="tn-pane" data-theme="light">
+        <p class="tn-panelabel">Light</p>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Button &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-button" data-cn>
+            <div class="tn-row">
+              <button class="btn primary" type="button">Example</button>
+              <button class="btn secondary" type="button">Example</button>
+              <button class="btn tertiary" type="button">Example</button>
+              <button class="btn quaternary" type="button">Example</button>
+              <button class="btn primary is-disabled" type="button" disabled>Example</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Input fields &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-input-fields" data-cn>
+            <div class="field">
+              <label class="lbl" for="li1">Boxed field</label>
+              <div class="box"><input id="li1" type="text" placeholder="Placeholder"></div>
+            </div>
+            <div class="field is-error">
+              <label class="lbl" for="li2">Boxed field &mdash; error</label>
+              <div class="box"><input id="li2" type="text" value="Not a sort code"></div>
+            </div>
+            <div class="field is-disabled">
+              <label class="lbl" for="li3">Boxed field &mdash; disabled</label>
+              <div class="box"><input id="li3" type="text" value="Locked" disabled></div>
+            </div>
+            <div class="uctrl" style="margin-top:20px;"><input type="text" placeholder="Underline field"></div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Tags / chips &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-tags" data-cn>
+            <div class="tn-row">
+              <span class="tag"><span class="lbl">Savings</span></span>
+              <a class="tag link" href="#" onclick="return false;"><span class="lbl">#travel</span></a>
+              <span class="tag"><span class="lbl">GBP</span><button class="x" type="button" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></span>
+              <span class="tag"><span class="lbl">Last 30 days</span><button class="x" type="button" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Status indicator &mdash; <span class="tn-role">border-radius/indicator</span> (+ control on the button)</span>
+          <div class="cn-status-indicator" data-cn>
+            <div class="chips">
+              <span class="chip ok"><span class="dot"></span>Received</span>
+              <span class="chip warn"><span class="dot"></span>Pending</span>
+              <span class="chip err"><span class="dot"></span>Declined</span>
+              <span class="chip inf"><span class="dot"></span>In review</span>
+            </div>
+            <div class="cells">
+              <span class="cell ok">Cleared</span><span class="cell warn">Held</span>
+              <span class="cell err">Failed</span><span class="cell inf">Queued</span>
+            </div>
+            <button class="sim" type="button">Simulate</button>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Cards &mdash; <span class="tn-role">border-radius/surface</span></span>
+          <div class="cn-cards" data-cn>
+            <div class="row">
+              <article class="card action">
+                <div class="body"><div><h3>Card title</h3><p>Description.</p></div></div>
+                <div class="actions"><button class="qbtn" type="button">Action</button></div>
+              </article>
+              <a class="linkcard" href="#" onclick="return false;" aria-label="Example link">
+                <div><span class="ttl">Example link <span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></span><p>Description.</p></div>
+              </a>
+            </div>
+            <div class="row" style="margin-top:16px;">
+              <div class="card opt" role="radio" aria-checked="true" tabindex="0"><span class="radio" aria-hidden="true"><span class="dot"></span></span><div><h3>Current account</h3><p>Everyday spending.</p></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Banner &mdash; <span class="tn-role">border-radius/surface</span></span>
+          <div class="cn-banner" data-cn>
+            <div class="banner err"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>We could not complete your payment.</p></div><button class="x" type="button" aria-label="Dismiss"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+            <div class="banner warn"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Your card expires next month.</p></div></div>
+            <div class="banner ok"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Payment sent.</p></div></div>
+            <div class="banner info"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Statements move to paperless in April.</p></div></div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Modal &mdash; <span class="tn-role">border-radius/surface</span> + control on its buttons</span>
+          <div class="cn-modals" data-cn>
+            <div class="dialog" role="dialog" aria-label="Confirm payment">
+              <button class="close" type="button" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button>
+              <h2>Confirm payment</h2>
+              <p>&pound;240.00 to Rowan Fisher, today.</p>
+              <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn secondary" type="button">Cancel</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Segmented control &mdash; <span class="tn-role">border-radius/segmented-container + /segmented-thumb</span></span>
+          <div class="cn-segmented-control" data-cn>
+            <div class="segrow">
+              <span class="segcap">xs &middot; 28</span>
+              <div class="seg xs" role="group" aria-label="Density"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Low</button><button type="button" aria-pressed="false">High</button></div>
+              <span class="segcap">s &middot; 36</span>
+              <div class="seg s" role="group" aria-label="Period"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Monthly</button><button type="button" aria-pressed="false">Year to date</button></div>
+              <span class="segcap">m &middot; 44</span>
+              <div class="seg m" role="group" aria-label="View as"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">List</button><button type="button" aria-pressed="false">Grid</button><button type="button" aria-pressed="false">Table</button></div>
+              <span class="segcap">l &middot; 48</span>
+              <div class="seg l" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Day</button><button type="button" aria-pressed="false">Week</button><button type="button" aria-pressed="false">Month</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Container shell &mdash; <span class="tn-role">border-radius/container</span> (schematic)</span>
+          <div class="cn-container-shell" data-cn>
+            <div class="shell"><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ---------- DARK PANE ---------- -->
+      <section class="tn-pane" data-theme="dark">
+        <p class="tn-panelabel">Dark</p>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Button &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-button" data-cn>
+            <div class="tn-row">
+              <button class="btn primary" type="button">Example</button>
+              <button class="btn secondary" type="button">Example</button>
+              <button class="btn tertiary" type="button">Example</button>
+              <button class="btn quaternary" type="button">Example</button>
+              <button class="btn primary is-disabled" type="button" disabled>Example</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Input fields &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-input-fields" data-cn>
+            <div class="field">
+              <label class="lbl" for="di1">Boxed field</label>
+              <div class="box"><input id="di1" type="text" placeholder="Placeholder"></div>
+            </div>
+            <div class="field is-error">
+              <label class="lbl" for="di2">Boxed field &mdash; error</label>
+              <div class="box"><input id="di2" type="text" value="Not a sort code"></div>
+            </div>
+            <div class="field is-disabled">
+              <label class="lbl" for="di3">Boxed field &mdash; disabled</label>
+              <div class="box"><input id="di3" type="text" value="Locked" disabled></div>
+            </div>
+            <div class="uctrl" style="margin-top:20px;"><input type="text" placeholder="Underline field"></div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Tags / chips &mdash; <span class="tn-role">border-radius/control</span></span>
+          <div class="cn-tags" data-cn>
+            <div class="tn-row">
+              <span class="tag"><span class="lbl">Savings</span></span>
+              <a class="tag link" href="#" onclick="return false;"><span class="lbl">#travel</span></a>
+              <span class="tag"><span class="lbl">GBP</span><button class="x" type="button" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></span>
+              <span class="tag"><span class="lbl">Last 30 days</span><button class="x" type="button" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Status indicator &mdash; <span class="tn-role">border-radius/indicator</span> (+ control on the button)</span>
+          <div class="cn-status-indicator" data-cn>
+            <div class="chips">
+              <span class="chip ok"><span class="dot"></span>Received</span>
+              <span class="chip warn"><span class="dot"></span>Pending</span>
+              <span class="chip err"><span class="dot"></span>Declined</span>
+              <span class="chip inf"><span class="dot"></span>In review</span>
+            </div>
+            <div class="cells">
+              <span class="cell ok">Cleared</span><span class="cell warn">Held</span>
+              <span class="cell err">Failed</span><span class="cell inf">Queued</span>
+            </div>
+            <button class="sim" type="button">Simulate</button>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Cards &mdash; <span class="tn-role">border-radius/surface</span></span>
+          <div class="cn-cards" data-cn>
+            <div class="row">
+              <article class="card action">
+                <div class="body"><div><h3>Card title</h3><p>Description.</p></div></div>
+                <div class="actions"><button class="qbtn" type="button">Action</button></div>
+              </article>
+              <a class="linkcard" href="#" onclick="return false;" aria-label="Example link">
+                <div><span class="ttl">Example link <span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></span><p>Description.</p></div>
+              </a>
+            </div>
+            <div class="row" style="margin-top:16px;">
+              <div class="card opt" role="radio" aria-checked="true" tabindex="0"><span class="radio" aria-hidden="true"><span class="dot"></span></span><div><h3>Current account</h3><p>Everyday spending.</p></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Banner &mdash; <span class="tn-role">border-radius/surface</span></span>
+          <div class="cn-banner" data-cn>
+            <div class="banner err"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>We could not complete your payment.</p></div><button class="x" type="button" aria-label="Dismiss"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+            <div class="banner warn"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Your card expires next month.</p></div></div>
+            <div class="banner ok"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Payment sent.</p></div></div>
+            <div class="banner info"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8"/></svg></span><div class="main"><p>Statements move to paperless in April.</p></div></div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Modal &mdash; <span class="tn-role">border-radius/surface</span> + control on its buttons</span>
+          <div class="cn-modals" data-cn>
+            <div class="dialog" role="dialog" aria-label="Confirm payment">
+              <button class="close" type="button" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button>
+              <h2>Confirm payment</h2>
+              <p>&pound;240.00 to Rowan Fisher, today.</p>
+              <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn secondary" type="button">Cancel</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Segmented control &mdash; <span class="tn-role">border-radius/segmented-container + /segmented-thumb</span></span>
+          <div class="cn-segmented-control" data-cn>
+            <div class="segrow">
+              <span class="segcap">xs &middot; 28</span>
+              <div class="seg xs" role="group" aria-label="Density"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Low</button><button type="button" aria-pressed="false">High</button></div>
+              <span class="segcap">s &middot; 36</span>
+              <div class="seg s" role="group" aria-label="Period"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Monthly</button><button type="button" aria-pressed="false">Year to date</button></div>
+              <span class="segcap">m &middot; 44</span>
+              <div class="seg m" role="group" aria-label="View as"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">List</button><button type="button" aria-pressed="false">Grid</button><button type="button" aria-pressed="false">Table</button></div>
+              <span class="segcap">l &middot; 48</span>
+              <div class="seg l" role="group" aria-label="Range"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">Day</button><button type="button" aria-pressed="false">Week</button><button type="button" aria-pressed="false">Month</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-spec">
+          <span class="tn-speclabel">Container shell &mdash; <span class="tn-role">border-radius/container</span> (schematic)</span>
+          <div class="cn-container-shell" data-cn>
+            <div class="shell"><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span></div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ══════════════════ READOUT ══════════════════ -->
+    <section class="tn-readout">
+      <h2>Readout &mdash; token &rarr; value, current dial state</h2>
+      <table class="tn-table">
+        <thead><tr><th>Token</th><th>Store</th><th>Tuner</th><th>Source</th><th>Drift</th></tr></thead>
+        <tbody id="readoutBody"></tbody>
+      </table>
+    </section>
+
+    <!-- ══════════════════ RULING-SHAPED ══════════════════ -->
+    <section class="tn-ruling">
+      <header>
+        <h2>Ruling-shaped &mdash; verbatim, unscoped, NOT a ruling</h2>
+        <p>This block prints the dial state in the shape a ruling takes, so it can be pasted straight into chat.
+        It carries no scope: it does not say which themes it applies to, whether it mints or inherits, or what
+        enacts it. Those are Dave's words to add. Nothing on this page has changed a token.</p>
+      </header>
+      <pre id="rulingText"></pre>
+    </section>
+
+    <section class="tn-notes">
+      <h2>What is not faithful &mdash; declared</h2>
+      <ul>
+        <li><strong>Icons are placeholders.</strong> The HSBC icon paths are lifted verbatim only for the
+        close glyph (Tags/Banner/Modal) and the link chevron (Cards). The card-details and RAG glyphs are
+        drawn as a plain circle. Icons carry no radius, so nothing under review depends on them.</li>
+        <li><strong>The modal renders inline.</strong> The real <code>.dialog</code> sits inside a fixed
+        <code>.overlay</code>; here it is placed in flow so both modes are visible at once. The dialog's own
+        box, border, shadow, padding and both radius bindings are the snippet's.</li>
+        <li><strong>The container shell is a schematic</strong>, not a lifted snippet: a sub-bento wrapper with
+        six tiles bound to <code>--border-radius-container</code>, standing in for the s217-D2 model (the theme
+        radius sits on the sub-bento container, tiles at 1px spacing). The corner-keyline construction of
+        s218-D8 is not modelled.</li>
+        <li><strong>Hover/press physics are present but partial</strong> &mdash; the Button family's
+        <code>--press-travel</code>/<code>--press-darken</code> partial is carried; the reduced-motion and
+        container-query reflow blocks are not.</li>
+        <li><strong>Per-component canon projections are included, colour and all</strong>, pasted from
+        canon.css AUTO-THEMES for these eight components. Any component not on this page is not represented.</li>
+      </ul>
+    </section>
+
+    <p class="tn-foot">
+      Sources read: knowledge/tokens/layout.json (border-radius family) &middot;
+      knowledge/tokens/themes/apollo-{console,legacy,supercharge}.overrides.json &middot;
+      knowledge/canon/canon.css AUTO-THEMES &middot; knowledge/canon/type.css (inlined verbatim above) &middot;
+      knowledge/snippets/{Button,Input-fields,Tags,Status-indicator,Cards,Banner,Modals,Segmented-control}.reference.html &middot;
+      knowledge/_rulings.json (s199-D3, s200-D1/D2/D3/D4, s201-D1/D5, s202-D1/D2, s217-D2/D3, s227-D4/D7).
+      Constraining rulings honoured: the concentric law and its zero floor; padding untouched;
+      derivation is mint-time (s200-D1 clause a) &mdash; the live derive here is for the eye only.
+    </p>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── STORE: the radius family exactly as it sits on disk, 2026-09-03 ────────
+     null on a role = the role ALIASES border-radius/default (layout.json $alias).
+     Console is the only theme that has unlinked any role.                      */
+  var SEG_PAD = { xs:2, s:2, m:2, l:4 };            /* spacing tokens — read-only here */
+  var SCALES  = ["xs","s","m","l"];
+  var ROLES   = ["control","surface","indicator","container"];
+
+  var STORE = {
+    mono:        { def:0, roles:{control:null,surface:null,indicator:null,container:null},
+                   segc:{xs:0,s:0,m:0,l:0}, segt:{xs:0,s:0,m:0,l:0},
+                   note:"Base theme. Every role aliases default; squares stay square (s201-D5 / s197 floor)." },
+    legacy:      { def:0, roles:{control:null,surface:null,indicator:null,container:null},
+                   segc:{xs:0,s:0,m:0,l:0}, segt:{xs:0,s:0,m:0,l:0},
+                   note:"default:0 is an explicit override — Legacy is square by ruling, not by inheritance." },
+    console:     { def:4, roles:{control:8,surface:20,indicator:null,container:20},
+                   segc:{xs:6,s:8,m:10,l:12}, segt:{xs:4,s:6,m:8,l:8},
+                   note:"The only dialled theme. control 8 and surface 20 are s199-D3 tuner picks; container 20 is s200-D2/D3; the segmented pairs are s201-D1/s200-D4 re-minted concentric at s227-D4/D7." },
+    supercharge: { def:0, roles:{control:null,surface:null,indicator:null,container:null},
+                   segc:{xs:0,s:0,m:0,l:0}, segt:{xs:0,s:0,m:0,l:0},
+                   note:"Carries no radius override at all — it inherits the layout.json base." }
+  };
+  var THEMES = ["mono","legacy","console","supercharge"];
+  var LABEL  = { mono:"Apollo Mono", legacy:"Apollo Legacy (Common)", console:"Apollo Console", supercharge:"Apollo Supercharge" };
+
+  /* ── STATE: one editable copy per theme, seeded from the store ───────────── */
+  function seed(t){
+    var s = STORE[t], st = { def:s.def, roles:{}, segc:{}, segt:{}, derive:true };
+    ROLES.forEach(function(r){
+      st.roles[r] = { alias: s.roles[r] === null, val: (s.roles[r] === null ? s.def : s.roles[r]) };
+    });
+    SCALES.forEach(function(k){ st.segc[k] = s.segc[k]; st.segt[k] = s.segt[k]; });
+    /* the store's thumbs are exactly concentric today, so derive starts ON and reproduces them */
+    st.derive = SCALES.every(function(k){ return s.segt[k] === Math.max(s.segc[k] - SEG_PAD[k], 0); });
+    return st;
+  }
+  var STATE = {}; THEMES.forEach(function(t){ STATE[t] = seed(t); });
+  var current = "mono";
+
+  /* ── RESOLVE: state → concrete px for every token in the family ──────────── */
+  function resolve(st){
+    var out = { "default": st.def };
+    ROLES.forEach(function(r){ out[r] = st.roles[r].alias ? st.def : st.roles[r].val; });
+    out.seg = {};
+    SCALES.forEach(function(k){
+      var c = st.segc[k];
+      var t = st.derive ? Math.max(c - SEG_PAD[k], 0) : st.segt[k];
+      out.seg[k] = { c:c, t:t, pad:SEG_PAD[k] };
+    });
+    return out;
+  }
+  function storeResolved(t){
+    var s = STORE[t], out = { "default": s.def };
+    ROLES.forEach(function(r){ out[r] = (s.roles[r] === null ? s.def : s.roles[r]); });
+    out.seg = {};
+    SCALES.forEach(function(k){ out.seg[k] = { c:s.segc[k], t:s.segt[k], pad:SEG_PAD[k] }; });
+    return out;
+  }
+
+  /* ── APPLY: inline custom properties on every specimen root. Inline always
+        beats the AUTO-THEMES projections, whatever their specificity.          */
+  var stage = document.getElementById("stage");
+  function apply(){
+    var r = resolve(STATE[current]);
+    var props = {
+      "--border-radius-default":   r["default"] + "px",
+      "--border-radius-control":   r.control    + "px",
+      "--border-radius-surface":   r.surface    + "px",
+      "--border-radius-indicator": r.indicator  + "px",
+      "--border-radius-container": r.container  + "px"
+    };
+    SCALES.forEach(function(k){
+      props["--seg-rad-"   + k] = r.seg[k].c + "px";
+      props["--seg-thumb-" + k] = r.seg[k].t + "px";
+    });
+    var roots = stage.querySelectorAll("[data-cn]");
+    for(var i=0;i<roots.length;i++){
+      for(var p in props){ if(props.hasOwnProperty(p)) roots[i].style.setProperty(p, props[p]); }
+    }
+    stage.setAttribute("data-apollo-theme", current);
+    document.getElementById("stageHeading").textContent =
+      "Specimens — " + LABEL[current] + ", light and dark";
+    document.getElementById("themeNote").textContent = STORE[current].note;
+    paintReadout(r);
+    paintRuling(r);
+  }
+
+  /* ── DIALS ──────────────────────────────────────────────────────────────── */
+  var roleHost = document.getElementById("roleDials");
+  var segHost  = document.getElementById("segDials");
+
+  function dial(opts){
+    var wrap = document.createElement("div"); wrap.className = "tn-dial";
+    var head = document.createElement("div"); head.className = "tn-dhead";
+    var name = document.createElement("span"); name.className = "tn-name"; name.textContent = opts.name;
+    var val  = document.createElement("span"); val.className  = "tn-val";
+    head.appendChild(name); head.appendChild(val); wrap.appendChild(head);
+    var range = document.createElement("input");
+    range.type = "range"; range.min = "0"; range.max = String(opts.max || 32); range.step = "1";
+    wrap.appendChild(range);
+    var sub = document.createElement("span"); sub.className = "tn-sub"; wrap.appendChild(sub);
+    var box = null;
+    if(opts.linkLabel){
+      var link = document.createElement("label"); link.className = "tn-link";
+      box = document.createElement("input"); box.type = "checkbox";
+      link.appendChild(box); link.appendChild(document.createTextNode(opts.linkLabel));
+      wrap.appendChild(link);
+    }
+    (opts.host || roleHost).appendChild(wrap);
+    return { wrap:wrap, range:range, val:val, sub:sub, check:box };
+  }
+
+  var D = {};
+  D.def = dial({ name:"border-radius/default", max:32 });
+  ROLES.forEach(function(r){
+    D[r] = dial({ name:"border-radius/" + r, max:32, linkLabel:" = default (alias)" });
+  });
+  var SD = {};
+  SCALES.forEach(function(k){
+    SD[k] = {
+      c: dial({ name:"segmented-container/" + k, max:24, host:segHost }),
+      t: dial({ name:"segmented-thumb/" + k,     max:24, host:segHost,
+                linkLabel:" derive concentric (all scales share one switch)" })
+    };
+  });
+
+  function sync(){
+    var st = STATE[current], r = resolve(st), s = storeResolved(current);
+
+    D.def.range.value = st.def;
+    D.def.val.textContent = r["default"] + "px";
+    D.def.sub.textContent = "store " + s["default"] + "px";
+    D.def.wrap.classList.toggle("is-drift", r["default"] !== s["default"]);
+
+    ROLES.forEach(function(role){
+      var d = D[role], rs = st.roles[role];
+      d.check.checked = rs.alias;
+      d.range.disabled = rs.alias;
+      d.range.value = rs.alias ? st.def : rs.val;
+      d.val.textContent = r[role] + "px";
+      d.sub.textContent = "store " + s[role] + "px" +
+        (STORE[current].roles[role] === null ? " (aliased)" : " (override)") +
+        (rs.alias ? " · following default" : " · unlinked");
+      d.wrap.classList.toggle("is-drift", r[role] !== s[role]);
+    });
+
+    SCALES.forEach(function(k){
+      var dc = SD[k].c, dt = SD[k].t;
+      dc.range.value = st.segc[k];
+      dc.val.textContent = r.seg[k].c + "px";
+      dc.sub.textContent = "store " + s.seg[k].c + "px · padding " + SEG_PAD[k] + "px (spacing token)";
+      dc.wrap.classList.toggle("is-drift", r.seg[k].c !== s.seg[k].c);
+
+      dt.check.checked = st.derive;
+      dt.range.disabled = st.derive;
+      dt.range.value = r.seg[k].t;
+      dt.val.textContent = r.seg[k].t + "px";
+      dt.sub.textContent = "store " + s.seg[k].t + "px · " +
+        (st.derive ? ("max(" + r.seg[k].c + " − " + SEG_PAD[k] + ", 0)") : "typed");
+      dt.wrap.classList.toggle("is-drift", r.seg[k].t !== s.seg[k].t);
+    });
+  }
+
+  D.def.range.addEventListener("input", function(){
+    STATE[current].def = parseInt(this.value, 10); sync(); apply();
+  });
+  ROLES.forEach(function(role){
+    D[role].range.addEventListener("input", function(){
+      STATE[current].roles[role].val = parseInt(this.value, 10); sync(); apply();
+    });
+    D[role].check.addEventListener("change", function(){
+      var rs = STATE[current].roles[role];
+      rs.alias = this.checked;
+      if(!rs.alias) rs.val = STATE[current].def;   /* unlink starts where the alias left it */
+      sync(); apply();
+    });
+  });
+  SCALES.forEach(function(k){
+    SD[k].c.range.addEventListener("input", function(){
+      STATE[current].segc[k] = parseInt(this.value, 10); sync(); apply();
+    });
+    SD[k].t.range.addEventListener("input", function(){
+      STATE[current].segt[k] = parseInt(this.value, 10); sync(); apply();
+    });
+    SD[k].t.check.addEventListener("change", function(){
+      var st = STATE[current];
+      st.derive = this.checked;
+      if(!st.derive){ SCALES.forEach(function(j){ st.segt[j] = Math.max(st.segc[j] - SEG_PAD[j], 0); }); }
+      sync(); apply();
+    });
+  });
+
+  /* ── THEME SWITCH ───────────────────────────────────────────────────────── */
+  var switchHost = document.getElementById("themeSwitch");
+  switchHost.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-theme-key]"); if(!b) return;
+    current = b.getAttribute("data-theme-key");
+    var all = switchHost.querySelectorAll("button[data-theme-key]");
+    for(var i=0;i<all.length;i++){
+      all[i].setAttribute("aria-pressed", all[i] === b ? "true" : "false");
+    }
+    sync(); apply();
+  });
+
+  /* ── READOUT ────────────────────────────────────────────────────────────── */
+  var body = document.getElementById("readoutBody");
+  function row(token, store, tuner, source){
+    var drift = store !== tuner;
+    var tr = document.createElement("tr");
+    if(drift) tr.className = "is-drift";
+    function td(txt, cls){ var c = document.createElement("td"); c.textContent = txt; if(cls) c.className = cls; return c; }
+    tr.appendChild(td(token));
+    tr.appendChild(td(store + "px"));
+    tr.appendChild(td(tuner + "px", drift ? "tn-drift" : "tn-same"));
+    tr.appendChild(td(source));
+    tr.appendChild(td(drift ? ((tuner > store ? "+" : "") + (tuner - store) + "px") : "—",
+                      drift ? "tn-drift" : "tn-same"));
+    body.appendChild(tr);
+  }
+  function paintReadout(r){
+    var s = storeResolved(current), st = STATE[current];
+    body.innerHTML = "";
+    row("border-radius/default", s["default"], r["default"], "theme base");
+    ROLES.forEach(function(role){
+      row("border-radius/" + role, s[role], r[role],
+          st.roles[role].alias ? "alias → default" : "unlinked override");
+    });
+    SCALES.forEach(function(k){
+      row("border-radius/segmented-container/" + k, s.seg[k].c, r.seg[k].c, "per-scale mint");
+    });
+    SCALES.forEach(function(k){
+      row("border-radius/segmented-thumb/" + k, s.seg[k].t, r.seg[k].t,
+          st.derive ? ("concentric: max(" + r.seg[k].c + " − " + SEG_PAD[k] + ", 0)") : "typed");
+    });
+  }
+
+  /* ── RULING-SHAPED EXPORT ───────────────────────────────────────────────── */
+  var pre = document.getElementById("rulingText");
+  function pad(s, n){ s = String(s); while(s.length < n) s += " "; return s; }
+  function paintRuling(r){
+    var s = storeResolved(current), st = STATE[current], L = [];
+    var drifted = [];
+    L.push("RULING-SHAPED — NOT RULED. Candidate radius set for " + LABEL[current] + ".");
+    L.push("Source: reviews/RADIUS-TUNER-2026-09-03-v1.html · 2026-09-03 · session #244 lane B.");
+    L.push("Unscoped: this text does not say which themes it binds, whether it mints or inherits,");
+    L.push("or what enacts it. Nothing in knowledge/tokens/ was changed to produce it.");
+    L.push("");
+    L.push("ROLE TOKENS");
+    L.push("  " + pad("border-radius/default", 38) + pad(r["default"] + "px", 8) +
+           "store " + pad(s["default"] + "px", 8) + (r["default"] !== s["default"] ? "CANDIDATE" : "unchanged"));
+    if(r["default"] !== s["default"]) drifted.push("border-radius/default");
+    ROLES.forEach(function(role){
+      var link = st.roles[role].alias ? "alias → default" : "unlinked";
+      L.push("  " + pad("border-radius/" + role, 38) + pad(r[role] + "px", 8) +
+             "store " + pad(s[role] + "px", 8) + (r[role] !== s[role] ? "CANDIDATE" : "unchanged") +
+             "   [" + link + "]");
+      if(r[role] !== s[role]) drifted.push("border-radius/" + role);
+    });
+    L.push("");
+    L.push("SEGMENTED CONTROL, PER SCALE — padding is a spacing token and was not touched.");
+    L.push("  " + pad("scale", 8) + pad("container", 12) + pad("padding", 10) + pad("thumb", 8) + "law");
+    SCALES.forEach(function(k){
+      var law = st.derive ? ("max(" + r.seg[k].c + " − " + SEG_PAD[k] + ", 0)") : "typed, not derived";
+      L.push("  " + pad(k, 8) + pad(r.seg[k].c + "px", 12) + pad(SEG_PAD[k] + "px", 10) +
+             pad(r.seg[k].t + "px", 8) + law);
+      if(r.seg[k].c !== s.seg[k].c) drifted.push("border-radius/segmented-container/" + k);
+      if(r.seg[k].t !== s.seg[k].t) drifted.push("border-radius/segmented-thumb/" + k);
+    });
+    L.push("");
+    if(drifted.length === 0){
+      L.push("NO CANDIDATE VALUES — every dial sits on its store value. This is the theme as built.");
+    } else {
+      L.push("CANDIDATES OFF CANON (" + drifted.length + "): " + drifted.join(", "));
+      L.push("Each is a proposal on a slider, seen on the specimens above in both modes. None is ruled,");
+      L.push("none is minted, and no generator has been run against them.");
+    }
+    L.push("");
+    L.push("Standing constraints this page did not touch: the concentric law and its zero floor;");
+    L.push("segmented padding; mint-time derivation (s200-D1 clause a) — the derive switch above is");
+    L.push("a live preview for the eye, never a runtime mechanism for anything shipped.");
+    pre.textContent = L.join("\n");
+  }
+
+  /* ── ACTIONS ────────────────────────────────────────────────────────────── */
+  document.getElementById("btnReset").addEventListener("click", function(){
+    STATE[current] = seed(current); sync(); apply();
+  });
+  document.getElementById("btnCopy").addEventListener("click", function(){
+    var txt = pre.textContent, btn = this;
+    function done(ok){ btn.textContent = ok ? "Copied" : "Select the block to copy";
+      setTimeout(function(){ btn.textContent = "Copy export"; }, 1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ done(true); }, function(){ done(false); });
+    } else {
+      var sel = window.getSelection(), rg = document.createRange();
+      rg.selectNodeContents(pre); sel.removeAllRanges(); sel.addRange(rg); done(false);
+    }
+  });
+
+  /* ── SEGMENTED THUMB GEOMETRY — the indicator has to sit under the pressed
+        segment or the concentric pair cannot be judged.                        */
+  function placeIndicators(){
+    var segs = document.querySelectorAll(".cn-segmented-control .seg");
+    for(var i=0;i<segs.length;i++){
+      var seg = segs[i];
+      var ind = seg.querySelector(".ind");
+      var on  = seg.querySelector('button[aria-pressed="true"]');
+      if(!ind || !on) continue;
+      ind.style.left  = on.offsetLeft + "px";
+      ind.style.width = on.offsetWidth + "px";
+    }
+  }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest(".cn-segmented-control .seg button"); if(!b) return;
+    var seg = b.closest(".seg"), all = seg.querySelectorAll("button");
+    for(var i=0;i<all.length;i++) all[i].setAttribute("aria-pressed", all[i] === b ? "true" : "false");
+    placeIndicators();
+  });
+  window.addEventListener("resize", placeIndicators);
+
+  sync(); apply();
+  placeIndicators();
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(placeIndicators); }
+  window.setTimeout(placeIndicators, 60);
+
+  /* probe hook for the render-verify driver */
+  window.__radiusTuner = {
+    setTheme:function(t){ current = t;
+      var all = switchHost.querySelectorAll("button[data-theme-key]");
+      for(var i=0;i<all.length;i++){ all[i].setAttribute("aria-pressed", all[i].getAttribute("data-theme-key") === t ? "true":"false"); }
+      sync(); apply(); placeIndicators(); },
+    setDial:function(kind, key, v){
+      var st = STATE[current];
+      if(kind === "default"){ st.def = v; }
+      else if(kind === "role"){ st.roles[key].alias = false; st.roles[key].val = v; }
+      else if(kind === "segc"){ st.segc[key] = v; }
+      sync(); apply(); placeIndicators(); },
+    resolve:function(){ return resolve(STATE[current]); },
+    themes:THEMES
+  };
+})();
+</script>
+</body>
+</html>
