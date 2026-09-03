@@ -41,10 +41,23 @@
     "commonPatterns": ["payment-date", "appointment-slot", "statement-period"]
   },
   "behaviour": {
-    "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
-    "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
-    "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
-    "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
+    "script": "knowledge/snippets/Calendar.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "keydown"
+    ],
+    "fallback": null,
+    "$note": {
+      "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
+      "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
+      "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
+      "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
+    },
+    "$unproven": [
+      "fallback"
+    ],
+    "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the live grid's <tbody id=cal-body> is EMPTY (innerHTML length 0) and #cal-title is a blank &nbsp; — the days are script-rendered, so the candidate 'server-authored buttons' is FALSE; next-month and the live region do nothing. 2/3 assertions held; failed: month grid renders: server-authored day buttons present. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-calendar-{before,after}.png"
   },
   "accessibility": {
     "structure": "A real <table> with role=grid and a visually-hidden <caption> carrying the month. Rows are <tr role=row>, weekday heads are <th role=columnheader scope=col abbr=...>, and cells are plain <td> whose role maps NATIVELY to gridcell because the table's role is grid (HTML-AAM). The redundant role attributes were removed rather than written — first rule of ARIA — and the computed roles were then verified in a real browser rather than asserted.",

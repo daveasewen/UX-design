@@ -26,10 +26,21 @@
     "commonPatterns": ["make-a-payment amount", "transfer amount", "top-up amount"]
   },
   "behaviour": {
-    "typing": "Digits, comma, dot accepted while typing; everything else stripped on input.",
-    "blur": "Value normalises: en-GB grouping + exactly two decimals; group gains is-completed (value weight 500).",
-    "focus": "is-completed lifts while editing.",
-    "keypad": "inputmode=decimal brings the numeric keypad on touch."
+    "script": "knowledge/snippets/Amount-input.reference.html#script",
+    "partial": null,
+    "events": [
+      "blur",
+      "focus",
+      "input"
+    ],
+    "fallback": "A native text input: `inputmode=decimal` is an attribute and stays; typed characters are kept verbatim (no stripping, no en-GB grouping, no two-decimal normalisation); no is-completed weight and no message on blur.",
+    "$note": {
+      "typing": "Digits, comma, dot accepted while typing; everything else stripped on input.",
+      "blur": "Value normalises: en-GB grouping + exactly two decimals; group gains is-completed (value weight 500).",
+      "focus": "is-completed lifts while editing.",
+      "keypad": "inputmode=decimal brings the numeric keypad on touch."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-amount-input-{before,after}.png"
   },
   "accessibility": {
     "label": "Real <label for> (or aria-label naming the currency when the visible label is elsewhere); help + messages joined via aria-describedby.",

@@ -1,0 +1,27 @@
+    ✗ real repo: clean (0 findings; got 2: ['VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ file=_gen_chain.py) — 23 line(s) differ (sha256 9a133a837646 vs source 42e4887e89ba)', 'VERBATIM SET: memento-package/claude-plugin/memento/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=claude-plugin copy file=_gen_chain.py) — 23 line(s) differ (sha256 9a133a837646 vs source 42e4887e89ba)'])
+    ✓ ARM1 mutation: doctored machinery/_gen_chain.py is caught, names the file + copy + a line count
+      quoted: VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ file=_gen_chain.py) — 25 line(s) differ (sha256 f2ecb5ccc907 vs source 42e4887e89ba)
+    ✓ ARM1 mutation: a MISSING verbatim file (not just a diff) is caught and named
+    ✓ ARM3 mutation: copies diverge on a non-verbatim-set file (the manifest) — caught, names the file and 'DIFFERS between'
+      quoted: CROSS-COPY: _MACHINERY-MANIFEST.md DIFFERS between memento-package/machinery/ and memento-package/claude-plugin/memento/machinery/ — 2 line(s) differ
+    ✓ ARM3 mutation: a known file missing from BOTH copies (pairwise-invisible) is still caught by the completeness sub-check
+      quoted: CROSS-COPY: both copies are missing known file(s): ['_consult-lexicon.json']
+    ✓ ARM4 mutation: a rogue file is caught, named with its exact path
+    ✓ ARM4 control: __pycache__ present in the SAME fixture is excluded BY NAME and never itself reported (proves the exclusion is narrow, not a silent blanket ignore)
+      quoted: UNKNOWN FILE: memento-package/machinery/_ROGUE.py (machinery/) is not on the known-files list ['_MACHINERY-MANIFEST.md', '_capture_gate.py', '_consult-lexicon.json', '_gen_chain.py', '_graph_edges.py', '_memento_search.py', '_search_core.py'] — fail loud rather than silently ignored (scope-blindness rule)
+    ✓ ARM2(a) mutation: measure_tokens body changed since port commit 91d7528 — caught, names the function and 'CHANGED since the port'
+      quoted: SHIM PROVENANCE chain(a): 'measure_tokens' in knowledge/_capture_gate.py has CHANGED since the port commit ba2c9f5 — 1 line(s) differ. memento-package/machinery/_capture_gate.py may now be stale against its declared source; re-review and re-port, or update the docstring.
+    ✓ ARM2(b) mutation: measurement_degraded deleted from current source — caught, names the function and 'GONE from current'
+      quoted: SHIM PROVENANCE chain(a): 'measurement_degraded' is GONE from current knowledge/_capture_gate.py (present at the port commit ba2c9f5) — the shim's ported source no longer exists to compare against
+    ✓ ARM2(c) mutation: GM_VOCAB changed since port commit ace3ed3 — caught, names GM_VOCAB and 'CHANGED since the port'
+      quoted: SHIM PROVENANCE chain(b): 'GM_VOCAB' in knowledge/_gm_usage.py has CHANGED since the port commit ace3ed3 — 1 line(s) differ. memento-package/machinery/_capture_gate.py may now be stale against its declared source; re-review and re-port, or update the docstring.
+    ✓ ARM2(d) mutation: shim docstring's claimed commit no longer matches the gate's expectation — caught, names both hashes
+      quoted: SHIM PROVENANCE: memento-package/machinery/_capture_gate.py's docstring now claims it was ported from knowledge/_capture_gate.py @ deadbee, but this gate is built against ba2c9f5 — the shim was re-ported and the gate was not updated to match.
+    ✓ ARM2(e) mutation: BOTH packed shim copies edited IDENTICALLY (invisible to the cross-copy arm) — caught, names the drifted body and both copies
+    ✓ ARM2(e) control: the same fixture's CROSS-COPY arm stays silent, proving arm 2b is what saw it (the copies really are still identical to each other)
+      quoted: SHIM BODIES: 'measure_tokens' in memento-package/machinery/_capture_gate.py (machinery/) has DRIFTED from knowledge/_capture_gate.py @ ba2c9f5 — 1 line(s) differ BEYOND the declare
+    ✓ ARM2(f) mutation: an edit INSIDE the one declared-difference region still FAILS — the allowance tolerates its exact quoted text and nothing adjacent to it
+    ✓ ARM2(g) mutation: a DECLARED-DIFFERENCE rule that no longer matches fails LOUD and named, rather than widening into a silent pass
+      quoted: SHIM BODIES: a DECLARED-DIFFERENCE rule no longer applies for 'read_chain_tk' — selftest: a rule whose source text does not exist — its source text was expected 1x, found 0x. The a
+    ✓ ARM2(h) control: with the real table restored, the real pack is GREEN — the three declared allowances are load-bearing, and a correct pack is not red
+  ✗ _validate_package_delta selftest: 1 bite(s) failed

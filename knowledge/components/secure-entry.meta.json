@@ -24,10 +24,22 @@
     "commonPatterns": ["SMS one-time passcode", "card PIN confirmation", "secure-key code"]
   },
   "behaviour": {
-    "advance": "Focus moves to the next cell on fill; backspace on an empty cell steps back and clears.",
-    "paste": "A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).",
-    "verify": "Checked when all cells are filled; group gains is-done or is-error; cells carry aria-invalid on failure.",
-    "resend": "Disabled for 30s; the wait counter is visible text beside the button."
+    "script": "knowledge/snippets/Secure-entry.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "input",
+      "keydown",
+      "paste"
+    ],
+    "fallback": "Six independent inputs; no auto-advance, no paste or typing distribution, no verify state; `autocomplete=one-time-code` (an attribute) stays on the first cell.",
+    "$note": {
+      "advance": "Focus moves to the next cell on fill; backspace on an empty cell steps back and clears.",
+      "paste": "A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).",
+      "verify": "Checked when all cells are filled; group gains is-done or is-error; cells carry aria-invalid on failure.",
+      "resend": "Disabled for 30s; the wait counter is visible text beside the button."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-secure-entry-{before,after}.png"
   },
   "accessibility": {
     "structure": "role=group named by the visible label (aria-labelledby); every cell carries 'Digit n of N'.",

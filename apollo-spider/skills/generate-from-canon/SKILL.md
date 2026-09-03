@@ -44,6 +44,15 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 2. **Copy the snippet, don't re-draw it.** Take markup and classes from
    `knowledge/snippets/<Slug>.reference.html`. Hand-rolling a component from its
    screenshot invents defects that the gates then catch as yours.
+2a. **Copy the script address with the markup; author no JS.** Every snippet whose
+    component carries behaviour declares its ADDRESS in `knowledge/components/<slug>.meta.json`
+    (`behaviour.script`) and carries the same address in a `#behaviour-manifest` block beside
+    `#token-manifest`. Take the snippet's own `<script>` (or its `AUTO-BEHAVIOUR` block)
+    verbatim — the bytes are the key — and carry the address into the page's receipt. Never
+    write a handler yourself, never paraphrase the script, never point at another component's
+    script: shared behaviour is a registered partial. `fallback` says what the component does
+    with JavaScript off; if it is null, say so in the Gaps list rather than inventing one.
+    `_validate_receipt.py` reads the meta and checks the page loads what it names.
 3. **Bind every visual value to a token by intent** — never a raw hex or px. The names
    live in `knowledge/tokens/*.json` and resolve in `knowledge/canon/canon.css`
    (`primary/background/hover` → `var(--primary-background-hover)`). Spacing, radius and
@@ -105,6 +114,19 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     ⚠ `Template-dashboard.reference.html` is `.l-grid`-based, not bento. It is a
     legitimate non-bento dashboard and it is **not** the answer to "build me a dashboard"
     unless the designer answered the question above with a no.
+7b. **Grouping comes from the graph, not from the class name.** Whether two modules share
+    a group is a fact stored ONCE, as an `edges.groupsWith` entry in the member's
+    `knowledge/components/<slug>.meta.json` (the positive twin of `mustNotNeighbour`). The
+    rails' `grouping` dial and this rule are DERIVED from it and never restate it. A group is
+    members that answer ONE question the user came with — never "the KPIs, because they are
+    KPIs"; its members are uniform in kind, carry one accessible name and one containment
+    signal, and stay contiguous at every band. Read the edge before you draw a `<section>`;
+    where the edge is `ref:null` the grouping is undecided and is a Gap, not a guess. HOW MANY
+    groups a screen has, and what belongs in each, is the designer's product decision — never
+    yours (template-dashboard-bento.meta.json:12). The snippet's group classes are ROLE words
+    (`tpl-group-lead` / `-evidence` / `-context`), never content types; the composition gate
+    (`_validate_composition.py`, step 1b of `_validate_screen.py`) reads span legality off the
+    page and blocks an orphan cell.
 8. **Icons are real assets only** — from `knowledge/assets/icons/`. Never draw a glyph.
    If a shape is genuinely custom, mark it `<svg data-bespoke="why">` so it reads as a
    decision rather than an invention.

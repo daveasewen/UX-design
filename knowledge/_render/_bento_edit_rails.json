@@ -301,6 +301,75 @@
         ]
       }
     },
+    "grouping": {
+      "kind": "derived",
+      "options": [
+        "component:kpi-tile",
+        "component:stat-card"
+      ],
+      "labels": {
+        "component:kpi-tile": "component:kpi-tile",
+        "component:stat-card": "component:stat-card"
+      },
+      "types": [
+        "dashboard"
+      ],
+      "themes": "all",
+      "theme_locked": false,
+      "control": "none - DERIVED, never picked. s234-D4: grouping lives ONCE in the KG; this dial is a CONSUMER generated from edges.groupsWith and is not a second home.",
+      "ruled_by": "s234-D4 \u00b7 s245-D7",
+      "note": "A group exists when its members answer ONE question the user came with (rB #234). Members uniform in kind (C2), one containment signal (C5), one accessible name (C3), contiguous at every band (C8, _validate_composition.py). Membership and group COUNT are product decisions and Dave's (template-dashboard-bento.meta.json).",
+      "$derived_from": "knowledge/components/<member>.meta.json edges.groupsWith; member set = the template's $composes (template-dashboard-bento)",
+      "groups": [
+        {
+          "members": [
+            "component:kpi-tile"
+          ],
+          "kind": "same-kind (self-edge)",
+          "edges": [
+            "component:kpi-tile -> component:kpi-tile"
+          ],
+          "uniform_in_kind": true
+        },
+        {
+          "members": [
+            "component:stat-card"
+          ],
+          "kind": "same-kind (self-edge)",
+          "edges": [
+            "component:stat-card -> component:stat-card"
+          ],
+          "uniform_in_kind": true
+        }
+      ],
+      "declared": [
+        {
+          "on": "component:chart-bar",
+          "$note": "RULED s245-D7 (#245). Group 'Spending analysis' (knowledge/snippets/Template-dashboard-bento.reference.html: the tpl-group-evidence section) holds ONE module - a Stat-card carrying Chart-bar's column specimen. A ONE-MEMBER GROUP IS LEGAL as a DECLARED CARVE-OUT (s245-D7 Q3(a)): ref:null because there is no partner to point at, and that is the declaration, not a gap."
+        },
+        {
+          "on": "component:template-dashboard-bento",
+          "$note": "RULED s245-D7 (#245). Group 'This month' (knowledge/snippets/Template-dashboard-bento.reference.html: section.tpl-group-lead, s245-D6 word) - members component:kpi-tile; shared question read off the section's aria-label. ref:null: a GROUP is not a node in the edge grammar (component|pattern|context|snippet|ruling) and s245-D7 Q7(a) keeps the edge at module level; a 'group:' prefix is (c), for when the grammar is next opened."
+        },
+        {
+          "on": "component:template-dashboard-bento",
+          "$note": "RULED s245-D7 (#245). Group 'Spending analysis' (knowledge/snippets/Template-dashboard-bento.reference.html: section.tpl-group-evidence, s245-D6 word) - members component:chart-bar (inside one Stat-card); one member, legal by the Q3(a) carve-out. ref:null: a GROUP is not a node in the edge grammar."
+        },
+        {
+          "on": "component:template-dashboard-bento",
+          "$note": "RULED s245-D7 (#245). Group 'Position' (knowledge/snippets/Template-dashboard-bento.reference.html: section.tpl-group-context, s245-D6 word) - members component:stat-card x2; shared question read off the section's aria-label. ref:null: a GROUP is not a node in the edge grammar."
+        }
+      ],
+      "$declared_note": "ref:null edges, each carrying its reason in $note: a one-member group (legal, s245-D7 Q3(a)) or a group that is not a node in the grammar (s245-D7 Q7(a)). Listed, never guessed.",
+      "role_names": {
+        "ruled": [
+          "tpl-group-lead",
+          "tpl-group-evidence",
+          "tpl-group-context"
+        ],
+        "status": "RULED s245-D6 (#245): role words, never content types."
+      }
+    },
     "$theme_locks": []
   },
   "page_rail": {
@@ -902,7 +971,8 @@
         "mainSpacing",
         "subSpacing",
         "keylines",
-        "bentoBg"
+        "bentoBg",
+        "grouping"
       ]
     }
   },

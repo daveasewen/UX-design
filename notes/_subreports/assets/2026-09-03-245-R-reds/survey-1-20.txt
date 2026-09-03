@@ -1,0 +1,43 @@
+— 142 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 25s · non-mutating steps only
+
+  ✅ [ 3] token blast-radius + graph report — determinism/staleness chec
+  ✅ [ 4] token blast-radius + graph report selftest (#79 P6)
+  ✅ [ 9] help-gate selftest — 5 mutation bites (#158 class gate)
+  ✅ [11] assertion veracity selftest — verbs bite + registry well-forme
+  ⏱ [13] capture/provenance selftest (Memento §4.1)
+  ✅ [14] gauge-tokens selftest -- counting path + cache + degraded-meas
+  ✅ [15] roll-state measurer selftest (#77 T1)
+  ✅ [16] commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1
+  ✅ [17] GM/LS mover selftest — hardened move mechanics (M5)
+  ❌ [18] section-usage instrumentation selftest (#23)  exit 1
+  ✅ [20] lane records determinism check (O1′ #24)
+
+==============================================================================
+SURVEY: 9 pass · 1 FAIL · 0 COULD-NOT-ASK (self-declared refusals) · 1 unaskable (missing/timed out) · 9 not asked (mutating) · 122 outside --range 1:20 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (1) — this is the number no single `_build_all.py` run can tell you:
+
+  [18] section-usage instrumentation selftest (#23)
+      python3 knowledge/_gm_usage.py --selftest   (exit 1)
+      [_gm_usage selftest] FAIL:
+
+UNASKABLE (1) — nobody asked these and they never said why (missing script / timeout). Counted as failures:
+  [13] capture/provenance selftest (Memento §4.1) — TIMEOUT >25s — not a verdict
+
+NOT ASKED (9 mutating steps) — run --include-mutating on a clean tree to include them:
+  [1] compliance knowledge graph
+  [2] token blast-radius + graph report
+  [5] guideline rules index (gate)
+  [6] runbook index (generated)
+  [7] standing-instructions reachability gate
+  [8] help-gate — no entry point may write before it reads argv (#158 cl
+  [10] assertion veracity gate — claims that can rot
+  [12] capture/provenance gate — status+provenance on new notes+dossiers 
+  … and 1 more

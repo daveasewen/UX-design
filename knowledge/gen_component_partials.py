@@ -416,10 +416,11 @@ def behaviour_manifest_fails(slug, typed, meta_rel):
                          "registered partial" % (slug, meta_rel, addr, foreign))
         elif err:
             fails.append("behaviour-manifest/%s: %s declares script `%s`, which %s" % (slug, meta_rel, addr, err))
-    partial = typed.get("partial")
-    if partial is not None:
+    # s245-D2: `partial` is `string | string[] | null`; the list reading lives in ONE place
+    # (VR.partial_names) so the generator and the gate cannot disagree about it.
+    for partial in VR.partial_names(typed):
         reg = VR.registered_partials()
-        if not isinstance(partial, str) or partial not in reg:
+        if partial not in reg:
             fails.append("behaviour-manifest/%s: %s declares partial %r, which component-types.json does not "
                          "register under $behaviour (has: %s)" % (slug, meta_rel, partial, sorted(reg) or "none"))
     return fails
@@ -1196,6 +1197,17 @@ def selftest():
         f, o, i = run_behaviour_manifests(True)
         if f or i != 1:
             fails.append("a registered partial with a file address was refused: %s" % f)
+        # (vii-b) s245-D2: `partial` as a LIST — every name judged; one ghost in the list refuses,
+        #         a list of registered names is emitted and the block carries the list verbatim
+        _meta_is(dict(_typed, script="knowledge/canon/demo.js", partial=["demo-b", "ghost-partial"]))
+        f, o, i = run_behaviour_manifests(True)
+        if not any("'ghost-partial'" in x for x in f):
+            fails.append("a partial LIST carrying an unregistered name was not refused (s245-D2): %s" % f)
+        _meta_is(dict(_typed, script="knowledge/canon/demo.js", partial=["demo-b"]))
+        f, o, i = run_behaviour_manifests(True)
+        _bm = BMANIFEST_RE.search(open(_snip).read())
+        if f or not _bm or json.loads(_bm.group(1)).get("partial") != ["demo-b"]:
+            fails.append("a partial LIST of registered names was refused or not carried verbatim (s245-D2): %s" % f)
         # (viii) no live #token-manifest → refuse (nothing to sit beside); a COMMENTED-OUT manifest
         #        is not an anchor (#211 lane R6 class)
         open(_snip, "w").write('<html><body><!-- <script type="application/json" id="token-manifest">{}</script> -->'

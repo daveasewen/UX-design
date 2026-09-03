@@ -27,10 +27,20 @@
     "commonPatterns": ["payment-setup", "account-opening", "application-forms"]
   },
   "behaviour": {
-    "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
-    "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
-    "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
-    "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
+    "script": "knowledge/snippets/Stepper.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "input"
+    ],
+    "fallback": "Only the panel the markup authors as current is shown; Next and Back do nothing; no announcement. The dots-to-line collapse is a container query (CSS, 520px) and still fires.",
+    "$note": {
+      "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
+      "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
+      "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
+      "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-stepper-{before,after}.png"
   },
   "accessibility": {
     "structure": "Steps in an <ol> (sequence semantics); aria-current=step on the current li; done dots = real buttons with 'Go back to step n (completed)' labels; panels are labelled sections; collapsed form = role=progressbar with aria-valuetext.",

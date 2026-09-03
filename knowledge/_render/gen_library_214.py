@@ -451,7 +451,11 @@ RELATED_CLUSTERS = [
     ["accordion", "summary", "timeline"],
 ]
 
-SCRIPT_RE = re.compile(r"<script\b(?![^>]*id=\"token-manifest\")[^>]*>(.*?)</script>", re.S)
+# #245 (s245-D1..D5 populate): the #behaviour-manifest JSON block gen_component_partials.py derives
+# beside #token-manifest is DATA, not behaviour — without the type exclusion it counted as JS lines
+# and 6 passive components (account-card, action-bar, badge, confirmation, eyebrow, summary) flipped
+# to ships_behaviour:true the moment their metas were typed. Exclude the CLASS (application/json).
+SCRIPT_RE = re.compile(r"<script\b(?![^>]*id=\"token-manifest\")(?![^>]*type=\"application/json\")[^>]*>(.*?)</script>", re.S)
 SENTENCE_RE = re.compile(r"^(.+?[.;])(\s|$)")
 
 

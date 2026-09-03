@@ -36,8 +36,19 @@
     "commonPatterns": ["add-a-payee", "make-a-payment", "profile edit"]
   },
   "behaviour": {
-    "validation": "Validate on submit; per-field errors + summary together. A field's error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.",
-    "masking": "Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern)."
+    "script": "knowledge/snippets/Form-layout.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "input",
+      "submit"
+    ],
+    "fallback": "The form submits natively (a GET; `novalidate` is authored, so native constraint validation is off as well); no per-field errors, no error summary, no sort-code masking.",
+    "$note": {
+      "validation": "Validate on submit; per-field errors + summary together. A field's error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.",
+      "masking": "Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern)."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-form-layout-{before,after}.png"
   },
   "accessibility": {
     "structure": "fieldset + legend name the form region; every input has a real <label for>; help/messages joined via aria-describedby.",

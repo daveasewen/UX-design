@@ -28,9 +28,23 @@
     "commonPatterns": ["proof-of-identity", "proof-of-address", "supporting-evidence"]
   },
   "behaviour": {
-    "staging": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.",
-    "remove": "Per-row 24px close (36px extended hit target); removal announced via the polite live region.",
-    "announcements": "Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3)."
+    "script": "knowledge/snippets/File-upload.reference.html#script",
+    "partial": null,
+    "events": [
+      "change",
+      "click",
+      "drop"
+    ],
+    "fallback": null,
+    "$note": {
+      "staging": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.",
+      "remove": "Per-row 24px close (36px extended hit target); removal announced via the polite live region.",
+      "announcements": "Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3)."
+    },
+    "$unproven": [
+      "fallback"
+    ],
+    "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the 'Browse files' <button> is script-wired and opens NO chooser JS-off; the <label for=fu-input> DOES open the native chooser; nothing stages, no progress bar, no announcement — a different reading from the candidate's conditional, not the candidate. 3/4 assertions held; failed: Browse <button> opens a file chooser with JS off. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-file-upload-{before,after}.png"
   },
   "accessibility": {
     "structure": "Real <label for> on the hidden file input; the browse button proxies its click; constraints in help text joined via aria-describedby; rows in a labelled list.",

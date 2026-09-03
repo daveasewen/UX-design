@@ -25,7 +25,7 @@
 
   WHERE EVERY REGION CAME FROM
     · the whole `.c-bento` grammar     → knowledge/canon/canon.css, the AUTO-BENTO block between
-                                         its own START/END markers, BYTE-IDENTICAL (10,404 chars).
+                                         its own START/END markers, BYTE-IDENTICAL (10,597 chars since s245-D8 re-spliced it at #245; 10,404 before).
     · AUTO-TOKENS / leading-trim /
       theme blocks / layout primitives /
       page-header lock-up / KPI + Stat-card +
@@ -221,7 +221,7 @@
        reads these six names off the container; a snippet does not link canon.css (TRUE PROBE:
        `grep -l 'href="../canon/canon.css"' knowledge/snippets/*.reference.html` -> 0 files), so
        the wall's parameters are declared HERE and four of the six are manifest-bound. ---- */
-    --layout-bento-gutter:0; --layout-bento-outer-padding:0; --layout-bento-row-unit:320px;
+    --layout-bento-gutter:0; --layout-bento-outer-padding:0; --layout-bento-row-unit:320px; --layout-bento-columns:6;
     --border-radius-container:0;
     /* the dashboard page ground — s219-D1's ruled `pageBg: grey`, bound to surface/subtle */
     --wall-ground:#F0F0F0;
@@ -264,7 +264,7 @@
        reads these six names off the container; a snippet does not link canon.css (TRUE PROBE:
        `grep -l 'href="../canon/canon.css"' knowledge/snippets/*.reference.html` -> 0 files), so
        the wall's parameters are declared HERE and four of the six are manifest-bound. ---- */
-    --layout-bento-gutter:0; --layout-bento-outer-padding:0; --layout-bento-row-unit:320px;
+    --layout-bento-gutter:0; --layout-bento-outer-padding:0; --layout-bento-row-unit:320px; --layout-bento-columns:6;
     --border-radius-container:0;
     /* the dashboard page ground — s219-D1's ruled `pageBg: grey`, bound to surface/subtle */
     --wall-ground:#1A1A1A;
@@ -357,13 +357,15 @@
    dead band reads as an orphan gap. MEASURED #217 in the matrix explorer's dashboard —
    a 360px cell holding a 240px grid — and INVISIBLE in the roles demo, whose nested walls
    happen to be the same height. So: flex the nested bento, let its grid take the slack,
-   and let the rows grow into it. `minmax(<unit>,1fr)` keeps the row unit as the FLOOR —
-   the fixed-row discipline that makes the span vocabulary visible is untouched, rows only
-   grow when the parent has already stretched the container past its content. */
+   and let the rows grow into it. `minmax(<unit>,auto)` keeps the row unit as the FLOOR —
+   the fixed-row discipline that makes the span vocabulary visible is untouched, and each
+   row grows to ITS OWN content. s245-D8 (#245, Dave: 'Okay it's 2'): the max is `auto`,
+   not `1fr` — `1fr` equalised a group's rows to its tallest content and lifted the whole
+   outer row (L4 finding 6: rail 277.7/277.7 vs 277.7/223.8); `auto` sizes each row alone. */
 .c-bento__tile.c-bento{height:100%; display:flex; flex-direction:column;}
 .c-bento__tile.c-bento > .c-bento__grid{
   flex:1 1 auto;
-  grid-auto-rows:minmax(var(--bento-row-unit),1fr);
+  grid-auto-rows:minmax(var(--bento-row-unit),auto);
 }
 
 /* RESPONSIVE BANDS — the CONTAINER decides. Concrete literals: a container-query
@@ -732,11 +734,15 @@
     --bento-gutter:40px; --bento-row-unit:auto; }
   /* 5 · SUB SPACING 4px — mono's s219-D1 default. (0,4,0) beats canon's (0,2,0) role rule. */
   .tpl-page .c-bento.tpl-group[data-bento-role="dashboard"]{ --bento-gutter:4px; }
-  /* 6 · per-group row floors. A nested bento's grid is `minmax(row-unit,1fr)` (canon), so these
-         are FLOORS the stretched group grows past — never fixed heights. */
-  .c-bento.tpl-group-kpi{ --bento-row-unit:196px; }
-  .c-bento.tpl-group-chart{ --bento-row-unit:380px; }
-  .c-bento.tpl-group-rail{ --bento-row-unit:184px; }
+  /* 6 · per-group row floors. A nested bento's grid is `minmax(row-unit,auto)` (canon, s245-D8:
+         each row grows to ITS OWN content, never below the rung), so these are FLOORS — never fixed
+         heights. s245-D9 (#245, Dave: "until thats done we just round to the nearest pixel, which
+         would make B the best"): ladder B, 120 / 240 / 96 — under the floor a rung below content
+         never paints, so the rows are pure content; re-put with the 4px audit (his carry).
+         The classes are ROLE words (s245-D6): lead / evidence / context — never content types. */
+  .c-bento.tpl-group-lead{ --bento-row-unit:120px; }
+  .c-bento.tpl-group-evidence{ --bento-row-unit:240px; }
+  .c-bento.tpl-group-context{ --bento-row-unit:96px; }
   /* 7 · THE MODULE *IS* THE COMPONENT. A Kpi-tile and a Stat-card each ship their own 1px frame;
          inside a bento the 4px gutter separates the modules and the frame would double the seam
          (the "double frame" Dave rejected at #217). The component's frame yields to the wall —
@@ -837,7 +843,7 @@
 
           <!-- GROUP 1 · the KPI board. Four Kpi-tiles at data-c="3": 2x2 at six columns, a
                single column at three, two and one. -->
-          <section class="c-bento__tile c-bento tpl-group tpl-group-kpi" data-bento-role="dashboard"
+          <section class="c-bento__tile c-bento tpl-group tpl-group-lead" data-bento-role="dashboard"
                    data-c="6" data-r="1" aria-label="This month">
             <div class="c-bento__grid">
 
@@ -898,7 +904,7 @@
           </section>
 
           <!-- GROUP 2 · the chart. One module, full width of its group. -->
-          <section class="c-bento__tile c-bento tpl-group tpl-group-chart" data-bento-role="dashboard"
+          <section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard"
                    data-c="3" data-r="1" aria-label="Spending analysis">
             <div class="c-bento__grid">
               <div class="c-bento__tile stat-card" data-c="6" data-r="1">
@@ -943,7 +949,7 @@
           </section>
 
           <!-- GROUP 3 · the position rail. Two modules stacked inside their own group. -->
-          <section class="c-bento__tile c-bento tpl-group tpl-group-rail" data-bento-role="dashboard"
+          <section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard"
                    data-c="3" data-r="1" aria-label="Position">
             <div class="c-bento__grid">
               <div class="c-bento__tile stat-card" data-c="6" data-r="1">

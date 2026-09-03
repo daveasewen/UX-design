@@ -3960,6 +3960,63 @@ def _parse_legacy_boot_declarations(text):
     return out
 
 
+# ★★ #245 — `s244-D1` (Dave, #244): ARM 1's DECLARED-DISCHARGE FORM. THE CEILING LITERAL DOES NOT MOVE.
+# Dave, #244, given three options for a ceiling breach whose later readings are all under: *"1. (b)"*
+# — (b) being "add a declared-discharge form for a ceiling breach when later readings are under".
+# (a) leave the red standing every wrap and (c) grade only the newest reading were REJECTED.
+#
+# WHAT IT DISCHARGES, AND ONLY THAT. A breach already in `notes/_GAUGE-LOG.md` (a post-diet reading
+# over `BOOT_CEILING_TK`, still inside the derived band's window) may be DISCHARGED BY DECLARATION
+# when EVERY reading AFTER it is under the ceiling. It clears the arm FOR THAT BREACH ONLY; a later
+# reading over the ceiling is a NEW breach, is failed by name, and — because it is itself a
+# post-breach reading that is NOT under — also un-discharges the older one (the ruling's clause is
+# EVERY, and it is applied literally).
+#
+# ⚠ THE DECLARATION CANNOT LAUNDER (#111-D1, unchanged). It discharges ONLY if the breach session
+# and figure, the ceiling, and EVERY post-breach reading it lists MATCH what this gate computes from
+# the log — session by session, figure by figure. A listed reading the gate does not hold (a figure
+# copied from `GOOD-MORNING.md` before its 2f roll, say) is a MISMATCH, not a preview: the
+# declaration may only state what the gate can verify. A mismatched declaration is a WORSE failure
+# than none — it is a session writing itself a pass — and is failed SEPARATELY and LOUDER below,
+# under its own name (`CEILING DECLARATION MISMATCH`).
+# ⚠ IT CANNOT GO STALE IN THE WAY THAT MATTERS. It is matched against the CURRENT computation every
+# run, so it can never discharge a breach it does not name, and it stops discharging the moment any
+# post-breach reading is over. Readings that ARRIVE after the declaration (each wrap's 2f roll adds
+# one) and are UNDER are graded fresh by the gate and NAMED in the discharge note as unlisted — they
+# were not the declarer's to see, and the invariant they must satisfy is checked here, not trusted.
+# ⛔ WHAT IT NEVER TOUCHES: `BOOT_CEILING_TK`, `BOOT_BAND_WINDOW`, `BOOT_BAND_SIGMA`. The literal
+# stays shrink-only and Dave's; this form removes the reason a wrap might be tempted to move it.
+BOOT_CEILING_DECL_RE = re.compile(
+    r"boot-drift\s+CEILING\s+DECLARED\s+#(?P<sess>\d+)"
+    r".{0,40}?breach\s+#(?P<bsess>\d+)\s+(?P<bfig>[\d,]*\d)"
+    r".{0,40}?ceiling\s+(?P<ceiling>[\d,]*\d)"
+    r".{0,60}?post-breach\s+readings?\s+(?P<reads>#\d+\s+[\d,]*\d(?:\s*[,·;]?\s*#\d+\s+[\d,]*\d)*)"
+    r"\s*all\s+under",
+    re.I | re.S)
+BOOT_CEILING_DECL_READ_RE = re.compile(r"#(\d+)\s+([\d,]*\d)")
+
+BOOT_CEILING_LEGAL_FORM = (
+    "> **boot-drift CEILING DECLARED #<N> (<YYYY-MM-DD>):** breach #<B> <F> · ceiling <C> · "
+    "post-breach readings #<s1> <r1>, #<s2> <r2> all under · DISCHARGED per `s244-D1`; the ceiling "
+    "literal was NOT moved.")
+
+
+def _parse_boot_ceiling_declarations(text):
+    """Every `s244-D1` ceiling-discharge declaration in the gauge log, as dicts. Never raises.
+    `reads` is a list of (session, figure) pairs in the order the declaration states them."""
+    out = []
+    for m in BOOT_CEILING_DECL_RE.finditer(text):
+        try:
+            d = {k: int(m.group(k).replace(",", "")) for k in ("sess", "bsess", "bfig", "ceiling")}
+            d["reads"] = [(int(s), int(tk.replace(",", "")))
+                          for s, tk in BOOT_CEILING_DECL_READ_RE.findall(m.group("reads"))]
+        except (ValueError, AttributeError):
+            continue
+        if d["reads"]:
+            out.append(d)
+    return out
+
+
 # ★★ #218 — A DELTA BESIDE `boot` IS NOT A READING, AND UNTIL NOW NOTHING SAID SO.
 #
 # THE CLASS: this parser reads "a number near the word boot" as A MEASUREMENT OF BOOT. The gauge
@@ -4285,14 +4342,97 @@ def boot_constant_drift_check(repo):
             % (len(pre), BOOT_CEILING_FROM_SESSION,
                " · ".join(f"#{s} {tk:,}" for s, tk in pre)))
     if over:
-        fails.append(
-            "boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = %s and %d "
-            "post-diet reading(s) EXCEED it — %s. ⛔ `s240-D2`/`s241-D1` make this number "
-            "SHRINK-ONLY: boot may go DOWN past it and never up, and the remedy is to CUT "
-            "THE BOOT, never to raise the literal. Raising it is Dave's word alone and is "
-            "not a price a wrap may pay to unblock itself "
-            "[[gate-must-quote-what-it-forbids]]."
-            % (f"{ceiling:,}", len(over), " · ".join(f"#{s} {tk:,}" for s, tk in over)))
+        # ★★ #245 / `s244-D1` — IS THE BREACH DISCHARGED BY DECLARATION? Per breach, never in bulk.
+        # Silence fails exactly as before (the message below, unchanged, plus the legal form);
+        # an honest declaration whose figures match, with every later reading under, passes;
+        # a declaration whose figures do NOT match fails LOUDER, under its own name.
+        with open(log, encoding="utf-8") as f:
+            cdecls = _parse_boot_ceiling_declarations(f.read())
+        in_window = dict(zip(sessions, reads))
+        undischarged = []
+        for b_sess, b_tk in over:
+            post = {s: tk for s, tk in in_window.items() if s > b_sess}
+            post_over = sorted((s, tk) for s, tk in post.items() if tk > ceiling)
+            mine = [d for d in cdecls if d["bsess"] == b_sess]
+            matched = [d for d in mine
+                       if d["bfig"] == b_tk and d["ceiling"] == ceiling
+                       and all(post.get(s) == tk for s, tk in d["reads"])]
+            mismatched = [d for d in mine if d not in matched]
+            if matched and not post_over:
+                d = matched[-1]
+                listed = {s for s, _ in d["reads"]}
+                unlisted = sorted((s, tk) for s, tk in post.items() if s not in listed)
+                notes.append(
+                    "boot-drift CEILING BREACH #%d %s ✅ DECLARED at #%d and DISCHARGED "
+                    "(`s244-D1`): the declaration states the same breach, the same ceiling %s "
+                    "and the same post-breach reading(s) this gate computed (%s), and EVERY "
+                    "post-breach reading in the window is under the ceiling%s. The breach is "
+                    "real and NOT hidden — that is the whole bar. ⛔ The ceiling literal was "
+                    "NOT moved; this clears the arm for THIS breach only."
+                    % (b_sess, f"{b_tk:,}", d["sess"], f"{ceiling:,}",
+                       " · ".join(f"#{s} {tk:,}" for s, tk in d["reads"]),
+                       (" — %d newer reading(s) not listed by the declaration, graded fresh "
+                        "here and under: %s"
+                        % (len(unlisted), " · ".join(f"#{s} {tk:,}" for s, tk in unlisted)))
+                       if unlisted else ""))
+            elif mismatched:
+                d = mismatched[-1]
+                fails.append(
+                    "boot-drift CEILING DECLARATION MISMATCH (CEILING BREACH #%d %s STANDS): a "
+                    "`s244-D1` declaration EXISTS (#%d) for that breach but its figures do NOT "
+                    "match this gate's computation "
+                    "— it states breach %s / ceiling %s / post-breach readings %s against a "
+                    "computed breach %s / ceiling %s / post-breach readings %s. ⛔ A declaration "
+                    "that mis-states the record is WORSE than none: it is a session writing "
+                    "itself a pass. Correct the FIGURES to what this gate prints — a reading "
+                    "the gate does not hold yet (not rolled into the log) may not be listed — "
+                    "and never the ceiling [[gate-must-quote-what-it-forbids]]."
+                    % (b_sess, f"{b_tk:,}", d["sess"], f"{d['bfig']:,}", f"{d['ceiling']:,}",
+                       " · ".join(f"#{s} {tk:,}" for s, tk in d["reads"]) or "(none)",
+                       f"{b_tk:,}", f"{ceiling:,}",
+                       " · ".join(f"#{s} {tk:,}" for s, tk in sorted(post.items())) or "(none)"))
+            elif matched:                      # figures match, but a LATER reading is over
+                d = matched[-1]
+                fails.append(
+                    "boot-drift CEILING BREACH #%d %s ⛔ NOT DISCHARGED: the `s244-D1` "
+                    "declaration at #%d matches this gate's figures, but %d post-breach "
+                    "reading(s) are OVER the ceiling %s — %s. The ruling's clause is EVERY "
+                    "post-breach reading under; a later breach is a new breach and "
+                    "un-discharges the older one. The remedy is to CUT THE BOOT."
+                    % (b_sess, f"{b_tk:,}", d["sess"], len(post_over), f"{ceiling:,}",
+                       " · ".join(f"#{s} {tk:,}" for s, tk in post_over)))
+            else:
+                undischarged.append((b_sess, b_tk))
+        if undischarged:
+            # The pre-#245 message, byte-for-byte when nothing is discharged; the breaches it
+            # names are the ones still standing.
+            breach_msg = (
+                "boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = %s and %d "
+                "post-diet reading(s) EXCEED it — %s. ⛔ `s240-D2`/`s241-D1` make this number "
+                "SHRINK-ONLY: boot may go DOWN past it and never up, and the remedy is to CUT "
+                "THE BOOT, never to raise the literal. Raising it is Dave's word alone and is "
+                "not a price a wrap may pay to unblock itself "
+                "[[gate-must-quote-what-it-forbids]]."
+                % (f"{ceiling:,}", len(undischarged),
+                   " · ".join(f"#{s} {tk:,}" for s, tk in undischarged)))
+            hint = ""
+            declarable = [(s, tk) for s, tk in undischarged
+                          if any(x > s for x in in_window)
+                          and all(t <= ceiling for x, t in in_window.items() if x > s)]
+            if declarable:
+                b_sess, b_tk = declarable[-1]
+                post = sorted((s, tk) for s, tk in in_window.items() if s > b_sess)
+                hint = (
+                    "\n    ★ `s244-D1` (Dave, #244) — THERE IS A LEGAL WAY FORWARD FOR BREACH "
+                    "#%d: every reading after it is under the ceiling, so it may be DISCHARGED "
+                    "BY DECLARATION. Add ONE line to notes/_GAUGE-LOG.md, exactly this shape:\n"
+                    "      %s\n"
+                    "    filled with the figures this gate computed: breach #%d %s · ceiling %s "
+                    "· post-breach readings %s all under. The figures must MATCH — wrong "
+                    "figures fail louder than none — and the ceiling literal is NOT moved."
+                    % (b_sess, BOOT_CEILING_LEGAL_FORM, b_sess, f"{b_tk:,}", f"{ceiling:,}",
+                       ", ".join(f"#{s} {tk:,}" for s, tk in post)))
+            fails.append(breach_msg + hint)
 
     # ---- ARM 2: THE DERIVED BAND. Step change out, slow drift in — see BOOT_BAND_SIGMA.
     if abs(delta) <= red_line:
@@ -7467,11 +7607,19 @@ def selftest_growth():
                             "if they still charge the chain the budget measures the old contract.")
 
         # …and the chain DOES bite on the region that is actually in it: the banner.
-        _f, w, _n = _warns_for(td, fat_banner=24)
+        # ★ #245-R — THE FIXTURE IS 34 LINES, NOT 24, AND THE CONSTANT DID NOT MOVE. The #241 diet
+        # (`s241-D2`, `_gen_chain.py` 7f8801f) cut the 461 bare ids out of the chain's state block,
+        # so the SAME 24-line fixture measured 9,297 tape before that commit and 6,882 after it —
+        # under the 7,700 warn floor by 818, and this bite went red for a change in the wrapper,
+        # not in the budget. MEASURED by single-variable swap (pre-#241 generator vs HEAD, same
+        # fixture, same measurer): delta 2,415 tape ≈ 10 fat lines at ~244 tape each. 34 restores
+        # the pre-diet margin (~9,320 tape). `CHAIN_BUDGET_TK` is Dave's (`s212-D11`) and untouched.
+        _m10_fat_lines = 34
+        _f, w, _n = _warns_for(td, fat_banner=_m10_fat_lines)
         if not any("M10 read chain" in x for x in w):
-            failures.append("M10: a 24-fat-line banner did not warn the chain — the budget does "
-                            "not bite on the one region the chain is made of")
-        f, _w, _n = _warns_for(td, fat_banner=24)
+            failures.append(f"M10: a {_m10_fat_lines}-fat-line banner did not warn the chain — the "
+                            "budget does not bite on the one region the chain is made of")
+        f, _w, _n = _warns_for(td, fat_banner=_m10_fat_lines)
         if any("M10 read chain" in x for x in f):
             failures.append("M10: a chain finding reached FAILS — ADVISORY by ruling (Dave "
                             "2026-07-27 #18), and #33's re-pointed numbers are agent-derived and "
@@ -7481,7 +7629,7 @@ def selftest_growth():
             failures.append("M10: an ordinary chain warned — the budget fires on everything")
         # the remedy text must NOT prescribe a region: measured at enactment, the deltas the old
         # text pointed at could not have paid the difference. Pin the correction.
-        _f, w, _n = _warns_for(td, fat_banner=24)
+        _f, w, _n = _warns_for(td, fat_banner=_m10_fat_lines)
         if any("step 2d" in x for x in w if "M10 read chain" in x):
             failures.append("M10: the chain warn prescribes rolling deltas again — it knows the "
                             "total, not where the weight sits")
@@ -8568,6 +8716,155 @@ def selftest_boot_delta_parse():
     return failures
 
 
+def selftest_boot_ceiling_discharge():
+    """★ #245 — `s244-D1`: ARM 1's DECLARED-DISCHARGE FORM, driven in BOTH directions.
+
+    Every arm runs the REAL `boot_constant_drift_check` on a fixture log whose readings are
+    UNDER the ceiling except the breach(es) planted on purpose, and whose spread keeps ARM 2
+    green — a fixture that also tripped the band would fail for the other reason and prove
+    nothing about this one. The clause under test is "a declaration discharges ONLY when its
+    figures match the gate's own AND every post-breach reading is under" — so the same
+    declaration is shown discharging, then mis-stated by ONE figure at a time and shown failing
+    by name, then left intact with a later breach planted and shown NOT discharging
+    [[mutation-tests-the-clause-not-the-feature]]. The no-declaration control asserts the
+    pre-#245 message HEAD byte-for-byte, so the addition is proven to be an addition.
+    """
+    failures = []
+    try:
+        sys.path.insert(0, HERE)
+        import _gauge_tokens as gt
+        window, ceiling = gt.BOOT_BAND_WINDOW, gt.BOOT_CEILING_TK
+    except Exception as e:                                            # noqa: BLE001
+        SELFTEST_REFUSALS.append(f"boot-ceiling discharge arm: _gauge_tokens unreadable ({e})")
+        return failures
+    if window < 4:
+        SELFTEST_REFUSALS.append(f"boot-ceiling discharge arm: BOOT_BAND_WINDOW={window} is too "
+                                 f"small to plant a breach with readings on both sides")
+        return failures
+    flat = ceiling - 2_865                     # the #243 distance under, as it happens
+    base = 500 + BOOT_CEILING_FROM_SESSION     # every fixture session is POST-diet
+    b_at = window - 3                          # breach index: two under readings follow it
+    b_sess, b_tk = base + b_at, ceiling + 710
+    post = [(base + i, flat) for i in range(b_at + 1, window)]
+
+    def log_for(readings, extra=""):
+        return "\n".join(f"> **pre-flight #{s}:** boot {tk:,} real" for s, tk in readings) \
+            + extra + "\n"
+
+    def drive(text):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "notes"))
+            with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+                f.write(text)
+            return boot_constant_drift_check(td)
+
+    def decl(bs=b_sess, bf=b_tk, ceil=ceiling, reads=None, sess=base + window):
+        reads = post if reads is None else reads
+        return ("\n> **boot-drift CEILING DECLARED #%d (2026-09-03):** breach #%d %s · ceiling %s "
+                "· post-breach readings %s all under · DISCHARGED per `s244-D1`; the ceiling "
+                "literal was NOT moved."
+                % (sess, bs, f"{bf:,}", f"{ceil:,}", ", ".join(f"#{s} {tk:,}" for s, tk in reads)))
+
+    readings = [(base + i, b_tk if i == b_at else flat) for i in range(window)]
+    # The WHOLE pre-#245 message, as an independent literal (not read off the gate's own string,
+    # which would make the assertion tautological) — a changed byte anywhere in it is a mutation
+    # of an existing arm, and this is the control that catches it (M7 at #245 escaped a head-only
+    # version of this literal [[mutation-tests-the-clause-not-the-feature]]).
+    head = ("boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = %s and 1 post-diet "
+            "reading(s) EXCEED it — #%d %s. ⛔ `s240-D2`/`s241-D1` make this number SHRINK-ONLY: "
+            "boot may go DOWN past it and never up, and the remedy is to CUT THE BOOT, never to "
+            "raise the literal. Raising it is Dave's word alone and is not a price a wrap may pay "
+            "to unblock itself [[gate-must-quote-what-it-forbids]]."
+            % (f"{ceiling:,}", b_sess, f"{b_tk:,}"))
+
+    # ---- (d) NO DECLARATION: the original red stands, head byte-for-byte, and it now names the
+    # legal way forward with the figures the gate computed (the #111-D1 owed hint).
+    f_, n_ = drive(log_for(readings))
+    if len(f_) != 1 or not f_[0].startswith(head):
+        failures.append(f"ceiling discharge (d): with NO declaration the pre-#245 head must stand "
+                        f"byte-for-byte — got fails={[x[:120] for x in f_]}")
+    elif "boot-drift CEILING DECLARED #<N>" not in f_[0] or \
+            f"post-breach readings {', '.join(f'#{s} {tk:,}' for s, tk in post)} all under" not in f_[0]:
+        failures.append("ceiling discharge (d): the undeclared red must carry the legal form AND "
+                        "the computed post-breach figures — it does not")
+    if any("STEP CHANGE" in x for x in f_):
+        failures.append("ceiling discharge fixture: ARM 2 tripped — the fixture proves nothing "
+                        "about ARM 1 until its spread is widened")
+
+    # ---- (a) THE MATCHING DECLARATION DISCHARGES: 0 fails, and the note names it by ruling.
+    f_, n_ = drive(log_for(readings, decl()))
+    if f_ or not any("DISCHARGED (`s244-D1`)" in x for x in n_):
+        failures.append(f"ceiling discharge (a): a matching declaration must DISCHARGE the breach — "
+                        f"fails={[x[:120] for x in f_]} notes={[x[:80] for x in n_]}")
+    # …and the declaration line itself must be INERT to the reading parser (else it would be
+    # a boot sample and the double-count check would see two figures in one stratum).
+    g_, r_, d_ = _parse_boot_samples(decl())
+    if g_ or r_:
+        failures.append(f"ceiling discharge: the declaration line was read as a boot READING "
+                        f"or refused — good={g_} refused={r_}")
+
+    # ---- (b) ONE WRONG FIGURE ⇒ FAILS BY NAME, LOUDER THAN NONE. Each mutation is a single
+    # field; the control (a) above is the same text unmutated.
+    for label, text in (
+            ("breach figure +1", decl(bf=b_tk + 1)),
+            ("ceiling +1 (a widened literal)", decl(ceil=ceiling + 1)),
+            ("ceiling -1", decl(ceil=ceiling - 1)),
+            ("post-breach figure +1", decl(reads=[(post[0][0], post[0][1] + 1)] + post[1:])),
+            ("a reading the gate does NOT hold (not rolled yet)",
+             decl(reads=post + [(base + window, flat)])),
+            ("a pre-breach reading listed as post-breach", decl(reads=[(base, flat)] + post))):
+        f_, _n_ = drive(log_for(readings, text))
+        if not any("CEILING DECLARATION MISMATCH" in x for x in f_):
+            failures.append(f"ceiling discharge (b, {label}): a mis-stated declaration must fail "
+                            f"BY NAME (`CEILING DECLARATION MISMATCH`) — fails={[x[:120] for x in f_]}")
+        elif not any(f"CEILING BREACH #{b_sess}" in x for x in f_):
+            failures.append(f"ceiling discharge (b, {label}): the mismatch fail must say the breach "
+                            f"STANDS — it does not name #{b_sess}")
+    # A declaration for a breach that is not in the log names nothing the gate holds: it is not
+    # a mismatch against THIS breach, and the original red must still stand (no laundering by
+    # mis-addressing).
+    f_, _n_ = drive(log_for(readings, decl(bs=b_sess - 1)))
+    if not any(x.startswith(head) for x in f_):
+        failures.append(f"ceiling discharge (b, wrong breach session): a declaration addressed to a "
+                        f"different session must leave the red standing — fails={[x[:120] for x in f_]}")
+    # The FORM is the whole form: a line that lists the figures but does not ASSERT `all under`
+    # is prose about a breach, not a declaration, and must neither discharge nor mismatch.
+    f_, n_ = drive(log_for(readings, decl().replace(" all under", "")))
+    if any("DISCHARGED (`s244-D1`)" in x for x in n_) or not any(x.startswith(head) for x in f_) \
+            or any("DECLARATION MISMATCH" in x for x in f_):
+        failures.append(f"ceiling discharge (form): a line without the `all under` assertion must "
+                        f"be ignored, leaving the red standing — fails={[x[:100] for x in f_]} "
+                        f"notes={[x[:80] for x in n_]}")
+
+    # ---- (c) A POST-BREACH READING OVER THE CEILING ⇒ NOT DISCHARGED, even with figures that match.
+    later = [(base + i, (b_tk if i == b_at else ceiling + 1 if i == window - 1 else flat))
+             for i in range(window)]
+    post_c = [(s, tk) for s, tk in later if s > b_sess]
+    f_, n_ = drive(log_for(later, decl(reads=post_c[:-1])))     # lists only the UNDER reading
+    if any("DISCHARGED (`s244-D1`)" in x for x in n_):
+        failures.append("ceiling discharge (c): a breach was DISCHARGED while a later reading sits "
+                        "OVER the ceiling — the EVERY clause is not enforced")
+    if not any(f"CEILING BREACH #{b_sess}" in x and "NOT DISCHARGED" in x for x in f_):
+        failures.append(f"ceiling discharge (c): the matching-but-blocked declaration must fail as "
+                        f"NOT DISCHARGED naming the breach — fails={[x[:120] for x in f_]}")
+    if not any("CEILING BREACH:" in x and f"#{base + window - 1} {ceiling + 1:,}" in x for x in f_):
+        failures.append(f"ceiling discharge (c): the NEW breach #{base + window - 1} must fail by "
+                        f"name in its own right — fails={[x[:120] for x in f_]}")
+    if any("STEP CHANGE" in x for x in f_):
+        failures.append("ceiling discharge (c) fixture: ARM 2 tripped — widen the fixture's spread")
+
+    # ---- STALENESS, THE HALF THAT MATTERS: a newer UNDER reading the declaration did not list
+    # (arrived by a later 2f roll) keeps the discharge and is NAMED as graded fresh…
+    f_, n_ = drive(log_for(readings, decl(reads=post[:1])))
+    if f_ or not any("DISCHARGED (`s244-D1`)" in x and "not listed by the declaration" in x
+                     and f"#{post[-1][0]} {post[-1][1]:,}" in x for x in n_):
+        failures.append(f"ceiling discharge (stale-under): an unlisted LATER reading under the "
+                        f"ceiling must keep the discharge and be NAMED — fails={[x[:100] for x in f_]} "
+                        f"notes={[x[:100] for x in n_]}")
+    # …while the same declaration can never discharge a breach it does not name: (c) above.
+    return failures
+
+
 def selftest_regen_serial():
     """★ #221 — THE REGEN-SERIAL COMPLETENESS CHECK, DRIVEN IN BOTH DIRECTIONS.
 
@@ -9286,6 +9583,7 @@ def _selftest_body():
                 + selftest_instrument_stray()    # ★ #218 — #138's gate, driven at last + s217-D1
                 + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
+                + selftest_boot_ceiling_discharge() # ★ #245 `s244-D1` — ARM 1's discharge form
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
                 + selftest_regen_serial()        # ★ #221 — the ordered serial, whole per wave
                 + selftest_shared_helper_dedup() # ★ #221 — W-92's residual: ONE implementation

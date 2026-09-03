@@ -28,10 +28,23 @@
     "commonPatterns": ["payment-time (with Date picker)", "branch-appointment-slot"]
   },
   "behaviour": {
-    "open": "Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).",
-    "keyboard": "ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.",
-    "select": "Writes HH:MM, clears any error, closes, returns focus.",
-    "validation": "On blur: empty = no error; malformed or impossible times (25:70) error with 'Enter a time in 24-hour format, like 14:30.' Error lifts as soon as the value re-validates."
+    "script": "knowledge/snippets/Time-picker.reference.html#script",
+    "partial": null,
+    "events": [
+      "blur",
+      "click",
+      "input",
+      "keydown",
+      "pointerdown"
+    ],
+    "fallback": "The text input works as a native field (HH:MM typed by hand); the tail button does nothing and the list never opens; no on-blur validation message.",
+    "$note": {
+      "open": "Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).",
+      "keyboard": "ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.",
+      "select": "Writes HH:MM, clears any error, closes, returns focus.",
+      "validation": "On blur: empty = no error; malformed or impossible times (25:70) error with 'Enter a time in 24-hour format, like 14:30.' Error lifts as soon as the value re-validates."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-time-picker-{before,after}.png"
   },
   "accessibility": {
     "structure": "Real <label for>; input = role=combobox with aria-expanded/aria-controls; list = role=listbox of role=option items; help + message via aria-describedby.",

@@ -1,0 +1,157 @@
+{
+  "$what": "PROPOSED groupsWith edges for the bento template and its group members. NOT applied to any live meta.",
+  "$ruling": "s234-D4",
+  "$measured_from": "knowledge/snippets/Template-dashboard-bento.reference.html (comments stripped, <main> only)",
+  "$schema": "knowledge/_tmp/l3-245/meta.schema.proposed.json",
+  "groups_measured": [
+    {
+      "class": "tpl-group-kpi",
+      "role_word_today": "kpi",
+      "shared_question": "This month",
+      "span": 6,
+      "line": 840,
+      "tiles": [
+        {
+          "scope": "kpi-tile",
+          "data_c": 3
+        },
+        {
+          "scope": "kpi-tile",
+          "data_c": 3
+        },
+        {
+          "scope": "kpi-tile",
+          "data_c": 3
+        },
+        {
+          "scope": "kpi-tile",
+          "data_c": 3
+        }
+      ],
+      "tile_scopes": [
+        "kpi-tile"
+      ],
+      "contents": {}
+    },
+    {
+      "class": "tpl-group-chart",
+      "role_word_today": "chart",
+      "shared_question": "Spending analysis",
+      "span": 3,
+      "line": 901,
+      "tiles": [
+        {
+          "scope": "stat-card",
+          "data_c": 6
+        }
+      ],
+      "tile_scopes": [
+        "stat-card"
+      ],
+      "contents": {
+        "chart-bar": 1
+      }
+    },
+    {
+      "class": "tpl-group-rail",
+      "role_word_today": "rail",
+      "shared_question": "Position",
+      "span": 3,
+      "line": 946,
+      "tiles": [
+        {
+          "scope": "stat-card",
+          "data_c": 6
+        },
+        {
+          "scope": "stat-card",
+          "data_c": 6
+        }
+      ],
+      "tile_scopes": [
+        "stat-card"
+      ],
+      "contents": {
+        "summary": 1,
+        "status-indicator": 3
+      }
+    }
+  ],
+  "proposals": {
+    "kpi-tile.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": "component:kpi-tile",
+            "$note": "PROPOSED #245 L3. Group 'This month' (knowledge/snippets/Template-dashboard-bento.reference.html:840): FOUR Kpi-tiles answer one question - how did this month go. Uniform in kind (rB C2), so the edge is a SELF-edge: a KPI groups with the other KPIs of its period, never with a chart because it is 'a KPI'."
+          }
+        ]
+      }
+    },
+    "stat-card.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": "component:stat-card",
+            "$note": "PROPOSED #245 L3. Group 'Position' (knowledge/snippets/Template-dashboard-bento.reference.html:946): TWO Stat-card modules (Balances - Needs attention) stacked, one question - where do I stand. MEASURED: the MODULE is the group member; what it carries (Summary, Status-indicator) rides inside it."
+          }
+        ]
+      }
+    },
+    "chart-bar.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": null,
+            "$note": "PROPOSED #245 L3. Group 'Spending analysis' (knowledge/snippets/Template-dashboard-bento.reference.html:901) holds ONE module - a Stat-card carrying Chart-bar's column specimen. One member is a tile, not a group, under Carbon's framing (rB Q3, Dave's - NOT ruled here). ref:null because there is no partner to point at until he says whether a one-member group is legal."
+          }
+        ]
+      }
+    },
+    "summary.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": "component:status-indicator",
+            "$note": "PROPOSED #245 L3. Inside group 'Position' (knowledge/snippets/Template-dashboard-bento.reference.html:946): Balances (Summary) beside Needs attention (Status-indicator chips) - the same question, where do I stand."
+          }
+        ]
+      }
+    },
+    "status-indicator.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": "component:summary",
+            "$note": "PROPOSED #245 L3. The mirror of summary.edges.groupsWith -> component:summary, same group 'Position' (knowledge/snippets/Template-dashboard-bento.reference.html:946). Symmetric by proposal; whether the edge is stored once or twice is a question, not a ruling."
+          }
+        ]
+      }
+    },
+    "template-dashboard-bento.meta.json": {
+      "edges": {
+        "groupsWith": [
+          {
+            "ref": null,
+            "$note": "PROPOSED #245 L3. Group 'This month' (knowledge/snippets/Template-dashboard-bento.reference.html:840) - members component:kpi-tile; shared question read off the section's aria-label. ref:null: a GROUP is not a node in the edge grammar (component|pattern|context|snippet|ruling) and this lane does not invent a 'group:' prefix - Dave's eye. Today's class: tpl-group-kpi."
+          },
+          {
+            "ref": null,
+            "$note": "PROPOSED #245 L3. Group 'Spending analysis' (knowledge/snippets/Template-dashboard-bento.reference.html:901) - members component:chart-bar; shared question read off the section's aria-label. ref:null: a GROUP is not a node in the edge grammar (component|pattern|context|snippet|ruling) and this lane does not invent a 'group:' prefix - Dave's eye. Today's class: tpl-group-chart."
+          },
+          {
+            "ref": null,
+            "$note": "PROPOSED #245 L3. Group 'Position' (knowledge/snippets/Template-dashboard-bento.reference.html:946) - members component:status-indicator + component:summary; shared question read off the section's aria-label. ref:null: a GROUP is not a node in the edge grammar (component|pattern|context|snippet|ruling) and this lane does not invent a 'group:' prefix - Dave's eye. Today's class: tpl-group-rail."
+          }
+        ]
+      }
+    }
+  },
+  "counts": {
+    "groups": 3,
+    "tiles": 7,
+    "member_metas": 5,
+    "meta_files_touched_if_applied": 6,
+    "edges": 8
+  }
+}

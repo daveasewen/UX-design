@@ -1,0 +1,77 @@
+## REGEN SERIAL — #245 L2-populate — order from knowledge/_build_all.py::STEPS (ramp first, index last); never _build_all.py
+
+$ python3 knowledge/gen_component_partials.py        # step 202: write
+gen_component_partials: 20 consumer block(s) injected/refreshed
+rc=0
+
+$ python3 knowledge/gen_component_partials.py --check
+gen_component_partials --check OK — all AUTO-PARTIAL blocks in sync, contracts hold.
+rc=0
+
+$ python3 knowledge/gen_token_ramp.py        # step 207 RAMP FIRST
+gen_token_ramp: 0 file(s) synced (0 with block, 0 block-removed), 148 already in sync.
+rc=0
+
+$ python3 knowledge/canon/gen_canon_components.py   # step 215
+gen_canon_components: no change (136 components in sync).
+rc=0
+
+$ python3 knowledge/canon/gen_canon_components.py --check
+gen_canon_components --check OK — 136 components in sync.
+rc=0
+
+$ python3 knowledge/gen_snippet_tokens.py --check --quiet   # step 223
+
+gen_snippet_tokens: 5015 manifest bindings across 136 snippets + 9 tranches; 0 value(s) would change; 0 canon.css literal(s) would change.
+OK — snippets + tranches + canon.css in sync with tokens.
+rc=0
+
+$ python3 knowledge/_validate_snippets.py   # step 224
+snippet gate: 136 snippet(s), 0 failure(s)
+rc=0
+
+$ python3 knowledge/canon/gen_theme_cascade.py --check   # step 228
+gen_theme_cascade --check OK — 230 override path(s), 392 component projection(s) in sync.
+rc=0
+
+$ python3 knowledge/gen_showroom.py   # step 252 (write)
+gen_showroom: 136 page(s) -> showroom/ (20 written, 0 orphan(s) pruned; index owned by knowledge/_render/gen_library_214.py)
+rc=0
+
+$ python3 knowledge/gen_showroom.py --check
+gen_showroom --check OK — 136 page(s) + index in sync (index owned by knowledge/_render/gen_library_214.py).
+rc=0
+
+$ python3 knowledge/_render/gen_library_214.py --check   # library index
+gen_library_214 --check: OUT OF SYNC — ['showroom/index.html', 'showroom/index.json']
+Run: python3 knowledge/_render/gen_library_214.py
+rc=1
+
+$ python3 knowledge/_render/gen_library_214.py   # write
+   foundation page missing: none
+   missing thumbnail: 1 — template-dashboard-bento
+   no behaviour JS:   30 — amount-display, app-shell-focused, avatar, breadcrumbs, cta-lockup, divider, document-row, empty-state
+rc=0
+
+# gen_library_214 SCRIPT_RE fixed (behaviour-manifest JSON counted as JS) — re-run
+$ python3 knowledge/_render/gen_library_214.py
+   missing thumbnail: 1 — template-dashboard-bento
+   no behaviour JS:   36 — account-card, action-bar, amount-display, app-shell-focused, avatar, badge, breadcrumbs, confirmation
+rc=0
+
+$ python3 knowledge/_render/gen_library_214.py --selftest
+   residual · foundation page not on disk: none
+   residual · ships no behaviour script: 36 component(s)
+rc=0
+
+$ python3 knowledge/_render/gen_library_214.py --check
+gen_library_214 --check OK — 144 component(s), index + index.json + stub in sync.
+rc=0
+
+$ python3 knowledge/_build_memento_index.py   # step 442 INDEX LAST
+memento index: 1994 records → knowledge/_memento-index.json (brief:181, carries-section:22, component-meta:138, context-node:216, dream:10, gauge-block:225, gm-archive-section:214, gm-section:20, lane:4, ledger-section:86, ls-archive-section:437, ls-section:11, pattern-node:374, runbook-section:56)
+rc=0
+
+$ python3 knowledge/_build_memento_index.py --check
+memento index --check: current (1994 records)
+rc=0

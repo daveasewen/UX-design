@@ -185,6 +185,28 @@ def reachable_surfaces() -> list[str]:
 # run, so the declaration cannot rot into a lie. Laundering is impossible by construction —
 # naming an unwired importer FAILS.
 ARM_OF: dict[str, tuple[str, str, str]] = {
+    "_validate_composition.py": (
+        "_validate_screen.py",
+        "s245-D7 (#245 L3 → L5, Dave: \"I'll go with all the recommendations\", Q4 (b)) — step 1b "
+        "of the composed-screen chain: `import _validate_composition as composition` and "
+        "`gate_composition()` on every screen in `_validate_screen.py`'s default run, which is "
+        "wired in `_build_all.STEPS`. C9 blocks, C1/C7/C8/C4 advisory. ⚠ Its `--selftest` (17 "
+        "arms) is NOT a STEPS entry yet: adding one moves the STEPS count the read chain derives "
+        "(_CHAIN.md, the wrap's), so the cut lane declared it as a carry rather than touch the "
+        "chain — wire the selftest at the next wrap.",
+        "2026-09-03",
+    ),
+    "_validate_receipt.py": (
+        "_validate_screen.py",
+        "s235-D2 (#235 L1, built #238 L2) — step 0 of the composed-screen chain, imported and "
+        "CALLED unconditionally in `_validate_screen.py`'s default run (`receipt = "
+        "importlib.import_module(\"_validate_receipt\")`, `gate_receipt()` on every screen), and "
+        "`_validate_screen.py` is wired in `_build_all.STEPS`. It was an ORPHAN by this gate's "
+        "reading from #238 to #245 — imported by a wired script but never DECLARED as its arm; "
+        "found at #245 L5 while wiring the sibling step 1b (`_validate_composition.py`, "
+        "s245-D7, which is wired directly by its own STEPS selftest entry).",
+        "2026-09-03",
+    ),
     "_gate_harness_stubs.py": (
         "_test_git_commit.py",
         "W-33 (#192) — the detector's consumer, and the consumer says so in its own words at "

@@ -1,0 +1,61 @@
+— 142 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 25s · non-mutating steps only
+
+  ⊘ [121] memento schematic determinism check — a stale diagram publishe  COULD-NOT-ASK
+  ⊘ [122] memento schematic selftest — figure provenance, caption geomet  COULD-NOT-ASK
+  ❌ [124] memento-package delta-audit selftest — mutation-tested, all 4   exit 1
+  ⏱ [126] instrument-fit selftest (advisory, ds-015)
+  ✅ [129] could-not-ask convention selftest (#193 — the third verdict's 
+  ✅ [132] governs matcher selftest — the [12]/[13] trigger-index arm, na
+  ✅ [133] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [134] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [135] pack ship-list audit — the manifest is byte-identical to a fre
+  ❌ [136] release-audit selftest — manifest compare + the pack arm's res  exit 1
+  ✅ [137] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [138] pack-side CI template selftest — 10 mutants incl. a smuggled c
+  ✅ [141] polarity gate — five refusals + content-fresh derived status/e
+  ✅ [142] polarity gate selftest — control + every refusal arm on a copy
+
+==============================================================================
+SURVEY: 9 pass · 2 FAIL · 2 COULD-NOT-ASK (self-declared refusals) · 1 unaskable (missing/timed out) · 8 not asked (mutating) · 120 outside --range 121:142 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (2) — this is the number no single `_build_all.py` run can tell you:
+
+  [124] memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)
+      python3 knowledge/_validate_package_delta.py --selftest   (exit 1)
+      ✗ real repo: clean (0 findings; got 2: ['VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ f
+
+  [136] release-audit selftest — manifest compare + the pack arm's resting refusal (#219)
+      python3 knowledge/_release/_gate_release_audit.py --selftest   (exit 1)
+      ❌ the manifest reads version 'v1.0.5' and NO zip in dist/ carries it (zips present: Apollo-Spider-v1.0.0.zip, Apollo-Spider-v1.0.1.zip, Apollo-Spider-
+
+COULD-NOT-ASK (2) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [121] memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)
+      python3 knowledge/_gen_schematic.py --check   (exit 77)
+      COULD-NOT-ASK: reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html — MEASUREMENT REFUSAL, NOT A CONTENT VERDICT IN EITHER DIRECTION. The committed page carries figures in ['real']; the only tier reachable in THIS environment is `tape (cl100k ESTIMATE)` (cl100k). Every token figure would differ for that reason alone. ⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, proven by single-variable isolation), so a bare checkout can never agree with a `real` page. Give this environment the same measurer, or re-ask where it is reachable — this artefact's content is UNKNOWN here and is reported as unknown rather than guessed.
+
+  [122] memento schematic selftest — figure provenance, caption geometry, self-recheck (#127)
+      python3 knowledge/_gen_schematic.py --selftest   (exit 77)
+      COULD-NOT-ASK: reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html --selftest — MEASUREMENT REFUSAL, NOT A CONTENT VERDICT IN EITHER DIRECTION. The committed page carries figures in ['real']; the only tier reachable in THIS environment is `tape (cl100k ESTIMATE)` (cl100k). Every token figure would differ for that reason alone. ⚠ `real` is reachable ONLY via `API-KEY.txt` or `knowledge/.token-cache.json` and BOTH ARE GITIGNORED (#173, proven by single-variable isolation), so a bare checkout can never agree with a `real` page. Give this environment the same measurer, or re-ask where it is reachable — this artefact's content is UNKNOWN here and is reported as unknown rather than guessed. ⇒ THESE BITES ARE NOT SKIPPED, THEY ARE UNASKABLE HERE: they are asked in full wherever `real` is reachable (any session holding `API-KEY.txt` or the token cache), and that run is the proof of record.
+
+UNASKABLE (1) — nobody asked these and they never said why (missing script / timeout). Counted as failures:
+  [126] instrument-fit selftest (advisory, ds-015) — TIMEOUT >25s — not a verdict
+
+NOT ASKED (8 mutating steps) — run --include-mutating on a clean tree to include them:
+  [123] memento-package delta-audit — #64 boundary enforcement (#79)
+  [125] enactment register — is each ruling IN FORCE? (advisory, ADR-0016)
+  [127] instrument fit — can the gate SEE the property? (advisory, ds-015)
+  [128] integrity lint (gate)
+  [130] probe registry — every historically-found defect class, re-driven 
+  [131] claim-table evidence linter — s182-D1 tokens + expected observatio
+  [139] baked-pack audit — a zip in apollo-spider/dist/ must match the man
+  [140] pack ship-list drift — how far behind HEAD the manifest is (ADVISO

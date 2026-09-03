@@ -8,15 +8,15 @@
 
 | verdict | count | meaning |
 |---|---:|---|
-| **PROVEN** | 5 | a check names it AND a selftest proves that check can FAIL on it |
-| **CLAIMED** | 24 | a check names it, nothing proves it can fail — the dangerous middle |
-| **UNPROVEN** | 55 | no executable check names it at all |
+| **PROVEN** | 9 | a check names it AND a selftest proves that check can FAIL on it |
+| **CLAIMED** | 21 | a check names it, nothing proves it can fail — the dangerous middle |
+| **UNPROVEN** | 54 | no executable check names it at all |
 | **NOT-GATEABLE** | 0 | the ledger says so explicitly, with a reason |
 | **TOTAL** | 84 | |
 
-**5 of 84 rulings (6%) are PROVEN.** That number is the finding, not a failure of this script.
+**9 of 84 rulings (11%) are PROVEN.** That number is the finding, not a failure of this script.
 
-**Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 6% as *of the pillar ledgers*, not *of the project*.**
+**Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 11% as *of the pillar ledgers*, not *of the project*.**
 
 ⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: `_sweep_type_enactment.py` named its subject and reported *0 deviations* while it could not read the stylesheet at all. A green light from a blind check is worse than no check.
 
@@ -32,19 +32,19 @@
 | `ADR-0002` | **UNPROVEN** | ADR-0002 — Build on open, model-agnostic standards | — | `docs/decisions/ADR-0002-open-standards-portability.md` |
 | `ADR-0003` | **UNPROVEN** | ADR-0003 — Knowledge representation chosen per stage (not one store) | — | `docs/decisions/ADR-0003-knowledge-layer-per-stage.md` |
 | `ADR-0004` | **UNPROVEN** | ADR-0004 — Compliance bar: build to WCAG 2.2 AA, version as a parameter | — | `docs/decisions/ADR-0004-compliance-bar-wcag22.md` |
-| `ADR-0005` | **CLAIMED** | ADR-0005 — Ratify the pivot: the knowledge engine is the product; orchestration is inherited | knowledge/_validate_advisory.py, knowledge/_validate_behaviour.py, knowledge/_validate_dataviz.py, knowledge/_validate_partials.py, knowledge/_validate_proforma.py, knowledge/_validate_radius.py, knowledge/_validate_snippets.py, knowledge/gen_component_partials.py | `docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md` |
+| `ADR-0005` | **PROVEN** | ADR-0005 — Ratify the pivot: the knowledge engine is the product; orchestration is inherited | knowledge/_validate_receipt.py, knowledge/gen_provenance_receipt.py | `docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md` |
 | `ADR-0006` | **UNPROVEN** | ADR-0006 — The product is a *flexing* engine: one governed core, dial-settings per work-type | — | `docs/decisions/ADR-0006-flexing-engine-product-shape.md` |
 | `ADR-0007` | **UNPROVEN** | ADR-0007 — Project memory as a temporal decision-graph (lightweight-first); `_LIVE-STATE` is the cold-start spine | — | `docs/decisions/ADR-0007-project-memory-decision-graph.md` |
 | `ADR-0008` | **CLAIMED** | ADR-0008 — Apollo is the canonical core; consumers are reached by automated adapters | knowledge/gen_component_partials.py | `docs/decisions/ADR-0008-canonical-core-and-adapters.md` |
 | `ADR-0009` | **CLAIMED** | ADR-0009 — State styling: colour is the universal substrate; opacity is an optional operational layer | knowledge/_validate_state_snap.py | `docs/decisions/ADR-0009-state-styling-architecture.md` |
 | `ADR-0010` | **PROVEN** | ADR-0010 — Token schema: explicit nullable slots for the dimensions we flex | knowledge/_validate_radius.py | `docs/decisions/ADR-0010-token-schema-nullable-flex-slots.md` |
-| `ADR-0011` | **CLAIMED** | ADR-0011 — Four-theme token architecture: themes as override sets, not forks | knowledge/_validate_theme_provenance.py, knowledge/gen_showroom.py | `docs/decisions/ADR-0011-four-theme-token-architecture.md` |
+| `ADR-0011` | **PROVEN** | ADR-0011 — Four-theme token architecture: themes as override sets, not forks | knowledge/_validate_theme_provenance.py | `docs/decisions/ADR-0011-four-theme-token-architecture.md` |
 | `ADR-0012` | **UNPROVEN** | ADR-0012 — Decision-graph edge convention: typed edges on the record corpus | — | `docs/decisions/ADR-0012-decision-graph-edge-convention.md` |
 | `ADR-0013` | **PROVEN** | ADR-0013 — Component-type tier: shared VALUES and shared RULES (composition by retrieval) | knowledge/_validate_partials.py, knowledge/gen_component_partials.py | `docs/decisions/ADR-0013-component-type-tier-composition.md` |
 | `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_palette_tier.py, knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
 | `ADR-0015` | **PROVEN** | ADR-0015 — Behaviour partials: the dataviz interaction layer as generated JS | knowledge/gen_component_partials.py | `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` |
 | `ADR-0016` | **PROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | knowledge/_validate_dataviz.py | `docs/decisions/ADR-0016-enactment-proof-register.md` |
-| `ADR-0017` | **CLAIMED** | ADR-0017 — WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen | knowledge/_validate_evidence.py, knowledge/_validate_intent_resolve.py, knowledge/_validate_state_contrast.py, knowledge/gen_brief.py, knowledge/gen_itinerary_status.py, knowledge/gen_radius_derive.py | `docs/decisions/ADR-0017-write-once-live-facts.md` |
+| `ADR-0017` | **PROVEN** | ADR-0017 — WRITE-ONCE: live facts get ONE home and addresses; history gets copies, dated and frozen | knowledge/gen_itinerary_status.py | `docs/decisions/ADR-0017-write-once-live-facts.md` |
 | `B-D1` | **UNPROVEN** | B-D1 — Apollo Mono primary carries NO red (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D2` | **UNPROVEN** | B-D2 — Mono primary token ladder minted; completes `button/*` (2026-07-20). | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D3` | **UNPROVEN** | B-D3 — Hover = dual token; mechanism is selectable (2026-07-20). → ADR-0009. | — | `_proforma/_BUTTON-DECISIONS.md` |
@@ -67,7 +67,7 @@
 | `DV-D13` | **CLAIMED** | DV-D13 · The Value⇄Percent seg drives EVERY numeric surface; the centre figure follows the | knowledge/_verify_dv_legend.js, knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D14` | **UNPROVEN** | DV-D14 · dv-004 separation is satisfied by GEOMETRY on gridded plots, not by a surface-coloured | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D15` | **UNPROVEN** | DV-D15 · Type drawn ON a series fill gets its own semantic role — `data/text/on-series` MINTED | — | `_proforma/_DATAVIZ-DECISIONS.md` |
-| `DV-D16` | **UNPROVEN** | DV-D16 · Stacked chart animates SEQUENTIALLY FROM THE BOTTOM, with a shaped easing cadence. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D16` | **CLAIMED** | DV-D16 · Stacked chart animates SEQUENTIALLY FROM THE BOTTOM, with a shaped easing cadence. | knowledge/_validate_token_forks.py | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D17` | **CLAIMED** | DV-D17 · The isolated key must NOT stay active once other series are checked back on. | knowledge/_verify_dv_legend.js, knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D18` | **CLAIMED** | mentions it (`:728`, `## ★ #70 — … — DV-D18: …`), and #75's registration rule takes an id only when | knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D19` | **CLAIMED** | "DV-D19 — the mode latch, shown on real canon prototype is perfect as it is."* ⇒ The | knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
@@ -90,7 +90,7 @@
 | `R-D16` | **UNPROVEN** | R-D16 — Apollo Mono semantic greys seated on the `color/mono/*` ramp (2026-07-19) | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D17` | **UNPROVEN** | R-D17 — The bare `rag/*` roles are Legacy-drifted; teal leak gated (2026-07-20). Source: Dave. | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D18` | **CLAIMED** | R-D18 — Success GREEN set completed; teal fully evicted from Mono (2026-07-20). Source: Dave, on the live tuner. | knowledge/_validate_legacy_leak.py | `_proforma/_RAG-DECISIONS.md` |
-| `R-D19` | **CLAIMED** | R-D19 — Red belongs to a THEME, not to Mono: Legacy red vs the Mono status red (2026-07-20). Source: Dave. | knowledge/_validate_theme_provenance.py | `_proforma/_RAG-DECISIONS.md` |
+| `R-D19` | **PROVEN** | R-D19 — Red belongs to a THEME, not to Mono: Legacy red vs the Mono status red (2026-07-20). Source: Dave. | knowledge/_validate_theme_provenance.py | `_proforma/_RAG-DECISIONS.md` |
 | `R-D20` | **UNPROVEN** | R-D20 — error / warning / information sets COMPLETED; the last Legacy RAG hexes evicted from Mono (2026-07-20). Source: Dave, on the live tuner. | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D21` | **UNPROVEN** | R-D21 — the decision-graph audit's two conflicts RESOLVED: role-uniformity superseded + red's mode-stability bounded to the fill (2026-07-21). Source: | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D22` | **UNPROVEN** | R-D22 — `progress/complete` = INK (progress is structure, not status) + Badge mints the component slot `badge/background`; the Mono red-drift pair CLO | — | `_proforma/_RAG-DECISIONS.md` |

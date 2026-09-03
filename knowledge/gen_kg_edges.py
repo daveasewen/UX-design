@@ -73,6 +73,9 @@ PROFORMA = ROOT / "_proforma" / "icon-button.meta.json"
 SNIPPETS = ROOT / "snippets"
 NODES_PATTERN = COMPONENTS / "_nodes-pattern.json"
 NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
+# s245-D7 — edge types that are AUTHORED in the meta (ruled, Dave's-eye) rather than derived
+# from prose by this generator. The generator carries them through a regeneration verbatim.
+DECLARED_EDGE_TYPES = ("groupsWith",)
 
 # s135-D4 — the ruled verdicts file is a GENERATOR INPUT, not a hand-patch.
 RESOLUTIONS = ROOT.parent / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
@@ -445,6 +448,15 @@ def main():
         stem = f.name[: -len(".meta.json")]
 
         edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name)
+        # s245-D7 (#245): DECLARED edge types are CARRIED, never derived. `groupsWith` is the
+        # composition edge whose ONE home is the meta itself (s234-D4: grouping lives once in
+        # the KG) — it has no prose field to derive from, so a regeneration that rebuilt `edges`
+        # from prose alone would silently DROP it (the freshness arm of _validate_kg.py caught
+        # exactly that). Carried verbatim from the file's own `edges`, appended last.
+        prior_edges = json.loads(raw).get("edges", {}) if '"edges"' in raw else {}
+        for etype in DECLARED_EDGE_TYPES:
+            if etype in prior_edges:
+                edges[etype] = prior_edges[etype]
 
         for etype, arr in edges.items():
             counts[etype] = counts.get(etype, 0) + len(arr)

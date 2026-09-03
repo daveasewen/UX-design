@@ -1,0 +1,632 @@
+diff --git a/knowledge/components/account-card.meta.json b/knowledge/components/account-card.meta.json
+index 1187108..5580ba8 100644
+--- a/knowledge/components/account-card.meta.json
++++ b/knowledge/components/account-card.meta.json
+@@ -30,7 +30,13 @@
+     "commonPatterns": ["account balance summary on a dashboard", "tappable account row that opens account detail (REVIEW: interactive variant?)"]
+   },
+   "behaviour": {
+-    "passive": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role."
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": {
++      "passive": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role."
++    }
+   },
+   "accessibility": {
+     "role": "role=\"group\" with aria-labelledby pointing at the account label, so the card is announced as a single unit.",
+diff --git a/knowledge/components/action-bar.meta.json b/knowledge/components/action-bar.meta.json
+index 1a62356..1e5b00e 100644
+--- a/knowledge/components/action-bar.meta.json
++++ b/knowledge/components/action-bar.meta.json
+@@ -40,7 +40,13 @@
+     "wide": "inline — tertiary Back pinned left (margin-right:auto), secondary + primary on the right",
+     "narrow": "stacked, each button full-width; PRIMARY promoted to the TOP, tertiary Back to the BOTTOM (mobile priority); hover-grow disabled (a full-bleed grow overflows)"
+   },
+-  "behaviour": "Passive layout container — no states of its own; the Button atom inside carries hover/pressed/focus.",
++  "behaviour": {
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": "Passive layout container — no states of its own; the Button atom inside carries hover/pressed/focus."
++  },
+   "accessibility": {
+     "role": "None on the bar itself (it is layout); the actions are native <button>s so they are focusable and keyboard-operable by default.",
+     "focusOrder": "REVIEW (inferred): DOM order is tertiary→secondary→primary (Back → Cancel → Confirm) so keyboard focus runs back-out → forward; the visual reorder at narrow widths (primary top, Back bottom) is CSS order only — confirm this does not conflict with 2.4.3 expectations.",
+diff --git a/knowledge/components/amount-input.meta.json b/knowledge/components/amount-input.meta.json
+index 75434a1..1a3075a 100644
+--- a/knowledge/components/amount-input.meta.json
++++ b/knowledge/components/amount-input.meta.json
+@@ -26,10 +26,21 @@
+     "commonPatterns": ["make-a-payment amount", "transfer amount", "top-up amount"]
+   },
+   "behaviour": {
+-    "typing": "Digits, comma, dot accepted while typing; everything else stripped on input.",
+-    "blur": "Value normalises: en-GB grouping + exactly two decimals; group gains is-completed (value weight 500).",
+-    "focus": "is-completed lifts while editing.",
+-    "keypad": "inputmode=decimal brings the numeric keypad on touch."
++    "script": "knowledge/snippets/Amount-input.reference.html#script",
++    "partial": null,
++    "events": [
++      "blur",
++      "focus",
++      "input"
++    ],
++    "fallback": "A native text input: `inputmode=decimal` is an attribute and stays; typed characters are kept verbatim (no stripping, no en-GB grouping, no two-decimal normalisation); no is-completed weight and no message on blur.",
++    "$note": {
++      "typing": "Digits, comma, dot accepted while typing; everything else stripped on input.",
++      "blur": "Value normalises: en-GB grouping + exactly two decimals; group gains is-completed (value weight 500).",
++      "focus": "is-completed lifts while editing.",
++      "keypad": "inputmode=decimal brings the numeric keypad on touch."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-amount-input-{before,after}.png"
+   },
+   "accessibility": {
+     "label": "Real <label for> (or aria-label naming the currency when the visible label is elsewhere); help + messages joined via aria-describedby.",
+diff --git a/knowledge/components/anchor-nav.meta.json b/knowledge/components/anchor-nav.meta.json
+index 209255b..aaf3727 100644
+--- a/knowledge/components/anchor-nav.meta.json
++++ b/knowledge/components/anchor-nav.meta.json
+@@ -117,9 +117,16 @@
+     "$slots": "railHeading: The rail's visible heading ('On this page'). The bar has no visible heading — its accessible name lives on the <nav>."
+   },
+   "behaviour": {
+-    "scrollspy": "IntersectionObserver rooted on the scroll container, rootMargin '-56px 0px -55% 0px', threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.",
+-    "jump": "Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.",
+-    "motion": "standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion."
++    "script": "knowledge/snippets/Anchor-nav.reference.html#script",
++    "partial": null,
++    "events": [],
++    "fallback": "Fragment links still jump — they are real `href=\"#…\"` links and each section carries `scroll-margin-top:56px`; the authored `aria-current` stays where the markup put it and never moves.",
++    "$note": {
++      "scrollspy": "IntersectionObserver rooted on the scroll container, rootMargin '-56px 0px -55% 0px', threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.",
++      "jump": "Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.",
++      "motion": "standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-anchor-nav-{before,after}.png"
+   },
+   "$distinctFrom": [
+     "component:tabs — Tabs swaps panels; this hides nothing",
+diff --git a/knowledge/components/badge.meta.json b/knowledge/components/badge.meta.json
+index 894e90c..c2c0c7c 100644
+--- a/knowledge/components/badge.meta.json
++++ b/knowledge/components/badge.meta.json
+@@ -72,8 +72,14 @@
+     ]
+   },
+   "behaviour": {
+-    "appearing": "If a badge already exists when a page is navigated to, it should be included in the page load. If created after load, it may appear with subtle animated motion to attract attention (see the relevant toolkits for motion).",
+-    "passive": "Badges are passive indicators — they notify but are not themselves interactive controls; the element they attach to is the actionable target."
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": {
++      "appearing": "If a badge already exists when a page is navigated to, it should be included in the page load. If created after load, it may appear with subtle animated motion to attract attention (see the relevant toolkits for motion).",
++      "passive": "Badges are passive indicators — they notify but are not themselves interactive controls; the element they attach to is the actionable target."
++    }
+   },
+   "accessibility": {
+     "role": "REVIEW: badge is a decorative/status adornment on a host element; the host element (link/button/icon) is the focusable control",
+diff --git a/knowledge/components/calendar.meta.json b/knowledge/components/calendar.meta.json
+index ac1ae83..329a6c8 100644
+--- a/knowledge/components/calendar.meta.json
++++ b/knowledge/components/calendar.meta.json
+@@ -41,10 +41,23 @@
+     "commonPatterns": ["payment-date", "appointment-slot", "statement-period"]
+   },
+   "behaviour": {
+-    "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
+-    "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
+-    "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
+-    "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
++    "script": "knowledge/snippets/Calendar.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "keydown"
++    ],
++    "fallback": null,
++    "$note": {
++      "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
++      "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
++      "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
++      "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
++    },
++    "$unproven": [
++      "fallback"
++    ],
++    "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the live grid's <tbody id=cal-body> is EMPTY (innerHTML length 0) and #cal-title is a blank &nbsp; — the days are script-rendered, so the candidate 'server-authored buttons' is FALSE; next-month and the live region do nothing. 2/3 assertions held; failed: month grid renders: server-authored day buttons present. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-calendar-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "A real <table> with role=grid and a visually-hidden <caption> carrying the month. Rows are <tr role=row>, weekday heads are <th role=columnheader scope=col abbr=...>, and cells are plain <td> whose role maps NATIVELY to gridcell because the table's role is grid (HTML-AAM). The redundant role attributes were removed rather than written — first rule of ARIA — and the computed roles were then verified in a real browser rather than asserted.",
+diff --git a/knowledge/components/command-palette.meta.json b/knowledge/components/command-palette.meta.json
+index a951157..2dba5e1 100644
+--- a/knowledge/components/command-palette.meta.json
++++ b/knowledge/components/command-palette.meta.json
+@@ -122,10 +122,25 @@
+     "$slots": "result.icon: 18px library glyph identifying the destination or action type.; result.label: Single line, truncating. .t-cm-label.; result.meta: Right-aligned trailing hint: the section a destination lives in, or the keyboard shortcut of an action."
+   },
+   "behaviour": {
+-    "open": "A shortcut opens it. THE CHORD IS NOT RULED — the specimen shows Ctrl+K, and the platform-correct pairing (Ctrl on Windows, Command on macOS) plus whether the product claims that chord at all is PROPOSED #203, Dave's.",
+-    "keyboard": "Up/Down move the highlight and wrap; Enter commits the highlighted option; Esc closes and returns focus to the opener; Tab is not used to move within the list.",
+-    "results": "Grouped, group order fixed, groups with no results omitted. Ranking is application business and is not specified here.",
+-    "motion": "standard ease only (160ms cubic-bezier(.4,0,.2,1)); a prefers-reduced-motion block neutralises every transition."
++    "script": "knowledge/snippets/Command-palette.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "focusin",
++      "input",
++      "keydown"
++    ],
++    "fallback": null,
++    "$note": {
++      "open": "A shortcut opens it. THE CHORD IS NOT RULED — the specimen shows Ctrl+K, and the platform-correct pairing (Ctrl on Windows, Command on macOS) plus whether the product claims that chord at all is PROPOSED #203, Dave's.",
++      "keyboard": "Up/Down move the highlight and wrap; Enter commits the highlighted option; Esc closes and returns focus to the opener; Tab is not used to move within the list.",
++      "results": "Grouped, group order fixed, groups with no results omitted. Ranking is application business and is not specified here.",
++      "motion": "standard ease only (160ms cubic-bezier(.4,0,.2,1)); a prefers-reduced-motion block neutralises every transition."
++    },
++    "$unproven": [
++      "fallback"
++    ],
++    "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the specimen authors the palette OPEN (role=dialog visible, combobox aria-expanded=true), so 'cannot open' is not measurable on the snippet; Ctrl+K adds nothing, typing does not filter (5 options before and after). 2/3 assertions held; failed: candidate clause 'cannot open' is TESTABLE on this snippet (palette authored CLOSED)?. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-command-palette-{before,after}.png"
+   },
+   "$distinctFrom": [
+     "component:dropdown — role=menu hung off a trigger, no query",
+diff --git a/knowledge/components/confirmation.meta.json b/knowledge/components/confirmation.meta.json
+index c61a775..19c1d6b 100644
+--- a/knowledge/components/confirmation.meta.json
++++ b/knowledge/components/confirmation.meta.json
+@@ -30,7 +30,13 @@
+     "mustNotNeighbour": [],
+     "commonPatterns": ["payment sent confirmation", "request submitted", "form success screen"]
+   },
+-  "behaviour": "Passive panel — no states of its own; the Button atom inside carries hover/pressed/focus. Full-width actions, so buttons use press-only physics (no hover-grow).",
++  "behaviour": {
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": "Passive panel — no states of its own; the Button atom inside carries hover/pressed/focus. Full-width actions, so buttons use press-only physics (no hover-grow)."
++  },
+   "motion": {
+     "entrance": "success-solid pops in (scale .5 → 1.06 → 1, spring easing) then title / message / actions rise (translateY 10→0 + fade), staggered 140 / 220 / 300ms.",
+     "reducedMotion": "all entrance animation disabled under prefers-reduced-motion — content is shown immediately."
+diff --git a/knowledge/components/date-picker.meta.json b/knowledge/components/date-picker.meta.json
+index c7ed3a2..0bbba33 100644
+--- a/knowledge/components/date-picker.meta.json
++++ b/knowledge/components/date-picker.meta.json
+@@ -29,10 +29,23 @@
+     "commonPatterns": ["payment-date", "date-of-birth", "statement-range (see Date-range picker)"]
+   },
+   "behaviour": {
+-    "open": "Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.",
+-    "keyboard": "Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.",
+-    "select": "Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.",
+-    "validation": "On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with 'Enter a real date, like …' (ctkn-020 'Enter…' + 3.3.3 suggestion). Error lifts as soon as the value re-validates."
++    "script": "knowledge/snippets/Date-picker.reference.html#script",
++    "partial": null,
++    "events": [
++      "blur",
++      "click",
++      "input",
++      "keydown",
++      "pointerdown"
++    ],
++    "fallback": "The text input works as a native field (DD/MM/YYYY typed by hand); the tail button does nothing and the panel never opens (`aria-expanded` stays false); no on-blur validation message, even for an impossible date.",
++    "$note": {
++      "open": "Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.",
++      "keyboard": "Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.",
++      "select": "Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.",
++      "validation": "On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with 'Enter a real date, like …' (ctkn-020 'Enter…' + 3.3.3 suggestion). Error lifts as soon as the value re-validates."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 7/7 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-date-picker-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "Real <label for>; help + message joined via aria-describedby; panel = role=dialog (non-modal) with aria-label; grid = role=grid, day buttons = gridcells with full-date aria-labels.",
+diff --git a/knowledge/components/date-range-picker.meta.json b/knowledge/components/date-range-picker.meta.json
+index ed39ba2..37ea790 100644
+--- a/knowledge/components/date-range-picker.meta.json
++++ b/knowledge/components/date-range-picker.meta.json
+@@ -28,10 +28,22 @@
+     "commonPatterns": ["statement-period", "transaction-search", "custom-reporting-window"]
+   },
+   "behaviour": {
+-    "protocol": "No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.",
+-    "open": "Either tail button (aria-haspopup=dialog); the view seeds from that field's value (else start, else today); focus returns to the opening button on close.",
+-    "keyboard": "Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.",
+-    "validation": "Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — 'Enter an end date after the start date.' Errors lift on re-validation or on a valid calendar pick."
++    "script": "knowledge/snippets/Date-range-picker.reference.html#script",
++    "partial": null,
++    "events": [
++      "blur",
++      "click",
++      "keydown",
++      "pointerdown"
++    ],
++    "fallback": "Both fields work as native text inputs; neither tail button opens the panel; no per-field and no pair validation on blur.",
++    "$note": {
++      "protocol": "No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.",
++      "open": "Either tail button (aria-haspopup=dialog); the view seeds from that field's value (else start, else today); focus returns to the opening button on close.",
++      "keyboard": "Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.",
++      "validation": "Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — 'Enter an end date after the start date.' Errors lift on re-validation or on a valid calendar pick."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-date-range-picker-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "Two real <label for> fields; one non-modal dialog serves both (both tail buttons carry aria-haspopup/aria-expanded); grid = role=grid with full-date aria-labels.",
+diff --git a/knowledge/components/eyebrow.meta.json b/knowledge/components/eyebrow.meta.json
+index 8a2d3ef..3d59b17 100644
+--- a/knowledge/components/eyebrow.meta.json
++++ b/knowledge/components/eyebrow.meta.json
+@@ -18,7 +18,13 @@
+     "mustNotNeighbour": [],
+     "commonPatterns": ["eyebrow + heading section intro", "card title kicker"]
+   },
+-  "behaviour": "Passive display label — no states.",
++  "behaviour": {
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": "Passive display label — no states."
++  },
+   "accessibility": {
+     "role": "None — a decorative <span>, NOT a heading, so it does not break heading order.",
+     "screenReader": "REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.",
+diff --git a/knowledge/components/file-upload.meta.json b/knowledge/components/file-upload.meta.json
+index 1667e33..903a778 100644
+--- a/knowledge/components/file-upload.meta.json
++++ b/knowledge/components/file-upload.meta.json
+@@ -28,9 +28,23 @@
+     "commonPatterns": ["proof-of-identity", "proof-of-address", "supporting-evidence"]
+   },
+   "behaviour": {
+-    "staging": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.",
+-    "remove": "Per-row 24px close (36px extended hit target); removal announced via the polite live region.",
+-    "announcements": "Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3)."
++    "script": "knowledge/snippets/File-upload.reference.html#script",
++    "partial": null,
++    "events": [
++      "change",
++      "click",
++      "drop"
++    ],
++    "fallback": null,
++    "$note": {
++      "staging": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.",
++      "remove": "Per-row 24px close (36px extended hit target); removal announced via the polite live region.",
++      "announcements": "Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3)."
++    },
++    "$unproven": [
++      "fallback"
++    ],
++    "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the 'Browse files' <button> is script-wired and opens NO chooser JS-off; the <label for=fu-input> DOES open the native chooser; nothing stages, no progress bar, no announcement — a different reading from the candidate's conditional, not the candidate. 3/4 assertions held; failed: Browse <button> opens a file chooser with JS off. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-file-upload-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "Real <label for> on the hidden file input; the browse button proxies its click; constraints in help text joined via aria-describedby; rows in a labelled list.",
+diff --git a/knowledge/components/form-layout.meta.json b/knowledge/components/form-layout.meta.json
+index d38b8dc..4d99a26 100644
+--- a/knowledge/components/form-layout.meta.json
++++ b/knowledge/components/form-layout.meta.json
+@@ -36,8 +36,19 @@
+     "commonPatterns": ["add-a-payee", "make-a-payment", "profile edit"]
+   },
+   "behaviour": {
+-    "validation": "Validate on submit; per-field errors + summary together. A field's error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.",
+-    "masking": "Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern)."
++    "script": "knowledge/snippets/Form-layout.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "input",
++      "submit"
++    ],
++    "fallback": "The form submits natively (a GET; `novalidate` is authored, so native constraint validation is off as well); no per-field errors, no error summary, no sort-code masking.",
++    "$note": {
++      "validation": "Validate on submit; per-field errors + summary together. A field's error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.",
++      "masking": "Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern)."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-form-layout-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "fieldset + legend name the form region; every input has a real <label for>; help/messages joined via aria-describedby.",
+diff --git a/knowledge/components/meta.schema.json b/knowledge/components/meta.schema.json
+index dae122f..5207f1d 100644
+--- a/knowledge/components/meta.schema.json
++++ b/knowledge/components/meta.schema.json
+@@ -85,6 +85,76 @@
+         "ref": { "type": ["string", "null"], "pattern": "^(component|pattern|context|snippet|ruling):.+$" },
+         "$note": { "type": "string" }
+       }
++    },
++    "behaviourAddress": {
++      "description": "s234-D5 (Dave, #234) + s245-D1 (grammar (a), #245): `behaviour` promoted from optional prose notes to a TYPED OBJECT carrying the script/partial ADDRESS. The meta is the ONE HOME (s234-D4/D5: generation chain, never copy chain): gen_component_partials.py DERIVES a #behaviour-manifest block into the snippet beside #token-manifest, and _validate_receipt.py reads THIS object to check that a composed page loads what the meta declares. `script` GRAMMAR — three forms, nothing else resolves: null = the component carries NO script (a POSITIVE declaration, never 'unknown'); `knowledge/<path>.js` = a hand-authored source file, the component-types.json $behaviour form (e.g. knowledge/canon/dv-behaviour.js); `knowledge/snippets/<Slug>.reference.html#script` = the snippet's own inline executable <script> element(s) outside any AUTO-BEHAVIOUR markers. `partial` = the AUTO-BEHAVIOUR name(s) registered under component-types.json $behaviour that the snippet carries — one name, a list of names (s245-D2: 9 of the 14 dataviz members carry 2-3), else null. `events` = DOM event names as passed to addEventListener — s245-D4: KEPT, OPTIONAL, generated from the snippet, never authored (rC Q3 answered). `fallback` = what the component does with CSS on and JS off (rA resilience criterion, GOV.UK/USWDS); null = NOT DECLARED (an honest UNPROVEN), never 'none' — a passive component says so in words ('identical — the component carries no script'). `$note` keeps the pre-s234-D5 prose VERBATIM (by-addition migration, ADR-0017 archive-never-delete). `$unproven` names the fields whose value is null because neither the prose nor a probe settles them. Existence of the addressed file/script is NOT a schema question — the generator and the gate resolve it (gate the presence, not the shape).",
++      "type": "object",
++      "required": [
++        "script",
++        "partial",
++        "fallback"
++      ],
++      "additionalProperties": false,
++      "patternProperties": {
++        "^\\$": {}
++      },
++      "properties": {
++        "script": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "pattern": "^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$"
++        },
++        "partial": {
++          "type": [
++            "string",
++            "array",
++            "null"
++          ],
++          "pattern": "^[a-z][a-z0-9-]*$",
++          "items": {
++            "type": "string",
++            "pattern": "^[a-z][a-z0-9-]*$"
++          },
++          "minItems": 1,
++          "uniqueItems": true
++        },
++        "events": {
++          "type": "array",
++          "items": {
++            "type": "string",
++            "pattern": "^[a-z][a-z0-9]*$"
++          },
++          "uniqueItems": true
++        },
++        "fallback": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "minLength": 1
++        },
++        "$note": {
++          "type": [
++            "object",
++            "array",
++            "string"
++          ]
++        },
++        "$unproven": {
++          "type": "array",
++          "items": {
++            "enum": [
++              "script",
++              "partial",
++              "events",
++              "fallback"
++            ]
++          },
++          "uniqueItems": true
++        }
++      }
+     }
+   },
+   "properties": {
+@@ -195,7 +265,25 @@
+       "description": "optional geometry/measurement spec — the sizes a generator would otherwise have to invent (height, padding, indicator/border widths, gaps, target size). Values are px numbers or strings naming a layout/spacing token. Added 2026-06-19 (fitness-test fix #3). Open shape; prefer token references over raw numbers where a token exists.",
+       "type": "object"
+     },
+-    "behaviour": { "description": "optional behavioural notes", "type": ["object", "array", "string"] },
++    "behaviour": {
++      "description": "s234-D5: the behaviour ADDRESS (typed — #/definitions/behaviourAddress), OR, during migration only, the pre-s234-D5 prose notes (object|array|string). The discriminator is the `script` key: an object carrying `script` MUST validate as a behaviourAddress; anything else is LEGACY prose, permitted by this schema but BLOCKED by the receipt gate since s245-D3 (#245: FAIL:BEHAVIOUR-PROSE in _validate_receipt.py step 4b) — the s140-D1 posture, gate not schema (the s140-D1 staging posture: permit now, enforce by gate later). By-addition: the migration moves the prose under $note, so once the 20 prose values are migrated the legacy branch has no population and can be retired by a ruling.",
++      "if": {
++        "type": "object",
++        "required": [
++          "script"
++        ]
++      },
++      "then": {
++        "$ref": "#/definitions/behaviourAddress"
++      },
++      "else": {
++        "type": [
++          "object",
++          "array",
++          "string"
++        ]
++      }
++    },
+     "usage": { "description": "optional usage notes", "type": ["object", "array", "string"] },
+     "build": { "description": "optional build/implementation notes", "type": ["object", "array", "string"] },
+     "graphicIndicator": { "description": "optional graphic/indicator notes", "type": ["object", "array", "string"] },
+diff --git a/knowledge/components/secure-entry.meta.json b/knowledge/components/secure-entry.meta.json
+index e489c06..24dffa8 100644
+--- a/knowledge/components/secure-entry.meta.json
++++ b/knowledge/components/secure-entry.meta.json
+@@ -24,10 +24,22 @@
+     "commonPatterns": ["SMS one-time passcode", "card PIN confirmation", "secure-key code"]
+   },
+   "behaviour": {
+-    "advance": "Focus moves to the next cell on fill; backspace on an empty cell steps back and clears.",
+-    "paste": "A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).",
+-    "verify": "Checked when all cells are filled; group gains is-done or is-error; cells carry aria-invalid on failure.",
+-    "resend": "Disabled for 30s; the wait counter is visible text beside the button."
++    "script": "knowledge/snippets/Secure-entry.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "input",
++      "keydown",
++      "paste"
++    ],
++    "fallback": "Six independent inputs; no auto-advance, no paste or typing distribution, no verify state; `autocomplete=one-time-code` (an attribute) stays on the first cell.",
++    "$note": {
++      "advance": "Focus moves to the next cell on fill; backspace on an empty cell steps back and clears.",
++      "paste": "A pasted code distributes across cells (autocomplete=one-time-code invites OS autofill).",
++      "verify": "Checked when all cells are filled; group gains is-done or is-error; cells carry aria-invalid on failure.",
++      "resend": "Disabled for 30s; the wait counter is visible text beside the button."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-secure-entry-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "role=group named by the visible label (aria-labelledby); every cell carries 'Digit n of N'.",
+diff --git a/knowledge/components/stepper.meta.json b/knowledge/components/stepper.meta.json
+index 5adcc03..868b71e 100644
+--- a/knowledge/components/stepper.meta.json
++++ b/knowledge/components/stepper.meta.json
+@@ -27,10 +27,20 @@
+     "commonPatterns": ["payment-setup", "account-opening", "application-forms"]
+   },
+   "behaviour": {
+-    "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
+-    "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
+-    "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
+-    "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
++    "script": "knowledge/snippets/Stepper.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "input"
++    ],
++    "fallback": "Only the panel the markup authors as current is shown; Next and Back do nothing; no announcement. The dots-to-line collapse is a container query (CSS, 520px) and still fires.",
++    "$note": {
++      "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
++      "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
++      "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
++      "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-stepper-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "Steps in an <ol> (sequence semantics); aria-current=step on the current li; done dots = real buttons with 'Go back to step n (completed)' labels; panels are labelled sections; collapsed form = role=progressbar with aria-valuetext.",
+diff --git a/knowledge/components/summary.meta.json b/knowledge/components/summary.meta.json
+index 765f651..225bda4 100644
+--- a/knowledge/components/summary.meta.json
++++ b/knowledge/components/summary.meta.json
+@@ -21,7 +21,13 @@
+     "mustNotNeighbour": [],
+     "commonPatterns": ["payment review (To / Amount / Date / Reference)", "order summary with total"]
+   },
+-  "behaviour": "Passive display list — no states.",
++  "behaviour": {
++    "script": null,
++    "partial": null,
++    "events": [],
++    "fallback": "identical — the component carries no script",
++    "$note": "Passive display list — no states."
++  },
+   "accessibility": {
+     "role": "Semantic <dl>/<dt>/<dd> so assistive tech announces each name→value pair as a group (1.3.1). Each row wraps one dt+dd in a div.",
+     "screenReader": "REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.",
+diff --git a/knowledge/components/tab-bar.meta.json b/knowledge/components/tab-bar.meta.json
+index 77e6e99..1e4c95f 100644
+--- a/knowledge/components/tab-bar.meta.json
++++ b/knowledge/components/tab-bar.meta.json
+@@ -29,7 +29,17 @@
+     "mustNotNeighbour": ["Tabs (in-page) — a tab bar is app navigation, not in-page section switching"],
+     "commonPatterns": ["Home / Cards / Payments / Menu bottom nav", "persistent primary navigation on mobile"]
+   },
+-  "behaviour": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
++  "behaviour": {
++    "script": "knowledge/snippets/Tab-bar.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "resize"
++    ],
++    "fallback": "Each item is a native `<a>` and takes keyboard focus; the authored `aria-current` stands; clicking another item moves nothing — the active pill stays where the markup put it.",
++    "$note": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-tab-bar-{before,after}.png"
++  },
+   "motion": {
+     "segmented": "the selected fill is a sliding pill — left+width animate from the current segment on 200ms cubic-bezier(.4,0,.2,1) (matching View-options / the toggle); the glyph colour transitions on the same easing so on-fill contrast holds through the slide.",
+     "reducedMotion": "the slide + colour change become instant under prefers-reduced-motion."
+diff --git a/knowledge/components/textarea.meta.json b/knowledge/components/textarea.meta.json
+index 7689a16..39294bc 100644
+--- a/knowledge/components/textarea.meta.json
++++ b/knowledge/components/textarea.meta.json
+@@ -22,8 +22,17 @@
+     "commonPatterns": ["notes to approvers", "reason for payment", "secure message body"]
+   },
+   "behaviour": {
+-    "resize": "vertical only (horizontal resize breaks the layout grid); disabled turns resize off.",
+-    "counter": "n/max updates on input; is-warn (weight 500) at ≥90%; aria-live region announces remaining at 90% and at the limit."
++    "script": "knowledge/snippets/Textarea.reference.html#script",
++    "partial": null,
++    "events": [
++      "input"
++    ],
++    "fallback": "A native textarea: vertical-only resize is CSS and holds; the counter does not move, no warn weight, no announcement.",
++    "$note": {
++      "resize": "vertical only (horizontal resize breaks the layout grid); disabled turns resize off.",
++      "counter": "n/max updates on input; is-warn (weight 500) at ≥90%; aria-live region announces remaining at 90% and at the limit."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-textarea-{before,after}.png"
+   },
+   "accessibility": {
+     "label": "Real <label for>; help + counter joined via aria-describedby.",
+diff --git a/knowledge/components/time-picker.meta.json b/knowledge/components/time-picker.meta.json
+index b6b3266..70ea081 100644
+--- a/knowledge/components/time-picker.meta.json
++++ b/knowledge/components/time-picker.meta.json
+@@ -28,10 +28,23 @@
+     "commonPatterns": ["payment-time (with Date picker)", "branch-appointment-slot"]
+   },
+   "behaviour": {
+-    "open": "Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).",
+-    "keyboard": "ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.",
+-    "select": "Writes HH:MM, clears any error, closes, returns focus.",
+-    "validation": "On blur: empty = no error; malformed or impossible times (25:70) error with 'Enter a time in 24-hour format, like 14:30.' Error lifts as soon as the value re-validates."
++    "script": "knowledge/snippets/Time-picker.reference.html#script",
++    "partial": null,
++    "events": [
++      "blur",
++      "click",
++      "input",
++      "keydown",
++      "pointerdown"
++    ],
++    "fallback": "The text input works as a native field (HH:MM typed by hand); the tail button does nothing and the list never opens; no on-blur validation message.",
++    "$note": {
++      "open": "Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).",
++      "keyboard": "ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.",
++      "select": "Writes HH:MM, clears any error, closes, returns focus.",
++      "validation": "On blur: empty = no error; malformed or impossible times (25:70) error with 'Enter a time in 24-hour format, like 14:30.' Error lifts as soon as the value re-validates."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-time-picker-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "Real <label for>; input = role=combobox with aria-expanded/aria-controls; list = role=listbox of role=option items; help + message via aria-describedby.",
+diff --git a/knowledge/components/tree.meta.json b/knowledge/components/tree.meta.json
+index a52b134..3e262e6 100644
+--- a/knowledge/components/tree.meta.json
++++ b/knowledge/components/tree.meta.json
+@@ -40,10 +40,20 @@
+     "commonPatterns": ["account-hierarchy", "category-picker", "org-structure"]
+   },
+   "behaviour": {
+-    "keyboard": "ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.",
+-    "pointer": "Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.",
+-    "visibility": "'Visible' is computed as offsetParent !== null, which is exactly the question 'is any ancestor collapsed', rather than a parallel model that can drift from the DOM.",
+-    "lazy": "First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree's item set."
++    "script": "knowledge/snippets/Tree.reference.html#script",
++    "partial": null,
++    "events": [
++      "click",
++      "keydown"
++    ],
++    "fallback": "Every branch renders in the open or closed state the markup authors (collapsed groups hidden by CSS); no keyboard model, no expand or collapse on click, no lazy load.",
++    "$note": {
++      "keyboard": "ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.",
++      "pointer": "Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.",
++      "visibility": "'Visible' is computed as offsetParent !== null, which is exactly the question 'is any ancestor collapsed', rather than a parallel model that can drift from the DOM.",
++      "lazy": "First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree's item set."
++    },
++    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-tree-{before,after}.png"
+   },
+   "accessibility": {
+     "structure": "role=tree on the list, role=treeitem on each <li>, role=group on each nested <ul>. Every item carries aria-level, aria-setsize and aria-posinset, so depth and position are never carried by indentation alone. Non-item rows (loading bones, the empty-branch note) carry role=none so they cannot be mistaken for nodes.",

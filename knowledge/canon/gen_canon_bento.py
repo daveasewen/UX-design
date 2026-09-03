@@ -652,13 +652,15 @@ def bento_css():
     A("   dead band reads as an orphan gap. MEASURED #217 in the matrix explorer's dashboard —")
     A("   a 360px cell holding a 240px grid — and INVISIBLE in the roles demo, whose nested walls")
     A("   happen to be the same height. So: flex the nested bento, let its grid take the slack,")
-    A("   and let the rows grow into it. `minmax(<unit>,1fr)` keeps the row unit as the FLOOR —")
-    A("   the fixed-row discipline that makes the span vocabulary visible is untouched, rows only")
-    A("   grow when the parent has already stretched the container past its content. */")
+    A("   and let the rows grow into it. `minmax(<unit>,auto)` keeps the row unit as the FLOOR —")
+    A("   the fixed-row discipline that makes the span vocabulary visible is untouched, and each")
+    A("   row grows to ITS OWN content. s245-D8 (#245, Dave: 'Okay it's 2'): the max is `auto`,")
+    A("   not `1fr` — `1fr` equalised a group's rows to its tallest content and lifted the whole")
+    A("   outer row (L4 finding 6: rail 277.7/277.7 vs 277.7/223.8); `auto` sizes each row alone. */")
     A(".c-bento__tile.c-bento{height:100%; display:flex; flex-direction:column;}")
     A(".c-bento__tile.c-bento > .c-bento__grid{")
     A("  flex:1 1 auto;")
-    A("  grid-auto-rows:minmax(var(--bento-row-unit),1fr);")
+    A("  grid-auto-rows:minmax(var(--bento-row-unit),auto);")
     A("}")
     A("")
     A("/* RESPONSIVE BANDS — the CONTAINER decides. Concrete literals: a container-query")
@@ -698,7 +700,16 @@ def render():
     existing = open(CANON).read()
     block = bento_css()
     if START in existing and END in existing:
-        return re.sub(re.escape(START) + r".*?" + re.escape(END), lambda _m: block, existing, flags=re.S)
+        # ⛔ count=1 — the AUTO-BENTO block has ONE home, the first marker pair. Since #231 the
+        # Template-dashboard-bento snippet carries a DECLARED COPY of this block, and
+        # gen_canon_components.py projects that copy into canon.css under
+        # `.cn-template-dashboard-bento` WITH the markers — so a second START/END pair now sits in
+        # the AUTO-COMPONENTS region. MEASURED at #245 L5: an unbounded re.sub rewrote that
+        # projected copy too, replacing its `:where(.cn-template-dashboard-bento)`-scoped rules
+        # with the unscoped block (+69/−40 in canon.css for a one-word change). The projection is
+        # gen_canon_components.py's to write, from the snippet, never this generator's.
+        return re.sub(re.escape(START) + r".*?" + re.escape(END), lambda _m: block, existing,
+                      count=1, flags=re.S)
     if ANCHOR not in existing:
         raise BentoStoreError("canon.css has no AUTO-COMPONENTS anchor — refusing to guess a home.")
     return existing.replace(ANCHOR, block + "\n\n" + ANCHOR, 1)

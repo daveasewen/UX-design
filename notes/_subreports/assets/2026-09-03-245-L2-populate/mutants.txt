@@ -1,0 +1,9 @@
+BITES gate M1  PROSE ratchet removed (state==PROSE never taken)              rc=1 ['  ❌ S  meta PROSE (pre-s234-D5, an object without `script`) — BLOCKS, named (s245-D3) -> PASS | unproven=1', '  ❌ S2 meta PROSE as a bare string — BLOCKS too (s245-D3) -> PASS | unproven=1', '  ❌ S3 meta PROSE as a list — BLOCKS too (s245-D3) -> PASS | unproven=1']
+BITES gate M2  PROSE fails under a different reason (not named BEHAVIOUR-PROSE) rc=1 ['  ❌ S  meta PROSE (pre-s234-D5, an object without `script`) — BLOCKS, named (s245-D3) -> BEHAVIOUR-NOT-LOADED | unproven=1', '       FAIL:BEHAVIOUR-PROSE — `Demo#1`: meta tmpiswlw9k8/components/demo.meta.json carries a `behaviour` key that is still pre-s234-D5 prose (dict), not a typed address (s245-D3, #245); type it — `script` / `partial` / `fallback`, prose kept under `$note` — and regenerate', '  ❌ S2 meta PROSE as a bare string — BLOCKS too (s245-D3) -> BEHAVIOUR-NOT-LOADED | unproven=1']
+BITES gate M3  partial_names keeps only the first name of a list             rc=1 ['  ❌ U2 meta partial LIST with one unregistered name — the ghost is named, the real one still judged -> PASS | unproven=1', 'SELFTEST: FAIL ❌']
+BITES gate M4  partial_names returns [] for a list (list silently unchecked) rc=1 ['  ❌ U2 meta partial LIST with one unregistered name — the ghost is named, the real one still judged -> PASS | unproven=1', 'SELFTEST: FAIL ❌']
+MISSED gate C0  control (unmutated) — must stay GREEN                         rc=0 []
+BITES gen  M1  list partials skipped by the generator's refusal              rc=1 []
+BITES gen  M2  block carries only the first name of a partial list           rc=1 []
+BITES gen  C0  control (unmutated) — must stay GREEN                         rc=1 []
+mutants bitten 7/8 (controls counted as green-required)

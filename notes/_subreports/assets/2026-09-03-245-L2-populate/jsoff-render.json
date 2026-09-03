@@ -1,0 +1,891 @@
+{
+ "$driven": "playwright chromium, new_context(java_script_enabled=False), page.goto(file://…); never set_content",
+ "$date": "2026-09-03",
+ "$session": "#245 L2-populate",
+ "snippets": {
+  "amount-input": [
+   {
+    "assert": "script ran? (modality tracker would set data-modality)",
+    "got": null,
+    "want": null,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "input#a1 carries inputmode=decimal (attribute, not script)",
+    "got": "decimal",
+    "want": "decimal",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "typed '1234.567abc' stays verbatim (no stripping/grouping/2dp)",
+    "got": "1234.567abc",
+    "want": "1234.567abc",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no is-completed weight after blur",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "#a1msg stays invisible after blur",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "anchor-nav": [
+   {
+    "assert": "aria-current links as authored",
+    "got": [
+     "#a-rates",
+     "#b-what"
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "sections carry scroll-margin-top (CSS)",
+    "got": "56px",
+    "want": "56px",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "fragment link jumps: location.hash",
+    "got": "#a-fees",
+    "want": "#a-fees",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "fragment link jumps: page scrolled (scrollY changed)",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "aria-current did NOT move (stays where authored)",
+    "got": [
+     "#a-rates",
+     "#b-what"
+    ],
+    "want": [
+     "#a-rates",
+     "#b-what"
+    ],
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "calendar": [
+   {
+    "assert": "live grid #cal-table day buttons in markup (JS off)",
+    "got": 0,
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "#cal-title text (JS off)",
+    "got": " ",
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "#cal-echo text (JS off)",
+    "got": "Nothing selected yet.",
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "#cal-body innerHTML length (JS off)",
+    "got": 0,
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "month grid renders: server-authored day buttons present",
+    "got": false,
+    "want": true,
+    "ok": false,
+    "note": "candidate says 'server-authored buttons'; <tbody id=cal-body> is EMPTY in markup — the days are script-rendered"
+   },
+   {
+    "assert": "clicking next-month: #cal-title unchanged (nothing pages)",
+    "got": " ",
+    "want": " ",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "live region #cal-echo unchanged (no announcement)",
+    "got": "Nothing selected yet.",
+    "want": "Nothing selected yet.",
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "command-palette": [
+   {
+    "assert": "role=dialog visible as authored (JS off)",
+    "got": true,
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "combobox aria-expanded as authored",
+    "got": "true",
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "Ctrl+K opens nothing new (dialog count unchanged)",
+    "got": 2,
+    "want": 2,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "typing does not filter (visible option count unchanged)",
+    "got": 5,
+    "want": 5,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "candidate clause 'cannot open' is TESTABLE on this snippet (palette authored CLOSED)?",
+    "got": true,
+    "want": false,
+    "ok": false,
+    "note": "the specimen authors the palette OPEN, so 'cannot open' is not measurable here"
+   }
+  ],
+  "date-picker": [
+   {
+    "assert": "panel #dp-panel invisible at load",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "tail button click: panel stays invisible (never opens)",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "tail button click: aria-expanded stays false",
+    "got": "false",
+    "want": "false",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "typing: panel stays invisible",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "input works as native field (value as typed)",
+    "got": "31/02/2026",
+    "want": "31/02/2026",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "blur on impossible date: #f-date-msg stays invisible (no validation)",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "blur: no is-error class on the input",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "date-range-picker": [
+   {
+    "assert": "panel #dr-panel invisible at load",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "from tail button: panel stays invisible",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "to tail button: panel stays invisible",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "both tail buttons aria-expanded false",
+    "got": [
+     "false",
+     "false"
+    ],
+    "want": [
+     "false",
+     "false"
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "both fields native (values as typed, to < from)",
+    "got": [
+     "20/03/2026",
+     "10/03/2026"
+    ],
+    "want": [
+     "20/03/2026",
+     "10/03/2026"
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no pair validation: both msgs invisible",
+    "got": [
+     false,
+     false
+    ],
+    "want": [
+     false,
+     false
+    ],
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "file-upload": [
+   {
+    "assert": "native <input type=file> present",
+    "got": 1,
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "#fu-input computed (clip-hidden 1×1, opacity 0)",
+    "got": [
+     "1px",
+     "1px",
+     "0",
+     "absolute"
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "Browse <button> opens a file chooser with JS off",
+    "got": false,
+    "want": true,
+    "ok": false,
+    "note": "candidate: 'Browse still works IF the control wraps a native input' — the browse control is a <button> wired by script"
+   },
+   {
+    "assert": "<label for=fu-input> opens the native chooser with JS off (the 'wraps a native input' route)",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "live control: staged items / progress bars inside the live component's box",
+    "got": [
+     0,
+     0
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "progress bar absent in the LIVE control (static states specimens excluded)",
+    "got": 0,
+    "want": 0,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "#fu-announce empty (no announcement)",
+    "got": "",
+    "want": "",
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "form-layout": [
+   {
+    "assert": "<form novalidate> present (native constraint validation OFF by markup)",
+    "got": true,
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "sort code NOT masked (value stays 123456)",
+    "got": "123456",
+    "want": "123456",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no per-field error after blur of an empty required-ish field",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "submit navigates natively (form GET to file:// URL)",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "url after submit (truncated)",
+    "got": "file:///sessions/compassionate-dazzling-tesla/mnt/UX-design/knowledge/snippets/Form-layout.reference.html?name=&sort=123",
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "no summary #fs shown by script",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "secure-entry": [
+   {
+    "assert": "first cell carries autocomplete=one-time-code (attribute)",
+    "got": "one-time-code",
+    "want": "one-time-code",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "six cells in the first group",
+    "got": 6,
+    "want": 6,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "typing one digit: focus does NOT auto-advance",
+    "got": "INPUT.se-cell",
+    "want": "INPUT.se-cell",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "cell values after typing 123456 into cell 1 (maxlength decides)",
+    "got": [
+     "1",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "no paste/typing distribution: cells 2–6 empty",
+    "got": [
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "want": [
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "#otp-msg stays invisible (no verify state)",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "stepper": [
+   {
+    "assert": "only the authored current panel visible: #p-1 visible",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "#p-2/#p-3/#p-4 hidden",
+    "got": [
+     false,
+     false,
+     false
+    ],
+    "want": [
+     false,
+     false,
+     false
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "Next does nothing: #p-1 still visible, #p-2 still hidden",
+    "got": [
+     true,
+     false
+    ],
+    "want": [
+     true,
+     false
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "Back does nothing: #p-1 still visible",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no announcement (#stLive unchanged)",
+    "got": "",
+    "want": "",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "container-query state at 1200 (ol.steps, .collapse display)",
+    "got": [
+     "none",
+     "block"
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "dots→line collapse is CSS (@container 520px) and still fires JS off",
+    "got": [
+     [
+      "none",
+      "block"
+     ],
+     [
+      "none",
+      "block"
+     ]
+    ],
+    "want": [
+     [
+      "none",
+      "block"
+     ],
+     [
+      "none",
+      "block"
+     ]
+    ],
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "tab-bar": [
+   {
+    "assert": "items are native <a href>",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "authored aria-current across the first bar",
+    "got": [
+     "page",
+     "",
+     "",
+     ""
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "Tab key reaches a native <a> (keyboard-operable)",
+    "got": "A",
+    "want": "A",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "click on another item: aria-current stands where authored",
+    "got": [
+     "page",
+     "",
+     "",
+     ""
+    ],
+    "want": [
+     "page",
+     "",
+     "",
+     ""
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "the active pill does not move (is-active rect unchanged)",
+    "got": [
+     40,
+     91,
+     105,
+     56
+    ],
+    "want": [
+     40,
+     91,
+     105,
+     56
+    ],
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "textarea": [
+   {
+    "assert": "resize is vertical (CSS)",
+    "got": "vertical",
+    "want": "vertical",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "counter element found / text before typing",
+    "got": [
+     "#t1-count",
+     "78/300"
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "value as typed appended to the authored text (native textarea)",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "counter does not move",
+    "got": "78/300",
+    "want": "78/300",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no warn weight class",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no announcement (#t1-live unchanged)",
+    "got": "",
+    "want": "",
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "time-picker": [
+   {
+    "assert": "#tp-menu invisible at load",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "tail button: list stays invisible",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "tail button: aria-expanded stays false",
+    "got": "false",
+    "want": "false",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "typing never opens the list",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "input native (value as typed)",
+    "got": "25:99",
+    "want": "25:99",
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "blur on impossible time: #f-time-msg stays invisible",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   }
+  ],
+  "tree": [
+   {
+    "assert": "authored aria-expanded states in #live-tree",
+    "got": [
+     "true",
+     "false",
+     "-",
+     "-",
+     "false",
+     "-",
+     "false",
+     "-"
+    ],
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   },
+   {
+    "assert": "collapsed branch's group hidden by CSS ([aria-expanded=false] > .tr-group)",
+    "got": false,
+    "want": false,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "expanded branch's group visible",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "click on a collapsed row: no expand (states unchanged)",
+    "got": [
+     "true",
+     "false",
+     "-",
+     "-",
+     "false",
+     "-",
+     "false",
+     "-"
+    ],
+    "want": [
+     "true",
+     "false",
+     "-",
+     "-",
+     "false",
+     "-",
+     "false",
+     "-"
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "Arrow keys: no keyboard model (focus stays, states unchanged)",
+    "got": [
+     "LI.tr-item",
+     [
+      "true",
+      "false",
+      "-",
+      "-",
+      "false",
+      "-",
+      "false",
+      "-"
+     ]
+    ],
+    "want": [
+     "LI.tr-item",
+     [
+      "true",
+      "false",
+      "-",
+      "-",
+      "false",
+      "-",
+      "false",
+      "-"
+     ]
+    ],
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "no lazy load in the LIVE tree (#live-tree .tr-loading absent/invisible; static ladder specimen excluded)",
+    "got": true,
+    "want": true,
+    "ok": true,
+    "note": ""
+   },
+   {
+    "assert": "#tree-echo text (JS off)",
+    "got": "Nothing selected yet.",
+    "want": null,
+    "ok": null,
+    "note": "observed"
+   }
+  ]
+ },
+ "pageerrors": [],
+ "verdicts": {
+  "amount-input": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 5,
+   "observed": 0
+  },
+  "anchor-nav": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 4,
+   "observed": 1
+  },
+  "calendar": {
+   "verdict": "UNPROVEN",
+   "failed": [
+    "month grid renders: server-authored day buttons present"
+   ],
+   "asserts": 3,
+   "observed": 4
+  },
+  "command-palette": {
+   "verdict": "UNPROVEN",
+   "failed": [
+    "candidate clause 'cannot open' is TESTABLE on this snippet (palette authored CLOSED)?"
+   ],
+   "asserts": 3,
+   "observed": 2
+  },
+  "date-picker": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 7,
+   "observed": 0
+  },
+  "date-range-picker": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 6,
+   "observed": 0
+  },
+  "file-upload": {
+   "verdict": "UNPROVEN",
+   "failed": [
+    "Browse <button> opens a file chooser with JS off"
+   ],
+   "asserts": 4,
+   "observed": 3
+  },
+  "form-layout": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 4,
+   "observed": 2
+  },
+  "secure-entry": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 5,
+   "observed": 1
+  },
+  "stepper": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 6,
+   "observed": 1
+  },
+  "tab-bar": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 4,
+   "observed": 1
+  },
+  "textarea": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 5,
+   "observed": 1
+  },
+  "time-picker": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 6,
+   "observed": 0
+  },
+  "tree": {
+   "verdict": "PROVEN",
+   "failed": [],
+   "asserts": 5,
+   "observed": 2
+  }
+ }
+}

@@ -437,9 +437,6 @@ def state_block():
     dave = [i for i in ls if i["owner"] == "dave"]
     mine = [i for i in ls if i["owner"] == "claude"]
 
-    def ids(seq):
-        return " · ".join(f"`{i['id']}`" for i in seq)
-
     out = [
         "\n\n---\n\n",
         "## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**\n\n",
@@ -476,12 +473,22 @@ def state_block():
     # 0 red lines. Bodies and close conditions did not move — they live in the store, and the
     # line below names the command. ⚠ The safe band for the wrapper is ~1,670–7,486 tape
     # (report finding 7): a further "while we're here" BANNER trim spends C's FLOOR margin.
+    # ★ READING D2 OF THE #241 RITUAL DIET (`s241-D2`, applied 2026-09-02 on Dave's "apply" to
+    # the RECOMMENDED DEFAULT PACKAGE of notes/_subreports/2026-09-02-241-lane-D-ritual-diet.md).
+    # THE 461 BARE IDS ARE GONE FROM THE CHAIN; THE COUNTS THAT CARRY THE MEANING STAY. Measured
+    # by lane D at 2,615 tape read by EVERY cold session, forever, with no reader: the sole grep
+    # for the block (`grep -n "OPEN WORK\|ids only\|DAVE'S ("` over `_capture_gate.py`) returns
+    # only line 1548, which generates the 28-item DO-FIRST presence index from a different source
+    # [[unmatched-grep-is-not-an-absence]] — the probe is named, not assumed.
+    # ⚠ THE ITEMS ARE NOT DELETED, AND THE COST OF FORGETTING THAT IS THIRTEEN TIMES THE SAVING.
+    # They live in `_state.json`; the command below reaches them. A reader who wants ONE id and
+    # reads `_state.json` whole pays ~147,000 tape against the 2,615 this block cost
+    # [[home-by-addition-then-cut]] — so the pointer is stated HERE, on the line the ids left,
+    # never only in the footer.
     out.append(f">\n> **DAVE'S ({len(dave)}) — {n_cond} with a ratified `closes_when`, "
-               f"{n_un} with NONE — ids only (s227-D2): bodies + close conditions are in the "
-               f"store, never here:** "
-               f"{ids(sorted(dave, key=lambda x: (x['closes_when'] is None, x['id'])))}\n")
-    out.append(f">\n> **MINE ({len(mine)}), ids only — bodies are in the store, not here:** "
-               f"{ids(mine)}\n")
+               f"{n_un} with NONE · MINE ({len(mine)}). IDS, BODIES AND CLOSE CONDITIONS ARE "
+               f"IN THE STORE, NEVER HERE (s227-D2 shape, ids cut `s241-D2`): the counts above "
+               f"are the inventory; the rows are one command away, named on the next line.**\n")
     out.append(f">\n> ⚠ store gate: **{'PASS' if ok else 'FAIL'}**"
                + ("" if ok else f" — {len(fails)} failure(s): {fails[0]}")
                # #221/F6 — resolved, not typed: `_state.py` sits beside this script in the

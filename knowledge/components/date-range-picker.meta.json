@@ -28,10 +28,22 @@
     "commonPatterns": ["statement-period", "transaction-search", "custom-reporting-window"]
   },
   "behaviour": {
-    "protocol": "No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.",
-    "open": "Either tail button (aria-haspopup=dialog); the view seeds from that field's value (else start, else today); focus returns to the opening button on close.",
-    "keyboard": "Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.",
-    "validation": "Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — 'Enter an end date after the start date.' Errors lift on re-validation or on a valid calendar pick."
+    "script": "knowledge/snippets/Date-range-picker.reference.html#script",
+    "partial": null,
+    "events": [
+      "blur",
+      "click",
+      "keydown",
+      "pointerdown"
+    ],
+    "fallback": "Both fields work as native text inputs; neither tail button opens the panel; no per-field and no pair validation on blur.",
+    "$note": {
+      "protocol": "No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.",
+      "open": "Either tail button (aria-haspopup=dialog); the view seeds from that field's value (else start, else today); focus returns to the opening button on close.",
+      "keyboard": "Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.",
+      "validation": "Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — 'Enter an end date after the start date.' Errors lift on re-validation or on a valid calendar pick."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-date-range-picker-{before,after}.png"
   },
   "accessibility": {
     "structure": "Two real <label for> fields; one non-modal dialog serves both (both tail buttons carry aria-haspopup/aria-expanded); grid = role=grid with full-date aria-labels.",

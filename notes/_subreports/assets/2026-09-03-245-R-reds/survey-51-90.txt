@@ -1,0 +1,50 @@
+— 142 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 25s · non-mutating steps only
+
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ❌ [61] dashboard sync — generated progress dashboard (RULED #164, bui  exit 1
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ✅ [70] wiring gate selftest — 4 bites
+  ⊘ [74] state-contrast gate selftest — paint stack, report arithmetic,  COULD-NOT-ASK
+  ✅ [76] type-composites selftest
+  ✅ [85] KG edge gate selftest (6 bites)
+  ✅ [87] Token fork-ban selftest (2-direction)
+
+==============================================================================
+SURVEY: 11 pass · 1 FAIL · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 27 not asked (mutating) · 102 outside --range 51:90 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (1) — this is the number no single `_build_all.py` run can tell you:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 1)
+      gen_dashboard --check FAIL — dashboard/index.html is OUT OF SYNC with the stores or with a live gate result. Re-run `python3 knowledge/gen_dashboard.p
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [74] state-contrast gate selftest — paint stack, report arithmetic, named args
+      python3 knowledge/_validate_state_contrast.py --selftest   (exit 77)
+      COULD-NOT-ASK: _validate_state_contrast.py — chromium would not launch on this box (TargetClosedError: BrowserType.launch: Target page, context or browser has been closed) — this gate measures rendered pixels and cannot be proven without a browser; install them with `playwright install chromium` ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run BLOCKING in the `render` job of .github/workflows/gates.yml, which installs chromium — that job is where this gate's proof of record lives. Nothing here is claimed green; the question was unaskable on this box.
+
+NOT ASKED (27 mutating steps) — run --include-mutating on a clean tree to include them:
+  [52] state-snap gate — opacity states snap to the active theme's ramp (
+  [54] stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (B
+  [56] palette-tier gate — every theme names a palette per family, no div
+  [58] radius gate — no hardcoded border-radius; shape is a theme flex sl
+  [62] Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mon
+  [63] theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a
+  [64] token-tier gate (_STANDARDS.md §1)
+  [65] icon-source gate
+  … and 19 more

@@ -1298,6 +1298,70 @@ def _defaults_block():
     return block
 
 
+def grouping_dial(template_stem="template-dashboard-bento"):
+    """-> the DERIVED `grouping` dial (s245-D7, #245 L3 → L5). s234-D4: grouping lives ONCE in the
+    KG — `edges.groupsWith` in the member metas — and every consumer DERIVES it. This dial is such a
+    consumer: groups = connected components of the groupsWith graph over the template's `$composes`
+    members; `ref:null` edges are listed as DECLARED (a one-member group is legal by s245-D7 Q3(a);
+    a group is not a node in the grammar, s245-D7 Q7(a)), never guessed. `kind: derived`, `control:
+    none` — no editor picks a group; membership and group COUNT are the designer's product decision
+    (template-dashboard-bento.meta.json). Reads ONLY `edges.groupsWith` + `$composes`; no prose."""
+    comp_dir = os.path.join(KNOW, "components")
+    def meta(stem):
+        f = os.path.join(comp_dir, stem + ".meta.json")
+        return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else {}
+    tpl = meta(template_stem)
+    members = [c.split(":", 1)[1] for c in tpl.get("$composes", []) if c.startswith("component:")]
+    edges, declared = [], []
+    for stem in members:
+        for e in meta(stem).get("edges", {}).get("groupsWith", []):
+            if e.get("ref") is None:
+                declared.append({"on": "component:" + stem, "$note": e.get("$note", "")})
+            else:
+                edges.append(("component:" + stem, e["ref"]))
+    parent = {}
+    def find(x):
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+    for a, b in edges:
+        parent[find(a)] = find(b)
+    comps = {}
+    for a, b in edges:
+        comps.setdefault(find(a), set()).update([a, b])
+    groups = []
+    for root, ms in sorted(comps.items(), key=lambda kv: sorted(kv[1])):
+        ms = sorted(ms)
+        groups.append({"members": ms,
+                       "kind": "same-kind (self-edge)" if len(ms) == 1 else "mixed-kind",
+                       "edges": ["%s -> %s" % (a, b) for a, b in edges if find(a) == root],
+                       "uniform_in_kind": len(ms) == 1})
+    for u in tpl.get("edges", {}).get("groupsWith", []):
+        declared.append({"on": "component:" + template_stem, "$note": u.get("$note", "")})
+    options = [" + ".join(g["members"]) for g in groups]
+    return {
+        "kind": "derived", "options": options, "labels": {o: o for o in options},
+        "types": ["dashboard"], "themes": "all", "theme_locked": False,
+        "control": "none - DERIVED, never picked. s234-D4: grouping lives ONCE in the KG; this dial "
+                   "is a CONSUMER generated from edges.groupsWith and is not a second home.",
+        "ruled_by": "s234-D4 · s245-D7",
+        "note": "A group exists when its members answer ONE question the user came with (rB #234). "
+                "Members uniform in kind (C2), one containment signal (C5), one accessible name (C3), "
+                "contiguous at every band (C8, _validate_composition.py). Membership and group COUNT "
+                "are product decisions and Dave's (template-dashboard-bento.meta.json).",
+        "$derived_from": "knowledge/components/<member>.meta.json edges.groupsWith; member set = the "
+                         "template's $composes (%s)" % template_stem,
+        "groups": groups,
+        "declared": declared,
+        "$declared_note": "ref:null edges, each carrying its reason in $note: a one-member group "
+                          "(legal, s245-D7 Q3(a)) or a group that is not a node in the grammar "
+                          "(s245-D7 Q7(a)). Listed, never guessed.",
+        "role_names": {"ruled": ["tpl-group-lead", "tpl-group-evidence", "tpl-group-context"],
+                       "status": "RULED s245-D6 (#245): role words, never content types."},
+    }
+
+
 def option_space():
     """-> {dial: {…}} — the whole dial vocabulary, one entry per dial, built from the SAME option
     lists the controls are built from.
@@ -1380,6 +1444,9 @@ def option_space():
                       "a chord OPTION, scoped console gallery — see exclusion X6, which is OPEN.",
                       tokens=bg_tokens, ink_rule=dict(INK_FOR_GROUND),
                       reachable_by_theme={t: capbg_for("gallery", t) for t in THEMES}),
+        # s245-D7 — the DERIVED grouping dial (see grouping_dial()). By addition: every other dial
+        # is untouched, and this one carries no editor control.
+        "grouping": grouping_dial(),
         "$theme_locks": locked,
     }
 
@@ -3801,16 +3868,26 @@ def selftest():
           # ⛔ `pageBg` IS ABSENT AND THE ABSENCE IS THE ASSERTION (s219-D3(4)). It left the bento
           # dial grammar for a page-level rail; a manifest still listing it among the bento dials
           # would be the grammar contradicting the ruling in its own vocabulary.
-          ["bentoBg", "capBg", "edge", "keylines", "mainSpacing", "mode", "rounding",
+          ["bentoBg", "capBg", "edge", "grouping", "keylines", "mainSpacing", "mode", "rounding",
            "spacing", "subSpacing"],
-          [False] * 9, []))
+          [False] * 10, []))
     bite("R6b · the dashboard's two-dial spacing split is in the vocabulary and BOTH dials draw "
          "from the one rail (s219-D1(5))",
          (sorted(_rails_doc["types"]["dashboard"]["dials"]),
           _rails_doc["dials"]["mainSpacing"]["options"] ==
           _rails_doc["dials"]["subSpacing"]["options"] ==
           [str(s) for s in SPACING_STOPS]),
-         (["bentoBg", "keylines", "mainSpacing", "subSpacing"], True))
+         (["bentoBg", "grouping", "keylines", "mainSpacing", "subSpacing"], True))
+    # s245-D7 — the grouping dial is DERIVED from the KG, never authored here: it names the three
+    # drawn groups of the template (kpi-tile self, stat-card self) and lists every ref:null edge as
+    # DECLARED with its reason, and it has NO control.
+    _g = _rails_doc["dials"]["grouping"]
+    bite("R6e · the grouping dial is DERIVED from edges.groupsWith (s245-D7): derived kind, no "
+         "control, 2 resolved groups (self-edges), 4 declared ref:null edges, role words ruled",
+         (_g["kind"], _g["control"].startswith("none"), [x["members"] for x in _g["groups"]],
+          len(_g["declared"]), _g["role_names"]["ruled"]),
+         ("derived", True, [["component:kpi-tile"], ["component:stat-card"]], 4,
+          ["tpl-group-lead", "tpl-group-evidence", "tpl-group-context"]))
     bite("R6c · the defaults are ADDRESSED, never copied — this module owns the option space and "
          "says so when lane B's table is not there to read",
          (_rails_doc["defaults"]["$owner"].startswith("knowledge/_render/gen_foundations_217.py"),

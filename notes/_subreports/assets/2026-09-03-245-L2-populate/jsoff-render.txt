@@ -1,0 +1,117 @@
+## Amount-input
+   OK   script ran? (modality tracker would set data-modality)     got=None want=None 
+   OK   input#a1 carries inputmode=decimal (attribute, not script) got='decimal' want='decimal' 
+   OK   typed '1234.567abc' stays verbatim (no stripping/grouping/2dp) got='1234.567abc' want='1234.567abc' 
+   OK   no is-completed weight after blur                          got=False want=False 
+   OK   #a1msg stays invisible after blur                          got=False want=False 
+## Anchor-nav
+   SEEN aria-current links as authored                             ['#a-rates', '#b-what']
+   OK   sections carry scroll-margin-top (CSS)                     got='56px' want='56px' 
+   OK   fragment link jumps: location.hash                         got='#a-fees' want='#a-fees' 
+   OK   fragment link jumps: page scrolled (scrollY changed)       got=True want=True 
+   OK   aria-current did NOT move (stays where authored)           got=['#a-rates', '#b-what'] want=['#a-rates', '#b-what'] 
+## Calendar
+   SEEN live grid #cal-table day buttons in markup (JS off)        0
+   SEEN #cal-title text (JS off)                                   '\xa0'
+   SEEN #cal-echo text (JS off)                                    'Nothing selected yet.'
+   SEEN #cal-body innerHTML length (JS off)                        0
+   FAIL month grid renders: server-authored day buttons present    got=False want=True candidate says 'server-authored buttons'; <tbody id=cal-body> is EMPTY in markup — the days are script-rendered
+   OK   clicking next-month: #cal-title unchanged (nothing pages)  got='\xa0' want='\xa0' 
+   OK   live region #cal-echo unchanged (no announcement)          got='Nothing selected yet.' want='Nothing selected yet.' 
+## Command-palette
+   SEEN role=dialog visible as authored (JS off)                   True
+   SEEN combobox aria-expanded as authored                         'true'
+   OK   Ctrl+K opens nothing new (dialog count unchanged)          got=2 want=2 
+   OK   typing does not filter (visible option count unchanged)    got=5 want=5 
+   FAIL candidate clause 'cannot open' is TESTABLE on this snippet (palette authored CLOSED)? got=True want=False the specimen authors the palette OPEN, so 'cannot open' is not measurable here
+## Date-picker
+   OK   panel #dp-panel invisible at load                          got=False want=False 
+   OK   tail button click: panel stays invisible (never opens)     got=False want=False 
+   OK   tail button click: aria-expanded stays false               got='false' want='false' 
+   OK   typing: panel stays invisible                              got=False want=False 
+   OK   input works as native field (value as typed)               got='31/02/2026' want='31/02/2026' 
+   OK   blur on impossible date: #f-date-msg stays invisible (no validation) got=False want=False 
+   OK   blur: no is-error class on the input                       got=False want=False 
+## Date-range-picker
+   OK   panel #dr-panel invisible at load                          got=False want=False 
+   OK   from tail button: panel stays invisible                    got=False want=False 
+   OK   to tail button: panel stays invisible                      got=False want=False 
+   OK   both tail buttons aria-expanded false                      got=['false', 'false'] want=['false', 'false'] 
+   OK   both fields native (values as typed, to < from)            got=['20/03/2026', '10/03/2026'] want=['20/03/2026', '10/03/2026'] 
+   OK   no pair validation: both msgs invisible                    got=[False, False] want=[False, False] 
+## File-upload
+   SEEN native <input type=file> present                           1
+   SEEN #fu-input computed (clip-hidden 1×1, opacity 0)            ['1px', '1px', '0', 'absolute']
+   FAIL Browse <button> opens a file chooser with JS off           got=False want=True candidate: 'Browse still works IF the control wraps a native input' — the browse control is a <button> wired by script
+   OK   <label for=fu-input> opens the native chooser with JS off (the 'wraps a native input' route) got=True want=True 
+   SEEN live control: staged items / progress bars inside the live component's box [0, 0]
+   OK   progress bar absent in the LIVE control (static states specimens excluded) got=0 want=0 
+   OK   #fu-announce empty (no announcement)                       got='' want='' 
+## Form-layout
+   SEEN <form novalidate> present (native constraint validation OFF by markup) True
+   OK   sort code NOT masked (value stays 123456)                  got='123456' want='123456' 
+   OK   no per-field error after blur of an empty required-ish field got=False want=False 
+   OK   submit navigates natively (form GET to file:// URL)        got=True want=True 
+   SEEN url after submit (truncated)                               'file:///sessions/compassionate-dazzling-tesla/mnt/UX-design/knowledge/snippets/Form-layout.reference.html?name=&sort=123'
+   OK   no summary #fs shown by script                             got=False want=False 
+## Secure-entry
+   OK   first cell carries autocomplete=one-time-code (attribute)  got='one-time-code' want='one-time-code' 
+   OK   six cells in the first group                               got=6 want=6 
+   OK   typing one digit: focus does NOT auto-advance              got='INPUT.se-cell' want='INPUT.se-cell' 
+   SEEN cell values after typing 123456 into cell 1 (maxlength decides) ['1', '', '', '', '', '']
+   OK   no paste/typing distribution: cells 2–6 empty              got=['', '', '', '', ''] want=['', '', '', '', ''] 
+   OK   #otp-msg stays invisible (no verify state)                 got=False want=False 
+## Stepper
+   OK   only the authored current panel visible: #p-1 visible      got=True want=True 
+   OK   #p-2/#p-3/#p-4 hidden                                      got=[False, False, False] want=[False, False, False] 
+   OK   Next does nothing: #p-1 still visible, #p-2 still hidden   got=[True, False] want=[True, False] 
+   OK   Back does nothing: #p-1 still visible                      got=True want=True 
+   OK   no announcement (#stLive unchanged)                        got='' want='' 
+   SEEN container-query state at 1200 (ol.steps, .collapse display) ['none', 'block']
+   OK   dots→line collapse is CSS (@container 520px) and still fires JS off got=[['none', 'block'], ['none', 'block']] want=[['none', 'block'], ['none', 'block']] 
+## Tab-bar
+   OK   items are native <a href>                                  got=True want=True 
+   SEEN authored aria-current across the first bar                 ['page', '', '', '']
+   OK   Tab key reaches a native <a> (keyboard-operable)           got='A' want='A' 
+   OK   click on another item: aria-current stands where authored  got=['page', '', '', ''] want=['page', '', '', ''] 
+   OK   the active pill does not move (is-active rect unchanged)   got=[40, 91, 105, 56] want=[40, 91, 105, 56] 
+## Textarea
+   OK   resize is vertical (CSS)                                   got='vertical' want='vertical' 
+   SEEN counter element found / text before typing                 ['#t1-count', '78/300']
+   OK   value as typed appended to the authored text (native textarea) got=True want=True 
+   OK   counter does not move                                      got='78/300' want='78/300' 
+   OK   no warn weight class                                       got=False want=False 
+   OK   no announcement (#t1-live unchanged)                       got='' want='' 
+## Time-picker
+   OK   #tp-menu invisible at load                                 got=False want=False 
+   OK   tail button: list stays invisible                          got=False want=False 
+   OK   tail button: aria-expanded stays false                     got='false' want='false' 
+   OK   typing never opens the list                                got=False want=False 
+   OK   input native (value as typed)                              got='25:99' want='25:99' 
+   OK   blur on impossible time: #f-time-msg stays invisible       got=False want=False 
+## Tree
+   SEEN authored aria-expanded states in #live-tree                ['true', 'false', '-', '-', 'false', '-', 'false', '-']
+   OK   collapsed branch's group hidden by CSS ([aria-expanded=false] > .tr-group) got=False want=False 
+   OK   expanded branch's group visible                            got=True want=True 
+   OK   click on a collapsed row: no expand (states unchanged)     got=['true', 'false', '-', '-', 'false', '-', 'false', '-'] want=['true', 'false', '-', '-', 'false', '-', 'false', '-'] 
+   OK   Arrow keys: no keyboard model (focus stays, states unchanged) got=['LI.tr-item', ['true', 'false', '-', '-', 'false', '-', 'false', '-']] want=['LI.tr-item', ['true', 'false', '-', '-', 'false', '-', 'false', '-']] 
+   OK   no lazy load in the LIVE tree (#live-tree .tr-loading absent/invisible; static ladder specimen excluded) got=True want=True 
+   SEEN #tree-echo text (JS off)                                   'Nothing selected yet.'
+
+VERDICTS
+  amount-input       PROVEN   asserts=5 observed=0 
+  anchor-nav         PROVEN   asserts=4 observed=1 
+  calendar           UNPROVEN asserts=3 observed=4 FAILED: month grid renders: server-authored day buttons present
+  command-palette    UNPROVEN asserts=3 observed=2 FAILED: candidate clause 'cannot open' is TESTABLE on this snippet (palette authored CLOSED)?
+  date-picker        PROVEN   asserts=7 observed=0 
+  date-range-picker  PROVEN   asserts=6 observed=0 
+  file-upload        UNPROVEN asserts=4 observed=3 FAILED: Browse <button> opens a file chooser with JS off
+  form-layout        PROVEN   asserts=4 observed=2 
+  secure-entry       PROVEN   asserts=5 observed=1 
+  stepper            PROVEN   asserts=6 observed=1 
+  tab-bar            PROVEN   asserts=4 observed=1 
+  textarea           PROVEN   asserts=5 observed=1 
+  time-picker        PROVEN   asserts=6 observed=0 
+  tree               PROVEN   asserts=5 observed=2 
+proven 11 / unproven 3 of 14
+pageerrors: []

@@ -29,10 +29,23 @@
     "commonPatterns": ["payment-date", "date-of-birth", "statement-range (see Date-range picker)"]
   },
   "behaviour": {
-    "open": "Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.",
-    "keyboard": "Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.",
-    "select": "Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.",
-    "validation": "On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with 'Enter a real date, like …' (ctkn-020 'Enter…' + 3.3.3 suggestion). Error lifts as soon as the value re-validates."
+    "script": "knowledge/snippets/Date-picker.reference.html#script",
+    "partial": null,
+    "events": [
+      "blur",
+      "click",
+      "input",
+      "keydown",
+      "pointerdown"
+    ],
+    "fallback": "The text input works as a native field (DD/MM/YYYY typed by hand); the tail button does nothing and the panel never opens (`aria-expanded` stays false); no on-blur validation message, even for an impossible date.",
+    "$note": {
+      "open": "Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.",
+      "keyboard": "Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.",
+      "select": "Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.",
+      "validation": "On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with 'Enter a real date, like …' (ctkn-020 'Enter…' + 3.3.3 suggestion). Error lifts as soon as the value re-validates."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 7/7 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-date-picker-{before,after}.png"
   },
   "accessibility": {
     "structure": "Real <label for>; help + message joined via aria-describedby; panel = role=dialog (non-modal) with aria-label; grid = role=grid, day buttons = gridcells with full-date aria-labels.",

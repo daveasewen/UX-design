@@ -7,7 +7,7 @@ generated AUTO-PARTIAL block. STRICT = registry members on their mapped control 
 
 ## ✅ STRICT clean — no member re-implements a registered partial
 
-## ⚠ CENSUS — press-physics outside the registry (66 rule(s))
+## ⚠ CENSUS — press-physics outside the registry (68 rule(s))
 
 *Candidates for future group membership (accrete from OBSERVED duplication —
 ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
@@ -57,6 +57,8 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Tags` → `.tag .x:active`
 - `Template-confirmation` → `.btn:hover`
 - `Template-confirmation` → `.btn:active`
+- `Template-dashboard-bento` → `.btn:hover`
+- `Template-dashboard-bento` → `.btn:active`
 - `Template-dashboard` → `.btn:hover`
 - `Template-dashboard` → `.btn:active`
 - `Template-detail` → `.btn:hover`

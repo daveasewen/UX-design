@@ -117,9 +117,16 @@
     "$slots": "railHeading: The rail's visible heading ('On this page'). The bar has no visible heading — its accessible name lives on the <nav>."
   },
   "behaviour": {
-    "scrollspy": "IntersectionObserver rooted on the scroll container, rootMargin '-56px 0px -55% 0px', threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.",
-    "jump": "Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.",
-    "motion": "standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion."
+    "script": "knowledge/snippets/Anchor-nav.reference.html#script",
+    "partial": null,
+    "events": [],
+    "fallback": "Fragment links still jump — they are real `href=\"#…\"` links and each section carries `scroll-margin-top:56px`; the authored `aria-current` stays where the markup put it and never moves.",
+    "$note": {
+      "scrollspy": "IntersectionObserver rooted on the scroll container, rootMargin '-56px 0px -55% 0px', threshold 0. The FIRST intersecting section in document order wins, so scrolling up and down produces a stable, monotonic mark rather than a flicker between two partly-visible sections.",
+      "jump": "Real fragment links plus scroll-margin-top on each section, so the heading clears the sticky bar.",
+      "motion": "standard ease only; smooth scrolling and every transition are neutralised under prefers-reduced-motion."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-anchor-nav-{before,after}.png"
   },
   "$distinctFrom": [
     "component:tabs — Tabs swaps panels; this hides nothing",

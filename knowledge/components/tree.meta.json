@@ -40,10 +40,20 @@
     "commonPatterns": ["account-hierarchy", "category-picker", "org-structure"]
   },
   "behaviour": {
-    "keyboard": "ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.",
-    "pointer": "Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.",
-    "visibility": "'Visible' is computed as offsetParent !== null, which is exactly the question 'is any ancestor collapsed', rather than a parallel model that can drift from the DOM.",
-    "lazy": "First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree's item set."
+    "script": "knowledge/snippets/Tree.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "keydown"
+    ],
+    "fallback": "Every branch renders in the open or closed state the markup authors (collapsed groups hidden by CSS); no keyboard model, no expand or collapse on click, no lazy load.",
+    "$note": {
+      "keyboard": "ONE tab stop for the whole tree (roving tabindex). Down and up move through everything currently visible; right expands a closed branch or steps into an open one; left collapses an open branch or steps out to its parent; Home and End go to the first and last visible node; Enter and Space select; the asterisk key expands every branch at the focused level; a letter key jumps to the next visible node whose label starts with it, wrapping.",
+      "pointer": "Clicking the twisty toggles the branch. Clicking anywhere else on the row selects the node. The twisty is aria-hidden decoration, not a second control — keyboard users never need it.",
+      "visibility": "'Visible' is computed as offsetParent !== null, which is exactly the question 'is any ancestor collapsed', rather than a parallel model that can drift from the DOM.",
+      "lazy": "First open sets aria-busy, swaps the group for skeleton bones, and replaces them with real treeitems when the children arrive. The bones are role=none so they never enter the tree's item set."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 5/5 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-tree-{before,after}.png"
   },
   "accessibility": {
     "structure": "role=tree on the list, role=treeitem on each <li>, role=group on each nested <ul>. Every item carries aria-level, aria-setsize and aria-posinset, so depth and position are never carried by indentation alone. Non-item rows (loading bones, the empty-branch note) carry role=none so they cannot be mistaken for nodes.",

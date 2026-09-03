@@ -1,0 +1,68 @@
+— 142 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 60s · non-mutating steps only
+
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ⊘ [61] dashboard sync — generated progress dashboard (RULED #164, bui  COULD-NOT-ASK
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ✅ [70] wiring gate selftest — 4 bites
+  ⊘ [74] state-contrast gate selftest — paint stack, report arithmetic,  COULD-NOT-ASK
+  ✅ [76] type-composites selftest
+  ✅ [85] KG edge gate selftest (6 bites)
+  ✅ [87] Token fork-ban selftest (2-direction)
+  ✅ [91] binds-resolve selftest — 5 bites incl. any-store clause (#146)
+  ✅ [93] chart-intent resolve selftest — 4 bites incl. list case + abse
+  ✅ [95] DataViz gate selftest — bite-tests dv-004 + the dtype vocabula
+  ✅ [97] property-resolves gate C2 selftest — 4 bites + a bite-the-bite
+  ✅ [99] dataviz var-resolution gate selftest — 8 arms incl. alias chai
+  ✅ [101] minted-consumption selftest — 10 arms incl. both false-positiv
+  ✅ [103] hidden-attr display selftest — 16 bites incl. the real #218 mu
+  ✅ [108] consult tool selftest (advisory)
+  ✅ [109] search core selftest — two-stage engine + receipt format (O2′ 
+  ✅ [111] memento index determinism check (O2′ #25)
+  ✅ [112] memento index selftest — contract refusals + determinism (O2′ 
+  ✅ [113] memento search selftest — known-answer retrieval + fetch refus
+  ✅ [115] graph mention map determinism check (#115 step 0)
+  ✅ [116] graph mention map selftest — hit/miss/refusal bites (#115 step
+  ✅ [118] read chain determinism check — stale _CHAIN.md serves a PREVIO
+  ✅ [119] read chain selftest — verbatim terms + the CUT + refusal on a 
+
+==============================================================================
+SURVEY: 27 pass · 0 FAIL · 2 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 41 not asked (mutating) · 72 outside --range 51:120 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (2) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 77)
+      COULD-NOT-ASK: dashboard/index.html — the page differs, but a live gate baked into it is reading INPUTS OUTSIDE THE COMMITTED TREE, so its verdict — and therefore this page — cannot be reproduced here: provenance names `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`; provenance names `outputs/_PARTITION-button-primary-2026-08-06-v1.md`. Every one of those paths is untracked, so an environment that has them and one that does not will render different prose from the SAME commit. This is a REFUSAL, not a staleness verdict in either direction: the page's agreement with the stores is UNKNOWN here and is reported as unknown. Ask it where those inputs are present (a working tree that holds them), or commit them.
+
+  [74] state-contrast gate selftest — paint stack, report arithmetic, named args
+      python3 knowledge/_validate_state_contrast.py --selftest   (exit 77)
+      COULD-NOT-ASK: _validate_state_contrast.py — chromium would not launch on this box (TargetClosedError: BrowserType.launch: Target page, context or browser has been closed) — this gate measures rendered pixels and cannot be proven without a browser; install them with `playwright install chromium` ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run BLOCKING in the `render` job of .github/workflows/gates.yml, which installs chromium — that job is where this gate's proof of record lives. Nothing here is claimed green; the question was unaskable on this box.
+
+NOT ASKED (41 mutating steps) — run --include-mutating on a clean tree to include them:
+  [52] state-snap gate — opacity states snap to the active theme's ramp (
+  [54] stale-queue gate — §C·1 qprobe claims re-measured vs disk + git (B
+  [56] palette-tier gate — every theme names a palette per family, no div
+  [58] radius gate — no hardcoded border-radius; shape is a theme flex sl
+  [62] Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mon
+  [63] theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a
+  [64] token-tier gate (_STANDARDS.md §1)
+  [65] icon-source gate
+  … and 33 more
+
+real	0m8.297s
+user	0m8.179s
+sys	0m1.122s

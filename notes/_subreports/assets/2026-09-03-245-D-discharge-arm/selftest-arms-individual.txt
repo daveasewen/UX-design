@@ -1,0 +1,23 @@
+INDIVIDUAL ARMS (a)-(d), driven on fixtures through the REAL boot_constant_drift_check — 2026-09-03 #245 lane D
+constants read, not set: BOOT_CEILING_TK=70000 BOOT_BAND_WINDOW=7 BOOT_BAND_SIGMA=2.0
+
+== (d) NO declaration -> original red stands == fails=1
+  FAIL: boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = 70,000 and 1 post-diet reading(s) EXCEED it — #745 70,710. ⛔ `s240-D2`/`s241-D1` make this number SHRINK-ONLY: boot may go DOWN past it and never up, and the remedy is to CUT THE BOOT, never to raise the literal. Raising it is Dave's word alone and is not a price a wrap may pay to unblock itself [[gate-must-quote-what-it-forbids]]. /     ★ `s244-D1` (Dave, #2
+
+== (a) MATCHING declaration -> discharges, 0 fails == fails=0
+  NOTE: boot-drift CEILING BREACH #745 70,710 ✅ DECLARED at #748 and DISCHARGED (`s244-D1`): the declaration states the same breach, the same ceiling 70,000 and the same post-breach reading(s) this gate computed (#746 67,135 · #747 67,135), and EVERY post-breach reading in the window is under the ceiling. The breach is real and NOT hidden — that is the whole bar. ⛔ The ceiling literal was NOT moved; this clears the arm for T
+
+== (b) WRONG figure (post-breach +1) -> fails by name == fails=1
+  FAIL: boot-drift CEILING DECLARATION MISMATCH (CEILING BREACH #745 70,710 STANDS): a `s244-D1` declaration EXISTS (#748) for that breach but its figures do NOT match this gate's computation — it states breach 70,710 / ceiling 70,000 / post-breach readings #746 67,136 · #747 67,135 against a computed breach 70,710 / ceiling 70,000 / post-breach readings #746 67,135 · #747 67,135. ⛔ A declaration that mis-states the record i
+
+== (b') WRONG ceiling (+1, a widened literal) -> fails by name == fails=1
+  FAIL: boot-drift CEILING DECLARATION MISMATCH (CEILING BREACH #745 70,710 STANDS): a `s244-D1` declaration EXISTS (#748) for that breach but its figures do NOT match this gate's computation — it states breach 70,710 / ceiling 70,001 / post-breach readings #746 67,135 · #747 67,135 against a computed breach 70,710 / ceiling 70,000 / post-breach readings #746 67,135 · #747 67,135. ⛔ A declaration that mis-states the record i
+
+== (c) matching declaration but a LATER reading OVER -> NOT discharged == fails=2
+  FAIL: boot-drift CEILING BREACH #745 70,710 ⛔ NOT DISCHARGED: the `s244-D1` declaration at #748 matches this gate's figures, but 1 post-breach reading(s) are OVER the ceiling 70,000 — #747 70,001. The ruling's clause is EVERY post-breach reading under; a later breach is a new breach and un-discharges the older one. The remedy is to CUT THE BOOT.
+  FAIL: boot-drift CEILING BREACH: `_gauge_tokens.BOOT_CEILING_TK` = 70,000 and 1 post-diet reading(s) EXCEED it — #747 70,001. ⛔ `s240-D2`/`s241-D1` make this number SHRINK-ONLY: boot may go DOWN past it and never up, and the remedy is to CUT THE BOOT, never to raise the literal. Raising it is Dave's word alone and is not a price a wrap may pay to unblock itself [[gate-must-quote-what-it-forbids]].
+
+== the whole arm ==
+selftest_boot_ceiling_discharge(): failures=0 refusals=[] (3.7 ms)
+selftest_boot_delta_parse() [existing ARM 1/ARM 2 arm] AFTER: failures=0
+wired into _selftest_body: True

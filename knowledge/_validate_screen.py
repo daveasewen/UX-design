@@ -12,6 +12,13 @@ Runs, on each composed screen:
                     see THE RECEIPT STEP below.
   1. compose      — _validate_compose checks (rogue hex, no .c-/.cn- redefinition, classes
                     resolve, no native/accent-color control reinvention)
+  1b. composition — _validate_composition (s245-D7, Dave: "I'll go with all the recommendations"):
+                    rB's arithmetic composition conditions read off the page's OWN bento grammar.
+                    C9 span legality BLOCKS (Q4 (b)); C1 gap ladder, C7 neuro-003 section air,
+                    C8 ID-9 adjacency and C4 CA-2 DOM-order are ADVISORY (Q4 (b), Q5 (b)) —
+                    reported with ⚠, never blocking. A page with no .c-bento is NOT APPLICABLE;
+                    a page whose bento never declares its column count is UNPROVEN, said so,
+                    and does not block (the same ADR-0016 posture as NO-RECEIPT below).
   2. icon-source  — _validate_icons logic: every inline <svg> path must byte-match the
                     assets/icons library (or be marked data-bespoke); shape-only icons flagged
   3. a11y         — _validate_a11y.check: reduced-motion present if it animates; target-size
@@ -48,7 +55,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 icons = importlib.import_module("_validate_icons")
 a11y  = importlib.import_module("_validate_a11y")
-receipt = importlib.import_module("_validate_receipt")     # step 0 (s235-D2)
+import _validate_receipt as receipt          # noqa: E402 - step 0 (s235-D2); a literal import so _validate_wiring.py can SEE the arm
+import _validate_composition as composition  # noqa: E402 - step 1b (s245-D7)
 
 
 def gate_receipt(path, strict):
@@ -91,6 +99,21 @@ def gate_compose(path):
     comp = importlib.import_module("_validate_compose")
     fails, _ = comp.check_screen(path)
     return fails
+
+def gate_composition(html):
+    """Step 1b — s245-D7. Returns (lines, blocking_fails). Only C9 blocks; the rest is said."""
+    cl, reds, unproven = composition.check(html)
+    blocking = composition.blocking_reds(reds)
+    advisory = composition.advisory_reds(reds)
+    if cl and cl[0].startswith("composition: NOT APPLICABLE"):
+        return ["- composition: n/a — no .c-bento on this page"], []
+    head = ("❌ C9 " + "; ".join(blocking) if blocking
+            else ("UNPROVEN: " + "; ".join(unproven) if unproven and not advisory
+                  else "✅ C9 span legality holds at every band"))
+    out = ["- composition: " + head]
+    out += ["  ⚠ advisory " + a for a in advisory]
+    out += ["  UNPROVEN: " + u for u in unproven] if (unproven and advisory) else []
+    return out, blocking
 
 # ---------- #230 T5 — THE GATE MUST NOT WIPE ITS OWN RECORD.
 # Until now this runner rewrote _SCREEN-GATE.md wholesale from the files given on the command
@@ -143,6 +166,9 @@ def main():
         # 1. compose
         cf = gate_compose(path)
         lines.append("- compose: " + ("✅" if not cf else "❌ " + "; ".join(cf)))
+        # 1b. composition (s245-D7) — C9 blocks, C1/C7/C8/C4 advisory
+        cpl, cpf = gate_composition(html)
+        lines += cpl
         # 2. icons
         icf = gate_icons(html)
         lines.append("- icon-source: " + ("✅ all paths library-matched" if not icf
@@ -151,9 +177,9 @@ def main():
         _, af, aw, *_rest = a11y.check(path)
         lines.append("- a11y: " + ("✅" if not af else "❌ " + "; ".join(af)) +
                      (f"  (warn: {'; '.join(aw)})" if aw else ""))
-        if cf or icf or af or rf:
+        if cf or icf or af or rf or cpf:
             ok = False
-        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf) else "FAIL ❌"))
+        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf or cpf) else "FAIL ❌"))
         subjects[name] = lines
         report += lines[1:]
     if render:

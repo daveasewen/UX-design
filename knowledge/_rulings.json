@@ -5763,6 +5763,176 @@
    "notes/_subreports/2026-09-03-244-lane-C-debt-sweep.md - the ONE s203-D1 read-back: run #482 FAILURE, five errors, gates and release exit 1",
    "notes/_subreports/2026-09-03-244-lane-B-radius-tuner.md - the tuner built and verified, awaiting Dave's eye"
   ]
+ },
+ {
+  "id": "s245-D1",
+  "ruled": "THE BEHAVIOUR ADDRESS GRAMMAR IS (a) PATH + FRAGMENT, WITH THE FOREIGN REFUSAL. `behaviour.script` in `knowledge/components/<slug>.meta.json` is one of exactly three forms: `null` (a POSITIVE 'the component carries no script'), `knowledge/<path>.js` (a hand-authored source, the component-types.json $behaviour form), or `knowledge/snippets/<Slug>.reference.html#script` (the component's OWN snippet's inline executable <script> element(s), outside AUTO-BEHAVIOUR markers). One grammar shared by the meta, the derived #behaviour-manifest, the receipt and the registry. A `#script` address that names ANOTHER component's snippet is REFUSED as BEHAVIOUR-ADDRESS-FOREIGN on both sides (generator and gate): shared behaviour is a registered partial, never a pointer into another file. Option (b), the KG node-id grammar `snippet:<file>#script`, is REJECTED.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. Question 1 as put: 'The address grammar and its constraints. (a) path + fragment - `knowledge/<path>.js` | `knowledge/snippets/<Slug>.reference.html#script`, one grammar with the receipt and the registry, `#script` = the component's OWN snippet's inline script(s) (finding 6); (b) node-id - `snippet:<file>#script`, the KG edge grammar, but a file address has no prefix and the receipt already uses paths. Recommend (a), including the FOREIGN refusal.'",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/_validate_receipt.py",
+   "knowledge/gen_component_partials.py",
+   "knowledge/components/"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md - RULING-SHAPED QUESTIONS 1-5, the options and the recommendation Dave took",
+   "commit 7ad3a26 - the tree the L2 review page and its five questions were filed under (`_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06)"
+  ]
+ },
+ {
+  "id": "s245-D2",
+  "ruled": "`behaviour.partial` IS `string | string[] | null`, WIDENED NOW BY ADDITION. Option (b): the schema's `partial` accepts a single registered $behaviour name, a list of them, or null, from the day the 20 metas are written - not singular-then-widen-later (a), not a rename to `partials: []` (c). The 20 L2 metas are unaffected (all null); the measured need is the 14 dataviz metas, 9 of which carry 2-3 AUTO-BEHAVIOUR partials, whose migration (registry -> meta) becomes mechanical under this shape. That second migration is NOT ruled here - it is a carry.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. Question 2 as put: '`partial`: one name or a list? (a) singular now, widen later; (b) `string | string[] | null` today, by addition (the 20 are unaffected - all null); (c) rename `partials: []`. Measured need: 9 of the 14 dataviz members carry 2-3. Recommend (b); the dataviz migration is then ~2K tokens and mechanical.'",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/_validate_receipt.py",
+   "knowledge/gen_component_partials.py"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md - RULING-SHAPED QUESTIONS 1-5, the options and the recommendation Dave took",
+   "commit 7ad3a26 - the tree the L2 review page and its five questions were filed under (`_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06)"
+  ]
+ },
+ {
+  "id": "s245-D3",
+  "ruled": "A PROSE `behaviour` VALUE BLOCKS THE GATE FROM THE DAY THE 20 METAS ARE WRITTEN (#245). In the L1/L2 receipt chain (`_validate_receipt.py` step 4b, inherited by `_validate_screen.py` step 0) a markup region whose meta carries a `behaviour` key that is still pre-s234-D5 prose - a string, a list, or an object with no `script` key - is a named FAIL (BEHAVIOUR-PROSE, rc 1), no longer one UNPROVEN line. A meta with NO `behaviour` key stays UNPROVEN (meta:NONE) until rC Q3 and the dataviz migration settle what 'none' means. Population on the day of the ruling: 0 metas go red, because the 20 are typed in the same lane.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. Question 3 as put: 'When does a PROSE `behaviour` start blocking? Today: one UNPROVEN line, never red. Recommend: block a meta whose `behaviour` key is still prose on the day the 20 are written (0 would go red then; one flag, ~300 tokens); metas with NO `behaviour` key stay UNPROVEN until rC Q3 and the dataviz migration settle what \"none\" means.'",
+  "governs": [
+   "knowledge/_validate_receipt.py",
+   "knowledge/_validate_screen.py",
+   "knowledge/components/"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md - RULING-SHAPED QUESTIONS 1-5, the options and the recommendation Dave took",
+   "commit 7ad3a26 - the tree the L2 review page and its five questions were filed under (`_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06)"
+  ]
+ },
+ {
+  "id": "s245-D4",
+  "ruled": "`behaviour.events` IS KEPT, OPTIONAL, AND GENERATED FROM THE SNIPPET - NEVER AUTHORED. The key stays in the schema as an optional array of DOM event names as passed to addEventListener; its value is MEASURED from the snippet's inline script (the page-level modality tracker excluded, per L2 finding 9), never written by hand. rC Q3 ('is an events field wanted at all?') is answered: wanted, optional. Nothing further is claimed of the field's semantics.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. Question 4 as put: '`events` - wanted at all (rC Q3, still Dave's)? Proposal: optional, measured never authored, floated. Recommend keep, optional; a generator can mint it from the snippet.'",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/gen_component_partials.py",
+   "knowledge/components/"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md - RULING-SHAPED QUESTIONS 1-5, the options and the recommendation Dave took",
+   "commit 7ad3a26 - the tree the L2 review page and its five questions were filed under (`_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06)"
+  ]
+ },
+ {
+  "id": "s245-D5",
+  "ruled": "THE 14 CANDIDATE `fallback` READINGS ARE SETTLED BY A JS-OFF RENDER, NOT ACCEPTED ON A READING. `behaviour.fallback` (what the component does with CSS on and JavaScript off) is populated for one of the 14 interactive L2 metas ONLY where a JS-off render of its snippet (`page.goto(\"file://...\")` in a context with JavaScript disabled, never `set_content`) PROVES the reading; where the render does not prove it the field stays `null` with `$unproven: [\"fallback\"]` and a `$note` naming what was seen. The lane's 14 candidate sentences are NOT promoted on the lane's word - that is the L2 brief's pitfall 2.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. Question 5 as put: 'The 14 candidate `fallback` readings - accept, reject, or render? Recommend the render (a JS-off pass over the 14 snippets, rA's resilience criterion, ~3K tokens); promoting them on my reading alone is the brief's pitfall 2.'",
+  "governs": [
+   "knowledge/components/",
+   "knowledge/components/meta.schema.json",
+   "knowledge/_RUNBOOK-render-verify.md"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "notes/_subreports/2026-09-02-238-B-L2-behaviour-address.md - RULING-SHAPED QUESTIONS 1-5, the options and the recommendation Dave took",
+   "commit 7ad3a26 - the tree the L2 review page and its five questions were filed under (`_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06)"
+  ]
+ },
+ {
+  "id": "s245-D6",
+  "ruled": "THE THREE BENTO ROLE-NAME WORDS ARE `-lead` / `-evidence` / `-context`. The `s234-D4` role classes on the dashboard bento template are renamed from the content words to role words: `tpl-group-kpi` -> `tpl-group-lead`, `tpl-group-chart` -> `tpl-group-evidence`, `tpl-group-rail` -> `tpl-group-context`. The ONE source is `knowledge/snippets/Template-dashboard-bento.reference.html` (the three CSS rules and the three <section class> attributes); `knowledge/canon/canon.css` is REGENERATED from it by `canon/gen_canon_components.py`, never edited. The rename is RULED HERE, NOT ENACTED HERE: it is L3's build, and whether the old class rides beside the new for one release (by-addition) or is cut clean was not put to Dave and is not ruled.",
+  "says": "Dave at #245, 2026-09-03, given the five L2 questions from `_REVIEW-L2-behaviour-address-2026-09-02-v1.html` § 06 with the conductor's recommendations and the three L3 role-name words, answering all in one line: 'take the recommendations'. Those are his words and they are the ruling. The role-name words as put: 'the L3 role-name words `-lead / -evidence / -context` (proposed)' - floated in `_CARRIES.md` since #234 (`tpl-group-kpi` / `-chart` / `-rail` re-cut as ROLE names by `s234-D4`, the WORDS Dave's) and dry-run by L3 in `knowledge/_tmp/l3-245/rename-plan.json`.",
+  "governs": [
+   "knowledge/snippets/Template-dashboard-bento.reference.html",
+   "knowledge/canon/canon.css"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"take the recommendations\", quoted in says",
+   "knowledge/_tmp/l3-245/rename-plan.json - L3's dry run: the one source file, the two regenerated files, the floated mapping",
+   "commit 7ad3a26 - the tree in which `_CARRIES.md` carried the words as FLOATED ONLY, Dave's"
+  ]
+ },
+ {
+  "id": "s245-D7",
+  "ruled": "THE COMPOSITION EDGE IS RULED ON THE L3 RECOMMENDATIONS, ALL OF THEM (`_REVIEW-L3-composition-edge-2026-09-03-v1.html` § 06). Q2 (a): `groupsWith` is ADDED to `knowledge/components/meta.schema.json` under `edges`, beside `mustNotNeighbour`, in the closed `{ref: <node-id>|null, $note}` form every other edge uses - the POSITIVE composition edge, the one home for grouping (s234-D4); consumers DERIVE from it. Q3 (a): a ONE-MEMBER GROUP IS LEGAL as a DECLARED CARVE-OUT - its edge stays `ref:null` carrying the reason, the wrapper keeps its row-unit seat, nothing in the snippet changes. Q4 (b): `check_composition.py` is REGISTERED in `_validate_screen.py`'s chain as `knowledge/_validate_composition.py` - BLOCKING for C9 span legality (a C9 red fails the screen), ADVISORY for the C1 gap ladder (reported, never blocking); an artefact that does not declare its column count stays UNPROVEN (exit 77), never assumed. Q5 (b): the three composition-class guideline rules `ID-9` (related content stays adjacent through every band), `neuro-003` (>=20px between sibling sections) and `CA-2` (DOM order = visual order) are WIRED as the C8 / C7 / C4 arms of that same gate, each with a selftest bite; the other destiny-tagged rules stay CARRIED, not wired. Q7 (a): the edge lives at MODULE LEVEL ONLY - 6 edges: `kpi-tile` self-edge, `stat-card` self-edge, `chart-bar` `ref:null` (the Q3 carve-out), and the template's three `ref:null` group edges; the two content-level edges (`summary` <-> `status-indicator`) are DROPPED. Q1 (the role words) was already ruled at s245-D6; Q6 (the row-height model) is s245-D8.",
+  "says": "Dave at #245, 2026-09-03, on `_REVIEW-L3-composition-edge-2026-09-03-v1.html` (the seven ruling-shaped questions of § 06, each with options priced and one recommendation): 'I'll go with all the recommendations'. Those are his words and they are the ruling. The recommendations as put on the page: Q2 recommend (a) apply the fragment as proposed; Q3 recommend (a) legal, a declared carve-out; Q4 recommend (b) BLOCKING for C9 + advisory C1; Q5 recommend (b) the composition-class rules ID-9 / neuro-003 / CA-2 as C7/C8/C4 arms of this same gate; Q7 recommend (a) now, (c) when the grammar is next opened; Q6 recommended NO PICK (settled by s245-D8); Q1 recommended (a) and was already s245-D6.",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/components/kpi-tile.meta.json",
+   "knowledge/components/stat-card.meta.json",
+   "knowledge/components/chart-bar.meta.json",
+   "knowledge/components/template-dashboard-bento.meta.json",
+   "knowledge/_validate_composition.py",
+   "knowledge/_validate_screen.py",
+   "knowledge/_render/gen_bento_matrix_217.py",
+   "apollo-spider/skills/generate-from-canon/SKILL.md"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+  "chat #245 2026-09-03 - Dave: \"I'll go with all the recommendations\", quoted in says",
+  "./_REVIEW-L3-composition-edge-2026-09-03-v1.html - the surface put to Dave (repo root); § 06 carries the seven questions and the recommendations his words adopt",
+  "notes/_subreports/2026-09-03-245-L3-composition-edge.md - L3's report: the fragment, the 8-edge proposal (6 survive Q7(a)), the gate's 10 arms, the rename dry run",
+  "commit 33062c1 - the tree in which the edge existed nowhere (grep -rn groupsWith knowledge/components/ -> 0)"
+ ]
+ },
+ {
+  "id": "s245-D8",
+  "ruled": "THE NESTED TILE GRID'S ROW-HEIGHT MODEL IS THE FLOOR WITH `auto` AS ITS MAX: `.c-bento__tile.c-bento > .c-bento__grid { grid-auto-rows: minmax(var(--bento-row-unit), auto); }` - model 2 of `reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html`. Each row of a group grows to ITS OWN content and never below the rung; canon's shipped `1fr` max (which equalised a group's rows to its tallest content and lifted the outer row - L4 finding 6) is RETIRED. The ONE source is the template in `knowledge/canon/gen_canon_bento.py`; `knowledge/canon/canon.css`'s AUTO-BENTO block is regenerated from it, and the declared copy inside `knowledge/snippets/Template-dashboard-bento.reference.html` is re-spliced byte-identical (its `.cn-template-dashboard-bento` projection in canon.css follows from `gen_canon_components.py`). The OUTER wall grid of the dashboard role stays at `--bento-row-unit:auto` (L4 Q2 (a), no change). Dave's stated preference for 'the spacing on 3' is read with lane K's finding 1: under the floor a rung below content never paints, so what he prefers is CONTENT-SIZED rows - that preference is what s245-D9's ladder B enacts.",
+  "says": "Dave at #245, 2026-09-03, on `reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html` (three models per theme: 1 FIXED, 2 FLOOR minmax(unit,auto), 3 MIS-RUNG; L4's Q1 which model governs the nested tile grid and Q4 auto-or-1fr as the floor's max): 'Okay it's 2 but I do prefer the spacing on 3.' Those are his words and they are the ruling: model 2 is the FLOOR, and the page's model 2 IS the `auto` form (its toggle shows canon's `1fr` as the alternative), so Q4 resolves to (b) mint `auto` in the generator's template.",
+  "governs": [
+   "knowledge/canon/gen_canon_bento.py",
+   "knowledge/canon/canon.css",
+   "knowledge/snippets/Template-dashboard-bento.reference.html"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+  "chat #245 2026-09-03 - Dave: \"Okay it's 2 but I do prefer the spacing on 3.\", quoted in says",
+  "reviews/ROW-HEIGHT-RENDERS-2026-09-03-v1.html - the surface put to Dave: 24 renders, model 2 = FLOOR minmax(unit,auto), the 1fr toggle",
+  "notes/_subreports/2026-09-03-245-L4-row-height-renders.md - L4's report: finding 6 (auto and 1fr render differently: rail rows 277.7 and 223.8 under auto, 277.7 and 277.7 under 1fr), Q1, Q4",
+  "commit 33062c1 - the tree that ships `minmax(var(--bento-row-unit),1fr)` at canon.css:1124 from gen_canon_bento.py's template"
+ ]
+ },
+ {
+  "id": "s245-D9",
+  "ruled": "THE RUNG LADDER FOR `Template-dashboard-bento` IS **B** FOR v1.0.6: KPI 120px / chart 240px / rail 96px, written at the ONE source (`knowledge/snippets/Template-dashboard-bento.reference.html`'s three per-group `--bento-row-unit` rules) and projected into `knowledge/canon/canon.css` by `gen_canon_components.py`; under the s245-D8 floor a rung below content never paints (lane K finding 1), so the rows are PURE CONTENT above the floor - which is the spacing he preferred. ⛔ AND A CARRY, IN HIS WORDS: the grid snapping is 4px, not 8px; components, type and padding/margins are meant to be multiples of 4 and he doubts they are; the bento grid's purpose is to line up adjacent and stacked components, these are containers that line up anyway, so the grid may be unnecessary for them; until the constituents are audited for 4px multiples, round to the nearest pixel (B). D (2:1 level, 160/548/272) is his stated preference once that audit lands. The AUDIT IS NOT RULED HERE and is NOT this session's build: a carry for `_CARRIES.md` - audit components, type and spacing for 4px multiples; re-put the ladder (D) and the question of whether the container grid is needed at all when the audit is done.",
+  "says": "Dave at #245, 2026-09-03, on `reviews/RUNG-LADDER-2026-09-03-v1.html` (four ladders A canon 196/380/184, B tight 120/240/96, C content-fitted 152/344/264, D 2:1 level 160/548/272, rendered under the floor): 'I am minded to go for D but the grid snapping is 4px not 8px, im almost certain. I'd like to understand what we have to round off subpixels anyway, surely we have tried to make all the components, type and padding/margins multiples of 4 anyway. I almost think that the grid doesn't matter tbh in this case, the grid is there to line up adjacent and stacked components, these are containers that line up anyway, the grid might simply be unnecessary, and if all the constituents are based on 4px, they should fine in theory. I think our components, type, and spacing aren't right and in fact the grid might not matter. Hmmmm, maybe the attention should be paid to the components etc and until thats done we just round to the nearest pixel, which would make B the best.' Those are his words and they are the ruling.",
+  "governs": [
+   "knowledge/snippets/Template-dashboard-bento.reference.html",
+   "knowledge/canon/canon.css"
+  ],
+  "date": "2026-09-03",
+  "by": "Dave",
+  "status": "ruled",
+  "evidence": [
+   "chat #245 2026-09-03 - Dave: \"...until thats done we just round to the nearest pixel, which would make B the best.\", quoted in full in says",
+   "reviews/RUNG-LADDER-2026-09-03-v1.html - the surface put to Dave: 32 renders, the four ladders, the content probe (KPI 156 / chart 344 / rail 271)",
+   "notes/_subreports/2026-09-03-245-K-rung-ladder.md - lane K's report: finding 1 (under the floor a rung below content never paints), finding 4 (D is the only ladder where the rung IS the row)",
+   "commit 33062c1 - the tree that ships 196/380/184 at canon.css:17230-17232, projected from the snippet"
+  ]
  }
 ]
 }

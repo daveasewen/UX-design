@@ -2,13 +2,16 @@
 
 > CI gate over the authored canon. **ERROR** = the graph is inconsistent (fix before relying on it); **WARNING** = best-effort / probably fine but worth a look. Regenerate: `python3 knowledge/_build_integrity.py` (exits non-zero on any ERROR).
 
-**Result:** PASS ✅ — 0 errors, 19 warnings. Schema: 135/135 metas valid. Token store: 1030 leaf tokens, groups 41.
+**Result:** PASS ✅ — 0 errors, 22 warnings. Schema: 136/136 metas valid. Token store: 1035 leaf tokens, groups 42.
 
 ## Errors (0)
 
 _No errors — the canon is internally consistent. 🎉_
 
-## Warnings (best-effort) (19)
+## Warnings (best-effort) (22)
+
+**Account card**
+- token path may not resolve: 'size/role'
 
 **Back to top**
 - token path may not resolve: 'target/--glyph'
@@ -20,6 +23,9 @@ _No errors — the canon is internally consistent. 🎉_
 **Butterfly chart (vertical)**
 - token path may not resolve: 'data/series-1-hc'
 - token path may not resolve: 'data/series-3-hc'
+
+**Eyebrow**
+- token path may not resolve: 'size/role'
 
 **Hero**
 - token path may not resolve: 'icon/arrow'
@@ -36,6 +42,9 @@ _No errors — the canon is internally consistent. 🎉_
 
 **Modals**
 - token path may not resolve: 'overlay/background-blur'
+
+**Template dashboard (bento)**
+- token path may not resolve: 'layout/bento/packing'
 
 **Template settings**
 - token path may not resolve: 'background/hover'

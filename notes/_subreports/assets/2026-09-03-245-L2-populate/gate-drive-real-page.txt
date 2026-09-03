@@ -1,0 +1,50 @@
+## GATE DRIVE — real page: dashboards/international-banking-dashboard.regen-v2-receipt.html
+
+$ python3 knowledge/_validate_receipt.py dashboards/international-banking-dashboard.regen-v2-receipt.html   # AFTER the 20 are typed, all live metas
+  - ✅ List-items#markup (markup, 1966 bytes) · behaviour NO-BEHAVIOUR-DECLARED · meta:NONE
+  - ✅ Pagination#markup (markup, 840 bytes) · behaviour NO-BEHAVIOUR-DECLARED · meta:NONE
+  - ✅ Chart-line#behaviour (behaviour, 14524 bytes)
+  - ✅ Chart-line#legend-behaviour (behaviour, 15446 bytes)
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+  UNPROVEN:behaviour-address — 5 with meta:NONE (Page-header-lockup#markup, Stat-card#markup, Chart-line#markup, List-items#markup, Pagination#markup): no typed behaviour address (s234-D5), so whether the page must load a script for these regions was NOT measured; typing the meta's `behaviour` (the L2 migration proposal) would prove it
+  verdict: PASS (+2 UNPROVEN)
+
+RESULT: PASS ✅
+rc=0
+
+$ python3 knowledge/_validate_screen.py dashboards/international-banking-dashboard.regen-v2-receipt.html   # the chain
+# Composed-screen gate — full pipeline on *.canon.html
+## international-banking-dashboard.regen-v2-receipt.html
+- receipt: ✅ 12 region(s) re-hashed and matched
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+- compose: ❌ 191 hex colour(s) in <style>: ['#F6604C', '#1A1A1A', '#1A1A1A', '#FFFFFF', '#1A1A1A']
+RESULT: FAIL ❌
+rc=1
+
+## BITE — pagination.meta.json given a PROSE `behaviour` (a string), page unchanged
+$ python3 knowledge/_validate_receipt.py dashboards/international-banking-dashboard.regen-v2-receipt.html
+rc=1
+  FAIL:BEHAVIOUR-PROSE — `Pagination#markup`: meta knowledge/components/pagination.meta.json carries a `behaviour` key that is still pre-s234-D5 prose (str), not a typed address (s245-D3, #245); type it — `script` / `partial` / `fallback`, prose kept under `$note` — and regenerate
+  verdict: FAIL:BEHAVIOUR-PROSE (+2 UNPROVEN)
+RESULT: FAIL ❌
+$ python3 knowledge/_validate_screen.py dashboards/international-banking-dashboard.regen-v2-receipt.html
+rc=1
+## international-banking-dashboard.regen-v2-receipt.html
+- receipt: ❌ BEHAVIOUR-PROSE
+  FAIL:BEHAVIOUR-PROSE — `Pagination#markup`: meta knowledge/components/pagination.meta.json carries a `behaviour` key that is still pre-s234-D5 prose (str), not a typed address (s245-D3, #245); type it — `script` / `partial` / `fallback`, prose kept under `$note` — and regenerate
+  UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from
+RESULT: FAIL ❌
+BITES
+
+## BITE 2 — prose as an object without `script`: rc=1 BITES
+restored pagination.meta.json: 6163fc49b5dc9a9a == original True
+control after restore: rc=0 ['RESULT: PASS ✅']
+
+## RECORD RESET — the chain writes _screen-gate/<subject>.md; the last chain run above was the BITE, so re-run post-restore
+$ python3 knowledge/_validate_screen.py dashboards/international-banking-dashboard.regen-v2-receipt.html
+- receipt: ✅ 12 region(s) re-hashed and matched
+RESULT: FAIL ❌
+rc=1
+$ git diff --stat knowledge/_screen-gate/
+ 1 file changed, 1 insertion(+)
++  UNPROVEN:behaviour-address — 5 with meta:NONE (Page-header-lockup#markup, Stat-card#markup, Chart-line#markup, List-items#markup, Pagination#markup): no typed behaviour address (s234-D5), so whet

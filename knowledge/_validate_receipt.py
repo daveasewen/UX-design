@@ -94,8 +94,10 @@ remedy: one parse, in the consumer's grammar, shared.
                                                          BYTE-IDENTICAL (sha256, no normalisation —
                                                          the s235-D1 posture; a whitespace-shifted
                                                          copy is named in the hint, never passed)
-               `partial: <name>`                         must be registered in component-types.json
-                                                         $behaviour; loaded = AUTO-BEHAVIOUR <name>
+               `partial: <name> | [<name>, …]`           each name must be registered in
+                                                         component-types.json $behaviour (s245-D2: one
+                                                         name, a list, or null); loaded = an
+                                                         AUTO-BEHAVIOUR block per name
                ⇒ FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE (grammar, missing file, snippet with no
                  inline script) · FAIL:BEHAVIOUR-NOT-LOADED · FAIL:BEHAVIOUR-PARTIAL-UNREGISTERED
                · FAIL:BEHAVIOUR-ADDRESS-FOREIGN when a #script names ANOTHER component's snippet
@@ -103,9 +105,13 @@ remedy: one parse, in the consumer's grammar, shared.
                  otherwise any page carrying the other component would satisfy the check)
                · FAIL:BEHAVIOUR-ADDRESS-DISAGREES when the receipt's own `script` names a
                  different address from the meta's — the receipt is a COPY, the meta is the home.
-        PROSE  (pre-s234-D5 notes)  → nothing was measured: ONE `UNPROVEN:behaviour-address`
-               line per page names the regions, and the region note carries `meta:PROSE`.
-        NONE   (no `behaviour` key)  → likewise UNPROVEN, note `meta:NONE`.
+        PROSE  (pre-s234-D5 notes)  → ⛔ FAIL:BEHAVIOUR-PROSE (s245-D3, #245, the day the 20 were
+               typed): a `behaviour` key that is still a string / list / object without `script`
+               is a named BLOCK, not an UNPROVEN line — the meta is the one home and prose there
+               addresses nothing. Population on the day of the ruling: 0 live metas (the 20 are
+               typed; 116 carry no key). Before #245 this was one `UNPROVEN:behaviour-address` line.
+        NONE   (no `behaviour` key)  → UNPROVEN, note `meta:NONE` — stays UNPROVEN until rC Q3 and
+               the dataviz migration settle what 'none' means (s245-D3 rules PROSE only).
       ⛔ THE CHECK IS TWO-SIDED BY CONSTRUCTION (the L2 brief's pitfall 3, "a gate that checks
       the meta and not the page, or the reverse"): the META side is `resolve_address` (does what
       the meta names exist?) and the PAGE side is `address_loaded` (does the page carry it?), and
@@ -471,6 +477,16 @@ def behaviour_verdict(html, r):
     typed = typed_behaviour(meta)
     rel = os.path.relpath(mpath, os.path.dirname(ROOT)) if mpath else None
     fails, lines = [], []
+    if state == "PROSE":
+        # s245-D3 (#245): a `behaviour` key that is still prose BLOCKS, named. Dave's word on the
+        # L2 recommendation ("take the recommendations"): "block a meta whose `behaviour` key is
+        # still prose on the day the 20 are written". NONE / NO-META keep the UNPROVEN posture.
+        fails.append("BEHAVIOUR-PROSE")
+        lines.append("FAIL:BEHAVIOUR-PROSE — `%s`: meta %s carries a `behaviour` key that is still "
+                     "pre-s234-D5 prose (%s), not a typed address (s245-D3, #245); type it — "
+                     "`script` / `partial` / `fallback`, prose kept under `$note` — and regenerate"
+                     % (rid, rel, type((meta or {}).get("behaviour")).__name__))
+        return "", lines, fails, state
     if typed is None:
         # L1's check, unchanged: the receipt's own address, if it declares one
         if receipt_addr:
@@ -516,8 +532,9 @@ def behaviour_verdict(html, r):
                 fails.append("BEHAVIOUR-NOT-LOADED")
                 lines.append("FAIL:BEHAVIOUR-NOT-LOADED — `%s`: meta %s declares script `%s`, and "
                              "the page does not load it%s" % (rid, rel, addr, hint))
-    partial = typed.get("partial")
-    if partial:
+    # s245-D2: `partial` is `string | string[] | null` — normalised to a list here, each name
+    # judged on its own (an unregistered name and an unloaded one are BOTH named, no first-obstacle).
+    for partial in partial_names(typed):
         reg = registered_partials()
         if partial not in reg:
             fails.append("BEHAVIOUR-PARTIAL-UNREGISTERED")
@@ -531,6 +548,18 @@ def behaviour_verdict(html, r):
         else:
             suffix += " · partial %s LOADED (AUTO-BEHAVIOUR block)" % partial
     return suffix, lines, fails, state
+
+
+def partial_names(typed):
+    """s245-D2: the meta's `partial` as a list of names — `null` → [], `"a"` → ["a"], `["a","b"]`
+    → itself. ONE place, imported by gen_component_partials.py too, so the generator and the gate
+    cannot disagree about what a list means (the #150 two-code-paths defect)."""
+    p = (typed or {}).get("partial")
+    if p is None:
+        return []
+    if isinstance(p, str):
+        return [p] if p else []
+    return [x for x in p if isinstance(x, str) and x]
 
 
 # ------------------------------------------------------------------------------ the gate
@@ -678,7 +707,8 @@ def check(path):
 
     # 4b, the honest gap: a region whose meta carries PROSE (or nothing) has had NOTHING about
     # its script measured. One line per page, naming the regions — never silence, never green.
-    gap = {k: v for k, v in unmeasured.items() if k in ("PROSE", "NONE", "NO-META") and v}
+    # (PROSE left this set at s245-D3 — it is a named FAIL above now, not an unmeasured gap.)
+    gap = {k: v for k, v in unmeasured.items() if k in ("NONE", "NO-META") and v}
     if gap:
         parts = ["%d with meta:%s (%s)" % (len(v), k, ", ".join(v)) for k, v in sorted(gap.items())]
         unproven.append("UNPROVEN:behaviour-address — %s: no typed behaviour address (s234-D5), so "
@@ -874,8 +904,14 @@ def selftest():
     arm("R2 receipt `script` AGREES with the meta — no double jeopardy",
         page(body, gh, script=inline_addr, extra_body=carried), "PASS")
     meta({"keyboard": "Arrows move the highlight", "open": "A shortcut opens it"})
-    arm("S  meta PROSE (pre-s234-D5) — UNPROVEN:behaviour-address, not a pass and not a fail",
-        page(body, gh), "PASS", expect_unproven="behaviour-address")
+    arm("S  meta PROSE (pre-s234-D5, an object without `script`) — BLOCKS, named (s245-D3)",
+        page(body, gh), "BEHAVIOUR-PROSE")
+    meta("Arrows move the highlight; a shortcut opens it")
+    arm("S2 meta PROSE as a bare string — BLOCKS too (s245-D3)",
+        page(body, gh), "BEHAVIOUR-PROSE")
+    meta(["Arrows move the highlight", "a shortcut opens it"])
+    arm("S3 meta PROSE as a list — BLOCKS too (s245-D3)",
+        page(body, gh), "BEHAVIOUR-PROSE")
     meta(...)
     arm("T  meta with NO behaviour key — UNPROVEN too (meta:NONE)",
         page(body, gh), "PASS", expect_unproven="meta:NONE")
@@ -889,6 +925,16 @@ def selftest():
         page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
              extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
                         "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
+    meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b"], "fallback": None})
+    arm("W2 meta partial as a LIST of one registered name, block carried (s245-D2)",
+        page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
+             extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
+                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
+    meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b", "ghost-partial"], "fallback": None})
+    arm("U2 meta partial LIST with one unregistered name — the ghost is named, the real one still judged",
+        page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
+             extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
+                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "BEHAVIOUR-PARTIAL-UNREGISTERED")
     # X: the #script address must ignore an AUTO-BEHAVIOUR payload in the SNIPPET (it has its own
     # registry address) — a snippet whose only script is an injected block resolves to nothing.
     open(os.path.join(ROOT, "snippets", "Injected.reference.html"), "w", encoding="utf-8").write(

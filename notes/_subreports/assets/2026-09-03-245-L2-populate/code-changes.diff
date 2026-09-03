@@ -1,0 +1,180 @@
+diff --git a/knowledge/_render/gen_library_214.py b/knowledge/_render/gen_library_214.py
+index 3c61de6..9d130cc 100644
+--- a/knowledge/_render/gen_library_214.py
++++ b/knowledge/_render/gen_library_214.py
+@@ -451,7 +451,11 @@ RELATED_CLUSTERS = [
+     ["accordion", "summary", "timeline"],
+ ]
+ 
+-SCRIPT_RE = re.compile(r"<script\b(?![^>]*id=\"token-manifest\")[^>]*>(.*?)</script>", re.S)
++# #245 (s245-D1..D5 populate): the #behaviour-manifest JSON block gen_component_partials.py derives
++# beside #token-manifest is DATA, not behaviour — without the type exclusion it counted as JS lines
++# and 6 passive components (account-card, action-bar, badge, confirmation, eyebrow, summary) flipped
++# to ships_behaviour:true the moment their metas were typed. Exclude the CLASS (application/json).
++SCRIPT_RE = re.compile(r"<script\b(?![^>]*id=\"token-manifest\")(?![^>]*type=\"application/json\")[^>]*>(.*?)</script>", re.S)
+ SENTENCE_RE = re.compile(r"^(.+?[.;])(\s|$)")
+ 
+ 
+diff --git a/knowledge/_validate_receipt.py b/knowledge/_validate_receipt.py
+index 5e3d02f..a49c54d 100644
+--- a/knowledge/_validate_receipt.py
++++ b/knowledge/_validate_receipt.py
+@@ -94,8 +94,10 @@ remedy: one parse, in the consumer's grammar, shared.
+                                                          BYTE-IDENTICAL (sha256, no normalisation —
+                                                          the s235-D1 posture; a whitespace-shifted
+                                                          copy is named in the hint, never passed)
+-               `partial: <name>`                         must be registered in component-types.json
+-                                                         $behaviour; loaded = AUTO-BEHAVIOUR <name>
++               `partial: <name> | [<name>, …]`           each name must be registered in
++                                                         component-types.json $behaviour (s245-D2: one
++                                                         name, a list, or null); loaded = an
++                                                         AUTO-BEHAVIOUR block per name
+                ⇒ FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE (grammar, missing file, snippet with no
+                  inline script) · FAIL:BEHAVIOUR-NOT-LOADED · FAIL:BEHAVIOUR-PARTIAL-UNREGISTERED
+                · FAIL:BEHAVIOUR-ADDRESS-FOREIGN when a #script names ANOTHER component's snippet
+@@ -103,9 +105,13 @@ remedy: one parse, in the consumer's grammar, shared.
+                  otherwise any page carrying the other component would satisfy the check)
+                · FAIL:BEHAVIOUR-ADDRESS-DISAGREES when the receipt's own `script` names a
+                  different address from the meta's — the receipt is a COPY, the meta is the home.
+-        PROSE  (pre-s234-D5 notes)  → nothing was measured: ONE `UNPROVEN:behaviour-address`
+-               line per page names the regions, and the region note carries `meta:PROSE`.
+-        NONE   (no `behaviour` key)  → likewise UNPROVEN, note `meta:NONE`.
++        PROSE  (pre-s234-D5 notes)  → ⛔ FAIL:BEHAVIOUR-PROSE (s245-D3, #245, the day the 20 were
++               typed): a `behaviour` key that is still a string / list / object without `script`
++               is a named BLOCK, not an UNPROVEN line — the meta is the one home and prose there
++               addresses nothing. Population on the day of the ruling: 0 live metas (the 20 are
++               typed; 116 carry no key). Before #245 this was one `UNPROVEN:behaviour-address` line.
++        NONE   (no `behaviour` key)  → UNPROVEN, note `meta:NONE` — stays UNPROVEN until rC Q3 and
++               the dataviz migration settle what 'none' means (s245-D3 rules PROSE only).
+       ⛔ THE CHECK IS TWO-SIDED BY CONSTRUCTION (the L2 brief's pitfall 3, "a gate that checks
+       the meta and not the page, or the reverse"): the META side is `resolve_address` (does what
+       the meta names exist?) and the PAGE side is `address_loaded` (does the page carry it?), and
+@@ -471,6 +477,16 @@ def behaviour_verdict(html, r):
+     typed = typed_behaviour(meta)
+     rel = os.path.relpath(mpath, os.path.dirname(ROOT)) if mpath else None
+     fails, lines = [], []
++    if state == "PROSE":
++        # s245-D3 (#245): a `behaviour` key that is still prose BLOCKS, named. Dave's word on the
++        # L2 recommendation ("take the recommendations"): "block a meta whose `behaviour` key is
++        # still prose on the day the 20 are written". NONE / NO-META keep the UNPROVEN posture.
++        fails.append("BEHAVIOUR-PROSE")
++        lines.append("FAIL:BEHAVIOUR-PROSE — `%s`: meta %s carries a `behaviour` key that is still "
++                     "pre-s234-D5 prose (%s), not a typed address (s245-D3, #245); type it — "
++                     "`script` / `partial` / `fallback`, prose kept under `$note` — and regenerate"
++                     % (rid, rel, type((meta or {}).get("behaviour")).__name__))
++        return "", lines, fails, state
+     if typed is None:
+         # L1's check, unchanged: the receipt's own address, if it declares one
+         if receipt_addr:
+@@ -516,8 +532,9 @@ def behaviour_verdict(html, r):
+                 fails.append("BEHAVIOUR-NOT-LOADED")
+                 lines.append("FAIL:BEHAVIOUR-NOT-LOADED — `%s`: meta %s declares script `%s`, and "
+                              "the page does not load it%s" % (rid, rel, addr, hint))
+-    partial = typed.get("partial")
+-    if partial:
++    # s245-D2: `partial` is `string | string[] | null` — normalised to a list here, each name
++    # judged on its own (an unregistered name and an unloaded one are BOTH named, no first-obstacle).
++    for partial in partial_names(typed):
+         reg = registered_partials()
+         if partial not in reg:
+             fails.append("BEHAVIOUR-PARTIAL-UNREGISTERED")
+@@ -533,6 +550,18 @@ def behaviour_verdict(html, r):
+     return suffix, lines, fails, state
+ 
+ 
++def partial_names(typed):
++    """s245-D2: the meta's `partial` as a list of names — `null` → [], `"a"` → ["a"], `["a","b"]`
++    → itself. ONE place, imported by gen_component_partials.py too, so the generator and the gate
++    cannot disagree about what a list means (the #150 two-code-paths defect)."""
++    p = (typed or {}).get("partial")
++    if p is None:
++        return []
++    if isinstance(p, str):
++        return [p] if p else []
++    return [x for x in p if isinstance(x, str) and x]
++
++
+ # ------------------------------------------------------------------------------ the gate
+ 
+ def first_diff_offset(a, b):
+@@ -678,7 +707,8 @@ def check(path):
+ 
+     # 4b, the honest gap: a region whose meta carries PROSE (or nothing) has had NOTHING about
+     # its script measured. One line per page, naming the regions — never silence, never green.
+-    gap = {k: v for k, v in unmeasured.items() if k in ("PROSE", "NONE", "NO-META") and v}
++    # (PROSE left this set at s245-D3 — it is a named FAIL above now, not an unmeasured gap.)
++    gap = {k: v for k, v in unmeasured.items() if k in ("NONE", "NO-META") and v}
+     if gap:
+         parts = ["%d with meta:%s (%s)" % (len(v), k, ", ".join(v)) for k, v in sorted(gap.items())]
+         unproven.append("UNPROVEN:behaviour-address — %s: no typed behaviour address (s234-D5), so "
+@@ -874,8 +904,14 @@ def selftest():
+     arm("R2 receipt `script` AGREES with the meta — no double jeopardy",
+         page(body, gh, script=inline_addr, extra_body=carried), "PASS")
+     meta({"keyboard": "Arrows move the highlight", "open": "A shortcut opens it"})
+-    arm("S  meta PROSE (pre-s234-D5) — UNPROVEN:behaviour-address, not a pass and not a fail",
+-        page(body, gh), "PASS", expect_unproven="behaviour-address")
++    arm("S  meta PROSE (pre-s234-D5, an object without `script`) — BLOCKS, named (s245-D3)",
++        page(body, gh), "BEHAVIOUR-PROSE")
++    meta("Arrows move the highlight; a shortcut opens it")
++    arm("S2 meta PROSE as a bare string — BLOCKS too (s245-D3)",
++        page(body, gh), "BEHAVIOUR-PROSE")
++    meta(["Arrows move the highlight", "a shortcut opens it"])
++    arm("S3 meta PROSE as a list — BLOCKS too (s245-D3)",
++        page(body, gh), "BEHAVIOUR-PROSE")
+     meta(...)
+     arm("T  meta with NO behaviour key — UNPROVEN too (meta:NONE)",
+         page(body, gh), "PASS", expect_unproven="meta:NONE")
+@@ -889,6 +925,16 @@ def selftest():
+         page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
+              extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
+                         "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
++    meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b"], "fallback": None})
++    arm("W2 meta partial as a LIST of one registered name, block carried (s245-D2)",
++        page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
++             extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
++                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
++    meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b", "ghost-partial"], "fallback": None})
++    arm("U2 meta partial LIST with one unregistered name — the ghost is named, the real one still judged",
++        page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
++             extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
++                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "BEHAVIOUR-PARTIAL-UNREGISTERED")
+     # X: the #script address must ignore an AUTO-BEHAVIOUR payload in the SNIPPET (it has its own
+     # registry address) — a snippet whose only script is an injected block resolves to nothing.
+     open(os.path.join(ROOT, "snippets", "Injected.reference.html"), "w", encoding="utf-8").write(
+diff --git a/knowledge/gen_component_partials.py b/knowledge/gen_component_partials.py
+index 2c3c5f9..510367e 100644
+--- a/knowledge/gen_component_partials.py
++++ b/knowledge/gen_component_partials.py
+@@ -416,10 +416,11 @@ def behaviour_manifest_fails(slug, typed, meta_rel):
+                          "registered partial" % (slug, meta_rel, addr, foreign))
+         elif err:
+             fails.append("behaviour-manifest/%s: %s declares script `%s`, which %s" % (slug, meta_rel, addr, err))
+-    partial = typed.get("partial")
+-    if partial is not None:
++    # s245-D2: `partial` is `string | string[] | null`; the list reading lives in ONE place
++    # (VR.partial_names) so the generator and the gate cannot disagree about it.
++    for partial in VR.partial_names(typed):
+         reg = VR.registered_partials()
+-        if not isinstance(partial, str) or partial not in reg:
++        if partial not in reg:
+             fails.append("behaviour-manifest/%s: %s declares partial %r, which component-types.json does not "
+                          "register under $behaviour (has: %s)" % (slug, meta_rel, partial, sorted(reg) or "none"))
+     return fails
+@@ -1196,6 +1197,17 @@ def selftest():
+         f, o, i = run_behaviour_manifests(True)
+         if f or i != 1:
+             fails.append("a registered partial with a file address was refused: %s" % f)
++        # (vii-b) s245-D2: `partial` as a LIST — every name judged; one ghost in the list refuses,
++        #         a list of registered names is emitted and the block carries the list verbatim
++        _meta_is(dict(_typed, script="knowledge/canon/demo.js", partial=["demo-b", "ghost-partial"]))
++        f, o, i = run_behaviour_manifests(True)
++        if not any("'ghost-partial'" in x for x in f):
++            fails.append("a partial LIST carrying an unregistered name was not refused (s245-D2): %s" % f)
++        _meta_is(dict(_typed, script="knowledge/canon/demo.js", partial=["demo-b"]))
++        f, o, i = run_behaviour_manifests(True)
++        _bm = BMANIFEST_RE.search(open(_snip).read())
++        if f or not _bm or json.loads(_bm.group(1)).get("partial") != ["demo-b"]:
++            fails.append("a partial LIST of registered names was refused or not carried verbatim (s245-D2): %s" % f)
+         # (viii) no live #token-manifest → refuse (nothing to sit beside); a COMMENTED-OUT manifest
+         #        is not an anchor (#211 lane R6 class)
+         open(_snip, "w").write('<html><body><!-- <script type="application/json" id="token-manifest">{}</script> -->'

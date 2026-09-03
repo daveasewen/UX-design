@@ -29,7 +29,17 @@
     "mustNotNeighbour": ["Tabs (in-page) — a tab bar is app navigation, not in-page section switching"],
     "commonPatterns": ["Home / Cards / Payments / Menu bottom nav", "persistent primary navigation on mobile"]
   },
-  "behaviour": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
+  "behaviour": {
+    "script": "knowledge/snippets/Tab-bar.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "resize"
+    ],
+    "fallback": "Each item is a native `<a>` and takes keyboard focus; the authored `aria-current` stands; clicking another item moves nothing — the active pill stays where the markup put it.",
+    "$note": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-tab-bar-{before,after}.png"
+  },
   "motion": {
     "segmented": "the selected fill is a sliding pill — left+width animate from the current segment on 200ms cubic-bezier(.4,0,.2,1) (matching View-options / the toggle); the glyph colour transitions on the same easing so on-fill contrast holds through the slide.",
     "reducedMotion": "the slide + colour change become instant under prefers-reduced-motion."

@@ -1,0 +1,20 @@
+diff --git a/apollo-spider/skills/generate-from-canon/SKILL.md b/apollo-spider/skills/generate-from-canon/SKILL.md
+index a91257e..fd434b4 100644
+--- a/apollo-spider/skills/generate-from-canon/SKILL.md
++++ b/apollo-spider/skills/generate-from-canon/SKILL.md
+@@ -44,6 +44,15 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
+ 2. **Copy the snippet, don't re-draw it.** Take markup and classes from
+    `knowledge/snippets/<Slug>.reference.html`. Hand-rolling a component from its
+    screenshot invents defects that the gates then catch as yours.
++2a. **Copy the script address with the markup; author no JS.** Every snippet whose
++    component carries behaviour declares its ADDRESS in `knowledge/components/<slug>.meta.json`
++    (`behaviour.script`) and carries the same address in a `#behaviour-manifest` block beside
++    `#token-manifest`. Take the snippet's own `<script>` (or its `AUTO-BEHAVIOUR` block)
++    verbatim — the bytes are the key — and carry the address into the page's receipt. Never
++    write a handler yourself, never paraphrase the script, never point at another component's
++    script: shared behaviour is a registered partial. `fallback` says what the component does
++    with JavaScript off; if it is null, say so in the Gaps list rather than inventing one.
++    `_validate_receipt.py` reads the meta and checks the page loads what it names.
+ 3. **Bind every visual value to a token by intent** — never a raw hex or px. The names
+    live in `knowledge/tokens/*.json` and resolve in `knowledge/canon/canon.css`
+    (`primary/background/hover` → `var(--primary-background-hover)`). Spacing, radius and

@@ -1,0 +1,21 @@
+## PACK-DOC GATE over a HEAD-manifest stage (manifest commit ff1b2f53, staged in the same bash call) with the EDITED SKILL.md overlaid at skills/generate-from-canon/SKILL.md
+$ _gate_pack_docs.py --stage $S --strict   # BEFORE overlay (baseline)
+  [knowledge/_RUNBOOK-review-doc.md] reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html  →  named as if it ships; it is not in the pack
+  [knowledge/_RUNBOOKS.md] knowledge/gen_runbook_index.py  →  named as if it ships; it is not in the pack
+  … 160 more distinct name(s) not printed (199 total occurrence(s)); the count above is the honest denominator, not the cap.
+
+215 finding(s). STRICT — exiting 1.
+rc=1
+2a lines in staged SKILL.md: 1
+
+$ _gate_pack_docs.py --stage $S --strict   # AFTER overlay (rule 2a present)
+  [knowledge/_RUNBOOK-review-doc.md] reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html  →  named as if it ships; it is not in the pack
+  [knowledge/_RUNBOOKS.md] knowledge/gen_runbook_index.py  →  named as if it ships; it is not in the pack
+  … 160 more distinct name(s) not printed (199 total occurrence(s)); the count above is the honest denominator, not the cap.
+
+215 finding(s). STRICT — exiting 1.
+rc=1
+
+findings naming skills/generate-from-canon/SKILL.md: before overlay 0 · after overlay 0 (delta 0)
+total findings after: 215 finding
+NOTE: the 215 findings are the pre-existing baseline of the advisory gate (build-designer-pack.sh runs it ADVISORY, not --strict); rule 2a adds 0.

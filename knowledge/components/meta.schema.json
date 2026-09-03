@@ -85,6 +85,76 @@
         "ref": { "type": ["string", "null"], "pattern": "^(component|pattern|context|snippet|ruling):.+$" },
         "$note": { "type": "string" }
       }
+    },
+    "behaviourAddress": {
+      "description": "s234-D5 (Dave, #234) + s245-D1 (grammar (a), #245): `behaviour` promoted from optional prose notes to a TYPED OBJECT carrying the script/partial ADDRESS. The meta is the ONE HOME (s234-D4/D5: generation chain, never copy chain): gen_component_partials.py DERIVES a #behaviour-manifest block into the snippet beside #token-manifest, and _validate_receipt.py reads THIS object to check that a composed page loads what the meta declares. `script` GRAMMAR — three forms, nothing else resolves: null = the component carries NO script (a POSITIVE declaration, never 'unknown'); `knowledge/<path>.js` = a hand-authored source file, the component-types.json $behaviour form (e.g. knowledge/canon/dv-behaviour.js); `knowledge/snippets/<Slug>.reference.html#script` = the snippet's own inline executable <script> element(s) outside any AUTO-BEHAVIOUR markers. `partial` = the AUTO-BEHAVIOUR name(s) registered under component-types.json $behaviour that the snippet carries — one name, a list of names (s245-D2: 9 of the 14 dataviz members carry 2-3), else null. `events` = DOM event names as passed to addEventListener — s245-D4: KEPT, OPTIONAL, generated from the snippet, never authored (rC Q3 answered). `fallback` = what the component does with CSS on and JS off (rA resilience criterion, GOV.UK/USWDS); null = NOT DECLARED (an honest UNPROVEN), never 'none' — a passive component says so in words ('identical — the component carries no script'). `$note` keeps the pre-s234-D5 prose VERBATIM (by-addition migration, ADR-0017 archive-never-delete). `$unproven` names the fields whose value is null because neither the prose nor a probe settles them. Existence of the addressed file/script is NOT a schema question — the generator and the gate resolve it (gate the presence, not the shape).",
+      "type": "object",
+      "required": [
+        "script",
+        "partial",
+        "fallback"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {}
+      },
+      "properties": {
+        "script": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^knowledge/(?:[^#\\s]+\\.js|snippets/[^#\\s/]+\\.reference\\.html#script)$"
+        },
+        "partial": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*$"
+          },
+          "uniqueItems": true
+        },
+        "fallback": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "$note": {
+          "type": [
+            "object",
+            "array",
+            "string"
+          ]
+        },
+        "$unproven": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "script",
+              "partial",
+              "events",
+              "fallback"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
     }
   },
   "properties": {
@@ -195,7 +265,25 @@
       "description": "optional geometry/measurement spec — the sizes a generator would otherwise have to invent (height, padding, indicator/border widths, gaps, target size). Values are px numbers or strings naming a layout/spacing token. Added 2026-06-19 (fitness-test fix #3). Open shape; prefer token references over raw numbers where a token exists.",
       "type": "object"
     },
-    "behaviour": { "description": "optional behavioural notes", "type": ["object", "array", "string"] },
+    "behaviour": {
+      "description": "s234-D5: the behaviour ADDRESS (typed — #/definitions/behaviourAddress), OR, during migration only, the pre-s234-D5 prose notes (object|array|string). The discriminator is the `script` key: an object carrying `script` MUST validate as a behaviourAddress; anything else is LEGACY prose, permitted by this schema but BLOCKED by the receipt gate since s245-D3 (#245: FAIL:BEHAVIOUR-PROSE in _validate_receipt.py step 4b) — the s140-D1 posture, gate not schema (the s140-D1 staging posture: permit now, enforce by gate later). By-addition: the migration moves the prose under $note, so once the 20 prose values are migrated the legacy branch has no population and can be retired by a ruling.",
+      "if": {
+        "type": "object",
+        "required": [
+          "script"
+        ]
+      },
+      "then": {
+        "$ref": "#/definitions/behaviourAddress"
+      },
+      "else": {
+        "type": [
+          "object",
+          "array",
+          "string"
+        ]
+      }
+    },
     "usage": { "description": "optional usage notes", "type": ["object", "array", "string"] },
     "build": { "description": "optional build/implementation notes", "type": ["object", "array", "string"] },
     "graphicIndicator": { "description": "optional graphic/indicator notes", "type": ["object", "array", "string"] },
@@ -214,6 +302,7 @@
         "usedInContext": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
         "commonPattern": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
         "mustNotNeighbour": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
+        "groupsWith": {"type": "array", "items": {"$ref": "#/definitions/edge"}, "description": "RULED s245-D7 (#245 L3, Dave: 'I'll go with all the recommendations'; s234-D4, Dave: 'grouping lives ONCE in the KG and is derived everywhere else'). The POSITIVE composition edge, the counterpart of mustNotNeighbour: this component shares a GROUP with the referenced component — a group being members that answer ONE question the user came with (rB, #234: nobody groups by content type). Same edge form as every other entry ({ref: <node-id>|null, $note}); ref:null where the partner is not a node in the grammar (a group has no node-id today - s245-D7 Q7(a): edges live at MODULE level only) or where the group has ONE member (s245-D7 Q3(a): legal, a declared carve-out) — declared, never invented. Consumers DERIVE from it: the rails grouping dial (gen_bento_matrix_217.py --rails), SKILL rule 7b, _validate_composition.py. Never copy the fact into a second home."},
         "triggeredBy": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
         "consumes": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
         "reuses": { "type": "array", "items": { "$ref": "#/definitions/edge" } },
