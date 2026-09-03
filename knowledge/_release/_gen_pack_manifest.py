@@ -110,13 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.5"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.6"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.5"
+MEMENTO_CUT_VERSION = "v1.0.6"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -700,6 +700,9 @@ RATIFY_IDS = {
     # PROPOSED and `--release` refuses (build-designer-pack.sh: `ratified || die`), which is
     # the machine doing its job. ⬛ WHEN DAVE RATIFIES, add the row keyed to THAT ruling id —
     # a fresh RATIFYING word, not the authorisation that named the cut.
+    # ⛔ v1.0.6 (#245 L5) LIKEWISE HAS NO ROW: cut PROPOSED on Dave's word to bundle the [124]
+    # port with the cut and on s245-D7/D8/D9 (the content), none of which is a RATIFYING word for
+    # the pack. s237-D9: the HELD/PROPOSED fact is DERIVED from _rulings.json, never typed.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
