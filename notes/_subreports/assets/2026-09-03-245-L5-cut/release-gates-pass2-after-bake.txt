@@ -1,0 +1,22 @@
+[1] rc=0 :: python3 knowledge/_release/_gate_frozen_release.py --check
+     PASS — 3 arm(s) asked, no frozen surface moved.
+[2] rc=0 :: python3 knowledge/_release/_gate_frozen_release.py --selftest
+     selftest: 14 bites, 0 fail(s)
+[3] rc=0 :: python3 knowledge/_release/_gate_release_audit.py --check
+     PASS — the manifest at knowledge/_release/_pack_manifest.json is byte-identical to a fresh generation at f6a834064ba3 (1667 files, sha256 0519a1c9741d05ba)
+[4] rc=0 :: python3 knowledge/_release/_gate_release_audit.py --selftest
+     selftest: 10 bites, 0 fail(s)
+[5] rc=0 :: python3 knowledge/_release/_gate_release_audit.py --pack
+     PASS — apollo-spider/dist/Apollo-Spider-v1.0.6.zip matches the manifest at f6a834064ba3
+[6] rc=0 :: python3 knowledge/_release/_gate_ci_template.py --check
+     PASS — the template parses, ships what it calls, and hides nothing.
+[7] rc=0 :: python3 knowledge/_release/_gate_ci_template.py --selftest
+     selftest: 10 bites, 0 fail(s)
+selftest: 216 bites, 0 fail(s)
+green — refused, as it must
+green — refused, as it must
+green — manifest status is PROPOSED, so --release cannot run
+[8] rc=0
+gen_projections --check OK — 3 projection(s) and 3 PLACED host file(s) in sync with cold-start/DESIGN-CONTRACT.md.
+[9] rc=0
+  If he says re-cut: python3 knowledge/_release/_gen_pack_manifest.py --probe --commit <sha> && python3 knowledge/_release/_gen_pack_manifest.py --manifest --commit <sha>
