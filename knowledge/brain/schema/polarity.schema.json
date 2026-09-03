@@ -2,10 +2,10 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "apollo:knowledge/brain/schema/polarity.schema.json",
  "title": "Polarity node — the one home (s238-D1)",
- "description": "A polarity is a permanent pull between two (or more) true things that is managed, never solved (s238-D4). It is a hyper-relational NODE with N typed parties and typed out-links to rulings; pairwise edges are DERIVED for consumers, never authored (s238-D1). This schema carries NO status field (s238-D3 / s237-D9: settled-by-obligation / resolved / open is derived at build time with a clock) and NO free-text judgement field of any name (s238-D7 refusal 3): the node's only judgement is a typed link to a knowledge/_rulings.json id. `additionalProperties: false` at every level is what makes refusals 3 and 5 structural rather than a list of banned words. Enforced by knowledge/_validate_polarities.py, which READS this file (the consumer's grammar) and never re-types its rules. PINNED (#239 lane F, V's Q2): the gate carries this file's sha256 and the floors of the five refusals in code — a schema edit must move the pin in the same commit, and a schema that LOOSENS a floor is refused (the floor is applied regardless); a schema may only TIGHTEN.",
+ "description": "A polarity is a permanent pull between two (or more) true things that is managed, never solved (s238-D4). It is a hyper-relational NODE with N typed parties and typed out-links to rulings; pairwise edges are DERIVED for consumers, never authored (s238-D1). This schema carries NO status field (s238-D3 / s237-D9: settled-by-obligation / resolved / open is derived at build time with a clock) and NO free-text judgement field of any name (s238-D7 refusal 3): the node's only judgement is a typed link to a knowledge/_rulings.json id. `additionalProperties: false` at every level is what makes refusals 3 and 5 structural rather than a list of banned words. Enforced by knowledge/_validate_polarities.py, which READS this file (the consumer's grammar) and never re-types its rules. PINNED (#239 lane F, V's Q2): the gate carries this file's sha256 and the floors of the five refusals in code — a schema edit must move the pin in the same commit, and a schema that LOOSENS a floor is refused (the floor is applied regardless); a schema may only TIGHTEN. THE RECEIPT (s240-D3, #242 lane P): every node traces to something Dave ruled, and the anchor is ONE POINTER PER NODE — either an R1 register row (`sources`, the migration's form) or, for a node born after R1, the knowledge/_rulings.json id that created it (`$seed`). Both on one node is refused, neither is refused. A RETIRED node KEEPS its row and carries `retiredBy` (the ruling id that retired it); it stays in this file and drops out of everything generated under _generated/.",
  "type": "object",
  "additionalProperties": false,
- "required": ["id", "parties", "mediating_variable", "links", "sources"],
+ "required": ["id", "parties", "mediating_variable", "links"],
  "properties": {
   "id": {
    "type": "string",
@@ -47,10 +47,22 @@
     }
    }
   },
+  "$seed": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+   "description": "THE BIRTH RECEIPT OF A NODE BORN AFTER R1 (s240-D3): the knowledge/_rulings.json id of the ruling that created this polarity. It is the ALTERNATIVE to `sources`, never its companion — the receipt is one pointer per node, so a node carrying both is refused (S-SOURCE) and so is a node carrying neither. An id that is not in knowledge/_rulings.json is R1-DANGLING. A $seed node claims no frozen R1 row, so the migration bijection is unaffected; it also has no source row, so it can carry no verifiable quote (a resolvedBy needs one — see x-refusals).",
+   "maxWords": 1
+  },
+  "retiredBy": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+   "description": "THE RETIREMENT RECEIPT (s240-D3): the knowledge/_rulings.json id of the ruling that retired this polarity. A retired node KEEPS its row here (and keeps its R1 `sources` claim, so no frozen row is orphaned) and DROPS OUT of everything generated under _generated/ — status rows, edges and the defaults declaration. A retired id still present in a generated file is R4-RETIRED-GENERATED. An id that is not in knowledge/_rulings.json is R1-DANGLING. Retirement is additive to the birth receipt: it is not the node's second receipt, it is the ruling that ended it.",
+   "maxWords": 1
+  },
   "sources": {
    "type": "array",
    "minItems": 1,
-   "description": "Where the row came from: the frozen register row that keeps the words this node does not carry (the_pull, how_it_resolves — ADR-0017: the node points, the source keeps the words). The path must be on the gate's source allow-list (today: the frozen R1 register only — a second register is Dave's), the id must be a row in it, and every frozen row is claimed by exactly one node (the migration receipt, verified).",
+   "description": "THE BIRTH RECEIPT OF A NODE THAT CAME FROM R1: the frozen register row that keeps the words this node does not carry (the_pull, how_it_resolves — ADR-0017: the node points, the source keeps the words). The path must be on the gate's source allow-list (today: the frozen R1 register only — a second register is Dave's), the id must be a row in it, and every frozen row is claimed by exactly one node (the migration receipt, verified). Not required (s240-D3): a node born after R1 carries `$seed` instead — exactly one of the two.",
    "items": {
     "type": "object",
     "additionalProperties": false,
@@ -65,11 +77,11 @@
  "x-vocabulary": "`maxWords` and `minWords` are house keywords (a standard validator ignores them; knowledge/_validate_polarities.py enforces them — words are counted after every Unicode format/control character is treated as a separator, so an invisible join cannot hide a paragraph). Everything else is draft 2020-12 core: type · required · additionalProperties · properties · items · enum · pattern · minItems · minLength.",
  "x-refusals": {
   "description": "The five refusals of s238-D7, named as the validator prints them. Listed here so the schema and the gate cannot describe two different contracts; the enforcement lives in knowledge/_validate_polarities.py. Sub-forms added #239 lane F are marked.",
-  "R1": "a party or link ref that does not resolve against the live registers (sub-forms: R1-DANGLING — also a resolvedBy to a ruling whose status text says OPEN/PARKED/DEFERRED/FORKED (#239) · R1-SUPERSEDED — the `superseded_by` field, or supersession in the store's prose (#239) · R1-SELF-PARTY · R1-CIRCULAR · R1-WRONG-REGISTER · R1-UNDECLARED-STUB)",
+  "R1": "a party or link ref — or (#242, s240-D3) a `$seed` / `retiredBy` receipt id — that does not resolve against the live registers (sub-forms: R1-DANGLING — also a resolvedBy to a ruling whose status text says OPEN/PARKED/DEFERRED/FORKED (#239) · R1-SUPERSEDED — the `superseded_by` field, or supersession in the store's prose (#239) · R1-SELF-PARTY · R1-CIRCULAR · R1-WRONG-REGISTER · R1-UNDECLARED-STUB)",
   "R2": "an untyped link (sub-forms: R2-UNTYPED — the key absent, null, or a link that is not an object (#239) · R2-UNKNOWN-TYPE)",
   "R3": "a judgement text field of any name on a node (sub-forms: R3-JUDGEMENT-FIELD — also a note / mediating_variable / stub phrase that is not verbatim in the frozen register, and free text at the top level (#239) · R3-QUOTE-TOO-LONG · R3-NOTE-TOO-LONG · R3-QUOTE-NOT-VERBATIM — also an empty, under-floor or unverifiable quote (#239) · R3-QUOTE-MISSING — a resolvedBy with no quote (#239))",
-  "R4": "an authored edge file — pairwise edges exist only under _generated/ with a content-freshness check (sub-forms: R4-AUTHORED-GENERATED — also a clock that is not ISO-8601 UTC, in the future, before the R1 asset, or differing across the three files (#239) · R4-AUTHORED-EDGES · R4-STRAY-FILE — every entry at every level is listed: dotfiles, schema/, _generated/, __pycache__, *.tmp, symlinks, a non-directory at a directory path (#239))",
+  "R4": "an authored edge file — pairwise edges exist only under _generated/ with a content-freshness check (sub-forms: R4-RETIRED-GENERATED — (#242, s240-D3) a node carrying `retiredBy` whose id still appears in a file under _generated/: a retired node keeps its row and drops out of everything generated · R4-AUTHORED-GENERATED — also a clock that is not ISO-8601 UTC, in the future, before the R1 asset, or differing across the three files (#239) · R4-AUTHORED-EDGES · R4-STRAY-FILE — every entry at every level is listed: dotfiles, schema/, _generated/, __pycache__, *.tmp, symlinks, a non-directory at a directory path (#239))",
   "R5": "a typed status on a node (R5-TYPED-STATUS)",
-  "S": "the schema refusals the same grammar implies: S-PARSE (also a non-UTF-8 byte) · S-SHAPE (also the catch-all for any crash, named with its exception class and path; and an absent home in the source repo) · S-ID · S-MIN-PARTIES · S-ROLE · S-DUP-ID · S-DUP-PARTY · S-STUB-SHAPE · S-DUP-STUB · S-ONE-SIDED · S-SCHEMA (also a malformed schema) · S-FORMAT-CHAR (#239: a Unicode Cf/Cc/Co character in any string) · S-SOURCE (#239: a source path off the allow-list, an id that is not a row, a frozen row claimed twice or by no node) · S-RECEIPT (#239: the $migration receipt does not verify) · SCHEMA-PIN-MISMATCH (#239) · SCHEMA-LOOSENED (#239) · SCHEMA-KEYWORD-UNSUPPORTED · MISSING-GENERATED · STALE-GENERATED"
+  "S": "the schema refusals the same grammar implies: S-PARSE (also a non-UTF-8 byte) · S-SHAPE (also the catch-all for any crash, named with its exception class and path; and an absent home in the source repo) · S-ID · S-MIN-PARTIES · S-ROLE · S-DUP-ID · S-DUP-PARTY · S-STUB-SHAPE · S-DUP-STUB · S-ONE-SIDED · S-SCHEMA (also a malformed schema) · S-FORMAT-CHAR (#239: a Unicode Cf/Cc/Co character in any string) · S-SOURCE (#239: a source path off the allow-list, an id that is not a row, a frozen row claimed twice or by no node; #242 s240-D3: a node carrying BOTH `sources` and `$seed` — the receipt is one pointer per node — or NEITHER) · S-RECEIPT (#239: the $migration receipt does not verify) · SCHEMA-PIN-MISMATCH (#239) · SCHEMA-LOOSENED (#239) · SCHEMA-KEYWORD-UNSUPPORTED · MISSING-GENERATED · STALE-GENERATED"
  }
 }

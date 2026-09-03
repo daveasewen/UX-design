@@ -1,0 +1,42 @@
+#242 lane P — the s240-D3 mutation arms, driven BOTH WAYS at the CLI
+====================================================================================================
+
+PIN — SCHEMA_SHA256 is a pin, not a decoration (the brief's own arm)
+  OK GREEN CONTROL: the schema as committed, pin c2c165ac…
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 0  GREEN
+  OK BREAK ARM: schema touched, SCHEMA_SHA256 not moved
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['SCHEMA-PIN-MISMATCH']
+     ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 ddd063848e206361… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in knowledge/_validate_polarities.py 
+
+(a) a `$seed` / `retiredBy` naming an id ABSENT from knowledge/_rulings.json → R1-DANGLING
+  OK GREEN CONTROL: `$seed` = s240-D3, a real ruling id
+     $ python3 knowledge/_validate_polarities.py --write --brain <copy>   → rc 0  GREEN
+  OK BREAK ARM: `$seed` = s999-D9
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['R1-DANGLING']
+     ⛔ REFUSED (R1-DANGLING) — pl-31.$seed 's999-D9' is not a knowledge/_rulings.json id — the receipt names a ruling that does not exist (s240-D3); a receipt that points at nothing is a judgement wearing 
+  OK GREEN CONTROL: `retiredBy` = s240-D3, re-derived with --write
+     $ python3 knowledge/_validate_polarities.py --write --brain <copy>   → rc 0  GREEN
+  OK BREAK ARM: `retiredBy` = s999-D9
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['R1-DANGLING']
+     ⛔ REFUSED (R1-DANGLING) — pl-30.retiredBy 's999-D9' is not a knowledge/_rulings.json id — the receipt names a ruling that does not exist (s240-D3); a receipt that points at nothing is a judgement wear
+
+(b) TWO receipts on one node — the receipt is ONE POINTER PER NODE → S-SOURCE
+  OK GREEN CONTROL: all 30 nodes carry exactly one receipt (their R1 row)
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 0  GREEN
+  OK BREAK ARM: pl-01 carries its R1 `sources` AND a `$seed`
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['S-SOURCE']
+     ⛔ REFUSED (S-SOURCE) — pl-01: carries BOTH an R1 receipt (sources[0].id 'tn-01') and a $seed ruling receipt 's240-D3' — THE RECEIPT IS ONE POINTER PER NODE (s240-D3): a node came from the R1 register 
+  OK BREAK ARM: a node with NEITHER receipt
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['S-SOURCE']
+     ⛔ REFUSED (S-SOURCE) — pl-32: carries NO receipt — every polarity traces to something Dave ruled (s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, the knowledge/_rulings.jso
+
+(c) a RETIRED node still present under knowledge/brain/_generated/ → R4-RETIRED-GENERATED
+  OK BREAK ARM: pl-30 retired, _generated/ NOT re-derived
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 1  names ['R4-RETIRED-GENERATED', 'STALE-GENERATED']
+     ⛔ REFUSED (R4-RETIRED-GENERATED) — _generated/polarity-status.json still names 'pl-30', a node RETIRED by ruling 's240-D3' — a retired node keeps its row in polarities.json and DROPS OUT of everything
+  OK GREEN CONTROL: the same tree after --write (the node dropped out)
+     $ python3 knowledge/_validate_polarities.py --check --brain <copy>   → rc 0  GREEN
+     drop-out: polarities.json still carries pl-30 = True · _generated/ names pl-30 = False · rows in polarity-status.json = 29
+
+====================================================================================================
+Every arm above is also a --selftest arm (see selftest.txt, arms 104-114 and 99).

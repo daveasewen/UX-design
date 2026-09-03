@@ -28,7 +28,8 @@ THE FIVE REFUSALS (s238-D7), each LOUD, NAMED, rc != 0, NOTHING WRITTEN:
       R3-QUOTE-TOO-LONG · R3-NOTE-TOO-LONG · R3-QUOTE-NOT-VERBATIM — also (#239) an empty,
       under-floor or UNVERIFIABLE quote · R3-QUOTE-MISSING — (#239) a resolvedBy with no quote)
   R4  an authored edge file — pairwise edges exist only under _generated/ with a content-
-      freshness check (R4-AUTHORED-GENERATED — also (#239) a clock that is not ISO-8601 UTC, in
+      freshness check (R4-RETIRED-GENERATED — (#242, s240-D3) a node carrying `retiredBy` whose id
+      still appears in a file under _generated/ · R4-AUTHORED-GENERATED — also (#239) a clock that is not ISO-8601 UTC, in
       the future, before the R1 asset, or differing across the three files · R4-AUTHORED-EDGES ·
       R4-STRAY-FILE — (#239) every entry at every level is listed: dotfiles, schema/, _generated/,
       __pycache__, *.tmp, symlinks, a file where a directory should be)
@@ -65,6 +66,31 @@ promise "the refusal is NAMED above", and it is.
       a refusal (rc 1), not COULD-NOT-ASK; 77 stays for a shipped pack (no store, no home). The
       seam's POLARITY_BRAIN_DIR redirect is DECLARED and the tree's own home is gated too.
   argv the flags are a contract: --dry-run with --write, or --check with --write, is rc 2.
+
+#242 LANE P — THE RECEIPT WIDENS (s240-D3, Dave, 2026-09-02). The quote rule stands (every polarity
+traces to something Dave ruled); the ANCHOR may be an R1 register row OR a knowledge/_rulings.json
+id, and it is ONE POINTER PER NODE:
+  `sources`    the migration's form — a frozen R1 register row (allow-list + bijection, Q3 #239)
+  `$seed`      a node BORN AFTER R1 — the ruling id that created it (the R1 alternative, not its
+               companion: BOTH is S-SOURCE, NEITHER is S-SOURCE, an id not in the store is
+               R1-DANGLING). `sources` therefore leaves the schema's `required`; the floor moves
+               into code (check_receipt), so nothing is loosened.
+  `retiredBy`  a node RETIRED — the ruling id that retired it. The node KEEPS its row (so no frozen
+               row is orphaned) and DROPS OUT of everything generated: derive() never sees it, and
+               a retired id still present under _generated/ is R4-RETIRED-GENERATED.
+This is the legal form lane F (#239) found missing for a NEW or a RETIRED polarity — its RULING-
+SHAPED 4. Retirement is ADDITIVE to the birth receipt, not a second one (declared, #242-P).
+
+#242 LANE P2 — the two gaps the adversarial verifier (V2) drove, closed:
+  DROPS OUT = EVERY BYTE, not every row. `delta_vs_237T.cause` was a hardcoded literal naming
+              pl-22 and pl-02 whether or not they were live, so a retired node stayed in
+              polarity-status.json with the gate GREEN — and the selftest CERTIFIED it. The prose
+              is now DERIVED from the live rows (delta_cause()), the leak check scans the whole
+              file (id_in_raw_text()), and the arm is re-pointed: a retired id ANYWHERE under
+              _generated/ is R4-RETIRED-GENERATED. With nothing retired the bytes do not move.
+  THE WIDENING IS FLOORED. Re-adding `sources` to the schema's `required` reads as a TIGHTENING
+              (the superset floor passes) and silently makes every `$seed` node S-SCHEMA. The new
+              `excludes` floor kind pins it: a schema may tighten a REFUSAL, never a PERMISSION.
 
 DERIVED, WITH A CLOCK (s238-D3): every generated file carries `generated_at` and a
 `content_sha256` over its body. `--check` re-derives with the ON-DISK clock and compares BYTES
@@ -127,6 +153,22 @@ OPEN_DEFAULTS_REL = "notes/_subreports/assets/2026-09-02-237-T-tensions-schema/o
 OPEN_DEFAULTS = os.path.join(REPO, OPEN_DEFAULTS_REL)
 T_SORT_FIGURE = ("6 · 3 · 21", "notes/_subreports/assets/2026-09-02-237-T-tensions-schema/tension-sort.json")
 
+# s240-D3 (#242 lane P2, closing V2's finding 3): `delta_vs_237T.cause` WAS a hardcoded string that
+# named pl-22 and pl-02 whether or not they were live — so retiring them left their ids in
+# polarity-status.json while the gate stayed GREEN, and the ruling's own words ("drops out of
+# EVERYTHING generated from the KG") were not literally true. The prose is now DERIVED: each clause
+# is keyed by the node it is about and is emitted ONLY while that node is live, and the r1 id in it
+# is a LOOKUP against the derived row, not a re-typed literal (s234-D1: generation, never copy).
+# ⚠ WITH BOTH NODES LIVE THE JOINED TEXT IS BYTE-IDENTICAL TO THE OLD LITERAL — the three generated
+# files do not move, which is the probe that this is a de-hardcoding and not a content edit.
+DELTA_CLAUSES = (
+    ("pl-22", "{id} ({r1}) carries resolvedBy s217-D8, whose id sat in apollo_touch (237-T "
+              "finding 2: a genuine resolution whose id sits in the wrong field)."),
+    ("pl-02", "{id}'s s217-D5 is typed `touches` (UNPROVEN — see the migration receipt)"),
+)
+DELTA_FIGURE = ("the 6 · 9 · 15 figure quoted in s238-D6 — the naive variant that would have closed "
+                "four rows wrongly — is not reproduced, by design.")
+
 # Q3 (#239): THE SOURCE ALLOW-LIST — where a node's words may come from. Today the frozen R1
 # register only (ADR-0017); a second register is RULING-SHAPED (Dave's), not this file's.
 R1_TENSIONS_REL = "notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json"
@@ -172,16 +214,34 @@ SCHEMA_KEYWORDS = {"$schema", "$id", "title", "description", "type", "additional
 
 # Q2 (#239): THE PIN. sha256 of knowledge/brain/schema/polarity.schema.json — a schema edit must
 # move this constant in the same commit (V's Q2 (b)); SCHEMA_FLOORS below is (c).
-SCHEMA_SHA256 = "42f845036705db1baadd9ff3d6c9636a499f3de07d3574e6a2a5179721bdfc66"
+SCHEMA_SHA256 = "c2c165ac126d878d8cb9d8548ac1fba2d765724667bf410dfbcca611372243e4"
 # THE FLOORS: (pointer into the schema, keyword, kind, floor). kind: min = the schema's value must
 # be >= floor · max = <= floor · eq = == floor · keys = `properties` has EXACTLY these keys ·
-# superset = `required` carries at least these. A looser schema is SCHEMA-LOOSENED and the floor
-# is applied to the data regardless; a tighter one is honoured (the schema still drives the check).
+# superset = `required` carries at least these · excludes = `required` carries NONE of these (the
+# floor on a PERMISSION — #242 lane P2, V2's finding 4). A looser schema is SCHEMA-LOOSENED and the
+# floor is applied to the data regardless; a tighter one is honoured (the schema still drives the
+# check) — EXCEPT a "tightening" that would legislate away a permission the ruling granted, which
+# `excludes` pins: #239's whole point was that a schema edit cannot move a refusal, and s240-D3's
+# `$seed` needs the same protection in the other direction.
 SCHEMA_FLOORS = (
     ("", "type", "eq", "object"),
     ("", "additionalProperties", "eq", False),
-    ("", "required", "superset", ["id", "parties", "mediating_variable", "links", "sources"]),
-    ("", "properties", "keys", ["id", "parties", "mediating_variable", "links", "sources"]),
+    # s240-D3 (#242): `sources` leaves `required` because a node born after R1 carries `$seed`
+    # instead. The floor does NOT weaken: EXACTLY ONE of {sources, $seed} is enforced in code
+    # (check_receipt) — one pointer per node — so "neither" and "both" are still refusals.
+    ("", "required", "superset", ["id", "parties", "mediating_variable", "links"]),
+    # …and it CANNOT COME BACK by a schema edit (#242 lane P2, V2 finding 4): re-adding `sources`
+    # to `required` reads as a TIGHTENING, passes the superset floor, and silently makes every
+    # `$seed` node S-SCHEMA — the permission s240-D3 granted, legislated away in one word.
+    ("", "required", "excludes", ["sources"]),
+    ("", "properties", "keys", ["id", "parties", "mediating_variable", "links", "sources",
+                                "$seed", "retiredBy"]),
+    ("properties.$seed", "type", "eq", "string"),
+    ("properties.$seed", "pattern", "eq", ASCII_ID_PAT),
+    ("properties.$seed", "maxWords", "max", 1),
+    ("properties.retiredBy", "type", "eq", "string"),
+    ("properties.retiredBy", "pattern", "eq", ASCII_ID_PAT),
+    ("properties.retiredBy", "maxWords", "max", 1),
     ("properties.id", "type", "eq", "string"),
     ("properties.id", "pattern", "eq", POLARITY_ID_PAT),
     ("properties.parties", "type", "eq", "array"),
@@ -418,9 +478,22 @@ def schema_pin_and_floors(schema_text, schema):
             loose = not isinstance(have, int) or isinstance(have, bool) or have > floor
         elif kind == "superset":
             loose = not isinstance(have, list) or not set(floor) <= set(have)
+        elif kind == "excludes":
+            loose = isinstance(have, list) and bool(set(floor) & set(have))
         elif kind == "keys":
             loose = not isinstance(have, dict) or set(have) != set(floor)
         if loose:
+            if kind == "excludes":
+                back = sorted(set(floor) & set(have if isinstance(have, list) else []))
+                fails.append(("SCHEMA-LOOSENED",
+                              f"{where}: {back!r} is back in `required`, which the pinned floor EXCLUDES "
+                              f"(#242 lane P2, s240-D3) — it reads as a tightening, but it legislates away "
+                              f"the RECEIPT WIDENING Dave ruled: every node born after R1 carries `$seed` "
+                              f"and no `sources`, so this one word would make every one of them S-SCHEMA. "
+                              f"A schema may only tighten a REFUSAL, never a PERMISSION; the floor is "
+                              f"applied regardless"))
+                node[kw] = [k for k in have if k not in set(floor)]
+                continue
             fails.append(("SCHEMA-LOOSENED",
                           f"{where}: {have!r} loosens the pinned floor {floor!r} (s238-D7; #239 lane F, "
                           f"V's Q2) — a schema may only tighten; the floor is applied regardless"))
@@ -751,6 +824,63 @@ def check_migration_receipt(pol, register_raw):
     return fails
 
 
+def check_receipt(nid, node, rulings):
+    """s240-D3 (#242 lane P) — THE RECEIPT IS ONE POINTER PER NODE.
+
+    Every polarity traces to something Dave ruled; the ANCHOR widens from the R1 register row to
+    an R1 row OR a knowledge/_rulings.json id:
+      `sources`     the migration's form — a frozen R1 register row (verified elsewhere: allow-list,
+                    row exists, bijection)
+      `$seed`       a node BORN AFTER R1 — the ruling id that created it
+      `retiredBy`   a node RETIRED — the ruling id that retired it; the node keeps its row and
+                    drops out of everything generated (enforced in derive() + retired_leaks())
+    BOTH birth receipts on one node is refused (S-SOURCE); NEITHER is refused (S-SOURCE); a receipt
+    id that is not in the store is refused (R1-DANGLING). `retiredBy` is ADDITIVE — it is not a
+    second birth receipt, so a $seed node may also be retired.
+    """
+    fails = []
+    seed = node.get("$seed")
+    src = node.get("sources")
+    has_src = isinstance(src, list) and len(src) > 0
+    has_seed = isinstance(seed, str) and seed.strip() != ""
+    if has_src and has_seed:
+        first_id = src[0].get("id") if isinstance(src[0], dict) else "?"
+        fails.append(("S-SOURCE", f"{nid}: carries BOTH an R1 receipt (sources[0].id {str(first_id)[:40]!r}) "
+                                  f"and a $seed ruling receipt {seed[:40]!r} — THE RECEIPT IS ONE POINTER PER NODE "
+                                  f"(s240-D3): a node came from the R1 register or from a ruling, never from both"))
+    elif not has_src and not has_seed:
+        fails.append(("S-SOURCE", f"{nid}: carries NO receipt — every polarity traces to something Dave ruled "
+                                  f"(s240-D3): name the frozen R1 row in `sources` or, for a node born after R1, "
+                                  f"the knowledge/_rulings.json id that created it in `$seed`"))
+    for key in ("$seed", "retiredBy"):
+        v = node.get(key)
+        if v is None or not isinstance(v, str):
+            continue        # absent is legal; a non-string is named by the schema walk
+        if v not in rulings:
+            fails.append(("R1-DANGLING", f"{nid}.{key} {v[:40]!r} is not a knowledge/_rulings.json id — the "
+                                         f"receipt names a ruling that does not exist (s240-D3); a receipt that "
+                                         f"points at nothing is a judgement wearing an id"))
+    return fails
+
+
+def retired_map(home):
+    """{node id: the ruling id that retired it} — s240-D3's drop-out set, with its receipt."""
+    try:
+        nodes = home["obj"]["polarities.json"]["polarities"]
+    except (KeyError, TypeError):
+        return {}
+    if not isinstance(nodes, list):
+        return {}
+    return {n["id"]: n["retiredBy"] for n in nodes
+            if isinstance(n, dict) and isinstance(n.get("id"), str) and isinstance(n.get("retiredBy"), str)}
+
+
+def live_nodes(home_nodes):
+    """The nodes the derivation sees: a retired node keeps its row here and DROPS OUT of everything
+    generated from the KG (s240-D3)."""
+    return [n for n in home_nodes if not (isinstance(n, dict) and isinstance(n.get("retiredBy"), str))]
+
+
 def check_polarities(home, register):
     """R1 · R2 · R3 · R5 and the schema refusals over polarities.json. Returns (fails, resolved)
     where resolved[pl-id] = list of party dicts with a DERIVED `kind` (+ `grade`)."""
@@ -814,6 +944,10 @@ def check_polarities(home, register):
             if kw == "additionalProperties" and path.count(".") == 1:
                 continue    # already named above at node level
             fails.append((name_violation(kw, path, detail, inst), f"{path}: {detail}"))
+        # s240-D3 (#242) — THE RECEIPT: one pointer per node (an R1 row OR a ruling id), and every
+        # receipt id resolves in the store. Asked BEFORE the source pointers so "no receipt" is
+        # named as itself and not as an absent `sources` key.
+        fails += check_receipt(nid, node, rulings)
         # Q3 — the SOURCE pointers: on the allow-list, a real row, claimed once
         sources = node.get("sources") if isinstance(node.get("sources"), list) else []
         hays = []
@@ -953,8 +1087,9 @@ def check_polarities(home, register):
     if unclaimed and not any(n == "S-SHAPE" for n, _ in fails):
         fails.append(("S-SOURCE", f"frozen row(s) {unclaimed[:6]}{'…' if len(unclaimed) > 6 else ''} "
                                   f"({len(unclaimed)}) are claimed by no node — the migration is one row, "
-                                  f"one node ($migration is its receipt); retiring a polarity has no "
-                                  f"legal form yet (Dave's)"))
+                                  f"one node ($migration is its receipt). RETIRING a polarity does NOT delete "
+                                  f"its row: the node keeps its row and carries `retiredBy` naming the ruling "
+                                  f"that retired it (s240-D3), and drops out of everything generated"))
     return fails, resolved
 
 
@@ -1043,6 +1178,26 @@ def render_txt(body_lines, generated_at):
             f"---\n{body}")
 
 
+def delta_cause(rows_by_id):
+    """`delta_vs_237T.cause`, DERIVED from the LIVE rows (s240-D3, #242 lane P2).
+
+    A clause is emitted only while the node it is about still has a derived row, so a RETIRED node
+    takes its own id out of the prose as well as out of the rows — the drop-out is every BYTE of
+    every generated file, not just every row. With both nodes live the result is byte-identical to
+    the literal this replaced (selftest arm: DELTA-PROSE BYTE-IDENTITY)."""
+    parts = []
+    for nid, tmpl in DELTA_CLAUSES:
+        row = rows_by_id.get(nid)
+        if row is None:
+            continue                      # retired (or absent): its clause goes with it
+        parts.append(tmpl.format(id=nid, r1=row.get("r1_id")))
+    if parts and not parts[-1].endswith("."):
+        parts[-1] = parts[-1] + ", so " + DELTA_FIGURE
+    else:
+        parts.append(DELTA_FIGURE[0].upper() + DELTA_FIGURE[1:])
+    return " ".join(parts)
+
+
 def _first_source_id(node):
     s = node.get("sources")
     if isinstance(s, list) and s and isinstance(s[0], dict) and isinstance(s[0].get("id"), str):
@@ -1051,8 +1206,17 @@ def _first_source_id(node):
 
 
 def derive(home, resolved, defaults, defaults_sha, generated_at):
-    """Return {filename: text} for the three generated files, at the given clock."""
-    nodes = home["obj"]["polarities.json"]["polarities"]
+    """Return {filename: text} for the three generated files, at the given clock.
+
+    s240-D3 (#242): a RETIRED node (one carrying `retiredBy`) keeps its row in polarities.json and
+    DROPS OUT HERE — it produces no status row, no edge and no defaults line. The drop-out is the
+    ruling's own words ("drops out of everything generated from the KG"), so it happens at the one
+    place every generated file is derived, not per file."""
+    # NOTE: nothing about the retired set is WRITTEN into the derived bodies — with zero retired
+    # nodes the three files are byte-identical to #239's, so the derivation did not move. The one
+    # prose position that used to name node ids regardless (`delta_vs_237T.cause`) is now DERIVED
+    # from the live rows too — see delta_cause() and V2's finding 3.
+    nodes = live_nodes(home["obj"]["polarities.json"]["polarities"])
     rows, edges = [], []
     counts = {"settled-by-obligation": 0, "resolved": 0, "open": 0}
     kind_counts = {"principle": 0, "obligation": 0, "ruling": 0, "stub": 0}
@@ -1111,11 +1275,7 @@ def derive(home, resolved, defaults, defaults_sha, generated_at):
         "delta_vs_237T": {
             "237-T_sort": T_SORT_FIGURE[0], "237-T_source": T_SORT_FIGURE[1],
             "this_derivation": f"{counts['settled-by-obligation']} · {counts['resolved']} · {counts['open']}",
-            "cause": ("pl-22 (tn-22) carries resolvedBy s217-D8, whose id sat in apollo_touch (237-T "
-                      "finding 2: a genuine resolution whose id sits in the wrong field). pl-02's "
-                      "s217-D5 is typed `touches` (UNPROVEN — see the migration receipt), so the "
-                      "6 · 9 · 15 figure quoted in s238-D6 — the naive variant that would have closed "
-                      "four rows wrongly — is not reproduced, by design."),
+            "cause": delta_cause({r["id"]: r for r in rows}),
         },
         "inputs": {"open_defaults": {"path": OPEN_DEFAULTS_REL, "sha256": defaults_sha}},
         "rows": rows,
@@ -1231,8 +1391,33 @@ def read_generated(brain, name, floor_date=None):
     return gen_at, text
 
 
+def id_in_raw_text(nid, text):
+    """Does this node id appear ANYWHERE in a generated file's bytes? (s240-D3, #242 lane P2.)
+
+    ⚠ THIS IS THE LEAK CHECK V2 ASKED FOR, and it only became honest once `delta_vs_237T.cause`
+    stopped being a hardcoded literal (delta_cause()). Until then a raw scan refused a CORRECTLY
+    derived file, which is why lane P read rows only — a narrowing that let a retired pl-02 sit in
+    polarity-status.json with the gate green. Word-bounded so `pl-02` does not match `pl-020`."""
+    return re.search(r"(?<![A-Za-z0-9_-])" + re.escape(nid) + r"(?![A-Za-z0-9_-])", text) is not None
+
+
+def generated_node_ids(name, text):
+    """The node ids a generated file NAMES AS A ROW — read STRUCTURALLY. Kept beside
+    id_in_raw_text() so a refusal can say WHICH position leaked: a derived row is a derivation bug,
+    a raw-text-only hit is prose that was not derived from the live set."""
+    try:
+        if name == "polarity-status.json":
+            return {r.get("id") for r in json.loads(text).get("rows", []) if isinstance(r, dict)}
+        if name == "polarity-edges.json":
+            return {e.get("polarity") for e in json.loads(text).get("edges", []) if isinstance(e, dict)}
+    except (json.JSONDecodeError, AttributeError, TypeError):
+        return set()
+    return set(re.findall(r"^\s+(" + POLARITY_ID_PAT.strip("^$") + r") \(", text, re.M))
+
+
 def freshness(brain, home, resolved, defaults, defaults_sha, floor_date=None):
     fails, notes, clocks = [], [], {}
+    retired = retired_map(home)
     for name in GEN_FILES:
         try:
             gen_at, on_disk = read_generated(brain, name, floor_date)
@@ -1240,6 +1425,21 @@ def freshness(brain, home, resolved, defaults, defaults_sha, floor_date=None):
             fails.append((r.name, r.detail))
             continue
         clocks[name] = gen_at
+        # s240-D3 (#242): a retired node DROPS OUT of everything generated. The freshness compare
+        # below would say STALE; this says WHY by name, so the reader is not left to infer it.
+        # The scan is ANYWHERE in the file's bytes, not just its rows (#242 lane P2, V2 finding 3):
+        # "everything generated" is every BYTE, and every position in these three files is derived.
+        named_rows = generated_node_ids(name, on_disk)
+        for rid, by in sorted(retired.items()):
+            in_row = rid in named_rows
+            if in_row or id_in_raw_text(rid, on_disk):
+                where = ("as a derived ROW" if in_row
+                         else "in its text (not as a row — a leak a row-only check cannot see)")
+                fails.append(("R4-RETIRED-GENERATED",
+                              f"{GEN_DIR}/{name} still names {rid!r} {where}, a node RETIRED by ruling "
+                              f"{by!r} — a retired node keeps its row in polarities.json and DROPS OUT of "
+                              f"everything generated from the KG (s240-D3); run: python3 "
+                              f"knowledge/_validate_polarities.py --write"))
         fresh, *_ = derive(home, resolved, defaults, defaults_sha, gen_at)
         if fresh[name] != on_disk:
             fails.append(("STALE-GENERATED", f"{GEN_DIR}/{name} does not match a fresh derivation "
@@ -1357,8 +1557,11 @@ def gate(brain, write=False, overrides=None, quiet=False):
     for n in nodes:
         for l in n.get("links", []):
             by_type[l["type"]] = by_type.get(l["type"], 0) + 1
+    retired = retired_map(home)
+    n_seed = sum(1 for n in nodes if isinstance(n.get("$seed"), str))
     say(f"polarity gate (s238-D7): home {rel(brain)} · "
-        f"rows {len(nodes)} · parties {sum(kinds.values())} "
+        f"rows {len(nodes)} (live {len(nodes) - len(retired)} · retired {len(retired)}) · "
+        f"parties {sum(kinds.values())} "
         f"(principle {kinds['principle']} · obligation {kinds['obligation']} · ruling {kinds['ruling']} · "
         f"stub {kinds['stub']}) · stubs declared {len(home['obj']['stubs.json']['stubs'])} · "
         f"links {n_links} by type " + " ".join(f"{k}={v}" for k, v in sorted(by_type.items()))
@@ -1367,6 +1570,10 @@ def gate(brain, write=False, overrides=None, quiet=False):
     say(f"  quotes {n_quotes}: verbatim against their source rows in {R1_TENSIONS_REL} — {n_quotes} verified "
         f"(an unverifiable quote is refused, never declared — Q3 #239) · schema pinned {SCHEMA_SHA256[:12]}… "
         f"+ {len(SCHEMA_FLOORS)} floors · receipt $migration verified")
+    say(f"  receipts (s240-D3): ONE pointer per node — R1 register row {len(nodes) - n_seed} · "
+        f"$seed ruling id {n_seed} · retiredBy {len(retired)}"
+        + (f" ({', '.join(f'{k}→{v}' for k, v in sorted(retired.items()))}, dropped from every "
+           f"generated file)" if retired else ""))
     for k, v in STATUS_RULES.items():
         say(f"  RULE {k}: {v}")
     say(f"  status derived: settled-by-obligation {counts['settled-by-obligation']} · resolved "
@@ -1582,10 +1789,12 @@ def selftest(real_brain):
     red_ok = [r for r in red_arms if r[5]]
     green_arms = [r for r in results if r[2] == "green"]
     new_arms = [r for r in results if r[1].startswith("V") or "(#239" in r[1]]
+    p242_arms = [r for r in results if "#242" in r[1] or r[1].startswith("s240-D3")]
     print("-" * 100)
     print(f"arms {len(results)} · red arms {len(red_arms)} (went red by name {len(red_ok)}/{len(red_arms)}) · "
           f"green arms {len(green_arms)} · no-fire/77 arms {len(results) - len(red_arms) - len(green_arms)} · "
-          f"new #239 arms {len(new_arms)} · failures {fails}")
+          f"new #239 arms {len(new_arms)} · new #242 (s240-D3 receipt) arms {len(p242_arms)} · "
+          f"failures {fails}")
     if fails:
         print(f"✗ selftest FAILED — {fails} arm(s)")
         return 1
@@ -1948,8 +2157,10 @@ def _selftest_arms(real_brain, tmp_root, results):
         "S-ONE-SIDED")
     arm("S mediating_variable empty", "red",
         pol(lambda o: o["polarities"][0].__setitem__("mediating_variable", "")), "S-SCHEMA")
-    arm("S sources missing", "red",
-        pol(lambda o: o["polarities"][0].__delitem__("sources")), "S-SCHEMA")
+    # (#242, s240-D3): `sources` is no longer `required` in the schema — the floor moved into code.
+    # Deleting it leaves the node with NO receipt, which is S-SOURCE, not S-SCHEMA.
+    arm("S sources missing — no receipt at all (s240-D3 re-cut of the #239 S-SCHEMA arm)", "red",
+        pol(lambda o: o["polarities"][0].__delitem__("sources")), "S-SOURCE")
     arm("S polarities.json does not parse", "red",
         lambda d: open(os.path.join(d, "polarities.json"), "a").write("{"), "S-PARSE")
     arm("V252 S polarities.json carries one non-UTF-8 byte — S-PARSE, no traceback (#239 Q7)", "red",
@@ -2017,6 +2228,151 @@ def _selftest_arms(real_brain, tmp_root, results):
                                       "moved — the real 2-party rows are refused S-MIN-PARTIES: the schema still "
                                       "drives; only loosening is refused", "red", rc_t, "S-MIN-PARTIES" in out_t,
                     ok, "" if ok else out_t[-400:]))
+
+    # ---- s240-D3 (#242 lane P) — THE RECEIPT: an R1 ROW **OR** A RULING ID, ONE POINTER PER NODE -
+    # Every refusal below is driven BOTH WAYS: a GREEN CONTROL that must pass and a BREAK ARM that
+    # must go RED BY NAME. The green controls are the legal form lane F (#239) found missing.
+    _real_pol = json.loads(read_text(os.path.join(real_brain, "polarities.json")))["polarities"]
+    _seed_parties = [{k: v for k, v in p.items() if k != "note"} for p in _real_pol[0]["parties"]]
+    SEED_RULING = "s240-D3"          # the ruling this receipt enacts — a real id in the real store
+
+    def seed_node(**over):
+        """A polarity BORN AFTER R1: no frozen row to cite, so its receipt is the ruling id."""
+        n = {"id": "pl-31", "parties": copy.deepcopy(_seed_parties),
+             "mediating_variable": "target count", "links": [], "$seed": SEED_RULING}
+        n.update(over)
+        return n
+
+    arm("s240-D3 GREEN CONTROL: a NEW polarity born after R1 carries `$seed` = a real ruling id and "
+        "NO `sources` — the legal form #239-F RULING-SHAPED 4 was missing (#242 lane P)", "green",
+        pol(lambda o: o["polarities"].append(seed_node())), None, write=True)
+    arm("s240-D3 BREAK ARM: `$seed` names s999-D9, absent from knowledge/_rulings.json (#242)", "red",
+        pol(lambda o: o["polarities"].append(seed_node(**{"$seed": "s999-D9"}))), "R1-DANGLING")
+    arm("s240-D3 BREAK ARM: BOTH receipts on one node — its R1 `sources` AND a `$seed` (the receipt "
+        "is ONE POINTER PER NODE) (#242)", "red",
+        pol(lambda o: o["polarities"][0].__setitem__("$seed", SEED_RULING)), "S-SOURCE")
+    arm("s240-D3 BREAK ARM: NEITHER receipt — a node with no `sources` and no `$seed` (#242)", "red",
+        pol(lambda o: o["polarities"].append(
+            {k: v for k, v in seed_node(id="pl-32").items() if k != "$seed"})), "S-SOURCE")
+    arm("s240-D3 GREEN CONTROL: a node RETIRED by a real ruling id — it KEEPS its row and the "
+        "derivation is re-run without it (#242)", "green",
+        pol(lambda o: o["polarities"][-1].__setitem__("retiredBy", SEED_RULING)), None, write=True)
+    arm("s240-D3 BREAK ARM: a RETIRED node whose id still appears under _generated/ — "
+        "R4-RETIRED-GENERATED by name, not just STALE (#242)", "red",
+        pol(lambda o: o["polarities"][-1].__setitem__("retiredBy", SEED_RULING)),
+        ["R4-RETIRED-GENERATED", "STALE-GENERATED"])
+    arm("s240-D3 BREAK ARM: `retiredBy` names s999-D9, absent from knowledge/_rulings.json (#242)", "red",
+        pol(lambda o: o["polarities"][-1].__setitem__("retiredBy", "s999-D9")), "R1-DANGLING")
+    arm("s240-D3 BREAK ARM: `$seed` removed from the SCHEMA's properties — the key set is pinned, so "
+        "the receipt cannot be legislated away by a schema edit (#242 Q2)", "red",
+        schema(lambda s: s["properties"].__delitem__("$seed")),
+        ["SCHEMA-LOOSENED", "SCHEMA-PIN-MISMATCH"])
+
+    # ---- #242 lane P2 — V2's FINDING 3, CLOSED. This position used to be a GREEN CONTROL asserting
+    # that a retired id sitting in `delta_vs_237T.cause` was "not a leak" — the selftest CERTIFIED
+    # the leak. `delta_cause()` now derives that prose from the live rows and the check scans the
+    # whole file, so the arm is RE-POINTED: a retired id ANYWHERE under _generated/ is RED BY NAME.
+    # Driven BOTH WAYS in one arm: (1) retire pl-02, --write, and its id is gone from every BYTE of
+    # all three files; (2) plant it back in the PROSE ONLY, self-consistently, where the ROW check
+    # is blind — and the gate must still refuse R4-RETIRED-GENERATED by name.
+    LEAK_PROSE = ("pl-02's s217-D5 is typed `touches` — the hardcoded literal #242 lane P2 removed, "
+                  "replanted here so the arm names the position, not the accident.")
+    d_l = os.path.join(tmp_root, "prose-only-leak")
+    _copy_brain(real_brain, d_l)
+    _mutate_json(os.path.join(d_l, "polarities.json"),
+                 lambda o: next(n for n in o["polarities"] if n.get("id") == "pl-02")
+                 .__setitem__("retiredBy", SEED_RULING))
+    rc_lw, _out_lw = _run_gate_captured(d_l, write=True)
+    _status_p = os.path.join(d_l, GEN_DIR, "polarity-status.json")
+    gone_everywhere = [n for n in GEN_FILES
+                       if not id_in_raw_text("pl-02", read_text(os.path.join(d_l, GEN_DIR, n)))]
+    _obj = json.loads(read_text(_status_p))
+    _gen_at = _obj["generated_at"]
+    _body = {k: v for k, v in _obj.items() if k not in ("$header", "generated_at", "content_sha256")}
+    _body["delta_vs_237T"]["cause"] = LEAK_PROSE
+    _rewrite(_status_p, lambda _t: render_json(_body, _gen_at))
+    row_blind = "pl-02" not in generated_node_ids("polarity-status.json", read_text(_status_p))
+    rc_l, out_l = _run_gate_captured(d_l)
+    named_l = "R4-RETIRED-GENERATED" in set(re.findall(r"REFUSED \(([A-Za-z0-9-]+)\)", out_l))
+    ok = (rc_lw == 0 and len(gone_everywhere) == len(GEN_FILES) and row_blind
+          and rc_l == 1 and named_l and "Traceback (most recent" not in out_l)
+    results.append((len(results) + 1,
+                    "s240-D3 LEAK ARM (#242 lane P2, V2 finding 3): pl-02 retired → --write and its id "
+                    "is gone from every BYTE of all three generated files; replanted in the derivation's "
+                    "PROSE ONLY (self-consistent sha, invisible to the ROW check) → R4-RETIRED-GENERATED "
+                    "BY NAME. A retired id anywhere under _generated/ is a leak",
+                    "red", rc_l, named_l, ok,
+                    "" if ok else f"write_rc={rc_lw} gone_from={gone_everywhere} row_blind={row_blind} "
+                                  f"rc={rc_l} named={named_l} :: {out_l[-400:]}"))
+
+    # ---- #242 lane P2 — V2's FINDING 4, CLOSED: THE WIDENING IS FLOORED. Re-adding `sources` to the
+    # schema's `required` reads as a TIGHTENING (the superset floor passes) and silently makes every
+    # `$seed` node S-SCHEMA. The pin is moved HONESTLY to the mutant's sha — exactly what a real
+    # two-file schema edit does — so this is a floor check on the SCHEMA TEXT, not the pin.
+    d_x = os.path.join(tmp_root, "required-sources-back")
+    _copy_brain(real_brain, d_x)
+    _mutate_json(os.path.join(d_x, SCHEMA_REL), lambda s: s["required"].append("sources"))
+    _mutate_json(os.path.join(d_x, "polarities.json"), lambda o: o["polarities"].append(seed_node()))
+    kept_pin_x = SCHEMA_SHA256
+    try:
+        SCHEMA_SHA256 = sha256_text(read_text(os.path.join(d_x, SCHEMA_REL)))
+        rc_x, out_x = _run_gate_captured(d_x)
+    finally:
+        SCHEMA_SHA256 = kept_pin_x
+    names_x = set(re.findall(r"REFUSED \(([A-Za-z0-9-]+)\)", out_x))
+    ok = (rc_x == 1 and "SCHEMA-LOOSENED" in names_x and "SCHEMA-PIN-MISMATCH" not in names_x
+          and "S-SCHEMA" not in names_x and "Traceback (most recent" not in out_x)
+    results.append((len(results) + 1,
+                    "s240-D3 FLOOR ARM (#242 lane P2, V2 finding 4): `sources` put BACK into the schema's "
+                    "`required` with the pin moved honestly — SCHEMA-LOOSENED by name (a schema may tighten "
+                    "a REFUSAL, never a PERMISSION), and the floor is APPLIED REGARDLESS, so the legal "
+                    "`$seed` node beside it is NOT S-SCHEMA",
+                    "red", rc_x, "SCHEMA-LOOSENED" in names_x, ok,
+                    "" if ok else f"rc={rc_x} names={sorted(names_x)} :: {out_x[-400:]}"))
+
+    # THE DROP-OUT PROOF — the ruling's own words: a retired node "keeps its row and drops out of
+    # everything generated from the KG". Driven both ways in one arm: --check names the leak,
+    # --write regenerates, the row survives in polarities.json and appears in NO generated file.
+    d_r = os.path.join(tmp_root, "retired-dropout")
+    _copy_brain(real_brain, d_r)
+    _mutate_json(os.path.join(d_r, "polarities.json"),
+                 lambda o: o["polarities"][-1].__setitem__("retiredBy", SEED_RULING))
+    retired_id = json.loads(read_text(os.path.join(d_r, "polarities.json")))["polarities"][-1]["id"]
+    rc_before, out_before = _run_gate_captured(d_r)
+    rc_w, _out_w = _run_gate_captured(d_r, write=True)
+    rc_after, _out_after = _run_gate_captured(d_r)
+    still_in = [n for n in GEN_FILES
+                if retired_id in generated_node_ids(n, read_text(os.path.join(d_r, GEN_DIR, n)))]
+    kept_row = re.search(r"\b" + re.escape(retired_id) + r"\b",
+                         read_text(os.path.join(d_r, "polarities.json"))) is not None
+    ok = (rc_before == 1 and "R4-RETIRED-GENERATED" in out_before and rc_w == 0 and rc_after == 0
+          and not still_in and kept_row)
+    results.append((len(results) + 1,
+                    f"s240-D3 DROP-OUT PROOF (#242): {retired_id} retired → --check names "
+                    f"R4-RETIRED-GENERATED · --write regenerates · the node KEEPS its row in "
+                    f"polarities.json and appears in NONE of the three generated files",
+                    "green", rc_after, True, ok,
+                    "" if ok else f"before={rc_before} write={rc_w} after={rc_after} still_in={still_in} "
+                                  f"kept_row={kept_row} :: {out_before[-300:]}"))
+
+    # THE WRITER carries the new receipt too — #239-F's green-controls (d)/(e) and V's 100/326.
+    d_s = os.path.join(tmp_root, "add-polarity-seed")
+    _copy_brain(real_brain, d_s)
+    buf, old = io.StringIO(), sys.stdout
+    sys.stdout = buf
+    try:
+        rc_seed_dry = add_entry(d_s, "polarity", seed_node(), write=False)
+        rc_seed = add_entry(d_s, "polarity", seed_node(), write=True)
+    finally:
+        sys.stdout = old
+    rc_seed_chk, _ = _run_gate_captured(d_s)
+    n_after = len(json.loads(read_text(os.path.join(d_s, "polarities.json")))["polarities"])
+    ok = rc_seed_dry == 0 and rc_seed == 0 and rc_seed_chk == 0 and n_after == 31
+    results.append((len(results) + 1, "s240-D3 ADD-POLARITY (#242): a BRAND-NEW polarity with a `$seed` "
+                                      "receipt is accepted by the writer (dry-run then --write), 31 rows, "
+                                      "gate green after — #239-F green control (e), which had no legal form",
+                    "green", rc_seed_chk, True, ok,
+                    "" if ok else f"dry={rc_seed_dry} wr={rc_seed} chk={rc_seed_chk} n={n_after} :: {buf.getvalue()[-400:]}"))
 
     # ---- Q4 — THE CLOCK ------------------------------------------------------------------------
     def future_clock(d):

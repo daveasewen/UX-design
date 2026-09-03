@@ -1,0 +1,157 @@
+#239-F — EVERY ESCAPED ROW OF V's escaped-repro.txt, RE-DRIVEN STANDALONE AFTER THE FIX (same order)
+cp -r knowledge/brain $T ; <mutation> ; --write --brain $T ; --check --brain $T   (decisive door as V named it)
+verdict CAUGHT = decisive door rc!=0, no traceback, nothing written on refusal; the names printed follow.
+
+ #   grade     verdict   doors                                   names
+---  --------  --------  --------------------------------------  ----------------------------------------------
+ 22  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['S-FORMAT-CHAR', 'S-STUB-SHAPE']
+     stub whose phrase is one U+200B
+     ⛔ ⛔ REFUSED (S-FORMAT-CHAR) — stubs.json.stubs[15].phrase: U+200B (ZERO WIDTH SPACE) at offset 0 — an invisible character is refused in every string of the home (it hides w
+ 30  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R1-SUPERSEDED', 'R3-QUOTE-MISSING']
+     resolvedBy s200-D2 — superseded in s200-D3's PROSE
+     ⛔ ⛔ REFUSED (R1-SUPERSEDED) — pl-03.links[0]: ruling 's200-D2' is superseded in the store's PROSE (s200-D3 says 'supersedes s200-D2') — not live for a resolvedBy; point at 
+ 31  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R1-DANGLING', 'R3-QUOTE-MISSING']
+     resolvedBy gauge-band — status 'still open'
+     ⛔ ⛔ REFUSED (R1-DANGLING) — pl-03.links[0]: ruling 'gauge-band' does not resolve against the LIVE register (sub-form NOT-LIVE): its status text says 'FORKED' ('RULED #56; t
+ 32  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R1-DANGLING', 'R3-QUOTE-MISSING']
+     resolvedBy s182-D1 — status PARKED
+     ⛔ ⛔ REFUSED (R1-DANGLING) — pl-03.links[0]: ruling 's182-D1' does not resolve against the LIVE register (sub-form NOT-LIVE): its status text says 'parked' ('RULED - calls 2
+ 70  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-GENERATED']
+     generated_at 2099-01-01 on all three derived files
+     ⛔ ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/polarity-status.json: generated_at 2099-01-01T15:18:55Z is in the future (now 2026-09-03T09:59:56Z, skew allowed 3600s) — a
+ 71  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-GENERATED']
+     generated_at 'banana'
+     ⛔ ⛔ REFUSED (R4-AUTHORED-GENERATED) — _generated/polarity-status.json: generated_at 'banana' is not an ISO-8601 UTC clock (%Y-%m-%dT%H:%M:%SZ) — a derived file carries a cl
+ 82  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD']
+     $migration.verdicts = {pl-01: ...}
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — polarities.json $migration keys ['by', 'from', 'receipts', 'sha256', 'verdicts'] are not exactly ['from', 'sha256', 'by', 'receipts'] — a
+ 83  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD']
+     $description replaced by 500 words of verdict
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — polarities.json $description is 192 words, maximum 120 (FLOATED, #239) — a header, not an essay
+ 93  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM', 'S-ID', 'S-SOURCE']
+     sources[0].id 'tn-0１' (fullwidth 1)
+     ⛔ ⛔ REFUSED (S-ID) — pl-01.sources[0].id: 'tn-0１' does not match ^[A-Za-z0-9][A-Za-z0-9._-]*$
+110  RULED     CAUGHT    write-rc=1 check-rc=1  names=['S-MIN-PARTIES', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema minItems 2→1 + pl-01 with ONE party
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 54a5aed5caddfbb1… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+111  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R2-UNKNOWN-TYPE', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema enum + 'relatedTo' + a relatedTo link
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 47d3eb3dcbc0b373… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+112  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema parties.items.additionalProperties true + party.why
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 d13a163296c8c52f… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+210  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-EDGES']
+     .edges.json (authored edge list) at brain top
+     ⛔ ⛔ REFUSED (R4-AUTHORED-EDGES) — .edges.json carries an `edges` key outside a derived file — pairwise edges are DERIVED (s238-D1); delete it and run --write
+211  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-EDGES', 'R4-STRAY-FILE']
+     _generated/.authored-edges.json
+     ⛔ ⛔ REFUSED (R4-STRAY-FILE) — _generated/.authored-edges.json is not one of the derived files (polarity-status.json, polarity-edges.json, defaults-declaration.txt) — nothin
+212  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-EDGES', 'R4-STRAY-FILE']
+     _generated/.polarity-edges.json.tmp (half-written)
+     ⛔ ⛔ REFUSED (R4-STRAY-FILE) — _generated/.polarity-edges.json.tmp is not one of the derived files (polarity-status.json, polarity-edges.json, defaults-declaration.txt) — no
+213  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R4-AUTHORED-EDGES']
+     schema/edges.json (authored edge list)
+     ⛔ ⛔ REFUSED (R4-AUTHORED-EDGES) — schema/edges.json carries an `edges` key outside a derived file — pairwise edges are DERIVED (s238-D1); delete it and run --write
+214  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R4-STRAY-FILE']
+     schema/polarity.schema.v2.json (second schema)
+     ⛔ ⛔ REFUSED (R4-STRAY-FILE) — schema/polarity.schema.v2.json is not one of the homes (principles.json, polarities.json, stubs.json), schema/polarity.schema.json or _generat
+216  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R4-STRAY-FILE']
+     __pycache__/edges.json
+     ⛔ ⛔ REFUSED (R4-STRAY-FILE) — __pycache__/ is a directory that is not part of the home (delete it; __pycache__ and the like included)
+220  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE']
+     pl-01 sources → knowledge/_rulings.json#s238-D7, quote = 13 words OF THE RULING
+     ⛔ ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'knowledge/_rulings.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tens
+222  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE']
+     P arm 23's paraphrase + sources.path → nowhere
+     ⛔ ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'notes/no-such-file.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tens
+223  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM']
+     resolvedBy s116-D1 with quote ''
+     ⛔ ⛔ REFUSED (R3-QUOTE-NOT-VERBATIM) — pl-01.links[1].quote: 0 word(s), minimum 3
+224  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM']
+     resolvedBy s116-D1 with quote 'the'
+     ⛔ ⛔ REFUSED (R3-QUOTE-NOT-VERBATIM) — pl-01.links[1].quote: 1 word(s), minimum 3
+230  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD']
+     party.note = 14-word verdict
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.parties[0].note 'Jakob must always win in Apollo because Dave rules by eye an' is not a verbatim substring of the node's source row
+231  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'R3-NOTE-TOO-LONG', 'S-FORMAT-CHAR']
+     party.note = 44 visible words joined by U+200B
+     ⛔ ⛔ REFUSED (S-FORMAT-CHAR) — polarities.json.polarities[0].parties[0].note: U+200B (ZERO WIDTH SPACE) at offset 5 (+42 more) — an invisible character is refused in every s
+232  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD']
+     mediating_variable = 300-word verdict
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-01.mediating_variable: 140 words, maximum 25
+233  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'S-ID', 'S-SOURCE']
+     sources[0].id = 300-word verdict on pl-04
+     ⛔ ⛔ REFUSED (S-ID) — pl-04.sources[0].id: 'aesthetics wins over usability in Apollo, always. aesthetics' does not match ^[A-Za-z0-9][A-Za-z0-9._-]*$
+234  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD']
+     stub phrase = 15-word verdict declared as a party
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — stubs[15]: phrase 'dense financial tables must always beat whitespace in Apollo' is not VERBATIM in the frozen R1 register — a stub is a 
+241  UNRULED   ESCAPED   write-rc=0 check-rc=0  names=[]
+     principles.json statement rewritten ('Fitts is wrong …')
+     ⛔ 
+243  UNRULED   ESCAPED   write-rc=0 check-rc=0  names=[]
+     pl-16: resolvedBy s116-D1 AND challengedBy s116-D1
+     ⛔ 
+244  UNRULED   CAUGHT    write-rc=1 check-rc=1  names=['S-SOURCE']
+     all 30 rows deleted
+     ⛔ ⛔ REFUSED (S-SOURCE) — frozen row(s) ['tn-01', 'tn-02', 'tn-03', 'tn-04', 'tn-05', 'tn-06']… (30) are claimed by no node — the migration is one row, one node ($migration 
+245  UNRULED   ESCAPED   write-rc=0 check-rc=0  names=[]
+     all 21 links deleted
+     ⛔ 
+246  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['S-RECEIPT']
+     $migration.sha256 = 64 zeros
+     ⛔ ⛔ REFUSED (S-RECEIPT) — $migration.sha256 0000000000000000… does not match the frozen register's bytes (a3b120288e448d5b…) — the receipt is verified, not decorative
+247  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['S-RECEIPT']
+     $migration.from = a path that does not exist
+     ⛔ ⛔ REFUSED (S-RECEIPT) — $migration.from 'notes/does-not-exist.json' is not the frozen R1 register notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.js
+300  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE']
+     pl-01 sources → knowledge/brain/polarities.json#pl-01, quote = 8 words of its own mediating_variable
+     ⛔ ⛔ REFUSED (S-SOURCE) — pl-01.sources[0].path 'knowledge/brain/polarities.json' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-sur
+301  UNRULED   ESCAPED   write-rc=0 check-rc=0  names=[]
+     principles.json pr-wcag-1-4-3 grade L→C
+     ⛔ 
+310  RULED     CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema sources.items.additionalProperties true + judgement (V's TOTAL escape)
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 80cdf408135531a2… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+311  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-NOT-VERBATIM', 'S-SCHEMA', 'S-SOURCE', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema sources.minItems 0 + sources [] + paraphrased quote
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 6014d30d2b4bc118… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+312  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'R3-NOTE-TOO-LONG', 'SCHEMA-LOOSENED', 'SCHEMA-PIN-MISMATCH']
+     schema note.maxWords 500 + a 64-word note
+     ⛔ ⛔ REFUSED (SCHEMA-PIN-MISMATCH) — schema/polarity.schema.json sha256 4bf04716f9f0a96f… is not the pinned c2c165ac126d878d… — a schema edit must move SCHEMA_SHA256 in know
+400  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-QUOTE-MISSING']
+     resolvedBy s116-D1 with NO quote at all
+     ⛔ ⛔ REFUSED (R3-QUOTE-MISSING) — pl-01.links[1]: a resolvedBy carries no quote — it CLOSES the polarity and needs a verbatim receipt from the source row (Q3, #239); touches
+401  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R3-JUDGEMENT-FIELD', 'S-SOURCE']
+     pl-04 sources[0].id → 'tn-02'
+     ⛔ ⛔ REFUSED (R3-JUDGEMENT-FIELD) — pl-04.parties[0].note 'beauty raises perceived usability' is not a verbatim substring of the node's source row — a note that the register
+402  UNRULED   CAUGHT    write-rc=1 check-rc=1  names=['S-SOURCE']
+     pl-01's body duplicated under id pl-31
+     ⛔ ⛔ REFUSED (S-SOURCE) — frozen row 'tn-01' is claimed by ['pl-01', 'pl-31'] — one row, one node (the r1_id pointer drives the derived status; two claimants would copy one 
+403  PROMISED  CAUGHT    write-rc=1 check-rc=1  names=['R4-STRAY-FILE']
+     polarities.json replaced by a symlink to a file outside the home
+     ⛔ ⛔ REFUSED (R4-STRAY-FILE) — polarities.json is a SYMLINK — the home is a closed directory of regular files; a commit would carry the link, not the words
+
+324  PROMISED  CAUGHT    rc=1 homes-untouched=True  names=['R3-QUOTE-NOT-VERBATIM', 'S-SOURCE']
+     WRITER: --add-polarity of an entry whose quote has no reachable source
+     ⛔ ⛔ REFUSED (S-SOURCE) — pl-91.sources[0].path 'selftest' is not on the source allow-list ['notes/_subreports/assets/2026-09-02-236-R1-principles-survey/tensions.json'] — a
+328  PROMISED  CAUGHT    rc=1 homes-untouched=True  names=['S-FORMAT-CHAR', 'S-STUB-SHAPE']
+     WRITER: --add-stub of the U+200B phrase
+     ⛔ ⛔ REFUSED (S-FORMAT-CHAR) — stubs.json.stubs[15].phrase: U+200B (ZERO WIDTH SPACE) at offset 0 — an invisible character is refused in every string of the home (it hides w
+
+ D1  PROMISED  CAUGHT    A(cli)=1 B(build form)=1 C(seam)=1  names=['S-SHAPE']
+     BUILD DOOR: home absent (POLARITY_BRAIN_DIR=/nowhere) — the build loop routes rc 1 as GATE (was 77 = COULD-NOT-ASK, build continued)
+     ⛔ ⛔ REFUSED (S-SHAPE) — home directory /dev/shm/p242/no-such-home does not exist — this is the source repo (knowledge/_rulings.json is here), so an absent home is a mutatio
+ D2  PROMISED  CAUGHT    (a) no env rc=1 names=['R5-TYPED-STATUS'] · (b) POLARITY_BRAIN_DIR=<clean copy> rc=1 names=['R5-TYPED-STATUS']
+     SEAM DOOR: the redirect is DECLARED and the tree's own home is gated: — polarity gate: REDIRECTED to /dev/shm/p242/brain-real (DECLARED via POLARITY_BRAIN_DIR — a probe target; the tree's ow
+     ✗ ✗ polarity gate REFUSED (s238-D7) on the TREE'S OWN knowledge/brain/ (the redirect above passed, the commit's home does not) — the refusal is NAMED directly above. Nothin
+
+ A1  PROMISED  CAUGHT    rc=2 file-changed=False   --add-polarity FILE --dry-run --write
+     ⛔ ⛔ REFUSED (argv) — --add-* needs EXACTLY one of --dry-run or --write, stated (a dry run that writes is the #239 V-A1 defect). usage: --check | --write | --selftest | --ad
+ A2  PROMISED  CAUGHT    rc=2 _generated-changed=False   --check --write
+     ⛔ ⛔ REFUSED (argv) — --check + --write — exactly one of --check / --write / --selftest (a check that writes is the #239 V-A2 defect). usage: --check | --write | --selftest 
+
+TOTAL: 48 rows re-driven · CAUGHT 44 · still ESCAPED 4 (RULED 0 · PROMISED 0 · UNRULED 4)
+  RULED   : 16/16 caught
+  PROMISED: 26/26 caught
+  UNRULED : 2/6 caught · STILL ESCAPING: [241, 243, 245, 301]
+  verdict per row: {"22": "CAUGHT", "30": "CAUGHT", "31": "CAUGHT", "32": "CAUGHT", "70": "CAUGHT", "71": "CAUGHT", "82": "CAUGHT", "83": "CAUGHT", "93": "CAUGHT", "110": "CAUGHT", "111": "CAUGHT", "112": "CAUGHT", "210": "CAUGHT", "211": "CAUGHT", "212": "CAUGHT", "213": "CAUGHT", "214": "CAUGHT", "216": "CAUGHT", "220": "CAUGHT", "222": "CAUGHT", "223": "CAUGHT", "224": "CAUGHT", "230": "CAUGHT", "231": "CAUGHT", "232": "CAUGHT", "233": "CAUGHT", "234": "CAUGHT", "241": "ESCAPED", "243": "ESCAPED", "244": "CAUGHT", "245": "ESCAPED", "246": "CAUGHT", "247": "CAUGHT", "300": "CAUGHT", "301": "ESCAPED", "310": "CAUGHT", "311": "CAUGHT", "312": "CAUGHT", "400": "CAUGHT", "401": "CAUGHT", "402": "CAUGHT", "403": "CAUGHT", "324": "CAUGHT", "328": "CAUGHT", "D1": "CAUGHT", "D2": "CAUGHT", "A1": "CAUGHT", "A2": "CAUGHT"}

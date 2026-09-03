@@ -1,0 +1,31 @@
+#242 V2 — 22 SELF-CONSTRUCTED ATTACK ARMS against the gate as built (driver: _v2_attack.py)
+Every arm copies knowledge/brain/ to a scratch home and drives `--check` (or `--write`) with --brain.
+Columns: arm | expect | rc | refusal names printed | verdict
+====================================================================================================
+A1-both-on-new-node                 | red   | 1 | names=S-SOURCE,R3-JUDGEMENT-FIELD          | OK
+A2-both-sources-empty-array         | red   | 1 | names=S-SCHEMA                             | OK
+A3-seed-is-a-list-with-sources      | red   | 1 | names=S-SCHEMA                             | OK
+A4-seed-empty-string                | red   | 1 | names=S-SCHEMA,S-SOURCE,R1-DANGLING        | OK
+A5-seed-wrong-case  ("S240-D3")     | red   | 1 | names=R1-DANGLING                          | OK
+A6-seed-s240-D9-absent              | red   | 1 | names=R1-DANGLING                          | OK
+A7-seed-names-a-principle           | red   | 1 | names=R1-DANGLING                          | OK
+A8-retired-no-birth-receipt         | red   | 1 | names=S-SOURCE                             | OK
+A9-all-three-keys                   | red   | 1 | names=S-SOURCE                             | OK
+A10-retire-all-30-then-write        | green | 0 | -                                          | OK
+A11-retired-id-in-prose-of-generated| red   | 1 | names=R4-AUTHORED-GENERATED                | OK
+A12-schema-add-property             | red   | 1 | names=SCHEMA-PIN-MISMATCH,SCHEMA-LOOSENED  | OK
+A13-schema-delete-retiredBy         | red   | 1 | names=SCHEMA-PIN-MISMATCH,SCHEMA-LOOSENED  | OK
+A14-schema-loosen-seed-maxWords     | red   | 1 | names=SCHEMA-PIN-MISMATCH,SCHEMA-LOOSENED  | OK
+A15-schema-one-byte-title           | red   | 1 | names=SCHEMA-PIN-MISMATCH                  | OK
+A16-green-seed-node-write           | green | 0 | -                                          | OK
+A17-green-seed-node-also-retired    | green | 0 | -                                          | OK
+A18-seed-names-SUPERSEDED-ruling    | green | 0 | -                                          | OK  (s129-D1)
+A19-seed-names-NOT-RULED-id         | green | 0 | -                                          | OK  (ds-021)
+A20-retiredBy-superseded            | green | 0 | -                                          | OK
+A21-retired-node-bogus-quote        | red   | 1 | names=R3-QUOTE-NOT-VERBATIM                | OK
+A22-stray-file-in-generated         | red   | 1 | names=R4-STRAY-FILE                        | OK
+====================================================================================================
+16 red-expected · 16 caught BY NAME · 0 escaped · 0 crashes (no traceback in any arm)
+ 6 green-expected · 6 green
+NOTE A12/A13 also echo S-SOURCE / R1-DANGLING / R4-RETIRED-GENERATED inside the SCHEMA-LOOSENED
+     detail line, which quotes the schema's own x-refusals prose. Not extra refusals.

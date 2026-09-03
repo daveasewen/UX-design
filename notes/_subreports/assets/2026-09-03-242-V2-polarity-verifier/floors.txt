@@ -1,0 +1,22 @@
+#242 V2 — THE FLOOR TEST: is `$seed` / `retiredBy` protected by the FLOORS, or only by the PIN?
+Method (_v2_floor.py): import knowledge/_validate_polarities.py as a module, mutate the schema in a
+scratch home, then MOVE SCHEMA_SHA256 to the mutated file's sha — i.e. exactly what an honest
+two-file schema edit does. If the arm still goes red, the FLOOR bit, not the pin.
+====================================================================================================
+F1-seed-maxWords-1to5   rc=1 SCHEMA-LOOSENED  "$seed.maxWords: 5 loosens the pinned floor 1"
+F2-seed-deleted         rc=1 SCHEMA-LOOSENED  properties key set + $seed.type/pattern/maxWords None
+F3-retiredBy-deleted    rc=1 SCHEMA-LOOSENED  properties key set + retiredBy.type/pattern/maxWords
+F4-seed-pattern-open    rc=1 SCHEMA-LOOSENED  "'.*' loosens the pinned floor '^[A-Za-z0-9]...'"
+F5-seed-type-any        rc=1 SCHEMA-LOOSENED  "'object' loosens the pinned floor 'string'"
+F6-sources-re-required  rc=0 GREEN            <-- a TIGHTENING; the `required` floor is a SUPERSET
+F7-addProps-true        rc=1 SCHEMA-LOOSENED  "True loosens the pinned floor False"
+====================================================================================================
+6 of 7 red by name WITH THE PIN HONESTLY MOVED. The floors are real, independent of the pin.
+
+F6 CONSEQUENCE PROBE (_v2_floor_tightening.py): same tightening, PLUS one legal `$seed` node
+(pl-40, $seed s240-D3, no `sources`):
+   rc=1  names=['S-SCHEMA']
+   ⛔ REFUSED (S-SCHEMA) — pl-40.sources: required key 'sources' is missing
+=> The RECEIPT'S WIDENING IS NOT FLOORED. Re-adding `sources` to the schema's `required` passes
+   SCHEMA-LOOSENED (it is a tightening) and silently makes every `$seed` node illegal. No floor and
+   no arm of the 136 catches it. See finding 4.

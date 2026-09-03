@@ -1,0 +1,28 @@
+# #242 lane F brief — DECOMPOSE THE BOOT and design its OFFLOAD (JIT · progressive disclosure · componentisation · mechanisation)
+
+**Model: Opus. Conductor: Fable (#242). Survey + design lane — NO rulings, NO memory-store edits. Dated period record (ADR-0017).**
+
+## DAVE'S WORDS (this morning, verbatim — the brief serves these, not a paraphrase)
+
+> "I'm still very concerned about the 70K, there must be a way to offload this from the boot, maybe JIT, progressive disclosure, componentisation and mechanizing as much as possible."
+
+Context he has: the ceiling is **70,000 real, shrink-only** (`s241-D1`); #241 measured **69,092**; this morning's first turn measured **70,710 real** (`knowledge/_checkin.py`, `message.usage`) — **710 OVER the ceiling on its first morning**. `ds-025` item 1 stands: the TOTAL is measured, the DECOMPOSITION of boot is dark.
+
+## THE QUESTION (answer it in this order)
+
+1. **What is IN the 70,710?** Inventory every input that reaches the first turn and measure what you CAN measure, in **cl100k TAPE**, one line per component, unit on every line. Candidates on disk (measure, don't assume): `mnt/.auto-memory/MEMORY.md` (the index — the whole thing is in the boot; individual memory files are NOT unless recalled); the `<available_skills>` roster — each skill's `name` + `description` frontmatter is in the boot, so measure `/sessions/.../mnt/.claude/skills/*/SKILL.md` frontmatter descriptions (and the plugin skills under the rpm path if reachable); MCP server instruction blocks (claude-in-chrome, computer-use — quoted in the conductor's system prompt; find their source if on disk, else declare); `CLAUDE.md` / project instructions; the deferred-tool NAME list. What you cannot see on disk (Anthropic's system prompt text, the loaded tool schemas — Artifact alone is thousands) is the **HARNESS REMAINDER: declare it as `70,710 real − Σ(ours)`, label it ESTIMATED-BY-SUBTRACTION, and NEVER present tape and real as summable** [[measure-dont-convert-units]]. Existing instruments to reuse, not rebuild: `knowledge/_boot_remeasure.py` (tape, disk half), `knowledge/_gm_usage.py --sizes` (read its docstring first), `knowledge/_gauge_tokens.py` (the authority), `notes/_GAUGE-LOG.md` + `notes/_BOOT-DISK-LOG.jsonl` (history — the −7,046 at #241 came from Figma removal + computer-use off + MEMORY.md 21,064→12,454 B; use that as a real-token calibration point for what a byte of MEMORY.md costs at boot, stated as a ratio REPORTED never APPLIED).
+2. **Which of OURS can move out of boot without losing what it does?** For each: the mechanism (JIT via `_memento_search.py`, a hook, a stub index, a skill collapse), the predicted tape saving, the RISK named (what recall degrades — e.g. a `[[hook]]` in `MEMORY.md` is what makes a session NOTICE unprompted; a retrieval index only answers when asked — MEMORY-ARCHIVE #49 already drew that line: look-up-BY-NAME moves, notice-UNPROMPTED stays), and who owns the decision (Dave, always, for anything that touches the memory store).
+3. **A design, not a ruling**: progressive-disclosure shape for `MEMORY.md` — e.g. a ≤N-line stub carrying only the ⛔/★★★ notice-unprompted hooks plus ONE retrieval line, with the rest reachable by `_memento_search.py`; and componentisation of the skills roster (which skill descriptions are boot-worthy vs. loadable on demand — `dave-voice` is EVERY-REPLY so stays; `docx`/`pptx`/`xlsx`/`pdf`/`schedule`/`setup-cowork`/`import-memory`/`explain-usage` are plugin-roster candidates Dave can disable — price each). Mechanise: what can a script enforce (a MEMORY.md byte/line cap as a gate check, like `s241-D2`'s S1 banner cap)? Name the consumer of any instrument you propose [[instrument-without-a-consumer]].
+4. **The experiment**: boot is only measurable on the NEXT session's first turn. Write the A/B: what changes at #243's opener, what `_checkin.py` line is read, what delta counts as the item's real price. One variable per session.
+5. **The 710-over reading**: is it inside turn-to-turn noise (n=7 band ±1,219) or a real rise? Say what the derived band (`derived_boot_band()` in `_gauge_tokens.py`) reports for 70,710 and what the gate WILL do at wrap when `notes/_GAUGE-LOG.md` carries it. Do not fix it; report it.
+
+## FENCE
+
+- ⛔ NO edits to `mnt/.auto-memory/` (read-only from bash anyway — and no agent edits the memory store: `notes/_dream/_MEMORY-GRADES.json`'s consequence rule). ⛔ NO edits to skills, plugins, `MEMORY.md`, the store, GM/LS/CARRIES, prior reports. ⛔ NO rulings. ⛔ NO commit/push. ⛔ NO `_build_all.py`.
+- You MAY add a new script under `knowledge/` if the decomposition needs one to be repeatable (e.g. `_boot_decompose.py`) — refuses loudly without tiktoken, unit on every line, one consumer named in its docstring, `--selftest` with a break arm. Staged, listed, uncommitted.
+- ⛔ A survey figure must name WHICH command/mode it measured (lane D #241 counted the wrap-gate dump as the check-in — headline was 6× inflated and had to be corrected in Dave's chat). Every number carries its command.
+- Sandbox call kill ~178 s; `pip install tiktoken --break-system-packages` first.
+
+## REPORT — file it, chat is a stub
+
+`notes/_subreports/2026-09-03-242-lane-F-boot-offload.md`, `_TEMPLATE.md` shape, COUNTS line (components measured / estimated / files / tests / findings / ruling-shaped / UNPROVEN). Lead with ONE table: component · tape · movable? · mechanism · risk · owner. Then the design (≤1 page), the experiment (≤10 lines), the ruling-shaped list for Dave in PLAIN PROSE — he is dyslexic; decisions as numbered plain sentences, no id codes as the decision surface. Final chat message = path + COUNTS + the one-line headline (with its command).

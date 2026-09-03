@@ -1,0 +1,21 @@
+#242 V2 — THE FALSE-RED CONTROLS driven LITERALLY and in their s240-D3 LEGAL FORM, and the
+DROP-OUT read by RAW TEXT over EVERY file under _generated/ (_v2_controls.py)
+====================================================================================================
+C100 literal (a NEW node citing a fictional R1 path)          rc=1 ['S-SOURCE']       RED, correctly
+C100 s240-D3 legal form (the same node with `$seed`)          write 0 / check 0       GREEN
+C225 literal (sources.path = /etc/hostname)                   rc=1 ['S-ID','S-SOURCE'] RED, correctly
+C248 literal (sources.path = 'x')                             rc=1 ['S-SOURCE']       RED, correctly
+C321 literal (all 30 rows DELETED)                            rc=1 ['S-SOURCE']       RED, correctly
+C321 s240-D3 legal (all 30 RETIRED, then --write)             write 0 / check 0       GREEN
+----------------------------------------------------------------------------------------------------
+THE DROP-OUT, READ BY RAW TEXT over the C321 legal home (all 30 nodes retired, freshly derived,
+gate GREEN):
+  _generated/ contents: ['defaults-declaration.txt','polarity-edges.json','polarity-status.json']
+  RAW-TEXT scan defaults-declaration.txt     retired ids present: NONE
+  RAW-TEXT scan polarity-edges.json          retired ids present: NONE
+  RAW-TEXT scan polarity-status.json         retired ids present: ['pl-02', 'pl-22']   <-- LEAK
+  polarities.json rows kept: 30
+SOURCE OF THE LEAK: knowledge/_validate_polarities.py:1208-1212 — `delta_vs_237T.cause` is a
+HARDCODED string literal inside derive() that names pl-22 and pl-02 by id. It is emitted whether
+those nodes are live or retired, and generated_node_ids() (:1328) deliberately does not read it.
+=> A retired node drops out of every derived ROW. It does NOT drop out of the FILE. See finding 3.

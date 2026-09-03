@@ -564,6 +564,17 @@ MEASURERS = {
         "does not make a new one. ⛔ Its figures are NEVER summed with, scaled to, or compared "
         "against a `real` measurement [[measure-dont-convert-units]]; the consumer is the "
         "boot-band re-base sitting, which is DAVE'S."),
+    "_boot_decompose.py": ("estimate-only",
+        "BUILT #242 lane F (the boot DECOMPOSITION `_boot_remeasure.py`'s two hard-coded paths "
+        "could not give), REGISTERED AT THE WRAP THAT SHIPPED IT — ds-021 (C) caught it "
+        "unregistered on its first gate run, which is the birth-catch the bite exists for. WHY "
+        "'estimate-only': every component figure it prints is a cl100k TAPE count over the "
+        "DISK-RESIDENT boot inputs; a REAL boot figure comes only from `message.usage`, which "
+        "this file never sees — it takes the real total as `--real N` from the caller and prints "
+        "the harness remainder as `<real> − Σ(ours, tape)` labelled ESTIMATED-BY-SUBTRACTION, "
+        "because that subtraction mixes units BY CONSTRUCTION. ⛔ Its tape figures are never "
+        "summed with, scaled to, or compared against a `real` measurement "
+        "[[measure-dont-convert-units]]."),
 }
 
 

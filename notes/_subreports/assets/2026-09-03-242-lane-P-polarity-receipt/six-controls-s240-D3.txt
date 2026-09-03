@@ -1,0 +1,41 @@
+#242 lane P — lane F's seven green controls, LITERAL vs their s240-D3 LEGAL FORM
+====================================================================================================
+[120] links-empty-array — GREEN-OK at #238 and #239; unchanged by s240-D3
+  OK 120 literal (--write)                                      rc=0  GREEN
+
+[100] row31-no-stub-fictional-source — FALSE-RED at #239 (S-SOURCE: the node named its own oracle)
+  OK 100 literal: a fictional R1 path (still REFUSED, correctly) rc=1  RED S-SOURCE
+  OK 100 s240-D3: the same new node with `$seed` = a ruling id  rc=0  GREEN
+
+[225] sources-path-absolute-outside-repo — FALSE-RED at #239 (S-ID + S-SOURCE)
+  OK 225 literal: a second, foreign receipt (still REFUSED, correctly) rc=1  RED S-ID,S-SOURCE
+  OK 225 s240-D3: an R1 row AND a `$seed` — one pointer per node rc=1  RED S-SOURCE
+  OK 225 s240-D3 LEGAL: the node names ONE legal receipt (the ruling id) rc=0  GREEN
+
+[235] orphan-stub-declared-never-used — FALSE-RED at #239 (phrase not verbatim in R1)
+  OK 235 literal: an invented phrase (still REFUSED, correctly) rc=1  RED R3-JUDGEMENT-FIELD
+  OK 235 #239-F (a): orphan stub, phrase VERBATIM 'tn-01 pr-jakobs-law (work like' rc=0  GREEN
+
+[248] node-all-parties-are-stubs — FALSE-RED at #239 (S-SOURCE on the fake path 'x')
+  OK 248 literal: source path 'x' (still REFUSED, correctly)    rc=1  RED S-SOURCE
+  OK 248 s240-D3: the same all-stub node with `$seed`           rc=0  GREEN
+
+[321] writer-append-into-empty-array — FALSE-RED at #239 (#239-F (d): 29 frozen rows unclaimed;
+      lane F: 'RULING-SHAPED: retiring rows needs a legal form'. s240-D3 IS that legal form:
+      a retired node KEEPS its row and carries `retiredBy`; deletion is still refused.
+  OK 321 literal: 30 rows DELETED, then the writer      rc=1  RED S-SOURCE
+  OK 321 s240-D3 step 1: all 30 RETIRED, --write                rc=0  GREEN
+  OK 321 s240-D3 step 2: writer appends the `$seed` node  rc=0  GREEN
+  OK 321 s240-D3 drop-out: rows kept in polarities.json = 31 (30 retired + 1 new) · retired ids leaking into _generated/ = []
+
+[326] writer-on-2-space-indented-file — FALSE-RED at #239 (S-SOURCE on the entry's fake receipt;
+      the FORMAT tolerance V found was never the thing refused)
+  OK 326 literal: entry cites 'selftest'               rc=1  RED S-SOURCE
+  OK 326 s240-D3: the same entry with `$seed`, 2-space   rc=0  GREEN · rows 31
+
+====================================================================================================
+SUMMARY — all seven controls have a GREEN form under s240-D3:
+  120 green literally (unchanged) · 235 green in #239-F's form (a), unchanged by s240-D3
+  100 · 225 · 248 · 326 green once the node's receipt is the RULING ID instead of an oracle
+      the node invented — the Q3 refusal that made them FALSE-RED is CORRECT and stays
+  321 green once the 30 rows are RETIRED rather than DELETED — the legal form s240-D3 adds
