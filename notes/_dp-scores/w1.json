@@ -1,0 +1,62 @@
+{
+  "$wave": "W1 density · #247 · 2026-09-05 · lane R",
+  "$scored_on": "outputs/w1-density/arm-B-sighted/dashboard.html (sha256 bfa25da3c5b1…) — the sighted arm; arm A deviations noted per row. Line numbers are that file's unless a path is given.",
+  "$instruments": "A richness (0–3 ×4, per arm) · B seeds (pass/fail) · C 29 rows (met|missed|n/a + one fact). Never summed.",
+  "$baseline": {"richness_B_sighted": "2/2/0/2", "richness_A_blind": "2/2/0/2", "first_chart_group_y_1440_light_sighted": 837.8, "first_chart_svg_y_1440_light_sighted": 897.8, "instrument": "outputs/w1-density/_render_arm.py re-run on outputs/baseline-246/arm-B-sighted/dashboard.html (copy at outputs/w1-density-baseline-reprobe/arm-B/probe-reprobe.json)"},
+  "richness": {
+    "arm-A-blind": {"rich": 1, "full": 1, "persistent": 0, "interactive": 2,
+      "facts": {"rich": "probe-render.json 1440-light: cols=1 rows=6 — the wall collapsed to one column (Tabs.reference.html L80 --demo-width 640px + L120 .panel max-width:52ch carried blind); tabFont 'Times New Roman'; toolbar stacked (ftbBasis auto, ftbW 1360)",
+                "full": "first chart svg y=1634.4 at 1440; one KPI tile above the 900px fold (aboveFold.kpiTiles=1)",
+                "persistent": "drive-render.json persist_after_reload: selectedTab Overview, count 24, ddval All currencies — nothing survives reload; tab round-trip keeps state only because the DOM is never torn down",
+                "interactive": "drive-render.json: nav 4/4 switch tabs, sort asc/desc, USD filter 24→7 rows, legend toggle opacity 0.12, table toggle 12 rows, tooltip visible; period seg moves indicator only (dataChanged false); kpi-cta 1 with no handler; FX bar chart controls 0 legend 0 animation none"}},
+    "arm-B-sighted": {"rich": 2, "full": 2, "persistent": 0, "interactive": 2,
+      "facts": {"rich": "render-1440-light.png: one animated multi-series chart-line (legend, CSV, table), six sparklines, one static column chart in a hidden tab — the same set as the baseline; density changed the packing, not the set",
+                "full": "probe-render.json 1440-light: aboveFold.kpiTiles=6, chartSvgTop 739, chartSvgBottomVisible true, contextTop 679 — baseline B: 4 tiles, chart svg 898, bottom NOT visible. Score held at 2 because the content set is unchanged; the fold fact is the W1 delta",
+                "persistent": "drive-render.json persist_after_reload: selectedTab Overview, count 24 results, ddval All currencies — 0, as baseline",
+                "interactive": "drive-render.json identical to arm A (nav 4/4, tabs 4/4, sort, filter 24→7, legend, table, tooltip); animName cn-chart-line-dvDraw (canon-projected keyframe name)"}}
+  },
+  "seeds": {
+    "1": {"verdict": "pass", "words": "the 2×2 board", "fact": "L236-321: six kpi-tile at data-c=\"1\"; probe-render.json 1440-light cols=6 rows=1, lead.h 150.5 (baseline 309.7, 2 rows). Arm A: the SAME markup but cols=1 rows=6 — the row is intact in the bytes and collapsed by the Tabs demo width, not by a 2×2"},
+    "2": {"verdict": "fail", "words": "the always-open filter bar", "fact": "L151-206 .tpl-toolbar.cn-filter-toolbar-bar always rendered, no collapsed form, no toggle; chips L197-201 carry no count and no clear-all (W3 owns)"},
+    "3": {"verdict": "fail", "words": "nothing executes", "fact": "L473-491 'Needs attention': three rows of label + status, zero actions; kpi-cta L251 has no handler (kpi-tile.meta.json behaviour=null); 'New payment' L140 is a dead button (W5 owns)"},
+    "4": {"verdict": "fail", "words": "the symmetric wall", "fact": "L324 evidence data-c=\"3\" and L460 context data-c=\"3\": an even 3+3 pair below the lead row, no dominant tile (W2 owns)"},
+    "5": {"verdict": "fail", "words": "blood where there should be fruit", "fact": "L296 'Net FX exposure −1.2% down' wears .delta.down + spark data-trend=\"down\" (red) — a falling exposure is good; L270 'Payments today −4.3% down' likewise. kpi-tile binds colour to up/down, no polarity prop (W4 owns)"},
+    "6": {"verdict": "fail", "words": "the action on the wrong surface", "fact": "L151 currency filter sits in the page title zone; its only consumer is the Data-grid inside hidden tab p2 (glue L1643-1656); on the Overview tab the filter changes nothing the reader can see (W5 owns)"}
+  },
+  "rows": [
+    {"id": "DP-01", "verdict": "missed", "fact": "every control the template carried is on the first level: toolbar L151, chips L197, tabs L210, kpi view-as-table L251; no first/secondary split"},
+    {"id": "DP-02", "verdict": "missed", "fact": "L151-206: filter bar always open, not dismissible; no defaultState prop exists on filter-toolbar-bar (W3)"},
+    {"id": "DP-03", "verdict": "missed", "fact": "L197-201: two chips ('All entities', 'Month to date') with no count and no clear-all; no collapsed form to show them from"},
+    {"id": "DP-04", "verdict": "met", "fact": "in place: chart 'View as table' L345 (drive chart_table_toggle open=true rows=12); by navigation: masthead → tab L106-109 + L210 (drive nav 4/4). Caveat: kpi-cta L251 promises a table and has no handler"},
+    {"id": "DP-05", "verdict": "met", "fact": "reveals labelled (L345 'View as table', tabs L211-214) and reversible from where opened (same summary closes it — drive closed it before hover); revealed grid re-measures: drive grid_before count '24 results' after tab click. Caveat: kpi-cta L251 labelled, not reversible because it never opens"},
+    {"id": "DP-06", "verdict": "met", "fact": "knowledge/snippets/Template-dashboard-bento.reference.html L852-936 (six compact kpi-tile, data-c=\"1\") → page L236-321; probe-render.json 1440-light: lead.h 150.5, cols 6 rows 1, first chart group y 678.6 / svg 738.6 (baseline sighted 837.8 / 897.8, −159.2px); chartSvgBottomVisible true (baseline false)"},
+    {"id": "DP-07", "verdict": "met", "fact": "six metrics, L240 L254 L267 L280 L293 L306 — inside 3–6 (snippet L850 'Tile count 6 sits inside DP-07's 3–6'); first is 'Group liquidity' L240. ORDER is the specimen's, not a checked reading-frequency (snippet L850-851; REVIEW, Dave's)"},
+    {"id": "DP-08", "verdict": "missed", "fact": "4 of 6 tiles carry value + signed delta + named period (L243 L257 L270 L296 '+2.1% up · vs yesterday'); 2 carry a count/status in the delta slot (L283 '14 payments · 5 need you', L309 '40% drawn · Reviewed 1 Sep'); sparkline in 6/6 (L245-249 …); no gauge/ring: grep -c chart-donut = 0. Source: snippet L896-907, L922-933 (specimen content, per lane D RSQ 4)"},
+    {"id": "DP-09", "verdict": "met", "fact": "knowledge/canon/canon.css L17246 `:where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .kpi-tile{border:0}` (snippet rule 7, L746-751); measured: tileBorder 0px, leadGap 4px, wallGap 40px, keylines OFF (snippet L59)"},
+    {"id": "DP-10", "verdict": "missed", "fact": "L473-491 'Needs attention' exists with status per item (warn/err/inf) and a due on 2 of 3; 'View all' L476 carries no count against total (the BLOCKING clause)"},
+    {"id": "DP-11", "verdict": "missed", "fact": "L478-490: each attention row is a label + a status chip; zero in-place actions (no approve/release/retry)"},
+    {"id": "DP-12", "verdict": "n/a", "fact": "no on-page action exists to give feedback on (DP-11 missed); principles page: 'DP-12's states carry it until an action exists'"},
+    {"id": "DP-13", "verdict": "missed", "fact": "L151 filter-toolbar-bar declares no consumer (no data-controls); the currency→grid link is authored glue L1643-1656; entity dropdown L162 and period seg L189-194 have no consumer at all (drive period_seg dataChanged false)"},
+    {"id": "DP-14", "verdict": "missed", "fact": "L324 evidence data-c=\"3\" equals L460 context data-c=\"3\": no single widest tile; measured evidenceH 422 = contextH 422"},
+    {"id": "DP-15", "verdict": "missed", "fact": "the row below the lead splits evenly 3+3 (L324, L460); lead row uses 1 ×6 (the ruled set's 1) — W2 owns the 4/2 defaults"},
+    {"id": "DP-16", "verdict": "met", "fact": "gate-it1-screen.txt 'composition: ✅ C9 span legality holds at every band'; probe-render.json: 1440 6×1, 820 2×3 — no orphan; tops align (rows=1 at 1440). Under the canon.css model (it2+) the gate reports 'UNPROVEN: C9 bands' because the band CSS lives in canon.css — the render is the proof"},
+    {"id": "DP-17", "verdict": "missed", "fact": "two groups below the lead row (L323, L459) as an even 3+3 pair; TASTE row, held for W6"},
+    {"id": "DP-18", "verdict": "missed", "fact": "context group stretched to the evidence height (422 = 422); its two stat-cards measure 233/185px against content 163/116px (48px padding each) — ≈22px dead band per card, empty ground not a second tile"},
+    {"id": "DP-19", "verdict": "n/a", "fact": "P0 is not an all-clear state (L485 'Returned', L481 'Approval due'); P4 owns the quiet-board test"},
+    {"id": "DP-20", "verdict": "missed", "fact": "signalsAboveFold = 10 at 1440 (4 coloured deltas L243/257/270/296, 4 coloured sparks, the green 'ok' chip L146, the brand-red masthead current indicator) — over the proposed three, with no named dominant"},
+    {"id": "DP-21", "verdict": "met", "fact": "one channel per tier at the tile: the arrow glyph carries the colour, the numeral stays ink (L243 .arrow + .t-cm-figure-6; kpi-tile.meta antiPattern 2); status chips = dot + word (L481-489)"},
+    {"id": "DP-22", "verdict": "missed", "fact": "L296 falling FX exposure painted red (.delta.down, data-trend=\"down\"); L270 falling payments-out red; kpi-tile.meta.json carries trend up|down|flat and no polarity field (Q11, Dave's)"},
+    {"id": "DP-23", "verdict": "missed", "fact": "L327 figure.dv.dv-animate: the chart-line draws on load (drive chart_legend_toggle.animName cn-chart-line-dvDraw); the spark ends fade in — entry choreography on a monitoring page"},
+    {"id": "DP-24", "verdict": "met", "fact": "six equal lead tiles L240-306 (data-c=\"1\"), colour only on rag/delta; no tile coloured for importance or enlarged for wrongness"},
+    {"id": "DP-25", "verdict": "n/a", "fact": "the mono rule has no id yet (Q9, Dave's); the observable hue census is DP-20's row. Chart series hues L446 (--data-series-1..3) are the dataviz kit's ruled palette, outside the row's stated scope"},
+    {"id": "DP-26", "verdict": "missed", "fact": "L485 'Returned' is one past participle; L481 'Approval due 18:00' and L489 'Due 30 Sep' are phrases; L283 '5 need you' is a sentence in a status slot"},
+    {"id": "DP-27", "verdict": "missed", "fact": "L146 .status.ok green dot on 'All nostro feeds up to date' — a green tick on a quiet fact"},
+    {"id": "DP-28", "verdict": "missed", "fact": "L151 currency filter in the page title zone; its consumer is the grid in hidden tab p2 (glue L1652); no triggeredBy/groupsWith edge names it"},
+    {"id": "DP-29", "verdict": "missed", "fact": "filtering from the Overview tab: the chip and count land in #fbar/#dgCount inside hidden p2 (drive filter_usd count '7 results' only visible after #t2) — feedback out of the locus of attention"}
+  ],
+  "first_chart_y": {"template_lane_D": {"before": 675.7, "after": 516.5}, "page_sighted_1440_light": {"baseline_B": 837.8, "w1_B": 678.6, "delta": -159.2}, "page_blind_1440_light": {"baseline_A": 953.8, "w1_A": 1554.4, "note": "arm A regression is the Tabs demo-width collapse, not the edit"}},
+  "conflict_ledger": [
+    {"pair": "DP-06 vs DP-14", "tile": "the lead row / evidence group", "file": "outputs/w1-density/arm-B-sighted/dashboard.html L236-321 vs L323-457", "observed": "NOT pulled apart on this page: the compact row (DP-06) made the chart the widest thing the eye lands on above the fold, and DP-14 is missed for a reason unrelated to DP-06 (3+3 split). Recorded as watched, not as a conflict"},
+    {"pair": "DP-06 vs DP-18", "tile": "lead row at 520px", "file": "outputs/w1-density/template/measure.json after-520-light (lane D finding 3)", "observed": "at the 1-column band six compact tiles stack to 1368.6px first-chart-y vs 1081.6 before: the density gain at 1440 is a density LOSS at 520. DP-06 (one row) and DP-18 (size to content floor) do not conflict, but DP-06's 'first chart above the fold' inverts at the narrow band. Recorded; the trade is Dave's (lane D RSQ 2)"}
+  ]
+}

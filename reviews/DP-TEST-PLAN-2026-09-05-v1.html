@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DP test plan — enact 29, carefully, and test (#247)</title>
+<style>
+  :root{
+    --accent:#DB0011; --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif; color:var(--black); background:var(--white); font-size:16px; line-height:1.7}
+  a{color:var(--black)}
+  nav.top{position:sticky; top:0; background:var(--white); border-bottom:1px solid var(--grey-2); height:56px; display:flex; align-items:center; padding:0 var(--s4); gap:var(--s4); font-size:14px; z-index:5}
+  nav.top .ctx{color:var(--grey-6)}
+  nav.top .links{margin-left:auto; display:flex; gap:var(--s3); flex-wrap:wrap}
+  nav.top .links a{color:var(--grey-6); text-decoration:none; letter-spacing:.04em}
+  nav.top .links a:hover{color:var(--black)}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4)}
+  section{padding:var(--s6) 0; border-bottom:1px solid var(--grey-2)}
+  section.major{padding:var(--s7) 0}
+  section.grey{background:var(--grey-1)}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3)}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent)}
+  h1{font-size:57px; line-height:1.05; font-weight:400; letter-spacing:0; margin:0 0 var(--s3)}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3)}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:var(--s4) 0 var(--s2)}
+  p{margin:0 0 var(--s2); max-width:68ch}
+  .head{display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); align-items:start}
+  .meta{font-size:14px; color:var(--grey-7); line-height:1.6}
+  .meta dt{font-weight:500; color:var(--black); margin-top:var(--s2)} .meta dd{margin:0}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s3); margin-top:var(--s4)}
+  .stat .n{font-size:43px; font-weight:200; line-height:1; letter-spacing:0}
+  .stat .c{font-size:12px; color:var(--grey-6); margin-top:var(--s1); letter-spacing:.04em}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start}
+  .dim .idx{font-size:84px; font-weight:100; line-height:1; color:var(--grey-3)}
+  .dim .dl{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--grey-6); margin-top:var(--s2)}
+  .dim p, .dim li{max-width:none}
+  table{border-collapse:collapse; width:100%; font-size:14px; line-height:1.5; margin:var(--s2) 0 var(--s3)}
+  th,td{text-align:left; vertical-align:top; padding:var(--s2) var(--s2) var(--s2) 0; border-bottom:1px solid var(--grey-2)}
+  th{font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; white-space:nowrap}
+  .chk{color:var(--grey-6); white-space:nowrap}
+  .tw{overflow-x:auto}
+  .prompt{display:grid; grid-template-columns:1fr 2fr; gap:var(--s4); padding:var(--s3) 0; border-top:1px solid var(--grey-2)}
+  .prompt:last-child{border-bottom:1px solid var(--grey-2)}
+  .prompt .id{font-size:34px; font-weight:200; line-height:1}
+  .prompt .nm{font-size:19px; font-weight:500; margin:var(--s1) 0}
+  .prompt .tests{font-size:12px; letter-spacing:.06em; color:var(--grey-6); text-transform:uppercase}
+  pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; line-height:1.6; background:var(--grey-1); padding:var(--s2) var(--s3); margin:0 0 var(--s2); white-space:pre-wrap; border-left:2px solid var(--black)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3); margin:var(--s3) 0}
+  .grid2 > div{background:var(--white); padding:var(--s3)}
+  section.grey .grid2 > div{background:var(--grey-1)}
+  .grid2 .h{font-size:12px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:var(--s2); color:var(--grey-6)}
+  .grid2 .h.ours{color:var(--accent)}
+  ol.rsq{padding-left:1.4em; margin:0} ol.rsq li{margin-bottom:var(--s3)}
+  ol.rsq .q{margin-bottom:var(--s1)} ol.rsq .opts{color:var(--grey-7); font-size:14px}
+  ul.plain{padding-left:1.2em} ul.plain li{margin-bottom:var(--s1)}
+  blockquote{margin:0 0 var(--s2); padding-left:var(--s3); border-left:1px solid var(--grey-3); color:var(--grey-8)}
+  footer{padding:var(--s5) 0; font-size:14px; color:var(--grey-6)}
+  @media (max-width:820px){ .head,.dim,.prompt,.grid2{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} h1{font-size:43px} }
+</style>
+</head>
+<body>
+<nav class="top"><span class="ctx">Apollo · reviews · #247</span><span>DP test plan</span>
+<div class="links"><a href="#schedule">Schedule</a><a href="#prompts">Prompts</a><a href="#score">Score sheet</a><a href="#dp17">DP-17</a><a href="#ideas">Ideas</a><a href="#rsq">Questions</a></div></nav>
+
+<section class="major">
+  <div class="wrap">
+    <p class="label">Test plan · 2026-09-05 · #247</p>
+    <div class="head">
+      <div>
+        <h1>Enact 29, carefully, and test.</h1>
+        <p>One frozen prompt, re-run after every group lands, so each group's effect is seen alone. Eight prompts beside it, each built to trip one group. A 29-row score sheet and the six seeds as pass/fail. A blind judge for the rhythm. Then the four baseline arms again, and Dave's cold run in VS.</p>
+        <blockquote>"okay lets do 29, carefully, and test."<br><span class="meta">Dave · 2026-09-05 · inscribed s247-D1</span></blockquote>
+      </div>
+      <dl class="meta">
+        <dt>Governed by</dt><dd>s246-D1…D7 (all ADVISORY until a second dashboard · filters default-only · spans dial trial · attention recipe · KPI row default · no grill-me · DP-17 test all three) · s247-D1 (29, carefully, test)</dd>
+        <dt>Baseline</dt><dd>#246 lanes B + O: <code>reviews/BASELINE-246-2026-09-05-v1.html</code> · <code>reviews/BASELINE-246-OPUS-2026-09-05-v1.html</code></dd>
+        <dt>Source of the 29</dt><dd><code>reviews/DASHBOARD-PRINCIPLES-2026-09-05-v1.html</code> § 03–04</dd>
+        <dt>Horizon</dt><dd>SH demo ≈ 09-19. Nothing new enacted after 09-16.</dd>
+      </dl>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">6</div><div class="c">enact waves, one group each</div></div>
+      <div class="stat"><div class="n">9</div><div class="c">prompts: one control + eight probes</div></div>
+      <div class="stat"><div class="n">29 + 6</div><div class="c">score rows: principles + seeds</div></div>
+      <div class="stat"><div class="n">8</div><div class="c">questions still Dave's before W4/W5</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">00</div><div class="dl">Method</div></div>
+    <div>
+      <h2>Careful means one group at a time, and the control re-run after each</h2>
+      <p>The #246 finding was that four dashboards from two models were the same specimen — the library dictated the result. So the experiment is on the library, and the model is held constant: Fable, the same prompt, blind and sighted arms as before. Each wave lands ONE group at its ONE landing source (the enactment table's rule: additive only), gates run, and P0 is re-run. The score delta between wave <em>n−1</em> and <em>n</em> is that group's effect, alone. A group that moves nothing across two waves is a candidate to drop — Dave's call, named in the wrap.</p>
+      <p>Conflicts are the thing Dave said he is wary of. Every wave keeps a conflict ledger: any pair of principles that pulled in opposite directions on the same tile, with the file and line. Three pairs are already suspected and are listed under Ideas.</p>
+      <div class="grid2">
+        <div><div class="h">What a wave is NOT</div>A wave does not touch a lane report, a ruling, a constant or a version. It does not re-word a principle. It does not fix a defect the group did not name — that is a finding for the next wave, not a side edit.</div>
+        <div><div class="h ours">What a wave IS</div>One landing edit · gates at four bands · P0 re-run, both arms · the 29-row sheet filled with one fact per row · the six seeds pass/fail · a conflict ledger · a one-line verdict: moved / did not move.</div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section id="schedule" class="grey">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">01</div><div class="dl">Schedule</div></div>
+    <div>
+      <h2>Ten waves, six that land, ordered cheap-and-ruled first</h2>
+      <p>Dates assume one session a day; the session numbers are the real sequence. Density goes first because it is one snippet edit already ruled by s246-D5 and it is the edit the principles page said would move both baselines. Signal and Execute sit later because they wait on Q8–Q15.</p>
+      <div class="tw"><table>
+        <tr><th>Wave</th><th>Session · date</th><th>Group</th><th>Principles</th><th>Size</th><th>What lands</th><th>How it is verified</th><th>Needs first</th></tr>
+        <tr><td class="mono">W0</td><td class="mono">#246<br>Sat 09-05</td><td>Baseline</td><td class="mono">—</td><td class="mono">DONE</td><td>Four dashboards, one specimen: B 2/2/0/2 ×2 · O 1/2/1/1 → 2/2/1/2.</td><td>—</td><td>—</td></tr><tr><td class="mono">W1</td><td class="mono">#247<br>Sat 09-05</td><td>Density</td><td class="mono">DP-06 07 08 09</td><td class="mono">S</td><td>Template lead group: four compact tiles in one row (the single edit that moves both baselines). s246-D5 already rules the row default and removes 2×2.</td><td>Re-run P0 (Fable, blind + sighted). Seed 1 (2×2 board) must not recur. Gates at four bands.</td><td>nothing — ruled</td></tr><tr><td class="mono">W2</td><td class="mono">#248<br>Sun 09-06</td><td>Bento rhythm</td><td class="mono">DP-14 15 16 18 (17 held for W6)</td><td class="mono">S + M</td><td>Template defaults data-c=&quot;4&quot; evidence / data-c=&quot;2&quot; context; the spans dial (s246-D3, a TRIAL); DP-18 stretch arm.</td><td>Re-run P0. Seed 4 (symmetric wall) must not recur. Rhythm scored blind by a judge sub.</td><td>nothing — D3 rules the dial trial</td></tr><tr><td class="mono">W3</td><td class="mono">#249<br>Mon 09-07</td><td>Reveal</td><td class="mono">DP-01 02 03 04 05</td><td class="mono">M</td><td>New note dashboard-composition.md; filter-toolbar-bar prop defaultState (collapsed default, s246-D2, no question); collapsed variant + chips.</td><td>Re-run P0 + P2 (filters brief). Seed 2 (always-open filter bar) must not recur. Collapsed chips show count + clear-all.</td><td>nothing — D2 rules default-only</td></tr><tr><td class="mono">W4</td><td class="mono">#250<br>Tue 09-08</td><td>Signal</td><td class="mono">DP-19 20 21 22 23 24 25 26 27</td><td class="mono">M</td><td>Tier table once in the note § signal; kpi-tile polarity prop; mono rule id; status-indicator tier enum + word map; template data-motion.</td><td>Re-run P0 + P4 (all-clear) + P5 (down-is-good). Seed 5 (blood where fruit) must not recur. Test PER THEME (four themes).</td><td>Q8 · Q9 · Q10 · Q11 · Q12 · Q13 — Dave, before this wave</td></tr><tr><td class="mono">W5</td><td class="mono">#251<br>Wed 09-09</td><td>Execute + Locality</td><td class="mono">DP-10 11 12 13 · DP-28 29</td><td class="mono">S (recipe) + S</td><td>Attention surface as a RECIPE over summary + status-indicator + button (s246-D4); DP-13 controls edge; livesInside clause; triggeredBy on ~10 dashboard consumers.</td><td>Re-run P0 + P3 (three things need you). Seeds 3 + 6 (nothing executes · action on wrong surface) must not recur. Interactions driven.</td><td>Q14 · Q15 — Dave, before this wave</td></tr><tr><td class="mono">W6</td><td class="mono">#252<br>Thu 09-10</td><td>DP-17 three-way</td><td class="mono">DP-17</td><td class="mono">3 lanes</td><td>Nothing lands. Three arms of one prompt: (a) TASTE chord · (b) ADVISORY · (c) dropped, DP-14/15 carry it.</td><td>Blind judge ranks the three renders; Dave picks. s246-D7.</td><td>Dave picks after the ranking</td></tr><tr><td class="mono">W7</td><td class="mono">#253<br>Fri 09-11</td><td>Regression</td><td class="mono">all 29</td><td class="mono">4 lanes + sweep</td><td>Nothing lands. Same four arms as W0 (Fable blind/sighted · Opus blind/sighted) on P0; the P-set sweep P1…P8 on Fable sighted.</td><td>The #246 finding — four dashboards = one specimen — stands or falls, in numbers.</td><td>nothing</td></tr><tr><td class="mono">W8</td><td class="mono">Dave<br>≈ 09-12 → 09-13</td><td>Cold VS test</td><td class="mono">—</td><td class="mono">Dave</td><td>Nothing lands. Dave runs P0 in VS Code, blind, the demo condition.</td><td>His eye. Freeze what he sees for the SH demo.</td><td>Dave</td></tr><tr><td class="mono">—</td><td class="mono">—<br>09-14 → 09-19</td><td>Buffer → SH demo</td><td class="mono">—</td><td class="mono">—</td><td>Fix what W8 found; nothing new enacted after 09-16.</td><td>—</td><td>—</td></tr>
+      </table></div>
+      <p class="meta">Cost, in the budget that binds: one re-run lane ≈ 300K quota tokens (#246 measured B at 298,810). Six enact waves with two arms + W6 three arms + W7 four arms + sweep ≈ 20 lanes ≈ 6M quota. FILL is not the constraint; the conductor stays under the advisory by delegating every lane.</p>
+    </div>
+  </div></div>
+</section>
+
+<section id="prompts">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">02</div><div class="dl">Prompt set</div></div>
+    <div>
+      <h2>One control, eight probes</h2>
+      <p>P0 is the only prompt compared across waves and is never edited. P1–P8 each exist to trip one group; they run in the wave that lands that group and again in the W7 sweep. All are <code>/generate-from-canon</code> prompts a person could type in VS — nothing here needs the conductor.</p>
+      <div class="prompt"><div><div class="id">P0</div><div class="nm">The frozen control</div><div class="tests">tests · everything · the ONLY prompt compared across waves</div></div><div><pre>/generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</pre><p class="meta">Verbatim from #246 (typo included). Never improved: a changed control measures nothing.</p></div></div><div class="prompt"><div><div class="id">P1</div><div class="nm">Sentence one alone</div><div class="tests">tests · DP-10…13 · DP-28/29</div></div><div><pre>/generate-from-canon build me a financial dashboard for corporate international banking.</pre><p class="meta">Dave appended sentence two because earlier builds missed interactivity. If the execute group works, sentence two becomes unnecessary — that is the test.</p></div></div><div class="prompt"><div><div class="id">P2</div><div class="nm">The filter brief</div><div class="tests">tests · DP-01 02 03 05 · DP-13</div></div><div><pre>/generate-from-canon build me a payments operations dashboard. Filters: currency, entity, status, date range. The ops lead checks it first thing every morning.</pre><p class="meta">Names filters explicitly, so the collapsed default and the declared-consumer rule are exercised, not skipped. Names a role and a cadence for DP-01/07 first-level.</p></div></div><div class="prompt"><div><div class="id">P3</div><div class="nm">Three things need you</div><div class="tests">tests · DP-10 11 12 · DP-28 29 · DP-20 budget</div></div><div><pre>/generate-from-canon build me a treasury dashboard. Today three payments are held for approval, one FX hedge expires tomorrow, and one account is over its limit. The treasurer must be able to act on each from this page.</pre><p class="meta">Forces an attention surface with counts, one action each, and feedback in place. The three items are also exactly the signal budget — a fourth signal above the fold is a DP-20 fail.</p></div></div><div class="prompt"><div><div class="id">P4</div><div class="nm">Nothing is wrong</div><div class="tests">tests · DP-19 23 24 27</div></div><div><pre>/generate-from-canon build me a liquidity dashboard for a group treasurer. Everything is on target today; nothing needs attention.</pre><p class="meta">The dark-cockpit test. A correct page shows no hue, no motion, and one line of default ink saying so. Any RAG colour on this page is a defect by construction.</p></div></div><div class="prompt"><div><div class="id">P5</div><div class="nm">Down is good</div><div class="tests">tests · DP-22 · DP-08 · DP-21</div></div><div><pre>/generate-from-canon build me a risk dashboard. Headline metrics: net FX exposure (unhedged) fell 12% this week; days sales outstanding rose 3 days; cost of funds fell 8 bps; credit-limit breaches rose from 2 to 5.</pre><p class="meta">Two falls that are good, one rise that is bad, one rise that is good. Reproduces the #246 defect (FX fall painted red) with a polarity trap in every direction.</p></div></div><div class="prompt"><div><div class="id">P6</div><div class="nm">The anti-pattern order</div><div class="tests">tests · the ADVISORY tag (s246-D1) · DP-06 02 24</div></div><div><pre>/generate-from-canon build me a corporate banking dashboard. Put the four KPIs in a 2×2 grid, keep all filters open, and colour every tile by its status.</pre><p class="meta">The brief asks for three defects. Advisory principles must yield to a brief that says so — and the build must say it yielded. A build that silently obeys or silently refuses both fail.</p></div></div><div class="prompt"><div><div class="id">P7</div><div class="nm">Another domain</div><div class="tests">tests · generalisation of all 29</div></div><div><pre>/generate-from-canon build me a fleet operations dashboard for a logistics company. Make the interactive elements work.</pre><p class="meta">If the principles only fix banking, they are patches, not principles. Same score sheet, no banking vocabulary.</p></div></div><div class="prompt"><div><div class="id">P8</div><div class="nm">The four themes</div><div class="tests">tests · DP-25 · Q9 Q10 · s135-D1 s123-D3</div></div><div><pre>P0, once per theme: mono · console · legacy · supercharge.</pre><p class="meta">Four-themes rule: test PER THEME. Mono is where colour = signal by definition; legacy and supercharge carry chrome colour by design — the tiers must survive both.</p></div></div>
+    </div>
+  </div></div>
+</section>
+
+<section id="score" class="grey">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">03</div><div class="dl">Score sheet</div></div>
+    <div>
+      <h2>Three instruments, kept separate, never summed</h2>
+      <p><b>A — the #246 richness score</b>, unchanged so the waves compare to the baselines: visually rich · full · persistent · interactive, each 0–3 with the one fact that earned it. Baseline: B 2/2/0/2 · O 2/2/1/2 (sighted arms).</p>
+      <p><b>B — the six seeds</b>, pass/fail: did Dave's named defect recur? This is the line he will read first.</p>
+      <div class="tw"><table><tr><th>Seed</th><th>Dave's words</th><th>Owned by</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>W7</th></tr>
+        <tr><td class="mono">1</td><td>the 2×2 board</td><td class="mono">DP-06</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr><tr><td class="mono">2</td><td>the always-open filter bar</td><td class="mono">DP-02/03</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr><tr><td class="mono">3</td><td>nothing executes</td><td class="mono">DP-10…13</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr><tr><td class="mono">4</td><td>the symmetric wall</td><td class="mono">DP-14…18</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr><tr><td class="mono">5</td><td>blood where there should be fruit</td><td class="mono">DP-19…27</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr><tr><td class="mono">6</td><td>the action on the wrong surface</td><td class="mono">DP-28/29</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td></tr>
+      </table></div>
+      <p><b>C — the 29-row sheet</b>, one row per principle: met · missed · n/a, plus the ONE fact (file + line, or crop) that decided it. A row with no fact is not scored. "n/a" is legal only when the prompt gave the principle nothing to act on (P4 has no attention items, so DP-10/11 are n/a there — that is the point of P4).</p>
+      <div class="tw"><table><tr><th>ID</th><th>Group</th><th>Principle</th><th>Tag</th><th>Verdict</th><th>The one fact</th></tr>
+        <tr><td class="mono">DP-01</td><td>Reveal</td><td>A dashboard&#x27;s first level shows what is read every visit; everything else is one deliberate step away, and never more than one.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-02</td><td>Reveal</td><td>Filter controls on an overview are dismissible and ship in the state the designer decided; the collapsed form is the default unless the brief says otherwise.</td><td class="mono">REVIEW</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-03</td><td>Reveal</td><td>A collapsed filter shows its count and its applied values as dismissible chips; a clear-all sits beside them when two or more are applied.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-04</td><td>Reveal</td><td>Detail is revealed in place where it answers the tile&#x27;s own question (expand, view-as-table, popover) and by navigation where it changes the subject (drill to the parent list).</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-05</td><td>Reveal</td><td>Every reveal is labelled with what it will show and reversible from where it opened; a revealed region re-measures itself when it becomes visible.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-06</td><td>Density</td><td>Headline metrics sit in one row across the top of the wall, compact, so the first chart starts above the fold; a 2×2 board is a choice for two metrics, not a default for four.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-07</td><td>Density</td><td>A headline row carries between three and six metrics; the first is the one the role checks first, and order runs left to right by how often it is read, not by size of number.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-08</td><td>Density</td><td>Each headline metric shows value, signed delta against a named period, and a trend shape; the shape is a sparkline (length and position), never a gauge or ring.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-09</td><td>Density</td><td>Group with space and a single containment signal, not with borders; separators are as light as will still group.</td><td class="mono">—</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-10</td><td>Execute + feedback</td><td>An overview carries a standing &quot;needs attention&quot; region: items the role must act on, each with its status, its due, and its count against the total.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-11</td><td>Execute + feedback</td><td>Each attention item offers its one primary action in place (approve, release, retry, dismiss); an action with no input fires and the item leaves the list, an action with input opens on the tile, and at most six actions live on any tile.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-12</td><td>Execute + feedback</td><td>Feedback for an on-page action lands on the page: the button runs the loading → notification ladder, the row updates or leaves, and an error names the item and the next step.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-13</td><td>Execute + feedback</td><td>A control on the overview declares what it acts on; a filter with no declared consumer is not placed.</td><td class="mono">—</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-14</td><td>Bento rhythm</td><td>One tile per wall is dominant — the widest span, holding the evidence the role came for — and no other tile matches its width.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-15</td><td>Bento rhythm</td><td>Widths are importance-weighted from the ruled span set — 6 · 4 · 3 · 2 (and 1 in the lead row) — and a row below the lead row does not split evenly when it holds two tiles.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-16</td><td>Bento rhythm</td><td>Irregular reads as ordered when every tile edge sits on a column line, tops align across a row, and the wall closes with no orphan cell.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-17</td><td>Bento rhythm</td><td>Prefer odd counts below the lead row — three groups, or a 4 + 2 pair over a 3 + 3 pair — and repeat one shape with one break rather than alternating every row.</td><td class="mono">TASTE</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-18</td><td>Bento rhythm</td><td>A tile is sized to its content&#x27;s floor and never stretched to a neighbour&#x27;s height; a taller neighbour is answered by a second tile in the column, not by empty ground.</td><td class="mono">REVIEW</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-19</td><td>Signal</td><td>The dark-cockpit default: a dashboard with nothing wrong shows no hue, no motion and no emphasis beyond type hierarchy — if the page is quiet, all is well. Sky and foliage are unlit.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-20</td><td>Signal</td><td>A signal budget per screen: above the fold, at most three elements carry a signal colour or motion, and one of them is dominant; the rest of the page is foliage. Tiers are distributed like rationalised alarms — most low, few medium, almost none high.</td><td class="mono">REVIEW</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-21</td><td>Signal</td><td>One channel per tier, and no tier is identified by a conjunction. Predator: hue + glyph (+ motion only if the reader must act before leaving the page). Blood and fruit: the ruled red or green ink on the numeral with its symbol, nothing else coloured. Game: enclosure and position — a button, a count, a row at the top — never hue. Sky and foliage: default ink.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-22</td><td>Signal</td><td>Colour follows meaning, not arithmetic: every metric declares which direction is good, and the red/green ink and spark stroke bind to good/bad, never to up/down. A falling cost, exposure or overdue count is fruit, not blood.</td><td class="mono">—</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-23</td><td>Signal</td><td>Motion is the rarest signal, reserved for a change that happened while the reader was looking — an item arrived, an action completed — and never spent on load or entry choreography on a monitoring page. Hover motion is an affordance, not a signal, and stays.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-24</td><td>Signal</td><td>Size and position carry importance; hue carries state; weight carries reading order. A tile is never coloured to say &quot;important&quot;, and never enlarged to say &quot;wrong&quot;.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-25</td><td>Signal</td><td>Mono&#x27;s law gets an id: in the mono theme every hue outside the neutral ramp is a signal by definition — the ruled RAG inks and fills, the brand red on the primary action — and a hue with no state behind it is a defect, not a style.</td><td class="mono">—</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-26</td><td>Signal</td><td>Copy carries the same tiers. A status is one word, an adjective or past participle (&quot;Held&quot;, &quot;Returned&quot;, &quot;Due&quot;); an action is verb-first (&quot;Approve&quot;, &quot;Release&quot;, &quot;Retry&quot;); the word and the colour agree in tier; no decoration adjectives, intensifiers or exclamation marks anywhere on the board.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-27</td><td>Signal</td><td>Quiet is a designed state, not an absence. The all-clear reads as one line of default ink — &quot;Nothing needs you&quot; — with no green tick and no celebratory colour; the cockpit stays dark when things are good.</td><td class="mono">TASTE</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-28</td><td>Locality</td><td>An action lives on the surface it acts on. A control that changes one module sits in that module&#x27;s own header or footer; a control that changes the whole page sits in the page title zone; a control that finalises a flow sits in the flow&#x27;s action bar. The distance between a control and its consumer is an edge (triggeredBy / groupsWith), and a control whose consumer is on another surface — or has none — is misplaced.</td><td class="mono">REVIEW</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr><tr><td class="mono">DP-29</td><td>Locality</td><td>Feedback appears at the locus of attention. First on the control that was operated (state, count, inline message), then on the object that changed (row updates or leaves); a toast is used only when the effect is out of view; an error that must be acted on is shown inline at the field and summarised at the top when the field may be off-screen. Feedback never lives only in a corner the eye is not in.</td><td class="mono">ADVISORY</td><td class="chk">☐ met · ☐ missed · ☐ n/a</td><td class="chk"></td></tr>
+      </table></div>
+      <p class="meta">Tags are as PROPOSED on the principles page; s246-D1 makes every one of them ADVISORY until a second dashboard exists, so no row here blocks a build. Rows marked — carried no tag on the page.</p>
+    </div>
+  </div></div>
+</section>
+
+<section id="dp17">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">04</div><div class="dl">DP-17 · three-way</div></div>
+    <div>
+      <h2>Test all three, then Dave picks</h2>
+      <p>s246-D7 rules a test, not an option. The design: after W2 has landed DP-14/15/16/18, three lanes build P0 sighted, differing only in what DP-17 is — (a) a named TASTE chord in the rails · (b) an ADVISORY line with the display bento as the worked example · (c) absent, DP-14/15 alone carrying the rhythm. The three renders at 1440 light are stripped of any arm label and handed to a fourth lane, a judge who has not read this page, with one instruction: rank the three walls for order, and say in one line what ordered them. Dave then sees the ranking, the judge's line, and only then the arm key.</p>
+      <div class="grid2">
+        <div><div class="h">What would make the test fail</div>Three identical walls — DP-17 changed nothing, and (c) wins by parsimony. Or the judge's line names something other than count and break — the rhythm is coming from DP-14/15 and DP-17 is a restatement.</div>
+        <div><div class="h ours">What would make it decisive</div>The judge ranks (a) or (b) first and names the odd count or the one break unprompted. That is the taste, seen by an eye that was not told to look for it.</div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section id="ideas" class="grey">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">05</div><div class="dl">Other ideas</div></div>
+    <div>
+      <h2>Six things worth adding, none of them ruled</h2>
+      <ul class="plain">
+        <li><b>A blind judge on every wave, not just DP-17.</b> The conductor who briefed the wave should not score it. A judge lane gets the render and the score sheet and nothing else; ≈ 60K quota per wave.</li>
+        <li><b>The conflict ledger, seeded.</b> Three pairs to watch from day one: DP-06 (one compact row) vs DP-14 (one dominant tile) when a KPI is the evidence the role came for · DP-20 (three signals above the fold) vs DP-10 (attention counts) on a bad morning · DP-02 (collapsed filters) vs DP-13 (declared consumer) when the consumer is off-screen. A conflict is recorded, never resolved by the lane.</li>
+        <li><b>Opus as the second eye at W7 only.</b> The GPT proxy costs 347K a lane. One run at the end tells whether the library's fix survives a different model; running it every wave would only re-prove #246.</li>
+        <li><b>A "which sentence did it" probe.</b> Once P1 (sentence one alone) scores level with P0, drop sentence two from the demo prompt. The demo is stronger if the library, not the prompt, carries interactivity.</li>
+        <li><b>Persist the sheet as data.</b> Each wave writes <code>notes/_dp-scores/&lt;wave&gt;.json</code> in the score-sheet shape; a tiny generator renders the trend table on this page at W7. No number typed twice.</li>
+        <li><b>Freeze early.</b> Dave's cold VS run (W8) is the demo condition; the last enact wave before it is the version the demo ships. Anything W8 finds is fixed as a patch, and nothing new lands after 09-16.</li>
+      </ul>
+    </div>
+  </div></div>
+</section>
+
+<section id="rsq">
+  <div class="wrap"><div class="dim">
+    <div><div class="idx">06</div><div class="dl">Questions</div></div>
+    <div>
+      <h2>Four on the plan, and eight carried from #246</h2>
+      <ol class="rsq">
+        <li><div><p class="q">Wave order: cheap-and-ruled first (as scheduled), or Dave's seeds in the order he wrote them (2×2 → filters → execute → wall → signal → locality)?</p><p class="opts">(a) as scheduled · (b) seed order · (c) name the order.</p></div></li>
+        <li><div><p class="q">Re-run P0 after EVERY group (six lanes) or after every two (three lanes)? Every group isolates the effect; every two halves the cost.</p><p class="opts">(a) every group · (b) every two · (c) every group but sighted arm only until W7.</p></div></li>
+        <li><div><p class="q">Blind judge on every wave, or only DP-17?</p><p class="opts">(a) every wave · (b) DP-17 only · (c) every wave, but Dave is the judge for the seeds row.</p></div></li>
+        <li><div><p class="q">Which principles, if any, may a wave fix outside its group when the fact is on the page in front of it?</p><p class="opts">(a) none — record it for the next wave · (b) any S-size item already ruled · (c) name them.</p></div></li>
+      </ol>
+      <h3>Carried from #246 — W4 waits on Q8–Q13, W5 on Q14–Q15</h3>
+      <ol class="rsq" start="8">
+        <li><div><p class="q">Signal budget (DP-20): does it become a validator arm — count of rag-resolved colours plus running animations in the first viewport, with a named dominant — and is three the number?</p><p class="opts">(a) arm, REVIEW, three + one dominant · (b) arm, but Dave sets the number · (c) prose only in the note, no count.</p></div></li><li><div><p class="q">Mono&#x27;s &quot;colour = signal&quot; (DP-25): does it get a written rule id and a hue-census gate — and does console inherit it, given console shares mono&#x27;s neutral ramp (s157-D2) but not its RAG lane (s122-D3)?</p><p class="opts">(a) rule id + gate, mono only · (b) rule id + gate, mono and console · (c) rule id only, no gate yet.</p></div></li><li><div><p class="q">Is the dark-cockpit tiering (DP-19/21/24) a mono theme rule or an all-theme composition rule, given legacy and supercharge carry more chrome colour by design (s135-D1 borders, SC solid tints s123-D3)?</p><p class="opts">(a) all-theme: tiers govern what is signalled, themes govern how · (b) mono + console only · (c) mono only, the others are a later lane.</p></div></li><li><div><p class="q">Polarity (DP-22): a polarity prop on kpi-tile (and amount-display) with no default, so an undeclared metric fails the gate — and when &quot;down is good&quot;, is the falling spark painted green, or left neutral with the symbol alone carrying it?</p><p class="opts">(a) prop, no default, green for good-down · (b) prop, no default, neutral for good-down (colour only for bad) · (c) prop with default higher-is-better — the baseline behaviour, named.</p></div></li><li><div><p class="q">Copy tiering (DP-26): does the status-word rule land in copywriting.md as a guideline, or in status-indicator.meta.json as a variant→word map the builder cannot deviate from?</p><p class="opts">(a) guideline only · (b) meta map, derived copy · (c) both, the map cites the guideline id.</p></div></li><li><div><p class="q">Load motion on monitoring surfaces (DP-23): a template attribute for the dashboard role, or a clause in motion-standards.md that every monitoring page inherits — and does hover scale-physics (mot-007) stay?</p><p class="opts">(a) template attribute, hover stays · (b) motion-standards clause, hover stays · (c) both, hover stays · (d) hover goes too on dashboards.</p></div></li><li><div><p class="q">Action locality (DP-28): is triggeredBy the edge a placement arm may consume — it is on 13 of 137 metas and resolves to a node on 2 — or does the arm wait for groupsWith to be populated (s245-D7 says module level only), or for DP-13&#x27;s controls edge, which would carry the same fact in a third home?</p><p class="opts">(a) populate triggeredBy on the ~10 dashboard consumers (Dave&#x27;s-eye refs), arm reads it · (b) fold it into DP-13&#x27;s controls edge — ONE edge, control → consumer, and triggeredBy stays prose · (c) no arm; DP-28 is prose in the note and the eye checks it.</p></div></li><li><div><p class="q">Feedback locus (DP-29): does it change toast.meta.json&#x27;s antiPatterns — adding &quot;feedback for a change the reader can already see&quot; — so the census can count a toast that fires beside a visible row, or does the ladder stay a notifications-guideline clause and the meta is left as ruled?</p><p class="opts">(a) meta antiPattern + guideline clause, id on the clause · (b) guideline clause only · (c) neither yet; DP-12&#x27;s states carry it until an action exists to give feedback on.</p></div></li><li><div><p class="q">The horizon / banding thought: does it stay HELD (Dave&#x27;s &quot;maybe hold&quot;), or take the one advisory line — &quot;a shell&#x27;s three landmarks are three tonal bands, and a dashboard has a ground&quot; — with an id in dashboard-composition.md, or become a footer on the dashboard template only (the missing ground) with no banding rule at all?</p><p class="opts">(a) HELD, revisit after the demo · (b) one ADVISORY line + id, no build · (c) template footer only, no rule.</p></div></li>
+      </ol>
+    </div>
+  </div></div>
+</section>
+
+<footer><div class="wrap">reviews/DP-TEST-PLAN-2026-09-05-v1.html · #247 · Fable conductor · principles extracted programmatically from the #246 page, 29 rows read back · nothing on this page is enacted</div></footer>
+</body>
+</html>
