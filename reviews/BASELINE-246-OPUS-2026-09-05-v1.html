@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baseline 246 — Opus arm: the same prompt, the same library</title>
+<style>
+:root{
+  --accent:#DB0011; --accent-2:#BA1110;
+  --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px; --gutter:2rem;
+  --ff:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--white); color:var(--black); font-family:var(--ff);
+  font-size:1rem; line-height:1.75; -webkit-font-smoothing:antialiased;}
+.wrap{max-width:var(--max); margin-inline:auto; padding-inline:var(--gutter);}
+section{padding-block:var(--s7);}
+hr.rule{border:0; border-top:1px solid var(--grey-2); margin:0;}
+
+nav.top{position:sticky; top:0; z-index:50; background:var(--white);
+  border-bottom:1px solid var(--grey-2);}
+nav.top .wrap{display:flex; align-items:center; gap:var(--s4); height:56px;}
+nav.top .back{font-size:.875rem; letter-spacing:.04em; color:var(--black); text-decoration:none;}
+nav.top .links{margin-left:auto; display:flex; gap:var(--s3); flex-wrap:wrap;}
+nav.top .links a{font-size:.875rem; letter-spacing:.05em; color:var(--grey-6); text-decoration:none;}
+nav.top .links a:hover{color:var(--black);}
+
+.label{font-size:.75rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);}
+.label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent);}
+
+h1{font-size:3.5625rem; line-height:1.04; font-weight:300; letter-spacing:0; margin:0 0 var(--s3); max-width:20ch;}
+h2{font-size:2.125rem; line-height:1.15; font-weight:300; margin:0 0 var(--s3); max-width:26ch;}
+h3{font-size:1.1875rem; line-height:1.2; font-weight:500; margin:0 0 var(--s2);}
+p{margin:0 0 var(--s2); max-width:74ch;}
+.lede{font-size:1.1875rem; line-height:1.65; max-width:64ch;}
+small,.cap{font-size:.875rem; line-height:1.55; color:var(--grey-7);}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8125rem;}
+
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin-top:var(--s5);}
+.stat .n{font-size:2.6875rem; line-height:1; font-weight:200; letter-spacing:0; display:block;}
+.stat .l{font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6); display:block; margin-top:var(--s1);}
+
+.prop{display:grid; grid-template-columns:3fr 1fr 4fr; gap:var(--s6); align-items:start;}
+.prop .div{border-left:1px solid var(--grey-2); min-height:120px;}
+.dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+.dim .idx{font-size:2.6875rem; font-weight:200; color:var(--grey-3); line-height:1; display:block; margin-bottom:var(--s1);}
+
+table{width:100%; border-collapse:collapse; margin:var(--s3) 0 var(--s2); font-size:.875rem;}
+th,td{text-align:left; vertical-align:top; padding:.7rem .8rem; border-bottom:1px solid var(--grey-2);}
+thead th{font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6);
+  border-bottom:1px solid var(--grey-3); font-weight:500;}
+tbody tr:hover{background:var(--grey-1);}
+td.n{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.scroll{overflow-x:auto;}
+.ok{color:var(--grey-8); font-weight:500;}
+.no{color:var(--accent); font-weight:500;}
+
+.shots{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-2);
+  border:1px solid var(--grey-2); margin-top:var(--s4);}
+.shot{background:var(--white); padding:var(--s2);}
+.shot img{width:100%; display:block; border:1px solid var(--grey-2);}
+.shot .c{font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--grey-6);
+  margin:0 0 var(--s1);}
+
+.band{background:var(--grey-1);}
+ol.find{counter-reset:f; list-style:none; padding:0; margin:0;}
+ol.find > li{counter-increment:f; border-top:1px solid var(--grey-2); padding:var(--s4) 0;
+  display:grid; grid-template-columns:4rem 1fr; gap:var(--s3);}
+ol.find > li::before{content:counter(f,decimal-leading-zero); font-size:1.1875rem; font-weight:200;
+  color:var(--grey-5); line-height:1.4;}
+ol.find h3{margin-bottom:var(--s1);}
+.proof{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.75rem; color:var(--grey-7);
+  border-left:2px solid var(--grey-3); padding-left:var(--s2); margin-top:var(--s2); max-width:78ch;}
+
+.dist{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3); margin-top:var(--s3);}
+.dist > div{background:var(--white); padding:var(--s3);}
+.dist .k{font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; margin:0 0 var(--s1);}
+.dist .them .k{color:var(--grey-6);} .dist .us .k{color:var(--accent);}
+
+.rsq{border-top:1px solid var(--grey-2); padding:var(--s4) 0;}
+.rsq h3{max-width:60ch;}
+footer{border-top:1px solid var(--grey-2); padding-block:var(--s5); font-size:.875rem; color:var(--grey-6);}
+
+@media (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .prop,.dim{grid-template-columns:1fr; gap:var(--s4);}
+  .prop .div{display:none;}
+  .shots{grid-template-columns:1fr;}
+  h1{font-size:2.6875rem;}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="back" href="#">&larr; Apollo Reviews &middot; #246 lane O &middot; Opus baseline</a>
+    <span class="links">
+      <a href="#renders">Renders</a><a href="#inventory">Inventory</a><a href="#charts">Charts</a>
+      <a href="#interactions">Interactions</a><a href="#scores">Scores</a>
+      <a href="#compare">Opus vs Fable</a><a href="#findings">Findings</a><a href="#questions">Questions</a>
+    </span>
+  </div>
+</nav>
+
+<section>
+  <div class="wrap">
+    <p class="label">Baseline &middot; dated period record &middot; 5 September 2026</p>
+    <h1>The same prompt, run by a different model, against the same library</h1>
+    <p class="lede">Lane B ran this brief with Fable. This is the Opus 5 arm, run independently:
+      Arm A blind and frozen before anything was rendered, Arm B sighted with a cap of three
+      iterations, both then measured the same way. Neither of lane B's outputs was read until
+      both of these arms were frozen and measured.</p>
+    <p class="cap"><strong>Prompt (verbatim, frozen):</strong>
+      <code>/generate-from-canon build me a financial dashboard for corporate international
+      banking. Please make the all the interactive elements work such as filtering and
+      navigation.</code></p>
+
+    <div class="stats">
+      <div class="stat"><span class="n">19 / 26</span><span class="l">Arm A driven assertions</span></div>
+      <div class="stat"><span class="n">24 / 26</span><span class="l">Arm B, after sight</span></div>
+      <div class="stat"><span class="n">576px</span><span class="l">Arm A wall width at 1440</span></div>
+      <div class="stat"><span class="n">0</span><span class="l">Lines of JS authored, Arm A</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap prop">
+    <div>
+      <h2>What this page is, and what it is not</h2>
+    </div>
+    <div class="div"></div>
+    <div>
+      <p>It is a BEFORE picture, taken twice. Nothing in the library was fixed, edited or ruled
+        to produce it. Arm A is the VS Code condition — the pack surfaces, no eyes, no gate,
+        frozen the moment the skill said it was done. Arm B starts from Arm A's exact bytes and
+        adds a browser and the two gates, three iterations, each one logged.</p>
+      <p>It is <em>not</em> a verdict on which model is better. Where the two lanes diverge, this
+        page states what each did and what the library did to both. Two of the three biggest
+        differences turn out to be the library acting on a different choice, not a model acting
+        differently.</p>
+      <p class="cap">
+        Arm A &middot; <code>outputs/baseline-246-opus/arm-A-blind/dashboard.html</code> &middot; sha256 <code>81ecd996780a8eb7</code> &middot; mono, theme skipped &rArr; default announced<br>
+        Arm B &middot; <code>outputs/baseline-246-opus/arm-B-sighted/dashboard.html</code> &middot; 3 iterations, both gates still red &mdash; see finding 04<br>
+        Brief &middot; <code>outputs/baseline-246-opus/brief.md</code> &mdash; six questions, all skipped/defaulted; Dave was not asked<br>
+        Logs &middot; <code>arm-A-blind/READ-LOG.md</code> &middot; <code>arm-B-sighted/ITERATION-LOG.md</code> &middot; <code>*/drive.json</code> &middot; <code>toolbar-probe.json</code>
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="renders">
+  <div class="wrap">
+    <p class="label">Renders &mdash; 1440 and 820, light and dark, mono</p>
+    <h2>The blind arm shipped a 1440 page inside a 576px column</h2>
+    <p>Every component on the page is correct and every script runs. The wall is nonetheless
+      trapped in a narrow strip with two thirds of the viewport empty, because
+      <code>Tabs.reference.html</code> line 80 carries
+      <code>.tabs{width:var(--demo-width, 640px)}</code> — a demo dial — and the whole main
+      region inherits it. Nothing in the blind condition can see that. One render did.</p>
+
+    <div class="shots">
+      <div class="shot"><p class="c">Arm A &middot; 1440 &middot; light &mdash; wall 576px of 1440</p>
+        <img src="../outputs/baseline-246-opus/arm-A-blind/final-1440-light.png" alt="Arm A at 1440 light: the whole dashboard collapsed into a narrow left column"></div>
+      <div class="shot"><p class="c">Arm B &middot; 1440 &middot; light &mdash; wall 1376px</p>
+        <img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-light.png" alt="Arm B at 1440 light: a full-width bento wall, 2x2 KPI board"></div>
+      <div class="shot"><p class="c">Arm A &middot; 1440 &middot; dark</p>
+        <img src="../outputs/baseline-246-opus/arm-A-blind/final-1440-dark.png" alt="Arm A at 1440 dark"></div>
+      <div class="shot"><p class="c">Arm B &middot; 1440 &middot; dark</p>
+        <img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-dark.png" alt="Arm B at 1440 dark"></div>
+      <div class="shot"><p class="c">Arm A &middot; 820 &middot; light</p>
+        <img src="../outputs/baseline-246-opus/arm-A-blind/final-820-light.png" alt="Arm A at 820 light"></div>
+      <div class="shot"><p class="c">Arm B &middot; 820 &middot; light &mdash; wall bands to 2 columns</p>
+        <img src="../outputs/baseline-246-opus/arm-B-sighted/final-820-light.png" alt="Arm B at 820 light"></div>
+      <div class="shot"><p class="c">Arm A &middot; payments tab &middot; 1440 dark &mdash; the view switch has a zero-width indicator and an invisible label</p>
+        <img src="../outputs/baseline-246-opus/arm-A-blind/final-1440-dark-payments.png" alt="Arm A payments tab in dark mode"></div>
+      <div class="shot"><p class="c">Arm B &middot; payments tab &middot; 1440 dark &mdash; indicator placed, label legible</p>
+        <img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-dark-payments.png" alt="Arm B payments tab in dark mode"></div>
+      <div class="shot"><p class="c">Arm A &middot; payments tab &middot; 820 light</p>
+        <img src="../outputs/baseline-246-opus/arm-A-blind/final-820-light-payments.png" alt="Arm A payments tab at 820"></div>
+      <div class="shot"><p class="c">Arm B &middot; payments tab &middot; 820 light &mdash; grid min-width raised to 900</p>
+        <img src="../outputs/baseline-246-opus/arm-B-sighted/final-820-light-payments.png" alt="Arm B payments tab at 820"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="inventory">
+  <div class="wrap dim">
+    <div>
+      <span class="idx">01</span>
+      <p class="label">Inventory</p>
+      <p class="cap">Identical in both arms. Sight changed no component choice — it changed how
+        four of them behave. Levels are the showroom index's own.</p>
+    </div>
+    <div>
+      <h3>What was used</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Component (slug)</th><th>Level</th><th class="n">Instances</th><th>How it arrived</th></tr></thead>
+        <tbody>
+          <tr><td>template-dashboard-bento</td><td>template</td><td class="n">1</td><td>rule 7a — spliced, edited down; L290-462 + L470-756</td></tr>
+          <tr><td>app-shell-top-nav (masthead)</td><td>shell</td><td class="n">1</td><td>via the template, L673-703 + L793-805</td></tr>
+          <tr><td>page-header-lockup (breadcrumbs · headers · button)</td><td>block</td><td class="n">1</td><td>via the template, L544-582</td></tr>
+          <tr><td>layout-utilities</td><td>element</td><td class="n">—</td><td>via the template, L470-536</td></tr>
+          <tr><td>kpi-tile (incl. chart-sparkline)</td><td>element</td><td class="n">4</td><td>via the template, L586-614</td></tr>
+          <tr><td>stat-card</td><td>element</td><td class="n">4</td><td>via the template, L618-619</td></tr>
+          <tr><td>summary</td><td>element</td><td class="n">2</td><td>via the template, L629-633</td></tr>
+          <tr><td>status-indicator</td><td>element</td><td class="n">4</td><td>via the template, L638-644</td></tr>
+          <tr><td>chart-bar (column)</td><td>pattern</td><td class="n">1</td><td>markup via the template; <strong>controls, motion, tooltip and engine re-fetched from Chart-bar.reference.html</strong></td></tr>
+          <tr><td>filter-toolbar-bar (search-field · dropdown ×2 · segmented-control · tags)</td><td>block</td><td class="n">1</td><td>CSS L96-252, script L382-454 verbatim</td></tr>
+          <tr><td>data-grid (selection-controls · pagination · skeleton by reference)</td><td>pattern</td><td class="n">1</td><td>CSS L140-297, script L459-743, data replaced</td></tr>
+          <tr><td>tabs</td><td>element</td><td class="n">1</td><td>CSS L80-124, script L176-258 verbatim</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">By level: template 1 &middot; shell 1 &middot; block 2 &middot; pattern 2 &middot; element 6 kinds.</p>
+
+      <h3>Available in the dashboard set, not used</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Slug</th><th>Level</th><th>Why not</th></tr></thead>
+        <tbody>
+          <tr><td>runway-bar · limits-meter</td><td>element</td><td>the template composes neither, and <code>template-dashboard-bento.meta.json:12</code> says how many groups a screen has is the designer's decision, never the builder's</td></tr>
+          <tr><td>quick-actions</td><td>element</td><td>same — no group in the template holds one</td></tr>
+          <tr><td>stats-band-lockup</td><td>block</td><td>the template already carries a KPI board</td></tr>
+          <tr><td>sidebar-nav · app-shell-side-nav · app-shell-nav-rail</td><td>pattern / shell</td><td>the template draws a top masthead; a second shell inside it is a <code>mustNotNeighbour</code></td></tr>
+          <tr><td>chart-line · chart-donut · chart-combo · chart-bullet · chart-stacked-area</td><td>pattern</td><td>one chart was the judgement; nothing in the skill says how many charts a dashboard gets. The FX tab names its absence on the page.</td></tr>
+          <tr><td>transaction-row · account-card · amount-display · timeline</td><td>element / pattern</td><td>the grid answers the same question; <code>amount-display</code> is the money primitive the grid script does not consume (Gap G-6)</td></tr>
+          <tr><td>template-dashboard</td><td>template</td><td>correctly not used — rule 7a says it is not the answer to "build me a dashboard"</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="charts">
+  <div class="wrap dim">
+    <div>
+      <span class="idx">02</span>
+      <p class="label">Chart completeness</p>
+      <p class="cap">One chart on the page. It is whole in both arms as markup; only in Arm B does
+        its interaction layer actually run.</p>
+    </div>
+    <div>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Property</th><th>The bento template ships</th><th>Arm A</th><th>Arm B</th></tr></thead>
+        <tbody>
+          <tr><td>Engine script, byte-for-byte</td><td class="no">none</td>
+              <td class="ok">sha256 <code>28435b5953797506</code></td><td class="ok">same sha</td></tr>
+          <tr><td>&hellip; identical to <code>knowledge/canon/dv-behaviour.js</code></td><td>—</td><td class="ok">yes, 14,099 bytes</td><td class="ok">yes</td></tr>
+          <tr><td>Entry animation (<code>@keyframes dvGrowY</code> + <code>.dv-animate</code>)</td><td class="no">absent</td>
+              <td class="ok">present, <code>animationName: dvGrowY</code></td><td class="ok">same</td></tr>
+          <tr><td>Sort switch — three baked views</td><td class="no">absent</td>
+              <td class="no">present but <strong>inert</strong></td><td class="ok">works</td></tr>
+          <tr><td>Value tooltip on hover and focus</td><td class="no">absent</td>
+              <td class="no">unreachable (the hidden view could not be hovered)</td>
+              <td class="ok"><code>Hong Kong: US$940m</code></td></tr>
+          <tr><td>Copy data (CSV)</td><td class="no">absent</td><td class="ok">present</td><td class="ok">present</td></tr>
+          <tr><td>View as table popover</td><td class="no">absent</td><td class="ok">opens</td><td class="ok">opens, unclipped by the bento tile</td></tr>
+          <tr><td>Responsive fit engine re-pins the viewBox</td><td class="no">absent</td>
+              <td class="ok"><code>0 0 528 260</code></td><td class="ok"><code>0 0 620 260</code></td></tr>
+          <tr><td>Legend</td><td>—</td><td>n/a — single series has no legend in Chart-bar</td><td>n/a</td></tr>
+          <tr><td>Axis grid, baseline, per-bar <code>aria-label</code> + <code>data-tip</code></td><td class="ok">present</td><td class="ok">present</td><td class="ok">present</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">Other scripts, both arms, byte-identical to source:
+        filter-toolbar <code>f41136156c0d08ee</code> (its L382-454) &middot; tabs
+        <code>ed5492c7196f4961</code> (its L176-258). Data-grid's script is content-edited in both
+        (the <code>DATA</code> literal, a currency-aware money formatter, two extra columns) and
+        every handler in it is the snippet's own.</p>
+      <p class="cap"><strong>Geometry honesty note.</strong> <code>dv-behaviour.js</code> says chart
+        geometry is "generated, never computed here", and no generator is exposed to a builder. The
+        six bars re-use Chart-bar's own baked scale read off the snippet (y(0)=230, y(1000)=14,
+        0.216px per unit). This is the one place the build computes rather than copies, and it is
+        listed as a Gap in the read log.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="interactions">
+  <div class="wrap">
+    <p class="label">Interactions driven</p>
+    <h2>Four control clusters. In Arm A one of them answers; in Arm B, two.</h2>
+    <p>Playwright, 1440, both arms, same script — <code>_build/drive.py</code>, results in each
+      arm's <code>drive.json</code>. The toolbar probe is a separate run,
+      <code>toolbar-probe.json</code>.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Control</th><th>Arm A</th><th>Arm B</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>Bento wall uses the viewport</td><td class="no">no — 576px of 1440</td><td class="ok">yes — 1376px</td><td><code>.tpl-wall</code> bounding rect</td></tr>
+        <tr><td>KPI group is a board, not a stack</td><td class="no">2 tracks</td><td class="ok">6 tracks</td><td><code>gridTemplateColumns</code></td></tr>
+        <tr><td>Masthead nav ×4</td><td class="no">marks nothing</td><td class="no">marks nothing; jumps to the panel anchor</td><td><code>aria-current</code> unchanged after click, both arms</td></tr>
+        <tr><td>Tabs ×3 — panel swap</td><td class="ok">works</td><td class="ok">works</td><td>p2 shown, p1 hidden; indicator 207px</td></tr>
+        <tr><td>Tab keyboard (arrows/Home/End)</td><td class="ok">the snippet's own</td><td class="ok">same</td><td>Tabs L232-239, carried verbatim</td></tr>
+        <tr><td>Data-grid sort (Amount)</td><td class="ok">works</td><td class="ok">works</td><td><code>aria-sort=ascending</code>, top row &minus;US$9,600,000.00</td></tr>
+        <tr><td>Data-grid filter &rarr; chip &rarr; count</td><td class="ok">works</td><td class="ok">works</td><td>"Dubai" &rarr; 4 results, 1 chip</td></tr>
+        <tr><td>Data-grid pagination</td><td class="ok">works</td><td class="ok">works</td><td>page 2 &rarr; "9–16 of 24"</td></tr>
+        <tr><td>Data-grid row selection</td><td class="ok">works</td><td class="ok">works</td><td><code>aria-selected=true</code></td></tr>
+        <tr><td>Data-grid rows-per-page, edit-in-place, roving cell focus</td><td class="ok">the snippet's own</td><td class="ok">same</td><td>Data-grid L638-728, carried</td></tr>
+        <tr><td>Toolbar entity dropdown</td><td class="no">label only</td><td class="no">label only</td><td>24 results &rarr; 24 results</td></tr>
+        <tr><td>Toolbar currency dropdown</td><td class="no">label only</td><td class="no">label only</td><td>24 results &rarr; 24 results</td></tr>
+        <tr><td>Toolbar search field</td><td class="no">dead</td><td class="no">dead</td><td>"Dubai" + Enter &rarr; 24 results</td></tr>
+        <tr><td>Toolbar applied-filter chips</td><td class="no">dismiss only</td><td class="no">dismiss only</td><td>3 chips &rarr; 2; count unchanged</td></tr>
+        <tr><td>Toolbar view switch (Table/Cards)</td><td class="no">indicator zero-width at reveal; pressed label invisible in dark</td><td class="ok">placed at 57.5px; still switches nothing</td><td><code>.ind</code> style.width <code>0px</code> &rarr; <code>57.4688px</code></td></tr>
+        <tr><td>Chart sort switch</td><td class="no">inert</td><td class="ok">swaps the baked view</td><td>orig <code>dv-off</code> false &rarr; true</td></tr>
+        <tr><td>Chart tooltip</td><td class="no">unreachable</td><td class="ok">works</td><td><code>Hong Kong: US$940m</code></td></tr>
+        <tr><td>Chart view-as-table · copy CSV</td><td class="ok">opens</td><td class="ok">opens, unclipped</td><td>panel height &gt; 20px; fits inside the tile</td></tr>
+        <tr><td>KPI "view as table" button ×1</td><td class="no">dead</td><td class="no">dead</td><td>DOM unchanged after click</td></tr>
+        <tr><td>Masthead search / profile, Download, Initiate payment</td><td class="no">dead</td><td class="no">dead</td><td>no handler in any snippet</td></tr>
+        <tr><td><strong>Persistent</strong> — grid filter survives tab navigation</td><td class="ok">yes</td><td class="ok">yes</td><td>4 results &rarr; 4 results after Overview &rarr; Payments</td></tr>
+        <tr><td><strong>Persistent</strong> — anything survives reload</td><td class="no">no</td><td class="no">no</td><td>tab back to t1; <code>localStorage.length === 0</code></td></tr>
+        <tr><td>No horizontal page overflow at 820</td><td class="ok">0px</td><td class="ok">0px</td><td>scrollWidth − clientWidth</td></tr>
+        <tr><td>Console / page errors</td><td class="ok">0 / 0</td><td class="ok">0 / 0</td><td>all four render passes</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Data believability</h3>
+    <p>Plausible corporate international banking, invented: six group entities (Hong Kong,
+      Singapore, New York, Frankfurt, Dubai, São Paulo), seven currencies, SWIFT MT103, SEPA
+      credit, trade finance / LC drawdown, FX settlement, money-market placement, cash-pool sweep,
+      withholding tax; balances by currency; a KYC refresh and a returned MT103 in the attention
+      panel. The corridor chart values are authored to Chart-bar's own baked scale so the bars,
+      the <code>aria-label</code>s, the tooltips and the table view all agree.
+      <strong>Gap:</strong> no cut-off clock, no runway reading, no limits meter, and the FX tab
+      is a Summary list that names the two components it should have been.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="scores" class="band">
+  <div class="wrap dim">
+    <div>
+      <span class="idx">03</span>
+      <p class="label">Scores, 0&ndash;3</p>
+      <h3 style="font-size:2.125rem; font-weight:300; line-height:1.15;">Sight bought a page that fits its viewport and a chart that answers. It did not buy a richer dashboard.</h3>
+    </div>
+    <div>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Axis</th><th class="n">Arm A</th><th class="n">Arm B</th><th>The one fact that earned it</th></tr></thead>
+        <tbody>
+          <tr><td>Visually rich</td><td class="n">1</td><td class="n">2</td>
+            <td>A: the whole wall measured 576px inside a 1440 viewport, two thirds of the screen empty.
+                B: 1376px, a 2×2 KPI board and an animated chart — but one chart, and the chart tile
+                still carries a dead band under it where the group stretches to its neighbour's height.</td></tr>
+          <tr><td>Full</td><td class="n">2</td><td class="n">2</td>
+            <td>Three destinations, one of them thin: the FX tab is a four-row Summary that names
+                <code>chart-line</code> and <code>limits-meter</code> as the components it should have
+                been. Fifteen dashboard-set components sat on the shelf.</td></tr>
+          <tr><td>Persistent</td><td class="n">1</td><td class="n">1</td>
+            <td>The grid's filter and sort survive a tab round trip (4 results &rarr; 4 results, measured);
+                nothing survives a reload and <code>localStorage.length === 0</code>. See RSQ 1 —
+                lane B scored this axis 0 on the same two facts.</td></tr>
+          <tr><td>Interactive</td><td class="n">1</td><td class="n">2</td>
+            <td>Of four control clusters — masthead, toolbar, chart, grid — A answers on one (grid);
+                B answers on two (grid + chart). The toolbar filters nothing in either arm:
+                every one of its five controls leaves the grid at 24 results.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Judgement, labelled as one.</strong> Sentence 1 alone — <em>"build me a financial
+        dashboard for corporate international banking"</em> — would have stopped at the bento
+        template spliced and re-contented, plus its own static chart: no tabs, no grid, no toolbar,
+        no chart engine. Rich 2, full 1, persistent 0, interactive 0. The appended second sentence
+        is the entire reason a builder went looking for <code>&lt;script&gt;</code> blocks at all,
+        because no rule in the skill tells it to.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="compare">
+  <div class="wrap">
+    <p class="label">Opus vs Fable &mdash; same brief, same library, two independent runs</p>
+    <h2>Two of the three big differences are the library, not the model</h2>
+    <p class="cap">Lane B: <code>reviews/BASELINE-246-2026-09-05-v1.html</code> and
+      <code>notes/_subreports/2026-09-05-246-B-baseline.md</code>, read only after both arms here
+      were frozen and measured. No verdict is offered on which run is better.</p>
+
+    <h3>Scores side by side</h3>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Axis</th><th class="n">Fable A</th><th class="n">Fable B</th><th class="n">Opus A</th><th class="n">Opus B</th><th>Where the number comes from</th></tr></thead>
+      <tbody>
+        <tr><td>Visually rich</td><td class="n">2</td><td class="n">2</td><td class="n">1</td><td class="n">2</td>
+          <td>Opus A is lower because a demo width from a third snippet narrowed the page; Fable's blind arm did not carry that snippet's width rule</td></tr>
+        <tr><td>Full</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td>same reading, different content: Fable composed two charts, Opus one</td></tr>
+        <tr><td>Persistent</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td class="n">1</td>
+          <td>identical measurements — reload resets, 0 storage keys. The difference is what "persistent" is taken to mean (RSQ 1)</td></tr>
+        <tr><td>Interactive</td><td class="n">2</td><td class="n">2</td><td class="n">1</td><td class="n">2</td>
+          <td>Fable's blind arm authored 14 lines of glue and got nav + currency filtering; Opus's authored none and got the grid's own controls</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Inventory</h3>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Choice</th><th>Fable (lane B)</th><th>Opus (lane O)</th></tr></thead>
+      <tbody>
+        <tr><td>Spine</td><td>template-dashboard-bento, spliced</td><td>same</td></tr>
+        <tr><td>Charts</td><td>chart-line (multi-series, whole, with legend) + the template's static chart-bar</td><td>chart-bar (single series) with its toolbar, motion and engine re-fetched; no second chart</td></tr>
+        <tr><td>Navigation</td><td>masthead ×4 + tabs ×4, both driven by authored glue</td><td>tabs ×3 driven by the Tabs snippet's own script; masthead left as anchors and declared dead</td></tr>
+        <tr><td>Grid, toolbar</td><td>data-grid + filter-toolbar-bar</td><td>same</td></tr>
+        <tr><td>Unused dashboard-set components</td><td>runway-bar, limits-meter, quick-actions, stats-band-lockup, sidebar-nav, app-shell-*, most charts</td><td>the same list, plus chart-line, plus amount-display</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>The three differences, named</h3>
+    <div class="dist">
+      <div class="them">
+        <p class="k">Fable — Arm A authored 14 lines of glue</p>
+        <p>Its blind arm met "make filtering and navigation work" by writing handlers, which rule 2a
+          forbids, and reported the violation. Result: masthead nav and a currency filter that
+          actually filter.</p>
+      </div>
+      <div class="us">
+        <p class="k">Opus — Arm A authored none</p>
+        <p>Its blind arm carried each component's own <code>&lt;script&gt;</code> verbatim instead:
+          sort, filter, pagination, selection, edit-in-place, tabs and the chart engine all arrive
+          from the library. The three lines Opus does author appear in Arm B, after a render showed
+          an invisible control, and are flagged as a rule-2a violation on the page.</p>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:var(--s2);"><strong>What the library did to both:</strong> neither
+      arm could wire the toolbar to the grid without authoring, because
+      <code>Filter-toolbar-bar.reference.html</code> L388-405 only writes the trigger label. Fable
+      authored and got a working currency filter; Opus did not and shipped a decorative toolbar.
+      Same defect, two different honest answers.</p>
+
+    <div class="dist" style="margin-top:var(--s4);">
+      <div class="them">
+        <p class="k">Fable — went green by leaving the splice model</p>
+        <p>At iteration 2 lane B switched to canon.css-linked <code>.cn-*</code> composition and both
+          gates exit 0 at iteration 3.</p>
+      </div>
+      <div class="us">
+        <p class="k">Opus — stayed spliced and both gates stay red</p>
+        <p>Arm B still fails <code>compose</code> on 188 hex colours and a <code>.c-bento</code>
+          redefinition, and fails the receipt gate for having no receipt. A control run proves the
+          gate is failing the library, not the page: the gated template snippet itself fails the same
+          two clauses (finding 04).</p>
+      </div>
+    </div>
+
+    <div class="dist" style="margin-top:var(--s4);">
+      <div class="them">
+        <p class="k">Fable — blind defects: a truncated CSS copy and a serif fallback</p>
+        <p>A stacked toolbar from a CSS copy that stopped at L231, and tabs rendering in a serif
+          because the tab rule depended on a body font the template does not declare.</p>
+      </div>
+      <div class="us">
+        <p class="k">Opus — blind defects: a demo width and a behaviour collision</p>
+        <p>A 640px demo dial narrowed the whole page, and two copies of the segmented atom on one page
+          fought: the toolbar's inlined handler set <code>aria-pressed</code> as the click bubbled, so
+          <code>dv-behaviour.js</code>'s early return killed the chart's sort switch.</p>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:var(--s2);"><strong>What the library did to both:</strong> all four
+      blind defects are the same class — a snippet's demo scaffolding, or a duplicated atom, leaking
+      into a composed page and being invisible to every gate. Two models, four different symptoms,
+      one cause.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">Findings</p>
+    <h2>Each one a fact and the file that proves it</h2>
+    <ol class="find">
+      <li><div>
+        <h3>Rule 2a's behaviour address is unpopulated for every component this dashboard needs.</h3>
+        <p>The skill says a behaving component "declares its ADDRESS in
+          <code>knowledge/components/&lt;slug&gt;.meta.json</code> (<code>behaviour.script</code>)".
+          A builder that follows that literally finds nothing and ships a dead page. This build has
+          working interactions only because it went looking for a <code>&lt;script&gt;</code> in the
+          snippet body, which no rule tells it to do.</p>
+        <p class="proof">20 of 137 metas carry a <code>behaviour</code> key. None of
+          data-grid, filter-toolbar-bar, tabs, sidebar-nav, segmented-control, chart-bar, chart-line,
+          chart-donut, chart-combo or template-dashboard-bento is among them.
+          Probe: <code>outputs/baseline-246-opus/arm-A-blind/READ-LOG.md</code> §5 G-1.</p>
+      </div></li>
+
+      <li><div>
+        <h3>The bento template ships its chart with the attributes of an interactive chart and none of the machinery.</h3>
+        <p>Every dashboard starts here, by rule 7a. The template splices Chart-bar's rects complete
+          with <code>data-grow="up"</code>, <code>animation-delay</code>, <code>data-tip</code>,
+          <code>tabindex="0"</code> and <code>role="img"</code> — and carries no
+          <code>@keyframes dvGrowY</code>, no <code>.dv-animate</code>, no <code>.dv-tip</code>, no
+          controls and no script. The attributes are inert. Recovering the layer cost a second file
+          of 1,384 lines.</p>
+        <p class="proof">Template-dashboard-bento.reference.html L931-936 (the rects) against a grep
+          of the same file for <code>keyframes|dv-animate|dv-tip|dv-csv|dv-tablepanel|fitCharts</code>
+          — all ABSENT. This is Dave's "the charts are only partially retrieved", located in the file.</p>
+      </div></li>
+
+      <li><div>
+        <h3>Three snippets on one page carry a demo width, and one of them silently ate two thirds of the viewport.</h3>
+        <p><code>Tabs.reference.html</code> L80, <code>Data-grid.reference.html</code> L144 and
+          <code>Filter-toolbar-bar.reference.html</code> L256 each size themselves from a
+          <code>--demo-width</code> fallback. s210-D3 rules that the container decides. The blind arm
+          carried all three faithfully and rendered a 1440 page inside 576 pixels, with every gate
+          green over it.</p>
+        <p class="proof"><code>.tabs{ width:var(--demo-width, 640px); max-width:100%; }</code> —
+          Tabs.reference.html:80. Measured: <code>.tpl-wall</code> 576px of 1440
+          (arm-A-blind/drive.json), 1376px after the one-line fix (arm-B-sighted/drive.json).</p>
+      </div></li>
+
+      <li><div>
+        <h3>The composed-screen gate fails the library's own gated template on the same two clauses it fails this page on.</h3>
+        <p>A page built by obeying rule 2 — splice the snippet — cannot pass <code>compose</code>,
+          because the snippets' own theme blocks are raw hex and the bento grammar the template tells
+          you to copy is a canon-class redefinition. This is not a property of the page; it is a
+          contradiction between two rules, and it was proved by running the gate on the template.</p>
+        <p class="proof">Arm B: <code>compose: ❌ 188 hex colour(s) in &lt;style&gt;; redefines canon
+          class(es): ['c-bento', 'c-bento__caption', 'c-bento__grid', 'c-bento__tile']</code>.<br>
+          Control, same gate, on <code>knowledge/snippets/Template-dashboard-bento.reference.html</code>:
+          <code>compose: ❌ 130 hex colour(s); redefines canon class(es): ['c-bento', 'c-bento__caption',
+          'c-bento__grid', 'c-bento__tile']</code> — RESULT: FAIL. Lane B reached exit 0 only by
+          abandoning the splice model at its iteration 2.</p>
+      </div></li>
+
+      <li><div>
+        <h3>Two copies of the segmented atom on one page, and the older copy silently disables the newer one.</h3>
+        <p><code>Filter-toolbar-bar</code> inlines the Segmented-control handler and binds it to
+          <em>every</em> <code>.seg button</code> on the document. It sets
+          <code>aria-pressed="true"</code> as the click bubbles. <code>canon/dv-behaviour.js</code>
+          then receives the same click and its first line is
+          <code>if (btn.getAttribute('aria-pressed') === 'true') return;</code>. The chart's sort
+          switch never runs. Nothing errors; the console is clean.</p>
+        <p class="proof">Filter-toolbar-bar.reference.html L413-416 vs
+          knowledge/canon/dv-behaviour.js L212. Measured Arm A:
+          <code>chart sort switch — orig off=False, desc on=False</code>. After scoping the toolbar's
+          copy to <code>.ftb-view</code>: <code>orig off=True, desc on=True</code>.</p>
+      </div></li>
+
+      <li><div>
+        <h3>A component revealed by a tab measures zero and never re-measures, and in dark mode that makes its label disappear.</h3>
+        <p>The segmented indicator is positioned by <code>getBoundingClientRect</code> at load. Inside
+          a <code>hidden</code> tab panel every rectangle is zero, so the white indicator has width 0,
+          and <code>.seg button[aria-pressed=true]{color:var(--on-sel)}</code> paints #333333 text on
+          the #1F1F1F surface it was supposed to sit above. The pack has no lifecycle hook, no
+          re-place entry point, and <code>placeAll</code> is bound only to <code>resize</code>.</p>
+        <p class="proof">Arm A: <code>.ind style.width = "0px"</code> at first reveal;
+          <code>arm-A-blind/final-1440-dark-payments.png</code> shows the sliver and the missing label.
+          The three lines Arm B authors to fix it are the page's only authored JavaScript and are a
+          declared rule-2a violation (<code>ITERATION-LOG.md</code>, B-i2-b).</p>
+      </div></li>
+
+      <li><div>
+        <h3>The filter toolbar filters nothing, in either arm, and could not without authoring.</h3>
+        <p>Every one of its five controls behaves correctly as a control — the dropdown opens, roves,
+          commits a label; the chips dismiss with focus management; the segmented indicator slides —
+          and none of them is connected to anything. The block is a control bar with no consumer.</p>
+        <p class="proof"><code>toolbar-probe.json</code>: entity dropdown, currency dropdown, toolbar
+          search, chip dismiss — all <code>24 results → 24 results</code>, both arms.
+          Filter-toolbar-bar.reference.html L393: <code>choose()</code> writes
+          <code>val.textContent</code> and closes the menu. That is the whole contract.</p>
+      </div></li>
+
+      <li><div>
+        <h3>Nothing on the page survives a reload, and no rule anywhere asks it to.</h3>
+        <p>State inside a session is real: the grid's filter, sort, page and selection survive tab
+          navigation because the DOM is never rebuilt. Across a reload everything resets. There are
+          zero storage keys, and neither the skill, the metas nor the guidelines mention persistence.</p>
+        <p class="proof">After reload the selected tab is <code>t1</code> and
+          <code>localStorage.length === 0</code>, both arms (<code>drive.json</code>,
+          <code>toolbar-probe.json</code>). Dave's word was "persistent"; the library has no
+          vocabulary for it.</p>
+      </div></li>
+
+      <li><div>
+        <h3>The chart's geometry is mint-time and the mint is not reachable from a build.</h3>
+        <p><code>dv-behaviour.js</code> is explicit: "geometry is generated, never computed here".
+          The generator is <code>canon/gen_canon_bento.py</code>'s sibling in the dataviz pipeline and
+          nothing in the skill points a builder at it. To put its own numbers on the chart the build
+          had to read the baked scale off the snippet and extrapolate.</p>
+        <p class="proof">knowledge/canon/dv-behaviour.js L180.
+          <code>_build/build_arm_a.py</code>, <code>bars()</code> — the one function in the compositor
+          that computes rather than slices, declared as Gap in READ-LOG §4.</p>
+      </div></li>
+
+      <li><div>
+        <h3>Six visual values had to be renamed to compose four snippets, and the library already knows this class of bug.</h3>
+        <p><code>--border</code> means <em>border/subtle</em> (#E1E1E1) in the template and
+          <em>form/border/default</em> (#808080) in the toolbar; <code>.sep</code> is a breadcrumb
+          separator in one and a menu divider in the other. Put them on one page and one silently wins.
+          The template's own header records the identical class at <code>--grid-alpha</code> and calls
+          it "a sixth member for W-59's ledger". This build adds a seventh and an eighth.</p>
+        <p class="proof">Template-dashboard-bento.reference.html L196-205 (the W-59 note) against
+          Filter-toolbar-bar.reference.html L68 and L161. Renames declared in READ-LOG §3, A-e1 and A-e2.</p>
+      </div></li>
+
+      <li><div>
+        <h3>No page-level navigation behaviour exists anywhere in the library.</h3>
+        <p>The masthead every dashboard inherits is four <code>&lt;a href="#"&gt;</code> and a CSS
+          <code>aria-current</code> underline. There is no shell-level script. In-page navigation had
+          to be borrowed from <code>tabs</code>, an <em>element</em>. The masthead links are dead by
+          construction in both arms and in both lanes.</p>
+        <p class="proof">Template-dashboard-bento.reference.html L795-800 and L689-695 — markup and CSS,
+          no script. <code>app-shell-*.meta.json</code>: no <code>behaviour</code> key on any of the six.</p>
+      </div></li>
+
+      <li><div>
+        <h3>Context was not the constraint for this model, so the pack's retrieval cost is untested by this lane.</h3>
+        <p>Dave's diagnosis is that VS Code retrieves partially. This run read every file it wanted:
+          five snippets in full, the whole index, all 137 metas probed. If a real Copilot session
+          cannot, the cause is the host's budget, not the pack's shape — and that is a different fix
+          from the one the other findings ask for.</p>
+        <p class="proof">READ-LOG §1, last row. Largest single reads: Template-dashboard-bento
+          1,172 lines, Chart-bar ~330 of 1,384, Data-grid 746, Filter-toolbar-bar 457.</p>
+      </div></li>
+    </ol>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="questions" class="band">
+  <div class="wrap">
+    <p class="label">Ruling-shaped questions</p>
+    <h2>Only Dave can settle these. Nothing below has been decided.</h2>
+
+    <div class="rsq">
+      <h3>1 &middot; What does "persistent" mean on the scoring rubric — across navigation, or across a reload?</h3>
+      <p>The two lanes measured the same two facts and scored the axis differently (Fable 0, Opus 1)
+        because the word is undefined. Whichever it is, it decides whether #247 needs a storage
+        contract or only a DOM one.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>2 &middot; Which rule gives way — rule 2 (splice the snippet) or the compose gate?</h3>
+      <p>They cannot both hold: the gated template fails the gate. Either the snippets stop carrying
+        their own theme blocks and start linking canon.css, or the compose gate learns that a spliced
+        page is a legitimate shape. Lane B chose the first by iterating; this lane chose neither and
+        reported the contradiction.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>3 &middot; May a composed screen author the glue that connects two components?</h3>
+      <p>Rule 2a says no. A filter toolbar that filters nothing, a masthead that navigates nothing and
+        a segmented control that measures zero are all the same consequence. If the answer stays no,
+        something in the library has to grow a wiring contract; if it becomes yes, the rule needs a
+        boundary so "glue" does not become "a hand-rolled component".</p>
+    </div>
+
+    <div class="rsq">
+      <h3>4 &middot; Should <code>behaviour.script</code> be mandatory on every meta whose snippet carries a script?</h3>
+      <p>Twenty of 137 carry it today and none of the dashboard set does. A gate that fails a meta
+        whose snippet has a <code>&lt;script&gt;</code> and whose meta has no
+        <code>behaviour</code> key would close finding 01 mechanically.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>5 &middot; Should <code>--demo-width</code> be forbidden in a snippet?</h3>
+      <p>Three of the five snippets on this page size themselves from one, against s210-D3. A grep gate
+        is a few lines. The alternative is that every consumer keeps discovering it by rendering.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>6 &middot; Should the bento template carry a whole chart, or an explicitly empty chart slot?</h3>
+      <p>It currently carries neither: it carries a chart that looks whole in the markup and does
+        nothing. Both options are honest; the present state is the one that misleads a builder.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>7 &middot; How many charts and how many groups does a dashboard get?</h3>
+      <p><code>template-dashboard-bento.meta.json:12</code> already says group count is the designer's
+        decision, never the builder's. The consequence is that every blind build ships the template's
+        three groups and one chart, and "fuller" is unreachable by construction. Fable composed two
+        charts, Opus one, and neither had a rule to appeal to.</p>
+    </div>
+
+    <div class="rsq">
+      <h3>8 &middot; Is a duplicated atom (two <code>.seg</code> copies, two segmented handlers) a build error?</h3>
+      <p>Today it is silent and it disabled a working control. W-59's ledger already tracks the CSS
+        half; the JavaScript half has no ledger at all.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>#246 lane O &middot; Opus 5 &middot; dated period record (ADR-0017) &middot; 5 September 2026.
+      Read-only against canon, knowledge, showroom and apollo-spider. Nothing moved, nothing ruled,
+      nothing committed. The two gates were run with their <code>knowledge/</code> writes redirected
+      to <code>outputs/baseline-246-opus/_gate-out/</code>; a <code>find -newermt</code> check
+      confirms no file under <code>knowledge/</code> was touched.</p>
+    <p>Subreport: <code>notes/_subreports/2026-09-05-246-O-opus-baseline.md</code>.</p>
+  </div>
+</footer>
+
+</body>
+</html>

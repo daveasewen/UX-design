@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard principles — draft for ruling (#246 lane P)</title>
+<style>
+  :root{
+    --accent:#DB0011; --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif; color:var(--black); background:var(--white); font-size:16px; line-height:1.7}
+  a{color:var(--black)}
+  nav.top{position:sticky; top:0; background:var(--white); border-bottom:1px solid var(--grey-2); height:56px; display:flex; align-items:center; padding:0 var(--s4); gap:var(--s4); font-size:14px; z-index:5}
+  nav.top .ctx{color:var(--grey-6)}
+  nav.top .links{margin-left:auto; display:flex; gap:var(--s3); flex-wrap:wrap}
+  nav.top .links a{color:var(--grey-6); text-decoration:none; letter-spacing:.04em}
+  nav.top .links a:hover{color:var(--black)}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4)}
+  section{padding:var(--s6) 0; border-bottom:1px solid var(--grey-2)}
+  section.major{padding:var(--s7) 0}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3)}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent)}
+  h1{font-size:57px; line-height:1.05; font-weight:400; letter-spacing:0; margin:0 0 var(--s3)}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3)}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:var(--s4) 0 var(--s2)}
+  p{margin:0 0 var(--s2); max-width:68ch}
+  .head{display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); align-items:start}
+  .meta{font-size:14px; color:var(--grey-7); line-height:1.6}
+  .meta dt{font-weight:500; color:var(--black); margin-top:var(--s2)} .meta dd{margin:0}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s3); margin-top:var(--s4)}
+  .stat .n{font-size:43px; font-weight:200; line-height:1; letter-spacing:0}
+  .stat .c{font-size:12px; color:var(--grey-6); margin-top:var(--s1); letter-spacing:.04em}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start}
+  .dim .idx{font-size:84px; font-weight:100; line-height:1; color:var(--grey-3)}
+  .dim .dl{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--grey-6); margin-top:var(--s2)}
+  table{border-collapse:collapse; width:100%; font-size:14px; line-height:1.5; margin:var(--s2) 0 var(--s3)}
+  th,td{text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--grey-2)}
+  th{font-weight:500; border-bottom:1px solid var(--black)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em; background:var(--grey-1); padding:1px 4px}
+  .band{background:var(--grey-1)}
+  .verdict{font-size:34px; line-height:1.2; font-weight:400}
+  /* seeds */
+  .seed{display:grid; grid-template-columns:1fr; gap:var(--s3); padding:var(--s4) 0; border-top:1px solid var(--grey-2); align-items:start}
+  .seed blockquote{margin:0; font-size:19px; line-height:1.5; max-width:64ch}
+  .seed blockquote::before{content:'“'} .seed blockquote::after{content:'”'}
+  .seed .who{font-size:12px; color:var(--grey-6); letter-spacing:.04em; margin-top:var(--s1)}
+  .seed .defect{font-size:14px; color:var(--grey-7)}
+  .seed .defect b{color:var(--black); font-weight:500}
+  .crop{position:relative; overflow:hidden; border:1px solid var(--grey-2); background:var(--white); margin:var(--s2) 0 var(--s1)}
+  .crop img{display:block; width:100%; height:auto}
+  .crop.kpi{aspect-ratio:1440/313} .crop.kpi img{transform:translateY(-37.2%)}
+  .crop.bento{aspect-ratio:1440/540} .crop.bento img{transform:translateY(-54.1%)}
+  .crop.filters{aspect-ratio:1440/115} .crop.filters img{transform:translateY(-22.9%)}
+  .crop.opus-rail{aspect-ratio:1440/200} .crop.opus-rail img{transform:translateY(-80.8%)}
+  .crop figcaption,.cap{font-size:12px; color:var(--grey-6); letter-spacing:.04em; margin-top:var(--s1)}
+  /* digest */
+  ol.digest{padding-left:0; list-style:none; counter-reset:d; margin:0 0 var(--s3)}
+  ol.digest li{counter-increment:d; display:grid; grid-template-columns:40px 1fr; gap:var(--s2); padding:var(--s2) 0; border-top:1px solid var(--grey-2); font-size:15px; line-height:1.55}
+  ol.digest li::before{content:counter(d,decimal-leading-zero); font-size:19px; font-weight:200; line-height:1.4; color:var(--grey-5)}
+  ol.digest li a{font-size:12px; color:var(--grey-6); word-break:break-all; display:block; margin-top:2px}
+  /* principles */
+  .dp{border-top:1px solid var(--black); padding:var(--s3) 0 var(--s4); display:grid; grid-template-columns:120px 1fr; gap:var(--s3)}
+  .dp .id{font-size:24px; font-weight:200; line-height:1.2}
+  .dp .id small{display:block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6); margin-top:var(--s1); font-weight:500}
+  .dp .st{font-size:19px; line-height:1.45; margin:0 0 var(--s2); max-width:none}
+  .dp dl{margin:0; font-size:14px; line-height:1.55; display:grid; grid-template-columns:110px 1fr; gap:4px var(--s2)}
+  .dp dt{color:var(--grey-6); letter-spacing:.04em} .dp dd{margin:0; max-width:72ch}
+  .dp dd a{color:var(--grey-6); font-size:12px; word-break:break-all}
+  .tag{display:inline-block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; padding:1px 6px; border:1px solid var(--black); font-weight:500}
+  .tag.adv{border-color:var(--grey-5); color:var(--grey-7)} .tag.rev{border-style:dashed} .tag.taste{border-color:var(--grey-3); color:var(--grey-6)}
+  /* P2 addition marker — the signal group, added the same afternoon by lane P2 */
+  h3.p2, .group.p2 > h3{border-left:3px solid var(--black); padding-left:var(--s2)}
+  span.p2{color:var(--grey-7)}
+  /* P3 addition marker — the locality group + the HELD banding thought, same afternoon, lane P3 */
+  h3.p3, .group.p3 > h3{border-left:3px double var(--black); padding-left:var(--s2)}
+  span.p3{color:var(--grey-7)}
+  .held{border-top:1px dashed var(--grey-5); padding:var(--s3) 0 var(--s4); display:grid; grid-template-columns:120px 1fr; gap:var(--s3); background:var(--grey-1); margin-top:var(--s3)}
+  .held .id{font-size:24px; font-weight:200; line-height:1.2; color:var(--grey-6)}
+  .held .id small{display:block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6); margin-top:var(--s1); font-weight:500}
+  .held .st{font-size:19px; line-height:1.45; margin:0 0 var(--s2); max-width:none; color:var(--grey-8)}
+  .held dl{margin:0; font-size:14px; line-height:1.55; display:grid; grid-template-columns:110px 1fr; gap:4px var(--s2)}
+  .held dt{color:var(--grey-6); letter-spacing:.04em} .held dd{margin:0; max-width:72ch}
+  .held dd a{color:var(--grey-6); font-size:12px; word-break:break-all}
+  .tag.held{border-style:dotted; color:var(--grey-6); border-color:var(--grey-5)}
+  .group{margin-top:var(--s6)}
+  .group:first-of-type{margin-top:0}
+  .group h3{font-size:24px; font-weight:400; margin:0 0 var(--s3)}
+  /* enact */
+  .enact td:first-child{font-weight:500; white-space:nowrap}
+  ol.rsq{padding-left:0; list-style:none; counter-reset:q}
+  ol.rsq li{counter-increment:q; display:grid; grid-template-columns:64px 1fr; gap:var(--s3); padding:var(--s3) 0; border-top:1px solid var(--grey-2); max-width:none}
+  ol.rsq li::before{content:'Q' counter(q); font-size:24px; font-weight:200; line-height:1.2; color:var(--grey-5)}
+  ol.rsq .q{font-weight:500; margin:0 0 var(--s1)}
+  ol.rsq .opts{font-size:14px; color:var(--grey-7); margin:0}
+  .quote{border-top:1px solid var(--grey-2); padding-top:var(--s3); font-size:19px; max-width:60ch; margin-top:var(--s4)}
+  footer{padding:var(--s5) 0; font-size:12px; color:var(--grey-6)}
+  @media (max-width:820px){ .head,.dim,.dp,.held{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} h1{font-size:43px} .dp dl,.held dl{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="../reviews/">← Apollo Reviews</a>
+  <span class="ctx">#246 lane P · dashboard principles · DRAFT</span>
+  <div class="links">
+    <a href="#seeds">Seeds</a><a href="#digest">Research</a><a href="#principles">Principles</a><a href="#enact">Enact</a><a href="#rsq">Questions</a>
+  </div>
+</nav>
+
+<section class="major">
+  <div class="wrap">
+    <p class="label">Draft principles · dated period record · 5 September 2026</p>
+    <div class="head">
+      <div>
+        <h1>Dashboard composition: reveal, density, execute, rhythm, signal, locality</h1>
+        <p>Two baselines ran the demo prompt cold on 5 September and both produced the same page: a 2×2 KPI board, a symmetric 3/3 bento, an always-open filter bar, and a "Needs attention" list that can only be looked at. Nothing in the 470-rule index told the builder otherwise. This page turns Dave's six seeds and the published literature into twenty-nine draft principles in the <code>_rules-index.json</code> shape, each pinned to the defect it would have prevented. <b>Nothing here is ruled.</b> Every tag is proposed; every question in § 05 is Dave's. <span class="p2">Lane P2 added the fifth group, <b>signal (preattentive)</b>, DP-19…27, from Dave's seed of the same afternoon.</span> <span class="p3">Lane P3 added the sixth, <b>locality</b>, DP-28…29, plus one thought Dave asked to <b>hold</b> — the horizon/banding idea — validated, not encoded, not built.</span></p>
+      </div>
+      <dl class="meta">
+        <dt>Baselines read</dt><dd><code>reviews/BASELINE-246-2026-09-05-v1.html</code> (Fable, lane B) · <code>reviews/BASELINE-246-OPUS-2026-09-05-v1.html</code> (Opus, lane O)</dd>
+        <dt>Existing rules grepped</dt><dd><code>knowledge/guidelines/_rules-index.json</code> — 470 rules; 63 touch filters, hierarchy, density or charts; <b>0</b> mention dashboard composition, progressive disclosure, KPI rows or bento rhythm. Signal (P2): 167 rules touch colour, motion, weight, size or status; the preattentive <em>attributes</em> are partly encoded (avd-001, dv-011/012, icon-013, neuro-014/036, col26-003, type26-009) but <b>0</b> rules tier them, budget them, or bind colour to a metric's meaning; "cockpit" — 0 hits anywhere in the repo. <span class="p3">Locality (P3): proximity is encoded once, as an accessibility rule (aid-004 "group elements that belong together … form errors close to their fields"); added-content placement at acd-023 ("place it AFTER its trigger"); landmarks at acd-005 and in all seven app-shell snippets (header · nav · main · footer[contentinfo]); toast scope at ctkn-004 and <code>toast.meta.json</code> antiPatterns ("an action that exists ONLY in the toast"); popconfirm's anchor rule ("if the object is off-screen … the pattern should be a Modal"); the edges <code>triggeredBy</code> (13 of 137 metas, 2 with a resolved ref) and <code>groupsWith</code> (s245-D7). <b>0</b> rules say where an action lives relative to what it acts on, and <b>0</b> say where feedback appears relative to the trigger; "horizon" / tonal banding — 0 hits</span></dd>
+        <dt>Rulings that bind</dt><dd>s217-D2/D3/D5 · s218-D1 · s219-D1/D3 · s234-D4 · s245-D6/D7/D8/D9 · s182-D2 · s165-D6 — cited where they close a question. Signal: s151-D1 (two-red law) · s155-D1 (green mirrors it) · s144-D1 (the only coloured text) · s182-D3 (spark stroke is semantic) · s157-D1 ("an unsigned amount is not a success state") · s122-D2 (mono RAG map)</dd>
+        <dt>Sources</dt><dd>14 web sources (lane P) + 9 (lane P2) + 12 (lane P3), primary over secondary; every principle cites one or Dave's words, else it is TASTE and says so</dd>
+      </dl>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">6</div><div class="c">seeds, Dave's words verbatim</div></div>
+      <div class="stat"><div class="n">29</div><div class="c">draft principles DP-01…29 + 1 HELD</div></div>
+      <div class="stat"><div class="n">5·4·4·5·9·2</div><div class="c">reveal · density · execute · rhythm · signal · locality</div></div>
+      <div class="stat"><div class="n">16</div><div class="c">ruling-shaped questions</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 01 SEEDS ============================== -->
+<section id="seeds">
+  <div class="wrap">
+    <div class="dim">
+      <div><div class="idx">01</div><div class="dl">The six seeds</div></div>
+      <div>
+        <h2>Dave's words, each beside the defect it names</h2>
+        <p>Both arms of both baselines share the defects below; the crops are the sighted arms at 1440 light. Line numbers are the built pages, not the snippets.</p>
+
+        <div class="seed">
+          <div>
+            <blockquote>both chose the 2x2 lock-up for the stats a designer wouldn't do this, they would make it vertically dense by having them in a row, also filters would probably be dismissible for the same reason, then the designer simply decides on the default state. maybe we need guidance on progressive reveal strategies, there are many we should research the subject so we have principles and rules around this.</blockquote>
+            <div class="who">Dave · 2026-09-05</div>
+          </div>
+          <div class="defect">
+            <b>Defect: the 2×2 board.</b> Four <code>kpi-tile</code>s at <code>data-c="3"</code> in a 6-column group — <code>outputs/baseline-246/arm-B-sighted/dashboard.html</code> L236–276 and <code>outputs/baseline-246-opus/arm-B-sighted/dashboard.html</code> L1284–1311. Two rows of 120px where one row of four would do; the chart lands 310px lower than it needs to.
+            <figure class="crop kpi"><img src="../outputs/baseline-246/arm-B-sighted/render-1440-light.png" alt="Fable arm B: four KPI tiles arranged two by two"><figcaption>Fable · arm B · 1440 light · the KPI group</figcaption></figure>
+            <b>Defect: the always-open filter bar.</b> <code>filter-toolbar-bar</code> spliced at L158–202 (Fable) with search, two dropdowns, a period switch and two chips permanently open above the tabs — and filtering nothing (both baselines' drive.json). No default state was decided; the snippet's demo state shipped.
+            <figure class="crop filters"><img src="../outputs/baseline-246/arm-B-sighted/render-1440-light.png" alt="Fable arm B: the filter toolbar row"><figcaption>Fable · arm B · the toolbar, open by default, two applied chips nobody applied</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="seed">
+          <div>
+            <blockquote>When I think of a dashboard I think of something more complex on an overview, with the options to execute on this page, I also think that a summary/feedback on actions tasks and statuses are always important.</blockquote>
+            <div class="who">Dave · 2026-09-05</div>
+          </div>
+          <div class="defect">
+            <b>Defect: nothing executes on the page.</b> Both "Needs attention" rails list three items with a status chip and one <code>View all</code> link (Opus L1444–1445; Fable equivalent) — no approve, release, retry or dismiss on any row. The Fable baseline's own score sheet: "New payment · Download · KPI view-as-table · masthead search — dead". The Opus baseline: "Fifteen dashboard-set components sat on the shelf", <code>quick-actions</code> among them.
+            <figure class="crop opus-rail"><img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-light.png" alt="Opus arm B: the Needs attention list with a View all link"><figcaption>Opus · arm B · "Needs attention" — chips, no actions, no count, no feedback surface</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="seed">
+          <div>
+            <blockquote>the bento construction could be more interesting, this is too regular, a mixture of odd numbered and non-symmetrical layouts create rhythm in layouts, strict grids are boring as hell, this is why i love the display bentos so much, and mixing 6-4-3-2 three columns and making them irregular widths based on importance is another way of creating hierarchy.</blockquote>
+            <div class="who">Dave · 2026-09-05</div>
+          </div>
+          <div class="defect">
+            <b>Defect: the symmetric wall.</b> Every span on both pages is 3 or 6: KPI tiles 3·3·3·3, evidence group 3, context group 3 (Fable L292 and L427; Opus L1340 and L1427). Two equal columns under a full-width band of four equal tiles — the "quadrants of equal size" Few names as failure 9. In the Opus arm the chart tile stretches to its neighbour's height and carries a dead band (Opus review, finding "Visually rich"). The canon grammar already carries <code>data-c="1…6"</code> (<code>canon.css</code> L1098–1104) and the display wall already mints irregular spans (<code>gen_bento_matrix_217.py</code> L1660–1675); the dashboard template simply never uses them.
+            <figure class="crop bento"><img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-light.png" alt="Opus arm B: two equal columns, chart left, lists right"><figcaption>Opus · arm B · the evidence/context row, 3 + 3, chart tile stretched with a dead band</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="seed">
+          <div>
+            <blockquote>the focus is getting the dashboards one-shotable.</blockquote>
+            <div class="who">Dave · 2026-09-05</div>
+          </div>
+          <div class="defect">
+            <b>Defect: the builder had nothing to decide with.</b> The template meta says "HOW MANY groups … is Dave's" (<code>template-dashboard-bento.meta.json</code> props.groups); the brief skipped six questions and asked none about density, default state or importance; the rules index carries zero composition rules. Both models therefore shipped the template's specimen arrangement unchanged. One-shot needs the decision either made in canon (a default) or asked once (grill-me) — this page proposes which is which, per principle.
+          </div>
+        </div>
+
+        <div class="seed p2">
+          <div>
+            <blockquote>Preattentive processing is super important to me, its one of the reasons I excluded colour from mono unless it has some sort of signal it need to carry. so principles around size colour movement might be useful, they might be encoded already i guess, but discerning predators, the sky, blood, foliage, fruit and game are important in our interfaces, obviously this is a metaphor, but it is also part of the dark cockpit work we've done previously. this can also be reflected in copy I feel.</blockquote>
+            <blockquote>dashboards are a forest, colour, movement, dimensions, contrast, grouping, shape etc are the signals</blockquote>
+            <div class="who">Dave · 2026-09-05 · seed for lane P2</div>
+          </div>
+          <div class="defect">
+            <b>Defect: blood where there should be fruit.</b> Both arms paint the "Net FX exposure (unhedged)" spark and delta <em>red</em> because the number fell — Fable L250–258 (−8.1%, <code>data-trend="down"</code>), Opus L1297–1305 (−11.2%). A falling unhedged exposure is good news for a treasurer. The stroke binds to arithmetic direction (<code>kpi-tile.meta.json</code> trend → <code>rag.error-ink</code>, per s182-D3) and no field says which direction is <em>good</em>; the strongest preattentive channel on the page fires the wrong tier.
+            <figure class="crop kpi"><img src="../outputs/baseline-246/arm-B-sighted/render-1440-light.png" alt="Fable arm B: four KPI tiles, the second with a red falling sparkline"><figcaption>Fable · arm B · 1440 light · two of four sparks coloured, one of them the wrong way</figcaption></figure>
+            <b>Defect: no dark cockpit — everything lit, nothing dominant.</b> Opus "Needs attention" (L1448–1458): three rows, three coloured chips (warn · err · inf) — a 100% signal rate, the information tier lit as hard as the error tier. Both pages also animate every chart series and marker on load (<code>animation-delay</code> ×42 Fable, ×27 Opus) — motion, the rarest signal, spent on entry choreography while the reader is still orienting. Nothing on either page is quiet enough for a real signal to pop.
+            <figure class="crop opus-rail"><img src="../outputs/baseline-246-opus/arm-B-sighted/final-1440-light.png" alt="Opus arm B: Needs attention list with three coloured status chips"><figcaption>Opus · arm B · three of three rows carry a coloured chip; warn, error and info at equal weight</figcaption></figure>
+            <b>Not a defect, a gap:</b> Dave's "colour only when it carries a signal" for mono exists only as riders inside s144-D1 / s151-D1 / s157-D1 ("an unsigned amount is not a success state"); it has no rule id a builder can cite. "Dark cockpit" has zero hits in the repo — the concept is named here for the first time.
+          </div>
+        </div>
+
+        <div class="seed p3">
+          <div>
+            <blockquote>green and blue splits a humans interface (environment) into solid and sky top and bottom, and tells them when it turns red its morning and nightfall, horizons are useful, for example we might have a white and grey and black split on a page, white controls all below, navigation, titles controls, the footer is the ground. I'm not sure how to encode this, and it might be pointless but there is something about banding horizontal and even vertically to zone areas. maybe hold this thought I'm not sure it's useful, unless you something that validates it.</blockquote>
+            <blockquote>Are there rules or principles about proximity, like CTAs triggering actions close to them rather than somewhere else on a screen, im also not sure about this, maybe validate</blockquote>
+            <div class="who">Dave · 2026-09-05 · seeds for lane P3 — the first is HELD at Dave's own request; the second became DP-28/29 on his "add"</div>
+          </div>
+          <div class="defect">
+            <b>Defect: the action lives on the wrong surface.</b> Both pages put a filter toolbar in the page's title zone that acts on nothing there: entity, currency, period and search all leave the grid at 24 results (<code>outputs/baseline-246-opus/toolbar-probe.json</code>, both arms: "24 results → 24 results" ×3, view switch "block", chip dismiss "3 chips, count 24 → 24"); Fable's own drive records the period switch with <code>anything-else-changed: "no consumer wired"</code> (<code>outputs/baseline-246/arm-B-sighted/drive.json</code> → toolbar.period-Quarter). The one filter that does work is the grid's <em>own</em> search, inside the grid module — the control that sits on the surface it acts on is the one that works. Neither <code>filter-toolbar-bar.meta.json</code> nor the template carries a <code>triggeredBy</code> / <code>groupsWith</code> edge between the toolbar and the grid, so the builder had no distance to measure.
+            <figure class="crop filters"><img src="../outputs/baseline-246/arm-B-sighted/render-1440-light.png" alt="Fable arm B: the page-level filter toolbar above the wall"><figcaption>Fable · arm B · the page toolbar: five controls in the title zone, two pre-applied chips, no consumer on the page</figcaption></figure>
+            <b>Defect: feedback nowhere near the hand.</b> The only feedback either page produces is the grid's count line (<code>role="status"</code>, "24 results" / "9 results") and a chip row — both of them <em>inside the grid</em>, while the control that was operated sits a module away in the title zone. Nothing inline on the control itself changes; no page-level control has any feedback locus at all. The attention list's rows and the two page buttons (Fable "New payment", Opus "Initiate payment" L1252 / "Download statement" L1251) are dead, so there is no action-feedback pair to inspect — the feedback class is <em>chip/count</em> throughout, never inline, never on the object.
+            <b>Not a defect, an observation for the HELD thought:</b> both built pages carry a masthead <code>&lt;header&gt;</code>, a <code>&lt;nav&gt;</code> and a <code>&lt;main&gt;</code> (Fable L120–227, Opus L1221–1262) and <b>no <code>&lt;footer&gt;</code></b> — the page has a sky and a field and no ground. The app-shell snippets (all seven) carry <code>footer role="contentinfo"</code>; <code>Template-dashboard-bento.reference.html</code> itself has none (0 hits), so both builders inherited a groundless page from the template, not from a copy error.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 02 DIGEST ============================== -->
+<section id="digest" class="band">
+  <div class="wrap">
+    <div class="dim">
+      <div><div class="idx">02</div><div class="dl">Research digest</div></div>
+      <div>
+        <h2>Six topics, one sentence per finding, source beside it</h2>
+        <p>Primary sources where they exist (Nielsen, Few, SAP, IBM, Shopify, MOJ). Two claims that only secondary sources carry are marked as such.</p>
+
+        <h3>A · Progressive disclosure / reveal</h3>
+        <ol class="digest">
+          <li><div>Nielsen's definition: show only a few of the most important options first and disclose the larger set on request — the presence of a thing on the initial display is itself a signal that it matters.<a href="https://www.nngroup.com/articles/progressive-disclosure/">nngroup.com/articles/progressive-disclosure/</a></div></li>
+          <li><div>The two things you must get right are the split between initial and secondary (everything frequently needed goes up front) and an obvious, well-labelled path to the secondary level; designs beyond two levels usually lose users.<a href="https://www.nngroup.com/articles/progressive-disclosure/">nngroup.com/articles/progressive-disclosure/</a></div></li>
+          <li><div>Staged disclosure is the linear variant (wizards) and differs from progressive disclosure in that users are expected to reach every stage; a dashboard is the hierarchical kind, where most users never leave the first level.<a href="https://www.nngroup.com/articles/progressive-disclosure/">nngroup.com/articles/progressive-disclosure/</a></div></li>
+          <li><div>SAP Fiori's overview page puts the filter bar in the page header and ships it <em>snapped</em> (collapsed) by default "since content is already available on the cards and users can start right away"; it expands on scroll or click and filters in live-update mode with no Go button.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>Shopify Polaris index filters toggle between a "View" mode and a "Filter" mode — the search field and filters are revealed by a button, and no more than two or three filters are promoted (pinned) into the visible bar.<a href="https://polaris-react.shopify.com/components/selection-and-input/index-filters">polaris-react.shopify.com/components/selection-and-input/index-filters</a></div></li>
+          <li><div>MOJ (GOV.UK family) filter-a-list: the list appears unfiltered first, the filter panel starts hidden on wide screens behind a Show/Hide filter button, and filters do not persist across sessions unless a user need is shown.<a href="https://design-patterns.service.justice.gov.uk/patterns/filter-a-list/">design-patterns.service.justice.gov.uk/patterns/filter-a-list/</a></div></li>
+          <li><div>Carbon's filtering pattern separates batch (apply at the end) from live filtering, requires a dismiss-all when several categories are applied, and says the start state may differ per category.<a href="https://carbondesignsystem.com/patterns/filtering/">carbondesignsystem.com/patterns/filtering/</a></div></li>
+          <li><div>Applied filters are shown as dismissible tags between the bar and the data with a clear-all beside them (Helios / HashiCorp, a secondary system echoing Carbon and Polaris).<a href="https://helios.hashicorp.design/patterns/filter-patterns">helios.hashicorp.design/patterns/filter-patterns</a></div></li>
+        </ol>
+
+        <h3>B · Density and stat rows</h3>
+        <ol class="digest">
+          <li><div>Few defines a dashboard as the most important information consolidated on a single screen so it can be monitored at a glance — density is the point, not a cost.<a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com/…/Formatting_and_Layout_Matter.pdf</a></div></li>
+          <li><div>Few's emphasis map: the upper-left is the most valuable region, lower-right the least; place the seven key metrics in the upper-left band and give the rest less room.<a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com/…/Formatting_and_Layout_Matter.pdf</a></div></li>
+          <li><div>Few's failure 4, "sizing content larger than it deserves": size each section to be easily seen, then adjust sizes to reinforce relative importance — a KPI given a chart's height is the failure in one line.<a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com/…/Formatting_and_Layout_Matter.pdf</a></div></li>
+          <li><div>Carbon's presentation-dashboard rules: strongest hierarchy at the top following the F-pattern, limit the number of metrics, and use white space to group rather than borders.<a href="https://v10.carbondesignsystem.com/data-visualization/dashboards/">v10.carbondesignsystem.com/data-visualization/dashboards/</a></div></li>
+          <li><div>NN/g: dashboards impart at-a-glance information users act on quickly; length and 2D position (bars, lines, sparklines) are read preattentively, area and angle are not.<a href="https://www.nngroup.com/articles/dashboards-preattentive/">nngroup.com/articles/dashboards-preattentive/</a></div></li>
+          <li><div>SAP's analytical card puts a mandatory KPI header (title, value with unit, optional trend triangle and percentage) above the chart — the delta is a header property, not a second module.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>Secondary sources converge on 5–9 primary metrics per view; no primary source fixes a number, so this page treats the count as ADVISORY.<a href="https://www.clearpointstrategy.com/blog/kpi-dashboard-best-practices">clearpointstrategy.com/blog/kpi-dashboard-best-practices</a></div></li>
+          <li><div>In-house: the KPI tile already has a <code>compact</code> variant "for dense boards where many tiles share a row" — the row form exists and is unused.<a href="../knowledge/components/kpi-tile.meta.json">knowledge/components/kpi-tile.meta.json · variants[compact]</a></div></li>
+        </ol>
+
+        <h3>C · Execute on the page + feedback</h3>
+        <ol class="digest">
+          <li><div>SAP's overview page tagline is "view, filter, and take immediate action": micro actions let users react on the spot, and a role's overview needs at least three cards that are not all the same type.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>SAP's card header carries a counter "[items on card] of [total]" (5 of 40) and the whole header navigates to the full set — the "View all" is the header, and the count is mandatory when there is one.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>SAP action rules: at most six actions per card footer, right-aligned with overflow; an action with no input fires immediately and the item leaves the stream; one with input opens a dialog on the card; errors and confirmations show on the overview page itself.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>SAP list cards show at most five standard items (three extended) before handing off to the parent app.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>Salesforce's Lightning home composes an Assistant (up to ten overdue or ignored items), Today's Tasks, Today's Events and Key Deals — a tasks/exceptions surface is a standing region, not an afterthought.<a href="https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder/lightning_app_builder_homepage">trailhead.salesforce.com/…/lightning_app_builder_homepage</a></div></li>
+          <li><div>Atlassian dashboards keep a filter count on the Filters button and show a "No data" message with a Clear when a gadget's result is empty under the active filter.<a href="https://support.atlassian.com/platform-experiences/docs/add-and-manage-dashboard-filters/">support.atlassian.com/…/add-and-manage-dashboard-filters/</a></div></li>
+          <li><div>Carbon's exploration-dashboard rule: linked charts — a filter applied in one place updates every related view.<a href="https://v10.carbondesignsystem.com/data-visualization/dashboards/">v10.carbondesignsystem.com/data-visualization/dashboards/</a></div></li>
+          <li><div>In-house: the app "button activity" pattern (loading → notification state) and the notification severity ladder are already ruled at <code>ctkb-012</code> and <code>ctkn-008</code>; execute-on-page inherits both.<a href="../knowledge/guidelines/_rules-index.json">knowledge/guidelines/_rules-index.json</a></div></li>
+        </ol>
+
+        <h3>D · Bento rhythm and hierarchy</h3>
+        <ol class="digest">
+          <li><div>Few's failure 9, "enforcing a rigid symmetrical grid": equal quadrants are rarely useful; layout should follow the arrangement and sizing that communicates best, and asymmetry may be used deliberately to say things are <em>not</em> equal.<a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com/…/Formatting_and_Layout_Matter.pdf</a></div></li>
+          <li><div>Few's failure 5, "separating content excessively": borders and fills should be just visible enough to group and no more — the counterweight that keeps an irregular wall from reading as clutter.<a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com/…/Formatting_and_Layout_Matter.pdf</a></div></li>
+          <li><div>Müller-Brockmann: the grid is a system for hierarchy, rhythm and proportion, with text and images occupying whole modules — irregular spans are legal so long as every edge lands on a module line.<a href="https://ia803105.us.archive.org/29/items/GridSystemsInGraphicDesignJosefMullerBrockmann/Grid%20systems%20in%20graphic%20design%20-%20Josef%20Muller-Brockmann.pdf">archive.org · Grid systems in graphic design (PDF)</a></div></li>
+          <li><div>Apple's keynote bentos: hierarchy is enforced by area — the largest tile carries the one message, and without one fact that earns the biggest tile every tile competes and the slide goes flat.<a href="https://www.deck.gallery/blog/apple-bento-grid-breakdown/">deck.gallery/blog/apple-bento-grid-breakdown/</a></div></li>
+          <li><div>Material 3's supporting-pane canonical layout fixes the primary/secondary ratio at roughly two-thirds to one-third — the 4/2 split as a named default.<a href="https://m3.material.io/foundations/layout/canonical-examples/overview">m3.material.io/foundations/layout/canonical-examples/overview</a></div></li>
+          <li><div>SAP's card layout is a Z-flow of fixed-width columns with variable card heights — order carries importance where size cannot.<a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com/fiori-design-web/v1-50/overview-page/</a></div></li>
+          <li><div>In-house: the ruled bento grammar is a 6-column wall with <code>data-c</code> 1–6, container-query bands at 1100/820/520, and a mint-time squaring pass that promotes the last span so the wall closes (s217-D3/D7).<a href="../knowledge/_render/gen_bento_matrix_217.py">knowledge/_render/gen_bento_matrix_217.py L1660–1690</a></div></li>
+          <li><div>In-house: Dave has ruled the row floor (<code>minmax(unit, auto)</code>, s245-D8) and the rung ladder B 120/240/96 (s245-D9) — so heights are settled, and the open axis is <em>width</em>.<a href="../knowledge/_rulings.json">knowledge/_rulings.json · s245-D8 · s245-D9</a></div></li>
+        </ol>
+
+        <h3 class="p2">E · Signal (preattentive) — lane P2</h3>
+        <p>Vision science first, then the industries that turned it into rules (flight decks, control rooms), then the design systems' copy rules for status words.</p>
+        <ol class="digest">
+          <li><div>Healey & Enns: a display property is preattentive if a target is found in under 200–250 ms regardless of how many distractors surround it; the catalogue includes hue, intensity, size, length, orientation, closure, flicker, direction and velocity of motion — and a target defined by a <em>conjunction</em> of two features (red <em>and</em> circular) is not found preattentively but by serial search.<a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">csc2.ncsu.edu/faculty/healey/PP/</a></div></li>
+          <li><div>The same page: motion and flicker pop out even against colour and shape — the one channel that beats hue — which is exactly why it must be the rarest.<a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">csc2.ncsu.edu/faculty/healey/PP/ · Table 1</a></div></li>
+          <li><div>Few: contrast in any preattentive attribute "nags us to assign meaning", colour above all; his aesthetic rule for dashboards is to keep bright colours to a minimum "using them only to make a few items stand out" and to give the rest the same lightness so nothing else competes — and he names the commercial-jet cockpit as the model.<a href="https://www.perceptualedge.com/files/Dashboard_Design_Course.pdf">perceptualedge.com/files/Dashboard_Design_Course.pdf</a></div></li>
+          <li><div>Bertin's retinal variables: size is the only <em>quantitative</em> variable and value (lightness) is ordered, while colour (hue) is selective and associative but <em>not ordered</em> — so hue can say "which kind" and never "how much" or "how important".<a href="https://www.axismaps.com/guide/visual-variables">axismaps.com/guide/visual-variables</a> (secondary, a faithful digest of Bertin)</div></li>
+          <li><div>Airbus dark cockpit (A310 onward): an overhead pushbutton stays unlit when its system is normal and lights only when a fault needs the crew — "if the cockpit is dark, all is well"; the human-factors case is reduced scan load and faster reaction to the one thing that lit.<a href="https://www.airflow.blog/2025/01/16/the-dark-cockpit-philosophy-enhancing-efficiency-and-safety-in-modern-aviation/">airflow.blog · dark cockpit philosophy</a> (secondary; primary is the Airbus FCOM, not public) · <a href="https://www.lean.org/the-lean-post/articles/the-dark-cockpit-what-aviation-can-teach-lean-leaders/">lean.org · the dark cockpit</a></div></li>
+          <li><div>Alarm management (EEMUA 191 / ISA-18.2): rationalised alarms distribute roughly 80 % low · 15 % medium · 5 % high priority, and more than ten alarms in ten minutes at one operator position is a <em>flood</em> — the ancestor of "needs attention" as a budgeted, tiered surface rather than a wall of equals.<a href="https://industrialmonitordirect.com/blogs/knowledgebase/industrial-alarm-system-standards-iec-62682-isa-182-and-eemua-191">industrialmonitordirect.com · IEC 62682 / ISA-18.2 / EEMUA 191</a> (secondary; the standards are paywalled — <a href="https://www.isa.org/standards-and-publications/isa-standards/isa-standards-committees/isa18">isa.org/…/isa18</a>)</div></li>
+          <li><div>GOV.UK tag: a tag shows status only, uses adjectives not verbs (a verb reads as clickable), colour may draw the eye to one especially important tag ("Urgent" in red), and absence is itself a status — an item without a tag is understood as incomplete.<a href="https://design-system.service.gov.uk/components/tag/">design-system.service.gov.uk/components/tag/</a></div></li>
+          <li><div>Polaris badge: one word for the tone of an object, two only for a compound state ("Partially refunded"), always past tense; tones are success · attention · warning · critical · info, and no new badge word is minted while an existing one fits.<a href="https://polaris-react.shopify.com/components/feedback-indicators/badge">polaris-react.shopify.com/…/badge</a></div></li>
+          <li><div>In-house, already ruled: the two-red law s151-D1 and its green mirror s155-D1 make red/green text lawful in exactly one seat (monetary values carrying a symbol); s182-D3 makes the spark stroke semantic; neuro-036 puts movement last and neuro-014 caps bright colour at 20 % of the screen; col26-003 carries the sentence "if everything competes for attention, nothing stands out". What is <b>not</b> there: a tiering, a per-screen budget, a metric's good-direction, a motion role for monitoring pages, a written mono rule, and copy tiering.<a href="../knowledge/guidelines/_rules-index.json">knowledge/guidelines/_rules-index.json · knowledge/_rulings.json</a></div></li>
+        </ol>
+
+        <h3 class="p3">F · Locality: action beside object, feedback at the eye — lane P3</h3>
+        <p>Perception first (why nearness reads as belonging), then the two HCI laws that price distance, then the systems that turned it into placement rules — and, for the held thought, what makes a horizontal band read as a zone.</p>
+        <ol class="digest">
+          <li><div>Palmer (1992) added <em>common region</em> to the Gestalt set: elements inside one bounded region group together, and the cue is strong enough to overcome proximity and similarity — a container, not just nearness, is what tells a reader "these belong".<a href="https://www.sciencedirect.com/science/article/abs/pii/001002859290014S">sciencedirect.com · Palmer, Cognitive Psychology 24(3) 1992</a> · <a href="https://www.nngroup.com/articles/common-region/">nngroup.com/articles/common-region/</a></div></li>
+          <li><div>NN/g proximity: elements close together are read as related and things set apart are assumed to play different roles — and proximity can overpower colour or shape similarity.<a href="https://www.nngroup.com/articles/gestalt-proximity/">nngroup.com/articles/gestalt-proximity/</a></div></li>
+          <li><div>Nielsen's "closeness of actions and objects": users overlook a control that is "too far away from the objects they act on" and assume the feature does not exist; his iTunes case is a button in a separate coloured stripe at the bottom of a window acting on icons at the top — the fix he shows is the button beside the object.<a href="https://www.nngroup.com/articles/closeness-of-actions-and-objects-gui/">nngroup.com/articles/closeness-of-actions-and-objects-gui/</a></div></li>
+          <li><div>Fitts's law (MacKenzie's Shannon form, MT = a + b·log₂(D/W + 1)): time to acquire a target grows with distance and shrinks with width, so an action far from the hand's current locus is paid for on every use; NN/g's applications — put the button below the last field, reduce the distance between sequential actions.<a href="https://www.nngroup.com/articles/fitts-law/">nngroup.com/articles/fitts-law/</a></div></li>
+          <li><div>Norman: natural mapping is spatial correspondence between control and effect (switches laid out like the lights they run), and feedback is continuous information about what an action did — both are broken when the control and the thing it changes are in different regions of the screen.<a href="https://www.nngroup.com/articles/natural-mappings/">nngroup.com/articles/natural-mappings/</a></div></li>
+          <li><div>Raskin: a person has one locus of attention; anything the interface wants noticed must appear where that locus already is, and the more absorbed the person is the less they notice anything elsewhere — the case against feedback that lands in a corner the eye is not in.<a href="https://raskincenter.org/jef/humane-interface/">raskincenter.org · The Humane Interface</a></div></li>
+          <li><div>Nielsen heuristic 1, visibility of system status: keep users informed with appropriate feedback within reasonable time; whether an action succeeded is "perhaps the most basic guideline" — and it is only visible if it appears where they are looking.<a href="https://www.nngroup.com/articles/visibility-system-status/">nngroup.com/articles/visibility-system-status/</a></div></li>
+          <li><div>GOV.UK error summary: on a validation failure show <em>both</em> an error summary at the top of the page (focused on load, each error linking to its field) and an error message beside each field — the pair covers the out-of-view case and the locus case at once.<a href="https://design-system.service.gov.uk/components/error-summary/">design-system.service.gov.uk/components/error-summary/</a></div></li>
+          <li><div>Material: a snackbar is for brief, non-critical confirmation; do not use it for critical, persistent or bulk errors, never as the only route to an action, and never stacked — errors that need attention go inline where the failure is.<a href="https://m1.material.io/patterns/errors.html">m1.material.io/patterns/errors.html</a> · <a href="https://m1.material.io/components/snackbars-toasts.html">m1.material.io/components/snackbars-toasts.html</a></div></li>
+          <li><div>Material's contextual action bar: when items are selected the top bar transforms into a bar carrying only the actions for the selection, and closes when the selection does — the action set is scoped to the object set, and its lifetime too.<a href="https://m2.material.io/components/app-bars-top">m2.material.io/components/app-bars-top</a></div></li>
+          <li><div>SAP Fiori action placement: actions that affect the whole page go in the header toolbar, closing/finalising actions in the footer bar, and object-level actions on the object (table toolbar, card footer); groups ordered business → content → layout → generic, importance left to right.<a href="https://www.sap.com/design-system/fiori-design-web/v1-145/foundations/best-practices/global-patterns/action-placement">sap.com · Fiori action placement</a> · <a href="https://experience.sap.com/fiori-design-web/article/v1-68_v1-62_v1-58_v1-54_v1-42_toolbar-overview/">experience.sap.com · toolbar overview</a></div></li>
+          <li><div>Polaris card layout: a card is header · body · footer; the header carries the action that modifies the card's contents, the footer the call-to-action; the point of the fixed structure is that merchants learn to attach meaning to places — the surface an action sits on is part of its meaning.<a href="https://polaris-react.shopify.com/patterns/card-layout">polaris-react.shopify.com/patterns/card-layout</a></div></li>
+          <li><div>For the held thought — Tufte, <em>Envisioning Information</em> ch. 3, layering and separation: clutter is a design failure, not a data property; separate layers by value, weight, texture or size so they do not compete, and beware 1 + 1 = 3 (two edges make a third thing between them). A tonal band is a layer; two bands make an edge.<a href="https://eclass.uth.gr/modules/document/file.php/PRE_P_122/Edward%20R.%20Tufte%20Envisioning%20Information%201990.pdf">eclass.uth.gr · Envisioning Information (PDF)</a></div></li>
+          <li><div>For the held thought — Bertin: the two <em>planar</em> variables (x, y) are the richest of the eight; a horizontal band is a y-interval carrying <em>value</em> (lightness, ordered) — so bands can say "above / below" and "lighter / heavier" and never "which kind" without a second variable.<a href="https://www3.cs.stonybrook.edu/~mueller/teaching/cse564/bertin.pdf">cs.stonybrook.edu · Bertin, Semiology of Graphics (lecture digest)</a> (secondary)</div></li>
+          <li><div>For the held thought — W3C APG landmarks: every perceivable area of a page, "which designers typically indicate visually using alignment and spacing", gets a landmark; <code>banner</code> and <code>contentinfo</code> are one-per-page and top-level, <code>main</code> one-per-page — the sky / field / ground split already has a programmatic name.<a href="https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/">w3.org/WAI/ARIA/apg/practices/landmark-regions/</a></div></li>
+          <li><div>In-house: <code>aid-004</code> (proximity: labels close to controls, form errors close to their fields, reflow keeps related content directly after its section); <code>acd-023</code> (added content placed AFTER its trigger, focus moved or announced); <code>ctkn-004/011</code> snackbar scope and placement; <code>toast.meta.json</code> antiPatterns (an error toast; an action that exists only in the toast); <code>popconfirm.meta.json</code> ("if the object is off-screen … the pattern should be a Modal"); <code>acd-005</code> landmarks; edges <code>triggeredBy</code> (13/137 metas, 2 resolved refs) and <code>groupsWith</code> (s245-D7). What is <b>not</b> there: a rule that the action sits on the surface it acts on; a rule for where feedback lands relative to the trigger; any word on tonal bands as zones.<a href="../knowledge/guidelines/_rules-index.json">_rules-index.json · knowledge/components/*.meta.json</a></div></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 03 PRINCIPLES ============================== -->
+<section id="principles" class="major">
+  <div class="wrap">
+    <div class="dim">
+      <div><div class="idx">03</div><div class="dl">Draft principles</div></div>
+      <div>
+        <h2>Twenty-nine principles, in the rules-index shape — and one held thought</h2>
+        <p>Each carries: statement · rationale with source · a <b>proposed</b> tag · where it would bind · the baseline defect it prevents. Tags are the index's own four — BLOCKING, ADVISORY, REVIEW, TASTE — and none is ruled. A principle with neither a source nor Dave's words is TASTE and says so.</p>
+
+        <!-- ---------- REVEAL ---------- -->
+        <div class="group">
+          <h3>Reveal — 5</h3>
+
+          <div class="dp">
+            <div class="id">DP-01<small>reveal</small></div>
+            <div>
+              <p class="st">A dashboard's first level shows what is read every visit; everything else is one deliberate step away, and never more than one.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Nielsen: get the initial/secondary split right and keep it to two levels. <a href="https://www.nngroup.com/articles/progressive-disclosure/">nngroup.com/articles/progressive-disclosure/</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed</dd>
+                <dt>Binds to</dt><dd>new guideline note <code>dashboard-composition.md</code>; generate-from-canon rule 7 preamble</dd>
+                <dt>Prevents</dt><dd>Both baselines show every control the template happened to carry (toolbar, chips, view switch, KPI view-as-table) with no first/second split at all.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-02<small>reveal</small></div>
+            <div>
+              <p class="st">Filter controls on an overview are dismissible and ship in the state the designer decided; the collapsed form is the default unless the brief says otherwise.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "filters would probably be dismissible … then the designer simply decides on the default state." SAP ships the filter bar snapped by default; MOJ starts the panel hidden on wide screens; Polaris hides filters behind a View/Filter toggle. <a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com</a> · <a href="https://design-patterns.service.justice.gov.uk/patterns/filter-a-list/">MOJ filter-a-list</a></dd>
+                <dt>Tag</dt><dd><span class="tag rev">REVIEW</span> proposed (the state is a decision; the gate can only check that one was recorded)</dd>
+                <dt>Binds to</dt><dd><code>filter-toolbar-bar.meta.json</code> new prop <code>defaultState: expanded|collapsed</code>; a grill-me question (RSQ Q2)</dd>
+                <dt>Prevents</dt><dd>Fable L158–202: five controls and two pre-applied chips open above the fold, none wired.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-03<small>reveal</small></div>
+            <div>
+              <p class="st">A collapsed filter shows its count and its applied values as dismissible chips; a clear-all sits beside them when two or more are applied.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Atlassian's Filters button carries the count; Carbon requires dismiss-all across categories; applied filters render as tags between bar and data. <a href="https://carbondesignsystem.com/patterns/filtering/">carbondesignsystem.com/patterns/filtering/</a> · <a href="https://support.atlassian.com/platform-experiences/docs/add-and-manage-dashboard-filters/">support.atlassian.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed for the chip row (already in-house: <code>ctkt-024</code> delete pills display an applied filter); <span class="tag adv">ADVISORY</span> for the count</dd>
+                <dt>Binds to</dt><dd><code>filter-toolbar-bar</code> collapsed variant; extends <code>ctkt-024</code>, <code>ctkt-025</code></dd>
+                <dt>Prevents</dt><dd>Both baselines: chips dismiss but filter nothing, and no state survives (drive.json, both arms).</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-04<small>reveal</small></div>
+            <div>
+              <p class="st">Detail is revealed in place where it answers the tile's own question (expand, view-as-table, popover) and by navigation where it changes the subject (drill to the parent list).</p>
+              <dl>
+                <dt>Rationale</dt><dd>SAP: card header navigates to the parent app; quick-view actions and view switches happen on the card; Nielsen's hypertext form — higher pages carry higher concepts. <a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed</dd>
+                <dt>Binds to</dt><dd>guideline note; s116-D2 already makes the table control one molecule for all charts, so the in-place half is partly built</dd>
+                <dt>Prevents</dt><dd>Both: tabs duplicate the masthead's four destinations (Fable) and the KPI view-as-table button is dead — two reveal mechanisms, neither decided.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-05<small>reveal</small></div>
+            <div>
+              <p class="st">Every reveal is labelled with what it will show and reversible from where it opened; a revealed region re-measures itself when it becomes visible.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Nielsen: the path to the secondary level must have information scent. The second clause is the Opus baseline's own finding — a segmented control revealed inside a hidden tab measured 0px and lost its label in dark mode. <a href="https://www.nngroup.com/articles/progressive-disclosure/">nngroup.com</a> · <code>BASELINE-246-OPUS</code> finding 06</dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed for the re-measure clause (it is a defect class, testable by driving); <span class="tag adv">ADVISORY</span> for labelling</dd>
+                <dt>Binds to</dt><dd>a lifecycle hook in <code>canon/dv-behaviour.js</code> and the segmented atom; a validator arm that toggles every hidden panel and reads widths</dd>
+                <dt>Prevents</dt><dd>Opus arm A: <code>.ind style.width = "0px"</code> at first reveal; three lines of forbidden glue to fix.</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- DENSITY ---------- -->
+        <div class="group">
+          <h3>Density — 4</h3>
+
+          <div class="dp">
+            <div class="id">DP-06<small>density</small></div>
+            <div>
+              <p class="st">Headline metrics sit in one row across the top of the wall, compact, so the first chart starts above the fold; a 2×2 board is a choice for two metrics, not a default for four.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "they would make it vertically dense by having them in a row." Few's emphasis map (upper-left band for the key metrics) and failure 4 (sizing larger than deserved). <a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed — becomes the template DEFAULT (s219-D3: generation ships defaults), the 2×2 an edit-pass option</dd>
+                <dt>Binds to</dt><dd><code>Template-dashboard-bento.reference.html</code> lead group: four tiles at <code>data-c="1"</code> in a 4-track inner grid (or <code>data-c="3"</code> of 12); <code>kpi-tile</code> variant <code>compact</code> as the lead-group default</dd>
+                <dt>Prevents</dt><dd>Fable L236–276 / Opus L1284–1311: 3·3·3·3 in six tracks = two rows, chart pushed to y≈840 at 1440.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-07<small>density</small></div>
+            <div>
+              <p class="st">A headline row carries between three and six metrics; the first is the one the role checks first, and order runs left to right by how often it is read, not by size of number.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Few: upper-left is the most-read region; Carbon: limit the number of metrics and follow the F-pattern; secondary sources converge on 5–9 per view. <a href="https://v10.carbondesignsystem.com/data-visualization/dashboards/">carbondesignsystem.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed (count) · <span class="tag rev">REVIEW</span> (order is a product judgement)</dd>
+                <dt>Binds to</dt><dd>guideline note; a grill-me question "which number do they check first?" (feeds DP-06's left slot and DP-14's dominant tile)</dd>
+                <dt>Prevents</dt><dd>Both: four tiles of equal weight, liquidity first by accident of the template's specimen order.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-08<small>density</small></div>
+            <div>
+              <p class="st">Each headline metric shows value, signed delta against a named period, and a trend shape; the shape is a sparkline (length and position), never a gauge or ring.</p>
+              <dl>
+                <dt>Rationale</dt><dd>NN/g: length and 2D position are preattentive, area and angle are not; SAP's analytical-card KPI header (value, unit, trend, percentage). Already in-house: <code>kpi-tile</code> composes Stat-card + Chart-sparkline (s182-D2 sparkline is an atom alone). <a href="https://www.nngroup.com/articles/dashboards-preattentive/">nngroup.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed for "no gauge/ring for a headline metric" (checkable: no <code>chart-donut</code> inside a lead group); <span class="tag adv">ADVISORY</span> for the rest</dd>
+                <dt>Binds to</dt><dd><code>kpi-tile.meta.json</code> (already drawn); a composition-gate arm on the lead group's members</dd>
+                <dt>Prevents</dt><dd>Nothing in this baseline — both used sparklines. Recorded so the rule exists before a donut arrives. The delta-arrow two-red seat stays Dave's (<code>kpi-tile.meta.json $finding-two-seats</code>).</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-09<small>density</small></div>
+            <div>
+              <p class="st">Group with space and a single containment signal, not with borders; separators are as light as will still group.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Few failure 5; Carbon: white space sets elements apart or brings them together. Already ruled in-house for the bento: keylines OFF on every dashboard (s219-D2(4)), one containment signal per group (C5, <code>_validate_composition.py</code>). <a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com</a></dd>
+                <dt>Tag</dt><dd>already <span class="tag">BLOCKING</span> via C5 — this row only cross-references; nothing new proposed</dd>
+                <dt>Binds to</dt><dd>cross-reference in the guideline note to s219-D2 and C5</dd>
+                <dt>Prevents</dt><dd>Nothing new; both baselines pass C5. Listed so the density group is complete.</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- EXECUTE + FEEDBACK ---------- -->
+        <div class="group">
+          <h3>Execute + feedback — 4</h3>
+
+          <div class="dp">
+            <div class="id">DP-10<small>execute</small></div>
+            <div>
+              <p class="st">An overview carries a standing "needs attention" region: items the role must act on, each with its status, its due, and its count against the total.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "a summary/feedback on actions tasks and statuses are always important." SAP's counter "[on card] of [total]"; Salesforce's Assistant and Today's Tasks as standing regions. <a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com</a> · <a href="https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder/lightning_app_builder_homepage">trailhead.salesforce.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed (presence) · <span class="tag">BLOCKING</span> proposed for "a truncated list states its count" (checkable: a <code>View all</code> link with no <code>n of N</code> beside it)</dd>
+                <dt>Binds to</dt><dd>the template's context group (<code>tpl-group-context</code>, s245-D6) — whether a new component or a composition is RSQ Q5</dd>
+                <dt>Prevents</dt><dd>Opus L1444–1445 / Fable equivalent: three items, "View all", no count, no due on two of three.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-11<small>execute</small></div>
+            <div>
+              <p class="st">Each attention item offers its one primary action in place (approve, release, retry, dismiss); an action with no input fires and the item leaves the list, an action with input opens on the tile, and at most six actions live on any tile.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "with the options to execute on this page." SAP micro-action rules verbatim in structure. <a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed (the six-cap could be BLOCKING; not proposed so until a tile carries six)</dd>
+                <dt>Binds to</dt><dd>the attention component's meta (<code>actions[]</code> with <code>needsInput</code>); <code>quick-actions</code> for page-level shortcuts; the behaviour address (s234-D5 open item)</dd>
+                <dt>Prevents</dt><dd>Both: New payment / Initiate payment, Download, and every attention row are dead controls (drive.json, both arms).</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-12<small>execute</small></div>
+            <div>
+              <p class="st">Feedback for an on-page action lands on the page: the button runs the loading → notification ladder, the row updates or leaves, and an error names the item and the next step.</p>
+              <dl>
+                <dt>Rationale</dt><dd>In-house already: <code>ctkb-012</code> button activity, <code>ctkn-008</code> severity order, <code>ctkn-015</code> notifications persist until resolved; SAP: errors and confirmations display on the overview page. <a href="../knowledge/guidelines/_rules-index.json">_rules-index.json</a></dd>
+                <dt>Tag</dt><dd>inherits <code>ctkb-012</code>'s tag; <span class="tag adv">ADVISORY</span> proposed for the composition clause</dd>
+                <dt>Binds to</dt><dd>guideline note cross-reference; the attention component's states (<code>pending · done · failed</code>)</dd>
+                <dt>Prevents</dt><dd>Nothing yet visible — there are no actions to give feedback on. Recorded so DP-11 does not ship without it.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-13<small>execute</small></div>
+            <div>
+              <p class="st">A control on the overview declares what it acts on; a filter with no declared consumer is not placed.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Carbon linked charts (one filter, every related view updates); both baselines' RSQ "should a control's meta name what it filters." Extends s245-D7's <code>groupsWith</code> edge with a <code>controls</code> edge. <a href="https://v10.carbondesignsystem.com/data-visualization/dashboards/">carbondesignsystem.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed (checkable: a <code>filter-toolbar-bar</code> instance with no <code>data-controls</code> target on the page)</dd>
+                <dt>Binds to</dt><dd><code>meta.schema.json</code> edges: <code>controls: [{ref}]</code>; a composition-gate arm; the receipt gate's UNPROVEN row</dd>
+                <dt>Prevents</dt><dd>Both: entity, currency, period and search controls leave the grid at 24 results (toolbar-probe.json).</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- BENTO RHYTHM ---------- -->
+        <div class="group">
+          <h3>Bento rhythm — 5</h3>
+
+          <div class="dp">
+            <div class="id">DP-14<small>rhythm</small></div>
+            <div>
+              <p class="st">One tile per wall is dominant — the widest span, holding the evidence the role came for — and no other tile matches its width.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Apple's bentos: area enforces hierarchy and one fact must earn the biggest tile or the layout goes flat; Few failure 4. <a href="https://www.deck.gallery/blog/apple-bento-grid-breakdown/">deck.gallery</a> · <a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed; the "exactly one widest below the lead row" clause is checkable and could be REVIEW</dd>
+                <dt>Binds to</dt><dd>the template's evidence group span (s245-D6 <code>tpl-group-evidence</code>) — default <code>data-c="4"</code> against context <code>data-c="2"</code>; a bento rail dial if RSQ Q3 says yes</dd>
+                <dt>Prevents</dt><dd>Fable L292/L427, Opus L1340/L1427: evidence 3, context 3 — the chart and a key/value list given equal weight.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-15<small>rhythm</small></div>
+            <div>
+              <p class="st">Widths are importance-weighted from the ruled span set — 6 · 4 · 3 · 2 (and 1 in the lead row) — and a row below the lead row does not split evenly when it holds two tiles.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "mixing 6-4-3-2 three columns and making them irregular widths based on importance." Material's supporting pane at ≈2/3 : 1/3; Few failure 9 on equal quadrants. Canon already carries <code>data-c</code> 1–6 (<code>canon.css</code> L1098–1104) and bands them at 1100/820/520. <a href="https://m3.material.io/foundations/layout/canonical-examples/overview">m3.material.io</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed for the weighting; <span class="tag rev">REVIEW</span> for "no 3/3 below the lead row" (a designer may want it — it should be a pick, not a default)</dd>
+                <dt>Binds to</dt><dd>template defaults; the rails file (a new <code>spans</code> dial — RSQ Q3); the squaring pass already promotes the last tile so the wall closes (s217-D7)</dd>
+                <dt>Prevents</dt><dd>The symmetric wall in both baselines; Opus's chart tile stretched to its neighbour's height with a dead band.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-16<small>rhythm</small></div>
+            <div>
+              <p class="st">Irregular reads as ordered when every tile edge sits on a column line, tops align across a row, and the wall closes with no orphan cell.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Müller-Brockmann: content occupies whole modules on a common grid. In-house the last clause is already the squaring pass (s217-D3, ratified "is very cool") and the row floor (s245-D8). <a href="https://ia803105.us.archive.org/29/items/GridSystemsInGraphicDesignJosefMullerBrockmann/Grid%20systems%20in%20graphic%20design%20-%20Josef%20Muller-Brockmann.pdf">archive.org · Grid systems</a></dd>
+                <dt>Tag</dt><dd>already <span class="tag">BLOCKING</span> for orphans via the pass; <span class="tag adv">ADVISORY</span> proposed for the two alignment clauses</dd>
+                <dt>Binds to</dt><dd>cross-reference; the composition gate's C8 (contiguous at every band)</dd>
+                <dt>Prevents</dt><dd>The class of mess an importance-weighted wall could become without it — the guard that lets DP-14/15 be adopted.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-17<small>rhythm</small></div>
+            <div>
+              <p class="st">Prefer odd counts below the lead row — three groups, or a 4 + 2 pair over a 3 + 3 pair — and repeat one shape with one break rather than alternating every row.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "a mixture of odd numbered and non-symmetrical layouts create rhythm … strict grids are boring as hell." No primary source states the odd-count rule for dashboards; SAP's "at least three cards, not all of one type" is the nearest. <b>Partly TASTE and says so.</b> <a href="https://experience.sap.com/fiori-design-web/v1-50/overview-page/">experience.sap.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag taste">TASTE</span> proposed — Dave's eye, offered as an edit-pass chord, never a gate</dd>
+                <dt>Binds to</dt><dd>the rails file as a named chord ("editorial": 4+2 / 2+4 / 3 groups); the display generator's <code>PANELS</code> spans as the worked example (<code>gen_bento_matrix_217.py</code>)</dd>
+                <dt>Prevents</dt><dd>The "too regular" reading of both baselines — two even rows, every row the same shape.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-18<small>rhythm</small></div>
+            <div>
+              <p class="st">A tile is sized to its content's floor and never stretched to a neighbour's height; a taller neighbour is answered by a second tile in the column, not by empty ground.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Few failure 4 (sizing larger than deserved) and 3 (items that serve no purpose — empty space is one). SAP: card height follows content. Ruled floor s245-D8 governs the row; this is the column clause. <a href="https://www.perceptualedge.com/articles/Whitepapers/Formatting_and_Layout_Matter.pdf">perceptualedge.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag rev">REVIEW</span> proposed (a dead band is measurable: content height vs tile height per tile)</dd>
+                <dt>Binds to</dt><dd>a screen-gate arm reading <code>scrollHeight</code> vs tile height; template context group holding two tiles (balances + attention) beside one evidence tile — already the template's shape, which is why the Fable arm has no band and the Opus arm does</dd>
+                <dt>Prevents</dt><dd>Opus arm B: "the chart tile still carries a dead band under it where the group stretches to its neighbour's height."</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- SIGNAL (P2) ---------- -->
+        <div class="group p2">
+          <h3>Signal (preattentive) — 9</h3>
+          <p class="cap">Dave's metaphor, mapped honestly and used as the tier names below: <b>sky</b> = ambient state, the calm baseline, unlit · <b>foliage</b> = the normal mass, unsignalled · <b>fruit</b> = opportunity, positive delta · <b>game</b> = things to act on · <b>blood</b> = loss, breach · <b>predator</b> = threat, error, the rarest and the only tier allowed every channel. The dark cockpit is the same idea from the flight deck: silent and unlit when normal, a light only when something needs a human.</p>
+
+          <div class="dp">
+            <div class="id">DP-19<small>signal</small></div>
+            <div>
+              <p class="st">The dark-cockpit default: a dashboard with nothing wrong shows no hue, no motion and no emphasis beyond type hierarchy — if the page is quiet, all is well. Sky and foliage are unlit.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Airbus: a pushbutton lit only when its system needs the crew. Few: bright colour only to make a few items stand out, and the jet cockpit as the model. In-house: neuro-042's "calm ceiling", neuro-014 (bright ≤ 20 %), col26-003. Dave: "I excluded colour from mono unless it has some sort of signal it need to carry." <a href="https://www.airflow.blog/2025/01/16/the-dark-cockpit-philosophy-enhancing-efficiency-and-safety-in-modern-aviation/">airflow.blog</a> · <a href="https://www.perceptualedge.com/files/Dashboard_Design_Course.pdf">perceptualedge.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed — the prose principle; DP-20 is its countable arm</dd>
+                <dt>Binds to</dt><dd>new guideline note <code>dashboard-composition.md</code> § signal (the tier table above lives here, once); generate-from-canon rule 7 preamble; the template's specimen data gets an all-clear drive alongside the three-item one</dd>
+                <dt>Prevents</dt><dd>Both baselines: two coloured sparks, three coloured chips, forty-odd entry animations — no quiet ground for a real signal to pop from.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-20<small>signal</small></div>
+            <div>
+              <p class="st">A signal budget per screen: above the fold, at most three elements carry a signal colour or motion, and one of them is dominant; the rest of the page is foliage. Tiers are distributed like rationalised alarms — most low, few medium, almost none high.</p>
+              <dl>
+                <dt>Rationale</dt><dd>EEMUA 191 / ISA-18.2: 80 · 15 · 5 priority distribution, and ten in ten minutes is a flood. Few: "using them only to make a few items stand out". col26-003: "if everything competes for attention, nothing stands out". The number three is a proposal, not a finding — Dave's to set. <a href="https://industrialmonitordirect.com/blogs/knowledgebase/industrial-alarm-system-standards-iec-62682-isa-182-and-eemua-191">industrialmonitordirect.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag rev">REVIEW</span> proposed — countable: elements whose computed colour resolves to a <code>rag/*</code> ink or fill, plus elements with a running animation, within the first viewport</dd>
+                <dt>Binds to</dt><dd>a signal-census arm in <code>_validate_screen.py</code> (count + a named dominant); the template meta gains <code>signalBudget</code> so a screen can declare a different number with a reason</dd>
+                <dt>Prevents</dt><dd>Opus "Needs attention": 3 of 3 rows lit — a 100 % signal rate in miniature, the info tier as loud as the error tier. Fable: 2 of 4 sparks coloured with no dominant.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-21<small>signal</small></div>
+            <div>
+              <p class="st">One channel per tier, and no tier is identified by a conjunction. Predator: hue + glyph (+ motion only if the reader must act before leaving the page). Blood and fruit: the ruled red or green ink on the numeral with its symbol, nothing else coloured. Game: enclosure and position — a button, a count, a row at the top — never hue. Sky and foliage: default ink.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Healey & Enns: a conjunction target (red <em>and</em> circular) is found by serial search, not preattentively — so a tier must be recognisable from any one of its channels alone; the glyph-plus-word redundancy avd-001 and icon-013 demand is not a conjunction, because each alone identifies. Blood/fruit are already ruled: s151-D1, s155-D1, s144-D1 ("the only coloured text is for plus and minus"). <a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">csc2.ncsu.edu/faculty/healey/PP/</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed (the red/green legs are already BLOCKING by ruling and are not re-tagged here)</dd>
+                <dt>Binds to</dt><dd>the tier table in <code>dashboard-composition.md</code>; a <code>tier</code> enum (<code>ambient · positive · action · loss · threat</code>) on <code>status-indicator.meta.json</code> and the attention surface of RSQ Q4, so the variant→colour bind reads the tier rather than the variant</dd>
+                <dt>Prevents</dt><dd>Both "Needs attention" lists give warn, error and info the same treatment (dot + tinted chip); "Payments awaiting approval" — the one <em>game</em> metric on the board — is flat-neutral with no action affordance while the sparks carry the colour.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-22<small>signal</small></div>
+            <div>
+              <p class="st">Colour follows meaning, not arithmetic: every metric declares which direction is good, and the red/green ink and spark stroke bind to good/bad, never to up/down. A falling cost, exposure or overdue count is fruit, not blood.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Few: red suggests danger by convention, so it must be earned by danger. s182-D3 rules the stroke semantic ("follow the red and green ink colours") and binds it to <em>trend</em>; <code>kpi-tile.meta.json</code> carries <code>trend: up|down|flat → success-ink|error-ink|text</code> and no field for polarity — the semantics stop one step short. <a href="https://www.perceptualedge.com/files/Dashboard_Design_Course.pdf">perceptualedge.com</a> · <a href="../knowledge/components/kpi-tile.meta.json">kpi-tile.meta.json · props.trend</a></dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed — a coloured spark or delta with no declared polarity is a signal that may be lying</dd>
+                <dt>Binds to</dt><dd>a <code>polarity</code> prop on <code>kpi-tile.meta.json</code> (<code>higher-is-better · lower-is-better · neutral</code>, no default); <code>data-trend</code> stays the arithmetic and a derived <code>data-signal</code> (<code>good · bad · none</code>) is what the ink binds to; <code>amount-display</code>'s sign enum (s157-D1) is the sibling seat and takes the same field. A grill-me line per metric: "which way is good?"</dd>
+                <dt>Prevents</dt><dd>Fable L250–258 and Opus L1297–1305: "Net FX exposure (unhedged)" down 8.1 % / 11.2 %, painted red. The page bleeds where it should ripen.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-23<small>signal</small></div>
+            <div>
+              <p class="st">Motion is the rarest signal, reserved for a change that happened while the reader was looking — an item arrived, an action completed — and never spent on load or entry choreography on a monitoring page. Hover motion is an affordance, not a signal, and stays.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Healey & Enns: motion and flicker pop out over every other channel. neuro-036: attention-attracting movement is a last resort, with the hover receipt as the exception; neuro-035 and mot-005/006: no autoplay, deploy at key points. WCAG 2.2.2. <a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">csc2.ncsu.edu/faculty/healey/PP/</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed (REVIEW if DP-20's census counts running animations, which it should)</dd>
+                <dt>Binds to</dt><dd><code>motion-standards.md</code> gains a "monitoring surface" clause; the dashboard template sets <code>data-motion="settle"</code> (or equivalent) so <code>dv-series</code> / <code>dv-marker</code> entry animation is off for the dashboard role — the charts still animate on their own showroom pages</dd>
+                <dt>Prevents</dt><dd>Both baselines: every bar, line and marker animates in on load (42 / 27 <code>animation-delay</code> attributes) at the moment the reader is orienting — the strongest channel, spent on decoration.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-24<small>signal</small></div>
+            <div>
+              <p class="st">Size and position carry importance; hue carries state; weight carries reading order. A tile is never coloured to say "important", and never enlarged to say "wrong".</p>
+              <dl>
+                <dt>Rationale</dt><dd>Bertin: size is the only quantitative retinal variable and value is ordered, hue is not — so hue cannot rank. Few's emphasis map (upper-left) and failure 4 (size to importance) are the position and size legs, already carried by DP-07 and DP-14. type26-009: scale/weight/placement signal reading order. <a href="https://www.axismaps.com/guide/visual-variables">axismaps.com/guide/visual-variables</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed</dd>
+                <dt>Binds to</dt><dd>the tier table (a column "channel" per tier); no new machinery — it is the rule that keeps DP-14's dominant tile and DP-20's dominant signal from being the same lever</dd>
+                <dt>Prevents</dt><dd>Neither baseline marks anything as important except by chip colour; the largest tile carries no more consequence than the smallest.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-25<small>signal</small></div>
+            <div>
+              <p class="st">Mono's law gets an id: in the mono theme every hue outside the neutral ramp is a signal by definition — the ruled RAG inks and fills, the brand red on the primary action — and a hue with no state behind it is a defect, not a style.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave, today: "I excluded colour from mono unless it has some sort of signal it need to carry." It exists today only as riders — s144-D1 ("the only coloured text"), s151-D1 clause 1, s157-D1 ("an unsigned amount is not a success state") — and a builder cannot cite a rider. col25-001 (red applied tactically) and webf-003 (every use of red evaluated) are the brand-side kin.</dd>
+                <dt>Tag</dt><dd><span class="tag">BLOCKING</span> proposed — measurable: a hue census per rendered screen, mono theme, against the allowlist (neutral ramp + <code>rag/*</code> + brand red on a primary seat)</dd>
+                <dt>Binds to</dt><dd>a rule id in <code>colour-usage.md</code> (so <code>gen_rules_index.py</code> mints it) <em>and</em> a <code>signalOnly: true</code> flag on the mono entry in the theme registry, so the gate reads the theme rather than a hard-coded name; whether console (which shares mono's neutral ramp, s157-D2) inherits the flag is RSQ Q9</dd>
+                <dt>Prevents</dt><dd>Not a visible baseline defect — both arms stayed inside the RAG seats — but the rule that makes DP-20's census meaningful in mono, and the one Dave has been enforcing by eye since #122.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-26<small>signal</small></div>
+            <div>
+              <p class="st">Copy carries the same tiers. A status is one word, an adjective or past participle ("Held", "Returned", "Due"); an action is verb-first ("Approve", "Release", "Retry"); the word and the colour agree in tier; no decoration adjectives, intensifiers or exclamation marks anywhere on the board.</p>
+              <dl>
+                <dt>Rationale</dt><dd>GOV.UK tag: adjectives not verbs, a verb reads as clickable; Polaris badge: one word, past tense, two only for a compound state. In-house: copy-030 / ctkb-013 (buttons: action verbs, ≤ 5 words), ctkn-012 (title 3–5 words), copy-017 (exclamation marks rare), copy-011 / neuro-022 (bold for phrases only). Dave: "this can also be reflected in copy I feel." <a href="https://design-system.service.gov.uk/components/tag/">design-system.service.gov.uk/components/tag/</a> · <a href="https://polaris-react.shopify.com/components/feedback-indicators/badge">polaris-react.shopify.com</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed; the "status word is not a verb" clause could be REVIEW (a word-list check)</dd>
+                <dt>Binds to</dt><dd><code>copywriting.md</code> gains a status-word clause; <code>status-indicator.meta.json</code> gains a variant→word map (<code>approved → "Approved"</code> …) so the copy is derived, not authored per screen — RSQ Q12 decides which of the two is the source</dd>
+                <dt>Prevents</dt><dd>Opus rows mix forms in one list — "Approval due 16:00", "Returned — beneficiary", "Due 30 Sep" (two-part, dash, a time); Fable's "Held" is the shape the rule wants and sits beside "Approval due".</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-27<small>signal</small></div>
+            <div>
+              <p class="st">Quiet is a designed state, not an absence. The all-clear reads as one line of default ink — "Nothing needs you" — with no green tick and no celebratory colour; the cockpit stays dark when things are good.</p>
+              <dl>
+                <dt>Rationale</dt><dd>GOV.UK tag: absence is itself a status ("if something does not have a tag, that means it's incomplete"). Airbus: lit means attention, so an all-clear light would be noise. Few: contrasts nag us to assign meaning — a green tick on a quiet board is a contrast with nothing to mean. <b>Partly TASTE and says so</b> — the copy line is a proposal. <a href="https://design-system.service.gov.uk/components/tag/">design-system.service.gov.uk/components/tag/</a></dd>
+                <dt>Tag</dt><dd><span class="tag taste">TASTE</span> proposed for the copy; ADVISORY for "the empty state exists and is unlit"</dd>
+                <dt>Binds to</dt><dd>the attention surface's empty state (RSQ Q4's component or recipe) and the template's second drive file (DP-19)</dd>
+                <dt>Prevents</dt><dd>Neither baseline has an all-clear: both drive files always carry three items, so the page has never been seen quiet and nobody has designed what quiet looks like.</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- LOCALITY (P3) ---------- -->
+        <div class="group p3">
+          <h3>Locality — 2</h3>
+          <p>Dave's second seed, validated: the literature has said this since 1993 and the index has it only as an accessibility rule about form fields. Two principles: where the <em>action</em> lives, and where the <em>feedback</em> lands. The edge that makes both checkable already exists in the schema (<code>triggeredBy</code>, <code>groupsWith</code>); it is just not populated.</p>
+
+          <div class="dp">
+            <div class="id">DP-28<small>locality</small></div>
+            <div>
+              <p class="st">An action lives on the surface it acts on. A control that changes one module sits in that module's own header or footer; a control that changes the whole page sits in the page title zone; a control that finalises a flow sits in the flow's action bar. The distance between a control and its consumer is an edge (<code>triggeredBy</code> / <code>groupsWith</code>), and a control whose consumer is on another surface — or has none — is misplaced.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Dave: "CTAs triggering actions close to them rather than somewhere else on a screen." Nielsen 2010: controls too far from their objects are overlooked and assumed absent; Palmer: a common region groups harder than proximity, so the module's boundary is the edge that says "this acts here"; Fitts/MacKenzie price the distance on every use; SAP places page actions in the header toolbar and object actions on the object; Polaris puts the card-modifying action in the card header. <a href="https://www.nngroup.com/articles/closeness-of-actions-and-objects-gui/">nngroup.com · closeness of actions and objects</a> · <a href="https://www.sap.com/design-system/fiori-design-web/v1-145/foundations/best-practices/global-patterns/action-placement">sap.com · action placement</a> · <a href="https://polaris-react.shopify.com/patterns/card-layout">polaris · card layout</a></dd>
+                <dt>Tag</dt><dd><span class="tag rev">REVIEW</span> proposed for placement (a checker can read the edge and the DOM ancestor, but "the surface it acts on" needs an eye when a control fans out to several modules); the "no consumer" half is already <span class="tag">BLOCKING</span>-proposed at DP-13 and is not re-proposed here</dd>
+                <dt>Binds to</dt><dd>the three placement homes that already exist — <code>card-header-lockup</code> (module toolbar: "inline ghost actions or a single overflow trigger"), <code>page-header-lockup</code> (title zone: "a right-aligned action pair"), <code>action-bar</code> (flow footer) — as a clause in each meta's <code>livesInside</code>; the edge is <code>edges.triggeredBy</code> on the consumer and <code>groupsWith</code> between control and consumer (s245-D7, module level); prose in <code>dashboard-composition.md</code> § locality; extends <code>aid-004</code> from fields to modules</dd>
+                <dt>Prevents</dt><dd>Both baselines: a five-control filter toolbar in the title zone whose only possible consumer is one grid inside one tile, wired to nothing (<code>toolbar-probe.json</code>: 24 → 24 on every control, both arms; Fable <code>drive.json</code> toolbar.period-Quarter "no consumer wired"). Under DP-28 that toolbar is either the grid's own toolbar inside the grid module (the search that does work is exactly this) or it stays in the title zone <em>because</em> it filters every module — and declares so.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="dp">
+            <div class="id">DP-29<small>locality</small></div>
+            <div>
+              <p class="st">Feedback appears at the locus of attention. First on the control that was operated (state, count, inline message), then on the object that changed (row updates or leaves); a toast is used only when the effect is out of view; an error that must be acted on is shown inline at the field <em>and</em> summarised at the top when the field may be off-screen. Feedback never lives only in a corner the eye is not in.</p>
+              <dl>
+                <dt>Rationale</dt><dd>Raskin: one locus of attention, and absorption narrows it; Nielsen heuristic 1: feedback is the most basic guideline, so it has to be seen; GOV.UK: error summary + inline message, both, every time; Material: no snackbar for critical or persistent errors, never the only route to an action. In-house <code>acd-023</code> already says added content is placed after its trigger; <code>toast.meta.json</code> already forbids an error toast and an action that exists only in the toast. <a href="https://raskincenter.org/jef/humane-interface/">raskincenter.org</a> · <a href="https://www.nngroup.com/articles/visibility-system-status/">nngroup.com · visibility of system status</a> · <a href="https://design-system.service.gov.uk/components/error-summary/">gov.uk · error summary</a> · <a href="https://m1.material.io/patterns/errors.html">material.io · errors</a></dd>
+                <dt>Tag</dt><dd><span class="tag adv">ADVISORY</span> proposed for the ladder (control → object → toast); <span class="tag">BLOCKING</span> proposed for the one countable clause "no error is delivered by toast alone" — already an antiPattern on <code>toast.meta.json</code>, so this promotes an existing sentence to an id rather than minting a rule</dd>
+                <dt>Binds to</dt><dd><code>ctkb-012</code> (the button activity ladder is the "on the control" step, already ruled); a clause in <code>common-toolkit-notifications.md</code> beside <code>ctkn-004/007/011</code> naming the ladder; <code>toast.meta.json</code> antiPatterns gain "feedback for an in-view change" (RSQ Q15 decides whether that is a change to the meta or only the note); <code>alert</code> + <code>input-fields</code> error message as the inline pair; DP-12's attention-item states</dd>
+                <dt>Prevents</dt><dd>Both baselines: every feedback on the page is chip/count-class inside the grid (<code>role="status"</code> count line, applied-filter chips) while the control operated is in the title zone, a module away — and the page-level controls produce no feedback at all where they sit. Nothing inline, nothing on the control, and (since no action fires) no toast either: the feedback ladder has zero rungs. Recorded so DP-11's actions do not ship with a toast as their only receipt.</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="held">
+            <div class="id">HELD<small>horizon / banding</small></div>
+            <div>
+              <p class="st">The page as a landscape: a light band above (navigation, title, controls — "white controls all below"), a field in the middle (the work), a dark band beneath (the footer as ground); a change of colour in a band reads as a change of state, the way a red horizon reads as morning or nightfall. Dave: "maybe hold this thought I'm not sure it's useful, unless you [find] something that validates it." <b>Held, not proposed as a DP.</b></p>
+              <dl>
+                <dt>What validates it</dt><dd>Three things, all primary. <b>Common region</b> (Palmer 1992): a tonal band is a bounded region, and it groups what is inside it more strongly than nearness does — so a band <em>is</em> a zone, perceptually, not a decoration. <b>Tufte</b> (layering and separation): layers separated by value do not compete, and two edges make a third thing — which is why a page reads calm with three bands and busy with six. <b>Landmarks</b> (W3C APG): the sky / field / ground split already has names — <code>banner</code> (one, top, full width), <code>main</code> (one), <code>contentinfo</code> (one, bottom) — and the APG's own instruction is to derive them from the areas designers indicate "using alignment and spacing"; Dave's bands are the visual half of a split the a11y layer already requires. Bertin adds the limit: a band carries <em>position</em> and <em>value</em> (ordered), so it can say above/below and heavier/lighter, and cannot say <em>which kind</em> without a second variable — the red-horizon half of the thought (colour = state change) is a signal question and belongs to DP-19/21, not to banding.</dd>
+                <dt>Already encoded</dt><dd>The structural half: all seven app-shell snippets carry <code>header</code> · <code>nav</code> · <code>main</code> · <code>footer[role=contentinfo]</code>; <code>showroom/index.json</code> has a <code>shell</code> level with the seven shells; <code>acd-005</code> makes landmarks ADVISORY; the masthead chrome is ruled per theme (s230-D2 logo defaults on light/dark chrome — so the sky already has a tone). The signal half: s151-D1 / s155-D1 / DP-19…27.</dd>
+                <dt>Not encoded</dt><dd>A <em>tonal</em> rule: nothing says the three landmarks carry three values (light / field / dark) or that a page has a ground at all. The dashboard template has no footer (0 hits), so both baselines shipped sky + field and no ground. No rule names vertical banding (rail / field) as a zone either, though the side-nav and nav-rail shells do it in practice. "Horizon", "banding", "zone" — 0 hits in rules and rulings.</dd>
+                <dt>At most</dt><dd>ONE advisory line, if Dave wants it and only then: <em>"A page shell carries its three landmarks as three tonal bands — banner, main, contentinfo — and a dashboard has a ground."</em> That is the whole proposal. No new component, no dial, no rail, no gate, no id until ruled — and Dave's own "maybe hold" stands until he says otherwise (RSQ Q16).</dd>
+                <dt>Tag</dt><dd><span class="tag held">HELD</span> — not a DP; not tagged; not enacted</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 04 ENACT ============================== -->
+<section id="enact" class="band">
+  <div class="wrap">
+    <div class="dim">
+      <div><div class="idx">04</div><div class="dl">What it would take</div></div>
+      <div>
+        <h2>One landing place per group, additive only</h2>
+        <p>Sizes are rough and priced in lane tokens; nothing below is started. Where a home already exists it is named so no second home is minted (s234-D4: grouping lives once and is derived everywhere else).</p>
+        <table class="enact">
+          <thead><tr><th>Group</th><th>Lands at (the ONE source)</th><th>Consumers derived from it</th><th>Size</th></tr></thead>
+          <tbody>
+            <tr><td>Reveal</td><td>New note <code>knowledge/guidelines/dashboard-composition.md</code> (DP-01, 04, 05 prose) + <code>filter-toolbar-bar.meta.json</code> prop <code>defaultState</code> (DP-02) + collapsed variant markup in the snippet (DP-03)</td><td>gen_rules_index.py picks the note up; the skill's rule 7 points at the prop; grill-me gains one question if Q2 says yes</td><td>M — note ≈2K words, one prop, one variant, one driven proof</td></tr>
+            <tr><td>Density</td><td><code>knowledge/snippets/Template-dashboard-bento.reference.html</code> lead group: four <code>compact</code> tiles in one row (DP-06) — the single edit that moves both baselines; DP-07/08/09 as prose in the same note</td><td>canon.css and the showroom regenerate from the snippet; the 2×2 becomes an edit-pass pick</td><td>S — one snippet edit, re-render at four bands, gate run</td></tr>
+            <tr><td>Execute + feedback</td><td>Either a new component <code>attention-list</code> (meta + snippet: item · status · due · count · one action · three states) or a composition recipe on the existing <code>summary</code> + <code>status-indicator</code> + <code>button</code> — RSQ Q5 decides; DP-13's <code>controls</code> edge lands in <code>meta.schema.json</code> beside <code>groupsWith</code></td><td>the composition gate gains a C-arm for undeclared controls; the receipt gate's UNPROVEN row gains an address</td><td>L — a component is a lane of its own; the edge is S</td></tr>
+            <tr><td>Bento rhythm</td><td>Template defaults evidence <code>data-c="4"</code> / context <code>data-c="2"</code> (DP-14/15) — one attribute each; a <code>spans</code> dial in <code>gen_bento_matrix_217.py --rails</code> only if Q3 says yes; DP-18's dead-band arm in <code>_validate_screen.py</code></td><td>the rails JSON regenerates; the foundations grids-dashboard page shows the new default</td><td>S for the attributes; M for the dial; S for the arm</td></tr>
+            <tr class="p2"><td>Signal (P2)</td><td>The tier table lands ONCE in <code>dashboard-composition.md</code> § signal (DP-19/21/24/27 prose) · <code>kpi-tile.meta.json</code> prop <code>polarity</code> + derived <code>data-signal</code> (DP-22; <code>amount-display</code> sibling) · mono rule id in <code>colour-usage.md</code> + <code>signalOnly</code> flag on the theme registry entry (DP-25) · <code>status-indicator.meta.json</code> <code>tier</code> enum + variant→word map (DP-21/26) · template <code>data-motion</code> for the dashboard role (DP-23) · a second, all-clear drive file (DP-19/27)</td><td>a signal-census arm in <code>_validate_screen.py</code> reads rag-resolved colours + running animations in the first viewport (DP-20), and reads <code>signalOnly</code> for the hue census (DP-25); <code>gen_rules_index.py</code> picks up the new ids; the sparkline CSS reads <code>data-signal</code> instead of <code>data-trend</code> for its stroke (one selector swap, s182-D3's semantics preserved)</td><td>M — two meta props, one flag, one enum, one note section; the census arm is S once DP-18's arm exists (same walk)</td></tr>
+            <tr class="p3"><td>Locality (P3)</td><td>DP-28: a <code>livesInside</code> clause on the three placement homes (<code>card-header-lockup</code> · <code>page-header-lockup</code> · <code>action-bar</code>) naming the scope each carries (module · page · flow), plus <code>edges.triggeredBy</code> populated on the consumers that matter for a dashboard (<code>data-grid</code>, <code>chart-*</code>, the attention surface ← <code>filter-toolbar-bar</code>, <code>segmented-control</code>, <code>search-field</code>) — today 13/137 metas carry the edge and 2 resolve to a node · DP-29: one clause in <code>common-toolkit-notifications.md</code> beside ctkn-004/007/011 stating the ladder (control → object → toast), and — if Q15 says so — one antiPattern line on <code>toast.meta.json</code> · both as prose in <code>dashboard-composition.md</code> § locality · <b>HELD</b>: nothing</td><td>a placement arm in <code>_validate_composition.py</code> reads each control's <code>triggeredBy</code>/<code>groupsWith</code> partner and checks the DOM ancestor: same module ⇒ pass, page-title zone ⇒ pass only if the edge fans out to ≥2 modules, else REVIEW (DP-28); the receipt gate's "no consumer" row stays DP-13's; <code>gen_rules_index.py</code> picks up the notification clause (DP-29); the eye keeps the toast-vs-inline call</td><td>S for the clauses and the note; M for populating <code>triggeredBy</code> (≈10 metas, each a Dave's-eye ref per s131-D2's "never guessed"); S for the arm once DP-13's C-arm exists (same walk)</td></tr>
+          </tbody>
+        </table>
+        <p class="cap">Not touched by any row: canon's bento grammar, the span vocabulary, the bands, the squaring pass, the row floor, the rung ladder — all ruled and all sufficient. The gap is defaults and decisions, not machinery. Signal adds one caution: the red/green values and their background keying (s151-D1, s155-D1, s122-D2) are ruled and untouched — DP-22 changes <em>what the ink binds to</em>, not the ink.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 05 RSQ ============================== -->
+<section id="rsq" class="major">
+  <div class="wrap">
+    <div class="dim">
+      <div><div class="idx">05</div><div class="dl">Ruling-shaped questions</div></div>
+      <div>
+        <h2>Sixteen questions, unanswered, Dave's</h2>
+        <ol class="rsq">
+          <li><div><p class="q">Which tags? Proposed: BLOCKING for DP-03 chips, DP-05 re-measure, DP-08 no-gauge, DP-10 count, DP-13 declared consumer; REVIEW for DP-02, DP-15b, DP-18; TASTE for DP-17; ADVISORY for the rest.</p><p class="opts">Option (a) take the proposed set · (b) everything ADVISORY until a second dashboard is built · (c) name the ones to move.</p></div></li>
+          <li><div><p class="q">Does "the designer decides the default state" become a grill-me question — "Filters: open or collapsed on load?" — or a template default (collapsed) with the question skipped?</p><p class="opts">(a) grill-me question with skip ⇒ collapsed · (b) default only, no question · (c) question only when a filter-toolbar-bar is composed.</p></div></li>
+          <li><div><p class="q">Do importance-weighted spans need a new bento dial in the rails (a <code>spans</code> chord: 4+2 · 2+4 · 3+3 · 6), or is the template default enough and the span an authoring-level change?</p><p class="opts">(a) new dial, edit-pass picks a chord · (b) template default only · (c) dial, but generation-time hint answered by the grill-me "which number first?"</p></div></li>
+          <li><div><p class="q">Does the "needs attention / tasks" surface become a new component (<code>attention-list</code>, with actions and states) or a composition recipe over summary + status-indicator + button?</p><p class="opts">(a) new component, its own lane · (b) composition recipe, prose only · (c) recipe now, component when the behaviour address (s234-D5) is settled.</p></div></li>
+          <li><div><p class="q">Does the row form (DP-06) replace the 2×2 as the template's shipped default, with the 2×2 kept as an edit-pass option — or stay a brief question?</p><p class="opts">(a) row default, 2×2 an option · (b) ask every time · (c) row default and the option is removed.</p></div></li>
+          <li><div><p class="q">May generate-from-canon add three composition questions to grill-me (which number first · filters open or collapsed · what can be actioned here), given #241's "getting excessive"?</p><p class="opts">(a) all three, each with skip · (b) only "what can be actioned" — the other two become defaults · (c) none; defaults only.</p></div></li>
+          <li><div><p class="q">Is DP-17's odd-count / one-break rhythm Dave's taste to keep as a named chord, or does he want it promoted to ADVISORY with the display bento as the worked example?</p><p class="opts">(a) TASTE, a chord · (b) ADVISORY · (c) drop it; DP-14/15 carry the rhythm.</p></div></li>
+          <li class="p2"><div><p class="q">Signal budget (DP-20): does it become a validator arm — count of rag-resolved colours plus running animations in the first viewport, with a named dominant — and is three the number?</p><p class="opts">(a) arm, REVIEW, three + one dominant · (b) arm, but Dave sets the number · (c) prose only in the note, no count.</p></div></li>
+          <li class="p2"><div><p class="q">Mono's "colour = signal" (DP-25): does it get a written rule id and a hue-census gate — and does console inherit it, given console shares mono's neutral ramp (s157-D2) but not its RAG lane (s122-D3)?</p><p class="opts">(a) rule id + gate, mono only · (b) rule id + gate, mono and console · (c) rule id only, no gate yet.</p></div></li>
+          <li class="p2"><div><p class="q">Is the dark-cockpit tiering (DP-19/21/24) a mono theme rule or an all-theme composition rule, given legacy and supercharge carry more chrome colour by design (s135-D1 borders, SC solid tints s123-D3)?</p><p class="opts">(a) all-theme: tiers govern <em>what</em> is signalled, themes govern <em>how</em> · (b) mono + console only · (c) mono only, the others are a later lane.</p></div></li>
+          <li class="p2"><div><p class="q">Polarity (DP-22): a <code>polarity</code> prop on <code>kpi-tile</code> (and <code>amount-display</code>) with no default, so an undeclared metric fails the gate — and when "down is good", is the falling spark painted green, or left neutral with the symbol alone carrying it?</p><p class="opts">(a) prop, no default, green for good-down · (b) prop, no default, neutral for good-down (colour only for bad) · (c) prop with default higher-is-better — the baseline behaviour, named.</p></div></li>
+          <li class="p2"><div><p class="q">Copy tiering (DP-26): does the status-word rule land in <code>copywriting.md</code> as a guideline, or in <code>status-indicator.meta.json</code> as a variant→word map the builder cannot deviate from?</p><p class="opts">(a) guideline only · (b) meta map, derived copy · (c) both, the map cites the guideline id.</p></div></li>
+          <li class="p2"><div><p class="q">Load motion on monitoring surfaces (DP-23): a template attribute for the dashboard role, or a clause in <code>motion-standards.md</code> that every monitoring page inherits — and does hover scale-physics (mot-007) stay?</p><p class="opts">(a) template attribute, hover stays · (b) motion-standards clause, hover stays · (c) both, hover stays · (d) hover goes too on dashboards.</p></div></li>
+          <li class="p3"><div><p class="q">Action locality (DP-28): is <code>triggeredBy</code> the edge a placement arm may consume — it is on 13 of 137 metas and resolves to a node on 2 — or does the arm wait for <code>groupsWith</code> to be populated (s245-D7 says module level only), or for DP-13's <code>controls</code> edge, which would carry the same fact in a third home?</p><p class="opts">(a) populate <code>triggeredBy</code> on the ~10 dashboard consumers (Dave's-eye refs), arm reads it · (b) fold it into DP-13's <code>controls</code> edge — ONE edge, control → consumer, and <code>triggeredBy</code> stays prose · (c) no arm; DP-28 is prose in the note and the eye checks it.</p></div></li>
+          <li class="p3"><div><p class="q">Feedback locus (DP-29): does it change <code>toast.meta.json</code>'s antiPatterns — adding "feedback for a change the reader can already see" — so the census can count a toast that fires beside a visible row, or does the ladder stay a notifications-guideline clause and the meta is left as ruled?</p><p class="opts">(a) meta antiPattern + guideline clause, id on the clause · (b) guideline clause only · (c) neither yet; DP-12's states carry it until an action exists to give feedback on.</p></div></li>
+          <li class="p3"><div><p class="q">The horizon / banding thought: does it stay HELD (Dave's "maybe hold"), or take the one advisory line — "a shell's three landmarks are three tonal bands, and a dashboard has a ground" — with an id in <code>dashboard-composition.md</code>, or become a footer on the dashboard template only (the missing ground) with no banding rule at all?</p><p class="opts">(a) HELD, revisit after the demo · (b) one ADVISORY line + id, no build · (c) template footer only, no rule.</p></div></li>
+        </ol>
+        <p class="quote">The two baselines are not a failure of the models. They are what a builder does with a template that decided nothing and an index that says nothing about composition. Every principle above is a decision moved into canon so it need not be made twice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    #246 lane P · Fable · 2026-09-05 · read-only against canon, knowledge and showroom; nothing ruled here; nothing committed. Subreport: <code>notes/_subreports/2026-09-05-246-P-principles.md</code>. Sources: 14 external (NN/g ×2, Perceptual Edge, SAP Fiori, Carbon ×2, Polaris, MOJ, Atlassian, Salesforce, Material 3, deck.gallery, Helios, ClearPoint) + 6 in-house files. <b>Lane P2</b> (signal group, same day, same subreport § P2): +9 external (Healey & Enns PP, Few Dashboard Design Course PDF, GOV.UK tag, Polaris badge, Axis Maps on Bertin, airflow.blog and lean.org on the dark cockpit, industrialmonitordirect on EEMUA 191 / ISA-18.2, isa.org) + kpi-tile / chart-sparkline / status-indicator metas, canon.css spark seats, both built dashboards. <b>Lane P3</b> (locality group + HELD banding, same day, same subreport § P3): +12 external (Palmer 1992 via ScienceDirect, NN/g common region · proximity · closeness of actions and objects · Fitts · natural mappings · visibility of status, Raskin Center, GOV.UK error summary, Material errors + snackbars + top app bars, SAP Fiori action placement + toolbar overview, Polaris card layout, Tufte Envisioning Information PDF, Bertin lecture digest, W3C APG landmarks) + toast / popconfirm / card-header-lockup / page-header-lockup / action-bar / filter-toolbar-bar metas, meta.schema.json edges, seven app-shell snippets, showroom/index.json, both drive.json files and toolbar-probe.json.
+  </div>
+</footer>
+
+</body>
+</html>
