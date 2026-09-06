@@ -153,6 +153,135 @@ observed, not inferred. Detail and measurements: the DataViz ledger, Open/pendin
 Node: ADR-0015-A2
 Edges: supersedes(ADR-0015, claim=group-wide-injection-becomes-manifest-gated)
 
+## Amendment 3 — 2026-09-06 (#250, Dave, option (e)): the unit becomes CODE-ONLY bytes, the page sum becomes `consumes`-aware, and the caps do NOT move
+
+**Ruled by Dave, 2026-09-06, session #250, in chat: option (e) of a five-way fork priced in
+`notes/_subreports/2026-09-06-250-PROBE-byte-gate.md`.** Amends §4's size clause and Amendment 1
+§3's page-budget clause. Nothing above is rewritten — this amendment is the correction, by
+addition, in the ADR-0017 posture.
+
+**⚠ PROSE CORRECTION, STATED FIRST.** Every "**32 KB**" in this document — Amendment 1 §3 ("A
+per-group PAGE budget of **32 KB** is added"), Amendment 1 §3's closing bite sentence ("two
+sources which each pass 16 KB and together fail **32 KB**"), and Amendment 2 §4 ("16 KB per source
+· **32 KB** per page stand") — is **stale and reads 34 KB** as of `#96-D5` (Dave, 2026-08-05:
+`PAGE_BYTES` re-dialled 32→34 KB; receipt `notes/_MEMENTO-DECISIONS.md:3874`). That re-dial moved
+the constant in code and never reached this document, and it also left three printed strings in
+`_validate_behaviour.py` saying "32 KB" for 32 days, so the published `_BEHAVIOUR-GATE.md` printed
+the arithmetic contradiction `39.5 KB of 32 KB, 116%`. **Those three strings are corrected in the
+same beat as this amendment** (`_validate_behaviour.py` report header, the per-group report line,
+the `main()` PASS line). The two surviving "32KB" strings in that file are deliberate history: the
+`PAGE_BYTES` comment narrating the #96 re-dial, and the page-budget bite's comment explaining why
+it needs a third pad.
+
+**BEAT 1 — what forced the question.** The #249 VFIT build (proposal (a), 19/19, committed
+`c05ff59`) added 4,588 B to `canon/dv-behaviour.js`, taking it to 19,768 B raw against a 16,384 B
+per-source cap, and the registry group to 40,410 B against a 34,816 B page budget. The kit had
+exactly **zero** headroom before the addition: 14,174 + 15,131 + 5,511 = 34,816 = `PAGE_BYTES`
+*to the byte*. Any byte added to any dataviz source failed the page gate.
+
+**BEAT 2 — the fork, and what the probe found underneath it.** Four options were priced —
+(a) re-dial both caps · (b) build a marked-waiver mechanism · (c) shave comments · (d) park the
+lane. The probe surfaced two structural facts none of the four addressed:
+
+1. **Of the 40,410 raw bytes, 15,573 are block comments and 23 are blank lines.** The three
+   sources carry **zero** `//` comments. The code is 24,814 B; the provenance trail is the rest.
+2. **The gate was not measuring a page.** `check_group` summed *every* source registered in the
+   group, while Amendment 2 (2026-07-28) had added per-member `consumes` and **15 of 15 members
+   declare one**. Only `Chart-donut` ever loads all three sources. Amendment 2's own sentence —
+   *"Budgets untouched… `_validate_behaviour.py` unmodified"* — is the seam: the budget's ADR
+   called it a PAGE budget while the code summed a REGISTRY.
+
+**THE RULING — option (e): change the UNIT and the SUMMATION; leave the CAPS alone.**
+
+1. **The measured unit is CODE-ONLY bytes.** `//` line comments, `/* */` block comments and blank
+   lines are stripped **at measure time**, in memory, by a scanner in `_validate_behaviour.py`
+   (`code_only()`). **No source file is modified; not one provenance byte is spent.** This is the
+   whole difference between (e) and (c).
+2. **The reason is Amendment 1's own words.** Rejecting minification on 2026-07-26 this ADR wrote:
+   *"the cap is a complexity forcing function, and minifying shrinks the number without
+   simplifying the thing."* A comment is not complexity. A cap written to force a conversation
+   about complexity was, until today, also charging for the answers to that conversation — every
+   time a lane documented WHY a routine exists, the gate read it as the routine getting harder.
+   That is the gate measuring the proxy instead of the thing, which is the exact failure shape
+   Amendment 1 §3 names and closes for the split case.
+3. **Both caps are UNMOVED: `MAX_BYTES` = 16 KB per source, `PAGE_BYTES` = 34 KB per page.**
+   Amendment 1's *"a cap that moves once moves again"* stands, unspent.
+4. **The page budget sums per MEMBER PAGE from `consumes`.** The group's figure is the **worst
+   member page** — the heaviest thing a browser actually loads. A member declaring
+   `consumes: ["dv-behaviour"]` is no longer charged for `dv-legend`. `consumes` naming an unknown
+   behaviour REFUSES (a fourth direction on Amendment 2's fail-loud list, now enforced in the byte
+   gate too, not only the generator). Absent `consumes` still means universal, unchanged.
+5. **Both figures are reported.** Raw and code-only, per source, with the comment/blank delta, and
+   every member page listed. Nothing is hidden by the strip; the report shows exactly what was not
+   counted.
+6. **Banned-pattern scanning stays on the RAW text.** Only the size measure changes.
+
+**Measured at amendment** (`python3 knowledge/_validate_behaviour.py`, exit 0):
+
+| source | raw | comment/blank | **code-only** | of 16 KB |
+|---|---|---|---|---|
+| `canon/dv-behaviour.js` | 19,768 | 6,720 | **13,048** | 80% |
+| `canon/dv-legend.js` | 15,131 | 7,397 | **7,734** | 47% |
+| `canon/dv-donut-sweep.js` | 5,511 | 1,622 | **3,889** | 24% |
+
+Worst member page: **`Chart-donut` 24,671** code-only B (71% of 34,816); the eight two-source
+members 20,782; the six `dv-behaviour`-only members 13,048. Under the OLD registry sum the same
+tree read 40,410 and was red twice.
+
+**THE STRONGEST CASE AGAINST (e) — that it is a re-dial in disguise.** Stated in full, because it
+is the honest objection and it is not weak:
+
+> The cap did not move, but the *thing being measured* got smaller by 15,573 bytes overnight, and
+> the file that was 27% over is now 20% under. Nothing about `dv-behaviour.js` changed. If the
+> test of a cap is whether it still bites, a change that converts a red into a green with a
+> comfortable margin, decided by the people the red was blocking, is a re-dial wearing a different
+> word — and a worse one than (a), because (a) at least records honestly in an integer that the
+> bar was lowered, while (e) hides the same relief inside a definition. `dv-behaviour.js` is still
+> 19,768 bytes for a human to read. Amendment 1 §2 renamed the 16 KB cap's job **LEGIBILITY** —
+> *"small enough for one person to hold in their head"* — and a person holds the comments too.
+
+**THE ANSWER, in three parts.**
+
+1. **A re-dial is unfalsifiable relief; this is a testable definition.** (a) makes the gate weaker
+   against every future addition of any kind. (e) leaves the gate *exactly as strong against code*
+   as it was — proven, not asserted, by `--mutate code-pad`: appending **4,000 bytes of real code**
+   to `dv-behaviour.js` still goes RED at 17,054 > 16,384. Under (a) at `MAX_BYTES` = 20 KB, those
+   same 4,000 bytes pass. The next behaviour addition faces the same conversation it always faced
+   — which Amendment 1 line 90 calls *"the forcing function working, not a defect."*
+2. **The objection's own premise is what makes it answerable.** "Nothing about the file changed" is
+   true and is the point: the file did not become more complex, so a complexity gate should not
+   have started failing it. The bytes that pushed it over were 6,720 B of provenance — VFIT's
+   rationale among them. Under (c) the way to green was to **delete** that rationale: pay for a
+   complexity budget in documentation. That is the incentive (e) removes, and removing a perverse
+   incentive is a real solution rather than a patch (`s234-D6`).
+3. **The legibility objection is real and is NOT answered here — it is re-pointed.** (e) concedes
+   that 19,768 raw bytes is a long read. But the per-source cap was never able to measure that
+   either: it measured bytes, and bytes are a proxy for legibility as poor as they are for
+   complexity. If legibility is to be gated, the honest instrument is a *structural* one — module
+   count, function length, cyclomatic depth — not a byte count with comments taxed. **Flagged for
+   Dave, not decided:** whether a structural legibility check should join this gate. Until then
+   the 16 KB code-only cap is what stands, and it is the tighter of the two readings of §4 that
+   remains defensible.
+
+**Bitten, not asserted** (`s182-D1` — mechanical claims carry a probeable token):
+`python3 knowledge/_validate_behaviour.py --selftest` (green; adds nine new bites: five on the
+scanner's string/regex/division handling, two on the comment-vs-code delta, four on the
+`consumes`-aware sum, and the pre-existing size and page-budget pads **converted from comment
+padding to real code** — a comment pad would have silently stopped biting the moment the unit
+changed, which is the first rot this amendment could have caused). Plus three named mutations in
+the `_validate_fit_physics.py --mutate` house style: `code-pad` → RED · `comment-pad` → GREEN ·
+`string-slash` → RED.
+
+**Declared limitation.** `code_only()` is a hand-rolled scanner, not a JS parser. It tracks string
+and regex-literal state so `"http://x"` and `/a\/\/b/` are never read as comments, and it uses the
+standard previous-significant-token heuristic for regex-vs-division. A regex opened immediately
+after a keyword-like token outside `_KW_BEFORE_REGEX` would be mis-scanned. The failure mode errs
+toward a **larger** figure (a stray tail counted as code), never a smaller one, so the gate cannot
+be evaded by it. Every construct in the live canon sources is covered.
+
+Node: ADR-0015-A3
+Edges: supersedes(ADR-0015, claim=size-clause-unit-becomes-code-only) · supersedes(ADR-0015-A1, claim=page-budget-value-32-reads-34-and-sum-becomes-per-member) · supersedes(ADR-0015-A2, claim=budgets-are-no-longer-untouched-consumes-now-drives-the-page-sum) · relates(#96-D5, scope=the-prose-this-amendment-reconciles)
+
 ## Consequences
 
 - The gate work rides the Chart-line exemplar build: size + pattern checks + sync `--check` +
