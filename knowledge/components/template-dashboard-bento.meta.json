@@ -81,6 +81,15 @@
     "delta": "rag/success + rag/error as the KPI ARROW FILL seat only, inherited verbatim from Stat-card via Kpi-tile where it is already flagged as Dave's. NOT resolved here.",
     "dataviz": "data/series/1 + data/series/3 + data/axis/color + data/axis/alpha + data/grid/color + data/grid/alpha, and the sparkline ink seats rag/success-ink + rag/error-ink + text/default. ALL are declared in BOTH theme blocks - [[dangling-dataviz-var-renders-silent-black]]."
   },
+  "behaviour": {
+    "script": null,
+    "partial": [
+      "dv-behaviour",
+      "dp08-anchor"
+    ],
+    "fallback": "IDENTICAL minus two enhancements. dv-behaviour off: the chart paints its authored 580x260 canvas instead of fitting its cell, and the popover/table affordances go quiet - every number is still in the DOM and in the figure's aria-label. dp08-anchor off: the strip chip is still a real in-page link to a real id (#dp08-na), so the browser jumps to the Needs-attention card unaided; what is lost is the focus move and the transient highlight, i.e. the arrival, not the destination.",
+    "$note": "TYPED at #251 (2026-09-06, DP-08 build lane) - this file had NO `behaviour` key at all while already consuming dv-behaviour, so the s234-D5 declaration is added by the same lane that added the second partial. `script` is null as a POSITIVE declaration: the template itself carries no hand-authored script. The two inline <script> elements in the snippet are (a) the AUTO-BEHAVIOUR payloads, which are `partial`, not `script`, and (b) the DEMO CHROME (theme toggle + width read-out) which the file's own comment marks as 'Not the template' and which is deleted when the page is composed - declaring it here would address demo furniture as component behaviour. `events` is deliberately absent: s245-D4 keeps it OPTIONAL and GENERATED from the snippet, never authored, and no generator run has emitted it for this file."
+  },
   "relationships": {
     "livesInside": [
       "A navigation shell - though this file draws its own masthead, which Template dashboard does not",

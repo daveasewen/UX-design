@@ -58,6 +58,16 @@
                  pageBg grey, bentoBg transparent (read off role_defaults_219.py --table, not typed).
       · s219-D2(4) keylines default OFF on every dashboard in every theme.
       · s230-D2  the masthead logo pair.
+      · s251-D1  DP-08 = A+B with a NAMED RELATIONSHIP. The header status STRIP is the
+                 orientation layer, the Needs-attention card is the detail, and a strip chip
+                 anchor-links to the card (behaviour `dp08-anchor`, injected below). Undrawn
+                 facilities is a STATE, not an action: STRIP-ONLY — it does not enter the card.
+                 The two status tiles LEFT the headline row (s247-D3's "not hidden among the
+                 KPI tiles"), so the row is four KPI tiles at every band (page rule 10a).
+      · s251-D2  the ONE shared count and label is the strip's wording, verbatim:
+                 `14 payments · 5 need you`. The card's older "N of M need you" form is RETIRED
+                 for this fact, and the retired string appears nowhere in this file, comments
+                 included — a grep for it is one of the build lane's proofs.
     NOT ruled, and NOT decided here:
       · the DARK page ground (s219-D3(4) leaves it expressly open) — see the manifest driftAllow.
       · whether this file should carry the keylines-ON construction inline at all: that
@@ -794,6 +804,41 @@
          stays — it is what lets the figure take the grid cell's width instead of its content's. */
   .tpl-group > .c-bento__grid > .stat-card > .dv{ min-width:0; }
 
+  /* 10 · DP-08, s251-D1/D2 (#251). THE STRIP IS THE ORIENTATION LAYER; THE CARD IS THE DETAIL.
+         Page-level rules only — no new component is minted (the strip is Status-indicator form B
+         in the header's existing `.l-row` status row, and the card head is the Summary idiom the
+         rail already carries). 10a is the ONLY band rule the strip costs: the two status tiles
+         leave the row (s247-D3) so the lead group is FOUR at every band — measured 4/4/4 at
+         1440 / 1100 / 820, light and dark, maxWdiff 0, no void (#251 probe P1). It out-specifies
+         canon's band clamps deliberately: four tiles never have to divide three because the band
+         never reaches the row, which is what keeps s249-D5 (no ragged layouts) true here. */
+  .tpl-page .c-bento.tpl-group-lead > .c-bento__grid{ --bento-cols-now:4; }              /* 10a */
+  .tpl-strip .l-row{ align-items:center; flex-wrap:wrap; }                               /* 10b */
+  /* 10c · the chip is a LINK, and looks exactly like the chip it already was: no underline, no
+           colour change — the affordance is the pointer and the focus ring, because a RAG chip
+           that also carried link ink would read as a second status. */
+  .tpl-strip-link{ text-decoration:none; color:var(--text); }
+  .tpl-strip-link:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  /* 10d · the plain legal item carries NO chip: Undrawn facilities is a state with no RAG
+           meaning, and painting one would say "act on this" (DP-10 grammar, s251-D1). The 1px
+           divider is the separator instead — a line, not a colour. */
+  .tpl-strip-plain{ opacity:var(--alpha-60); padding-left:16px; border-left:1px solid var(--divider); }
+  /* 10e · the PROMOTED head row inside the Needs-attention card. Awaiting approval ONLY. */
+  .tpl-na-head{ margin-bottom:8px; border-bottom:1px solid var(--divider); }
+  .tpl-na-head .summary__row{ align-items:baseline; }
+  .tpl-na-head .summary__row:last-child{ border-bottom:0; }
+  .tpl-na-head .summary__k{ display:flex; flex-direction:column; gap:6px; }
+  .tpl-na-head .summary__k .t-cm-legal{ display:block; opacity:1; }
+  /* 10f · ARRIVAL. The `dp08-anchor` behaviour adds this class for exactly one animation and
+           removes it on `animationend`; the keyframes live HERE because the page owns paint and
+           the behaviour owns the event (DEF-003: no JS scale-physics, and none is needed —
+           this is a colour wash). The card's focus ring is the non-visual channel and arrives
+           whatever this rule does, so nothing depends on the highlight alone (1.4.1). Under
+           `prefers-reduced-motion: reduce` the behaviour never adds the class at all, and the
+           global reduce block below clamps any animation that slips through. */
+  .stat-card.is-dp08-arrived{ animation:tplArrive 1200ms ease-out 1; }
+  @keyframes tplArrive{ from{ box-shadow:inset 0 0 0 2px var(--focus); } to{ box-shadow:inset 0 0 0 2px transparent; } }
+  .stat-card[data-dp08-target]:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
 
   /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works.
      ⚠ 36px, NOT the 32px Template-dashboard.reference.html draws: 32 is off the 28/36/44/48
@@ -863,8 +908,20 @@
   </div>
   </div>
 
-  <div class="l-row" data-justify="between" data-gap="m">
+  <!-- THE STATUS STRIP — s251-D1 (#251). The header's existing status row GROWN, not replaced:
+       three items, all Status-indicator form B or plainer. (1) the feed chip, kept verbatim.
+       (2) the awaiting-approval chip, which is the SAME element with an href: it addresses the
+       Needs-attention card by id (`#dp08-na`, the card itself — not a tab panel), and the
+       `dp08-anchor` behaviour turns that jump into an arrival. Its wording is s251-D2's, exact,
+       and the card's head row repeats it character for character — ONE shared count and label.
+       (3) Undrawn facilities as PLAIN legal text behind a 1px divider: a state, not an action,
+       so it carries no chip and no RAG colour, and by s251-D1 it appears NOWHERE ELSE. -->
+  <div class="l-row tpl-strip" data-justify="between" data-gap="m" role="region" aria-label="Status">
+  <div class="l-row" data-gap="m">
   <span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">All feeds up to date</span></span>
+  <a class="status warn tpl-strip-link" href="#dp08-na" data-dp08-anchor data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval &middot; 14 payments &middot; 5 need you</span></a>
+  <span class="tpl-strip-plain t-cm-legal">Available overdraft &pound;25,000.00 &middot; None used &middot; Limit reviewed 4 Aug</span>
+  </div>
   </div>
   </header>
 
@@ -880,14 +937,18 @@
       <div class="c-bento tpl-wall" data-bento-role="dashboard" aria-label="Account overview">
         <div class="c-bento__grid">
 
-          <!-- GROUP 1 · the headline row (DP-06, #247 W1). SIX Kpi-tiles, `compact` variant
-               (.t-cm-figure-3, 24px — kpi-tile.meta.json variant "compact"), each at data-c="1":
-               ONE row at six columns, 3+3 at three, 2+2+2 at two, a single column at one. Six
-               divides every band count, so the row is square at 6 / 3 / 2 / 1 with no new band
-               rule — the header's squaring constraint holds. The 2x2 board (four tiles at
-               data-c="3", the #231–#246 form) is the edit-pass option, not the default (s246-D5).
-               Tile count 6 sits inside DP-07's 3–6. Order left→right is the SPECIMEN's, not a
-               ruling on which number the role checks first (DP-07 REVIEW, Dave's). -->
+          <!-- GROUP 1 · the headline row (DP-06, #247 W1; re-cut at #251 for s251-D1). FOUR
+               Kpi-tiles, `compact` variant (.t-cm-figure-3, 24px — kpi-tile.meta.json variant
+               "compact"), each at data-c="1". It was SIX until #251: the two STATUS tiles
+               s247-D3 names — Awaiting approval and the undrawn-facility state — left the row
+               for the header strip, because Dave ruled that if they are the only statuses shown
+               they must not sit hidden among the KPI tiles. What is left is four true KPIs, and
+               the row STAYS A ROW (s247-D4, "row for sure"): page rule 10a pins the lead group
+               to four columns at every band, so the row never has to divide three and never goes
+               ragged (s249-D5). Four sits inside DP-07's 3–6 and inside s249-D2 ("whatever the
+               data dictates"). The 2x2 board (four tiles at data-c="3", the #231–#246 form) is
+               the edit-pass option, not the default (s246-D5). Order left→right is the
+               SPECIMEN's, not a ruling (DP-07 REVIEW, Dave's). -->
           <section class="c-bento__tile c-bento tpl-group tpl-group-lead" data-bento-role="dashboard"
                    data-c="6" data-r="1" aria-label="This month">
             <div class="c-bento__grid">
@@ -932,18 +993,10 @@
         </div>
         </div>
 
-        <div class="c-bento__tile kpi-tile" role="group" aria-label="Awaiting approval" data-c="1" data-r="1">
-        <p class="lbl16 t-cm-caption">Awaiting approval</p>
-        <span class="amt t-cm-figure-3"><span>&pound;</span><span>9,840.55</span></span>
-        <span class="delta"><span class="t-cm-figure-6">6 payments</span><span class="per t-cm-legal">2 to approve</span></span>
-        <div class="kpi-spark">
-        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-        <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-        <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
-        <circle class="dv-end" cx="197" cy="24.0" r="3"/>
-        </svg>
-        </div>
-        </div>
+        <!-- ⬛ THE "Awaiting approval" KPI TILE STOOD HERE until #251. It did not move into the
+             Needs-attention card and it did not shrink: it became the header strip's warn chip,
+             carrying s251-D2's wording, and the card's promoted head row now repeats that one
+             count. s247-D3 is what removed it; s251-D1 is what re-homed it. -->
 
         <div class="c-bento__tile kpi-tile" role="group" aria-label="Card spend" data-c="1" data-r="1">
         <p class="lbl16 t-cm-caption">Card spend</p>
@@ -958,18 +1011,11 @@
         </div>
         </div>
 
-        <div class="c-bento__tile kpi-tile" role="group" aria-label="Available overdraft" data-c="1" data-r="1">
-        <p class="lbl16 t-cm-caption">Available overdraft</p>
-        <span class="amt t-cm-figure-3"><span>&pound;</span><span>25,000.00</span></span>
-        <span class="delta"><span class="t-cm-figure-6">None used</span><span class="per t-cm-legal">Limit reviewed 4 Aug</span></span>
-        <div class="kpi-spark">
-        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-        <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-        <polyline class="dv-series" points="3.0,23.0 20.6,23.0 38.3,23.0 55.9,23.0 73.5,23.0 91.2,23.0 108.8,23.0 126.5,23.0 144.1,23.0 161.7,23.0 179.4,23.0 197.0,23.0"/>
-        <circle class="dv-end" cx="197" cy="23.0" r="3"/>
-        </svg>
-        </div>
-        </div>
+        <!-- ⬛ THE UNDRAWN-FACILITY STATE TILE STOOD HERE until #251 ("Available overdraft ·
+             None used · Limit reviewed 4 Aug"). s247-D3 named it the second of the two status
+             tiles; s251-D1 rules it STRIP-ONLY — a state, not an action — so it is now the
+             strip's plain legal item behind the divider, with NO chip, and it deliberately does
+             NOT appear in the Needs-attention card. -->
 
             </div>
           </section>
@@ -1043,22 +1089,25 @@
           <section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard"
                    data-c="2" data-r="1" aria-label="Position">
             <div class="c-bento__grid">
-              <div class="c-bento__tile stat-card" data-c="3" data-r="1">
-                <div class="tpl-panel-head">
-                <h3 class="t-cm-section-label">Balances</h3>
-                </div>
-                <dl class="summary">
-                <div class="summary__row"><dt class="summary__k t-cm-label">Current account</dt><dd class="summary__v t-cm-figure-5">&pound;184,205.10</dd></div>
-                <div class="summary__row"><dt class="summary__k t-cm-label">Deposit account</dt><dd class="summary__v t-cm-figure-5">&pound;310,000.00</dd></div>
-                <div class="summary__row"><dt class="summary__k t-cm-label">Foreign currency</dt><dd class="summary__v t-cm-figure-5">&euro;42,180.00</dd></div>
-                <div class="summary__row"><dt class="summary__k t-cm-label">Card balance</dt><dd class="summary__v t-cm-figure-5">&pound;3,204.80</dd></div>
-                </dl>
-              </div>
-              <div class="c-bento__tile stat-card" data-c="3" data-r="1">
+              <!-- NEEDS ATTENTION IS FIRST IN THE RAIL as of #251 (s251-D1). It is the strip's
+                   referent, so it is what the chip arrives at, and at 1440 the swap is what puts
+                   it inside the first screen (#251 probe P2 measured y 678.6 first vs y 913.7
+                   second). At 1100 the two cards are one two-up row of equal height (s248-D1) and
+                   the order stops mattering; below that they stack. THE ID IS ON THE CARD, not on
+                   a row inside it: the card is the whole answer, and focusing it reads the head
+                   row and the items together. `data-dp08-target` is the behaviour's hook. -->
+              <div class="c-bento__tile stat-card" id="dp08-na" data-dp08-target data-c="3" data-r="1">
                 <div class="tpl-panel-head">
                 <h3 class="t-cm-section-label">Needs attention</h3>
                 <a class="tpl-link t-cm-caption" href="#">View all</a>
                 </div>
+                <!-- THE PROMOTED HEAD ROW — ONE row, Awaiting approval ONLY. Its wording is the
+                     strip's, character for character (s251-D2: `14 payments · 5 need you`; the
+                     older "N of M need you" form is retired). Undrawn facilities is NOT here and must
+                     not be added: s251-D1 makes it strip-only. -->
+                <dl class="summary tpl-na-head">
+                <div class="summary__row"><dt class="summary__k t-cm-label">Awaiting approval <span class="t-cm-legal">14 payments &middot; 5 need you</span></dt><dd class="summary__v t-cm-figure-5">&pound;9,840.55</dd></div>
+                </dl>
                 <div class="l-stack" data-gap="m">
                 <div class="l-row" data-gap="s" data-justify="between">
                 <span class="t-cm-label">Supplier payment run</span>
@@ -1073,6 +1122,17 @@
                 <span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Due 30 Sep</span></span>
                 </div>
                 </div>
+              </div>
+              <div class="c-bento__tile stat-card" data-c="3" data-r="1">
+                <div class="tpl-panel-head">
+                <h3 class="t-cm-section-label">Balances</h3>
+                </div>
+                <dl class="summary">
+                <div class="summary__row"><dt class="summary__k t-cm-label">Current account</dt><dd class="summary__v t-cm-figure-5">&pound;184,205.10</dd></div>
+                <div class="summary__row"><dt class="summary__k t-cm-label">Deposit account</dt><dd class="summary__v t-cm-figure-5">&pound;310,000.00</dd></div>
+                <div class="summary__row"><dt class="summary__k t-cm-label">Foreign currency</dt><dd class="summary__v t-cm-figure-5">&euro;42,180.00</dd></div>
+                <div class="summary__row"><dt class="summary__k t-cm-label">Card balance</dt><dd class="summary__v t-cm-figure-5">&pound;3,204.80</dd></div>
+                </dl>
               </div>
             </div>
           </section>
@@ -1241,6 +1301,19 @@
     "$reason": "s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling."
   }
 }
+  </script>
+  <script type="application/json" id="behaviour-manifest">
+  {
+    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/template-dashboard-bento.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+    "component": "component:template-dashboard-bento",
+    "script": null,
+    "partial": [
+      "dv-behaviour",
+      "dp08-anchor"
+    ],
+    "events": [],
+    "fallback": "IDENTICAL minus two enhancements. dv-behaviour off: the chart paints its authored 580x260 canvas instead of fitting its cell, and the popover/table affordances go quiet - every number is still in the DOM and in the figure's aria-label. dp08-anchor off: the strip chip is still a real in-page link to a real id (#dp08-na), so the browser jumps to the Needs-attention card unaided; what is lost is the focus move and the transient highlight, i.e. the arrival, not the destination."
+  }
   </script>
 
   <!-- ===== THE CHART's BEHAVIOUR — s249-D4: the dashboard role is REGISTERED in knowledge/component-types.json
@@ -1579,6 +1652,98 @@
 }());
 </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+
+  <!-- ===== THE STRIP's BEHAVIOUR — s251-D1 (#251): the chip anchor-links to the Needs-attention
+       card and the jump becomes an ARRIVAL (scroll · focus · one transient highlight). Registered
+       in knowledge/component-types.json as behaviour "dp08-anchor" and declared in this member's
+       `consumes`, so gen_component_partials.py injects it between the markers below and
+       _validate_behaviour.py charges its bytes to THIS page. Edit the source, regenerate — never
+       between markers. The 14 chart members declare it away and carry no payload. ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dp08-anchor START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dp08-anchor.js (behaviour "dp08-anchor", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dp08-anchor — the status-strip → Needs-attention ARRIVAL behaviour (ADR-0015 behaviour
+   partial, hand-authored SOURCE). ONE file, injected between AUTO-BEHAVIOUR markers by
+   knowledge/gen_component_partials.py into every member that declares it in `consumes`.
+
+   WHY IT EXISTS. s251-D1 (Dave, #251): the header status STRIP is the orientation layer and
+   the Needs-attention card is the detail — "the user might even click on the chip and it
+   anchor links to the needs attention panel". A bare `href="#id"` jumps, and a jump inside a
+   long dashboard leaves the reader with no idea WHICH card answered them. This partial makes
+   the jump an ARRIVAL: scroll, focus, and one transient highlight on the card itself.
+
+   CONTRACT (ADR-0015 §4, gated by knowledge/_validate_behaviour.py):
+     · no polling (setInterval), no network, no JS scale-physics (DEF-003) — none used here.
+     · ZERO resize listeners of its own. This behaviour has nothing to reflow; the group's ONE
+       rAF-debounced listener lives in dv-behaviour.js and stays the group's only one.
+     · code-only bytes are what the gate measures (s250-D1 / ADR-0015 Amendment 3), so this
+       comment costs the page nothing.
+
+   ACCESSIBILITY. The card takes `tabindex="-1"` only at the moment it is addressed, so the
+   card never enters the tab order; focus is what carries the arrival to a screen reader and
+   to the keyboard, and the highlight is the sighted echo of the same event (never the only
+   channel — 1.4.1). `prefers-reduced-motion: reduce` drops BOTH the smooth scroll and the
+   highlight; nothing is left animating.
+
+   PROGRESSIVE ENHANCEMENT. With JS off the chip is still a real in-page link to a real id:
+   the browser jumps to the card and the page still works, minus the focus and the highlight.
+   That is the `fallback` string in the meta's typed `behaviour` (s234-D5). */
+(function () {
+  "use strict";
+  var SEL = '[data-dp08-anchor]';          /* the strip chip(s) that address a card */
+  var TARGET = 'data-dp08-target';         /* the card that may be arrived at */
+  var CLS = 'is-dp08-arrived';             /* transient; the page owns the keyframes */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function targetOf(a) {
+    var href = a.getAttribute('href') || '';
+    if (href.charAt(0) !== '#' || href.length < 2) return null;
+    return document.getElementById(href.slice(1));
+  }
+
+  function arrive(card) {
+    if (!card) return;
+    if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '-1');
+    card.focus({ preventScroll: true });
+    card.classList.add(CLS);
+    if (reduce && reduce.matches) { card.classList.remove(CLS); return; }
+    var done = function (e) {
+      if (e && e.target !== card) return;
+      card.classList.remove(CLS);
+      card.removeEventListener('animationend', done);
+    };
+    card.addEventListener('animationend', done);
+  }
+
+  function onClick(e) {
+    var a = e.target && e.target.closest ? e.target.closest(SEL) : null;
+    if (!a) return;
+    var card = targetOf(a);
+    if (!card) return;                     /* no target ⇒ leave the link alone */
+    e.preventDefault();
+    card.scrollIntoView({ block: 'start',
+                         behavior: (reduce && reduce.matches) ? 'auto' : 'smooth' });
+    if (history && history.replaceState) history.replaceState(null, '', a.getAttribute('href'));
+    arrive(card);
+  }
+
+  function onHash() {
+    var id = (location.hash || '').slice(1);
+    if (!id) return;
+    var card = document.getElementById(id);
+    if (card && card.hasAttribute(TARGET)) arrive(card);
+  }
+
+  document.addEventListener('click', onClick, false);
+  window.addEventListener('hashchange', onHash, false);
+  if (document.readyState !== 'loading') onHash();
+  else document.addEventListener('DOMContentLoaded', onHash, false);
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dp08-anchor END ===== -->
 
   <script>
     // DEMO CHROME. Not the template.

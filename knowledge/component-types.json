@@ -442,7 +442,8 @@
         "Template-dashboard-bento": {
           "selector": "figure.dv",
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dp08-anchor"
           ],
           "markup": [
             "dv-lockup-title"
@@ -486,6 +487,19 @@
           },
           "$manifestBinds": {},
           "$description": "The DONUT RADIAL-SWEEP INTRO — DV-D12 alone. THIRD behaviour source for the group, split out of dv-legend.js 2026-08-02 (#76-D1, Dave) when that file reached 17,035 B against ADR-0015's 16 KB per-source cap and _validate_behaviour.py went RED. WHY THIS SEAM AND NOT ANOTHER: sweepDonut/arcPath/pt hold ZERO references to the legend interaction model (all nine of rec/render/highlight/toggleSwatch/isolate/centreData/updateCentre/hostOf/hiTarget measured at 0 hits), so the cut follows a boundary that already existed rather than one invented to make the numbers work. ⚠ THE SPLIT BUYS NO HEADROOM AND THE GATE ENFORCES THAT, NOT A COMMENT: check_group sums every registered source against the 32 KB page budget, so this file is counted exactly as it was when it lived next door — which is the entire purpose of the 2026-07-26 re-scoping, and the reason registering it was the SECOND half of the split rather than an afterthought. ⛔ The gate read GREEN at 25,055 B / 2 sources in the window between the file being written and this entry existing — a false green caused by content leaving the gate's view, i.e. the exact failure the page budget exists to prevent. CONSUMER SCOPE = Chart-donut ALONE (Dave, #76): the sweep selects path.dv-series[data-a1], which only a donut carries, so bar/line/combo/scatter were shipping it as dead payload. That narrow scope is what lets requires.declarations be HONEST here ('data-a1=' is a hook its one member really carries) — the wider all-five scope would have forced an EMPTY contract, repeating the class=\"dv-legrow promotion failure recorded in the dv-legend entry, where a hook required of every member was one two members could never satisfy. ★ THE MOTION LAW IS SHARED WITH THE STACKED BAR AND ONLY THIS HALF IS BUILT: Dave's stacked-segment ruling (② wording, in force — bottom ease-IN, top ease-OUT, intermediates LINEAR, ONE shared timeline) is this same trapezoidal profile in a different geometry. They share a LAW and CANNOT share an implementation — the bar half must stay CSS (DEF-003 forbids JS transforms), this half must stay JS (an SVG arc's angular extent is not CSS-animatable, Batch 3 #7). The bar half is UNBUILT: animation-timing-function appears 0 times in Chart-bar.reference.html and what ships is a fixed stagger, one of the shapes ② superseded. Logged as its own item at #76, deliberately NOT fixed in this split."
+        },
+        "dp08-anchor": {
+          "source": "canon/dp08-anchor.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dp08-anchor",
+              "data-dp08-target"
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "THE STATUS-STRIP ARRIVAL — s251-D1 (Dave, #251): \"the user might even click on the chip and it anchor links to the needs attention panel\". FOURTH behaviour source for the group, added 2026-09-06 (#251 DP-08 build lane). It is NOT dataviz code, and the name says so: it is registered HERE because a behaviour partial is addressed per GROUP and Template-dashboard-bento is a member of exactly one group with behaviours (`dataviz`) — the probe measured that (notes/_subreports/2026-09-06-251-PROBE-dp08.md finding 9). Whether a Layer-2 template group should exist so a template behaviour does not have to live in the chart group is a RULING-SHAPED QUESTION carried in notes/_subreports/2026-09-06-251-BUILD-dp08.md, not a decision this lane took. CONSUMER SCOPE = Template-dashboard-bento ALONE, which is what lets requires.declarations be HONEST (`data-dp08-anchor` on the chip, `data-dp08-target` on the card): the 14 chart members declare it away in their own `consumes` and carry no payload, the narrow-scope shape the dv-donut-sweep entry above records. ZERO resize listeners by design — the group's ONE rAF-debounced listener stays dv-behaviour's; this behaviour has nothing to reflow. Byte cost at inscription: 1,821 code-only bytes (3,884 raw), taking the Template-dashboard-bento member page from 13,048 to 14,869 of PAGE_BYTES 34,816 (s250-D1, caps UNMOVED)."
         }
       },
       "$markup": {
