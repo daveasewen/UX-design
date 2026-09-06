@@ -671,9 +671,7 @@
   .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
   figure.dv-fit-on .dv-chart-area{width:100%;}
   figure.dv-fit-on .dv-svg{width:100%;}
-  /* s248-D2 vertical fit (THIS template only — Chart-bar carries width alone, RSQ W2-D3): the JS
-     releases the fixed 260px height too; the svg's box then follows its viewBox 1:1 in BOTH axes. */
-  figure.dv-fit-on .dv-svg{height:auto;}
+  figure.dv-fit-on .dv-svg{height:auto;}   /* s248-D2/s249-D4 — VFIT: the box follows the viewBox height (JS-on only) */
   .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
   line.dv-axis{stroke:var(--baseline); stroke-width:1;}
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
@@ -988,10 +986,16 @@
                    data-c="4" data-r="1" aria-label="Spending analysis">
             <div class="c-bento__grid">
               <div class="c-bento__tile stat-card" data-c="6" data-r="1">
-                <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="tpl-cb-h">
+                <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="tpl-cb-h" data-lockup-title="Where the money went">
                 <figcaption id="tpl-cb-h" class="sr-only">Spend by category this month, pounds</figcaption>
                 <div class="dv-head">
-                <h3 class="dv-title t-cm-section-label">Where the money went</h3>
+                <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Where the money went</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
                 <span class="t-cm-caption" style="opacity:.6">30 days to 20 Aug</span>
                 </div>
                 <div class="dv-stage"><div class="dv-chart-area">
@@ -1239,30 +1243,38 @@
 }
   </script>
 
-  <!-- ===== THE CHART's FIT ENGINE — knowledge/canon/dv-behaviour.js, FIT module only, carried
-       declaration-for-declaration (#248, Dave: the chart must be responsive; see THE CHART block
-       in the style sheet). Chart-bar hosts the WHOLE dv-behaviour partial between AUTO-BEHAVIOUR
-       markers (popover · table panel · sort · legend); this template carries ONLY the fit module —
-       nothing here reads a table, opens a panel or touches a legend. Two deliberate deviations
-       from the source, both named: (1) the guard is `__dvFit`, not `__dvBehaviour`, so a later
-       injection of the full partial is not skipped by this stub; (2) the resize listener calls
-       fitCharts() alone — the source also calls placeSegs(), which this page has no .seg for.
-       Plus ONE addition the source does not have: VFIT (s248-D2, the chart fills its tile's
-       HEIGHT too, bars re-scaled from data) — the block is named inside; carrying it back to
-       dv-behaviour.js / Chart-bar is a ruling-shaped question (W2-D3), not done here.
-       ⛔ Hand-carried, NOT generated: if the dashboard role is ever registered in
-       component-types.json group "dataviz", delete this block and let gen_component_partials.py
-       inject the real thing. ===== -->
-  <script>
+  <!-- ===== THE CHART's BEHAVIOUR — s249-D4: the dashboard role is REGISTERED in knowledge/component-types.json
+       group "dataviz" (consumes dv-behaviour), so gen_component_partials.py injects the ONE engine (both axes,
+       VFIT included) between the markers below. The hand-carried fit stub that lived here (#248) is gone:
+       two engines on one selector was the DP18 collision. Edit the source, regenerate — never between markers. ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow, BOTH axes (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
 (function () {
   'use strict';
-  if (window.__dvFit) { return; } window.__dvFit = true;
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
 
-  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
-     Source: only HORIZONTAL positions relayout to the container width; height + text are fixed.
-     ⚠ THIS COPY ALSO FITS THE HEIGHT — see VFIT below (s248-D2); the source does not, yet.
-     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
-     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+  /* ---------- FIT — responsive reflow on BOTH axes (proforma fitCharts, ported; s248-D2/D3
+     + s249-D4 carried the tile-height axis in from the bento template's stub — ONE engine).
+     x relayouts to the container width, y/height to the TILE's slack (VFIT below); text and
+     strokes never scale — the viewBox is re-pinned 1:1 and every position is RE-DERIVED from
+     cached fractions of the baked plot. Geometry rides data-fx/data-fw/data-dx/data-x0/
+     data-fx2 + polyline data-fxs/data-ys; plot frame per-svg via data-pl/data-pr/data-h/
+     data-pt/data-pb/data-h-min (defaults = the kit's 46/12/260/14/30/200).
      JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
      JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
   function fitCharts() {
@@ -1294,72 +1306,70 @@
     var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
     return Math.min(Math.max(floorPL, need), cap);
   }
-  /* ---------- VFIT — s248-D2 (#248, Dave: "the charts should probably be vertically responsive
-     to, the aspect ratio doesn't need to be constant either"). ⚠ THIS TEMPLATE ONLY: the source
-     module (dv-behaviour.js, Chart-bar) is width-only; carrying this back is an RSQ (W2-D3).
-     Same physics as the width fit, turned 90°: the viewBox is re-pinned 1:1 to the new height and
-     every y / height is RE-DERIVED FROM DATA — the baked geometry is cached once as fractions of
-     the baked plot height (data-fy / data-fh / data-fy1 / data-fy2), exactly as data-fx/data-fw
-     carry the x-axis — so TEXT AND STROKES NEVER SCALE (DV-D02). The plot frame is per-svg via
-     data-pt (top pad) / data-pb (the label zone under the baseline), defaults 14/30 = the kit's
-     bake; a text's data-dy is a fixed pixel offset from its anchor, never scaled; a text anchored
-     BELOW the baseline (category labels) rides the baseline at a fixed offset. data-h is the
-     PREFERRED height, data-h-min the FLOOR (default 200px). The height answers the TILE: the svg
-     is laid out at data-h first, the empty ground between the figure's foot and the tile's
-     content edge is measured, and the svg takes it — a stretched tile fills (1440: the rail's
-     height), a content-sized tile keeps data-h (1100: the chart sits alone on its row), a tile
-     shorter than data-h shrinks the plot no further than the floor. */
-  var H_MIN_DEFAULT = 200;   /* the floor, px — W2-D3's "sane floor"; per-svg via data-h-min */
+  /* ---------- VFIT — the height axis (s248-D2: the chart fills its tile; s248-D3: probe at
+     data-h FIRST so the row never ratchets; s249-D4: one engine, here). H = data-h + the
+     empty ground under the figure inside its .c-bento__tile (no tile: the figure's parent),
+     floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
+     — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
+     centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
+     (an explicit attribute is RSQ, #249). H_MIN_DEFAULT is PROVISIONAL-AWAITING-DAVE. */
+  var H_MIN_DEFAULT = 200;
   function slackBelow(svg) {
-    var fig = svg.parentElement; while (fig && !(fig.tagName === 'FIGURE' && /\bdv\b/.test(fig.className))) { fig = fig.parentElement; }
-    if (!fig) { return 0; }
-    var tile = fig.parentElement; while (tile && !/\bc-bento__tile\b/.test(tile.className)) { tile = tile.parentElement; }
-    if (!tile) { tile = fig.parentElement; }
-    var cs = getComputedStyle(tile);
+    var fig = svg.closest('figure.dv'); if (!fig) { return 0; }
+    var tile = fig.closest('.c-bento__tile') || fig.parentElement, cs = getComputedStyle(tile);
     var edge = tile.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom || '0') - parseFloat(cs.borderBottomWidth || '0');
     return edge - fig.getBoundingClientRect().bottom;
   }
   function fitHeight(svg, W) {
     var H0 = parseFloat(svg.getAttribute('data-h') || '260');
-    var Hmin = parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT));
-    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe: lay out at the preferred height */
-    var H = Math.round(H0 + slackBelow(svg));
-    if (H < Hmin) { H = Hmin; }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe at the preferred height */
+    var H = Math.max(Math.round(H0 + slackBelow(svg)), parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT)));
+    if (H === H0) { return H0; }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);    /* the box must FOLLOW the viewBox (height:auto released) — */
+    if (Math.abs(svg.getBoundingClientRect().height - H) > 1) { return H0; }   /* a CSS-pinned box would SCALE: keep the bake */
     return H;
   }
   function fitY(svg, H) {
-    var PT = parseFloat(svg.getAttribute('data-pt') || '14');
-    var PB = parseFloat(svg.getAttribute('data-pb') || '30');
-    var H0 = parseFloat(svg.getAttribute('data-h') || '260');
-    var plot0 = H0 - PT - PB, plot = H - PT - PB;
-    if (plot0 <= 0 || plot <= 0) { return; }
+    var PT = parseFloat(svg.getAttribute('data-pt') || '14'), PB = parseFloat(svg.getAttribute('data-pb') || '30');
+    var plot0 = parseFloat(svg.getAttribute('data-h') || '260') - PT - PB, plot = H - PT - PB;
+    if (plot0 <= 0 || plot <= 0) { return null; }
     var Y = function (f) { return PT + parseFloat(f) * plot; };
-    var frac = function (el, key, px) {          /* cache the bake as a fraction of the baked plot, ONCE */
+    var frac = function (el, key, px) {                   /* cache the bake ONCE, as a plot fraction */
       if (el.getAttribute(key) === null) { el.setAttribute(key, ((px - PT) / plot0).toFixed(4)); }
       return el.getAttribute(key);
     };
-    var els = svg.querySelectorAll('rect[y],line[y1],text[y]');
+    var els = svg.querySelectorAll('rect[y],line[y1],text[y],circle[cy],polygon[points]');
     for (var i = 0; i < els.length; i++) {
-      var el = els[i], tag = el.tagName.toLowerCase();
-      if (tag === 'rect') {
-        var fy = frac(el, 'data-fy', parseFloat(el.getAttribute('y')));
+      var el = els[i], tag = el.tagName.toLowerCase(), mark = /\bdv-mk\b/.test(el.getAttribute('class') || '');
+      if (tag === 'rect' && mark) {
+        var hh = parseFloat(el.getAttribute('height')) / 2;
+        el.setAttribute('y', (Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')) + hh)) - hh).toFixed(1));
+      } else if (tag === 'polygon') {
+        if (el.getAttribute('data-pts0') === null) { el.setAttribute('data-pts0', el.getAttribute('points')); }
+        var p0 = el.getAttribute('data-pts0').trim().split(/\s+/).map(function (s) { return s.split(',').map(parseFloat); });
+        var cy0 = 0; for (var q = 0; q < p0.length; q++) { cy0 += p0[q][1] / p0.length; }
+        var dyp = Y(frac(el, 'data-fy', cy0)) - cy0;
+        el.setAttribute('points', p0.map(function (pt) { return pt[0].toFixed(1) + ',' + (pt[1] + dyp).toFixed(1); }).join(' '));
+      } else if (tag === 'rect') {
         if (el.getAttribute('data-fh') === null) { el.setAttribute('data-fh', (parseFloat(el.getAttribute('height')) / plot0).toFixed(4)); }
-        el.setAttribute('y', Y(fy).toFixed(1));
+        el.setAttribute('y', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')))).toFixed(1));
         el.setAttribute('height', (parseFloat(el.getAttribute('data-fh')) * plot).toFixed(1));
       } else if (tag === 'line') {
-        var fy1 = frac(el, 'data-fy1', parseFloat(el.getAttribute('y1')));
-        var fy2 = frac(el, 'data-fy2', parseFloat(el.getAttribute('y2')));
-        el.setAttribute('y1', Y(fy1).toFixed(1)); el.setAttribute('y2', Y(fy2).toFixed(1));
+        el.setAttribute('y1', Y(frac(el, 'data-fy1', parseFloat(el.getAttribute('y1')))).toFixed(1));
+        el.setAttribute('y2', Y(frac(el, 'data-fy2', parseFloat(el.getAttribute('y2')))).toFixed(1));
+      } else if (tag === 'circle') {
+        el.setAttribute('cy', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('cy')))).toFixed(1));
       } else if (tag === 'text') {
         var dy = parseFloat(el.getAttribute('data-dy') || '0');
-        if (el.getAttribute('data-fy') === null) {
-          var anchor = parseFloat(el.getAttribute('y')) - dy, base0 = PT + plot0;
-          if (anchor > base0 + 0.5) { dy += anchor - base0; anchor = base0; el.setAttribute('data-dy', dy.toFixed(1)); }
-          el.setAttribute('data-fy', ((anchor - PT) / plot0).toFixed(4));
+        if (el.getAttribute('data-fy') === null) {          /* below the baseline = a fixed offset, not a fraction */
+          var a = parseFloat(el.getAttribute('y')) - dy, b0 = PT + plot0;
+          if (a > b0 + 0.5) { dy += a - b0; a = b0; el.setAttribute('data-dy', dy.toFixed(1)); }
+          el.setAttribute('data-fy', ((a - PT) / plot0).toFixed(4));
         }
         el.setAttribute('y', (Y(el.getAttribute('data-fy')) + dy).toFixed(1));
       }
     }
+    return Y;
   }
   function fitOne(svg) {
     try {
@@ -1371,7 +1381,7 @@
       PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
       var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
-      fitY(svg, H);                                       /* s248-D2 — y/height from data, not scale */
+      var Y = fitY(svg, H);                               /* s248-D2 — y from data, after the pin */
       var X = function (f) { return PL + parseFloat(f) * plotW; };
       var els = svg.querySelectorAll('[data-fx]');
       for (var i = 0; i < els.length; i++) {
@@ -1397,24 +1407,178 @@
       for (var j = 0; j < pls.length; j++) {
         var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/), fys = null;
+        if (Y) {                                          /* VFIT: y from cached plot fractions */
+          var PT0 = parseFloat(svg.getAttribute('data-pt') || '14'), pl0 = parseFloat(svg.getAttribute('data-h') || '260') - PT0 - parseFloat(svg.getAttribute('data-pb') || '30');
+          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return ((parseFloat(y) - PT0) / pl0).toFixed(4); }).join(' ')); }
+          fys = pl.getAttribute('data-fys').trim().split(/\s+/);
+        }
         var pts = [];
-        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + (fys ? Y(fys[k]).toFixed(1) : ys[k])); }
         pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }
   }
   var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
   window.addEventListener('resize', function () {
-    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); });
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
   });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y, src) {
+    /* #230 T4 — .dv-tip is cn-chart-scoped: re-home, then write */
+    var h = src.closest('[class*=cn-chart-]') || document.body;
+    if (dvTip.parentNode !== h) { h.appendChild(dvTip); }
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14, el); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40, el);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
+  }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
+  document.addEventListener('click', function (e) {
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
 
   /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
   var figs = document.querySelectorAll('figure.dv');
   for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
   fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
 }());
-  </script>
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
 
   <script>
     // DEMO CHROME. Not the template.

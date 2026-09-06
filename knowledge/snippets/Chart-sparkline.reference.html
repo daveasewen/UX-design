@@ -323,7 +323,7 @@
    gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
    Edit HERE and regenerate — never between a consumer's markers.
 
-   Modules: value POPOVER (dvTip) · responsive FIT reflow (DV-D02: text never scales) ·
+   Modules: value POPOVER (dvTip) · responsive FIT reflow, BOTH axes (DV-D02: text never scales) ·
    TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
    _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
    rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
@@ -333,10 +333,13 @@
   'use strict';
   if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
 
-  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
-     Only HORIZONTAL positions relayout to the container width; height + text are fixed.
-     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
-     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+  /* ---------- FIT — responsive reflow on BOTH axes (proforma fitCharts, ported; s248-D2/D3
+     + s249-D4 carried the tile-height axis in from the bento template's stub — ONE engine).
+     x relayouts to the container width, y/height to the TILE's slack (VFIT below); text and
+     strokes never scale — the viewBox is re-pinned 1:1 and every position is RE-DERIVED from
+     cached fractions of the baked plot. Geometry rides data-fx/data-fw/data-dx/data-x0/
+     data-fx2 + polyline data-fxs/data-ys; plot frame per-svg via data-pl/data-pr/data-h/
+     data-pt/data-pb/data-h-min (defaults = the kit's 46/12/260/14/30/200).
      JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
      JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
   function fitCharts() {
@@ -368,16 +371,82 @@
     var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
     return Math.min(Math.max(floorPL, need), cap);
   }
+  /* ---------- VFIT — the height axis (s248-D2: the chart fills its tile; s248-D3: probe at
+     data-h FIRST so the row never ratchets; s249-D4: one engine, here). H = data-h + the
+     empty ground under the figure inside its .c-bento__tile (no tile: the figure's parent),
+     floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
+     — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
+     centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
+     (an explicit attribute is RSQ, #249). H_MIN_DEFAULT is PROVISIONAL-AWAITING-DAVE. */
+  var H_MIN_DEFAULT = 200;
+  function slackBelow(svg) {
+    var fig = svg.closest('figure.dv'); if (!fig) { return 0; }
+    var tile = fig.closest('.c-bento__tile') || fig.parentElement, cs = getComputedStyle(tile);
+    var edge = tile.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom || '0') - parseFloat(cs.borderBottomWidth || '0');
+    return edge - fig.getBoundingClientRect().bottom;
+  }
+  function fitHeight(svg, W) {
+    var H0 = parseFloat(svg.getAttribute('data-h') || '260');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe at the preferred height */
+    var H = Math.max(Math.round(H0 + slackBelow(svg)), parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT)));
+    if (H === H0) { return H0; }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);    /* the box must FOLLOW the viewBox (height:auto released) — */
+    if (Math.abs(svg.getBoundingClientRect().height - H) > 1) { return H0; }   /* a CSS-pinned box would SCALE: keep the bake */
+    return H;
+  }
+  function fitY(svg, H) {
+    var PT = parseFloat(svg.getAttribute('data-pt') || '14'), PB = parseFloat(svg.getAttribute('data-pb') || '30');
+    var plot0 = parseFloat(svg.getAttribute('data-h') || '260') - PT - PB, plot = H - PT - PB;
+    if (plot0 <= 0 || plot <= 0) { return null; }
+    var Y = function (f) { return PT + parseFloat(f) * plot; };
+    var frac = function (el, key, px) {                   /* cache the bake ONCE, as a plot fraction */
+      if (el.getAttribute(key) === null) { el.setAttribute(key, ((px - PT) / plot0).toFixed(4)); }
+      return el.getAttribute(key);
+    };
+    var els = svg.querySelectorAll('rect[y],line[y1],text[y],circle[cy],polygon[points]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], tag = el.tagName.toLowerCase(), mark = /\bdv-mk\b/.test(el.getAttribute('class') || '');
+      if (tag === 'rect' && mark) {
+        var hh = parseFloat(el.getAttribute('height')) / 2;
+        el.setAttribute('y', (Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')) + hh)) - hh).toFixed(1));
+      } else if (tag === 'polygon') {
+        if (el.getAttribute('data-pts0') === null) { el.setAttribute('data-pts0', el.getAttribute('points')); }
+        var p0 = el.getAttribute('data-pts0').trim().split(/\s+/).map(function (s) { return s.split(',').map(parseFloat); });
+        var cy0 = 0; for (var q = 0; q < p0.length; q++) { cy0 += p0[q][1] / p0.length; }
+        var dyp = Y(frac(el, 'data-fy', cy0)) - cy0;
+        el.setAttribute('points', p0.map(function (pt) { return pt[0].toFixed(1) + ',' + (pt[1] + dyp).toFixed(1); }).join(' '));
+      } else if (tag === 'rect') {
+        if (el.getAttribute('data-fh') === null) { el.setAttribute('data-fh', (parseFloat(el.getAttribute('height')) / plot0).toFixed(4)); }
+        el.setAttribute('y', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')))).toFixed(1));
+        el.setAttribute('height', (parseFloat(el.getAttribute('data-fh')) * plot).toFixed(1));
+      } else if (tag === 'line') {
+        el.setAttribute('y1', Y(frac(el, 'data-fy1', parseFloat(el.getAttribute('y1')))).toFixed(1));
+        el.setAttribute('y2', Y(frac(el, 'data-fy2', parseFloat(el.getAttribute('y2')))).toFixed(1));
+      } else if (tag === 'circle') {
+        el.setAttribute('cy', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('cy')))).toFixed(1));
+      } else if (tag === 'text') {
+        var dy = parseFloat(el.getAttribute('data-dy') || '0');
+        if (el.getAttribute('data-fy') === null) {          /* below the baseline = a fixed offset, not a fraction */
+          var a = parseFloat(el.getAttribute('y')) - dy, b0 = PT + plot0;
+          if (a > b0 + 0.5) { dy += a - b0; a = b0; el.setAttribute('data-dy', dy.toFixed(1)); }
+          el.setAttribute('data-fy', ((a - PT) / plot0).toFixed(4));
+        }
+        el.setAttribute('y', (Y(el.getAttribute('data-fy')) + dy).toFixed(1));
+      }
+    }
+    return Y;
+  }
   function fitOne(svg) {
     try {
       var PL = parseFloat(svg.getAttribute('data-pl') || '46');
       var PR = parseFloat(svg.getAttribute('data-pr') || '12');
-      var H  = parseFloat(svg.getAttribute('data-h')  || '260');
       var W = Math.round(svg.getBoundingClientRect().width);
       if (!W) { return; }
+      var H = fitHeight(svg, W);                          /* s248-D2 — the tile's height, floored */
       PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
       var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var Y = fitY(svg, H);                               /* s248-D2 — y from data, after the pin */
       var X = function (f) { return PL + parseFloat(f) * plotW; };
       var els = svg.querySelectorAll('[data-fx]');
       for (var i = 0; i < els.length; i++) {
@@ -403,9 +472,14 @@
       for (var j = 0; j < pls.length; j++) {
         var pl = pls[j], isP = pl.tagName === 'path';
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
-        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/), fys = null;
+        if (Y) {                                          /* VFIT: y from cached plot fractions */
+          var PT0 = parseFloat(svg.getAttribute('data-pt') || '14'), pl0 = parseFloat(svg.getAttribute('data-h') || '260') - PT0 - parseFloat(svg.getAttribute('data-pb') || '30');
+          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return ((parseFloat(y) - PT0) / pl0).toFixed(4); }).join(' ')); }
+          fys = pl.getAttribute('data-fys').trim().split(/\s+/);
+        }
         var pts = [];
-        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + (fys ? Y(fys[k]).toFixed(1) : ys[k])); }
         pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
     } catch (e) { /* leave the baked SVG intact */ }

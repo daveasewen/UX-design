@@ -1,0 +1,61 @@
+# `#249`-`META` — Option-space metadata: what the library carries, where it is prescriptive, a tag proposal as options (s249-D1 research)
+
+session: `#249` · 2026-09-06
+window: `META — research lane on s249-D1 ("related to / interchangeable with … maybe with weights"), s249-D2, s249-D6`
+sub index: `META`
+brief: the conductor's lane-META prompt in chat (read-only on the repo; ⛔ nothing under `knowledge/` edited; ONE HTML page + this report)
+tokens: `≈145K by the harness counter (15,000,000 − ~14,855,000 at the report's write — QUOTA drawn across 17 tool calls; message.usage is not readable from a subagent)`
+
+## VERDICT
+
+DONE, all five regions, read-only. The 137 metas carry a **156-key union** of which **12 keys are the real schema** (on ≥134 files) and **130 are `$`-prefixed prose, 94 of them on exactly one file**. Relation edges are 13 kinds, **only one hand-declared** (`groupsWith`, `gen_kg_edges.py:78`); the only negative relation (`mustNotNeighbour`, 50 files) is `ref:null` prose on 50 of its 69 entries. **No machine-readable "instead-of", "fits" or (outside the 15 charts' `intent`) "answers" exists** — but their prose ancestors do: 25 files carry `$differsFrom` / `$distinctFrom` / `$relatedComponents` under 8 different key spellings. A composed page is chosen by the skill's "splice the snippet" rule, not the graph (SKILL.md L98–113; the routing-off-the-graph question is banked as W-333, Dave's). Six prescriptive decisions are listed with their addresses. The tag proposal is eight tags ranked; **three carry the leverage — `answers`, `interchangeable-with {weight, when}`, `fits`** — with `data-shape` as the pre-filter that makes `s247-D3`/DP-08 automatic (worked example A) and the 1100 band as two weighted alternatives instead of rule 6b's single CSS answer (example B). Alternatives (prompt-side · recipe library · rails dial) and Dave's own risk ("it might not be the solution") are stated; the cheapest true thing may be the rails dial plus `data-shape` alone. Page `reviews/OPTION-SPACE-META-2026-09-06-v1.html` (41,700 B, ≤120 KB), rendered at 1280 with 0 page errors, 0 horizontal overflow, three crops eyeballed and two layout defects fixed before shipping. Nothing of Dave's ruled.
+
+COUNTS: findings 11 · ruling-shaped 7 · UNPROVEN 4
+
+## What was done
+
+1. **Inventory** — `python3` over `knowledge/components/*.meta.json` (137 files): union of top-level keys with per-key counts; union of `edges.*` kinds; `relationships.*` kinds; `intent` values; every key matching `$differs*|$distinct*|$related*|$relationship-to*`; `mustNotNeighbour` entries vs `ref:null`. Read `knowledge/component-types.json` (`$description` — a token-store + `$members`/`$partials` registry, no component-choice fields), `knowledge/chart-intents.json`, `knowledge/gen_kg_edges.py` (L12–38 derivation rules, L78 `DECLARED_EDGE_TYPES`), `knowledge/_render/_bento_edit_rails.json` (`dials` keys), `apollo-spider/skills/generate-from-canon/SKILL.md` L98–128, `notes/_briefs/2026-09-05-246-lane-B-baseline-brief.md` L13–17 (the frozen prompt). `knowledge/_state.py` not opened — `_state.json` is the work register, it names no components (per `gen_dashboard.py` docstring L14–20); declared as not-probed.
+2. **Prescriptive map** — `knowledge/_rulings.json` s246-D3/D4/D5, s247-D3/D4, s248-D1…D4, s249-D1…D6; `knowledge/snippets/Template-dashboard-bento.reference.html` L224/L267 (`--layout-bento-columns:6`), L341–346 (`data-c` 1–6), L377/381 (band clamps), L762–782 (rule 6b); `knowledge/_validate_composition.py` L96–110 (C9's static read); `reviews/DASHBOARD-PRINCIPLES-2026-09-05-v1.html` L425–440 (DP-08).
+3. **Proposal** — eight tags as a table (type · authored/derived · unlocks · cost), a validator sketch in the repo's existing shapes (`_validate_kg.py` arm 2b, `_validate_intent_resolve.py`), two worked examples, three alternatives with a comparison table, the risk in Dave's words.
+4. **Page** — `reviews/OPTION-SPACE-META-2026-09-06-v1.html`: Swiss (Helvetica stack, black/white, `#DB0011` on section labels only, 1px `#EDEDED` rules, 1/3:2/3 sections, 120px light index numerals, no shadow/radius), three inline SVGs, no libraries. Playwright 1280×900: `pageerror` 0, console errors 0, `scrollWidth` 1280, height 8934. Crops in `notes/_subreports/assets/2026-09-06-249-META-research/` (`hero-1280.png`, `page-1280-full.png`, `fig-i-today.png`, `fig-ii-graph.png`, `fig-iii-flow.png`, `s02-table.png`). Two defects seen and fixed before shipping: figure ii node sublabels overflowed 130px boxes (widened to 200); `td.k{white-space:nowrap}` squeezed the 02 table's third column (removed).
+5. **This report.**
+
+## Findings
+
+1. **Schema is 12 keys deep and 130 keys wide.** Union 156; `name · category · purpose · relationships · provenance` on 137/137, `edges` 136, `props/tokens/accessibility/antiPatterns` 135, `tokenValidation` 134, `variants` 124. Every other key is `$`-prefixed (130), and 94 of those appear on exactly one file (`$finding-*`, `$differsFromStatCard`, `$bentoGrammar`…). Probe: the Counter in step 1.
+2. **Thirteen edge kinds, one declared.** `renderedBy` 136 · `commonPattern` 136 · `usedInContext` 135 · `mustNotNeighbour` 50 · `containedBy` 42 · `governedBy` 20 · `consumes` 15 · `triggeredBy` 13 · `family` 12 · `partial` 6 · `hasPart` 5 · `groupsWith` 4 · `reuses` 2. `knowledge/gen_kg_edges.py:78` `DECLARED_EDGE_TYPES = ("groupsWith",)` — every other edge is derived from `relationships.*` free text (L12–38). `groupsWith` on 4 files, all self-edges (kpi-tile→kpi-tile "s245-D7").
+3. **The only negative relation is mostly prose.** `mustNotNeighbour`: 69 entries across 50 files, 50 of them `ref:null` with a `$note` ("A chart making the identical claim in the same view"). One resolves to a slug: chart-bar → `component:stat-card`.
+4. **"Interchangeable-with" already exists as prose on 25 files under 8 spellings**: `$differsFrom` (11), `$differsFromNeighbours` (4), `$distinctFrom` (3), `$relatedComponents` (3), `$differsFromStatCard`, `$differsFromAvatar`, `$relationship-to-date-picker`, `$relationship-to-cascader-and-sidebar-nav`. `kpi-tile.meta.json` `$differsFromStatCard` carries exactly the `when` clause a tag would need ("A KPI tile with no series is a Stat card").
+5. **"Answers" exists for charts only.** `intent` on 15 files (comparison 4 · change-over-time 4 · composition 3 · distribution 2 · relationship 1 · a two-word list 1), resolved against `knowledge/chart-intents.json` by `_validate_intent_resolve.py`. kpi-tile, stat-card, status-indicator, summary carry none.
+6. **"Fits" does not exist anywhere.** `responsive` (70 files) is prose ("grid auto-fill, minmax(240px,1fr)"); `dimensions` (18) is px padding/heights. No min/max span in either axis on any file, although `s248-D3` requires every tile-placed component to answer its tile. Nearest measurable: the chart fit engine's `data-h-min` 200px floor (W2-D3 report).
+7. **Component choice is the template's, not the graph's.** SKILL.md L100–104: "Bento-first means you splice the snippet… start from `Template-dashboard-bento.reference.html` and edit it down to the brief." `template-dashboard-bento.meta.json` `$composes` = 11 slugs. L112 banked comment W-333: routing off the knowledge graph "is Dave's to rule." #246 measured four baseline dashboards = the specimen arrangement.
+8. **Six prescriptive decisions, each stored where only a person can vary it** (page §02): rule 6b CSS (`s248-D1`, L762–782); the 1100/820/520 clamps (L375–387) read statically by C9 (`_validate_composition.py` L96–110 — why the gate is RED ×3 on 6b); `--layout-bento-columns:6` vs the 12-col vocabulary (`s249-D2`: 12 is "desirable only"); the headline count (`s246-D5` → `s247-D4` → `s249-D2`, now un-prescribed but with nothing to compute it); the component set (`$composes`); the `spans` dial (`s246-D3`) — `_bento_edit_rails.json` `dials` has 11 keys (`spacing mainSpacing subSpacing keylines mode edge rounding bentoBg capBg grouping $theme_locks`), no `spans`.
+9. **Three tags carry the leverage.** `answers` (brief → candidates), `interchangeable-with {slug, weight, when}` (ranked substitutes; k=3 = three solutions), `fits` (pack without orphans, `s249-D5`, and a fact C9 could read). `data-shape` is the pre-filter; `prominence` (1–3 = lead/evidence/context, `s245-D6` words) sizes the row. `contains` and `related-to` already exist as `hasPart/consumes/containedBy` and shared `commonPattern` — not worth new keys. `variant-of` is derivable from `variants[]`/`$family`.
+10. **Example A makes `s247-D3` automatic.** "Awaiting approval 14/5" typed `data-shape: count+threshold` never matches kpi-tile (`series`) or stat-card (`delta`); candidates are status-indicator strip, needs-attention head (`s246-D4` recipe), summary row — three solutions from one walk. DP-08 (value+delta+sparkline, never a gauge) is the same fact from the component side.
+11. **Example B: rule 6b as two weighted alternatives.** `s248-D4` verbatim already says the choice is the designer's; today it is one CSS block. As metadata: `reflow` (when chart prominence ≤2 or rail ≥2 cards) · `compress` (when chart prominence 1 and `fits.cols.min` ≤4). Cost: C9 must read alternatives — a debt already owed since it cannot read 6b either.
+
+## RULING-SHAPED QUESTIONS
+
+1. Is the option space a **library fact or a prompt fact**? (a) tags in metas · (b) rails dial only · (c) prompt-side · (d) `data-shape` + `answers` in metas, layout in the dial.
+2. **One span vocabulary before any `fits` tag: 6 or 12?** Template 6 (L224); Dave's notes/#216 showcase 12; `s249-D2` "desirable only". (a) 12 canonical, 6 = pairs · (b) 6 · (c) both with a declared mapping.
+3. **Weights**: (a) 0–1 numbers as floated · (b) ordered list · (c) `when` clause only, factory ranks by fit.
+4. Does **`answers` extend `chart-intents.json`** to non-charts, or start a sibling vocabulary, or wait?
+5. **First authoring pass**: the 11 `$composes` slugs · +14 charts · every molecule/organism.
+6. **Rule 6b**: leave as CSS · two alternatives on the evidence group (and teach C9) · `bandMode` in the rails.
+7. Is **"three solutions" a factory parameter k** (skill default 1; factory 3) or a prompt phrase?
+
+## UNPROVEN / CLAIMED
+
+- **UNPROVEN**: that a weighted walk actually yields three *distinct* pages on the frozen prompt — no factory consumes tags today; proving it = author tags on the 11 `$composes` slugs + a 60-line resolver + one blind run (≈40K).
+- **UNPROVEN**: that C9 can be taught to read declared alternatives without breaking its static-clamp read — not attempted (≈5K to prototype on a scratch copy).
+- **UNPROVEN**: the rails-dial route (alternative 3) is cheaper end-to-end — `spans` is absent, so the dial's cost is itself unmeasured.
+- **CLAIMED**: "all four baseline dashboards were the template's specimen" — carried from the #246 wrap, not re-measured here.
+- Not probed: `knowledge/_state.py` schema (declared above); the 15 chart `intent` values were counted, their `chart-intents.json` definitions not re-read.
+
+## Evidence
+
+- Page: `reviews/OPTION-SPACE-META-2026-09-06-v1.html` — 41,700 B; Playwright chromium 1280×900, `pageerror` [] · console errors [] · `scrollWidth` 1280 · `scrollHeight` 8934.
+- Crops: `notes/_subreports/assets/2026-09-06-249-META-research/{hero-1280,page-1280-full,fig-i-today,fig-ii-graph,fig-iii-flow,s02-table}.png`.
+- Inventory probe (re-runnable): `python3` Counter over `knowledge/components/*.meta.json` top-level keys, `edges.*` keys, `relationships.*` keys, `intent` values, `mustNotNeighbour[].ref is None` — outputs quoted in findings 1–5.
+- Files cited: `knowledge/gen_kg_edges.py:12–38,78` · `knowledge/chart-intents.json` `$description` · `knowledge/_rulings.json` s246-D3/D4/D5 · s247-D3/D4 · s248-D1…D4 · s249-D1…D6 · `knowledge/snippets/Template-dashboard-bento.reference.html` L224 · L267 · L341–346 · L375–387 · L762–782 · `knowledge/_validate_composition.py` L96–110 · `knowledge/_render/_bento_edit_rails.json` `dials` · `apollo-spider/skills/generate-from-canon/SKILL.md` L98–128 · `notes/_briefs/2026-09-05-246-lane-B-baseline-brief.md` L13–17 · `reviews/DASHBOARD-PRINCIPLES-2026-09-05-v1.html` L425–440.
+- Nothing under `knowledge/` written; `git status` not run (read-only lane, no commit).

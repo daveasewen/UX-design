@@ -7303,6 +7303,8 @@
 :where(.cn-chart-bar) .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
 :where(.cn-chart-bar) figure.dv-fit-on .dv-chart-area{width:100%;}
 :where(.cn-chart-bar) figure.dv-fit-on .dv-svg{width:100%;}
+:where(.cn-chart-bar) figure.dv-fit-on .dv-svg{height:auto;}
+/* s248-D2/s249-D4 — VFIT: the box follows the viewBox height (JS-on only) */
 :where(.cn-chart-bar) .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 :where(.cn-chart-bar) line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 :where(.cn-chart-bar) text.dv-axis, :where(.cn-chart-bar) text.dv-label{opacity:var(--axis-alpha);}
@@ -8989,6 +8991,8 @@
      HORIZONTAL positions only — height + text metrics fixed, viewBox pinned 1:1 (DV-D02). */
 :where(.cn-chart-line) figure.dv-fit-on .dv-chart-area{width:100%;}
 :where(.cn-chart-line) figure.dv-fit-on .dv-svg{width:100%;}
+:where(.cn-chart-line) figure.dv-fit-on .dv-svg{height:auto;}
+/* s248-D2/s249-D4 — VFIT: the box follows the viewBox height (JS-on only) */
 :where(.cn-chart-line) .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 :where(.cn-chart-line) line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 :where(.cn-chart-line) text.dv-axis, :where(.cn-chart-line) text.dv-label{opacity:var(--axis-alpha);}
@@ -17137,13 +17141,24 @@
 :where(.cn-template-dashboard-bento) .status.inf{background:var(--info-tint);}
 :where(.cn-template-dashboard-bento) .status.inf .dot{background:var(--info);}
 /* ============================================================================================
-     THE CHART — Chart-bar.reference.html, declaration-for-declaration.
-     ⚠ THE CHART IS NOT MADE FLUID, AND THAT IS THE POINT. Chart-bar's own answer to a narrow
-     container is `.dv-stage{overflow-x:auto}` around a fixed 580px canvas — the class NEVER
-     becomes `width:100%` without its fit ENGINE, which is JavaScript this file does not host.
-     Setting `width:100%` on the SVG here would stretch the viewBox and scale the text and the
-     strokes with the pane, which is the banned physics `_RUNBOOK-render-verify.md` records Dave
-     catching in his own browser. So the chart SCROLLS. Declared, not smoothed.
+     THE CHART — Chart-bar.reference.html, declaration-for-declaration, FIT ENGINE INCLUDED.
+     #248 (Dave, 2026-09-05: "this is mostly fine as long as the chart is responsive. rule 9 is
+     possibly a mistake" · "the chart [should be responsive], it should be"). Until #248 this block
+     declared the chart NOT fluid: a fixed 580px canvas inside `.dv-stage{overflow-x:auto}`, on the
+     ground that the fit ENGINE is JavaScript this file did not host and `width:100%` without it
+     would scale the viewBox. That reading was retired — the answer is to CARRY the engine, not to
+     scroll. What is carried, declaration-for-declaration from Chart-bar: the two `.dv-fit-on`
+     rules below (the JS-ON release of the fixed width), the `dv-fit` class on the svg, the
+     data-fx/data-fw/data-dx/data-fx2 geometry already on every mark, and the FIT module of
+     `knowledge/canon/dv-behaviour.js` (fitCharts · gutterPL · fitOne · the ONE rAF-debounced
+     resize listener · the init that lands `.dv-fit-on`) in the script block at the foot.
+     ⛔ THE BANNED PHYSICS STAYS BANNED (DV-D02): the engine re-pins the viewBox 1:1 to the
+     measured width AND (s248-D2, this template's VFIT) to the tile's available height, and moves
+     x-positions/widths from the data-fx fractions and y-positions/heights from the cached
+     data-fy/data-fh fractions — TEXT AND STROKES NEVER SCALE. `_RUNBOOK-render-verify.md` records Dave catching a scaled chart in his own
+     browser; the proof here is a Playwright assertion (label font-size and bar stroke/height
+     identical at 1440 and 1100 while the chart-area width differs — W2-D2 sub-report).
+     JS-off keeps the pre-#248 static answer: fixed geometry + horizontal scroll.
      ============================================================================================ */
 :where(.cn-template-dashboard-bento) figure.dv{margin:0; position:relative;}
 :where(.cn-template-dashboard-bento) .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
@@ -17151,6 +17166,10 @@
 :where(.cn-template-dashboard-bento) .dv-stage{overflow-x:auto; padding-bottom:4px;}
 :where(.cn-template-dashboard-bento) .dv-chart-area{width:580px;}
 :where(.cn-template-dashboard-bento) .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+:where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-chart-area{width:100%;}
+:where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-svg{width:100%;}
+:where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-svg{height:auto;}
+/* s248-D2/s249-D4 — VFIT: the box follows the viewBox height (JS-on only) */
 :where(.cn-template-dashboard-bento) .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 :where(.cn-template-dashboard-bento) line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 :where(.cn-template-dashboard-bento) text.dv-axis, :where(.cn-template-dashboard-bento) text.dv-label{opacity:var(--axis-alpha);}
@@ -17239,6 +17258,27 @@
 :where(.cn-template-dashboard-bento) .c-bento.tpl-group-lead{--bento-row-unit:120px;}
 :where(.cn-template-dashboard-bento) .c-bento.tpl-group-evidence{--bento-row-unit:240px;}
 :where(.cn-template-dashboard-bento) .c-bento.tpl-group-context{--bento-row-unit:96px;}
+/* 6b · THE RE-FLOW BAND — s248-D1 (#248, Dave, on the 1100 render: "so this should fill" ·
+         "thsi could be two columns too"). The 4+2 wall re-packs at the 3-column band instead of
+         orphaning: the context rail takes the WHOLE row it lands on, and its two cards sit side by
+         side while the rail is wide enough. Two declarations, both BAND rules, named here because
+         no span the base grammar carries does this — 2 of 6 cannot also be 3 of 3, and grid has no
+         "fill the rest of my row" — so the band is the only clean lever. Neither touches the canon
+         `[data-c]` clamps at L375–387 (those stay canon's, byte for byte) and neither is copied from
+         another file. (i) queries the WALL (the rail's nearest container): `1 / -1` is "the whole
+         row" at every band ≤1100, so the ≤820 and ≤520 clamps need no re-statement. (ii) queries the
+         RAIL's own width: its cards are data-c="3" of its 6 — a legal 3+3 by the snippet's own law —
+         and canon's ≤1100 clamp would otherwise make 3 the FULL 3-column row; above the 2-column
+         band the rail keeps its base count so 3+3 is two columns. Below 821px the rail stacks by
+         canon's own ≤820/≤520 clamps (1440: rail 432px → 1 col; 820: rail 756px → 2 cols).
+         ⚠ C9 (_validate_composition.py L100–107) reads only canon-shaped clamps, so it does not see
+         (i): the gate's static read of the wall is the RSQ in the W2-D3 report, not a defect here. */
+@container bento (max-width:1100px){
+:where(.cn-template-dashboard-bento) .tpl-page .c-bento__tile.tpl-group-context{grid-column:1 / -1;}
+}
+@container bento (min-width:821px){
+:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-context > .c-bento__grid{--bento-cols-now:var(--bento-columns);}
+}
 /* 7 · THE MODULE *IS* THE COMPONENT. A Kpi-tile and a Stat-card each ship their own 1px frame;
          inside a bento the 4px gutter separates the modules and the frame would double the seam
          (the "double frame" Dave rejected at #217). The component's frame yields to the wall —
@@ -17246,8 +17286,12 @@
 :where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .kpi-tile, :where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .stat-card{border:0; height:100%;}
 /* 8 · a panel module is roomier than a KPI module (Template-dashboard's rule 9, carried). */
 :where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .stat-card{padding:24px;}
-/* 9 · the chart module scrolls its own fixed canvas rather than stretching it — Chart-bar's
-         own answer, and the reason is in THE CHART block above. */
+/* 9 · the chart module FITS its cell — Chart-bar's own fit engine, carried (THE CHART block
+         above). The old rule 9 ("scrolls its own fixed canvas rather than stretching it") was
+         RETIRED at #248: Dave, "rule 9 is possibly a mistake … the chart [should be responsive]".
+         It was a mistake because the promoted evidence tile painted its extra width as blank
+         (276px of empty ground right of a 580px canvas at 1440, W2-D Finding 5). `min-width:0`
+         stays — it is what lets the figure take the grid cell's width instead of its content's. */
 :where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .stat-card > .dv{min-width:0;}
 /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works.
      ⚠ 36px, NOT the 32px Template-dashboard.reference.html draws: 32 is off the 28/36/44/48

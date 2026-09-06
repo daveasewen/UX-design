@@ -438,6 +438,16 @@
             "dv-lockup-title",
             "dv-lockup-table"
           ]
+        },
+        "Template-dashboard-bento": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour"
+          ],
+          "markup": [
+            "dv-lockup-title"
+          ],
+          "$note": "s249-D4 (#249, FIT lane) — the dashboard role REGISTERED so the template carries the real dv-behaviour partial (both axes) instead of the #248 hand-carried fit stub (two engines on one svg.dv-fit selector = the DP18 collision). Its one figure is a Chart-bar column block; the title lockup rides data-lockup-title. No dv-legend (no legend on the page)."
         }
       },
       "$behaviour": {
@@ -491,7 +501,7 @@
           "dataAttr": "data-lockup-table",
           "render": "attr:aria-controls",
           "mandatory": false,
-          "$description": "dv-lockup (#68) \u2014 the OPTIONAL header item: the 'View as table' disclosure. REBUILT #116 under s116-D2 (Dave: \"the table button and pop-over should be a molecule consumed by all of teh charts\"): the injected block is now a <summary class=\"dv-tbl-toggle\"> inside a hand-authored <details class=\"dv-tbl\"> that also wraps that figure's .dv-tablepanel. The disclosure is HTML+CSS and WORKS WITH JS OFF \u2014 the previous button + `hidden` + JS split left the table fallback unreachable without JS on every chart but the sparkline (MEASURED #116). canon/dv-behaviour.js now only clamps, moves focus and adds Escape, as progressive enhancement. aria-controls is still rewritten per-occurrence from the figure's data-lockup-table attribute; aria-expanded is GONE \u2014 a <summary>'s state is details[open], and a static value would lie with JS off. Sparkline does NOT declare this partial: it is the COMPACT variant of the same native mechanism (inline table, no floating panel, no toolbar chrome) and was the only chart that was already right."
+          "$description": "dv-lockup (#68) — the OPTIONAL header item: the 'View as table' disclosure. REBUILT #116 under s116-D2 (Dave: \"the table button and pop-over should be a molecule consumed by all of teh charts\"): the injected block is now a <summary class=\"dv-tbl-toggle\"> inside a hand-authored <details class=\"dv-tbl\"> that also wraps that figure's .dv-tablepanel. The disclosure is HTML+CSS and WORKS WITH JS OFF — the previous button + `hidden` + JS split left the table fallback unreachable without JS on every chart but the sparkline (MEASURED #116). canon/dv-behaviour.js now only clamps, moves focus and adds Escape, as progressive enhancement. aria-controls is still rewritten per-occurrence from the figure's data-lockup-table attribute; aria-expanded is GONE — a <summary>'s state is details[open], and a static value would lie with JS off. Sparkline does NOT declare this partial: it is the COMPACT variant of the same native mechanism (inline table, no floating panel, no toolbar chrome) and was the only chart that was already right."
         }
       }
     },
