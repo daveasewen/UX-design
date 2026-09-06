@@ -644,13 +644,24 @@
   .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
 
   /* ============================================================================================
-     THE CHART — Chart-bar.reference.html, declaration-for-declaration.
-     ⚠ THE CHART IS NOT MADE FLUID, AND THAT IS THE POINT. Chart-bar's own answer to a narrow
-     container is `.dv-stage{overflow-x:auto}` around a fixed 580px canvas — the class NEVER
-     becomes `width:100%` without its fit ENGINE, which is JavaScript this file does not host.
-     Setting `width:100%` on the SVG here would stretch the viewBox and scale the text and the
-     strokes with the pane, which is the banned physics `_RUNBOOK-render-verify.md` records Dave
-     catching in his own browser. So the chart SCROLLS. Declared, not smoothed.
+     THE CHART — Chart-bar.reference.html, declaration-for-declaration, FIT ENGINE INCLUDED.
+     #248 (Dave, 2026-09-05: "this is mostly fine as long as the chart is responsive. rule 9 is
+     possibly a mistake" · "the chart [should be responsive], it should be"). Until #248 this block
+     declared the chart NOT fluid: a fixed 580px canvas inside `.dv-stage{overflow-x:auto}`, on the
+     ground that the fit ENGINE is JavaScript this file did not host and `width:100%` without it
+     would scale the viewBox. That reading was retired — the answer is to CARRY the engine, not to
+     scroll. What is carried, declaration-for-declaration from Chart-bar: the two `.dv-fit-on`
+     rules below (the JS-ON release of the fixed width), the `dv-fit` class on the svg, the
+     data-fx/data-fw/data-dx/data-fx2 geometry already on every mark, and the FIT module of
+     `knowledge/canon/dv-behaviour.js` (fitCharts · gutterPL · fitOne · the ONE rAF-debounced
+     resize listener · the init that lands `.dv-fit-on`) in the script block at the foot.
+     ⛔ THE BANNED PHYSICS STAYS BANNED (DV-D02): the engine re-pins the viewBox 1:1 to the
+     measured width AND (s248-D2, this template's VFIT) to the tile's available height, and moves
+     x-positions/widths from the data-fx fractions and y-positions/heights from the cached
+     data-fy/data-fh fractions — TEXT AND STROKES NEVER SCALE. `_RUNBOOK-render-verify.md` records Dave catching a scaled chart in his own
+     browser; the proof here is a Playwright assertion (label font-size and bar stroke/height
+     identical at 1440 and 1100 while the chart-area width differs — W2-D2 sub-report).
+     JS-off keeps the pre-#248 static answer: fixed geometry + horizontal scroll.
      ============================================================================================ */
   figure.dv{margin:0; position:relative;}
   .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
@@ -658,6 +669,11 @@
   .dv-stage{overflow-x:auto; padding-bottom:4px;}
   .dv-chart-area{width:580px;}
   .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+  /* s248-D2 vertical fit (THIS template only — Chart-bar carries width alone, RSQ W2-D3): the JS
+     releases the fixed 260px height too; the svg's box then follows its viewBox 1:1 in BOTH axes. */
+  figure.dv-fit-on .dv-svg{height:auto;}
   .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
   line.dv-axis{stroke:var(--baseline); stroke-width:1;}
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
@@ -743,6 +759,27 @@
   .c-bento.tpl-group-lead{ --bento-row-unit:120px; }
   .c-bento.tpl-group-evidence{ --bento-row-unit:240px; }
   .c-bento.tpl-group-context{ --bento-row-unit:96px; }
+  /* 6b · THE RE-FLOW BAND — s248-D1 (#248, Dave, on the 1100 render: "so this should fill" ·
+         "thsi could be two columns too"). The 4+2 wall re-packs at the 3-column band instead of
+         orphaning: the context rail takes the WHOLE row it lands on, and its two cards sit side by
+         side while the rail is wide enough. Two declarations, both BAND rules, named here because
+         no span the base grammar carries does this — 2 of 6 cannot also be 3 of 3, and grid has no
+         "fill the rest of my row" — so the band is the only clean lever. Neither touches the canon
+         `[data-c]` clamps at L375–387 (those stay canon's, byte for byte) and neither is copied from
+         another file. (i) queries the WALL (the rail's nearest container): `1 / -1` is "the whole
+         row" at every band ≤1100, so the ≤820 and ≤520 clamps need no re-statement. (ii) queries the
+         RAIL's own width: its cards are data-c="3" of its 6 — a legal 3+3 by the snippet's own law —
+         and canon's ≤1100 clamp would otherwise make 3 the FULL 3-column row; above the 2-column
+         band the rail keeps its base count so 3+3 is two columns. Below 821px the rail stacks by
+         canon's own ≤820/≤520 clamps (1440: rail 432px → 1 col; 820: rail 756px → 2 cols).
+         ⚠ C9 (_validate_composition.py L100–107) reads only canon-shaped clamps, so it does not see
+         (i): the gate's static read of the wall is the RSQ in the W2-D3 report, not a defect here. */
+  @container bento (max-width:1100px){
+    .tpl-page .c-bento__tile.tpl-group-context{ grid-column:1 / -1; }
+  }
+  @container bento (min-width:821px){
+    .tpl-page .c-bento.tpl-group-context > .c-bento__grid{ --bento-cols-now:var(--bento-columns); }
+  }
   /* 7 · THE MODULE *IS* THE COMPONENT. A Kpi-tile and a Stat-card each ship their own 1px frame;
          inside a bento the 4px gutter separates the modules and the frame would double the seam
          (the "double frame" Dave rejected at #217). The component's frame yields to the wall —
@@ -751,8 +788,12 @@
   .tpl-group > .c-bento__grid > .stat-card{ border:0; height:100%; }
   /* 8 · a panel module is roomier than a KPI module (Template-dashboard's rule 9, carried). */
   .tpl-group > .c-bento__grid > .stat-card{ padding:24px; }
-  /* 9 · the chart module scrolls its own fixed canvas rather than stretching it — Chart-bar's
-         own answer, and the reason is in THE CHART block above. */
+  /* 9 · the chart module FITS its cell — Chart-bar's own fit engine, carried (THE CHART block
+         above). The old rule 9 ("scrolls its own fixed canvas rather than stretching it") was
+         RETIRED at #248: Dave, "rule 9 is possibly a mistake … the chart [should be responsive]".
+         It was a mistake because the promoted evidence tile painted its extra width as blank
+         (276px of empty ground right of a 580px canvas at 1440, W2-D Finding 5). `min-width:0`
+         stays — it is what lets the figure take the grid cell's width instead of its content's. */
   .tpl-group > .c-bento__grid > .stat-card > .dv{ min-width:0; }
 
 
@@ -935,9 +976,16 @@
             </div>
           </section>
 
-          <!-- GROUP 2 · the chart. One module, full width of its group. -->
+          <!-- GROUP 2 · the evidence group (DP-14/15, #248 W2). One chart module, full width of its
+               group, at data-c="4": the wall below the headline row is a 4+2 split, not the even
+               3+3 that DP-15 names as the thing a row under the lead row does not do. Per band
+               (canon's clamps at L375–387 + rule 6b): 6 cols 4+2 · 3 cols 3 (full row) + the
+               context rail on a full row of its own (s248-D1 — W2-D measured the 2-of-3 orphan at
+               358.7px and Dave ruled it a defect, so rule 6b re-flows it) · 2 cols 2+2, each a
+               full row · 1 col 1+1. Which group leads the wall is DP-14's product judgement, not a
+               ruling; the 4/2 values are the plan's defaults (DP-TEST-PLAN § 01 W2). -->
           <section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard"
-                   data-c="3" data-r="1" aria-label="Spending analysis">
+                   data-c="4" data-r="1" aria-label="Spending analysis">
             <div class="c-bento__grid">
               <div class="c-bento__tile stat-card" data-c="6" data-r="1">
                 <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="tpl-cb-h">
@@ -947,17 +995,17 @@
                 <span class="t-cm-caption" style="opacity:.6">30 days to 20 Aug</span>
                 </div>
                 <div class="dv-stage"><div class="dv-chart-area">
-                <svg class="dv-svg" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spend by category. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300, pounds.">
+                <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30" data-h-min="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spend by category. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300, pounds.">
                 <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">0</text>
                 <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">250</text>
+                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">250</text>
                 <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">500</text>
+                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">500</text>
                 <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">750</text>
+                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">750</text>
                 <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">1000</text>
+                <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">1000</text>
                 <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
                 <g data-dv-view="orig">
                 <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="65.1" y="139.3" width="48.7" height="90.7" data-fx="0.0366" data-fw="0.0933" tabindex="0" role="img" aria-label="Groceries: 420" data-tip="Groceries: 420"></rect>
@@ -980,11 +1028,18 @@
             </div>
           </section>
 
-          <!-- GROUP 3 · the position rail. Two modules stacked inside their own group. -->
+          <!-- GROUP 3 · the context rail (DP-14/15, #248 W2). Two Stat-card modules inside their
+               own group, at data-c="2" — the narrow arm of the 4+2 wall. At the 3-col band the rail
+               FILLS its row (s248-D1, rule 6b: `1 / -1`, not 2 of 3), and at 2 and 1 cols it is a
+               full row. The cards are data-c="3" of the rail's 6: side by side (3+3) while the rail
+               is wider than the 2-column band, stacked below it by canon's own clamps — so at 1440
+               (rail 432px) they stack and at 1100 (rail 1036px) they sit as two columns, Dave's
+               "this could be two columns too". Whether the rail's cards stretch to the chart's
+               height or answer with content is DP-18 (rule 7 `height:100%`), measured in W2-D. -->
           <section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard"
-                   data-c="3" data-r="1" aria-label="Position">
+                   data-c="2" data-r="1" aria-label="Position">
             <div class="c-bento__grid">
-              <div class="c-bento__tile stat-card" data-c="6" data-r="1">
+              <div class="c-bento__tile stat-card" data-c="3" data-r="1">
                 <div class="tpl-panel-head">
                 <h3 class="t-cm-section-label">Balances</h3>
                 </div>
@@ -995,7 +1050,7 @@
                 <div class="summary__row"><dt class="summary__k t-cm-label">Card balance</dt><dd class="summary__v t-cm-figure-5">&pound;3,204.80</dd></div>
                 </dl>
               </div>
-              <div class="c-bento__tile stat-card" data-c="6" data-r="1">
+              <div class="c-bento__tile stat-card" data-c="3" data-r="1">
                 <div class="tpl-panel-head">
                 <h3 class="t-cm-section-label">Needs attention</h3>
                 <a class="tpl-link t-cm-caption" href="#">View all</a>
@@ -1182,6 +1237,183 @@
     "$reason": "s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling."
   }
 }
+  </script>
+
+  <!-- ===== THE CHART's FIT ENGINE — knowledge/canon/dv-behaviour.js, FIT module only, carried
+       declaration-for-declaration (#248, Dave: the chart must be responsive; see THE CHART block
+       in the style sheet). Chart-bar hosts the WHOLE dv-behaviour partial between AUTO-BEHAVIOUR
+       markers (popover · table panel · sort · legend); this template carries ONLY the fit module —
+       nothing here reads a table, opens a panel or touches a legend. Two deliberate deviations
+       from the source, both named: (1) the guard is `__dvFit`, not `__dvBehaviour`, so a later
+       injection of the full partial is not skipped by this stub; (2) the resize listener calls
+       fitCharts() alone — the source also calls placeSegs(), which this page has no .seg for.
+       Plus ONE addition the source does not have: VFIT (s248-D2, the chart fills its tile's
+       HEIGHT too, bars re-scaled from data) — the block is named inside; carrying it back to
+       dv-behaviour.js / Chart-bar is a ruling-shaped question (W2-D3), not done here.
+       ⛔ Hand-carried, NOT generated: if the dashboard role is ever registered in
+       component-types.json group "dataviz", delete this block and let gen_component_partials.py
+       inject the real thing. ===== -->
+  <script>
+(function () {
+  'use strict';
+  if (window.__dvFit) { return; } window.__dvFit = true;
+
+  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
+     Source: only HORIZONTAL positions relayout to the container width; height + text are fixed.
+     ⚠ THIS COPY ALSO FITS THE HEIGHT — see VFIT below (s248-D2); the source does not, yet.
+     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
+     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  /* ---------- ds-012(b) GUTTER-RELATIVE PLOT AREA — RULED by Dave 2026-07-27 (ds-012 in
+     _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
+     never baked: the clipping was driven by label length and face looseness (the licensed
+     HSBC cut is looser than Helvetica), neither a design property — a build-time constant
+     is (a) wearing (b)'s clothes. Opt-in per svg via data-pl-fit="<selector>"; data-pl is
+     the FLOOR, so no gutter ends up NARROWER than its reviewed geometry.
+     PROVISIONAL-AWAITING-DAVE — the two constants below guard ds-012 point 3 ("do not let
+     the plot area collapse"); the narrow-width trade is Dave's eye, not a formula. */
+  var PL_MAX_FRAC = 0.42;   /* PROVISIONAL-AWAITING-DAVE — gutter ceiling as a share of width */
+  var PL_EDGE_PAD = 2;      /* PROVISIONAL-AWAITING-DAVE — clearance left of the longest label */
+  function gutterPL(svg, floorPL, W) {
+    var sel = svg.getAttribute('data-pl-fit');
+    if (!sel) { return floorPL; }
+    var labs = svg.querySelectorAll(sel), maxW = 0, pad = 0, i, bb, dx;
+    for (i = 0; i < labs.length; i++) {
+      try { bb = labs[i].getBBox(); } catch (e) { continue; }
+      if (bb.width > maxW) { maxW = bb.width; }
+      dx = Math.abs(parseFloat(labs[i].getAttribute('data-dx') || '0'));
+      if (dx > pad) { pad = dx; }
+    }
+    if (!maxW) { return floorPL; }                       /* nothing measurable — leave the bake */
+    var need = Math.ceil(maxW + pad + PL_EDGE_PAD);
+    var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
+    return Math.min(Math.max(floorPL, need), cap);
+  }
+  /* ---------- VFIT — s248-D2 (#248, Dave: "the charts should probably be vertically responsive
+     to, the aspect ratio doesn't need to be constant either"). ⚠ THIS TEMPLATE ONLY: the source
+     module (dv-behaviour.js, Chart-bar) is width-only; carrying this back is an RSQ (W2-D3).
+     Same physics as the width fit, turned 90°: the viewBox is re-pinned 1:1 to the new height and
+     every y / height is RE-DERIVED FROM DATA — the baked geometry is cached once as fractions of
+     the baked plot height (data-fy / data-fh / data-fy1 / data-fy2), exactly as data-fx/data-fw
+     carry the x-axis — so TEXT AND STROKES NEVER SCALE (DV-D02). The plot frame is per-svg via
+     data-pt (top pad) / data-pb (the label zone under the baseline), defaults 14/30 = the kit's
+     bake; a text's data-dy is a fixed pixel offset from its anchor, never scaled; a text anchored
+     BELOW the baseline (category labels) rides the baseline at a fixed offset. data-h is the
+     PREFERRED height, data-h-min the FLOOR (default 200px). The height answers the TILE: the svg
+     is laid out at data-h first, the empty ground between the figure's foot and the tile's
+     content edge is measured, and the svg takes it — a stretched tile fills (1440: the rail's
+     height), a content-sized tile keeps data-h (1100: the chart sits alone on its row), a tile
+     shorter than data-h shrinks the plot no further than the floor. */
+  var H_MIN_DEFAULT = 200;   /* the floor, px — W2-D3's "sane floor"; per-svg via data-h-min */
+  function slackBelow(svg) {
+    var fig = svg.parentElement; while (fig && !(fig.tagName === 'FIGURE' && /\bdv\b/.test(fig.className))) { fig = fig.parentElement; }
+    if (!fig) { return 0; }
+    var tile = fig.parentElement; while (tile && !/\bc-bento__tile\b/.test(tile.className)) { tile = tile.parentElement; }
+    if (!tile) { tile = fig.parentElement; }
+    var cs = getComputedStyle(tile);
+    var edge = tile.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom || '0') - parseFloat(cs.borderBottomWidth || '0');
+    return edge - fig.getBoundingClientRect().bottom;
+  }
+  function fitHeight(svg, W) {
+    var H0 = parseFloat(svg.getAttribute('data-h') || '260');
+    var Hmin = parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT));
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe: lay out at the preferred height */
+    var H = Math.round(H0 + slackBelow(svg));
+    if (H < Hmin) { H = Hmin; }
+    return H;
+  }
+  function fitY(svg, H) {
+    var PT = parseFloat(svg.getAttribute('data-pt') || '14');
+    var PB = parseFloat(svg.getAttribute('data-pb') || '30');
+    var H0 = parseFloat(svg.getAttribute('data-h') || '260');
+    var plot0 = H0 - PT - PB, plot = H - PT - PB;
+    if (plot0 <= 0 || plot <= 0) { return; }
+    var Y = function (f) { return PT + parseFloat(f) * plot; };
+    var frac = function (el, key, px) {          /* cache the bake as a fraction of the baked plot, ONCE */
+      if (el.getAttribute(key) === null) { el.setAttribute(key, ((px - PT) / plot0).toFixed(4)); }
+      return el.getAttribute(key);
+    };
+    var els = svg.querySelectorAll('rect[y],line[y1],text[y]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], tag = el.tagName.toLowerCase();
+      if (tag === 'rect') {
+        var fy = frac(el, 'data-fy', parseFloat(el.getAttribute('y')));
+        if (el.getAttribute('data-fh') === null) { el.setAttribute('data-fh', (parseFloat(el.getAttribute('height')) / plot0).toFixed(4)); }
+        el.setAttribute('y', Y(fy).toFixed(1));
+        el.setAttribute('height', (parseFloat(el.getAttribute('data-fh')) * plot).toFixed(1));
+      } else if (tag === 'line') {
+        var fy1 = frac(el, 'data-fy1', parseFloat(el.getAttribute('y1')));
+        var fy2 = frac(el, 'data-fy2', parseFloat(el.getAttribute('y2')));
+        el.setAttribute('y1', Y(fy1).toFixed(1)); el.setAttribute('y2', Y(fy2).toFixed(1));
+      } else if (tag === 'text') {
+        var dy = parseFloat(el.getAttribute('data-dy') || '0');
+        if (el.getAttribute('data-fy') === null) {
+          var anchor = parseFloat(el.getAttribute('y')) - dy, base0 = PT + plot0;
+          if (anchor > base0 + 0.5) { dy += anchor - base0; anchor = base0; el.setAttribute('data-dy', dy.toFixed(1)); }
+          el.setAttribute('data-fy', ((anchor - PT) / plot0).toFixed(4));
+        }
+        el.setAttribute('y', (Y(el.getAttribute('data-fy')) + dy).toFixed(1));
+      }
+    }
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var H = fitHeight(svg, W);                          /* s248-D2 — the tile's height, floored */
+      PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      fitY(svg, H);                                       /* s248-D2 — y/height from data, not scale */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j], isP = pl.tagName === 'path';
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); });
+  });
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+}());
   </script>
 
   <script>
