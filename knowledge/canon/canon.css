@@ -16784,6 +16784,8 @@
   --wall-ground: #F0F0F0;
   --spark-base-alpha: .10;
   --layout-bento-columns: 6;
+  --layout-bento-packing: row dense;
+  --layout-bento-caption-space: 86px;
 }
 [data-theme="dark"] .cn-template-dashboard-bento{
   --wall-ground: #1A1A1A;
@@ -17277,7 +17279,7 @@
 :where(.cn-template-dashboard-bento) .tpl-page .c-bento__tile.tpl-group-context{grid-column:1 / -1;}
 }
 @container bento (min-width:821px){
-:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-context > .c-bento__grid{--bento-cols-now:var(--bento-columns);}
+:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-context > .c-bento__grid{grid-template-columns:repeat(var(--bento-columns),minmax(0,1fr));}
 }
 /* 7 · THE MODULE *IS* THE COMPONENT. A Kpi-tile and a Stat-card each ship their own 1px frame;
          inside a bento the 4px gutter separates the modules and the frame would double the seam
@@ -17301,8 +17303,17 @@
          1440 / 1100 / 820, light and dark, maxWdiff 0, no void (#251 probe P1). It out-specifies
          canon's band clamps deliberately: four tiles never have to divide three because the band
          never reaches the row, which is what keeps s249-D5 (no ragged layouts) true here. */
-:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-lead > .c-bento__grid{--bento-cols-now:4;}
-/* 10a */
+/* 10a · ⚠ THE COUNT IS WRITTEN ON THE GRID PROPERTY, NOT ON `--bento-cols-now` (#255).
+           `--bento-cols-now` belongs to CANON's band machinery — it is what the bands rewrite —
+           and this rule is not a band: it OPTS OUT of them (see above). Declaring a second value
+           of that name in template scope is a token fork by `_validate_token_forks.py`'s own
+           measure (scope `.cn-template-dashboard-bento` resolving 4 against `.c-bento__grid`
+           resolving 1), and moving the literal onto the `--bento-columns` instance dial only
+           moves the fork onto THAT name — measured both ways at #255. Writing the grid property
+           the wall's own base rule writes says exactly what is true here: this grid is four
+           across at every band, by out-specifying (0,4,0) vs canon's (0,1,0), and it leaves the
+           dial and the band name untouched for anything nested inside it. */
+:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-lead > .c-bento__grid{grid-template-columns:repeat(4,minmax(0,1fr));}
 :where(.cn-template-dashboard-bento) .tpl-strip .l-row{align-items:center; flex-wrap:wrap;}
 /* 10b */
 /* 10c · the chip is a LINK, and looks exactly like the chip it already was: no underline, no
@@ -17318,7 +17329,12 @@
 :where(.cn-template-dashboard-bento) .tpl-na-head{margin-bottom:8px; border-bottom:1px solid var(--divider);}
 :where(.cn-template-dashboard-bento) .tpl-na-head .summary__row{align-items:baseline;}
 :where(.cn-template-dashboard-bento) .tpl-na-head .summary__row:last-child{border-bottom:0;}
-:where(.cn-template-dashboard-bento) .tpl-na-head .summary__k{display:flex; flex-direction:column; gap:6px;}
+/* 4px, not 8: the key cell is ONE unit — the key and its `.t-cm-legal` caption line are the
+     same thing said twice, and 8px is what `.tpl-na-head` already spends BELOW the whole head
+     row (margin-bottom:8px), so an 8px stack would make the caption read as a peer row rather
+     than as the key's own second line. 4px is the tightest step the grid has and it is the one
+     that keeps the pair reading as a pair. (#255; 6px was off the 4px grid entirely.) */
+:where(.cn-template-dashboard-bento) .tpl-na-head .summary__k{display:flex; flex-direction:column; gap:4px;}
 :where(.cn-template-dashboard-bento) .tpl-na-head .summary__k .t-cm-legal{display:block; opacity:1;}
 /* 10f · ARRIVAL. The `dp08-anchor` behaviour adds this class for exactly one animation and
            removes it on `animationend`; the keyframes live HERE because the page owns paint and
