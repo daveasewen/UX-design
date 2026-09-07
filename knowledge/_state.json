@@ -7712,10 +7712,46 @@
       "project": "apollo",
       "owner": "dave",
       "opened": 255,
-      "state": "open",
+      "state": "done",
       "title": "#255 RULING-SHAPED - s248-D1's ruled 4+2 wall contradicts C9's divisibility leg (4 does not divide 6): either C9 learns the ruled declarations (10a lead grid, 6b(i) full-bleed at <=1100px) as legal, or the 4+2 wall is re-ruled",
       "body": "Surfaced by lane B once the selftest ran. The flagship bento artefact has been C9 RED at every commit since 0979a9b (#249), invisible because the selftest aborted before reaching the arm. Recommendation (Claude, s251-D15): teach the reader the two ruled declarations - the rulings are newer than the gate and were made with the artefact in view; a gate that reds a ruled layout is the reader lagging the ruling, s253-D2 shape. Alternative: re-rule the 4+2 wall to a 3+3 or 6 split, which changes the page.",
       "closes_when": "Dave says which: teach C9 the two ruled declarations, or re-rule the 4+2 wall",
+      "condition": "stated",
+      "closed_by": "s255-D1 (Dave: '1') — teach C9 the two ruled declarations; enacted #255 lane C, notes/_subreports/2026-09-07-255-BUILD-C.md"
+    },
+    {
+      "links": [
+        "knowledge/_validate_composition.py",
+        "knowledge/_rulings.json",
+        "notes/_subreports/2026-09-07-255-V-C.md"
+      ],
+      "home": "notes/_subreports/2026-09-07-255-BUILD-C.md",
+      "id": "W-482",
+      "project": "apollo",
+      "owner": "claude",
+      "opened": 255,
+      "state": "done",
+      "title": "#255 LANE C - s255-D1 enacted: C9 reads the artefact's own ruled declarations (literal repeat(n) on a scoped grid; grid-column:1/-1 full-bleed per band) and flows tiles SPARSE to find orphans; the flagship bento artefact GREEN on C9 for the first time since 0979a9b (#249); 22 arms 0 failed",
+      "body": "Opus lane + cold verifier V-C (claims 18 / green 16 / red 0 / mismatches 0 / unproven 2). Nothing exempted by name; mutants 10a-deleted, 6b(i)-deleted, data-c 4->5 all RED. Claude call under s251-D15 after V-C 3(d), strikeable: dense backfill is NOT a source of legality - the orphan leg flows sparse regardless of grid-auto-flow (M10 [4,4,2,2] dense -> RED; K6 [4,2,4,2] -> GREEN); one call site to revert. Ruling-shaped left open: (i) a literal repeat(n) opts a scope out of the band model - which scopes may is unruled; (ii) --selftest still not a _build_all STEPS entry (L5 RSQ1, #245).",
+      "closes_when": "s255-D1 is enacted in a commit with V-C accepting",
+      "closed_by": "#255 lane-C commit - V-C ACCEPT, artefact GREEN, notes/_subreports/2026-09-07-255-BUILD-C.md",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-09-07-255-BUILD-C.md",
+        "knowledge/_validate_composition.py"
+      ],
+      "home": "notes/_subreports/2026-09-07-255-V-C.md",
+      "id": "W-483",
+      "project": "apollo",
+      "owner": "claude",
+      "opened": 255,
+      "state": "done",
+      "title": "#255 VERIFIER V-C - cold seat on lane C: claims 18 / green 16 / red 0 / mismatches 0 / unproven 2; three mutants driven RED; name-exemption scan clean; flagged 3(d) dense-backfill-as-legality, taken by the conductor as a Claude call (sparse flow)",
+      "body": "s182-D1 method. Unproven 2 because driving them writes repo files (pack probe json, _SCREEN-GATE.md) the seat may not touch. Artefact and _pack_gate_probe.json md5-identical to HEAD.",
+      "closes_when": "lane C's work is committed with the 3(d) flag either taken or recorded",
+      "closed_by": "#255 lane-C commit - 3(d) taken (sparse flow), notes/_subreports/2026-09-07-255-BUILD-C.md §5",
       "condition": "stated"
     },
     {

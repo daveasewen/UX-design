@@ -4,9 +4,21 @@ _validate_composition.py — rB's composition conditions (#234), driven against 
 artefact (never the library). Built at #245 L3 as `check_composition.py`; RULED and REGISTERED by
 s245-D7 (Dave: "I'll go with all the recommendations" — Q4 (b), Q5 (b)).
 
-  C9  SPAN LEGALITY   every tile's effective span divides the column count at EVERY compiled band
-                      (clamp = min(data-c, cols), exactly as the artefact's own band CSS clamps), AND
-                      every grid's effective spans sum to whole rows at every band (no orphan cell).
+  C9  SPAN LEGALITY   no grid leaves an ORPHAN CELL at any compiled band: the artefact's own tiles
+                      are FLOWED into the artefact's own grid (its column count, its span rules, its
+                      row spans) in SPARSE row-major order and every cell of every row must be filled —
+                      leg 1 an empty cell ABOVE the last row (a tile that could not fit the columns
+                      left in its row), leg 2 an empty cell IN the last row (spans not whole rows).
+                      ⚠ #255, s255-D1: the old leg 1 asked `cols % span == 0` per tile, which reds
+                      the 4+2 wall s248-D1 RULED legal (4+2 fills a 6-column row; 4 does not divide
+                      6). The condition NAMED was always "orphan column"; the reader was computing a
+                      proxy for it and lagging the rulings, so the reader is taught to flow the grid.
+                      Nothing is exempted by name: a page whose tiles leave a real hole still reds.
+                      ⚠ #255 after V-C §3(d) (conductor's call, Claude under s251-D15, Dave may
+                      strike): `grid-auto-flow: dense` is READ and REPORTED but is NOT a source of
+                      legality. Dense backfill fills a row only by rendering tiles out of DOM order
+                      — a reorder C4 cannot see and C8's rendered leg leaves unproven — and s255-D1
+                      never made it legal. The flow C9 judges is SPARSE at every band.
                       ⛔ BLOCKING (s245-D7 Q4 (b)) — a C9 red fails the screen in _validate_screen.py.
   C1  GAP LADDER      for every nested bento, gap(child) < gap(parent) STRICTLY (Polaris: equal is a
                       named defect), and every gap is on the ruled stop set {1,2,4,16,24,40} (s219-D1(4)).
@@ -26,8 +38,14 @@ matching its own `--bento-gutter` rules against its own DOM (specificity-ranked)
 from canon.css, the rails file or a meta — the page is judged by what it carries. A page with no
 `.c-bento` is NOT APPLICABLE (exit 0, one line saying so).
 
+C9's per-grid column count and per-tile span are CASCADED from the artefact's own rules (selector
+specificity, then source order, band conditions honoured) — so a grid whose `grid-template-columns`
+is written directly with a literal `repeat(<n>,…)` is <n> across at every band it applies to, and a
+tile pinned `grid-column:1 / -1` inside a band takes that grid's whole row at that band. Both are
+read as PROPERTIES, never as class names: no selector, group or template is exempted by name.
+
   python3 knowledge/_validate_composition.py <artefact.html>   -> report; exit 0 green, 1 red, 77 UNPROVEN
-  python3 knowledge/_validate_composition.py --selftest        -> the real bento snippet + 11 mutants + 5 controls (17 arms)
+  python3 knowledge/_validate_composition.py --selftest        -> the real bento snippet + 14 mutants + 7 controls (22 arms)
 
 WIRED: imported and called by _validate_screen.py (step 1b of its chain) — declared as its ARM in
 _validate_wiring.py. ⚠ `--selftest` is not yet a _build_all.STEPS entry (a STEPS addition moves the
@@ -93,19 +111,82 @@ def style_text(html):
 
 # ------------------------------------------------------------------ the artefact's own band grammar
 def bands(css):
-    """-> [(label, cols, {data_c: span})] read off the artefact: the base column count and each
-    @container (max-width) block that rewrites --bento-cols-now and clamps spans."""
+    """-> [(label, cols, width)] read off the artefact: the base column count and each @container
+    (max-width) block that rewrites --bento-cols-now. `width` is the width this band is EVALUATED
+    at — the band's own max-width, and None for the base band (wider than every declared band) — so
+    a rule's own @container condition can be tested against it. Per-tile spans are NOT read here
+    any more (#255): they are cascaded from the artefact's own `grid-column` rules, which is what
+    lets a `1 / -1` pin and a scoped `grid-template-columns` be seen at all."""
     base = re.search(r"--layout-bento-columns\s*:\s*(\d+)", css)
-    out = [("base", int(base.group(1)), {})] if base else []
+    out = [("base", int(base.group(1)), None)] if base else []
     for m in re.finditer(r"@container[^{]*\(max-width:\s*(\d+)px\)\s*{(.*?)}\s*}", css, flags=re.S):
         block = m.group(2) + "}"
         cols = re.search(r"--bento-cols-now\s*:\s*(\d+)", block)
         if not cols: continue
-        clamp = {}
-        for sel, span in re.findall(r"((?:\.c-bento__grid\s*>\s*\.c-bento__tile\[data-c=\"\d\"\]\s*,?\s*)+)\{grid-column:span (\d+);\}", block):
-            for c in re.findall(r'data-c="(\d)"', sel): clamp[int(c)] = int(span)
-        out.append(("<=%spx" % m.group(1), int(cols.group(1)), clamp))
+        out.append(("<=%spx" % m.group(1), int(cols.group(1)), int(m.group(1))))
     return out
+
+
+# ------------------------------------------------------------------ every rule, with its band conditions
+def _conds(prelude):
+    """-> [('max'|'min', px)] for one @container prelude (the query, not the container name)."""
+    return ([("max", int(v)) for v in re.findall(r"max-width:\s*(\d+)px", prelude)] +
+            [("min", int(v)) for v in re.findall(r"min-width:\s*(\d+)px", prelude)])
+
+
+def band_applies(conds, width):
+    """Does a rule carrying `conds` apply at a band evaluated at `width` (None = the base band)?"""
+    for kind, px in conds:
+        if kind == "max" and (width is None or width > px): return False
+        if kind == "min" and (width is not None and width < px): return False
+    return True
+
+
+def all_rules(css):
+    """-> [(conds, selector, declarations, pos)] over the whole stylesheet, @container blocks
+    INCLUDED and carrying their query as `conds`. `pos` is the absolute offset of the rule, so
+    source order is comparable across the top level and every band block."""
+    out, spans = [], []
+    for m in re.finditer(r"@container([^{]*)\{", css):
+        if any(s <= m.start() < e for s, e in spans): continue   # a nested @container, already taken
+        i, depth = m.end(), 1
+        while i < len(css) and depth:
+            depth += 1 if css[i] == "{" else (-1 if css[i] == "}" else 0)
+            i += 1
+        spans.append((m.start(), i))
+        conds = _conds(m.group(1))
+        for r in re.finditer(r"([^{}]+)\{([^{}]*)\}", css[m.end():i - 1]):
+            for sel in _split_top(r.group(1), ","):
+                out.append((conds, sel.strip(), r.group(2), m.end() + r.start()))
+    masked = list(css)
+    for s, e in spans:
+        for k in range(s, e): masked[k] = " "
+    for r in re.finditer(r"([^{}]+)\{([^{}]*)\}", "".join(masked)):
+        for sel in _split_top(r.group(1), ","):
+            out.append(([], sel.strip(), r.group(2), r.start()))
+    return out
+
+
+def decls_of(rules, prop):
+    """-> the subset of `rules` declaring `prop`, as (conds, selector, value, pos)."""
+    rx = re.compile(r"(?:^|[;{\s])" + prop + r"\s*:\s*([^;]+)")
+    out = []
+    for conds, sel, decl, pos in rules:
+        m = rx.search(decl)
+        if m: out.append((conds, sel, m.group(1).strip(), pos))
+    return out
+
+
+def cascade(el, rules, width):
+    """The winning value for one element at one band: highest (specificity, source order) among the
+    rules whose selector matches it and whose @container query holds at `width`. None if none do."""
+    best = None
+    for conds, sel, val, pos in rules:
+        if not band_applies(conds, width): continue
+        ok, spec = match_selector(el, sel)
+        if not ok: continue
+        if best is None or (spec, pos) > best[0]: best = ((spec, pos), val)
+    return best[1] if best else None
 
 
 # ------------------------------------------------------------------ gutter resolution from the page's own CSS
@@ -162,6 +243,29 @@ def _match_compound(el, compound):
     return True, spec
 
 
+def match_selector(el, sel):
+    """-> (matched, specificity) for a whole descendant/child selector against one element.
+    `matched` is None when the selector uses a construct this reader does not support (the caller
+    SKIPS those, it never guesses). Extracted at #255 from gutter_of(), byte-for-byte the same walk,
+    so the gutter arms and the new C9 readers share ONE matcher."""
+    comps = _compounds(sel)
+    if not comps: return False, 0
+    ok, spec = _match_compound(el, comps[-1][1])
+    if ok is None: return None, 0
+    if not ok: return False, 0
+    node = el
+    for comb, comp in reversed(comps[:-1]):
+        cands = [node.parent] if comb == ">" else list(node.ancestors())
+        hit = None
+        for a in cands:
+            if a is None: continue
+            r = _match_compound(a, comp)
+            if r[0]: hit = a; spec += r[1]; break
+        if hit is None: return False, 0
+        node = hit
+    return True, spec
+
+
 def gutter_rules(css):
     """-> [(selector, value, order)] for every rule declaring --bento-gutter OUTSIDE @container blocks"""
     flat = re.sub(r"@container[^{]*{(?:[^{}]*{[^{}]*})*[^{}]*}", "", css, flags=re.S)
@@ -190,26 +294,88 @@ def gutter_of(el, rules, css):
     best = None  # (spec, order, value)
     unsupported = 0
     for sel, val, order in rules:
-        comps = _compounds(sel)
-        ok, spec = _match_compound(el, comps[-1][1])
+        ok, spec = match_selector(el, sel)
         if ok is None: unsupported += 1; continue
         if not ok: continue
-        # ancestors: each earlier compound must match some ancestor (child combinator = the parent)
-        node, good = el, True
-        for comb, comp in reversed(comps[:-1]):
-            cands = [node.parent] if comb == ">" else list(node.ancestors())
-            hit = None
-            for a in cands:
-                if a is None: continue
-                r = _match_compound(a, comp)
-                if r[0]: hit = a; spec += r[1]; break
-            if hit is None: good = False; break
-            node = hit
-        if not good: continue
         key = (spec, order)
         if best is None or key > best[0]: best = (key, val, sel)
     if best is None: return None, None, unsupported
     return resolve_var(best[1], css), best[2], unsupported
+
+
+# ------------------------------------------------------------------ C9's grid model, read off the page
+REPEAT_N_RE = re.compile(r"repeat\(\s*(\d+)\s*,")           # a LITERAL count written on the property
+FULL_BLEED_RE = re.compile(r"^1\s*/\s*-1$")                 # "the whole row", whatever the row is
+SPAN_RE = re.compile(r"^span\s+(\d+)$")
+
+
+def resolve_str(value, css):
+    """Follow var() chains textually (the numeric resolve_var above only answers lengths)."""
+    v = (value or "").strip()
+    for _ in range(6):
+        m = re.search(r"var\((--[-a-zA-Z0-9]+)(?:,([^()]*))?\)", v)
+        if not m: break
+        decls = re.findall(re.escape(m.group(1)) + r"\s*:\s*([^;}]+)", css)
+        v = v[:m.start()] + (decls[-1].strip() if decls else (m.group(2) or "").strip()) + v[m.end():]
+    return v.strip()
+
+
+def grid_cols_at(g, gtc_rules, band):
+    """-> (columns, source) for one grid at one band. A rule that writes the count as a LITERAL
+    `repeat(<n>,…)` and wins the cascade IS the count at that band; a rule that writes it through a
+    var() is canon's band machinery, so the band's own count stands. Nothing is keyed to a class."""
+    label, cols, width = band
+    val = cascade(g, gtc_rules, width)
+    if val:
+        m = REPEAT_N_RE.search(val)
+        if m: return max(1, int(m.group(1))), "grid-template-columns:%s" % val.strip()
+    return max(1, cols), "band"
+
+
+def tile_span_at(t, gc_rules, band, cols):
+    """-> (span, source) for one tile at one band, cascaded from the page's own `grid-column`
+    rules: `1 / -1` is the whole row (so the row it lands on is filled by it alone), `span N` is N,
+    and a tile no rule reaches falls back to its own data-c. Always clamped to the column count,
+    which is what the browser does with a span wider than the explicit grid."""
+    val = cascade(t, gc_rules, band[2])
+    if val:
+        v = val.strip()
+        if FULL_BLEED_RE.match(v): return cols, "1 / -1"
+        m = SPAN_RE.match(v)
+        if m: return max(1, min(int(m.group(1)), cols)), "span %s" % m.group(1)
+    return max(1, min(int(t.attrs.get("data-c", "1") or 1), cols)), "data-c"
+
+
+def flow_grid(items, cols):
+    """Flow (span, rowspan) items into `cols` columns as CSS grid auto-placement does in SPARSE
+    row-major order: the cursor never moves back, so a hole left behind stays a hole.
+    -> (rows, placements) where rows is a list of per-row occupancy lists. An EMPTY CELL is an
+    orphan, wherever it is.
+
+    ⚠ #255 (conductor's call after V-C §3(d), Claude under s251-D15, Dave may strike): the flow is
+    SPARSE regardless of the page's `grid-auto-flow`. `dense` is READ and REPORTED but is NOT a
+    source of legality — `s255-D1` ruled the 4+2 wall legal, it never ruled that dense backfill
+    fills a row. A dense page whose sparse flow leaves a hole packs whole only by rendering its
+    tiles out of DOM order, a reorder C4 does not see (it reads `order:`, `*-reverse` and explicit
+    line placement, not `dense`) and C8's rendered leg leaves unproven. So C9 judges the sparse
+    flow, and V-C's `[4,4,2,2]`-in-6 page reds again."""
+    rows, placements, cur = [], [], (0, 0)
+    def ensure(r):
+        while len(rows) <= r: rows.append([False] * cols)
+    for span, rs in items:
+        span, rs = max(1, min(span, cols)), max(1, rs)
+        r, c = cur
+        while True:
+            if c + span > cols: r, c = r + 1, 0; continue
+            ensure(r + rs - 1)
+            if all(not rows[r + dr][c + dc] for dr in range(rs) for dc in range(span)): break
+            c += 1
+        ensure(r + rs - 1)
+        for dr in range(rs):
+            for dc in range(span): rows[r + dr][c + dc] = True
+        placements.append((r, c, span, rs))
+        cur = (r, c + span) if c + span < cols else (r + 1, 0)
+    return rows, placements
 
 
 # ------------------------------------------------------------------ the two conditions
@@ -280,29 +446,47 @@ def check(html):
                         "var(--layout-bento-columns) and nothing sets it) - the base column count is UNDECLARED, so the "
                         "widest band is not checked; the gate does not assume 6")
     lines.append("C9 · bands read off the artefact: " + " · ".join("%s=%d cols" % (b[0], b[1]) for b in bl))
+    rules = all_rules(css)
+    gtc_rules, gc_rules, gaf_rules = decls_of(rules, "grid-template-columns"), decls_of(rules, "grid-column"), decls_of(rules, "grid-auto-flow")
+    lit = ["%s%s" % (s, "" if not cd else " @" + ",".join("%s-width:%dpx" % k for k in cd)) for cd, s, v, _ in gtc_rules if REPEAT_N_RE.search(v)]
+    fb = ["%s%s" % (s, "" if not cd else " @" + ",".join("%s-width:%dpx" % k for k in cd)) for cd, s, v, _ in gc_rules if FULL_BLEED_RE.match(v.strip())]
+    lines.append("C9 · column counts written as a literal repeat() on the grid property: %s" % (lit or "none"))
+    lines.append("C9 · tiles pinned to the whole row by `grid-column:1 / -1`: %s" % (fb or "none"))
     grids = [e for e in dom.descendants() if "c-bento__grid" in e.classes]
     tiles_seen = 0
     for g in grids:
         tiles = [c for c in g.children if "c-bento__tile" in c.classes]
         owner = g.parent
         label = owner.attrs.get("aria-label", owner.attrs.get("class", "?")) if owner else "?"
-        spans = []
-        for t in tiles:
-            c = int(t.attrs.get("data-c", "1")); tiles_seen += 1
-            per_band = []
-            for name, cols, clamp in bl:
-                eff = clamp.get(c, min(c, cols))
-                per_band.append((name, cols, eff))
-                if cols % eff != 0:
-                    reds.append("C9 RED  line %d data-c=%d in '%s': span %d does not divide %d columns at band %s (orphan column)" % (t.line, c, label, eff, cols, name))
-            spans.append(per_band)
-        for i, (name, cols, _) in enumerate(bl):
-            total = sum(s[i][2] for s in spans)
-            if total % cols != 0:
-                reds.append("C9 RED  grid '%s' (line %d): spans sum to %d at band %s (%d cols) - not whole rows, an orphan cell" % (label, g.line, total, name, cols))
-        lines.append("C9 · grid '%s' line %d: %d tile(s) data-c=%s -> %s" % (label, g.line, len(tiles), [int(t.attrs.get("data-c", "1")) for t in tiles],
-                     "; ".join("%s: %s" % (b[0], [s[i][2] for s in spans]) for i, b in enumerate(bl))))
-    lines.append("C9 · %d grid(s), %d tile(s) checked at %d band(s)" % (len(grids), tiles_seen, len(bl)))
+        tiles_seen += len(tiles)
+        shown = []
+        for band in bl:
+            name = band[0]
+            cols, src = grid_cols_at(g, gtc_rules, band)
+            dense = "dense" in resolve_str(cascade(g, gaf_rules, band[2]) or "row", css)
+            items, srcs = [], []
+            for t in tiles:
+                sp, how = tile_span_at(t, gc_rules, band, cols)
+                items.append((sp, max(1, int(t.attrs.get("data-r", "1") or 1)))); srcs.append(how)
+            rows, placements = flow_grid(items, cols)   # SPARSE always — `dense` is reported, not honoured
+            shown.append("%s: %d cols%s%s -> %s" % (name, cols, "" if src == "band" else " (%s)" % src,
+                                                    " [declares dense; judged sparse]" if dense else "", [i[0] for i in items]))
+            if not rows: continue
+            holes = [(r, c) for r, row in enumerate(rows) for c, v in enumerate(row) if not v]
+            above = [h for h in holes if h[0] < len(rows) - 1]
+            if above:
+                r0, c0 = above[0]
+                i = next((k for k, p in enumerate(placements) if (p[0], p[1]) > (r0, c0)), None)
+                if i is None:
+                    reds.append("C9 RED  grid '%s' (line %d): %d empty cell(s) above the last row at band %s (%d cols) - an orphan column" % (label, g.line, len(above), name, cols))
+                else:
+                    reds.append("C9 RED  line %d data-c=%s in '%s': span %d cannot take the %d column(s) left in row %d at band %s (%d cols) - it wraps and leaves %d empty cell(s) behind it, an orphan column" % (
+                        tiles[i].line, tiles[i].attrs.get("data-c", "1"), label, items[i][0], cols - c0, r0 + 1, name, cols, len(above)))
+            tail = [c for c, v in enumerate(rows[-1]) if not v]
+            if tail:
+                reds.append("C9 RED  grid '%s' (line %d): spans leave %d empty column(s) in the last row at band %s (%d cols) - not whole rows, an orphan cell" % (label, g.line, len(tail), name, cols))
+        lines.append("C9 · grid '%s' line %d: %d tile(s) data-c=%s -> %s" % (label, g.line, len(tiles), [int(t.attrs.get("data-c", "1")) for t in tiles], "; ".join(shown)))
+    lines.append("C9 · %d grid(s), %d tile(s) flowed at %d band(s)" % (len(grids), tiles_seen, len(bl)))
     # C1
     rules = gutter_rules(css)
     lines.append("C1 · %d `--bento-gutter` rule(s) in the artefact's own <style>" % len(rules))
@@ -380,15 +564,43 @@ def selftest():
     KPI = '<div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Closing balance" data-c="1" data-r="1">'
     GROUP_GAP = '.tpl-page .c-bento.tpl-group[data-bento-role="dashboard"]{ --bento-gutter:4px; }'
     WALL_GAP = '--bento-gutter:40px; --bento-row-unit:auto; }'
-    for a in (KPI, GROUP_GAP, WALL_GAP): assert real.count(a) == 1, a
+    # #255, s255-D1: the two RULED declarations C9 was taught to read. Each is anchored so the arms
+    # below can DELETE it from the page's CSS — the mutation that proves the reading is load-bearing
+    # and that nothing is exempted by name: with the declaration gone the same tiles red again.
+    RULE_10A = '.tpl-page .c-bento.tpl-group-lead > .c-bento__grid{ grid-template-columns:repeat(4,minmax(0,1fr)); }'
+    RULE_6BI = '.tpl-page .c-bento__tile.tpl-group-context{ grid-column:1 / -1; }'
+    EVIDENCE = 'data-c="4" data-r="1" aria-label="Spending analysis">'
+    # #255 after V-C §3(d): a hand-built page, deliberately carrying NEITHER ruled declaration —
+    # no literal repeat(), no `grid-column:1 / -1` — so the only thing under test is the flow.
+    DENSE_TILES = '<div class="c-bento__tile" data-c="%d" data-r="1">%s</div>'
+    def dense_page(order):
+        return ('<html><body><main class="tpl-page">\n<style>\n'
+                '.tpl-page{ --layout-bento-columns:6; }\n'
+                '.tpl-page .c-bento{ --bento-gutter:4px; }\n'
+                '.tpl-page .c-bento__grid{ display:grid; grid-auto-flow:row dense; }\n'
+                '</style>\n<section class="c-bento" aria-label="Dense page">\n'
+                '  <div class="c-bento__grid">\n'
+                + "".join("  " + DENSE_TILES % (sp, nm) + "\n" for sp, nm in order)
+                + '  </div>\n</section>\n</main></body></html>\n')
+    DENSE_PAGE = dense_page([(4, "A"), (4, "B"), (2, "C"), (2, "D")])
+    DENSE_PAGE_CTRL = dense_page([(4, "A"), (2, "B"), (4, "C"), (2, "D")])
+    for a in (KPI, GROUP_GAP, WALL_GAP, RULE_10A, RULE_6BI, EVIDENCE): assert real.count(a) == 1, a
     arms = [
         ("R  · the REAL artefact as shipped (column count declared since #245 L5) -> GREEN", real, 0, None),
         ("R0 · the artefact with its column-count literal STRIPPED (L3 finding 5 as it was) -> UNPROVEN 77, never green", raw, 77, None),
-        # M1/M2 RE-DERIVED at #255 for the data-c="1" tile, each keeping its NAMED condition:
-        # M1 is the SPAN-LEGALITY leg of C9 (a span that does not divide the band's column count),
-        # M2 is the SUM-TO-WHOLE-ROWS leg (a span that divides every band but leaves an orphan cell).
-        ("M1 · one KPI tile data-c 1 -> 4 (4 does not divide 6: span-legality orphan at the base band)", real.replace(KPI, KPI.replace('data-c="1"', 'data-c="4"')), 1, "C9"),
-        ("M2 · one KPI tile data-c 1 -> 3 (divides at every band, but the grid no longer sums to whole rows at <=820px)", real.replace(KPI, KPI.replace('data-c="1"', 'data-c="3"')), 1, "C9"),
+        # M1/M2 keep their NAMED legs and are RE-DERIVED at #255 (s255-D1) against the flow model:
+        # M1 is the ORPHAN-COLUMN leg (a tile that cannot take the columns left in its row, so it
+        # wraps and leaves cells empty behind it), M2 is the WHOLE-ROWS leg (every row fills except
+        # the last). The old mutations were `4 does not divide 6` and `3 divides but does not sum` —
+        # arithmetic on a proxy; `s248-D1`'s ruled 4+2 wall is exactly the case where the proxy and
+        # the render disagree, so each mutation is re-derived to produce a REAL empty cell.
+        ("M1 · the wall's evidence tile data-c 4 -> 5 (5+2 cannot share a 6-column row: the rail wraps and one column stays empty)", real.replace(EVIDENCE, 'data-c="5" data-r="1" aria-label="Spending analysis">'), 1, "C9"),
+        ("M2 · one KPI tile data-c 1 -> 3 (3+1 fills the lead row, the other two KPIs leave the last row half empty)", real.replace(KPI, KPI.replace('data-c="1"', 'data-c="3"')), 1, "C9"),
+        # M1b/M1c — the two ruled declarations s255-D1 taught C9, each DELETED from the page's CSS.
+        # These are the bite: if the reader were exempting a class name rather than reading the
+        # property, the page would stay green with the declaration gone.
+        ("M1b · rule 10a DELETED from the CSS (the lead grid falls back to the band count: four data-c=1 tiles in 6 / 3 / 2 columns)", real.replace(RULE_10A, ""), 1, "C9"),
+        ("M1c · rule 6b(i) DELETED from the CSS (the context rail is 2 of 3 at <=1100px again - the orphan s248-D1 ruled a defect)", real.replace(RULE_6BI, ""), 1, "C9"),
         ("M3 · group gutter 4 -> 40 (EQUAL to the wall - the flat ladder)", real.replace(GROUP_GAP, GROUP_GAP.replace("4px", "40px")), 1, "C1"),
         ("M4 · wall gutter 40 -> 4 (child not strictly smaller)", real.replace(WALL_GAP, WALL_GAP.replace("40px", "4px")), 1, "C1"),
         ("M5 · group gutter 4 -> 5 (off the ruled stop set)", real.replace(GROUP_GAP, GROUP_GAP.replace("4px", "5px")), 1, "C1"),
@@ -403,6 +615,21 @@ def selftest():
         ("M9b · explicit `grid-row-start:1` line placement (CA-2)", real.replace(GROUP_GAP, GROUP_GAP + "\n.tpl-page .kpi-tile{ grid-row-start:1; }"), 1, "C4"),
         ("K3 · control: `border:` and `--border:` in CSS must NOT read as `order:` (the substring trap)", real.replace(GROUP_GAP, GROUP_GAP + "\n.tpl-page .kpi-tile{ border:1px solid var(--border); }"), 0, None),
         ("K4 · control: a page with no .c-bento is NOT APPLICABLE -> 0", "<html><body><main><p>no bento</p></main></body></html>", 0, None),
+        # K5 · the reader must read the NUMBER on the property, not the rule's name. Two columns is
+        # a different count from four and the four data-c=1 tiles still fill whole rows, so the page
+        # stays GREEN — while M1b (the same rule deleted) goes RED. Together they prove the count is
+        # DERIVED: neither `.tpl-group-lead` nor the literal 4 is known to the gate.
+        ("K5 · control: rule 10a's repeat(4) -> repeat(2) (a different count, still whole rows: 4 tiles / 2 cols)",
+         real.replace(RULE_10A, RULE_10A.replace("repeat(4,", "repeat(2,")), 0, None),
+        # M10 / K6 — the conductor's call after V-C §3(d). A HAND-BUILT page (not the artefact):
+        # six columns declared, no literal repeat(), no `1 / -1`, `grid-auto-flow: row dense`, and
+        # tiles [4,4,2,2]. Dense backfill would pack that into two whole rows — but only by putting
+        # tile C ahead of tile B on screen, a reorder C4 cannot see and C8's rendered leg leaves
+        # unproven, and s255-D1 never made dense a source of legality. So C9 judges the SPARSE flow
+        # and this page is RED. K6 is the SAME four tiles ordered [4,2,4,2], which fills both rows
+        # sparse: the tiles are not the defect, the DOM order is — which is the point.
+        ("M10 · six columns, tiles [4,4,2,2], `grid-auto-flow:row dense` (packs whole only by backfilling out of DOM order)", DENSE_PAGE, 1, "C9"),
+        ("K6 · control: the same four tiles ordered [4,2,4,2] (fills both rows SPARSE, dense or not)", DENSE_PAGE_CTRL, 0, None),
     ]
     import io
     fails = 0
