@@ -59,6 +59,7 @@
 - clears when: The mount layout changes and .auto-memory/ is no longer reachable from the shell — at which point the zero-fill route is genuinely gone and every doc telling a session to check disk first is wrong.
 - asserted in: `memory:memory-md-is-in-the-mount`, `_LIVE-STATE.md`
 - last verified: 2026-08-06
+- ⚠ **STALE:** last verified 32d ago, window is 30d
 
 ## ✓ ASSERT-008 — environment
 

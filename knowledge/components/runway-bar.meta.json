@@ -2,7 +2,19 @@
   "name": "Coverage / runway bar",
   "category": "molecule",
   "purpose": "A READOUT that answers one question: does the money cover what is already scheduled, and until when? It states a verdict with a date, shows the arithmetic that produces it (balance − committed = buffer), and draws the split on a bar. ⚠ THE BAR IS A GATED Progress-bar, COPIED BYTE-FOR-BYTE — this component draws no new bar. What it adds is the verdict, the arithmetic and the legend. PROPOSED #204 (itinerary row 94, slug runway-bar) — NOT GATED, NOT RULED, AND ITS PROVENANCE IS A TEST FIXTURE (see provenance). Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
-  "intent": "composition",
+  "intent": "one-number",
+  "provides": "headline-metric",
+  "answers": "one-number",
+  "shape": "one-measure × committed-vs-balance-split",
+  "span": {
+    "cols": {
+      "min": 3,
+      "max": 6
+    }
+  },
+  "priority": 30,
+  "when": "answers = one-number AND shape = one-measure × committed-vs-balance-split AND verdict != none — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the reading is \"money vs what is already scheduled\" and the takeaway is a VERDICT WITH A DATE rather than a delta or a trend; yields to stat-card when there is nothing committed to net off, to kpi-tile when a series is the claim, and to Chart-bullet (40, \"a target or performance band is the point, not the delta\") when a target band, not a coverage date, is the benchmark.",
+  "$interchangeability": "s254-D2 item 7 (Dave, #254) — the six fields authored at #254 build lane S. READ OFF THIS META, never off roles.json: `answers: one-number` and `shape` from the purpose prose (\"A READOUT that answers one question: does the money cover what is already scheduled, and until when? ... shows the arithmetic that produces it (balance − committed = buffer), and draws the split on a bar\"); `span cols 3–6` from the responsive prose (\"Fluid to a 480px max-width column; the bar is width:100% of its container. Legend and head wrap. Verified at 1400px and 480px.\") — a 480px max-width column is a quarter-to-half of a 12-col page band, and the head/legend wrap is what lets it hold at 3; `priority: 30` is the ruling's own number, the bottom of headline-metric under stat-card 60 / kpi-tile 50 / Chart-bullet 40, matching roles.json's adopted membership. ⚠ `intent` was `composition` until #254; the conductor set it to `one-number` to EQUAL `answers` (item 4 of s254-D2: `intent` is an alias of `answers` until the SH demo, then removed) — a Claude call under s251-D15, unvetoed, so check 7 is GREEN on this meta.",
   "props": [
     { "name": "balance", "type": "number", "$note": "The domain maximum — aria-valuemax." },
     { "name": "committed", "type": "number", "$note": "The fill — aria-valuenow. ⚠ CLAMPED to balance in the SHORT state, because a progressbar cannot express overflow. The true figure appears in the legend, the arithmetic and aria-valuetext." },

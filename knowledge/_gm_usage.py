@@ -420,6 +420,56 @@ HISTORY_SOURCES = (os.path.join("notes", "_GAUGE-LOG.md"), "GOOD-MORNING.md")
 DEFER_STREAK = 6
 DEFER_STREAK_STATUS = "AGENT-PROPOSED, ADVISORY — awaiting Dave (#35)"
 
+# ★★ #254 — "A SESSION THAT WRAPPED TWICE" IS A THING THE RECORD CAN SAY, AND THE READER HAD NO
+# TERM FOR IT. WHAT HAPPENED: #218 wrapped TWICE (2026-08-24 and again 2026-08-25) — a real event,
+# recorded honestly, and recorded in ONE `#218` block because `_gm_move.py::roll_2f` REFUSES a
+# duplicate session key. So `notes/_GAUGE-LOG.md` carries two `section-usage #218` lines, the
+# second labelled `(second wrap; …)`, and their codes DIFFER because the two halves of the day
+# genuinely read different sections. The reader graded that honest record as a falsification
+# ("testifies DIFFERENTLY … REFUSED") for one reason only: it had no vocabulary for a second wrap.
+#
+# ⛔ THE FIX IS THE READER, NEVER THE GATE (s253-D2, Dave). Nothing below narrows the check:
+# neither testimony is edited, dropped or excluded, #218 is not special-cased, and two testimonies
+# for one session AT THE SAME WRAP INDEX still REFUSE with the identical message. What is added is
+# a TERM — the wrap index, taken from the line's own parenthetical, which is the session's own
+# words and not this reader's inference. A line that says nothing is wrap 1, exactly as before.
+#
+# ⚠ ds-025 REFUSAL DISCIPLINE HELD: the index is READ, never estimated. An unrecognised ordinal
+# does not become "probably the next one" — the parenthetical either names a wrap or it does not,
+# and where it does not, the reader says wrap 1 because that is what an unlabelled wrap has always
+# meant here. No guess is ever inscribed.
+#
+# ★ WHICH WRAP IS THE SESSION'S FIGURE: the LAST one. A session's closing testimony is what it
+# said when it finished, and #218's second wrap is the one that closed it. The earlier wraps are
+# KEPT and READ (they are what proves the session wrapped twice) and are never averaged, summed or
+# blended into the closing figure [[measure-dont-convert-units]] — the report says which wrap it is
+# using, by name, so a table reader can never mistake one wrap for the whole session.
+WRAP_WORDS = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5,
+              "sixth": 6, "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10}
+WRAP_LABEL_RE = re.compile(
+    r"\b(" + "|".join(WRAP_WORDS) + r"|\d+(?:st|nd|rd|th))\s+wrap\b", re.I)
+
+
+def wrap_index(parenthetical):
+    """The wrap index a `section-usage` line's own parenthetical declares. UNLABELLED IS 1 —
+    the meaning an unlabelled line has always carried — and an ordinal this reader does not
+    recognise is NOT guessed at (ds-025): it stays 1, and the disagreement check then fires,
+    which is the loud outcome, never the quiet one."""
+    m = WRAP_LABEL_RE.search(parenthetical or "")
+    if not m:
+        return 1
+    tok = m.group(1).lower()
+    if tok in WRAP_WORDS:
+        return WRAP_WORDS[tok]
+    return int(re.sub(r"\D", "", tok))
+
+
+def _at(wrap):
+    """Wrap qualifier for a refusal. EMPTY at wrap 1 on purpose: the single-wrap message is the
+    one the corpus, the gate and every downstream reader already know, and #254 must not reword
+    a refusal it did not change [[mutation-tests-the-clause-not-the-feature]]."""
+    return "" if wrap == 1 else f" (wrap {wrap})"
+
 
 def usage_history(repo=REPO):
     """Read EVERY `section-usage` line in the corpus as a SERIES.
@@ -437,9 +487,16 @@ def usage_history(repo=REPO):
     until the next wrap's `roll_2f` moves it to the log. Identical duplicates are collapsed
     silently; DISAGREEING duplicates are a REFUSAL, because one of the two is false and this
     reader cannot know which.
+
+    ⚠ …AND A SESSION MAY GENUINELY HAVE WRAPPED TWICE (#254). Testimonies are keyed by
+    (session, WRAP INDEX), read from the line's own parenthetical (`(second wrap; …)`).
+    Two testimonies at the SAME wrap index that disagree still REFUSE, unchanged. Two at
+    DIFFERENT indices are both kept, and the LAST wrap is the session's closing figure —
+    the one the table and the streaks use, named as such in the report.
     """
-    rows, refusals, notes = {}, [], []
-    seen_src, unmeasured = {}, {}
+    refusals, notes = [], []
+    entries = {}      # (session, wrap) -> {id: code}  |  None for UNMEASURED
+    seen_src = {}     # (session, wrap) -> the source that first testified it
     for rel in HISTORY_SOURCES:
         path = os.path.join(repo, rel)
         if not os.path.exists(path):
@@ -455,25 +512,29 @@ def usage_history(repo=REPO):
                 # ★ FIRST-CLASS (#62): present testimony that no measurement exists. No table
                 # column — the same convention as a session absent from the record (a column of
                 # invented `?`s would flatten "refused to measure" into "not yet registered").
-                un = int(um.group(1))
-                if un in rows:
+                # ⚠ The UNMEASURED form carries no parenthetical at all, so it is always
+                # wrap 1 — read, never assumed: it has no place to declare anything else.
+                key = (int(um.group(1)), 1)
+                if key in entries and entries[key] is not None:
                     refusals.append(
-                        f"session #{un} testifies with codes in {seen_src[un]} and UNMEASURED "
-                        f"in {rel} — one of them is false and this reader cannot tell which. "
-                        f"REFUSED.")
+                        f"session #{key[0]}{_at(key[1])} testifies with codes in "
+                        f"{seen_src[key]} and UNMEASURED in {rel} — one of them is false and "
+                        f"this reader cannot tell which. REFUSED.")
                     continue
-                unmeasured.setdefault(un, rel)   # identical duplicates collapse silently
+                if key not in entries:           # identical duplicates collapse silently
+                    entries[key], seen_src[key] = None, rel
                 continue
             m = USAGE_RE.match(ln.strip())
             if not m:
                 refusals.append(f"{rel}: a `section-usage` line does not parse — "
                                 f"REFUSED, not skipped: {ln.strip()[:90]}")
                 continue
-            n = int(m.group(1))
-            if n in unmeasured:
+            key = (int(m.group(1)), wrap_index(m.group(2)))
+            if key in entries and entries[key] is None:
                 refusals.append(
-                    f"session #{n} testifies UNMEASURED in {unmeasured[n]} and with codes in "
-                    f"{rel} — one of them is false and this reader cannot tell which. REFUSED.")
+                    f"session #{key[0]}{_at(key[1])} testifies UNMEASURED in {seen_src[key]} "
+                    f"and with codes in {rel} — one of them is false and this reader cannot "
+                    f"tell which. REFUSED.")
                 continue
             testimony = {}
             for group, blob in (("GM", m.group(3)), ("LS", m.group(4))):
@@ -481,13 +542,34 @@ def usage_history(repo=REPO):
                     tm = TOKEN_RE.match(tok)
                     if tm:
                         testimony[f"{group}:{tm.group(1)}"] = tm.group(2)
-            if n in rows and rows[n] != testimony:
+            if key in entries and entries[key] != testimony:
                 refusals.append(
-                    f"session #{n} testifies DIFFERENTLY in {seen_src[n]} and {rel} — "
-                    f"one of them is false and this reader cannot tell which. REFUSED.")
+                    f"session #{key[0]}{_at(key[1])} testifies DIFFERENTLY in "
+                    f"{seen_src[key]} and {rel} — one of them is false and this reader "
+                    f"cannot tell which. REFUSED.")
                 continue
-            rows[n] = testimony
-            seen_src[n] = rel
+            if key not in entries:
+                entries[key], seen_src[key] = testimony, rel
+    # ★ CLOSING FIGURE = THE LAST WRAP. Earlier wraps are kept in the record and named in the
+    # notes; they are never averaged into the closing one, and never dropped from the count of
+    # what the session actually did.
+    wraps, closing = {}, {}
+    for (n, w), t in entries.items():
+        wraps.setdefault(n, []).append(w)
+        if n not in closing or w > closing[n][0]:
+            closing[n] = (w, t)
+    rows = {n: t for n, (w, t) in closing.items() if t is not None}
+    unmeasured = {n: seen_src[(n, w)] for n, (w, t) in closing.items() if t is None}
+    multi = {n: sorted(ws) for n, ws in wraps.items() if len(ws) > 1}
+    if multi:
+        notes.append(
+            "MULTI-WRAP: " + " · ".join(
+                f"#{n} wrapped {len(ws)} times (wraps {', '.join(str(w) for w in ws)}) — "
+                f"the series carries wrap {ws[-1]} as its CLOSING testimony"
+                for n, ws in sorted(multi.items()))
+            + ". The earlier wrap(s) are READ and KEPT — a session that wrapped twice is a "
+              "real event honestly recorded, not a contradiction — and are NEVER averaged, "
+              "summed or blended into the closing figure (#254).")
     ordered = sorted(rows.items())
     if ordered:
         span = [n for n, _ in ordered]
@@ -565,6 +647,11 @@ def history_report(repo=REPO, min_streak=DEFER_STREAK):
     lines = [f"USAGE HISTORY — {len(rows)} sessions of testimony ({sessions})",
              "  (U unread · R read · C cited · ? not yet registered — UNKNOWN, never an unread)",
              f"  {'id':<14} {'oldest → newest':<{max(14, len(rows))}} {'U-streak':>8}  note"]
+    # ★ #254 — a session that wrapped twice contributes ONE column, and the reader must say
+    # WHICH wrap that column is, out loud, in the same block as the table. A silent choice
+    # between two honest testimonies is the confident-false-inscription failure by omission.
+    for _n in [n for n in notes if n.startswith("MULTI-WRAP: ")]:
+        lines.insert(1, "  ⚠ " + _n)
     for k, v in st.items():
         note = []
         if v["retired"]:
@@ -865,6 +952,59 @@ def selftest():
         _r3, ref3f, _n3f = usage_history(td3)
         bite("reader: a NEAR-UNMEASURED corpus line still REFUSES (nothing was loosened, only taught)",
              any("does not parse" in e for e in ref3f))
+
+    # --- ★★ #254 — A SESSION THAT WRAPPED TWICE (s253-D2: fix the reader, never the gate) ---
+    # THE THREE BITES ARE A SET AND THE THIRD IS THE POINT. (1) the label is READ — two
+    # disagreeing testimonies one wrap apart are two honest records, kept, with the LAST as the
+    # closing figure. (2) the report SAYS which wrap it used. (3) THE MUTATION: strip the label
+    # and the identical pair must still REFUSE, with the byte-identical message — the clause is
+    # intact, only a vocabulary was added [[mutation-tests-the-clause-not-the-feature]].
+    bite("wrap label: an unlabelled parenthetical is wrap 1 — READ, never guessed",
+         wrap_index("self-report, delegated OPUS wrap sub") == 1)
+    bite("wrap label: `(second wrap; …)` reads as wrap 2, and `wrap sub` alone does NOT",
+         wrap_index("second wrap; self-report, delegated OPUS wrap sub") == 2
+         and wrap_index("3rd wrap, self-report") == 3)
+    with tempfile.TemporaryDirectory() as td5:
+        os.makedirs(os.path.join(td5, "notes"))
+        _log5 = os.path.join(td5, "notes", "_GAUGE-LOG.md")
+        _gm5 = os.path.join(td5, "GOOD-MORNING.md")
+        open(_gm5, "w", encoding="utf-8").write("")
+        _w1 = GOOD_USAGE.replace("#23", "#60")
+        _w2 = _w1.replace("(observed, self-report)", "(second wrap; observed, self-report)") \
+                 .replace("DEAD:R", "DEAD:U")
+        open(_log5, "w", encoding="utf-8").write(_w1 + "\n" + _w2 + "\n")
+        r5, ref5, n5 = usage_history(td5)
+        bite(f"#254: a `(second wrap` testimony that DISAGREES with the first reads CLEAN — "
+             f"it is a second wrap of one session, not a falsification (got: {ref5[:1]})",
+             ref5 == [] and len(r5) == 1 and r5[0][0] == 60)
+        bite("#254: the CLOSING figure is the LAST wrap (wrap 2's `DEAD:U`, not wrap 1's `R`)",
+             len(r5) == 1 and r5[0][1]["LS:DEAD"] == "U")
+        bite("#254: both wraps are NAMED in the notes — the earlier one is kept, never dropped",
+             any(n.startswith("MULTI-WRAP: ") and "#60 wrapped 2 times" in n
+                 and "wrap 2 as its CLOSING testimony" in n for n in n5))
+        _rep5, _, _ = history_report(td5)
+        bite("#254: the REPORT says which wrap the column is — a silent pick between two "
+             "honest testimonies is a false inscription by omission",
+             "MULTI-WRAP" in _rep5 and "CLOSING testimony" in _rep5)
+        # ⛔ THE MUTATION — the SAME disagreeing pair with the label removed. Nothing else changes.
+        open(_log5, "w", encoding="utf-8").write(
+            _w1 + "\n" + _w2.replace("(second wrap; observed, self-report)",
+                                     "(observed, self-report)") + "\n")
+        _r5m, ref5m, _n5m = usage_history(td5)
+        bite("#254 MUTATION: strip the wrap label and the identical pair REFUSES again — the "
+             "gate was NOT narrowed, a vocabulary was added (s253-D2)",
+             any("session #60 testifies DIFFERENTLY" in e and "cannot tell which. REFUSED." in e
+                 for e in ref5m))
+        bite("#254 MUTATION: and the refusal message is UNCHANGED at wrap 1 — no `(wrap N)` "
+             "qualifier leaks into the single-wrap case its consumers already know",
+             all("(wrap " not in e for e in ref5m))
+        # …and a THIRD testimony colliding with wrap 2 must refuse AT wrap 2, named.
+        open(_log5, "w", encoding="utf-8").write(
+            _w1 + "\n" + _w2 + "\n" + _w2.replace("DEAD:U", "DEAD:R") + "\n")
+        _r5c, ref5c, _n5c = usage_history(td5)
+        bite("#254: two testimonies at the SAME wrap index that differ still REFUSE, and the "
+             "refusal NAMES the wrap",
+             any("session #60 (wrap 2) testifies DIFFERENTLY" in e for e in ref5c))
 
     _prose = ("> **★ the usage data:** eleven sessions of `section-usage` testimony were read "
               "as a SERIES — this line is PROSE and must not be mistaken for testimony")

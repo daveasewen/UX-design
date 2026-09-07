@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 135 components · 19 with deprecated bindings · 45 god-nodes (blast≥7).
+**Totals:** 136 components · 19 with deprecated bindings · 45 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -124,6 +124,7 @@
 | Tags input | mol | 12 | border-radius/control, focus/ring, background/default, background/hover… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2, 4.1.3 | — |  |
 | Template confirmation | tem | 11 | background/default, border/subsection, rag/error-ink, rag/success… | 1.3.1, 1.4.1, 1.4.11, 2.3.3, 2.4.3, 2.4.6, 2.4.7, 4.1.3 | — |  |
 | Template dashboard | tem | 27 | background/default, border-radius/surface, border/subtle, series/1… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
+| Template dashboard (bento) | tem | 27 | border/subtle, series/1, border/section, focus/ring… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
 | Template detail | tem | 19 | background/default, border-radius/surface, border/subtle, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
 | Template empty | tem | 10 | background/default, border-radius/control, border-radius/surface, border/subtle… | 1.3.1, 1.4.1, 2.4.3, 2.4.4, 2.4.6, 2.4.7, 4.1.3 | — |  |
 | Template error | tem | 6 | background/default, border-radius/control, border/section, text/default… | 1.3.1, 1.4.1, 2.4.2, 2.4.3, 2.4.6, 2.4.7, 3.2.3 | — |  |

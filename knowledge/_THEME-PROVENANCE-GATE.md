@@ -1,8 +1,8 @@
 # Theme-provenance gate (ADR-0011, R-D19) — ADVISORY
 
-Scanned **164** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011, $NOTE.
+Scanned **165** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011, $NOTE.
 
-**48** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
+**49** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 
 | Area | File | Hex | ×  | Belongs to |
 |---|---|---|---|---|
@@ -21,6 +21,7 @@ Scanned **164** Mono-designated library files (snippets, _proforma, _review). Fo
 | snippets | Section-heading-lockup.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Sidebar-nav.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Stats-band-lockup.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| snippets | Template-dashboard-bento.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | _proforma | Icon-button.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | _proforma | Masthead-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _proforma | Masthead-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |

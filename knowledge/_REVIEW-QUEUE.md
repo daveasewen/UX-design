@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 222 items across 86 components — 186 🔴 review, 36 🟡 inferred. By category: other 92, anti-pattern 65, accessibility 36, token-rebind 29.
+**Totals:** 224 items across 87 components — 188 🔴 review, 36 🟡 inferred. By category: other 94, anti-pattern 65, accessibility 36, token-rebind 29.
 
 Most-flagged components: Confirmation (10), Account card (9), Action bar (8), Tab-bar (7), Badge (6), Eyebrow (6), Meter (6), Avatar (5).
 
@@ -304,12 +304,12 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Timeline**
 - 🔴 `antiPatterns` — REVIEW Never present the 90-day empty-state window as a product rule; it is invented specimen copy standing in for one.
 
-## Other (92)
+## Other (94)
 
 **Account card**
 - 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
 - 🔴 `relationships.commonPatterns` — tappable account row that opens account detail (REVIEW: interactive variant?)
-- 🔴 `behaviour.passive` — REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role.
+- 🔴 `behaviour.$note.passive` — REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role.
 - 🔴 `tokenValidation.$note` — REVIEW: this is a CANDIDATE from the gap report, not yet reconciled against a Figma component. If HSBC already has an account/balance card, bind to its node + tokens; if net-new, it needs design review + a Figma source.
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated.
 
@@ -333,7 +333,6 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **App shell — focused / full-page**
 - 🟡 `$copiedFrom` — Progress-bar.reference.html — `.pb`/`.pb-head`/`.pb-label`/`.pb-value`/`.pb-track`/`.pb-fill` verbatim: the 4px track on progress/incomplete, the fill on progress/complete, role=progressbar with valuenow/min/max/valuetext, and the NAMED …
-- 🟡 `$decisionsForDave` — 5 · THE BRAND MARK. 12 official SVGs sit in knowledge/assets/logos/ and nothing binds them; zero of the pre-existing snippets reference them; row 86's derived verdict is ASSET-ONLY. An auth screen is the single most likely place a real m…
 
 **App shell — multi-column**
 - 🟡 `$finding-descender-catch` — ★ THE GATE CAUGHT A REAL DEFECT IN THIS FILE, AND IT IS WORTH RECORDING BECAUSE IT ANSWERS $decisionsForDave 7 IN App-shell-top-nav. `_validate_descender_clip.py` flagged `.sh-detail-head h1` — the truncating record title in the detail h…
@@ -431,6 +430,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Input fields**
 - 🟡 `dimensions.$description` — Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026…
 
+**KPI tile**
+- 🔴 `not-with.$note` — The DESK example, kept: reviews/ROLES-REVIEW-2026-09-07-v1.html §01. A KPI tile with no series is a Stat card (s247-D3 / DP-08), so a slot that wanted a status-surface reading is not served by this tile.
+
 **Line chart**
 - 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 - 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
@@ -475,6 +477,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokens.tick-marker (DEPRECATED)` — non-interactive (depricate)/border/on-light/neutral-6 (#767676) → REVIEW (rebind form/border/default | scrollbar/foreground — both #767676)
 
 **Sparkline**
+- 🔴 `when` — answers=change-over-time AND series=1 AND axes=absent AND span.cols ≤ 4 (inline, or a trend cell in a table) — yields to chart-line (88, "change-over-time") whenever the panel can carry axes, and is normally a complement of headline-metr…
 - 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Stacked area chart**
@@ -497,6 +500,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Tags input**
 - 🔴 `tokenValidation.$scope` — MONO base only. The other three themes are shown, not measured, in reviews/REVIEW-203-tags-input-four-themes-v1.html.
+
+**Template dashboard (bento)**
+- 🟡 `$tokenGaps` — layout/bento/columns CANNOT be manifest-bound today: gen_snippet_tokens._unitless() does not know the path, so resolve('layout/bento/columns','light') returns the STRING '6px' and grid-template-columns:repeat(6px,...) is invalid CSS. MEA…
 
 **Template — multi-step wizard**
 - 🔴 `$existence-question` — READ THIS BEFORE KEEPING THE FILE. Stepper.reference.html is ALREADY an interactive wizard: step panels, validation-gated Next, back-navigation on completed dots, focus management, sr-live announcer. Row 109 is a missing PAGE, not a miss…

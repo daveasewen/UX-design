@@ -38,6 +38,20 @@ THE CHECKS (each named in the output; by addition only — this script NEVER edi
   8  span-ordered        `span.cols.min` <= `span.cols.max`. The 1..12 BOUNDS are the
                          schema's job (s251-D10, 12-col canon); draft-07 cannot compare
                          two siblings, so the ordering is checked here.
+  9  shape-known         every `shape` is a key of `shapes` in knowledge/shapes.json.
+                         s254-D2 item 1 CLOSED that vocabulary — page B's grammar
+                         `<x-dimension> × <mark>` is the one grammar and the store is its
+                         ONE home. Until #254 this field resolved against NOTHING; a new
+                         value enters the store by Dave's ruling, never by a lane.
+ 10  when-fields-known   every LEFT-HAND field name in a `when` gate is a key of `fields`
+                         in knowledge/when-fields.json. s251-D5 ruled `when` a PREDICATE
+                         and deferred the field list; s254-D2 item 2 is that further
+                         ruling. Parse: split the value on the FIRST em-dash and read only
+                         the GATE half; a clause opening `<field> <operator>` is a field
+                         claim, a clause with no operator is prose inside the gate and is
+                         NOT parsed (the V-B operator-token method, M2). The per-field
+                         COUNTS are printed so a review page quotes script output rather
+                         than a human reading — that is what closes V-B's M2.
 
 DERIVED, PRINTED, NEVER WRITTEN (s251-D6, Dave: "author one direction, the validator
 derives the other"; ISO 25964 preferred-term/RT reciprocity):
@@ -63,14 +77,16 @@ So membership disagreement is REPORTED, never failed — and while ZERO metas ca
 WHAT THIS CANNOT SEE, DECLARED.
   * It proves a word EXISTS in the vocabulary, not that it is the RIGHT word for that
     component. Correctness is Dave's eye, grounded in each meta's own `purpose` prose.
-  * `shape` has NO STORE — its vocabulary is NOT RULED (s251-D3…D8). This script COUNTS
-    and LISTS the distinct values so a review page can show them; it cannot check them.
-    Same for the field list inside a `when` predicate (s251-D5 explicitly defers it).
+  * It checks that a `shape` value EXISTS in the store and that a `when` field name is
+    legal. It does NOT check that the predicate is TRUE of the component, that the
+    operators are used consistently, or that the prose half after the em-dash agrees with
+    the gate half. It never parses the RIGHT-hand side of a clause: those value
+    vocabularies (`present`/`absent`, `categorical`, counts) are NOT ruled.
   * Presence is not this check's business: a meta carrying none of the eight is skipped.
     No gate, no ratchet, no glob width is decided here.
 
 Usage:  python3 knowledge/_validate_roles_resolve.py              # check mode
-        python3 knowledge/_validate_roles_resolve.py --selftest   # 8 bites
+        python3 knowledge/_validate_roles_resolve.py --selftest   # 15 bites
         python3 knowledge/_validate_roles_resolve.py --mutate <name>
 Exit non-zero on any failure. An ABSENT store or an EMPTY corpus glob fails LOUD — an
 absent instrument must not read as a pass (_validate_binds_ratchet.py's rule).
@@ -85,14 +101,38 @@ import copy
 import glob
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROLES = os.path.join(HERE, "roles.json")
 INTENTS = os.path.join(HERE, "chart-intents.json")
+SHAPES = os.path.join(HERE, "shapes.json")
+WHENF = os.path.join(HERE, "when-fields.json")
 COMP = os.path.join(HERE, "components")
 
 TERMS = ("provides", "answers", "shape", "span", "priority", "when", "with", "not-with")
+
+# s254-D2 item 2 — the `when` parse. GATE — PROSE, split on the FIRST em-dash; only the
+# gate half is read. A clause opening `<field> <operator>` is a FIELD CLAIM; a clause with
+# no operator is prose inside the gate and is NOT parsed (V-B's operator-token method, M2).
+WHEN_OPS = ("!=", ">=", "<=", "==", "=", "≥", "≤", "<", ">", "in", "spans")
+_WHEN_CLAUSE = re.compile(r"^([A-Za-z][A-Za-z0-9_.\-]*)\s*(%s)"
+                          % "|".join(re.escape(o) if o.isalpha() is False else r"\b%s\b" % o
+                                     for o in WHEN_OPS))
+
+
+def when_field_claims(value):
+    """Every (field, clause) a `when` gate CLAIMS. Prose clauses carry none, by design."""
+    if not isinstance(value, str):
+        return []
+    gate = value.split("—")[0]
+    out = []
+    for clause in re.split(r"\bAND\b|\bOR\b", gate):
+        m = _WHEN_CLAUSE.match(clause.strip())
+        if m:
+            out.append((m.group(1), clause.strip()))
+    return out
 
 
 # --------------------------------------------------------------------------- stores
@@ -120,6 +160,32 @@ def load_answers(path=INTENTS):
         raise SystemExit("FAIL — %s carries no non-empty `chart-intent` object; the "
                          "answers vocabulary has no home" % path)
     return vocab
+
+
+def load_shapes(path=SHAPES):
+    """The ONE home for the shape vocabulary (s254-D2 item 1). Absent = LOUD failure."""
+    if not os.path.exists(path):
+        raise SystemExit("FAIL — shape store MISSING: %s (an absent instrument is "
+                         "not a pass)" % path)
+    data = json.loads(open(path, encoding="utf-8").read())
+    shapes = data.get("shapes")
+    if not isinstance(shapes, dict) or not shapes:
+        raise SystemExit("FAIL — %s carries no non-empty `shapes` object; the shape "
+                         "vocabulary has no home" % path)
+    return shapes
+
+
+def load_when_fields(path=WHENF):
+    """The ONE home for the `when` field list (s254-D2 item 2). Absent = LOUD failure."""
+    if not os.path.exists(path):
+        raise SystemExit("FAIL — when-field store MISSING: %s (an absent instrument is "
+                         "not a pass)" % path)
+    data = json.loads(open(path, encoding="utf-8").read())
+    fields = data.get("fields")
+    if not isinstance(fields, dict) or not fields:
+        raise SystemExit("FAIL — %s carries no non-empty `fields` object; the `when` "
+                         "predicate's field list has no home" % path)
+    return fields
 
 
 def metas(comp_dir=COMP):
@@ -155,17 +221,23 @@ def _words(val):
     return [], False
 
 
-def check(comp_dir=COMP, roles_path=ROLES, intents_path=INTENTS):
+def check(comp_dir=COMP, roles_path=ROLES, intents_path=INTENTS,
+          shapes_path=SHAPES, when_path=WHENF):
     """Returns (fails, stats). Every offending value is NAMED with its file."""
     roles = load_roles(roles_path)
     vocab = load_answers(intents_path)
+    shapes = load_shapes(shapes_path)
+    whenf = load_when_fields(when_path)
     docs, fails = read_corpus(comp_dir)
     legal_roles = sorted(roles)
     legal_answers = sorted(vocab)
+    legal_shapes = sorted(shapes)
+    legal_when = sorted(whenf)
     known_slugs = set(docs) | set(roles)
 
     stats = {"metas": len(docs), "carrying": 0, "addresses": 0,
              "shape_values": {}, "when_fields": [], "by_role": {},
+             "when_field_counts": {}, "when_prose_clauses": 0,
              "counts": {t: 0 for t in TERMS}}
     prio = {}   # role -> {priority -> [stem, ...]}
 
@@ -278,11 +350,48 @@ def check(comp_dir=COMP, roles_path=ROLES, intents_path=INTENTS):
                                  "compare two siblings, so the ORDER is checked here."
                                  % (name, lo, hi))
 
-        # free axes — collected, never judged (their vocabularies are NOT ruled)
-        if isinstance(d.get("shape"), str):
-            stats["shape_values"].setdefault(d["shape"], []).append(name)
-        if isinstance(d.get("when"), str):
-            stats["when_fields"].append((name, d["when"]))
+        # 9 shape-known (s254-D2 item 1 — the vocabulary is CLOSED as of #254)
+        if "shape" in d:
+            sv = d["shape"]
+            if not isinstance(sv, str):
+                fails.append("%s: FAIL [shape-known] — `shape` must be a single value "
+                             "(string), got %r" % (name, sv))
+            else:
+                stats["addresses"] += 1
+                stats["shape_values"].setdefault(sv, []).append(name)
+                if sv not in shapes:
+                    fails.append(
+                        "%s: FAIL [shape-known] — UNKNOWN SHAPE %r — not a key of `shapes` "
+                        "in knowledge/shapes.json. Legal set: %s. s254-D2 item 1 CLOSED "
+                        "this vocabulary on page B's grammar `<x-dimension> × <mark>`: a "
+                        "new value is PROPOSED on a review page and added by Dave's "
+                        "ruling, NEVER silently by a lane."
+                        % (name, sv, ", ".join(legal_shapes)))
+
+        # 10 when-fields-known (s254-D2 item 2 — the further ruling s251-D5 deferred)
+        if "when" in d:
+            wv = d["when"]
+            if not isinstance(wv, str):
+                fails.append("%s: FAIL [when-fields-known] — `when` must be a predicate "
+                             "string (s251-D5), got %r" % (name, wv))
+            else:
+                stats["when_fields"].append((name, wv))
+                gate = wv.split("—")[0]
+                claims = when_field_claims(wv)
+                stats["when_prose_clauses"] += (
+                    len([c for c in re.split(r"\bAND\b|\bOR\b", gate) if c.strip()])
+                    - len(claims))
+                for fld, clause in claims:
+                    stats["when_field_counts"].setdefault(fld, []).append(name)
+                    if fld not in whenf:
+                        fails.append(
+                            "%s: FAIL [when-fields-known] — UNKNOWN `when` FIELD %r in "
+                            "clause %r — not a key of `fields` in "
+                            "knowledge/when-fields.json. Legal set: %s. s251-D5 ruled "
+                            "`when` a PREDICATE and deferred the field list; s254-D2 item "
+                            "2 closed it. A lane does not add a name to make its own "
+                            "predicate parse." % (name, fld, clause[:80],
+                                                  ", ".join(legal_when)))
 
     # 5 priority-unique (after the sweep — a tie needs both members named)
     for r in sorted(prio):
@@ -410,17 +519,40 @@ def main():
           "addresses resolved: %d" % (stats["metas"], stats["carrying"], stats["addresses"]))
     print("  field population: " + " · ".join("%s %d" % (t, stats["counts"][t]) for t in TERMS))
 
+    shapes = load_shapes()
+    whenf = load_when_fields()
     if stats["shape_values"]:
-        print("  `shape` values in use (vocabulary NOT RULED — listed, not checked): "
-              + " · ".join("%s (%d)" % (k, len(v)) for k, v in sorted(stats["shape_values"].items())))
+        print("  `shape` values in use (%d of the %d in knowledge/shapes.json — CLOSED "
+              "store, s254-D2 item 1): " % (len(stats["shape_values"]), len(shapes))
+              + " · ".join("%s (%d)" % (k, len(v))
+                           for k, v in sorted(stats["shape_values"].items())))
+        unused = sorted(set(shapes) - set(stats["shape_values"]))
+        if unused:
+            print("    store values with NO carrier (reported, not a fail): "
+                  + " · ".join(unused))
     else:
-        print("  `shape`: no values in use (vocabulary NOT RULED — nothing to list)")
+        print("  `shape`: no values in use (the store has %d)" % len(shapes))
+    if stats["when_field_counts"]:
+        print("  `when` FIELD COUNTS (%d of the %d in knowledge/when-fields.json — "
+              "SCRIPT OUTPUT, quote these on a review page rather than counting by eye; "
+              "this is what closes V-B's M2):"
+              % (len(stats["when_field_counts"]), len(whenf)))
+        for f in sorted(stats["when_field_counts"],
+                        key=lambda k: (-len(stats["when_field_counts"][k]), k)):
+            who = stats["when_field_counts"][f]
+            print("    %-14s %2d  %s" % (f, len(who), ", ".join(sorted(who))))
+        nf = sorted(set(whenf) - set(stats["when_field_counts"]))
+        if nf:
+            print("    legal fields with NO clause (reported, not a fail): "
+                  + " · ".join(nf))
+        print("    gate clauses carrying NO operator (prose inside the gate — not parsed, "
+              "not judged, V-B's M2 method): %d" % stats["when_prose_clauses"])
     if stats["when_fields"]:
-        print("  `when` predicates (field list NOT RULED — collected for the review page):")
+        print("  `when` predicates as authored:")
         for n, w in stats["when_fields"]:
             print("    %-28s %s" % (n, w))
     else:
-        print("  `when`: no predicates authored yet (field list NOT RULED, s251-D5)")
+        print("  `when`: no predicates authored yet")
 
     d = derive(docs, roles)
     print("DERIVED (printed, NEVER written into a meta — s251-D6, ISO 25964):")
@@ -439,17 +571,18 @@ def main():
         print("\n".join(fails))
         print("RESULT: FAIL (%d)" % len(fails))
         return 1
-    print("RESULT: PASS — every role/answers/not-with/with address resolves, priorities are "
-          "unique in-role, and intent agrees with answers. This proves no address DANGLES; "
-          "it does not prove any assignment is RIGHT (Dave's eye, against each meta's own "
-          "`purpose` prose), and it checks NOTHING about `shape` or the `when` field list, "
-          "whose vocabularies are not ruled.")
+    print("RESULT: PASS — every role/answers/shape/not-with/with address resolves, every "
+          "`when` field name is legal, priorities are unique in-role, and intent agrees "
+          "with answers. This proves no address DANGLES; it does not prove any assignment "
+          "is RIGHT (Dave's eye, against each meta's own `purpose` prose), and it does not "
+          "prove a `when` predicate is TRUE of its component — only that its field names "
+          "are in the store.")
     return 0
 
 
 # --------------------------------------------------------------------------- selftest
 def selftest():
-    """8 bites. Each must return the named verdict, or the check is decorative."""
+    """15 bites. Each must return the named verdict, or the check is decorative."""
     import shutil
     import tempfile
     ok = True
@@ -462,10 +595,12 @@ def selftest():
             os.makedirs(cdir)
             rp = os.path.join(tmp, "roles.json")
             ip = os.path.join(tmp, "chart-intents.json")
-            stores(rp, ip)
+            sp = os.path.join(tmp, "shapes.json")
+            wp = os.path.join(tmp, "when-fields.json")
+            stores(rp, ip, sp, wp)
             build(cdir, rp, ip)
             try:
-                fails, _ = check(cdir, rp, ip)
+                fails, _ = check(cdir, rp, ip, sp, wp)
                 got = bool(fails)
                 detail = fails[0] if fails else "(green)"
             except SystemExit as e:
@@ -477,13 +612,19 @@ def selftest():
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
-    def stores(rp, ip):
+    def stores(rp, ip, sp, wp):
         json.dump({"roles": {"chart-panel": {"providers": [{"slug": "chart-bar"}]},
                              "headline-metric": {"providers": []}}},
                   open(rp, "w", encoding="utf-8"))
         json.dump({"chart-intent": {w: {"definition": "x"} for w in
                                     ("comparison", "distribution", "change-over-time")}},
                   open(ip, "w", encoding="utf-8"))
+        json.dump({"shapes": {s: {"definition": "x"} for s in
+                              ("series", "categories × series")}},
+                  open(sp, "w", encoding="utf-8"))
+        json.dump({"fields": {f: {"definition": "x"} for f in
+                              ("span.cols", "answers", "shape", "series")}},
+                  open(wp, "w", encoding="utf-8"))
 
     def meta(cdir, name, **kw):
         d = {"name": name, "purpose": "p"}
@@ -494,7 +635,10 @@ def selftest():
     bite("a fully-tagged meta resolves", False,
          lambda c, r, i: meta(c, "chart-bar", provides="chart-panel", answers="comparison",
                               shape="series", span={"cols": {"min": 6, "max": 12}},
-                              priority=60, when="span >= 6"))
+                              priority=60, when="span.cols >= 6"))
+    # ^ the `when` here was `span >= 6` until #254. Check 10 (s254-D2 item 2) refused it:
+    # `span` is not a legal field name, `span.cols` is. The FIXTURE was corrected, not the
+    # check — a stale bite is exactly what a new check is supposed to catch.
     bite("unknown role refuses", True,
          lambda c, r, i: meta(c, "Bad", provides="chart-pane"))
     bite("unknown answer refuses", True,
@@ -515,6 +659,18 @@ def selftest():
          lambda c, r, i: meta(c, "Bad5", span={"cols": {"min": 9, "max": 4}}))
     bite("absent roles store fails LOUD", True,
          lambda c, r, i: (os.remove(r), meta(c, "Orphan", provides="chart-panel")))
+    bite("unknown shape refuses", True,
+         lambda c, r, i: meta(c, "Bad7", shape="bins × frequency"))
+    bite("a shape IN the store resolves", False,
+         lambda c, r, i: meta(c, "Ok7", shape="categories × series"))
+    bite("unknown `when` field refuses", True,
+         lambda c, r, i: meta(c, "Bad8", when="prominence >= 2 — beats nothing"))
+    bite("prose in the gate is NOT a field claim", False,
+         lambda c, r, i: meta(c, "Ok8", when="answers = comparison AND parts sum to a "
+                                             "whole — beats nothing"))
+    bite("a field named only AFTER the em-dash is not parsed", False,
+         lambda c, r, i: meta(c, "Ok9", when="series != none — yields when prominence "
+                                             "= low, which is prose"))
     print("RESULT: %s" % ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 
@@ -537,6 +693,17 @@ MUTATIONS = {
     "notwith-ghost": ("chart-bar gains not-with slug 'ghost-card'", "RED"),
     "derive-demo": ("chart-bar + chart-line tagged legally, with a not-with edge — the arm "
                     "that DRIVES derive(): the reciprocals must actually PRINT", "GREEN"),
+    "unknown-shape": ("chart-bar's shape becomes 'categories-by-series' — the PRE-#254 "
+                      "page-A spelling, now re-cut out of the store (s254-D2 item 1)",
+                      "RED"),
+    "known-shape": ("chart-bar's shape becomes 'parts-of-whole' — a value that IS in the "
+                    "store, wrong for a bar chart but LEGAL: the check reads the store, "
+                    "not the meaning", "GREEN"),
+    "unknown-when-field": ("chart-bar's `when` gate gains 'prominence >= 2' — a field name "
+                           "no store admits (s254-D2 item 2)", "RED"),
+    "when-prose-not-parsed": ("chart-bar's `when` gains a prose clause with NO operator "
+                              "('the reader already knows the categories') — the arm that "
+                              "proves prose is not read as a field claim", "GREEN"),
 }
 
 
@@ -571,29 +738,56 @@ def mutate(name):
         elif name == "notwith-ghost":
             d["not-with"] = [{"slug": "ghost-card"}]
         elif name == "derive-demo":
-            d["provides"], d["priority"] = "chart-panel", 60
-            d["shape"] = "series"
+            # The fixture's values were `shape: series` / priorities 60 and 50 until #254,
+            # written when ZERO metas carried a term. Check 9 (shape-known) refused the
+            # invented shape and priority 60 now collides with a live provider — so the
+            # FIXTURE moved to the store's own values and the metas' own priorities. The
+            # arm still drives derive(); nothing about the check was relaxed.
+            d["provides"], d["priority"] = "chart-panel", 92
+            d["shape"] = "categories × series"
             d["span"] = {"cols": {"min": 6, "max": 12}}
-            d["not-with"] = [{"slug": "chart-line", "when": "span < 6"}]
+            d["not-with"] = [{"slug": "chart-line", "when": "span.cols < 6"}]
             e = copy.deepcopy(docs["chart-line"])
-            e["provides"], e["priority"] = "chart-panel", 50
-            e["shape"] = "series"
+            e["provides"], e["priority"] = "chart-panel", 88
+            e["shape"] = "categories × series"
             e["span"] = {"cols": {"min": 6, "max": 12}}
             e["with"] = [{"slug": "chart-bar", "rel": "recommends"}]
             json.dump(e, open(line, "w", encoding="utf-8"))
+        elif name == "unknown-shape":
+            d["shape"] = "categories-by-series"
+        elif name == "known-shape":
+            d["shape"] = "parts-of-whole"
+        elif name == "unknown-when-field":
+            d["when"] = ("answers = comparison AND prominence >= 2 — beats chart-line "
+                         "when the x-dimension is categorical")
+        elif name == "when-prose-not-parsed":
+            d["when"] = ("answers = comparison AND the reader already knows the "
+                         "categories — beats chart-line when the x-dimension is "
+                         "categorical")
         json.dump(d, open(bar, "w", encoding="utf-8"))
-        fails, stats = check(cdir, ROLES, INTENTS)
+        fails, stats = check(cdir, ROLES, INTENTS, SHAPES, WHENF)
         mdocs, _ = read_corpus(cdir)
         derived = derive(mdocs, load_roles())
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
-    got = "RED" if fails else "GREEN"
+    # The verdict is BASELINE-RELATIVE (#254): does THIS mutation make the check say
+    # something it was not already saying? It was `bool(fails)` until #254, which silently
+    # assumed the live corpus is green. It is not: runway-bar carries a RED-BY-DESIGN
+    # intent/answers disagreement (s254-D2 item 4 is DATED, not built), and that one
+    # standing fail made all four GREEN arms unprovable — a harness that cannot be driven
+    # is [[instrument-without-a-consumer]]. The CHECK is untouched and no fail is hidden:
+    # the baseline is printed, and every arm still proves the check READS its field.
+    new_fails = [f for f in fails if f not in base_fails]
+    got = "RED" if new_fails else "GREEN"
     print("MUTATION %s — %s" % (name, what))
     print("  baseline : live corpus %s (%d fail(s)) — probed BEFORE the claim (#244)"
           % ("RED" if base_fails else "GREEN", len(base_fails)))
-    print("  mutated  : %d fail(s) · metas carrying a term now %d (baseline 0 would mean "
-          "the check reads NOTHING)" % (len(fails), stats["carrying"]))
-    for x in fails[:4]:
+    for x in base_fails[:2]:
+        print("  = " + x[:200])
+    print("  mutated  : %d fail(s), %d NEW · metas carrying a term now %d (baseline 0 "
+          "would mean the check reads NOTHING)"
+          % (len(fails), len(new_fails), stats["carrying"]))
+    for x in new_fails[:4]:
         print("  X " + x[:200])
     nd = sum(len(v) for v in derived.values())
     print("  derived  : %d reciprocal/preferred line(s) — printed, never written" % nd)

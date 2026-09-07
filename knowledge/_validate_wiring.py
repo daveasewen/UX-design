@@ -85,6 +85,18 @@ EXEMPT: dict[str, tuple[str, str]] = {
     # EMPTY IS A LEGITIMATE STATE: selftest bites 3+4 use a SYNTHETIC exemption so they keep
     # biting with no real entries here — a bite that needs a real exemption to exist is a bite
     # that can silently stop existing.
+    "_validate_fit_physics.py": (
+        "FIT physics gate (s248-D2/D3, s249-D4; #249 FIT lane): drives the composed page in "
+        "headless chromium via playwright at 1440 and 1100 — the SAME staged-browser dependency "
+        "as _validate_descender_computed.py, and `import playwright` raises ModuleNotFoundError "
+        "in _build_all.py's environment. Wiring it would make the build red on an ENVIRONMENT "
+        "fact dressed as an artefact verdict (#173/#183 class). It runs on demand wherever "
+        "chromium is staged. Exempted #254 (Claude call, s251-D15 unvetoed) so the first "
+        "end-to-end runner pass since #253 could reach step 144; lane C's #253 question 5 "
+        "('orphaned') stands answered by this row. ⚠ Re-visit if the render job ever gains a "
+        "knowledge-gate step.",
+        "2026-09-07",
+    ),
     "_validate_descender_computed.py": (
         "G2 render leg (#215, row W-101): drives real pages in headless chromium and reads "
         "getComputedStyle — needs a STAGED BROWSER, which _build_all.py's environment does not "

@@ -83,18 +83,18 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **546 items · 459 live · 205 Dave's · 254 mine · 532 carry a stated close condition · **14 UNCONDITIONED**.**
+> **546 items · 458 live · 205 Dave's · 253 mine · 532 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (205) — 205 with a ratified `closes_when`, 0 with NONE · MINE (254). IDS, BODIES AND CLOSE CONDITIONS ARE IN THE STORE, NEVER HERE (s227-D2 shape, ids cut `s241-D2`): the counts above are the inventory; the rows are one command away, named on the next line.**
+> **DAVE'S (205) — 205 with a ratified `closes_when`, 0 with NONE · MINE (253). IDS, BODIES AND CLOSE CONDITIONS ARE IN THE STORE, NEVER HERE (s227-D2 shape, ids cut `s241-D2`): the counts above are the inventory; the rows are one command away, named on the next line.**
 >
-> ⚠ store gate: **FAIL** — 1 failure(s): W-463 home UNRESOLVABLE — '_HANDOFF-252-lanes-cold.md' does not exist under /sessions/peaceful-dreamy-brown/mnt/UX-design. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
+> ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 
 
 ---
 
-*(Chain ends. **9,162 tape (cl100k ESTIMATE) — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **9,116 tape (cl100k ESTIMATE) — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 34,276 tape (cl100k ESTIMATE) and stays whole for retrieval; you have paid for
 27% of it. Under 40% is this generator's own floor — above it, the wrapper is

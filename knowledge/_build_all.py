@@ -390,7 +390,7 @@ STEPS = [
     # rather than printing a bare pass — the absence is reported, never read as agreement.
     ("roles/answers resolve gate — meta provides/answers/not-with address → roles.json + chart-intents.json (#253)",
      "_validate_roles_resolve.py"),
-    ("roles/answers resolve selftest — 10 bites incl. in-role priority ties + absent store (#253)",
+    ("roles/answers resolve selftest — 15 bites incl. in-role priority ties, absent store, shape-known and when-fields-known (#253/#254)",
      "_validate_roles_resolve.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
@@ -957,8 +957,8 @@ ROUTE_ROWS = [
     # #253 lane C — the row lands WITH the step, in the same edit (a STEPS entry with no
     # route aborts every full build; that (a)-class omission is recorded three times above).
     ("roles/answers resolve gate — meta provides/answers/not-with address → roles.json + chart-intents.json (#253)", GATE,
-     "\n❌ roles/answers resolve gate failed (exit {code}) — a meta's `provides` is not one of the twelve roles in knowledge/roles.json, an `answers` word is not a key of chart-intents.json, a `not-with`/`with` slug resolves to neither a meta nor a role, two providers of one role claim the same `priority`, `intent` and `answers` disagree, or a `span.cols` is inverted. The role and answers vocabularies are ADOPTED (s252-D1 / s251-D11): a new word enters ONLY by Dave's ruling, never silently. Run: python3 knowledge/_validate_roles_resolve.py"),
-    ("roles/answers resolve selftest — 10 bites incl. in-role priority ties + absent store (#253)", GATE,
+     "\n❌ roles/answers resolve gate failed (exit {code}) — a meta's `provides` is not one of the twelve roles in knowledge/roles.json, an `answers` word is not a key of chart-intents.json, a `not-with`/`with` slug resolves to neither a meta nor a role, two providers of one role claim the same `priority`, `intent` and `answers` disagree, a `span.cols` is inverted, a `shape` is not a key of knowledge/shapes.json, or a `when` gate names a field that is not a key of knowledge/when-fields.json (s254-D2 items 1 and 2 closed those two vocabularies). The role and answers vocabularies are ADOPTED (s252-D1 / s251-D11): a new word enters ONLY by Dave's ruling, never silently. Run: python3 knowledge/_validate_roles_resolve.py"),
+    ("roles/answers resolve selftest — 15 bites incl. in-role priority ties, absent store, shape-known and when-fields-known (#253/#254)", GATE,
      "\n❌ roles/answers resolve selftest failed (exit {code}) — python3 knowledge/_validate_roles_resolve.py --selftest"),
     # #196: the stale-queue pair. The row landed WITH the step, in the same edit — a STEPS
     # entry with no route aborts every full build above step 1 (the (a)-class omission

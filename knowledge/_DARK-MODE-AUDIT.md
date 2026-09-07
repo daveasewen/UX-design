@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 122/129 components clean · 7 leak a primitive. Store: 198 semantic colour tokens (light+dark), 68 flat (dark==light), 229 primitives.
+**Coverage:** 123/130 components clean · 7 leak a primitive. Store: 198 semantic colour tokens (light+dark), 68 flat (dark==light), 229 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -129,6 +129,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Tags input | ✅ clean | — | `form/background/default`, `form/border/default`, `rag/error` |
 | Template confirmation | ✅ clean | — | `rag/success`, `rag/warning` |
 | Template dashboard | ✅ clean | — | `data/series/1`, `form/border/default`, `rag/error`, `rag/information`, `rag/success`… |
+| Template dashboard (bento) | ✅ clean | — | `data/series/1`, `data/series/3`, `form/border/default`, `primary/border/default`, `rag/error`… |
 | Template detail | ✅ clean | — | `rag/information`, `rag/success`, `rag/warning` |
 | Template empty | ✅ clean | — | `form/border/default` |
 | Template error | ✅ clean | — | — |

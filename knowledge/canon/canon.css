@@ -17293,6 +17293,43 @@
          (276px of empty ground right of a 580px canvas at 1440, W2-D Finding 5). `min-width:0`
          stays — it is what lets the figure take the grid cell's width instead of its content's. */
 :where(.cn-template-dashboard-bento) .tpl-group > .c-bento__grid > .stat-card > .dv{min-width:0;}
+/* 10 · DP-08, s251-D1/D2 (#251). THE STRIP IS THE ORIENTATION LAYER; THE CARD IS THE DETAIL.
+         Page-level rules only — no new component is minted (the strip is Status-indicator form B
+         in the header's existing `.l-row` status row, and the card head is the Summary idiom the
+         rail already carries). 10a is the ONLY band rule the strip costs: the two status tiles
+         leave the row (s247-D3) so the lead group is FOUR at every band — measured 4/4/4 at
+         1440 / 1100 / 820, light and dark, maxWdiff 0, no void (#251 probe P1). It out-specifies
+         canon's band clamps deliberately: four tiles never have to divide three because the band
+         never reaches the row, which is what keeps s249-D5 (no ragged layouts) true here. */
+:where(.cn-template-dashboard-bento) .tpl-page .c-bento.tpl-group-lead > .c-bento__grid{--bento-cols-now:4;}
+/* 10a */
+:where(.cn-template-dashboard-bento) .tpl-strip .l-row{align-items:center; flex-wrap:wrap;}
+/* 10b */
+/* 10c · the chip is a LINK, and looks exactly like the chip it already was: no underline, no
+           colour change — the affordance is the pointer and the focus ring, because a RAG chip
+           that also carried link ink would read as a second status. */
+:where(.cn-template-dashboard-bento) .tpl-strip-link{text-decoration:none; color:var(--text);}
+:where(.cn-template-dashboard-bento) .tpl-strip-link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* 10d · the plain legal item carries NO chip: Undrawn facilities is a state with no RAG
+           meaning, and painting one would say "act on this" (DP-10 grammar, s251-D1). The 1px
+           divider is the separator instead — a line, not a colour. */
+:where(.cn-template-dashboard-bento) .tpl-strip-plain{opacity:var(--alpha-60); padding-left:16px; border-left:1px solid var(--divider);}
+/* 10e · the PROMOTED head row inside the Needs-attention card. Awaiting approval ONLY. */
+:where(.cn-template-dashboard-bento) .tpl-na-head{margin-bottom:8px; border-bottom:1px solid var(--divider);}
+:where(.cn-template-dashboard-bento) .tpl-na-head .summary__row{align-items:baseline;}
+:where(.cn-template-dashboard-bento) .tpl-na-head .summary__row:last-child{border-bottom:0;}
+:where(.cn-template-dashboard-bento) .tpl-na-head .summary__k{display:flex; flex-direction:column; gap:6px;}
+:where(.cn-template-dashboard-bento) .tpl-na-head .summary__k .t-cm-legal{display:block; opacity:1;}
+/* 10f · ARRIVAL. The `dp08-anchor` behaviour adds this class for exactly one animation and
+           removes it on `animationend`; the keyframes live HERE because the page owns paint and
+           the behaviour owns the event (DEF-003: no JS scale-physics, and none is needed —
+           this is a colour wash). The card's focus ring is the non-visual channel and arrives
+           whatever this rule does, so nothing depends on the highlight alone (1.4.1). Under
+           `prefers-reduced-motion: reduce` the behaviour never adds the class at all, and the
+           global reduce block below clamps any animation that slips through. */
+:where(.cn-template-dashboard-bento) .stat-card.is-dp08-arrived{animation:cn-template-dashboard-bento-tplArrive 1200ms ease-out 1;}
+@keyframes cn-template-dashboard-bento-tplArrive{ from{ box-shadow:inset 0 0 0 2px var(--focus); } to{ box-shadow:inset 0 0 0 2px transparent; } }
+:where(.cn-template-dashboard-bento) .stat-card[data-dp08-target]:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works.
      ⚠ 36px, NOT the 32px Template-dashboard.reference.html draws: 32 is off the 28/36/44/48
      component ramp and the #231 brief forbids importing another off-ramp height literal. ---- */

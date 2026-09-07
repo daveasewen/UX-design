@@ -114,6 +114,8 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Template-confirmation.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Template-create-edit.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Template-create-edit.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
+| Template-dashboard-bento.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
+| Template-dashboard-bento.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Template-dashboard.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Template-dashboard.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Template-detail.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |

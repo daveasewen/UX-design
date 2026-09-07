@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 62/64 applies_to components have a bound audited token or a gated snippet contrastPair |
+| 1.4.11 | ✅ pass | component | 63/65 applies_to components have a bound audited token or a gated snippet contrastPair |
 | 1.4.3 | ✅ pass | component | 41/42 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,7 +17,7 @@
 
 ### 1.4.11
 
-62/64 applies_to components have a bound audited token or a gated snippet contrastPair. 62 pass, 0 fail, 2 not_covered.
+63/65 applies_to components have a bound audited token or a gated snippet contrastPair. 63 pass, 0 fail, 2 not_covered.
 
 **Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Alert, Back to top
 

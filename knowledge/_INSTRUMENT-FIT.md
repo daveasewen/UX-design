@@ -16,10 +16,10 @@
 | verdict | count | meaning |
 |---|---:|---|
 | **UNDER-INSTRUMENTED** | 12 | a gate names it but sits BELOW the rung its property needs — passes without observing |
-| **UNGATED** | 165 | no gate names it; the rung shown is the COST of gating it |
+| **UNGATED** | 164 | no gate names it; the rung shown is the COST of gating it |
 | **UNTAGGED** | 282 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
 | **EYE-ONLY** | 5 | needs judgment; correctly ungateable |
-| **FIT** | 6 | the gate's instrument reaches the property |
+| **FIT** | 7 | the gate's instrument reaches the property |
 | **TOTAL** | 470 | |
 
 **12 rules carry a gate that cannot observe them; 2 of those are BLOCKING.** A BLOCKING rule with an under-powered gate is the `aid-009` shape: green, and blind.
@@ -64,6 +64,7 @@
 | `knowledge/_validate_binds_ratchet.py` | I0-STATIC |
 | `knowledge/_validate_binds_resolve.py` | I0-STATIC |
 | `knowledge/_validate_compose.py` | I0-STATIC |
+| `knowledge/_validate_composition.py` | I0-STATIC |
 | `knowledge/_validate_coverage.py` | I0-STATIC |
 | `knowledge/_validate_css_governed.py` | I0-STATIC |
 | `knowledge/_validate_dark_surfaces.py` | I0-STATIC |
@@ -73,8 +74,10 @@
 | `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
 | `knowledge/_validate_evidence.py` | I0-STATIC |
+| `knowledge/_validate_fit_physics.py` | I2-RENDER |
 | `knowledge/_validate_grid.py` | I0-STATIC |
 | `knowledge/_validate_help_gate.py` | I0-STATIC |
+| `knowledge/_validate_hidden_display.py` | I0-STATIC |
 | `knowledge/_validate_hit_area.py` | I2-RENDER |
 | `knowledge/_validate_icons.py` | I0-STATIC |
 | `knowledge/_validate_intent_resolve.py` | I0-STATIC |
@@ -84,10 +87,13 @@
 | `knowledge/_validate_package_delta.py` | I0-STATIC |
 | `knowledge/_validate_palette_tier.py` | I0-STATIC |
 | `knowledge/_validate_partials.py` | I0-STATIC |
+| `knowledge/_validate_polarities.py` | I0-STATIC |
 | `knowledge/_validate_proforma.py` | I0-STATIC |
 | `knowledge/_validate_property_resolves.py` | I0-STATIC |
 | `knowledge/_validate_queue_fresh.py` | I0-STATIC |
 | `knowledge/_validate_radius.py` | I0-STATIC |
+| `knowledge/_validate_receipt.py` | I0-STATIC |
+| `knowledge/_validate_roles_resolve.py` | I0-STATIC |
 | `knowledge/_validate_screen.py` | I2-RENDER |
 | `knowledge/_validate_snippets.py` | I0-STATIC |
 | `knowledge/_validate_standing_instructions.py` | I0-STATIC |
@@ -98,7 +104,7 @@
 | `knowledge/_validate_token_tiers.py` | I0-STATIC |
 | `knowledge/_validate_type_blast_radius.py` | I0-STATIC |
 | `knowledge/_validate_type_composites.py` | I0-STATIC |
-| `knowledge/_validate_wiring.py` | I0-STATIC |
+| `knowledge/_validate_wiring.py` | I2-RENDER |
 
 *Detected from `sync_playwright` / `.chromium.launch` / `page.evaluate` and DOM-parser imports — **never from bare words**. A word-based detector reads `_validate_proforma.py` as RENDER because the file says *monochrome* and *demo-chrome*, overstating gate strength (MEASURED 2026-07-27; bite 2 pins it).*
 
@@ -108,7 +114,7 @@
 |---|---:|---|
 | I0-STATIC | 31 | cheapest wins — a regex reaches these |
 | I1-DOM | 17 | needs a parsed tree |
-| I2-RENDER | 78 | needs the render harness (`_RUNBOOK-render-verify.md`) |
+| I2-RENDER | 77 | needs the render harness (`_RUNBOOK-render-verify.md`) |
 
 ## Untagged — what the pattern table cannot classify
 

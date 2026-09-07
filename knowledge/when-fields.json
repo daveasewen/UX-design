@@ -1,0 +1,40 @@
+{
+  "$description": "THE `when` PREDICATE'S FIELD LIST — the legal LEFT-HAND names of the clauses in a meta's `when` gate. ONE home (ADR-0017 write-once). s251-D5 ruled the `when` value a PREDICATE over shape, prominence and span rather than prose, and said in as many words that the field list was \"a further ruling, not made here\"; s254-D2 item 2 is that further ruling: the list is closed, the resolver parses the predicate half and refuses an unknown name, and the per-field counts a review page quotes become SCRIPT OUTPUT rather than a human reading (this closes V-B's M2, where page B said 12 fields and the script found 11).",
+  "$grammar": "A `when` value is GATE — PROSE, split on the FIRST em-dash (U+2014). Only the GATE half is parsed. The gate is clauses joined by `AND` / `OR`; a clause that opens with `<field> <operator>` is a FIELD CLAIM and its field name must be a key of `fields` below. A clause with NO operator is PROSE inside the gate (e.g. \"parts sum to a whole\", \"both axes carry quantitative measures\") — it carries no field name, is not parsed, and is not judged: that is the V-B operator-token method (notes/_subreports/2026-09-07-253-V-B.md, M2), kept verbatim so the count is reproducible. The prose half after the em-dash is the R2 beats/yields sentence (s253-D1) and is never parsed.",
+  "$operators": ["=", "==", "!=", ">=", "<=", "≥", "≤", "<", ">", "in", "spans"],
+  "$provenance": {
+    "ruled": "s254-D2 item 2 (Dave, #254, 2026-09-07) — \"`when` gains a closed list of legal left-hand field names, parsed by the resolver, so the page counts become script output (closes V-B's M2)\"",
+    "further-ruling-to": "s251-D5 (Dave, #251, DESK RSQ 3: \"q3. Predicate\") — which deferred exactly this list",
+    "method": "notes/_subreports/2026-09-07-253-V-B.md M2 — the operator-token sweep over the gate half; every name below was READ OFF the 24 metas authored at #253 (plus `verdict`, authored onto runway-bar at #254), not invented",
+    "resolver": "knowledge/_validate_roles_resolve.py check 10 `when-fields-known` — an unknown field name refuses, loud and named; the per-field counts are PRINTED so a page can quote them"
+  },
+  "$extension": "EXPECTED, by ruling only. A new predicate that needs a field not listed here PROPOSES it on a review page; Dave rules it in. A lane does not add one to make its own `when` parse.",
+  "fields": {
+    "answers": { "definition": "the reader's question this provider is being asked for — an address into chart-intents.json", "kind": "address" },
+    "shape": { "definition": "the data shape being offered — an address into shapes.json", "kind": "address" },
+    "span.cols": { "definition": "the width band available, on the 12-column canon (s251-D10)", "kind": "number" },
+    "series": { "definition": "how many series the data carries (`none` = zero)", "kind": "count" },
+    "categories": { "definition": "how many categories the categorical dimension carries", "kind": "count" },
+    "variables": { "definition": "how many variables are being described", "kind": "count" },
+    "bins": { "definition": "the binning of a continuous variable (`contiguous` = no inter-bar gap)", "kind": "enum" },
+    "parts": { "definition": "how many parts a composition splits into", "kind": "count" },
+    "rows": { "definition": "how many rows the reading carries", "kind": "count" },
+    "total": { "definition": "whether a total figure is printed", "kind": "enum" },
+    "axes": { "definition": "whether axes are drawn (`present` / `absent`)", "kind": "enum" },
+    "axis.x": { "definition": "what the x-dimension is (`categorical`, `time`, …)", "kind": "enum" },
+    "units": { "definition": "whether the measures share a unit (`different` / `same`)", "kind": "enum" },
+    "delta": { "definition": "whether a movement figure exists (`none` = it does not)", "kind": "enum" },
+    "verdict": { "definition": "whether a stated verdict-and-date is part of the reading (`none` = it is not)", "kind": "enum" },
+    "depth": { "definition": "how deep in the hierarchy the page sits", "kind": "count" },
+    "destinations": { "definition": "how many navigation destinations exist", "kind": "count" },
+    "nav.levels": { "definition": "how many levels of navigation exist", "kind": "count" },
+    "scope": { "definition": "the reach of a navigation (`global` / `local` / `in-page`)", "kind": "enum" },
+    "level": { "definition": "the document level a title band sits at (`page` / `screen` / `section`)", "kind": "enum" },
+    "lockup": { "definition": "whether a lock-up (actions / tabs riding the band) is wanted", "kind": "enum" },
+    "platform": { "definition": "the surface being built (`app` / `marketing`)", "kind": "enum" },
+    "emphasis": { "definition": "the action's emphasis tier (primary / secondary / tertiary / quaternary)", "kind": "enum" },
+    "label": { "definition": "what the trigger is labelled with (`text` / `glyph`)", "kind": "enum" },
+    "content": { "definition": "what an arrangement is being asked to hold", "kind": "enum" },
+    "surface": { "definition": "whether the arrangement paints a surface (`none` = it must not)", "kind": "enum" }
+  }
+}

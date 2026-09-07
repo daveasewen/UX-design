@@ -1,0 +1,109 @@
+{
+  "$description": "THE SHAPE tier — the DATA-SHAPE axis of FFF (the second face, beside `answers`' function and `span`'s form). ONE home for the shape vocabulary (ADR-0017 write-once). Metas carry `shape: \"<value>\"` as an ADDRESS into this file — never an inline definition, never a value invented at the point of use. CLOSED by s254-D2 item 1 (Dave, #254, \"just go for it\"): before that ruling `shape` was a free string that resolved against nothing, which the schema itself declared as an UNPROVEN; it is now a store with a resolver, on the chart-intents.json / roles.json pattern. Adding a value is Dave's ruling, never a lane's drift. Equality of shape strings is what the resolver's `instead-of` grade compares (knowledge/_validate_roles_resolve.py `derive()`), so two components with the SAME value are declaring themselves candidates to swap — a collision here is a claim, not an accident.",
+  "$grammar": "`<x-dimension> × <mark>` — page B's grammar (s254-D1 call B4), now the ONLY grammar. LEFT of the ×: what varies along the primary dimension (`categories`, `time-series`, `bins`, `periods`, `points`, `rows`, `one-measure`, `one-state`, `ancestor-path`, `destination-set`, or `no-data` for a component that takes no data at all). RIGHT of the ×: what is drawn per unit of it (`frequency`, `ohlc`, `series`, `links`, `value-and-delta`, `dot-and-label`, …). The multiplication sign is U+00D7 with a space either side. ONE value predates the grammar and is kept verbatim rather than re-cut, because s254-D1 kept page B's thirteen chart values AS AUTHORED: `parts-of-whole`, shared deliberately by chart-donut and chart-pie (the collision IS the claim — the two are substitutes, separated only by whether a centre total is printed).",
+  "$provenance": {
+    "ruled": "s254-D2 item 1 (Dave, #254, 2026-09-07) — \"`shape` becomes a CLOSED store with page B's grammar `<x-dimension> × <mark>` as the one grammar; page A's eleven values are re-cut to match and the resolver gains a shape-known check\"",
+    "grammar": "s254-D1 call B4 (reviews/META-TAGS-B-2026-09-07-v1.html §16), kept as authored",
+    "re-cut": "the eleven page-A values (reviews/META-TAGS-A-2026-09-07-v1.html) were re-cut into the grammar at #254 build lane S; each meta's MEANING is preserved and the `when` predicate that quoted the old value was updated in the same edit",
+    "resolver": "knowledge/_validate_roles_resolve.py check 9 `shape-known` — an unknown value refuses, loud and named"
+  },
+  "$extension": "EXPECTED, by ruling only. A new component whose data shape is genuinely new PROPOSES a value on a review page; Dave rules it in. A lane that needs a value not listed here does NOT add one — it reports the gap.",
+  "shapes": {
+    "no-data × control": {
+      "definition": "Takes no data at all: a label and an action. The trigger family.",
+      "used-by": ["button"],
+      "$note": "s254-D1 call A8 kept button on a \"no data\" shape; the re-cut preserves that reading as the x-dimension `no-data` and names the mark."
+    },
+    "no-data × arbitrary-blocks": {
+      "definition": "Takes no data of its own; arranges whatever blocks it is given, painting nothing.",
+      "used-by": ["layout-utilities"],
+      "$note": "s254-D1 call A8: layout-utilities carries the arbitrary-blocks reading. Re-cut keeps it and states the no-data left half explicitly."
+    },
+    "no-data × page-regions": {
+      "definition": "Takes no data of its own; holds the named regions of a page (masthead, nav, main, aside, footer).",
+      "used-by": ["app-shell-top-nav"]
+    },
+    "no-data × title-and-optional-action": {
+      "definition": "Takes no data of its own; a title band, optionally with actions or tabs riding it.",
+      "used-by": ["headers"]
+    },
+    "one-state × dot-and-label": {
+      "definition": "One state value, drawn as a mark plus its word.",
+      "used-by": ["status-indicator"]
+    },
+    "one-measure × value-and-delta": {
+      "definition": "One measure and its movement — no series behind it.",
+      "used-by": ["stat-card"],
+      "$note": "Deliberately shares its x-dimension with kpi-tile and runway-bar and is separated by the MARK: the three are substitutes in headline-metric, gated by `when` (series present / commitments to net off)."
+    },
+    "one-measure × value-delta-and-series": {
+      "definition": "One measure, its movement, and the shape of its change drawn inline.",
+      "used-by": ["kpi-tile"]
+    },
+    "one-measure × committed-vs-balance-split": {
+      "definition": "One measure split against what is already committed against it, with the remainder (the buffer) as the reading.",
+      "used-by": ["runway-bar"]
+    },
+    "rows × name-value-pairs": {
+      "definition": "N rows, each a name and its value.",
+      "used-by": ["summary"]
+    },
+    "rows × measure-target-bands": {
+      "definition": "N rows, each one measure against a target plus qualitative performance bands.",
+      "used-by": ["Chart-bullet"]
+    },
+    "ancestor-path × links": {
+      "definition": "An ordered path from root to here, each step a link.",
+      "used-by": ["breadcrumbs"]
+    },
+    "destination-set × links": {
+      "definition": "A flat or shallow set of destinations, each a link.",
+      "used-by": ["navigations"]
+    },
+    "categories × series": {
+      "definition": "Categorical x-dimension, one or more series drawn per category (grouped or stacked).",
+      "used-by": ["chart-bar"]
+    },
+    "categories × two-series-mirrored": {
+      "definition": "Categorical x-dimension, exactly two series mirrored about a shared centre or baseline.",
+      "used-by": ["Chart-butterfly-h", "Chart-butterfly-v"]
+    },
+    "categories × five-number-summary": {
+      "definition": "Categorical x-dimension, each category carrying median · IQR · whiskers · outliers.",
+      "used-by": ["Chart-boxplot"]
+    },
+    "bins × frequency": {
+      "definition": "Contiguous bins of ONE variable, each carrying a count.",
+      "used-by": ["Chart-histogram"]
+    },
+    "periods × ohlc": {
+      "definition": "Ordered periods, each carrying open · high · low · close.",
+      "used-by": ["Chart-candlestick"]
+    },
+    "points × two-measures": {
+      "definition": "Unordered observations, each carrying two quantitative measures.",
+      "used-by": ["Chart-scatter"]
+    },
+    "shared-x × two-measures-different-units": {
+      "definition": "One shared x-dimension, two measures in DIFFERENT units read against it.",
+      "used-by": ["chart-combo"]
+    },
+    "time-series × 1–5-series": {
+      "definition": "One continuous time axis, one to five series on it, axes present.",
+      "used-by": ["chart-line"]
+    },
+    "time-series × single-series-no-axes": {
+      "definition": "One continuous time axis, one series, NO axes — an inline trend.",
+      "used-by": ["chart-sparkline"]
+    },
+    "time-series × parts-of-whole": {
+      "definition": "One continuous time axis, cumulative bands sharing one total at every point.",
+      "used-by": ["chart-stacked-area"]
+    },
+    "parts-of-whole": {
+      "definition": "Parts that sum to a whole, no x-dimension — a snapshot split.",
+      "used-by": ["chart-donut", "chart-pie"],
+      "$note": "PRE-GRAMMAR value, kept VERBATIM under s254-D1 (page B's thirteen chart values stand as authored). The donut/pie collision is DELIBERATE: they are substitutes separated only by whether a centre total is printed (chart-donut 80 beats chart-pie 48 whenever it is)."
+    }
+  }
+}
