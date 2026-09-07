@@ -380,6 +380,18 @@ STEPS = [
      "_validate_intent_resolve.py"),
     ("chart-intent resolve selftest — 4 bites incl. list case + absent store (s195-D1)",
      "_validate_intent_resolve.py", ["--selftest"]),
+    # #253 lane C — the sibling address layer for the 25-meta interchangeability pass
+    # (s251-D3…D11, s252-D1). `provides` -> roles.json, `answers` -> chart-intents.json,
+    # `not-with`/`with` slugs -> a meta stem or a role. WIRED IN THE SAME COMMIT AS THE
+    # SCHEMA FIELDS, on purpose: the premise probe found NO consumer of these terms
+    # anywhere, and a field whose first resolver arrives a session later is the
+    # [[instrument-without-a-consumer]] class the four comments above record three times.
+    # It is GREEN-on-zero today (no meta carries a term yet) and says so in its own output
+    # rather than printing a bare pass — the absence is reported, never read as agreement.
+    ("roles/answers resolve gate — meta provides/answers/not-with address → roles.json + chart-intents.json (#253)",
+     "_validate_roles_resolve.py"),
+    ("roles/answers resolve selftest — 10 bites incl. in-role priority ties + absent store (#253)",
+     "_validate_roles_resolve.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
@@ -942,6 +954,12 @@ ROUTE_ROWS = [
      "\n❌ chart-intent resolve gate failed (exit {code}) — a meta's `intent` is not a key of chart-intents.json, or the store is absent (s195-D1; the vocabulary is ADOPTED, a new word enters only by Dave's ruling). Run: python3 knowledge/_validate_intent_resolve.py"),
     ("chart-intent resolve selftest — 4 bites incl. list case + absent store (s195-D1)", GATE,
      "\n❌ chart-intent resolve selftest failed (exit {code}) — python3 knowledge/_validate_intent_resolve.py --selftest"),
+    # #253 lane C — the row lands WITH the step, in the same edit (a STEPS entry with no
+    # route aborts every full build; that (a)-class omission is recorded three times above).
+    ("roles/answers resolve gate — meta provides/answers/not-with address → roles.json + chart-intents.json (#253)", GATE,
+     "\n❌ roles/answers resolve gate failed (exit {code}) — a meta's `provides` is not one of the twelve roles in knowledge/roles.json, an `answers` word is not a key of chart-intents.json, a `not-with`/`with` slug resolves to neither a meta nor a role, two providers of one role claim the same `priority`, `intent` and `answers` disagree, or a `span.cols` is inverted. The role and answers vocabularies are ADOPTED (s252-D1 / s251-D11): a new word enters ONLY by Dave's ruling, never silently. Run: python3 knowledge/_validate_roles_resolve.py"),
+    ("roles/answers resolve selftest — 10 bites incl. in-role priority ties + absent store (#253)", GATE,
+     "\n❌ roles/answers resolve selftest failed (exit {code}) — python3 knowledge/_validate_roles_resolve.py --selftest"),
     # #196: the stale-queue pair. The row landed WITH the step, in the same edit — a STEPS
     # entry with no route aborts every full build above step 1 (the (a)-class omission
     # recorded three times above).

@@ -174,6 +174,58 @@
     "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
     "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
     "intent": { "description": "ADDRESS into knowledge/chart-intents.json — the analytical question this chart answers (comparison | change-over-time | distribution | relationship | composition). A word, or a list where the purpose genuinely spans two. OPTIONAL: charts carry it, other components do not. Resolver: knowledge/_validate_intent_resolve.py — an unknown word refuses. Values live ONCE in the store (ADR-0017); never redefine them here.", "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 }] },
+    "provides": { "description": "s252-D1 (Dave, #252) — ADDRESS into knowledge/roles.json `roles`: the ROLE this component provides, i.e. the thing a template slot asks for as `wants: <role>`. One slug from the twelve adopted roles; co-providers of a role are its SUBSTITUTES, ordered by `priority` and gated by `when` (s251-D11). OPTIONAL: the placed-not-provider set (roles.json `$not-a-provider`) carries none. Resolver: knowledge/_validate_roles_resolve.py — an unknown slug refuses, loud and named. The role's definition, axis and membership live ONCE in roles.json (ADR-0017 write-once); never redefine them here, and never invent a thirteenth role — that is Dave's ruling, not a lane's drift.", "type": "string" },
+    "answers": { "description": "s251-D11 (Dave, #251, META RSQ 4 option (a)) — ADDRESS into knowledge/chart-intents.json, EXTENDED from charts to every component: the question this component answers for the reader. A word, or a list where the component genuinely spans two. On a chart this is the SAME word as `intent` (the resolver asserts equality where both exist; `intent` is NOT renamed and keeps its own resolver). Non-chart words (status-of-N, one-number, what-needs-me, …) are NEW KEYS of the one closed list — proposed on a review page and added to chart-intents.json by Dave's ruling, never silently by a lane; this schema deliberately does NOT enumerate them, because the vocabulary has ONE home (ADR-0017 write-once). Resolver: knowledge/_validate_roles_resolve.py — an unknown word refuses, loud and named.", "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 }] },
+    "shape": { "description": "s251-D3…D8 (the DESK eight) — the DATA-SHAPE axis: what shape of data the component takes (the second FFF face, beside `answers`' function). FREE STRING: the vocabulary is NOT RULED. It is deliberately unenumerated here rather than guessed — the 25-meta pass lists every value it uses on its review page, and a closed list, if Dave wants one, becomes a store with a resolver on the chart-intents.json pattern. Until then this field resolves against NOTHING and the validator reports its distinct values rather than checking them; that is a declared UNPROVEN, not an oversight.", "type": "string" },
+    "span": {
+      "description": "s251-D10 (Dave, #251, META RSQ 2 option (a)) — the width this component wants, in the ONE canonical vocabulary: 12 COLUMNS. A six-column template expresses its sixes as PAIRS of the twelve; nothing is authored on a 6-col vocabulary (this closes the #248 12-vs-6 collision). `cols.min`/`cols.max` are the inclusive bounds. The 1 ≤ min ≤ max ≤ 12 BOUNDS are enforced here; the min ≤ max ORDERING is not expressible in draft-07 and is checked by knowledge/_validate_roles_resolve.py instead (gate, not schema — the s140-D1 staging posture).",
+      "type": "object",
+      "required": ["cols"],
+      "additionalProperties": false,
+      "patternProperties": { "^\\$": {} },
+      "properties": {
+        "cols": {
+          "type": "object",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "patternProperties": { "^\\$": {} },
+          "properties": {
+            "min": { "type": "integer", "minimum": 1, "maximum": 12 },
+            "max": { "type": "integer", "minimum": 1, "maximum": 12 }
+          }
+        }
+      }
+    },
+    "priority": { "description": "s251-D11 (META RSQ 3, closed by s251-D4) — an integer ordering this component against the OTHER providers of the SAME role (update-alternatives, Debian virtual packages). IN-ROLE ONLY: the number is meaningless across roles and must never be read as a global ranking or a 0-1 weight (no weight model was adopted). Higher = the default reach. Uniqueness within a role is checked by knowledge/_validate_roles_resolve.py; the role's own provider list in roles.json is the cross-check, not the source, once the metas carry this field.", "type": "integer" },
+    "when": { "description": "s251-D5 (Dave, #251, DESK RSQ 3: \"q3. Predicate\") — the PREDICATE that gates this provider, over shape, prominence and span, C9-readable; NOT prose. The field list on the predicate's right-hand side is explicitly A FURTHER RULING, not made at s251-D5, so this schema types the value as a string and does not parse it. knowledge/_validate_roles_resolve.py collects every field used and reports them for the review page; it does not judge them.", "type": "string" },
+    "with": {
+      "description": "s251-D6 / s251-D3 — COMPLEMENTS: components that go WITH this one. NORMALLY THIS DOES NOT LIVE HERE: complements hang off the ROLE in knowledge/roles.json (s251-D6), which is their one home. The entry exists so a meta that genuinely needs a component-level complement has somewhere legal to put it, and so the resolver has a shape to read; it is OPTIONAL and expected to be rare. `rel` grades the edge: `recommends` (strong) or `suggests` (weak). Reciprocals are DERIVED, never authored — the validator computes and PRINTS the other direction and writes nothing back (s251-D6, ISO 25964).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug"],
+        "additionalProperties": false,
+        "patternProperties": { "^\\$": {} },
+        "properties": {
+          "slug": { "type": "string" },
+          "rel": { "enum": ["recommends", "suggests"] }
+        }
+      }
+    },
+    "not-with": {
+      "description": "s251-D6 (DESK RSQ 5, Dave: \"q5. do it\") — EXCLUSIONS: `mustNotNeighbour` PROMOTED to a typed edge with a REQUIRED `slug`. No ref:null seat exists here on purpose: the whole point of the promotion is that an exclusion names its partner (the ~50 prose entries under `relationships.mustNotNeighbour` / `edges.mustNotNeighbour` are the migration backlog, kept verbatim until each is resolved — ADR-0017 archive-never-delete). `slug` addresses a meta stem or a roles.json role; `when` is the optional predicate (s251-D5) that narrows the exclusion to a condition. Reciprocals are DERIVED and PRINTED by knowledge/_validate_roles_resolve.py, never written into the metas.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug"],
+        "additionalProperties": false,
+        "patternProperties": { "^\\$": {} },
+        "properties": {
+          "slug": { "type": "string" },
+          "when": { "type": "string" }
+        }
+      }
+    },
     "props": {
       "type": "array",
       "items": {
