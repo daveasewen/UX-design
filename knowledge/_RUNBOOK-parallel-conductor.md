@@ -187,6 +187,26 @@ find their own.**
   the handoff + commits; commits are serialized. The only rule left to *trust* is "one conductor" — the
   rest is enforced by naming, location, and the reconcile step (2.5).
 
+### ⛔ TWO CLAUSES EVERY BUILD BRIEF NOW CARRIES — homed here at the #254 wrap's 2c/2d EXIT CHECK
+
+*(Both were living ONLY on a rolling `_LIVE-STATE.md` delta or a carry line. The #253 wrap's
+finding 7 declared the first one DUE at this wrap, precisely so the lesson would not roll into a
+dated home with the delta that carried it. Provenance: 254 · 2026-09-07 · status: observed.)*
+
+- ⛔ **"USE CANON'S OWN FIGURES" — say it in every build brief that pastes from a specimen.**
+  The #251 DP-08 build mapped a specimen tile onto canon and pasted the specimen's `$120.0m` /
+  `$2.7m` / **`40% drawn`** into a page whose canon reads `None used` — a **`$` specimen fact
+  inside `£` canon**, isolated by the cold-seat verifier as an INVENTED FACT and repaired by the
+  conductor by hand. The lane did nothing wrong that a brief had forbidden; the brief had not
+  forbidden it. A build brief that names a specimen must name, in the same line, that **every
+  figure comes from canon and never from the specimen it is imitating.**
+- ⛔ **"NEVER `git checkout` A SHARED DIRECTORY" — scope every revert to the files this lane owns.**
+  At #253 lanes A and B each ran `git checkout -- knowledge/components/` to undo their own
+  reformat, over the directory they SHARED, and each wiped the other's authored metas once.
+  Nothing was permanently lost only because both lanes authored from a re-runnable SCRIPT.
+  ⚠ **Nothing enforces this** [[instrument-without-a-consumer]] — it is a brief clause, and the
+  carry that asks for a gate is still open.
+
 ## Entry points
 
 `_RUNBOOK-capture-ritual.md` (the conductor runs it once) · `_RUNBOOK-git-commit.md` (serialized
