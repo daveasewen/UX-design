@@ -1,0 +1,641 @@
+{
+  "$description": "THE ROLE tier - the thing a slot asks for (`wants: <role>`) and a component declares (`provides: <role>`). ONE home for the provides vocabulary (ADR-0017 write-once). Metas carry `provides: \"<slug>\"` as an ADDRESS into this file - never an inline definition. The address set is the FENCE: a thirteenth role is Dave's ruling (s252-D1), never a lane's drift. Co-providers of a role are its substitutes; `priority` (integer, compared only within one role, update-alternatives) orders them, `when` (a predicate, s251-D5) gates them; complements hang off the role as `with`, exclusions as `not-with` (s251-D3/D6). The `providers` lists here are the ADOPTED MEMBERSHIP from the v1 review page; their priority/when values are ILLUSTRATIVE until the 25-meta pass (s251-D12) authors them on the metas themselves, at which point the metas are canon and this file's provider lists are a cross-check, not a source. Structure adopted from the DESK research (notes/_subreports/2026-09-06-249-DESK-interchangeability.md): Debian virtual packages, WordNet synsets, ISO 25964 preferred terms.",
+  "$provenance": {
+    "ruled": "s252-D1 (Dave, #252, 2026-09-07) adopting reviews/ROLES-REVIEW-2026-09-07-v1.html whole",
+    "structure": "s251-D3…D8 (DESK), s251-D9…D11 (META)",
+    "resolver": "knowledge/_validate_roles_resolve.py (owed in the 25-meta pass) - an unknown slug refuses, loud and named"
+  },
+  "$extension": "EXPECTED, by ruling only: input sub-roles when forms are authored (non-factory modes, s251-D7); media / identity for marketing pages; needs-attention only if Dave names that molecule.",
+  "$not-a-provider": "template-* (12, consumers - they hold the wants list) · hero · hero-variants · footer · footer-doormat-lockup · image-block · video-player · qr-code · avatar · avatar-group · tags · payment-card-visual · card-header-lockup · account-card · EXAMPLE-button",
+  "roles": {
+    "headline-metric": {
+      "index": 1,
+      "axis": "FFF: function \"how big is it, and did it move?\"",
+      "definition": "One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.",
+      "providers": [
+        {
+          "slug": "stat-card",
+          "priority": 60,
+          "when": "default — label · value · delta · period, no series"
+        },
+        {
+          "slug": "kpi-tile",
+          "priority": 50,
+          "when": "a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)"
+        },
+        {
+          "slug": "Chart-bullet",
+          "priority": 40,
+          "when": "a target or performance band is the point, not the delta"
+        },
+        {
+          "slug": "runway-bar",
+          "priority": 30,
+          "when": "the number is \"money vs what is already scheduled\""
+        }
+      ]
+    },
+    "status-surface": {
+      "index": 2,
+      "axis": "FFF: function \"how many, against what, and is that fine?\"",
+      "definition": "A count or state against a threshold. The DESK example role, kept as named.",
+      "providers": [
+        {
+          "slug": "status-indicator",
+          "priority": 60,
+          "when": "one state, one dot + label, 2–4 cols"
+        },
+        {
+          "slug": "summary",
+          "priority": 40,
+          "when": "n × count as a key/value list, 6–12 cols"
+        },
+        {
+          "slug": "meter",
+          "priority": 35,
+          "when": "the threshold is a cap being spent against (limits-meter reading)"
+        },
+        {
+          "slug": "badge",
+          "priority": 20,
+          "when": "inline, attached to another element, count only"
+        }
+      ]
+    },
+    "chart-panel": {
+      "index": 3,
+      "axis": "FFF: function is the chart-intent word, gated by answers, not by the role",
+      "definition": "A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison · change-over-time · distribution · relationship · composition) already live on the answers axis (chart-intents.json, s251-D11), so they gate; the role only names the slot. Five roles named after the intents would duplicate that axis and break \"three independent axes\" (s251-D3). This is the call most worth striking if you disagree — see §14 call 1.",
+      "providers": [
+        {
+          "slug": "chart-bar",
+          "priority": 60,
+          "when": "comparison; stacked variant when composition across categories"
+        },
+        {
+          "slug": "chart-line",
+          "priority": 60,
+          "when": "change-over-time"
+        },
+        {
+          "slug": "chart-donut",
+          "priority": 60,
+          "when": "composition, a centre total is meaningful"
+        },
+        {
+          "slug": "Chart-histogram",
+          "priority": 60,
+          "when": "distribution, one variable"
+        },
+        {
+          "slug": "Chart-scatter",
+          "priority": 60,
+          "when": "relationship"
+        },
+        {
+          "slug": "chart-stacked-area",
+          "priority": 50,
+          "when": "composition over time"
+        },
+        {
+          "slug": "Chart-boxplot",
+          "priority": 50,
+          "when": "distribution per category"
+        },
+        {
+          "slug": "chart-combo",
+          "priority": 45,
+          "when": "two measures in different units over one axis"
+        },
+        {
+          "slug": "Chart-butterfly-h",
+          "priority": 40,
+          "when": "exactly two series mirrored, categories ≥ 6"
+        },
+        {
+          "slug": "Chart-butterfly-v",
+          "priority": 35,
+          "when": "as above, wide panel"
+        },
+        {
+          "slug": "chart-pie",
+          "priority": 40,
+          "when": "composition, no centre figure, ≤ 5 parts"
+        },
+        {
+          "slug": "Chart-candlestick",
+          "priority": 40,
+          "when": "OHLC per period"
+        },
+        {
+          "slug": "chart-sparkline",
+          "priority": 30,
+          "when": "inline scale, no axes — normally a complement of 01, not a panel"
+        }
+      ]
+    },
+    "record-list": {
+      "index": 4,
+      "axis": "FFF: function \"show me the items\"",
+      "definition": "Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.",
+      "providers": [
+        {
+          "slug": "table",
+          "priority": 60,
+          "when": "default, read-mostly"
+        },
+        {
+          "slug": "data-grid",
+          "priority": 50,
+          "when": "sort / filter / select / edit-in-place is required"
+        },
+        {
+          "slug": "list-items",
+          "priority": 45,
+          "when": "≤ 3 fields per item, tappable"
+        },
+        {
+          "slug": "transaction-row",
+          "priority": 40,
+          "when": "the records are a ledger with a running balance"
+        },
+        {
+          "slug": "document-row",
+          "priority": 35,
+          "when": "the records are issued documents to open / download"
+        },
+        {
+          "slug": "standing-order-mandate-row",
+          "priority": 35,
+          "when": "the records are future recurring instructions"
+        },
+        {
+          "slug": "timeline",
+          "priority": 30,
+          "when": "time is the structure, records have happened"
+        },
+        {
+          "slug": "tree",
+          "priority": 20,
+          "when": "records nest"
+        }
+      ]
+    },
+    "page-frame": {
+      "index": 5,
+      "axis": "FFF: form dominates — the frame is chosen by navigation depth and job",
+      "definition": "The shell around everything. Seven providers, one per frame; only one can win, so not-with is implicit among co-providers (Debian: one-at-a-time facility).",
+      "providers": [
+        {
+          "slug": "app-shell-top-nav",
+          "priority": 60,
+          "when": "default for dashboards (the bento template composes it)"
+        },
+        {
+          "slug": "app-shell-side-nav",
+          "priority": 50,
+          "when": "> 7 destinations or two nav levels"
+        },
+        {
+          "slug": "app-shell-nav-rail",
+          "priority": 45,
+          "when": "dense app, content cannot spare 248px"
+        },
+        {
+          "slug": "app-shell-multi-column",
+          "priority": 40,
+          "when": "list-and-detail job"
+        },
+        {
+          "slug": "app-shell-split",
+          "priority": 35,
+          "when": "two peers on screen at once"
+        },
+        {
+          "slug": "app-shell-focused",
+          "priority": 30,
+          "when": "one job, no navigation (auth, wizard)"
+        },
+        {
+          "slug": "app-shell-doormat",
+          "priority": 20,
+          "when": "marketing / servicing site with a mega-footer"
+        }
+      ]
+    },
+    "page-title": {
+      "index": 6,
+      "axis": "FFF: function \"what am I looking at?\"",
+      "definition": "The band that names the page or a section of it. Providers differ by level, so when is the level.",
+      "providers": [
+        {
+          "slug": "page-header-lockup",
+          "priority": 60,
+          "when": "page level, with actions or tabs"
+        },
+        {
+          "slug": "headers",
+          "priority": 50,
+          "when": "page or screen level, app-only, no lock-up needed"
+        },
+        {
+          "slug": "section-heading-lockup",
+          "priority": 40,
+          "when": "section level, above one board / table / panel"
+        },
+        {
+          "slug": "eyebrow",
+          "priority": 10,
+          "when": "a kicker alone is enough (rare; normally a part of the above)"
+        }
+      ]
+    },
+    "wayfinding": {
+      "index": 7,
+      "axis": "FFF: function \"where am I, where can I go?\"",
+      "definition": "Navigation that is not the frame. Global, local, in-page and mobile are the when values.",
+      "providers": [
+        {
+          "slug": "navigations",
+          "priority": 60,
+          "when": "global — masthead / main-nav family"
+        },
+        {
+          "slug": "sidebar-nav",
+          "priority": 50,
+          "when": "global, desktop, persistent column (pairs with app-shell-side-nav)"
+        },
+        {
+          "slug": "tabs",
+          "priority": 45,
+          "when": "local — peer views in one context"
+        },
+        {
+          "slug": "breadcrumbs",
+          "priority": 40,
+          "when": "ancestry, depth ≥ 2"
+        },
+        {
+          "slug": "anchor-nav",
+          "priority": 30,
+          "when": "in-page, long document"
+        },
+        {
+          "slug": "tab-bar",
+          "priority": 30,
+          "when": "mobile bottom, 3–5 destinations"
+        },
+        {
+          "slug": "pagination",
+          "priority": 20,
+          "when": "within one list"
+        },
+        {
+          "slug": "back-to-top",
+          "priority": 10,
+          "when": "page chrome only"
+        }
+      ]
+    },
+    "action": {
+      "index": 8,
+      "axis": "FFF: function \"do the thing\"",
+      "definition": "A trigger. Emphasis (primary / secondary / ghost) is a placement property, not a role — Material's emphasis axis, per the DESK page.",
+      "providers": [
+        {
+          "slug": "button",
+          "priority": 60,
+          "when": "default"
+        },
+        {
+          "slug": "icon-button",
+          "priority": 50,
+          "when": "space is tight and the glyph is universal"
+        },
+        {
+          "slug": "split-button",
+          "priority": 40,
+          "when": "one main action plus a menu of related ones"
+        },
+        {
+          "slug": "links",
+          "priority": 35,
+          "when": "the action is navigation inside running text"
+        },
+        {
+          "slug": "quick-actions",
+          "priority": 30,
+          "when": "a row / grid of 4–8 shortcuts on an overview"
+        },
+        {
+          "slug": "action-bar",
+          "priority": 25,
+          "when": "a flow's primary + secondary pinned to the footer"
+        },
+        {
+          "slug": "fab",
+          "priority": 20,
+          "when": "mobile, one dominant action"
+        },
+        {
+          "slug": "cta-lockup",
+          "priority": 15,
+          "when": "marketing band, heading + support line + pair"
+        }
+      ]
+    },
+    "arrangement": {
+      "index": 9,
+      "axis": "FFF: form — these carry no content of their own",
+      "definition": "Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not component-provided roles.",
+      "providers": [
+        {
+          "slug": "layout-utilities",
+          "priority": 60,
+          "when": "default — container / stack / row / grid / twelve-column / split / measure"
+        },
+        {
+          "slug": "cards",
+          "priority": 50,
+          "when": "a bordered surface per item"
+        },
+        {
+          "slug": "stats-band-lockup",
+          "priority": 45,
+          "when": "3–6 headline-metrics in a labelled row"
+        },
+        {
+          "slug": "feature-grid-lockup",
+          "priority": 30,
+          "when": "marketing, 2/3/4-up icon + title + body"
+        },
+        {
+          "slug": "splitter",
+          "priority": 25,
+          "when": "the reader sizes two panes"
+        },
+        {
+          "slug": "accordion",
+          "priority": 20,
+          "when": "content collapses behind a heading"
+        },
+        {
+          "slug": "carousel",
+          "priority": 15,
+          "when": "one of a set at a time"
+        },
+        {
+          "slug": "divider",
+          "priority": 10,
+          "when": "a rule alone"
+        }
+      ]
+    },
+    "feedback": {
+      "index": 10,
+      "axis": "FFF: function \"the system is telling you something\"",
+      "definition": "Status from the system to the person: persistence and placement are the when. Includes the nothing-yet states.",
+      "providers": [
+        {
+          "slug": "alert",
+          "priority": 60,
+          "when": "in-flow, stays until resolved"
+        },
+        {
+          "slug": "notifications",
+          "priority": 50,
+          "when": "the RAG family in its four placements"
+        },
+        {
+          "slug": "banner",
+          "priority": 45,
+          "when": "page-level, above content, persistent"
+        },
+        {
+          "slug": "toast",
+          "priority": 40,
+          "when": "transient, confirms and leaves"
+        },
+        {
+          "slug": "empty-state",
+          "priority": 35,
+          "when": "a region has nothing to show"
+        },
+        {
+          "slug": "skeleton-loader",
+          "priority": 30,
+          "when": "content is on its way, shape known"
+        },
+        {
+          "slug": "loading-indicator",
+          "priority": 25,
+          "when": "working, shape unknown"
+        },
+        {
+          "slug": "progress-bar",
+          "priority": 25,
+          "when": "a task underway, full = done (meter's progress reading)"
+        },
+        {
+          "slug": "progress-tracker",
+          "priority": 20,
+          "when": "where in a multi-step process"
+        },
+        {
+          "slug": "countdown-timer",
+          "priority": 15,
+          "when": "something fires at a time"
+        },
+        {
+          "slug": "confirmation",
+          "priority": 15,
+          "when": "end of flow, success screen"
+        }
+      ]
+    },
+    "input": {
+      "index": 11,
+      "axis": "Not in the first pass (s251-D12) — listed so the library is whole",
+      "definition": "The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored — not now.",
+      "providers": [
+        {
+          "slug": "input-fields",
+          "priority": 60,
+          "when": null
+        },
+        {
+          "slug": "textarea",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "amount-input",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "search-field",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "dropdown",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "combobox",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "multi-select",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "cascader",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "selection-controls",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "segmented-control",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "date-picker",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "date-range-picker",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "time-picker",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "calendar",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "slider",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "range-slider",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "rating",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "tags-input",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "secure-entry",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "file-upload",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "transfer-list",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "reorder",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "view-options",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "form-layout",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "stepper",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "account-selector",
+          "priority": null,
+          "when": null
+        },
+        {
+          "slug": "amount-display",
+          "priority": null,
+          "when": null
+        }
+      ]
+    },
+    "overlay": {
+      "index": 12,
+      "axis": "Not in the first pass — listed so the library is whole",
+      "definition": "Something on top of the page that the person must dismiss or answer.",
+      "providers": [
+        {
+          "slug": "modals",
+          "priority": 60,
+          "when": "a message or side-task that needs an answer"
+        },
+        {
+          "slug": "drawer",
+          "priority": 50,
+          "when": "sub-task, page context stays visible"
+        },
+        {
+          "slug": "popover",
+          "priority": 40,
+          "when": "rich anchored content on click"
+        },
+        {
+          "slug": "popconfirm",
+          "priority": 35,
+          "when": "one question, in place"
+        },
+        {
+          "slug": "tooltip",
+          "priority": 30,
+          "when": "a label's help, on hover"
+        },
+        {
+          "slug": "modal-lightbox",
+          "priority": 25,
+          "when": "show a thing, not ask a thing"
+        },
+        {
+          "slug": "command-palette",
+          "priority": 20,
+          "when": "keyboard-first launcher"
+        }
+      ]
+    }
+  }
+}

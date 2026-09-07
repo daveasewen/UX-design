@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roles review — the `provides` list, v1</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:54px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.04em}
+nav span{color:var(--grey-6)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:57px;line-height:1.05;font-weight:300;margin:0 0 var(--s4);letter-spacing:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+section{padding:var(--s6) 0;border-top:1px solid var(--grey-2)}
+section.hero{padding:var(--s7) 0 var(--s6);border-top:0}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:96px;line-height:1;font-weight:100;color:var(--grey-3);margin:0 0 var(--s2)}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;font-weight:500}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px}
+.def{font-size:19px;line-height:1.5;margin:0 0 var(--s3)}
+table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.5;margin:0 0 var(--s3)}
+th{text-align:left;font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:12px;color:var(--grey-7);border-bottom:1px solid var(--grey-3);padding:0 var(--s2) var(--s1) 0}
+td{vertical-align:top;border-bottom:1px solid var(--grey-2);padding:var(--s1) var(--s2) var(--s1) 0}
+td.n{width:56px;color:var(--grey-7)}
+.meta{font-size:14px;color:var(--grey-7);margin:0 0 var(--s1)}
+.meta b{font-weight:500;color:var(--black)}
+.grey{background:var(--grey-1);border-top:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2)}
+.grid3>div{background:var(--white);padding:var(--s3)}
+.grid3 .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin:0 0 var(--s1)}
+.stat{font-size:43px;font-weight:200;line-height:1;margin:0 0 var(--s1)}
+.cap{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+ol.calls{padding-left:1.25rem;margin:0}
+ol.calls li{margin:0 0 var(--s2)}
+.strike{color:var(--grey-6)}
+footer{border-top:1px solid var(--grey-2);padding:var(--s4) 0;font-size:14px;color:var(--grey-6)}
+@media(max-width:820px){.split{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}h1{font-size:43px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><div>← Apollo · #252 · roles review</div><span>v1 · 2026-09-07 · Claude authors, Dave vetoes (s251-D15)</span></div></nav>
+
+<section class="hero"><div class="wrap">
+<p class="label">Review page · one of one</p>
+<h1>Twelve roles a brief can ask for, and who provides each.</h1>
+<div class="split">
+<div>
+<div class="grid3" style="grid-template-columns:1fr 1fr 1fr">
+<div><p class="stat">12</p><p class="cap">roles proposed</p></div>
+<div><p class="stat">25</p><p class="cap">first-pass metas covered</p></div>
+<div><p class="stat">137</p><p class="cap">library metas placed</p></div>
+</div>
+</div>
+<div>
+<p class="def">A role is the thing a slot asks for — <span class="mono">wants: status-surface</span> — and a component declares <span class="mono">provides: status-surface</span>. Co-providers are the substitutes; <span class="mono">priority</span> orders them, <span class="mono">when</span> gates them (s251-D4/D5/D11). This page fixes only the <em>names</em> and the <em>membership</em>. Priorities and <span class="mono">when</span> clauses are illustrative and get authored properly in the 25-meta pass.</p>
+<p><b>How to answer.</b> Strike a role by number. Rename by number ("3 → …"). Move a provider by slug ("table → 4, not 3"). Anything unstruck at the end is adopted as the list. Six calls I made without asking are in §14 — strike those too if they are wrong.</p>
+</div>
+</div>
+</div></section>
+
+<!-- 01 -->
+<section><div class="wrap split">
+<div><p class="idx">01</p><p class="label">Role</p><p class="slug">headline-metric</p><p class="meta">FFF: <b>function</b> "how big is it, and did it move?"</p></div>
+<div>
+<p class="def">One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">stat-card</td><td class="n">60</td><td>default — label · value · delta · period, no series</td></tr>
+<tr><td class="mono">kpi-tile</td><td class="n">50</td><td>a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)</td></tr>
+<tr><td class="mono">Chart-bullet</td><td class="n">40</td><td>a target or performance band is the point, not the delta</td></tr>
+<tr><td class="mono">runway-bar</td><td class="n">30</td><td>the number is "money vs what is already scheduled"</td></tr>
+</table>
+<p class="meta"><b>with</b> (complements, off the role, once): chart-sparkline <i>Suggests</i> · stats-band-lockup <i>Recommends</i> as the board that holds 3–6 of them.</p>
+<p class="meta"><b>not-with</b>: kpi-tile ↛ status-surface when shape lacks series (the DESK example, kept).</p>
+</div>
+</div></section>
+
+<!-- 02 -->
+<section><div class="wrap split">
+<div><p class="idx">02</p><p class="label">Role</p><p class="slug">status-surface</p><p class="meta">FFF: <b>function</b> "how many, against what, and is that fine?"</p></div>
+<div>
+<p class="def">A count or state against a threshold. The DESK example role, kept as named.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">status-indicator</td><td class="n">60</td><td>one state, one dot + label, 2–4 cols</td></tr>
+<tr><td class="mono">summary</td><td class="n">40</td><td>n × count as a key/value list, 6–12 cols</td></tr>
+<tr><td class="mono">meter</td><td class="n">35</td><td>the threshold is a cap being spent against (limits-meter reading)</td></tr>
+<tr><td class="mono">badge</td><td class="n">20</td><td>inline, attached to another element, count only</td></tr>
+</table>
+<p class="meta"><b>with</b>: table / data-grid <i>Recommends</i> (the list behind the count) · chart-bar <i>Suggests</i> (by team).</p>
+<p class="meta"><b>Note</b>: the DESK page's <span class="mono">needs-attention</span> provider does not exist as a meta. Not proposed here; if wanted it is a new molecule, Dave's to name.</p>
+</div>
+</div></section>
+
+<!-- 03 -->
+<section><div class="wrap split">
+<div><p class="idx">03</p><p class="label">Role</p><p class="slug">chart-panel</p><p class="meta">FFF: <b>function</b> is the chart-intent word, gated by <span class="mono">answers</span>, not by the role</p></div>
+<div>
+<p class="def">A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison · change-over-time · distribution · relationship · composition) already live on the <span class="mono">answers</span> axis (chart-intents.json, s251-D11), so they gate; the role only names the slot. Five roles named after the intents would duplicate that axis and break "three independent axes" (s251-D3). <b>This is the call most worth striking if you disagree — see §14 call 1.</b></p>
+<table><tr><th>Provider</th><th>Priority</th><th>When (beyond <span class="mono">answers</span>)</th></tr>
+<tr><td class="mono">chart-bar</td><td class="n">60</td><td>comparison; stacked variant when composition across categories</td></tr>
+<tr><td class="mono">chart-line</td><td class="n">60</td><td>change-over-time</td></tr>
+<tr><td class="mono">chart-donut</td><td class="n">60</td><td>composition, a centre total is meaningful</td></tr>
+<tr><td class="mono">Chart-histogram</td><td class="n">60</td><td>distribution, one variable</td></tr>
+<tr><td class="mono">Chart-scatter</td><td class="n">60</td><td>relationship</td></tr>
+<tr><td class="mono">chart-stacked-area</td><td class="n">50</td><td>composition over time</td></tr>
+<tr><td class="mono">Chart-boxplot</td><td class="n">50</td><td>distribution per category</td></tr>
+<tr><td class="mono">chart-combo</td><td class="n">45</td><td>two measures in different units over one axis</td></tr>
+<tr><td class="mono">Chart-butterfly-h</td><td class="n">40</td><td>exactly two series mirrored, categories ≥ 6</td></tr>
+<tr><td class="mono">Chart-butterfly-v</td><td class="n">35</td><td>as above, wide panel</td></tr>
+<tr><td class="mono">chart-pie</td><td class="n">40</td><td>composition, no centre figure, ≤ 5 parts</td></tr>
+<tr><td class="mono">Chart-candlestick</td><td class="n">40</td><td>OHLC per period</td></tr>
+<tr><td class="mono">chart-sparkline</td><td class="n">30</td><td>inline scale, no axes — normally a complement of 01, not a panel</td></tr>
+</table>
+<p class="meta"><b>Not here</b>: Chart-bullet provides 01 only (call 3: one role per component); chart-sparkline stays here at 30 because a brief can ask for a bare inline trend.</p>
+<p class="meta"><b>with</b>: table <i>Recommends</i> (the figures behind the chart — template-report's rule) · section-heading-lockup <i>Recommends</i>.</p>
+</div>
+</div></section>
+
+<!-- 04 -->
+<section><div class="wrap split">
+<div><p class="idx">04</p><p class="label">Role</p><p class="slug">record-list</p><p class="meta">FFF: <b>function</b> "show me the items"</p></div>
+<div>
+<p class="def">Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">table</td><td class="n">60</td><td>default, read-mostly</td></tr>
+<tr><td class="mono">data-grid</td><td class="n">50</td><td>sort / filter / select / edit-in-place is required</td></tr>
+<tr><td class="mono">list-items</td><td class="n">45</td><td>≤ 3 fields per item, tappable</td></tr>
+<tr><td class="mono">transaction-row</td><td class="n">40</td><td>the records are a ledger with a running balance</td></tr>
+<tr><td class="mono">document-row</td><td class="n">35</td><td>the records are issued documents to open / download</td></tr>
+<tr><td class="mono">standing-order-mandate-row</td><td class="n">35</td><td>the records are future recurring instructions</td></tr>
+<tr><td class="mono">timeline</td><td class="n">30</td><td>time is the structure, records have happened</td></tr>
+<tr><td class="mono">tree</td><td class="n">20</td><td>records nest</td></tr>
+</table>
+<p class="meta"><b>with</b>: filter-toolbar-bar <i>Recommends</i> · pagination <i>Recommends</i> when rows &gt; 25 · empty-state <i>Recommends</i> (the zero row).</p>
+</div>
+</div></section>
+
+<!-- 05 -->
+<section><div class="wrap split">
+<div><p class="idx">05</p><p class="label">Role</p><p class="slug">page-frame</p><p class="meta">FFF: <b>form</b> dominates — the frame is chosen by navigation depth and job</p></div>
+<div>
+<p class="def">The shell around everything. Seven providers, one per frame; only one can win, so <span class="mono">not-with</span> is implicit among co-providers (Debian: one-at-a-time facility).</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">app-shell-top-nav</td><td class="n">60</td><td>default for dashboards (the bento template composes it)</td></tr>
+<tr><td class="mono">app-shell-side-nav</td><td class="n">50</td><td>&gt; 7 destinations or two nav levels</td></tr>
+<tr><td class="mono">app-shell-nav-rail</td><td class="n">45</td><td>dense app, content cannot spare 248px</td></tr>
+<tr><td class="mono">app-shell-multi-column</td><td class="n">40</td><td>list-and-detail job</td></tr>
+<tr><td class="mono">app-shell-split</td><td class="n">35</td><td>two peers on screen at once</td></tr>
+<tr><td class="mono">app-shell-focused</td><td class="n">30</td><td>one job, no navigation (auth, wizard)</td></tr>
+<tr><td class="mono">app-shell-doormat</td><td class="n">20</td><td>marketing / servicing site with a mega-footer</td></tr>
+</table>
+<p class="meta"><b>Outside this list</b>: the seven <span class="mono">template-*</span> pages. They are <em>consumers</em> of roles (each is a fixed arrangement of wants), not providers. Placed in §13 as "not a provider".</p>
+</div>
+</div></section>
+
+<!-- 06 -->
+<section><div class="wrap split">
+<div><p class="idx">06</p><p class="label">Role</p><p class="slug">page-title</p><p class="meta">FFF: <b>function</b> "what am I looking at?"</p></div>
+<div>
+<p class="def">The band that names the page or a section of it. Providers differ by level, so <span class="mono">when</span> is the level.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">page-header-lockup</td><td class="n">60</td><td>page level, with actions or tabs</td></tr>
+<tr><td class="mono">headers</td><td class="n">50</td><td>page or screen level, app-only, no lock-up needed</td></tr>
+<tr><td class="mono">section-heading-lockup</td><td class="n">40</td><td>section level, above one board / table / panel</td></tr>
+<tr><td class="mono">eyebrow</td><td class="n">10</td><td>a kicker alone is enough (rare; normally a part of the above)</td></tr>
+</table>
+<p class="meta"><b>with</b>: breadcrumbs <i>Recommends</i> at page level, depth ≥ 2 · badge <i>Suggests</i>.</p>
+</div>
+</div></section>
+
+<!-- 07 -->
+<section><div class="wrap split">
+<div><p class="idx">07</p><p class="label">Role</p><p class="slug">wayfinding</p><p class="meta">FFF: <b>function</b> "where am I, where can I go?"</p></div>
+<div>
+<p class="def">Navigation that is not the frame. Global, local, in-page and mobile are the <span class="mono">when</span> values.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">navigations</td><td class="n">60</td><td>global — masthead / main-nav family</td></tr>
+<tr><td class="mono">sidebar-nav</td><td class="n">50</td><td>global, desktop, persistent column (pairs with app-shell-side-nav)</td></tr>
+<tr><td class="mono">tabs</td><td class="n">45</td><td>local — peer views in one context</td></tr>
+<tr><td class="mono">breadcrumbs</td><td class="n">40</td><td>ancestry, depth ≥ 2</td></tr>
+<tr><td class="mono">anchor-nav</td><td class="n">30</td><td>in-page, long document</td></tr>
+<tr><td class="mono">tab-bar</td><td class="n">30</td><td>mobile bottom, 3–5 destinations</td></tr>
+<tr><td class="mono">pagination</td><td class="n">20</td><td>within one list</td></tr>
+<tr><td class="mono">back-to-top</td><td class="n">10</td><td>page chrome only</td></tr>
+</table>
+<p class="meta"><b>Call</b>: breadcrumbs provides <em>this</em> role and is a complement (<span class="mono">with</span>) of 06 — the one component in the list that appears in two places. See §14 call 3.</p>
+</div>
+</div></section>
+
+<!-- 08 -->
+<section><div class="wrap split">
+<div><p class="idx">08</p><p class="label">Role</p><p class="slug">action</p><p class="meta">FFF: <b>function</b> "do the thing"</p></div>
+<div>
+<p class="def">A trigger. Emphasis (primary / secondary / ghost) is a placement property, not a role — Material's emphasis axis, per the DESK page.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">button</td><td class="n">60</td><td>default</td></tr>
+<tr><td class="mono">icon-button</td><td class="n">50</td><td>space is tight and the glyph is universal</td></tr>
+<tr><td class="mono">split-button</td><td class="n">40</td><td>one main action plus a menu of related ones</td></tr>
+<tr><td class="mono">links</td><td class="n">35</td><td>the action is navigation inside running text</td></tr>
+<tr><td class="mono">quick-actions</td><td class="n">30</td><td>a row / grid of 4–8 shortcuts on an overview</td></tr>
+<tr><td class="mono">action-bar</td><td class="n">25</td><td>a flow's primary + secondary pinned to the footer</td></tr>
+<tr><td class="mono">fab</td><td class="n">20</td><td>mobile, one dominant action</td></tr>
+<tr><td class="mono">cta-lockup</td><td class="n">15</td><td>marketing band, heading + support line + pair</td></tr>
+</table>
+</div>
+</div></section>
+
+<!-- 09 -->
+<section><div class="wrap split">
+<div><p class="idx">09</p><p class="label">Role</p><p class="slug">arrangement</p><p class="meta">FFF: <b>form</b> — these carry no content of their own</p></div>
+<div>
+<p class="def">Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not component-provided roles.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">layout-utilities</td><td class="n">60</td><td>default — container / stack / row / grid / twelve-column / split / measure</td></tr>
+<tr><td class="mono">cards</td><td class="n">50</td><td>a bordered surface per item</td></tr>
+<tr><td class="mono">stats-band-lockup</td><td class="n">45</td><td>3–6 headline-metrics in a labelled row</td></tr>
+<tr><td class="mono">feature-grid-lockup</td><td class="n">30</td><td>marketing, 2/3/4-up icon + title + body</td></tr>
+<tr><td class="mono">splitter</td><td class="n">25</td><td>the reader sizes two panes</td></tr>
+<tr><td class="mono">accordion</td><td class="n">20</td><td>content collapses behind a heading</td></tr>
+<tr><td class="mono">carousel</td><td class="n">15</td><td>one of a set at a time</td></tr>
+<tr><td class="mono">divider</td><td class="n">10</td><td>a rule alone</td></tr>
+</table>
+</div>
+</div></section>
+
+<!-- 10 -->
+<section><div class="wrap split">
+<div><p class="idx">10</p><p class="label">Role</p><p class="slug">feedback</p><p class="meta">FFF: <b>function</b> "the system is telling you something"</p></div>
+<div>
+<p class="def">Status from the system to the person: persistence and placement are the <span class="mono">when</span>. Includes the nothing-yet states.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">alert</td><td class="n">60</td><td>in-flow, stays until resolved</td></tr>
+<tr><td class="mono">notifications</td><td class="n">50</td><td>the RAG family in its four placements</td></tr>
+<tr><td class="mono">banner</td><td class="n">45</td><td>page-level, above content, persistent</td></tr>
+<tr><td class="mono">toast</td><td class="n">40</td><td>transient, confirms and leaves</td></tr>
+<tr><td class="mono">empty-state</td><td class="n">35</td><td>a region has nothing to show</td></tr>
+<tr><td class="mono">skeleton-loader</td><td class="n">30</td><td>content is on its way, shape known</td></tr>
+<tr><td class="mono">loading-indicator</td><td class="n">25</td><td>working, shape unknown</td></tr>
+<tr><td class="mono">progress-bar</td><td class="n">25</td><td>a task underway, full = done (meter's progress reading)</td></tr>
+<tr><td class="mono">progress-tracker</td><td class="n">20</td><td>where in a multi-step process</td></tr>
+<tr><td class="mono">countdown-timer</td><td class="n">15</td><td>something fires at a time</td></tr>
+<tr><td class="mono">confirmation</td><td class="n">15</td><td>end of flow, success screen</td></tr>
+</table>
+</div>
+</div></section>
+
+<!-- 11 -->
+<section><div class="wrap split">
+<div><p class="idx">11</p><p class="label">Role</p><p class="slug">input</p><p class="meta">Not in the first pass (s251-D12) — listed so the library is whole</p></div>
+<div>
+<p class="def">The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored — not now.</p>
+<p class="mono" style="line-height:1.9">input-fields 60 · textarea · amount-input · search-field · dropdown · combobox · multi-select · cascader · selection-controls · segmented-control · date-picker · date-range-picker · time-picker · calendar · slider · range-slider · rating · tags-input · secure-entry · file-upload · transfer-list · reorder · view-options · form-layout (the composer) · stepper (the flow driver) · account-selector · amount-display (the read twin of amount-input — arguably 01; placed here as the primitive)</p>
+</div>
+</div></section>
+
+<!-- 12 -->
+<section><div class="wrap split">
+<div><p class="idx">12</p><p class="label">Role</p><p class="slug">overlay</p><p class="meta">Not in the first pass — listed so the library is whole</p></div>
+<div>
+<p class="def">Something on top of the page that the person must dismiss or answer.</p>
+<table><tr><th>Provider</th><th>Priority</th><th>When</th></tr>
+<tr><td class="mono">modals</td><td class="n">60</td><td>a message or side-task that needs an answer</td></tr>
+<tr><td class="mono">drawer</td><td class="n">50</td><td>sub-task, page context stays visible</td></tr>
+<tr><td class="mono">popover</td><td class="n">40</td><td>rich anchored content on click</td></tr>
+<tr><td class="mono">popconfirm</td><td class="n">35</td><td>one question, in place</td></tr>
+<tr><td class="mono">tooltip</td><td class="n">30</td><td>a label's help, on hover</td></tr>
+<tr><td class="mono">modal-lightbox</td><td class="n">25</td><td>show a thing, not ask a thing</td></tr>
+<tr><td class="mono">command-palette</td><td class="n">20</td><td>keyboard-first launcher</td></tr>
+</table>
+</div>
+</div></section>
+
+<!-- 13 coverage -->
+<section class="grey"><div class="wrap split">
+<div><p class="idx">13</p><p class="label">Coverage</p><h2>Where the 25 first-pass metas land</h2><p class="meta">11 <span class="mono">$composes</span> + 14 charts (s251-D12). Every one has a role; none has two.</p></div>
+<div>
+<table><tr><th>Meta</th><th>Role</th></tr>
+<tr><td class="mono">kpi-tile · stat-card</td><td>01 headline-metric</td></tr>
+<tr><td class="mono">status-indicator · summary</td><td>02 status-surface</td></tr>
+<tr><td class="mono">chart-bar + the other 13 charts</td><td>03 chart-panel</td></tr>
+<tr><td class="mono">layout-utilities</td><td>09 arrangement</td></tr>
+<tr><td class="mono">breadcrumbs · navigations</td><td>07 wayfinding</td></tr>
+<tr><td class="mono">headers</td><td>06 page-title</td></tr>
+<tr><td class="mono">button</td><td>08 action</td></tr>
+<tr><td class="mono">app-shell-top-nav</td><td>05 page-frame</td></tr>
+</table>
+<p class="meta"><b>Placed but not a provider</b> (no <span class="mono">provides</span> line): the 12 <span class="mono">template-*</span> pages (consumers) · hero, hero-variants, footer, footer-doormat-lockup, image-block, video-player, qr-code, avatar, avatar-group, tags, payment-card-visual, card-header-lockup, account-card (a passive account summary — first candidate for 01 if a brief ever wants "balance" as a headline-metric), EXAMPLE-button (marketing / identity / passive visuals — no slot on a dashboard asks for them by role yet). A later pass can add <span class="mono">media</span> and <span class="mono">identity</span> roles if a brief ever wants them.</p>
+</div>
+</div></section>
+
+<!-- 14 calls -->
+<section><div class="wrap split">
+<div><p class="idx">14</p><p class="label">Calls made</p><h2>Six things I decided rather than asked</h2><p class="meta">Per s251-D15. Strike by number.</p></div>
+<div>
+<ol class="calls">
+<li><b>One <span class="mono">chart-panel</span> role, not five.</b> The intent words gate on the <span class="mono">answers</span> axis; a role per intent would carry the same fact twice. Cost: priority among the 14 charts only means something after <span class="mono">answers</span> has filtered — which is the intended order (D11: <span class="mono">when</span> gates, <span class="mono">priority</span> orders).</li>
+<li><b>Slot-level roles, not intent-level or atom-level.</b> Twelve names a brief would actually use ("give me a headline-metric"), not 40 fine ones. Debian's virtual packages sit at this grain.</li>
+<li><b>One component may appear once as a provider and again as a complement</b> (breadcrumbs: provides 07, <span class="mono">with</span> 06). No component provides two roles. If you want multi-provides, summary is the first candidate (02 and 04).</li>
+<li><b>Templates are consumers, not providers.</b> They hold the <span class="mono">wants</span> list; the bento template becomes the first worked consumer.</li>
+<li><b>Priorities are 10–60 in steps of 5</b>, compared only within a role (update-alternatives). Illustrative on this page; authored for real in the 25-meta pass.</li>
+<li><b>Roles 11 and 12 are named now, authored later.</b> They exist so the validator can say "every meta has a role" from day one, without the first pass growing past 25.</li>
+</ol>
+</div>
+</div></section>
+
+<!-- 15 decide -->
+<section class="grey"><div class="wrap split">
+<div><p class="idx">15</p><p class="label">Decide</p><h2>What your answer settles</h2></div>
+<div>
+<p>Unstruck roles become the <span class="mono">provides</span> vocabulary — one JSON home, <span class="mono">knowledge/roles.json</span>, same shape as <span class="mono">chart-intents.json</span> (address set is the fence; the validator refuses a slug not in it). The 25-meta pass then authors <span class="mono">provides · shape · span · priority · when</span> per meta against this list, one review page per batch.</p>
+<p>Not on this page and still open after it: the <span class="mono">when</span> predicate's field list (what may appear on the right-hand side) · rails for non-factory modes (the D7 caveat).</p>
+</div>
+</div></section>
+
+<footer><div class="wrap">Apollo · reviews/ROLES-REVIEW-2026-09-07-v1.html · sources: notes/_subreports/2026-09-06-249-DESK-interchangeability.md · knowledge/chart-intents.json · knowledge/components/*.meta.json (137) · rulings s251-D3…D15</div></footer>
+</body>
+</html>
