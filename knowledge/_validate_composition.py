@@ -372,15 +372,23 @@ def selftest():
     raw = real.replace(" --layout-bento-columns:6;", "")
     assert "--layout-bento-columns:" not in raw
     # anchors, each must be present exactly once so a mutant is a real one
-    KPI = '<div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Closing balance" data-c="3" data-r="1">'
+    # ⚠ #255: the KPI anchor DRIFTED. This tile was `data-c="3"` when the anchors were written at
+    # #245 (git show 5ae4d32:knowledge/snippets/Template-dashboard-bento.reference.html). #249/#251
+    # (0979a9b / fc1209b, DP-08 + s247-D3/s251-D1) took the two status tiles out of the lead row and
+    # page rule 10a pinned that grid to FOUR columns at every band, so its four true KPIs are now
+    # `data-c="1"`. The anchor is re-pointed at the SAME tile, not weakened: still `== 1` below.
+    KPI = '<div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Closing balance" data-c="1" data-r="1">'
     GROUP_GAP = '.tpl-page .c-bento.tpl-group[data-bento-role="dashboard"]{ --bento-gutter:4px; }'
     WALL_GAP = '--bento-gutter:40px; --bento-row-unit:auto; }'
     for a in (KPI, GROUP_GAP, WALL_GAP): assert real.count(a) == 1, a
     arms = [
         ("R  · the REAL artefact as shipped (column count declared since #245 L5) -> GREEN", real, 0, None),
         ("R0 · the artefact with its column-count literal STRIPPED (L3 finding 5 as it was) -> UNPROVEN 77, never green", raw, 77, None),
-        ("M1 · one KPI tile data-c 3 -> 2 (orphan at the 3-column band)", real.replace(KPI, KPI.replace('data-c="3"', 'data-c="2"')), 1, "C9"),
-        ("M2 · one KPI tile data-c 3 -> 6 (divides, but the grid no longer sums to whole rows at 6 cols)", real.replace(KPI, KPI.replace('data-c="3"', 'data-c="6"')), 1, "C9"),
+        # M1/M2 RE-DERIVED at #255 for the data-c="1" tile, each keeping its NAMED condition:
+        # M1 is the SPAN-LEGALITY leg of C9 (a span that does not divide the band's column count),
+        # M2 is the SUM-TO-WHOLE-ROWS leg (a span that divides every band but leaves an orphan cell).
+        ("M1 · one KPI tile data-c 1 -> 4 (4 does not divide 6: span-legality orphan at the base band)", real.replace(KPI, KPI.replace('data-c="1"', 'data-c="4"')), 1, "C9"),
+        ("M2 · one KPI tile data-c 1 -> 3 (divides at every band, but the grid no longer sums to whole rows at <=820px)", real.replace(KPI, KPI.replace('data-c="1"', 'data-c="3"')), 1, "C9"),
         ("M3 · group gutter 4 -> 40 (EQUAL to the wall - the flat ladder)", real.replace(GROUP_GAP, GROUP_GAP.replace("4px", "40px")), 1, "C1"),
         ("M4 · wall gutter 40 -> 4 (child not strictly smaller)", real.replace(WALL_GAP, WALL_GAP.replace("40px", "4px")), 1, "C1"),
         ("M5 · group gutter 4 -> 5 (off the ruled stop set)", real.replace(GROUP_GAP, GROUP_GAP.replace("4px", "5px")), 1, "C1"),
