@@ -3,6 +3,17 @@
   "category": "organism",
   "purpose": "Statistical distribution per category — median, interquartile range, whiskers, and outliers — as a real SVG box plot. NET-NEW, chart-expansion programme WAVE 2 lane ② (statistical/gauge), 2026-08-05. Built to the Chart-scatter Layer-1 pattern (toolbar + table spine); PROVISIONAL-AGENT pending Dave's eyeball and conductor registration.",
   "intent": "distribution",
+  "provides": "chart-panel",
+  "answers": "distribution",
+  "shape": "categories × five-number-summary",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 8
+    }
+  },
+  "priority": 60,
+  "when": "answers=distribution AND categories ≥ 2 AND each category carries a five-number summary (median · IQR · whiskers · outliers) — beats Chart-histogram (76, \"distribution, one variable\") whenever the spread must be read PER CATEGORY; yields to it when variables=1 and the bin shape is the claim. span.cols max 8 because the FIT hooks are not wired (this meta's own responsive rule).",
   "props": [
     { "name": "categories", "type": "array", "$note": "One box per category; each carries min/Q1/median/Q3/max + optional outliers." },
     { "name": "outliers", "type": "array", "$note": "Points outside the whisker range, drawn with the Chart-scatter ENLARGED marker family (circle r5.5, page-colour stroke) — same series, not a new colour channel." },

@@ -4,6 +4,17 @@
   "category": "atom",
   "$platform": "mobile app",
   "purpose": "A small coloured dot + label giving a visual cue of a background update or state change, making the user aware of relevant activity. RAG-coded across approved / cancelled / declined / pending, with a disabled (muted) variant.",
+  "provides": "status-surface",
+  "answers": "status-of-one",
+  "shape": "one-state",
+  "span": {
+    "cols": {
+      "min": 2,
+      "max": 4
+    }
+  },
+  "priority": 60,
+  "when": "shape = one-state AND span.cols <= 4 — the default of the role; beats summary (roles.json when: \"n × count as a key/value list, 6–12 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.",
   "props": [
     {
       "name": "variant",

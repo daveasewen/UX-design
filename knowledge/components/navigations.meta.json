@@ -2,6 +2,17 @@
   "name": "Navigations",
   "category": "organism",
   "purpose": "The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around the site/app and access search and account.",
+  "provides": "wayfinding",
+  "answers": "where-can-i-go",
+  "shape": "destination-set",
+  "span": {
+    "cols": {
+      "min": 12,
+      "max": 12
+    }
+  },
+  "priority": 60,
+  "when": "shape = destination-set AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
   "$family": "Covers the 'Navigations' canvas: Masthead ×2 + 3 flyouts, Anchors, Navigation bar bottom (app), Navigation bar top (app).",
   "props": [
     {

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meta tags — batch A, the 11 $composes metas, v1</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:54px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.04em}
+nav span{color:var(--grey-6)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:57px;line-height:1.05;font-weight:300;margin:0 0 var(--s4);letter-spacing:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:var(--s4) 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+section{padding:var(--s6) 0;border-top:1px solid var(--grey-2)}
+section.hero{padding:var(--s7) 0 var(--s6);border-top:0}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:96px;line-height:1;font-weight:100;color:var(--grey-3);margin:0 0 var(--s2)}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;font-weight:500}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px}
+.def{font-size:19px;line-height:1.5;margin:0 0 var(--s3)}
+table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.5;margin:0 0 var(--s3)}
+th{text-align:left;font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:12px;color:var(--grey-7);border-bottom:1px solid var(--grey-3);padding:0 var(--s2) var(--s1) 0}
+td{vertical-align:top;border-bottom:1px solid var(--grey-2);padding:var(--s1) var(--s2) var(--s1) 0}
+td.n{width:64px;color:var(--grey-7)}
+td.k{width:150px;color:var(--grey-7);text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.meta{font-size:14px;color:var(--grey-7);margin:0 0 var(--s1)}
+.meta b{font-weight:500;color:var(--black)}
+.grey{background:var(--grey-1);border-top:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2)}
+.grid3>div{background:var(--white);padding:var(--s3)}
+.stat{font-size:43px;font-weight:200;line-height:1;margin:0 0 var(--s1)}
+.cap{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+ol.calls{padding-left:1.25rem;margin:0}
+ol.calls li{margin:0 0 var(--s2)}
+.red{border-left:2px solid var(--accent);padding-left:var(--s2);font-size:14px;color:var(--grey-7);margin:0 0 var(--s2)}
+.red b{color:var(--accent);font-weight:500}
+.pred{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;background:var(--grey-1);padding:var(--s2);margin:0 0 var(--s2);line-height:1.6}
+footer{border-top:1px solid var(--grey-2);padding:var(--s4) 0;font-size:14px;color:var(--grey-6)}
+@media(max-width:820px){.split{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}h1{font-size:43px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><div>← Apollo · #253 · meta tags, batch A</div><span>v1 · 2026-09-07 · Claude authors, Dave vetoes (s251-D15)</span></div></nav>
+<section class="hero"><div class="wrap">
+<p class="label">Review page · batch A of two</p>
+<h1>Six fields, authored on the eleven metas the bento template composes.</h1>
+<div class="split"><div><div class="grid3" style="grid-template-columns:1fr 1fr 1fr">
+<div><p class="stat">11</p><p class="cap">metas authored</p></div>
+<div><p class="stat">10</p><p class="cap">red by design</p></div>
+<div><p class="stat">9</p><p class="cap">new answers words</p></div>
+<div><p class="stat">11</p><p class="cap">shape values</p></div>
+<div><p class="stat">18</p><p class="cap">when fields</p></div>
+<div><p class="stat">8</p><p class="cap">roles touched</p></div>
+</div></div><div>
+<p class="def">Every meta in <span class="mono">template-dashboard-bento</span>'s <span class="mono">$composes</span> list now carries <span class="mono">provides · answers · shape · span · priority · when</span>, plus <span class="mono">not-with</span> where the roles review named one. Values are grounded in each meta's own <span class="mono">purpose</span> prose, not in roles.json — roles.json's priorities and <span class="mono">when</span> clauses were illustrative (s252-D1) and these metas are now the canon.</p>
+<p><b>Red by design.</b> <b>10</b> of the 11 metas fail <span class="mono">_validate_roles_resolve.py</span> check 2 <span class="mono">answers-resolves</span>. That is the gate working: <span class="mono">answers</span> addresses one closed list, and a new word enters it by your ruling only (s251-D11). The 9 new words are proposed in §12. Nothing was added to <span class="mono">chart-intents.json</span>. Until you rule, those metas stay red.</p>
+<p><b>How to strike.</b> Strike any value by meta and field ("04 shape → …"). Strike a proposed word by word ("<span class="mono">details-before-commit</span> → no"). Strike a call in §14 by number. Anything unstruck is adopted as authored.</p>
+</div></div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">01</p><p class="label">Meta</p><p class="slug">kpi-tile</p><p class="meta">provides <b>headline-metric</b> · role 01</p></div><div>
+<p class="def">A dashboard tile that states a metric, how it changed, and the SHAPE of that change: label, value, delta and period (the Stat-card anatomy, verbatim) plus the Chart-sparkline atom at its inline scale in a slot. Use it when the reader needs to see how a number moved over time, not merely whether it moved. A KPI tile with no series is a Stat card and should be one.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">headline-metric</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">one-number</span> <b>NEW</b> · <span class="mono">change-over-time</span></td></tr>
+<tr><td class="k">shape</td><td class="mono">one-measure-with-series</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 3–6 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">50</td><td class="meta">roles.json illustrative: 50</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = one-measure-with-series AND series != none</p>
+<p class="meta">beats stat-card (roles.json when: &quot;default — label · value · delta · period, no series&quot;) whenever a series exists to show; yields to Chart-bullet (when: &quot;a target or performance band is the point, not the delta&quot;) when target != none, and to runway-bar (when: &quot;the number is &#x27;money vs what is already scheduled&#x27;&quot;) when the measure is money-vs-scheduled.</p>
+<h3>One hop — siblings in headline-metric (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">stat-card</td><td class="n">60</td><td>default — label · value · delta · period, no series</td></tr>
+<tr><td class="mono">Chart-bullet</td><td class="n">40</td><td>a target or performance band is the point, not the delta</td></tr>
+<tr><td class="mono">runway-bar</td><td class="n">30</td><td>the number is &quot;money vs what is already scheduled&quot;</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<h3>not-with (authored)</h3><table><tr><th>slug</th><th>when</th><th>note</th></tr>
+<tr><td class="mono">status-surface</td><td class="mono">shape lacks series</td><td>The DESK example, kept: reviews/ROLES-REVIEW-2026-09-07-v1.html §01. A KPI tile with no series is a Stat card (s247-D3 / DP-08), so a slot that wanted a status-surface reading is not served by this tile.</td></tr>
+</table>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">one-number</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">02</p><p class="label">Meta</p><p class="slug">stat-card</p><p class="meta">provides <b>headline-metric</b> · role 01</p></div><div>
+<p class="def">The dashboard tile for one headline number: label · value · delta · period on a card surface. Promotes the big-number pattern the fitness-test journeys improvised (sme-payments .flow blocks) into canon, composing the Amount-display money-format primitive (verbatim) on the Cards surface recipe. One tile, one claim — a board is a grid of these.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">headline-metric</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">one-number</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">one-measure-with-delta</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 2–4 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = one-measure-with-delta AND series = none AND delta != none</p>
+<p class="meta">the default of the role; beats kpi-tile (roles.json when: &quot;a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)&quot;) exactly when no series exists, and beats Chart-bullet (when: &quot;a target or performance band is the point, not the delta&quot;) when the delta, not a band, is the claim.</p>
+<h3>One hop — siblings in headline-metric (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">kpi-tile</td><td class="n">50</td><td>a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)</td></tr>
+<tr><td class="mono">Chart-bullet</td><td class="n">40</td><td>a target or performance band is the point, not the delta</td></tr>
+<tr><td class="mono">runway-bar</td><td class="n">30</td><td>the number is &quot;money vs what is already scheduled&quot;</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<table><tr><th>ref</th><th>$note</th></tr>
+<tr><td class="mono">null</td><td>A chart making the identical claim in the same view (pick one headline form)</td></tr>
+</table>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">one-number</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">03</p><p class="label">Meta</p><p class="slug">chart-bar</p><p class="meta">provides <b>chart-panel</b> · role 03</p></div><div>
+<p class="def">Categorical comparison as vertical columns or horizontal bars, single- or multi-series (grouped + stacked), with the full Layer-2 interaction layer restored to match the Chart-line exemplar (chart-revisit wave, 2026-07-24). Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 rounds, not signed off); kit geometry OBSERVED, Layer-2 + rulings receipted.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">chart-panel</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">comparison</span></td></tr>
+<tr><td class="k">shape</td><td class="mono">categories-by-series</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 4–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">84</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">answers = comparison AND axis.x = categorical</p>
+<p class="meta">beats chart-line (roles.json when: &quot;change-over-time&quot;) when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: &quot;composition, no centre figure, ≤ 5 parts&quot;) when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: &quot;composition over time&quot;) if the axis is time.</p>
+<h3>One hop — siblings in chart-panel (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">chart-line</td><td class="n">60</td><td>change-over-time</td></tr>
+<tr><td class="mono">chart-donut</td><td class="n">60</td><td>composition, a centre total is meaningful</td></tr>
+<tr><td class="mono">Chart-histogram</td><td class="n">60</td><td>distribution, one variable</td></tr>
+<tr><td class="mono">Chart-scatter</td><td class="n">60</td><td>relationship</td></tr>
+<tr><td class="mono">chart-stacked-area</td><td class="n">50</td><td>composition over time</td></tr>
+<tr><td class="mono">Chart-boxplot</td><td class="n">50</td><td>distribution per category</td></tr>
+<tr><td class="mono">chart-combo</td><td class="n">45</td><td>two measures in different units over one axis</td></tr>
+<tr><td class="mono">Chart-butterfly-h</td><td class="n">40</td><td>exactly two series mirrored, categories ≥ 6</td></tr>
+<tr><td class="mono">Chart-butterfly-v</td><td class="n">35</td><td>as above, wide panel</td></tr>
+<tr><td class="mono">chart-pie</td><td class="n">40</td><td>composition, no centre figure, ≤ 5 parts</td></tr>
+<tr><td class="mono">Chart-candlestick</td><td class="n">40</td><td>OHLC per period</td></tr>
+<tr><td class="mono">chart-sparkline</td><td class="n">30</td><td>inline scale, no axes — normally a complement of 01, not a panel</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<table><tr><th>ref</th><th>$note</th></tr>
+<tr><td class="mono">component:stat-card</td><td>A Stat-card making the identical claim in the same view</td></tr>
+<tr><td class="mono">null</td><td>A second chart re-using these series colours for DIFFERENT data (dv-014)</td></tr>
+</table>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">04</p><p class="label">Meta</p><p class="slug">summary</p><p class="meta">provides <b>status-surface</b> · role 02</p></div><div>
+<p class="def">A key/value list for confirming details before or after an action (a payment review, a receipt). Name on the left (text/secondary), value on the right (text/default, tabular-nums), hairline dividers between rows, with an optional emphasised total row. Surfaced as a missing pattern by the journey gap report.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">status-surface</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">details-before-commit</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">name-value-pairs</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 6–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">40</td><td class="meta">roles.json illustrative: 40</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = name-value-pairs AND rows &gt;= 2 AND span.cols &gt;= 6</p>
+<p class="meta">beats status-indicator (roles.json when: &quot;one state, one dot + label, 2–4 cols&quot;) whenever more than one row must be read at once; yields to meter (when: &quot;the threshold is a cap being spent against (limits-meter reading)&quot;) when threshold = cap-spent-against, and to badge (when: &quot;inline, attached to another element, count only&quot;) when the reading is inline.</p>
+<h3>One hop — siblings in status-surface (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">status-indicator</td><td class="n">60</td><td>one state, one dot + label, 2–4 cols</td></tr>
+<tr><td class="mono">meter</td><td class="n">35</td><td>the threshold is a cap being spent against (limits-meter reading)</td></tr>
+<tr><td class="mono">badge</td><td class="n">20</td><td>inline, attached to another element, count only</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">details-before-commit</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">05</p><p class="label">Meta</p><p class="slug">status-indicator</p><p class="meta">provides <b>status-surface</b> · role 02</p></div><div>
+<p class="def">A small coloured dot + label giving a visual cue of a background update or state change, making the user aware of relevant activity. RAG-coded across approved / cancelled / declined / pending, with a disabled (muted) variant.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">status-surface</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">status-of-one</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">one-state</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 2–4 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = one-state AND span.cols &lt;= 4</p>
+<p class="meta">the default of the role; beats summary (roles.json when: &quot;n × count as a key/value list, 6–12 cols&quot;) whenever exactly one state is read; yields to badge (when: &quot;inline, attached to another element, count only&quot;) when the dot is attached to another element rather than standing alone.</p>
+<h3>One hop — siblings in status-surface (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">summary</td><td class="n">40</td><td>n × count as a key/value list, 6–12 cols</td></tr>
+<tr><td class="mono">meter</td><td class="n">35</td><td>the threshold is a cap being spent against (limits-meter reading)</td></tr>
+<tr><td class="mono">badge</td><td class="n">20</td><td>inline, attached to another element, count only</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">status-of-one</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">06</p><p class="label">Meta</p><p class="slug">layout-utilities</p><p class="meta">provides <b>arrangement</b> · role 09</p></div><div>
+<p class="def">Seven content-agnostic layout primitives — container, stack, row, grid, twelve-column, split and measure — that arrange arbitrary blocks in space and then get out of the way. They paint nothing, size no type, and announce nothing. The class prefix is .l-.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">arrangement</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">where-does-it-go</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">arbitrary-blocks</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 1–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">content = arbitrary-blocks AND surface = none</p>
+<p class="meta">the default of the role; beats cards (roles.json when: &quot;a bordered surface per item&quot;) whenever the arrangement must paint nothing, and beats stats-band-lockup (when: &quot;3–6 headline-metrics in a labelled row&quot;) whenever the blocks are not headline-metrics; yields to divider (when: &quot;a rule alone&quot;) when a rule alone is the whole need.</p>
+<h3>One hop — siblings in arrangement (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">cards</td><td class="n">50</td><td>a bordered surface per item</td></tr>
+<tr><td class="mono">stats-band-lockup</td><td class="n">45</td><td>3–6 headline-metrics in a labelled row</td></tr>
+<tr><td class="mono">feature-grid-lockup</td><td class="n">30</td><td>marketing, 2/3/4-up icon + title + body</td></tr>
+<tr><td class="mono">splitter</td><td class="n">25</td><td>the reader sizes two panes</td></tr>
+<tr><td class="mono">accordion</td><td class="n">20</td><td>content collapses behind a heading</td></tr>
+<tr><td class="mono">carousel</td><td class="n">15</td><td>one of a set at a time</td></tr>
+<tr><td class="mono">divider</td><td class="n">10</td><td>a rule alone</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">where-does-it-go</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">07</p><p class="label">Meta</p><p class="slug">breadcrumbs</p><p class="meta">provides <b>wayfinding</b> · role 07</p></div><div>
+<p class="def">Secondary navigation showing the user&#x27;s location within the site hierarchy and letting them step back to ancestor pages. A row of breadcrumb levels (links) separated by a divider, ending in the current page (a non-link).</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">wayfinding</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">where-am-i</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">ancestor-path</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 6–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">40</td><td class="meta">roles.json illustrative: 40</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = ancestor-path AND depth &gt;= 2</p>
+<p class="meta">beats anchor-nav (roles.json when: &quot;in-page, long document&quot;) when the trail is ancestry rather than in-page position; yields to navigations (when: &quot;global — masthead / main-nav family&quot;) for global movement and to tabs (when: &quot;local — peer views in one context&quot;) for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.</p>
+<h3>One hop — siblings in wayfinding (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">navigations</td><td class="n">60</td><td>global — masthead / main-nav family</td></tr>
+<tr><td class="mono">sidebar-nav</td><td class="n">50</td><td>global, desktop, persistent column (pairs with app-shell-side-nav)</td></tr>
+<tr><td class="mono">tabs</td><td class="n">45</td><td>local — peer views in one context</td></tr>
+<tr><td class="mono">anchor-nav</td><td class="n">30</td><td>in-page, long document</td></tr>
+<tr><td class="mono">tab-bar</td><td class="n">30</td><td>mobile bottom, 3–5 destinations</td></tr>
+<tr><td class="mono">pagination</td><td class="n">20</td><td>within one list</td></tr>
+<tr><td class="mono">back-to-top</td><td class="n">10</td><td>page chrome only</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">where-am-i</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">08</p><p class="label">Meta</p><p class="slug">headers</p><p class="meta">provides <b>page-title</b> · role 06</p></div><div>
+<p class="def">App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a large display header with optional image and a processing state).</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">page-title</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">what-is-this</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">title-and-optional-action</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 6–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">50</td><td class="meta">roles.json illustrative: 50</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">level in (page, screen, section) AND platform = app AND lockup = none</p>
+<p class="meta">yields to page-header-lockup (roles.json when: &quot;page level, with actions or tabs&quot;) whenever actions or tabs ride the band; beats section-heading-lockup (when: &quot;section level, above one board / table / panel&quot;) because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: &quot;a kicker alone is enough (rare; normally a part of the above)&quot;) whenever a title, not a kicker, is wanted.</p>
+<h3>One hop — siblings in page-title (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">page-header-lockup</td><td class="n">60</td><td>page level, with actions or tabs</td></tr>
+<tr><td class="mono">section-heading-lockup</td><td class="n">40</td><td>section level, above one board / table / panel</td></tr>
+<tr><td class="mono">eyebrow</td><td class="n">10</td><td>a kicker alone is enough (rare; normally a part of the above)</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">what-is-this</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">09</p><p class="label">Meta</p><p class="slug">button</p><p class="meta">provides <b>action</b> · role 08</p></div><div>
+<p class="def">A control that triggers an action. Four emphasis levels form a hierarchy — primary (highest emphasis, the main action), secondary, tertiary (outlined), and quaternary (lowest emphasis / borderless). Available on-light and on-dark, in a default and a Large size.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">action</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">what-can-i-do</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">no-data</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 1–4 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">emphasis in (primary, secondary, tertiary, quaternary) AND label = text</p>
+<p class="meta">the default of the role; yields to icon-button (roles.json when: &quot;space is tight and the glyph is universal&quot;) when label = glyph, to split-button (when: &quot;one main action plus a menu of related ones&quot;) when a menu hangs off the action, and to links (when: &quot;the action is navigation inside running text&quot;) when the action is navigation in prose.</p>
+<h3>One hop — siblings in action (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">icon-button</td><td class="n">50</td><td>space is tight and the glyph is universal</td></tr>
+<tr><td class="mono">split-button</td><td class="n">40</td><td>one main action plus a menu of related ones</td></tr>
+<tr><td class="mono">links</td><td class="n">35</td><td>the action is navigation inside running text</td></tr>
+<tr><td class="mono">quick-actions</td><td class="n">30</td><td>a row / grid of 4–8 shortcuts on an overview</td></tr>
+<tr><td class="mono">action-bar</td><td class="n">25</td><td>a flow&#x27;s primary + secondary pinned to the footer</td></tr>
+<tr><td class="mono">fab</td><td class="n">20</td><td>mobile, one dominant action</td></tr>
+<tr><td class="mono">cta-lockup</td><td class="n">15</td><td>marketing band, heading + support line + pair</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">what-can-i-do</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">10</p><p class="label">Meta</p><p class="slug">navigations</p><p class="meta">provides <b>wayfinding</b> · role 07</p></div><div>
+<p class="def">The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around the site/app and access search and account.</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">wayfinding</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">where-can-i-go</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">destination-set</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 12–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">shape = destination-set AND scope = global</p>
+<p class="meta">the default of the role; beats breadcrumbs (roles.json when: &quot;ancestry, depth ≥ 2&quot;) and tabs (when: &quot;local — peer views in one context&quot;) because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: &quot;global, desktop, persistent column (pairs with app-shell-side-nav)&quot;) when the page-frame is app-shell-side-nav, and to tab-bar (when: &quot;mobile bottom, 3–5 destinations&quot;) on mobile.</p>
+<h3>One hop — siblings in wayfinding (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">sidebar-nav</td><td class="n">50</td><td>global, desktop, persistent column (pairs with app-shell-side-nav)</td></tr>
+<tr><td class="mono">tabs</td><td class="n">45</td><td>local — peer views in one context</td></tr>
+<tr><td class="mono">breadcrumbs</td><td class="n">40</td><td>ancestry, depth ≥ 2</td></tr>
+<tr><td class="mono">anchor-nav</td><td class="n">30</td><td>in-page, long document</td></tr>
+<tr><td class="mono">tab-bar</td><td class="n">30</td><td>mobile bottom, 3–5 destinations</td></tr>
+<tr><td class="mono">pagination</td><td class="n">20</td><td>within one list</td></tr>
+<tr><td class="mono">back-to-top</td><td class="n">10</td><td>page chrome only</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">where-can-i-go</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">11</p><p class="label">Meta</p><p class="slug">app-shell-top-nav</p><p class="meta">provides <b>page-frame</b> · role 05</p></div><div>
+<p class="def">The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99&#x27;s sibling and row 97&#x27;s own notes cell, &#x27;Frame content lives in.&#x27;</p>
+<table>
+<tr><td class="k">provides</td><td class="mono">page-frame</td></tr>
+<tr><td class="k">answers</td><td><span class="mono">what-holds-the-page</span> <b>NEW</b></td></tr>
+<tr><td class="k">shape</td><td class="mono">page-regions</td></tr>
+<tr><td class="k">span</td><td class="mono">cols 12–12 of 12</td></tr>
+<tr><td class="k">priority</td><td class="mono">60</td><td class="meta">roles.json illustrative: 60</td></tr>
+</table>
+<h3>when — the predicate, spelled out</h3>
+<p class="pred">destinations &lt;= 7 AND nav.levels &lt;= 2</p>
+<p class="meta">the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: &quot;&gt; 7 destinations or two nav levels&quot;) below those bounds and app-shell-nav-rail (when: &quot;dense app, content cannot spare 248px&quot;) when the content can spare the column; yields to app-shell-multi-column (when: &quot;list-and-detail job&quot;) and to app-shell-focused (when: &quot;one job, no navigation (auth, wizard)&quot;) when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.</p>
+<h3>One hop — siblings in page-frame (roles.json)</h3>
+<table><tr><th>Sibling</th><th>Priority</th><th>Its <span class='mono'>when</span></th></tr>
+<tr><td class="mono">app-shell-side-nav</td><td class="n">50</td><td>&gt; 7 destinations or two nav levels</td></tr>
+<tr><td class="mono">app-shell-nav-rail</td><td class="n">45</td><td>dense app, content cannot spare 248px</td></tr>
+<tr><td class="mono">app-shell-multi-column</td><td class="n">40</td><td>list-and-detail job</td></tr>
+<tr><td class="mono">app-shell-split</td><td class="n">35</td><td>two peers on screen at once</td></tr>
+<tr><td class="mono">app-shell-focused</td><td class="n">30</td><td>one job, no navigation (auth, wizard)</td></tr>
+<tr><td class="mono">app-shell-doormat</td><td class="n">20</td><td>marketing / servicing site with a mega-footer</td></tr>
+</table>
+<h3>One hop — <span class='mono'>edges.mustNotNeighbour</span></h3>
+<p class="meta">None authored on this meta (<span class="mono">edges.mustNotNeighbour</span> absent; <span class="mono">relationships.mustNotNeighbour</span> empty). Nothing to promote.</p>
+<p class="red"><b>RED BY DESIGN</b> — <span class="mono">answers-resolves</span> fails on <span class="mono">what-holds-the-page</span>. Designed behaviour (s251-D11): the word is proposed here, never written into the store by a lane.</p>
+</div></div></section>
+<section class="grey"><div class="wrap split">
+<div><p class="idx">12</p><p class="label">Vocabulary</p><h2>What this batch introduced</h2><p class="meta">9 new <span class="mono">answers</span> words · 11 <span class="mono">shape</span> values · 18 <span class="mono">when</span> fields. None of the three vocabularies is ruled.</p></div><div>
+<h3>New <span class='mono'>answers</span> words (9) — proposed for chart-intents.json, NOT added</h3>
+<table><tr><th>Word</th><th>Metas using it</th></tr>
+<tr><td class="mono">one-number</td><td class="mono">kpi-tile · stat-card</td></tr>
+<tr><td class="mono">details-before-commit</td><td class="mono">summary</td></tr>
+<tr><td class="mono">status-of-one</td><td class="mono">status-indicator</td></tr>
+<tr><td class="mono">where-does-it-go</td><td class="mono">layout-utilities</td></tr>
+<tr><td class="mono">where-am-i</td><td class="mono">breadcrumbs</td></tr>
+<tr><td class="mono">what-is-this</td><td class="mono">headers</td></tr>
+<tr><td class="mono">what-can-i-do</td><td class="mono">button</td></tr>
+<tr><td class="mono">where-can-i-go</td><td class="mono">navigations</td></tr>
+<tr><td class="mono">what-holds-the-page</td><td class="mono">app-shell-top-nav</td></tr>
+</table>
+<p class="meta">Reused from the existing closed list: <span class="mono">change-over-time</span> (kpi-tile) · <span class="mono">comparison</span> (chart-bar).</p>
+<h3>Every <span class='mono'>shape</span> value this batch uses (11)</h3>
+<table><tr><th>Value</th><th>Metas</th></tr>
+<tr><td class="mono">one-measure-with-series</td><td class="mono">kpi-tile</td></tr>
+<tr><td class="mono">one-measure-with-delta</td><td class="mono">stat-card</td></tr>
+<tr><td class="mono">categories-by-series</td><td class="mono">chart-bar</td></tr>
+<tr><td class="mono">name-value-pairs</td><td class="mono">summary</td></tr>
+<tr><td class="mono">one-state</td><td class="mono">status-indicator</td></tr>
+<tr><td class="mono">arbitrary-blocks</td><td class="mono">layout-utilities</td></tr>
+<tr><td class="mono">ancestor-path</td><td class="mono">breadcrumbs</td></tr>
+<tr><td class="mono">title-and-optional-action</td><td class="mono">headers</td></tr>
+<tr><td class="mono">no-data</td><td class="mono">button</td></tr>
+<tr><td class="mono">destination-set</td><td class="mono">navigations</td></tr>
+<tr><td class="mono">page-regions</td><td class="mono">app-shell-top-nav</td></tr>
+</table>
+<h3>Every field on a <span class='mono'>when</span> predicate's left-hand side (18)</h3>
+<table><tr><th>Field</th><th>Metas</th></tr>
+<tr><td class="mono">answers</td><td class="mono">chart-bar</td></tr>
+<tr><td class="mono">axis.x</td><td class="mono">chart-bar</td></tr>
+<tr><td class="mono">content</td><td class="mono">layout-utilities</td></tr>
+<tr><td class="mono">delta</td><td class="mono">stat-card</td></tr>
+<tr><td class="mono">depth</td><td class="mono">breadcrumbs</td></tr>
+<tr><td class="mono">destinations</td><td class="mono">app-shell-top-nav</td></tr>
+<tr><td class="mono">emphasis</td><td class="mono">button</td></tr>
+<tr><td class="mono">label</td><td class="mono">button</td></tr>
+<tr><td class="mono">level</td><td class="mono">headers</td></tr>
+<tr><td class="mono">lockup</td><td class="mono">headers</td></tr>
+<tr><td class="mono">nav.levels</td><td class="mono">app-shell-top-nav</td></tr>
+<tr><td class="mono">platform</td><td class="mono">headers</td></tr>
+<tr><td class="mono">rows</td><td class="mono">summary</td></tr>
+<tr><td class="mono">scope</td><td class="mono">navigations</td></tr>
+<tr><td class="mono">series</td><td class="mono">kpi-tile · stat-card</td></tr>
+<tr><td class="mono">shape</td><td class="mono">kpi-tile · stat-card · summary · status-indicator · breadcrumbs · navigations</td></tr>
+<tr><td class="mono">span.cols</td><td class="mono">summary · status-indicator</td></tr>
+<tr><td class="mono">surface</td><td class="mono">layout-utilities</td></tr>
+</table>
+<p class="meta">Counted from the predicate half only — the text before the em dash. The half after it names the sibling this meta beats or yields to and is prose by construction.</p>
+</div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">13</p><p class="label">Ladders</p><h2>Priority, per role</h2><p class="meta">In-role only (update-alternatives). Lane A's metas in black; every other provider in the library shown for the shape of the ladder.</p></div><div>
+<h3>headline-metric — 3 provider(s) authored, 4 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">stat-card</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+<tr><td class="mono">kpi-tile</td><td class="n">50</td><td class="n">50</td><td class="meta">A</td></tr>
+<tr><td class="mono">Chart-bullet</td><td class="n">40</td><td class="n">40</td><td class="meta">B</td></tr>
+</table>
+<h3>status-surface — 2 provider(s) authored, 4 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">status-indicator</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+<tr><td class="mono">summary</td><td class="n">40</td><td class="n">40</td><td class="meta">A</td></tr>
+</table>
+<h3>chart-panel — 13 provider(s) authored, 13 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">chart-line</td><td class="n">88</td><td class="n">60</td><td class="meta">B</td></tr>
+<tr><td class="mono">chart-bar</td><td class="n">84</td><td class="n">60</td><td class="meta">A</td></tr>
+<tr><td class="mono">chart-donut</td><td class="n">80</td><td class="n">60</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-histogram</td><td class="n">76</td><td class="n">60</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-scatter</td><td class="n">72</td><td class="n">60</td><td class="meta">B</td></tr>
+<tr><td class="mono">chart-stacked-area</td><td class="n">64</td><td class="n">50</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-boxplot</td><td class="n">60</td><td class="n">50</td><td class="meta">B</td></tr>
+<tr><td class="mono">chart-combo</td><td class="n">56</td><td class="n">45</td><td class="meta">B</td></tr>
+<tr><td class="mono">chart-pie</td><td class="n">48</td><td class="n">40</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-candlestick</td><td class="n">44</td><td class="n">40</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-butterfly-h</td><td class="n">40</td><td class="n">40</td><td class="meta">B</td></tr>
+<tr><td class="mono">Chart-butterfly-v</td><td class="n">36</td><td class="n">35</td><td class="meta">B</td></tr>
+<tr><td class="mono">chart-sparkline</td><td class="n">30</td><td class="n">30</td><td class="meta">B</td></tr>
+</table>
+<h3>page-frame — 1 provider(s) authored, 7 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">app-shell-top-nav</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+</table>
+<h3>page-title — 1 provider(s) authored, 4 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">headers</td><td class="n">50</td><td class="n">50</td><td class="meta">A</td></tr>
+</table>
+<h3>wayfinding — 2 provider(s) authored, 8 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">navigations</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+<tr><td class="mono">breadcrumbs</td><td class="n">40</td><td class="n">40</td><td class="meta">A</td></tr>
+</table>
+<h3>action — 1 provider(s) authored, 8 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">button</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+</table>
+<h3>arrangement — 1 provider(s) authored, 8 in roles.json</h3>
+<table><tr><th>Provider</th><th>Authored</th><th>roles.json (illustrative)</th><th>Lane</th></tr>
+<tr><td class="mono">layout-utilities</td><td class="n">60</td><td class="n">60</td><td class="meta">A</td></tr>
+</table>
+<p class="meta">Not yet authored anywhere: the providers roles.json lists that are outside the 25-meta first pass. Their rungs are free.</p>
+</div></div></section>
+<section class="grey"><div class="wrap split">
+<div><p class="idx">14</p><p class="label">Calls made</p><h2>8 things I decided rather than asked</h2><p class="meta">Per s251-D15. Strike by number. Nothing here is ruled.</p></div><div><ol class="calls">
+<li><b><span class='mono'>answers</span> words are questions, not categories.</b> The nine new words are phrased as the reader's question (<span class='mono'>where-am-i</span>, <span class='mono'>what-can-i-do</span>) to match the five existing intent words, which are the chart's question. Strike the phrasing and I will re-cut them as nouns.</li>
+<li><b><span class='mono'>summary</span> answers <span class='mono'>details-before-commit</span>, not a count.</b> roles.json puts it in <span class='mono'>status-surface</span> ("n × count as a key/value list"), but the meta's own purpose is "confirming details before or after an action (a payment review, a receipt)". I authored the purpose, per the brief. If the role membership is right, the word should be a counting word and the purpose prose is the thing that is wrong.</li>
+<li><b><span class='mono'>kpi-tile</span> answers two words, one of them existing.</b> <span class='mono'>[one-number, change-over-time]</span> — the tile states a number AND the shape of its change, and the second half is exactly the existing intent word its embedded sparkline carries. Strike if you want one word per non-chart meta.</li>
+<li><b><span class='mono'>chart-bar</span> took priority 84, not roles.json's 60.</b> Lane B, authoring concurrently, broke the illustrative five-way tie at 60 into a ladder (chart-line 88 … chart-sparkline 30) and gave 60 to Chart-boxplot. 84 is the free rung directly below chart-line and keeps chart-bar in the top tier the roles page put it in. Neither lane could see the other's file; this was reconciled from my side only.</li>
+<li><b>No <span class='mono'>not-with</span> promoted from prose.</b> stat-card and chart-bar carry <span class='mono'>edges.mustNotNeighbour</span> entries about "a chart making the identical claim"; chart-bar's names <span class='mono'>component:stat-card</span> resolvably. I did not promote it — the brief authorised only the one the roles page names (kpi-tile ↛ status-surface), and the ~50 prose entries are a declared migration backlog. Say the word and the resolvable ones migrate.</li>
+<li><b><span class='mono'>not-with</span> on kpi-tile targets a ROLE, not a meta.</b> The validator prints "reciprocal NOT DERIVABLE (target is a ROLE, not a meta)". That is honest, but it means this one exclusion gets no symmetric partner. If exclusions should always be meta-to-meta, this entry needs re-cutting against status-indicator and summary individually.</li>
+<li><b><span class='mono'>when</span> is two halves separated by an em dash.</b> A C9-readable predicate, then prose naming the sibling it beats or yields to (clause R2 of this morning's adopted research). This page counts the field list in §12 from the predicate half ALONE; the validator prints the whole string. If the two halves should be two fields, say so and it is a schema addition.</li>
+<li><b><span class='mono'>button</span> and <span class='mono'>layout-utilities</span> got shape values that mean "no data".</b> <span class='mono'>no-data</span> and <span class='mono'>arbitrary-blocks</span>. The shape axis was defined for data-carrying components; these two carry none. Strike if the field should simply be absent on them.</li>
+</ol></div></div></section>
+<section><div class="wrap split">
+<div><p class="idx">15</p><p class="label">Decide</p><h2>What your answer settles</h2></div><div>
+<p>Unstruck values become canon on the metas, and roles.json's provider lists become a cross-check rather than a source for these 11 (s252-D1). The 9 proposed <span class='mono'>answers</span> words either enter <span class='mono'>chart-intents.json</span> by your ruling — at which point 10 red metas go green with no edit to any meta — or they get re-cut and the metas change.</p>
+<p>Still open after this page, and not asked here: whether <span class='mono'>shape</span> becomes a closed list with its own resolver (11 values so far, unchecked by anything), and the <span class='mono'>when</span> predicate's legal field list (18 fields so far, unchecked by anything). Both are declared UNPROVEN, not oversights.</p>
+</div></div></section>
+<footer><div class="wrap">Apollo · reviews/META-TAGS-A-2026-09-07-v1.html · lane A of #253 · sources: knowledge/components/*.meta.json (24 carry <span class="mono">provides</span>) · knowledge/roles.json · knowledge/chart-intents.json · reviews/ROLES-REVIEW-2026-09-07-v1.html · rulings s251-D3…D15, s252-D1 · gate: knowledge/_validate_roles_resolve.py</div></footer>
+</body>
+</html>

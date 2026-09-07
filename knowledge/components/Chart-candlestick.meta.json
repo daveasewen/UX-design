@@ -3,6 +3,17 @@
   "category": "organism",
   "purpose": "Open-high-low-close (OHLC) per period, one candle per session — a real SVG candlestick chart. Encoding ENACTS ds-027 (Dave, ruled #100, 2026-08-05): solid two-state, table = a11y fallback. Built to the Chart-scatter Layer-1 pattern (toolbar + table spine).",
   "intent": "change-over-time",
+  "provides": "chart-panel",
+  "answers": "change-over-time",
+  "shape": "periods × ohlc",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 44,
+  "when": "answers=change-over-time AND shape=periods × OHLC (open · high · low · close per session) — beats chart-line (88, \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.",
   "props": [
     { "name": "sessions", "type": "array", "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule)." },
     { "name": "up", "type": "boolean", "$note": "close ≥ open — body SOLID fill = data/delta/gain (ds-027, ruled #100)." },

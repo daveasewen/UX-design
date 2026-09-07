@@ -2,6 +2,17 @@
   "name": "Headers",
   "category": "molecule",
   "purpose": "App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a large display header with optional image and a processing state).",
+  "provides": "page-title",
+  "answers": "what-is-this",
+  "shape": "title-and-optional-action",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 50,
+  "when": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
   "$family": "Covers the Headers family (app only); each type is a separate Figma component.",
   "$platform": "app only",
   "props": [

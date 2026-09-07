@@ -3,6 +3,26 @@
   "category": "organism",
   "purpose": "Trend over time as cumulative stacked fills, multi-series — line-family frame/toolbar ported from Chart-line.reference.html (2026-07-23 exemplar), stacking recipe (cumulative bands, in-fill letter keys, table Total column) ported from Chart-bar.reference.html's stacked-column figure (D-Q3, landed 2026-07-24, consumed here not re-promoted). New member, wave-2 lane ③ (2026-08-05).",
   "intent": ["change-over-time", "composition"],
+  "provides": "chart-panel",
+  "answers": [
+    "change-over-time",
+    "composition"
+  ],
+  "shape": "time-series × parts-of-whole",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 64,
+  "when": "answers spans change-over-time AND composition AND cumulative bands share ONE total across the time axis — beats chart-donut (80, \"composition, a centre total is meaningful\") and chart-pie (48) when the split MOVES rather than being a snapshot; yields to chart-line (88, \"change-over-time\") when the total is not meaningful.",
+  "not-with": [
+    {
+      "slug": "chart-bar",
+      "when": "chart-bar is drawn stacked over the identical series — one composition idiom per view"
+    }
+  ],
   "props": [
     { "name": "series", "type": "number", "$note": "1–5 supported by the token ramp; 3 in the reference. Each band carries colour (data/series/N) + an in-fill letter key (A/B/C, data/text/on-series) — colour is never the only channel." },
     { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel. Mirrors PER-SERIES values plus a computed Total column (the bands' sum) — parity between chart and table is scriptable the same way as the stacked-column check." },

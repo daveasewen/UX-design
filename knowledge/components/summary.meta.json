@@ -3,6 +3,17 @@
   "interactive": false,
   "category": "molecule",
   "purpose": "A key/value list for confirming details before or after an action (a payment review, a receipt). Name on the left (text/secondary), value on the right (text/default, tabular-nums), hairline dividers between rows, with an optional emphasised total row. Surfaced as a missing pattern by the journey gap report.",
+  "provides": "status-surface",
+  "answers": "details-before-commit",
+  "shape": "name-value-pairs",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 40,
+  "when": "shape = name-value-pairs AND rows >= 2 AND span.cols >= 6 — beats status-indicator (roles.json when: \"one state, one dot + label, 2–4 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.",
   "props": [
     { "name": "total", "type": "boolean", "default": false, "$note": "Emphasise the final row as a total (heavier weight, larger size)." }
   ],

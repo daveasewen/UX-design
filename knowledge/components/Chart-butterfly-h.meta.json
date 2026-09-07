@@ -3,6 +3,23 @@
   "category": "organism",
   "purpose": "Two-series comparison per category as mirrored horizontal bars flowing outward from a shared centre gutter — e.g. this-year versus last-year, actual versus target, inflow versus outflow. Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015, worker fence — markers empty). CHART-EXPANSION WAVE 2 lane 1 (2026-08-05); ported from Chart-bar.reference.html's mark contract and Chart-line.reference.html's Layer-2 state model.",
   "intent": "comparison",
+  "provides": "chart-panel",
+  "answers": "comparison",
+  "shape": "categories × two-series-mirrored",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 40,
+  "when": "answers=comparison AND series=2 mirrored outward from a shared centre gutter AND categories ≥ 6 — beats chart-bar (grouped) when the two series must read as OPPOSED directions rather than adjacent columns; yields to Chart-butterfly-v (36, \"as above, wide panel\") when the category axis is ordered left-to-right and span.cols ≥ 8.",
+  "not-with": [
+    {
+      "slug": "stat-card",
+      "when": "the Stat-card makes the identical claim in the same view"
+    }
+  ],
   "props": [
     { "name": "series", "type": "pair", "$note": "Exactly two series, one per direction. LEFT takes data/series/1 (categorical default); RIGHT takes data/series/3 (DV-D09's h-bar default, cited here for the positive-reading direction)." },
     { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005), surfaced by the same TABLE-VIEW POPOVER Chart-bar uses." },

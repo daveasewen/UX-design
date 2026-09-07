@@ -5,6 +5,17 @@
   "$layerKeyIsDollarPrefixed": "⚠ THE BRIEF PROPOSED A PLAIN `layer` KEY AND IT WOULD FAIL P-1. knowledge/components/meta.schema.json sets additionalProperties:false with patternProperties {'^\\$': {}}, and `layer` is not in its property list — so an unprefixed `layer` key is a schema violation that probe_meta_schema.py catches on the next run. The `$` prefix is the legal form for an annotation the schema has not adopted. If Layer 2 becomes a first-class idea in this repo, the schema should GAIN a real `layer` property (and probably a `shell` value in the `category` enum) — that is a schema change and schema changes are Dave's.",
   "$categoryChoice": "`template` is the closest LEGAL value in the schema's enum (atom · molecule · organism · template · page). A shell is not literally a template — a template fills a shell — but there is no `shell` value and inventing one would fail the gate. DECLARED as a compromise, not presented as correct. PROPOSED #210.",
   "purpose": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99's sibling and row 97's own notes cell, 'Frame content lives in.'",
+  "provides": "page-frame",
+  "answers": "what-holds-the-page",
+  "shape": "page-regions",
+  "span": {
+    "cols": {
+      "min": 12,
+      "max": 12
+    }
+  },
+  "priority": 60,
+  "when": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
   "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Nothing in this file is a ruling. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — this lane created NEW FILES ONLY.",
   "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file and is named in $copiedFrom with a diff-proof in the receipt. The only new CSS in the snippet is the .sh-* frame: it positions parts, it styles none of them.",
   "props": [

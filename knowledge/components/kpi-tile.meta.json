@@ -4,6 +4,27 @@
   "$status": "PROPOSED #203, Dave's eye owed",
   "$floated": "⛔ THE COMPONENT ITSELF IS FLOATED, NOT RULED. s182-D2 (#182) names it and explicitly declines to rule it — Dave, verbatim, quoted in that ruling: 'might be a partially built trend card with option, I haven't decided yet', and the ruling's own words: 'FLOATED, NOT RULED: the trend-card component itself — never launder into a ruling.' Itinerary row 55 is therefore NOT an ordinary gap a worker may close. This meta is a drawn proposal for Dave's eye; nothing in it is a ruling, and it must not be promoted, gated or registered without his word.",
   "purpose": "A dashboard tile that states a metric, how it changed, and the SHAPE of that change: label, value, delta and period (the Stat-card anatomy, verbatim) plus the Chart-sparkline atom at its inline scale in a slot. Use it when the reader needs to see how a number moved over time, not merely whether it moved. A KPI tile with no series is a Stat card and should be one.",
+  "provides": "headline-metric",
+  "answers": [
+    "one-number",
+    "change-over-time"
+  ],
+  "shape": "one-measure-with-series",
+  "span": {
+    "cols": {
+      "min": 3,
+      "max": 6
+    }
+  },
+  "priority": 50,
+  "when": "shape = one-measure-with-series AND series != none — beats stat-card (roles.json when: \"default — label · value · delta · period, no series\") whenever a series exists to show; yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") when target != none, and to runway-bar (when: \"the number is 'money vs what is already scheduled'\") when the measure is money-vs-scheduled.",
+  "not-with": [
+    {
+      "slug": "status-surface",
+      "when": "shape lacks series",
+      "$note": "The DESK example, kept: reviews/ROLES-REVIEW-2026-09-07-v1.html §01. A KPI tile with no series is a Stat card (s247-D3 / DP-08), so a slot that wanted a status-surface reading is not served by this tile."
+    }
+  ],
   "$differsFromStatCard": "THE BRIEF'S EXPLICIT REQUIREMENT, answered plainly. Stat card (GATED) is a PASSIVE ATOM — label · value · delta · period — and it ALREADY carries full delta semantics: arrow, sign and wording, the R-D5 three-channel treatment. So 'metric + delta' (the itinerary's wording for row 55) was never the gap; only 'spark' was. KPI tile is a MOLECULE that composes two already-approved artefacts and draws nothing new: Stat card's anatomy verbatim, and Chart-sparkline's .spark-inline scale verbatim. THE ONE REAL DIFFERENCE: Stat card states the CHANGE (a signed delta against one prior period); KPI tile states the SHAPE of the change (twelve points of history). Choose Stat card when the reader needs the number and whether it moved; choose KPI tile when the reader needs to see HOW it moved. The sparkline atom anticipated this composition: its own source calls .spark-inline 'the KPI / Stat-card scale' and carries .spark-kpi-slot as 'a SPECIMEN-ONLY wrapper standing in for the Stat-card tile'. Neither parent file was touched.",
   "props": [
     {
