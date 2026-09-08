@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-donut — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, radial half (s249-D4, #259 donut type lane).
+  Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-donut`
+  namespace wrapper (drop it and the svg takes no size and the tip is unstyled), a `figure.dv`
+  with an EMPTY `svg.dv-svg`, an authored `<table class="dv-table">` as the JS-off spine, and an
+  inline DATA object drawn by `dvRender(figure, spec)`.
+
+  ⛔ NO dv-fit ON A RADIAL CANVAS. ds-030's #103 amendment makes the circular chart the exception
+  to fluid-plot scaling: fluid CONTAINER, fixed-diameter CENTRED plot. `_validate_dataviz.py`
+  makes `dv-fit` on a donut BLOCKING (DV-D02-A), and `.dv-svg{flex:none; margin-inline:auto}` in
+  canon.css is what centres it. So the canvas keeps its baked box and the engine reads the
+  diameter off data-h alone — which is exactly what the resize assertion below proves.
+
+  ⛔ SCRIPT ORDER IS LOAD-BEARING and is the reason the four tags below are not in registry order.
+  dv-legend's rec() caches every mark's data-tip-value ONCE at parse time (DV-D13), and
+  dv-donut-sweep (DV-D12) sweeps `path.dv-series[data-a1]` ONCE at parse time. Both must load
+  AFTER the dvRender() bootstrap or they initialise against an empty canvas.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These five tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. five arcs exist, each carrying the DV-D12 sweep contract (data-cx/-cy/-ro/-ri/-a1/-a2);
+    3. adjacent arcs are separated by ≥2px of REAL GEOMETRY at the inner edge (dv-004);
+    4. the tooltip (#dvTip.on) appears on hover of a segment, with that segment's own value;
+    5. the CATEGORY FILTER re-renders (rule 14) and the arc count changes with it;
+    6. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    7. every arc fill resolves to a non-empty computed colour (no dead var());
+    8. the centre total equals the sum of the drawn slices (dv-pie-010);
+    9. RESIZE: the figure re-flows and the ring does NOT scale — ro is constant and the ring
+       stays horizontally centred in its row (ds-030, the inverse of the cartesian assertion);
+   10. the DV-D12 sweep runs: arcs start collapsed and land on their full `d`.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-donut. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-donut{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-donut — driven test page</h1>
+  <p class="lede">Two radial canvases, one engine, one DATA object. Untick a category and both
+     figures re-render from the same numbers, table and centre total included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — categories in the spend ring</legend>
+  </fieldset>
+
+  <!-- ============ 1 · DONUT — ring with the total in the hole ============ -->
+  <div class="cn-chart-donut">
+  <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page"
+          data-labelling="spider" role="group" aria-labelledby="d1-h" id="fig-donut">
+    <figcaption id="d1-h" class="sr-only">Spend by category this month, pounds</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="d1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="d1-tbl" role="region" aria-label="Spend by category, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Spend by category this month, pounds</caption>
+              <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+              <tbody><tr><th scope="row">Housing</th><td>950</td></tr><tr><th scope="row">Groceries</th><td>420</td></tr><tr><th scope="row">Savings</th><td>300</td></tr><tr><th scope="row">Leisure</th><td>260</td></tr><tr><th scope="row">Other</th><td>390</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-donut-row">
+      <svg class="dv-svg" data-h="260" viewBox="0 0 300 260" width="300" height="260"
+           role="group" aria-label="Spend by category."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · PIE — the same routine with ri = 0 ============ -->
+  <div class="cn-chart-donut">
+  <figure class="dv" data-dv-type="pie" data-total="2320" data-surface="page"
+          data-labelling="spider" role="group" aria-labelledby="d2-h" id="fig-pie">
+    <figcaption id="d2-h" class="sr-only">Spend by category this month, pounds, as a pie</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">The same whole, drawn without the hole</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="d2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="d2-tbl" role="region" aria-label="Spend by category pie, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Spend by category this month, pounds</caption>
+              <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+              <tbody><tr><th scope="row">Housing</th><td>950</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-donut-row">
+      <svg class="dv-svg" data-h="260" viewBox="0 0 300 260" width="300" height="260"
+           role="group" aria-label="Spend by category, pie."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-donut.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies.
+   FIVE categories, not eight: dv-pie-009 caps a ring at six slices and ds-026's solid
+   categorical palette (data/series/1…5) caps it at five before that. */
+var CATS  = ['Housing', 'Groceries', 'Savings', 'Leisure', 'Other'];
+var SPEND = [950, 420, 300, 260, 390];
+var OFF = {};        /* the filter's state — category name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < CATS.length; i++) { if (!OFF[CATS[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  var cats = ix.map(function (i) { return CATS[i]; });
+  var vals = ix.map(function (i) { return SPEND[i]; });
+  dvRender(document.getElementById('fig-donut'), {
+    type: 'donut', categories: cats, series: [{ name: 'Amount', values: vals }],
+    unit: '£', categoryLabel: 'Category',
+    caption: 'Spend by category this month, pounds'
+  });
+  dvRender(document.getElementById('fig-pie'), {
+    type: 'pie', categories: cats, series: [{ name: 'Amount', values: vals }],
+    unit: '£', categoryLabel: 'Category',
+    caption: 'Spend by category this month, pounds'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  CATS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+</script>
+<!-- BELOW the bootstrap on purpose — both of these initialise at parse time against the marks
+     the engine has just drawn. See the header note. -->
+<script src="../../canon/dv-legend.js"></script>
+<script src="../../canon/dv-donut-sweep.js"></script>
+<script>window.__dvTestReady = true;</script>
+</body>
+</html>

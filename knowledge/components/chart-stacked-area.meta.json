@@ -90,6 +90,17 @@
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-line.reference.html"
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-stacked-area"
+    ],
+    "fallback": "With CSS on and JS off the plot <svg> renders as an EMPTY box and no chart is drawn — dvRender(figure, spec) is what fills it, and the snippet ships no baked geometry to fall back on. The data is still complete and still labelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), hand-authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction rather than by care. Lost with JS off: the value popover, the ds-030 width fit and s248-D2 height fit, the legend show/hide and isolate, Copy CSV, and any control that re-renders the spec. The empty-state pattern below the figure is pure markup and is unaffected.",
+    "$note": "Typed s249-D4 / #259 lane C. `script` addresses the ENGINE CORE — dv-render.js is where this component’s behaviour begins; dv-render-stacked-area.js is reached through the core’s type registry (dvRender.types[\"stacked-area\"]) and is named in `partial`, which is where registered AUTO-BEHAVIOUR names belong. All FOUR injected names are listed — the snippet really carries dv-behaviour, dv-legend, dv-render and dv-render-stacked-area between AUTO-BEHAVIOUR markers, and the schema’s own words for `partial` are \"the AUTO-BEHAVIOUR name(s) … that the snippet carries\". (Chart-bar’s meta lists three and flags the fourth as ruling-shaped; this lane read the schema wording and listed what the file carries — the divergence is reported, not decided.)"
+  },
   "slots": {
     "series": {
       "accepts": {

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-line — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED (s249-D4, #259 line lane) — modelled EXACTLY on
+  knowledge/_tests/chart-engine/bar.html, same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-line`
+  namespace wrapper (drop it and the svg takes no size, the lines never draw and the tip is
+  unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored `<table class="dv-table">`
+  as the JS-off spine, and an inline DATA object drawn by `dvRender(figure, spec)`. Nothing here
+  re-implements chart geometry; that is the whole point.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained, so the
+  partials are injected into it between AUTO-BEHAVIOUR markers and gated byte-exact. A TEST is the
+  opposite obligation: it must fail when the SOURCE breaks, not when a copy of it goes stale. These
+  tags load `knowledge/canon/*.js` directly, so this page can never be green against a source that
+  is red. The injected copies are proven identical by `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. polylines exist and carry data-fxs + data-ys — the fit grammar's path form, not baked pixels;
+    3. one .dv-mk glyph per point inside a focusable g.dv-marker carrying data-fx + data-x0;
+    4. the 24px HIT TIER (circle.dv-hit) is present and measures 24 where the band can pay for it;
+    5. the tooltip (#dvTip.on) appears on hover of a marker, with that marker's own value;
+    6. the MONTH FILTER re-renders (rule 14): point count, polyline vertex count and the <table>
+       row count all follow the filtered spec;
+    7. every stroke and glyph fill resolves to a non-empty computed colour (no dead var());
+    8. the line points sit on the COLUMN'S band centres, so a combo can overlay the two.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-line. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-line{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-line — driven test page</h1>
+  <p class="lede">Two canvases, one engine, one DATA object. Untick a month and every figure
+     re-renders from the same numbers, table included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — months in both charts</legend>
+  </fieldset>
+
+  <!-- ============ 1 · LINE, single series ============ -->
+  <div class="cn-chart-line">
+  <figure class="dv dv-animate" data-dv-type="line" data-surface="page"
+          role="group" aria-labelledby="t1-h" id="fig-line">
+    <figcaption id="t1-h" class="sr-only">Account balance by month, pounds thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Balance climbed steadily through the year</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="t1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="t1-tbl" role="region" aria-label="Account balance by month, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Account balance by month, pounds thousands</caption>
+              <thead><tr><th scope="col">Month</th><th scope="col">Balance</th></tr></thead>
+              <tbody><tr><th scope="row">Jan</th><td>82</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Account balance by month."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · MULTILINE, 12 categories × 3 series ============ -->
+  <div class="cn-chart-line">
+  <figure class="dv dv-animate" data-dv-type="multiline" data-surface="page"
+          role="group" aria-labelledby="t2-h" id="fig-multi">
+    <figcaption id="t2-h" class="sr-only">Balances by product by month, pounds thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Savings drove growth across every product</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="t2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="t2-tbl" role="region" aria-label="Balances by product, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Balances by product by month, pounds thousands</caption>
+              <thead><tr><th scope="col">Month</th><th scope="col">Current</th></tr></thead>
+              <tbody><tr><th scope="row">Jan</th><td>12</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Balances by product."></svg>
+    </div></div>
+    <ul class="dv-leg center t-cm-chart-label" id="t2-legend" role="group"
+        aria-label="Series — uncheck a swatch to dim it, click a name to isolate">
+      <li class="dv-legrow" data-series="1"><span class="dv-leg-sw sw-circle" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Current" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Current"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Current</span></button></li>
+      <li class="dv-legrow" data-series="2"><span class="dv-leg-sw sw-square" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Savings" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Savings"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Savings</span></button></li>
+      <li class="dv-legrow" data-series="3"><span class="dv-leg-sw sw-diamond" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Investments" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Investments"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Investments</span></button></li>
+      <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="t2-legend" disabled>Reset</button></li>
+    </ul>
+    <p class="dv-sr" id="t2-live" role="status" aria-live="polite"></p>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-legend.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-line.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies. */
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var BAL    = [82, 80, 85, 83, 88, 90, 87, 92, 95, 93, 98, 104];
+var PROD   = [
+  { name: 'Current',     values: [12, 11, 13, 12, 14, 13, 15, 14, 16, 15, 17, 18] },
+  { name: 'Savings',     values: [82, 80, 85, 83, 88, 90, 87, 92, 95, 93, 98, 104] },
+  { name: 'Investments', values: [40, 42, 41, 45, 44, 48, 47, 52, 55, 53, 58, 62] }
+];
+var OFF = {};        /* the filter's state — month -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < MONTHS.length; i++) { if (!OFF[MONTHS[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  var cats = ix.map(function (i) { return MONTHS[i]; });
+  dvRender(document.getElementById('fig-line'), {
+    type: 'line', categories: cats,
+    series: [{ name: 'Balance', values: ix.map(function (i) { return BAL[i]; }) }],
+    categoryLabel: 'Month',
+    caption: 'Account balance by month, pounds thousands'
+  });
+  dvRender(document.getElementById('fig-multi'), {
+    type: 'multiline', categories: cats,
+    series: PROD.map(function (s) {
+      return { name: s.name, values: ix.map(function (i) { return s.values[i]; }) };
+    }),
+    categoryLabel: 'Month',
+    caption: 'Balances by product by month, pounds thousands'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  MONTHS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+window.__dvTestReady = true;
+</script>
+</body>
+</html>

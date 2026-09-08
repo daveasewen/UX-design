@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-combo — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, combo edition (s249-D4, #259 lane F).
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-combo`
+  namespace wrapper (drop it and the svg takes no size, bars never animate and the tip is
+  unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored `<table class="dv-table">`
+  as the JS-off spine, and an inline DATA object drawn by `dvRender(figure, spec)`.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained, so the
+  partials are injected into it between AUTO-BEHAVIOUR markers and gated byte-exact. A TEST is the
+  opposite obligation: it must fail when the SOURCE breaks, not when a copy of it goes stale.
+  These five tags load `knowledge/canon/*.js` directly, so this page can never be green against a
+  source that is red. The injected copies are proven identical by `gen_component_partials.py --check`.
+
+  ⚠ FIVE tags, not four: `combo` DRAWS NOTHING ITSELF. It composes `dvRender.types.column` (from
+  dv-render-bar.js) and `dvRender.types.line` (from dv-render-line.js) on one ctx, so both type
+  partials must be loaded beside it or the composer throws, named.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. bars AND a polyline exist, carrying data-fx/data-fw and data-fxs — the fit grammar;
+    3. the line's points sit on the BARS' band centres (one shared band axis, not two);
+    4. the SECONDARY axis exists and floats (dv-line-001) while the bar axis is zero-based;
+    5. the tooltip (#dvTip.on) appears on hover of a mark, with that mark's own value and unit;
+    6. the CATEGORY FILTER re-renders (rule 14): mark count AND table row count change;
+    7. every fill and stroke resolves to a non-empty computed colour (no dead var());
+    8. the second figure (sharedScale) draws ONE axis and no right-edge rule.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-combo. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-combo{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-combo — driven test page</h1>
+  <p class="lede">Two canvases, one engine, one DATA object. Untick a month and both figures
+     re-render from the same numbers, table included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — months in the combo charts</legend>
+  </fieldset>
+
+  <!-- ============ 1 · COMBO, dual axis (columns £000 + line %) ============ -->
+  <div class="cn-chart-combo">
+  <figure class="dv dv-animate" data-dv-type="combo" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="t1-h" id="fig-combo">
+    <figcaption id="t1-h" class="sr-only">Payments processed and straight-through rate by month</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Payments grew while straight-through rates climbed</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="dv-toggle-seg"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target rate</button></div>
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="t1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="t1-tbl" role="region" aria-label="Payments and rate, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Payments processed and straight-through rate by month</caption>
+              <thead><tr><th scope="col">Month</th><th scope="col">Payments</th><th scope="col">STP rate</th></tr></thead>
+              <tbody><tr><th scope="row">Jan</th><td>620</td><td>88.2</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="44" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Payments and rate."></svg>
+    </div></div>
+    <ul class="dv-leg center t-cm-chart-label" id="t1-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+      <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Payments" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Payments"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Payments — left axis, £ thousands</span></button></li>
+      <li class="dv-legrow" data-series="2"><span class="dv-leg-sw sw-circle" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide STP rate" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate STP rate"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">STP rate — right axis, %</span></button></li>
+      <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="t1-legend" disabled>Reset</button></li>
+    </ul>
+    <p class="dv-sr" id="t1-live" role="status" aria-live="polite"></p>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · COMBO, SHARED scale — two columns + a line, one unit ============ -->
+  <div class="cn-chart-combo">
+  <figure class="dv dv-animate" data-dv-type="combo" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="t2-h" id="fig-shared">
+    <figcaption id="t2-h" class="sr-only">Inflows, outflows and the rolling balance by month</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">One unit, one axis — the line is a rolling average</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="t2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="t2-tbl" role="region" aria-label="Flows, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Inflows, outflows and the rolling average by month</caption>
+              <thead><tr><th scope="col">Month</th><th scope="col">Inflow</th></tr></thead>
+              <tbody><tr><th scope="row">Jan</th><td>620</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Flows by month."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-bar.js"></script>
+<script src="../../canon/dv-render-line.js"></script>
+<script src="../../canon/dv-render-combo.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies. */
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var PAY    = [620, 585, 705, 660, 748, 802, 760, 815, 878, 842, 910, 965];
+var STP    = [88.2, 89.0, 88.6, 90.1, 91.4, 90.8, 92.3, 93.0, 92.6, 93.8, 94.6, 95.4];
+var OUT    = [540, 512, 601, 588, 640, 690, 671, 704, 748, 736, 780, 812];
+var OFF = {};        /* the filter's state — month name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < MONTHS.length; i++) { if (!OFF[MONTHS[i]]) { ix.push(i); } }
+  return ix;
+}
+function pick(a, ix) { return ix.map(function (i) { return a[i]; }); }
+
+function draw() {
+  var ix = keep(), cats = pick(MONTHS, ix);
+  dvRender(document.getElementById('fig-combo'), {
+    type: 'combo', categories: cats, categoryLabel: 'Month',
+    caption: 'Payments processed and straight-through rate by month',
+    target: 95, targetLabel: 'Target 95%',
+    series: [
+      { name: 'Payments', kind: 'column', unit: '£k', values: pick(PAY, ix) },
+      { name: 'STP rate', kind: 'line',   unit: '',   format: 'percent', values: pick(STP, ix) }
+    ]
+  });
+  var inn = pick(PAY, ix), out = pick(OUT, ix), avg = [], i;
+  for (i = 0; i < inn.length; i++) { avg.push(Math.round((inn[i] + out[i]) / 2)); }
+  dvRender(document.getElementById('fig-shared'), {
+    type: 'combo', categories: cats, categoryLabel: 'Month', unit: '£', sharedScale: true,
+    caption: 'Inflows, outflows and the rolling average by month',
+    series: [
+      { name: 'Inflow',  kind: 'column', values: inn },
+      { name: 'Outflow', kind: 'column', values: out },
+      { name: 'Average', kind: 'line',   values: avg }
+    ]
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  MONTHS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+window.__dvTestReady = true;
+</script>
+</body>
+</html>

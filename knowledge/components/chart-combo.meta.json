@@ -59,8 +59,14 @@
     }
   ],
   "variants": [
-    { "name": "combo", "use": "Volume-style bars + a rate/average line in a different unit (e.g. payments processed + straight-through rate). NOT for two same-unit series — that is a multi-series line or grouped bar." },
-    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+    {
+      "name": "combo",
+      "use": "Volume-style bars + a rate/average line in a different unit (e.g. payments processed + straight-through rate). NOT for two same-unit series — that is a multi-series line or grouped bar."
+    },
+    {
+      "name": "no data",
+      "use": "Empty-state pattern in the chart frame."
+    }
   ],
   "tokens": {
     "font-family": "type composites via markup class — DV-D08 ladder: axis ticks (both axes, suffixed) .t-cm-chart-value (12/500 tabular) · month labels + legend + controls .t-cm-chart-label (12/500) · letter keys .t-cm-chart-key (12/700); table .t-cm-legal; title .t-cm-section-label",
@@ -71,18 +77,49 @@
     "entry": "Bars grow from the baseline (760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — Chart-bar language); line + casing draw AS ONE (same pathLength=2400 + 2400ms draw — the casing must never lead its line); markers land on the eased cadence (0·369·507·…·2400ms); the letter key fades in as the draw completes. All CSS (DEF-003).",
     "hover": "Bar brightness emphasis (1.12 light / 1.22 dark); legend/marker hover-highlight dims the OTHER series' data layer to .25 (.dv-quiet)."
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-bar",
+      "dv-render-line",
+      "dv-render-combo"
+    ],
+    "fallback": "With CSS on and JS off the canvas renders as an EMPTY <svg> box and no chart is drawn — dvRender is what fills it, and a combo is filled twice over (the column type partial writes the bars, the line type partial writes the polyline and its markers, the composer writes the secondary axis and the target rule). The data is still complete and still labelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), hand-authored in the markup and not generated, so it opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). Both series are in that one table with their units in the column headers — which is how a dual-axis chart stays honest without axes. The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow, the legend filter/isolate/highlight, Copy CSV, and the Target rate toggle (the dashed 95% rule is emitted by the engine, so with no script there is no rule to show).",
+    "$note": "Typed s249-D4 / #259 lane F (the combo type lane). `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; every type partial is reached through its type registry. `partial` lists all SIX AUTO-BEHAVIOUR names the snippet actually carries, which is the schema's own wording (\"the AUTO-BEHAVIOUR name(s) … that the snippet carries\") and is the component-types.json `consumes` list verbatim. ⚠ This DIVERGES from chart-bar.meta.json, which omits dv-legend on the narrower s245-D2 reading of `partial` as the script chain. Both readings were briefed; the divergence is flagged, not silently reconciled — one of the two is wrong and it is Dave's word which. THE COMPOSER: dv-render-combo registers `combo` and draws nothing itself. It splits the spec's series on `kind` (\"column\" | \"line\"), builds a prototype-linked sub-ctx per group — same push/out/plot frame, that group's series, scale, palette indices and formatter — and calls dvRender.types.column and dvRender.types.line. Both must be loaded beside it or it throws, named. Spec extension: series[i].kind, series[i].unit (two axes, two units — dv-line-006), spec.sharedScale (one axis, no right-edge rule), spec.target / spec.targetLabel (the [data-dv-view=\"target\"] group the segmented toggle governs)."
+  },
   "responsive": {
     "rule": "DV-D02 + fit via the behaviour partial: baked-fraction relayout (bars data-fx/data-fw, line data-fxs/data-ys, markers data-fx/data-x0, BOTH axes' ticks data-fx/data-dx) to the container width — fixed height, TEXT NEVER SCALES (viewBox pinned 1:1). Both scales recompute under fit because both are baked fractions of the same plot frame (46/12/260). JS-off = static 580×260 + horizontal scroll; stage padding-right 32px keeps the suffixed right ticks + letter key visible at the clip edge.",
     "tokens": []
   },
   "relationships": {
-    "livesInside": ["Dashboards", "Operations and payments views", "Reports"],
-    "mustNotNeighbour": ["A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)", "A same-unit pair drawn as a combo (use multi-series line or grouped bar instead — dv-line-006)"],
-    "commonPatterns": ["volume + rate", "revenue + margin %", "payments + straight-through rate"],
+    "livesInside": [
+      "Dashboards",
+      "Operations and payments views",
+      "Reports"
+    ],
+    "mustNotNeighbour": [
+      "A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)",
+      "A same-unit pair drawn as a combo (use multi-series line or grouped bar instead — dv-line-006)"
+    ],
+    "commonPatterns": [
+      "volume + rate",
+      "revenue + margin %",
+      "payments + straight-through rate"
+    ],
     "triggeredBy": []
   },
   "accessibility": {
-    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"],
+    "relatedSC": [
+      "1.4.1 Use of Color",
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover",
+      "2.1.1 Keyboard",
+      "4.1.2 Name, Role, Value"
+    ],
     "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption (names BOTH units and axes); svg role=\"group\" + full-sentence aria-label; table panel role=\"region\".",
     "name": "Bars AND markers are focus stops (tabindex 0) with aria-label == data-tip == table values; the legend text names each series' axis and unit (dv-line-006 — never colour alone: shapes + letters + axis-named legend).",
     "keyboard": "Bars + markers = focus stops (popover on focus); legend rows = filter buttons (aria-pressed; Shift+Enter isolates); table toggle aria-controls/expanded, Esc dismisses + refocuses; target toggle aria-pressed."

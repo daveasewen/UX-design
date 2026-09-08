@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**136 snippet(s)** · **0 failure(s)** · **282 warning(s)** · **692 note(s)**
+**136 snippet(s)** · **0 failure(s)** · **198 warning(s)** · **689 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1345 control(s)** and **209 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1345 control(s)** and **105 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -10,13 +10,10 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 
 ## Owed measurement — data marks below 24 (`s116-D1`, for Dave)
 
-**125 focusable data mark(s) fall below the 24px dense-case minimum**, across 6 snippet(s):
+**41 focusable data mark(s) fall below the 24px dense-case minimum**, across 3 snippet(s):
 
 - `Chart-butterfly-h` — 12
 - `Chart-butterfly-v` — 5
-- `Chart-combo` — 12
-- `Chart-line` — 60
-- `Chart-stacked-area` — 12
 - `Template-report` — 24
 
 NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the mark tier goes blocking. `MARK_TIER` in this file is the single switch.
@@ -428,81 +425,9 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — DATA MARK `rect.dv-series` — 48.7x17.1 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Chart-combo
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
 - ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Chart-line
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its rect child (rect w/h attrs)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 13.0x13.0 — under the 24 dense-case minimum (<g> wrapper measured from its polygon child (polygon bbox)) (s116-D1: marks carry the 24 floor, not the 44 target)
 - ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
@@ -517,25 +442,6 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
 - ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
 - ⚪ note — DATA MARK `path.dv-marker.dv-pie-seg.dv-series` — UNMEASURED: path with a free-form `d` — bbox not statically derived
-
-## Chart-sparkline
-- ⚪ note — DATA MARK `polyline.dv-series` — UNMEASURED: polyline (trend line): its target is stroke width x hit band, which is a render-axis fact
-- ⚪ note — DATA MARK `polyline.dv-series` — UNMEASURED: polyline (trend line): its target is stroke width x hit band, which is a render-axis fact
-- ⚪ note — DATA MARK `polyline.dv-series` — UNMEASURED: polyline (trend line): its target is stroke width x hit band, which is a render-axis fact
-
-## Chart-stacked-area
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 8.4x8.4 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Combobox
 - ⚪ note — `li#cb1-o1.cb-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)

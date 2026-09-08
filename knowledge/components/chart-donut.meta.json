@@ -52,6 +52,12 @@
     "rule": "DV-D02 excluded donuts from width-compression (compressing a circle distorts) — fixed geometry; .dv-stage scrolls if the container is narrower.",
     "tokens": []
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": ["dv-behaviour", "dv-legend", "dv-donut-sweep", "dv-render", "dv-render-donut"],
+    "fallback": "With CSS on and JS off the spider/legend canvas renders as an EMPTY <svg> and no ring is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the five categories, their pounds and their percentage shares open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. The DIRECT-LABEL canvas stays baked, so a complete ring, its leaders, its in-place labels and its centre total all render with JS off. Lost with JS off: the DV-D12 radial sweep intro, the value popover, the DV-D11 legend filter/isolate, the DV-D13 centre-follows-selection readout, the value ⇄ percent toggle and Copy CSV.",
+    "$note": "Typed s249-D4 / #259 (the donut type lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; dv-render-donut.js is reached through its type registry and is named in `partial`. `partial` lists ALL FIVE registered AUTO-BEHAVIOUR names the snippet actually carries, which is the schema's own wording ('the AUTO-BEHAVIOUR name(s) … that the snippet carries') and the s245-D2 shape for a member carrying 2–3+; chart-bar.meta.json lists three of its four and flagged the discrepancy at #259 lane A. ⛔ THE INJECTION ORDER ON THE SNIPPET IS NOT THE REGISTRY ORDER: dv-render and dv-render-donut sit ABOVE the dvRender() bootstrap and dv-legend + dv-donut-sweep BELOW it, because both of those initialise at parse time against marks that do not exist until the engine has drawn them."
+  },
   "relationships": {
     "livesInside": ["Dashboards", "Spending breakdowns", "Portfolio composition views"],
     "mustNotNeighbour": ["A second composition chart of the same data (pick one)", "Charts re-using these series colours for different data (dv-014)"],

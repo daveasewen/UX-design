@@ -33,7 +33,8 @@
         "white"
       ],
       "default": "background",
-      "binds": "background.default", "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
+      "binds": "background.default",
+      "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
     },
     {
       "name": "empty",
@@ -62,7 +63,10 @@
       "name": "highContrast",
       "type": "boolean",
       "default": false,
-      "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern).", "binds": "data.series-high-contrast", "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind. data-contrast=\"high\" remaps series onto this token (kit pattern, v2-recommended, ratified). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
+      "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern).",
+      "binds": "data.series-high-contrast",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind. data-contrast=\"high\" remaps series onto this token (kit pattern, v2-recommended, ratified). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+    }
   ],
   "variants": [
     {
@@ -214,5 +218,16 @@
         "ref": "ruling:s116-D2"
       }
     ]
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-line"
+    ],
+    "fallback": "With CSS on and JS off both engine-driven canvases (the single line and the multi-series overlay) render as EMPTY <svg> boxes and no chart is drawn — dvRender is what fills them. The data is still complete and still labelled: each figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). When the engine does run it REWRITES those same rows from the spec, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow in both axes, the legend filter/isolate, Copy CSV, the last-year and target overlays, and the monthly / year-to-date switch — which now re-renders from a second spec instead of toggling a second baked copy of the plot. The static empty-state figure is markup only and is unaffected.",
+    "$note": "Typed #259 by the LINE type lane, against the s249-D4 engine. `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-line.js is reached through its type registry (dvRender.types.line / .multiline) and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. `partial` lists ALL FOUR names the snippet carries, matching the registry's `consumes` for Chart-line — including dv-legend, which the multi-series canvas runs on. NOTE the divergence from chart-bar.meta.json, which lists three and flags dv-legend as an open question: the schema's own words are 'the AUTO-BEHAVIOUR name(s) … that the snippet carries', so all four are named here. Ruling-shaped, reported, not decided by this lane."
   }
 }

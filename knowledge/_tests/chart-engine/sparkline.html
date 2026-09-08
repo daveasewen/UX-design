@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-sparkline — driven test page</title>
+<!--
+  THE RECEIPT THE SPARKLINE ATOM NEVER HAD (s249-D4, #259 lane E).
+
+  WHAT THIS IS. Modelled exactly on knowledge/_tests/chart-engine/bar.html: a page built the way a
+  generated page is built — canon.css, the `.cn-chart-sparkline` namespace wrapper (drop it and the
+  svg takes no size, the line never draws and the tip is unstyled), a `figure.dv` with an EMPTY
+  `svg.dv-svg.spark-standalone`, an authored `<table class="dv-table">` as the JS-off spine,
+  and an inline DATA object drawn by `dvRender(figure, spec)`. Nothing here re-implements chart
+  geometry; that is the whole point.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained, so the
+  partials are injected into it between AUTO-BEHAVIOUR markers and gated byte-exact. A TEST is the
+  opposite obligation: it must fail when the SOURCE breaks, not when a copy of it goes stale. These
+  three tags load `knowledge/canon/*.js` directly, so this page can never be green against a source
+  that is red. The injected copies are proven identical by `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. the trend line exists and carries data-fxs + data-ys — the fit grammar, not baked pixels;
+    3. NO axis furniture at all (s182-D2): 0 line.dv-grid, 0 line.dv-axis, 0 text.dv-axis — the one
+       <line> is the atom's own hairline baseline, classed dv-base;
+    4. the trend line is the ONE focus stop (exactly one tabindex="0" per figure) and the dots are
+       aria-hidden — the s182-D2 receipt, driven;
+    5. the tooltip (#dvTip.on) appears on hover of the line, reading the mark's own endpoints;
+    6. the PERIOD FILTER re-renders (rule 14): the point count in data-fxs AND the <table> row
+       count both follow the filtered spec;
+    7. the ink is SEMANTIC (s182-D3): the three readings resolve to three different computed
+       colours, `role` overrides the reading, and every stroke/fill resolves to a real colour;
+    8. the atom is RESPONSIVE TO ITS ENCLOSURE (s184-D1): change the viewport width and the
+       rendered x positions move. ⚠ NOT via dv-behaviour's fit pass — _validate_dataviz.py's
+       DV-D02-A refuses `dv-fit` on a spark BLOCKING ("Do not 'fix' it by adding dv-fit"), because
+       the atom carries no text and its responsiveness is the CSS stretch (width:100% +
+       preserveAspectRatio="none"). The marks still carry data-fxs/data-ys — that is the grammar
+       the library speaks — but here the stretch is what moves them, and a re-render at a new
+       width re-authors them. Both are driven.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the ATOM is styled entirely by canon.css inside .cn-chart-sparkline. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  h2{font-size:13px; font-weight:500; margin:24px 0 6px; opacity:.7;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-sparkline{margin:0 0 8px;}
+  .slot{max-width:420px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-sparkline — driven test page</h1>
+  <p class="lede">Four atoms, one engine, one DATA object. Shorten the period and every spark
+     re-renders from the same numbers, sr-only table included. No spec here names a colour: the ink
+     is read from the data (s182-D3), or from an explicit series <code>role</code> where the
+     arithmetic cannot know the meaning.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — months in view (rule 14: rebuild the spec, call again)</legend>
+  </fieldset>
+
+  <!-- ============ 1 · RISING — reading "up" → --status-positive, with min/max markers ============ -->
+  <h2>1 · Balance index, rising — reading only, plus the optional min/max markers</h2>
+  <div class="cn-chart-sparkline">
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page"
+          role="group" aria-labelledby="s1-h" id="fig-up">
+    <figcaption id="s1-h" class="sr-only">Twelve-month balance index</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="flat" data-pl="4" data-pr="4"
+           data-pt="4" data-pb="4" data-h="90" data-h-min="90" viewBox="0 0 580 90"
+           preserveAspectRatio="none" role="group" aria-label="Twelve-month balance index."></svg>
+    </div>
+    <div class="dv-tablepanel sr-only" role="region" aria-label="Balance index, data table">
+      <table class="dv-table t-cm-legal">
+        <caption>Twelve-month balance index</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Index</th></tr></thead>
+        <tbody><tr><th scope="row">Jan</th><td>82</td></tr></tbody>
+      </table>
+    </div>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · FALLING — reading "down" → --status-negative (two-red law s151-D1) ======== -->
+  <h2>2 · Arrears index, falling — the reading lands on --status-negative</h2>
+  <div class="cn-chart-sparkline">
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page"
+          role="group" aria-labelledby="s2-h" id="fig-down">
+    <figcaption id="s2-h" class="sr-only">Twelve-month arrears index, falling</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="flat" data-pl="4" data-pr="4"
+           data-pt="4" data-pb="4" data-h="90" data-h-min="90" viewBox="0 0 580 90"
+           preserveAspectRatio="none" role="group" aria-label="Twelve-month arrears index."></svg>
+    </div>
+    <div class="dv-tablepanel sr-only" role="region" aria-label="Arrears index, data table">
+      <table class="dv-table t-cm-legal">
+        <caption>Twelve-month arrears index</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Index</th></tr></thead>
+        <tbody><tr><th scope="row">Jan</th><td>118</td></tr></tbody>
+      </table>
+    </div>
+  </figure>
+  </div>
+
+  <!-- ============ 3 · FLAT — reading "flat" → --status-neutral ============ -->
+  <h2>3 · Utilisation index, flat — the reading lands on --status-neutral</h2>
+  <div class="cn-chart-sparkline">
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page"
+          role="group" aria-labelledby="s3-h" id="fig-flat">
+    <figcaption id="s3-h" class="sr-only">Twelve-month utilisation index, flat</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="flat" data-pl="4" data-pr="4"
+           data-pt="4" data-pb="4" data-h="90" data-h-min="90" viewBox="0 0 580 90"
+           preserveAspectRatio="none" role="group" aria-label="Twelve-month utilisation index."></svg>
+    </div>
+    <div class="dv-tablepanel sr-only" role="region" aria-label="Utilisation index, data table">
+      <table class="dv-table t-cm-legal">
+        <caption>Twelve-month utilisation index</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Index</th></tr></thead>
+        <tbody><tr><th scope="row">Jan</th><td>96</td></tr></tbody>
+      </table>
+    </div>
+  </figure>
+  </div>
+
+  <!-- ============ 4 · ROLE OVERRIDES THE READING — a RISING series that must read amber ======== -->
+  <h2>4 · Overdraft usage, rising — <code>role: "monitor"</code> beats the reading (s184-D3)</h2>
+  <div class="cn-chart-sparkline slot">
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page"
+          role="group" aria-labelledby="s4-h" id="fig-role">
+    <figcaption id="s4-h" class="sr-only">Twelve-month overdraft usage, rising — flagged for monitoring</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-trend="flat" data-pl="4" data-pr="4"
+           data-pt="4" data-pb="4" data-h="90" data-h-min="90" viewBox="0 0 580 90"
+           preserveAspectRatio="none" role="group" aria-label="Twelve-month overdraft usage."></svg>
+    </div>
+    <div class="dv-tablepanel sr-only" role="region" aria-label="Overdraft usage, data table">
+      <table class="dv-table t-cm-legal">
+        <caption>Twelve-month overdraft usage</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Usage (%)</th></tr></thead>
+        <tbody><tr><th scope="row">Jan</th><td>12</td></tr></tbody>
+      </table>
+    </div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-sparkline.js"></script>
+<script>
+/* THE DATA and the four calls that draw it — the shape a generated page copies. */
+var M   = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var BAL = [82, 79, 88, 85, 93, 96, 91, 104, 111, 101, 107, 109];   /* first < last  -> up   */
+var ARR = [118, 121, 113, 109, 114, 104, 98, 101, 88, 92, 86, 90]; /* first > last  -> down */
+var UTL = [96, 97, 95, 96, 98, 95, 97, 96, 95, 97, 94, 96];        /* first == last -> flat */
+var ODR = [12, 14, 13, 18, 21, 19, 26, 24, 31, 29, 36, 41];        /* up, but role: monitor */
+var FROM = 0;        /* the filter's state — index of the first month in view */
+
+function slice(a) { return a.slice(FROM); }
+
+function draw() {
+  var cats = slice(M);
+  dvRender(document.getElementById('fig-up'), {
+    type: 'spark', categories: cats, categoryLabel: 'Month', markers: true,
+    series: [{ name: 'Index', values: slice(BAL) }],
+    caption: 'Twelve-month balance index'
+  });
+  dvRender(document.getElementById('fig-down'), {
+    type: 'spark', categories: cats, categoryLabel: 'Month',
+    series: [{ name: 'Index', values: slice(ARR) }],
+    caption: 'Twelve-month arrears index'
+  });
+  dvRender(document.getElementById('fig-flat'), {
+    type: 'sparkline', categories: cats, categoryLabel: 'Month',
+    series: [{ name: 'Index', values: slice(UTL) }],
+    caption: 'Twelve-month utilisation index'
+  });
+  dvRender(document.getElementById('fig-role'), {
+    type: 'spark', categories: cats, categoryLabel: 'Month', format: 'percent',
+    series: [{ name: 'Usage', role: 'monitor', values: slice(ODR) }],
+    caption: 'Twelve-month overdraft usage'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  [0, 3, 6, 9].forEach(function (f) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'radio'; box.name = 'from'; box.value = f; box.checked = (f === 0);
+    box.addEventListener('change', function () { if (box.checked) { FROM = f; draw(); } });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode((12 - f) + ' months (from ' + M[f] + ')'));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+window.__dvTestReady = true;
+</script>
+</body>
+</html>

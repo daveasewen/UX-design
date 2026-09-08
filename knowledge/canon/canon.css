@@ -9664,6 +9664,10 @@
   --spark-down: var(--rag-error-ink);
   --spark-up: var(--rag-success-ink);
   --spark-flat: var(--text-default);
+  --status-negative: var(--rag-error-ink);
+  --status-positive: var(--rag-success-ink);
+  --status-neutral: var(--text-default);
+  --status-monitor: var(--rag-warning-graphic);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
   --grid-alpha: .10;
@@ -9693,19 +9697,37 @@
      it). HEIGHT IS UNCHANGED and NOT RULED: 64px stands exactly as before; the 4px-grid height-
      snap idea remains OPEN DIRECTION (s184-D1 declines to pick it), so nothing here snaps. */
 :where(.cn-chart-sparkline) .spark-standalone{display:block; width:100%; height:64px; overflow:visible;}
-:where(.cn-chart-sparkline) .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+/* the atom's own hairline BASELINE — NOT an axis (s182-D2: no ticks, no tick labels, no
+     gridlines, no scale on show). `dv-base` is the class the inline scale already used; the
+     engine-drawn standalone uses it too, so one rule serves both scales. `dv-grid` is kept as an
+     alias for any consumer still shipping the promoted markup. */
+:where(.cn-chart-sparkline) .dv-grid, :where(.cn-chart-sparkline) .spark-standalone .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+/* ★ THE TABLE SPINE, s182-D2-COMPLIANT. dv-render REWRITES a `<table class="dv-table">` inside
+     the figure from the same numbers it draws — the engine's progressive-enhancement contract: the
+     SVG ships EMPTY, so JS-off the table is the whole answer. s182-D2 removed the table CTA ("the
+     table cta can be optional in the trend card component") and the <details> DISCLOSURE — the
+     visible chrome. It did not ask for the DATA to vanish. So the spine ships with NO summary, NO
+     toggle and NO visible surface: sr-only, exactly like the figcaption the atom already carries.
+     The atom still looks like the graphic and its one tip.
+     ⚠ RULING-SHAPED — whether an engine-drawn atom may carry an invisible spine at all is Dave's. */
+:where(.cn-chart-sparkline) .dv-tablepanel.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* s182-D3: the stroke is SEMANTIC, never a series-ramp pick. A sparkline knows its trend from
      FIRST-vs-LAST datum; the author declares that reading as data-trend on the svg (up|down|flat),
      and the fork to the ruled ink is done by the theme block above — identical keying in all four
      themes, exactly as canon keys --error-atom. Default = flat, so an undeclared trend is neutral,
-     never a guessed colour. */
-:where(.cn-chart-sparkline) .spark-standalone .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2.5;
+     never a guessed colour.
+     ★ AT THE STANDALONE SCALE THE STROKE IS NO LONGER SET HERE (s249-D4). Those canvases are drawn
+     by dvRender(figure, spec), and dv-render-sparkline emits the SEMANTIC ink as a presentation
+     attribute per mark — read from the data (first datum vs last) or from an explicit series
+     `role`. s182-D3 is unchanged in substance: the colour still follows the ruled red/green ink and
+     is still never a series-ramp pick; the fork now happens where the numbers are rather than in a
+     selector, and the engine writes data-trend BACK onto the svg so the declared reading survives
+     for anything keying off it. Only the non-colour stroke properties stay in CSS. The INLINE
+     scale below is still baked, so its fork below is untouched. */
+:where(.cn-chart-sparkline) .spark-standalone .dv-series{stroke-width:2.5;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-:where(.cn-chart-sparkline) .spark-standalone circle.dv-series{fill:var(--spark-flat); stroke:none;}
-:where(.cn-chart-sparkline) .spark-standalone[data-trend="up"] .dv-series{stroke:var(--spark-up);}
-:where(.cn-chart-sparkline) .spark-standalone[data-trend="up"] circle.dv-series{fill:var(--spark-up);}
-:where(.cn-chart-sparkline) .spark-standalone[data-trend="down"] .dv-series{stroke:var(--spark-down);}
-:where(.cn-chart-sparkline) .spark-standalone[data-trend="down"] circle.dv-series{fill:var(--spark-down);}
+:where(.cn-chart-sparkline) .spark-standalone polyline.dv-series{fill:none;}
+:where(.cn-chart-sparkline) .spark-standalone circle.dv-series{stroke:none;}
 :where(.cn-chart-sparkline) .spark-standalone polyline.dv-series{outline-offset:4px;}
 :where(.cn-chart-sparkline) .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
 /* inline spark — the KPI / Stat-card scale (200×48 frame @ 44px tall, stroke 2, dot r3).
