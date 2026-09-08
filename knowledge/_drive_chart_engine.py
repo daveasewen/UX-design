@@ -234,8 +234,130 @@ MEASURE_JS = r"""
     return { px: R3(best * scaleOf(svg)), note: n + ' adjacent pairs across ' + Object.keys(cols).length + ' columns' };
   }
 
+  /* #261 D3 — butterfly-v's BASELINE JOIN. The two wings meet at y=0; dv-render cuts half a GAP
+     off each wing so the pair is separated by the full 2.2px. That number was provable and
+     UNGATED (nothing measured it), so it is measured here, on the drawn bounding boxes, exactly
+     as a rect stack is: the minimum vertical clearance between adjacent marks in one column. */
+  function baselineJoin(svg, marks) {
+    const g = stackGap(svg, marks);
+    return { px: g.px, note: g.px === null ? g.note : ('baseline join, ' + g.note) };
+  }
+
+  /* ---------- #261 D3: THE VACUOUS SIBLINGS, read off the DRAWN DOM -------------------------
+     dv-009 / dv-016 / dv-017 / dv-line-011 all read static markup, and an engine canvas has no
+     static marks — so every one of them was vacuous (proved by _tests/chart-engine/
+     _probe_fail_open.py: 0/6 venues bit). These read the same facts from the rendered tree. */
+
+  function rgbOf(str) {
+    const m = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,/\s]+([\d.]+))?/i.exec(str || '');
+    if (!m) { return null; }
+    const a = m[4] === undefined ? 1 : parseFloat(m[4]);
+    return [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), a];
+  }
+
+  function lum(c) {
+    const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+  }
+
+  /* the painted surface behind the figure: first ancestor with a non-transparent background */
+  function surfaceOf(el) {
+    let n = el;
+    while (n && n.nodeType === 1) {
+      const c = rgbOf(getComputedStyle(n).backgroundColor);
+      if (c && c[3] > 0.01) { return c; }
+      n = n.parentElement;
+    }
+    return [255, 255, 255, 1];
+  }
+
+  /* composite a possibly-translucent paint over the surface, then contrast it against it */
+  function ratioOn(paint, surf) {
+    if (!paint || paint[3] <= 0.01) { return null; }
+    const a = paint[3];
+    const over = [paint[0] * a + surf[0] * (1 - a), paint[1] * a + surf[1] * (1 - a),
+                  paint[2] * a + surf[2] * (1 - a)];
+    const l1 = lum(over), l2 = lum(surf);
+    const hi = Math.max(l1, l2), lo = Math.min(l1, l2);
+    return R3((hi + 0.05) / (lo + 0.05));
+  }
+
+  const HEX = /^#[0-9a-fA-F]{3,8}$/;
+
+  function siblings(fig, svg, marks) {
+    const surf = surfaceOf(fig);
+    const out = {
+      /* dv-009 — flat fills */
+      gradients: 0, patterns: [],
+      /* dv-017 — palette-only fills: the RAW attribute the engine wrote, per mark */
+      series_paint_attrs: [], series_rogue_hex: [],
+      /* dv-016 — >=3:1 RENDERED contrast, computed from getComputedStyle, not from a token table */
+      contrast_series_min: null, contrast_axis_min: null, contrast_grid_min: null,
+      contrast_note: '',
+      /* dv-line-011 — straight lines */
+      curve_series: 0,
+      /* the surface the ratios are against, for the receipt to be readable by a human */
+      surface_rgb: surf.slice(0, 3).join(',')
+    };
+    if (!svg) { return out; }
+    out.gradients = svg.querySelectorAll('linearGradient,radialGradient,filter').length;
+    svg.querySelectorAll('pattern[id]').forEach((p) => out.patterns.push(p.id));
+
+    const paints = new Set(), rogue = new Set();
+    let cs = Infinity;
+    for (const m of marks) {
+      const st = getComputedStyle(m);
+      for (const attr of ['fill', 'stroke']) {
+        const raw = (m.getAttribute(attr) || '').trim();
+        if (raw && raw !== 'none') {
+          paints.add(raw);
+          if (HEX.test(raw)) { rogue.add(raw); }
+        }
+      }
+      /* dv-016 grades the mark's OWN colour — its FILL, or its STROKE when it is unfilled (a line
+         or a spark). ⛔ NEVER the stroke of a filled mark: that stroke is dv-004's separating
+         stroke, painted in the SURFACE colour on purpose, and reading it as a series colour scores
+         a correct donut at 1.00:1. Found by driving Chart-donut's static figure, #261 D3. */
+      const fillRaw = (m.getAttribute('fill') || '').trim();
+      const use = (fillRaw && fillRaw !== 'none') ? 'fill' : 'stroke';
+      const useRaw = (m.getAttribute(use) || '').trim();
+      if (useRaw && useRaw !== 'none') {
+        const r = ratioOn(rgbOf(st[use]), surf);
+        if (r !== null && r < cs) { cs = r; }
+      }
+      if (m.tagName.toLowerCase() === 'path' && /[CSQTcsqt]/.test(m.getAttribute('d') || '')) {
+        out.curve_series++;
+      }
+    }
+    out.series_paint_attrs = Array.from(paints).sort();
+    out.series_rogue_hex = Array.from(rogue).sort();
+    out.contrast_series_min = isFinite(cs) ? cs : null;
+
+    const worst = (sel) => {
+      let w = Infinity, n = 0;
+      svg.querySelectorAll(sel).forEach((el) => {
+        const st = getComputedStyle(el);
+        for (const attr of ['fill', 'stroke']) {
+          const raw = (el.getAttribute(attr) || '').trim();
+          if (!raw || raw === 'none') { continue; }
+          const r = ratioOn(rgbOf(st[attr]), surf);
+          if (r !== null) { n++; if (r < w) { w = r; } }
+        }
+      });
+      return [isFinite(w) ? w : null, n];
+    };
+    const ax = worst('.dv-axis,.dv-label,.dv-baseline');
+    const gr = worst('.dv-grid');
+    out.contrast_axis_min = ax[0];
+    out.contrast_grid_min = gr[0];
+    out.contrast_note = marks.length + ' marks, ' + ax[1] + ' axis/label paints, ' + gr[1] +
+                        ' gridline paints, over surface rgb(' + out.surface_rgb + ')';
+    return out;
+  }
+
   const RADIAL = { donut: 1, pie: 1 };
   const STACK = { stacked: 1, 'stacked-column': 1, 'stacked-bar': 1 };
+  const JOIN = { 'butterfly-v': 1 };
 
   function readFigure(fig) {
     const dtype = fig.getAttribute('data-dv-type') || '?';
@@ -250,8 +372,13 @@ MEASURE_JS = r"""
       } else if (STACK[dtype]) {
         const g = stackGap(svg, marks);
         out.dv004_px = g.px; out.dv004_note = g.note;
+      } else if (JOIN[dtype]) {
+        const g = baselineJoin(svg, marks);
+        out.dv004_px = g.px; out.dv004_note = g.note;
       }
     }
+    const sib = siblings(fig, svg, marks);
+    for (const k in sib) { out[k] = sib[k]; }
     return out;
   }
 
@@ -264,6 +391,36 @@ MEASURE_JS = r"""
     marks += r.marks; rows += r.table_rows;
   });
   return { figures: figs, total_marks: marks, total_rows: rows };
+}
+"""
+
+# #261 D3 — requiredAria, read off the RENDERED DOM.
+# `_validate_snippets.py` asks "is this string somewhere in the file", which a JS STRING LITERAL
+# satisfies: six shipped snippets pass a requiredAria string that way today, and stripping every
+# role/aria-label at runtime leaves that gate green (4th venue of [[no-gate-parses-the-artefact]]).
+# The receipt records which of the manifest's own strings survive into the tree the browser built,
+# plus the figure-level a11y spine, so the route can read pixels instead of source text.
+ARIA_JS = r"""
+(need) => {
+  const html = document.documentElement.outerHTML;
+  const figs = Array.prototype.slice.call(document.querySelectorAll('figure.dv'));
+  const per = {};
+  figs.forEach((f, i) => {
+    const svg = f.querySelector('svg.dv-svg');
+    per[f.id || ('fig-' + i)] = {
+      fig_role: f.getAttribute('role') || null,
+      fig_label: f.getAttribute('aria-label') || f.getAttribute('aria-labelledby') || null,
+      svg_role: svg ? (svg.getAttribute('role') || null) : null,
+      svg_label: svg ? (svg.getAttribute('aria-label') || svg.getAttribute('aria-labelledby') || null) : null,
+      table_rows: f.querySelectorAll('table.dv-table tbody tr').length
+    };
+  });
+  return {
+    required: (need || []).slice(),
+    present: (need || []).filter((n) => html.indexOf(n) >= 0),
+    missing: (need || []).filter((n) => html.indexOf(n) < 0),
+    figures: per
+  };
 }
 """
 
@@ -294,6 +451,19 @@ THEME_INIT = r"""
 """
 
 
+_ARIA_MANIFEST_RE = re.compile(
+    r'<script type="application/json" id="token-manifest">(.*?)</script>', re.S)
+
+
+def required_aria_of(path):
+    """The snippet's OWN `requiredAria` list, from its #token-manifest. [] for a test page."""
+    try:
+        m = _ARIA_MANIFEST_RE.search(open(path, encoding="utf-8").read())
+        return json.loads(m.group(1)).get("requiredAria", []) if m else []
+    except Exception:
+        return []
+
+
 def drive(pages, verbose=True):
     from playwright.sync_api import sync_playwright
 
@@ -305,6 +475,7 @@ def drive(pages, verbose=True):
         version = browser.version
         for page_path in pages:
             name = os.path.basename(page_path)
+            need = required_aria_of(page_path)
             combos = {}
             for theme in THEMES:
                 for mode in MODES:
@@ -325,6 +496,7 @@ def drive(pages, verbose=True):
                                   "if(typeof window.draw==='function'){window.draw();}}", [theme, mode])
                     page.wait_for_timeout(220)
                     before = page.evaluate(MEASURE_JS)
+                    aria = page.evaluate(ARIA_JS, need)
                     filt = page.evaluate(FILTER_JS)
                     page.wait_for_timeout(220)
                     after = page.evaluate(MEASURE_JS)
@@ -336,6 +508,7 @@ def drive(pages, verbose=True):
                         "figures": before["figures"],
                         "marks": before["total_marks"],
                         "table_rows": before["total_rows"],
+                        "aria": aria,
                         "filter": {
                             "driven": bool(filt.get("ok")),
                             "note": filt.get("note", ""),
@@ -351,14 +524,46 @@ def drive(pages, verbose=True):
                     if verbose:
                         f = combos[key]
                         px = [v["dv004_px"] for v in f["figures"].values() if v["dv004_px"] is not None]
-                        print("    %-28s %-24s errs %d/%d  marks %d->%d  rows %d->%d  dv-004 %s"
+                        cs = [v["contrast_series_min"] for v in f["figures"].values()
+                              if v.get("contrast_series_min") is not None]
+                        rogue = sum(len(v.get("series_rogue_hex", [])) for v in f["figures"].values())
+                        grad = sum(v.get("gradients", 0) for v in f["figures"].values())
+                        curve = sum(v.get("curve_series", 0) for v in f["figures"].values())
+                        print("    %-34s %-18s errs %d/%d  marks %d->%d  rows %d->%d  dv-004 %s  "
+                              "contrast %s  rogue %d  grad %d  curve %d  aria %d/%d"
                               % (name, key, f["pageerrors"], f["console_errors"],
                                  f["filter"]["marks_before"], f["filter"]["marks_after"],
                                  f["filter"]["rows_before"], f["filter"]["rows_after"],
-                                 ("min %.3fpx" % min(px)) if px else "n/a"))
-            out_pages[name] = {"sources": sources_for(page_path), "combos": combos}
+                                 ("min %.3fpx" % min(px)) if px else "n/a",
+                                 ("min %.2f:1" % min(cs)) if cs else "n/a",
+                                 rogue, grad, curve, len(aria["present"]), len(aria["required"])))
+            # `self_sha256` is the hash of the artefact ITSELF (#261 D3). `sources` proves the code
+            # behind the receipt has not moved; this proves the FILE UNDER JUDGMENT is the file
+            # that was driven. Without it a receipt found by BASENAME is evidence for whatever
+            # bytes happen to share the name — which is how a mutated copy stayed green.
+            out_pages[name] = {"sources": sources_for(page_path),
+                               "self_sha256": sha256_of(page_path),
+                               "combos": combos}
         browser.close()
     return version, out_pages
+
+
+SNIPPETS_GLOB = os.path.join(HERE, "snippets", "Chart-*.reference.html")
+
+
+def all_artefacts():
+    """Every artefact the receipt must cover: the 13 engine TEST PAGES **and** the 14 shipped
+    `Chart-*.reference.html` SNIPPETS (#261 D3).
+
+    ⛔ WHY THE SNIPPETS. Before #261 D3 the receipt measured only the test pages, while
+    `_validate_dataviz.py` GRADES the snippets — so the evidence was for a different file than the
+    one under judgment, and any engine fault living in a snippet's inlined copy was invisible. The
+    snippets are self-contained (the engine is injected into them), so driving them is driving the
+    artefact that actually ships. Both are keyed by basename in the same `pages` map; the test
+    pages stay because they exercise the engine's LINKED canon files, whose hashes are what make a
+    canon edit go STALE.
+    """
+    return sorted(glob.glob(os.path.join(PAGES_DIR, "*.html")) + glob.glob(SNIPPETS_GLOB))
 
 
 def load_receipts():
@@ -392,7 +597,7 @@ def main():
                 print("      stale source: %s" % f)
             stale += 1 if state == "STALE" else 0
         recorded = set(rec.get("pages", {}))
-        found = {os.path.basename(p) for p in glob.glob(os.path.join(PAGES_DIR, "*.html"))}
+        found = {os.path.basename(p) for p in all_artefacts()}
         for missing in sorted(found - recorded):
             print("  [MISSING] %s — no receipt at all" % missing)
             stale += 1
@@ -403,7 +608,7 @@ def main():
               % (len(rows), rec.get("driven", "?"), rec.get("chromium", "?")))
         return 0
 
-    all_pages = sorted(glob.glob(os.path.join(PAGES_DIR, "*.html")))
+    all_pages = all_artefacts()
     if args.page:
         want = set(args.page)
         all_pages = [p for p in all_pages if os.path.basename(p) in want]
