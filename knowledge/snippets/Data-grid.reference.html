@@ -122,7 +122,7 @@
   /* ================= THE GRID ================= */
   /* s258-D3: the width is a REAL component default (--dg-max), not a demo dial. It used to read
      var(--demo-width, 760px), which travelled into generated pages and collapsed the grid. */
-  .dg{width:100%; max-width:var(--dg-max, 760px);}
+  .dg{width:100%; max-width:var(--dg-max, 100%);}  /* the PAGE owns the width (s210-D3); the showroom harness sets --dg-max:760px inside its fence */
 
   .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
   .dg-count{opacity:var(--alpha-60); margin-left:auto;}
@@ -278,6 +278,7 @@
   /* ===== AUTO-PARTIAL press-physics END ===== */
 
   /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .dg{--dg-max:760px;}  /* showroom column width; a generated page never sees this */
   /* ---- demo controls (harness chrome, not the component) ---- */
   /* namespaced .dgseg — .seg is a type.css-bound blast radius this file must not join (gate-caught) */
   /* margin-bottom 28px (#210, PROPOSED): the switcher sat FLUSH on the "Transactions" section
