@@ -706,9 +706,13 @@ RATIFY_IDS = {
     # PROPOSED and `--release` refuses (build-designer-pack.sh: `ratified || die`), which is
     # the machine doing its job. ⬛ WHEN DAVE RATIFIES, add the row keyed to THAT ruling id —
     # a fresh RATIFYING word, not the authorisation that named the cut.
-    # ⛔ v1.0.6 (#245 L5) LIKEWISE HAS NO ROW: cut PROPOSED on Dave's word to bundle the [124]
+    # ⛔ v1.0.6 (#245 L5) HAD NO ROW until #257: cut PROPOSED on Dave's word to bundle the [124]
     # port with the cut and on s245-D7/D8/D9 (the content), none of which is a RATIFYING word for
     # the pack. s237-D9: the HELD/PROPOSED fact is DERIVED from _rulings.json, never typed.
+    "v1.0.6": "s257-D1",    # #257, Dave's word ("ratiify.") ratifying the #256 re-cut at
+                            # 1f4c35587f30. Keyed DIRECTLY here, not at the next cut, because
+                            # dist/ did not match the manifest (6 missing, 79 differing) — a
+                            # release bake is owed, and the bake reads this key.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
