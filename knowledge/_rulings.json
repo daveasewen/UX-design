@@ -6920,6 +6920,55 @@
     "chat #259 2026-09-08"
    ],
    "status": "ruled"
-  }
+  },
+ {
+  "id": "s260-D1",
+  "ruled": "PAGE BUDGET: the shared engine core (knowledge/canon/dv-render.js) is priced ONCE PER PAGE in _validate_behaviour's page sum, not once per member partial. PAGE_BYTES 34,816 (s250-D1) is UNMOVED today. CAVEAT, Dave's: the literal may need raising at some point in the future - that is a SEPARATE ruling when it comes, not a licence to raise now.",
+  "date": "2026-09-08",
+  "by": "Dave",
+  "says": "Dave at #260, offered three shapes for the s250-D1 red (1 price the core once per page, 2 raise the budget, 3 drop dv-legend where the engine draws its own legend): \"11 but I feel like the budget might have to be raised at some point in the future\" - read as option 1 with the caveat carried.",
+  "governs": [
+   "knowledge/_validate_behaviour.py",
+   "knowledge/_BEHAVIOUR-GATE.md",
+   "docs/decisions/ADR-0015-behaviour-partials-dataviz.md"
+  ],
+  "evidence": [
+   "chat #260 2026-09-08"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s260-D2",
+  "ruled": "STOP LINE REPRICED FOR DELEGATED WRAPS: the s214-D4 conditional band ENTERS FORCE. When the wrap is DELEGATED the advisory start-wrap-by line is 180,000 real; when the wrap runs INLINE the advisory stays 150,929. The 200,000 working wall and 256,000 hard wall are UNTOUCHED. s214-D4's staging condition (n>=2 measured delegated hand-overs) is met: #254 delta 4,077, #255 4,154, #256 4,799, #257 10,434, #258 10,382, #259 ~9,870 - 180,000 leaves 20,000 reserve against a max measured hand-over of 10,434.",
+  "date": "2026-09-08",
+  "by": "Dave",
+  "says": "Dave at #259: \"dude if you are delegating teh wrap do we really have to stop at 145?\"; the conductor recommended ~180K for delegated wraps, 150,929 kept for in-window ones; Dave at #260: \"can we reprice the token ceiling\" then, on the one-word ask, \"yes\".",
+  "governs": [
+   "knowledge/_checkin.py",
+   "knowledge/_gauge_tokens.py",
+   "notes/_GAUGE-LOG.md"
+  ],
+  "evidence": [
+   "chat #260 2026-09-08",
+   "chat #259 2026-09-08"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s260-D3",
+  "ruled": "DRIVEN RECEIPTS BECOME THE GATE FOR ENGINE-DRAWN CHARTS. Where a dataviz rule reads static geometry (dv-004 and its siblings) and the chart is drawn at runtime by knowledge/canon/dv-render.js, _validate_dataviz accepts a COMMITTED driven receipt (a Playwright measurement recorded from knowledge/_tests/chart-engine/) as the evidence for that rule - the gate is 'static OR driven', never skipped. Option (b), an engine-emitted self-report marker trusted by the static gate, is REFUSED as an instrument without a consumer.",
+  "date": "2026-09-08",
+  "by": "Dave",
+  "says": "Dave at #260, offered (a) the gate accepts a driven receipt for engine-drawn charts or (b) the engine emits a marker the static gate trusts, with (a) recommended: \"a\".",
+  "governs": [
+   "knowledge/_validate_dataviz.py",
+   "knowledge/_tests/chart-engine/",
+   "knowledge/canon/dv-render.js"
+  ],
+  "evidence": [
+   "chat #260 2026-09-08"
+  ],
+  "status": "ruled"
+ }
  ]
 }

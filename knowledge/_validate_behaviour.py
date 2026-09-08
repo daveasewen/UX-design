@@ -200,7 +200,7 @@ def check_source(js, label):
     return fails, n, code
 
 
-def check_group(sources, label, names=None, consumes=None):
+def check_group(sources, label, names=None, consumes=None, shared=()):
     """PAGE-LEVEL checks across every source a member page loads together.
 
     Both of these were per-SOURCE until 2026-07-26 and were wrong the moment a group carried
@@ -216,9 +216,16 @@ def check_group(sources, label, names=None, consumes=None):
     now the WORST member page, i.e. the heaviest thing a browser actually loads.
 
     `names`/`consumes` are optional so the unit bites can still hand in bare source lists; with
-    them absent the legacy whole-group sum is used and reported as one synthetic member."""
+    them absent the legacy whole-group sum is used and reported as one synthetic member.
+
+    `shared` (#260, s260-D1, ADR-0015 A4): behaviour NAMES that are a SHARED payload — the engine
+    core `dv-render` — priced ONCE PER PAGE, not once per member. A shared source still owes the
+    per-source 16 KB cap (legibility is not amortised) and is REPORTED beside the member figures;
+    it is simply not charged to every member that composes it. ⛔ Only names the registry marks
+    `"shared": true` qualify — a member cannot declare its own way out of the sum."""
     fails = []
     sizes = [len(code_only(js).encode("utf-8")) for js in sources]
+    shared = set(shared or ())
     if names and consumes:
         by_name = dict(zip(names, sizes))
         per_member = []
@@ -227,13 +234,16 @@ def check_group(sources, label, names=None, consumes=None):
             unknown = [w for w in want if w not in by_name]
             if unknown:
                 fails.append(f"{label}: {m} declares consumes {unknown} — not a behaviour of this group")
-            per_member.append((m, sum(by_name[w] for w in want if w in by_name), [w for w in want]))
+            per_member.append((m, sum(by_name[w] for w in want if w in by_name and w not in shared),
+                               [w for w in want]))
     else:
         per_member = [(label, sum(sizes), list(names or []))]
     worst_m, worst, _ = max(per_member, key=lambda t: t[1])
     if worst > PAGE_BYTES:
         fails.append(f"{label}: worst member page {worst_m} loads {worst} code-only bytes > "
                      f"{PAGE_BYTES} (ADR-0015 page budget — splitting a source does not buy headroom)")
+    if shared and shared - set(names or []):
+        fails.append(f"{label}: shared names {sorted(shared - set(names or []))} are not behaviours of this group")
     js = "\n".join(sources)
     r = len(RESIZE_RE.findall(js))
     if r != 1:
@@ -275,10 +285,12 @@ def run():
             fails += f
             rows.append((f"{gname}/{bname}", beh["source"], n, code, len(members)))
         if srcs:
+            shared = [b for b, beh in behs.items() if isinstance(beh, dict) and beh.get("shared") is True]
             f, worst, per_member = check_group(srcs, f"{gname} (page budget)", names,
-                                               consumes if members else None)
+                                               consumes if members else None, shared)
             fails += f
-            totals[gname] = (worst, len(srcs), per_member)
+            shared_bytes = sum(len(code_only(js).encode("utf-8")) for js, n in zip(srcs, names) if n in shared)
+            totals[gname] = (worst, len(srcs), per_member, shared, shared_bytes)
         for m in members:
             mp = os.path.join(HERE, "snippets", m + ".reference.html")
             if os.path.exists(mp):
@@ -294,15 +306,20 @@ def write_report(fails, rows, totals):
          "**Unit: CODE-ONLY bytes** — `//` and `/* */` comments and blank lines are stripped at "
          "measure time (ADR-0015 Amendment 3, Dave #250 2026-09-06, option (e)). Source files are "
          "never modified. The caps did not move. Page figures sum each member's `consumes` "
-         "declaration (Amendment 2), so the group's number is the WORST member page.", ""]
+         "declaration (Amendment 2), so the group's number is the WORST member page. A behaviour the "
+         "registry marks `shared: true` (the engine core `dv-render`) is priced ONCE PER PAGE and "
+         "excluded from member figures (Amendment 4, Dave #260 2026-09-08, `s260-D1`).", ""]
     for name, src, n, code, nm in rows:
         L.append(f"- **{name}** — `knowledge/{src}` · **{code} code-only bytes** "
                  f"({code / 1024:.1f} KB of 16 KB) · {n} raw, {n - code} comment/blank · {nm} member(s)")
     L.append("")
-    for gname, (worst, k, per_member) in sorted(totals.items()):
+    for gname, (worst, k, per_member, shared, shared_bytes) in sorted(totals.items()):
         pct = 100 * worst / PAGE_BYTES
         L.append(f"- **{gname} — page budget (worst member):** {worst} code-only bytes "
                  f"({worst / 1024:.1f} KB of 34 KB, {pct:.0f}%) across {k} source(s)")
+        if shared:
+            L.append(f"    - shared, priced ONCE PER PAGE (s260-D1, A4): {', '.join(sorted(shared))} — "
+                     f"{shared_bytes} code-only bytes, NOT charged to member figures")
         for m, tot, want in sorted(per_member, key=lambda t: -t[1]):
             L.append(f"    - `{m}` — {tot} bytes · consumes {', '.join(want) or '(all)'}")
     L.append("")
@@ -385,6 +402,23 @@ def selftest():
     if not any("not a behaviour of this group" in x for x in
                check_group([ok_src], "T", ["a"], {"m": ["nope"]})[0]):
         fails.append("consumes naming an unknown behaviour not caught")
+    # --- shared core priced once per page (#260, s260-D1, ADR-0015 A4) ---
+    fs, _, pms = check_group([ok_src, pad, pad, pad], "T", ["a", "b", "c", "d"],
+                             {"wide": ["a", "b", "c", "d"]}, shared=["b", "c"])
+    if any("page budget" in x for x in fs):
+        fails.append("shared core: a member composing two SHARED sources was still charged for them")
+    if dict((m, t) for m, t, _ in pms)["wide"] != measure(ok_src)[1] + measure(pad)[1]:
+        fails.append("shared core: the member figure is not (own sources) with shared ones excluded")
+    if not any("page budget" in x for x in
+               check_group([ok_src, pad, pad, pad, pad], "T", ["a", "b", "c", "d", "e"],
+                           {"wide": ["a", "b", "c", "d", "e"]}, shared=["b"])[0]):
+        fails.append("shared core: marking ONE source shared must not excuse the other two — "
+                     "a member still over budget on its own sources must fail")
+    if not any("not behaviours of this group" in x for x in
+               check_group([ok_src], "T", ["a"], {"m": ["a"]}, shared=["ghost"])[0]):
+        fails.append("shared core: a shared name that is not a group behaviour not caught")
+    if check_source(pad, "T")[0] or not any("size gate" in x for x in check_source(big, "T")[0]):
+        fails.append("shared core: the per-source cap must still bite a shared source (not amortised)")
     if not check_member('<script src="https://cdn.example/x.js"></script>', "T"):
         fails.append("external script src not caught")
     if check_member('<script>var a=1;</script>', "T"):
@@ -454,9 +488,11 @@ def main():
     for name, src, n, code, nm in rows:
         print(f"  [PASS] {name} — {code} code-only bytes ({code / 1024:.1f} KB of 16) "
               f"· {n} raw, {n - code} comment/blank · {nm} member(s)")
-    for gname, (worst, k, per_member) in sorted(totals.items()):
+    for gname, (worst, k, per_member, shared, shared_bytes) in sorted(totals.items()):
         print(f"  [PASS] {gname} page budget — worst member {worst} code-only bytes "
               f"({worst / 1024:.1f} KB of 34) across {k} source(s)")
+        if shared:
+            print(f"         shared, priced ONCE PER PAGE (s260-D1): {', '.join(sorted(shared))} — {shared_bytes} bytes")
         for m, tot, want in sorted(per_member, key=lambda t: -t[1]):
             print(f"         {m:28s} {tot:6d}  consumes {', '.join(want) or '(all)'}")
     print("Behaviour-contract gate OK — see knowledge/_BEHAVIOUR-GATE.md")

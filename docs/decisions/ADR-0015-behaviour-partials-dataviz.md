@@ -292,3 +292,13 @@ Edges: supersedes(ADR-0015, claim=size-clause-unit-becomes-code-only) · superse
   B-D7 press physics (chart-revisit Q5; flagged to Dave, standing).
 - When the theme builder arrives, behaviour joins the partial bin like everything else — one more
   organ the tool absorbs (see `_FUTURE-STATE` theme-generator entry).
+
+## Amendment 4 — 2026-09-08 (#260, Dave, `s260-D1`): the engine core is a SHARED payload, priced ONCE PER PAGE
+
+**Ruling:** `s260-D1` in `knowledge/_rulings.json`. Dave's words: *"11 but I feel like the budget might have to be raised at some point in the future"* — option 1 of the three shapes #259 handed back, with the caveat carried as a caveat and not as a raise.
+
+**What it resolves.** #259 landed the renderer `knowledge/canon/dv-render.js` (9,309 code-only bytes) and six type partials that compose it. Amendment 3's `consumes`-aware sum priced the core into EVERY member that lists it, so `Chart-combo` read 43,518 and `Chart-donut` 37,787 against the 34,816 budget — not fat pages, but the same 9,309 bytes charged five times over. The core is one payload however many types compose it.
+
+**What changes.** A `$behaviour` entry may carry `"shared": true` (today: `dv-render` only). A shared source is EXCLUDED from each member's page figure and REPORTED on its own line as "priced once per page". It still owes the per-source 16 KB cap — legibility is not amortised. ⛔ Only the registry may mark a behaviour shared; a member's `consumes` cannot declare its own way out of the sum. Bites in `_validate_behaviour.py --selftest`: a member composing two shared sources is not charged for them; marking ONE source shared does not excuse the others; a shared name that is not a group behaviour is refused.
+
+**What does NOT change.** `MAX_BYTES` 16,384 and `PAGE_BYTES` 34,816 are UNMOVED. Dave's caveat that the budget "might have to be raised at some point" is recorded and is a SEPARATE future ruling, not a licence. Measured after: `Chart-combo` 34,209 (607 spare), `Chart-donut` 28,478.

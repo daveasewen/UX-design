@@ -2,7 +2,7 @@
 
 Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no polling/network · ONE rAF-debounced resize per GROUP · DEF-003 boundary · members carry no external script src.
 
-**Unit: CODE-ONLY bytes** — `//` and `/* */` comments and blank lines are stripped at measure time (ADR-0015 Amendment 3, Dave #250 2026-09-06, option (e)). Source files are never modified. The caps did not move. Page figures sum each member's `consumes` declaration (Amendment 2), so the group's number is the WORST member page.
+**Unit: CODE-ONLY bytes** — `//` and `/* */` comments and blank lines are stripped at measure time (ADR-0015 Amendment 3, Dave #250 2026-09-06, option (e)). Source files are never modified. The caps did not move. Page figures sum each member's `consumes` declaration (Amendment 2), so the group's number is the WORST member page. A behaviour the registry marks `shared: true` (the engine core `dv-render`) is priced ONCE PER PAGE and excluded from member figures (Amendment 4, Dave #260 2026-09-08, `s260-D1`).
 
 - **dataviz/dv-behaviour** — `knowledge/canon/dv-behaviour.js` · **13048 code-only bytes** (12.7 KB of 16 KB) · 19768 raw, 6720 comment/blank · 15 member(s)
 - **dataviz/dv-legend** — `knowledge/canon/dv-legend.js` · **7734 code-only bytes** (7.6 KB of 16 KB) · 15131 raw, 7397 comment/blank · 15 member(s)
@@ -16,22 +16,22 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-render-sparkline** — `knowledge/canon/dv-render-sparkline.js` · **3235 code-only bytes** (3.2 KB of 16 KB) · 9852 raw, 6617 comment/blank · 15 member(s)
 - **dataviz/dv-render-combo** — `knowledge/canon/dv-render-combo.js` · **5198 code-only bytes** (5.1 KB of 16 KB) · 11625 raw, 6427 comment/blank · 15 member(s)
 
-- **dataviz — page budget (worst member):** 43518 code-only bytes (42.5 KB of 34 KB, 125%) across 11 source(s)
-    - `Chart-combo` — 43518 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
-    - `Chart-donut` — 37787 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
-    - `Chart-bar` — 34704 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar
-    - `Chart-stacked-area` — 34339 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
-    - `Chart-line` — 33707 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
-    - `Chart-sparkline` — 25592 bytes · consumes dv-behaviour, dv-render, dv-render-sparkline
+- **dataviz — page budget (worst member):** 34209 code-only bytes (33.4 KB of 34 KB, 98%) across 11 source(s)
+    - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 9309 code-only bytes, NOT charged to member figures
+    - `Chart-combo` — 34209 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
+    - `Chart-donut` — 28478 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
+    - `Chart-bar` — 25395 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar
+    - `Chart-stacked-area` — 25030 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
+    - `Chart-line` — 24398 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
     - `Chart-butterfly-h` — 20782 bytes · consumes dv-behaviour, dv-legend
     - `Chart-butterfly-v` — 20782 bytes · consumes dv-behaviour, dv-legend
     - `Chart-pie` — 20782 bytes · consumes dv-behaviour, dv-legend
     - `Chart-scatter` — 20782 bytes · consumes dv-behaviour, dv-legend
+    - `Chart-sparkline` — 16283 bytes · consumes dv-behaviour, dv-render, dv-render-sparkline
     - `Template-dashboard-bento` — 14869 bytes · consumes dv-behaviour, dp08-anchor
     - `Chart-boxplot` — 13048 bytes · consumes dv-behaviour
     - `Chart-bullet` — 13048 bytes · consumes dv-behaviour
     - `Chart-candlestick` — 13048 bytes · consumes dv-behaviour
     - `Chart-histogram` — 13048 bytes · consumes dv-behaviour
 
-## ✗ FAILURES
-- dataviz (page budget): worst member page Chart-combo loads 43518 code-only bytes > 34816 (ADR-0015 page budget — splitting a source does not buy headroom)
+## ✓ PASS — every behaviour source honours the contract.
