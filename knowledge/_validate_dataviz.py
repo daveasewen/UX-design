@@ -417,6 +417,292 @@ def driven_dv004_recorded(page_html_path, raw_dtype, receipts_path=None, root=No
                   "measurements across %d theme x mode combos, rule >=%.1fpx). Source: %s"
                   % (page, worst[2], worst[0], len(seen), len(combos), DV004_MIN_PX, where))
 
+
+# ---------------------------------------------------------------------------------------------
+# #261 D3 — THE DRIVER SCOPE. The siblings dv-009 / dv-016 / dv-017 / dv-line-011 and requiredAria
+# ---------------------------------------------------------------------------------------------
+# s260-D3 built the driven route and pointed it at dv-004 only. #260's wrap named what was left:
+#
+#   "only donut.html measures dv-004; butterfly-v's 2.200px baseline join is provable and ungated;
+#    siblings dv-016/017/009/line-011 vacuous on an engine canvas (2nd + 3rd venue).
+#    `requiredAria`/`requiredDeclarations` pass on a JS string literal — fails OPEN (4th/5th
+#    venue of [[no-gate-parses-the-artefact]])."
+#
+# PROVED, not assumed. `_tests/chart-engine/_probe_fail_open.py` mutates the INLINED engine on a
+# temp copy of a shipped snippet so the RENDERED DOM violates each rule, shows the violation in a
+# real Chromium, and runs this gate over it. Before this block: 0 of 6 venues bit — a runtime
+# `#ff2200`, a runtime `<linearGradient>`, curved series paths, a butterfly-v baseline join driven
+# from 2.200px to -0.000px, and a DOM with every role/aria-label stripped were all GREEN.
+#
+# THE FIX IS THE SAME ROUTE, NOT A NEW ONE. The driver now records, per figure per theme x mode,
+# the facts each of those rules reads — the paint ATTRIBUTES the engine wrote, the contrast of the
+# RESOLVED colours against the painted surface, gradient/pattern counts, curve commands, and which
+# of the snippet's own `requiredAria` strings survive into the built tree. This gate grades those
+# recorded numbers exactly as it grades the static ones: static OR driven, NEVER skipped.
+#
+# ⛔ IT INVENTS NO RULE. Every arm below is silent unless the receipt carries the fact; what it
+# refuses to do is pass a chart because the fact was unreadable. A missing receipt, an unmapped
+# artefact, a stale source hash or a short combo set is BLOCKING and names the remedy.
+DRIVEN_CONTRAST_MIN = 3.0
+CHEVRON_ONLY = "chevron"
+_LINEISH = ("line", "multiline", "spark", "column", "bar", "grouped", "stacked", "kpi", "combo")
+
+
+def _resolve_receipt(page_html_path, receipts_path=None, root=None):
+    """(key, entry, where, error) — the receipt entry for the artefact actually under judgment.
+
+    PREFERS the artefact's OWN receipt (the driver now drives the shipped snippets themselves) and
+    falls back to the ENGINE_TEST_PAGE mapping for anything only the test pages cover. `error` is a
+    ready-made blocking sentence when there is nothing to grade against; (None, None, where, None)
+    means "this artefact is not in the driven set at all" — the caller stays silent.
+    """
+    base = os.path.basename(page_html_path or "")
+    root = root or os.path.dirname(HERE)
+    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
+    rec = _load_receipts(receipts_path)
+    key = base if base in ((rec or {}).get("pages") or {}) else ENGINE_TEST_PAGE.get(base)
+    if not key:
+        return (None, None, where, None)
+    if not rec:
+        return (key, None, where,
+                "%s is ENGINE-DRAWN and maps to %s, but there is no driven receipt at %s. "
+                "Record one: %s" % (base, key, where, DRIVE_CMD))
+    entry = (rec.get("pages") or {}).get(key)
+    if not entry:
+        return (key, None, where,
+                "%s is ENGINE-DRAWN and maps to %s, but %s holds no driven receipt for it. "
+                "Record one: %s" % (base, key, where, DRIVE_CMD))
+    for rel, want in sorted((entry.get("sources") or {}).items()):
+        p = os.path.join(root, rel)
+        got = _sha256(p) if os.path.isfile(p) else None
+        if got != want:
+            return (key, None, where,
+                    "the driven receipt for %s is STALE — %s has changed since it was driven%s. "
+                    "Re-drive: %s" % (key, rel, " (file is missing)" if got is None else "", DRIVE_CMD))
+    # #261 D3 — the receipt must be evidence for THESE BYTES. The lookup is by basename, so without
+    # this a receipt vouches for any file that happens to share the name. (Found by the mutation
+    # probe: a mutated copy of a snippet was graded green on the pristine snippet's receipt.)
+    want_self = entry.get("self_sha256")
+    if want_self and page_html_path and os.path.isfile(page_html_path):
+        if _sha256(page_html_path) != want_self:
+            return (key, None, where,
+                    "the driven receipt for %s is STALE — the artefact itself has changed since it "
+                    "was driven. Re-drive: %s" % (key, DRIVE_CMD))
+    combos = entry.get("combos") or {}
+    want_n = len(rec.get("themes") or []) * len(rec.get("modes") or []) or 8
+    if len(combos) < want_n:
+        return (key, None, where,
+                "the driven receipt for %s covers %d of %d theme x mode combinations — a partial "
+                "receipt is not evidence. Re-drive: %s" % (key, len(combos), want_n, DRIVE_CMD))
+    return (key, entry, where, None)
+
+
+def _fig_records(entry, fig_id, fig_index):
+    """[(combo, figure record)] for one figure across every recorded combo. The driver keys a
+    figure by its id, falling back to `fig-<index>` — the same order this gate walks them in."""
+    out = []
+    for combo in sorted(entry.get("combos") or {}):
+        figs = (entry["combos"][combo].get("figures") or {})
+        rec = figs.get(fig_id) if fig_id else None
+        if rec is None:
+            rec = figs.get("fig-%d" % fig_index)
+        if rec is not None:
+            out.append((combo, rec))
+    return out
+
+
+def driven_dv004_figure(page_html_path, raw_dtype, fig_id, fig_index,
+                        receipts_path=None, root=None):
+    """dv-004 for ONE figure, from that figure's OWN driven record. (ok, message); ok None = silent.
+
+    ⛔ WHY FIGURE-SCOPED. `driven_dv004_recorded` takes the MINIMUM across every figure on the
+    receipted page. That was safe while the receipts only covered the engine test pages, which
+    carry one chart each. It is NOT safe now the driver drives the shipped snippets: Chart-donut
+    ships an engine-drawn donut (2.109px of real geometry) NEXT TO a markup-authored donut that
+    meets dv-004 by the other legal mechanism — a surface-coloured separating stroke, hence a
+    measured gap of 0.000px. Mixing them fails a correct chart on its neighbour's evidence. Each
+    figure is graded on its own record, and the static figure keeps the static route it always had.
+    """
+    key, entry, where, err = _resolve_receipt(page_html_path, receipts_path, root)
+    if key is None or os.path.basename(page_html_path or "") != key:
+        return (None, None)          # no receipt of its OWN — the page-scoped arms still apply
+    if err:
+        return (False, "dv-004: " + err)
+    recs = _fig_records(entry, fig_id, fig_index)
+    measured = [(float(r["dv004_px"]), combo) for combo, r in recs if r.get("dv004_px") is not None]
+    if not measured:
+        return (None, None)          # nothing measured for this figure: no rule invented
+    worst = min(measured)
+    if worst[0] < DV004_MIN_PX:
+        return (False, "dv-004: driven receipt FAILS — %s figure %s measured %.3fpx of separation "
+                       "in combo %s (rule is >=%.1fpx). Source: %s"
+                       % (raw_dtype, fig_id or ("fig-%d" % fig_index), worst[0], worst[1],
+                          DV004_MIN_PX, where))
+    return (True, "dv-004: PASSED by driven receipt — %s figure %s measured %.3fpx (worst of %d "
+                  "measurements across %d theme x mode combos, rule >=%.1fpx). Source: %s"
+                  % (raw_dtype, fig_id or ("fig-%d" % fig_index), worst[0], len(measured),
+                     len(entry.get("combos") or {}), DV004_MIN_PX, where))
+
+
+def driven_siblings(page_html_path, dtype, raw_dtype, fig_id, fig_index,
+                    receipts_path=None, root=None):
+    """dv-009 / dv-017 / dv-016 / dv-line-011 from the DRIVEN receipt. Returns (blocking, advisory).
+
+    The static arms of these four rules read `class="dv-series"` elements out of the markup. On an
+    engine canvas there are none, so each rule iterates an EMPTY list and passes — vacuously. These
+    arms read the browser's answer instead, and are BLOCKING on the same thresholds.
+    """
+    B, A = [], []
+    key, entry, where, err = _resolve_receipt(page_html_path, receipts_path, root)
+    if key is None:
+        return (B, A)
+    if err:
+        B.append("dv-009/016/017/line-011: " + err)
+        return (B, A)
+    recs = _fig_records(entry, fig_id, fig_index)
+    if not recs:
+        B.append("dv-009/016/017/line-011: %s is ENGINE-DRAWN and %s has a receipt for %s, but no "
+                 "record for figure %s — the siblings would grade nothing. Re-drive: %s"
+                 % (raw_dtype, where, key, fig_id or ("fig-%d" % fig_index), DRIVE_CMD))
+        return (B, A)
+
+    seen_marks = max(r.get("marks") or 0 for _c, r in recs)
+    if not seen_marks:
+        B.append("dv-009/016/017/line-011: %s is ENGINE-DRAWN and its receipt records ZERO drawn "
+                 "marks for figure %s — the engine drew nothing, so every sibling rule would pass "
+                 "on an empty set. Source: %s" % (raw_dtype, fig_id or fig_index, where))
+        return (B, A)
+
+    for combo, r in recs:
+        # --- dv-009 flat fills, in the DRAWN svg ---
+        if r.get("gradients"):
+            B.append("dv-009 [driven]: %d <linearGradient>/<radialGradient>/<filter> in the DRAWN "
+                     "chart SVG in %s — fills must be flat. Source: %s" % (r["gradients"], combo, where))
+        pats = r.get("patterns") or []
+        if len(pats) > 1:
+            B.append("dv-009 [driven]: %d <pattern>s drawn in %s — at most ONE (chevron). Source: %s"
+                     % (len(pats), combo, where))
+        for pid in pats:
+            if CHEVRON_ONLY not in str(pid).lower():
+                B.append("dv-009 [driven]: drawn <pattern id=\"%s\"> in %s — the one permitted "
+                         "pattern is the chevron. Source: %s" % (pid, combo, where))
+
+        # --- dv-017 palette-only fills, on the paint the ENGINE ACTUALLY WROTE ---
+        for hexv in (r.get("series_rogue_hex") or []):
+            B.append("dv-017 [driven]: the engine painted series `%s` — a raw hex, in %s. Must "
+                     "resolve to a data/* or building-block token. Source: %s" % (hexv, combo, where))
+        for paint in (r.get("series_paint_attrs") or []):
+            if paint in ("none", "currentColor") or paint.startswith(("var(", "url(")):
+                continue
+            if HEX_RE.fullmatch(paint) or HEX_RE.search(paint):
+                continue  # already named above
+            B.append("dv-017 [driven]: the engine painted series `%s` in %s — palette-only means a "
+                     "token or a url(). Source: %s" % (paint, combo, where))
+
+        # --- dv-016 >=3:1 RENDERED contrast, computed by the browser from the resolved colours ---
+        for label, field, block in (("series", "contrast_series_min", True),
+                                    ("axis/label", "contrast_axis_min", True),
+                                    ("gridline", "contrast_grid_min", False)):
+            v = r.get(field)
+            if v is None:
+                continue
+            if v < DRIVEN_CONTRAST_MIN:
+                msg = ("dv-016 [driven, %s]: worst drawn %s contrast is %.2f:1 (<%.1f:1) in %s — %s. "
+                       "Source: %s" % (label, label, v, DRIVEN_CONTRAST_MIN, combo,
+                                       r.get("contrast_note", ""), where))
+                (B if block else A).append(msg)
+
+        # --- dv-line-011 straight lines, on the drawn `d` ---
+        if dtype in _LINEISH and r.get("curve_series"):
+            B.append("dv-line-011 [driven]: %d drawn series <path>(s) carry a curve command "
+                     "(C/S/Q/T) in %s — series lines must be straight. Source: %s"
+                     % (r["curve_series"], combo, where))
+
+    B = list(dict.fromkeys(B))
+    A = list(dict.fromkeys(A))
+    if not B:
+        A.append("dv-009/016/017/line-011: PASSED by driven receipt — figure %s, %d drawn marks, "
+                 "worst series contrast %.2f:1, 0 gradients, 0 rogue hex, 0 curved series, across "
+                 "%d theme x mode combos. Source: %s"
+                 % (fig_id or ("fig-%d" % fig_index), seen_marks,
+                    min([r.get("contrast_series_min") or 99 for _c, r in recs]), len(recs), where))
+    return (B, A)
+
+
+REQUIRED_ARIA_RE = re.compile(
+    r'<script type="application/json" id="token-manifest">(.*?)</script>', re.S)
+
+
+def required_aria_of(html):
+    """The file's own `requiredAria` list, from its #token-manifest — [] when it declares none."""
+    m = REQUIRED_ARIA_RE.search(html or "")
+    if not m:
+        return []
+    try:
+        return json.loads(m.group(1)).get("requiredAria", []) or []
+    except Exception:
+        return []
+
+
+def driven_aria(page_html_path, html, receipts_path=None, root=None):
+    """requiredAria against the RENDERED DOM. Returns (blocking, advisory).
+
+    ⛔ THE VENUE THIS CLOSES. `_validate_snippets.py` asks whether each requiredAria string appears
+    anywhere in the file's TEXT (minus the manifest block). A JS STRING LITERAL satisfies that, and
+    six shipped snippets pass a requiredAria string exactly that way TODAY — `role="img"` on five,
+    `aria-pressed` on Chart-histogram, present only inside the injected engine. The probe strips
+    every role and aria-label from the built tree at runtime and that gate stays green.
+
+    This arm grades the strings the BROWSER ended up with. It is deliberately implemented here and
+    not in `_validate_snippets.py`: that file is outside this lane's fence (#261 D3 constraints),
+    and the receipt route it would need already lives in this module. Named as an obstacle in the
+    subreport — the source-text arm over there is still open and still fails open on its own.
+    """
+    B, A = [], []
+    need = required_aria_of(html)
+    if not need:
+        return (B, A)  # nothing declared: no rule to answer, and none invented
+    key, entry, where, err = _resolve_receipt(page_html_path, receipts_path, root)
+    if key is None:
+        return (B, A)  # not an artefact the driver covers — the static gate keeps it
+    if err:
+        B.append("requiredAria [driven]: " + err)
+        return (B, A)
+    worst = None
+    for combo in sorted(entry.get("combos") or {}):
+        aria = (entry["combos"][combo].get("aria") or {})
+        if not aria.get("required"):
+            B.append("requiredAria [driven]: the receipt for %s records no requiredAria measurement "
+                     "in %s, but the manifest declares %d string(s). Re-drive: %s"
+                     % (key, combo, len(need), DRIVE_CMD))
+            return (B, A)
+        missing = [n for n in need if n not in (aria.get("present") or [])]
+        if missing and (worst is None or len(missing) > len(worst[1])):
+            worst = (combo, missing)
+    if worst:
+        B.append("requiredAria [driven]: %d of %d declared ARIA string(s) are MISSING FROM THE "
+                 "RENDERED DOM in %s — %s. They may still be present in the file as JS string "
+                 "literals; a gate that reads source text cannot tell. Source: %s"
+                 % (len(worst[1]), len(need), worst[0], ", ".join(worst[1]), where))
+    else:
+        A.append("requiredAria [driven]: PASSED — all %d declared string(s) present in the RENDERED "
+                 "DOM across %d theme x mode combos. Source: %s"
+                 % (len(need), len(entry.get("combos") or {}), where))
+    return (B, A)
+
+
+# ---------------- the static-or-driven MATRIX (the #261 D3 receipt) ----------------
+# Every (artefact, figure, rule) the gate visited, tagged with the route that answered it. A rule
+# that answered "n-a" says so because the dtype does not owe it; a rule that answered nothing at
+# all would show up as a missing row, which is the whole point of printing it.
+ROUTES = []
+MATRIX_RULES = ("dv-004", "dv-009", "dv-016", "dv-017", "dv-line-011", "requiredAria")
+
+
+def route(artefact, figure, rule, how):
+    ROUTES.append((os.path.basename(artefact or "?"), figure or "?", rule, how))
+
+
 # ---------------- colour maths (lifted from _review/_gen_series_renders.py — one source) ----------------
 def _lin(c):
     c /= 255.0
@@ -556,6 +842,17 @@ def check_chart(attrs, inner, themes, ctx, fileinfo=None):
     surface_key = "--raised" if attrs.get("data-surface") == "raised" else "--page"
     svg = "\n".join(re.findall(r'<svg\b.*?</svg>', inner, re.S))
 
+    # #261 D3 — is THIS figure drawn at runtime? Decided once, used by every rule below, so the
+    # static and driven arms can never disagree about which artefact they are grading.
+    fi = fileinfo or {}
+    _fig_i = ctx.get("_fig_i", 0)
+    ctx["_fig_i"] = _fig_i + 1
+    _fig_id = attrs.get("id") or ""
+    _all_segs = re.findall(r'<(?:path|rect|circle|polyline|polygon|g)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
+    engine = is_engine_drawn(_all_segs, fi.get("html"))
+    _art = fi.get("path") or "?"
+    _tag = _fig_id or ("fig-%d" % _fig_i)
+
     # --- DV-D02-A dv-fit scope ---------------------------------------------
     # Bites BOTH ways: a cartesian plot MISSING dv-fit, and an excluded plot CARRYING it.
     # The second direction matters — #27 proved a manifest bites hardest where the author
@@ -632,16 +929,22 @@ def check_chart(attrs, inner, themes, ctx, fileinfo=None):
     #     mechanism is the one that reads as correct on plain page and lies over gridlines.
     #     Dave ruled the geometry route for stacked columns on 2026-07-27; both mechanisms now
     #     pass, and an unmeasurable chart still has to carry the stroke.
+    _dv004_route = "n-a"
     if dtype in ("donut", "pie", "stacked"):
         segs = re.findall(r'<(?:path|rect|circle)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
         stroke_ok = bool(segs) and all(_seg_has_surface_stroke(s) for s in segs)
         gap_ok, gap_note = _rect_stack_gap(segs) if dtype == "stacked" else (None, "not a rect stack")
-        fi = fileinfo or {}
+        _dv004_route = "driven" if is_engine_drawn(segs, fi.get("html")) else "static"
         if is_engine_drawn(segs, fi.get("html")):
             # s260-D3 — the chart does not exist in the markup; a COMMITTED driven receipt is the
             # evidence. Never a skip: every failure path below is BLOCKING and names the remedy.
-            ok, msg = driven_dv004(fi.get("path"), dtype, raw_dtype,
-                                   receipts_path=fi.get("receipts"), root=fi.get("root"))
+            # prefer THIS figure's own record (#261 D3); fall back to the dtype-scoped test-page
+            # arm for any artefact the driver does not drive directly.
+            ok, msg = driven_dv004_figure(fi.get("path"), raw_dtype, _fig_id, _fig_i,
+                                          receipts_path=fi.get("receipts"), root=fi.get("root"))
+            if ok is None:
+                ok, msg = driven_dv004(fi.get("path"), dtype, raw_dtype,
+                                       receipts_path=fi.get("receipts"), root=fi.get("root"))
             (A if ok else B).append(msg)
         elif not stroke_ok and gap_ok is not True:
             if gap_ok is False:
@@ -655,14 +958,33 @@ def check_chart(attrs, inner, themes, ctx, fileinfo=None):
         # even though the dtype is outside the gapless-surface set. Silent (None) unless a real
         # measured number exists; it can never invent a rule the receipts do not measure.
         segs = re.findall(r'<(?:path|rect|circle)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
-        fi = fileinfo or {}
         if is_engine_drawn(segs, fi.get("html")):
-            ok, msg = driven_dv004_recorded(fi.get("path"), raw_dtype,
-                                            receipts_path=fi.get("receipts"), root=fi.get("root"))
+            ok, msg = driven_dv004_figure(fi.get("path"), raw_dtype, _fig_id, _fig_i,
+                                          receipts_path=fi.get("receipts"), root=fi.get("root"))
+            if ok is None:
+                ok, msg = driven_dv004_recorded(fi.get("path"), raw_dtype,
+                                                receipts_path=fi.get("receipts"), root=fi.get("root"))
             if ok is True:
                 A.append(msg)
+                _dv004_route = "driven"
             elif ok is False:
                 B.append(msg)
+                _dv004_route = "driven"
+
+    # --- #261 D3: the SIBLINGS on an engine canvas -------------------------
+    #     dv-009 / dv-017 / dv-016 / dv-line-011 above all iterate `class="dv-series"` elements
+    #     pulled out of the MARKUP. When the engine draws, that list is empty and all four pass
+    #     vacuously — proved, not assumed, by _tests/chart-engine/_probe_fail_open.py (0/6 bit).
+    #     Same route as dv-004: static OR driven, never skipped.
+    if engine:
+        sb, sa = driven_siblings(fi.get("path"), dtype, raw_dtype, _fig_id, _fig_i,
+                                 receipts_path=fi.get("receipts"), root=fi.get("root"))
+        B.extend(sb)
+        A.extend(sa)
+    for _rule in ("dv-009", "dv-016", "dv-017"):
+        route(_art, _tag, _rule, "driven" if engine else "static")
+    route(_art, _tag, "dv-line-011", ("driven" if engine else "static") if dtype in _LINEISH else "n-a")
+    route(_art, _tag, "dv-004", _dv004_route)
 
     # --- dv-bar-009 zero baseline (bar-family ONLY; never fires on lines) ---
     if dtype in BAR_FAMILY:
@@ -742,9 +1064,24 @@ def check_file(path):
     for attrs, inner in charts:
         B, A = check_chart(attrs, inner, themes, ctx, fileinfo)
         results.append((attrs.get("data-dv-type", "?"), attrs.get("id", ""), B, A))
+    # #261 D3 — requiredAria against the RENDERED DOM, once per file (the manifest is per file).
+    # Attached to the first chart so it lands in the blocking channel; a file-level advisory list
+    # cannot red, and this rule has to be able to.
+    if results:
+        ab, aa = driven_aria(path, html)
+        if ab or aa:
+            results[0][2].extend(ab)
+            results[0][3].extend(aa)
+            route(path, "file", "requiredAria", "driven")
+        elif required_aria_of(html):
+            route(path, "file", "requiredAria", "static")
+        else:
+            route(path, "file", "requiredAria", "n-a")
     # journey-consistency advisory (a series index mapped to >1 fill across the view)
     file_adv = []
     for idx, fillset in ctx.items():
+        if str(idx).startswith("_"):
+            continue  # #261 D3 bookkeeping (the figure counter), not a series index
         if len(fillset) > 1:
             file_adv.append("dv-014: series index %s bound to multiple fills across the view: %s" % (idx, sorted(fillset)))
     return results, file_adv
@@ -1123,7 +1460,56 @@ def selftest():
     print("\n%s selftest" % ("✅" if ok else "❌"))
     return 0 if ok else 1
 
+def matrix():
+    """#261 D3's receipt: every artefact x figure x rule, and WHICH ROUTE answered it.
+
+    `static OR driven, never skipped` is only checkable if you can see the route. A `?` in this
+    table is a rule that answered nothing — the exact silence s260-D3 forbids.
+    """
+    files = discover()
+    for path in files:
+        try:
+            check_file(path)
+        except Exception as e:  # a broken file must not hide the rest of the table
+            print("  [EXC] %s — %s" % (os.path.relpath(path, HERE), e))
+    # requiredAria is declared once per FILE (the #token-manifest is the file's, not the figure's),
+    # so its route is the artefact's and is repeated down the artefact's figure rows.
+    per_file = {art: how for art, fig, rule, how in ROUTES if rule == "requiredAria"}
+    seen = {}
+    for art, fig, rule, how in ROUTES:
+        if rule == "requiredAria":
+            continue
+        seen.setdefault((art, fig), {})[rule] = how
+    fig_rules = [r for r in MATRIX_RULES if r != "requiredAria"]
+    hdr = "%-36s %-8s " % ("artefact", "figure") + " ".join("%-11s" % r for r in fig_rules) + " requiredAria"
+    print(hdr)
+    print("-" * len(hdr))
+    gaps = 0
+    for (art, fig) in sorted(seen):
+        row = seen[(art, fig)]
+        cells = []
+        for r in fig_rules:
+            v = row.get(r, "?")
+            if v == "?":
+                gaps += 1
+            cells.append("%-11s" % v)
+        aria = per_file.get(art, "?")
+        if aria == "?":
+            gaps += 1
+        print("%-36s %-8s " % (art[:36], fig[:8]) + " ".join(cells) + " " + aria)
+    n_driven = sum(1 for v in ROUTES if v[3] == "driven")
+    n_static = sum(1 for v in ROUTES if v[3] == "static")
+    n_na = sum(1 for v in ROUTES if v[3] == "n-a")
+    print("\n%d artefact(s), %d figure-row(s): %d driven · %d static · %d n-a · %d unanswered."
+          % (len(files), len(seen), n_driven, n_static, n_na, gaps))
+    if gaps:
+        print("❌ %d rule(s) answered by NEITHER route — that is the skip s260-D3 forbids." % gaps)
+    return 1 if gaps else 0
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--matrix" in sys.argv:
+        sys.exit(matrix())
     sys.exit(main())
