@@ -28,6 +28,8 @@ regenerates `_CHAIN.md` from them. Nobody edits `_CHAIN.md`.
 
 ## 2. Why the focus narrowed to one sentence
 
+> ⚠ **CORRECTED #257 (2026-09-08), BY ADDITION — Dave: *"where do you get the idea that this has anything to do with Sutherland? The demo is to David Rice at HSBC"*.** "Sutherland demo" below was this record's inference, not his words: Sutherland is HSBC's React component library (the binding target), never the audience. The demo is to **David Rice, HSBC Chief AI Officer**; prep note `notes/_DEMO-PREP-david-rice-hsbc.html`. The line below stands as written so the misinscription stays visible.
+
 Dave, at the opener: the Sutherland demo is about two weeks out and *"the focus is getting the dashboards
 one-shotable"* from the frozen prompt. Everything else on the queue — the cold test of v1.0.6, [18], the radius
 build, the 4px audit — stayed his and stayed carried. The session's shape follows from the sentence: if a
