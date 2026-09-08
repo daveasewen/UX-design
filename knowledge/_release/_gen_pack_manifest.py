@@ -215,6 +215,12 @@ GATE_DATA_CANDIDATES = [
     "knowledge/chart-intents.json",
     "knowledge/canon/_type-bindings.json",
     "knowledge/canon/_bindings-applied.json",
+    # #256 (Dave: "ship — completeness over convenience"): the three stores
+    # `_validate_roles_resolve.py` reads (s252-D1 roles · s254-D1 shapes + when-fields).
+    # Without them the gate ran in the pack and had nothing to judge (REPO-BOUND at #256).
+    "knowledge/roles.json",
+    "knowledge/shapes.json",
+    "knowledge/when-fields.json",
 ]
 
 # ---------------------------------------------------------------------------------------------
