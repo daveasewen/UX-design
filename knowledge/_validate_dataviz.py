@@ -363,20 +363,42 @@ def driven_dv004_recorded(page_html_path, raw_dtype, receipts_path=None, root=No
     goes red. `dv-004 and its siblings … static OR driven, never skipped`: a recorded figure that
     nothing reads is a skip wearing a receipt.
 
-    ⛔ IT DELIBERATELY DOES NOT WIDEN THE RULE. No mapping, no receipt, or a receipt whose figures
-    all carry `dv004_px: null` (the driver only measures radial and stacked joins) => (None, None),
-    no opinion, no failure. This function can only ever go red on a number that exists.
+    ⛔ IT DELIBERATELY DOES NOT WIDEN THE RULE. An UNMAPPED snippet, or a receipt whose figures all
+    carry `dv004_px: null` (the driver only measures radial and stacked joins) => (None, None), no
+    opinion, no failure. The no-opinion arm can only ever be reached by a receipt that EXISTS and is
+    FRESH.
+
+    #260 — ORDER IS THE WHOLE POINT. The freshness arms run FIRST, for any member the map names:
+    an engine page whose receipt is missing, or whose recorded source hashes no longer match the
+    bytes on disk, is BLOCKING before we ever ask whether a dv-004 figure was measured. Ordering it
+    the other way (V2's finding) meant 12 of the 13 engine pages — every type whose join the driver
+    does not measure — took the (None, None) exit ahead of the STALE arm, so editing an engine
+    source and never re-driving left the gate GREEN and only `--check` caught it. That is `static
+    OR driven, never skipped` failing on the "driven" side.
     """
-    rec = _load_receipts(receipts_path)
-    if not rec:
-        return (None, None)
     base = os.path.basename(page_html_path or "")
     page = ENGINE_TEST_PAGE.get(base)
     if not page:
         return (None, None)
+    root = root or os.path.dirname(HERE)
+    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
+    rec = _load_receipts(receipts_path)
+    if not rec:
+        return (False, "dv-004: %s is ENGINE-DRAWN and maps to the chart-engine test page %s, but "
+                       "there is no driven receipt at %s. Record one: %s"
+                       % (raw_dtype, page, where, DRIVE_CMD))
     entry = (rec.get("pages") or {}).get(page)
     if not entry:
-        return (None, None)
+        return (False, "dv-004: %s is ENGINE-DRAWN and maps to %s, but %s holds no driven receipt "
+                       "for that page. Record one: %s" % (raw_dtype, page, where, DRIVE_CMD))
+    for rel, want in sorted((entry.get("sources") or {}).items()):
+        p = os.path.join(root, rel)
+        got = _sha256(p) if os.path.isfile(p) else None
+        if got != want:
+            return (False, "dv-004: %s is ENGINE-DRAWN and its driven receipt (%s) is STALE — %s "
+                           "has changed since it was driven%s. Re-drive: %s"
+                           % (raw_dtype, page, rel, " (file is missing)" if got is None else "",
+                              DRIVE_CMD))
     combos = entry.get("combos") or {}
     seen = []
     for combo in sorted(combos):
@@ -385,17 +407,6 @@ def driven_dv004_recorded(page_html_path, raw_dtype, receipts_path=None, root=No
                 seen.append((float(f["dv004_px"]), combo, fid))
     if not seen:
         return (None, None)
-    root = root or os.path.dirname(HERE)
-    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
-    for rel, want in sorted((entry.get("sources") or {}).items()):
-        p = os.path.join(root, rel)
-        got = _sha256(p) if os.path.isfile(p) else None
-        if got != want:
-            return (False, "dv-004: %s is ENGINE-DRAWN and its driven receipt (%s) carries a "
-                           "measured separation, but the receipt is STALE — %s has changed since "
-                           "it was driven%s. Re-drive: %s"
-                           % (raw_dtype, page, rel, " (file is missing)" if got is None else "",
-                              DRIVE_CMD))
     worst = min(seen)
     if worst[0] < DV004_MIN_PX:
         return (False, "dv-004: driven receipt FAILS — %s/%s measured %.3fpx of separation in "
@@ -1074,6 +1085,25 @@ def selftest():
     cases.append(("★ #260 a receipt that measures NOTHING (dv004_px null) invents no rule",
                   ENGINE_BFLY, lambda B, A: not has(B, "dv-004") and not has(A, "dv-004"),
                   _bite_recorded("bfly-null", None)))
+
+    # ---- #260 · the STALE arm must be REACHABLE for a page the driver measures nothing on ------
+    # V2's finding: the no-opinion exit used to run BEFORE the source-hash check, so 12 of 13
+    # engine pages could carry a stale receipt and stay green. The pair below is the mutation in
+    # miniature — same fixture, one byte of engine source changed.
+    _fi_null_stale = _bite_recorded("bfly-null-stale", None)
+    open(_fi_null_stale["_src"], "w").write("engine v2 — edited after the drive")
+    cases.append(("★ #260 a FRESH receipt with no measured dv-004 figure still passes (no rule invented)",
+                  ENGINE_BFLY, lambda B, A: not has(B, "dv-004") and not has(A, "dv-004"),
+                  _bite_recorded("bfly-null-fresh", None)))
+    cases.append(("★ #260 the SAME receipt with one source hash changed is BLOCKING STALE",
+                  ENGINE_BFLY, lambda B, A: has(B, "dv-004") and has(B, "STALE")
+                  and has(B, "dv-render-butterfly.js") and has(B, "_drive_chart_engine.py"),
+                  _fi_null_stale))
+    _fi_no_receipt = dict(_bite_recorded("bfly-none", None),
+                          receipts=os.path.join(_tmp, "bfly-none", "nope.json"))
+    cases.append(("★ #260 a mapped engine page with NO receipt at all is BLOCKING, never a skip",
+                  ENGINE_BFLY, lambda B, A: has(B, "dv-004") and has(B, "ENGINE-DRAWN")
+                  and has(B, "_drive_chart_engine.py"), _fi_no_receipt))
 
     ok = bool(_map_ok)
     for case in cases:
