@@ -4,8 +4,8 @@
     "version": "v1.0.8",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version moves WITH the pack (s225-D3): every Gumdrop version line in the cut is stamped from this one, so the pack cannot disagree with itself about what it carries."
   },
-  "commit": "ffb2240ea17897d0c79cb2469709a63b7d451604",
-  "commit_date": "2026-09-08T19:12:56+01:00",
+  "commit": "193c56772bfe557ca14c22bf780316f338a0a36f",
+  "commit_date": "2026-09-08T19:29:50+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,7 +101,7 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 11 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "ffb2240ea17897d0c79cb2469709a63b7d451604",
+    "commit": "193c56772bfe557ca14c22bf780316f338a0a36f",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -128,16 +128,8 @@
         "why": "crashed: AssertionError: file_contains must find a present needle"
       },
       {
-        "gate": "_validate_dataviz.py",
-        "why": "runs, but its subject is not in the pack — it is GREEN against the full repo and RED here: [PASS] snippets/Chart-bar.reference.html  (5 charts, 0 blocking, 20 advisory) / [PASS] snippets/Chart-boxplot.reference.html  (1 charts, 0 b"
-      },
-      {
         "gate": "_validate_evidence.py",
         "why": "refuses for notes/_claims, a repo resource the pack does not ship — not a dependency the designer can install"
-      },
-      {
-        "gate": "_validate_fit_physics.py",
-        "why": "crashed: ╚════════════════════════════════════════════════════════════╝"
       },
       {
         "gate": "_validate_kg.py",
@@ -1412,7 +1404,7 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 1240696,
+      "bytes": 1441038,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
@@ -1420,11 +1412,11 @@
       ],
       "counts": {
         "empty_population": 4,
-        "needs_dep": 3,
-        "repo_bound": 11,
-        "runnable": 40
+        "needs_dep": 4,
+        "repo_bound": 9,
+        "runnable": 41
       },
-      "files": 63,
+      "files": 73,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1438,6 +1430,7 @@
         "knowledge/_binds-ratchet.json",
         "knowledge/_contrast_utils.py",
         "knowledge/_could_not_ask.py",
+        "knowledge/_drive_chart_engine.py",
         "knowledge/_dtcg_units.py",
         "knowledge/_gate_artefact_fresh.py",
         "knowledge/_gate_dataviz_vars.py",
@@ -1445,6 +1438,13 @@
         "knowledge/_gate_minted_consumption.py",
         "knowledge/_helpgate.py",
         "knowledge/_htmlmask.py",
+        "knowledge/_tests/chart-engine/_receipts.json",
+        "knowledge/_tests/chart-engine/bar.html",
+        "knowledge/_tests/chart-engine/combo.html",
+        "knowledge/_tests/chart-engine/donut.html",
+        "knowledge/_tests/chart-engine/line.html",
+        "knowledge/_tests/chart-engine/sparkline.html",
+        "knowledge/_tests/chart-engine/stacked-area.html",
         "knowledge/_type_ratchet.json",
         "knowledge/_validate_a11y.py",
         "knowledge/_validate_advisory.py",
@@ -1456,10 +1456,12 @@
         "knowledge/_validate_coverage.py",
         "knowledge/_validate_css_governed.py",
         "knowledge/_validate_dark_surfaces.py",
+        "knowledge/_validate_dataviz.py",
         "knowledge/_validate_descender_clip.py",
         "knowledge/_validate_descender_computed.py",
         "knowledge/_validate_dtcg.py",
         "knowledge/_validate_edge_extremity.py",
+        "knowledge/_validate_fit_physics.py",
         "knowledge/_validate_grid.py",
         "knowledge/_validate_help_gate.py",
         "knowledge/_validate_hidden_display.py",
@@ -1651,11 +1653,11 @@
         {
           "gate": "_validate_dataviz.py",
           "invocation": "",
-          "population": "",
+          "population": "graded",
           "selftest": "green",
           "third_party": [],
-          "verdict": "REPO-BOUND",
-          "why": "runs, but its subject is not in the pack — it is GREEN against the full repo and RED here: [PASS] snippets/Chart-bar.reference.html  (5 charts, 0 blocking, 20 advisory) / [PASS] snippets/Chart-boxplot.reference.html  (1 charts, 0 b"
+          "verdict": "RUNNABLE",
+          "why": "ran clean, verdict PASS"
         },
         {
           "gate": "_validate_descender_clip.py",
@@ -1712,8 +1714,8 @@
           "third_party": [
             "playwright"
           ],
-          "verdict": "REPO-BOUND",
-          "why": "crashed: ╚════════════════════════════════════════════════════════════╝"
+          "verdict": "NEEDS-DEP",
+          "why": "playwright install chromium"
         },
         {
           "gate": "_validate_grid.py",
@@ -2692,8 +2694,8 @@
         "files": 1168
       },
       "gates": {
-        "bytes": 1240696,
-        "files": 63
+        "bytes": 1441038,
+        "files": 73
       },
       "gumdrop": {
         "bytes": 1992050,
@@ -2716,10 +2718,10 @@
         "files": 7
       }
     },
-    "bytes": 43682135,
-    "files": 1678,
-    "pack_bytes": 43708792,
-    "pack_files": 1680
+    "bytes": 43882477,
+    "files": 1688,
+    "pack_bytes": 43909134,
+    "pack_files": 1690
   },
   "version": "v1.0.8"
 }
