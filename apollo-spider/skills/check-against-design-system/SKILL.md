@@ -1,6 +1,6 @@
 ---
-name: check-against-design-system
-description: Review a UI candidate against the Apollo design system and flag where it drifts — invented components or variants, hard-coded values instead of tokens, raw type instead of composites, theme leaks, red-law breaches, off-rails layout, anti-pattern violations and missing states. Use to check whether a design conforms before it advances. Pairs with check-with-gates, which proves mechanically what this skill judges by reading. Use this when the question is asked of an existing screen or component — “does this match our design system”, “is this on brand”, “review this screen”, “why does this look off”, “did we build this the right way”, “check this page before I share it”.
+name: ADS-check-against-design-system
+description: Review a UI candidate against the Apollo design system and flag where it drifts — invented components or variants, hard-coded values instead of tokens, raw type instead of composites, theme leaks, red-law breaches, off-rails layout, anti-pattern violations and missing states. Use to check whether a design conforms before it advances. Pairs with ADS-check-with-gates, which proves mechanically what this skill judges by reading. Use this when the question is asked of an existing screen or component — “does this match our design system”, “is this on brand”, “review this screen”, “why does this look off”, “did we build this the right way”, “check this page before I share it”.
 ---
 
 # Check against the design system
@@ -10,7 +10,7 @@ Inspect a design or its code against the canon and report where it strays.
 **Run the gates first.** This pack ships the same executable checks Apollo runs on
 itself — contrast maths, token fidelity, icon provenance, accessibility targets. They are
 cheaper and more certain than reading, and they will find the mechanical drift before you
-spend attention on it. Start with the `check-with-gates` skill, then come back here for
+spend attention on it. Start with the `ADS-check-with-gates` skill, then come back here for
 everything a gate cannot see: whether the right component was chosen, whether the states
 make sense, whether the layout obeys the rails, whether the copy is right.
 
@@ -78,7 +78,7 @@ you that a perfectly-tokenised card was the wrong component for the job.
 
 ## Procedure
 
-1. **Run the gates** (`check-with-gates`). Record what each said, verbatim.
+1. **Run the gates** (`ADS-check-with-gates`). Record what each said, verbatim.
 2. For each element, confirm the **component exists** in `showroom/index.json` and is not
    deprecated — and that it is the right one for the job, per its `purpose`.
 3. Confirm the **variant** is defined in the meta.

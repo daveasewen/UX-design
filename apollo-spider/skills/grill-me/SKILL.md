@@ -1,6 +1,6 @@
 ---
-name: grill-me
-description: Grill the brief before anything gets built — six standard questions that decide how a piece of Apollo work will look (theme first, then light/dark, density, brand assets, data and constraints), then open discovery, one question at a time, until the brief is exhausted. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new design project or a new design task, and always before generate-from-canon builds anything, whenever briefs/ holds no current brief for that task. Use this on openings like “new design project”, “I’m starting a new screen”, “make this look like our brand”, “use our brand colours”, “which theme should we use”, “what do you need from me before you build”, “here’s a new product area” — and skip it, silently, when a current brief already exists.
+name: ADS-grill-me
+description: Grill the brief before anything gets built — six standard questions that decide how a piece of Apollo work will look (theme first, then light/dark, density, brand assets, data and constraints), then open discovery, one question at a time, until the brief is exhausted. Saves the answers as a short brief the other Apollo skills read. Use at the start of a new design project or a new design task, and always before ADS-generate-from-canon builds anything, whenever briefs/ holds no current brief for that task. Use this on openings like “new design project”, “I’m starting a new screen”, “make this look like our brand”, “use our brand colours”, “which theme should we use”, “what do you need from me before you build”, “here’s a new product area” — and skip it, silently, when a current brief already exists.
 ---
 
 # Grill me
@@ -30,7 +30,7 @@ Run it when the folder gives you no answer:
 - At the start of a **new design task** inside a project that already has briefs, when the
   task is different enough to want its own answers (a different product area, a different
   audience, a different surface) and no brief covers it.
-- **Before `generate-from-canon` builds anything**, when no current brief exists. That
+- **Before `ADS-generate-from-canon` builds anything**, when no current brief exists. That
   skill checks for a brief first and will ask the theme question itself if it can't find
   one — running this properly is the better version of that.
 
@@ -182,7 +182,7 @@ constraint from question 6 — and start.
 
 ## Handing it on
 
-`generate-from-canon` reads the newest brief in `briefs/` and **cites it** in its
+`ADS-generate-from-canon` reads the newest brief in `briefs/` and **cites it** in its
 used/missing note: which brief, and which of the six answers actually shaped the build.
 A brief nobody cited is a brief nobody read.
 

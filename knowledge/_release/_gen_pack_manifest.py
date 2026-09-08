@@ -110,13 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.6"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.7"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.6"
+MEMENTO_CUT_VERSION = "v1.0.7"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -713,6 +713,10 @@ RATIFY_IDS = {
                             # 1f4c35587f30. Keyed DIRECTLY here, not at the next cut, because
                             # dist/ did not match the manifest (6 missing, 79 differing) — a
                             # release bake is owed, and the bake reads this key.
+    # ⛔ v1.0.7 (#257) HAS NO ROW YET: cut on Dave's "Cut 1.0.7 ... prepend ADS- to the skill
+    # names" (s257-D2 — an AUTHORISATION, s223-D3), because the ratified v1.0.6 re-bake moved
+    # dist/ at the same version and the frozen ledger rightly called it laundering. PROPOSED
+    # until his ratifying word; s237-D9: derived, never typed.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")

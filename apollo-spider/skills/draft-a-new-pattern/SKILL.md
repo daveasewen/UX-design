@@ -1,11 +1,11 @@
 ---
-name: draft-a-new-pattern
+name: ADS-draft-a-new-pattern
 description: Help create a NEW component or pattern that fits the Apollo design system — built from its existing tokens, type composites, states, layout rails, accessibility rules and naming — and package it as a candidate ready to propose for the library. Use when the system is missing something you need. Produces a reviewable draft, not adopted canon. Use this when the output is UI and nothing in the library fits — “we need a component the system doesn’t have”, “design a new pattern for this”, “there’s no widget for this, invent one”, “add something to the library”, “the closest component is wrong, make a proper one”.
 ---
 
 # Draft a new pattern
 
-The **creative** mode. Use it when `generate-from-canon` flagged a Gap, or when you want
+The **creative** mode. Use it when `ADS-generate-from-canon` flagged a Gap, or when you want
 something the system doesn't have yet. The point isn't to freestyle — it's to grow the
 system *on-brand and accessible by construction*, so your idea can become part of the
 shared library rather than a one-off on one screen.
@@ -68,7 +68,7 @@ If it survives all four, draft it.
 1. Clarify what the pattern is for, where it'll live and what it must not sit next to.
 2. Compose it from canon primitives — bind tokens, apply composites, add the states.
 3. Write the draft: a **snippet** (HTML/CSS or React) plus its **meta**.
-4. **Gate it.** Use the `check-with-gates` skill. The quick loop is
+4. **Gate it.** Use the `ADS-check-with-gates` skill. The quick loop is
    `python3 knowledge/_validate_screen.py <your-file>`; the full contribution contract is
    Route C in that skill — a `#token-manifest` block declaring every var and its token,
    plus light and dark blocks, which is what makes `_validate_snippets.py` and

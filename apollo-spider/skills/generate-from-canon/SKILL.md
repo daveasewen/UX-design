@@ -1,5 +1,5 @@
 ---
-name: generate-from-canon
+name: ADS-generate-from-canon
 description: Build a screen or component using only the Apollo design system — its 135 reviewed components, its tokens, its type composites and its layout rails — never inventing new ones. Flags anything the system is missing instead of improvising. Use when you want on-brand, accessible UI drafted by construction. Outputs React (preferred) or plain HTML/CSS. Use this whenever the thing being asked for IS a piece of UI, however casually it is put — “build me a dashboard”, “build a screen”, “make a page”, “design a settings page”, “create a form”, “mock up a view”, “add a card to this screen”, “put a table on that page”, “can you lay this out”.
 ---
 
@@ -10,7 +10,7 @@ failure of AI design work — quietly *inventing* components, variants or colour
 isn't in the system, this skill flags it rather than making it up.
 
 This is the **strict** mode: deliberately faithful, not a creativity play. When the
-system is genuinely missing something you need, use `draft-a-new-pattern`.
+system is genuinely missing something you need, use `ADS-draft-a-new-pattern`.
 
 ## Where things live
 
@@ -97,7 +97,7 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     > **dashboard bento — is that right?**
 
     Then go bento-first unless the designer says otherwise. **A skip is a yes**, exactly
-    as in `grill-me`: a shrug never counts as a no, and you never wait for permission to
+    as in `ADS-grill-me`: a shrug never counts as a no, and you never wait for permission to
     proceed. Bento-first means you **splice the snippet**, not re-draw the wall: start
     from `knowledge/snippets/Template-dashboard-bento.reference.html` and edit it down to
     the brief. Rule 2 applies here like everywhere else — hand-rolling a bento wall from
@@ -150,7 +150,7 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 
 0. **Brief first.** Look for the newest `briefs/*-grill.md` in the project. If one
    exists, **read it and cite it** in the used/missing note — which brief, and which of
-   its answers shaped the build (theme above all). If there is none, run the `grill-me`
+   its answers shaped the build (theme above all). If there is none, run the `ADS-grill-me`
    skill; if the designer would rather not, ask **one** question before you build —
    *which theme?* — because rule 5's four themes differ in corner shape as well as
    colour, and **mono makes every radius zero by design**, so a mono build is
@@ -182,7 +182,7 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    component locally, you've left canon.
    The long version of this is `knowledge/_RUNBOOK-compose-from-canon.md`.
 4. **Gaps.** Anything the system can't supply → the Gaps list. Don't invent.
-5. **Prove it.** Run the gates on what you built — see the `check-with-gates` skill.
+5. **Prove it.** Run the gates on what you built — see the `ADS-check-with-gates` skill.
    Composed screens have their own runner:
    `python3 knowledge/_validate_screen.py path/to/your-screen.html`.
    A draft you haven't gated is a claim, not a result.

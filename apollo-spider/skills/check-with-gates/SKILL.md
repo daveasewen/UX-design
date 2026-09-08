@@ -1,6 +1,6 @@
 ---
-name: check-with-gates
-description: Run Apollo's own executable gates against work in progress — contrast, token binding, type composites, icon provenance, accessibility targets, hardcoded values — and read the verdict honestly. Use to prove a design conforms rather than assert it. The mechanical half of check-against-design-system. Use this whenever a screen or component is about to be shown to anyone — “check my work”, “run the checks on this”, “is this accessible”, “what’s the contrast here”, “is this ready to share”, “anything wrong with this page”.
+name: ADS-check-with-gates
+description: Run Apollo's own executable gates against work in progress — contrast, token binding, type composites, icon provenance, accessibility targets, hardcoded values — and read the verdict honestly. Use to prove a design conforms rather than assert it. The mechanical half of ADS-check-against-design-system. Use this whenever a screen or component is about to be shown to anyone — “check my work”, “run the checks on this”, “is this accessible”, “what’s the contrast here”, “is this ready to share”, “anything wrong with this page”.
 ---
 
 # Check with gates
@@ -154,13 +154,13 @@ gets broken.
 
 Local runs are for the loop you're in. CI is the record.
 
-## Working with check-against-design-system
+## Working with ADS-check-against-design-system
 
 The two skills are halves of one review.
 
-- **`check-with-gates`** proves the mechanical half: contrast maths, token existence,
+- **`ADS-check-with-gates`** proves the mechanical half: contrast maths, token existence,
   icon provenance, target sizes, hardcoded values. Definitive, and cheap.
-- **`check-against-design-system`** does the half no gate can: was this the right
+- **`ADS-check-against-design-system`** does the half no gate can: was this the right
   component, does the layout obey the rails, do the states make sense, is the copy right.
 
 Run the gates first. Then bring the verdicts — quoted, with their populations, and with

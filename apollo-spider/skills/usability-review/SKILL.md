@@ -1,5 +1,5 @@
 ---
-name: usability-review
+name: ADS-usability-review
 description: Run an expert usability inspection of a screen or flow against Nielsen's 10 heuristics, producing severity-rated, actionable findings. Use to evaluate interaction quality — distinct from design-system conformance, from the executable gates, and from accessibility auditing. Use this when the question is about the experience of a screen or flow rather than its construction — “is this usable”, “would someone understand this screen”, “UX review of this flow”, “what’s confusing here”, “will people get lost in this”.
 ---
 
@@ -8,8 +8,8 @@ description: Run an expert usability inspection of a screen or flow against Niel
 Expert usability inspection against Nielsen & Molich's 10 heuristics. This is the
 **craft-of-usability** check, and it is a different question from the other three:
 
-- `check-with-gates` measures what is mechanically true — contrast, tokens, targets.
-- `check-against-design-system` asks whether it conforms to the system.
+- `ADS-check-with-gates` measures what is mechanically true — contrast, tokens, targets.
+- `ADS-check-against-design-system` asks whether it conforms to the system.
 - **This skill asks whether it actually works for the person using it.** A screen can be
   perfectly conformant and perfectly gated and still be confusing, and no gate will ever
   tell you that.
@@ -60,7 +60,7 @@ summary. **Surface the 3s and 4s first**: those drive the conversation, and bury
 under a list of cosmetics is the most common way a good review fails to land.
 
 Where a finding is really a system gap rather than a screen defect, say so and route it
-to `draft-a-new-pattern` — that's how a usability problem gets fixed once for everybody
+to `ADS-draft-a-new-pattern` — that's how a usability problem gets fixed once for everybody
 instead of once per screen.
 
 *Experimental.*
