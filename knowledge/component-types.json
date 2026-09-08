@@ -126,7 +126,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-line"
           ],
           "markup": [
             "dv-lockup-title",
@@ -156,7 +158,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-bar"
           ],
           "markup": [
             "dv-lockup-title",
@@ -187,7 +191,11 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-bar",
+            "dv-render-line",
+            "dv-render-combo"
           ],
           "markup": "source"
         },
@@ -212,7 +220,9 @@
           "consumes": [
             "dv-behaviour",
             "dv-legend",
-            "dv-donut-sweep"
+            "dv-donut-sweep",
+            "dv-render",
+            "dv-render-donut"
           ],
           "markup": [
             "dv-lockup-title",
@@ -222,7 +232,9 @@
         "Chart-sparkline": {
           "selector": "figure.dv",
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-sparkline"
           ],
           "markup": [],
           "markupExempt": {
@@ -432,7 +444,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-stacked-area"
           ],
           "markup": [
             "dv-lockup-title",
@@ -500,6 +514,90 @@
           },
           "$manifestBinds": {},
           "$description": "THE STATUS-STRIP ARRIVAL — s251-D1 (Dave, #251): \"the user might even click on the chip and it anchor links to the needs attention panel\". FOURTH behaviour source for the group, added 2026-09-06 (#251 DP-08 build lane). It is NOT dataviz code, and the name says so: it is registered HERE because a behaviour partial is addressed per GROUP and Template-dashboard-bento is a member of exactly one group with behaviours (`dataviz`) — the probe measured that (notes/_subreports/2026-09-06-251-PROBE-dp08.md finding 9). Whether a Layer-2 template group should exist so a template behaviour does not have to live in the chart group is a RULING-SHAPED QUESTION carried in notes/_subreports/2026-09-06-251-BUILD-dp08.md, not a decision this lane took. CONSUMER SCOPE = Template-dashboard-bento ALONE, which is what lets requires.declarations be HONEST (`data-dp08-anchor` on the chip, `data-dp08-target` on the card): the 14 chart members declare it away in their own `consumes` and carry no payload, the narrow-scope shape the dv-donut-sweep entry above records. ZERO resize listeners by design — the group's ONE rAF-debounced listener stays dv-behaviour's; this behaviour has nothing to reflow. Byte cost at inscription: 1,821 code-only bytes (3,884 raw), taking the Template-dashboard-bento member page from 13,048 to 14,869 of PAGE_BYTES 34,816 (s250-D1, caps UNMOVED)."
+        },
+        "dv-render": {
+          "source": "canon/dv-render.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "dvRender("
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "THE DATA-DRIVEN CHART ENGINE, core — s249-D4 (Dave: the engine is the LIBRARY'S, not a recipe re-typed per build), built #259. FIFTH behaviour source for the group. `window.dvRender(figureEl, spec)` turns a data spec {type, categories, series:[{name, values, role}], format, unit} into the dv-fit SVG grammar canon/dv-behaviour.js already fits, writes the figure's <table> spine from the same numbers (so popover value == table value by construction, not by care), sets the svg's accessible name, and dispatches ONE `resize` so dv-behaviour's single rAF-debounced listener re-fits the fresh marks. It REPLACES rule 18 of ADS-generate-from-canon — the interim 'author the geometry yourself' recipe that five cold runs re-typed five different ways. WHY A SEPARATE SOURCE FROM dv-behaviour: the fit engine is the CONSUMER of this grammar and the renderer is its PRODUCER; they share a contract, not a lifetime, and dv-behaviour has 3.3 KB of code-only headroom against the 16 KB cap while this file needs 9. THE TYPE REGISTRY IS THE SEAM: `dvRender.types[name] = fn(ctx)`, so a type partial (dv-render-bar and its five siblings) owns the MARKS only and no type lane ever edits this file or the registry. requires `dvRender(` — a consumer that carries the engine and never calls it has an empty canvas and no way to know."
+        },
+        "dv-render-bar": {
+          "source": "canon/dv-render-bar.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The BAR TYPE PARTIAL for dv-render — column, grouped-column, stacked-column and the horizontal bar, registered #259 as the REFERENCE IMPLEMENTATION the five sibling type partials are written against. One routine, two flags (horiz, stack): a grouped column and a horizontal bar are the same arithmetic with the band and value axes exchanged, and writing them twice is how the two copies drift. Enacts dv-004 (2px of REAL geometry between adjacent blocks, cut off the block below a join so the top segment still reads its true total), s116-D1 (24px thickness floor wherever the band can pay for it), DV-D09 (horizontal single-series default = data/series/3), dv-bar-007 (a negative on a horizontal bar THROWS, named) and §04.3 (>=2 series ⇒ an on-chart letter key, so colour is never the only channel). requires `data-dv-type=\"` — the figure must say which bar it is; the engine reads the type off the spec, the gate reads it off the figure, and a disagreement between them is the defect this catches."
+        },
+        "dv-render-line": {
+          "source": "canon/dv-render-line.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\"line\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "REGISTERED STUB, placed by the #259 engine-core lane so the line type lane has a file to fill and a registry entry to consume WITHOUT touching canon/dv-render.js or this registry. It registers its type name(s) and throws a NAMED 'NOT BUILT yet' error if anything asks it to draw. A missing registration and a stub registration fail differently on purpose: 'no type partial registered for X' means nobody has claimed the name; 'the line type partial is NOT BUILT yet' means someone has and has not finished. NO MEMBER CONSUMES IT TODAY — a registered behaviour with zero consumers is legal (the generator only refuses a NON-consumer that carries the markers), and it costs zero page bytes because ADR-0015 A3 sums the page from `consumes`. Owed: polyline data-fxs + data-ys, one .dv-mk circle per point, the band axis shared with the column."
+        },
+        "dv-render-stacked-area": {
+          "source": "canon/dv-render-stacked-area.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\"stacked-area\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "REGISTERED STUB, placed by the #259 engine-core lane so the stacked-area type lane has a file to fill and a registry entry to consume WITHOUT touching canon/dv-render.js or this registry. It registers its type name(s) and throws a NAMED 'NOT BUILT yet' error if anything asks it to draw. A missing registration and a stub registration fail differently on purpose: 'no type partial registered for X' means nobody has claimed the name; 'the stacked-area type partial is NOT BUILT yet' means someone has and has not finished. NO MEMBER CONSUMES IT TODAY — a registered behaviour with zero consumers is legal (the generator only refuses a NON-consumer that carries the markers), and it costs zero page bytes because ADR-0015 A3 sums the page from `consumes`. Owed: one path data-fxs + data-ys per band emitted M...L...Z (#96-D1 5), stacked to the category total, dv-004 separation."
+        },
+        "dv-render-donut": {
+          "source": "canon/dv-render-donut.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\"donut\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "REGISTERED STUB, placed by the #259 engine-core lane so the donut type lane has a file to fill and a registry entry to consume WITHOUT touching canon/dv-render.js or this registry. It registers its type name(s) and throws a NAMED 'NOT BUILT yet' error if anything asks it to draw. A missing registration and a stub registration fail differently on purpose: 'no type partial registered for X' means nobody has claimed the name; 'the donut type partial is NOT BUILT yet' means someone has and has not finished. NO MEMBER CONSUMES IT TODAY — a registered behaviour with zero consumers is legal (the generator only refuses a NON-consumer that carries the markers), and it costs zero page bytes because ADR-0015 A3 sums the page from `consumes`. Owed: arc paths with the data-a1/data-a2 sweep hooks dv-donut-sweep already drives, <=6 slices (dv-pie-009), a >=2px surface-coloured separating stroke (dv-004), centre figure."
+        },
+        "dv-render-sparkline": {
+          "source": "canon/dv-render-sparkline.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\"spark\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "REGISTERED STUB, placed by the #259 engine-core lane so the sparkline type lane has a file to fill and a registry entry to consume WITHOUT touching canon/dv-render.js or this registry. It registers its type name(s) and throws a NAMED 'NOT BUILT yet' error if anything asks it to draw. A missing registration and a stub registration fail differently on purpose: 'no type partial registered for X' means nobody has claimed the name; 'the sparkline type partial is NOT BUILT yet' means someone has and has not finished. NO MEMBER CONSUMES IT TODAY — a registered behaviour with zero consumers is legal (the generator only refuses a NON-consumer that carries the markers), and it costs zero page bytes because ADR-0015 A3 sums the page from `consumes`. Owed: one polyline, NO axis furniture at all (the atom is axis-free, s182-D2), exactly ONE data-tip mark."
+        },
+        "dv-render-combo": {
+          "source": "canon/dv-render-combo.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\"combo\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "REGISTERED STUB, placed by the #259 engine-core lane so the combo type lane has a file to fill and a registry entry to consume WITHOUT touching canon/dv-render.js or this registry. It registers its type name(s) and throws a NAMED 'NOT BUILT yet' error if anything asks it to draw. A missing registration and a stub registration fail differently on purpose: 'no type partial registered for X' means nobody has claimed the name; 'the combo type partial is NOT BUILT yet' means someone has and has not finished. NO MEMBER CONSUMES IT TODAY — a registered behaviour with zero consumers is legal (the generator only refuses a NON-consumer that carries the markers), and it costs zero page bytes because ADR-0015 A3 sums the page from `consumes`. Owed: the bar partial's rects plus the line partial's polyline on ONE band axis and (today) one value scale."
         }
       },
       "$markup": {

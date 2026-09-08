@@ -12,6 +12,20 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ Context-aware responsive behaviours — one component, N strategies (Dave, 2026-09-08 #258, post-wrap)
+
+**What (his words, verbatim):**
+> Can we make responsive behaviors context aware, for instance, could a segmented control have two or more different responsive behaviors (in this case space-awarness). Imagine we have a set of controls in a row, one behavior could be a simple reflow and the seg-control might just stack under the other controls, another might be that it collapses into a split button, I could imagine that there are other responsive behaviors that might have more than one behavior bepending on context and designer preference. I don't know if we have this decision made at author time automatically, or the option is presented to the designer, or this is something that the designer finesses at edit mode.
+>
+> It's definitely something I'd like us to investigate, maybe theres some material only we can research.
+
+**Why it's held:** captured after the #258 wrap; not ruled, not scoped. A RESEARCH lane is owed before any build.
+**What it feeds:** the `behaviour` meta (a `responsive.strategies[]` key with a default + context rule), container queries in snippets (Transfer-list already uses `container-type:inline-size`), a skill rule; sits on `s258-D2` (code is where innovation lives) and the 51-meta `behaviour` backlog.
+**Shape of the question (conductor's reading, labelled):** N named strategies (reflow / stack / collapse-to-split-button / overflow-menu / icon-only …) chosen by *context* (inline space, siblings, density) and *designer preference*; three candidate decision points — author time (skill picks), presented option (skill asks, grill-me style), edit mode (designer finesses on the page) — possibly layered.
+**Research leads (unverified):** CSS container queries; Priority+ navigation; Material adaptive/canonical layouts; Apple HIG size classes; Polaris/Carbon overflow patterns; the pack's own Action-bar / View-options overflow. The "material only we can research" question: does any published system let a designer choose *among* strategies per instance?
+**Source:** chat #258 2026-09-08 · carried `_CARRIES.md` § residual → #259 item ⑩.
+**Status:** `idea`. `[born #258 · guards: this entry + #259 residual ⑩ · until: Dave scopes the research lane]`
+
 ## ⚠ Proforma svg `data-pl/pr/h` are INERT — declared #72, homed #76 by the 2d EXIT CHECK
 
 **What:** the `data-pl` / `data-pr` / `data-h` attributes specced onto the proforma svg during #72's

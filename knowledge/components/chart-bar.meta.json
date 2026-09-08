@@ -85,6 +85,12 @@
     "figma_node": "",
     "code_path": "knowledge/_proforma/DataViz-interactive.html"
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": ["dv-behaviour", "dv-render", "dv-render-bar"],
+    "fallback": "With CSS on and JS off the three engine-driven canvases (column, horizontal bar, grouped column) render as EMPTY <svg> boxes and the chart is not drawn — dvRender is what fills them. The data is still fully available and still labelled: every figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. The status-ramp and stacked-column canvases stay baked, so those two render fully with JS off. Lost with JS off: the value popover, the responsive fit reflow, the legend filter/isolate, Copy CSV, and the sort control (which re-renders rather than toggling baked variants).",
+    "$note": "Typed s249-D4 / #259 (the chart-engine lane). `script` addresses the ENGINE CORE — dv-render.js is the file a consumer's behaviour begins at; dv-render-bar.js is reached through its type registry and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. dv-legend is deliberately NOT listed: it is injected and consumed (the grouped/stacked legends run on it) but the s245-D2 reading of `partial` is the behaviour ADDRESS the component's own script chain needs, and the pre-existing prose note on the tokenValidation block still carries the full membership story."
+  },
   "slots": {
     "series": {
       "accepts": {

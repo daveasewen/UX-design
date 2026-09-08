@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**136 snippet(s)** · **0 failure(s)** · **288 warning(s)** · **692 note(s)**
+**136 snippet(s)** · **0 failure(s)** · **282 warning(s)** · **692 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1345 control(s)** and **245 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1345 control(s)** and **209 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -10,9 +10,8 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 
 ## Owed measurement — data marks below 24 (`s116-D1`, for Dave)
 
-**131 focusable data mark(s) fall below the 24px dense-case minimum**, across 7 snippet(s):
+**125 focusable data mark(s) fall below the 24px dense-case minimum**, across 6 snippet(s):
 
-- `Chart-bar` — 6
 - `Chart-butterfly-h` — 12
 - `Chart-butterfly-v` — 5
 - `Chart-combo` — 12
@@ -406,14 +405,6 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `li#cs2-l0-o3.cs-opt.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button#cs3-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button#cs4-field.cs-field` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-
-## Chart-bar
-- 🟡 warn — DATA MARK `rect.dv-series` — 219.2x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `rect.dv-series` — 94.0x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `rect.dv-series` — 495.9x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `rect.dv-series` — 135.7x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `rect.dv-series` — 109.6x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `rect.dv-series` — 156.6x20.2 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
 
 ## Chart-butterfly-h
 - 🟡 warn — DATA MARK `rect.dv-series` — 133.2x20.0 — under the 24 dense-case minimum (rect w/h attrs) (s116-D1: marks carry the 24 floor, not the 44 target)
