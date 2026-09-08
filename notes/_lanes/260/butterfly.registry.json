@@ -1,0 +1,46 @@
+{
+  "$what": "#260 lane F4 (butterfly-h + butterfly-v) — the knowledge/component-types.json changes this lane may NOT make itself (four lanes, one working tree). Apply under component-type.dataviz: add the ONE $behaviour entry below, and REPLACE the `consumes` array of each named $member. Nothing else in the registry is touched by this lane.",
+
+  "component-type.dataviz.$behaviour": {
+    "dv-render-butterfly": {
+      "source": "canon/dv-render-butterfly.js",
+      "requires": {
+        "vars": [],
+        "matchValues": [],
+        "declarations": ["data-dv-type=\""]
+      },
+      "$manifestBinds": {},
+      "$description": "The BUTTERFLY TYPE PARTIAL for dv-render — butterfly-h (mirrored horizontal wings either side of a shared centre gutter) and butterfly-v (mirrored columns above and below one shared baseline), registered #260 as the s259-D1 fast follower. ONE partial for BOTH orientations, on dv-render-bar's argument: the two share the symmetric domain, the pair validation, the DV-D09 fill rule, the mark writer and the wing arithmetic, and only the axis assignment differs — writing them twice is how the two copies drift. The DOMAIN is symmetric ([-M, +M] over the largest magnitude in either wing), which is what makes both wings share ONE scale; the mirror is the SECOND SERIES, not a sign, so a negative inside a wing THROWS, named, and so does a third series. ⛔ It DISCARDS the core's cartesian furniture (`ctx.out.length = 0`, the dv-render-donut move): both reference implementations draw no gridlines and no value-axis ticks by ds-020 declaration, and on a symmetric domain a tick would read \"-40\" under a wing whose value is 40 — a misstatement, not merely a redundancy. See knowledge/_tmp/260/butterfly.core-requests.md. Enacts dv-004 (the two butterfly-v wings MEET at the baseline — the pre-engine bake had 0.0px there and the engine cuts half a GAP off each wing, driven at 2.200px in 8 of 8 theme x mode combinations), s116-D1 (24px thickness floor where the band can pay for it), DV-D09 (the two wings bind data/series/1 and data/series/3, the pair both #token-manifests already declare) and DV-D02 (every x is data-fx / data-fw, INCLUDING the centre gutter, which is a FRACTION of the plot — 0.196, the reference's own 90/460 — precisely so the fit can re-derive it). §04.3 on-chart letter keys are deliberately OMITTED: direction is already the non-colour channel, receipted as a delta from the bar contract since #95. requires `data-dv-type=\"` — the figure must say which butterfly it is; the engine reads the type off the spec, the gate reads it off the figure, and a disagreement between them is the defect this catches."
+    }
+  },
+
+  "component-type.dataviz.$members.Chart-butterfly-h.consumes": [
+    "dv-behaviour",
+    "dv-legend",
+    "dv-render",
+    "dv-render-butterfly"
+  ],
+  "component-type.dataviz.$members.Chart-butterfly-v.consumes": [
+    "dv-behaviour",
+    "dv-legend",
+    "dv-render",
+    "dv-render-butterfly"
+  ],
+
+  "$budget": {
+    "$note": "Measured with knowledge/_validate_behaviour.py's own code_only(), s260-D1 shared-core pricing (dv-render marked shared: true in the registry already, so it is priced once per PAGE and excluded from the member figure).",
+    "dv-behaviour": 13048,
+    "dv-legend": 7734,
+    "dv-render-butterfly": 4711,
+    "member_page_figure": 25493,
+    "PAGE_BYTES": 34816,
+    "headroom": 9323,
+    "per_source_cap": 16384,
+    "per_source_used_pct": 28.8,
+    "$if_core_were_not_shared": "34802 of 34816 — FOURTEEN bytes under. Named in the subreport: s260-D1 is not a comfort for this member, it is the whole margin."
+  },
+
+  "$not_needed": {
+    "_validate_dataviz.ENGINE_TEST_PAGE": "NO mapping is required for these two snippets. That table exists for the s260-D3 driven-receipt route, and the route is reached only for dtype in (donut, pie, stacked) — butterfly-h/-v are not gapless surfaces, so the static dv-004 branch never runs on them and an empty canvas is not a failure there. The lane still DROVE dv-004 and reports the measured figures (butterfly-v 2.200px at the baseline join; butterfly-h 198.3px of centre gutter at 1180px, 116.0px at 760px). If an integration lane wants those numbers in _receipts.json anyway, the two test pages are knowledge/_tests/chart-engine/butterfly-h.html and butterfly-v.html and the driver picks up every *.html in that directory unaided."
+  }
+}

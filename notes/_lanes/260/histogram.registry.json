@@ -1,0 +1,23 @@
+{
+  "$what": "#260 lane F1 — the registry change Chart-histogram needs, as a FRAGMENT. The lane may not edit knowledge/component-types.json (four lanes, one working tree, the #253 defect); the integration lane merges this into component-type.dataviz and then runs `python3 knowledge/gen_component_partials.py` to fill the two empty AUTO-BEHAVIOUR marker pairs the snippet now carries.",
+  "$merge": [
+    "component-type.dataviz.$behaviour['dv-render-histogram'] = the object under \"behaviour\" below (dv-render itself is already registered and marked shared:true by s260-D1 / ADR-0015 A4)",
+    "component-type.dataviz.$members['Chart-histogram'].consumes = the array under \"consumes\" below (dv-behaviour is the one it already had; dv-render and dv-render-histogram are new). Chart-histogram consumes NO legend — its key is the static `.dv-leg-static` swatch, because one distribution has nothing to filter."
+  ],
+  "$measured": {
+    "dv-render-histogram code-only bytes": 2218,
+    "per-source cap": 16384,
+    "Chart-histogram page figure": "dv-behaviour 13048 + dv-render-histogram 2218 = 15266 of 34816 (43.8%), the shared core dv-render EXCLUDED per ADR-0015 Amendment 4"
+  },
+  "behaviour": {
+    "source": "canon/dv-render-histogram.js",
+    "requires": {
+      "vars": [],
+      "matchValues": [],
+      "declarations": ["data-dv-type=\""]
+    },
+    "$manifestBinds": {},
+    "$description": "dv-render TYPE PARTIAL — histogram. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.histogram and draws MARKS only from ctx; the core (dv-render) owns the value scale, the axis furniture, the table spine and the resize dispatch. WHAT MAKES IT NOT `column`: the bins are CONTIGUOUS — band = plotW / bins and the mark IS the whole band — because the variable underneath is continuous and a gutter there would assert a range with no data in it. The 2px separation of adjacent filled blocks is therefore met by the page-coloured stroke canon.css already puts on `:where(.cn-chart-histogram) rect.dv-series` (#96-D3), NOT by geometry; cutting a geometric gap would destroy the contiguity the type exists to show, and _validate_dataviz scopes dv-004 to donut/pie/stacked and never reads this type. Two loud refusals: a SECOND series throws (a histogram is one distribution — grouped-column and stacked-column already exist for more) and a NEGATIVE frequency throws (dv-bar-009: a count below zero is a data defect, and drawing it downward would hide one). Bin labels thin themselves when the band cannot afford them, keeping the first and, where it does not collide, the last. requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+  },
+  "consumes": ["dv-behaviour", "dv-render", "dv-render-histogram"]
+}

@@ -1,0 +1,23 @@
+{
+  "$what": "#260 lane F1 — the registry change Chart-scatter needs, as a FRAGMENT. The lane may not edit knowledge/component-types.json (four lanes, one working tree, the #253 defect); the integration lane merges this into component-type.dataviz and then runs `python3 knowledge/gen_component_partials.py` to fill the two empty AUTO-BEHAVIOUR marker pairs the snippet now carries.",
+  "$merge": [
+    "component-type.dataviz.$behaviour['dv-render-scatter'] = the object under \"behaviour\" below (dv-render itself is already registered and marked shared:true by s260-D1 / ADR-0015 A4)",
+    "component-type.dataviz.$members['Chart-scatter'].consumes = the array under \"consumes\" below (dv-behaviour and dv-legend are the two it already had; dv-render and dv-render-scatter are new)"
+  ],
+  "$measured": {
+    "dv-render-scatter code-only bytes": 4148,
+    "per-source cap": 16384,
+    "Chart-scatter page figure": "dv-behaviour 13048 + dv-legend 7734 + dv-render-scatter 4148 = 24930 of 34816 (71.6%), the shared core dv-render EXCLUDED per ADR-0015 Amendment 4"
+  },
+  "behaviour": {
+    "source": "canon/dv-render-scatter.js",
+    "requires": {
+      "vars": [],
+      "matchValues": [],
+      "declarations": ["data-dv-type=\""]
+    },
+    "$manifestBinds": {},
+    "$description": "dv-render TYPE PARTIAL — scatter. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.scatter and draws MARKS only from ctx; the core (dv-render) owns the value scale, the y furniture, the table spine and the resize dispatch. TWO things this partial owns that no sibling does: (1) a NUMERIC X AXIS — every other type reads spec.categories as a band, but a scatter's x is a measurement, so this partial parses a number out of each category and scales x by it (falling back to band centres when any category is not a number), and emits the second axis's gridlines and tick labels itself off dvRender.util.nice; the missing spec field is filed as a core request in knowledge/_tmp/260/scatter.core-requests.md. (2) SHAPE as the non-colour channel (§04.3) — circle/square/diamond/triangle by series index, each `.dv-mk` so the fit moves the glyph instead of stretching it, each wrapped in `g.dv-marker[data-fx][data-x0]` because fitOne branches on TAG and has no circle branch (the #72 discharge shape), each with an invisible r=12 `circle.dv-hit` carrying the interactive attributes (AA 2.5.8 / s116-D1: a 24px target around a 9px mark). requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+  },
+  "consumes": ["dv-behaviour", "dv-legend", "dv-render", "dv-render-scatter"]
+}

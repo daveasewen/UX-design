@@ -1,0 +1,19 @@
+{
+  "$who": "#260 lane F2 (pie) — registry fragment for the INTEGRATION lane. Apply into knowledge/component-types.json under component-type.dataviz. This lane did not edit the registry (four lanes, one working tree).",
+  "$behaviour": {
+    "$note": "NOTHING TO ADD. `pie` is already registered by dv-render-donut.js (window.dvRender.types.pie = ring(ctx, false)), and `dv-render-donut` is already a $behaviour entry. Chart-pie COMPOSES it; there is no dv-render-pie source and there must not be one — see boxplot.core-requests.md item 2 and the subreport."
+  },
+  "$members": {
+    "Chart-pie": {
+      "consumes": [
+        "dv-behaviour",
+        "dv-legend",
+        "dv-render",
+        "dv-render-donut"
+      ]
+    }
+  },
+  "$apply": "Replace ONLY the `consumes` array of $members['Chart-pie'] with the one above (it previously read [\"dv-behaviour\", \"dv-legend\"]). Everything else in that member object — selector, extraContract, markup — is unchanged. Then run: python3 knowledge/gen_component_partials.py",
+  "$why": "Chart-pie's cp1 canvas now ships EMPTY and is drawn by dvRender(fig, DATA); dv-render + dv-render-donut are injected between AUTO-BEHAVIOUR markers already present (empty) in knowledge/snippets/Chart-pie.reference.html, above the bootstrap, with dv-legend below it (script order is load-bearing — dv-legend's rec() caches data-tip-value at parse time).",
+  "$budget": "dv-behaviour 13,048 + dv-legend 7,734 + dv-render-donut 3,807 = 24,589 code-only bytes of PAGE_BYTES 34,816 (71%). dv-render (9,309) is EXCLUDED: ADR-0015 Amendment 4 / s260-D1 prices the shared core once per page."
+}

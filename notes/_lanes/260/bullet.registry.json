@@ -1,0 +1,27 @@
+{
+  "$note": "#260 lane F3 — the registry fragment for the BULLET type partial. The lane may not edit knowledge/component-types.json (four lanes, one working tree, the #253 defect); the INTEGRATION lane applies this. Two changes: one new $behaviour entry, and Chart-bullet's `consumes` grows from [dv-behaviour] to [dv-behaviour, dv-render, dv-render-bullet]. `dv-render` is already registered with \"shared\": true (s260-D1) so it is priced once per PAGE, not per member. Measured page figure for Chart-bullet after this lands: 13048 (dv-behaviour) + 4443 (dv-render-bullet) = 17491 code-only bytes of the 34816 cap, 50.2%.",
+  "apply": {
+    "component-type.dataviz.$behaviour.dv-render-bullet": {
+      "source": "canon/dv-render-bullet.js",
+      "requires": {
+        "vars": [],
+        "matchValues": [],
+        "declarations": [
+          "data-dv-type=\""
+        ]
+      },
+      "$manifestBinds": {},
+      "$description": "The BULLET TYPE PARTIAL for dv-render — one KPI per ROW: a measure bar read against a comparative target marker, with the qualitative performance bands behind both. Registered #260 as the first of the s259-D1 fast-follower types. The value axis runs ACROSS x (fn.axis = \"x\", the horizontal-bar arm of the core's furniture switch) and fn.domain returns the RANGE TOP rather than the largest measure, because a bullet is read against its bands — the one thing the core cannot infer from `series` alone. Enacts #96-D1 ② (row pitch 60px, the RULED constant, CAPPED and never stretched, so filtering a row out leaves the survivors' bands identical), #96-D1 ③ (the canon greys --dv-range-1/2/3, minted nothing, and a fourth band throws because a fourth token does not exist), the brief-ruled bindings (measure = data/series/1, marker = ink) and the bands→bar→marker z-order, which in SVG is DOM order and nothing else. Carries ONE spec extension, `ranges`, declared and validated by the partial itself — a bullet without its qualitative bands is a horizontal bar. ⚠ Discards the core's cartesian furniture (ctx.out.length = 0, the donut/sparkline work-around) and emits the one piece a bullet owns, the vertical zero baseline; core request filed at knowledge/_tmp/260/bullet.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes, so a consumer that carries a type partial has said which type it draws.",
+      "$where": "knowledge/component-type.dataviz.$behaviour — sibling of dv-render-bar / dv-render-donut, alphabetical placement is the integration lane's call"
+    },
+    "component-type.dataviz.$members.Chart-bullet.consumes": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-bullet"
+    ]
+  },
+  "unchanged": {
+    "component-type.dataviz.$members.Chart-bullet.extraContract": "untouched — the snippet still declares --data-axis, class=\"dv-tbl-toggle and class=\"dv-tablepanel",
+    "component-type.dataviz.$members.Chart-bullet.markup": "untouched — [dv-lockup-title, dv-lockup-table]"
+  }
+}

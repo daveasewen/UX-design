@@ -1,0 +1,26 @@
+{
+  "$who": "#260 lane F2 (boxplot) — registry fragment for the INTEGRATION lane. Apply into knowledge/component-types.json under component-type.dataviz. This lane did not edit the registry (four lanes, one working tree).",
+  "$behaviour": {
+    "dv-render-boxplot": {
+      "source": "canon/dv-render-boxplot.js",
+      "requires": {
+        "vars": [],
+        "matchValues": [],
+        "declarations": []
+      },
+      "$manifestBinds": {},
+      "$description": "dv-render TYPE PARTIAL — boxplot. Built #260 (s259-D1 fast follower). Registers dvRender.types.boxplot and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. THE FIVE-NUMBER SUMMARY IS FIVE SERIES IN ORDER (Minimum, Q1, Median, Q3, Maximum) and any further series is an OUTLIER CANDIDATE, drawn only where the value escapes the whiskers — the s249-D4 spec is not extended. No declaration contract: a composing consumer consumes it without declaring itself."
+    }
+  },
+  "$members": {
+    "Chart-boxplot": {
+      "consumes": [
+        "dv-behaviour",
+        "dv-render",
+        "dv-render-boxplot"
+      ]
+    }
+  },
+  "$apply": "1. Add the $behaviour entry above (alphabetical placement is not enforced; the #259 entries sit in build order after dv-render). 2. Replace ONLY the `consumes` array of $members['Chart-boxplot'] with the one above (it previously read [\"dv-behaviour\"]). Everything else in that member object — selector, extraContract, markup — is unchanged. 3. Run: python3 knowledge/gen_component_partials.py  4. Re-drive the receipts: python3 knowledge/_drive_chart_engine.py --page boxplot.html (this lane did NOT write _receipts.json; --check will report boxplot.html MISSING until you do).",
+  "$budget": "dv-behaviour 13,048 + dv-render-boxplot 4,336 = 17,384 code-only bytes of PAGE_BYTES 34,816 (49.9%). dv-render (9,309) is EXCLUDED: ADR-0015 Amendment 4 / s260-D1 prices the shared core once per page."
+}

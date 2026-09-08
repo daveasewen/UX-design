@@ -1,0 +1,27 @@
+{
+  "$note": "#260 lane F3 — the registry fragment for the CANDLESTICK type partial. The lane may not edit knowledge/component-types.json (four lanes, one working tree, the #253 defect); the INTEGRATION lane applies this. Two changes: one new $behaviour entry, and Chart-candlestick's `consumes` grows from [dv-behaviour] to [dv-behaviour, dv-render, dv-render-candlestick]. `dv-render` is already registered with \"shared\": true (s260-D1) so it is priced once per PAGE, not per member. Measured page figure for Chart-candlestick after this lands: 13048 (dv-behaviour) + 4872 (dv-render-candlestick) = 17920 code-only bytes of the 34816 cap, 51.5%. ⚠ ALSO FOR THE INTEGRATION LANE: knowledge/_validate_dataviz.py's ENGINE_TEST_PAGE map is a GATE and this lane may not edit it — but neither Chart-bullet nor Chart-candlestick needs an entry, because dv-004's engine-drawn branch fires only for donut/pie/stacked and neither of these types is one. If a later change brings a gapless surface to either type, the mapping (Chart-bullet.reference.html -> bullet.html, Chart-candlestick.reference.html -> candlestick.html) is owed then, not now.",
+  "apply": {
+    "component-type.dataviz.$behaviour.dv-render-candlestick": {
+      "source": "canon/dv-render-candlestick.js",
+      "requires": {
+        "vars": [],
+        "matchValues": [],
+        "declarations": [
+          "data-dv-type=\""
+        ]
+      },
+      "$manifestBinds": {},
+      "$description": "The CANDLESTICK TYPE PARTIAL for dv-render — open/high/low/close per period, one candle per session. Registered #260 as the second of the s259-D1 fast-follower types. OHLC is expressed as FOUR NAMED SERIES IN ORDER (open, high, low, close), which is the s249-D4 spec UNEXTENDED and is why the core's own writeTable emits exactly the columns the promoted snippet baked by hand — ds-027 (Dave, #100) makes that table THE accessibility answer, so it must not be able to drift from the chart. Enacts ds-027's SOLID TWO-STATE encoding (colour is close-vs-open and nothing else, both directions filled, --data-delta-gain/--data-delta-loss consumed verbatim; the #96-D1 ① hollow-up channel stays retired), the OHLC clause only this type can enforce (a high below its own open/close/low, or a low above them, THROWS by name), DV-D02 (every candle rides a g[data-fx][data-x0] that dv-behaviour TRANSLATES, so the 1px wick and the body width survive every container width) and DEF-003 (entry motion is CSS). ⚠ Computes its OWN domain and re-emits its OWN furniture: dv-render.js clamps `if (lo > 0) { lo = 0; }` AFTER calling fn.domain (dv-bar-009's zero baseline, right for a bar, catastrophic for a price series), so fn.domain cannot escape it — the same obstacle dv-render-line reported and dv-render-sparkline worked around. Core request filed at knowledge/_tmp/260/candlestick.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes.",
+      "$where": "knowledge/component-type.dataviz.$behaviour — sibling of dv-render-bar / dv-render-donut, alphabetical placement is the integration lane's call"
+    },
+    "component-type.dataviz.$members.Chart-candlestick.consumes": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-candlestick"
+    ]
+  },
+  "unchanged": {
+    "component-type.dataviz.$members.Chart-candlestick.extraContract": "untouched — the snippet still declares --data-axis, --data-grid, class=\"dv-tbl-toggle and class=\"dv-tablepanel",
+    "component-type.dataviz.$members.Chart-candlestick.markup": "untouched — [dv-lockup-title, dv-lockup-table]"
+  }
+}
