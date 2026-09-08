@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-histogram — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, histogram half (s259-D1 fast follower, #260 lane F1).
+  Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the
+  `.cn-chart-histogram` namespace wrapper (drop it and the svg takes no size, the bins lose the
+  2px page-coloured separating stroke that #96-D3 rests on, and the tip is unstyled), a
+  `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored `<table class="dv-table">` as the
+  JS-off spine, and an inline DATA object drawn by `dvRender(figure, spec)`.
+
+  ⛔ CONTIGUITY IS THE ASSERTION. A histogram's bins TILE the plot: bin n ends exactly where bin
+  n+1 begins, because the variable underneath is continuous. That is the difference between this
+  type and `column`, and the driven check below measures it — zero gap between adjacent bins, and
+  the bins summing to the full plot width. dv-004's 2px separation is met here by the
+  page-coloured stroke canon.css puts on `rect.dv-series` (#96-D3), NOT by geometry; cutting a
+  geometric gap would destroy the contiguity this type exists to show.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. 8 (and 20) bins exist, each a `rect.dv-series` carrying data-fx AND data-fw AND data-tip
+       — the fit grammar, not baked pixels;
+    3. CONTIGUITY: every adjacent pair of bins measures 0.0px of gap and the bins tile the plot;
+    4. the tooltip (#dvTip.on) appears on hover of a bin, with that bin's own count;
+    5. the BIN FILTER re-renders (rule 14) and the bin count changes with it;
+    6. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    7. every bin fill resolves to a non-empty computed colour (no dead var());
+    8. LABEL THINNING: the 20-bin canvas labels a subset, the 8-bin canvas labels all eight;
+    9. RESIZE: the plot re-fits (viewBox tracks the width, bins re-derive from data-fx/data-fw,
+       text size unchanged) — the cartesian assertion.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-histogram. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-histogram{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-histogram — driven test page</h1>
+  <p class="lede">Two distributions, one engine, one DATA object. Untick a band and the figure
+     re-renders from the same numbers, table included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — bands in the transaction distribution</legend>
+  </fieldset>
+
+  <!-- ============ 1 · HISTOGRAM — 8 contiguous bins ============ -->
+  <div class="cn-chart-histogram">
+  <figure class="dv dv-animate" data-dv-type="histogram" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="h1-h" id="fig-histogram">
+    <figcaption id="h1-h" class="sr-only">Transaction count by value band, pounds</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Most transactions cluster between £150 and £250</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="h1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="h1-tbl" role="region" aria-label="Transaction count by value band, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Transaction count by value band, pounds</caption>
+              <thead><tr><th scope="col">Band</th><th scope="col">Count</th></tr></thead>
+              <tbody><tr><th scope="row">£0–50</th><td>12</td></tr><tr><th scope="row">£50–100</th><td>28</td></tr><tr><th scope="row">£100–150</th><td>45</td></tr><tr><th scope="row">£150–200</th><td>60</td></tr><tr><th scope="row">£200–250</th><td>52</td></tr><tr><th scope="row">£250–300</th><td>33</td></tr><tr><th scope="row">£300–350</th><td>18</td></tr><tr><th scope="row">£350–400</th><td>7</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Transaction count by value band."></svg>
+    </div></div>
+    <ul class="dv-leg-static t-cm-chart-label" aria-hidden="true">
+      <li><span class="sw"></span><span>Transactions</span></li>
+    </ul>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · HISTOGRAM — 20 finer bins, so LABEL THINNING has to fire ============ -->
+  <div class="cn-chart-histogram">
+  <figure class="dv dv-animate" data-dv-type="histogram" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="h2-h" id="fig-fine">
+    <figcaption id="h2-h" class="sr-only">Account age distribution in years, finer bins</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Account age peaks in the third year</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="h2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="h2-tbl" role="region" aria-label="Account age distribution, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Account age distribution in years</caption>
+              <thead><tr><th scope="col">Band</th><th scope="col">Count</th></tr></thead>
+              <tbody><tr><th scope="row">0.00–0.25</th><td>9</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Account age distribution."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-histogram.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies. The bin LABEL is
+   the category and the count is the value; the series is named for what is being counted, which
+   is the noun the popover and the accessible name read ("60 transactions"). */
+var BANDS = ['£0–50', '£50–100', '£100–150', '£150–200', '£200–250', '£250–300', '£300–350', '£350–400'];
+var COUNT = [12, 28, 45, 60, 52, 33, 18, 7];
+var AGE   = ['0.00–0.25', '0.25–0.50', '0.50–0.75', '0.75–1.00', '1.00–1.25', '1.25–1.50',
+             '1.50–1.75', '1.75–2.00', '2.00–2.25', '2.25–2.50', '2.50–2.75', '2.75–3.00',
+             '3.00–3.25', '3.25–3.50', '3.50–3.75', '3.75–4.00', '4.00–4.25', '4.25–4.50',
+             '4.50–4.75', '4.75–5.00'];
+var AGEN  = [9, 14, 18, 24, 29, 36, 44, 51, 57, 64, 71, 66, 58, 52, 45, 40, 33, 25, 19, 12];
+var OFF = {};        /* the filter's state — band -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < BANDS.length; i++) { if (!OFF[BANDS[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  dvRender(document.getElementById('fig-histogram'), {
+    type: 'histogram',
+    categories: ix.map(function (i) { return BANDS[i]; }),
+    series: [{ name: 'transactions', values: ix.map(function (i) { return COUNT[i]; }) }],
+    categoryLabel: 'Band',
+    caption: 'Transaction count by value band, pounds'
+  });
+  dvRender(document.getElementById('fig-fine'), {
+    type: 'histogram', categories: AGE, series: [{ name: 'accounts', values: AGEN }],
+    categoryLabel: 'Band', caption: 'Account age distribution in years'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  BANDS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+window.__dvTestReady = true;
+</script>
+</body>
+</html>

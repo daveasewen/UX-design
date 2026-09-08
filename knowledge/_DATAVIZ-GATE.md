@@ -48,57 +48,24 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 ## ✓ snippets/Chart-bullet.reference.html — PASS
 
 ## ✓ snippets/Chart-butterfly-h.reference.html — PASS
-- ⚠ butterfly-h — §04.3 letters: 2 series but <2 legend letter-keys and not directly labelled (colour must never be the only channel).
 
 ## ✓ snippets/Chart-butterfly-v.reference.html — PASS
-- ⚠ butterfly-v — §04.3 letters: 2 series but <2 legend letter-keys and not directly labelled (colour must never be the only channel).
 
 ## ✓ snippets/Chart-candlestick.reference.html — PASS
 
 ## ✓ snippets/Chart-combo.reference.html — PASS
 
 ## ✓ snippets/Chart-donut.reference.html — PASS
-- ⚠ donut#cd1 — dv-004: PASSED by driven receipt — donut.html/fig-donut measured 2.109px (worst of 8 measurements across 8 theme x mode combos, rule >=2.0px), driven 2026-09-08T18:01:19Z on Chromium 151.0.7922.34. Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ donut#cd1 — dv-004: PASSED by driven receipt — donut.html/fig-donut measured 2.109px (worst of 8 measurements across 8 theme x mode combos, rule >=2.0px), driven 2026-09-08T19:35:36Z on Chromium 151.0.7922.34. Source: knowledge/_tests/chart-engine/_receipts.json
 
 ## ✓ snippets/Chart-histogram.reference.html — PASS
 
 ## ✓ snippets/Chart-line.reference.html — PASS
 
 ## ✓ snippets/Chart-pie.reference.html — PASS
+- ⚠ pie#cp1 — dv-004: PASSED by driven receipt — donut.html/fig-pie measured 2.108px (worst of 8 measurements across 8 theme x mode combos, rule >=2.0px), driven 2026-09-08T19:35:36Z on Chromium 151.0.7922.34. Source: knowledge/_tests/chart-engine/_receipts.json
 
 ## ✓ snippets/Chart-scatter.reference.html — PASS
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
-- ⚠ scatter — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-sparkline.reference.html — PASS
 

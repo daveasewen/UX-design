@@ -15,14 +15,38 @@
   "priority": 44,
   "when": "answers=change-over-time AND shape=periods × OHLC (open · high · low · close per session) — beats chart-line (88, \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.",
   "props": [
-    { "name": "sessions", "type": "array", "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule)." },
-    { "name": "up", "type": "boolean", "$note": "close ≥ open — body SOLID fill = data/delta/gain (ds-027, ruled #100)." },
-    { "name": "down", "type": "boolean", "$note": "close < open — body SOLID fill = data/delta/loss (ds-027, ruled #100)." },
-    { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> mirroring OHLC columns per session (dv-005) — THE accessibility fallback per ds-027, not decorative." },
-    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
+    {
+      "name": "sessions",
+      "type": "array",
+      "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule)."
+    },
+    {
+      "name": "up",
+      "type": "boolean",
+      "$note": "close ≥ open — body SOLID fill = data/delta/gain (ds-027, ruled #100)."
+    },
+    {
+      "name": "down",
+      "type": "boolean",
+      "$note": "close < open — body SOLID fill = data/delta/loss (ds-027, ruled #100)."
+    },
+    {
+      "name": "data",
+      "type": "table",
+      "$note": "Real <table class=\"dv-table\"> mirroring OHLC columns per session (dv-005) — THE accessibility fallback per ds-027, not decorative."
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "default": false,
+      "$note": "No-data state = the Empty-state pattern by reference."
+    }
   ],
   "variants": [
-    { "name": "forty sessions", "use": "Realistic-density price series (ds-027 standing rule) — wick per session (ink @ reduced weight), body SOLID both directions, coloured by close-vs-open only." }
+    {
+      "name": "forty sessions",
+      "use": "Realistic-density price series (ds-027 standing rule) — wick per session (ink @ reduced weight), body SOLID both directions, coloured by close-vs-open only."
+    }
   ],
   "tokens": {
     "font-family": "type composites via markup class — axis ticks/labels .t-cm-chart-label/-value · table .t-cm-legal",
@@ -44,14 +68,33 @@
     "reducedMotion": "Fade sits inside prefers-reduced-motion:no-preference; global collapse also present.",
     "tokens": []
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-candlestick"
+    ],
+    "fallback": "With CSS on and JS off no candle is drawn — the canvas ships EMPTY and dvRender is what fills it. That is not a degradation of the accessibility answer, it IS the accessibility answer: ds-027 (Dave, #100) made the OHLC table the fallback position, and the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so all forty sessions and their open/high/low/close open and read with no script at all (dv-005). The engine REWRITES those same rows from the same four named series when it runs, so the popover values and the table values are one set of numbers by construction. Lost with JS off: the chart itself, the value popover, the per-candle fade entry and Copy CSV.",
+    "$note": "Typed #260 (s259-D1 fast follower, the candlestick type lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; dv-render-candlestick.js is reached through its type registry and is named in `partial`. OHLC is expressed as FOUR NAMED SERIES in order (open, high, low, close), which is the s249-D4 spec UNEXTENDED and the reason the core's own writeTable emits exactly the columns this component baked by hand. ⚠ THE VALUE AXIS IS THE PARTIAL'S: dv-render.js floors every domain at zero (dv-bar-009) and a price series 90.41–108.52 against a zero floor is a smear, so the partial computes its own nice scale and re-emits the furniture against it — core request filed at knowledge/_tmp/260/candlestick.core-requests.md. `data-domain-min=\"0\"` was REMOVED from the figure for the same reason: the domain is not zero-based and declaring it so was a claim the chart does not make."
+  },
   "responsive": {
     "rule": "DV-D02: compress width, never scale — text must not scale. Static (JS-off) answer: fixed 580×260 + horizontal scroll. FIT WIRED (ds-027 standing rule, #100: 'all these charts should be fully responsive, so the 580 sizing doesn't really apply') — every candle <g> carries data-fx/data-x0, axis gridlines/baseline carry data-fx/data-fx2, labels carry data-fx/data-dx; dv-behaviour.js's fitOne() translates candle groups and repositions axis elements on resize.",
     "tokens": []
   },
   "relationships": {
-    "livesInside": ["Dashboards", "Markets / pricing views", "Reports"],
-    "mustNotNeighbour": ["A second chart re-using data/delta/gain·loss for a DIFFERENT semantic (e.g. status ramp) in the same journey (dv-014)"],
-    "commonPatterns": ["share price OHLC by session", "index performance by day"],
+    "livesInside": [
+      "Dashboards",
+      "Markets / pricing views",
+      "Reports"
+    ],
+    "mustNotNeighbour": [
+      "A second chart re-using data/delta/gain·loss for a DIFFERENT semantic (e.g. status ramp) in the same journey (dv-014)"
+    ],
+    "commonPatterns": [
+      "share price OHLC by session",
+      "index performance by day"
+    ],
     "triggeredBy": []
   },
   "accessibility": {
@@ -60,7 +103,11 @@
     "keyboard": "Candle bodies are tabindex 0 with aria-label; value popover behaviour wired (dv-behaviour.js, AUTO-BEHAVIOUR block present and active).",
     "focus": "Candle body :focus-visible = 2px ink outline, offset 2.",
     "nonText": "Gain/loss fills ≥3:1 vs the page both modes (dv-016 — DECLARED, not yet render-verified, see receipt). ds-027 (Dave, #100): SOLID two-state — colour = close vs open only, fill in BOTH directions. The #96-D1 ① hollow-up non-colour shape channel is RETIRED; the real OHLC data table is now the accessibility fallback for colour-blind/greyscale reading (Dave: 'we're using the table as the fallback position for Ally').",
-    "relatedSC": ["1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+    "relatedSC": [
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover"
+    ]
   },
   "antiPatterns": [
     "Raw hex fills for gain/loss (dv-017 — must ride data/delta/gain·loss)",

@@ -75,6 +75,16 @@
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-boxplot.reference.html"
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-boxplot"
+    ],
+    "fallback": "With CSS on and JS off the canvas renders as an EMPTY <svg> and no box is drawn — dvRender is what fills it. The data is still fully available and still labelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the five-number summary and the outlier for every team open, read and copy with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow, the staggered entry fade and Copy CSV.",
+    "$note": "Typed #260 (s259-D1 fast follower, boxplot lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; dv-render-boxplot.js is reached through its type registry and is named in `partial`. THE FIVE-NUMBER SUMMARY IS FIVE SERIES, IN ORDER (Minimum, Q1, Median, Q3, Maximum), and a sixth series is an OUTLIER CANDIDATE drawn only where the value escapes the whiskers — the s249-D4 spec is not extended. The exemplar's data moved for that reason: the ruled spec has no null, so an Outlier series must carry a number for every category, and Teams B and D gained REAL low outliers (8 and 3) rather than a placeholder that would have put a non-outlier number in the a11y spine. dv-legend is deliberately NOT consumed: a box plot draws one distribution per category, not filterable series, so no mark carries data-series-group and there is no colour channel for §04.3 to disambiguate."
+  },
   "slots": {
     "categories": {
       "accepts": {

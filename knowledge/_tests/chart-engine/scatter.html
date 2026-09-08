@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-scatter — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, scatter half (s259-D1 fast follower, #260 lane F1).
+  Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-scatter`
+  namespace wrapper (drop it and the svg takes no size, the points lose their page-coloured stroke
+  and the tip is unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored
+  `<table class="dv-table">` as the JS-off spine, and an inline DATA object drawn by
+  `dvRender(figure, spec)`.
+
+  ⛔ THE X AXIS IS NUMERIC, AND THAT IS THE POINT OF THIS PAGE. `dv-render-scatter` reads a number
+  out of every category and scales the x axis by it; the spacing assertion below is what proves it
+  did — evenly spaced band centres would pass every other assertion on this page and still not be
+  a scatter. See the header of knowledge/canon/dv-render-scatter.js and the core request in
+  knowledge/_tmp/260/scatter.core-requests.md.
+
+  ⛔ SCRIPT ORDER IS LOAD-BEARING for dv-legend (#259 donut lane found this): its rec() caches
+  every mark once at parse time, so it must load AFTER the dvRender() bootstrap or it caches an
+  empty canvas.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. 12 + 15 points exist, each a `g.dv-marker[data-fx][data-x0]` wrapping a glyph and a
+       `circle.dv-hit` of r=12 (the 24px AA 2.5.8 target);
+    3. the x positions are PROPORTIONAL to the numbers, not evenly spaced (the numeric-axis
+       assertion: adjacent gaps must differ, and each gap must track its own x delta);
+    4. the tooltip (#dvTip.on) appears on hover of a point, with that point's own value;
+    5. the CATEGORY FILTER re-renders (rule 14) and the point count changes with it;
+    6. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    7. every glyph fill resolves to a non-empty computed colour (no dead var());
+    8. §04.3 — three series draw three DIFFERENT shapes (circle, square, diamond);
+    9. RESIZE: the plot re-fits (viewBox tracks the width, points re-translate, glyph size and
+       text size unchanged) — the cartesian assertion, the inverse of the donut's.
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-scatter. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-scatter{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-scatter — driven test page</h1>
+  <p class="lede">Two cartesian canvases, one engine, one DATA object. Untick an income band and
+     both figures re-render from the same numbers, table included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — income bands in the plots</legend>
+  </fieldset>
+
+  <!-- ============ 1 · SCATTER, single series, numeric x ============ -->
+  <div class="cn-chart-scatter">
+  <figure class="dv dv-animate" data-dv-type="scatter" data-surface="page"
+          role="group" aria-labelledby="s1-h" id="fig-scatter">
+    <figcaption id="s1-h" class="sr-only">Monthly income against savings, per customer, pounds thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Savings rise with monthly income</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="s1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="s1-tbl" role="region" aria-label="Income against savings, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Monthly income against savings, per customer, pounds thousands</caption>
+              <thead><tr><th scope="col">Income (£000)</th><th scope="col">Savings</th></tr></thead>
+              <tbody><tr><th scope="row">28</th><td>6</td></tr><tr><th scope="row">35</th><td>9</td></tr><tr><th scope="row">42</th><td>8</td></tr><tr><th scope="row">55</th><td>14</td></tr><tr><th scope="row">61</th><td>12</td></tr><tr><th scope="row">68</th><td>18</td></tr><tr><th scope="row">77</th><td>17</td></tr><tr><th scope="row">85</th><td>22</td></tr><tr><th scope="row">96</th><td>26</td></tr><tr><th scope="row">108</th><td>31</td></tr><tr><th scope="row">122</th><td>38</td></tr><tr><th scope="row">140</th><td>47</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Income against savings."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · SCATTER, three segments — shape is the non-colour channel (§04.3) ======== -->
+  <div class="cn-chart-scatter">
+  <figure class="dv dv-animate" data-dv-type="scatter" data-surface="page"
+          role="group" aria-labelledby="s2-h" id="fig-segments">
+    <figcaption id="s2-h" class="sr-only">Monthly income against savings by customer segment, pounds thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Savings rise with income across every segment</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="s2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="s2-tbl" role="region" aria-label="Income against savings by segment, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Monthly income against savings by customer segment, pounds thousands</caption>
+              <thead><tr><th scope="col">Income (£000)</th><th scope="col">Everyday</th><th scope="col">Saver</th><th scope="col">Investor</th></tr></thead>
+              <tbody><tr><th scope="row">30</th><td>4</td><td>11</td><td>20</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Income against savings by segment."></svg>
+    </div></div>
+    <!-- DV-D11 legend: authored chrome, bound to the engine's marks by data-series-group. -->
+    <ul class="dv-leg t-cm-chart-label" id="s2-legend" role="group" aria-label="Segments — uncheck a swatch to dim it, click a name to isolate">
+      <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Everyday" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Everyday"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Everyday</span></button></li>
+      <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Saver" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Saver"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Saver</span></button></li>
+      <li class="dv-legrow" data-series="3"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Investor" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="3" aria-pressed="false" aria-label="Isolate Investor"><span class="dv-key t-cm-chart-key">C</span><span class="dv-leg-name">Investor</span></button></li>
+      <li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="s2-legend" disabled>Reset</button></li>
+    </ul>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-scatter.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies.
+   The CATEGORIES are the x MEASUREMENTS, as strings, and they are deliberately UNEVEN: 28, 35,
+   42 … 140. A band axis would draw them equally spaced; the driven assertion reads the rendered
+   cx values back and fails if it did. */
+var INCOME = ['28', '35', '42', '55', '61', '68', '77', '85', '96', '108', '122', '140'];
+var SAVING = [6, 9, 8, 14, 12, 18, 17, 22, 26, 31, 38, 47];
+var BANDS  = ['30', '52', '74', '98', '116', '128', '144'];
+var SEGS   = [
+  { name: 'Everyday', values: [4, 7, 9, 13, 15, 17, 19] },
+  { name: 'Saver',    values: [11, 18, 24, 30, 35, 38, 44] },
+  { name: 'Investor', values: [20, 31, 42, 50, 56, 60, 66] }
+];
+var OFF = {};        /* the filter's state — income band -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < INCOME.length; i++) { if (!OFF[INCOME[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  dvRender(document.getElementById('fig-scatter'), {
+    type: 'scatter',
+    categories: ix.map(function (i) { return INCOME[i]; }),
+    series: [{ name: 'Savings (£000)', values: ix.map(function (i) { return SAVING[i]; }) }],
+    categoryLabel: 'Monthly income (£000)',
+    caption: 'Monthly income against savings, per customer, pounds thousands'
+  });
+  dvRender(document.getElementById('fig-segments'), {
+    type: 'scatter', categories: BANDS, series: SEGS,
+    categoryLabel: 'Monthly income (£000)',
+    caption: 'Monthly income against savings by customer segment, pounds thousands'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  INCOME.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode('£' + c + 'k'));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+</script>
+<!-- BELOW the bootstrap on purpose — rec() caches every mark at parse time. See the header note. -->
+<script src="../../canon/dv-legend.js"></script>
+<script>window.__dvTestReady = true;</script>
+</body>
+</html>

@@ -15,15 +15,43 @@
   "priority": 40,
   "when": "answers=comparison AND the reading is one measure against a target plus qualitative performance bands AND span.cols 4–6 — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the BENCHMARK, not the delta and not a series, is the point; yields to both when no target exists.",
   "props": [
-    { "name": "rows", "type": "array", "$note": "One row per KPI: measure, target, and three qualitative range breakpoints." },
-    { "name": "measure", "type": "number", "$note": "The primary bar — fill = data/series/1 (brief-ruled)." },
-    { "name": "target", "type": "number", "$note": "Comparative marker — a 3px vertical ink tick spanning the row (brief-ruled: 'marker = ink')." },
-    { "name": "ranges", "type": "array", "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)." },
-    { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)." },
-    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
+    {
+      "name": "rows",
+      "type": "array",
+      "$note": "One row per KPI: measure, target, and three qualitative range breakpoints."
+    },
+    {
+      "name": "measure",
+      "type": "number",
+      "$note": "The primary bar — fill = data/series/1 (brief-ruled)."
+    },
+    {
+      "name": "target",
+      "type": "number",
+      "$note": "Comparative marker — a 3px vertical ink tick spanning the row (brief-ruled: 'marker = ink')."
+    },
+    {
+      "name": "ranges",
+      "type": "array",
+      "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)."
+    },
+    {
+      "name": "data",
+      "type": "table",
+      "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)."
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "default": false,
+      "$note": "No-data state = the Empty-state pattern by reference."
+    }
   ],
   "variants": [
-    { "name": "three KPI rows", "use": "Stacked horizontal gauges (e.g. revenue/satisfaction/retention) sharing one 0–100 domain." }
+    {
+      "name": "three KPI rows",
+      "use": "Stacked horizontal gauges (e.g. revenue/satisfaction/retention) sharing one 0–100 domain."
+    }
   ],
   "tokens": {
     "font-family": "type composites via markup class — labels/values .t-cm-chart-label/-value · table .t-cm-legal",
@@ -40,14 +68,34 @@
     "reducedMotion": "Fade/grow sit inside prefers-reduced-motion:no-preference; global collapse also present.",
     "tokens": []
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-bullet"
+    ],
+    "fallback": "With CSS on and JS off the gauge canvas renders as an EMPTY <svg> and no row is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so all three KPIs, their measures, their targets AND their three qualitative breakpoints open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those rows from the spec when it runs, so the popover value and the table value are one number by construction — and the engine's table spine has no column for a qualitative band, so the three \"…to\" columns are present with JS OFF and absent with JS ON. Lost with JS off: the chart itself, the value popover, the row fade / bar-grow entry and Copy CSV.",
+    "$note": "Typed #260 (s259-D1 fast follower, the bullet type lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; dv-render-bullet.js is reached through its type registry and is named in `partial`. `partial` lists ALL THREE registered AUTO-BEHAVIOUR names the snippet actually carries, which is the schema's own wording and the s245-D2 shape for a member carrying 2–3+. The canvas is engine-drawn: data-pt=\"4\" data-pb=\"16\" with data-h = 80 + (rowCount−1)·60 make the plot exactly 60·rowCount, so the partial's band arithmetic lands on #96-D1 ②'s RULED pitch with no special case, and the pitch is CAPPED rather than stretched so a filtered stack keeps its band. `ranges` is an EXTENSION to the s249-D4 spec, declared and validated by the partial — RULING-SHAPED, see notes/_subreports/2026-09-08-260-F3-bullet-candlestick.md."
+  },
   "responsive": {
     "rule": "DV-D02: compress width, never scale — text must not scale. Static answer: fixed 580×H + horizontal scroll, width always 580. #96-D1 ② RULED: H = 80 + (rowCount-1)*60 (pitch=60 constant, BAKED not JS-derived) — this reference's 3 rows = H 200 (unchanged, formula-verified); a 1-row instance = H 80 with the row band visually identical to any row here. FIT hooks NOT wired — AUTO-BEHAVIOUR markers present but empty (conductor serial); see receipt.",
     "tokens": []
   },
   "relationships": {
-    "livesInside": ["Dashboards", "KPI / scorecard views", "Reports"],
-    "mustNotNeighbour": ["A second chart re-using data/series/1 for DIFFERENT data in the same journey (dv-014)"],
-    "commonPatterns": ["revenue vs target", "satisfaction score vs target", "retention vs target"],
+    "livesInside": [
+      "Dashboards",
+      "KPI / scorecard views",
+      "Reports"
+    ],
+    "mustNotNeighbour": [
+      "A second chart re-using data/series/1 for DIFFERENT data in the same journey (dv-014)"
+    ],
+    "commonPatterns": [
+      "revenue vs target",
+      "satisfaction score vs target",
+      "retention vs target"
+    ],
     "triggeredBy": []
   },
   "accessibility": {
@@ -56,7 +104,11 @@
     "keyboard": "Measure bars are tabindex 0 with aria-label (value popover behaviour NOT yet wired — see AUTO-BEHAVIOUR gap).",
     "focus": "Measure bar :focus-visible = 2px ink outline, offset 2.",
     "nonText": "Measure fill ≥3:1 vs the page both modes (dv-016 — DECLARED, not yet render-verified, see receipt). Range tints are DECORATIVE background, not a contrast-bearing channel.",
-    "relatedSC": ["1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+    "relatedSC": [
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover"
+    ]
   },
   "antiPatterns": [
     "Raw hex fills for the measure or target (dv-017)",

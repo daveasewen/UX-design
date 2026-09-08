@@ -49,6 +49,21 @@
   above — they are a computed tint of an existing token, not a raw hex) · composites-only type
   (DV-D05/DV-D08 12px floor) · DEF-003 CSS-only motion · role-token radius only. Empty state consumes
   the Empty-state pattern by reference.
+
+  ★ #260 (s259-D1 fast follower) — THE CANVAS IS NOW ENGINE-DRAWN. The gauge stack ships as an
+  EMPTY <svg> and `window.dvRender(figure, spec)` (knowledge/canon/dv-render.js + the type partial
+  knowledge/canon/dv-render-bullet.js, both injected below) draws it from the DATA object at the
+  foot of this file. Rule 18 of ADS-generate-from-canon — "author the geometry yourself" — no
+  longer applies to this component: the library owns the arithmetic, the author owns the data.
+  · #96-D1 ② is ENACTED, not re-typed: PITCH = 60 is a constant in the partial and it is CAPPED,
+    never stretched, so filtering a KPI out leaves the survivors' bands identical — driven at 60px
+    before and after, in all four themes and both modes.
+  · `ranges` is an EXTENSION to the s249-D4 spec, declared and validated by the partial (a bullet
+    without its bands is a horizontal bar). RULING-SHAPED — see the #260 F3 subreport.
+  · JS-OFF: the table below is authored, not generated, and carries the range breakpoints too. The
+    engine REWRITES its rows from the spec when it runs — and the engine's table spine has no
+    column for a qualitative band, so the three "…to" columns are present with JS OFF and absent
+    with JS ON. Named, not hidden: RULING-SHAPED in the same subreport.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -211,7 +226,7 @@
 </head>
 <body data-theme="light">
   <h2>Bullet — three KPI rows (measure vs target, qualitative ranges)</h2>
-  <figure class="dv dv-animate" data-dv-type="bullet" data-domain-min="0" data-domain-max="100" data-surface="page" role="group" aria-labelledby="cbl1-h" data-lockup-title="Revenue is ahead of target; satisfaction lags" data-lockup-table="cbl1-tbl">
+  <figure id="cbl1" class="dv dv-animate" data-dv-type="bullet" data-domain-min="0" data-domain-max="100" data-surface="page" role="group" aria-labelledby="cbl1-h" data-lockup-title="Revenue is ahead of target; satisfaction lags" data-lockup-table="cbl1-tbl">
     <figcaption id="cbl1-h" class="sr-only">KPI performance against target and qualitative ranges</figcaption>
     <div class="dv-head">
       <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
@@ -246,38 +261,17 @@
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
-      <svg class="dv-svg dv-fit" data-pl="120" data-pr="12" data-h="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 200" role="group" aria-label="Three KPI rows against target. Revenue: measure 82 of 100, target 75. Satisfaction: measure 58 of 100, target 70. Retention: measure 91 of 100, target 85.">
-        <!-- plot 120→568 (width 448), domain 0–100. Ranges: poor 0–40 (w179.2) · satisfactory 40–60 (w89.6) · good 60–100 (w179.2) -->
-        <!-- CANVAS HEIGHT FORMULA (#96-D1 ②): H = 80 + (rowCount-1)*60, pitch=60px constant. 3 rows here: H=200. -->
-        <!-- Row 1: Revenue — measure 82 (w367.36), target 75 (x=456) -->
-        <g class="dv-row" style="animation-delay:0ms">
-          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="112" y="34" text-anchor="end">Revenue</text>
-          <rect class="dv-range-1" x="120" y="18" width="179.2" height="32"></rect>
-          <rect class="dv-range-2" x="299.2" y="18" width="89.6" height="32"></rect>
-          <rect class="dv-range-3" x="388.8" y="18" width="179.2" height="32"></rect>
-          <rect class="dv-measure" x="120" y="26" width="367.4" height="16" tabindex="0" role="img" aria-label="Revenue: 82 of 100, target 75" data-tip="Revenue: 82 of 100, target 75"></rect>
-          <line class="dv-target" x1="456" y1="10" x2="456" y2="58"></line>
-        </g>
-        <!-- Row 2: Satisfaction — measure 58 (w259.84), target 70 (x=433.6) -->
-        <g class="dv-row" style="animation-delay:90ms">
-          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="112" y="94" text-anchor="end">Satisfaction</text>
-          <rect class="dv-range-1" x="120" y="78" width="179.2" height="32"></rect>
-          <rect class="dv-range-2" x="299.2" y="78" width="89.6" height="32"></rect>
-          <rect class="dv-range-3" x="388.8" y="78" width="179.2" height="32"></rect>
-          <rect class="dv-measure" x="120" y="86" width="259.8" height="16" tabindex="0" role="img" aria-label="Satisfaction: 58 of 100, target 70" data-tip="Satisfaction: 58 of 100, target 70"></rect>
-          <line class="dv-target" x1="433.6" y1="70" x2="433.6" y2="118"></line>
-        </g>
-        <!-- Row 3: Retention — measure 91 (w407.68), target 85 (x=500.8) -->
-        <g class="dv-row" style="animation-delay:180ms">
-          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="112" y="154" text-anchor="end">Retention</text>
-          <rect class="dv-range-1" x="120" y="138" width="179.2" height="32"></rect>
-          <rect class="dv-range-2" x="299.2" y="138" width="89.6" height="32"></rect>
-          <rect class="dv-range-3" x="388.8" y="138" width="179.2" height="32"></rect>
-          <rect class="dv-measure" x="120" y="146" width="407.7" height="16" tabindex="0" role="img" aria-label="Retention: 91 of 100, target 85" data-tip="Retention: 91 of 100, target 85"></rect>
-          <line class="dv-target" x1="500.8" y1="130" x2="500.8" y2="178"></line>
-        </g>
-        <line class="dv-axis" x1="120" y1="10" x2="120" y2="178" stroke="var(--baseline)"/>
-      </svg>
+      <!-- ⛔ THIS CANVAS SHIPS EMPTY. `dvRender(fig, DATA)` below draws every band, bar,
+           marker, row label and the zero baseline. data-pt="4" data-pb="16" are NOT
+           decoration: they are what makes the plot exactly H - 20 = 60 x rowCount, so the
+           partial's band arithmetic lands on #96-D1 ②'s RULED 60px pitch with no special
+           case (3 rows -> data-h="200", plot 180 = 3 x 60). Change the row count and BOTH
+           move together, at bake time (DV-D02). -->
+      <svg class="dv-svg dv-fit" data-pl="120" data-pl-fit="text.dv-label" data-pr="12"
+           data-h="200" data-pt="4" data-pb="16" data-h-min="200"
+           data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"
+           viewBox="0 0 580 200" role="group"
+           aria-label="KPI performance against target."></svg>
     </div></div>
   </figure>
 
@@ -305,6 +299,20 @@
     "icons": {},
     "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "role=\"region\""],
     "$note": "NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Measure = data/series/1 (brief-ruled). Target marker = ink (brief-ruled), a 3px vertical tick spanning the row. Qualitative ranges: #96-D1 ③ RULED — CANON greys (--dv-range-1/2/3 literal values mirror canon.css --color-grey-200/300/400 light, --color-grey-dark-mode-500/400/300 dark; minted nothing, retired the color-mix approximation). Canvas height: #96-D1 ② RULED — H = 80 + (rowCount-1)*60, pitch=60 constant, not a fixed 200 (this file's 3 rows = 200, unchanged). ds-020 FENCE: axis idiom pre-DV-D07, declared gap. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
+  }
+  </script>
+  <script type="application/json" id="behaviour-manifest">
+  {
+    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/Chart-bullet.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+    "component": "component:Chart-bullet",
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-bullet"
+    ],
+    "events": [],
+    "fallback": "With CSS on and JS off the gauge canvas renders as an EMPTY <svg> and no row is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so all three KPIs, their measures, their targets AND their three qualitative breakpoints open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those rows from the spec when it runs, so the popover value and the table value are one number by construction — and the engine's table spine has no column for a qualitative band, so the three \"…to\" columns are present with JS OFF and absent with JS ON. Lost with JS off: the chart itself, the value popover, the row fade / bar-grow entry and Copy CSV."
   }
   </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
@@ -639,6 +647,541 @@
 }());
 </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render.js (behaviour "dv-render", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render — THE DATA-DRIVEN CHART ENGINE, core (s249-D4, built #259, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   WHAT IT IS. `window.dvRender(figureEl, spec)` turns a DATA SPEC into exactly the SVG grammar
+   `canon/dv-behaviour.js` already fits — rect `data-fx`+`data-fw`, line `data-fx`+`data-fx2`,
+   text `data-fx`+`data-dx`, g `data-fx`+`data-x0`, `.dv-mk` for glyphs that must keep their
+   size — plus `data-tip` on every mark and a real `<table>` spine. It REPLACES rule 18 of
+   `ADS-generate-from-canon` (the interim "author the geometry yourself" recipe): the library
+   owns the arithmetic, the author owns the data.
+
+   THE SPEC (the whole contract):
+     { type:       "column" | "bar" | "grouped-column" | "stacked-column" | …   (a registered type)
+       categories: ["Q1", "Q2", …],                     (the band axis, ≥1)
+       series:     [{ name: "Savings", values: [40, 45, …], role?: "positive" }, …],
+       format?:    "plain" | "compact" | "percent",     (default "plain")
+       unit?:      "£" | "%" | "k" | …,                 (1 char ⇒ prefix, else suffix)
+       caption?:   "…",  categoryLabel?: "…",  label?:  "…"   (a11y sentence; derived if absent) }
+
+   THE DIVISION OF LABOUR. This file owns everything that is the same for every chart: spec
+   VALIDATION (fail loud, named), the linear value SCALE with nice ticks, the band axis, the
+   AXIS/GRIDLINE/TICK-LABEL furniture, the `<table>` spine, the accessible name, the single
+   `resize` dispatch that hands the fresh marks to dv-behaviour, and the TYPE REGISTRY. A type
+   partial (`dv-render-bar` and its siblings) owns the MARKS only, and registers itself as
+   `dvRender.types["<name>"] = fn(ctx)`. That seam is why six type partials can be built in
+   parallel without any of them touching this file or each other.
+
+   PERFORMANCE CONTRACT (ADR-0015 §4, gated by _validate_behaviour.py): ≤16 KB code-only per
+   source · no setInterval / network / polling · NO NEW RESIZE LISTENER — re-fit is
+   `dispatchEvent(new Event('resize'))`, dv-behaviour's one rAF-debounced listener does the work ·
+   no external <script src> · events stay delegated at the document (dv-behaviour's, not ours).
+
+   PROGRESSIVE ENHANCEMENT (ADR-0015 §4). The SVG a consumer ships is EMPTY and this fills it, so
+   with JS off there is no chart — which is why the `<table>` spine is not optional and not
+   generated: the consumer ships a real `<table class="dv-table">` inside the figure (dv-005),
+   and this engine REWRITES its rows to match the render. JS off ⇒ the table is the answer.
+
+   DEF-004 / dv-017 — NO HARDCODED STYLING. Every colour this file emits is a var() token:
+   `--data-grid`, `--data-axis`, `--baseline`, `--data-series-1…5` (ds-026 solid palette) and the
+   s184-D3 status vocabulary `--status-positive|negative|monitor|neutral`. The two-red law
+   (s151-D1, #DA1A00-on-white / #F6604C-else) rides `--status-negative` → `--rag-error-graphic`,
+   which is where the per-theme pair already lives; this file never names a red.
+
+   DEF-003 boundary: data-driven geometry ONLY. No press-physics custom properties, no scale
+   transform assignment, no scale-physics of any kind — every number this file writes is an SVG
+   attribute derived from the data. Entry motion stays CSS (`.dv-animate` + `data-grow`). */
+(function () {
+  'use strict';
+  if (window.dvRender) { return; }
+
+  /* ---------- the type registry. A type partial does `dvRender.types.column = fn` and may hang
+     two optional properties on its own function:
+       fn.axis   — "y" (default: value runs UP, categories along x) or "x" (value runs ACROSS,
+                   categories down y — the horizontal bar). Decides which furniture is drawn.
+       fn.domain — fn(spec) -> [lo, hi]. Only stacked types need it (the domain is the stack
+                   TOTAL, not the largest single value). Absent ⇒ the min/max of every value. */
+  var TYPES = {};
+
+  var ROLES = { positive: 1, negative: 1, monitor: 1, neutral: 1 };   /* s184-D3 status vocabulary */
+  var FORMATS = { plain: 1, compact: 1, percent: 1 };
+  var PAL = 5;        /* ds-026 — data/series/1…5, the solid categorical palette */
+  /* dv-004 — 2px between adjacent filled blocks, REAL geometry, never a painted stroke. The rule
+     is 2px MINIMUM RENDERED, and the constant carries a 0.2px rounding budget on top of it: the
+     fit re-derives a mark's x and its width INDEPENDENTLY from data-fx/data-fw and rounds each to
+     one decimal, so up to 0.15px can vanish out of the gap between them. MEASURED at #259 — an
+     authored 2.0 landed at 1.90px in the browser and the driven check went red, which is the whole
+     reason this is 2.2 and not 2. It is not a fudge of the rule; it is the rule stated in the
+     coordinate space the rule is actually judged in. */
+  var GAP = 2.2;
+  var HIT = 24;       /* s116-D1 — a mark that is a hit target wants 24px, where the band allows */
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&quot;';
+    });
+  }
+  function n1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+  function f4(v) { return v.toFixed(4); }
+  function attr(el, key, dflt) { var v = parseFloat(el.getAttribute(key)); return isFinite(v) ? v : dflt; }
+
+  /* ---------- NICE TICKS. A 1 / 2 / 2.5 / 5 / 10 × 10ⁿ step chosen against a target tick count,
+     then the domain WIDENED to whole steps. dv-bar-009's zero baseline is enforced by the caller
+     (bar-family domains floor at 0); a domain that genuinely spans zero keeps zero as a tick. */
+  function nice(lo, hi, want) {
+    if (!(hi > lo)) { hi = lo + (Math.abs(lo) || 1); }
+    var step = Math.pow(10, Math.floor(Math.log((hi - lo) / want) / Math.LN10));
+    var k = (hi - lo) / want / step;
+    step *= k <= 1 ? 1 : k <= 2 ? 2 : k <= 2.5 ? 2.5 : k <= 5 ? 5 : 10;
+    var min = Math.floor(lo / step) * step, max = Math.ceil(hi / step) * step;
+    var ticks = [], v = min;
+    while (v <= max + step * 1e-9) { ticks.push(Math.round(v * 1e9) / 1e9); v += step; }
+    return { min: min, max: max, step: step, ticks: ticks };
+  }
+
+  /* ---------- VALUE FORMATTING. Display only — the table's <td> always carries the RAW number,
+     because _validate_dataviz.py reads the table for dv-bar-007 (no negative horizontals) and
+     dv-pie-010 (slice sum), and a "£1.2k" cell would read as 1.2 to that gate. */
+  function fmt(spec, v) {
+    var s;
+    if (spec.format === 'percent') { s = (Math.round(v * 10) / 10) + '%'; }
+    else if (spec.format === 'compact' && Math.abs(v) >= 1000) {
+      s = (Math.round(v / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'k';
+    } else { s = String(Math.round(v * 1000) / 1000); }
+    var u = spec.unit || '';
+    return !u ? s : u.length === 1 ? u + s : s + ' ' + u;
+  }
+
+  /* ---------- FILL. A series with a `role` takes the status vocabulary (s184-D3) — that is the
+     salience ramp, and it is NEVER the isoluminant categorical set (R-D9). Everything else takes
+     data/series/N, wrapping at 5. Both are var() tokens: dv-017 has no other legal answer. */
+  function fillOf(s, i) {
+    if (s.role) { return 'var(--status-' + s.role + ')'; }
+    return 'var(--data-series-' + ((i % PAL) + 1) + ')';
+  }
+
+  /* ---------- VALIDATION — fail loud and NAMED. Every message says the field and what it wanted,
+     because this is the surface a build gets wrong and the only place it can be told so. */
+  function bad(msg) { throw new Error('dv-render: ' + msg); }
+
+  function validate(spec) {
+    if (!spec || typeof spec !== 'object') { bad('spec must be an object'); }
+    if (typeof spec.type !== 'string' || !spec.type) { bad('spec.type must be a non-empty string'); }
+    var c = spec.categories;
+    if (!Array.isArray(c) || !c.length) { bad('spec.categories must be a non-empty array'); }
+    var s = spec.series;
+    if (!Array.isArray(s) || !s.length) { bad('spec.series must be a non-empty array'); }
+    if (spec.format && !FORMATS[spec.format]) {
+      bad('spec.format "' + spec.format + '" is not one of plain|compact|percent');
+    }
+    for (var i = 0; i < s.length; i++) {
+      var one = s[i], at = 'spec.series[' + i + ']';
+      if (!one || typeof one !== 'object') { bad(at + ' must be an object'); }
+      if (typeof one.name !== 'string' || !one.name) { bad(at + '.name must be a non-empty string'); }
+      if (!Array.isArray(one.values)) { bad(at + '.values must be an array'); }
+
+      if (one.values.length !== c.length) {
+        bad(at + '.values has ' + one.values.length + ' for ' + c.length +
+            ' categories — one value per category, always');
+      }
+      for (var j = 0; j < one.values.length; j++) {
+        if (typeof one.values[j] !== 'number' || !isFinite(one.values[j])) {
+          bad(at + '.values[' + j + '] is not a finite number');
+        }
+      }
+      if (one.role && !ROLES[one.role]) {
+        bad(at + '.role "' + one.role + '" is not s184-D3 (positive|negative|monitor|neutral)');
+      }
+    }
+  }
+
+  /* ---------- THE TABLE SPINE (dv-005 + the a11y spine). Written into the figure's EXISTING
+     <table class="dv-table">, so the consumer's caption/lockup/table-popover chrome is untouched;
+     created inside .dv-tablepanel (else the figure) only when the consumer shipped none. The rows
+     are the render's own numbers, so popover value == table value by construction, not by care. */
+  function writeTable(fig, spec) {
+    var t = fig.querySelector('table.dv-table');
+    if (!t) {
+      t = document.createElement('table');
+      t.className = 'dv-table t-cm-legal';
+      (fig.querySelector('.dv-tablepanel') || fig).appendChild(t);
+    }
+    var cap = spec.caption;
+    if (!cap) { var fc = fig.querySelector('figcaption'); cap = fc ? fc.textContent.trim() : 'Chart data'; }
+    var head = '<caption>' + esc(cap) + '</caption><thead><tr><th scope="col">' +
+               esc(spec.categoryLabel || 'Category') + '</th>';
+    var i, j;
+    for (i = 0; i < spec.series.length; i++) {
+      head += '<th scope="col">' + esc(spec.series[i].name) +
+              (spec.unit ? ' (' + esc(spec.unit) + ')' : '') + '</th>';
+    }
+    head += '</tr></thead><tbody>';
+    for (i = 0; i < spec.categories.length; i++) {
+      head += '<tr><th scope="row">' + esc(spec.categories[i]) + '</th>';
+      for (j = 0; j < spec.series.length; j++) { head += '<td>' + spec.series[j].values[i] + '</td>'; }
+      head += '</tr>';
+    }
+    t.innerHTML = head + '</tbody>';
+    return t;
+  }
+
+  /* ---------- THE ACCESSIBLE NAME. A full sentence, the way the baked snippets read: the subject,
+     then every category and its value. Capped so a 40-category chart does not read for a minute;
+     the table is the complete answer past that point. */
+  function autoLabel(spec) {
+    var out = [], i, j, ns = spec.series.length, n = Math.min(spec.categories.length, 12);
+    for (i = 0; i < n; i++) {
+      for (j = 0; j < ns; j++) {
+        out.push((ns > 1 ? spec.series[j].name + ' ' : '') + spec.categories[i] + ' ' +
+                 fmt(spec, spec.series[j].values[i]));
+      }
+    }
+    return (spec.caption || 'Chart') + '. ' + out.join(', ') +
+           (n < spec.categories.length ? ', and more in the table' : '') + '.';
+  }
+
+  /* ---------- AXIS FURNITURE. Emitted by the CORE, identically for every type, in the fit
+     grammar: gridlines are lines with data-fx/data-fx2, tick labels are texts with data-fx/data-dx,
+     the baseline is a line in --baseline. `axis === "x"` swaps the two roles for horizontal bars. */
+  function furniture(ctx, axis) {
+    var i, t, p, x, y;
+    if (axis === 'x') {
+      for (i = 0; i < ctx.ticks.length; i++) {
+        t = ctx.ticks[i]; p = ctx.vf(t); x = ctx.PL + p * ctx.plotW;
+        ctx.push('<line class="dv-grid" x1="' + n1(x) + '" y1="' + ctx.PT + '" x2="' + n1(x) +
+                 '" y2="' + ctx.y0 + '" stroke="var(--data-grid)" data-fx="' + f4(p) +
+                 '" data-fx2="' + f4(p) + '"/>');
+        ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + n1(x) +
+                 '" y="' + (ctx.y0 + 16) + '" text-anchor="middle" data-fx="' + f4(p) + '">' +
+                 esc(ctx.fmt(t)) + '</text>');
+      }
+      ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + ctx.PT + '" x2="' + ctx.PL +
+               '" y2="' + ctx.y0 + '" stroke="var(--baseline)" data-fx="' + f4(ctx.vf(0)) +
+               '" data-fx2="' + f4(ctx.vf(0)) + '"/>');
+      return;
+    }
+    for (i = 0; i < ctx.ticks.length; i++) {
+      t = ctx.ticks[i]; y = ctx.vy(t);
+      ctx.push('<line class="dv-grid" x1="' + ctx.PL + '" y1="' + n1(y) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+               '" y2="' + n1(y) + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>');
+      ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + (ctx.PL - 8) +
+               '" y="' + n1(y + 3) + '" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">' +
+               esc(ctx.fmt(t)) + '</text>');
+    }
+    var zy = ctx.vy(Math.min(Math.max(0, ctx.min), ctx.max));
+    ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + n1(zy) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+             '" y2="' + n1(zy) + '" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>');
+  }
+
+  /* ---------- THE ENGINE. Idempotent by construction: everything inside the <svg> and everything
+     inside the <table> is REPLACED, so a filter re-render (rule 14) is one more call with a
+     smaller spec, never a diff. The cached fit fractions (data-fy/data-fh) go with the old marks,
+     which is exactly right — they described geometry that no longer exists. */
+  function dvRender(fig, spec) {
+    if (!fig || !fig.querySelector) { bad('first argument must be the <figure> element'); }
+    validate(spec);
+    var draw = TYPES[spec.type];
+    if (typeof draw !== 'function') {
+      bad('no type partial registered for "' + spec.type + '" — have: ' +
+          (Object.keys(TYPES).sort().join(', ') || '(none)'));
+    }
+    var svg = fig.querySelector('svg.dv-fit') || fig.querySelector('svg.dv-svg');
+    if (!svg) { bad('figure has no <svg class="dv-fit"> canvas to render into'); }
+
+    /* Geometry comes from the canvas's own data-* frame (the kit's 46/12/14/30/260 defaults), and
+       the value axis is authored in the data-h coordinate space — NEVER the live viewBox height.
+       dv-behaviour's fitY caches every y as a fraction of `data-h − PT − PB`; authoring into a
+       already-fitted taller box would cache fractions that describe the wrong plot. */
+    var PL = attr(svg, 'data-pl', 46), PR = attr(svg, 'data-pr', 12);
+    var PT = attr(svg, 'data-pt', 14), PB = attr(svg, 'data-pb', 30);
+    var VH = attr(svg, 'data-h', 260);
+    /* ⛔ THE WIDTH IS THE RENDERED ONE, not the authored viewBox. fitOne re-pins the viewBox 1:1
+       to the element's CSS width, so one viewBox unit IS one device-independent pixel after a fit
+       — and only then is a 2px dv-004 gap actually 2px. Authoring into a 580-wide box that then
+       fits to 496 shrank every constant by 5%: MEASURED at #259, the grouped gap landed at 1.90px
+       and the driven check went red. Read the box first, author into it, and the constant survives
+       the fit. Falls back to the authored viewBox when the element has no layout yet (display:none,
+       an unattached figure) — then the first resize does the honest thing. */
+    var vb = (svg.getAttribute('viewBox') || '').trim().split(/\s+/);
+    var VW = Math.round(svg.getBoundingClientRect().width);
+    if (!(VW > 0)) { VW = parseFloat(vb[2]); }
+    if (!isFinite(VW) || VW <= 0) { VW = 580; }
+
+    var lo = Infinity, hi = -Infinity, i, j, v;
+    if (typeof draw.domain === 'function') { v = draw.domain(spec); lo = v[0]; hi = v[1]; }
+    else {
+      for (i = 0; i < spec.series.length; i++) {
+        for (j = 0; j < spec.series[i].values.length; j++) {
+          v = spec.series[i].values[j];
+          if (v < lo) { lo = v; } if (v > hi) { hi = v; }
+        }
+      }
+    }
+    if (lo > 0) { lo = 0; }                      /* dv-bar-009 — the baseline is zero, always */
+    var sc = nice(lo, hi, 4);
+    var plotW = VW - PL - PR, plotH = VH - PT - PB, y0 = VH - PB;
+    var span = sc.max - sc.min || 1;
+
+    var ctx = {
+      fig: fig, svg: svg, spec: spec, cats: spec.categories, series: spec.series,
+      PL: PL, PR: PR, PT: PT, PB: PB, VW: VW, VH: VH,
+      plotW: plotW, plotH: plotH, y0: y0,
+      min: sc.min, max: sc.max, step: sc.step, ticks: sc.ticks,
+      GAP: GAP, HIT: HIT, esc: esc, n1: n1, f4: f4,
+      fmt: function (n) { return fmt(spec, n); },
+      fill: function (k) { return fillOf(spec.series[k] || {}, k); },
+      vy: function (n) { return y0 - (n - sc.min) / span * plotH; },   /* value -> px, y axis */
+      vf: function (n) { return (n - sc.min) / span; },                /* value -> plot FRACTION */
+      fx: function (px) { return (px - PL) / plotW; },                 /* px -> data-fx fraction */
+      out: []
+    };
+    ctx.push = function (s) { ctx.out.push(s); };
+
+    furniture(ctx, draw.axis === 'x' ? 'x' : 'y');
+    draw(ctx);
+
+    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+    svg.innerHTML = ctx.out.join('\n');
+    svg.setAttribute('aria-label', spec.label || autoLabel(spec));
+    writeTable(fig, spec);
+
+    /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).
+       dv-behaviour's one rAF-debounced listener re-derives x from data-fx and caches y. */
+    window.dispatchEvent(new Event('resize'));
+    return fig;
+  }
+
+  dvRender.types = TYPES;
+  dvRender.util = { esc: esc, n1: n1, f4: f4, nice: nice, fmt: fmt, fill: fillOf };
+  window.dvRender = dvRender;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bullet START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render-bullet.js (behaviour "dv-render-bullet", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render-bullet — the BULLET TYPE PARTIAL for the dv-render engine (s259-D1 fast follower,
+   built #260). Hand-authored SOURCE; injected between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py. Edit HERE and regenerate — never between a consumer's markers.
+
+   REGISTERS ONE TYPE: `bullet` — one KPI per ROW, a measure bar read against a comparative
+   target marker and, behind both, the qualitative performance bands. The value axis runs ACROSS
+   x (`fn.axis = "x"`, the horizontal-bar arm of the core's furniture switch); the rows run down y.
+
+   THE SPEC, and the ONE extension it needs:
+     { type: "bullet",
+       categories: ["Revenue", "Satisfaction", "Retention"],      one KPI per row
+       series:     [{ name: "Measure", values: [82, 58, 91] },    series[0] IS the measure
+                    { name: "Target",  values: [75, 70, 85] }],   series[1] IS the target marker
+       ranges:     [40, 60, 100],                                 ⚠ EXTENSION — see below
+       unit?, format?, caption?, categoryLabel? }
+
+   ⚠ `ranges` IS AN EXTENSION TO THE s249-D4 SPEC, and it is declared rather than smuggled. A
+   bullet chart without its qualitative bands is a horizontal bar; the bands are the component's
+   whole reason to beat stat-card and kpi-tile (Chart-bullet.meta `when`: "when the BENCHMARK …
+   is the point"). The core's `validate()` neither knows nor rejects extra keys, so this partial
+   validates `ranges` ITSELF, loudly and by name, exactly as the core validates what it owns.
+   Whether the ruled spec grows a `ranges` field is Dave's, not a lane's — filed RULING-SHAPED.
+
+   RULES ENACTED HERE:
+     #96-D1 ②  ROW PITCH = 60px, the RULED CONSTANT, and the canvas height formula that falls out
+               of it: H = 80 + (rowCount−1)·60 with data-pt="4" data-pb="16", because then
+               plotH = H − 20 = 60·rowCount EXACTLY and the band arithmetic below needs no
+               special case. The pitch is CAPPED, never stretched (`Math.min`), so filtering a
+               row out leaves the survivors' bands IDENTICAL — which is the ruling's own words,
+               "a single row keeps the SAME 60px band/appearance".
+     #96-D1 ③  the qualitative bands take the CANON greys `--dv-range-1/2/3`. Minted nothing;
+               canon.css already carries the pair per mode inside `.cn-chart-bullet`.
+     brief-ruled  measure = data/series/1 · target marker = ink. The measure rect carries
+               `fill="var(--data-series-1)"` as a presentation attribute so the dataviz gate can
+               READ it (it reads `fill` off `.dv-series`); canon.css's `.dv-measure{fill:…}`
+               rule wins at paint time and binds the SAME token, so the two cannot disagree.
+     z-order   bands → bar → marker, which in SVG is DOM order and nothing else. The push order
+               below IS the z-order; there is no z-index to get wrong.
+     dv-005    the value the popover says is the value the table says, because the core writes
+               both off one spec. See the RULING-SHAPED note about the range columns.
+     DEF-003   entry motion is CSS: `.dv-animate .dv-row` fades on an authored animation-delay
+               and `.dv-animate rect.dv-measure` grows from the axis. No JS geometry animation.
+     dv-017    every colour emitted is a var() token.
+
+   ⚠ THE CORE'S CARTESIAN FURNITURE IS DISCARDED (`ctx.out.length = 0`), the same WORK-AROUND
+   dv-render-donut and dv-render-sparkline already carry, for the same reason: `dvRender` calls
+   `furniture()` unconditionally before `draw(ctx)` and offers no opt-out. A bullet reads against
+   its BANDS, not against gridlines and tick labels — the promoted component has never carried
+   either — so drawing them and then painting opaque greys over them would be paying for ink
+   nobody sees. The core request ("honour fn.axis = 'none' / fn.furniture = false") is filed
+   verbatim in knowledge/_tmp/260/bullet.core-requests.md. This partial emits the one piece of
+   furniture the component does own: the vertical zero baseline. */
+(function () {
+  'use strict';
+  if (!window.dvRender) { return; }   /* core absent — dvRender's own error is the loud one */
+  var T = window.dvRender.types, U = window.dvRender.util;
+  var n1 = U.n1, f4 = U.f4, esc = U.esc;
+
+  /* #96-D1 ② — the RULED row geometry, in the coordinate space the ruling states it in:
+     row band 32 tall, measure bar 16 tall, target tick 48 tall, all inside a 60px pitch. */
+  var PITCH = 60, ROW_H = 32, MEAS_H = 16, TICK_H = 48;
+  var TINTS = 3;      /* --dv-range-1/2/3 — three canon greys exist and no fourth is minted */
+
+  function bad(msg) { throw new Error('dv-render-bullet: ' + msg); }
+
+  /* The qualitative breakpoints, validated the way the core validates its own fields: say the
+     field, say what it wanted. An ABSENT `ranges` is legal and draws a bare measure/target row. */
+  function bands(spec) {
+    var r = spec.ranges;
+    if (r === undefined || r === null) { return []; }
+    if (!Array.isArray(r) || !r.length) {
+      bad('spec.ranges must be a non-empty array of ascending breakpoints, or absent');
+    }
+    if (r.length > TINTS) {
+      bad('spec.ranges has ' + r.length + ' breakpoints — #96-D1 ③ mints THREE qualitative tints ' +
+        '(--dv-range-1/2/3) and a fourth band would bind a token that does not exist');
+    }
+    for (var i = 0; i < r.length; i++) {
+      if (typeof r[i] !== 'number' || !isFinite(r[i])) {
+        bad('spec.ranges[' + i + '] is not a finite number');
+      }
+      if (r[i] <= (i ? r[i - 1] : 0)) {
+        bad('spec.ranges must ascend from zero — ranges[' + i + '] is ' + r[i] +
+          ' and the band before it ends at ' + (i ? r[i - 1] : 0));
+      }
+    }
+    return r;
+  }
+
+  /* The domain is the RANGE TOP, not the largest measure — a bullet is read against its bands,
+     so a chart whose worst KPI is 58 must still show the whole 0–100 scale. This is exactly the
+     case `fn.domain` exists for: the core cannot infer it from `series` alone. */
+  function domain(spec) {
+    var hi = 0, i, j, v;
+    for (i = 0; i < spec.series.length; i++) {
+      for (j = 0; j < spec.series[i].values.length; j++) {
+        v = spec.series[i].values[j];
+        if (v > hi) { hi = v; }
+      }
+    }
+    var r = bands(spec);
+    if (r.length && r[r.length - 1] > hi) { hi = r[r.length - 1]; }
+    return [0, hi];
+  }
+
+  function bullet(ctx) {
+    ctx.out.length = 0;                 /* ⚠ the core's cartesian furniture — see the header */
+
+    var ns = ctx.series.length, nc = ctx.cats.length, i, j;
+    if (ns > 2) {
+      bad('a bullet row is ONE measure against AT MOST ONE target — got ' + ns +
+        ' series. Expected [measure] or [measure, target]; use type "bar" for a multi-series ' +
+        'horizontal comparison');
+    }
+    var rs = bands(ctx.spec);
+    var meas = ctx.series[0], tgt = ns > 1 ? ctx.series[1] : null;
+
+    /* #96-D1 ② — CAPPED, never stretched. With the ruled canvas (data-h = 80 + (n−1)·60,
+       data-pt="4", data-pb="16") plotH is exactly 60·n and the cap is inert; on any other
+       canvas the rows keep their 60px appearance and sit top-aligned in the space there is. */
+    var pitch = Math.min(PITCH, ctx.plotH / nc);
+    var k = pitch / PITCH;                          /* the one scale factor, applied to all three */
+    var rh = ROW_H * k, mh = MEAS_H * k, th = TICK_H * k;
+    var X = function (v) { return ctx.PL + ctx.vf(v) * ctx.plotW; };
+    var W = function (a, b) { return (ctx.vf(b) - ctx.vf(a)) * ctx.plotW; };
+
+    for (i = 0; i < nc; i++) {
+      var cy = ctx.PT + i * pitch + pitch / 2;
+      ctx.push('<g class="dv-row" style="animation-delay:' + (i * 90) + 'ms">');
+
+      /* The KPI name, in the LEFT GUTTER — data-fx="0" + data-dx so the 8px clearance stays 8px
+         on every width, and so ds-012(b)'s measured gutter (data-pl-fit) can size itself off it. */
+      ctx.push('<text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="' +
+        n1(ctx.PL - 8) + '" y="' + n1(cy + 4) + '" text-anchor="end" data-fx="0" data-dx="-8">' +
+        esc(ctx.cats[i]) + '</text>');
+
+      /* ① the qualitative bands, FIRST = furthest back (SVG paint order is the z-order) */
+      var from = 0;
+      for (j = 0; j < rs.length; j++) {
+        ctx.push('<rect class="dv-range-' + (j + 1) + '" fill="var(--dv-range-' + (j + 1) +
+          ')" x="' + n1(X(from)) + '" y="' + n1(cy - rh / 2) + '" width="' + n1(W(from, rs[j])) +
+          '" height="' + n1(rh) + '" data-fx="' + f4(ctx.vf(from)) + '" data-fw="' +
+          f4(W(from, rs[j]) / ctx.plotW) + '"></rect>');
+        from = rs[j];
+      }
+
+      /* ② the measure bar, over the bands. Its words carry the DOMAIN and the TARGET, because a
+         bullet's reading is a comparison — a bare number is the one thing this chart is not. */
+      var v = meas.values[i];
+      var w = W(0, v); if (w < 1) { w = 1; }
+      var words = ctx.cats[i] + ': ' + ctx.fmt(v) + ' of ' + ctx.fmt(ctx.max) +
+        (tgt ? ', target ' + ctx.fmt(tgt.values[i]) : '');
+      ctx.push('<rect class="dv-series dv-measure" data-series-i="1" fill="' + ctx.fill(0) +
+        '" data-grow="right" style="animation-delay:' + (i * 90) + 'ms" x="' + n1(X(0)) +
+        '" y="' + n1(cy - mh / 2) + '" width="' + n1(w) + '" height="' + n1(mh) +
+        '" data-fx="' + f4(ctx.vf(0)) + '" data-fw="' + f4(w / ctx.plotW) +
+        '" tabindex="0" role="img" aria-label="' + esc(words) + '" data-tip="' +
+        esc(words) + '"></rect>');
+
+      /* ③ the comparative marker, LAST = on top of everything. Ink, 3px, spanning the row —
+         the conventional bullet target indicator, and brief-ruled ("marker = ink"). */
+      if (tgt) {
+        var tv = tgt.values[i];
+        ctx.push('<line class="dv-target" x1="' + n1(X(tv)) + '" y1="' + n1(cy - th / 2) +
+          '" x2="' + n1(X(tv)) + '" y2="' + n1(cy + th / 2) + '" data-fx="' + f4(ctx.vf(tv)) +
+          '" data-fx2="' + f4(ctx.vf(tv)) + '"/>');
+      }
+      ctx.push('</g>');
+    }
+
+    /* The one piece of furniture a bullet owns: the vertical baseline the bars grow from. */
+    ctx.push('<line class="dv-axis" x1="' + n1(X(0)) + '" y1="' + n1(ctx.PT - 8) + '" x2="' +
+      n1(X(0)) + '" y2="' + n1(ctx.PT + nc * pitch + 8) + '" stroke="var(--baseline)" data-fx="' +
+      f4(ctx.vf(0)) + '" data-fx2="' + f4(ctx.vf(0)) + '"/>');
+  }
+
+  bullet.axis = 'x';        /* the value runs ACROSS — the same switch the horizontal bar throws */
+  bullet.domain = domain;
+  T.bullet = bullet;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bullet END ===== -->
+  <script>
+  /* THE DATA — rule 13, data-model-first. The numbers live here; the geometry does not exist
+     until dvRender draws it. This block is the shape a generated page copies, so it is NOT
+     inside an APOLLO-DEMO fence: the fence is for showroom harness, and this is the pattern.
+
+     series[0] is the MEASURE and series[1] is the TARGET — that ordering is the spec, and the
+     partial refuses a third series by name rather than drawing something nobody asked for.
+     `ranges` is the ONE extension to the s249-D4 spec (a bullet without its qualitative bands is
+     a horizontal bar); #96-D1 ③ mints exactly three tints, so exactly three breakpoints are legal
+     and a fourth throws. #96-D1 ②’s 60px pitch is the partial’s constant, capped rather than
+     stretched, so a filtered stack keeps the band it had. */
+  (function () {
+    var fig = document.getElementById('cbl1');
+    if (fig && window.dvRender) {
+      dvRender(fig, {
+        type: 'bullet',
+        categories: ['Revenue', 'Satisfaction', 'Retention'],
+        series: [
+          { name: 'Measure', values: [82, 58, 91] },
+          { name: 'Target',  values: [75, 70, 85] }
+        ],
+        ranges: [40, 60, 100],
+        categoryLabel: 'KPI',
+        caption: 'KPI performance: measure vs target, 0 to 100'
+      });
+    }
+  }());
+  </script>
 
 </body>
 </html>

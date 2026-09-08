@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-butterfly (vertical) — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, mirrored-vertical half (s259-D1 fast follower, #260
+  lane F4). Sibling of knowledge/_tests/chart-engine/butterfly-h.html — the SAME type partial,
+  the other orientation. Two pages, not one, because the two types are two members with two
+  snippets, and a receipt that maps 1:1 is a receipt a reviewer can falsify.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the
+  `.cn-chart-butterfly-v` namespace wrapper, a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an
+  authored `<table class="dv-table">` as the JS-off spine, and an inline DATA object drawn by
+  `dvRender(figure, spec)`.
+
+  ⛔ SCRIPT ORDER IS LOAD-BEARING — dv-legend loads AFTER the dvRender() bootstrap, because its
+  rec() caches every mark once at parse time. See the -h page's header.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load, on hover, on resize and after the filter;
+    2. 2 wings × n categories of rects, every one carrying data-fx AND data-fw AND data-tip;
+    3. ONE shared baseline, and dv-004 MEASURED where the rule actually bites on this type: the
+       vertical gap between the UP rect's foot and the DOWN rect's head, which the reference bake
+       had at 0.0px and the engine holds at ≥2px of real geometry;
+    4. adjacent category COLUMNS are separated by real geometry (the 28% band gutter);
+    5. the tooltip (#dvTip.on) appears on hover of a mark, with that mark's own value;
+    6. the CATEGORY FILTER re-renders (rule 14) and the mark count changes with it;
+    7. the <table> spine row count follows the filtered spec;
+    8. the two wings resolve to the TWO DV-D09 colours (data/series/1 and data/series/3);
+    9. RESIZE: the cartesian assertion — the figure re-flows, the viewBox tracks the width, the
+       wings stay balanced about the baseline and text does NOT scale (DV-D02).
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-butterfly-v. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-butterfly-v{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-butterfly — vertical, driven test page</h1>
+  <p class="lede">Two mirrored wings above and below one shared baseline, on one scale. Untick a
+     quarter and the figure, its table and its accessible name all re-render from the same numbers.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — quarters in the chart</legend>
+  </fieldset>
+
+  <!-- ============ BUTTERFLY-V — mirrored vertical, two series ============ -->
+  <div class="cn-chart-butterfly-v">
+  <figure class="dv dv-animate" data-dv-type="butterfly-v" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="bv-h" id="fig-butterfly-v">
+    <figcaption id="bv-h" class="sr-only">Actual versus forecast by quarter, thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Q3 actual beat forecast by the widest margin</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="bv-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="bv-tbl" role="region" aria-label="Actual versus forecast by quarter, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Actual versus forecast by quarter, thousands</caption>
+              <thead><tr><th scope="col">Quarter</th><th scope="col">Actual</th><th scope="col">Forecast</th></tr></thead>
+              <tbody><tr><th scope="row">Q1</th><td>42</td><td>35</td></tr><tr><th scope="row">Q2</th><td>18</td><td>24</td></tr><tr><th scope="row">Q3</th><td>95</td><td>80</td></tr><tr><th scope="row">Q4</th><td>26</td><td>30</td></tr><tr><th scope="row">Q5</th><td>21</td><td>19</td></tr><tr><th scope="row">Q6</th><td>30</td><td>33</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group"
+           aria-label="Actual versus forecast by quarter, thousands."></svg>
+    </div></div>
+    <ul class="dv-leg center t-cm-chart-label" id="bv-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+      <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Actual" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Actual"><span class="dv-leg-name">Actual</span></button></li>
+      <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Forecast" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Forecast"><span class="dv-leg-name">Forecast</span></button></li>
+      <button type="button" class="dv-leg-reset" disabled>Reset</button>
+      <li class="dv-sr" id="bv-live" role="status" aria-live="polite"></li>
+    </ul>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-butterfly.js"></script>
+<script>
+/* THE DATA and the call that draws it — the shape a generated page copies. */
+var CATS = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6'];
+var ACT  = [42, 18, 95, 26, 21, 30];
+var FCT  = [35, 24, 80, 30, 19, 33];
+var OFF = {};        /* the filter's state — category name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < CATS.length; i++) { if (!OFF[CATS[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  dvRender(document.getElementById('fig-butterfly-v'), {
+    type: 'butterfly-v',
+    categories: ix.map(function (i) { return CATS[i]; }),
+    series: [{ name: 'Actual', values: ix.map(function (i) { return ACT[i]; }) },
+             { name: 'Forecast', values: ix.map(function (i) { return FCT[i]; }) }],
+    categoryLabel: 'Quarter',
+    caption: 'Actual versus forecast by quarter, thousands'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  CATS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+</script>
+<!-- BELOW the bootstrap on purpose — see the -h page's header. -->
+<script src="../../canon/dv-legend.js"></script>
+<script>window.__dvTestReady = true;</script>
+</body>
+</html>

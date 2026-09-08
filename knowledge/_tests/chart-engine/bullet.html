@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-bullet — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, gauge half (s259-D1 fast follower, #260 bullet lane).
+  Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-bullet`
+  namespace wrapper (drop it and the svg takes no size, the range greys never bind and the tip is
+  unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored `<table class="dv-table">`
+  as the JS-off spine, and an inline DATA object drawn by `dvRender(figure, spec)`.
+
+  ⛔ THE CANVAS GEOMETRY IS #96-D1 ②'s, and it is why data-pt/data-pb are authored here.
+  The ruling fixes the row pitch at 60px and the canvas at H = 80 + (rowCount−1)·60. With
+  data-pt="4" data-pb="16" the plot is exactly H − 20 = 60·rowCount, so the partial's band
+  arithmetic lands on the ruled 60px pitch with no special case: 3 rows -> data-h="200",
+  plot 180 = 3 × 60. Change the row count and BOTH move together, at bake time (DV-D02).
+
+  ⛔ dv-fit IS REQUIRED HERE. A bullet is cartesian (`_validate_dataviz.py` CARTESIAN_DTYPES), so
+  DV-D02-A makes the plot svg carry dv-fit — the opposite of the donut page's radial exception.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These three tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. three measure bars exist, each carrying data-fx AND data-fw — the fit grammar, not pixels;
+    3. three range bands per row, in DOM order behind the bar, and the target tick on top of it
+       (z-order = paint order: bands -> bar -> marker, #96-D1 ③);
+    4. the tooltip (#dvTip.on) appears on hover of a measure bar, reading that row's own measure,
+       domain and target — the same numbers the table row carries;
+    5. the CATEGORY FILTER re-renders (rule 14) and the bar count changes with it;
+    6. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    7. every measure fill resolves to a non-empty computed colour (no dead var());
+    8. #96-D1 ② — the row pitch measures 60px, and it is STILL 60px after a row is filtered out
+       (the pitch is capped, not stretched);
+    9. RESIZE: the figure re-flows and the bars re-fit — bar length tracks the container width
+       while the row heights and the type do NOT scale (DV-D02, the cartesian assertion).
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-bullet. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-bullet{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-bullet — driven test page</h1>
+  <p class="lede">One gauge stack, one engine, one DATA object. Untick a KPI and the rows, the
+     table and the accessible name all follow — and the survivors keep their 60px band.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — KPI rows in the stack</legend>
+  </fieldset>
+
+  <!-- ============ 1 · BULLET — measure vs target against qualitative bands ============ -->
+  <div class="cn-chart-bullet">
+  <figure class="dv dv-animate" data-dv-type="bullet" data-domain-min="0" data-domain-max="100"
+          data-surface="page" role="group" aria-labelledby="b1-h" id="fig-bullet">
+    <figcaption id="b1-h" class="sr-only">KPI performance against target and qualitative ranges</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Revenue is ahead of target; satisfaction lags</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="b1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="b1-tbl" role="region" aria-label="KPI performance against target, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>KPI performance: measure vs target, 0 to 100</caption>
+              <thead><tr><th scope="col">KPI</th><th scope="col">Measure</th><th scope="col">Target</th></tr></thead>
+              <tbody><tr><th scope="row">Revenue</th><td>82</td><td>75</td></tr><tr><th scope="row">Satisfaction</th><td>58</td><td>70</td></tr><tr><th scope="row">Retention</th><td>91</td><td>85</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="120" data-pl-fit="text.dv-label" data-pr="12"
+           data-h="200" data-pt="4" data-pb="16" data-h-min="200" viewBox="0 0 580 200"
+           role="group" aria-label="KPI performance against target."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-bullet.js"></script>
+<script>
+/* THE DATA and the one call that draws it — the shape a generated page copies.
+   series[0] is the MEASURE, series[1] is the TARGET, and `ranges` is the qualitative band set
+   (#96-D1 ③ mints exactly three tints, so exactly three breakpoints are legal). */
+var KPI    = ['Revenue', 'Satisfaction', 'Retention'];
+var MEAS   = [82, 58, 91];
+var TARGET = [75, 70, 85];
+var RANGES = [40, 60, 100];
+var OFF = {};        /* the filter's state — KPI name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < KPI.length; i++) { if (!OFF[KPI[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  dvRender(document.getElementById('fig-bullet'), {
+    type: 'bullet',
+    categories: ix.map(function (i) { return KPI[i]; }),
+    series: [
+      { name: 'Measure', values: ix.map(function (i) { return MEAS[i]; }) },
+      { name: 'Target',  values: ix.map(function (i) { return TARGET[i]; }) }
+    ],
+    ranges: RANGES,
+    categoryLabel: 'KPI',
+    caption: 'KPI performance: measure vs target, 0 to 100'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  KPI.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+window.__dvTestReady = true;
+</script>
+</body>
+</html>

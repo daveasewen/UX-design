@@ -247,6 +247,17 @@ ENGINE_TEST_PAGE = {
     "Chart-combo.reference.html":       "combo.html",
     "Chart-sparkline.reference.html":   "sparkline.html",
     "Chart-stacked-area.reference.html": "stacked-area.html",
+    # ---- s259-D1 fast follower, #260. Every engine-drawn member maps to ITS OWN test page, so a
+    #      receipt is never evidence for code the snippet does not load. Chart-pie is the one
+    #      exception above and it is a COMPOSITION, not a shortcut: Chart-pie consumes
+    #      dv-render-donut (there is no dv-render-pie.js) and donut.html exercises both arms.
+    "Chart-scatter.reference.html":      "scatter.html",
+    "Chart-histogram.reference.html":    "histogram.html",
+    "Chart-boxplot.reference.html":      "boxplot.html",
+    "Chart-bullet.reference.html":       "bullet.html",
+    "Chart-candlestick.reference.html":  "candlestick.html",
+    "Chart-butterfly-h.reference.html":  "butterfly-h.html",
+    "Chart-butterfly-v.reference.html":  "butterfly-v.html",
 }
 
 _RECEIPTS_CACHE = {}
@@ -340,6 +351,60 @@ def driven_dv004(page_html_path, dtype, raw_dtype, receipts_path=None, root=None
                   "Chromium %s. Source: %s"
                   % (page, worst[2], worst[0], len(seen), len(combos), DV004_MIN_PX,
                      rec.get("driven", "?"), rec.get("chromium", "?"), where))
+
+
+def driven_dv004_recorded(page_html_path, raw_dtype, receipts_path=None, root=None):
+    """s260-D3, the SECOND half: grade a dv-004 figure the receipt ACTUALLY MEASURED, whatever
+    the dtype. Returns (ok, message) or (None, None) when there is nothing measured to grade.
+
+    The dtype-scoped route above answers "does this chart owe dv-004 and can it prove it". This
+    one answers a narrower and strictly-additive question: the driver measured a separation on
+    this page and WROTE IT DOWN — so if that number is below 2.0px in any combination, the gate
+    goes red. `dv-004 and its siblings … static OR driven, never skipped`: a recorded figure that
+    nothing reads is a skip wearing a receipt.
+
+    ⛔ IT DELIBERATELY DOES NOT WIDEN THE RULE. No mapping, no receipt, or a receipt whose figures
+    all carry `dv004_px: null` (the driver only measures radial and stacked joins) => (None, None),
+    no opinion, no failure. This function can only ever go red on a number that exists.
+    """
+    rec = _load_receipts(receipts_path)
+    if not rec:
+        return (None, None)
+    base = os.path.basename(page_html_path or "")
+    page = ENGINE_TEST_PAGE.get(base)
+    if not page:
+        return (None, None)
+    entry = (rec.get("pages") or {}).get(page)
+    if not entry:
+        return (None, None)
+    combos = entry.get("combos") or {}
+    seen = []
+    for combo in sorted(combos):
+        for fid, f in sorted((combos[combo].get("figures") or {}).items()):
+            if f.get("dv004_px") is not None:
+                seen.append((float(f["dv004_px"]), combo, fid))
+    if not seen:
+        return (None, None)
+    root = root or os.path.dirname(HERE)
+    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
+    for rel, want in sorted((entry.get("sources") or {}).items()):
+        p = os.path.join(root, rel)
+        got = _sha256(p) if os.path.isfile(p) else None
+        if got != want:
+            return (False, "dv-004: %s is ENGINE-DRAWN and its driven receipt (%s) carries a "
+                           "measured separation, but the receipt is STALE — %s has changed since "
+                           "it was driven%s. Re-drive: %s"
+                           % (raw_dtype, page, rel, " (file is missing)" if got is None else "",
+                              DRIVE_CMD))
+    worst = min(seen)
+    if worst[0] < DV004_MIN_PX:
+        return (False, "dv-004: driven receipt FAILS — %s/%s measured %.3fpx of separation in "
+                       "combo %s (rule is >=%.1fpx). The figure is RECORDED, so the rule is "
+                       "graded whatever the dtype (s260-D3). Source: %s"
+                       % (page, worst[2], worst[0], worst[1], DV004_MIN_PX, where))
+    return (True, "dv-004: PASSED by driven receipt — %s/%s measured %.3fpx (worst of %d recorded "
+                  "measurements across %d theme x mode combos, rule >=%.1fpx). Source: %s"
+                  % (page, worst[2], worst[0], len(seen), len(combos), DV004_MIN_PX, where))
 
 # ---------------- colour maths (lifted from _review/_gen_series_renders.py — one source) ----------------
 def _lin(c):
@@ -574,6 +639,19 @@ def check_chart(attrs, inner, themes, ctx, fileinfo=None):
             else:
                 B.append("dv-004: %s segment lacks a >=2px surface-coloured separating stroke "
                          "(geometry not statically measurable here: %s)." % (raw_dtype, gap_note))
+    else:
+        # s260-D3, the second half — a dv-004 figure the driver RECORDED for this page is graded
+        # even though the dtype is outside the gapless-surface set. Silent (None) unless a real
+        # measured number exists; it can never invent a rule the receipts do not measure.
+        segs = re.findall(r'<(?:path|rect|circle)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
+        fi = fileinfo or {}
+        if is_engine_drawn(segs, fi.get("html")):
+            ok, msg = driven_dv004_recorded(fi.get("path"), raw_dtype,
+                                            receipts_path=fi.get("receipts"), root=fi.get("root"))
+            if ok is True:
+                A.append(msg)
+            elif ok is False:
+                B.append(msg)
 
     # --- dv-bar-009 zero baseline (bar-family ONLY; never fires on lines) ---
     if dtype in BAR_FAMILY:
@@ -941,7 +1019,63 @@ def selftest():
                   STATIC_DONUT, lambda B, A: not has(B, "dv-004")
                   and not has(A, "driven receipt") and not has(B, "driven receipt"), fi_ok))
 
-    ok = True
+    # ---- #260 · the ENGINE_TEST_PAGE mapping for the s259-D1 fast-follower types --------------
+    # The mapping is DATA, so the bite is on the data: every engine-drawn member must resolve to
+    # its own page, and no member may resolve to a page that is not on disk.
+    _WANT_MAP = {"Chart-scatter.reference.html": "scatter.html",
+                 "Chart-histogram.reference.html": "histogram.html",
+                 "Chart-boxplot.reference.html": "boxplot.html",
+                 "Chart-bullet.reference.html": "bullet.html",
+                 "Chart-candlestick.reference.html": "candlestick.html",
+                 "Chart-butterfly-h.reference.html": "butterfly-h.html",
+                 "Chart-butterfly-v.reference.html": "butterfly-v.html",
+                 "Chart-pie.reference.html": "donut.html"}
+    _pages_dir = os.path.join(HERE, "_tests", "chart-engine")
+    _map_ok = all(ENGINE_TEST_PAGE.get(k) == v for k, v in _WANT_MAP.items()) and \
+        all(os.path.isfile(os.path.join(_pages_dir, p)) for p in set(ENGINE_TEST_PAGE.values()))
+    print("  [%s] ★ #260 ENGINE_TEST_PAGE maps every engine-drawn member to a test page that EXISTS"
+          % ("ok" if _map_ok else "XX"))
+    if not _map_ok:
+        missing = [p for p in sorted(set(ENGINE_TEST_PAGE.values()))
+                   if not os.path.isfile(os.path.join(_pages_dir, p))]
+        print("        want=%s missing_pages=%s" % (_WANT_MAP, missing))
+
+    # ---- #260 · a RECORDED dv-004 figure is graded whatever the dtype (s260-D3, second half) ---
+    def _bite_recorded(tag, px, dtype="butterfly-v", fid="fig-bfly"):
+        root = os.path.join(_tmp, tag)
+        os.makedirs(os.path.join(root, "canon"), exist_ok=True)
+        src = os.path.join(root, "canon", "dv-render-butterfly.js")
+        open(src, "w").write("engine v1")
+        combos = {}
+        for t in ("mono", "legacy", "console", "supercharge"):
+            for m in ("light", "dark"):
+                combos["%s/%s" % (t, m)] = {
+                    "pageerrors": 0, "console_errors": 0,
+                    "figures": {fid: {"dtype": dtype, "marks": 12, "table_rows": 6,
+                                      "dv004_px": px, "dv004_note": "bite fixture"}}}
+        rec = {"chromium": "bite", "driven": "2026-09-08T00:00:00Z",
+               "themes": ["mono", "legacy", "console", "supercharge"], "modes": ["light", "dark"],
+               "pages": {"butterfly-v.html": {"sources": {"canon/dv-render-butterfly.js": _sha256(src)},
+                                              "combos": combos}}}
+        rpath = os.path.join(root, "_receipts.json")
+        json.dump(rec, open(rpath, "w"), indent=1, sort_keys=True)
+        return {"path": os.path.join(root, "Chart-butterfly-v.reference.html"),
+                "html": ENGINE_HTML, "receipts": rpath, "root": root, "_src": src}
+
+    ENGINE_BFLY = ('<figure class="dv" data-dv-type="butterfly-v" data-domain-min="0">'
+                   '<svg class="dv-svg" viewBox="0 0 300 260"></svg>'
+                   '<table><tr><th>A</th><td>10</td></tr><tr><th>B</th><td>20</td></tr></table></figure>')
+    cases.append(("★ #260 recorded dv-004 figure BELOW 2px is BLOCKING outside donut/pie/stacked",
+                  ENGINE_BFLY, lambda B, A: has(B, "dv-004") and has(B, "1.500px")
+                  and has(B, "whatever the dtype"), _bite_recorded("bfly-red", 1.5)))
+    cases.append(("★ #260 recorded dv-004 figure at 2.200px PASSES and says so",
+                  ENGINE_BFLY, lambda B, A: not has(B, "dv-004") and has(A, "2.200px"),
+                  _bite_recorded("bfly-green", 2.2)))
+    cases.append(("★ #260 a receipt that measures NOTHING (dv004_px null) invents no rule",
+                  ENGINE_BFLY, lambda B, A: not has(B, "dv-004") and not has(A, "dv-004"),
+                  _bite_recorded("bfly-null", None)))
+
+    ok = bool(_map_ok)
     for case in cases:
         name, fig, pred = case[0], case[1], case[2]
         fileinfo = case[3] if len(case) > 3 else None

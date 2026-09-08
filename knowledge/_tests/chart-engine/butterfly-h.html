@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-butterfly (horizontal) — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, mirrored-horizontal half (s259-D1 fast follower, #260
+  lane F4). Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same
+  obligations. Its sibling knowledge/_tests/chart-engine/butterfly-v.html drives the OTHER
+  orientation registered by the SAME partial.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the
+  `.cn-chart-butterfly-h` namespace wrapper (drop it and the svg takes no size, bars never
+  animate and the tip is unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored
+  `<table class="dv-table">` as the JS-off spine, and an inline DATA object drawn by
+  `dvRender(figure, spec)`.
+
+  ⛔ SCRIPT ORDER IS LOAD-BEARING and is why the tags below are not in registry order. dv-legend's
+  rec() caches every mark ONCE at parse time, so it must load AFTER the dvRender() bootstrap or it
+  initialises against an empty canvas. Measured at #259 on the donut; inherited here, not re-learned.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load, on hover, on resize and after the filter;
+    2. 2 wings × n categories of rects, every one carrying data-fx AND data-fw AND data-tip —
+       the fit grammar, not baked pixels;
+    3. the two baselines exist, sit either side of the plot centre, and the CENTRE GUTTER between
+       them is ≥2px (dv-004 has nothing tighter to measure on this orientation — the wings never
+       touch) and holds every category label;
+    4. adjacent category ROWS are separated by real geometry (the 28% band gutter);
+    5. the tooltip (#dvTip.on) appears on hover of a mark, with that mark's own value;
+    6. the CATEGORY FILTER re-renders (rule 14) and the mark count changes with it;
+    7. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    8. every fill resolves to a non-empty computed colour, and the two wings resolve to the TWO
+       DV-D09 colours (data/series/1 and data/series/3), never one;
+    9. RESIZE: the cartesian assertion — the figure re-flows, the viewBox tracks the width, the
+       gutter stays proportional and the tick text does NOT scale (DV-D02).
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-butterfly-h. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-butterfly-h{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-butterfly — horizontal, driven test page</h1>
+  <p class="lede">Two mirrored wings either side of a shared centre gutter, one engine, one DATA
+     object. Untick a line of business and the figure, its table and its accessible name all
+     re-render from the same numbers.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — lines of business in the chart</legend>
+  </fieldset>
+
+  <!-- ============ BUTTERFLY-H — mirrored horizontal, two series ============ -->
+  <div class="cn-chart-butterfly-h">
+  <figure class="dv dv-animate" data-dv-type="butterfly-h" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="bh-h" id="fig-butterfly-h">
+    <figcaption id="bh-h" class="sr-only">Business volumes by line, 2025 versus 2026, thousands</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Cards led both years, Wealth lagged both</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="bh-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="bh-tbl" role="region" aria-label="Business volumes by line, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Business volumes by line, 2025 versus 2026, thousands</caption>
+              <thead><tr><th scope="col">Line</th><th scope="col">2025</th><th scope="col">2026</th></tr></thead>
+              <tbody><tr><th scope="row">Retail</th><td>72</td><td>88</td></tr><tr><th scope="row">Commercial</th><td>45</td><td>61</td></tr><tr><th scope="row">Wealth</th><td>30</td><td>25</td></tr><tr><th scope="row">Cards</th><td>90</td><td>95</td></tr><tr><th scope="row">Mortgages</th><td>58</td><td>40</td></tr><tr><th scope="row">Insurance</th><td>20</td><td>33</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="60" data-pr="60" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group"
+           aria-label="Business volumes by line, 2025 versus 2026, thousands."></svg>
+    </div></div>
+    <ul class="dv-leg center t-cm-chart-label" id="bh-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">
+      <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide 2025" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate 2025"><span class="dv-leg-name">2025</span></button></li>
+      <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide 2026" style="--sc:var(--data-series-3)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate 2026"><span class="dv-leg-name">2026</span></button></li>
+      <button type="button" class="dv-leg-reset" disabled>Reset</button>
+      <li class="dv-sr" id="bh-live" role="status" aria-live="polite"></li>
+    </ul>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-butterfly.js"></script>
+<script>
+/* THE DATA and the call that draws it — the shape a generated page copies. */
+var CATS = ['Retail', 'Commercial', 'Wealth', 'Cards', 'Mortgages', 'Insurance'];
+var Y25  = [72, 45, 30, 90, 58, 20];
+var Y26  = [88, 61, 25, 95, 40, 33];
+var OFF = {};        /* the filter's state — category name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < CATS.length; i++) { if (!OFF[CATS[i]]) { ix.push(i); } }
+  return ix;
+}
+function draw() {
+  var ix = keep();
+  dvRender(document.getElementById('fig-butterfly-h'), {
+    type: 'butterfly-h',
+    categories: ix.map(function (i) { return CATS[i]; }),
+    series: [{ name: '2025', values: ix.map(function (i) { return Y25[i]; }) },
+             { name: '2026', values: ix.map(function (i) { return Y26[i]; }) }],
+    categoryLabel: 'Line',
+    caption: 'Business volumes by line, 2025 versus 2026, thousands'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  CATS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+</script>
+<!-- BELOW the bootstrap on purpose — dv-legend initialises at parse time against the marks the
+     engine has just drawn. See the header note. -->
+<script src="../../canon/dv-legend.js"></script>
+<script>window.__dvTestReady = true;</script>
+</body>
+</html>

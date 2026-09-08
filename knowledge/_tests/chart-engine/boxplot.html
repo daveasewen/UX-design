@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="mono">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-render + dv-render-boxplot — driven test page</title>
+<!--
+  THE RECEIPT rule 18 NEVER COMMITTED, statistical half (s259-D1 fast follower, #260 boxplot lane).
+  Modelled on knowledge/_tests/chart-engine/bar.html — same loading pattern, same obligations.
+
+  WHAT THIS IS. A page built the way a generated page is built — canon.css, the `.cn-chart-boxplot`
+  namespace wrapper (drop it and the svg takes no size, the box has no fill and the tip is
+  unstyled), a `figure.dv` with an EMPTY `svg.dv-svg.dv-fit`, an authored `<table class="dv-table">`
+  as the JS-off spine, and an inline DATA object drawn by `dvRender(figure, spec)`.
+
+  THE FIVE-NUMBER SUMMARY IS FIVE SERIES. s249-D4's spec carries one value per category per
+  series, so `[Minimum, Q1, Median, Q3, Maximum]` in that ORDER is the whole box plot with no new
+  spec field — and the core's own writeTable then emits the five-number-summary table the baked
+  snippet used to author by hand. A sixth series is an OUTLIER CANDIDATE: a value inside the
+  whiskers is not an outlier and is not drawn, which is how a ragged outlier list survives a
+  rectangular spec.
+
+  ⛔ dv-fit STAYS ON. A box plot is CARTESIAN (DV-D02), the inverse of the donut page's rule:
+  `_validate_dataviz.py` makes a cartesian plot MISSING dv-fit blocking. Every mark is therefore
+  authored in the fit grammar and the resize assertion below is that the plot COMPRESSES.
+
+  WHY <script src> AND NOT INLINE COPIES. A reference SNIPPET must be self-contained; a TEST must
+  fail when the SOURCE breaks, not when a copy of it goes stale. These three tags load
+  `knowledge/canon/*.js` directly. The injected copies are proven identical by
+  `gen_component_partials.py --check`.
+
+  WHAT IT DRIVES (assert these, in every theme × mode):
+    1. zero page errors on load;
+    2. one box per category, each carrying data-fx AND data-fw — the fit grammar, not baked px;
+    3. whiskers, caps and the median line exist and sit in the right order (max >= Q3 >= median
+       >= Q1 >= min, read off the DRAWN y coordinates, not off the spec);
+    4. the tooltip (#dvTip.on) appears on hover of a box, with that box's own median;
+    5. the CATEGORY FILTER re-renders (rule 14) and the box count changes with it;
+    6. the <table> spine row count follows the filtered spec — the a11y answer is never stale;
+    7. every box fill resolves to a non-empty computed colour (no dead var());
+    8. outliers are drawn ONLY where the value escapes the whiskers, and each carries a 24px hit
+       circle over its 5.5px glyph (s116-D1);
+    9. RESIZE: the plot COMPRESSES — the box x positions move and the boxes stay ≥2px apart
+       (the cartesian assertion, the inverse of the donut page's).
+-->
+<link rel="stylesheet" href="../../canon/type.css">
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* Page furniture only — the CHART is styled entirely by canon.css inside .cn-chart-boxplot. */
+  body{margin:0; padding:24px; background:var(--page); color:var(--ink);
+       font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;}
+  h1{font-size:18px; font-weight:500; margin:0 0 4px;}
+  p.lede{margin:0 0 20px; font-size:13px; opacity:.7;}
+  fieldset{border:1px solid var(--line); margin:0 0 24px; padding:12px 16px;}
+  legend{font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  fieldset label{display:inline-flex; align-items:center; gap:6px; margin:0 16px 0 0; font-size:13px;}
+  .cn-chart-boxplot{margin:0 0 40px;}
+</style>
+</head>
+<body data-theme="light" data-surface="page">
+
+  <h1>dv-render-boxplot — driven test page</h1>
+  <p class="lede">Two cartesian canvases, one engine, one DATA object. Untick a team and both
+     figures re-render from the same numbers, table included.</p>
+
+  <fieldset id="filter">
+    <legend>Filter — teams in the distribution</legend>
+  </fieldset>
+
+  <!-- ============ 1 · BOX PLOT with outliers ============ -->
+  <div class="cn-chart-boxplot">
+  <figure class="dv dv-animate" data-dv-type="boxplot" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="b1-h" id="fig-boxplot">
+    <figcaption id="b1-h" class="sr-only">Score distribution by team, 0 to 100</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Team C carries the widest spread — and its lone standout</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="b1-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="b1-tbl" role="region" aria-label="Score distribution by team, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Score distribution by team, five-number summary, 0 to 100</caption>
+              <thead><tr><th scope="col">Team</th><th scope="col">Minimum</th><th scope="col">Q1</th><th scope="col">Median</th><th scope="col">Q3</th><th scope="col">Maximum</th><th scope="col">Outlier</th></tr></thead>
+              <tbody><tr><th scope="row">Team A</th><td>10</td><td>35</td><td>50</td><td>65</td><td>90</td><td>5</td></tr><tr><th scope="row">Team B</th><td>20</td><td>40</td><td>55</td><td>70</td><td>95</td><td>55</td></tr><tr><th scope="row">Team C</th><td>5</td><td>25</td><td>40</td><td>55</td><td>80</td><td>98</td></tr><tr><th scope="row">Team D</th><td>15</td><td>45</td><td>60</td><td>75</td><td>100</td><td>60</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Score distribution by team."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+  <!-- ============ 2 · BOX PLOT, no outlier series at all — the five-series minimum ============ -->
+  <div class="cn-chart-boxplot">
+  <figure class="dv dv-animate" data-dv-type="boxplot" data-domain-min="0" data-surface="page"
+          role="group" aria-labelledby="b2-h" id="fig-boxplot-plain">
+    <figcaption id="b2-h" class="sr-only">Score distribution by team, five-number summary only</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">The same distributions with no outlier series supplied</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <details class="dv-tbl">
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="b2-tbl"><span>View as table</span></summary>
+          <div class="dv-tablepanel" id="b2-tbl" role="region" aria-label="Score distribution by team, five-number summary, data table" tabindex="-1">
+            <table class="dv-table t-cm-legal">
+              <caption>Score distribution by team, five-number summary, 0 to 100</caption>
+              <thead><tr><th scope="col">Team</th><th scope="col">Minimum</th><th scope="col">Q1</th><th scope="col">Median</th><th scope="col">Q3</th><th scope="col">Maximum</th></tr></thead>
+              <tbody><tr><th scope="row">Team A</th><td>10</td><td>35</td><td>50</td><td>65</td><td>90</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30"
+           data-h-min="200" viewBox="0 0 580 260" role="group" aria-label="Score distribution by team, summary only."></svg>
+    </div></div>
+  </figure>
+  </div>
+
+<script src="../../canon/dv-behaviour.js"></script>
+<script src="../../canon/dv-render.js"></script>
+<script src="../../canon/dv-render-boxplot.js"></script>
+<script>
+/* THE DATA and the two calls that draw it — the shape a generated page copies.
+   FIVE series in a FIXED ORDER are the five-number summary; the sixth is the outlier candidate,
+   and Team B / Team D carry their own median there, which is inside the whiskers and therefore
+   draws nothing. That is the rule, not a placeholder trick: a point within [min, max] is not an
+   outlier. */
+var CATS = ['Team A', 'Team B', 'Team C', 'Team D'];
+var FIVE = {
+  Minimum:  [10, 20,  5, 15],
+  Q1:       [35, 40, 25, 45],
+  Median:   [50, 55, 40, 60],
+  Q3:       [65, 70, 55, 75],
+  Maximum:  [90, 95, 80, 100],
+  Outlier:  [ 5, 55, 98, 60]
+};
+var ORDER = ['Minimum', 'Q1', 'Median', 'Q3', 'Maximum'];
+var OFF = {};        /* the filter's state — category name -> excluded */
+
+function keep() {
+  var ix = [];
+  for (var i = 0; i < CATS.length; i++) { if (!OFF[CATS[i]]) { ix.push(i); } }
+  return ix;
+}
+function pick(name, ix) {
+  return ix.map(function (i) { return FIVE[name][i]; });
+}
+function draw() {
+  var ix = keep();
+  var cats = ix.map(function (i) { return CATS[i]; });
+  var five = ORDER.map(function (n) { return { name: n, values: pick(n, ix) }; });
+  dvRender(document.getElementById('fig-boxplot'), {
+    type: 'boxplot', categories: cats,
+    series: five.concat([{ name: 'Outlier', values: pick('Outlier', ix) }]),
+    categoryLabel: 'Team',
+    caption: 'Score distribution by team, five-number summary, 0 to 100'
+  });
+  dvRender(document.getElementById('fig-boxplot-plain'), {
+    type: 'boxplot', categories: cats, series: five,
+    categoryLabel: 'Team',
+    caption: 'Score distribution by team, five-number summary, 0 to 100'
+  });
+}
+
+/* ONE filter control, wired the rule-14 way: change state, rebuild the spec, call again. */
+(function () {
+  var fs = document.getElementById('filter');
+  CATS.forEach(function (c) {
+    var lab = document.createElement('label');
+    var box = document.createElement('input');
+    box.type = 'checkbox'; box.checked = true; box.value = c;
+    box.addEventListener('change', function () { OFF[c] = !box.checked; draw(); });
+    lab.appendChild(box);
+    lab.appendChild(document.createTextNode(c));
+    fs.appendChild(lab);
+  });
+}());
+
+draw();
+</script>
+<script>window.__dvTestReady = true;</script>
+</body>
+</html>

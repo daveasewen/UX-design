@@ -246,7 +246,9 @@
           "selector": "figure.dv",
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-scatter"
           ],
           "markup": [
             "dv-lockup-title",
@@ -287,7 +289,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-butterfly"
           ],
           "markup": [
             "dv-lockup-title",
@@ -309,7 +313,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-butterfly"
           ],
           "markup": [
             "dv-lockup-title",
@@ -328,7 +334,9 @@
             ]
           },
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-histogram"
           ],
           "markup": [
             "dv-lockup-title",
@@ -348,7 +356,9 @@
             ]
           },
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-boxplot"
           ],
           "markup": [
             "dv-lockup-title",
@@ -367,7 +377,9 @@
             ]
           },
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-bullet"
           ],
           "markup": [
             "dv-lockup-title",
@@ -387,7 +399,9 @@
             ]
           },
           "consumes": [
-            "dv-behaviour"
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-candlestick"
           ],
           "markup": [
             "dv-lockup-title",
@@ -414,7 +428,9 @@
           },
           "consumes": [
             "dv-behaviour",
-            "dv-legend"
+            "dv-legend",
+            "dv-render",
+            "dv-render-donut"
           ],
           "markup": [
             "dv-lockup-title",
@@ -589,7 +605,77 @@
           },
           "$manifestBinds": {},
           "$description": "dv-render TYPE PARTIAL — combo (composes column + line). Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
-        }
+        },
+          "dv-render-scatter": {
+            "source": "canon/dv-render-scatter.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — scatter. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.scatter and draws MARKS only from ctx; the core (dv-render) owns the value scale, the y furniture, the table spine and the resize dispatch. TWO things this partial owns that no sibling does: (1) a NUMERIC X AXIS — every other type reads spec.categories as a band, but a scatter's x is a measurement, so this partial parses a number out of each category and scales x by it (falling back to band centres when any category is not a number), and emits the second axis's gridlines and tick labels itself off dvRender.util.nice; the missing spec field is filed as a core request in knowledge/_tmp/260/scatter.core-requests.md. (2) SHAPE as the non-colour channel (§04.3) — circle/square/diamond/triangle by series index, each `.dv-mk` so the fit moves the glyph instead of stretching it, each wrapped in `g.dv-marker[data-fx][data-x0]` because fitOne branches on TAG and has no circle branch (the #72 discharge shape), each with an invisible r=12 `circle.dv-hit` carrying the interactive attributes (AA 2.5.8 / s116-D1: a 24px target around a 9px mark). requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          },
+          "dv-render-histogram": {
+            "source": "canon/dv-render-histogram.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — histogram. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.histogram and draws MARKS only from ctx; the core (dv-render) owns the value scale, the axis furniture, the table spine and the resize dispatch. WHAT MAKES IT NOT `column`: the bins are CONTIGUOUS — band = plotW / bins and the mark IS the whole band — because the variable underneath is continuous and a gutter there would assert a range with no data in it. The 2px separation of adjacent filled blocks is therefore met by the page-coloured stroke canon.css already puts on `:where(.cn-chart-histogram) rect.dv-series` (#96-D3), NOT by geometry; cutting a geometric gap would destroy the contiguity the type exists to show, and _validate_dataviz scopes dv-004 to donut/pie/stacked and never reads this type. Two loud refusals: a SECOND series throws (a histogram is one distribution — grouped-column and stacked-column already exist for more) and a NEGATIVE frequency throws (dv-bar-009: a count below zero is a data defect, and drawing it downward would hide one). Bin labels thin themselves when the band cannot afford them, keeping the first and, where it does not collide, the last. requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          },
+          "dv-render-boxplot": {
+            "source": "canon/dv-render-boxplot.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": []
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — boxplot. Built #260 (s259-D1 fast follower). Registers dvRender.types.boxplot and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. THE FIVE-NUMBER SUMMARY IS FIVE SERIES IN ORDER (Minimum, Q1, Median, Q3, Maximum) and any further series is an OUTLIER CANDIDATE, drawn only where the value escapes the whiskers — the s249-D4 spec is not extended. No declaration contract: a composing consumer consumes it without declaring itself."
+          },
+          "dv-render-bullet": {
+            "source": "canon/dv-render-bullet.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The BULLET TYPE PARTIAL for dv-render — one KPI per ROW: a measure bar read against a comparative target marker, with the qualitative performance bands behind both. Registered #260 as the first of the s259-D1 fast-follower types. The value axis runs ACROSS x (fn.axis = \"x\", the horizontal-bar arm of the core's furniture switch) and fn.domain returns the RANGE TOP rather than the largest measure, because a bullet is read against its bands — the one thing the core cannot infer from `series` alone. Enacts #96-D1 ② (row pitch 60px, the RULED constant, CAPPED and never stretched, so filtering a row out leaves the survivors' bands identical), #96-D1 ③ (the canon greys --dv-range-1/2/3, minted nothing, and a fourth band throws because a fourth token does not exist), the brief-ruled bindings (measure = data/series/1, marker = ink) and the bands→bar→marker z-order, which in SVG is DOM order and nothing else. Carries ONE spec extension, `ranges`, declared and validated by the partial itself — a bullet without its qualitative bands is a horizontal bar. ⚠ Discards the core's cartesian furniture (ctx.out.length = 0, the donut/sparkline work-around) and emits the one piece a bullet owns, the vertical zero baseline; core request filed at knowledge/_tmp/260/bullet.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes, so a consumer that carries a type partial has said which type it draws."
+          },
+          "dv-render-candlestick": {
+            "source": "canon/dv-render-candlestick.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The CANDLESTICK TYPE PARTIAL for dv-render — open/high/low/close per period, one candle per session. Registered #260 as the second of the s259-D1 fast-follower types. OHLC is expressed as FOUR NAMED SERIES IN ORDER (open, high, low, close), which is the s249-D4 spec UNEXTENDED and is why the core's own writeTable emits exactly the columns the promoted snippet baked by hand — ds-027 (Dave, #100) makes that table THE accessibility answer, so it must not be able to drift from the chart. Enacts ds-027's SOLID TWO-STATE encoding (colour is close-vs-open and nothing else, both directions filled, --data-delta-gain/--data-delta-loss consumed verbatim; the #96-D1 ① hollow-up channel stays retired), the OHLC clause only this type can enforce (a high below its own open/close/low, or a low above them, THROWS by name), DV-D02 (every candle rides a g[data-fx][data-x0] that dv-behaviour TRANSLATES, so the 1px wick and the body width survive every container width) and DEF-003 (entry motion is CSS). ⚠ Computes its OWN domain and re-emits its OWN furniture: dv-render.js clamps `if (lo > 0) { lo = 0; }` AFTER calling fn.domain (dv-bar-009's zero baseline, right for a bar, catastrophic for a price series), so fn.domain cannot escape it — the same obstacle dv-render-line reported and dv-render-sparkline worked around. Core request filed at knowledge/_tmp/260/candlestick.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes."
+          },
+          "dv-render-butterfly": {
+            "source": "canon/dv-render-butterfly.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The BUTTERFLY TYPE PARTIAL for dv-render — butterfly-h (mirrored horizontal wings either side of a shared centre gutter) and butterfly-v (mirrored columns above and below one shared baseline), registered #260 as the s259-D1 fast follower. ONE partial for BOTH orientations, on dv-render-bar's argument: the two share the symmetric domain, the pair validation, the DV-D09 fill rule, the mark writer and the wing arithmetic, and only the axis assignment differs — writing them twice is how the two copies drift. The DOMAIN is symmetric ([-M, +M] over the largest magnitude in either wing), which is what makes both wings share ONE scale; the mirror is the SECOND SERIES, not a sign, so a negative inside a wing THROWS, named, and so does a third series. ⛔ It DISCARDS the core's cartesian furniture (`ctx.out.length = 0`, the dv-render-donut move): both reference implementations draw no gridlines and no value-axis ticks by ds-020 declaration, and on a symmetric domain a tick would read \"-40\" under a wing whose value is 40 — a misstatement, not merely a redundancy. See knowledge/_tmp/260/butterfly.core-requests.md. Enacts dv-004 (the two butterfly-v wings MEET at the baseline — the pre-engine bake had 0.0px there and the engine cuts half a GAP off each wing, driven at 2.200px in 8 of 8 theme x mode combinations), s116-D1 (24px thickness floor where the band can pay for it), DV-D09 (the two wings bind data/series/1 and data/series/3, the pair both #token-manifests already declare) and DV-D02 (every x is data-fx / data-fw, INCLUDING the centre gutter, which is a FRACTION of the plot — 0.196, the reference's own 90/460 — precisely so the fit can re-derive it). §04.3 on-chart letter keys are deliberately OMITTED: direction is already the non-colour channel, receipted as a delta from the bar contract since #95. requires `data-dv-type=\"` — the figure must say which butterfly it is; the engine reads the type off the spec, the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          }
       },
       "$markup": {
         "dv-lockup-title": {

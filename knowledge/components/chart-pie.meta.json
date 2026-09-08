@@ -87,6 +87,17 @@
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-donut.reference.html"
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-donut"
+    ],
+    "fallback": "With CSS on and JS off the spider/legend canvas renders as an EMPTY <svg> and no pie is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the five categories, their pounds and their percentage shares open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. The DIRECT-LABEL canvas stays baked, so a complete pie, its leaders and its in-place labels all render with JS off. Lost with JS off: the value popover, the DV-D11 legend filter/isolate, the value ⇄ percent toggle and Copy CSV.",
+    "$note": "Typed #260 (s259-D1 fast follower, pie lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; the wedges are drawn through its type registry by dv-render-donut.js, which is named in `partial`. THERE IS NO dv-render-pie: dv-render-donut registers BOTH `donut` and `pie` off one ring(ctx, hole) routine (a pie is that ring with ri = 0), so Chart-pie COMPOSES the donut partial rather than duplicating the trigonometry — the same reading _validate_dataviz.py's ENGINE_TEST_PAGE already commits to (\"pie is the ri=0 arm of the same partial\", mapping this snippet's driven receipt to _tests/chart-engine/donut.html). `partial` lists ALL FOUR registered AUTO-BEHAVIOUR names the snippet carries, per the schema's own wording and the chart-donut precedent."
+  },
   "slots": {
     "slices": {
       "accepts": {

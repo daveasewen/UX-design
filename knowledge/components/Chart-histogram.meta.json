@@ -25,7 +25,7 @@
     }
   ],
   "props": [
-    { "name": "bins", "type": "array", "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. DERIVED from Chart-bar's column geometry — see the snippet header for the exact arithmetic (8 bins, 522px plot area, 65.25px/bin)." },
+    { "name": "bins", "type": "array", "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. ★ #260: the arithmetic is no longer authored — dv-render-histogram derives band = plotW / bins at the RENDERED width and the mark is the whole band, so contiguity holds at every width instead of at the one the specimen was baked at (the old note's 8 bins / 522px plot / 65.25px per bin was that one width). Driven: bins tile the plot to within 0.1px at 1132px and at 712px." },
     { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)." },
     { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
   ],
@@ -83,6 +83,16 @@
     "source": "code",
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-bar.reference.html, knowledge/snippets/Chart-line.reference.html"
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-histogram"
+    ],
+    "fallback": "With CSS on and JS off the histogram canvas renders as an EMPTY <svg> box and no bins are drawn — dvRender is what fills them. The data is still fully available and still labelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine), and the static `.dv-leg-static` key is plain markup that needs no script. The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow, and Copy CSV.",
+    "$note": "Typed #260 (s259-D1, the fast follower to the #259 chart engine). `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-histogram.js is reached through its type registry and is named in `partial`, where the registered AUTO-BEHAVIOUR names belong. This component consumes NO legend source: one distribution has nothing to filter, so its key is the static swatch, not the DV-D11 model."
   },
   "slots": {
     "bins": {

@@ -76,6 +76,16 @@
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-scatter.reference.html"
   },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-scatter"
+    ],
+    "fallback": "With CSS on and JS off both scatter canvases render as EMPTY <svg> boxes and no points are drawn — dvRender is what fills them. The data is still fully available and still labelled: each figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens and reads with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the focus tip on the 24px hit targets, the responsive fit reflow, and the legend's show/hide and isolate on the segment chart.",
+    "$note": "Typed #260 (s259-D1, the fast follower to the #259 chart engine). `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-scatter.js is reached through its type registry and is named in `partial`, where the registered AUTO-BEHAVIOUR names belong. dv-legend is deliberately NOT listed, following chart-bar's precedent at #259: it is injected and consumed (the segment chart's legend runs on it) but the s245-D2 reading of `partial` is the behaviour ADDRESS this component's own script chain needs. ⚠ Chart-bar's lane flagged that reading as ruling-shaped and it is still open — this snippet carries FOUR behaviour blocks and `partial` names three."
+  },
   "slots": {
     "series": {
       "accepts": {
