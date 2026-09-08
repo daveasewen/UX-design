@@ -221,6 +221,39 @@ GATE_DATA_CANDIDATES = [
     "knowledge/roles.json",
     "knowledge/shapes.json",
     "knowledge/when-fields.json",
+    # ⛔ #260 R2 — THE DRIVEN-RECEIPT EVIDENCE, and why all EIGHT paths are one entry, not one.
+    # s260-D3 (Dave, 2026-09-08) made `_validate_dataviz.py`'s dv-004 read a COMMITTED driven
+    # receipt for every ENGINE-DRAWN chart, and ruled the route "never skipped". The receipt is
+    # `knowledge/_tests/chart-engine/_receipts.json`; no group's `match` claims `knowledge/_tests/`,
+    # so at v1.0.8's first manifest it was unclaimed, the gate went RED inside the pack and GREEN
+    # in the full tree, the differential arm called it REPO-BOUND, and A GATE THAT SHIPPED IN
+    # v1.0.7 SILENTLY LEFT THE CUT — the exact #223 shape [[gate-cannot-pass-in-one-environment]].
+    #
+    # THE SIX TEST PAGES RIDE TOO, and this is not generosity. Each page's receipt records a
+    # `sources` map of sha256s that `driven_dv004()` re-hashes ON DISK before it will grade
+    # anything, and the FIRST entry in every one of those maps is the test page itself
+    # (`knowledge/_tests/chart-engine/<page>.html`). Ship the receipt without the pages and the
+    # freshness check reads "file is missing" and the gate is BLOCKING-red in the pack for a
+    # reason the designer cannot fix. The other `sources` rows are `knowledge/canon/*` and are
+    # already owned by engine-canon, and the gate resolves every row against
+    # `os.path.dirname(HERE)` — the PACK ROOT inside the pack — so the same receipt is fresh in
+    # both trees with no path rule changed. 116 KB, committed, already evidence.
+    #
+    # AND THE DRIVER, by the rule DOOR_COMPANIONS already states in prose: a packed tool travels
+    # with the thing that re-makes its input. `_drive_chart_engine.py` is the remedy dv-004 names
+    # IN ITS OWN FAILURE TEXT ("Re-drive: python3 knowledge/_drive_chart_engine.py"), and the
+    # moment a designer edits an engine partial the shipped receipt goes stale by design. A pack
+    # that ships the red without the remedy hands them a dead end. (It is not routed through
+    # DOOR_COMPANIONS because that closure fills a companion BESIDE a door that landed elsewhere;
+    # here door and driver both land in `knowledge/`, so the seed would be a no-op copy.)
+    "knowledge/_tests/chart-engine/_receipts.json",
+    "knowledge/_tests/chart-engine/bar.html",
+    "knowledge/_tests/chart-engine/combo.html",
+    "knowledge/_tests/chart-engine/donut.html",
+    "knowledge/_tests/chart-engine/line.html",
+    "knowledge/_tests/chart-engine/sparkline.html",
+    "knowledge/_tests/chart-engine/stacked-area.html",
+    "knowledge/_drive_chart_engine.py",
 ]
 
 # ---------------------------------------------------------------------------------------------

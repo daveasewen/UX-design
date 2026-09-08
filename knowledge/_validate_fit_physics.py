@@ -27,6 +27,9 @@ does not test the clause (memory: mutation-tests-the-clause-not-the-feature).
 import sys, os, re, json, argparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import _could_not_ask as cna  # noqa: E402 - after the path insert, by necessity
 SNIP = os.path.join(HERE, 'snippets')
 OUT = os.path.join(ROOT, 'outputs', 'fit-physics')
 TILE_H = 438
@@ -156,11 +159,58 @@ def checks_for(A, B, live):
         '19 0 page errors': not A['errs'] and not B['errs'],
     }
 
+class FitPhysicsUnreachable(Exception):
+    """The instrument, not the CSS. Carried to `_could_not_ask.EXIT` (77) by `__main__`."""
+
+
+def _launch_chromium(p):
+    """⛔ #260 R2 — THE THIRD STATE, for the gate that never got the #223 treatment.
+
+    #223 taught `_validate_state_contrast.py`, `_validate_hit_area.py` and
+    `_validate_descender_computed.py` that "playwright IMPORTS but its BROWSER BINARIES are
+    absent" is a REFUSAL, not a verdict. This gate is younger (#249) and was written with a bare
+    `p.chromium.launch(...)`, so on a box with playwright but no chromium it died with an
+    unhandled traceback — and the release probe's classifier reads a traceback as
+    `REPO-BOUND (crashed)`. Measured at the v1.0.8 manifest: the gate flipped
+    `NEEDS-DEP(playwright)` at v1.0.7 → `REPO-BOUND` and SILENTLY LEFT THE SHIP SET, which is
+    word-for-word the consequence #223 already recorded and fixed for its three siblings
+    [[gate-cannot-pass-in-one-environment]].
+
+    ⚠ Keyed on the LAUNCH ACTUALLY FAILING, never on a path-glob guess about where binaries ought
+    to live [[feedback-measuring-tool-must-not-guess]]: install chromium here and the refusal
+    disappears on this very machine. `except Exception` is deliberate and scoped to the single
+    `launch()` call — the only thing attempted there is STARTING a browser, so any failure of it
+    is a fact about this box's instrument, never a verdict about the geometry. NOTHING about the
+    19 checks is softened: with a browser present this function is `launch()` and no more.
+    """
+    try:
+        return p.chromium.launch(args=['--no-sandbox'])
+    except Exception as e:
+        msg = str(e)
+        absent = "Executable doesn't exist" in msg or "playwright install" in msg
+        what = ("playwright is installed but its BROWSER BINARIES are not — the chromium "
+                "executable it drives was never downloaded" if absent else
+                "chromium would not launch on this box")
+        # ONE LINE, always: `_could_not_ask.reason_in()` reads the FIRST marked line and nothing
+        # after it, and playwright's launch error carries a multi-line ASCII-box banner.
+        detail = "%s: %s" % (type(e).__name__,
+                             " ".join((msg.splitlines() or [""])[0].split())[:240])
+        raise FitPhysicsUnreachable(
+            "%s (%s) — this gate measures rendered geometry and cannot be proven without a "
+            "browser; install one with `playwright install chromium`" % (what, detail))
+
+
 def run(targets, mutate, json_out):
-    from playwright.sync_api import sync_playwright
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError as e:
+        raise FitPhysicsUnreachable(
+            "the 'playwright' module is not installed (%s) — this gate measures rendered geometry "
+            "and cannot be proven without it; run `pip install playwright && playwright install "
+            "chromium`" % e)
     report = {}; total_fail = 0
     with sync_playwright() as p:
-        br = p.chromium.launch(args=['--no-sandbox'])
+        br = _launch_chromium(p)
         for t in targets:
             path, raw = build_harness(t, mutate)
             per_w = {}
@@ -202,4 +252,10 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--mutate', choices=sorted(MUTATIONS)); ap.add_argument('--json'); ap.add_argument('--targets', nargs='*')
     a = ap.parse_args()
-    sys.exit(run(a.targets or TARGETS, a.mutate, a.json))
+    try:
+        sys.exit(run(a.targets or TARGETS, a.mutate, a.json))
+    except FitPhysicsUnreachable as e:
+        # ⛔ A REFUSAL IS NOT A VERDICT (s223-D5). Exit 77 + a `COULD-NOT-ASK:` first line, so a
+        # survey, CI, and the release-pack probe all bucket this as the third verdict instead of
+        # reading a missing browser as a geometry failure — or, worse, as a crash.
+        sys.exit(cna.refuse("_validate_fit_physics.py", str(e)))
