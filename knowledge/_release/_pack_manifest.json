@@ -4,8 +4,8 @@
     "version": "v1.0.6",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version moves WITH the pack (s225-D3): every Gumdrop version line in the cut is stamped from this one, so the pack cannot disagree with itself about what it carries."
   },
-  "commit": "f6a834064ba3433309a13562b349603de82e87b7",
-  "commit_date": "2026-09-03T21:23:07+01:00",
+  "commit": "b15b7d98ba4112b430cfa3e3388ab870d094c8f3",
+  "commit_date": "2026-09-07T22:14:18+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,7 +101,7 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 10 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "f6a834064ba3433309a13562b349603de82e87b7",
+    "commit": "b15b7d98ba4112b430cfa3e3388ab870d094c8f3",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -144,6 +144,10 @@
         "why": "runs, but its verdict is about GOOD-MORNING.md, which the pack does not ship"
       },
       {
+        "gate": "_validate_roles_resolve.py",
+        "why": "runs, but its verdict is about knowledge/roles.json, which the pack does not ship"
+      },
+      {
         "gate": "_validate_standing_instructions.py",
         "why": "crashed: AssertionError: must discover the git runbook"
       },
@@ -156,7 +160,7 @@
   },
   "groups": [
     {
-      "bytes": 1193490,
+      "bytes": 1206296,
       "files": 44,
       "group": "engine-canon",
       "key": "engine-canon.tokens",
@@ -210,7 +214,7 @@
       "title": "Tokens"
     },
     {
-      "bytes": 1483238,
+      "bytes": 1509821,
       "files": 140,
       "group": "engine-canon",
       "key": "engine-canon.components",
@@ -360,7 +364,7 @@
       "title": "Component contracts"
     },
     {
-      "bytes": 4039735,
+      "bytes": 4162919,
       "files": 138,
       "group": "engine-canon",
       "key": "engine-canon.snippets",
@@ -508,14 +512,15 @@
       "title": "Reference markup"
     },
     {
-      "bytes": 2123354,
-      "files": 12,
+      "bytes": 2141841,
+      "files": 13,
       "group": "engine-canon",
       "key": "engine-canon.canon",
       "paths": [
         "knowledge/canon/_bindings-applied.json",
         "knowledge/canon/_type-bindings.json",
         "knowledge/canon/canon.css",
+        "knowledge/canon/dp08-anchor.js",
         "knowledge/canon/dv-behaviour.js",
         "knowledge/canon/dv-donut-sweep.js",
         "knowledge/canon/dv-legend.js",
@@ -530,7 +535,7 @@
       "title": "Canon CSS + its generators"
     },
     {
-      "bytes": 244923,
+      "bytes": 245909,
       "files": 46,
       "group": "engine-canon",
       "key": "engine-canon.compliance",
@@ -1396,7 +1401,7 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 1158949,
+      "bytes": 1208973,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
@@ -1404,11 +1409,11 @@
       ],
       "counts": {
         "empty_population": 4,
-        "needs_dep": 3,
-        "repo_bound": 9,
+        "needs_dep": 4,
+        "repo_bound": 10,
         "runnable": 40
       },
-      "files": 60,
+      "files": 61,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1445,6 +1450,7 @@
         "knowledge/_validate_descender_computed.py",
         "knowledge/_validate_dtcg.py",
         "knowledge/_validate_edge_extremity.py",
+        "knowledge/_validate_fit_physics.py",
         "knowledge/_validate_grid.py",
         "knowledge/_validate_help_gate.py",
         "knowledge/_validate_hidden_display.py",
@@ -1651,12 +1657,12 @@
           "gate": "_validate_descender_computed.py",
           "invocation": "",
           "population": "",
-          "selftest": "red",
+          "selftest": "crashed",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright install chromium"
+          "why": "playwright"
         },
         {
           "gate": "_validate_dtcg.py",
@@ -1684,6 +1690,17 @@
           "third_party": [],
           "verdict": "REPO-BOUND",
           "why": "refuses for notes/_claims, a repo resource the pack does not ship — not a dependency the designer can install"
+        },
+        {
+          "gate": "_validate_fit_physics.py",
+          "invocation": "",
+          "population": "",
+          "selftest": "none",
+          "third_party": [
+            "playwright"
+          ],
+          "verdict": "NEEDS-DEP",
+          "why": "playwright"
         },
         {
           "gate": "_validate_grid.py",
@@ -1716,12 +1733,12 @@
           "gate": "_validate_hit_area.py",
           "invocation": "--all",
           "population": "",
-          "selftest": "red",
+          "selftest": "crashed",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright install --with-deps chromium"
+          "why": "playwright"
         },
         {
           "gate": "_validate_icons.py",
@@ -1850,6 +1867,15 @@
           "why": "ran, verdict FAIL (exit 2) — a verdict is a run"
         },
         {
+          "gate": "_validate_roles_resolve.py",
+          "invocation": "",
+          "population": "",
+          "selftest": "green",
+          "third_party": [],
+          "verdict": "REPO-BOUND",
+          "why": "runs, but its verdict is about knowledge/roles.json, which the pack does not ship"
+        },
+        {
           "gate": "_validate_screen.py",
           "invocation": "",
           "population": "graded",
@@ -1882,12 +1908,12 @@
           "gate": "_validate_state_contrast.py",
           "invocation": "",
           "population": "",
-          "selftest": "red",
+          "selftest": "crashed",
           "third_party": [
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright install chromium"
+          "why": "playwright"
         },
         {
           "gate": "_validate_state_snap.py",
@@ -1978,7 +2004,7 @@
       "title": "Runbooks"
     },
     {
-      "bytes": 14322755,
+      "bytes": 14486958,
       "files": 289,
       "group": "library",
       "key": "library.showroom",
@@ -2649,19 +2675,19 @@
         "files": 10
       },
       "engine-canon": {
-        "bytes": 10809452,
-        "files": 1160
+        "bytes": 10991498,
+        "files": 1161
       },
       "gates": {
-        "bytes": 1158949,
-        "files": 60
+        "bytes": 1208973,
+        "files": 61
       },
       "gumdrop": {
         "bytes": 1992050,
         "files": 24
       },
       "library": {
-        "bytes": 28196934,
+        "bytes": 28361137,
         "files": 375
       },
       "memento-clean-cut": {
@@ -2677,10 +2703,10 @@
         "files": 7
       }
     },
-    "bytes": 42690401,
-    "files": 1667,
-    "pack_bytes": 42717058,
-    "pack_files": 1669
+    "bytes": 43086674,
+    "files": 1669,
+    "pack_bytes": 43113331,
+    "pack_files": 1671
   },
   "version": "v1.0.6"
 }
