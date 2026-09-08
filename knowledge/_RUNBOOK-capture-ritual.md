@@ -447,6 +447,13 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
        hand-over reserve must be a measurement before it may replace the 49,071 wrap term.
      - ⚠️ No gate parses this line yet — the consumer is the `s214-D4` staging check and the re-base
        sitting, both human-read. A `_capture_gate.py` guard is a priced candidate, not built.
+     - ⛔ **A STRAY'S PROVENANCE IS A SEAT LIMIT UNTIL IT IS SEARCHED** *(dream-11 P3(b), #256 — #247's
+       wrap sub published "`_tools/` … provenance unknown" 11 times across 7 surfaces while #246's own
+       chat names the directory, its build command and its purpose)*: a stray may be declared
+       **UNCOMMITTED** from any seat, but it may only be declared **UNKNOWN** after
+       `grep -rn "<path>"` over `notes/`, `_DECISION-HISTORY/` and the last two sessions' briefs
+       returns nothing; otherwise write **"provenance not established from this seat"** — the honest
+       form of a blind spot, never a claim about the world.
 
      ### ★ BANNER DISCIPLINE (`s214-D6` — the boot-reduction pair, half 1)
 

@@ -49,7 +49,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
-import os, re, sys, glob, importlib
+import os, re, sys, glob, importlib, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -131,11 +131,42 @@ def subject_file(name):
     """One home per subject. `name` is the screen's basename."""
     return os.path.join(GATE_DIR, re.sub(r"\.html?$", "", name) + ".md")
 
+def _untracked_subjects(files):
+    """Which of `files` does git not track? ([] when git cannot answer — DECLARED, not faked.)
+
+    dream-11 P4(b): `_SCREEN-GATE.md` is a TRACKED build output derived from `_screen-gate/`.
+    If a member of that directory is untracked, this machine writes N rows and a fresh clone
+    writes N-1 — the index is green in the only place that checks it and stale in the only
+    place that is read. So the build refuses rather than inscribing local-only state.
+    """
+    try:
+        if subprocess.run(["git", "-C", HERE, "rev-parse", "--is-inside-work-tree"],
+                          capture_output=True).returncode != 0:
+            return []                     # not a clone — the question is UNDECIDABLE here
+        out = subprocess.run(["git", "-C", HERE, "ls-files", "--", *files],
+                             capture_output=True, text=True)
+        if out.returncode != 0:
+            return []
+        tracked = {os.path.normpath(os.path.join(HERE, ln)) for ln in out.stdout.splitlines() if ln}
+        return [f for f in files if os.path.normpath(f) not in tracked]
+    except (OSError, FileNotFoundError):
+        return []                         # no git binary — say nothing rather than guess
+
 def write_index():
     """Rebuild _SCREEN-GATE.md from what is ON DISK — the whole population, not this run's."""
     rows = ["# Composed-screen gate — index\n",
             "One file per subject under `_screen-gate/`; this index is rebuilt from that",
             "directory on every run, so gating one screen never erases another (#230 T5).\n"]
+    untracked = _untracked_subjects(sorted(glob.glob(os.path.join(GATE_DIR, "*.md"))))
+    if untracked:
+        raise SystemExit(
+            "⛔ SCREEN-GATE INDEX REFUSED — a generated index may not be built from state a "
+            "clone cannot see.\n"
+            + "".join(f"   untracked subject: {os.path.relpath(f, HERE)}\n" for f in untracked)
+            + "   `_SCREEN-GATE.md` is tracked; these are not, so this machine would write "
+              "more rows than a fresh clone.\n"
+              "   Commit the subject, or move it out of `_screen-gate/` if it is a draft. "
+              "(dream-11 P4(b))")
     for f in sorted(glob.glob(os.path.join(GATE_DIR, "*.md"))):
         head = ""
         for line in open(f, encoding="utf-8"):

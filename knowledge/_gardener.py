@@ -66,6 +66,7 @@ CLI
     _gardener.py --show                   # print the current queue receipt
     _gardener.py --refresh                # B3 REFRESH ARM: re-probe + restamp the sidecar grades
     _gardener.py --refresh --dry-run      # grade, print the receipt, write nothing
+    _gardener.py --refresh --accept-population-change   # say a SHRUNKEN population is INTENDED
     _gardener.py --selftest-grades        # the B3 mutation tests (grades + alert + fence)
     _gardener.py --grade-decision ID --changed yes|no --note "..."
                                           # log ONE retrieval decision (the return-with-numbers
@@ -142,6 +143,14 @@ GRADE_SCHEMA_ID = "memory-grades/0-PROVISIONAL"
 # claim no machine can decide is NEVER silently called FRESH [[measuring-tool-must-not-guess]].
 GRADE_VOCAB = ("FRESH", "AGING", "STALE", "UNPROVABLE")
 GRADE_AGING_DAYS = 30        # PROVISIONAL: probe passes but the claim itself hasn't been touched
+# ── POPULATION ALARM (dream-11 P1(a), enacted #256) ────────────────────────────────────────
+# `:706`'s refusal says an EMPTY grade set "would read as 'nothing is stale'". The SAME
+# sentence is true of a 73% cut, and #242's memory-index diet made exactly that cut (122 → 33)
+# with nothing declaring it. So the slope gets the posture the zero already had: a move of
+# more than this many hooks is PRINTED, and a SHRINK of more than this many REFUSES.
+# ⚠ The number is a PLACEHOLDER, picked not derived — the same honest register as
+# GRADE_AGING_DAYS. Dave's at the B3 review.
+POPULATION_DELTA_THRESHOLD = 5
 # ── THE COUNTING WINDOW, GENERATED NOT NOTED (s183-D1 enacting dream-8 P4a) ────────────────
 # `s182-D1` CALL 4 ruled the boundary in prose: "the counting window opens at the FIRST
 # SCHEDULED dream-pass; the 2026-08-15 manual pass does NOT count." That is the SCHEDULED
@@ -693,6 +702,11 @@ class GradesBlock(GardenerBlock):
 
 
 _HOOK_RE = re.compile(r"^-\s+\[(?P<title>[^\]]+)\]\((?P<slug>[^)\s]+\.md)\)(?P<rest>.*)$")
+# dream-11 P2 (enacted #256): `_HOOK_RE.match()` graded the FIRST link on a line and dropped
+# every later one WITHOUT declaring it — 5 starred hooks in the live index were read by nothing.
+# `_HOOK_RE` still decides whether the LINE is a hook line (so the prose lines stay in
+# `unlinked`, DECLARED); `_HOOK_LINK_RE` then finds EVERY link on it.
+_HOOK_LINK_RE = re.compile(r"\[(?P<title>[^\]]+)\]\((?P<slug>[^)\s]+\.md)\)")
 
 
 def memory_index_path(memory_dir: str) -> str:
@@ -713,20 +727,20 @@ def parse_memory_index(memory_dir: str) -> tuple[list[dict], list[str]]:
         s = line.strip()
         if not s or not s.startswith("- "):
             continue
-        m = _HOOK_RE.match(s)
-        if not m:
+        if not _HOOK_RE.match(s):
             unlinked.append(f"{i}: {_flat(s)}")     # DECLARED, never silently dropped
             continue
-        title = m.group("title")
-        hooks.append({
-            "id": m.group("slug"),
-            "line": i,
-            "title": title,
-            "marks": "".join(sorted({c for c in ALERT_MARKS if c in title})),
-            "starred": any(c in title for c in ALERT_MARKS),
-            "hook": s,
-            "hook_sha": _sha(s),
-        })
+        for m in _HOOK_LINK_RE.finditer(s):         # P2: EVERY link on the line, not just the first
+            title = m.group("title")
+            hooks.append({
+                "id": m.group("slug"),
+                "line": i,
+                "title": title,
+                "marks": "".join(sorted({c for c in ALERT_MARKS if c in title})),
+                "starred": any(c in title for c in ALERT_MARKS),
+                "hook": s,
+                "hook_sha": _sha(s),
+            })
     return hooks, unlinked
 
 
@@ -973,8 +987,27 @@ def load_grades(path: str) -> dict:
     return doc
 
 
+def population_delta(prev_seen, seen: int,
+                     threshold: int = POPULATION_DELTA_THRESHOLD) -> dict:
+    """dream-11 P1(a). Did the graded POPULATION move, and did it SHRINK?
+
+    `prev_seen` is last run's `hooks_seen`, read from the sidecar the arm already persists.
+    None (no sidecar yet) is not a move — it is a first run, and says so.
+    """
+    if prev_seen is None:
+        return {"prev": None, "now": seen, "delta": None, "moved": False, "shrank": False,
+                "line": f"POPULATION: {seen} hooks this run · no previous run on record"}
+    delta = seen - int(prev_seen)
+    moved = abs(delta) > threshold
+    return {"prev": int(prev_seen), "now": seen, "delta": delta, "moved": moved,
+            "shrank": moved and delta < 0, "threshold": threshold,
+            "line": f"POPULATION CHANGED: {seen} hooks this run vs {prev_seen} last run "
+                    f"({delta:+d}, threshold ±{threshold})"}
+
+
 def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
-                dry: bool = True, now: float | None = None) -> dict:
+                dry: bool = True, now: float | None = None,
+                accept_population: bool = False) -> dict:
     """B3 REFRESH ARM — BUILT #180 under s179-D1. Consumes and produces the sidecar.
 
     Re-derives a probe for every MEMORY.md hook, re-runs it, restamps the grade. Writes ONLY
@@ -1013,6 +1046,7 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             "grade": g["grade"], "why": g["why"], "probe_ran": g["probe_ran"],
             "graded_at": _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         })
+    pop = population_delta(prev_doc.get("hooks_seen"), len(hooks))
     doc = {
         "schema": GRADE_SCHEMA_ID,
         "PROVISIONAL": (
@@ -1053,9 +1087,21 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
         "counts": counts,
         "hooks_seen": len(hooks),
         "unlinked_index_lines": unlinked,
+        "population": pop,
         "grade_changes_this_pass": changed,
         "entries": entries,
     }
+    # dream-11 P1(a): a SHRINK is refused with the same posture `parse_memory_index` takes for
+    # an empty index — nothing is written, the reason is named. A GROWTH only prints.
+    if pop["shrank"] and not accept_population:
+        raise GradesBlock(
+            "B3 — the graded POPULATION SHRANK and the refresh will not silently succeed.\n"
+            f"        {pop['line']}\n"
+            f"        index : {memory_index_path(memory_dir)}\n"
+            "        A 73% cut reads as 'nothing is stale' exactly the way an EMPTY grade set "
+            "does (see parse_memory_index's refusal), and #242's index diet made that cut with "
+            "nothing declaring it.\n"
+            "        Say the shrink is INTENDED and re-run: --refresh --accept-population-change")
     if not dry:
         if fence is None:
             raise GradesBlock("B3 — refresh asked to WRITE with no WriteFence. Refused: every "
@@ -1222,6 +1268,7 @@ def main(argv: list[str] | None = None) -> int:
     # ── B3 (s179-D1 clause 1) ──
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--selftest-grades", action="store_true")
+    ap.add_argument("--accept-population-change", action="store_true")
     ap.add_argument("--memory-dir", default=None)
     ap.add_argument("--grade-decision", default=None, metavar="ENTRY_ID")
     ap.add_argument("--changed", default=None, choices=["yes", "no"])
@@ -1255,12 +1302,17 @@ def main(argv: list[str] | None = None) -> int:
         try:
             root = os.path.abspath(a.root)
             fence = WriteFence(root, [], apply_tier1=False)
-            doc = refresh_arm(root, mem, fence, dry=a.dry_run)
+            doc = refresh_arm(root, mem, fence, dry=a.dry_run,
+                              accept_population=a.accept_population_change)
         except GardenerBlock as exc:
             _die(4, *str(exc).splitlines())
         c = doc["counts"]
         print("── B3 REFRESH RECEIPT (grade schema PROVISIONAL — Dave's at review) ──")
         print(f"index           : {doc['memory_index']}")
+        if doc["population"]["moved"]:              # dream-11 P1(a) — ADVISORY on a growth
+            print(f"⚠ {doc['population']['line']}"
+                  + ("  [ACCEPTED by --accept-population-change]"
+                     if doc["population"]["shrank"] else ""))
         print(f"hooks graded    : {doc['hooks_seen']}  "
               + " · ".join(f"{k} {c[k]}" for k in GRADE_VOCAB))
         print(f"unlinked lines  : {len(doc['unlinked_index_lines'])} DECLARED, not graded")
@@ -1459,8 +1511,9 @@ def _mkmem(hooks: list[str], bodies: dict | None = None) -> str:
     open(os.path.join(d, MEMORY_INDEX_BASENAME), "w", encoding="utf-8").write(
         "\n".join(hooks) + "\n")
     for h in hooks:
-        m = _HOOK_RE.match(h.strip())
-        if m:
+        if not _HOOK_RE.match(h.strip()):
+            continue
+        for m in _HOOK_LINK_RE.finditer(h.strip()):   # every link on the line gets a file
             slug = m.group("slug")
             open(os.path.join(d, slug), "w", encoding="utf-8").write(
                 (bodies or {}).get(slug, "body\n"))
@@ -1716,6 +1769,56 @@ def selftest_grades() -> int:
                      f"grade={e['grade']}; why={_flat(e['why'], 90)!r}")
         finally:
             shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g14) dream-11 P2 — TWO LINKS ON ONE INDEX LINE ⇒ TWO graded entries, neither dropped.
+    #       The old `.match()` graded the FIRST and dropped the second SILENTLY (it is not in
+    #       `unlinked` either — the line matched). CONTROL: a one-link line still grades ONE.
+    TWO_ON_A_LINE = ("- [★★★ First](first.md) — `knowledge/_probe_target.py` · "
+                     "[★★★ Second](second.md) — the second link")
+    for label, line, want_ids in (("two links", TWO_ON_A_LINE, ["first.md", "second.md"]),
+                                  ("one link (CONTROL)",
+                                   "- [★★★ First](first.md) — one only", ["first.md"])):
+        root, mem, fence = _grade_fixture([line], make_target=True)
+        try:
+            doc = refresh_arm(root, mem, fence, dry=True)
+            got = [e["id"] for e in doc["entries"]]
+            ok &= _t(f"(g14) {label} ⇒ {len(want_ids)} graded entr(y/ies), none dropped",
+                     got == want_ids and doc["hooks_seen"] == len(want_ids)
+                     and doc["unlinked_index_lines"] == [],
+                     f"ids={got}; hooks_seen={doc['hooks_seen']}; "
+                     f"unlinked={doc['unlinked_index_lines']}")
+        finally:
+            shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+
+    # (g15) dream-11 P1(a) — THE POPULATION ALARM. A shrink past the threshold REFUSES with a
+    #       named reason; a growth past it only PRINTS; a first run is not a move.
+    first = population_delta(None, 33)
+    grew = population_delta(33, 140)
+    shrank = population_delta(140, 33)
+    inside = population_delta(33, 31)
+    named = accepted = False
+    root, mem, fence = _grade_fixture(["- [★★ Thing](thing.md) — `knowledge/_probe_target.py`"],
+                                      make_target=True)
+    try:
+        fence.write(fence.grades_path, json.dumps(
+            {"schema": GRADE_SCHEMA_ID, "hooks_seen": 99, "entries": []}) + "\n")
+        try:
+            refresh_arm(root, mem, fence, dry=True)
+        except GradesBlock as exc:
+            named = "POPULATION CHANGED" in str(exc) and "SHRANK" in str(exc)
+        accepted = refresh_arm(root, mem, fence, dry=True,
+                               accept_population=True)["population"]["shrank"] is True
+    finally:
+        shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
+    ok &= _t("(g15) population SHRINK ⇒ named refusal; growth advisory; first run is not a move",
+             named and accepted
+             and first["moved"] is False and grew["moved"] is True
+             and grew["shrank"] is False and shrank["shrank"] is True
+             and inside["moved"] is False
+             and "140 hooks this run vs 33 last run" in grew["line"],
+             f"refused={named}; --accept-population-change passes={accepted}; "
+             f"first={first['moved']}; grew={grew['moved']}/{grew['shrank']}; "
+             f"shrank={shrank['shrank']}; inside-threshold={inside['moved']}")
 
     print("ALL B3 MUTATION TESTS PASSED" if ok else "B3 MUTATION TESTS FAILED")
     return 0 if ok else 1
