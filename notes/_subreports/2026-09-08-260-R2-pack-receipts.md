@@ -233,7 +233,7 @@ say "the manifest names a release nobody baked", which is the true state of a PR
 |---|---|
 | `193c567` | `#260 R2: the driven-receipt evidence ships, and fit-physics refuses instead of crashing` |
 | `1459e55` | `#260 R2: v1.0.8 manifest at 193c567 — the dataviz gate is back in the ship set (45 gates)` |
-| *(this file)* | the R2 report |
+| `9f5fafa` | `#260 R2: the R2 report — both dropped gates back, mutation-proven inside the unzipped pack` |
 
 NOT PUSHED — Dave pushes via GitHub Desktop. `DOC_ROW_ACK` declared on every commit: the unrowed
 subreports are lanes A's and R's own filed reports and their `_state` rows belong to those lanes or
