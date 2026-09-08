@@ -1,7 +1,7 @@
 # Composition gate audit
 
 ## canon.css
-- defs 974, var() refs 559
+- defs 982, var() refs 578
 - ✅ vars resolve, braces balanced, spine markers present
 - ℹ️ canon.css: 4 var(s) resolved via inline-scope (set in snippet markup, not CSS): ['--b1', '--b2', '--sc', '--self']
 

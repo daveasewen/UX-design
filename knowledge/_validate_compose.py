@@ -40,6 +40,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CANON = os.path.join(HERE, "canon", "canon.css")
 GEN = os.path.join(HERE, "..")  # generator lives in outputs at runtime; spine check is optional
 RUNTIME_VARS = {"--pct", "--demo-width", "--row-h"}
+# s258-D3 (#258): `--<component>-max` are PAGE-OWNED width vars (s210-D3) — the snippet gives a
+# 100%/px fallback, the showroom harness sets them inside its APOLLO-DEMO fence (never projected
+# into canon since #258), and a composed page may set them. Unresolved in canon.css BY DESIGN.
+def _is_runtime(v): return v in RUNTIME_VARS or v.endswith("-max")
 
 def inline_scope_vars():
     """Scan snippet + composed HTML for inline style="--x:..." definitions
@@ -82,7 +86,7 @@ def check_canon():
     defs = set(re.findall(r'(--[\w-]+)\s*:', code))
     refs = set(re.findall(r'var\((--[\w-]+)', code))
     inline_defs = inline_scope_vars()
-    missing = sorted(r for r in refs if r not in defs and r not in RUNTIME_VARS)
+    missing = sorted(r for r in refs if r not in defs and not _is_runtime(r))  # s258-D3
     # split out vars resolved via inline-scope (set on markup, not in CSS) —
     # report as a distinct provenance, don't fold them into "defs" or silently drop them
     # (#101 finding: --sc is set inline in snippets, e.g. style="--sc:var(--data-series-1)",

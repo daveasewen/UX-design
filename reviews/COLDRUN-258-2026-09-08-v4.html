@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold run v4 — the frozen prompt against the tree at 84f0a17</title>
+<style>
+  :root{
+    --accent:#DB0011; --accent-3:#730014;
+    --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--white); color:var(--black);
+    font:400 16px/1.75 "Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4);}
+  nav.top{position:sticky; top:0; z-index:10; background:var(--white); border-bottom:1px solid var(--grey-2);}
+  nav.top .wrap{display:flex; align-items:center; justify-content:space-between; height:56px; gap:var(--s4);}
+  nav.top a{font-size:14px; letter-spacing:.05em; color:var(--grey-6); text-decoration:none;}
+  nav.top a:hover{color:var(--black);}
+  nav.top .back{color:var(--black); font-weight:500;}
+  section{padding:var(--s7) 0; border-bottom:1px solid var(--grey-2);}
+  section.tight{padding:var(--s5) 0;}
+  section.band{background:var(--grey-1);}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent);}
+  h1{font-size:57px; line-height:1.04; font-weight:400; letter-spacing:0; margin:0 0 var(--s3);}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3);}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:0 0 var(--s2);}
+  p{margin:0 0 var(--s2); max-width:68ch;}
+  .meta{font-size:14px; color:var(--grey-7);}
+  code, .mono{font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size:13px;}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+  .idx{font-size:84px; line-height:1; font-weight:200; color:var(--grey-3); margin:0 0 var(--s2);}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin:var(--s4) 0 0;}
+  .stat .n{font-size:43px; line-height:1.05; font-weight:200;}
+  .stat .k{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6);}
+  table{border-collapse:collapse; width:100%; margin:var(--s3) 0 0; font-size:14px;}
+  th,td{border-bottom:1px solid var(--grey-2); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-7);}
+  td.num{text-align:right; font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace;}
+  .scroll{overflow-x:auto;}
+  .ok{color:var(--grey-8); font-weight:500;}
+  .bad{color:var(--accent); font-weight:500;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3);}
+  .grid2 > div{background:var(--white); padding:var(--s3);}
+  .renders{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4);}
+  .renders figure{margin:0;}
+  .renders img{width:100%; border:1px solid var(--grey-2); display:block;}
+  .renders figcaption{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6); padding-top:var(--s1);}
+  ol.findings{padding-left:0; list-style:none; counter-reset:f;}
+  ol.findings > li{counter-increment:f; padding:var(--s3) 0; border-top:1px solid var(--grey-2);}
+  ol.findings > li::before{content:'F' counter(f,decimal-leading-zero); display:block;
+    font-size:12px; letter-spacing:.14em; color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  .quote{border-top:1px solid var(--grey-3); padding-top:var(--s3); font-size:19px; max-width:68ch;}
+  footer{padding:var(--s5) 0; font-size:14px; color:var(--grey-6);}
+  @media (max-width:860px){ .dim,.renders,.grid2,.stats{grid-template-columns:1fr;} h1{font-size:40px;} }
+</style>
+</head>
+<body>
+
+<nav class="top"><div class="wrap">
+  <a class="back" href="COLDRUN-258-2026-09-08-v3.html">&larr; Cold run v3</a>
+  <a href="#delta">Delta</a><a href="#findings">Findings</a><a href="#rsq">Questions for Dave</a>
+  <span class="meta">session 258 · lane C4</span>
+</div></nav>
+
+<section>
+  <div class="wrap">
+    <p class="label">Cold run v4 · 2026-09-08</p>
+    <h1>The same frozen prompt, after step 2 was told to read <code>behaviour</code>.</h1>
+    <p>One arm, blind. The #246 prompt, unaltered, against the working tree at <code>84f0a17</code> —
+    the state in which the skill's step 2 says read the meta's <code>behaviour</code> block, step 5 mints
+    the receipt <em>before</em> the gate, Data-grid's width belongs to the page, and canon.css has been
+    re-projected. No repo notes, no reviews, no earlier cold-run output was read until the arm had been
+    driven and gated.</p>
+    <p class="mono meta">prompt&nbsp; /generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</p>
+    <p class="meta">HEAD <code>84f0a176c50ef3e38c9478de31d498cb7fe30942</code> ·
+    arm <code>outputs/coldrun-258-v4/arm-A-blind/dashboard.html</code> · 122,876 bytes ·
+    sha256 <code>6b9e699f5477…7023b</code> · drive log <code>outputs/coldrun-258-v4/arm-A-blind/drive.json</code> (40 recorded steps)</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">3</div><div class="k">Visually rich</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">Full</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">Persistent</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">Interactive</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">01 · Four scores, each with the one fact that earned it</p>
+    <div class="scroll"><table>
+      <tr><th>Score</th><th>Row</th><th>The earning fact</th></tr>
+      <tr><td class="num">3</td><td>Visually rich</td><td>Sixteen canon components on one page, and every number on it is computed at run time from one <code>MODEL</code>: six chart bars, four KPI figures, four sparklines (48 coordinates), six balance rows, four exception rows and the status strip all re-derive on every filter. The page LINKS <code>canon.css</code> and <code>type.css</code> and drops each component in as its <code>.cn-*</code> scope class, so it carries <strong>no hex of its own</strong> — its whole local <code>&lt;style&gt;</code> is five harness rules and <strong>0 hex values</strong> (measured on the built file).</td></tr>
+      <tr><td class="num">2</td><td>Full</td><td>84 payment instructions across 6 legal entities, 6 currencies with an FX table, 12 months, 4 statuses and 6 payment types; no placeholder text; footer present (rule 17). <strong>Held at 2 by F01</strong>: the payments grid still renders 760px wide inside a 1,376px tile at 1440 — 616px of dead band and the Amount column pushed out of sight — and this time the page <em>tried</em> to own the width and could not.</td></tr>
+      <tr><td class="num">3</td><td>Persistent</td><td>State lives in the URL and is mirrored to <code>localStorage</code>. Reloading <code>?view=payments&amp;entity=E4&amp;ccy=HKD&amp;measure=volume</code> cold restored the view, the nav's <code>aria-current</code>, both dropdown trigger labels (<code>Meridian HK Ltd</code>), three filter chips and the chart's measure (<code>drive.json → reload_url_state</code>). Sort, page and rows-per-page also round-trip (<code>page_in_url: true</code>, <code>page2: 25–48 of 84</code>).</td></tr>
+      <tr><td class="num">3</td><td>Interactive</td><td>40 recorded drive steps, <strong>0 pageerrors</strong>, and <strong>0 dead controls</strong>. Every toolbar control opens and drives the page (<code>dd1_open: "true"</code>, <code>dd1_label: "Meridian Foods GmbH"</code>, <code>dd1_count: "10 results"</code>), the chips dismiss (3&rarr;2), the segmented control re-titles and re-derives the chart, the grid sorts / filters / pages / selects / edits in place, the strip chip lands focus on <code>#dp08-na</code>, the KPI CTA switches view, and the Drawer opens from a needs-attention row (<code>drawer_open: 1</code>, <code>position: fixed</code>) and closes on Escape.</td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)">JS <code>pageerror</code> count on load: <strong>0</strong>. Across the whole 40-step drive including two reloads: <strong>0</strong>. Console <code>error</code> entries: <strong>0</strong>. Two earlier passes did throw — both were splice defects of this lane's own making (a double-wrapped <code>&lt;script&gt;</code> around the Drawer's script, and <code>page.inert</code> with no <code>#page</code> element); both were found at the skill's <em>step 6</em>, repaired, and the drive re-run. That is the step 6 loop working, and it is declared rather than hidden.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">02 · Measurements 10, 11 and 12</p>
+    <div class="dim">
+      <div>
+        <p class="idx">0</p>
+        <h3><code>grep -c APOLLO-DEMO dashboard.html</code></h3>
+        <p class="meta">Zero, again — including in prose. The first assembly of this page carried the marker string inside an explanatory <em>comment</em> of the builder's own writing, and that alone would have earned <code>FAIL:DEMO-CHROME-COPIED</code>. The fence rule catches honest prose as well as copied chrome.</p>
+        <h3 style="margin-top:var(--s4)">Measurement 12 · dead toolbar controls</h3>
+        <p class="idx">0</p>
+        <p class="meta">Six toolbar controls, none dead: search, clear-search, entity listbox, currency listbox, the Value/Volume segmented control, and the chips. In v3 three of four headline filters never opened. What changed is exactly what step 2 now asks for — <code>filter-toolbar-bar.meta.json</code> → <code>behaviour</code> names the script address and says the menu opens on <code>data-open="true"</code>, so the snippet's own <code>wireDD</code> was carried verbatim instead of re-invented.</p>
+      </div>
+      <div>
+        <h3>Measurement 10 · the payments grid at 1440</h3>
+        <div class="scroll"><table>
+          <tr><th>Measure</th><th class="num">px</th><th>Read off</th></tr>
+          <tr><td>Bento tile holding the grid</td><td class="num">1376</td><td><code>drive.json → widths_1440.tile</code></td></tr>
+          <tr><td>The grid <code>.dg</code></td><td class="num">760</td><td><code>drive.json → widths_1440.dg</code></td></tr>
+          <tr><td>Dead band</td><td class="num">616</td><td>difference; the Amount column sits outside the visible scroller</td></tr>
+        </table></div>
+        <p class="meta">Unchanged from v3 in effect, but the cause is now pinned: <code>canon.css:10538</code> carries
+        <code>:where(.cn-data-grid) .dg{--dg-max:760px}</code>. The snippet's fence kept the dial out of the
+        copied markup; the canon projection re-imported it. The page set <code>--dg-max:100%</code> on its own
+        wrapper and it made no difference, because the dial is set on <code>.dg</code> itself and beats
+        inheritance — so "the PAGE owns the width" is not true of any page that links canon.css.</p>
+        <h3 style="margin-top:var(--s4)">Measurement 11 · step 5, mint then gate</h3>
+        <p class="meta">Yes — the new wording led straight to a mint. <code>gen_provenance_receipt.py --mint</code>
+        → <em>minted receipt into …/dashboard.html</em>, exit 0; then <code>_validate_receipt.py</code> exit
+        <strong>0</strong>, <code>RESULT: PASS ✅</code> (+1 <code>UNPROVEN:retrievalSet</code>). Ordering the mint
+        first is what kept the gate off <code>FAIL:NO-RECEIPT</code>, which is what the previous wording produced.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">03 · The gates, as they printed</p>
+    <div class="scroll"><table>
+      <tr><th>Gate</th><th>Exit</th><th>What it printed</th></tr>
+      <tr><td><code>gen_provenance_receipt.py --mint</code></td><td class="num">0</td><td>minted receipt into outputs/coldrun-258-v4/arm-A-blind/dashboard.html</td></tr>
+      <tr><td><code>_validate_receipt.py</code></td><td class="num">0</td><td><span class="ok">RESULT: PASS ✅</span> — pack UNDECLARED (reported, not enforced); <code>UNPROVEN:retrievalSet — null</code></td></tr>
+      <tr><td><code>_validate_screen.py</code></td><td class="num">1</td><td><span class="bad">RESULT: FAIL ❌</span> — receipt ✅ (0 regions re-hashed and matched) · compose ❌ <em>2 native radio/checkbox not composed from .cn-selection-controls (.radio/.box)</em> · composition <code>UNPROVEN: C9 bands</code> · icon-source ✅ · a11y ✅</td></tr>
+    </table></div>
+    <p class="meta">The screen gate writes its ledger into the repo. <code>knowledge/_screen-gate/dashboard.md</code>
+    and <code>knowledge/_SCREEN-GATE.md</code> were both modified by the run; the ledger was copied to
+    <code>outputs/coldrun-258-v4/arm-A-blind/GATE-LEDGER-copy-of-knowledge-_screen-gate-dashboard.md</code>
+    and both repo files were restored from <code>HEAD</code> (<code>git show HEAD:… &gt; …</code>, no checkout).
+    <code>git status --porcelain</code> is empty.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">04 · The renders</p>
+    <p>1440 and 820, light and dark, taken with chromium-headless-shell after the drive, from a cleared
+    <code>localStorage</code> so each is the page's cold first paint.</p>
+    <div class="renders">
+      <figure><img src="../outputs/coldrun-258-v4/arm-A-blind/render-1440-light.png" alt="1440 light"><figcaption>1440 · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v4/arm-A-blind/render-1440-dark.png" alt="1440 dark"><figcaption>1440 · dark</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v4/arm-A-blind/render-820-light.png" alt="820 light"><figcaption>820 · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v4/arm-A-blind/render-820-dark.png" alt="820 dark"><figcaption>820 · dark</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="delta">
+  <div class="wrap">
+    <p class="label">05 · #246 → v1 → v2 → v3 → v4</p>
+    <div class="scroll"><table>
+      <tr><th>Row</th><th>#246 blind</th><th>258 v1 (zip)</th><th>258 v2 (D1/D2)</th><th>258 v3 (D3 fences)</th><th>258 v4 (behaviour)</th></tr>
+      <tr><td>Visually rich</td><td class="num">2</td><td class="num">3</td><td class="num">3</td><td class="num">3</td><td class="num">3</td></tr>
+      <tr><td>Full</td><td class="num">2</td><td class="num">2</td><td class="num">2</td><td class="num">2</td><td class="num">2</td></tr>
+      <tr><td>Persistent</td><td class="num">0</td><td class="num">0</td><td class="num">3</td><td class="num">3</td><td class="num">3</td></tr>
+      <tr><td>Interactive</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">2</td><td class="num">3</td></tr>
+      <tr><td>Dead filter/toolbar controls</td><td>5 dead of 17 (all cross-component)</td><td>5 dead of 17</td><td>not isolated</td><td class="num">3</td><td class="num">0</td></tr>
+      <tr><td>JS <code>pageerror</code> on load</td><td>not measured</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td><code>APOLLO-DEMO</code> markers carried</td><td>n/a (pre-fence)</td><td>n/a</td><td>fences did not exist</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>Payments grid vs its tile at 1440</td><td>n/a</td><td>n/a</td><td>region broken</td><td>760 / 1312</td><td>760 / 1376</td></tr>
+      <tr><td>Receipt gate</td><td>n/a</td><td>n/a</td><td>FAIL</td><td>FAIL:NO-RECEIPT</td><td><span class="ok">PASS</span></td></tr>
+      <tr><td>Screen gate</td><td>n/a</td><td>n/a</td><td>FAIL (262 hex in style, 4 canon classes redefined)</td><td>FAIL</td><td>FAIL (one check: 2 native checkboxes)</td></tr>
+      <tr><td>Page bytes</td><td>—</td><td>—</td><td>229,820</td><td>80,977</td><td>122,876</td></tr>
+    </table></div>
+    <p class="meta">Read the row that moved: <strong>Interactive 2 → 3 with dead controls 3 → 0</strong>, and the
+    receipt gate <strong>FAIL:NO-RECEIPT → PASS</strong>. Both are the two edits this tree carries. Everything
+    else in the table is flat, and the one flat row that costs the most — <em>Full</em>, held at 2 for the
+    fourth run in a row — is held by a single width dial in canon.css.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">06 · Code creativity — a judgement, labelled as one</p>
+    <p class="quote">Rule 2a bought a <em>cross-component</em> page: one filter pass that four unrelated
+    components read — the grid's own script now calls <code>APP.rows()</code>, the chart re-derives its own
+    domain, gridlines and six bars from the same array, four sparklines re-plot 48 coordinates from a
+    12-month aggregation of it, and the Drawer is filled from a row id. A 2a-bound build could copy all
+    four scripts and still not have one of them know the others exist.</p>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">07 · Findings</p>
+    <ol class="findings">
+      <li><strong>The page cannot own the grid's width, and the snippet says it does.</strong>
+        <code>canon.css:10538</code> — <code>:where(.cn-data-grid) .dg{--dg-max:760px}</code> — sets the showroom's
+        dial on <code>.dg</code> itself. <code>Data-grid.reference.html:125</code> says "the PAGE owns the width
+        (s210-D3); the showroom harness sets <code>--dg-max:760px</code> inside its fence". s258-D3 took the dial
+        out of the copied markup but the canon projection re-imported it, so every page that links canon.css
+        gets a 760px grid. Measured: <code>.dg</code> 760px inside a 1,376px tile, Amount column outside the
+        scroller. A page-level <code>--dg-max:100%</code> on the wrapper had no effect (inheritance loses to a
+        rule on the element).</li>
+      <li><strong>Rule 2 and <code>_validate_screen.py</code> contradict each other.</strong> The gate fails on
+        <em>2 native radio/checkbox not composed from .cn-selection-controls</em>. Both checkboxes are
+        <code>Data-grid.reference.html</code>'s own markup, copied verbatim, which is what rule 2 demands and what
+        the receipt gate then re-hashes and matches. A builder cannot satisfy both without editing a snippet's
+        markup on the way in.</li>
+      <li><strong>Step 2's new sentence is the difference between a working toolbar and a dead one.</strong>
+        <code>filter-toolbar-bar.meta.json</code> → <code>behaviour</code> gives the script address, the four events
+        and the <code>data-open="true"</code> contract; reading it makes carrying <code>wireDD</code> verbatim the
+        obvious move, and all three listboxes open. But the key is <em>absent</em> on 19 of the 23 metas read
+        here (tabs, kpi-tile, stat-card, every chart, drawer, pagination, segmented-control, multi-select,
+        footer, app-shell-side-nav). The instruction only pays where the key exists.</li>
+      <li><strong>The <code>[hidden]</code> attribute does not hide a bento tile.</strong> Switching views by
+        <code>el.hidden = true</code> left the chart group visible, because <code>.c-bento__tile</code> sets
+        <code>display</code> and the attribute has no <code>display:none !important</code> behind it in canon.
+        Driven and repaired at step 6 with a harness class; a page that trusted the attribute would ship a nav
+        that changes nothing.</li>
+      <li><strong>The fence rule catches the builder's own prose.</strong> The first assembly of this page
+        carried the string <code>APOLLO-DEMO</code> inside a comment explaining that no fenced span had been
+        copied — which the receipt gate refuses as <code>FAIL:DEMO-CHROME-COPIED</code>. The marker is a
+        substring test, not a structural one.</li>
+      <li><strong>The screen gate writes into the repo.</strong> One run modified
+        <code>knowledge/_screen-gate/dashboard.md</code> and <code>knowledge/_SCREEN-GATE.md</code>. This lane
+        copied the ledger out and restored both files from HEAD; a consumer running step 5 on a checkout gets
+        two dirty files and no warning.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="rsq">
+  <div class="wrap">
+    <p class="label">08 · Ruling-shaped questions — not answered here</p>
+    <ol class="findings">
+      <li>Is <code>--dg-max:760px</code> in canon.css a component default or a leaked showroom dial? If the
+        page is to own the width, does canon drop the rule, or does the skill gain a sanctioned way for a page
+        to set a component dial without "redefining a class"?</li>
+      <li>Does rule 2 win over <code>_validate_screen.py</code>'s selection-controls check, or does Data-grid's
+        snippet get re-cut to compose its checkboxes from <code>.cn-selection-controls</code>?</li>
+      <li><code>behaviour</code> is typed on 4 of the 23 metas a dashboard build touches. Is filling the other
+        19 the next unit of work, and in what order?</li>
+      <li>Should canon carry <code>[hidden]{display:none !important}</code> so a generated page can switch views
+        with the attribute the platform already gives it?</li>
+      <li>Should step 5 say to run the screen gate on a copy outside the repo, given it writes a ledger into
+        <code>knowledge/</code> on every run?</li>
+    </ol>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <p>Cold run v4 · lane C4 · session 258 · 2026-09-08 · read-only against canon, showroom and apollo-spider ·
+  nothing built here was committed. Arm: <code>outputs/coldrun-258-v4/arm-A-blind/</code>.</p>
+</div></footer>
+
+</body>
+</html>

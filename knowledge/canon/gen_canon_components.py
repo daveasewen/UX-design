@@ -238,6 +238,10 @@ def gen_one(path):
     # silently dropping EVERY rule after it (the whole AUTO-THEMES block included).
     html_nc = re.sub(r"<!--.*?-->", "", html, flags=re.S)
     style = re.search(r"<style>(.*?)</style>", html_nc, re.S).group(1)
+    # s258-D3 (#258): APOLLO-DEMO fenced CSS is showroom harness — never projected into canon.
+    # Cold run 4 finding 1: the fenced `.dg{--dg-max:760px}` reached canon.css:10538 and made
+    # "the page owns the width" false for every page linking canon.css.
+    style = re.sub(r"/\* ===== APOLLO-DEMO[^\n]*?START.*?APOLLO-DEMO[^\n]*?END ===== \*/", "", style, flags=re.S)
     if "<" in strip_css_noise(style):
         raise SystemExit(f"gen_canon_components: HARVEST NOT CSS — literal '<' outside comments "
                          f"or CSS strings in harvested <style> of {os.path.basename(path)}; "
