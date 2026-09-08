@@ -188,6 +188,54 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     console before you claim it. A page that throws has not been built, only written.
 17. **Every page shell carries a footer.** A screen ends in the shell's footer region —
     never a page that stops at the last card.
+18. **Charts from data — the interim recipe.** Use it for any chart whose numbers come from
+    `DATA` (rule 13). *A library engine replaces this in v1.0.9; until then, author the
+    geometry yourself and let `knowledge/canon/dv-behaviour.js` — linked, never
+    re-implemented — do fit, tooltip and table.*
+    **Skeleton**, copied from `knowledge/snippets/Chart-bar.reference.html`:
+    `<div class="cn-chart-bar">` ▸ `<figure class="dv dv-animate" data-dv-type="column">` ▸
+    `figcaption.sr-only` ▸ `.dv-head` (`h3.dv-title`, the `details.dv-tbl` table lockup, the
+    `.dv-legend`/`.dv-leg` rows for multi-series) ▸ `.dv-stage > .dv-chart-area` ▸
+    `<svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-pt="14" data-pb="30"
+    data-h="260" data-h-min="200" viewBox="0 0 580 260">` — left EMPTY; JS fills it. The tip
+    host is created by dv-behaviour itself (`#dvTip`); don't author one.
+    **Geometry you author** (bar · line · stacked-area · donut · sparkline · combo): the marks
+    only. Every mark carries its x as a FRACTION of the plot box, because `fitOne()`
+    re-derives it as `PL + data-fx × plotW` on each resize —
+    `rect` → `data-fx` + `data-fw` · `line` → `data-fx` + `data-fx2` · `text` → `data-fx` +
+    `data-dx` · `polyline`/`path` → `data-fxs` + `data-ys` · `g` → `data-fx` + `data-x0` · a
+    glyph that must keep its size (donut/scatter/combo marker) adds `class="dv-mk"`. y is
+    cached for you (`data-fy`/`data-fh`) on the first fit — never author those.
+    **Tooltip** = `data-tip="Label: value"` on the mark and nothing else (dv-behaviour
+    delegates `pointermove`/`focusin` at `document`); add `tabindex="0" role="img" aria-label`.
+    **Animation** = `.dv-animate` on the figure + `data-grow="up"` (columns) / `"right"`
+    (h-bars) on each `rect.dv-series`, staggered with `style="animation-delay:${i*45}ms"`.
+    **Re-render on every filter change** (rule 14): rebuild the string, `svg.innerHTML = out`,
+    then `dispatchEvent(new Event('resize'))` — the only re-fit hook dv-behaviour exposes.
+    **Manifest**: `dv-behaviour` under `borrowed`, the renderer under `authored` —
+    *"renderBars() — SVG geometry emitted in dv-behaviour's data-fx/data-fw contract"*.
+    **Traps.** (a) The `.dv-*` chrome in `canon.css` is namespaced `:where(.cn-chart-bar)`;
+    drop that wrapper and the svg takes no size, bars never animate, the tip is unstyled —
+    cold run 5 shipped exactly that. (b) Theme attrs go on `<html>`, never on the element
+    carrying `.cn-chart-bar` (step 3). (c) Marks you render don't exist when a per-element
+    listener runs — delegate (rule 14).
+    ```js
+    const PL=46, PR=12, PT=14, PB=30, VW=580, VH=260;        // must match the svg's data-*
+    function renderBars(svg, cats){                          // cats = [{k,v},…] off DATA
+      const plotW=VW-PL-PR, y0=VH-PB, h=y0-PT, max=Math.max(...cats.map(c=>c.v),1);
+      const band=plotW/cats.length, bw=band*0.56, pad=(band-bw)/2;
+      let out=`<line class="dv-axis" x1="${PL}" y1="${y0}" x2="${VW-PR}" y2="${y0}" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>`;
+      cats.forEach((c,i)=>{
+        const fx=(i*band+pad)/plotW, y=y0-(c.v/max)*h, t=`${c.k}: ${c.v}`;
+        out+=`<rect class="dv-series" data-grow="up" style="animation-delay:${i*45}ms"
+          fill="var(--data-series-1)" x="${(PL+fx*plotW).toFixed(1)}" y="${y.toFixed(1)}"
+          width="${bw.toFixed(1)}" height="${(y0-y).toFixed(1)}"
+          data-fx="${fx.toFixed(4)}" data-fw="${(bw/plotW).toFixed(4)}"
+          tabindex="0" role="img" aria-label="${t}" data-tip="${t}"></rect>`;
+      });
+      svg.innerHTML=out; dispatchEvent(new Event('resize'));  // re-fit the fresh marks
+    }
+    ```
 
 ## Procedure
 
