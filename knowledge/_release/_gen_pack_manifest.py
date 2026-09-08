@@ -751,6 +751,12 @@ RATIFY_IDS = {
     # dist/ at the same version and the frozen ledger rightly called it laundering. PROPOSED
     # until his ratifying word; s237-D9: derived, never typed.
     "v1.0.7": "s257-D3",    # #257, Dave's word ("ratify") on the PROPOSED cut at b9c4c802439c.
+    "v1.0.8": "s260-D4",    # #260, Dave's word ("ratified... go for it") on the PROPOSED cut at
+                            # 193c56772bfe — the chart engine + the driven-receipt evidence. Keyed
+                            # at the bake, the #257 shape: key → regenerate the manifest RATIFIED
+                            # at the SAME cut commit → --release → move the frozen literal and
+                            # --seed. ⛔ Never a same-version re-bake: #257 Finding 2 is the whole
+                            # reason v1.0.7 exists at all.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")

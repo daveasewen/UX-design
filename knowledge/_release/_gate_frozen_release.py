@@ -127,7 +127,9 @@ SURFACES = [
     # caveat as above; bumped in the seed commit, read back from the printed table.
     # #257: v1.0.6 -> v1.0.7 with the v1.0.7 bake (s257-D3). The v1.0.6 zip was re-baked at the
     # same version after s257-D1 and this gate rightly refused it; the bump is the remedy.
-    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.7",
+    # #260: v1.0.7 -> v1.0.8 with the v1.0.8 bake (s260-D4). Same fourth-home caveat as above;
+    # bumped in the release commit, read back from the seed's printed table.
+    ("apollo-spider", ["apollo-spider/dist/"], "v1.0.8",
      "Apollo — Spider (s219-D8, formerly designer-skills-v3). Its frozen surface is the BAKED "
      "ZIP in dist/, nothing else. build-designer-pack.sh, ci-template/ and skills/ are the "
      "machinery that cuts the release and stay editable. The surface is the DIRECTORY, so it "
