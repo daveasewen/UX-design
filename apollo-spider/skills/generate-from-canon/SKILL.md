@@ -200,7 +200,10 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 1. **Find.** Search `showroom/index.json` for each thing the screen needs — by alias and
    blurb. Open the showroom page to confirm it's the right thing.
 2. **Read the contract.** `knowledge/components/<slug>.meta.json` — variants, states,
-   antiPatterns, relationships.
+   antiPatterns, relationships, and **`behaviour`** (s258 cold run 3: the script address,
+   the events it emits/handles, and the open/selected contract it expects — e.g. a filter
+   menu that opens on `data-open="true"`. Wiring a control without reading this is how
+   three toolbar filters died).
 2a. **Model the data** (rule 13). Write `DATA` before the markup: the entities the brief
    implies, their relationships, the time series, the currencies, enough rows to sort and
    page. List the behaviours it must support — which filter drives which panel — then build
@@ -231,6 +234,13 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    Composed screens have their own runner:
    `python3 knowledge/_validate_screen.py path/to/your-screen.html`.
    A draft you haven't gated is a claim, not a result.
+   **Mint the receipt first** — `python3 knowledge/gen_provenance_receipt.py --mint path/to/your-screen.html`
+   — then `python3 knowledge/_validate_receipt.py path/to/your-screen.html`. Without a
+   receipt the gate stops at `FAIL:NO-RECEIPT` and never inspects the page; every later
+   check (behaviour loaded, no demo chrome copied) only runs on a receipted page.
+   **No eyes, no browser (a VS Code / Copilot session):** you cannot do step 6 or read a
+   console. Say so in the Gaps list as one line — *"not driven: no browser in this session"* —
+   list the controls you wired and what each should change, and stop. Do not claim a drive.
 6. **Drive it.** Load the page, read the console (rule 16), then work every control (rule 14)
    and reload once to prove the state came back (rule 15). Report what you drove and what
    each control changed — untested wiring is a claim too.

@@ -1355,8 +1355,9 @@
 /* ── RESPONSIVE action bar (Dim 11 reflow) ─────────────────────────────────────────────────────
      The confirm/cancel pair (button.meta commonPatterns). Container-query driven so it reflows to its
      OWN width, not the viewport (house style: Cards/Table). max-width:100% → also reflows on a narrow
-     screen; the slider drives --demo-width so both states are visible without resizing. */
-:where(.cn-button) .bar-wrap{width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
+     screen. s258-D3: the width is a REAL component default (--action-bar-max), not a demo dial;
+     it used to read var(--demo-width, 560px), which travelled into generated pages. */
+:where(.cn-button) .bar-wrap{width:100%; max-width:var(--action-bar-max, 560px); container-type:inline-size;
     border:1px solid var(--ter-border-disabled); padding:16px; background:var(--surface);}
 :where(.cn-button) .actionbar{display:flex; gap:12px; justify-content:flex-end; align-items:center;}
 @container (max-width: 420px){
@@ -1419,7 +1420,7 @@
 :where(.cn-list-items) :is(button, :where(.cn-list-items) a, :where(.cn-list-items) label, :where(.cn-list-items) span, :where(.cn-list-items) small, :where(.cn-list-items) strong, :where(.cn-list-items) em, :where(.cn-list-items) b, :where(.cn-list-items) i, :where(.cn-list-items) th, :where(.cn-list-items) td, :where(.cn-list-items) dt, :where(.cn-list-items) dd, :where(.cn-list-items) li, :where(.cn-list-items) figcaption, :where(.cn-list-items) legend, :where(.cn-list-items) caption, :where(.cn-list-items) summary, :where(.cn-list-items) output, :where(.cn-list-items) time, :where(.cn-list-items) input[type=text], :where(.cn-list-items) input[type=search], :where(.cn-list-items) input[type=email], :where(.cn-list-items) input[type=tel], :where(.cn-list-items) input[type=url], :where(.cn-list-items) input[type=password], :where(.cn-list-items) input[type=number], :where(.cn-list-items) input:not([type]), :where(.cn-list-items) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* DEFAULT density (roomy). Compact toggle tightens these to the former default. */
 :where(.cn-list-items) h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 12px;}
-:where(.cn-list-items) .wrap{width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+:where(.cn-list-items) .wrap{width:100%; max-width:var(--wrap-max, 460px); margin-bottom:2.5rem; container-type:inline-size;}
 /* ---- canonical avatar atom (round; from Avatar.reference) ---- */
 :where(.cn-list-items) .avatar{flex:none; border-radius:50%; background:var(--avatar); color:var(--text); width:36px; height:36px;
     display:inline-flex; align-items:center; justify-content:center; /* type: t-cm-caption + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */}
@@ -1534,7 +1535,8 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-cards) :is(button, :where(.cn-cards) a, :where(.cn-cards) label, :where(.cn-cards) span, :where(.cn-cards) small, :where(.cn-cards) strong, :where(.cn-cards) em, :where(.cn-cards) b, :where(.cn-cards) i, :where(.cn-cards) th, :where(.cn-cards) td, :where(.cn-cards) dt, :where(.cn-cards) dd, :where(.cn-cards) li, :where(.cn-cards) figcaption, :where(.cn-cards) legend, :where(.cn-cards) caption, :where(.cn-cards) summary, :where(.cn-cards) output, :where(.cn-cards) time, :where(.cn-cards) input[type=text], :where(.cn-cards) input[type=search], :where(.cn-cards) input[type=email], :where(.cn-cards) input[type=tel], :where(.cn-cards) input[type=url], :where(.cn-cards) input[type=password], :where(.cn-cards) input[type=number], :where(.cn-cards) input:not([type]), :where(.cn-cards) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-cards) .wrap{width:var(--demo-width, 760px); max-width:100%;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 760px)). */
+:where(.cn-cards) .wrap{width:100%; max-width:var(--cards-max, 760px);}
 :where(.cn-cards) .row{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;}
 /* responsive, no JS */
 /* ---- canonical arrow-link atom (verbatim from Links.reference.html) ---- */
@@ -1885,7 +1887,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-notifications) :is(button, :where(.cn-notifications) a, :where(.cn-notifications) label, :where(.cn-notifications) span, :where(.cn-notifications) small, :where(.cn-notifications) strong, :where(.cn-notifications) em, :where(.cn-notifications) b, :where(.cn-notifications) i, :where(.cn-notifications) th, :where(.cn-notifications) td, :where(.cn-notifications) dt, :where(.cn-notifications) dd, :where(.cn-notifications) li, :where(.cn-notifications) figcaption, :where(.cn-notifications) legend, :where(.cn-notifications) caption, :where(.cn-notifications) summary, :where(.cn-notifications) output, :where(.cn-notifications) time, :where(.cn-notifications) input[type=text], :where(.cn-notifications) input[type=search], :where(.cn-notifications) input[type=email], :where(.cn-notifications) input[type=tel], :where(.cn-notifications) input[type=url], :where(.cn-notifications) input[type=password], :where(.cn-notifications) input[type=number], :where(.cn-notifications) input:not([type]), :where(.cn-notifications) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 :where(.cn-notifications) h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.9rem 0 .7rem;}
-:where(.cn-notifications) .nwrap{width:var(--demo-width, 540px); max-width:100%; container-type:inline-size;}
+:where(.cn-notifications) .nwrap{width:100%; max-width:var(--nwrap-max, 540px); container-type:inline-size;}
 /* per-variant tokens */
 :where(.cn-notifications) .err{--accent:var(--err); --tint:var(--err-t); --gtext:#FFFFFF;}
 :where(.cn-notifications) .warn{--accent:var(--warn); --tint:var(--warn-t); --gtext:#333333;}
@@ -2314,7 +2316,7 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-progress-tracker) :is(button, :where(.cn-progress-tracker) a, :where(.cn-progress-tracker) label, :where(.cn-progress-tracker) span, :where(.cn-progress-tracker) small, :where(.cn-progress-tracker) strong, :where(.cn-progress-tracker) em, :where(.cn-progress-tracker) b, :where(.cn-progress-tracker) i, :where(.cn-progress-tracker) th, :where(.cn-progress-tracker) td, :where(.cn-progress-tracker) dt, :where(.cn-progress-tracker) dd, :where(.cn-progress-tracker) li, :where(.cn-progress-tracker) figcaption, :where(.cn-progress-tracker) legend, :where(.cn-progress-tracker) caption, :where(.cn-progress-tracker) summary, :where(.cn-progress-tracker) output, :where(.cn-progress-tracker) time, :where(.cn-progress-tracker) input[type=text], :where(.cn-progress-tracker) input[type=search], :where(.cn-progress-tracker) input[type=email], :where(.cn-progress-tracker) input[type=tel], :where(.cn-progress-tracker) input[type=url], :where(.cn-progress-tracker) input[type=password], :where(.cn-progress-tracker) input[type=number], :where(.cn-progress-tracker) input:not([type]), :where(.cn-progress-tracker) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-progress-tracker) .pt{width:var(--demo-width, 520px); max-width:100%; container-type:inline-size;}
+:where(.cn-progress-tracker) .pt{width:100%; max-width:var(--pt-max, 520px); container-type:inline-size;}
 /* persistent announcement — visually hidden, lives OUTSIDE both renderings so step
      changes announce whichever form is showing */
 :where(.cn-progress-tracker) .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
@@ -2466,7 +2468,7 @@
 :where(.cn-links) a.icon-lnk[aria-disabled="true"]{color:var(--text-disabled); pointer-events:none;}
 :where(.cn-links) a.icon-lnk[aria-disabled="true"] .ic{color:var(--text-disabled);}
 /* RESPONSIVE related-links list (footer / utility pattern) */
-:where(.cn-links) .related{width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
+:where(.cn-links) .related{width:100%; max-width:var(--demo-width, 560px);   /* --demo-width kept BY NAME: it is a declared RUNTIME var (_validate_compose.py RUNTIME_VARS) written onto #related by knowledge/_render_links.py; the 560px is a real component default, so nothing outside this file is required for it to render */ container-type:inline-size;
     border:1px solid var(--text-disabled); padding:12px 16px;}
 :where(.cn-links) .related ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px 28px;}
 :where(.cn-links) .related a{color:var(--text);}
@@ -2533,7 +2535,7 @@
 /* V1 dismiss — collapse + fade so neighbours reflow smoothly */
 :where(.cn-tags) .tag.removing{max-width:0 !important; opacity:0; margin-right:0 !important; padding-left:0; padding-right:0; border-width:0; transform:scale(.95);}
 /* RESPONSIVE applied-filters bar */
-:where(.cn-tags) .filterbar{width:var(--demo-width, 560px); max-width:100%; container-type:inline-size; border:1px solid var(--border); padding:12px;}
+:where(.cn-tags) .filterbar{--filterbar-w:560px; width:var(--filterbar-w); max-width:100%; container-type:inline-size; border:1px solid var(--border); padding:12px;}
 :where(.cn-tags) .filterbar .row{gap:0;}
 /* chips carry margin so the dismiss collapse is smooth */
 :where(.cn-tags) .filterbar .tag{margin:0 8px 8px 0;}
@@ -2590,7 +2592,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-status-indicator) :is(button, :where(.cn-status-indicator) a, :where(.cn-status-indicator) label, :where(.cn-status-indicator) span, :where(.cn-status-indicator) small, :where(.cn-status-indicator) strong, :where(.cn-status-indicator) em, :where(.cn-status-indicator) b, :where(.cn-status-indicator) i, :where(.cn-status-indicator) th, :where(.cn-status-indicator) td, :where(.cn-status-indicator) dt, :where(.cn-status-indicator) dd, :where(.cn-status-indicator) li, :where(.cn-status-indicator) figcaption, :where(.cn-status-indicator) legend, :where(.cn-status-indicator) caption, :where(.cn-status-indicator) summary, :where(.cn-status-indicator) output, :where(.cn-status-indicator) time, :where(.cn-status-indicator) input[type=text], :where(.cn-status-indicator) input[type=search], :where(.cn-status-indicator) input[type=email], :where(.cn-status-indicator) input[type=tel], :where(.cn-status-indicator) input[type=url], :where(.cn-status-indicator) input[type=password], :where(.cn-status-indicator) input[type=number], :where(.cn-status-indicator) input:not([type]), :where(.cn-status-indicator) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 :where(.cn-status-indicator) h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 16px;}
-:where(.cn-status-indicator) .wrap{width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+:where(.cn-status-indicator) .wrap{--si-w:460px; width:var(--si-w); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
 /* ---- form A: inline dot + label ---- */
 :where(.cn-status-indicator) .stat{display:flex; align-items:center; gap:12px; margin:12px 0; font:400 16px/1.3 var(--font); color:var(--label);}
 :where(.cn-status-indicator) .dot{width:12px; height:12px; border-radius:50%; flex:none;}
@@ -2769,6 +2771,7 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-table) :is(button, :where(.cn-table) a, :where(.cn-table) label, :where(.cn-table) span, :where(.cn-table) small, :where(.cn-table) strong, :where(.cn-table) em, :where(.cn-table) b, :where(.cn-table) i, :where(.cn-table) th, :where(.cn-table) td, :where(.cn-table) dt, :where(.cn-table) dd, :where(.cn-table) li, :where(.cn-table) figcaption, :where(.cn-table) legend, :where(.cn-table) caption, :where(.cn-table) summary, :where(.cn-table) output, :where(.cn-table) time, :where(.cn-table) input[type=text], :where(.cn-table) input[type=search], :where(.cn-table) input[type=email], :where(.cn-table) input[type=tel], :where(.cn-table) input[type=url], :where(.cn-table) input[type=password], :where(.cn-table) input[type=number], :where(.cn-table) input:not([type]), :where(.cn-table) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- demo controls ---- */
 /* segmented control — headerType variant switcher (the active segment is disabled = a real state) */
 :where(.cn-table) .seg{display:inline-flex; border:1px solid var(--border);}
@@ -2781,8 +2784,9 @@
 :where(.cn-table) .seg button[aria-pressed="true"]{background:var(--header); font-weight:500;}
 :where(.cn-table) .seg button:disabled{cursor:default;}
 /* the current variant can't be re-selected */
+/* ===== APOLLO-DEMO css END ===== */
 /* ---- the table (horizontal / data-table form) ---- */
-:where(.cn-table) .wrap{width:var(--demo-width, 760px); max-width:100%; container-type:inline-size;}
+:where(.cn-table) .wrap{--table-w:760px; width:var(--table-w); max-width:100%; container-type:inline-size;}
 :where(.cn-table) .scroll{overflow-x:auto; transition:box-shadow var(--ease);}
 :where(.cn-table) .scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :where(.cn-table) table{border-collapse:collapse; width:100%; background:var(--cell); border:1px solid var(--border); border-radius:var(--border-radius-surface);}
@@ -2893,7 +2897,7 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-tabs) :is(button, :where(.cn-tabs) a, :where(.cn-tabs) label, :where(.cn-tabs) span, :where(.cn-tabs) small, :where(.cn-tabs) strong, :where(.cn-tabs) em, :where(.cn-tabs) b, :where(.cn-tabs) i, :where(.cn-tabs) th, :where(.cn-tabs) td, :where(.cn-tabs) dt, :where(.cn-tabs) dd, :where(.cn-tabs) li, :where(.cn-tabs) figcaption, :where(.cn-tabs) legend, :where(.cn-tabs) caption, :where(.cn-tabs) summary, :where(.cn-tabs) output, :where(.cn-tabs) time, :where(.cn-tabs) input[type=text], :where(.cn-tabs) input[type=search], :where(.cn-tabs) input[type=email], :where(.cn-tabs) input[type=tel], :where(.cn-tabs) input[type=url], :where(.cn-tabs) input[type=password], :where(.cn-tabs) input[type=number], :where(.cn-tabs) input:not([type]), :where(.cn-tabs) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-tabs) .tabs{width:var(--demo-width, 640px); max-width:100%;}
+:where(.cn-tabs) .tabs{--tabs-w:640px; width:var(--tabs-w); max-width:100%;}
 :where(.cn-tabs) .tablist{position:relative; display:flex; gap:var(--tab-gap); align-items:stretch;
     background:var(--tabs-background); border-bottom:var(--track-h) solid var(--tabs-standard-border);}
 :where(.cn-tabs) .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:var(--border-radius-control); flex:0 0 auto;
@@ -3003,7 +3007,7 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-selection-controls) :is(button, :where(.cn-selection-controls) a, :where(.cn-selection-controls) label, :where(.cn-selection-controls) span, :where(.cn-selection-controls) small, :where(.cn-selection-controls) strong, :where(.cn-selection-controls) em, :where(.cn-selection-controls) b, :where(.cn-selection-controls) i, :where(.cn-selection-controls) th, :where(.cn-selection-controls) td, :where(.cn-selection-controls) dt, :where(.cn-selection-controls) dd, :where(.cn-selection-controls) li, :where(.cn-selection-controls) figcaption, :where(.cn-selection-controls) legend, :where(.cn-selection-controls) caption, :where(.cn-selection-controls) summary, :where(.cn-selection-controls) output, :where(.cn-selection-controls) time, :where(.cn-selection-controls) input[type=text], :where(.cn-selection-controls) input[type=search], :where(.cn-selection-controls) input[type=email], :where(.cn-selection-controls) input[type=tel], :where(.cn-selection-controls) input[type=url], :where(.cn-selection-controls) input[type=password], :where(.cn-selection-controls) input[type=number], :where(.cn-selection-controls) input:not([type]), :where(.cn-selection-controls) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
-:where(.cn-selection-controls) .sc{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
+:where(.cn-selection-controls) .sc{width:100%; max-width:var(--sc-max, 720px); container-type:inline-size;}
 :where(.cn-selection-controls) h2{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.75rem 0 .7rem;}
 :where(.cn-selection-controls) fieldset{border:0; margin:0; padding:0;}
 :where(.cn-selection-controls) legend{padding:0; font:500 var(--fs)/1.3 var(--font);}
@@ -4068,7 +4072,8 @@
 :where(.cn-action-bar) :is(button, :where(.cn-action-bar) a, :where(.cn-action-bar) label, :where(.cn-action-bar) span, :where(.cn-action-bar) small, :where(.cn-action-bar) strong, :where(.cn-action-bar) em, :where(.cn-action-bar) b, :where(.cn-action-bar) i, :where(.cn-action-bar) th, :where(.cn-action-bar) td, :where(.cn-action-bar) dt, :where(.cn-action-bar) dd, :where(.cn-action-bar) li, :where(.cn-action-bar) figcaption, :where(.cn-action-bar) legend, :where(.cn-action-bar) caption, :where(.cn-action-bar) summary, :where(.cn-action-bar) output, :where(.cn-action-bar) time, :where(.cn-action-bar) input[type=text], :where(.cn-action-bar) input[type=search], :where(.cn-action-bar) input[type=email], :where(.cn-action-bar) input[type=tel], :where(.cn-action-bar) input[type=url], :where(.cn-action-bar) input[type=password], :where(.cn-action-bar) input[type=number], :where(.cn-action-bar) input:not([type]), :where(.cn-action-bar) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* motion/duration/press + motion/easing/out — snappy depress */
 /* ---- Action bar ---- */
-:where(.cn-action-bar) .action-bar-region{width:var(--demo-width, 100%); max-width:100%; container-type:inline-size;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 100%)). */
+:where(.cn-action-bar) .action-bar-region{width:100%; max-width:100%; container-type:inline-size;}
 /* container-query boundary */
 :where(.cn-action-bar) .action-bar{display:flex; gap:12px; justify-content:flex-end; align-items:center; padding:12px 16px; background:var(--surface); border-top:1px solid var(--border);}
 :where(.cn-action-bar) .action-bar--sticky{position:sticky; bottom:0;}
@@ -4171,7 +4176,8 @@
      --warn-t #3C2C13→#614C1C, --ok-t #12291D→#32533F, --info-t #092131→#38475C. --warn/--warn-t(light)
      were already current (s134-D3 #E0A61F applied). */
 :where(.cn-alert) h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
-:where(.cn-alert) .awrap{width:var(--demo-width, 560px); max-width:100%;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 560px)). */
+:where(.cn-alert) .awrap{width:100%; max-width:var(--alert-max, 560px);}
 /* per-status tokens — accent (glyph/border) + tint (surface); retrieval only, R-D20 */
 :where(.cn-alert) .alert.err{--accent:var(--err); --tint:var(--err-t);}
 :where(.cn-alert) .alert.warn{--accent:var(--warn); --tint:var(--warn-t);}
@@ -4306,13 +4312,15 @@
 :where(.cn-amount-display) .amount--positive{color:var(--success-ink);}
 /* redacted (privacy) — value masked; context via aria-label on the element */
 :where(.cn-amount-display) .amount--redacted{color:var(--muted); letter-spacing:.08em;}
-/* right-aligned tabular column — proves the figures line up (the reason they are tabular) */
-:where(.cn-amount-display) .col-demo{display:inline-flex; flex-direction:column; gap:8px; align-items:flex-end;
-    border-left:1px solid var(--border); padding-left:16px;}
 :where(.cn-amount-display) .prose{font:400 16px/1.5 var(--font); max-width:52ch; color:var(--text);}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* right-aligned tabular column — proves the figures line up (the reason they are tabular) */
+:where(.cn-amount-display) .col-demo{display:inline-flex; flex-direction:column; gap:8px; align-items:flex-end;
+    border-left:1px solid var(--border); padding-left:16px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Amount-input  (from snippets/Amount-input.reference.html)
@@ -4951,7 +4959,7 @@
 
 /* ============================================================
    App-shell-multi-column  (from snippets/App-shell-multi-column.reference.html)
-   Aria: <nav, aria-label, aria-current, aria-labelledby, aria-busy, role="status", aria-hidden="true", <h1
+   Aria: <nav, aria-label, aria-current, aria-labelledby, aria-busy, role="status", aria-hidden="true", <h1, role="contentinfo"
    Finding: THE LIBRARY HAS NO SELECTED LIST ROW, AND THAT IS THIS FILE'S FINDING. Probe, run: grep -c 'aria-current\|aria-selected' knowledge/snippets/List-items.reference.html -> 0. List-items is gated and promoted and models default, hover, pressed, disabled and processing; it models no selected or current state. A list/detail frame cannot exist without one. The atom borrowed instead is Sidebar-nav's .sn-link, which is the one gated atom in the corpus that carries 'you are here' on THREE independent channels - aria-current for AT, a 3px leading bar that is a SHAPE present or absent, and a surface change, colour only third. PROPOSED #210: keep it, or give List-items a selected state, or make the list a real role=listbox with aria-selected. Dave's.
    Finding: ONE DECLARED SELECTOR WIDENING, AN ADDITION AND NOT AN EDIT: Sidebar-nav writes .sn-link[aria-current="page"]; a row inside a list is aria-current="true" because a pane is not a document. This file adds .sn-link[aria-current] with the SAME declarations. Sidebar-nav was not touched. Probe: grep -c 'sn-link\[aria-current\]' knowledge/snippets/Sidebar-nav.reference.html -> 0.
    Finding: ONE DECLARED GEOMETRY ADDITION: a list row carries two lines, so .sh-list-body .sn-link grows min-height 44 -> 64 with 12px vertical padding, and gains a .sn-stack column plus a .sn-sub-label secondary line. Additive only - no borrowed declaration is overridden, and the row is still >= 44px.
@@ -5086,6 +5094,26 @@
 :where(.cn-app-shell-multi-column) .bone.body{height:24px;}
 :where(.cn-app-shell-multi-column) .bone.media{height:160px;}
 :where(.cn-app-shell-multi-column) .bone.control{height:44px; width:120px;}
+/* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ----
+     ⬛ PLACEMENT (#258, Dave: "the page shells should include the footer"). The footer is the last
+     child of `.sh` and spans ALL THREE PANES, because in a multi-column shell the rail, the list
+     and the detail are PEERS — none of them is "the content column". A legal bar under the detail
+     pane alone would read as belonging to the selected account rather than to the page. Each pane
+     scrolls internally (`.sh-list-body` / `.sh-detail-body` carry the `overflow-y:auto`), so a
+     footer outside them is pinned to the frame's floor and is reachable at every scroll position.
+     ⚠ This is the App-shell-top-nav arrangement (direct child of `.sh`), not the nav-rail one —
+     the two differ because top-nav has one content column and nav-rail has a rail to stop at. */
+:where(.cn-app-shell-multi-column) .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 24px;}
+:where(.cn-app-shell-multi-column) .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+:where(.cn-app-shell-multi-column) .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+/* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+:where(.cn-app-shell-multi-column) .sh-legal li{display:flex;}
+:where(.cn-app-shell-multi-column) .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+:where(.cn-app-shell-multi-column) .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+:where(.cn-app-shell-multi-column) .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+:where(.cn-app-shell-multi-column) .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
 /* ---- the LOADING region: Skeleton-loader VERBATIM, shimmer and all ---- */
 :where(.cn-app-shell-multi-column) .skwrap{display:flex; flex-direction:column; gap:8px;}
 :where(.cn-app-shell-multi-column) .skwrap .bone{background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
@@ -5459,7 +5487,7 @@
 
 /* ============================================================
    App-shell-side-nav  (from snippets/App-shell-side-nav.reference.html)
-   Aria: <nav, aria-label, aria-current="page", aria-expanded, aria-controls, aria-labelledby, role="dialog", aria-modal, <main, <h1
+   Aria: <nav, aria-label, aria-current="page", aria-expanded, aria-controls, aria-labelledby, role="dialog", aria-modal, <main, <h1, role="contentinfo"
    Finding: THE NAV COLUMN IS Sidebar-nav.reference.html VERBATIM - the whole .sn-* rule set, the sprite symbols, the markup shape, the three current-location carriers (aria-current + a 3px leading SHAPE bar + a surface change, colour third and never alone), and the .is-rail clip-path collapse that preserves accessible names. The app bar is Navigations' masthead geometry at the 56px in-app height Headers uses. The breadcrumb atom is Breadcrumbs verbatim. The bones are Skeleton-loader's shape kit. The off-canvas mechanics are Drawer's, mirrored left. NO PARENT FILE WAS EDITED.
    Finding: WHAT THIS FILE ADDS THAT Sidebar-nav CANNOT HAVE: the RULE that decides which state you get. Sidebar-nav ships expanded and rail as two static specimens with a toggle that has no script - it is the component. This is the frame, and the frame owns the collapse: >=1040cqi expanded, 720-1039cqi rail, <720cqi off-canvas. That is the whole reason a shell is a separate artefact from the nav inside it.
    Finding: PRECEDENCE, PROPOSED: the container query sets the DEFAULT, the user's toggle OVERRIDES it inside the band where both states are legal (data-nav="expanded"|"rail" on the shell beats data-nav="auto"), and the narrowest band wins outright because below 720cqi there is no rail to be in. Three-way precedence is a real design decision and it is Dave's.
@@ -5595,6 +5623,28 @@
 :where(.cn-app-shell-side-nav) .bone.body{height:24px;}
 :where(.cn-app-shell-side-nav) .bone.media{height:160px;}
 :where(.cn-app-shell-side-nav) .bone.control{height:44px; width:120px;}
+/* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ----
+     ⬛ PLACEMENT (#258, Dave: "the page shells should include the footer"). The footer is a child
+     of `.sh-content`, NOT of `.sh-body` — so it spans the CONTENT COLUMN and stops at the nav
+     column's edge. That is App-shell-nav-rail.reference.html's own arrangement (its `.sh-foot`
+     sits inside `.sh-body`'s content column, never under the rail), and the reason is the same
+     in both: the nav column is full-bleed chrome that runs floor-to-ceiling, and a legal bar
+     drawn UNDER it would cut the navigation off at the ankles and imply the nav had ended.
+     ⚠ DECLARED DIFFERENCE FROM nav-rail: `.sh-content` is the scroll container here
+     (`overflow-y:auto`), so this footer travels with the content rather than being pinned to the
+     frame's floor. That is the document-end reading of a legal bar and is deliberate; pinning it
+     would need a second scroll container, which is a layout change this lane did not make. */
+:where(.cn-app-shell-side-nav) .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 24px;}
+:where(.cn-app-shell-side-nav) .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+:where(.cn-app-shell-side-nav) .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+/* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+:where(.cn-app-shell-side-nav) .sh-legal li{display:flex;}
+:where(.cn-app-shell-side-nav) .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+:where(.cn-app-shell-side-nav) .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+:where(.cn-app-shell-side-nav) .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+:where(.cn-app-shell-side-nav) .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
 /* ============================================================================================
      THE NAV COLUMN — every rule below is Sidebar-nav.reference.html, VERBATIM.
      ============================================================================================ */
@@ -6288,11 +6338,6 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
 :where(.cn-avatar-group) :is(button, :where(.cn-avatar-group) a, :where(.cn-avatar-group) label, :where(.cn-avatar-group) span, :where(.cn-avatar-group) small, :where(.cn-avatar-group) strong, :where(.cn-avatar-group) b, :where(.cn-avatar-group) th, :where(.cn-avatar-group) td, :where(.cn-avatar-group) dt, :where(.cn-avatar-group) dd, :where(.cn-avatar-group) li, :where(.cn-avatar-group) figcaption, :where(.cn-avatar-group) legend, :where(.cn-avatar-group) caption, :where(.cn-avatar-group) summary, :where(.cn-avatar-group) output, :where(.cn-avatar-group) time, :where(.cn-avatar-group) input[type=text], :where(.cn-avatar-group) input[type=search], :where(.cn-avatar-group) input[type=email], :where(.cn-avatar-group) input[type=tel], :where(.cn-avatar-group) input[type=url], :where(.cn-avatar-group) input[type=password], :where(.cn-avatar-group) input[type=number], :where(.cn-avatar-group) input:not([type]), :where(.cn-avatar-group) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NO raw font-family on body — every text element carries a composite (Progress-bar precedent). */
-:where(.cn-avatar-group) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-avatar-group) .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:44rem;}
-:where(.cn-avatar-group) .demo-card{background:var(--card); border:1px solid var(--card-border);
-    border-radius:var(--border-radius-surface); padding:16px; display:inline-block;}
 :where(.cn-avatar-group) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ---- the disc — Avatar.reference verbatim (round exemption, same surface/ring/text tokens) ---- */
@@ -6357,6 +6402,13 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-avatar-group) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-avatar-group) .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:44rem;}
+:where(.cn-avatar-group) .demo-card{background:var(--card); border:1px solid var(--card-border);
+    border-radius:var(--border-radius-surface); padding:16px; display:inline-block;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Back-to-top  (from snippets/Back-to-top.reference.html)
@@ -6511,7 +6563,8 @@
 :where(.cn-banner) .is-info{--mark: var(--mark-info);}
 /* ===== AUTO-TOKENS END ===== */
 :where(.cn-banner) h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
-:where(.cn-banner) .bwrap{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 720px)). */
+:where(.cn-banner) .bwrap{width:100%; max-width:var(--banner-max, 720px); container-type:inline-size;}
 /* per-variant fill + ink — each ink is its most specific ruled role (see header) */
 /* s149-D1 (Dave, #149): MONO ONLY — error joins the ink camp, fill STAYS #F6604C, ink #1A1A1A
      (5.55:1). AMENDS s130-D4's #B92F1E fill move, which is DROPPED for mono — #B92F1E fails black
@@ -6662,7 +6715,6 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-cta-lockup) :is(button, :where(.cn-cta-lockup) a, :where(.cn-cta-lockup) label, :where(.cn-cta-lockup) span, :where(.cn-cta-lockup) small, :where(.cn-cta-lockup) strong, :where(.cn-cta-lockup) em, :where(.cn-cta-lockup) b, :where(.cn-cta-lockup) i, :where(.cn-cta-lockup) th, :where(.cn-cta-lockup) td, :where(.cn-cta-lockup) dt, :where(.cn-cta-lockup) dd, :where(.cn-cta-lockup) li, :where(.cn-cta-lockup) figcaption, :where(.cn-cta-lockup) legend, :where(.cn-cta-lockup) caption, :where(.cn-cta-lockup) summary, :where(.cn-cta-lockup) output, :where(.cn-cta-lockup) time, :where(.cn-cta-lockup) input[type=text], :where(.cn-cta-lockup) input[type=search], :where(.cn-cta-lockup) input[type=email], :where(.cn-cta-lockup) input[type=tel], :where(.cn-cta-lockup) input[type=url], :where(.cn-cta-lockup) input[type=password], :where(.cn-cta-lockup) input[type=number], :where(.cn-cta-lockup) input:not([type]), :where(.cn-cta-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 :where(.cn-cta-lockup) h2.spec-h{margin:2.5rem 0 1rem;}
-:where(.cn-cta-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Button.reference.html, verbatim (.btn + primary/secondary + press-physics partial) ===== */
 /* .btn's font+box declarations are OMITTED here exactly as they are in Button.reference.html
      itself — canon/type.css already binds `.btn` into its `.t-cm-button`/`.t-cm-slot` composite
@@ -6713,12 +6765,18 @@
 :where(.cn-cta-lockup) .ctal-actions .btn{width:100%;}
 }
 /* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
-:where(.cn-cta-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
-:where(.cn-cta-lockup) .demo-col{width:var(--demo-width, 900px); max-width:100%; border:1px dashed var(--divider); padding:20px;}
 :where(.cn-cta-lockup) .demo-tier{border-top:1px solid var(--divider); padding-top:8px; margin:0 0 4px;}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-cta-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+:where(.cn-cta-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
+/* s258-D3: the demo frame's width is now a fenced modifier class, not an inline
+     --demo-width dial that travelled with the copied markup. */
+:where(.cn-cta-lockup) .demo-col{width:900px; max-width:100%; border:1px dashed var(--divider); padding:20px;}
+:where(.cn-cta-lockup) .demo-col.w640{width:640px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Calendar  (from snippets/Calendar.reference.html)
@@ -6900,10 +6958,6 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-card-header-lockup) :is(button, :where(.cn-card-header-lockup) a, :where(.cn-card-header-lockup) label, :where(.cn-card-header-lockup) span, :where(.cn-card-header-lockup) small, :where(.cn-card-header-lockup) strong, :where(.cn-card-header-lockup) em, :where(.cn-card-header-lockup) b, :where(.cn-card-header-lockup) i, :where(.cn-card-header-lockup) th, :where(.cn-card-header-lockup) td, :where(.cn-card-header-lockup) dt, :where(.cn-card-header-lockup) dd, :where(.cn-card-header-lockup) li, :where(.cn-card-header-lockup) figcaption, :where(.cn-card-header-lockup) legend, :where(.cn-card-header-lockup) caption, :where(.cn-card-header-lockup) summary, :where(.cn-card-header-lockup) output, :where(.cn-card-header-lockup) time, :where(.cn-card-header-lockup) input[type=text], :where(.cn-card-header-lockup) input[type=search], :where(.cn-card-header-lockup) input[type=email], :where(.cn-card-header-lockup) input[type=tel], :where(.cn-card-header-lockup) input[type=url], :where(.cn-card-header-lockup) input[type=password], :where(.cn-card-header-lockup) input[type=number], :where(.cn-card-header-lockup) input:not([type]), :where(.cn-card-header-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: no raw font-family on body (TYPE-002/DEF-006) — every text element carries a composite. */
-:where(.cn-card-header-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-:where(.cn-card-header-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
-:where(.cn-card-header-lockup) .demo-frame{width:320px; max-width:100%;}
-:where(.cn-card-header-lockup) .demo-frame.narrow{width:230px;}
 /* ---- borrowed verbatim: Cards' `.card` surface + action-card body padding ---- */
 :where(.cn-card-header-lockup) .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
     container-type:inline-size; display:flex; flex-direction:column; padding-top:12px;}
@@ -6953,6 +7007,12 @@
 @media (prefers-reduced-motion: reduce){
 :where(.cn-card-header-lockup) .iconbtn:hover, :where(.cn-card-header-lockup) .iconbtn:active{transform:none !important; filter:none !important;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-card-header-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+:where(.cn-card-header-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
+:where(.cn-card-header-lockup) .demo-frame{width:320px; max-width:100%;}
+:where(.cn-card-header-lockup) .demo-frame.narrow{width:230px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Carousel  (from snippets/Carousel.reference.html)
@@ -7005,12 +7065,11 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. */
 :where(.cn-carousel) :is(button, :where(.cn-carousel) a, :where(.cn-carousel) label, :where(.cn-carousel) span, :where(.cn-carousel) small, :where(.cn-carousel) strong, :where(.cn-carousel) em, :where(.cn-carousel) b, :where(.cn-carousel) i, :where(.cn-carousel) th, :where(.cn-carousel) td, :where(.cn-carousel) dt, :where(.cn-carousel) dd, :where(.cn-carousel) li, :where(.cn-carousel) figcaption, :where(.cn-carousel) legend, :where(.cn-carousel) caption, :where(.cn-carousel) summary, :where(.cn-carousel) output, :where(.cn-carousel) time, :where(.cn-carousel) input[type=text], :where(.cn-carousel) input[type=search], :where(.cn-carousel) input[type=email], :where(.cn-carousel) input[type=tel], :where(.cn-carousel) input[type=url], :where(.cn-carousel) input[type=password], :where(.cn-carousel) input[type=number], :where(.cn-carousel) input:not([type]), :where(.cn-carousel) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-carousel) h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
-:where(.cn-carousel) p.demo-note{font-size:12px; opacity:var(--alpha-56); max-width:56ch; margin:.75rem 0 0;}
 :where(.cn-carousel) .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
 /* ===== shared carousel shell ===== */
-:where(.cn-carousel) .carousel{width:var(--demo-width, 560px); max-width:100%;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 560px)). */
+:where(.cn-carousel) .carousel{width:100%; max-width:var(--carousel-max, 560px);}
 :where(.cn-carousel) .cr-viewport{position:relative; overflow:hidden; border:1px solid var(--border); border-radius:var(--border-radius-surface); background:var(--surface);}
 :where(.cn-carousel) .cr-track{display:flex; margin:0; padding:0; list-style:none;}
 :where(.cn-carousel) .cr-slide{flex:0 0 100%;}
@@ -7049,6 +7108,10 @@
 @media (prefers-reduced-motion: reduce){
 :where(.cn-carousel) .cr-standard .cr-track{transition:none !important;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-carousel) h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
+:where(.cn-carousel) p.demo-note{font-size:12px; opacity:var(--alpha-56); max-width:56ch; margin:.75rem 0 0;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Cascader  (from snippets/Cascader.reference.html)
@@ -7116,10 +7179,6 @@
 :where(.cn-cascader) .note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 :where(.cn-cascader) .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 :where(.cn-cascader) .sr-live{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
-/* DEMO CHROME ONLY — the component itself declares no max-width (width is the container's,
-     the s210-D3 discipline applied as convention). Remove this wrapper in production. */
-:where(.cn-cascader) .demo-w{max-width:520px;}
-:where(.cn-cascader) .demo-w.wide{max-width:760px;}
 /* ---------- the trigger: Dropdown/Multi-select boxed field, copied ---------- */
 :where(.cn-cascader) .cs{position:relative; margin:0 0 32px;}
 :where(.cn-cascader) .cs-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
@@ -7223,8 +7282,17 @@
 
 }
 @media (max-width:480px){
+
+}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* DEMO CHROME ONLY — the component itself declares no max-width (width is the container's,
+     the s210-D3 discipline applied as convention). Remove this wrapper in production. */
+:where(.cn-cascader) .demo-w{max-width:520px;}
+:where(.cn-cascader) .demo-w.wide{max-width:760px;}
+@media (max-width:480px){
 :where(.cn-cascader) .demo-w, :where(.cn-cascader) .demo-w.wide{max-width:none;}
 }
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Chart-bar  (from snippets/Chart-bar.reference.html)
@@ -10315,30 +10383,12 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-data-grid) :is(button, :where(.cn-data-grid) a, :where(.cn-data-grid) label, :where(.cn-data-grid) span, :where(.cn-data-grid) small, :where(.cn-data-grid) strong, :where(.cn-data-grid) em, :where(.cn-data-grid) b, :where(.cn-data-grid) i, :where(.cn-data-grid) th, :where(.cn-data-grid) td, :where(.cn-data-grid) dt, :where(.cn-data-grid) dd, :where(.cn-data-grid) li, :where(.cn-data-grid) figcaption, :where(.cn-data-grid) legend, :where(.cn-data-grid) caption, :where(.cn-data-grid) summary, :where(.cn-data-grid) output, :where(.cn-data-grid) time, :where(.cn-data-grid) input[type=text], :where(.cn-data-grid) input[type=search], :where(.cn-data-grid) input[type=email], :where(.cn-data-grid) input[type=tel], :where(.cn-data-grid) input[type=url], :where(.cn-data-grid) input[type=password], :where(.cn-data-grid) input[type=number], :where(.cn-data-grid) input:not([type]), :where(.cn-data-grid) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-/* ---- demo controls (harness chrome, not the component) ---- */
-/* namespaced .dgseg — .seg is a type.css-bound blast radius this file must not join (gate-caught) */
-/* margin-bottom 28px (#210, PROPOSED): the switcher sat FLUSH on the "Transactions" section
-     label (0.00px measured). 28px = 1.75rem, the repo's demo-chrome-above-a-section-label value
-     (Button, Split-button, Toast all measure 28px for the same relationship); on-grid. */
-:where(.cn-data-grid) .dgseg{display:inline-flex; border:1px solid var(--fborder); margin:0 0 28px;}
-/* TYPE-002 (γ's #218 finding, enacted lane cB). `font:inherit` is EXEMPT from the gate, but
-     it also out-specifies (0,1,1) any composite class put on the element, so it had to go for
-     the composite to be anything but inert decoration — the Skeleton lesson. The two states
-     now name their own ramp step instead of overriding weight raw: unpressed = .t-cm-ctl-16
-     (16/400), pressed = .t-cm-button (16/500) — the SAME size and weight the raw rules
-     produced, measured before and after. The classes are toggled by the handler that already
-     toggles aria-pressed, so state has exactly one writer. */
-:where(.cn-data-grid) .dgseg button{padding:8px 12px; border:0; border-left:1px solid var(--fborder);
-    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
-:where(.cn-data-grid) .dgseg button:first-child{border-left:0;}
-:where(.cn-data-grid) .dgseg button:hover{background:var(--hover);}
-:where(.cn-data-grid) .dgseg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-data-grid) .dgseg button[aria-pressed="true"]{background:var(--header);}
-:where(.cn-data-grid) .dgseg button:disabled{cursor:default;}
 :where(.cn-data-grid) .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
 /* ================= THE GRID ================= */
-:where(.cn-data-grid) .dg{width:var(--demo-width, 760px); max-width:100%;}
+/* s258-D3: the width is a REAL component default (--dg-max), not a demo dial. It used to read
+     var(--demo-width, 760px), which travelled into generated pages and collapsed the grid. */
+:where(.cn-data-grid) .dg{width:100%; max-width:var(--dg-max, 760px);}
 :where(.cn-data-grid) .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
 :where(.cn-data-grid) .dg-count{opacity:var(--alpha-60); margin-left:auto;}
 /* toolbar — search filter.
@@ -10483,6 +10533,28 @@
 :where(.cn-data-grid) :is(.dg .sort, :where(.cn-data-grid) .dg .fchip .x, :where(.cn-data-grid) .dg .clearbtn, :where(.cn-data-grid) .dg .pbtn):hover, :where(.cn-data-grid) :is(.dg .sort, :where(.cn-data-grid) .dg .fchip .x, :where(.cn-data-grid) .dg .clearbtn, :where(.cn-data-grid) .dg .pbtn):active{transform:none !important; filter:none !important;}
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* ---- demo controls (harness chrome, not the component) ---- */
+/* namespaced .dgseg — .seg is a type.css-bound blast radius this file must not join (gate-caught) */
+/* margin-bottom 28px (#210, PROPOSED): the switcher sat FLUSH on the "Transactions" section
+     label (0.00px measured). 28px = 1.75rem, the repo's demo-chrome-above-a-section-label value
+     (Button, Split-button, Toast all measure 28px for the same relationship); on-grid. */
+:where(.cn-data-grid) .dgseg{display:inline-flex; border:1px solid var(--fborder); margin:0 0 28px;}
+/* TYPE-002 (γ's #218 finding, enacted lane cB). `font:inherit` is EXEMPT from the gate, but
+     it also out-specifies (0,1,1) any composite class put on the element, so it had to go for
+     the composite to be anything but inert decoration — the Skeleton lesson. The two states
+     now name their own ramp step instead of overriding weight raw: unpressed = .t-cm-ctl-16
+     (16/400), pressed = .t-cm-button (16/500) — the SAME size and weight the raw rules
+     produced, measured before and after. The classes are toggled by the handler that already
+     toggles aria-pressed, so state has exactly one writer. */
+:where(.cn-data-grid) .dgseg button{padding:8px 12px; border:0; border-left:1px solid var(--fborder);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+:where(.cn-data-grid) .dgseg button:first-child{border-left:0;}
+:where(.cn-data-grid) .dgseg button:hover{background:var(--hover);}
+:where(.cn-data-grid) .dgseg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-data-grid) .dgseg button[aria-pressed="true"]{background:var(--header);}
+:where(.cn-data-grid) .dgseg button:disabled{cursor:default;}
+/* ===== APOLLO-DEMO css END ===== */
 :where(.cn-data-grid) .hint{margin-top:16px; font:400 12px/1.5 var(--font); color:var(--text); opacity:var(--alpha-60); max-width:64ch;}
 :where(.cn-data-grid) .hint kbd{font:inherit; border:1px solid var(--border); padding:1px 4px; border-radius:var(--border-radius-indicator);}
 @media (prefers-reduced-motion: reduce){
@@ -10910,12 +10982,10 @@
    enhancement; headings/body excluded. Copied from the List-items skeleton. */
 :where(.cn-document-row) :is(button, :where(.cn-document-row) a, :where(.cn-document-row) label, :where(.cn-document-row) span, :where(.cn-document-row) small, :where(.cn-document-row) strong, :where(.cn-document-row) b, :where(.cn-document-row) th, :where(.cn-document-row) td, :where(.cn-document-row) dt, :where(.cn-document-row) dd, :where(.cn-document-row) li, :where(.cn-document-row) figcaption, :where(.cn-document-row) legend, :where(.cn-document-row) caption, :where(.cn-document-row) summary, :where(.cn-document-row) output, :where(.cn-document-row) time, :where(.cn-document-row) input[type=text], :where(.cn-document-row) input[type=search], :where(.cn-document-row) input[type=email], :where(.cn-document-row) input[type=tel], :where(.cn-document-row) input[type=url], :where(.cn-document-row) input[type=password], :where(.cn-document-row) input[type=number], :where(.cn-document-row) input:not([type]), :where(.cn-document-row) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* density — copied verbatim from List-items (roomy default) */
-:where(.cn-document-row) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-document-row) .demo-h:first-of-type{margin-top:0;}
 :where(.cn-document-row) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-:where(.cn-document-row) .wrap{width:var(--demo-width, 520px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+/* s258-D3: a real component default, not a demo dial (was var(--demo-width, 520px)). */
+:where(.cn-document-row) .wrap{width:100%; max-width:var(--doc-row-max, 520px); margin-bottom:2.5rem; container-type:inline-size;}
 /* ---- the list shell — copied from List-items ul.list, with ONE addition, declared ----
      ⬛ PROPOSED ADDITION (Dave's eye owed): List-items' own ul.list declares NO radius and its
      manifest does not carry --border-radius-surface, so its shell is square in every theme —
@@ -11018,6 +11088,11 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-document-row) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-document-row) .demo-h:first-of-type{margin-top:0;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Drawer  (from snippets/Drawer.reference.html)
@@ -11073,7 +11148,6 @@
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 /* ===== AUTO-TOKENS END ===== */
 /* LOCAL geometry — text buttons ≈120 (B-D7 divisor) */
-:where(.cn-drawer) h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
 :where(.cn-drawer) .bg-content{opacity:var(--alpha-84); max-width:60ch; line-height:1.6;}
 /* canon Button mirror — namespaced .dbtn (see header); type via composite classes in markup */
 :where(.cn-drawer) .dbtn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
@@ -11139,6 +11213,9 @@
 :where(.cn-drawer) .sheet:not(.open){display:none;}
 :where(.cn-drawer) .close:active{filter:none !important;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-drawer) h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Empty-state  (from snippets/Empty-state.reference.html)
@@ -11386,7 +11463,6 @@
 :where(.cn-feature-grid-lockup) :is(button, :where(.cn-feature-grid-lockup) a, :where(.cn-feature-grid-lockup) label, :where(.cn-feature-grid-lockup) span, :where(.cn-feature-grid-lockup) small, :where(.cn-feature-grid-lockup) strong, :where(.cn-feature-grid-lockup) em, :where(.cn-feature-grid-lockup) b, :where(.cn-feature-grid-lockup) i, :where(.cn-feature-grid-lockup) th, :where(.cn-feature-grid-lockup) td, :where(.cn-feature-grid-lockup) dt, :where(.cn-feature-grid-lockup) dd, :where(.cn-feature-grid-lockup) li, :where(.cn-feature-grid-lockup) figcaption, :where(.cn-feature-grid-lockup) legend, :where(.cn-feature-grid-lockup) caption, :where(.cn-feature-grid-lockup) summary, :where(.cn-feature-grid-lockup) output, :where(.cn-feature-grid-lockup) time, :where(.cn-feature-grid-lockup) input[type=text], :where(.cn-feature-grid-lockup) input[type=search], :where(.cn-feature-grid-lockup) input[type=email], :where(.cn-feature-grid-lockup) input[type=tel], :where(.cn-feature-grid-lockup) input[type=url], :where(.cn-feature-grid-lockup) input[type=password], :where(.cn-feature-grid-lockup) input[type=number], :where(.cn-feature-grid-lockup) input:not([type]), :where(.cn-feature-grid-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* --font byte-identical to Page-header-lockup:68 — this snippet reached for type.css's --uf instead, which does not exist in canon.css (#213 compose-gate repair) */
 :where(.cn-feature-grid-lockup) h2.spec-h{margin:2.5rem 0 1rem;}
-:where(.cn-feature-grid-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Cards.reference.html, verbatim (.card base + the Action-card icon/title/body geometry,
      minus the `.actions` button row — declared omission, see the file banner) ===== */
 :where(.cn-feature-grid-lockup) .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface); container-type:inline-size; display:flex; flex-direction:column;}
@@ -11420,12 +11496,18 @@
 :where(.cn-feature-grid-lockup) .fgl-grid.up-2, :where(.cn-feature-grid-lockup) .fgl-grid.up-3, :where(.cn-feature-grid-lockup) .fgl-grid.up-4{grid-template-columns:1fr;}
 }
 /* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
-:where(.cn-feature-grid-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
-:where(.cn-feature-grid-lockup) .demo-col{width:var(--demo-width, 900px); max-width:100%; border:1px dashed var(--border); padding:20px;}
 :where(.cn-feature-grid-lockup) .demo-tier{border-top:1px solid var(--border); padding-top:8px; margin:0 0 4px;}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-feature-grid-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+:where(.cn-feature-grid-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
+/* s258-D3: the demo frame's width is now a fenced modifier class, not an inline
+     --demo-width dial that travelled with the copied markup. */
+:where(.cn-feature-grid-lockup) .demo-col{width:900px; max-width:100%; border:1px dashed var(--border); padding:20px;}
+:where(.cn-feature-grid-lockup) .demo-col.w1040{width:1040px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    File-upload  (from snippets/File-upload.reference.html)
@@ -11652,9 +11734,6 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-filter-toolbar-bar) :is(button, :where(.cn-filter-toolbar-bar) a, :where(.cn-filter-toolbar-bar) label, :where(.cn-filter-toolbar-bar) span, :where(.cn-filter-toolbar-bar) small, :where(.cn-filter-toolbar-bar) strong, :where(.cn-filter-toolbar-bar) em, :where(.cn-filter-toolbar-bar) b, :where(.cn-filter-toolbar-bar) i, :where(.cn-filter-toolbar-bar) th, :where(.cn-filter-toolbar-bar) td, :where(.cn-filter-toolbar-bar) dt, :where(.cn-filter-toolbar-bar) dd, :where(.cn-filter-toolbar-bar) li, :where(.cn-filter-toolbar-bar) figcaption, :where(.cn-filter-toolbar-bar) legend, :where(.cn-filter-toolbar-bar) caption, :where(.cn-filter-toolbar-bar) summary, :where(.cn-filter-toolbar-bar) output, :where(.cn-filter-toolbar-bar) time, :where(.cn-filter-toolbar-bar) input[type=text], :where(.cn-filter-toolbar-bar) input[type=search], :where(.cn-filter-toolbar-bar) input[type=email], :where(.cn-filter-toolbar-bar) input[type=tel], :where(.cn-filter-toolbar-bar) input[type=url], :where(.cn-filter-toolbar-bar) input[type=password], :where(.cn-filter-toolbar-bar) input[type=number], :where(.cn-filter-toolbar-bar) input:not([type]), :where(.cn-filter-toolbar-bar) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-/* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
-     — these are page-annotation captions, not component text. */
-:where(.cn-filter-toolbar-bar) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Search-field.reference.html, verbatim (boxed) ===== */
 :where(.cn-filter-toolbar-bar) .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
     transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
@@ -11811,12 +11890,20 @@
 :where(.cn-filter-toolbar-bar) .ftb-view .seg button{flex:1;}
 }
 /* ---- demo chrome — NOT the component (s210-D3) ---- */
-:where(.cn-filter-toolbar-bar) .demo-stack{display:flex; flex-direction:column; gap:56px;}
-:where(.cn-filter-toolbar-bar) .demo-col{width:var(--demo-width, 900px); max-width:100%; border:1px dashed var(--hover); padding:20px;}
 :where(.cn-filter-toolbar-bar) .demo-tier{border-top:1px solid var(--border-disabled); padding-top:8px; margin:0 0 4px;}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
+     — these are page-annotation captions, not component text. */
+:where(.cn-filter-toolbar-bar) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+:where(.cn-filter-toolbar-bar) .demo-stack{display:flex; flex-direction:column; gap:56px;}
+/* s258-D3: the demo frame's width is now a fenced modifier class, not an inline
+     --demo-width dial that travelled with the copied markup. */
+:where(.cn-filter-toolbar-bar) .demo-col{width:900px; max-width:100%; border:1px dashed var(--hover); padding:20px;}
+:where(.cn-filter-toolbar-bar) .demo-col.w640{width:640px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Footer-doormat-lockup  (from snippets/Footer-doormat-lockup.reference.html)
@@ -11862,7 +11949,6 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-footer-doormat-lockup) :is(button, :where(.cn-footer-doormat-lockup) a, :where(.cn-footer-doormat-lockup) label, :where(.cn-footer-doormat-lockup) span, :where(.cn-footer-doormat-lockup) small, :where(.cn-footer-doormat-lockup) strong, :where(.cn-footer-doormat-lockup) b, :where(.cn-footer-doormat-lockup) th, :where(.cn-footer-doormat-lockup) td, :where(.cn-footer-doormat-lockup) dt, :where(.cn-footer-doormat-lockup) dd, :where(.cn-footer-doormat-lockup) li, :where(.cn-footer-doormat-lockup) figcaption, :where(.cn-footer-doormat-lockup) legend, :where(.cn-footer-doormat-lockup) caption, :where(.cn-footer-doormat-lockup) summary, :where(.cn-footer-doormat-lockup) output, :where(.cn-footer-doormat-lockup) time, :where(.cn-footer-doormat-lockup) input[type=text], :where(.cn-footer-doormat-lockup) input[type=search], :where(.cn-footer-doormat-lockup) input[type=email], :where(.cn-footer-doormat-lockup) input[type=tel], :where(.cn-footer-doormat-lockup) input[type=url], :where(.cn-footer-doormat-lockup) input[type=password], :where(.cn-footer-doormat-lockup) input[type=number], :where(.cn-footer-doormat-lockup) input:not([type]), :where(.cn-footer-doormat-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-footer-doormat-lockup) .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 1.5rem; max-width:60ch;}
 :where(.cn-footer-doormat-lockup) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ===== Footer.reference.html, verbatim (the doormat form only) ===== */
@@ -11915,6 +12001,9 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-footer-doormat-lockup) .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 1.5rem; max-width:60ch;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Footer  (from snippets/Footer.reference.html)
@@ -11961,9 +12050,6 @@
 :where(.cn-footer) :is(button, :where(.cn-footer) a, :where(.cn-footer) label, :where(.cn-footer) span, :where(.cn-footer) small, :where(.cn-footer) strong, :where(.cn-footer) b, :where(.cn-footer) th, :where(.cn-footer) td, :where(.cn-footer) dt, :where(.cn-footer) dd, :where(.cn-footer) li, :where(.cn-footer) figcaption, :where(.cn-footer) legend, :where(.cn-footer) caption, :where(.cn-footer) summary, :where(.cn-footer) output, :where(.cn-footer) time, :where(.cn-footer) input[type=text], :where(.cn-footer) input[type=search], :where(.cn-footer) input[type=email], :where(.cn-footer) input[type=tel], :where(.cn-footer) input[type=url], :where(.cn-footer) input[type=password], :where(.cn-footer) input[type=number], :where(.cn-footer) input:not([type]), :where(.cn-footer) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: no raw font-family on body — every text element carries a canon composite class, which
      is the mandatory route and the reason this file contributes 0 to the shrink-only ratchet. */
-:where(.cn-footer) .demo-h{opacity:var(--alpha-60); margin:1.75rem 2.25rem .7rem;}
-/* demo chrome — not the component */
-:where(.cn-footer) .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 0; max-width:60ch;}
 :where(.cn-footer) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ---- the region ---- */
@@ -12027,6 +12113,11 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-footer) .demo-h{opacity:var(--alpha-60); margin:1.75rem 2.25rem .7rem;}
+/* demo chrome — not the component */
+:where(.cn-footer) .demo-note{opacity:var(--alpha-60); margin:.6rem 2.25rem 0; max-width:60ch;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Form-layout  (from snippets/Form-layout.reference.html)
@@ -12293,8 +12384,6 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-hero-variants) :is(button, :where(.cn-hero-variants) a, :where(.cn-hero-variants) label, :where(.cn-hero-variants) span, :where(.cn-hero-variants) small, :where(.cn-hero-variants) strong, :where(.cn-hero-variants) em, :where(.cn-hero-variants) b, :where(.cn-hero-variants) i, :where(.cn-hero-variants) th, :where(.cn-hero-variants) td, :where(.cn-hero-variants) dt, :where(.cn-hero-variants) dd, :where(.cn-hero-variants) li, :where(.cn-hero-variants) figcaption, :where(.cn-hero-variants) legend, :where(.cn-hero-variants) caption, :where(.cn-hero-variants) summary, :where(.cn-hero-variants) output, :where(.cn-hero-variants) time, :where(.cn-hero-variants) input[type=text], :where(.cn-hero-variants) input[type=search], :where(.cn-hero-variants) input[type=email], :where(.cn-hero-variants) input[type=tel], :where(.cn-hero-variants) input[type=url], :where(.cn-hero-variants) input[type=password], :where(.cn-hero-variants) input[type=number], :where(.cn-hero-variants) input:not([type]), :where(.cn-hero-variants) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: no raw font-family on body (TYPE-002/DEF-006) — every text element carries a composite. */
-:where(.cn-hero-variants) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem; padding-left:2rem;}
-:where(.cn-hero-variants) .demo-note{opacity:var(--alpha-60); margin:.5rem 2rem 1.5rem; max-width:64ch;}
 /* ---- borrowed from Hero baseline, TYPE-002 FIX DECLARED: Hero.reference.html's own gated
          h1/.intro/.arrow carry raw `font:`/`font-weight` shorthand (a fluid clamp() size that
          has no fixed canon-ramp equivalent). Reproducing that raw CSS in a NEW file would be a
@@ -12354,6 +12443,10 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-hero-variants) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem; padding-left:2rem;}
+:where(.cn-hero-variants) .demo-note{opacity:var(--alpha-60); margin:.5rem 2rem 1.5rem; max-width:64ch;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Icon-button  (from snippets/Icon-button.reference.html)
@@ -12513,8 +12606,7 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. */
 :where(.cn-image-block) :is(button, :where(.cn-image-block) a, :where(.cn-image-block) label, :where(.cn-image-block) span, :where(.cn-image-block) small, :where(.cn-image-block) strong, :where(.cn-image-block) em, :where(.cn-image-block) b, :where(.cn-image-block) i, :where(.cn-image-block) th, :where(.cn-image-block) td, :where(.cn-image-block) dt, :where(.cn-image-block) dd, :where(.cn-image-block) li, :where(.cn-image-block) figcaption, :where(.cn-image-block) legend, :where(.cn-image-block) caption, :where(.cn-image-block) summary, :where(.cn-image-block) output, :where(.cn-image-block) time, :where(.cn-image-block) input[type=text], :where(.cn-image-block) input[type=search], :where(.cn-image-block) input[type=email], :where(.cn-image-block) input[type=tel], :where(.cn-image-block) input[type=url], :where(.cn-image-block) input[type=password], :where(.cn-image-block) input[type=number], :where(.cn-image-block) input:not([type]), :where(.cn-image-block) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-image-block) h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
-:where(.cn-image-block) .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; width:var(--demo-width, 720px); max-width:100%;}
+:where(.cn-image-block) .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; width:100%; max-width:var(--grid-max, 720px);}
 :where(.cn-image-block) .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
 /* ===== image block ===== */
@@ -12546,6 +12638,9 @@
 @media (prefers-reduced-motion: reduce){
 :where(.cn-image-block) .bone.media{animation:none; background-image:none;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-image-block) h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Kpi-tile  (from snippets/Kpi-tile.reference.html)
@@ -12608,8 +12703,6 @@
      ratchet counts, and it is redundant once every element is composed. Progress-bar
      (the #174 walked example) is the precedent; Stat-card and Chart-sparkline both still
      carry it and each contributes 3 to the debt. TYPE-002 contribution here: 0. */
-:where(.cn-kpi-tile) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
 :where(.cn-kpi-tile) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 :where(.cn-kpi-tile) .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
@@ -12676,6 +12769,10 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-kpi-tile) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Layout-utilities  (from snippets/Layout-utilities.reference.html)
@@ -12721,9 +12818,6 @@
 :where(.cn-layout-utilities) :is(button, :where(.cn-layout-utilities) a, :where(.cn-layout-utilities) label, :where(.cn-layout-utilities) span, :where(.cn-layout-utilities) small, :where(.cn-layout-utilities) strong, :where(.cn-layout-utilities) b, :where(.cn-layout-utilities) th, :where(.cn-layout-utilities) td, :where(.cn-layout-utilities) dt, :where(.cn-layout-utilities) dd, :where(.cn-layout-utilities) li, :where(.cn-layout-utilities) figcaption, :where(.cn-layout-utilities) legend, :where(.cn-layout-utilities) caption, :where(.cn-layout-utilities) summary, :where(.cn-layout-utilities) output, :where(.cn-layout-utilities) time, :where(.cn-layout-utilities) input[type=text], :where(.cn-layout-utilities) input[type=search], :where(.cn-layout-utilities) input[type=email], :where(.cn-layout-utilities) input[type=tel], :where(.cn-layout-utilities) input[type=url], :where(.cn-layout-utilities) input[type=password], :where(.cn-layout-utilities) input[type=number], :where(.cn-layout-utilities) input:not([type]), :where(.cn-layout-utilities) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: no raw font-family on body — every text element carries a canon composite class.
      TYPE-002 contribution here: 0. */
-:where(.cn-layout-utilities) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-layout-utilities) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
 :where(.cn-layout-utilities) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ============================================================================================
@@ -12823,6 +12917,14 @@
 /* breakpoint/ms, measured against the CONTAINER */
 :where(.cn-layout-utilities) .l-split > *{grid-column:1 / -1;}
 }
+:where(.cn-layout-utilities) :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-layout-utilities) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-layout-utilities) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
 /* ---- DEMO CHROME below this line. Not the component. ---- */
 :where(.cn-layout-utilities) .l-demo{background:var(--fill); border:1px solid var(--border);
     border-radius:var(--border-radius-surface); padding:12px; min-height:var(--target-min);
@@ -12830,10 +12932,7 @@
 :where(.cn-layout-utilities) .l-demo.tall{min-height:88px;}
 :where(.cn-layout-utilities) .frame{border:1px dashed var(--border); padding:12px;}
 :where(.cn-layout-utilities) .frame.narrow{max-width:420px;}
-:where(.cn-layout-utilities) :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-@media (prefers-reduced-motion: reduce){
-
-}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Limits-meter  (from snippets/Limits-meter.reference.html)
@@ -13023,13 +13122,9 @@
 /* NOTE: this snippet declares NO raw font-family, font-size or font-weight anywhere — every
      text element carries a .t-cm-* composite from canon/type.css (the Progress-bar precedent,
      #174, inherited via Limits-meter). TYPE-002 contribution: 0. */
-/* demo chrome — not the component */
 :where(.cn-meter) .specimens{display:flex; flex-direction:column; gap:40px;}
 :where(.cn-meter) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-/* demo chrome — the three tiers of the grammar, so the page reads in Dave's own model */
-:where(.cn-meter) .tier{color:var(--text); margin:0 0 4px; border-top:1px solid var(--border); padding-top:16px;}
-:where(.cn-meter) .tier-note{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px; max-width:640px;}
 /* ============================================================================
      THE METER — THE BASE MOLECULE.
      Everything bar-shaped and ring-shaped below is Progress-bar.reference.html's
@@ -13122,6 +13217,22 @@
 :where(.cn-meter) .chip.ok .dot{background:var(--ok);}
 :where(.cn-meter) .chip.warn{background:var(--warn-tint);}
 :where(.cn-meter) .chip.warn .dot{background:var(--warn);}
+:where(.cn-meter) .pair{display:flex; gap:40px; flex-wrap:wrap;}
+:where(.cn-meter) .pair > div{flex:1 1 320px; min-width:280px;}
+:where(.cn-meter) .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+/* 2.3.3 / 2.2.2 — the fill still MOVES to its final position (the value must be reachable),
+     it just arrives without an animated sweep. Copied from Progress-bar. */
+@media(prefers-reduced-motion:reduce){
+    .meter-track .meter-fill, .meter-dial .meter-dial-fill{transition:none;}
+  }
+@media (prefers-reduced-motion: reduce){
+
+}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* demo chrome — not the component */
+/* demo chrome — the three tiers of the grammar, so the page reads in Dave's own model */
+:where(.cn-meter) .tier{color:var(--text); margin:0 0 4px; border-top:1px solid var(--border); padding-top:16px;}
+:where(.cn-meter) .tier-note{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px; max-width:640px;}
 /* the title-size comparison strip (§B6) — demo chrome, so the two options sit side by side.
      ⚠ .pairnote is DEMO CHROME with its own margin, not the component's .meter-caption: found by
      LOOKING at the first render, where the borrowed margin:0 left the annotation flush against
@@ -13144,17 +13255,7 @@
 /* demo chrome: shows the box edge */
 :where(.cn-meter) .demo-stack{display:flex; flex-direction:column; gap:24px;}
 /* demo chrome */
-:where(.cn-meter) .pair{display:flex; gap:40px; flex-wrap:wrap;}
-:where(.cn-meter) .pair > div{flex:1 1 320px; min-width:280px;}
-:where(.cn-meter) .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
-/* 2.3.3 / 2.2.2 — the fill still MOVES to its final position (the value must be reachable),
-     it just arrives without an animated sweep. Copied from Progress-bar. */
-@media(prefers-reduced-motion:reduce){
-    .meter-track .meter-fill, .meter-dial .meter-dial-fill{transition:none;}
-  }
-@media (prefers-reduced-motion: reduce){
-
-}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Modal-lightbox  (from snippets/Modal-lightbox.reference.html)
@@ -13518,10 +13619,6 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-page-header-lockup) :is(button, :where(.cn-page-header-lockup) a, :where(.cn-page-header-lockup) label, :where(.cn-page-header-lockup) span, :where(.cn-page-header-lockup) small, :where(.cn-page-header-lockup) strong, :where(.cn-page-header-lockup) em, :where(.cn-page-header-lockup) b, :where(.cn-page-header-lockup) i, :where(.cn-page-header-lockup) th, :where(.cn-page-header-lockup) td, :where(.cn-page-header-lockup) dt, :where(.cn-page-header-lockup) dd, :where(.cn-page-header-lockup) li, :where(.cn-page-header-lockup) figcaption, :where(.cn-page-header-lockup) legend, :where(.cn-page-header-lockup) caption, :where(.cn-page-header-lockup) summary, :where(.cn-page-header-lockup) output, :where(.cn-page-header-lockup) time, :where(.cn-page-header-lockup) input[type=text], :where(.cn-page-header-lockup) input[type=search], :where(.cn-page-header-lockup) input[type=email], :where(.cn-page-header-lockup) input[type=tel], :where(.cn-page-header-lockup) input[type=url], :where(.cn-page-header-lockup) input[type=password], :where(.cn-page-header-lockup) input[type=number], :where(.cn-page-header-lockup) input:not([type]), :where(.cn-page-header-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 :where(.cn-page-header-lockup) h2.spec-h{margin:2.5rem 0 1rem;}
-/* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
-     — these are page-annotation captions, not component text, so they are advisory-exempt rather
-     than routed through a canon composite. */
-:where(.cn-page-header-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 /* ===== Breadcrumbs.reference.html — raw `nav ol`/`[aria-current]` font declarations REMOVED
      (TYPE-001/002 fix, not present in the borrowed geometry): the markup instead carries
      `t-cm-caption` (14/400, the closest single-line Component match to the source's 14px/400)
@@ -13638,13 +13735,19 @@
 :where(.cn-page-header-lockup) .ph-row{flex-direction:column; align-items:stretch;}
 :where(.cn-page-header-lockup) .ph-actions{justify-content:flex-end;}
 }
-/* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
-:where(.cn-page-header-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
-:where(.cn-page-header-lockup) .demo-col{width:var(--demo-width, 900px); max-width:100%; border:1px dashed var(--tertiary-hover); padding:20px;}
-:where(.cn-page-header-lockup) .demo-tier{border-top:1px solid var(--tabs-standard-border); padding-top:8px; margin:0 0 4px;}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
+     — these are page-annotation captions, not component text, so they are advisory-exempt rather
+     than routed through a canon composite. */
+:where(.cn-page-header-lockup) .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+/* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
+:where(.cn-page-header-lockup) .demo-stack{display:flex; flex-direction:column; gap:56px;}
+:where(.cn-page-header-lockup) .demo-col{width:100%; max-width:var(--demo-col-w, 900px); border:1px dashed var(--tertiary-hover); padding:20px;}
+:where(.cn-page-header-lockup) .demo-tier{border-top:1px solid var(--tabs-standard-border); padding-top:8px; margin:0 0 4px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Payment-card-visual  (from snippets/Payment-card-visual.reference.html)
@@ -13826,9 +13929,6 @@
      `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
      ratchet counts. Progress-bar (#174) is the walked precedent; Kpi-tile (#203) the recent one.
      TYPE-002 contribution here: 0. */
-:where(.cn-popconfirm) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-popconfirm) .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
 :where(.cn-popconfirm) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ---- the anchor: the popconfirm is positioned against the OBJECT being acted on ---- */
@@ -13883,9 +13983,6 @@
 :where(.cn-popconfirm) .pc .btn.primary:hover{background:var(--pri-hover);}
 :where(.cn-popconfirm) .pc .btn.ghost{background:transparent; color:var(--text);}
 :where(.cn-popconfirm) .pc .btn.ghost:hover{background:var(--ghost-hover);}
-/* ---- a list row, so the "in place" claim is visible rather than described ---- */
-:where(.cn-popconfirm) .row-demo{width:var(--demo-width, 460px); max-width:100%;
-    border:1px solid var(--pop-border, transparent);}
 :where(.cn-popconfirm) .payee-row{display:flex; align-items:center; gap:12px; padding:8px 0;}
 /* text-box-edge:text — the leading-trim rule above sets `cap alphabetic`, which combined with
      overflow:hidden CLIPS DESCENDERS ("Meridian Supplies" lost the tail of its p). Same defect
@@ -13901,6 +13998,14 @@
 @media (prefers-reduced-motion: reduce){
 :where(.cn-popconfirm) .pc .btn:active{filter:none !important;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-popconfirm) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-popconfirm) .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
+/* ---- a list row, so the "in place" claim is visible rather than described ---- */
+:where(.cn-popconfirm) .row-demo{width:100%; max-width:460px;
+    border:1px solid var(--pop-border, transparent);}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Popover  (from snippets/Popover.reference.html)
@@ -14140,18 +14245,20 @@
 :where(.cn-qr-code) .qr-alt{margin:4px 0 0;}
 :where(.cn-qr-code) .qr-alt a{color:var(--link); text-decoration:underline; text-underline-offset:2px;}
 :where(.cn-qr-code) .qr-alt a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-/* DEMO CHROME: the quiet-zone guide in section 3. A dashed rule drawn OVER the specimen at
-     the symbol boundary, so the four-module margin is visible. Not part of the component. */
-:where(.cn-qr-code) .guide{position:relative; display:inline-block;}
-:where(.cn-qr-code) .guide::after{content:""; position:absolute; pointer-events:none;
-    inset:calc(var(--qr-mod) * 4);
-    outline:1px dashed var(--focus);}
 @media (prefers-reduced-motion: reduce){
 
 }
 @media (max-width:480px){
 :where(.cn-qr-code) .row{gap:24px;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* DEMO CHROME: the quiet-zone guide in section 3. A dashed rule drawn OVER the specimen at
+     the symbol boundary, so the four-module margin is visible. Not part of the component. */
+:where(.cn-qr-code) .guide{position:relative; display:inline-block;}
+:where(.cn-qr-code) .guide::after{content:""; position:absolute; pointer-events:none;
+    inset:calc(var(--qr-mod) * 4);
+    outline:1px dashed var(--focus);}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Range-slider  (from snippets/Range-slider.reference.html)
@@ -14401,11 +14508,6 @@
 :where(.cn-section-heading-lockup) .t-ed-* composite class from canon/type.css, :where(.cn-section-heading-lockup) the Kpi-tile precedent. */
   body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-:where(.cn-section-heading-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-section-heading-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
-:where(.cn-section-heading-lockup) .demo-frame{max-width:640px; border:1px dashed var(--ter-hover); padding:16px;}
-:where(.cn-section-heading-lockup) .demo-frame.narrow{max-width:320px;}
 /* ---- borrowed verbatim: Layout-utilities l-row / l-stack ---- */
 :where(.cn-section-heading-lockup) .l-stack{display:flex; flex-direction:column; gap:var(--l-gap-m);}
 :where(.cn-section-heading-lockup) .l-stack[data-gap="xxs"]{gap:var(--l-gap-xxs);}
@@ -14440,6 +14542,13 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-section-heading-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-section-heading-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
+:where(.cn-section-heading-lockup) .demo-frame{max-width:640px; border:1px dashed var(--ter-hover); padding:16px;}
+:where(.cn-section-heading-lockup) .demo-frame.narrow{max-width:320px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Secure-entry  (from snippets/Secure-entry.reference.html)
@@ -14617,8 +14726,6 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. */
 :where(.cn-segmented-control) :is(button, :where(.cn-segmented-control) a, :where(.cn-segmented-control) label, :where(.cn-segmented-control) span, :where(.cn-segmented-control) small, :where(.cn-segmented-control) strong, :where(.cn-segmented-control) em, :where(.cn-segmented-control) b, :where(.cn-segmented-control) i, :where(.cn-segmented-control) th, :where(.cn-segmented-control) td, :where(.cn-segmented-control) dt, :where(.cn-segmented-control) dd, :where(.cn-segmented-control) li, :where(.cn-segmented-control) figcaption, :where(.cn-segmented-control) legend, :where(.cn-segmented-control) caption, :where(.cn-segmented-control) summary, :where(.cn-segmented-control) output, :where(.cn-segmented-control) time, :where(.cn-segmented-control) input[type=text], :where(.cn-segmented-control) input[type=search], :where(.cn-segmented-control) input[type=email], :where(.cn-segmented-control) input[type=tel], :where(.cn-segmented-control) input[type=url], :where(.cn-segmented-control) input[type=password], :where(.cn-segmented-control) input[type=number], :where(.cn-segmented-control) input:not([type]), :where(.cn-segmented-control) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-segmented-control) .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}
-/* demo-chrome — advisory-exempt */
 :where(.cn-segmented-control) .section-head-row{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
 :where(.cn-segmented-control) .section-head-row h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
 /* ===== the segmented control =====
@@ -14732,6 +14839,10 @@
 @media (prefers-reduced-motion: reduce){
 :where(.cn-segmented-control) .seg .ind{transition:none !important;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-segmented-control) .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}
+/* demo-chrome — advisory-exempt */
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Sidebar-nav  (from snippets/Sidebar-nav.reference.html)
@@ -14889,7 +15000,7 @@
 /* avatar idiom — 50% literal */
 :where(.cn-skeleton-loader) .bone.media{height:160px;}
 :where(.cn-skeleton-loader) .bone.control{height:44px; width:120px;}
-:where(.cn-skeleton-loader) .skwrap{width:var(--demo-width, 560px); max-width:100%; display:flex; flex-direction:column; gap:8px;}
+:where(.cn-skeleton-loader) .skwrap{width:100%; max-width:var(--skwrap-max, 560px); display:flex; flex-direction:column; gap:8px;}
 :where(.cn-skeleton-loader) .sk-row{display:flex; gap:12px; align-items:center;}
 :where(.cn-skeleton-loader) .sk-col{flex:1 1 auto; display:flex; flex-direction:column; gap:8px;}
 :where(.cn-skeleton-loader) .sk-card{border:1px solid var(--line); border-radius:var(--border-radius-surface); padding:16px;
@@ -15081,12 +15192,6 @@
      from canon/type.css (Progress-bar precedent). TYPE-002 contribution: 0. */
 :where(.cn-splitter) .sec{color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .35rem;}
 :where(.cn-splitter) .note{color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
-/* DEMO CHROME ONLY — the splitter fills whatever box it is given; these wrappers give it one.
-     Nothing below this comment belongs to the component. */
-:where(.cn-splitter) .demo-box{height:280px; border:1px solid var(--divider); margin:0 0 12px;}
-:where(.cn-splitter) .demo-box.tall{height:360px;}
-:where(.cn-splitter) .demo-readout{display:flex; gap:16px; align-items:baseline; margin:0 0 32px;
-    color:var(--text); opacity:var(--alpha-72);}
 /* ---------- the splitter ---------- */
 :where(.cn-splitter) .sp{display:grid; height:100%; width:100%; background:var(--surface);
     --div:8px;            /* the drawn divider thickness — 4px grid */
@@ -15127,6 +15232,14 @@
 @media (max-width:480px){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+/* DEMO CHROME ONLY — the splitter fills whatever box it is given; these wrappers give it one.
+     Nothing below this comment belongs to the component. */
+:where(.cn-splitter) .demo-box{height:280px; border:1px solid var(--divider); margin:0 0 12px;}
+:where(.cn-splitter) .demo-box.tall{height:360px;}
+:where(.cn-splitter) .demo-readout{display:flex; gap:16px; align-items:baseline; margin:0 0 32px;
+    color:var(--text); opacity:var(--alpha-72);}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Standing-order-mandate-row  (from snippets/Standing-order-mandate-row.reference.html)
@@ -15197,12 +15310,9 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-standing-order-mandate-row) :is(button, :where(.cn-standing-order-mandate-row) a, :where(.cn-standing-order-mandate-row) label, :where(.cn-standing-order-mandate-row) span, :where(.cn-standing-order-mandate-row) small, :where(.cn-standing-order-mandate-row) strong, :where(.cn-standing-order-mandate-row) em, :where(.cn-standing-order-mandate-row) b, :where(.cn-standing-order-mandate-row) i, :where(.cn-standing-order-mandate-row) th, :where(.cn-standing-order-mandate-row) td, :where(.cn-standing-order-mandate-row) dt, :where(.cn-standing-order-mandate-row) dd, :where(.cn-standing-order-mandate-row) li, :where(.cn-standing-order-mandate-row) figcaption, :where(.cn-standing-order-mandate-row) legend, :where(.cn-standing-order-mandate-row) caption, :where(.cn-standing-order-mandate-row) summary, :where(.cn-standing-order-mandate-row) output, :where(.cn-standing-order-mandate-row) time, :where(.cn-standing-order-mandate-row) input[type=text], :where(.cn-standing-order-mandate-row) input[type=search], :where(.cn-standing-order-mandate-row) input[type=email], :where(.cn-standing-order-mandate-row) input[type=tel], :where(.cn-standing-order-mandate-row) input[type=url], :where(.cn-standing-order-mandate-row) input[type=password], :where(.cn-standing-order-mandate-row) input[type=number], :where(.cn-standing-order-mandate-row) input:not([type]), :where(.cn-standing-order-mandate-row) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* density — List-items' roomy default via Document-row */
-:where(.cn-standing-order-mandate-row) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-/* demo chrome — not the component */
-:where(.cn-standing-order-mandate-row) .demo-h:first-of-type{margin-top:0;}
 :where(.cn-standing-order-mandate-row) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-:where(.cn-standing-order-mandate-row) .wrap{width:var(--demo-width, 560px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+:where(.cn-standing-order-mandate-row) .wrap{width:100%; max-width:var(--wrap-max, 560px); margin-bottom:2.5rem; container-type:inline-size;}
 /* ---- the list shell — Document-row's ul.doclist, copied including its declared departure
      from List-items (bound to border-radius/surface so the shell follows the THEME's rule
      rather than inheriting List-items' omission; overflow:hidden clips the end rows). That
@@ -15332,6 +15442,11 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-standing-order-mandate-row) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+/* demo chrome — not the component */
+:where(.cn-standing-order-mandate-row) .demo-h:first-of-type{margin-top:0;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Stat-card  (from snippets/Stat-card.reference.html)
@@ -15447,10 +15562,6 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-stats-band-lockup) :is(button, :where(.cn-stats-band-lockup) a, :where(.cn-stats-band-lockup) label, :where(.cn-stats-band-lockup) span, :where(.cn-stats-band-lockup) small, :where(.cn-stats-band-lockup) strong, :where(.cn-stats-band-lockup) em, :where(.cn-stats-band-lockup) b, :where(.cn-stats-band-lockup) i, :where(.cn-stats-band-lockup) th, :where(.cn-stats-band-lockup) td, :where(.cn-stats-band-lockup) dt, :where(.cn-stats-band-lockup) dd, :where(.cn-stats-band-lockup) li, :where(.cn-stats-band-lockup) figcaption, :where(.cn-stats-band-lockup) legend, :where(.cn-stats-band-lockup) caption, :where(.cn-stats-band-lockup) summary, :where(.cn-stats-band-lockup) output, :where(.cn-stats-band-lockup) time, :where(.cn-stats-band-lockup) input[type=text], :where(.cn-stats-band-lockup) input[type=search], :where(.cn-stats-band-lockup) input[type=email], :where(.cn-stats-band-lockup) input[type=tel], :where(.cn-stats-band-lockup) input[type=url], :where(.cn-stats-band-lockup) input[type=password], :where(.cn-stats-band-lockup) input[type=number], :where(.cn-stats-band-lockup) input:not([type]), :where(.cn-stats-band-lockup) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: no raw font-family on body (TYPE-002/DEF-006) — every text element carries a composite. */
-:where(.cn-stats-band-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
-:where(.cn-stats-band-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
-:where(.cn-stats-band-lockup) .demo-frame{max-width:720px;}
-:where(.cn-stats-band-lockup) .demo-frame.narrow{max-width:260px;}
 /* ---- THE ONLY NEW PART: the band's own section framing — arrangement only, zero paint ---- */
 :where(.cn-stats-band-lockup) .sb-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap;}
 /* ---- borrowed verbatim: Layout-utilities l-grid ---- */
@@ -15492,6 +15603,12 @@
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+:where(.cn-stats-band-lockup) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
+:where(.cn-stats-band-lockup) .demo-note{opacity:var(--alpha-60); margin:.5rem 0 1.5rem; max-width:64ch;}
+:where(.cn-stats-band-lockup) .demo-frame{max-width:720px;}
+:where(.cn-stats-band-lockup) .demo-frame.narrow{max-width:260px;}
+/* ===== APOLLO-DEMO css END ===== */
 
 /* ============================================================
    Stepper  (from snippets/Stepper.reference.html)
@@ -15569,7 +15686,7 @@
 :where(.cn-stepper) p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:var(--alpha-72); margin:0 0 1.5rem; max-width:60ch;}
 :where(.cn-stepper) .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 :where(.cn-stepper) .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
-:where(.cn-stepper) .st{width:var(--demo-width, 520px); max-width:100%; container-type:inline-size;}
+:where(.cn-stepper) .st{--st-w:520px; width:var(--st-w); max-width:100%; container-type:inline-size;}
 /* ── DOTS — Progress-tracker's reworked visuals, interactive deltas only (change visuals THERE) ── */
 :where(.cn-stepper) .st ol.steps{list-style:none; display:flex; margin:0 0 4px; padding:0;}
 :where(.cn-stepper) .st ol.steps li{flex:1; display:flex; flex-direction:column; align-items:center; position:relative; text-align:center;}
@@ -16154,11 +16271,13 @@
 :where(.cn-template-auth) .se-cell{width:40px; height:48px;}
 /* Secure-entry's own narrow cell */
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* demo-chrome — reference-page harness furniture only; never ships */
 :where(.cn-template-auth) .demo-wrap{padding:32px 24px;}
 :where(.cn-template-auth) .demo-sec{color:var(--text); opacity:var(--alpha-60); margin:0 0 8px;}
 :where(.cn-template-auth) .demo-note{color:var(--text); opacity:var(--alpha-72); margin:0 0 24px; max-width:60ch;}
 :where(.cn-template-auth) .demo-stack{margin:0 0 48px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -16396,6 +16515,7 @@
      the anchor is Empty-state's decorative 48px glyph at alpha/40 and the STATUS CHIP carries the
      meaning in a word. Whether pending deserves a roundel of its own is named for Dave. */
 :where(.cn-template-confirmation) .tpl-confirm .status{align-self:center;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-confirmation) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -16405,6 +16525,7 @@
 :where(.cn-template-confirmation) .demo-h{margin:0; padding:12px 16px; border-top:1px solid var(--divider);
     background:var(--hover); color:var(--text);}
 :where(.cn-template-confirmation) .demo-note{margin:8px 16px 24px; opacity:var(--alpha-60);}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -16666,8 +16787,10 @@
 :where(.cn-template-create-edit) .tpl-main{padding:24px 16px 0;}
 :where(.cn-template-create-edit) .tpl-actionbar{padding:16px;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* demo-chrome — reference-page harness furniture only; never ships */
 :where(.cn-template-create-edit) .demo-wrap{padding:32px 24px;}
+/* ===== APOLLO-DEMO css END ===== */
 /* ⚠ .demo-frame IS THE FIX FOR A REAL DEFECT, and it is deliberately harness-scoped.
      MEASURED at #210 before it existed: with two full templates stacked on one reference page,
      `position:sticky; bottom:0` resolved against the VIEWPORT, so the edit template's action bar
@@ -16676,17 +16799,19 @@
      A scrolling frame gives each specimen its own scrollport, which is what a real page is, so
      the sticky bar now sticks to the TEMPLATE's bottom edge — the intended behaviour, and now
      actually demonstrable. The template itself declares nothing about height. */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 :where(.cn-template-create-edit) .demo-frame{height:640px; overflow:auto; margin:0 0 16px;}
 :where(.cn-template-create-edit) .demo-sec{color:var(--text); opacity:var(--alpha-60); margin:0 0 8px;}
 :where(.cn-template-create-edit) .demo-note{color:var(--text); opacity:var(--alpha-72); margin:0 0 24px; max-width:60ch;}
 :where(.cn-template-create-edit) .demo-stack{margin:0 0 48px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
 
 /* ============================================================
    Template-dashboard-bento  (from snippets/Template-dashboard-bento.reference.html)
-   Aria: <nav, <main, aria-label, aria-labelledby, aria-current, <h1
+   Aria: <nav, <main, role="contentinfo", aria-label, aria-labelledby, aria-current, <h1
    Drift: s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling.
    Scope: .cn-template-dashboard-bento   ============================================================ */
 .cn-template-dashboard-bento{
@@ -17206,6 +17331,29 @@
 :where(.cn-template-dashboard-bento) .sh-nav a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
 :where(.cn-template-dashboard-bento) .sh-nav a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 :where(.cn-template-dashboard-bento) .sh-actions{display:flex; gap:8px; flex:none;}
+/* ---- SITE FOOTER — the slim form, copied from Footer.reference.html via App-shell-top-nav.
+     ⬛ PLACEMENT (#258, Dave: "the page shells should include the footer"). This template is a
+     WHOLE PAGE, not a boxed `.sh` frame, so the footer is a body-level sibling AFTER `</main>` —
+     the same relation the masthead has before it. It is NOT inside `.tpl-page`: `.tpl-page` is
+     the bento wall and carries the s219-D1 pageBg; a legal bar drawn inside it would sit on the
+     wall ground and read as one more tile.
+     ⚠ TOKEN VOCABULARY DIFFERS FROM THE App-shell-* FILES, DELIBERATELY. Those files name a
+     `--band` (surface/subtle); this file has no `--band` and its page ground already IS
+     surface/subtle (`--wall-ground`). So the footer takes `--surface`
+     (tertiary/background/default) — mirroring `.sh-masthead` above, which is the same band at
+     the other end of the page. Rendered relation (a lighter band against the grey wall) is the
+     one the App-shell files draw; the var name is this file's own. ZERO new hex, zero new vars. */
+:where(.cn-template-dashboard-bento) .sh-foot{background:var(--surface); border-top:1px solid var(--rule); padding:8px 32px;}
+:where(.cn-template-dashboard-bento) .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+:where(.cn-template-dashboard-bento) .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+/* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+:where(.cn-template-dashboard-bento) .sh-legal li{display:flex;}
+:where(.cn-template-dashboard-bento) .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+:where(.cn-template-dashboard-bento) .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+:where(.cn-template-dashboard-bento) .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+:where(.cn-template-dashboard-bento) .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--text);}
 :where(.cn-template-dashboard-bento) .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
     color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
     border-radius:var(--border-radius-control);}
@@ -17349,11 +17497,13 @@
 /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works.
      ⚠ 36px, NOT the 32px Template-dashboard.reference.html draws: 32 is off the 28/36/44/48
      component ramp and the #231 brief forbids importing another off-ramp height literal. ---- */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 :where(.cn-template-dashboard-bento) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 32px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
 :where(.cn-template-dashboard-bento) .demo-bar button{height:36px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
     color:var(--text); cursor:pointer;}
 :where(.cn-template-dashboard-bento) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -17817,12 +17967,14 @@
 /* 10 */
 :where(.cn-template-dashboard) .tpl-link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* 11 */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works. ---- */
 :where(.cn-template-dashboard) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
 :where(.cn-template-dashboard) .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
     color:var(--text); cursor:pointer;}
 :where(.cn-template-dashboard) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -18173,12 +18325,14 @@
 /* 7 · panels are their own height */
 :where(.cn-template-detail) .tpl-panel{padding:24px;}
 /* 8 */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-detail) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--hover); color:var(--text);}
 :where(.cn-template-detail) .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
     color:var(--text); cursor:pointer;}
 :where(.cn-template-detail) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -18414,6 +18568,7 @@
 /* 10 · Empty-state ships `.empty` with `max-width:480px; margin:0 auto`. Both are kept. What is
      NOT kept is any width assertion of this page's own — `s210-D3`: the container dictates. */
 :where(.cn-template-empty) .tpl-empty-region > .empty{width:100%;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-empty) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -18423,6 +18578,7 @@
 :where(.cn-template-empty) .demo-h{margin:40px 0 0; padding:12px 16px; border-top:1px solid var(--divider);
     background:var(--hover); color:var(--text);}
 :where(.cn-template-empty) .demo-note{margin:8px 16px 0; opacity:var(--alpha-60);}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -18603,6 +18759,7 @@
 /* 9 · a minimal masthead. An error page is often served OUTSIDE the app shell, so it carries the
      smallest possible way home rather than the app's navigation. */
 :where(.cn-template-error) .tpl-errbar{border-bottom:1px solid var(--divider); padding-block:16px;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-error) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -18612,6 +18769,7 @@
 :where(.cn-template-error) .demo-h{margin:0; padding:12px 16px; border-top:1px solid var(--divider);
     background:var(--hover); color:var(--text);}
 :where(.cn-template-error) .demo-note{margin:8px 16px 24px; opacity:var(--alpha-60);}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -19071,6 +19229,7 @@
      Document-row's demo page supplies one through `.wrap{container-type:inline-size}`. This
      template supplies it here rather than copying a demo width along with it. */
 :where(.cn-template-list-index) .tpl-list-host{container-type:inline-size;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-list-index) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -19079,6 +19238,7 @@
 :where(.cn-template-list-index) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :where(.cn-template-list-index) .demo-h{opacity:var(--alpha-60); margin:0 0 8px;}
 :where(.cn-template-list-index) .demo-note{opacity:var(--alpha-72); margin:0 0 16px; max-width:64ch;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -19517,12 +19677,14 @@
 :where(.cn-template-report) .tpl-notes ol{margin:0; padding-left:20px;}
 :where(.cn-template-report) .tpl-notes li{margin:0 0 4px; opacity:var(--alpha-72);}
 :where(.cn-template-report) .tpl-notes li:last-child{margin-bottom:0;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. ---- */
 :where(.cn-template-report) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
 :where(.cn-template-report) .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
     color:var(--text); cursor:pointer;}
 :where(.cn-template-report) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -19998,6 +20160,7 @@
        own narrow behaviour, re-pointed from .fl-btn to .btn because this page has ONE button family */
 :where(.cn-template-settings) .tpl-actionbar .btn{width:100%;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works. ---- */
 :where(.cn-template-settings) .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -20006,6 +20169,7 @@
 :where(.cn-template-settings) .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :where(.cn-template-settings) .demo-frame{height:760px; overflow-y:auto; border-bottom:1px solid var(--divider);}
 :where(.cn-template-settings) .demo-note{margin:12px 0 0; opacity:var(--alpha-60);}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -20291,15 +20455,19 @@
 :where(.cn-template-wizard) .summary__vwrap{justify-content:flex-start;}
 :where(.cn-template-wizard) .summary__v{text-align:left;}
 }
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* demo-chrome — reference-page harness furniture only; never ships */
 :where(.cn-template-wizard) .demo-wrap{padding:32px 24px;}
 :where(.cn-template-wizard) .demo-sec{color:var(--text); opacity:var(--alpha-60); margin:0 0 8px;}
 :where(.cn-template-wizard) .demo-note{color:var(--text); opacity:var(--alpha-72); margin:0 0 24px; max-width:60ch;}
+/* ===== APOLLO-DEMO css END ===== */
 /* ⚠ the scrolling frame is a REPAIR, carried from Template-create-edit: `position:sticky;
      bottom:0` resolves against the nearest SCROLLPORT, so on a reference page holding a whole
      template the bar otherwise paints over the template's own live content. The frame gives the
      specimen its own scrollport — which is what a real page is. */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 :where(.cn-template-wizard) .demo-frame{height:640px; overflow:auto; margin:0 0 16px;}
+/* ===== APOLLO-DEMO css END ===== */
 @media (prefers-reduced-motion: reduce){
 :where(.cn-template-wizard) .confirm .success, :where(.cn-template-wizard) .confirm__title, :where(.cn-template-wizard) .confirm__msg, :where(.cn-template-wizard) .confirm__actions{animation:none !important;}
 }
@@ -20608,11 +20776,13 @@
    headings/body excluded. Wrapping prose keeps its natural line box (text-box-trim:normal). */
 :where(.cn-timeline) :is(button, :where(.cn-timeline) a, :where(.cn-timeline) label, :where(.cn-timeline) span, :where(.cn-timeline) small, :where(.cn-timeline) strong, :where(.cn-timeline) b, :where(.cn-timeline) th, :where(.cn-timeline) td, :where(.cn-timeline) dt, :where(.cn-timeline) dd, :where(.cn-timeline) li, :where(.cn-timeline) figcaption, :where(.cn-timeline) legend, :where(.cn-timeline) caption, :where(.cn-timeline) summary, :where(.cn-timeline) output, :where(.cn-timeline) time, :where(.cn-timeline) input[type=text], :where(.cn-timeline) input[type=search], :where(.cn-timeline) input[type=email], :where(.cn-timeline) input[type=tel], :where(.cn-timeline) input[type=url], :where(.cn-timeline) input[type=password], :where(.cn-timeline) input[type=number], :where(.cn-timeline) input:not([type]), :where(.cn-timeline) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NO raw font-family on body — every text element carries a composite (Progress-bar precedent). */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 :where(.cn-timeline) .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}
 /* demo chrome — not the component */
+/* ===== APOLLO-DEMO css END ===== */
 :where(.cn-timeline) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-:where(.cn-timeline) .tl{width:var(--demo-width, 460px); max-width:100%; container-type:inline-size;
+:where(.cn-timeline) .tl{--tl-w:460px; width:var(--tl-w); max-width:100%; container-type:inline-size;
     background:var(--surface); border:1px solid var(--divider); border-radius:var(--border-radius-surface);
     padding:16px;}
 /* ---- date group: the time axis made explicit ---- */
@@ -20852,10 +21022,12 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-transaction-row) :is(button, :where(.cn-transaction-row) a, :where(.cn-transaction-row) label, :where(.cn-transaction-row) span, :where(.cn-transaction-row) small, :where(.cn-transaction-row) strong, :where(.cn-transaction-row) em, :where(.cn-transaction-row) b, :where(.cn-transaction-row) i, :where(.cn-transaction-row) th, :where(.cn-transaction-row) td, :where(.cn-transaction-row) dt, :where(.cn-transaction-row) dd, :where(.cn-transaction-row) li, :where(.cn-transaction-row) figcaption, :where(.cn-transaction-row) legend, :where(.cn-transaction-row) caption, :where(.cn-transaction-row) summary, :where(.cn-transaction-row) output, :where(.cn-transaction-row) time, :where(.cn-transaction-row) input[type=text], :where(.cn-transaction-row) input[type=search], :where(.cn-transaction-row) input[type=email], :where(.cn-transaction-row) input[type=tel], :where(.cn-transaction-row) input[type=url], :where(.cn-transaction-row) input[type=password], :where(.cn-transaction-row) input[type=number], :where(.cn-transaction-row) input:not([type]), :where(.cn-transaction-row) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
 /* demo chrome — not the component */
+/* ===== APOLLO-DEMO css END ===== */
 :where(.cn-transaction-row) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-:where(.cn-transaction-row) .wrap{width:var(--demo-width, 720px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+:where(.cn-transaction-row) .wrap{--tr-w:720px; width:var(--tr-w); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
 /* ---- THE SCROLL REGION. A statement is wider than a phone, and a region that scrolls must
      be reachable from the keyboard or its right-hand columns are unreadable without a mouse
      (2.1.1). So the table sits in a labelled role="region" with tabindex="0" — THE ONLY
@@ -20990,7 +21162,7 @@
      ⛔ `.l-split` got a DIFFERENT repair shape (the declaration moved onto the children) because
      `grid-column` is a child property and `flex-direction` is not — the asymmetry is deliberate
      and is named in the #211 receipt, not hidden. */
-:where(.cn-transfer-list) .tl-frame{width:var(--demo-width, 640px); max-width:100%; container-type:inline-size;}
+:where(.cn-transfer-list) .tl-frame{--tl-frame-w:640px; width:var(--tl-frame-w); max-width:100%; container-type:inline-size;}
 :where(.cn-transfer-list) .tl{display:flex; align-items:stretch; gap:16px; width:100%;}
 :where(.cn-transfer-list) .panel{flex:1; min-width:0; border:1px solid var(--panel-border); background:var(--surface); display:flex; flex-direction:column;}
 :where(.cn-transfer-list) .panel .head{display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--divider);}

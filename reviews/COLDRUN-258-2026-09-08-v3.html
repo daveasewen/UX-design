@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold run v3 — the frozen prompt against the tree at 5c241f7</title>
+<style>
+  :root{
+    --accent:#DB0011; --accent-3:#730014;
+    --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--white); color:var(--black);
+    font:400 16px/1.75 "Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4);}
+  nav.top{position:sticky; top:0; z-index:10; background:var(--white); border-bottom:1px solid var(--grey-2);}
+  nav.top .wrap{display:flex; align-items:center; justify-content:space-between; height:56px; gap:var(--s4);}
+  nav.top a{font-size:14px; letter-spacing:.05em; color:var(--grey-6); text-decoration:none;}
+  nav.top a:hover{color:var(--black);}
+  nav.top .back{color:var(--black); font-weight:500;}
+  section{padding:var(--s7) 0; border-bottom:1px solid var(--grey-2);}
+  section.tight{padding:var(--s5) 0;}
+  section.band{background:var(--grey-1);}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent);}
+  h1{font-size:57px; line-height:1.04; font-weight:400; letter-spacing:0; margin:0 0 var(--s3);}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3);}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:0 0 var(--s2);}
+  p{margin:0 0 var(--s2); max-width:68ch;}
+  .meta{font-size:14px; color:var(--grey-7);}
+  code, .mono{font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size:13px;}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+  .idx{font-size:84px; line-height:1; font-weight:200; color:var(--grey-3); margin:0 0 var(--s2);}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin:var(--s4) 0 0;}
+  .stat .n{font-size:43px; line-height:1.05; font-weight:200;}
+  .stat .k{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6);}
+  table{border-collapse:collapse; width:100%; margin:var(--s3) 0 0; font-size:14px;}
+  th,td{border-bottom:1px solid var(--grey-2); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-7);}
+  td.num{text-align:right; font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace;}
+  .scroll{overflow-x:auto;}
+  .ok{color:var(--grey-8); font-weight:500;}
+  .bad{color:var(--accent); font-weight:500;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3);}
+  .grid2 > div{background:var(--white); padding:var(--s3);}
+  .renders{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4);}
+  .renders figure{margin:0;}
+  .renders img{width:100%; border:1px solid var(--grey-2); display:block;}
+  .renders figcaption{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6); padding-top:var(--s1);}
+  ol.findings{padding-left:0; list-style:none; counter-reset:f;}
+  ol.findings > li{counter-increment:f; padding:var(--s3) 0; border-top:1px solid var(--grey-2);}
+  ol.findings > li::before{content:'F' counter(f,decimal-leading-zero); display:block;
+    font-size:12px; letter-spacing:.14em; color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  .quote{border-top:1px solid var(--grey-3); padding-top:var(--s3); font-size:19px; max-width:68ch;}
+  footer{padding:var(--s5) 0; font-size:14px; color:var(--grey-6);}
+  @media (max-width:860px){ .dim,.renders,.grid2,.stats{grid-template-columns:1fr;} h1{font-size:40px;} }
+</style>
+</head>
+<body>
+
+<nav class="top"><div class="wrap">
+  <a class="back" href="COLDRUN-258-2026-09-08-v2.html">&larr; Cold run v2</a>
+  <a href="#delta">Delta</a><a href="#findings">Findings</a><a href="#rsq">Questions for Dave</a>
+  <span class="meta">session 258 · lane C3</span>
+</div></nav>
+
+<section>
+  <div class="wrap">
+    <p class="label">Cold run v3 · 2026-09-08</p>
+    <h1>The same frozen prompt, after s258-D3 fenced the demo chrome.</h1>
+    <p>One arm, blind. The #246 prompt, unaltered, run against the working tree at <code>5c241f7</code> —
+    the state in which 53 snippets carry <code>APOLLO-DEMO</code> fences, the skill says never copy inside
+    a fence, and <code>_validate_receipt.py</code> refuses a page that does. No repo notes, no eyes, no
+    gate, no browser until the page was frozen. Nothing was fixed here.</p>
+    <p class="mono meta">prompt&nbsp; /generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</p>
+    <p class="meta">HEAD <code>5c241f707a4f219d7e49a3ba5614c0d8396dbd2c</code> ·
+    arm <code>outputs/coldrun-258-v3/arm-A-blind/dashboard.html</code> · 80,977 bytes ·
+    drive log <code>outputs/coldrun-258-v3/arm-A-blind/drive.json</code> + <code>probe2.json</code></p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">3</div><div class="k">Visually rich</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">Full</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">Persistent</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">Interactive</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">01 · Four scores, each with the one fact that earned it</p>
+    <div class="scroll"><table>
+      <tr><th>Score</th><th>Row</th><th>The earning fact</th></tr>
+      <tr><td class="num">3</td><td>Visually rich</td><td>15 canon components on one page; every bar, every sparkline coordinate, every KPI figure and every rail row is computed from the data model at run time. All six dataviz vars resolve in <em>both</em> modes off the rendered page — <code>--baseline</code> <code>#1A1A1A</code> light / <code>#FFFFFF</code> dark, <code>--spark-up</code> <code>#137F3C</code> / <code>#66CC8D</code> (<code>probe2.json → dataviz_light/dataviz_dark</code>). Nothing dangles to black.</td></tr>
+      <tr><td class="num">2</td><td>Full</td><td>50 payment instructions, 12 accounts, 5 legal entities, 6 currencies with a prior month, a 24-month series; no placeholder text and the footer is present (rule 17). <strong>Held at 2 by F01</strong>: the payments grid renders 760px wide inside a 1,312px tile — 552px of dead band, with the Amount column clipped, at 1440 in both modes.</td></tr>
+      <tr><td class="num">3</td><td>Persistent</td><td>Loading <code>?view=payments&amp;q=payroll&amp;period=365&amp;sort=gbp&amp;dir=ascending&amp;size=12</code> cold restored <em>every</em> observed key: the snapshot taken before the reload and the snapshot after it are <code>identical: true</code> across 14 probes including <code>aria-sort</code>, the range readout, the chart's six bar labels and the four KPI figures (<code>drive.json → measure.persistence</code>). A filter also survives navigating away and back (<code>filter_survives_nav: true</code>).</td></tr>
+      <tr><td class="num">2</td><td>Interactive</td><td>39 driven steps, <strong>0 pageerrors</strong>, and every wired control moves something real — but <strong>three of the page's four headline filters are unreachable</strong>. The entity / currency / status listboxes never open: after a real click on the trigger, <code>aria-expanded="true"</code> but the menu computes <code>opacity: 0; pointer-events: none</code> and <code>elementFromPoint</code> at the menu's own centre returns the toolbar, not the menu (<code>drive.json → measure.dropdown_entity/_ccy/_status</code>). See F02.</td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)">JS <code>pageerror</code> count on load: <strong>0</strong>. Across the whole 39-step drive including a reload: <strong>0</strong>. Console <code>error</code> entries: <strong>0</strong>. A second, independent pass (<code>_probe2.py</code>, 4 page loads, 2 modes, a viewport change) also recorded <strong>0</strong>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">02 · Measurement 10 — the fence count and the grid's width</p>
+    <div class="dim">
+      <div>
+        <p class="idx">0</p>
+        <h3><code>grep -c APOLLO-DEMO dashboard.html</code></h3>
+        <p class="meta">Zero. s258-D3's first job is done: a blind builder following rule 2 carried no fenced span into the page — not the <code>demo-bar</code>, not the Data-grid state switcher, not the toolbar's demo notes, not a demo script.</p>
+      </div>
+      <div>
+        <h3>The payments grid at 1440, against its tile</h3>
+        <div class="scroll"><table>
+          <tr><th>Measure</th><th class="num">px</th><th>Read off</th></tr>
+          <tr><td>Grid <code>#dg</code> bounding width</td><td class="num">760.00</td><td><code>getBoundingClientRect()</code></td></tr>
+          <tr><td>Host tile <code>.c-bento__tile.stat-card</code></td><td class="num">1,359.98</td><td>same</td></tr>
+          <tr><td>Tile content box (padding removed)</td><td class="num">1,311.98</td><td>computed padding 24px each side</td></tr>
+          <tr><td><strong>Dead band</strong></td><td class="num bad">551.98</td><td>tile inner − grid</td></tr>
+          <tr><td>Grid as a share of its tile</td><td class="num bad">57.9%</td><td>—</td></tr>
+          <tr><td>Computed <code>max-width</code> on <code>#dg</code></td><td class="num">100%</td><td>the author's <code>--dg-max</code> override <em>is</em> applied</td></tr>
+        </table></div>
+        <p class="meta">The author's override lands and is still overruled, because the binding rule is not
+        <code>max-width</code> at all. See F01.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">03 · The renders</p>
+    <h2>1440 and 820, light and dark</h2>
+    <p class="meta">Rendered with chromium-headless-shell after the freeze. Full-page height 2,685px at 1440; 3,243px at 820. At 820 <code>document.scrollWidth</code> is 820 against a 820 viewport — no page-level horizontal scroll; the grid's own <code>.dg-scroll</code> carries its 796px table, which is the component's declared behaviour.</p>
+    <div class="renders">
+      <figure><img src="../outputs/coldrun-258-v3/arm-A-blind/render-1440-light.png" alt="1440 light"><figcaption>1440 · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v3/arm-A-blind/render-1440-dark.png" alt="1440 dark"><figcaption>1440 · dark</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v3/arm-A-blind/render-820-light.png" alt="820 light"><figcaption>820 · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-258-v3/arm-A-blind/render-820-dark.png" alt="820 dark"><figcaption>820 · dark</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">04 · The gates, run after the freeze</p>
+    <div class="scroll"><table>
+      <tr><th>Gate</th><th>Exit</th><th>What it printed</th></tr>
+      <tr><td><code>_validate_screen.py</code></td><td class="num">1</td><td><strong>verdict: FAIL</strong> — <span class="bad">compose: ❌ 2 native radio/checkbox not composed from <code>.cn-selection-controls</code></span>. Passing or unproven: <code>receipt: UNPROVEN:NO-RECEIPT</code>, <code>composition: UNPROVEN: C9 bands</code>, <code>icon-source: ✅ all paths library-matched</code>, <code>a11y: ✅</code>. <strong>Zero hex</strong> and <strong>zero canon-class redefinitions</strong> — v2 reported 262 hex and four redefined <code>.c-bento*</code> classes at this step.</td></tr>
+      <tr><td><code>_validate_receipt.py</code></td><td class="num">1</td><td><code>FAIL:NO-RECEIPT</code> — no <code>#provenance-receipt</code> block. Unchanged from v1 and v2.</td></tr>
+      <tr><td><code>_validate_screen.py</code> index step</td><td class="num">1</td><td><span class="bad">⛔ SCREEN-GATE INDEX REFUSED</span> — the gate wrote its own ledger to <code>knowledge/_screen-gate/coldrun258v3.canon.md</code> and then refused because that file is untracked. The ledger is copied to <code>outputs/coldrun-258-v3/arm-A-blind/gate-screen-ledger.md</code> and the repo file was removed; <code>git status --porcelain knowledge/</code> is clean.</td></tr>
+    </table></div>
+
+    <h3 style="margin-top:var(--s5)">Mutation test — does s258-D3's new refusal actually fire?</h3>
+    <p>The clause was driven, not read. Two copies of the frozen page under <code>/tmp/</code>, one clean and
+    one with a single fenced <code>harness-bar</code> span pasted in, both minted with
+    <code>gen_provenance_receipt.py --mint</code>:</p>
+    <div class="grid2">
+      <div><p class="meta" style="letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:var(--grey-6)">clean</p>
+        <p class="mono">verdict: PASS (+1 UNPROVEN)<br>RESULT: PASS ✅</p></div>
+      <div><p class="meta" style="letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:var(--accent)">one fence pasted back in</p>
+        <p class="mono">FAIL:DEMO-CHROME-COPIED — the page carries fenced snippet harness (harness-bar)…<br>RESULT: FAIL ❌</p></div>
+    </div>
+    <p style="margin-top:var(--s3)"><strong>The clause works.</strong> It also only works after minting — see F03.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">05 · Inventory</p>
+    <h2>15 components used, 29 dashboard-set components available and unused</h2>
+    <div class="scroll"><table>
+      <tr><th>Used</th><th>Level</th><th>Where</th></tr>
+      <tr><td>template-dashboard-bento</td><td>template</td><td>the wall — spliced, four groups</td></tr>
+      <tr><td>app-shell-top-nav</td><td>shell</td><td>masthead + footer</td></tr>
+      <tr><td>kpi-tile</td><td>element</td><td>4, lead group</td></tr>
+      <tr><td>stat-card</td><td>element</td><td>4 — chart host, Needs attention, Balances, FX</td></tr>
+      <tr><td>data-grid</td><td>pattern</td><td>the payment ledger</td></tr>
+      <tr><td>filter-toolbar-bar</td><td>block</td><td>search + 3 listboxes + period segmented + chips</td></tr>
+      <tr><td>chart-bar (dataviz column)</td><td>pattern</td><td>corridor chart, re-drawn per filter</td></tr>
+      <tr><td>chart-sparkline</td><td>element</td><td>4, one per KPI</td></tr>
+      <tr><td>status-indicator</td><td>element</td><td>strip, rail, grid status column</td></tr>
+      <tr><td>button · summary · tags · breadcrumbs · footer · view-options</td><td>element / pattern</td><td>actions, rail lists, chips, crumb trail, legal footer, segmented</td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)"><strong>Available but unused</strong> (dashboard set): runway-bar, limits-meter, quick-actions, page-header-lockup, stats-band-lockup, template-dashboard, sidebar-nav, app-shell-side-nav, app-shell-nav-rail, chart-line, chart-donut, chart-pie, chart-combo, chart-stacked-area, chart-bullet, chart-scatter, chart-histogram, chart-boxplot, chart-candlestick, chart-butterfly-h/-v, tabs, pagination, drawer, account-card, amount-display, meter, empty-state, segmented-control. <strong>Ten of the eleven chart types shipped unused</strong> — the same shape as #246 and v1: one chart on the page, because the template carries one and the skill never routes a second.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">06 · Chart completeness</p>
+    <div class="scroll"><table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>Snippet <code>&lt;script&gt;</code> present byte-for-byte?</td><td class="ok">Yes, by reference. The page links <code>knowledge/canon/dv-behaviour.js</code> (sha256 <code>daba629f174a463a…</code>) and <code>dp08-anchor.js</code> (<code>cb2df93aab5cc73b…</code>) as files rather than pasting them — the bytes are the source's by construction, and the server log records both fetched 200.</td></tr>
+      <tr><td>Controls present?</td><td class="bad">No toolbar, no legend, no table-view segmented. <code>dv-behaviour.js</code> ships those modules; the template's <code>figure.dv</code> declares no <code>.seg</code> and no <code>&lt;table&gt;</code>, so the modules have nothing to bind. Unchanged from v1 and v2.</td></tr>
+      <tr><td>Animation present?</td><td class="ok">Yes — <code>data-grow="up"</code> with a 45ms per-bar delay, carried on every re-draw.</td></tr>
+      <tr><td>Tooltip working when driven?</td><td class="ok">Yes. Hovering the first bar produced <code>GB-GB: £3,785,200.00</code> at <code>opacity: 1</code> — and the tip text is the <em>filtered</em> total, so the behaviour reads the re-drawn geometry, not the baked one.</td></tr>
+      <tr><td>Keyboard reachable?</td><td class="ok">All 6 bars carry <code>tabindex="0"</code> after every re-draw.</td></tr>
+      <tr><td>Refit after a re-draw?</td><td class="ok">Yes — viewBox 580×260 fits to an 845px chart area; the author dispatches <code>resize</code> after writing new <code>data-fx</code>/<code>data-fw</code> fractions and the engine re-derives from them.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">07 · Interactions driven</p>
+    <div class="scroll"><table>
+      <tr><th>Control</th><th>Result</th><th>What moved</th></tr>
+      <tr><td>Primary nav × 4 (Overview / Payments / Liquidity / FX)</td><td class="ok">works</td><td>which bento groups render, page title, breadcrumb, <code>document.title</code>, URL</td></tr>
+      <tr><td>Entity listbox</td><td class="bad">DEAD — unreachable</td><td>menu never opens; see F02</td></tr>
+      <tr><td>Currency listbox</td><td class="bad">DEAD — unreachable</td><td>same</td></tr>
+      <tr><td>Status listbox</td><td class="bad">DEAD — unreachable</td><td>same. The <em>same</em> filter reached by URL (<code>?status=Awaiting+approval</code>) returns "8 results", all of one status — so the predicate is sound and only the control is broken.</td></tr>
+      <tr><td>Period segmented × 3</td><td class="ok">works</td><td>KPIs, all four sparklines, the chart's six bars, grid count, pager count, URL — one pass</td></tr>
+      <tr><td>Toolbar search (type + clear)</td><td class="ok">works</td><td>bars, count, KPIs, KPI deltas, needs-attention count and value, the header strip's chip text, rows, range, URL — <strong>11 observed keys in one keystroke</strong></td></tr>
+      <tr><td>Toolbar chip dismiss</td><td class="ok">works</td><td>driven for the period and search chips; the status chip could not be reached because its filter could not be set</td></tr>
+      <tr><td>Grid column sort × 6</td><td class="ok">works</td><td>first row changes on every one of the six; three-state cycle; <code>aria-sort</code> written</td></tr>
+      <tr><td>Pager (numbered, next, prev)</td><td class="ok">works</td><td>range readout and first row</td></tr>
+      <tr><td>Rows per page (8/12/24)</td><td class="ok">works</td><td>rows rendered, pager count, range</td></tr>
+      <tr><td>Grid chip filter (type + Enter, then dismiss)</td><td class="ok">works</td><td>count, pager, range</td></tr>
+      <tr><td>Row select / select-all</td><td class="ok">works</td><td>8 boxes checked; the header action re-labels to "Export 8 selected"</td></tr>
+      <tr><td>Release payments</td><td class="ok">works</td><td>8 rows moved from Awaiting approval to Released — the filtered view then reads "0 results" and <code>DATA.payments</code> Released count rose to 43</td></tr>
+      <tr><td>Reference edit-in-place</td><td class="ok">works</td><td>cell committed <code>EDITED-REF-9001</code> on Enter</td></tr>
+      <tr><td>KPI table CTA</td><td class="ok">works</td><td>sparkline hidden, six months of values inserted; second press removes it</td></tr>
+      <tr><td>Status chip → Needs attention</td><td class="ok">works</td><td><code>document.activeElement.id === "dp08-na"</code> — <code>dp08-anchor.js</code>, carried verbatim</td></tr>
+      <tr><td>Masthead search button</td><td class="ok">works</td><td>focus moves to <code>#qSearch</code></td></tr>
+      <tr><td>Light / dark button</td><td class="ok">works</td><td><code>data-theme="dark"</code> on the body, persisted in the URL and <code>localStorage</code></td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)"><strong>18 control families, 15 live, 3 dead.</strong> Every live filter re-drives the grid <em>and</em> the KPIs <em>and</em> the chart <em>and</em> both context cards in one pass — rule 14's exact test.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">08 · Data believability</p>
+    <p>Plausible corporate international banking, not placeholder. Five named legal entities with countries
+    and BICs; 12 accounts with IBAN-shaped identifiers across GBP/EUR/USD/SGD/HKD/JPY; 50 payment instructions
+    naming Siemens Energy, Maersk Line, PSA Corporation, Li &amp; Fung, ADP, HMRC and four intercompany sweeps;
+    eleven corridors; five statuses; four real channels (SWIFT gpi, SEPA, Fedwire, CHATS, FAST, ACH, CHAPS).
+    Mid-market rates and a prior month drive a real FX move column.</p>
+    <p><strong>One believability wobble, and it is arithmetic, not content:</strong> "Payments out +497.6% up"
+    and "Group cash position −53.6% down". The prior-period comparator is the same-length window immediately
+    before, and the ledger thins out beyond 30 days, so short windows produce violent deltas. A real product
+    would compare like for like or suppress the delta below a row-count floor. Called out rather than hidden.</p>
+  </div>
+</section>
+
+<section id="delta" class="band">
+  <div class="wrap">
+    <p class="label">09 · Delta</p>
+    <h2>#246 → v1 → v2 → v3</h2>
+    <p class="meta">Same rows, four columns, differences named as facts.</p>
+    <div class="scroll"><table>
+      <tr><th>Row</th><th>#246<br>v1.0.5 tree</th><th>#258 v1<br>v1.0.7 zip</th><th>#258 v2<br>tree @ e774fb7</th><th>#258 v3<br>tree @ 5c241f7</th><th>What v3 changed</th></tr>
+      <tr><td><strong>Scores</strong></td><td class="num">2 / 2 / 0 / 2</td><td class="num">3 / 2 / 0 / 2</td><td class="num">3 / 2 / 3 / 3</td><td class="num">3 / 2 / 3 / <span class="bad">2</span></td><td>−1 interactive. Not a regression in the pack: a different blind build reached for the toolbar's listboxes, which v2's did not, and hit an open-state contract nothing surfaced.</td></tr>
+      <tr><td>Demo chrome in the generated page</td><td>not measured</td><td>not measured</td><td><span class="bad">present</span> — the Data-grid state switcher and its width dial spliced in</td><td class="ok"><strong>0</strong> <code>APOLLO-DEMO</code> markers</td><td><strong>closed.</strong> Rule 2's fence, read cold, kept every harness span out.</td></tr>
+      <tr><td>Payments grid width in its tile (1440)</td><td>n/a</td><td>n/a</td><td class="bad">213px in a 1,296px tile</td><td class="bad">760px in a 1,312px tile</td><td>3.6× better and still wrong. The dial moved from <code>--demo-width</code> in the <em>snippet</em> to <code>--dg-max</code>; <strong>canon.css was never regenerated</strong>, so a page that links canon still gets <code>width:var(--demo-width, 760px)</code>. F01.</td></tr>
+      <tr><td>Compose gate on a spliced page</td><td>281 hex + <code>.c-bento</code> redefinition</td><td>256 hex + the same 4 classes</td><td>262 hex + the same 4 classes + 2 native controls</td><td class="ok"><strong>0 hex, 0 redefinitions</strong>, 2 native controls</td><td><strong>Mostly closed — by a route, not a fix.</strong> This build followed step 3 literally (link canon.css, wear the <code>cn-*</code> scope) instead of inlining the snippet's <code>&lt;style&gt;</code>. The hex was never the page's; it was the snippet's, and canon holds the same rules already scoped.</td></tr>
+      <tr><td>Receipt</td><td>FAIL blind</td><td><code>FAIL:NO-RECEIPT</code></td><td><code>FAIL:NO-RECEIPT</code></td><td><code>FAIL:NO-RECEIPT</code></td><td>unchanged — no skill tells a blind builder to mint one. Now with a consequence: F03.</td></tr>
+      <tr><td>Persistence</td><td class="num">0</td><td class="num">0</td><td class="num">3</td><td class="num">3</td><td>held. 14 observed keys identical across a cold reload.</td></tr>
+      <tr><td>JS pageerrors on load</td><td>not measured</td><td>not measured</td><td class="num">0</td><td class="num">0</td><td>held across 5 page loads and 2 modes.</td></tr>
+      <tr><td>Cross-component wiring</td><td>none — "needed 14 lines of glue rule 2a forbids"</td><td>none — filter moved rows 8→8, chart unchanged</td><td>every filter drives grid + KPIs + chart + both cards</td><td>same, and now the header strip's chip text too</td><td>held. s258-D1 is doing the work it was ruled for.</td></tr>
+      <tr><td>Charts on the page / available</td><td>1 of 11</td><td>1 of 11</td><td>1 of 11</td><td>1 of 11</td><td>unchanged. Nothing routes a second chart type.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">10 · Findings</p>
+    <ol class="findings">
+      <li>
+        <h3>s258-D3 fixed the snippets and left canon.css behind — <code>--demo-width</code> still governs 28 component widths.</h3>
+        <p><code>knowledge/snippets/Data-grid.reference.html:125</code> now reads
+        <code>.dg{width:100%; max-width:var(--dg-max, 760px);}</code> with a comment naming s258-D3.
+        <code>knowledge/canon/canon.css:10341</code> still reads
+        <code>:where(.cn-data-grid) .dg{width:var(--demo-width, 760px); max-width:100%;}</code>.
+        <code>git show --stat 5c241f7</code> touches 55 snippet files, the skill and the receipt gate —
+        and <strong>not canon.css</strong>; <code>git log -L 10341,10341:knowledge/canon/canon.css</code>
+        dates that line to <code>0272996</code>, 22 August, #215.</p>
+        <p>The consequence is not academic. Skill step 3 tells the builder to drop a component in as
+        "its scope class + the snippet's own markup" — i.e. to link canon and wear <code>cn-data-grid</code>.
+        A page that does exactly that inherits the demo dial: the grid sat at <strong>760.00px inside a
+        1,311.98px content box</strong>, 552px of dead band, Amount column clipped, and the author's
+        <code>--dg-max:100%</code> override computed correctly and changed nothing because the binding
+        declaration is <code>width</code>, not <code>max-width</code>.
+        <code>grep -c demo-width knowledge/canon/canon.css</code> = <strong>36</strong>, of which
+        <strong>28</strong> are <code>width:var(--demo-width, …)</code> on a component wrapper.</p>
+      </li>
+      <li>
+        <h3>The Filter-toolbar-bar's open-state contract is invisible to a blind builder, and three filters died on it.</h3>
+        <p>Canon binds the menu to <code>.menu[data-open="true"]</code>
+        (<code>canon.css:11710</code>). The snippet's own script sets that attribute
+        (<code>Filter-toolbar-bar.reference.html:415</code>). The builder read the snippet's markup range,
+        found no script <em>there</em>, wrote <code>#behaviour-manifest</code> saying
+        <code>"script": null</code> — and wired <code>.open</code> on the wrapper instead. Measured
+        result: <code>aria-expanded="true"</code>, <code>opacity: 0</code>, <code>pointer-events: none</code>,
+        <code>elementFromPoint</code> returns the toolbar. Three listboxes, all dead.</p>
+        <p>Two things are true at once. The builder should have read
+        <code>filter-toolbar-bar.meta.json</code>'s <code>behaviour.script</code> address, which names the
+        script exactly. And nothing in the skill's <em>procedure</em> sends it there: step 2 says read the
+        contract for "variants, states, antiPatterns, relationships" — <strong>it does not mention
+        <code>behaviour</code></strong>, which is where rule 2a's address lives. Rule 2a assumes the builder
+        already found the script.</p>
+      </li>
+      <li>
+        <h3>s258-D3's new refusal cannot fire on the population it was built for.</h3>
+        <p>Driven, not read. The frozen page and a mutant with one <code>harness-bar</code> fence pasted
+        back in were both put through <code>_validate_receipt.py</code>. <strong>Without a receipt, both
+        return the same thing</strong>: <code>FAIL:NO-RECEIPT</code>, verdict identical, the fence never
+        looked at. After <code>gen_provenance_receipt.py --mint</code>: clean → <code>PASS</code>,
+        mutant → <code>FAIL:DEMO-CHROME-COPIED</code>.</p>
+        <p>So the clause works, and a first-run generated page can never reach it, because
+        <code>ADS-generate-from-canon</code> never tells the builder to mint a receipt — rule 2a says
+        "carry that address into the page's receipt" as though the receipt already exists.</p>
+      </li>
+      <li>
+        <h3>The compose gate fails a page for copying the Data-grid snippet exactly as rule 2 instructs.</h3>
+        <p><code>compose: ❌ 2 native radio/checkbox not composed from .cn-selection-controls
+        (.radio/.box)</code>. Both are the Data-grid's own <code>.cbx</code> checkbox markup, carried
+        byte-for-byte from <code>Data-grid.reference.html</code> as rule 2 requires. Rule 2 and the gate
+        disagree about the same bytes, and the builder is told to obey both.</p>
+      </li>
+      <li>
+        <h3>The screen gate wrote into the repo and then refused because of what it wrote.</h3>
+        <p><code>python3 knowledge/_validate_screen.py &lt;page&gt;</code> emitted
+        <code>knowledge/_screen-gate/coldrun258v3.canon.md</code> and then exited 1 with
+        <span class="bad">⛔ SCREEN-GATE INDEX REFUSED — untracked subject</span>. There is no flag in the
+        runner's help to send the ledger elsewhere. Any consumer gating a page that lives outside the repo's
+        tracked set hits this on their first run; the useful output (the four gate verdicts) is only in the
+        file the gate objects to.</p>
+      </li>
+      <li>
+        <h3>Ten of eleven chart types shipped and unreachable; the fullness ceiling is unmoved since #246.</h3>
+        <p>The template carries one column chart. Nothing in the skill routes a second chart type off the
+        brief — no rule, no index query, no example — so a blind build lands on one chart in every run:
+        #246, v1, v2 and v3 alike. <code>chart-line</code>, <code>chart-donut</code>,
+        <code>chart-stacked-area</code> and eight others are stable, gated and never chosen.</p>
+      </li>
+      <li>
+        <h3>Two nav destinations render the same wall.</h3>
+        <p>The view router shows and hides bento groups, and Liquidity and FX resolve to overlapping group
+        sets, so <code>nav:fx</code> changed only the title and the URL — the groups snapshot was identical
+        to Liquidity's (<code>drive.json</code>, <code>nav:fx → changed: [title, url]</code>). Honest
+        reporting of a thin spot: the skill's rule 14 says "nav switches the view" and a group-visibility
+        router satisfies the letter of it while leaving two destinations nearly indistinguishable.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="rsq" class="band">
+  <div class="wrap">
+    <p class="label">11 · Ruling-shaped questions</p>
+    <h2>For Dave. Not answered here.</h2>
+    <ol>
+      <li><strong>Does s258-D3 count as enacted while canon.css still carries 28 <code>--demo-width</code> width rules?</strong> The snippets are fenced and the gate refuses copied fences; the generated-page symptom the ruling was written against still reproduces through the canon route.</li>
+      <li><strong>Which route is the sanctioned one — link canon.css and wear the <code>cn-*</code> scope, or inline the snippet's own <code>&lt;style&gt;</code>?</strong> v2 did the second and drew 262 hex; v3 did the first and drew none. Step 3 reads as the first; rule 2 reads as the second. Only one can be the answer the gates are calibrated for.</li>
+      <li><strong>Should <code>ADS-generate-from-canon</code> step 2 name <code>behaviour</code> as a thing to read?</strong> Rule 2a's script address lives there, and the one control family that died in this run died because the procedure never pointed at it.</li>
+      <li><strong>Should the skill's procedure mint a provenance receipt?</strong> Without one, s258-D3's <code>FAIL:DEMO-CHROME-COPIED</code> is unreachable for every first-run page.</li>
+      <li><strong>Is a native <code>&lt;input type="checkbox"&gt;</code> inside a copied Data-grid a defect?</strong> If not, the compose gate needs an exemption for snippet-carried controls; if so, the Data-grid snippet itself needs changing.</li>
+      <li><strong>Is one chart per dashboard the intended default?</strong> Four cold runs, four single-chart pages. If not, something has to route the second chart — a rule, a template variant, or a routing step off the knowledge graph (the W-333 note already banks that question).</li>
+    </ol>
+    <p class="quote">v3's honest headline: the fence held perfectly — zero demo markers in a page built cold — and the defect it was written to stop still reached the render, through canon.css, which the enactment did not touch.</p>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <p>Cold run v3 · session 258 · lane C3 · 2026-09-08 · read-only against canon, knowledge, showroom and apollo-spider.
+  Arm frozen before any measurement. Subreport <code>notes/_subreports/2026-09-08-258-C3-cold-run-3.md</code>.</p>
+</div></footer>
+
+</body>
+</html>
