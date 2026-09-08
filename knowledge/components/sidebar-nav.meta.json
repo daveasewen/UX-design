@@ -65,6 +65,22 @@
       "grouped destination list"
     ]
   },
+  "behaviour": {
+    "script": "knowledge/snippets/Sidebar-nav.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "keydown"
+    ],
+    "fallback": "Every row is a native `<a>` and stays focusable and in the tab order; the authored `aria-current=\"page\"` stands and both its visual carriers (the 3px leading bar and the surface change) follow it, because they are bound to the attribute in CSS. What goes: clicking another row never moves `aria-current`, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group cannot be toggled (it renders in the `aria-expanded`/`hidden` state the markup authors), and the rail collapse toggle does nothing.",
+    "$note": {
+      "current": "\"You are here\" is a STATE, not an authored fact — the measured defect was a static aria-current no interaction could move. Each `nav.sn` is its own scope, so two specimens do not share a current location.",
+      "keyboard": "NO roving tabindex by decision: a nav list is not a composite widget, so arrows move FOCUS only and every destination stays in the tab order. Hidden rows (a collapsed group) are skipped.",
+      "group": "Collapsible group is Accordion's disclosure, ARIA first: aria-expanded on the button, `hidden` on the list it names through aria-controls; the chevron rotation is CSS on [aria-expanded=\"true\"].",
+      "rail": "Rail collapse copies App-shell-side-nav's mechanics scoped to the column: labels are hidden, never removed, so accessible names survive; the toggle swaps its label, the chevron href and the nav's own aria-label.",
+      "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe."
+    }
+  },
   "accessibility": {
     "landmarks": "A <nav> landmark with an accessible name. The rail keeps its own name so the two states are distinguishable in a landmark list.",
     "currentLocation": "aria-current=\"page\" on exactly one link — 'page' because the destination IS a different page (Anchor nav uses aria-current=\"true\" for the same reason inverted).",

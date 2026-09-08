@@ -37,7 +37,8 @@
     "listHeader": { "accepts": { "capability": ["heading", "count"] }, "required": true, "use": "what the list is and how many rows it has. ⚠ NO FILTER OR TOOLBAR — see $finding-no-toolbar.", "$status": "PROPOSED #210" },
     "listRows": { "accepts": { "capability": ["selectable-row"] }, "required": true, "use": "the master list. ⚠ THE LIBRARY HAS NO SUCH ATOM — see $finding-no-selected-list-row.", "$status": "PROPOSED #210, Dave's eye owed" },
     "detailHeader": { "accepts": { "capability": ["heading", "icon-button"] }, "required": true, "use": "the record's name, a back control at narrow widths, and record-level actions", "$status": "PROPOSED #210" },
-    "detail": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the record. One region here is the real Skeleton-loader; the rest is placeholder furniture.", "$status": "PROPOSED #210" }
+    "detail": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the record. One region here is the real Skeleton-loader; the rest is placeholder furniture.", "$status": "PROPOSED #210" },
+    "endMatter": { "accepts": { "capability": ["footer"] }, "required": false, "use": "Footer in its slim form, as the LAST CHILD OF `.sh` so it spans all three panes — the rail, the list and the detail are peers and none of them is 'the content column'. The doormat form fits the same slot.", "$status": "ADDED #258, Dave's eye owed" }
   },
   "tokens": {
     "page": "background/default — the detail pane, so the record reads as the page and the list reads as chrome",
@@ -62,19 +63,21 @@
     "Navigations.reference.html — the masthead flex geometry and the 44x44 action buttons, at Headers' 56px in-app height.",
     "Headers.reference.html — the content-header back button (chevron-left at 20px in a 44px target) and the 56px in-app header height.",
     "Skeleton-loader.reference.html — VERBATIM AND COMPLETE for the one genuinely-loading region in the detail pane: the shimmer keyframes, role=\"status\", aria-busy, the visually-hidden 'Loading content', the reduced-motion static fallback and the resolve behaviour. Shape kit only (no announcement) everywhere else.",
-    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical.",
+    "Footer.reference.html — the slim legal bar, the a.lnk link atom (which Footer itself copied verbatim from Links), the 44px link targets at every width, and the copyright line. Verbatim; Footer is already composite-clean so nothing was re-keyed. ADDED #258 (Dave: \"the page shells should include the footer\"), taken through App-shell-top-nav's copy."
   ],
   "$finding-inactive-pane-is-removed": "★★ THE INACTIVE PANE IS REMOVED FROM THE LAYOUT, NOT MERELY MOVED OFF SCREEN. Below 840cqi the pane that is not current is `display:none`, so it leaves the tab order AND the accessibility tree together. The classic list/detail defect is a pane that is visually gone — translated away, or opacity 0 — but still focusable: a keyboard or screen-reader user then tabs into content nobody can see, and there is no way out of it. Stated here because it is invisible in a screenshot and is exactly the kind of thing a green gate cannot see.",
   "$finding-no-toolbar": "⚠ THE LIST PANE HAS NO FILTER OR SORT BAR, AND THAT IS A SCOPE LINE RATHER THAN AN OVERSIGHT. Itinerary row 120 (filter / toolbar bar) is a separate Layer-2 member being built in the SAME wave by another lane. A shell that invented its own toolbar would collide with it on arrival. The list header carries a title and a count and stops. Composing row 120's artefact into this slot is the follow-up, and it is the conductor's to sequence.",
   "$finding-two-skeleton-registers": "THE FILE DELIBERATELY CARRIES BOTH SKELETON REGISTERS SO THE DIFFERENCE IS VISIBLE. One region in the detail pane is the real Skeleton-loader, complete with its announcement, because a record's activity genuinely does arrive later. Everything else is static aria-hidden furniture, because a frame with the content left out is not loading. App-shell-top-nav.reference.html states the reasoning in full for all three shells; this file is where the genuine composition is actually demonstrated.",
   "$finding-brand-mark": "✅ THE BRAND MARK IS BOUND — CLOSED #230 ON DAVE'S WORD. Itinerary row 86's ASSET-ONLY verdict is spent. The masthead <img>-references knowledge/assets/logos/masterbrand-light-colour.svg on light chrome and masterbrand-dark-colour.svg on dark — his ruling verbatim: \"use this as teh default logo 'masterbrand-light-colour'\" and, minutes later, \"use this for dark mode masterbrand-dark-colour\". WHAT IT REPLACED, and why the replacement was not cosmetic: the mark was LITERAL TEXT, and the #230 rehearsal measured the consequence — a cold builder obeying the contract's 'copy the markup' rule shipped HSBC set in type, silently, never asked, and landed beside a target artefact wearing the hexagon. The <img> idiom is adopted from Template-auth.reference.html rather than invented; inlining was rejected there on a measurement (_validate_icons.py byte-matches inline paths against assets/icons/ only, so an inlined logo reads UNKNOWN — indistinguishable from an invented mark). ⛔ The Apollo crescent is an anonymity mark only (Dave's #86 ruling) and appears nowhere.",
   "$finding-breakpoints-unruled": "⚠ 1200cqi AND 840cqi ARE SPECIMEN CHOICES. No breakpoint scale exists in knowledge/tokens/layout.json (probed, absent). Three shells in one wave carry three different pairs (900/600, 1040/720, 1200/840).",
+  "$finding-footer-spans-every-pane": "ADDED #258 (Dave: \"the page shells should include the footer\"). THE FOOTER IS THE LAST CHILD OF `.sh` AND SPANS ALL THREE PANES, because the rail, the list and the detail are PEERS — none of them is 'the content column'. A legal bar under the detail pane alone would read as belonging to the selected account rather than to the page. Each pane scrolls internally (.sh-list-body / .sh-detail-body carry the overflow-y:auto), so a footer OUTSIDE them is pinned to the frame's floor and stays reachable at every scroll position — the App-shell-top-nav arrangement, not the nav-rail one, because top-nav has one content column and nav-rail has a rail to stop at. MEASURED at 1440 in a real browser, light and dark: footer x=25 w=1390 on the three-pane specimen (the full shell width), x=25 w=390 on both narrow specimens. Every legal <li> measures 44px in both themes, so the Footer #204 line-box defect did NOT recur here.",
   "relationships": {
     "livesInside": ["nothing — this IS the outermost frame"],
     "commonPatterns": ["statement and record browsing", "message and case queues", "any product where the user picks one of many and studies it", "settings with a category list"],
     "mustNotNeighbour": []
   },
-  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Skeleton-loader"],
+  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Skeleton-loader", "Footer"],
   "$relationshipsNote": "⚠ SCHEMA CONSTRAINT, FOUND BY DRIVING P-1 AND NOT BY READING: `relationships` sets additionalProperties:false with NO `^\\$` patternProperties and permits only livesInside · mustNotNeighbour · commonPatterns · triggeredBy. A `consumes` key, or even a `$note`, INSIDE relationships is a schema violation; the legal home is a top-level `$consumes`. ⚠ List-items is deliberately NOT in $consumes, and that absence is the point — see $finding-no-selected-list-row.",
   "accessibility": {
     "relatedSC": ["1.3.1", "1.4.3", "2.1.1", "2.4.1", "2.4.3", "2.4.4", "2.4.7", "2.4.8", "2.5.8", "4.1.2", "4.1.3"],
@@ -182,6 +185,10 @@
       {
         "ref": "component:skeleton-loader",
         "$note": "Skeleton-loader"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
       }
     ]
   }

@@ -41,6 +41,25 @@
     "mustNotNeighbour": [],
     "commonPatterns": ["transactions with filter chips + pagination", "multi-select then bulk action", "inline reference editing"]
   },
+  "behaviour": {
+    "script": "knowledge/snippets/Data-grid.reference.html#script",
+    "partial": null,
+    "events": [
+      "blur",
+      "change",
+      "click",
+      "dblclick",
+      "keydown"
+    ],
+    "fallback": "The table body is EMPTY — `<tbody id=\"tbody\">` carries only a comment and every row is rendered by the script, so with JS off there is no data at all: no rows, no chips, no pager buttons that do anything. The header, the search field, the rows-per-page select and the authored footer range text still paint; sorting, filtering, chip dismissal, paging, select-all, edit-in-place and the APG roving cell focus are all gone.",
+    "$note": {
+      "sort": "Header sort buttons cycle none -> ascending -> descending; the cycle re-renders the body and the pager.",
+      "filter": "The search field filters on keydown and the chip bar mirrors the active filters; each chip's `x` drops one filter, the clear control drops them all.",
+      "edit": "Double-click on a `td.edit` opens an inline input; keydown commits or cancels and blur commits.",
+      "keyboard": "APG grid roving cell focus on the table: one tab stop, arrows move the current cell, and focus is restored across re-renders by cell id.",
+      "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe."
+    }
+  },
   "accessibility": {
     "semantics": "Native <table> + role=grid; aria-rowcount/aria-rowindex track the FILTERED set across pages; columnheaders carry aria-sort; rows carry aria-selected.",
     "keyboard": "APG grid: ONE tab stop, roving tabindex over cells — arrows move, Home/End row ends, Ctrl+Home/End grid ends; Enter/Space activates the cell's widget (sort · checkbox · edit); F2/double-click edits; Esc cancels. Widgets inside cells are tabindex=-1 so Tab exits the grid.",

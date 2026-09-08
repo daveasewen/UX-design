@@ -186,6 +186,14 @@ constraint from question 6 — and start.
 used/missing note: which brief, and which of the six answers actually shaped the build.
 A brief nobody cited is a brief nobody read.
 
+**s258-D1 / s258-D2 (added, nothing above re-worded).** The build the brief hands on to is
+**ambitious by default**: every control on the page is assumed to work, and the author writes
+the JavaScript (the old "author no JS" rule 2a is removed). Two consequences for the grill.
+Question 5, **data**, is now load-bearing rather than a nicety — the build needs entities,
+currencies, a time span and enough rows for sorting and paging to mean something, so if it is
+skipped, say what you will invent and how deep. And a skipped answer never licenses a dead
+control: a shrug is still a yes, and the build wires it anyway.
+
 When an answer changes mid-project, don't edit the old brief — run this again for the new
 task and let the two sit side by side. The change is worth being able to see.
 

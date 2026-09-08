@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold run 258 — the frozen prompt against Apollo Spider v1.0.7</title>
+<style>
+:root{
+  --accent:#DB0011; --accent-3:#730014;
+  --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px; --gutter:2rem;
+  --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--white); color:var(--black); font-family:var(--font); font-size:1rem; font-weight:400; line-height:1.75;}
+.wrap{max-width:var(--max-width); margin:0 auto; padding:0 var(--gutter);}
+nav.top{position:sticky; top:0; z-index:20; background:var(--white); border-bottom:1px solid var(--grey-2);}
+nav.top .wrap{height:56px; display:flex; align-items:center; justify-content:space-between; gap:var(--s3);}
+nav.top a{color:var(--grey-6); text-decoration:none; font-size:.875rem; letter-spacing:.05em;}
+nav.top a:hover{color:var(--black);}
+nav.top .ctx{font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--grey-6);}
+.label{font-size:.75rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3) 0;}
+.label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent); flex:none;}
+h1{font-size:5.25rem; line-height:1.02; font-weight:300; letter-spacing:0; margin:0 0 var(--s3) 0;}
+h2{font-size:2.6875rem; line-height:1.15; font-weight:400; letter-spacing:-.01em; margin:0 0 var(--s3) 0;}
+h3{font-size:1.1875rem; line-height:1.2; font-weight:500; margin:0 0 var(--s2) 0;}
+p{margin:0 0 var(--s2) 0; max-width:70ch;}
+.cap{font-size:.875rem; line-height:1.55; color:var(--grey-7);}
+.cap2{font-size:.75rem; line-height:1.55; color:var(--grey-6);}
+section{padding:var(--s7) 0; border-top:1px solid var(--grey-2);}
+section.first{border-top:0; padding-top:var(--s6);}
+section.band{background:var(--grey-1);}
+.dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+.idx{font-size:5.25rem; line-height:1; font-weight:200; color:var(--grey-3); display:block; margin-bottom:var(--s2);}
+.prof{display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); align-items:end;}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin-top:var(--s5);}
+.stat .n{font-size:2.6875rem; line-height:1; font-weight:200; display:block;}
+.stat .l{font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-5); display:block; margin-top:var(--s1);}
+table{border-collapse:collapse; width:100%; font-size:.875rem; line-height:1.5;}
+.scroll{overflow-x:auto; margin-bottom:var(--s3);}
+th,td{text-align:left; vertical-align:top; padding:.7rem .9rem; border-bottom:1px solid var(--grey-2);}
+th{font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; font-weight:500; color:var(--grey-7); border-bottom:1px solid var(--grey-3); white-space:nowrap;}
+td.num{white-space:nowrap;}
+tbody tr:last-child td{border-bottom:1px solid var(--grey-3);}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.8125rem;}
+.ok{color:var(--grey-8);} .bad{color:var(--accent);} .bad::before{content:'';}
+.v-works{font-weight:500;} .v-dead{font-weight:500; color:var(--accent);}
+figure{margin:0 0 var(--s5) 0;}
+figure img{display:block; width:100%; height:auto; border:1px solid var(--grey-2);}
+figcaption{font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6); padding-top:var(--s2);}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:var(--s5);}
+ol.findings{list-style:none; counter-reset:f; padding:0; margin:0;}
+ol.findings > li{counter-increment:f; padding:var(--s4) 0; border-top:1px solid var(--grey-2); display:grid; grid-template-columns:5rem 1fr; gap:var(--s4);}
+ol.findings > li::before{content:'F' counter(f,decimal-leading-zero); font-size:1.1875rem; font-weight:500; color:var(--grey-5); letter-spacing:.08em;}
+ol.rsq{list-style:none; counter-reset:q; padding:0; margin:0;}
+ol.rsq > li{counter-increment:q; padding:var(--s3) 0; border-top:1px solid var(--grey-3); display:grid; grid-template-columns:4rem 1fr; gap:var(--s4);}
+ol.rsq > li::before{content:'Q' counter(q); font-size:1.1875rem; font-weight:500; color:var(--accent); letter-spacing:.08em;}
+.dist{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3); margin-top:var(--s4);}
+.dist > div{background:var(--white); padding:var(--s3);}
+.dist .h{font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; margin:0 0 var(--s2) 0;}
+.dist .a .h{color:var(--grey-6);} .dist .b .h{color:var(--accent);}
+.quote{border-top:1px solid var(--grey-3); padding-top:var(--s3); font-size:1.1875rem; line-height:1.6; max-width:60ch;}
+footer{padding:var(--s6) 0; border-top:1px solid var(--grey-2); color:var(--grey-6); font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;}
+@media (max-width:900px){
+  h1{font-size:3rem;} h2{font-size:2rem;} .idx{font-size:3rem;}
+  .dim,.prof,.grid2,.dist{grid-template-columns:1fr; gap:var(--s4);}
+  .stats{grid-template-columns:1fr 1fr;}
+  section{padding:var(--s6) 0;}
+  ol.findings > li, ol.rsq > li{grid-template-columns:1fr; gap:var(--s2);}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a href="BASELINE-246-2026-09-05-v1.html">&larr; Baseline 246</a>
+    <span class="ctx">Cold run &middot; session 258 &middot; lane C</span>
+    <a href="#scores">Scores</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section class="first">
+  <p class="label">Cold run · 2026-09-08</p>
+  <h1>The frozen prompt,<br>against v1.0.7,<br>blind.</h1>
+  <div class="prof">
+    <div>
+      <p>One arm. The #246 prompt, unaltered, run against the ratified <strong>Apollo-Spider-v1.0.7.zip</strong> and nothing else — no repo, no eyes, no gate, no browser, until the page was frozen. This is the after picture. Nothing was fixed here.</p>
+    </div>
+    <div>
+      <p class="cap">Prompt, verbatim:<br>
+      <code>/generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</code></p>
+      <p class="cap2">zip sha256 <code>13a593de1b117b144398bd928e024e430bada004f561957e8895147928974228</code><br>
+      arm sha256 <code>7619d71861ba3d2d55fdf370118f2c543172b49871bd5155c21bdbda646a1d3e</code> · 214,957 bytes · frozen before any measurement</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="n">3</span><span class="l">Visually rich</span></div>
+    <div class="stat"><span class="n">2</span><span class="l">Full</span></div>
+    <div class="stat"><span class="n">0</span><span class="l">Persistent</span></div>
+    <div class="stat"><span class="n">2</span><span class="l">Interactive</span></div>
+  </div>
+</section>
+
+<section>
+  <p class="label">The renders</p>
+  <h2>1440 and 820, light and dark</h2>
+  <p>Rendered with chromium-headless-shell after the freeze. Full-page height at 1440 is <strong>2,451px</strong>.</p>
+  <div class="grid2">
+    <figure><img src="../outputs/coldrun-258/renders/1440-light.png" alt="Dashboard at 1440px, light mode"><figcaption>1440 · light</figcaption></figure>
+    <figure><img src="../outputs/coldrun-258/renders/1440-dark.png" alt="Dashboard at 1440px, dark mode"><figcaption>1440 · dark</figcaption></figure>
+    <figure><img src="../outputs/coldrun-258/renders/820-light.png" alt="Dashboard at 820px, light mode"><figcaption>820 · light</figcaption></figure>
+    <figure><img src="../outputs/coldrun-258/renders/820-dark.png" alt="Dashboard at 820px, dark mode"><figcaption>820 · dark</figcaption></figure>
+  </div>
+  <p class="quote">The empty band beside the navigation column is <strong>my defect, not the pack's</strong>. My harness comment contained the characters <code>.c-*/</code>, which closes a CSS comment early and swallowed the <code>.ads-shell{display:flex}</code> rule that follows it. Probe: the parsed stylesheet contains <code>.ads-shell &gt; nav.sn</code> but <em>not</em> <code>.ads-shell</code>, and computed <code>display</code> on <code>.ads-shell</code> is <code>block</code>. The arm was already frozen, so it was declared rather than fixed.</p>
+</section>
+
+<section>
+  <p class="label">Step 5 of the skill</p>
+  <div class="dim">
+    <div><span class="idx">01</span><h3>The gates</h3><p class="cap2">Run after the freeze. Both exit 1.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Gate</th><th>Exit</th><th>What it printed</th></tr></thead>
+        <tbody>
+          <tr><td><code>knowledge/_validate_screen.py</code></td><td class="num bad">1</td>
+            <td><strong>RESULT: FAIL</strong> — <code>compose: ❌ 256 hex colour(s) in &lt;style&gt;</code>; <code>redefines canon class(es): ['c-bento','c-bento__caption','c-bento__grid','c-bento__tile']</code>; 2 native radio/checkbox not composed from <code>.cn-selection-controls</code>. Passing: <code>composition ✅ C9 span legality holds at every band</code>, <code>icon-source ✅ all paths library-matched</code>, <code>a11y ✅</code> (7 target-size warnings, all from snippet controls at 24×24).</td></tr>
+          <tr><td><code>knowledge/_validate_receipt.py</code></td><td class="num bad">1</td>
+            <td><code>FAIL:NO-RECEIPT</code> — no <code>#provenance-receipt</code> block. Neither skill tells the builder to mint one; <code>ADS-generate-from-canon</code> step 5 says only "run the gates".</td></tr>
+          <tr><td><em>Control:</em> the pack's own <code>Template-dashboard-bento.reference.html</code>, byte-unmodified, through the pack's own copy of the gate</td><td class="num bad">1</td>
+            <td><strong>RESULT: FAIL</strong> — <code>compose: ❌ 146 hex colour(s) in &lt;style&gt;; redefines canon class(es): ['c-bento','c-bento__caption','c-bento__grid','c-bento__tile']</code>. See F01.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap2">Side effect, declared: <code>_validate_screen.py</code> writes a ledger row into <code>knowledge/</code>, keyed on the page's <strong>basename</strong>. Because the arm is called <code>dashboard.html</code>, the run overwrote the pre-existing tracked row <code>knowledge/_screen-gate/dashboard.md</code> (which read <code>PASS ✅</code>) and flipped its line in <code>knowledge/_SCREEN-GATE.md</code>. Both were restored with <code>git show HEAD:</code>. One untracked file, <code>knowledge/_screen-gate/tpl-unmodified.md</code>, could not be deleted (the mount refuses <code>rm</code>) and is left on disk for the conductor.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">What got used</p>
+  <div class="dim">
+    <div><span class="idx">02</span><h3>Inventory</h3><p class="cap2">11 of the 31 dashboard-set slugs used. 20 available and not used.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Slug</th><th>Level</th><th>Status</th><th>In the page?</th></tr></thead>
+        <tbody>
+          <tr><td>template-dashboard-bento</td><td>template</td><td>beta</td><td class="v-works">used — the base of the build</td></tr>
+          <tr><td>sidebar-nav</td><td>pattern</td><td>beta</td><td class="v-works">used</td></tr>
+          <tr><td>filter-toolbar-bar</td><td>block</td><td>stable</td><td class="v-works">used</td></tr>
+          <tr><td>data-grid</td><td>pattern</td><td>stable</td><td class="v-works">used</td></tr>
+          <tr><td>kpi-tile</td><td>element</td><td>beta</td><td class="v-works">used ×4</td></tr>
+          <tr><td>stat-card</td><td>element</td><td>stable</td><td class="v-works">used ×3</td></tr>
+          <tr><td>chart-combo</td><td>pattern</td><td>stable</td><td class="v-works">used — via the template's injected partial</td></tr>
+          <tr><td>summary · status-indicator · segmented-control · breadcrumb</td><td>element</td><td>stable</td><td class="v-works">used</td></tr>
+          <tr><td>chart-bar · chart-line · chart-donut · chart-pie · chart-scatter · chart-bullet · chart-stacked-area · chart-sparkline</td><td>element / pattern</td><td>stable</td><td class="v-dead">available, not used — 8 chart types</td></tr>
+          <tr><td>runway-bar · limits-meter · quick-actions · empty-state · pagination · tab-bar</td><td>element</td><td>stable</td><td class="v-dead">available, not used</td></tr>
+          <tr><td>page-header-lockup · stats-band-lockup · feature-grid-lockup</td><td>block</td><td>stable</td><td class="v-dead">available, not used</td></tr>
+          <tr><td>app-shell-side-nav · app-shell-top-nav</td><td>shell</td><td>beta</td><td class="v-dead">available, not used</td></tr>
+          <tr><td>template-dashboard</td><td>template</td><td>beta</td><td class="v-dead">available, not used — rule 7a excludes it unless the designer says no to bento</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap2">The four sparklines on the page are the template's own inline <code>svg.spark-inline</code> markup, not the <code>chart-sparkline</code> component.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Byte-for-byte</p>
+  <div class="dim">
+    <div><span class="idx">03</span><h3>Chart completeness</h3><p class="cap2">Every <code>&lt;script&gt;</code> in the page, sha256 against its source in the zip.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Script block</th><th>sha256 (12)</th><th>Bytes</th><th>Verbatim?</th></tr></thead>
+        <tbody>
+          <tr><td><code>dv-behaviour</code> — the chart engine, from Template-dashboard-bento (injected from Chart-combo)</td><td class="mono">b7d2e85bd9ad</td><td class="num">19,965</td><td class="v-works">yes — and identical to <code>Chart-combo.reference.html</code>'s own block, so the registered partial matched</td></tr>
+          <tr><td><code>dp08-anchor</code> — the status-strip arrival</td><td class="mono">5ed002c8d0d7</td><td class="num">4,152</td><td class="v-works">yes</td></tr>
+          <tr><td>Template demo-chrome script</td><td class="mono">b91a22056512</td><td class="num">653</td><td class="v-works">yes — and it throws, see F05</td></tr>
+          <tr><td>Filter-toolbar-bar</td><td class="mono">842183affbe3</td><td class="num">5,403</td><td class="v-works">yes</td></tr>
+          <tr><td>Sidebar-nav</td><td class="mono">b306f4ae6dba</td><td class="num">3,908</td><td class="v-works">yes</td></tr>
+          <tr><td>Data-grid</td><td class="mono">252e1211fc6b</td><td class="num">17,594</td><td class="v-works">identical outside the <code>const DATA</code> array (content), which was rewritten to international payments</td></tr>
+          <tr><td><code>dv-legend</code> — Chart-combo's legend/series behaviour</td><td class="mono">483afd35ffa2</td><td class="num">15,313</td><td class="v-dead">absent — the template snippet ships <code>dv-behaviour</code> only, so the dashboard's chart has no legend</td></tr>
+        </tbody>
+      </table></div>
+      <div class="dist">
+        <div class="a"><p class="h">Controls present?</p><p class="cap">No chart toolbar, no series switch, no legend. The template's chart is one static <code>&lt;g data-dv-view="orig"&gt;</code> of six bars.</p></div>
+        <div class="b"><p class="h">Animation and tooltip present?</p><p class="cap">Yes, both. Bars carry <code>data-grow="up"</code> with staggered <code>animation-delay</code> 0–225ms, and <code>dv-behaviour</code> refit the canvas from its authored <code>viewBox="0 0 580 260"</code> to <code>"0 0 803 503"</code>. Hovering the first bar shows one visible tooltip reading <strong>USD: 420</strong>; focusing it shows the same. This is the #246 finding 3 measurably closed.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Driven, not judged</p>
+  <div class="dim">
+    <div><span class="idx">04</span><h3>Interactions</h3><p class="cap2">Every control clicked with playwright. Full log: <code>outputs/coldrun-258/drive.json</code>.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Control</th><th>Verdict</th><th>The assertion that decided it</th></tr></thead>
+        <tbody>
+          <tr><td>Sidebar nav — 7 links</td><td class="v-works">works, partly</td><td><code>aria-current</code> follows every click, all 7. But <code>main_text_len_changed:false</code> on all 7 and <code>url_changed:false</code> — nothing navigates. The snippet's own script calls <code>e.preventDefault()</code> with the comment <em>"href='#' is a specimen stub, not a destination"</em>.</td></tr>
+          <tr><td>Sidebar rail collapse</td><td class="v-works">works</td><td><code>nav.sn.classList.contains('is-rail') === true</code> after click.</td></tr>
+          <tr><td>Sidebar group disclosure</td><td class="v-works">works</td><td><code>aria-expanded</code> flips <code>"true"→"false"</code>.</td></tr>
+          <tr><td>Masthead nav — 4 links</td><td class="v-dead">dead</td><td><code>aria_current</code> stays <code>["Accounts"]</code> after clicking Payments, FX and liquidity, Reporting. No script exists for it in the template.</td></tr>
+          <tr><td>Filter dropdowns ×2</td><td class="v-dead">moves, filters nothing</td><td>Menu opens (<code>data-open="true"</code>) and the trigger label becomes <code>"Northgate UK plc"</code>. Grid rows <strong>8 → 8</strong>. KPI <strong>£184,205,100.10 → £184,205,100.10</strong>. Chart bar heights <code>chart_unchanged:true</code>.</td></tr>
+          <tr><td>Applied-filter chips ×3</td><td class="v-dead">removes itself only</td><td>Chips <strong>3 → 2</strong>; grid rows unchanged at 8.</td></tr>
+          <tr><td>List / Table segmented control</td><td class="v-dead">dead</td><td><code>aria-pressed</code> flips to <code>["false","true"]</code>; <code>grid_band_text_changed:false</code>. No second view exists.</td></tr>
+          <tr><td>Data-grid column sort ×5</td><td class="v-works">works</td><td><code>aria-sort="ascending"</code> on the Amount column and the first row's date moves <strong>20 Aug 2026 → 17 Aug 2026</strong>.</td></tr>
+          <tr><td>Data-grid filter</td><td class="v-works">works</td><td>Typing <code>FX desk</code> + Enter: count label <strong>"3 results"</strong>, range <strong>"1–3 of 3"</strong>, 3 rows, 1 chip in its own <code>#fbar</code>.</td></tr>
+          <tr><td>Data-grid pagination + rows-per-page</td><td class="v-works">works</td><td>3 page controls; <code>#pp</code> select accepts 12 and the range recomputes.</td></tr>
+          <tr><td>Chart bar hover / focus</td><td class="v-works">works</td><td>1 visible tooltip, text <strong>"USD: 420"</strong>, on hover and on keyboard focus.</td></tr>
+          <tr><td>KPI tile call-to-action</td><td class="v-dead">dead</td><td>"View group cash position as a table" — <code>kpi_cta.opened === 0</code>. <code>kpi-tile.meta.json</code> carries no <code>behaviour</code> key at all, so no script was ever addressed for it.</td></tr>
+          <tr><td>Status-strip chip</td><td class="v-works">works</td><td><code>location.hash === "#dp08-na"</code>, <code>document.activeElement.id === "dp08-na"</code>, target in view. The <code>dp08-anchor</code> partial does exactly what its meta's <code>fallback</code> says it adds.</td></tr>
+          <tr><td>Page load</td><td class="v-dead">8 uncaught errors</td><td><code>PAGEERROR: Cannot read properties of null (reading 'addEventListener')</code> ×2 and <code>Cannot set properties of null (setting 'textContent')</code> ×6. See F05.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Nothing survives</p>
+  <div class="dim">
+    <div><span class="idx">05</span><h3>Persistence</h3><p class="cap2">State applied, then the page reloaded.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>State</th><th>Before reload</th><th>After reload</th></tr></thead>
+        <tbody>
+          <tr><td>Grid result count</td><td>0 results</td><td class="bad">24 results</td></tr>
+          <tr><td>Date column sort</td><td>ascending</td><td class="bad">none</td></tr>
+          <tr><td>Sidebar current item</td><td>Settings</td><td class="bad">Accounts</td></tr>
+          <tr><td>View switch</td><td>Table</td><td class="bad">List</td></tr>
+        </tbody>
+      </table></div>
+      <p><code>localStorage</code>: <strong>0 keys</strong>. <code>sessionStorage</code>: <strong>0 keys</strong>. <code>location.search</code>: <strong>empty</strong>. Nothing in the page writes state anywhere it could be read back from, and <code>persistence.survived === false</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Content</p>
+  <div class="dim">
+    <div><span class="idx">06</span><h3>Data believability</h3></div>
+    <div>
+      <p>Plausible corporate international banking, not placeholder: 14 entities across 9 currencies; a committed multi-currency facility of £25,000,000.00; settlement-currency flow across USD / EUR / HKD / SGD / AED / CNH; a 24-row ledger of SWIFT MT103s, SEPA credits, intercompany sweeps, FX spot and forward settlements and receipts, with named counterparties in Singapore, Frankfurt, New York, Dubai, Tokyo, Rotterdam and Seoul.</p>
+      <p>One hole, and it is the pack's: <code>Data-grid</code>'s amount formatter is <code>const fmtAmt = n =&gt; (n &lt; 0 ? '−' : '') + '£' + …</code> — the pound sign is a literal inside gated script. A multi-currency ledger cannot be rendered without editing that script, which rule 2a forbids, so every amount is shown as GBP equivalent and the page says so. The balances card, whose markup is content rather than script, does carry $, € and HK$.</p>
+    </div>
+  </div>
+</section>
+
+<section id="scores" class="band">
+  <div class="wrap" style="padding:0;">
+  <p class="label">Scores</p>
+  <div class="dim">
+    <div><h2>3 / 2 / 0 / 2</h2><p class="cap2">Each with the one fact that earned it.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Dimension</th><th>#246 blind</th><th>#258 blind</th><th>The earning fact</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Visually rich</strong></td><td class="num">2</td><td class="num"><strong>3</strong></td><td>The chart is no longer stripped. <code>dv-behaviour</code> is present byte-for-byte (sha <code>b7d2e85bd9ad</code>, 19,965 B), it rewrote the chart's <code>viewBox</code> from the authored <code>0 0 580 260</code> to <code>0 0 803 503</code> to fit its cell, the six bars animate on a 0–225ms stagger, and hovering one produces a tooltip reading "USD: 420". Alongside it: 4 KPI tiles each with a live sparkline, a three-item status strip, two stat-cards and a 24-row grid — at both breakpoints and both modes.</td></tr>
+          <tr><td><strong>Full</strong></td><td class="num">2</td><td class="num"><strong>2</strong></td><td>Exactly <strong>one</strong> chart on the page — 6 <code>rect.dv-series</code> in a single <code>.dv-svg</code> — while 8 other chart components sit stable and unused in the index, along with runway-bar, limits-meter, quick-actions, stats-band-lockup and page-header-lockup. 11 of 31 dashboard-set slugs used. The template ships one chart module and rule 7a says splice the template.</td></tr>
+          <tr><td><strong>Persistent</strong></td><td class="num">0</td><td class="num"><strong>0</strong></td><td><code>localStorage</code> 0 keys, <code>sessionStorage</code> 0 keys, no query string. Reload resets the grid count 0→24, the sort ascending→none, the nav current Settings→Accounts and the view Table→List. Unchanged from #246 and no rule in either skill mentions persistence.</td></tr>
+          <tr><td><strong>Interactive</strong></td><td class="num">2</td><td class="num"><strong>2</strong></td><td>Twelve controls work and five are dead, and the split is not random: <strong>everything that works is self-contained inside one component</strong> (grid sorts itself, nav highlights itself, chart tooltips itself), and <strong>everything dead is a control that would have to reach another component</strong> — the filter dropdowns left the grid at 8 rows and the chart bar heights identical, the view switch changed no view, the KPI's table CTA opened nothing, the masthead never moved <code>aria-current</code>.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="quote">One line: <strong>the chart got fixed, the wiring did not.</strong> #247–#256 bought a full chart engine in the dashboard every build starts from, and moved nothing on fullness, persistence or interactivity — because all three depend on components talking to each other, and rule 2a forbids the author writing the sentence that would let them.</p>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Findings</p>
+  <h2>Each one fact, and the file that proves it.</h2>
+  <ol class="findings">
+    <li><div>
+      <h3>The skill's own step 5 fails the skill's own step 7a.</h3>
+      <p>Rule 7a: <em>"Bento-first means you <strong>splice the snippet</strong> … start from <code>knowledge/snippets/Template-dashboard-bento.reference.html</code>."</em> Step 5: <em>"Prove it. Run the gates … <code>python3 knowledge/_validate_screen.py</code>."</em> Doing the first makes the second impossible. Copying the pack's own unmodified <code>Template-dashboard-bento.reference.html</code> to a scratch file and running the pack's own copy of the gate on it prints <code>compose: ❌ 146 hex colour(s) in &lt;style&gt;; redefines canon class(es): ['c-bento','c-bento__caption','c-bento__grid','c-bento__tile']</code> → <strong>RESULT: FAIL ❌</strong>. Every snippet ships an <code>AUTO-TOKENS</code> ramp of literal hex inside its own <code>&lt;style&gt;</code>; the compose gate counts them as rogue. My spliced page reports 256 because it carries four snippets' worth. #246 recorded the same shape at 281 hex and got green only by abandoning the splice model entirely at iteration 2 — so this is unchanged and it is structural, not a build error.</p>
+    </div></li>
+    <li><div>
+      <h3>Rule 2a's premise is false for exactly the components the prompt asks about.</h3>
+      <p>Rule 2a: <em>"Every snippet whose component carries behaviour declares its ADDRESS in <code>knowledge/components/&lt;slug&gt;.meta.json</code> (<code>behaviour.script</code>)."</em> <strong>21 of 136</strong> metas in the zip carry a non-null <code>behaviour</code> key. <code>data-grid.meta.json</code>, <code>filter-toolbar-bar.meta.json</code> and <code>sidebar-nav.meta.json</code> have <strong>no <code>behaviour</code> key at all</strong> — the key is absent from their top-level key list — yet all three snippets ship a real, working <code>&lt;script&gt;</code> (17,594 / 5,403 / 3,908 bytes). So <code>_validate_receipt.py</code>, which "reads the meta and checks the page loads what it names", has nothing to check for the three components that carry the page's entire interactivity. Same for <code>kpi-tile</code>, <code>stat-card</code>, <code>segmented-control</code>, <code>tabs</code>, <code>quick-actions</code>, <code>chart-combo</code>, <code>chart-line</code>, <code>pagination</code>, <code>dropdown</code>, <code>search-field</code>, <code>tags</code> and <code>app-shell-side-nav</code> — 15 of the 17 dashboard-relevant slugs checked.</p>
+    </div></li>
+    <li><div>
+      <h3>The filter toolbar cannot filter, and nothing in the pack can make it.</h3>
+      <p><code>Filter-toolbar-bar.reference.html</code> lines 381–455 are its entire behaviour: <code>Search-field</code>'s clear button, <code>Dropdown</code>'s open/choose, <code>Segmented-control</code>'s indicator, <code>Tags</code>' dismiss. Not one line reads or writes a dataset. Driven: selecting "Northgate UK plc" left the grid at 8 rows, the lead KPI at £184,205,100.10 and every chart bar height byte-identical. Rule 2a — <em>"author no JS … never write a handler yourself"</em> — forbids the ~14 lines that would connect it. This is #246's finding 1, reproduced unchanged against v1.0.7.</p>
+    </div></li>
+    <li><div>
+      <h3>Navigation is a highlight, by the snippet's own declaration.</h3>
+      <p><code>Sidebar-nav.reference.html</code> line ~301: <code>e.preventDefault(); // href="#" is a specimen stub, not a destination</code>. All 7 links move <code>aria-current</code> and change nothing else (<code>main_text_len_changed:false</code>, <code>url_changed:false</code>). The masthead's 4 links have no script at all and never move <code>aria-current</code> off "Accounts". A prompt that says "make navigation work" has no component in the pack that can satisfy it.</p>
+    </div></li>
+    <li><div>
+      <h3>The template's demo chrome is labelled removable and is not safe to remove.</h3>
+      <p><code>Template-dashboard-bento.reference.html</code> line 896 marks the <code>.demo-bar</code> <em>"demo chrome only — not part of the template"</em>, and line 1784 marks its script <em>"DEMO CHROME. Not the template."</em> — but the script is unguarded: <code>var btn = document.getElementById('themeBtn'); btn.addEventListener(…)</code>. Deleting the markup the snippet tells you to delete throws <code>Cannot read properties of null (reading 'addEventListener')</code> on load, plus <code>Cannot set properties of null (setting 'textContent')</code> from <code>reportWidth()</code> on every resize. Eight uncaught page errors in the frozen arm. Removing the bar also removes the <strong>only</strong> theme toggle — the built page has no dark-mode control, and the dark renders on this page were produced by setting <code>data-theme</code> from outside.</p>
+    </div></li>
+    <li><div>
+      <h3>Splicing two snippets collides their symbol ids silently.</h3>
+      <p><code>Sidebar-nav</code> and <code>Template-dashboard-bento</code> both define <code>&lt;symbol id="ic-account"&gt;</code> with <strong>different artwork</strong> — a card/wallet in one, a person in the other. Copied verbatim as rule 2 requires, the first definition wins for every <code>&lt;use href="#ic-account"&gt;</code> on the page, so the sidebar's "Accounts" row renders the wrong glyph and nothing warns. <code>icon-source</code> passes: <code>✅ all paths library-matched</code> — both glyphs are real library assets, so the gate cannot see the collision.</p>
+    </div></li>
+    <li><div>
+      <h3>Every snippet ships a page-level <code>body{}</code> rule, so splice order decides the layout.</h3>
+      <p><code>Filter-toolbar-bar</code>, <code>Data-grid</code> and <code>Sidebar-nav</code> each declare <code>body{margin:0; padding:2.5rem; …}</code>; the template declares <code>body{margin:0; padding:0; …}</code>. Concatenated in the order the skill implies, the last snippet's 2.5rem padding wins over the template's zero. I dropped those three rules by hand as a marked splice edit. Nothing in the skill mentions this, and no gate catches it.</p>
+    </div></li>
+    <li><div>
+      <h3>The screen gate refuses to run on a page name it has not seen before — inside the repo.</h3>
+      <p>Run on a fresh path in the repo: <code>⛔ SCREEN-GATE INDEX REFUSED — untracked subject: _screen-gate/tpl-unmodified.md … Commit the subject</code>. It also keys its ledger on <strong>basename</strong>, so a page called <code>dashboard.html</code> anywhere in the tree overwrites the tracked row for any other <code>dashboard.html</code> — which is what happened here and had to be restored by hand. The refusal is repo-only: the same gate inside the unzipped pack ran clean on a brand-new filename, which is the condition a consumer is actually in.</p>
+    </div></li>
+    <li><div>
+      <h3>Only one of the six grill questions has a declared default.</h3>
+      <p><code>ADS-grill-me</code> gives a default for Q1 only — <em>"the build will use Mono, and it will say so"</em>. Q2 through Q6 (light/dark, density and width, brand assets, real vs placeholder data, fixed and off-limits) declare no default anywhere in the file, while the skill's own contract is that <em>"a skipped question is written down as skipped, and where a default has to be used it is said out loud"</em>. In the blind condition all six are skipped, so five of them were answered by my judgement with nothing to cite. The zip also has no <code>briefs/</code> and no <code>brief-template.md</code>, though the skill says <em>"Use the shape in <code>brief-template.md</code>, beside this file"</em>.</p>
+    </div></li>
+    <li><div>
+      <h3>The skill name and the command name disagree.</h3>
+      <p>The frozen prompt is <code>/generate-from-canon</code>. The directory is still <code>skills/generate-from-canon/</code>, but the frontmatter is now <code>name: ADS-generate-from-canon</code>, and every cross-reference inside the skills uses the ADS- form (<code>ADS-grill-me</code>, <code>ADS-draft-a-new-pattern</code>, <code>ADS-check-with-gates</code>). The prompt still resolved, so this is a naming seam, not a break — but the demo prompt and the pack's own vocabulary no longer match.</p>
+    </div></li>
+    <li><div>
+      <h3>The dashboard template ships the chart engine but not the chart's legend.</h3>
+      <p><code>Chart-combo.reference.html</code> carries two behaviour partials: <code>dv-behaviour</code> (19,965 B) and <code>dv-legend</code> (15,313 B). <code>Template-dashboard-bento</code>'s <code>behaviour.partial</code> is <code>["dv-behaviour","dp08-anchor"]</code> — <code>dv-legend</code> is not in it and its markers appear nowhere in the template. So the dashboard every build starts from has an animated, fitted, tooltipped chart with <strong>no legend and no series controls</strong>. This is the residue of #246's finding 3: the engine landed, the surrounding controls did not.</p>
+    </div></li>
+    <li><div>
+      <h3>Reading the template costs more than a blind consumer will spend.</h3>
+      <p><code>Template-dashboard-bento.reference.html</code> is <strong>1,801 lines / 123,798 bytes</strong>, and rule 7a makes it mandatory reading for every dashboard. Reading it whole is roughly 35K tokens before a single component is chosen; <code>Chart-line</code> is 108,462 bytes and <code>Chart-donut</code> 90,977. In VS Code, with no way to render and check, a model that reads these in full has spent its budget on one file, and a model that skims them is guessing at exactly the markup rule 2 forbids it to re-draw.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <p class="label">Delta</p>
+  <div class="dim">
+    <div><span class="idx">07</span><h3>#246 → #258</h3><p class="cap2">Same rows, both columns, differences named as facts.</p></div>
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Row</th><th>#246 (v1.0.5-era tree, blind)</th><th>#258 (v1.0.7 zip, blind)</th><th>Difference</th></tr></thead>
+        <tbody>
+          <tr><td>Scores</td><td>2 / 2 / 0 / 2</td><td><strong>3 / 2 / 0 / 2</strong></td><td class="ok">+1 visually rich; 0 elsewhere</td></tr>
+          <tr><td>Chart in the dashboard template</td><td>"ships its chart stripped (no toolbar/engine, by declared choice)"</td><td><code>dv-behaviour</code> present byte-for-byte, sha <code>b7d2e85bd9ad</code>; viewBox refit 580×260 → 803×503; tooltip "USD: 420" on hover and focus</td><td class="ok"><strong>closed</strong> — the single measurable win</td></tr>
+          <tr><td>Chart legend / series controls</td><td>absent</td><td>absent — <code>dv-legend</code> (15,313 B) not in the template's <code>behaviour.partial</code></td><td>unchanged</td></tr>
+          <tr><td><code>behaviour</code> in the dashboard-set metas</td><td>"none on 25/27"</td><td>21 of 136 overall; 15 of 17 dashboard-relevant slugs have no key at all</td><td>unchanged in substance</td></tr>
+          <tr><td>Cross-component wiring</td><td>"no dashboard-set component wires to another — needed 14 lines of authored glue that rule 2a forbids"</td><td>filter select: rows 8→8, KPI unchanged, <code>chart_unchanged:true</code>; view switch changes no view</td><td>unchanged</td></tr>
+          <tr><td>Compose gate on a spliced page</td><td>281 hex + <code>.c-bento</code> redefinition; green only by abandoning the splice at it2</td><td>256 hex + the same 4 classes; the unmodified template alone gives 146</td><td>unchanged and now traced to the snippet itself</td></tr>
+          <tr><td>Receipt</td><td>FAIL blind; minted at it1 of the sighted arm</td><td><code>FAIL:NO-RECEIPT</code></td><td>unchanged — no skill tells a blind builder to mint one</td></tr>
+          <tr><td>Persistence</td><td>0 — "reload resets everything, 0 storage keys, no rule mentions it"</td><td>0 — 0 / 0 keys, 4 of 4 states reset</td><td>unchanged</td></tr>
+          <tr><td>Grill-me defaults</td><td>six skipped, Mono announced</td><td>six skipped, Mono announced; and only Q1 has a declared default (F09)</td><td>new detail</td></tr>
+          <tr><td>Uncaught page errors on load</td><td>not reported</td><td>8, from the template's own unguarded demo-chrome script (F05)</td><td>new</td></tr>
+          <tr><td>Skill names</td><td><code>generate-from-canon</code></td><td><code>ADS-generate-from-canon</code>, directory unchanged</td><td>renamed at #257</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap" style="padding:0;">
+  <p class="label">For Dave</p>
+  <h2>Ruling-shaped questions</h2>
+  <p class="cap">Not answered here. Each one is a thing only you can decide, and each is blocking something named.</p>
+  <ol class="rsq">
+    <li><div><p><strong>Does "make the interactive elements work" mean cross-component wiring, and if so, who is allowed to write it?</strong> Rule 2a says the builder authors no JS. Nothing in the pack wires one component to another. Either the rule gets an exemption, or a wiring component/partial has to exist, or the demo prompt's second sentence is a promise the system does not make. Three different roadmaps.</p></div></li>
+    <li><div><p><strong>Should the compose gate stop counting a snippet's own <code>AUTO-TOKENS</code> ramp as rogue hex?</strong> Today the pack's own unmodified template fails the pack's own gate at 146 hex. Every faithful splice inherits it. Fixing this is a gate change; not fixing it means step 5 of the skill can never print green for a spliced dashboard.</p></div></li>
+    <li><div><p><strong>Is persistence in scope for v1.1?</strong> It has scored 0 in both baselines, no rule mentions it, and it is one of the three words in your #246 brief ("richer, fuller and more persistent"). It cannot be measured into existence.</p></div></li>
+    <li><div><p><strong>Should <code>dv-legend</code> join <code>template-dashboard-bento</code>'s <code>behaviour.partial</code>?</strong> The engine is in; the legend and series controls are one line of meta away, and their absence is what still reads as "partially retrieved charts".</p></div></li>
+    <li><div><p><strong>Is one chart the right default for a dashboard the stakeholder sees first?</strong> Eight chart components ship stable and unused. The template's shape, not the model's choice, is what put one chart on the page.</p></div></li>
+    <li><div><p><strong>Does the demo prompt become <code>/ADS-generate-from-canon</code>?</strong> The command and the skill name diverged at #257. Both currently resolve; the frozen prompt should probably say one of them on purpose.</p></div></li>
+    <li><div><p><strong>Should the six grill questions each carry a declared default?</strong> Only Q1 does. In the blind condition — which is the VS Code condition — five answers are the model's judgement with nothing to cite, which is the opposite of what the skill promises.</p></div></li>
+    <li><div><p><strong>Should the template's demo chrome be guarded, or removed from the shipped snippet?</strong> It is labelled "not part of the template" and its script crashes when you act on the label. Eight page errors in a stakeholder demo is a bad first frame.</p></div></li>
+  </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0;">
+    Cold run 258 · lane C · 2026-09-08 · arm <span class="mono">7619d718</span> · zip <span class="mono">13a593de</span> · outputs/coldrun-258/ · notes/_subreports/2026-09-08-258-C-cold-run.md
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

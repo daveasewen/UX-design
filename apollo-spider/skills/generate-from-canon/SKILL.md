@@ -9,8 +9,11 @@ Draft UI **strictly from the design system**. The one job here is to stop the co
 failure of AI design work — quietly *inventing* components, variants or colours. If it
 isn't in the system, this skill flags it rather than making it up.
 
-This is the **strict** mode: deliberately faithful, not a creativity play. When the
-system is genuinely missing something you need, use `ADS-draft-a-new-pattern`.
+**Strict about the interface, ambitious about the build** (`s258-D2`). The tokens, classes,
+components and layout rails are the boundary — the JavaScript is not. Assume everything on
+the page should *work*: rich mock data, live filters, real state. Writing code is an avenue
+to innovation here, not a violation. When the system is genuinely missing a *component*,
+use `ADS-draft-a-new-pattern`.
 
 ## Where things live
 
@@ -44,15 +47,18 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 2. **Copy the snippet, don't re-draw it.** Take markup and classes from
    `knowledge/snippets/<Slug>.reference.html`. Hand-rolling a component from its
    screenshot invents defects that the gates then catch as yours.
-2a. **Copy the script address with the markup; author no JS.** Every snippet whose
-    component carries behaviour declares its ADDRESS in `knowledge/components/<slug>.meta.json`
-    (`behaviour.script`) and carries the same address in a `#behaviour-manifest` block beside
-    `#token-manifest`. Take the snippet's own `<script>` (or its `AUTO-BEHAVIOUR` block)
-    verbatim — the bytes are the key — and carry the address into the page's receipt. Never
-    write a handler yourself, never paraphrase the script, never point at another component's
-    script: shared behaviour is a registered partial. `fallback` says what the component does
-    with JavaScript off; if it is null, say so in the Gaps list rather than inventing one.
-    `_validate_receipt.py` reads the meta and checks the page loads what it names.
+2a. **You write the JavaScript** (`s258-D1` — the old "author no JS" rule is REMOVED).
+    Copy a snippet's own `<script>` (or its `AUTO-BEHAVIOUR` block) **verbatim where it fits** —
+    the bytes are the key and a verbatim copy is still the cheapest correct answer — but you
+    are expected to write the wiring the snippets cannot know about, and you may extend a
+    component's script. Extend it and the gate says `NOTE:AUTHORED-JS`, not FAIL; delete a
+    declared script entirely and it still says `FAIL:BEHAVIOUR-NOT-LOADED`. Where a component
+    declares an ADDRESS in `knowledge/components/<slug>.meta.json` (`behaviour.script`), carry
+    that address into the page's receipt and into the `#behaviour-manifest` block beside
+    `#token-manifest` — it names the source you started from, not a promise you left it
+    untouched. `fallback` says what the component does with JavaScript off; if it is null, say
+    so in the Gaps list rather than inventing one. Creativity in the JS is wanted; the design
+    system's tokens and classes are the boundary, not the script.
 3. **Bind every visual value to a token by intent** — never a raw hex or px. The names
    live in `knowledge/tokens/*.json` and resolve in `knowledge/canon/canon.css`
    (`primary/background/hover` → `var(--primary-background-hover)`). Spacing, radius and
@@ -145,6 +151,27 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     empty, as the component defines them.
 11. **Sentence case** for headings and labels. No ALL-CAPS outside acronyms.
 12. **Carry provenance** — note which component and which tokens each part came from.
+13. **A DATA MODEL comes first.** Before any markup, write **one** in-page JS dataset —
+    `const DATA = {…}` in a single `<script>` — and make every KPI, chart, grid, filter option
+    and drawer read from it. No number is typed twice into the HTML. It is **rich and deep**
+    and plausible for the domain (`s258-D2`): named entities with ids and relationships to each
+    other, real currencies and units, a time series long enough to shape a chart, enough rows
+    that paging and sorting mean something, a spread of statuses and dates. Thin data is why
+    behaviours have nothing to act on. Derive KPIs from the rows — never hard-code a total that
+    a filter would falsify.
+14. **Every control does something visible.** Nothing on the page is decorative. Filters
+    re-drive the grid **and** the KPIs **and** the charts (a filter that moves the grid but
+    leaves a chart identical is a defect, not a shortcut). Nav switches the view. Sort sorts.
+    Paging pages. Search searches. Drawers, modals, menus and tabs open, close and return
+    focus. A CTA that opens nothing is a Gap, not a button. Wiring that reaches ACROSS
+    components is yours to write — that is exactly what rule 2a now allows.
+15. **State survives a reload.** Filters, nav/view, sort, page size and theme persist — URL
+    query params (shareable, preferred) or `localStorage` — and are read back on load so the
+    page comes up where it was left. Reflect state in the URL as the user changes it.
+16. **Zero uncaught JS errors on load**, and none on any interaction you wired. Open the
+    console before you claim it. A page that throws has not been built, only written.
+17. **Every page shell carries a footer.** A screen ends in the shell's footer region —
+    never a page that stops at the last card.
 
 ## Procedure
 
@@ -162,6 +189,10 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    blurb. Open the showroom page to confirm it's the right thing.
 2. **Read the contract.** `knowledge/components/<slug>.meta.json` — variants, states,
    antiPatterns, relationships.
+2a. **Model the data** (rule 13). Write `DATA` before the markup: the entities the brief
+   implies, their relationships, the time series, the currencies, enough rows to sort and
+   page. List the behaviours it must support — which filter drives which panel — then build
+   the markup to render it.
 3. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. Root
    element (or `<body>`) gets `class="canon"` plus **two** attributes — the theme and the
    mode: `data-apollo-theme="common|console|supercharge"` **and** `data-theme="light"` or
@@ -186,12 +217,18 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    Composed screens have their own runner:
    `python3 knowledge/_validate_screen.py path/to/your-screen.html`.
    A draft you haven't gated is a claim, not a result.
+6. **Drive it.** Load the page, read the console (rule 16), then work every control (rule 14)
+   and reload once to prove the state came back (rule 15). Report what you drove and what
+   each control changed — untested wiring is a claim too.
 
 ## Output
 
 - The code (React wiring the real components, or HTML/CSS on the canon classes).
 - A short **used / missing** note: components and tokens drawn on, plus any Gaps.
-- The gate verdict from step 5, as it actually printed.
+- A **behaviour manifest**: for each control, what it drives, and where its state persists.
+  Where you started from a snippet's script, name its address and say whether you carried it
+  verbatim or extended it (`s258-D1` — extending is allowed and is reported, not hidden).
+- The gate verdict from step 5 and the drive result from step 6, as they actually printed.
 
 > With Figma Dev Mode + Code Connect available you can pull components and variables
 > live; otherwise the files above are the source of truth.

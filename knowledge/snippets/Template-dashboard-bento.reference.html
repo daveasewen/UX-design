@@ -738,6 +738,30 @@
   .sh-nav a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--indicator);}
   .sh-nav a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .sh-actions{display:flex; gap:8px; flex:none;}
+
+  /* ---- SITE FOOTER — the slim form, copied from Footer.reference.html via App-shell-top-nav.
+     ⬛ PLACEMENT (#258, Dave: "the page shells should include the footer"). This template is a
+     WHOLE PAGE, not a boxed `.sh` frame, so the footer is a body-level sibling AFTER `</main>` —
+     the same relation the masthead has before it. It is NOT inside `.tpl-page`: `.tpl-page` is
+     the bento wall and carries the s219-D1 pageBg; a legal bar drawn inside it would sit on the
+     wall ground and read as one more tile.
+     ⚠ TOKEN VOCABULARY DIFFERS FROM THE App-shell-* FILES, DELIBERATELY. Those files name a
+     `--band` (surface/subtle); this file has no `--band` and its page ground already IS
+     surface/subtle (`--wall-ground`). So the footer takes `--surface`
+     (tertiary/background/default) — mirroring `.sh-masthead` above, which is the same band at
+     the other end of the page. Rendered relation (a lighter band against the grey wall) is the
+     one the App-shell files draw; the var name is this file's own. ZERO new hex, zero new vars. */
+  .sh-foot{background:var(--surface); border-top:1px solid var(--rule); padding:8px 32px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--text);}
   .sh-actions button{width:var(--target-min); height:var(--target-min); border:0; background:transparent;
     color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
     border-radius:var(--border-radius-control);}
@@ -1177,6 +1201,17 @@
     </div>
   </main>
 
+  <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+    <div class="sh-legal">
+      <ul>
+        <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+        <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+        <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+      </ul>
+      <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+    </div>
+  </footer>
+
   <script type="application/json" id="token-manifest">
 {
   "component": "Template dashboard (bento)",
@@ -1324,6 +1359,7 @@
   "requiredAria": [
     "<nav",
     "<main",
+    "role=\"contentinfo\"",
     "aria-label",
     "aria-labelledby",
     "aria-current",

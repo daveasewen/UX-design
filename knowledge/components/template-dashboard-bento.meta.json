@@ -172,7 +172,8 @@
     "component:headers",
     "component:button",
     "component:navigations",
-    "component:app-shell-top-nav"
+    "component:app-shell-top-nav",
+    "component:footer"
   ],
   "$composesNote": "⚠ `relationships` is a CLOSED shape in meta.schema.json (livesInside · mustNotNeighbour · commonPatterns · triggeredBy) and has no seat for 'the components this organism is assembled from'. ⬛ THAT IS A REAL GAP FOR LAYER 2 and it is named, not worked around silently: composition is the defining edge of a template, and the graph cannot currently express it. The list is carried as `$composes` so it is readable and greppable but does not pretend to be a graph edge. Adding a `composes` edge type is a schema change and is Dave's.",
   "$bentoGrammar": {
@@ -194,6 +195,7 @@
     "layout/bento/columns CANNOT be manifest-bound today: gen_snippet_tokens._unitless() does not know the path, so resolve('layout/bento/columns','light') returns the STRING '6px' and grid-template-columns:repeat(6px,...) is invalid CSS. MEASURED, not inferred. The value is declared as a literal 6 with this note; the one-line fix (add the path to _unitless) is priced in the report, not applied - it is a shared generator and the class fix is the build-PM's.",
     "layout/bento/packing CANNOT be manifest-bound either: s217-D4 stores 'row dense' under $extensions rather than $value, so resolve() raises KeyError. That is the RULED storage shape, not a defect; the literal is declared with the ruling named."
   ],
+  "$finding-site-footer": "ADDED #258 (Dave: \"the page shells should include the footer\"). Footer.reference.html's slim legal bar, taken through App-shell-top-nav's copy, as a BODY-LEVEL sibling after </main> — the mirror of the masthead before it. NOT inside .tpl-page: that element is the bento wall and carries the s219-D1 pageBg, so a legal bar drawn inside it would sit on the wall ground and read as one more tile. TOKEN VOCABULARY: this file has no --band, and its page ground already IS surface/subtle (--wall-ground), so the footer takes --surface (tertiary/background/default) — the same band .sh-masthead uses at the other end of the page. Zero new hex, zero new vars. MEASURED at 1440 light+dark: footer x=0 w=1440 h=61; page height 1133 -> 1194, exactly the footer's own height; a pixel diff of the full-page render before/after differs ONLY in rows 1133-1193, so nothing above it moved by a single pixel.",
   "edges": {
     "renderedBy": [
       {

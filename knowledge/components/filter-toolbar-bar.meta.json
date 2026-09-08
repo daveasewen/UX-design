@@ -30,6 +30,22 @@
     "mustNotNeighbour": [],
     "commonPatterns": ["search + filter + view-switch toolbar", "compact sort bar above a table"]
   },
+  "behaviour": {
+    "script": "knowledge/snippets/Filter-toolbar-bar.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "keydown",
+      "resize",
+      "transitionend"
+    ],
+    "fallback": "Everything the markup authors still paints and every control still takes focus: the search input types, the dropdown triggers are real buttons, the segmented buttons keep the `aria-pressed` the markup authors, and the chips stay. What goes: the search clear button does nothing, the dropdown menus never open (`aria-expanded` stays false and `data-open` stays false), the segmented indicator never moves off its authored position (it is placed by script, including on resize), and chips cannot be dismissed.",
+    "$note": {
+      "composition": "The script is four unedited borrowings kept in step with their sources — Search-field (clear), Dropdown (open/choose/outside-click close), Segmented-control (indicator placement, re-placed on resize) and Tags (chip dismiss).",
+      "dismiss": "The Tags dismiss carries the #218 lane cB repair verbatim: the transitionend listener is NOT {once:true} and unsubscribes only on its own propertyName, with a 600ms fallback timer so the removal can never depend on an event that may not fire; focus moves to the next remaining dismiss, or to the group.",
+      "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe."
+    }
+  },
   "accessibility": {
     "relatedSC": ["1.4.10 Reflow", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value", "1.4.1 Use of Color"],
     "structure": "Search-field keeps its own type=\"search\"/aria-label; Dropdown keeps its own role=\"combobox\"/listbox/option triad; Segmented-control keeps its own role=\"group\"+aria-pressed; Tags keeps its own aria-label per dismiss button — all unmodified from the source atom.",

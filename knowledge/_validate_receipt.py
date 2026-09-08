@@ -98,8 +98,13 @@ remedy: one parse, in the consumer's grammar, shared.
                                                          component-types.json $behaviour (s245-D2: one
                                                          name, a list, or null); loaded = an
                                                          AUTO-BEHAVIOUR block per name
+               ⛔ s258-D1 (#258) REMOVED rule 2a of ADS-generate-from-canon ("author no JS"): the
+                 author MAY write and EXTEND JavaScript. So a page script that is a recognisable
+                 EDITED copy of the declared bytes is NOTE:AUTHORED-JS — green, difference named —
+                 and an UNREGISTERED partial is NOTE:BEHAVIOUR-PARTIAL-UNREGISTERED. What stays red
+                 is a declared address the page carries NO trace of: BEHAVIOUR-NOT-LOADED.
                ⇒ FAIL:BEHAVIOUR-ADDRESS-UNRESOLVABLE (grammar, missing file, snippet with no
-                 inline script) · FAIL:BEHAVIOUR-NOT-LOADED · FAIL:BEHAVIOUR-PARTIAL-UNREGISTERED
+                 inline script) · FAIL:BEHAVIOUR-NOT-LOADED
                · FAIL:BEHAVIOUR-ADDRESS-FOREIGN when a #script names ANOTHER component's snippet
                  (shared behaviour is a registered partial, never a pointer into another file —
                  otherwise any page carrying the other component would satisfy the check)
@@ -444,10 +449,12 @@ def address_loaded(html, addr, kind, parts):
     label, body = missing[0]
     hint = " — the page carries %d inline executable script(s), none hashing to %s (%d bytes)" % (
         len(page), label, len(body.encode("utf-8")))
+    near = None  # s258-D1: an edited/extended copy is PRESENT, not absent — a NOTE, never a FAIL
     for i, (pb, _s) in enumerate(page):
         if _ws(pb) == _ws(body):
-            hint += ("; page script #%d matches it AFTER whitespace normalisation, so the bytes "
-                     "moved — copy the snippet's <script> verbatim (s235-D1: the bytes are the key)" % (i + 1))
+            near = ("page script #%d matches %s AFTER whitespace normalisation — the bytes moved"
+                    % (i + 1, label))
+            hint += "; " + near
             break
         off = first_diff_offset(pb, body)
         if off is None:
@@ -459,10 +466,16 @@ def address_loaded(html, addr, kind, parts):
             suf += 1
         if len(body) and (off + suf) / float(len(body)) >= 0.8:
             ctx = _ws(pb[max(0, off - 24):off + 24])
-            hint += ("; page script #%d diverges from it at byte %d of %d and shares %d%% of its bytes, "
-                     "near …%s… — an edited copy, not the snippet's script"
-                     % (i + 1, off, len(body), int(100 * (off + suf) / len(body)), ctx))
+            near = ("page script #%d diverges from %s at byte %d of %d and shares %d%% of its bytes, "
+                    "near …%s… — an EDITED/EXTENDED copy"
+                    % (i + 1, label, off, len(body), int(100 * (off + suf) / len(body)), ctx))
+            hint += "; " + near
             break
+    # s258-D1: rule 2a is removed — the author MAY write JavaScript and MAY extend a component's
+    # script. A recognisable near-copy of the declared address therefore reports NOTE (green with a
+    # named difference); only a declared address the page carries NO trace of stays NOT-LOADED.
+    if near and len(missing) == 1:
+        return "NOTE", "; ".join(hows + [near]), hint
     return False, None, hint
 
 
@@ -526,7 +539,11 @@ def behaviour_verdict(html, r):
                          "which %s" % (rid, rel, addr, err))
         else:
             ok, how, hint = address_loaded(html, addr, kind, parts)
-            if ok:
+            if ok == "NOTE":  # s258-D1
+                suffix = (" · behaviour %s LOADED-EXTENDED (%s; meta %s) "
+                          "· NOTE:AUTHORED-JS (s258-D1: rule 2a removed — the author may write and "
+                          "extend JavaScript; the difference is named, not failed)" % (addr, how, rel))
+            elif ok:
                 suffix = " · behaviour %s LOADED (%s; meta %s)" % (addr, how, rel)
             else:
                 fails.append("BEHAVIOUR-NOT-LOADED")
@@ -537,9 +554,11 @@ def behaviour_verdict(html, r):
     for partial in partial_names(typed):
         reg = registered_partials()
         if partial not in reg:
-            fails.append("BEHAVIOUR-PARTIAL-UNREGISTERED")
-            lines.append("FAIL:BEHAVIOUR-PARTIAL-UNREGISTERED — `%s`: meta %s declares partial `%s`, "
-                         "which component-types.json does not register under $behaviour (has: %s)"
+            # s258-D1: unregistered behaviour is no longer a block — the author may write JS the
+            # registry has never seen. Named in full, counted nowhere red.
+            lines.append("NOTE:BEHAVIOUR-PARTIAL-UNREGISTERED — `%s`: meta %s declares partial `%s`, "
+                         "which component-types.json does not register under $behaviour (has: %s); "
+                         "s258-D1 makes this a note, not a failure — register it when it settles"
                          % (rid, rel, partial, sorted(reg) or "none"))
         elif not any(m.group("name") == partial for m in AUTO_BEHAVIOUR_RE.finditer(html)):
             fails.append("BEHAVIOUR-NOT-LOADED")
@@ -692,6 +711,7 @@ def check(path):
                 fails += bfails
                 lines += blines
                 continue
+            lines += blines        # s258-D1: NOTE lines survive a green verdict, never silence
             note += suffix
         elif r.get("script"):
             # a non-markup region carrying a script claim: L1's check, unchanged
@@ -746,7 +766,7 @@ def main(argv):
             continue
         print("## %s" % p)
         for ln in lines:
-            if not quiet or ln.startswith("FAIL"):
+            if not quiet or ln.startswith("FAIL") or ln.startswith("NOTE"):  # s258-D1
                 print("  " + ln)
         for u in unproven:
             print("  " + u)
@@ -867,10 +887,15 @@ def selftest():
         page(body, gh, extra_body=carried), "PASS")
     arm("L  meta address PRESENT and the page carries NO script",
         page(body, gh), "BEHAVIOUR-NOT-LOADED")
-    arm("M  meta address PRESENT and the page carries a ONE-BYTE tampered copy",
-        page(body, gh, extra_body=carried.replace("n = 1", "n = 2")), "BEHAVIOUR-NOT-LOADED")
-    arm("N  meta address PRESENT and the page carries a whitespace-shifted copy (bytes are the key)",
+    # s258-D1: rule 2a removed — an EDITED/EXTENDED copy is present, so it is a NOTE, not a FAIL.
+    # Arm L above still proves the absent case reds: the relaxation is scoped to a near-copy.
+    arm("M  meta address PRESENT and the page carries a ONE-BYTE edited copy — NOTE, not a fail (s258-D1)",
+        page(body, gh, extra_body=carried.replace("n = 1", "n = 2")), "PASS")
+    arm("N  meta address PRESENT and the page carries a whitespace-shifted copy — NOTE (s258-D1)",
         page(body, gh, extra_body="\n<script>" + inline_body.replace(" ", "  ") + "</script>"),
+        "PASS")
+    arm("N3 meta address PRESENT and the page carries an UNRELATED script only — still NOT-LOADED",
+        page(body, gh, extra_body="\n<script>window.somethingElse = 1;</script>"),
         "BEHAVIOUR-NOT-LOADED")
     arm("N2 …and the page carries the script as application/json (data, not executable)",
         page(body, gh, extra_body='\n<script type="application/json">%s</script>' % inline_body),
@@ -916,8 +941,8 @@ def selftest():
     arm("T  meta with NO behaviour key — UNPROVEN too (meta:NONE)",
         page(body, gh), "PASS", expect_unproven="meta:NONE")
     meta({"script": inline_addr, "partial": "ghost-partial", "fallback": None})
-    arm("U  meta partial UNREGISTERED in component-types.json",
-        page(body, gh, extra_body=carried), "BEHAVIOUR-PARTIAL-UNREGISTERED")
+    arm("U  meta partial UNREGISTERED in component-types.json — NOTE, not a fail (s258-D1)",
+        page(body, gh, extra_body=carried), "PASS")
     meta({"script": "knowledge/canon/demo.js", "partial": "demo-b", "fallback": None})
     arm("V  meta partial REGISTERED and the page carries no AUTO-BEHAVIOUR block of that name",
         page(body, gh, extra_head='<script src="../canon/demo.js"></script>'), "BEHAVIOUR-NOT-LOADED")
@@ -931,10 +956,13 @@ def selftest():
              extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
                         "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
     meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b", "ghost-partial"], "fallback": None})
-    arm("U2 meta partial LIST with one unregistered name — the ghost is named, the real one still judged",
+    arm("U2 meta partial LIST with one unregistered name — the ghost is NOTED, the real one still judged (s258-D1)",
         page(body, gh, extra_head='<script src="../canon/demo.js"></script>',
              extra_body="\n<!-- ===== AUTO-BEHAVIOUR demo-b START (g) ===== -->\n<script>0</script>\n"
-                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "BEHAVIOUR-PARTIAL-UNREGISTERED")
+                        "<!-- ===== AUTO-BEHAVIOUR demo-b END ===== -->"), "PASS")
+    meta({"script": "knowledge/canon/demo.js", "partial": ["demo-b", "ghost-partial"], "fallback": None})
+    arm("U3 …and the real one's block MISSING still reds beside the noted ghost (s258-D1 scoped)",
+        page(body, gh, extra_head='<script src="../canon/demo.js"></script>'), "BEHAVIOUR-NOT-LOADED")
     # X: the #script address must ignore an AUTO-BEHAVIOUR payload in the SNIPPET (it has its own
     # registry address) — a snippet whose only script is an injected block resolves to nothing.
     open(os.path.join(ROOT, "snippets", "Injected.reference.html"), "w", encoding="utf-8").write(

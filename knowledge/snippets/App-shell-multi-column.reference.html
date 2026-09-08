@@ -231,6 +231,27 @@
   .bone.media{height:160px;}
   .bone.control{height:44px; width:120px;}
 
+  /* ---- footer — the slim form, copied from Footer.reference.html via App-shell-top-nav ----
+     ⬛ PLACEMENT (#258, Dave: "the page shells should include the footer"). The footer is the last
+     child of `.sh` and spans ALL THREE PANES, because in a multi-column shell the rail, the list
+     and the detail are PEERS — none of them is "the content column". A legal bar under the detail
+     pane alone would read as belonging to the selected account rather than to the page. Each pane
+     scrolls internally (`.sh-list-body` / `.sh-detail-body` carry the `overflow-y:auto`), so a
+     footer outside them is pinned to the frame's floor and is reachable at every scroll position.
+     ⚠ This is the App-shell-top-nav arrangement (direct child of `.sh`), not the nav-rail one —
+     the two differ because top-nav has one content column and nav-rail has a rail to stop at. */
+  .sh-foot{background:var(--band); border-top:1px solid var(--rule); flex:none; padding:8px 24px;}
+  .sh-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;}
+  .sh-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;}
+  /* ⚠ CARRIED VERBATIM WITH ITS REASON — an inline-flex child's min-height does not grow its
+     <li>'s line box, so without this the legal links stack on top of one another in a column. */
+  .sh-legal li{display:flex;}
+  .sh-legal a.lnk{display:inline-flex; align-items:center; min-height:var(--target-min);
+    color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
+  .sh-legal a.lnk:hover{text-decoration-thickness:2px;}
+  .sh-legal a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  .sh-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto; color:var(--muted);}
+
   /* ---- the LOADING region: Skeleton-loader VERBATIM, shimmer and all ---- */
   .skwrap{display:flex; flex-direction:column; gap:8px;}
   .skwrap .bone{
@@ -425,6 +446,16 @@
           </section>
 
         </div>
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
       </div>
     </div>
 
@@ -476,6 +507,16 @@
             </div>
           </section>
         </div>
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
       </div>
     </div>
 
@@ -538,6 +579,16 @@
             </div>
           </section>
         </div>
+        <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+          <div class="sh-legal">
+            <ul>
+              <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+              <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+            </ul>
+            <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+          </div>
+        </footer>
       </div>
     </div>
 
@@ -571,7 +622,9 @@
       { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
       { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
       { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
-      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
+      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" },
+      { "fg": "text/default", "bg": "surface/subtle", "context": "text" },
+      { "fg": "text/secondary", "bg": "surface/subtle", "context": "text" }
     ],
     "icons": {
       "menu": "global-controls/menu.svg",
@@ -593,7 +646,7 @@
       "CARRIED, NOT RE-MEASURED: Sidebar-nav's meta records the red current-location bar at 3.89 light / 2.73 dark on tertiary/background/hover in SUPERCHARGE, a FAIL, which is why the bar is never declared as a contrastPair and why the SHAPE carrier does the work. That figure is Sidebar-nav's, quoted, not re-measured at #210. It now applies on TWO surfaces in this file rather than one.",
       "No .cn-app-shell-multi-column block exists in canon/canon.css yet, so theme cascade projection is OFF for this file - only the light/dark legs authored here have been seen. Console, Legacy and Supercharge are UNPROVEN. DECLARED, and the conductor's to project."
     ],
-    "requiredAria": ["<nav", "aria-label", "aria-current", "aria-labelledby", "aria-busy", "role=\"status\"", "aria-hidden=\"true\"", "<h1"]
+    "requiredAria": ["<nav", "aria-label", "aria-current", "aria-labelledby", "aria-busy", "role=\"status\"", "aria-hidden=\"true\"", "<h1", "role=\"contentinfo\""]
   }
   </script>
 

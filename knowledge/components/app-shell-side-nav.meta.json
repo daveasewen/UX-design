@@ -28,7 +28,8 @@
     "sideNav": { "accepts": { "capability": ["navigation"] }, "required": true, "use": "the persistent column — Sidebar-nav, unmodified", "$status": "PROPOSED #210" },
     "utilityActions": { "accepts": { "capability": ["icon-button"] }, "required": false, "use": "search, profile — 44x44 icon buttons in the app bar's trailing group", "$status": "PROPOSED #210" },
     "trail": { "accepts": { "capability": ["breadcrumbs"] }, "required": false, "use": "the ancestor path above the page title", "$status": "PROPOSED #210" },
-    "content": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the page. Rendered here as neutral placeholder furniture — see App-shell-top-nav's $finding-skeleton-divergence, which states the reasoning once for all three shells.", "$status": "PROPOSED #210" }
+    "content": { "accepts": { "capability": ["anything"] }, "required": true, "use": "the page. Rendered here as neutral placeholder furniture — see App-shell-top-nav's $finding-skeleton-divergence, which states the reasoning once for all three shells.", "$status": "PROPOSED #210" },
+    "endMatter": { "accepts": { "capability": ["footer"] }, "required": false, "use": "Footer in its slim form, placed INSIDE the content column (a child of .sh-content, not of .sh-body) so it stops at the nav column's edge — App-shell-nav-rail's own placement. The doormat form fits the same slot.", "$status": "ADDED #258, Dave's eye owed" }
   },
   "tokens": {
     "page": "background/default",
@@ -56,19 +57,21 @@
     "Headers.reference.html — the 56px content-header height for an in-app bar.",
     "Skeleton-loader.reference.html — the bone shape kit geometry and the --bone token; shimmer and announcement not copied.",
     "Drawer.reference.html — the off-canvas mechanics (scrim at overlay/version1, translateX sheet, background inert + aria-hidden, Esc, focus return), mirrored to the left edge.",
-    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical."
+    "Command-palette.reference.html line 36 — the leading-trim block, byte-identical.",
+    "Footer.reference.html — the slim legal bar, the a.lnk link atom (which Footer itself copied verbatim from Links), the 44px link targets at every width, and the copyright line. Verbatim; Footer is already composite-clean so nothing was re-keyed. ADDED #258 (Dave: \"the page shells should include the footer\"), taken through App-shell-top-nav's copy."
   ],
   "$finding-three-rail-additions": "★ THREE RAIL RULES ARE NEW, AND THEY ARE ADDITIONS TO Sidebar-nav's SET RATHER THAN EDITS OF IT: `.is-rail .sn-group-toggle{justify-content:center; padding:0}`, `.is-rail .sn-group-toggle .sc{display:none}`, `.is-rail .sn-sub{display:none}`. Probe, run: `grep -c 'is-rail .sn-group-toggle' knowledge/snippets/Sidebar-nav.reference.html` → 0. The reason the parent never needed them is visible in the parent: its RAIL specimen contains no collapsible group at all — only its EXPANDED specimen does — so its rail rules never had to say what happens to a group toggle or its sub-list. A rail whose group toggle still reserved room for a chevron, and whose sub-list still rendered at a 48px indent inside a 64px column, would be a rail with a hole in it. ⬛ THIS IS ARGUABLY A GAP IN THE GATED PARENT. This lane did not edit it — Sidebar-nav is a shared artefact — and names it here instead.",
   "$finding-overlap-not-adjudicated": "⚠ THE Sidebar-nav-vs-Navigations OVERLAP IS OPEN AND IS NOT ADJUDICATED HERE. Sidebar-nav's own source records it as Dave's question, raised #203, unresolved: whether Sidebar-nav stands alone or is absorbed as a `type` of Navigations. This shell CONSUMES BOTH — a horizontal bar across the top and a vertical column at the side — which is the arrangement nearly every desktop application uses. That is a DEMONSTRATION of the arrangement, not a verdict on the naming. If Dave folds one into the other, this composition is unchanged; only the two names it cites collapse into one.",
   "$finding-brand-mark": "✅ THE BRAND MARK IS BOUND — CLOSED #230 ON DAVE'S WORD. Itinerary row 86's ASSET-ONLY verdict is spent. The masthead <img>-references knowledge/assets/logos/masterbrand-light-colour.svg on light chrome and masterbrand-dark-colour.svg on dark — his ruling verbatim: \"use this as teh default logo 'masterbrand-light-colour'\" and, minutes later, \"use this for dark mode masterbrand-dark-colour\". WHAT IT REPLACED, and why the replacement was not cosmetic: the mark was LITERAL TEXT, and the #230 rehearsal measured the consequence — a cold builder obeying the contract's 'copy the markup' rule shipped HSBC set in type, silently, never asked, and landed beside a target artefact wearing the hexagon. The <img> idiom is adopted from Template-auth.reference.html rather than invented; inlining was rejected there on a measurement (_validate_icons.py byte-matches inline paths against assets/icons/ only, so an inlined logo reads UNKNOWN — indistinguishable from an invented mark). ⛔ The Apollo crescent is an anonymity mark only (Dave's #86 ruling) and appears nowhere.",
   "$finding-breakpoints-unruled": "⚠ 1040cqi AND 720cqi ARE SPECIMEN CHOICES, NOT RULED BREAKPOINTS. Probed: no breakpoint scale exists in knowledge/tokens/layout.json. The three shells built in this one wave carry three different pairs of numbers (900/600, 1040/720, 1200/840) and none is ruled. See $decisionsForDave 4.",
   "$finding-drawer-carries-the-same-nav": "THE DRAWER CARRIES THE SAME NAVIGATION, NOT A REDUCED ONE. The sheet's content is the `.sn` column unmodified. A navigation that changes its own contents when it changes shape is teaching the user two maps of one building — and the map they learn on the desktop is the one they will try to use on the phone.",
+  "$finding-footer-scrolls-with-content": "ADDED #258 (Dave: \"the page shells should include the footer\"). THE FOOTER SPANS THE CONTENT COLUMN, NOT THE WHOLE FRAME. It is a child of `.sh-content`, never of `.sh-body`, so it stops at the nav column's edge — App-shell-nav-rail.reference.html's own arrangement, and for the same reason in both: the nav column is full-bleed chrome running floor-to-ceiling, and a legal bar drawn UNDER it would cut the navigation off at the ankles and imply the nav had ended. MEASURED at 1440 in a real browser, light and dark: footer x=273 w=1142 on the wide specimen (the 248px column is clear of it), x=89 w=1326 on the rail specimen, x=25 w=390 on the phone specimen where the column has left the layout entirely. ⚠ DECLARED DIFFERENCE FROM nav-rail: `.sh-content` is this shell's scroll container (overflow-y:auto), so the footer travels with the content and sits at the document end rather than pinned to the frame floor. Pinning it would need a second scroll container — a layout change this lane did not make. Every legal <li> measures 44px in both themes, so the Footer #204 line-box defect the `.sh-legal li{display:flex}` repair exists for did NOT recur here.",
   "relationships": {
     "livesInside": ["nothing — this IS the outermost frame"],
     "commonPatterns": ["desktop application frames", "a product with more destinations than a masthead row can hold", "any product with grouped or nested navigation"],
     "mustNotNeighbour": []
   },
-  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Breadcrumbs", "Skeleton-loader", "Drawer"],
+  "$consumes": ["Sidebar-nav", "Navigations", "Headers", "Breadcrumbs", "Skeleton-loader", "Drawer", "Footer"],
   "$relationshipsNote": "⚠ SCHEMA CONSTRAINT, FOUND BY DRIVING P-1 AND NOT BY READING: `relationships` sets additionalProperties:false with NO `^\\$` patternProperties and permits only livesInside · mustNotNeighbour · commonPatterns · triggeredBy. A `consumes` key, or even a `$note`, INSIDE relationships is a schema violation; the legal home is a top-level `$consumes`.",
   "accessibility": {
     "relatedSC": ["1.3.1", "1.4.3", "2.1.1", "2.1.2", "2.4.1", "2.4.3", "2.4.4", "2.4.7", "2.4.8", "2.5.8", "4.1.2"],
@@ -181,6 +184,10 @@
       {
         "ref": "component:drawer",
         "$note": "Drawer"
+      },
+      {
+        "ref": "component:footer",
+        "$note": "Footer"
       }
     ]
   }
