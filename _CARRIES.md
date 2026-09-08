@@ -43,7 +43,7 @@
 
 ---
 
-## residual → #259
+## residual → #259 · ⬛ **⑩ CONTEXT-AWARE RESPONSIVE BEHAVIOURS [NEW — 0, DAVE'S, CAPTURED AFTER THE WRAP]** — one component, N responsive strategies (reflow / stack / collapse-to-split-button …) chosen by space-awareness AND designer preference; decision point unknown (author time / presented option / edit mode). His words verbatim at `notes/_ideas/2026-09-08-258-context-aware-responsive-behaviours.md`. Owed: a RESEARCH lane, not a build.
 
 *Written straight here at the #258 wrap (2026-09-08, the session and the ritual on the same day) under `s225-D2` clause (i) — this carry set never stood on a ★ LATEST banner, so there was nothing for `_gm_move.py` to move; the banner carries the pointer and the probeable count only.*
 
