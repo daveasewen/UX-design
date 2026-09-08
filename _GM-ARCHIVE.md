@@ -1,5 +1,23 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-08 #259
+
+> **COMMIT STATE #258:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK, AND THAT IS DELIBERATE — A COMMIT CANNOT NAME ITSELF.** ⛔ **THE `--wrap` FORM IS REFUSED AT THIS SEAT, BY THE GATE, FOR THE TWELFTH WRAP RUNNING** — the boot-drift ceiling arm fails on **#255's 70,127** and **#256's 70,241** even though **#257's 68,837 and #258's own 68,826 are both UNDER the ceiling**; the literal is shrink-only (`s240-D2`/`s241-D1`) and raising it is not a price a wrap may pay to unblock itself, so the commit is made in the **#243 form** (`SESSION_N=258 bash knowledge/_git_commit.sh --reconciled <msgfile> --all-dirty`) and the refusal is recorded rather than routed around. ONE wrap commit, PUSHED via `--push`.
+
+
+> ## ★ PRIOR — 2026-09-08 (Tue from `date` **#257**, **Fable** + **0 LANES** + OPUS 5 wrap sub, DELEGATED — ★★★ **TWO RATIFICATIONS IN ONE DAY AND A FROZEN GATE THAT WAS RIGHT**)
+>
+> - ★ **⓪ SHAPE.** ⏱ delta #257 · WHY `_DECISION-HISTORY/2026-09-08-257-…md` · report `notes/_subreports/2026-09-08-257-wrap.md` · 8 commits, **PUSHED `71ab931..82b310c`**.
+> - ★★★ **① THREE RULINGS, HIS — READ BACK 396–398 (395→398):** `s257-D1` *"ratiify."* (sic) RATIFIES **v1.0.6** at `1f4c355` · `s257-D2` *"Cut 1.0.7 can you prepend ADS- to the skill names…"* (verbatim in the ⏱ delta) AUTHORISES v1.0.7 (`s223-D3`) · `s257-D3` *"ratify"* RATIFIES it at `b9c4c80`.
+> - ★★★ **② LANDED:** v1.0.6 baked `4781994f…` ≡ #256's dry-run ⇒ `--pack` **RED→PASS**. Six skills → **`ADS-<name>`** (`name:` ×6 + **25** refs; **dirs UNCHANGED**, no gate binds them, CHECKED), selftest **216/216**; v1.0.7 at `b9c4c80`: **1,673 files · 43,162,006 B**, probe **41/9/4**, zip `13a593de…` **dry-run≡release** with `ADS-grill-me` INSIDE it, `--seed` `9431a8f6a707`; frozen/`--pack` **PASS**, `--drift` clean.
+> - ⛔ **③ FINDING: THE FROZEN GATE REFUSED THE RE-BAKE AND WAS RIGHT** — **`RE-RECORDED WITHOUT A VERSION BUMP`** (`398c695a` vs `85f4f4db`). Cause is **#245's**: a ***PROPOSED*** zip seeded as frozen, so a ratified re-bake at one version launders a hash by the ledger's rule. ★ **Remedy = the BUMP, not a waiver**; whether `--seed` must refuse PROPOSED is open.
+> - ⛔ **④ CORRECTION, HIS WORDS:** *"…The demo is to David Rice at HSBC"*, not Sutherland. Source `2026-09-05-246-…md` **L31**, an INFERENCE (Sutherland = HSBC's React lib), corrected **BY ADDITION**. `notes/_DEMO-PREP-david-rice-hsbc.html`: Rice = HSBC's first **Chief AI Officer**, ex-COO CIB, an **operator**; 3 Qs his.
+> - ⛔ **⑤ NOT DONE — home = the ⏱ delta** (`s241-D2`): **dashboards one-shotable, the STATED JOB, NOT RUN** · **rulings page** · DIR rename · **P1(b)** · **Q2–Q6** · **R1** · `intent` ≈09-19 · CI read-back · 2 STALE hooks · no render/browser/build/plant.
+> - ⚙ **⑥ GAUGE, NEVER CONVERTED.** Conductor **216,975 cut — 66,046 past the 150,929 advisory, past the 200K wall** (harness said more; the RULED unit wins); sub-cut **227,409/89**, Δ **10,434**. ⛔ **NO `subs` line — 0 subs, never defaulted.** ⛔ **Seam-less.** ✅ Boot **68,837 — FIRST under the ceiling after 2 breaches**; #256's cut measured. ⛔ Arm REFUSES on **70,127**/**70,241**; `--wrap` refused an **ELEVENTH** time, commit in the #243 form.
+> **residual → #258:** ⬛ **① DASHBOARDS ONE-SHOTABLE — THE FROZEN PROMPT'S COLD RUN; HIS RULINGS PAGE [NEW — 0, DAVE'S]** — ⛔ **POINTER, NOT THE LIST (`s225-D2`).** **468 aged · 7 new · 1 STRUCK · 2 CORRECTED** at **`_CARRIES.md` § `residual → #258`** (`carries:residual-258`). ⚠ **PROBE:** `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#258:**' in l][0])))"` → **332**.
+> **residual (GENERATED #257):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #256) — _roll_state.py · 2026-09-08
+>
+
 ## Batch 2026-09-08 #258
 
 > **COMMIT STATE #257:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK, AND THAT IS DELIBERATE — A COMMIT CANNOT NAME ITSELF.** ⛔ **THE `--wrap` FORM IS REFUSED AT THIS SEAT, BY THE GATE, FOR THE ELEVENTH WRAP RUNNING** — the boot-drift ceiling arm fails on **#255's 70,127** even though **#257's own boot is 68,837, UNDER the ceiling**; the literal is shrink-only (`s240-D2`/`s241-D1`) and raising it is not a price a wrap may pay to unblock itself, so the commit is made in the **#243 form** (`SESSION_N=257 bash knowledge/_git_commit.sh --reconciled <msgfile> --all-dirty`) and the refusal is recorded rather than routed around. Paths are explicit — never `git add -A`. ONE wrap commit, PUSHED via `--push`.
