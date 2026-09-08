@@ -717,6 +717,7 @@ RATIFY_IDS = {
     # names" (s257-D2 — an AUTHORISATION, s223-D3), because the ratified v1.0.6 re-bake moved
     # dist/ at the same version and the frozen ledger rightly called it laundering. PROPOSED
     # until his ratifying word; s237-D9: derived, never typed.
+    "v1.0.7": "s257-D3",    # #257, Dave's word ("ratify") on the PROPOSED cut at b9c4c802439c.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
