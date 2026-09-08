@@ -110,13 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.7"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.8"                     # Spider's own lineage starts here; v1/v2 stay frozen
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.7"
+MEMENTO_CUT_VERSION = "v1.0.8"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
