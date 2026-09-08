@@ -214,6 +214,133 @@ def _rect_stack_gap(segs, minimum=2.0):
     return (False, "smallest measured gap is %.2fpx at x=%s (needs >=%.0fpx)" % (gap, x, minimum))
 CURVE_CMDS = re.compile(r'[CSQTcsqt]')
 
+# ---------------------------------------------------------------------------------------------
+# DRIVEN RECEIPTS — dv-004 on an ENGINE-DRAWN chart (s260-D3, Dave, 2026-09-08)
+# ---------------------------------------------------------------------------------------------
+# "DRIVEN RECEIPTS BECOME THE GATE FOR ENGINE-DRAWN CHARTS. Where a dataviz rule reads static
+#  geometry (dv-004 and its siblings) and the chart is drawn at runtime by knowledge/canon/
+#  dv-render.js, _validate_dataviz accepts a COMMITTED driven receipt (a Playwright measurement
+#  recorded from knowledge/_tests/chart-engine/) as the evidence for that rule — the gate is
+#  'static OR driven', never skipped. Option (b), an engine-emitted self-report marker trusted by
+#  the static gate, is REFUSED."
+#
+# WHY THIS EXISTS. #259 emptied Chart-donut's spider canvas: `dvRender(fig, DATA)` now draws every
+# arc at runtime, so there is NO `path.dv-series` in the file for the static rule to read. The
+# chart met dv-004 by real geometry in a browser and the gate failed it anyway — the second visit
+# of [[no-gate-parses-the-artefact]] in one session.
+#
+# THE ROUTE IS NEVER A SKIP. An engine-drawn chart with no receipt, an unmapped snippet, a receipt
+# whose recorded source hashes no longer match the bytes on disk, or ANY of the 8 theme×mode
+# combinations measuring below 2.0px is a BLOCKING failure that names what to do about it. A chart
+# that still carries its marks in the markup keeps the static route, untouched.
+RECEIPTS_PATH = os.path.join(HERE, "_tests", "chart-engine", "_receipts.json")
+DRIVE_CMD = "python3 knowledge/_drive_chart_engine.py"
+DV004_MIN_PX = 2.0
+
+# snippet basename -> the driven test page that exercises the SAME engine + type partial.
+# Explicit, not inferred: a mapping you can read is a mapping a reviewer can falsify.
+ENGINE_TEST_PAGE = {
+    "Chart-donut.reference.html":       "donut.html",
+    "Chart-pie.reference.html":         "donut.html",   # pie is the ri=0 arm of the same partial
+    "Chart-bar.reference.html":         "bar.html",
+    "Chart-line.reference.html":        "line.html",
+    "Chart-combo.reference.html":       "combo.html",
+    "Chart-sparkline.reference.html":   "sparkline.html",
+    "Chart-stacked-area.reference.html": "stacked-area.html",
+}
+
+_RECEIPTS_CACHE = {}
+
+
+def _load_receipts(path=None):
+    path = path or RECEIPTS_PATH
+    if path not in _RECEIPTS_CACHE:
+        try:
+            _RECEIPTS_CACHE[path] = json.load(open(path, encoding="utf-8"))
+        except Exception:
+            _RECEIPTS_CACHE[path] = None
+    return _RECEIPTS_CACHE[path]
+
+
+def _sha256(path):
+    h = __import__("hashlib").sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def is_engine_drawn(segs, page_html):
+    """No series marks in the markup + the page drives the engine => the chart is drawn at runtime."""
+    if segs:
+        return False
+    if not page_html:
+        return False
+    return ("dvRender(" in page_html) or ("dv-render" in page_html)
+
+
+def driven_dv004(page_html_path, dtype, raw_dtype, receipts_path=None, root=None):
+    """dv-004 via a COMMITTED driven receipt. Returns (ok, message).
+
+    ok is True only when: a receipt file exists, the snippet maps to a test page, that page has a
+    receipt, every recorded source still hashes to the bytes on disk, a figure of this dtype was
+    measured, all 8 theme x mode combinations are present, and every one of them is >= 2.0px.
+    Anything else is False — a BLOCKING failure that names the first obstacle.
+    """
+    root = root or os.path.dirname(HERE)
+    rec = _load_receipts(receipts_path)
+    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
+    if not rec:
+        return (False, "dv-004: %s is ENGINE-DRAWN (no marks in the markup) and there is no driven "
+                       "receipt at %s. Record one: %s" % (raw_dtype, where, DRIVE_CMD))
+    base = os.path.basename(page_html_path or "")
+    page = ENGINE_TEST_PAGE.get(base)
+    if not page:
+        return (False, "dv-004: %s is ENGINE-DRAWN but %s is not mapped to a chart-engine test page "
+                       "(ENGINE_TEST_PAGE in this file). Add the mapping and drive it: %s"
+                       % (raw_dtype, base or "this file", DRIVE_CMD))
+    entry = (rec.get("pages") or {}).get(page)
+    if not entry:
+        return (False, "dv-004: %s is ENGINE-DRAWN and maps to %s, but %s holds no driven receipt "
+                       "for that page. Record one: %s" % (raw_dtype, page, where, DRIVE_CMD))
+    for rel, want in sorted((entry.get("sources") or {}).items()):
+        p = os.path.join(root, rel)
+        got = _sha256(p) if os.path.isfile(p) else None
+        if got != want:
+            return (False, "dv-004: the driven receipt for %s is STALE — %s has changed since it was "
+                           "driven%s. Re-drive: %s"
+                           % (page, rel, " (file is missing)" if got is None else "", DRIVE_CMD))
+    combos = entry.get("combos") or {}
+    if not combos:
+        return (False, "dv-004: the driven receipt for %s records no theme x mode combination. "
+                       "Re-drive: %s" % (page, DRIVE_CMD))
+    want_combos = len(rec.get("themes") or []) * len(rec.get("modes") or []) or 8
+    if len(combos) < want_combos:
+        return (False, "dv-004: the driven receipt for %s covers %d of %d theme x mode combinations. "
+                       "Re-drive: %s" % (page, len(combos), want_combos, DRIVE_CMD))
+    seen = []
+    for combo in sorted(combos):
+        figs = (combos[combo].get("figures") or {})
+        hit = [(fid, f) for fid, f in sorted(figs.items())
+               if f.get("dtype") == dtype and f.get("dv004_px") is not None]
+        if not hit:
+            return (False, "dv-004: the driven receipt for %s carries no measured %s figure in combo "
+                           "%s — the receipt cannot stand in for the static rule it replaces. "
+                           "Re-drive: %s" % (page, dtype, combo, DRIVE_CMD))
+        for fid, f in hit:
+            px = float(f["dv004_px"])
+            seen.append((px, combo, fid))
+            if px < DV004_MIN_PX:
+                return (False, "dv-004: driven receipt FAILS — %s/%s measured %.3fpx of separation "
+                               "in combo %s (rule is >=%.1fpx). Source: %s"
+                               % (page, fid, px, combo, DV004_MIN_PX, where))
+    worst = min(seen)
+    return (True, "dv-004: PASSED by driven receipt — %s/%s measured %.3fpx (worst of %d "
+                  "measurements across %d theme x mode combos, rule >=%.1fpx), driven %s on "
+                  "Chromium %s. Source: %s"
+                  % (page, worst[2], worst[0], len(seen), len(combos), DV004_MIN_PX,
+                     rec.get("driven", "?"), rec.get("chromium", "?"), where))
+
 # ---------------- colour maths (lifted from _review/_gen_series_renders.py — one source) ----------------
 def _lin(c):
     c /= 255.0
@@ -340,7 +467,7 @@ def series_fill_vars(inner):
     return out
 
 # ---------------- per-chart checks ----------------
-def check_chart(attrs, inner, themes, ctx):
+def check_chart(attrs, inner, themes, ctx, fileinfo=None):
     """Return (blocking[list], advisory[list]). ctx = per-file journey map (mutated)."""
     B, A = [], []
     raw_dtype = attrs["data-dv-type"]
@@ -433,7 +560,14 @@ def check_chart(attrs, inner, themes, ctx):
         segs = re.findall(r'<(?:path|rect|circle)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
         stroke_ok = bool(segs) and all(_seg_has_surface_stroke(s) for s in segs)
         gap_ok, gap_note = _rect_stack_gap(segs) if dtype == "stacked" else (None, "not a rect stack")
-        if not stroke_ok and gap_ok is not True:
+        fi = fileinfo or {}
+        if is_engine_drawn(segs, fi.get("html")):
+            # s260-D3 — the chart does not exist in the markup; a COMMITTED driven receipt is the
+            # evidence. Never a skip: every failure path below is BLOCKING and names the remedy.
+            ok, msg = driven_dv004(fi.get("path"), dtype, raw_dtype,
+                                   receipts_path=fi.get("receipts"), root=fi.get("root"))
+            (A if ok else B).append(msg)
+        elif not stroke_ok and gap_ok is not True:
             if gap_ok is False:
                 B.append("dv-004: %s — %s, and no >=2px surface-coloured separating stroke."
                          % (raw_dtype, gap_note))
@@ -515,8 +649,9 @@ def check_file(path):
     charts = find_charts(html)
     ctx = {}
     results = []
+    fileinfo = {"path": path, "html": html}
     for attrs, inner in charts:
-        B, A = check_chart(attrs, inner, themes, ctx)
+        B, A = check_chart(attrs, inner, themes, ctx, fileinfo)
         results.append((attrs.get("data-dv-type", "?"), attrs.get("id", ""), B, A))
     # journey-consistency advisory (a series index mapped to >1 fill across the view)
     file_adv = []
@@ -578,12 +713,12 @@ def selftest():
              '--data-series-2:#A45C3A;--dv-axis:#545454;--dv-grid:#EDEDED;--bad:#FFF9C4;}'
              '[data-theme="dark"]{--page:#000000;--raised:#1D1D1D;--data-series-1:#766682;'
              '--data-series-2:#A45C3A;--dv-axis:#9B9B9B;--dv-grid:#3A3A3A;--bad:#222200;}</style>')
-    def run(fig):
+    def run(fig, fileinfo=None):
         html = "APOLLO-DATAVIZ" + THEME + fig
         m = re.search(r"<style[^>]*>(.*?)</style>", html, re.S)
         themes = {"light": theme_vars(m.group(1), "light"), "dark": theme_vars(m.group(1), "dark")}
         (attrs, inner) = find_charts(html)[0]
-        return check_chart(attrs, inner, themes, {})
+        return check_chart(attrs, inner, themes, {}, fileinfo)
     def has(msgs, tok):
         return any(tok in m for m in msgs)
 
@@ -733,10 +868,85 @@ def selftest():
                       "var(--vib)", "var(--data-series-2)"),
                   lambda B, A: True))  # exercised; level depends on the pair — just ensure no crash
 
+    # ---- s260-D3 · DRIVEN RECEIPTS for dv-004 on an ENGINE-DRAWN chart --------------------
+    # Five bites, each one a different way the route must NOT quietly pass:
+    #   missing receipt · stale source hash · one combo below 2px · fresh-and-green ·
+    #   and the CONTROL — a static donut that still carries its stroke keeps the static route.
+    # The fixtures are built on a throwaway tree, so the bite-test touches no repo file.
+    import tempfile as _tf
+    _tmp = _tf.mkdtemp(prefix="dv004-bite-")
+
+    ENGINE_DONUT = ('<figure class="dv" data-dv-type="donut" data-total="30">'
+                    '<svg class="dv-svg" viewBox="0 0 300 260"></svg>'
+                    '<table><tr><th>A</th><td>10</td></tr><tr><th>B</th><td>20</td></tr></table></figure>')
+    STATIC_DONUT = ('<figure class="dv" data-dv-type="donut" data-total="30">'
+                    '<svg class="dv-svg" viewBox="0 0 300 260">'
+                    '<path class="dv-series" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M0 0"/>'
+                    '<path class="dv-series" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M0 0"/>'
+                    '</svg><table><tr><th>A</th><td>10</td></tr><tr><th>B</th><td>20</td></tr></table></figure>')
+    ENGINE_HTML = "APOLLO-DATAVIZ dvRender(fig, DATA) <script src=\"../canon/dv-render.js\"></script>"
+
+    def _bite_tree(tag, px_by_combo, source_text="engine v1"):
+        """Build a throwaway root + receipts file; returns a fileinfo dict."""
+        root = os.path.join(_tmp, tag)
+        os.makedirs(os.path.join(root, "canon"), exist_ok=True)
+        src = os.path.join(root, "canon", "dv-render-donut.js")
+        open(src, "w").write(source_text)
+        combos = {}
+        for combo, px in px_by_combo.items():
+            combos[combo] = {"pageerrors": 0, "console_errors": 0,
+                             "figures": {"fig-donut": {"dtype": "donut", "marks": 5,
+                                                       "table_rows": 5, "dv004_px": px,
+                                                       "dv004_note": "bite fixture"}}}
+        rec = {"chromium": "bite", "driven": "2026-09-08T00:00:00Z",
+               "themes": ["mono", "legacy", "console", "supercharge"], "modes": ["light", "dark"],
+               "pages": {"donut.html": {"sources": {"canon/dv-render-donut.js": _sha256(src)},
+                                        "combos": combos}}}
+        rpath = os.path.join(root, "_receipts.json")
+        json.dump(rec, open(rpath, "w"), indent=1, sort_keys=True)
+        return {"path": os.path.join(root, "Chart-donut.reference.html"), "html": ENGINE_HTML,
+                "receipts": rpath, "root": root, "_src": src}
+
+    ALL_GREEN = {"%s/%s" % (t, m): 2.109
+                 for t in ("mono", "legacy", "console", "supercharge") for m in ("light", "dark")}
+
+    fi_ok = _bite_tree("green", ALL_GREEN)
+    cases.append(("★ s260-D3 driven receipt: fresh + all 8 combos >=2px PASSES (and says so)",
+                  ENGINE_DONUT, lambda B, A: not has(B, "dv-004")
+                  and has(A, "driven receipt") and has(A, "2.109px"), fi_ok))
+
+    ONE_SHORT = dict(ALL_GREEN); ONE_SHORT["console/dark"] = 1.9
+    fi_short = _bite_tree("short", ONE_SHORT)
+    cases.append(("★ s260-D3 driven receipt: ONE combo at 1.9px is BLOCKING, quoting combo + px",
+                  ENGINE_DONUT, lambda B, A: has(B, "dv-004") and has(B, "1.900px")
+                  and has(B, "console/dark") and has(B, "driven receipt"), fi_short))
+
+    fi_stale = _bite_tree("stale", ALL_GREEN)
+    open(fi_stale["_src"], "w").write("engine v2 — edited after the drive")
+    cases.append(("★ s260-D3 driven receipt: STALE source hash is BLOCKING and names the file",
+                  ENGINE_DONUT, lambda B, A: has(B, "dv-004") and has(B, "STALE")
+                  and has(B, "dv-render-donut.js") and has(B, "_drive_chart_engine.py"), fi_stale))
+
+    fi_missing = {"path": os.path.join(_tmp, "Chart-donut.reference.html"), "html": ENGINE_HTML,
+                  "receipts": os.path.join(_tmp, "nope.json"), "root": _tmp}
+    cases.append(("★ s260-D3 driven receipt: NO receipt at all is BLOCKING, never a skip",
+                  ENGINE_DONUT, lambda B, A: has(B, "dv-004") and has(B, "ENGINE-DRAWN")
+                  and has(B, "_drive_chart_engine.py"), fi_missing))
+
+    fi_unmapped = dict(fi_ok, path=os.path.join(_tmp, "green", "Chart-unmapped.reference.html"))
+    cases.append(("★ s260-D3 driven receipt: an UNMAPPED engine snippet is BLOCKING",
+                  ENGINE_DONUT, lambda B, A: has(B, "dv-004") and has(B, "not mapped"), fi_unmapped))
+
+    cases.append(("★ s260-D3 control: a STATIC donut with a >=2px stroke still passes the STATIC route",
+                  STATIC_DONUT, lambda B, A: not has(B, "dv-004")
+                  and not has(A, "driven receipt") and not has(B, "driven receipt"), fi_ok))
+
     ok = True
-    for name, fig, pred in cases:
+    for case in cases:
+        name, fig, pred = case[0], case[1], case[2]
+        fileinfo = case[3] if len(case) > 3 else None
         try:
-            B, A = run(fig)
+            B, A = run(fig, fileinfo)
             passed = pred(B, A)
         except Exception as e:
             passed = False
@@ -745,6 +955,7 @@ def selftest():
         if not passed:
             ok = False
             print("        B=%s" % B)
+    __import__("shutil").rmtree(_tmp, ignore_errors=True)
     print("\n%s selftest" % ("✅" if ok else "❌"))
     return 0 if ok else 1
 

@@ -57,8 +57,8 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 
 ## ✓ snippets/Chart-combo.reference.html — PASS
 
-## ✗ snippets/Chart-donut.reference.html — FAIL
-- ✗ **donut#cd1** — dv-004: donut segment lacks a >=2px surface-coloured separating stroke (geometry not statically measurable here: not a rect stack).
+## ✓ snippets/Chart-donut.reference.html — PASS
+- ⚠ donut#cd1 — dv-004: PASSED by driven receipt — donut.html/fig-donut measured 2.109px (worst of 8 measurements across 8 theme x mode combos, rule >=2.0px), driven 2026-09-08T18:01:19Z on Chromium 151.0.7922.34. Source: knowledge/_tests/chart-engine/_receipts.json
 
 ## ✓ snippets/Chart-histogram.reference.html — PASS
 
