@@ -177,6 +177,10 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     Paging pages. Search searches. Drawers, modals, menus and tabs open, close and return
     focus. A CTA that opens nothing is a Gap, not a button. Wiring that reaches ACROSS
     components is yours to write — that is exactly what rule 2a now allows.
+    **Wire by delegation.** Controls inside markup you RENDER from `DATA` (rule 13) do not
+    exist when a per-element listener runs; attach one listener to a static ancestor and
+    dispatch on `event.target.closest('[data-action]')`. Cold run 5: two KPI CTAs died on
+    exactly this, while the same handler on static markup worked.
 15. **State survives a reload.** Filters, nav/view, sort, page size and theme persist — URL
     query params (shareable, preferred) or `localStorage` — and are read back on load so the
     page comes up where it was left. Reflect state in the URL as the user changes it.
@@ -208,9 +212,11 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    implies, their relationships, the time series, the currencies, enough rows to sort and
    page. List the behaviours it must support — which filter drives which panel — then build
    the markup to render it.
-3. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. Root
-   element (or `<body>`) gets `class="canon"` plus **two** attributes — the theme and the
-   mode: `data-apollo-theme="common|console|supercharge"` **and** `data-theme="light"` or
+3. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. **The
+   `<html>` element** — not `<body>`, and never the same element that carries a `.cn-*`
+   scope class — gets `class="canon"` plus **two** attributes — the theme and the mode
+   (cold run 5: `data-theme` on `<body>` beside a `.cn-*` class killed the whole dark
+   theme silently — canon's theme legs are DESCENDANT selectors and never matched): `data-apollo-theme="common|console|supercharge"` **and** `data-theme="light"` or
    `data-theme="dark"`. They are different dials and `canon.css` selects on both:
    `data-apollo-theme` carries the four themes, `data-theme` carries light/dark only.
    **The answer to step 0's theme question lands on `data-apollo-theme`.** `data-theme`
