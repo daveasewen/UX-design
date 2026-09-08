@@ -11,7 +11,7 @@
   borrows Skeleton-loader's own bone atom VERBATIM (same class names, same token pair) rather than
   drawing a second placeholder mechanism — the two components share one loading idiom by construction.
 
-  ASPECT-RATIO VARIANTS, all on the 4px grid (declared heights at the --demo-width below are 4px
+  ASPECT-RATIO VARIANTS, all on the 4px grid (declared heights at the .grid width below are 4px
   multiples; the ratios themselves are the standard photographic/screen set so the component is
   useful against real crops): 16:9 (video/hero) · 4:3 (classic photo) · 1:1 (square/avatar-scale
   media) · 3:4 (portrait). `aspect-ratio` is a CSS ratio, not a pixel value — the 4px discipline
@@ -79,8 +79,7 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
-  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; width:var(--demo-width, 720px); max-width:100%; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; width:100%; max-width:var(--grid-max, 720px); }
 
   .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
@@ -119,11 +118,17 @@
       animation-iteration-count:1 !important; }
     .bone.media{ animation:none; background-image:none; }
   }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
+/* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="demo-h">Aspect-ratio variants — caption + attribution</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div class="grid">
 
     <figure class="imgblock ar-16x9">
@@ -174,7 +179,9 @@
 
   </div>
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="demo-h">Loading state — borrows Skeleton-loader's bone atom verbatim</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div class="grid">
     <figure class="imgblock ar-16x9" role="status" aria-busy="true">
       <span class="visually-hidden">Loading image</span>
@@ -184,7 +191,9 @@
     </figure>
   </div>
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="demo-h">Broken / failed-to-load state — byte-matched glyph</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div class="grid">
     <figure class="imgblock ar-16x9 is-broken">
       <div class="media">

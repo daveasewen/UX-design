@@ -186,15 +186,10 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .stateLabel{color:var(--muted); margin:1.75rem 0 .6rem;}   /* demo chrome — not the component */
-  .stateLabel:first-of-type{margin-top:0;}
   .specimens{display:flex; flex-direction:column; gap:40px;}
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
-  /* demo chrome — the three tiers of the grammar, so the page reads in Dave's own model */
-  .tier{color:var(--text); margin:0 0 4px; border-top:1px solid var(--border); padding-top:16px;}
-  .tier-note{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px; max-width:640px;}
 
   /* ============================================================================
      THE METER — THE BASE MOLECULE.
@@ -293,23 +288,7 @@
   .chip.ok{ background:var(--ok-tint); }   .chip.ok .dot{ background:var(--ok); }
   .chip.warn{ background:var(--warn-tint); } .chip.warn .dot{ background:var(--warn); }
 
-  /* the title-size comparison strip (§B6) — demo chrome, so the two options sit side by side.
-     ⚠ .pairnote is DEMO CHROME with its own margin, not the component's .meter-caption: found by
-     LOOKING at the first render, where the borrowed margin:0 left the annotation flush against
-     the title it annotates. The borrowed rule was not edited to fix a demo problem. */
-  .pairnote{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px;}
 
-  /* ⚑⚑ DEMO CHROME — THESE ARE NOT THE COMPONENT. ⚑⚑
-     s210-D3 took every width off the meter and off the lock-up. These four classes are the
-     SPECIMEN PAGE'S OWN containers, and they exist only so a reader can see that the meter
-     takes the width it is given. Delete every one of them and the component still works; it
-     just becomes as wide as the page. They are never referenced by any .meter-* rule. */
-  .demo-col{max-width:480px;}                       /* demo chrome: a plausible page column */
-  .demo-w-320{width:320px; max-width:100%;}         /* demo chrome: narrow container */
-  .demo-w-640{width:640px; max-width:100%;}         /* demo chrome: medium container */
-  .demo-w-1180{width:1180px; max-width:100%;}       /* demo chrome: wide container */
-  .demo-frame{border:1px dashed var(--border); padding:12px;}  /* demo chrome: shows the box edge */
-  .demo-stack{display:flex; flex-direction:column; gap:24px;}  /* demo chrome */
   .pair{display:flex; gap:40px; flex-wrap:wrap;}
   .pair > div{flex:1 1 320px; min-width:280px;}
   .row{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
@@ -323,6 +302,30 @@
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .stateLabel{color:var(--muted); margin:1.75rem 0 .6rem;}   /* demo chrome — not the component */
+  .stateLabel:first-of-type{margin-top:0;}
+  /* demo chrome — the three tiers of the grammar, so the page reads in Dave's own model */
+  .tier{color:var(--text); margin:0 0 4px; border-top:1px solid var(--border); padding-top:16px;}
+  .tier-note{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px; max-width:640px;}
+  /* the title-size comparison strip (§B6) — demo chrome, so the two options sit side by side.
+     ⚠ .pairnote is DEMO CHROME with its own margin, not the component's .meter-caption: found by
+     LOOKING at the first render, where the borrowed margin:0 left the annotation flush against
+     the title it annotates. The borrowed rule was not edited to fix a demo problem. */
+  .pairnote{color:var(--muted); opacity:var(--alpha-72); margin:0 0 8px;}
+  /* ⚑⚑ DEMO CHROME — THESE ARE NOT THE COMPONENT. ⚑⚑
+     s210-D3 took every width off the meter and off the lock-up. These four classes are the
+     SPECIMEN PAGE'S OWN containers, and they exist only so a reader can see that the meter
+     takes the width it is given. Delete every one of them and the component still works; it
+     just becomes as wide as the page. They are never referenced by any .meter-* rule. */
+  .demo-col{max-width:480px;}                       /* demo chrome: a plausible page column */
+  .demo-w-320{width:320px; max-width:100%;}         /* demo chrome: narrow container */
+  .demo-w-640{width:640px; max-width:100%;}         /* demo chrome: medium container */
+  .demo-w-1180{width:1180px; max-width:100%;}       /* demo chrome: wide container */
+  .demo-frame{border:1px dashed var(--border); padding:12px;}  /* demo chrome: shows the box edge */
+  .demo-stack{display:flex; flex-direction:column; gap:24px;}  /* demo chrome */
+/* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
@@ -333,9 +336,13 @@
          §A · THE BASE MOLECULE
          ================================================================ -->
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="tier t-cm-section-label">A · the base meter — the molecule</p>
       <p class="tier-note t-cm-caption">A value on a track between a minimum and a maximum, with a label, a visible readout and an accessible value. Ink on track. Everything below §A is a VARIANT of this one thing, and progress is one of them — not the parent of it.</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">A1 · base · default 4px track · default title = small (t-cm-legal, 12px, text/secondary) — ruled s210-D2 · no semantics claimed · no width of its own — ruled s210-D3</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter">
         <div class="meter-head">
           <span class="meter-label t-cm-legal" id="m0-label">Meter</span>
@@ -352,7 +359,9 @@
          the label, dropped into three DEMO-CHROME containers of different widths. The component
          carries no width; each copy is exactly as wide as its box. The dashed rule is the box. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">A2 · the container dictates the width (s210-D3) · one meter, three containers · 320 / 640 / 1180 · the dashed rule is demo chrome showing the container edge</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="demo-stack">
         <div class="demo-frame demo-w-320">
           <div class="meter">
@@ -397,13 +406,17 @@
          §B · THE VARIANTS
          ================================================================ -->
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="tier t-cm-section-label">B · the variants — "we just have progress variants"</p>
       <p class="tier-note t-cm-caption">B1–B4 are Progress-bar's four specimens, markup copied. B5 is Limits-meter's emphasis + compact readout, copied. B6 is the NEW option Dave asked for: the two title sizes, on the same meter, side by side.</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
     </div>
 
     <!-- B1 · linear, default 4px, PROGRESS semantics — Progress-bar specimen 1, verbatim -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B1 · linear · 4px · progress semantics · Progress-bar specimen 1, copied</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter meter--progress meter--title-lg">
         <div class="meter-head">
           <span class="meter-label t-cm-label" id="m1-label">Transferring funds</span>
@@ -418,7 +431,9 @@
 
     <!-- B2 · linear, emphasis 8px, with a supporting caption — Progress-bar specimen 2, verbatim -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B2 · linear · emphasis 8px · supporting caption · Progress-bar specimen 2, copied</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter meter--progress meter--emphasis meter--title-lg">
         <div class="meter-head">
           <span class="meter-label t-cm-label" id="m2-label">Statement download</span>
@@ -438,7 +453,9 @@
          meter" by name. It is drawn here as ONE VARIANT of ONE component, which is what the
          unification proposes. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B3 · linear · non-percentage scale · aria-valuetext carries the domain units · Progress-bar specimen 3, copied</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter meter--progress meter--title-lg">
         <div class="meter-head">
           <span class="meter-label t-cm-label" id="m3-label">Savings goal</span>
@@ -453,7 +470,9 @@
 
     <!-- B4 · dial (circular) — Progress-bar specimen 4, verbatim -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B4 · dial · the circular variant · role sits on the VISIBLE numeric caption, the svg is aria-hidden · Progress-bar specimen 4, copied</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="row">
         <div class="meter-dial">
           <svg data-bespoke="progress ring — a stateful, value-driven mark (stroke-dashoffset tracks aria-valuenow), not an icon; there is no library glyph for it and one would be wrong" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
@@ -472,7 +491,9 @@
     <!-- B5 · ALLOWANCE semantics, emphasis 8px, compact readout — Limits-meter specimen 5, verbatim.
          Same geometry as B2. The difference is entirely one of MEANING (Q6). -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B5 · linear · emphasis 8px · allowance semantics · compact two-key readout · Limits-meter specimen 5, copied</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter meter--allowance meter--emphasis meter--title-lg" role="group" aria-labelledby="m5-label">
         <div class="meter-head">
           <span class="meter-label t-cm-label" id="m5-label">Card spending limit · this month</span>
@@ -496,10 +517,14 @@
          OPT-IN modifier, which is what Progress-bar's larger title now is. ⛔ The question is
          CLOSED; the pair stays drawn as the RECEIPT for the ruling, not as a choice. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B6 · the title-size option · ruled s210-D2, "default small" (Dave, #210) · left = the default, no modifier · right = the opt-in .meter--title-lg</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="pair">
         <div>
+          <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
           <p class="pairnote t-cm-legal">the default (ruled s210-D2) — no modifier class · t-cm-legal, 12px, text/secondary (the Limits-meter stack's row-name treatment)</p>
+          <!-- ===== APOLLO-DEMO note END ===== -->
           <div class="meter meter--allowance">
             <div class="meter-head">
               <span class="meter-label t-cm-legal" id="m6a-label">Per day</span>
@@ -513,7 +538,9 @@
           </div>
         </div>
         <div>
+          <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
           <p class="pairnote t-cm-legal">the option (opt-in) — .meter--title-lg · t-cm-label, 16px, text/default (Progress-bar's own title treatment, now an explicit modifier)</p>
+          <!-- ===== APOLLO-DEMO note END ===== -->
           <div class="meter meter--allowance meter--title-lg">
             <div class="meter-head">
               <span class="meter-label t-cm-label" id="m6b-label">Per day</span>
@@ -537,7 +564,9 @@
          that dropping the row cannot be misread as retiring the state. Nothing new is authored:
          this is the §A1 markup with value 0. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">B7 · the empty state · value at the minimum · 0% fill · kept deliberately (s210-D4 scopes the drop to the §C3 organism only — an empty meter is still a legal state)</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="meter meter--progress">
         <div class="meter-head">
           <span class="meter-label t-cm-legal" id="m7-label">Statement download</span>
@@ -554,13 +583,17 @@
          §C · THE ORGANISM
          ================================================================ -->
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="tier t-cm-section-label">C · the organisms — all three</p>
       <p class="tier-note t-cm-caption">"Again what we have is a set of meter variants embedded in an organism, in this case a daily transfer limit lock-up" (Dave, #210). The lock-up is NOT a meter: it is a composition — a title, a verdict chip, a display figure, one or more meter molecules, a legend and, at the ceiling, a consequence sentence. THREE organisms ship, on Dave's Q4 answer ("I think we have all three, just be careful, dont hand roll, use the atoms"): the daily-transfer-limit lock-up (C1 within limit, C2 at limit), the payment-limits set (C3), and the savings-goal lock-up (C4). C1–C3 are Limits-meter's own markup, copied; only the class prefix moved. C4 is COMPOSED from the classes C1 and B3 already use — no new CSS rule was authored for it and no card chrome was invented.</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
     </div>
 
     <!-- C1 · the lock-up, within limit — Limits-meter specimen 1, copied -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">C1 · daily transfer limit lock-up · within limit · ONE meter molecule inside · the meter is ink on track, and there is no green on it · the 480px column is demo chrome (.demo-col), not the component (s210-D3)</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="demo-col">
       <div class="lockup" role="group" aria-labelledby="c1-label">
         <div class="lockup-head">
@@ -589,7 +622,9 @@
          because the allowance is spent — that is the honest geometry — and the CONSEQUENCE is a
          sentence, not a hue. The chip is the organism's, never the meter's. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">C2 · the same lock-up · at limit · no red was invented — the meter is full because the allowance is spent; the consequence is a sentence and a reset time · 480px column is demo chrome (s210-D3)</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="demo-col">
       <div class="lockup" role="group" aria-labelledby="c2-label">
         <div class="lockup-head">
@@ -626,7 +661,9 @@
          the bare molecule at §B7 above. The per-payment RULE itself is not lost either: it is a
          stated rule, not a quantity, and is carried as a sentence in the caption below. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">C3 · the payment-limits lock-up · two meter molecules in one organism · per day · per month · ONE group label, no chips · the per-payment empty track is dropped (s210-D4) and restated as a sentence · 480px column is demo chrome (s210-D3)</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="demo-col">
       <div class="lockup-stack" role="group" aria-labelledby="c3-label">
         <p class="lockup-title t-cm-label" id="c3-label" style="margin:0">Your payment limits · Business current account</p>
@@ -681,7 +718,9 @@
          to reach — the one place in this file where a full meter is SUCCESS. Nothing paints
          differently (Q6 is still open); the marker is authored, not inferred. -->
     <div>
+      <!-- ===== APOLLO-DEMO state-label START (showroom harness — never copy) ===== -->
       <p class="stateLabel t-cm-legal">C4 · the savings-goal lock-up · the third organism (Dave, #210: "I think we have all three") · composed only from atoms already in this file — zero new CSS · progress semantics: a full meter here is success · 480px column is demo chrome (s210-D3)</p>
+      <!-- ===== APOLLO-DEMO state-label END ===== -->
       <div class="demo-col">
       <div class="lockup" role="group" aria-labelledby="c4-label">
         <div class="lockup-head">

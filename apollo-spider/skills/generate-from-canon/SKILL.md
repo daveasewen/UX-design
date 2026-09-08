@@ -47,6 +47,15 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
 2. **Copy the snippet, don't re-draw it.** Take markup and classes from
    `knowledge/snippets/<Slug>.reference.html`. Hand-rolling a component from its
    screenshot invents defects that the gates then catch as yours.
+   ⛔ **Never copy inside a fence** (`s258-D3`). Markup, CSS or script between
+   `<!-- ===== APOLLO-DEMO <what> START (showroom harness — never copy) ===== -->` and its
+   matching `<!-- ===== APOLLO-DEMO <what> END ===== -->` — and the CSS/JS-comment form
+   `/* ===== APOLLO-DEMO <what> START … ===== */` … `/* ===== APOLLO-DEMO <what> END ===== */` —
+   is **showroom harness, not the component**: width dials, state switchers, demo labels,
+   `demo-*` wrapper classes and the script that drives them. Copy what is OUTSIDE the fences
+   and nothing inside them; the component still renders with every fenced span deleted, which
+   is exactly what the fence guarantees. A generated page that carries an `APOLLO-DEMO` marker
+   is refused by the receipt gate as `FAIL:DEMO-CHROME-COPIED`.
 2a. **You write the JavaScript** (`s258-D1` — the old "author no JS" rule is REMOVED).
     Copy a snippet's own `<script>` (or its `AUTO-BEHAVIOUR` block) **verbatim where it fits** —
     the bytes are the key and a verbatim copy is still the cheapest correct answer — but you
@@ -59,6 +68,9 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
     untouched. `fallback` says what the component does with JavaScript off; if it is null, say
     so in the Gaps list rather than inventing one. Creativity in the JS is wanted; the design
     system's tokens and classes are the boundary, not the script.
+    ⛔ Rule 2's fence applies to scripts too: a `<script>` fenced as `APOLLO-DEMO` is the
+    showroom's dial-and-switcher harness, never the component's behaviour — never copy it, and
+    never carry it as the declared `behaviour.script` bytes.
 3. **Bind every visual value to a token by intent** — never a raw hex or px. The names
    live in `knowledge/tokens/*.json` and resolve in `knowledge/canon/canon.css`
    (`primary/background/hover` → `var(--primary-background-hover)`). Spacing, radius and
@@ -208,7 +220,9 @@ them, each tagged BLOCKING / ADVISORY / REVIEW / TASTE),
    component-level attribute, not a theme one: in `canon.css` it appears only inside
    `.cn-template-auth`, swapping a light/dark logo mark. Do not put it on the root.) Drop each component in as
    its scope class + the snippet's own markup — `<div class="cn-button"><button class="btn
-   primary">…</button></div>`. Use the `.c-*` layout utilities. **Your own `<style>` is
+   primary">…</button></div>` — **and drop every `APOLLO-DEMO` fenced span on the way in**
+   (rule 2): the fenced markup, CSS and script are the showroom harness, and the component
+   renders without them. Use the `.c-*` layout utilities. **Your own `<style>` is
    harness only**: no hex, no redefining a `.c-*` or `.cn-*` class. If you're redefining a
    component locally, you've left canon.
    The long version of this is `knowledge/_RUNBOOK-compose-from-canon.md`.

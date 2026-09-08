@@ -92,7 +92,7 @@
   .bone.media{ height:160px; }
   .bone.control{ height:44px; width:120px; }
 
-  .skwrap{ width:var(--demo-width, 560px); max-width:100%; display:flex; flex-direction:column; gap:8px; }
+  .skwrap{ width:100%; max-width:var(--skwrap-max, 560px); display:flex; flex-direction:column; gap:8px; }
   .sk-row{ display:flex; gap:12px; align-items:center; }
   .sk-col{ flex:1 1 auto; display:flex; flex-direction:column; gap:8px; }
   .sk-card{ border:1px solid var(--line); border-radius:var(--border-radius-surface); padding:16px;
@@ -113,9 +113,11 @@
 </style>
 </head>
 <body data-theme="light">
+  <!-- ===== APOLLO-DEMO resolve-dial START (showroom harness — never copy) ===== -->
   <div>
     <button id="resolveDemo" type="button">Simulate content arriving</button>
   </div>
+  <!-- ===== APOLLO-DEMO resolve-dial END ===== -->
 
   <h2>Text block — heading + three lines</h2>
   <div class="skwrap" role="status" aria-busy="true">
@@ -158,6 +160,7 @@
     "$note": "No contrast pairs by design: bones are decorative placeholders (aria-hidden, convey no information — 1.4.11 exempt) and deliberately low-contrast. The loading STATE is announced by the region's role=status + visually-hidden text, not by the bones. Not the loader atom: no spinners here (that group is queued, GOOD-MORNING §C·3b)."
   }
   </script>
+  <!-- ===== APOLLO-DEMO resolve-dial script START (showroom harness — never copy) ===== -->
   <script>
     // Simulate resolution: aria-busy flips false, sr-text removed, bones swap for content
     document.getElementById('resolveDemo').addEventListener('click', ()=>{
@@ -167,5 +170,6 @@
       region.innerHTML='<div class="sk-card"><p class="sk-resolved t-ed-body">Content has arrived — the card now renders its real copy in the same footprint the bones reserved.</p></div>';
     });
   </script>
+  <!-- ===== APOLLO-DEMO resolve-dial script END ===== -->
 </body>
 </html>

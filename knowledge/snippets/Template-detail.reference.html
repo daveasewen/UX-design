@@ -403,12 +403,14 @@
   .tpl-split-host > .l-split{ align-items:start; }                            /* 7 · panels are their own height */
   .tpl-panel{ padding:24px; }                                                 /* 8 */
 
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
   /* ---- DEMO CHROME below this line. NOT the template. ---- */
   .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--hover); color:var(--text);}
   .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
     color:var(--text); cursor:pointer;}
   .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== APOLLO-DEMO css END ===== */
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -427,11 +429,13 @@
     <symbol id="dr-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
   </svg>
 
+<!-- ===== APOLLO-DEMO harness-bar START (showroom harness — never copy) ===== -->
   <div class="demo-bar">
     <span class="t-cm-legal">Reference harness — not part of the template</span>
     <button type="button" id="themeBtn" class="t-cm-legal">Toggle light / dark</button>
     <span class="t-cm-legal" id="wOut" aria-live="polite"></span>
   </div>
+<!-- ===== APOLLO-DEMO harness-bar END ===== -->
 
   <main class="tpl-page l-container" id="tplMain">
     <div class="l-stack" data-gap="xl">
@@ -679,24 +683,32 @@
   </script>
 
   <script>
-    /* ⚑ DEMO CHROME ONLY. The indicator position must be MEASURED after layout (Tabs' own
-       technique — widths depend on font metrics and cap-trim, so they cannot be authored). */
-    document.getElementById('themeBtn').addEventListener('click', function(){
-      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
-    });
+    /* COMPONENT behaviour — kept out of the demo fence on purpose. The indicator
+       position must be MEASURED after layout: widths depend on font metrics and
+       trim, so they cannot be authored. */
     function moveTabInd(){
       var list = document.querySelector('.tablist'), ind = document.getElementById('tabInd');
       var a = list.querySelector('.tab[aria-selected="true"]');
       if (!a) return;
       ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px';
     }
+    moveTabInd();
+    addEventListener('resize', function(){ moveTabInd(); });
+  </script>
+<!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
+  <script>
+    /* ⚑ DEMO CHROME ONLY — theme toggle + the viewport / main width read-out.
+       Fenced: this is showroom harness, never part of the template. */
+    document.getElementById('themeBtn').addEventListener('click', function(){
+      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
     function reportWidth(){
       document.getElementById('wOut').textContent =
         'viewport ' + window.innerWidth + 'px · main ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
-      moveTabInd();
     }
     addEventListener('resize', reportWidth);
     reportWidth();
   </script>
+<!-- ===== APOLLO-DEMO script END ===== -->
 </body>
 </html>

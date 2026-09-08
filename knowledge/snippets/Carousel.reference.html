@@ -95,14 +95,12 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--fade), color var(--fade);}
-  h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
-  p.demo-note{font-size:12px; opacity:var(--alpha-56); max-width:56ch; margin:.75rem 0 0;}
-
   .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
     clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
 
   /* ===== shared carousel shell ===== */
-  .carousel{ width:var(--demo-width, 560px); max-width:100%; }
+  /* s258-D3: a real component default, not a demo dial (was var(--demo-width, 560px)). */
+  .carousel{ width:100%; max-width:var(--carousel-max, 560px); }
   .cr-viewport{ position:relative; overflow:hidden; border:1px solid var(--border); border-radius:var(--border-radius-surface); background:var(--surface); }
   .cr-track{ display:flex; margin:0; padding:0; list-style:none; }
   .cr-slide{ flex:0 0 100%; }
@@ -149,6 +147,10 @@
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
     .cr-standard .cr-track{ transition:none !important; }
   }
+  /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  h2.demo-h{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--text); opacity:var(--alpha-60); margin:2.5rem 0 .9rem;}
+  p.demo-note{font-size:12px; opacity:var(--alpha-56); max-width:56ch; margin:.75rem 0 0;}
+  /* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
@@ -159,7 +161,9 @@
     <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
   </svg>
 
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <h2 class="demo-h">Standard — one slide per view, transform-driven</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
   <section class="carousel cr-standard" id="stdCarousel" aria-roledescription="carousel" aria-label="Featured offers">
     <div class="cr-viewport">
       <ul class="cr-track" id="stdTrack">
@@ -193,9 +197,13 @@
     </div>
     <p class="cr-status visually-hidden" aria-live="polite" id="stdStatus"></p>
   </section>
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <p class="demo-note">Left/Right on the dot row moves one slide (roving tabindex, like Tabs); Home/End jump to first/last. No autoplay — PROPOSED default, see $decisionsForDave.</p>
+  <!-- ===== APOLLO-DEMO label END ===== -->
 
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <h2 class="demo-h">Peek/snap — native scroll-snap, neighbours visible at the edges</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
   <section class="carousel cr-peek" id="peekCarousel" aria-roledescription="carousel" aria-label="Recent transfers, peek view">
     <div class="cr-viewport" id="peekViewport">
       <ul class="cr-track" id="peekTrack">
@@ -224,7 +232,9 @@
     </div>
     <p class="cr-status visually-hidden" aria-live="polite" id="peekStatus"></p>
   </section>
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <p class="demo-note">Neighbour slides peek at both edges; dragging/swiping the track natively updates the dots via IntersectionObserver, so the two input paths (buttons vs direct scroll) never disagree.</p>
+  <!-- ===== APOLLO-DEMO label END ===== -->
 
   <script type="application/json" id="token-manifest">
   {

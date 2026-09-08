@@ -52,7 +52,7 @@
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 12px;}
 
-  .wrap{ width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size; }
+  .wrap{ width:100%; max-width:var(--wrap-max, 460px); margin-bottom:2.5rem; container-type:inline-size; }
 
   /* ---- canonical avatar atom (round; from Avatar.reference) ---- */
   .avatar{flex:none; border-radius:50%; background:var(--avatar); color:var(--text); width:36px; height:36px;
@@ -118,9 +118,11 @@
 </style>
 </head>
 <body data-theme="light">
+  <!-- ===== APOLLO-DEMO density-dial START (showroom harness — never copy) ===== -->
   <div>
     <label><input type="checkbox" id="dense"> Compact density</label>
   </div>
+  <!-- ===== APOLLO-DEMO density-dial END ===== -->
 
   <!-- ===== A. Live interactive list (hover / click / Tab to focus) ===== -->
   <div class="wrap">
@@ -233,10 +235,6 @@
   }
   </script>
   <script>
-    document.getElementById('dense').addEventListener('change', e=>{ const r=document.documentElement.style;
-      if(e.target.checked){ r.setProperty('--row-h','64px'); r.setProperty('--row-pad','10px'); r.setProperty('--label-gap','8px'); }   /* compact = the former default */
-      else { r.removeProperty('--row-h'); r.removeProperty('--row-pad'); r.removeProperty('--label-gap'); } });                          /* default = roomy (:root) */
-
     /* roving keyboard navigation on the live list — Arrow Up/Down + Home/End move focus between rows. */
     const live=document.getElementById('liveList'); const rows=[...live.querySelectorAll('.row')].filter(r=>!r.disabled);
     rows.forEach((r,i)=> r.tabIndex = i===0?0:-1);
@@ -250,5 +248,14 @@
       if(j!==null){ e.preventDefault(); rows[i].tabIndex=-1; rows[j].tabIndex=0; rows[j].focus(); }
     });
   </script>
+  <!-- ===== APOLLO-DEMO density-dial script START (showroom harness — never copy) ===== -->
+  <script>
+    /* Showroom density dial — harness only. It writes --row-h/--row-pad/--label-gap onto
+       :root; the component's own :root defaults (roomy) stand when this block is deleted. */
+    document.getElementById('dense').addEventListener('change', e=>{ const r=document.documentElement.style;
+      if(e.target.checked){ r.setProperty('--row-h','64px'); r.setProperty('--row-pad','10px'); r.setProperty('--label-gap','8px'); }   /* compact = the former default */
+      else { r.removeProperty('--row-h'); r.removeProperty('--row-pad'); r.removeProperty('--label-gap'); } });                          /* default = roomy (:root) */
+  </script>
+  <!-- ===== APOLLO-DEMO density-dial script END ===== -->
 </body>
 </html>

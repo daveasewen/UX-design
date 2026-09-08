@@ -155,8 +155,6 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
-  .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
@@ -217,9 +215,6 @@
   .pc .btn.ghost{background:transparent; color:var(--text);}
   .pc .btn.ghost:hover{background:var(--ghost-hover);}
 
-  /* ---- a list row, so the "in place" claim is visible rather than described ---- */
-  .row-demo{width:var(--demo-width, 460px); max-width:100%;
-    border:1px solid var(--pop-border, transparent);}
   .payee-row{display:flex; align-items:center; gap:12px; padding:8px 0;}
   /* text-box-edge:text — the leading-trim rule above sets `cap alphabetic`, which combined with
      overflow:hidden CLIPS DESCENDERS ("Meridian Supplies" lost the tail of its p). Same defect
@@ -238,6 +233,14 @@
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
     .pc .btn:active{filter:none !important;}
   }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
+  .demo-note{opacity:var(--alpha-60); margin:.4rem 0 0; max-width:56ch;}
+  /* ---- a list row, so the "in place" claim is visible rather than described ---- */
+  .row-demo{width:100%; max-width:460px;
+    border:1px solid var(--pop-border, transparent);}
+/* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
@@ -248,7 +251,9 @@
     <symbol id="pc-delete" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/></symbol>
   </svg>
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Open state — the default, shown open so the review panes can see it</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div style="min-height:300px;">
     <span class="pc-anchor">
       <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc1">Remove payee</button>
@@ -265,7 +270,9 @@
     </span>
   </div>
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Destructive variant — the glyph takes the error ink, the label carries the word</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div style="min-height:332px;">
     <span class="pc-anchor">
       <button type="button" class="pc-trigger t-cm-button" aria-haspopup="dialog" aria-expanded="true" aria-controls="pc2">Delete standing order</button>
@@ -282,9 +289,13 @@
       </div>
     </span>
   </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
   <p class="demo-note t-cm-legal">The glyph is aria-hidden and says nothing a reader cannot also read: the question names the object, the body names the consequence, and the confirm button repeats the verb. Colour is the third channel, never the first.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
 
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">In place — an icon trigger inside a list row, confirming beside the object</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
   <div class="row-demo" style="min-height:300px;">
     <div class="payee-row">
       <span class="who t-cm-ctl-14">Meridian Supplies · sort code 40-12-88</span>
@@ -322,7 +333,9 @@
         </div>
       </span>
     </div>
+    <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
     <p class="demo-note t-cm-legal">Both triggers above are closed and driveable: activate one to open its confirm in place. The row stays visible behind it, which is the whole point of the pattern.</p>
+    <!-- ===== APOLLO-DEMO note END ===== -->
   </div>
 
   <!-- s151-D2 / s160-D2 MIGRATION, inherited: no rag-on-neutral FILL pair is declared below. The

@@ -510,6 +510,7 @@
      template supplies it here rather than copying a demo width along with it. */
   .tpl-list-host{ container-type:inline-size; }
 
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
   /* ---- DEMO CHROME below this line. NOT the template. ---- */
   .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -518,6 +519,7 @@
   .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .demo-h{opacity:var(--alpha-60); margin:0 0 8px;}
   .demo-note{opacity:var(--alpha-72); margin:0 0 16px; max-width:64ch;}
+/* ===== APOLLO-DEMO css END ===== */
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -542,11 +544,13 @@
     <symbol id="dr-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
   </svg>
 
+<!-- ===== APOLLO-DEMO harness-bar START (showroom harness — never copy) ===== -->
   <div class="demo-bar">
     <span class="t-cm-legal">Reference harness — not part of the template</span>
     <button type="button" id="themeBtn" class="t-cm-legal">Toggle light / dark</button>
     <span class="t-cm-legal" id="wOut" aria-live="polite"></span>
   </div>
+<!-- ===== APOLLO-DEMO harness-bar END ===== -->
 
   <main class="tpl-page l-container" id="tplMain">
     <div class="l-stack" data-gap="xxl">
@@ -601,7 +605,9 @@
 
       <!-- ============ 3 · FORM A — THE TABLE (Data-grid) ============ -->
       <section class="tpl-section" aria-labelledby="formA-h">
+<!-- ===== APOLLO-DEMO specimen-label START (showroom harness — never copy) ===== -->
         <p class="demo-h t-cm-legal">FORM A of two — drawn so the choice is made by eye. This half is `Data-grid`.</p>
+<!-- ===== APOLLO-DEMO specimen-label END ===== -->
         <div class="dg">
           <div class="dg-head">
             <span class="t-cm-section-label" id="formA-h">Payments</span>
@@ -700,7 +706,9 @@
 
       <!-- ============ 4 · FORM B — THE LIST (Document-row) ============ -->
       <section class="tpl-section tpl-list-host" aria-labelledby="formB-h">
+<!-- ===== APOLLO-DEMO specimen-label START (showroom harness — never copy) ===== -->
         <p class="demo-h t-cm-legal">FORM B of two — the SAME five records, the SAME filters, the SAME pager. This half is `Document-row` + `Pagination`.</p>
+<!-- ===== APOLLO-DEMO specimen-label END ===== -->
         <div class="dg-head">
           <span class="t-cm-section-label" id="formB-h">Payments</span>
           <span class="dg-count t-cm-caption">31 results</span>
@@ -792,7 +800,9 @@
            PROPOSED — the recovery action ("Clear all filters") is the ruled shape, the copy is not.
       -->
       <section class="tpl-section" aria-labelledby="empty-h">
+<!-- ===== APOLLO-DEMO specimen-label START (showroom harness — never copy) ===== -->
         <p class="demo-h t-cm-legal">The state the filter bar can create. `Data-grid`'s empty result, drawn.</p>
+<!-- ===== APOLLO-DEMO specimen-label END ===== -->
         <div class="dg">
           <div class="dg-head">
             <span class="t-cm-section-label" id="empty-h">Payments</span>
@@ -911,11 +921,9 @@
   </script>
 
   <script>
-    /* ⚑ DEMO CHROME ONLY. No filtering, sorting or paging happens on this page — that behaviour
-       lives in Data-grid and Pagination, and this template does not fork it. */
-    document.getElementById('themeBtn').addEventListener('click', function(){
-      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
-    });
+    /* COMPONENT behaviour — kept out of the demo fence on purpose. The indicator
+       position must be MEASURED after layout: widths depend on font metrics and
+       trim, so they cannot be authored. */
     document.querySelectorAll('input[data-indeterminate="true"]').forEach(function(i){ i.indeterminate = true; });
     function moveInd(seg){
       var ind = seg.querySelector('.ind'), a = seg.querySelector('button[aria-pressed="true"]');
@@ -931,13 +939,23 @@
       });
       moveInd(seg);
     });
+    document.querySelectorAll('.seg').forEach(moveInd);
+    addEventListener('resize', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+  </script>
+<!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
+  <script>
+    /* ⚑ DEMO CHROME ONLY — theme toggle + the viewport / main width read-out.
+       Fenced: this is showroom harness, never part of the template. */
+    document.getElementById('themeBtn').addEventListener('click', function(){
+      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
     function reportWidth(){
       document.getElementById('wOut').textContent =
         'viewport ' + window.innerWidth + 'px · main ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
-      document.querySelectorAll('.seg').forEach(moveInd);
     }
     addEventListener('resize', reportWidth);
     reportWidth();
   </script>
+<!-- ===== APOLLO-DEMO script END ===== -->
 </body>
 </html>

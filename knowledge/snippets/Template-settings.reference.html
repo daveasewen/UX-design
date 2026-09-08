@@ -518,6 +518,7 @@
     .tpl-actionbar .btn{width:100%;}
   }
 
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
   /* ---- DEMO CHROME below this line. NOT the template. Delete it and the page still works. ---- */
   .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
     border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
@@ -526,6 +527,7 @@
   .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .demo-frame{height:760px; overflow-y:auto; border-bottom:1px solid var(--divider);}
   .demo-note{margin:12px 0 0; opacity:var(--alpha-60);}
+/* ===== APOLLO-DEMO css END ===== */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
@@ -544,19 +546,23 @@
     <symbol id="ic-warn" viewBox="0 0 18 18"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
   </svg>
 
+<!-- ===== APOLLO-DEMO harness-bar START (showroom harness — never copy) ===== -->
   <!-- ⚑ DEMO CHROME — the theme + width harness. NOT part of the template. -->
   <div class="demo-bar">
     <span class="t-cm-legal">Reference harness — not part of the template</span>
     <button type="button" id="themeBtn" class="t-cm-legal">Toggle light / dark</button>
     <span class="t-cm-legal" id="wOut" aria-live="polite"></span>
   </div>
+<!-- ===== APOLLO-DEMO harness-bar END ===== -->
 
   <!-- ⚑ DEMO CHROME — a SCROLLPORT. The template's action bar is position:sticky, which resolves
        against the nearest scrolling ancestor. On a real page that is the page itself; on a
        reference page holding a template it is the viewport, and #210 lane C measured a sticky bar
        painting over its own live form when that was left unhandled. The frame makes the specimen
        behave the way a page does, and the non-overlap is MEASURED in the receipt. -->
+<!-- ===== APOLLO-DEMO wrapper-open START (showroom harness — never copy) ===== -->
   <div class="demo-frame" id="demoFrame">
+<!-- ===== APOLLO-DEMO wrapper-open END ===== -->
   <main class="tpl-page l-container" id="tplMain">
     <div class="l-stack" data-gap="xxl">
 
@@ -785,8 +791,12 @@
       </div>
     </div>
   </main>
+<!-- ===== APOLLO-DEMO wrapper-close START (showroom harness — never copy) ===== -->
   </div>
+<!-- ===== APOLLO-DEMO wrapper-close END ===== -->
+<!-- ===== APOLLO-DEMO specimen-label START (showroom harness — never copy) ===== -->
   <p class="demo-note t-cm-legal">Demo chrome: the frame above is a scrollport, so the sticky action bar behaves the way it does on a real page.</p>
+<!-- ===== APOLLO-DEMO specimen-label END ===== -->
 
   <script type="application/json" id="token-manifest">
   {
@@ -865,12 +875,9 @@
   </script>
 
   <script>
-    /* ⚑ DEMO CHROME ONLY — the theme toggle and the segmented indicator's initial position.
-       Segment widths depend on font metrics and on leading-trim, so the indicator MUST be
-       measured after layout; this is Segmented-control's own script, in shape. */
-    document.getElementById('themeBtn').addEventListener('click', function(){
-      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
-    });
+    /* COMPONENT behaviour — kept out of the demo fence on purpose. The indicator
+       position must be MEASURED after layout: widths depend on font metrics and
+       trim, so they cannot be authored. */
     function moveInd(seg){
       var ind = seg.querySelector('.ind'), a = seg.querySelector('button[aria-pressed="true"]');
       if (!ind || !a) return;
@@ -886,13 +893,23 @@
       });
       moveInd(seg);
     });
+    document.querySelectorAll('.seg').forEach(moveInd);
+    addEventListener('resize', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+  </script>
+<!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
+  <script>
+    /* ⚑ DEMO CHROME ONLY — theme toggle + the viewport / main width read-out.
+       Fenced: this is showroom harness, never part of the template. */
+    document.getElementById('themeBtn').addEventListener('click', function(){
+      var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
     function reportWidth(){
       document.getElementById('wOut').textContent =
         'viewport ' + window.innerWidth + 'px · main ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
-      document.querySelectorAll('.seg').forEach(moveInd);
     }
     addEventListener('resize', reportWidth);
     reportWidth();
   </script>
+<!-- ===== APOLLO-DEMO script END ===== -->
 </body>
 </html>

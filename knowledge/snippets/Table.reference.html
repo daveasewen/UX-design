@@ -57,6 +57,7 @@
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
   /* ---- demo controls ---- */
 
   /* segmented control — headerType variant switcher (the active segment is disabled = a real state) */
@@ -69,9 +70,10 @@
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .seg button[aria-pressed="true"]{background:var(--header); font-weight:500;}
   .seg button:disabled{cursor:default;}              /* the current variant can't be re-selected */
+/* ===== APOLLO-DEMO css END ===== */
 
   /* ---- the table (horizontal / data-table form) ---- */
-  .wrap{ width:var(--demo-width, 760px); max-width:100%; container-type:inline-size; }
+  .wrap{ --table-w:760px; width:var(--table-w); max-width:100%; container-type:inline-size; }
   .scroll{overflow-x:auto; transition:box-shadow var(--ease);}
   .scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
@@ -137,11 +139,13 @@
 </head>
 <body data-theme="light">
 
+<!-- ===== APOLLO-DEMO switcher START (showroom harness — never copy) ===== -->
   <div class="seg" role="group" aria-label="Header type">
     <button type="button" data-mode="both"   aria-pressed="true"  disabled>Row + column</button>
     <button type="button" data-mode="row"     aria-pressed="false">Column only</button>
     <button type="button" data-mode="column"  aria-pressed="false">Row only</button>
   </div>
+<!-- ===== APOLLO-DEMO switcher END ===== -->
 
   <div class="wrap" id="wrap">
     <!-- focusable region (passive AT, decision a) -->
@@ -227,6 +231,7 @@
   }
   </script>
 
+<!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
   <script>
     // headerType variant switcher — re-scopes the real table so AT structure matches the visual
     const tbl = document.getElementById('tbl');
@@ -247,5 +252,6 @@
     }
     segButtons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   </script>
+<!-- ===== APOLLO-DEMO script END ===== -->
 </body>
 </html>

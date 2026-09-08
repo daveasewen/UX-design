@@ -121,10 +121,6 @@
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2.spec-h{margin:2.5rem 0 1rem;}
-  /* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
-     — these are page-annotation captions, not component text, so they are advisory-exempt rather
-     than routed through a canon composite. */
-  .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
 
   /* ===== Breadcrumbs.reference.html — raw `nav ol`/`[aria-current]` font declarations REMOVED
      (TYPE-001/002 fix, not present in the borrowed geometry): the markup instead carries
@@ -244,14 +240,21 @@
     .ph-actions{justify-content:flex-end;}
   }
 
-  /* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
-  .demo-stack{display:flex; flex-direction:column; gap:56px;}
-  .demo-col{width:var(--demo-width, 900px); max-width:100%; border:1px dashed var(--tertiary-hover); padding:20px;}
-  .demo-tier{border-top:1px solid var(--tabs-standard-border); padding-top:8px; margin:0 0 4px;}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  /* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
+     — these are page-annotation captions, not component text, so they are advisory-exempt rather
+     than routed through a canon composite. */
+  .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
+  /* ---- demo chrome — NOT the component (s210-D3: deletable, the container's width is the page's) ---- */
+  .demo-stack{display:flex; flex-direction:column; gap:56px;}
+  .demo-col{width:100%; max-width:var(--demo-col-w, 900px); border:1px dashed var(--tertiary-hover); padding:20px;}
+  .demo-tier{border-top:1px solid var(--tabs-standard-border); padding-top:8px; margin:0 0 4px;}
+/* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
@@ -260,8 +263,12 @@
   <div class="demo-stack">
 
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="demo-tier">A — simple: eyebrow + title + right-aligned actions</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
+      <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
       <p class="demo-note">Stacks to a full-width action row under a 560px container.</p>
+      <!-- ===== APOLLO-DEMO note END ===== -->
       <div class="ph-outer demo-col">
         <div class="ph">
           <div class="ph-row">
@@ -279,8 +286,12 @@
     </div>
 
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="demo-tier">B — breadcrumb + title + tabs (Tabs' own built-in overflow, untouched)</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
+      <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
       <p class="demo-note">Tabs collapse into "More" via the component's own ResizeObserver — this lock-up never re-implements it.</p>
+      <!-- ===== APOLLO-DEMO note END ===== -->
       <div class="ph-outer demo-col">
         <div class="ph">
           <nav class="ph-crumb" aria-label="Breadcrumb">
@@ -318,9 +329,13 @@
     </div>
 
     <div>
+      <!-- ===== APOLLO-DEMO tier-label START (showroom harness — never copy) ===== -->
       <p class="demo-tier">C — eyebrow + title + badge count + meta line + actions</p>
+      <!-- ===== APOLLO-DEMO tier-label END ===== -->
+      <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
       <p class="demo-note">A count (Badge, standalone form) and a meta line (Eyebrow/caption idiom) beside the title.</p>
-      <div class="ph-outer demo-col" style="--demo-width:640px;">
+      <!-- ===== APOLLO-DEMO note END ===== -->
+      <div class="ph-outer demo-col" style="--demo-col-w:640px;">
         <div class="ph">
           <div class="ph-row">
             <div class="ph-titleblock">

@@ -70,6 +70,20 @@ remedy: one parse, in the consumer's grammar, shared.
   3. every SPLICE MARKER in the page is RECEIPTED    ⇒ FAIL:REGION-UNRECEIPTED (a region the
                                  receipt does not mention is provenance-free; a receipt that
                                  only covers what suits it is not a receipt)
+  3b. no SHOWROOM HARNESS was copied in          ⇒ FAIL:DEMO-CHROME-COPIED (s258-D3). The
+                                 reference snippets fence their demo chrome — width dials,
+                                 state switchers, demo labels and the script driving them —
+                                 in the same marker family:
+                                     <!-- ===== APOLLO-DEMO <what> START (showroom harness — never copy) ===== -->
+                                     …harness bytes…
+                                     <!-- ===== APOLLO-DEMO <what> END ===== -->
+                                 and, inside <style>/<script>, the comment form
+                                 `/* ===== APOLLO-DEMO <what> START … ===== */`. A fenced span
+                                 belongs to the showroom, not to the component: deleting every
+                                 one of them from a snippet still renders the component. So a
+                                 GENERATED page must carry none — a marker in the page is proof
+                                 the harness was copied along with the component. The check is
+                                 the MARKER STRING, not a parse: `APOLLO-DEMO … START|END`.
   4. the declared behaviour address is LOADED        ⇒ FAIL:BEHAVIOUR-NOT-LOADED when the
                                  receipt names a `script` the page neither inlines (an
                                  AUTO-BEHAVIOUR block of that name) nor pulls in via
@@ -178,6 +192,12 @@ SPLICE_START_RE = re.compile(
     r'<!--\s*=====\s*APOLLO-SPLICE\s+(?P<region>\S+)\s+START(?P<attrs>[^>]*?)=====\s*-->')
 SPLICE_END_TMPL = "<!-- ===== APOLLO-SPLICE %s END ===== -->"
 SPLICE_END_RE_TMPL = r'<!--\s*=====\s*APOLLO-SPLICE\s+%s\s+END\s*=====\s*-->'
+
+# s258-D3 — the showroom-harness fence. Same marker family as APOLLO-SPLICE / AUTO-*, used in
+# HTML comments AND in CSS/JS comments, so the check is deliberately a MARKER-STRING search over
+# the raw bytes (never the comment-masked text: the marker IS a comment) and needs no parse.
+DEMO_FENCE_RE = re.compile(r'APOLLO-DEMO[^\n]*(START|END)')
+DEMO_FENCE_NAME_RE = re.compile(r'APOLLO-DEMO\s+(?P<what>\S+)\s+(?:START|END)')
 
 SCHEMA = "apollo/provenance-receipt/1"
 
@@ -741,6 +761,19 @@ def check(path):
             fails.append("REGION-UNRECEIPTED")
             lines.append("FAIL:REGION-UNRECEIPTED — the page splices `%s` and the receipt "
                          "does not mention it" % rid)
+
+    # 3b (s258-D3): the showroom harness was copied in with the component. Marker-string only.
+    if DEMO_FENCE_RE.search(html):
+        whats = []
+        for m in DEMO_FENCE_NAME_RE.finditer(html):
+            if m.group("what") not in whats:
+                whats.append(m.group("what"))
+        named = ", ".join(whats[:6]) + ("…" if len(whats) > 6 else "") if whats else "unnamed"
+        fails.append("DEMO-CHROME-COPIED")
+        lines.append("FAIL:DEMO-CHROME-COPIED — the page carries fenced snippet harness (%s); "
+                     "the fence is showroom-only (width dials, state switchers, demo labels and "
+                     "their script), re-splice without it — every APOLLO-DEMO span deletes and "
+                     "the component still renders" % named)
     return lines, fails, unproven
 
 
@@ -1002,6 +1035,27 @@ def selftest():
     meta({"script": "knowledge/snippets/Dead.reference.html#script", "partial": None, "fallback": None}, slug="dead")
     arm("Z2 #script on a snippet whose only <script> sits inside an HTML comment resolves to nothing",
         page(body, gh, extra_body="\n<script>dead()</script>", snippet="Dead"), "BEHAVIOUR-ADDRESS-UNRESOLVABLE")
+    # ---- AA–AD: the showroom-harness fence (s258-D3). A clean meta so nothing else is in play.
+    meta({"script": None, "partial": None, "fallback": "the component carries no script"})
+    arm("AA no APOLLO-DEMO marker anywhere — clean page still PASSES (the fence is not a tax)",
+        page(body, gh), "PASS")
+    arm("AB the page carries a fenced HTML harness span copied from the snippet",
+        page(body, gh,
+             extra_body="\n<!-- ===== APOLLO-DEMO width-dial START (showroom harness — never copy) ===== -->"
+                        '\n<div class="demo-bar"><input type="range"></div>\n'
+                        "<!-- ===== APOLLO-DEMO width-dial END ===== -->"),
+        "DEMO-CHROME-COPIED")
+    arm("AC the harness came in as CSS/JS comment form inside a <style> — same fence, same fail",
+        page(body, gh,
+             extra_head="<style>/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */"
+                        "\n.demo-bar{display:flex}\n/* ===== APOLLO-DEMO css END ===== */</style>"),
+        "DEMO-CHROME-COPIED")
+    arm("AD a HALF fence (END marker only) is still harness bytes, still named",
+        page(body, gh, extra_body="\n<!-- ===== APOLLO-DEMO state-switcher END ===== -->"),
+        "DEMO-CHROME-COPIED")
+    arm("AE the words 'demo' and a splice fence alone do NOT trip it (no false positive)",
+        page(body, gh, extra_body='\n<div class="demo-note">a demo of the component</div>'),
+        "PASS")
     ROOT = saved_root
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1

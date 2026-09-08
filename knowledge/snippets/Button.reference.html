@@ -187,8 +187,9 @@
   /* ── RESPONSIVE action bar (Dim 11 reflow) ─────────────────────────────────────────────────────
      The confirm/cancel pair (button.meta commonPatterns). Container-query driven so it reflows to its
      OWN width, not the viewport (house style: Cards/Table). max-width:100% → also reflows on a narrow
-     screen; the slider drives --demo-width so both states are visible without resizing. */
-  .bar-wrap{ width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
+     screen. s258-D3: the width is a REAL component default (--action-bar-max), not a demo dial;
+     it used to read var(--demo-width, 560px), which travelled into generated pages. */
+  .bar-wrap{ width:100%; max-width:var(--action-bar-max, 560px); container-type:inline-size;
     border:1px solid var(--ter-border-disabled); padding:16px; background:var(--surface); }
   .actionbar{ display:flex; gap:12px; justify-content:flex-end; align-items:center; }
   @container (max-width: 420px){
@@ -300,11 +301,13 @@
   }
   </script>
 
+  <!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
   <script>
     
     // Action-bar width slider — drives the container query so the reflow is visible without resizing.
     
     
   </script>
+  <!-- ===== APOLLO-DEMO script END ===== -->
 </body>
 </html>

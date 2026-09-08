@@ -49,6 +49,21 @@ screen cannot silently drift because it has no component CSS of its own.
    Use the `.c-*` utilities + gap patterns for layout (`.c-stack-*`, `.c-actionbar`, `.c-summary`,
    `.c-account-card`, `.c-tabbar`, `.c-choice-row`). **The screen's own `<style>` is harness only —
    no `#hex`, no `.c-*`/`.cn-*` redefinitions.**
+   ⛔ **Never copy a fenced `APOLLO-DEMO` span** (`s258-D3`). Snippets carry showroom harness —
+   width dials, state switchers, demo labels, `demo-*` wrappers and the script driving them —
+   fenced in the same marker family as the injection markers, so all three grammars read alike:
+
+   | marker | who writes it | what it means |
+   |---|---|---|
+   | `<!-- ===== AUTO-TOKENS / AUTO-PARTIAL <name> / AUTO-BEHAVIOUR <name> / AUTO-MARKUP <name> / AUTO-BENTO START … ===== -->` (CSS/JS comment form inside `<style>`/`<script>`) | the generators (`gen_component_partials.py`, `gen_token_ramp.py`, `gen_canon_bento.py`) | **injected**: regenerated in place, never hand-edited |
+   | `<!-- ===== APOLLO-SPLICE <region> START (source=<path> kind=<markup\|style>) ===== -->` | `gen_provenance_receipt.py` | **spliced**: the region's bytes are hashed into the page's provenance receipt |
+   | `<!-- ===== APOLLO-DEMO <what> START (showroom harness — never copy) ===== -->` (and `/* ===== APOLLO-DEMO <what> START … ===== */` in CSS/JS) | the snippet author | **showroom-only**: delete every fenced span and the component still renders |
+
+   `APOLLO-DEMO` spans stay in the snippet and never reach a composed screen: a page carrying
+   the marker is red as `FAIL:DEMO-CHROME-COPIED` (`_validate_receipt.py`, step 3b).
+   Demo-only *vars the component itself reads* are NOT fenced — the component rule keeps a real
+   default (`.dg{max-width:var(--dg-max,760px)}`) and the harness sets that var from inside the
+   fence, so the dial is harness and the default is the component's.
 4. Worked example: `_fitness-test/payments-journey.canon.html` — same journey as the drifted
    `payments-journey.html`, but its hand-written CSS dropped from **117 lines → ~20** (harness
    only), 0 rogue hex, every component the gated original.

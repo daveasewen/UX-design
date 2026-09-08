@@ -163,11 +163,10 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}      /* demo chrome — not the component */
-  .demo-h:first-of-type{margin-top:0;}
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-  .wrap{width:var(--demo-width, 520px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size;}
+  /* s258-D3: a real component default, not a demo dial (was var(--demo-width, 520px)). */
+  .wrap{width:100%; max-width:var(--doc-row-max, 520px); margin-bottom:2.5rem; container-type:inline-size;}
 
   /* ---- the list shell — copied from List-items ul.list, with ONE addition, declared ----
      ⬛ PROPOSED ADDITION (Dave's eye owed): List-items' own ul.list declares NO radius and its
@@ -278,6 +277,10 @@
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
       animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   }
+  /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}      /* demo chrome — not the component */
+  .demo-h:first-of-type{margin-top:0;}
+  /* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
 <body data-theme="light">
@@ -292,7 +295,9 @@
   </svg>
 
   <!-- ===== A. VARIANT A (default) — two actions per row: open the document, or download it ===== -->
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Variant A — two actions per row (open = the row · download = the trailing button). PROPOSED</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
   <div class="wrap">
     <h3 class="dr-group t-cm-section-label">2026</h3>
     <ul class="doclist">
@@ -362,7 +367,9 @@
   </div>
 
   <!-- ===== B. VARIANT B — single action. Structurally a List-items row; drawn for comparison ===== -->
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Variant B — one action per row (the whole row downloads). ⚠ This form IS a List-items row and should be one. PROPOSED</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
   <div class="wrap">
     <ul class="doclist">
       <li><a class="drow-b" href="#dl-jun" download>
