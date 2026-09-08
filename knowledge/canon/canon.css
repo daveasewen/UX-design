@@ -10381,7 +10381,6 @@
     color:var(--text);}
 :where(.cn-data-grid) thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}
 /* the sort button carries the padding */
-:where(.cn-data-grid) thead th.sel{padding:var(--cell-py) var(--cell-px);}
 :where(.cn-data-grid) td.num{text-align:right;}
 :where(.cn-data-grid) td.num .t-cm-figure-5{display:inline-block;}
 /* sort headers — full-cell buttons; type = .t-cm-button composite (16/500, the Table header weight) */
@@ -10403,22 +10402,30 @@
 /* cell focus — the roving tab stop is the CELL */
 :where(.cn-data-grid) .dg :is(th, :where(.cn-data-grid) td):focus{outline:none;}
 :where(.cn-data-grid) .dg :is(th, :where(.cn-data-grid) td):focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-/* selection checkbox — Selection-controls anatomy (22×22 intrinsic square, tick/mixed bespoke
-     glyphs, checked = inverting fill). Colour states only: form-control precedent (Account-selector),
+/* selection checkbox — COMPOSED from Selection-controls (s258-D4). The wrapper carries the
+     canon scope class .cn-selection-controls and the markup is Selection-controls' own pattern:
+     visually-hidden <input> + sibling <label> holding <span class="box">, so a verbatim copy of
+     this grid into a canon.css page inherits the reviewed control (and passes the compose gate)
+     instead of re-inventing one. The rules below are the grid-local restatement of that anatomy,
+     on the grid's own token vars. Colour states only: form-control precedent (Account-selector),
      NO scale physics — that experiment stays Selection-controls' own. */
-:where(.cn-data-grid) .cbx{position:relative; display:inline-flex; width:22px; height:22px; vertical-align:middle;}
-:where(.cn-data-grid) .cbx input{position:absolute; inset:0; width:22px; height:22px; margin:0; opacity:0; cursor:pointer;}
+:where(.cn-data-grid) th.sel, :where(.cn-data-grid) td.sel{padding:0; width:44px;}
+:where(.cn-data-grid) .cbx{position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
+:where(.cn-data-grid) .cbx input{position:absolute; opacity:0; width:0; height:0;}
+/* native control drives state + a11y */
+:where(.cn-data-grid) .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    min-width:44px; min-height:44px;}
 :where(.cn-data-grid) .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
     background:transparent; display:inline-flex; align-items:center; justify-content:center;
     transition:background var(--ease), border-color var(--ease);}
 :where(.cn-data-grid) .cbx .box svg{width:14px; height:14px;}
 :where(.cn-data-grid) .cbx .box path{stroke:var(--onchk); stroke-width:2.4; fill:none;}
 :where(.cn-data-grid) .cbx .box .tick, :where(.cn-data-grid) .cbx .box .mixed{display:none;}
-:where(.cn-data-grid) .cbx:hover .box{border-color:var(--bar);}
-:where(.cn-data-grid) .cbx input:checked ~ .box, :where(.cn-data-grid) .cbx input:indeterminate ~ .box{background:var(--checked); border-color:var(--checked);}
-:where(.cn-data-grid) .cbx input:checked ~ .box .tick{display:block;}
-:where(.cn-data-grid) .cbx input:indeterminate ~ .box .mixed{display:block;}
-:where(.cn-data-grid) .cbx input:focus-visible ~ .box{outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-data-grid) .cbx label:hover .box{border-color:var(--bar);}
+:where(.cn-data-grid) .cbx input:checked + label .box, :where(.cn-data-grid) .cbx input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
+:where(.cn-data-grid) .cbx input:checked + label .box .tick{display:block;}
+:where(.cn-data-grid) .cbx input:indeterminate + label .box .mixed{display:block;}
+:where(.cn-data-grid) .cbx input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
 /* edit-in-place — the Reference column. Edit affordance appears on hover/cell focus (full-ink
      glyph, icon-011); editing chrome = the field ACTIVE recipe (border/active 4px bottom stroke
      + page fill) — FIELD-CHROME-COPY (partial), see worker receipt. */

@@ -3,6 +3,7 @@
   "interactive": true,
   "category": "organism",
   "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid.",
+  "$composes": "Selection-controls (s258-D4 — the header select-all and every row checkbox ARE the .cn-selection-controls scope with Selection-controls' hidden-input + label + .box markup; class names KEPT so a diff proves the borrow, the grid supplying only the ids, aria-label and the indeterminate state). Search-field (the filter field's boxed chrome, FIELD-CHROME-COPY). Tags (the applied-filter chips, namespaced .fchip). Pagination (44px pager targets, aria-current border). Skeleton-loader (the loading state, by reference). Account-selector (aria-selected = tint + inset start bar). Button (sort headers, .full because they are cell-bound).",
   "props": [
     { "name": "columns", "type": "array", "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)." },
     { "name": "selection", "type": "enum", "values": ["none", "multi"], "default": "multi", "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial." },
@@ -12,7 +13,7 @@
   ],
   "subComponents": {
     "sort-header": { "use": "Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button's own guard)." },
-    "selection-checkbox": { "use": "22×22 box, tick/mixed bespoke control glyphs, checked = secondary/background/default + text/on-inverse (Selection-controls verbatim anatomy; colour states only — form-control precedent)." },
+    "selection-checkbox": { "use": "COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent)." },
     "filter-field": { "use": "Search-field boxed chrome (FIELD-CHROME-COPY — receipted field-family accretion evidence). Enter commits the term as a chip." },
     "applied-chip": { "use": "Dismissible Tags recipe, namespaced .fchip (.tag/.chip are type.css-bound blast radii). Dismiss × = 24px button-family member; Tags' tactile × motion deliberately NOT copied (motion belongs to the partial, B-D7)." },
     "edit-cell": { "use": "Reference column; Enter/F2/double-click opens; editing chrome = field ACTIVE recipe (border/active 4px bottom stroke + page fill); Esc cancels, Enter/blur commits; announced." },
@@ -39,6 +40,7 @@
   "relationships": {
     "livesInside": ["Transaction histories", "Payee management", "Batch approval screens", "Back-office consoles"],
     "mustNotNeighbour": [],
+    "composes": ["selection-controls", "search-field", "tags", "pagination", "skeleton-loader", "account-selector", "button"],
     "commonPatterns": ["transactions with filter chips + pagination", "multi-select then bulk action", "inline reference editing"]
   },
   "behaviour": {

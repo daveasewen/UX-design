@@ -22,8 +22,10 @@
   MINED, NEVER MODIFIED: Search-field (boxed field chrome for the filter input — field-family
   accretion evidence, copied block marked FIELD-CHROME-COPY) · Tags (dismissible applied-filter
   chips; the tactile × scale motion is deliberately NOT copied — motion belongs to the
-  button-family partial, B-D7) · Selection-controls (22×22 checkbox anatomy, tick/mixed bespoke
-  control glyphs, checked = secondary/background/default + text/on-inverse; NO scale physics —
+  button-family partial, B-D7) · Selection-controls (COMPOSED, not mined, since s258-D4: the
+  row/header checkboxes carry the canon scope .cn-selection-controls and Selection-controls'
+  own hidden-input + label + .box pattern, so a verbatim copy inherits the reviewed control;
+  checked = secondary/background/default + text/on-inverse; NO scale physics —
   form-control precedent per Account-selector) · Pagination (44px targets, aria-current border,
   inverting colour press; its LOCAL scale press is census material and is NOT copied — physics
   comes from the partial) · Skeleton-loader (bone + shimmer BY REFERENCE for the loading state;
@@ -169,7 +171,6 @@
   th,td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
     color:var(--text);}
   thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}   /* the sort button carries the padding */
-  thead th.sel{padding:var(--cell-py) var(--cell-px);}
   td.num{text-align:right;}
   td.num .t-cm-figure-5{display:inline-block;}
 
@@ -195,22 +196,29 @@
   .dg :is(th,td):focus{outline:none;}
   .dg :is(th,td):focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 
-  /* selection checkbox — Selection-controls anatomy (22×22 intrinsic square, tick/mixed bespoke
-     glyphs, checked = inverting fill). Colour states only: form-control precedent (Account-selector),
+  /* selection checkbox — COMPOSED from Selection-controls (s258-D4). The wrapper carries the
+     canon scope class .cn-selection-controls and the markup is Selection-controls' own pattern:
+     visually-hidden <input> + sibling <label> holding <span class="box">, so a verbatim copy of
+     this grid into a canon.css page inherits the reviewed control (and passes the compose gate)
+     instead of re-inventing one. The rules below are the grid-local restatement of that anatomy,
+     on the grid's own token vars. Colour states only: form-control precedent (Account-selector),
      NO scale physics — that experiment stays Selection-controls' own. */
-  .cbx{position:relative; display:inline-flex; width:22px; height:22px; vertical-align:middle;}
-  .cbx input{position:absolute; inset:0; width:22px; height:22px; margin:0; opacity:0; cursor:pointer;}
+  th.sel,td.sel{padding:0; width:44px;}
+  .cbx{position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
+  .cbx input{position:absolute; opacity:0; width:0; height:0;}   /* native control drives state + a11y */
+  .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    min-width:44px; min-height:44px;}
   .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
     background:transparent; display:inline-flex; align-items:center; justify-content:center;
     transition:background var(--ease), border-color var(--ease);}
   .cbx .box svg{width:14px; height:14px;}
   .cbx .box path{stroke:var(--onchk); stroke-width:2.4; fill:none;}
   .cbx .box .tick,.cbx .box .mixed{display:none;}
-  .cbx:hover .box{border-color:var(--bar);}
-  .cbx input:checked ~ .box,.cbx input:indeterminate ~ .box{background:var(--checked); border-color:var(--checked);}
-  .cbx input:checked ~ .box .tick{display:block;}
-  .cbx input:indeterminate ~ .box .mixed{display:block;}
-  .cbx input:focus-visible ~ .box{outline:2px solid var(--focus); outline-offset:2px;}
+  .cbx label:hover .box{border-color:var(--bar);}
+  .cbx input:checked + label .box,.cbx input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
+  .cbx input:checked + label .box .tick{display:block;}
+  .cbx input:indeterminate + label .box .mixed{display:block;}
+  .cbx input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
 
   /* edit-in-place — the Reference column. Edit affordance appears on hover/cell focus (full-ink
      glyph, icon-011); editing chrome = the field ACTIVE recipe (border/active 4px bottom stroke
@@ -354,9 +362,9 @@
         <thead>
           <tr aria-rowindex="1">
             <th class="sel" scope="col">
-              <label class="cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
-                <span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span>
-              </label>
+              <span class="cn-selection-controls cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
+                <label for="selAll"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label>
+              </span>
             </th>
             <th scope="col" aria-sort="none" data-key="date"><button class="sort full t-cm-button" type="button" tabindex="-1">Date
               <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
@@ -570,9 +578,9 @@
       tbody.innerHTML = pageRows.map((r, i) => {
         const on = state.sel.has(r.id);
         return `<tr aria-rowindex="${start + i + 2}" aria-selected="${on}" data-id="${r.id}">
-          <td class="sel"><label class="cbx"><input type="checkbox" tabindex="-1" ${on ? 'checked' : ''}
+          <td class="sel"><span class="cn-selection-controls cbx"><input type="checkbox" id="selRow-${r.id}" tabindex="-1" ${on ? 'checked' : ''}
               aria-label="Select row: ${r.payee}, ${fmtDate(r.date)}">
-            <span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></td>
+            <label for="selRow-${r.id}"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></span></td>
           <td><span class="t-cm-label">${fmtDate(r.date)}</span></td>
           <td><span class="t-cm-label">${r.payee}</span></td>
           <td class="edit" data-id="${r.id}"><span class="val"><span class="t-cm-label">${r.ref}</span>
