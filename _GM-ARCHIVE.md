@@ -1,6 +1,10 @@
 # GOOD-MORNING — banner archive
 
 ## Batch 2026-09-08 #260
+
+> **COMMIT STATE #259:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK, AND THAT IS DELIBERATE — A COMMIT CANNOT NAME ITSELF.** ⛔ **THE `--wrap` FORM IS REFUSED AT THIS SEAT, BY THE GATE, FOR THE THIRTEENTH WRAP RUNNING** — the boot-drift ceiling arm still fails on **#255's 70,127** even though #256's 70,241 was discharged by declaration (`s244-D1`) and #257/#258/#259 all read UNDER; the literal is shrink-only (`s240-D2`/`s241-D1`) and raising it is not a price a wrap may pay to unblock itself, so the commit is made in the **#243 form** (`SESSION_N=259 bash knowledge/_git_commit.sh --reconciled <msgfile> --all-dirty`) and the refusal is RECORDED rather than routed around. ONE wrap commit BY PATH, then `knowledge/_memento-index.json` committed separately at step 2g. ⛔ **NOT PUSHED AT THIS SEAT, AND THAT IS THE DEFAULT RATHER THAN A FAILURE:** the #259 wrap brief gives no `--push` instruction (#258's did), and the standing split is Claude commits, **Dave pushes via GitHub Desktop** (`_RUNBOOK-git-commit.md`). The tree is therefore LOCAL and unpushed at the close.
+
+
 > ## ★ PRIOR — 2026-09-08 (Tue from `date` **#258**, **Fable** + **16 OPUS 5 LANES** + OPUS 5 wrap sub, DELEGATED — ★★★ **FIVE COLD RUNS IN ONE DAY, AND THE SENTENCE RULE 2a FORBADE**)
 >
 > - ★ **⓪ SHAPE.** ⏱ delta #258 · WHY `_DECISION-HISTORY/2026-09-08-258-five-cold-runs-and-the-sentence-2a-forbade.md` · **15** reports `notes/_subreports/2026-09-08-258-*.md` · 10 commits `70ed8c7..1c9c6ae`.

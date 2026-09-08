@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 38,632 tape (cl100k ESTIMATE); this file already
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 35,322 tape (cl100k ESTIMATE); this file already
 > carries the part of it a cold session needs, and the rest is retrieval surface you are not
 > meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
@@ -54,7 +54,7 @@
 > - ⛔ **⑤ NOT DONE — home = the ⏱ delta** (`s241-D2`): the PUSH · `s260-D3`'s DRIVER SCOPE (4th/5th venue of the fails-open class) · `--full-stage` · the clean-tree impossibility in `_git_commit.sh` · `_validate_screen.py` clobber + `test_gates.py` 5 GB · the 2dp donut patch · **7** collated core requests · **37** uncounted sub-24px marks · `_validate_behaviour` rewriting its own ledger · the boot arm · his rulings page.
 > - ⚙ **⑥ GAUGE + ONE STRUCTURAL REFUSAL.** Conductor **72,529 → 163,264** over five check-ins, brief cut ≈**167,000**; sub-cut **175,147** first-hand — **UNDER the new 180,000** delegated advisory, `s260-D2`'s own first exercise. **subs 1,956,110 (n=12)** — QUOTA never FILL. Boot **69,086**, fourth consecutive under-ceiling; **#255's 70,127 stands** ⇒ `--wrap` REFUSED a FOURTEENTH time. ⛔ **#259's stratum is UNROLLABLE — MEASURED, not predicted — so GM carries two live strata and the repair stays DAVE'S.**
 > **residual → #261:** ⬛ **① THE PUSH — SIXTEEN COMMITS INCLUDING A SHIPPED RELEASE STAND LOCAL AND UNPUSHED [NEW — 0, DAVE'S]** — ⛔ **POINTER, NOT THE LIST (`s225-D2`).** **491 aged · 12 new · 4 STRUCK · 1 CORRECTED** at **`_CARRIES.md` § `residual → #261`** (`carries:residual-261`). ⚠ **PROBE:** `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#261:**' in l][0])))"` → **356**.
-> **residual (GENERATED #260):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OVER (strata 2, log #259) — _roll_state.py · 2026-09-08
+> **residual (GENERATED #260):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #259) — _roll_state.py · 2026-09-08
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (28 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ENCODE BEFORE THE WAVE, part-consumed 28 · `0c` NEXT BUILD CANDIDATES · `0d` THE 67 ENACT WAVE, landed · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, PART-RULED #114 · `7` ds-017, UNRULED · `8` STILL OWED, none superseded · `9` DELEGATION TOPOLOGY · `10` ✅ PER-GATE TEST PLAN · `11` 2c-ROLL / INDEX-VOCAB DEADLOCK · `12` #57 1b DOSSIER · `13` tmp RUNBOOK EXPOSURE, unfixed · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59 · `16` UNHOMED PAIR (#78 2c EXIT CHECK) · `17` CHAIN-DIET CUT · `19` type.css 180 dark-mode specificity · `20` ds-029 FIRST IDIOM · `21` PER-THEME COLLISION SWEEP · `22` 89-D2 ruled not enacted, absent from state · `23` ds-025 re-scoped 109, not closed · `24` 110 boot-rent plan · `25` ds-032 enactment, ruled 106 · `26` ✅ boot-drift gate rulings
@@ -95,6 +95,6 @@
 
 *(Chain ends. **8,982 tape (cl100k ESTIMATE) — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 38,632 tape (cl100k ESTIMATE) and stays whole for retrieval; you have paid for
-23% of it. Under 40% is this generator's own floor — above it, the wrapper is
+`GOOD-MORNING.md` is 35,322 tape (cl100k ESTIMATE) and stays whole for retrieval; you have paid for
+25% of it. Under 40% is this generator's own floor — above it, the wrapper is
 carrying more than the slice, and `--selftest` says so by name.)*
