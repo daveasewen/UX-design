@@ -2,23 +2,27 @@
 
 > CI gate over the authored canon. **ERROR** = the graph is inconsistent (fix before relying on it); **WARNING** = best-effort / probably fine but worth a look. Regenerate: `python3 knowledge/_build_integrity.py` (exits non-zero on any ERROR).
 
-**Result:** FAIL ❌ — 14 errors, 25 warnings. Schema: 133/137 metas valid. Token store: 1035 leaf tokens, groups 42.
+**Result:** FAIL ❌ — 16 errors, 25 warnings. Schema: 132/137 metas valid. Token store: 1035 leaf tokens, groups 42.
 
-## Errors (14)
+## Errors (16)
 
 **Data grid**
-- schema: relationships: Additional properties are not allowed ('$composes-verbatim', 'composes' were unexpected)
+- schema: provenance/source: "gap-report; #261 design pass, Dave's nomination" is not one of ['figma', 'code', 'both', 'gap-report', 'proforma-promot
+- schema: relationships: Additional properties are not allowed ('composes', '$composes-verbatim' were unexpected)
 - schema: stateModel: {'$scope': "the COLUMN HEADER (#261); the grid's live/loading/empty modes stay on the `state` prop", 'states': ['rest', 
 - schema: with/0: 'selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)' is not of type 'object'
 - schema: with/1: 'filter-toolbar-bar' is not of type 'object'
 - schema: with/2: 'pagination' is not of type 'object'
 - schema: with/3: 'search-field' is not of type 'object'
 - schema: with/4: 'tags' is not of type 'object'
-- schema: with/5: 'skeleton-loader' is not of type 'object'
 
 **Filter-toolbar-bar**
-- schema: edges: Additional properties are not allowed ('delegatesTo', '$contract', 'drivesConsumer', 'composedOf' were unexpected)
+- schema: edges: Additional properties are not allowed ('drivesConsumer', '$contract', 'composedOf', 'delegatesTo' were unexpected)
 - schema: stateModel: {'attribute': 'data-ftb-state', 'states': [{'name': 'no-filters', 'shows': 'the total count and a `No filters applied` h
+
+**Footer**
+- schema: edges: Additional properties are not allowed ('composes' was unexpected)
+- schema: provenance/source: 'redesign' is not one of ['figma', 'code', 'both', 'gap-report', 'proforma-promotion']
 
 **KPI tile**
 - schema: stateModel: {'states': ['ready', 'loading', 'empty', 'error', 'stale'], 'loading': 'role=group + aria-busy=true, an sr-only sentence

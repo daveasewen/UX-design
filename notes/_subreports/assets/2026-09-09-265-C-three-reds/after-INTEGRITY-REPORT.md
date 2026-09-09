@@ -17,7 +17,7 @@
 - schema: with/5: 'skeleton-loader' is not of type 'object'
 
 **Filter-toolbar-bar**
-- schema: edges: Additional properties are not allowed ('delegatesTo', '$contract', 'drivesConsumer', 'composedOf' were unexpected)
+- schema: edges: Additional properties are not allowed ('drivesConsumer', 'composedOf', '$contract', 'delegatesTo' were unexpected)
 - schema: stateModel: {'attribute': 'data-ftb-state', 'states': [{'name': 'no-filters', 'shows': 'the total count and a `No filters applied` h
 
 **KPI tile**
