@@ -120,8 +120,8 @@ VERSION = "v1.0.9"                     # Spider's own lineage starts here; v1/v2
 # affordance and may contain a link, no underline), s262-D2 (24px is a rare floor, the
 # invisible hit area carries the rest) and s262-D3 (the current nav item carries the SELECTED
 # version of the icon).
-# ⛔ NO RATIFY_IDS ROW IS KEYED TO v1.0.9 — see the block at RATIFY_IDS. The cut reads
-# PROPOSED until Dave's fresh ratifying word (s219-D4(2) / s223-D3, derived per s237-D9).
+# ★ v1.0.9 IS RATIFIED — s262-D6, Dave's word "Ratify v1.0.9" (#262, 2026-09-09), keyed in the
+# RATIFY_IDS block below. The status is DERIVED from the store, never typed (s237-D9).
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
@@ -781,13 +781,17 @@ RATIFY_IDS = {
                             # at the SAME cut commit → --release → move the frozen literal and
                             # --seed. ⛔ Never a same-version re-bake: #257 Finding 2 is the whole
                             # reason v1.0.7 exists at all.
-    # ⛔ v1.0.9 (#262) HAS NO ROW, AND THAT IS THE POINT — NOT AN OMISSION. The cut was scoped by
-    # s261-D1, which is Dave asking for dashboard components, nav and footer — an AUTHORISATION
-    # naming what the release carries, never the RATIFYING word (s223-D3's whole distinction).
-    # s262-D1/D2/D3 are rulings ON the components, not on the pack. No ruling in the store
-    # carries his release word for v1.0.9, so `ratification_status()` derives PROPOSED and
-    # `--release` refuses (build-designer-pack.sh: `ratified || die`) — the machine doing its
-    # job. ⬛ WHEN DAVE RATIFIES, add the row keyed to THAT fresh ruling id.
+    # ⛔ v1.0.9 (#262) HAD NO ROW until Dave's ratifying word landed later the same session. The
+    # cut was scoped by s261-D1, which is Dave asking for dashboard components, nav and footer —
+    # an AUTHORISATION naming what the release carries, never the RATIFYING word (s223-D3's whole
+    # distinction). s262-D1/D2/D3 are rulings ON the components, not on the pack. Until s262-D6
+    # `ratification_status()` derived PROPOSED and `--release` refused
+    # (build-designer-pack.sh: `ratified || die`) — the machine doing its job.
+    "v1.0.9": "s262-D6",    # #262, Dave's word "Ratify v1.0.9" (2026-09-09) on the PROPOSED cut
+                            # at dd129e8efa79 — the six dashboard components, the nav family and
+                            # the /goal-modelled salutation opener. Keyed at the bake, the #257 /
+                            # #260 shape: key → regenerate the manifest RATIFIED at the SAME cut
+                            # commit → --release → move the frozen literal and --seed.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
