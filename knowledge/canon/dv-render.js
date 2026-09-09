@@ -58,7 +58,14 @@
        fn.axis   — "y" (default: value runs UP, categories along x) or "x" (value runs ACROSS,
                    categories down y — the horizontal bar). Decides which furniture is drawn.
        fn.domain — fn(spec) -> [lo, hi]. Only stacked types need it (the domain is the stack
-                   TOTAL, not the largest single value). Absent ⇒ the min/max of every value. */
+                   TOTAL, not the largest single value). Absent ⇒ the min/max of every value.
+       fn.furniture — THE DIAL, not the switch (#260 A1, FIVE reporters: donut, sparkline, bullet,
+                   butterfly, histogram). true/absent (default) ⇒ gridlines + tick labels + baseline,
+                   exactly as before. "axis" ⇒ tick labels + baseline, NO gridlines. false ⇒ nothing,
+                   the plot is the partial's alone. `fn.axis = "none"` is the same as false, because
+                   that is the spelling four of the five reporters asked for. The four copies of
+                   `ctx.out.length = 0` in donut/sparkline/bullet/butterfly are what this replaces —
+                   they stay legal (the buffer is still theirs) and are their own lanes' to remove. */
   var TYPES = {};
 
   var ROLES = { positive: 1, negative: 1, monitor: 1, neutral: 1 };   /* s184-D3 status vocabulary */
@@ -201,14 +208,16 @@
   /* ---------- AXIS FURNITURE. Emitted by the CORE, identically for every type, in the fit
      grammar: gridlines are lines with data-fx/data-fx2, tick labels are texts with data-fx/data-dx,
      the baseline is a line in --baseline. `axis === "x"` swaps the two roles for horizontal bars. */
-  function furniture(ctx, axis) {
+  function furniture(ctx, axis, bare) {
     var i, t, p, x, y;
     if (axis === 'x') {
       for (i = 0; i < ctx.ticks.length; i++) {
         t = ctx.ticks[i]; p = ctx.vf(t); x = ctx.PL + p * ctx.plotW;
-        ctx.push('<line class="dv-grid" x1="' + n1(x) + '" y1="' + ctx.PT + '" x2="' + n1(x) +
-                 '" y2="' + ctx.y0 + '" stroke="var(--data-grid)" data-fx="' + f4(p) +
-                 '" data-fx2="' + f4(p) + '"/>');
+        if (!bare) {
+          ctx.push('<line class="dv-grid" x1="' + n1(x) + '" y1="' + ctx.PT + '" x2="' + n1(x) +
+                   '" y2="' + ctx.y0 + '" stroke="var(--data-grid)" data-fx="' + f4(p) +
+                   '" data-fx2="' + f4(p) + '"/>');
+        }
         ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + n1(x) +
                  '" y="' + (ctx.y0 + 16) + '" text-anchor="middle" data-fx="' + f4(p) + '">' +
                  esc(ctx.fmt(t)) + '</text>');
@@ -220,8 +229,10 @@
     }
     for (i = 0; i < ctx.ticks.length; i++) {
       t = ctx.ticks[i]; y = ctx.vy(t);
-      ctx.push('<line class="dv-grid" x1="' + ctx.PL + '" y1="' + n1(y) + '" x2="' + n1(ctx.PL + ctx.plotW) +
-               '" y2="' + n1(y) + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>');
+      if (!bare) {
+        ctx.push('<line class="dv-grid" x1="' + ctx.PL + '" y1="' + n1(y) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+                 '" y2="' + n1(y) + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>');
+      }
       ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + (ctx.PL - 8) +
                '" y="' + n1(y + 3) + '" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">' +
                esc(ctx.fmt(t)) + '</text>');
@@ -295,7 +306,9 @@
     };
     ctx.push = function (s) { ctx.out.push(s); };
 
-    furniture(ctx, draw.axis === 'x' ? 'x' : 'y');
+    /* #260 A1 — the dial. Default true: every type registered before this line is unchanged. */
+    var fu = draw.furniture === undefined ? draw.axis !== 'none' : draw.furniture;
+    if (fu) { furniture(ctx, draw.axis === 'x' ? 'x' : 'y', fu === 'axis'); }
     draw(ctx);
 
     svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
