@@ -9,6 +9,10 @@
    size — plus `data-tip` on every mark and a real `<table>` spine. It REPLACES rule 18 of
    `ADS-generate-from-canon` (the interim "author the geometry yourself" recipe): the library
    owns the arithmetic, the author owns the data.
+   ⚠ THE TWO FIT PASSES ARE NOT SYMMETRIC (#260 A9, reported by scatter and boxplot): dv-behaviour's
+   `fitOne` moves rect/text/line/g and NOT `circle`, while `fitY` moves `circle` and NOT `g` — so a
+   POINT-MARK type must wrap its glyphs in `g[data-fx][data-x0]` and let the circle inside carry its
+   own y; a bare `<circle data-fx>` will not move in x, and a `<g>` alone will not move in y.
 
    THE SPEC (the whole contract):
      { type:       "column" | "bar" | "grouped-column" | "stacked-column" | …   (a registered type)

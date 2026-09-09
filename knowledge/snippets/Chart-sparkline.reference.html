@@ -731,7 +731,11 @@
    WHAT IT IS. `window.dvRender(figureEl, spec)` turns a DATA SPEC into exactly the SVG grammar
    `canon/dv-behaviour.js` already fits — rect `data-fx`+`data-fw`, line `data-fx`+`data-fx2`,
    text `data-fx`+`data-dx`, g `data-fx`+`data-x0`, `.dv-mk` for glyphs that must keep their
-   size — plus `data-tip` on every mark and a real `<table>` spine. It REPLACES rule 18 of
+   size — plus `data-tip` on every mark and a real `<table>` spine.
+   ⚠ THE TWO FIT PASSES ARE NOT SYMMETRIC (#260 A9, reported by scatter and boxplot): dv-behaviour's
+   `fitOne` moves rect/text/line/g and NOT `circle`, while `fitY` moves `circle` and NOT `g` — so a
+   POINT-MARK type must wrap its glyphs in `g[data-fx][data-x0]` and let the circle inside carry its
+   own y; a bare `<circle data-fx>` will not move in x, and a `<g>` alone will not move in y. It REPLACES rule 18 of
    `ADS-generate-from-canon` (the interim "author the geometry yourself" recipe): the library
    owns the arithmetic, the author owns the data.
 
