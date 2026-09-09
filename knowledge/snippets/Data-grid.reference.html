@@ -53,6 +53,20 @@
   4px inset start bar + the checked checkbox (never colour alone) · every action announced
   via the polite live region · loading = aria-busy + role=status; bones are aria-hidden ·
   empty state offers a real recovery action (clear filters). Sentence case throughout.
+
+  #261 COLUMN-HEADER DESIGN PASS (Dave's #2 nominated dashboard element, lane G). The header row
+  was one full-cell sort button per column; it is now a four-part anatomy inside .th-in —
+  label (truncating, title only when it truncates) · sort · optional per-column filter · resize
+  handle — under an OPTIONAL spanning group row (scope=colgroup), with both header rows sticky,
+  a comfortable/compact density prop, and a disabled column. Nothing was bolted onto the passive
+  Table: Table's header is a plain <th scope="col"> that collapses to cards, a different contract,
+  and it is NOT shared with this one. States: hover · focus-visible · sorted (ground + 3px accent
+  UNDER the cell) · filtered-active (3px accent LEADING the cell + the solid filter glyph — a
+  different edge, so a column can be sorted and filtered at once) · resizing · disabled ·
+  truncated. Keyboard keeps the ONE tab stop: arrows navigate cells, Enter/Space sorts,
+  Alt+Down opens the column filter, Alt+Left/Right enters resize mode (arrows size, Esc exits).
+  No new button-family members: the filter button and the menu are form furniture (Search-field
+  precedent), the density switch is a Segmented-control copy, the handle is a separator.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -101,7 +115,7 @@
     --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --page:#FFFFFF; --focus:#305A85;
     --fborder:#808080; --bar:#000000; --fhover:#F0F0F0; --selbg:#F0F0F0;
     --checked:#000000; --onchk:#FFFFFF; --disabled:#E1E1E1;
-    --pressedbg:#626262; --onpressed:#FFFFFF; --currentbd:#000000; --bone:#F0F0F0;
+    --pressedbg:#626262; --onpressed:#FFFFFF; --currentbd:#000000; --bone:#F0F0F0; --grouphdr:#F0F0F0;
     --press-travel:2; --press-darken:0.94;
     --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
   }
@@ -110,7 +124,7 @@
     --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --page:#1A1A1A; --focus:#4587A7;
     --fborder:#808080; --bar:#FFFFFF; --fhover:#232323; --selbg:#232323;
     --checked:#FFFFFF; --onchk:#333333; --disabled:#808080;
-    --pressedbg:#1A1A1A; --onpressed:#FFFFFF; --currentbd:#808080; --bone:#232323;
+    --pressedbg:#1A1A1A; --onpressed:#FFFFFF; --currentbd:#808080; --bone:#232323; --grouphdr:#1F1F1F;
     --press-travel:2; --press-darken:0.94;
     --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
   }
@@ -165,19 +179,42 @@
   .fchip .x svg{width:12px; height:12px; fill:currentColor;}
   .fchip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
-  /* the scroll region — horizontal overflow, NOT card-collapse (see header comment) */
-  .dg-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--border-radius-surface);}
-  table{border-collapse:collapse; width:100%; min-width:640px; background:var(--cell);}
+  /* the scroll region — horizontal overflow, NOT card-collapse (see header comment). #261: a
+     vertical max-block-size too, so the STICKY header is a provable state and not a promise. */
+  .dg-scroll{overflow:auto; max-block-size:var(--dg-vh, 380px);
+    border:1px solid var(--border); border-radius:var(--border-radius-surface);}
+  table{border-collapse:collapse; table-layout:fixed; width:100%; min-width:760px; background:var(--cell);}
   th,td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
     color:var(--text);}
-  thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}   /* the sort button carries the padding */
   td.num{text-align:right;}
-  td.num .t-cm-figure-5{display:inline-block;}
+  td.num .t-cm-figure-5{display:inline-block; font-variant-numeric:tabular-nums;}
 
-  /* sort headers — full-cell buttons; type = .t-cm-button composite (16/500, the Table header weight) */
-  .sort{display:flex; width:100%; min-height:44px; align-items:center; gap:8px; padding:var(--cell-py) var(--cell-px);
-    border:0; background:transparent; color:var(--text); cursor:pointer; text-align:left;
+  /* ================= THE COLUMN HEADER (#261 design pass — Dave's nomination) =================
+     Anatomy, in one flex row per cell: label · sort affordance · column filter · resize handle.
+     Above it an OPTIONAL spanning group row; both rows are sticky, so the header travels as one
+     block. Sticky + border-collapse drops cell borders while scrolling in every engine, so the
+     header paints its rules as INSET SHADOWS — those sticky keeps. */
+  thead th{background:var(--header); padding:0; position:sticky; z-index:2;
+    box-shadow:inset 0 -1px 0 0 var(--border), inset -1px 0 0 0 var(--border);}
+  thead tr.grp th{top:0; z-index:3; height:var(--grp-h,32px); padding:0 var(--cell-px);
+    background:var(--grouphdr);}
+  thead tr.cols th{top:var(--grp-h,32px);}
+  .dg[data-groups="off"] thead tr.grp{display:none;}
+  .dg[data-groups="off"] thead tr.cols th{top:0;}
+  thead tr.grp .glabel{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text; opacity:var(--alpha-60);}
+
+  /* the cell interior — label, filter and handle can never collide, at either density */
+  .th-in{display:flex; align-items:stretch; min-height:var(--hdr-min,44px);
+    box-shadow:var(--s-sort,0 0 transparent), var(--s-filt,0 0 transparent);}
+  .th-in.mid{align-items:center; justify-content:center;}
+
+  /* sort — full-cell button; type = .t-cm-button composite (16/500, the Table header weight) */
+  .sort{flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:8px;
+    padding:var(--cell-py) var(--cell-px); border:0; background:transparent; color:var(--text);
+    cursor:pointer; text-align:left;
     transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .sort .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
   .sort:hover{background:var(--hover);}
   .sort:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
@@ -185,6 +222,75 @@
   th[aria-sort="none"] .ic-none{display:inline-flex;}
   th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
   th[aria-sort="descending"] .ic-desc{display:inline-flex;}
+  /* SORTED — ground shift plus a 3px accent rule under the cell; with the direction glyph and
+     aria-sort that is three channels, never colour alone */
+  th[aria-sort="ascending"],th[aria-sort="descending"]{background:var(--hover);}
+  th[aria-sort="ascending"] .th-in,th[aria-sort="descending"] .th-in{--s-sort:inset 0 -3px 0 0 var(--bar);}
+
+  /* numeric column — label and glyph hug the right edge, over the tabular figures below */
+  th.num .sort{flex-direction:row-reverse; text-align:right;}
+  th.num .sort .ic{margin-left:0;}
+
+  /* DISABLED column — no sort affordance at all. Reference is the editable column: re-ordering
+     rows under an open editor is the bug, so sorting is off there by design, not by omission. */
+  th[data-disabled] .sort{cursor:default; opacity:var(--alpha-48);}   /* --disabled ink is #E1E1E1: illegible on the header ground, so the mute is alpha */
+  th[data-disabled] .sort:hover{background:transparent;}
+
+  /* per-column filter — form furniture (Search-field precedent): colour states, no press physics.
+     Off and on are two DISTINCT library glyphs (filter.svg / filter-active.svg), never one glyph
+     recoloured (icon-011). */
+  .colf{flex:none; align-self:center; width:24px; height:24px; margin-inline-end:4px; padding:0;
+    border:0; background:transparent; color:var(--icon); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+  .colf svg{width:16px; height:16px; fill:currentColor; display:block;}
+  .colf:hover{background:var(--fhover);}
+  .colf:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .colf[aria-expanded="true"]{background:var(--fhover);}
+  .colf .ic-on{display:none;}
+  th[data-filtered="true"] .colf .ic-off{display:none;}
+  th[data-filtered="true"] .colf .ic-on{display:block;}
+  /* FILTERED-ACTIVE — a LEADING accent rule: a different edge from sorted, so one column can
+     carry both states at once and stay readable */
+  th[data-filtered="true"] .th-in{--s-filt:inset 3px 0 0 0 var(--bar);}
+
+  /* the column menu — anchored under its own header cell (sticky is a containing block).
+     No buttons inside it: Enter commits, exactly as the toolbar filter does. */
+  .colmenu{display:none; position:absolute; inset-inline-start:0; top:100%; z-index:6; min-width:232px;
+    padding:8px; background:var(--page); border:1px solid var(--fborder); border-radius:var(--border-radius-surface);}
+  th.num .colmenu{inset-inline-start:auto; inset-inline-end:0;}
+  th[data-menu="open"] .colmenu{display:block;}
+  .colmenu .cml{display:block; margin-bottom:4px; opacity:var(--alpha-60);}
+  .colmenu input{width:100%; height:44px; padding:0 8px; border:1px solid var(--fborder);
+    border-radius:var(--border-radius-control); background:transparent; color:var(--text); outline:none;}
+  .colmenu input:focus-visible{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar);}
+  .colmenu .cmh{display:block; margin-top:8px; opacity:var(--alpha-60);}
+
+  /* RESIZE handle — 12px grip on the trailing edge with a 24px hit area (the ::before bleed).
+     tabindex=-1 keeps the grid's ONE tab stop: Alt+←/→ on the header cell enters resize mode. */
+  .rsz{flex:none; width:12px; align-self:stretch; padding:0; border:0; background:transparent;
+    cursor:col-resize; position:relative; touch-action:none;}
+  .rsz::before{content:""; position:absolute; inset:0 -6px;}
+  .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:2px;
+    background:var(--fborder);}
+  .rsz:hover::after{background:var(--bar);}
+  .rsz:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .rsz[data-active="true"]::after{background:var(--bar); top:0; bottom:0;}
+  .dg[data-resizing="true"]{cursor:col-resize; user-select:none;}
+  .dg[data-resizing="true"] .sort:hover{background:transparent;}
+
+  /* DENSITY — a real prop (comfortable | compact), not a demo dial. Compact holds a 32px header
+     row and 32px control targets: above the 24px dial-down floor, never below (s116-D1). */
+  .dg{--hdr-min:44px; --tap:44px; --grp-h:32px;}
+  .dg[data-density="compact"]{--cell-py:4px; --hdr-min:32px; --tap:32px; --grp-h:28px;}
+  /* the density switch mirrors Segmented-control (its group, not button-family — no press physics) */
+  .dgden{display:inline-flex; margin-inline-start:auto; border:1px solid var(--fborder);
+    border-radius:var(--border-radius-control);}
+  .dgden button{min-height:44px; padding:0 12px; border:0; border-inline-start:1px solid var(--fborder);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .dgden button:first-of-type{border-inline-start:0;}
+  .dgden button:hover{background:var(--hover);}
+  .dgden button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .dgden button[aria-pressed="true"]{background:var(--header);}
 
   /* rows — hover (Table's affordance) · selected = tint + inset start bar + checked box (never colour alone) */
   tbody tr{transition:background var(--ease);}
@@ -207,7 +313,7 @@
   .cbx{position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
   .cbx input{position:absolute; opacity:0; width:0; height:0;}   /* native control drives state + a11y */
   .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-    min-width:44px; min-height:44px;}
+    min-width:var(--tap,44px); min-height:var(--tap,44px);}   /* compact dials to 32px — above the 24px floor */
   .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
     background:transparent; display:inline-flex; align-items:center; justify-content:center;
     transition:background var(--ease), border-color var(--ease);}
@@ -293,6 +399,7 @@
      label (0.00px measured). 28px = 1.75rem, the repo's demo-chrome-above-a-section-label value
      (Button, Split-button, Toast all measure 28px for the same relationship); on-grid. */
   .dgseg{display:inline-flex; border:1px solid var(--fborder); margin:0 0 28px;}
+  .dgseg + .dgseg{margin-inline-start:8px;}
   /* TYPE-002 (γ's #218 finding, enacted lane cB). `font:inherit` is EXEMPT from the gate, but
      it also out-specifies (0,1,1) any composite class put on the element, so it had to go for
      the composite to be anything but inert decoration — the Skeleton lesson. The two states
@@ -329,6 +436,8 @@
     <symbol id="dg-cright" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
     <symbol id="dg-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
     <symbol id="dg-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="dg-filter" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/></symbol>
+    <symbol id="dg-filter-on" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.205 12.5 3.327 13.118 2.941 14H0V16H2.941C3.327 16.882 4.205 17.5 5.23 17.5C6.255 17.5 7.133 16.882 7.519 16H18V14H7.519C7.133 13.118 6.255 12.5 5.23 12.5ZM7.519 2C7.133 1.118 6.255 0.5 5.23 0.5C4.205 0.5 3.327 1.118 2.941 2H0V4H2.941C3.327 4.882 4.205 5.5 5.23 5.5C6.255 5.5 7.133 4.882 7.519 4H18V2H7.519ZM12.77 6.5C11.745 6.5 10.867 7.118 10.481 8H0V10H10.481C10.867 10.882 11.745 11.5 12.77 11.5C13.795 11.5 14.673 10.882 15.059 10H18V8H15.059C14.673 7.118 13.795 6.5 12.77 6.5Z" fill="currentColor"/></symbol>
     <symbol id="dg-edit" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"/></symbol>
   </svg>
 
@@ -338,9 +447,13 @@
     <button type="button" class="t-cm-ctl-16" data-state="loading" aria-pressed="false">Loading</button>
     <button type="button" class="t-cm-ctl-16" data-state="empty" aria-pressed="false">Empty</button>
   </div>
+  <div class="dgseg" role="group" aria-label="Group header row">
+    <button type="button" class="t-cm-button" data-groups="on" aria-pressed="true" disabled>Group row</button>
+    <button type="button" class="t-cm-ctl-16" data-groups="off" aria-pressed="false">No group row</button>
+  </div>
   <!-- ===== APOLLO-DEMO state switcher END ===== -->
 
-  <div class="dg" id="dg">
+  <div class="dg" id="dg" data-density="comfortable" data-groups="on">
     <div class="dg-head">
       <span class="t-cm-section-label" id="dgTitle">Transactions</span>
       <span class="dg-count t-cm-caption" id="dgCount" aria-live="polite">24 results</span>
@@ -353,39 +466,113 @@
           placeholder="Filter transactions — press enter to apply">
         <button class="dgs-clear" type="button" aria-label="Clear filter text"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button>
       </div>
+      <div class="dgden" role="group" aria-label="Row density">
+        <button type="button" class="t-cm-button" data-density="comfortable" aria-pressed="true">Comfortable</button>
+        <button type="button" class="t-cm-ctl-16" data-density="compact" aria-pressed="false">Compact</button>
+      </div>
     </div>
 
     <div class="fbar" id="fbar" role="list" aria-label="Applied filters" hidden></div>
 
     <div class="dg-scroll">
-      <table role="grid" id="tbl" aria-labelledby="dgTitle" aria-describedby="dgHint" aria-rowcount="25">
+      <table role="grid" id="tbl" aria-labelledby="dgTitle" aria-describedby="dgHint" aria-rowcount="26">
+        <colgroup>
+          <col data-col="sel" style="width:48px"><col data-col="date" style="width:140px">
+          <col data-col="payee" style="width:168px"><col data-col="ref" style="width:152px">
+          <col data-col="type" style="width:132px"><col data-col="amount" style="width:120px">
+        </colgroup>
         <thead>
-          <tr aria-rowindex="1">
+          <tr class="grp" aria-rowindex="1">
+            <th scope="col" class="sel"><span class="visually-hidden">Row selection</span></th>
+            <th scope="colgroup" colspan="4"><span class="glabel t-cm-caption">Transaction detail</span></th>
+            <th scope="colgroup" class="num"><span class="glabel t-cm-caption">Value (GBP)</span></th>
+          </tr>
+          <tr class="cols" aria-rowindex="2">
             <th class="sel" scope="col">
-              <span class="cn-selection-controls cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
+              <div class="th-in mid"><span class="cn-selection-controls cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
                 <label for="selAll"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label>
-              </span>
+              </span></div>
             </th>
-            <th scope="col" aria-sort="none" data-key="date"><button class="sort full t-cm-button" type="button" tabindex="-1">Date
-              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
-              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
-              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-            <th scope="col" aria-sort="none" data-key="payee"><button class="sort full t-cm-button" type="button" tabindex="-1">Payee
-              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
-              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
-              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-            <th scope="col" aria-sort="none" data-key="ref"><button class="sort full t-cm-button" type="button" tabindex="-1">Reference
-              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
-              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
-              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-            <th scope="col" aria-sort="none" data-key="type"><button class="sort full t-cm-button" type="button" tabindex="-1">Type
-              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
-              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
-              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-            <th scope="col" aria-sort="none" data-key="amount" class="num"><button class="sort full t-cm-button" type="button" tabindex="-1">Amount
-              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
-              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
-              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
+            <th scope="col" aria-sort="none" data-key="date">
+              <div class="th-in">
+                <button class="sort full t-cm-button" type="button" tabindex="-1"><span class="lbl">Date</span>
+                  <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                  <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                  <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button>
+                <button class="colf" type="button" tabindex="-1" aria-expanded="false" aria-controls="cm-date" aria-label="Filter by date">
+                  <svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter"/></svg>
+                  <svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter-on"/></svg></button>
+                <div class="rsz" role="separator" tabindex="-1" aria-orientation="vertical" aria-label="Resize date column"
+                  aria-valuenow="140" aria-valuemin="96" aria-valuemax="480"></div>
+              </div>
+              <div class="colmenu" id="cm-date" role="group" aria-label="Filter by date">
+                <label class="cml t-cm-caption" for="cf-date">Date contains</label>
+                <input type="text" id="cf-date" class="cf t-cm-input" data-key="date">
+                <span class="cmh t-cm-caption">Enter applies · Esc closes</span>
+              </div>
+            </th>
+            <th scope="col" aria-sort="none" data-key="payee">
+              <div class="th-in">
+                <button class="sort full t-cm-button" type="button" tabindex="-1"><span class="lbl">Payee</span>
+                  <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                  <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                  <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button>
+                <button class="colf" type="button" tabindex="-1" aria-expanded="false" aria-controls="cm-payee" aria-label="Filter by payee">
+                  <svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter"/></svg>
+                  <svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter-on"/></svg></button>
+                <div class="rsz" role="separator" tabindex="-1" aria-orientation="vertical" aria-label="Resize payee column"
+                  aria-valuenow="168" aria-valuemin="96" aria-valuemax="480"></div>
+              </div>
+              <div class="colmenu" id="cm-payee" role="group" aria-label="Filter by payee">
+                <label class="cml t-cm-caption" for="cf-payee">Payee contains</label>
+                <input type="text" id="cf-payee" class="cf t-cm-input" data-key="payee">
+                <span class="cmh t-cm-caption">Enter applies · Esc closes</span>
+              </div>
+            </th>
+            <th scope="col" data-key="ref" data-disabled="true">
+              <div class="th-in">
+                <button class="sort full t-cm-button" type="button" tabindex="-1" disabled aria-disabled="true"><span class="lbl">Reference</span>
+                  <span class="visually-hidden">Sorting is off on the editable column</span></button>
+                <button class="colf" type="button" tabindex="-1" aria-expanded="false" aria-controls="cm-ref" aria-label="Filter by reference">
+                  <svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter"/></svg>
+                  <svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter-on"/></svg></button>
+                <div class="rsz" role="separator" tabindex="-1" aria-orientation="vertical" aria-label="Resize reference column"
+                  aria-valuenow="152" aria-valuemin="96" aria-valuemax="480"></div>
+              </div>
+              <div class="colmenu" id="cm-ref" role="group" aria-label="Filter by reference">
+                <label class="cml t-cm-caption" for="cf-ref">Reference contains</label>
+                <input type="text" id="cf-ref" class="cf t-cm-input" data-key="ref">
+                <span class="cmh t-cm-caption">Enter applies · Esc closes</span>
+              </div>
+            </th>
+            <th scope="col" aria-sort="none" data-key="type">
+              <div class="th-in">
+                <button class="sort full t-cm-button" type="button" tabindex="-1"><span class="lbl">Type</span>
+                  <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                  <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                  <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button>
+                <button class="colf" type="button" tabindex="-1" aria-expanded="false" aria-controls="cm-type" aria-label="Filter by type">
+                  <svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter"/></svg>
+                  <svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-filter-on"/></svg></button>
+                <div class="rsz" role="separator" tabindex="-1" aria-orientation="vertical" aria-label="Resize type column"
+                  aria-valuenow="132" aria-valuemin="96" aria-valuemax="480"></div>
+              </div>
+              <div class="colmenu" id="cm-type" role="group" aria-label="Filter by type">
+                <label class="cml t-cm-caption" for="cf-type">Type contains</label>
+                <input type="text" id="cf-type" class="cf t-cm-input" data-key="type">
+                <span class="cmh t-cm-caption">Enter applies · Esc closes</span>
+              </div>
+            </th>
+            <th scope="col" aria-sort="none" data-key="amount" class="num">
+              <div class="th-in">
+                <button class="sort full t-cm-button" type="button" tabindex="-1"><span class="lbl">Amount</span>
+                  <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span>
+                  <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span>
+                  <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button>
+                <div class="rsz" role="separator" tabindex="-1" aria-orientation="vertical" aria-label="Resize amount column"
+                  aria-valuenow="120" aria-valuemin="96" aria-valuemax="480"></div>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody id="tbody"><!-- rows rendered by the demo script --></tbody>
@@ -412,6 +599,9 @@
     <kbd>Enter</kbd> sorts a header, toggles a row checkbox, or opens the reference cell for editing
     (<kbd>F2</kbd> also edits; <kbd>Esc</kbd> cancels, <kbd>Enter</kbd> saves).
     Type in the filter and press <kbd>Enter</kbd> to apply it as a removable chip.
+    On a column header, <kbd>Alt</kbd>+<kbd>↓</kbd> opens that column's filter and
+    <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> enters resize mode, where the arrows size the column
+    (<kbd>Shift</kbd> for a bigger step) and <kbd>Esc</kbd> returns to the header.
   </p>
 
   <div class="visually-hidden" role="status" id="dgStatus"></div>
@@ -430,6 +620,7 @@
       "--disabled": "text/disabled",
       "--pressedbg": "tertiary/background/pressed", "--onpressed": "text/reverse",
       "--currentbd": "tertiary/border/default", "--bone": "tertiary/background/hover",
+      "--grouphdr": "table/column/background",
       "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken",
       "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
       "--border-radius-indicator": "border-radius/indicator"
@@ -444,10 +635,14 @@
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
       { "fg": "tertiary/border/default", "bg": "background/default", "context": "ui" },
       { "fg": "icon/default", "bg": "background/default", "context": "ui" },
-      { "fg": "icon/default", "bg": "table/header/background", "context": "ui" }
+      { "fg": "icon/default", "bg": "table/header/background", "context": "ui" },
+      { "fg": "text/default", "bg": "table/column/background", "context": "text" },
+      { "fg": "form/border/active", "bg": "table/header/background", "context": "ui" }
     ],
     "icons": {
       "sort": "global-controls/sort.svg",
+      "filter": "global-controls/filter.svg",
+      "filter-active": "global-controls/filter-active.svg",
       "chevron-up": "arrows-and-chevrons/chevron-up.svg",
       "chevron-down": "arrows-and-chevrons/chevron-down.svg",
       "chevron-left": "arrows-and-chevrons/chevron-left.svg",
@@ -456,14 +651,18 @@
       "close": "global-controls/close.svg",
       "edit": "global-controls/edit.svg"
     },
-    "requiredAria": ["role=\"grid\"", "aria-sort", "aria-selected", "aria-rowcount", "aria-rowindex", "aria-current", "aria-busy", "aria-live", "role=\"status\"", "aria-label"],
+    "requiredAria": ["role=\"grid\"", "aria-sort", "aria-selected", "aria-rowcount", "aria-rowindex", "aria-current", "aria-busy", "aria-live", "role=\"status\"", "aria-label", "aria-expanded", "aria-disabled", "aria-pressed", "role=\"separator\"", "aria-valuenow"],
     "knownFindings": [
+      "#261 design pass on the COLUMN HEADER (Dave's #2 nomination): group row (scope=colgroup, sticky above the column row) · per-column filter menu (two distinct library glyphs, filter.svg / filter-active.svg) · resize handle (role=separator, pointer + Alt+arrow keyboard) · density prop · disabled column · truncation title only when it truncates.",
+      "SORTED and FILTERED-ACTIVE take DIFFERENT EDGES of the cell (3px accent under vs 3px accent leading), so one column can carry both at once; each is doubled by a glyph and by aria, never colour alone.",
+      "Sticky + border-collapse drops cell borders while scrolling, so the header's rules are inset shadows, not borders.",
+      "Sorting is OFF on the editable Reference column by design (re-ordering rows under an open editor is the bug), and that is the shipped example of the disabled-column state.",
       "The INTERACTIVE sibling Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component'). Table stays passive/semantic; the grid owns sort/filter/select/edit on the APG grid pattern.",
       "Responsive = horizontal scroll + sticky header, a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer shape: Carbon/Ant/AG-Grid). Reflow duty lives with the passive Table.",
       "Field chrome (search filter + edit-cell active stroke) is COPIED from Search-field/Input-fields — marked FIELD-CHROME-COPY, receipted as field-family accretion evidence (ADR-0013 ruling 3, cross-lane duplication now ≥8 files).",
       "Loading bones re-state Skeleton-loader's recipe minimally (by-reference consumption forced into duplication — receipted; skeleton-family = accretion candidate).",
       "No error/validation state in v1 — the input-error null slot (ADR-0010) is an open Dave question (wave-1 A-Q2); edit commits are unvalidated free text.",
-      "No density toggle in v1 (View-options territory) and no column show/hide — deferred; view-column glyph exists in the library when it lands.",
+      "Density landed at #261 (comfortable | compact, a real prop on .dg); column show/hide is still deferred — view-column glyph exists in the library when it lands.",
       "--selbg and --bone resolve to the same hex as hovers in Mono; they bind DISTINCT semantic sources (form/background/hover, tertiary/background/hover) so themes can split them."
     ],
     "$note": "Press physics: sort headers (.full — cell-bound, no hover grow), chip dismiss ×24, clear-filters, pagination ×44 all await partial injection on registration (empty AUTO-PARTIAL markers; $members proposal in the worker receipt). Checkboxes, search clear and the page-size select are form controls — colour states only, per the Account-selector/Search-field precedent."
@@ -480,9 +679,11 @@
       "change",
       "click",
       "dblclick",
-      "keydown"
+      "focus",
+      "keydown",
+      "pointerdown"
     ],
-    "fallback": "The table body is EMPTY — `<tbody id=\"tbody\">` carries only a comment and every row is rendered by the script, so with JS off there is no data at all: no rows, no chips, no pager buttons that do anything. The header, the search field, the rows-per-page select and the authored footer range text still paint; sorting, filtering, chip dismissal, paging, select-all, edit-in-place and the APG roving cell focus are all gone."
+    "fallback": "The table body is EMPTY — `<tbody id=\"tbody\">` carries only a comment and every row is rendered by the script, so with JS off there is no data at all: no rows, no chips, no pager buttons that do anything. The COLUMN HEADER still paints in full — group row, labels, sort glyphs at aria-sort=none, the filter buttons, the resize handles and the density switch — but none of them act: sorting, column filtering, column resizing, the density toggle, truncation measurement, chip dismissal, paging, select-all, edit-in-place and the APG roving cell focus are all gone. The search field, the rows-per-page select and the authored footer range text still paint."
   }
   </script>
 
@@ -526,10 +727,15 @@
     const status = document.getElementById('dgStatus');
     const announce = msg => { status.textContent = ''; requestAnimationFrame(() => { status.textContent = msg; }); };
 
+    // a filter is {key, term}: key null = the toolbar's all-text filter, key set = a COLUMN
+    // filter committed from that column's header menu (#261). Both render as chips.
+    const COLS = {date:'Date', payee:'Payee', ref:'Reference', type:'Type', amount:'Amount'};
     function filtered(){
       if (!state.filters.length) return DATA.slice();
-      return DATA.filter(r => state.filters.every(t => {
-        const q = t.toLowerCase();
+      return DATA.filter(r => state.filters.every(f => {
+        const q = f.term.toLowerCase();
+        if (f.key === 'date') return (fmtDate(r.date) + ' ' + r.date).toLowerCase().includes(q);
+        if (f.key) return String(r[f.key]).toLowerCase().includes(q);
         return r.payee.toLowerCase().includes(q) || r.ref.toLowerCase().includes(q) || r.type.toLowerCase().includes(q);
       }));
     }
@@ -549,7 +755,8 @@
       state.page = Math.min(state.page, pages);
       const start = (state.page - 1) * state.pageSize, pageRows = rows.slice(start, start + state.pageSize);
 
-      tbl.setAttribute('aria-rowcount', String(total + 1));
+      const hdrRows = dg.getAttribute('data-groups') === 'off' ? 1 : 2;   // the group row counts (#261)
+      tbl.setAttribute('aria-rowcount', String(total + hdrRows));
       tbl.removeAttribute('aria-busy');
       document.getElementById('dgCount').textContent = `${total} result${total === 1 ? '' : 's'}`;
       document.getElementById('dgRange').textContent = total
@@ -577,7 +784,7 @@
       }
       tbody.innerHTML = pageRows.map((r, i) => {
         const on = state.sel.has(r.id);
-        return `<tr aria-rowindex="${start + i + 2}" aria-selected="${on}" data-id="${r.id}">
+        return `<tr aria-rowindex="${start + i + 1 + hdrRows}" aria-selected="${on}" data-id="${r.id}">
           <td class="sel"><span class="cn-selection-controls cbx"><input type="checkbox" id="selRow-${r.id}" tabindex="-1" ${on ? 'checked' : ''}
               aria-label="Select row: ${r.payee}, ${fmtDate(r.date)}">
             <label for="selRow-${r.id}"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></span></td>
@@ -625,26 +832,130 @@
     }
 
     // ---------- sort ----------
-    document.querySelectorAll('thead th[data-key]').forEach(th => {
+    const SORTABLE = 'thead tr.cols th[data-key]:not([data-disabled])';
+    document.querySelectorAll(SORTABLE).forEach(th => {
       th.querySelector('.sort').addEventListener('click', () => cycleSort(th));
     });
     function cycleSort(th){
+      if (!th || th.hasAttribute('data-disabled')) return;
       const key = th.dataset.key;
       const next = state.sortKey !== key ? 'ascending' :
         th.getAttribute('aria-sort') === 'ascending' ? 'descending' :
         th.getAttribute('aria-sort') === 'descending' ? 'none' : 'ascending';
-      document.querySelectorAll('thead th[data-key]').forEach(t => t.setAttribute('aria-sort', 'none'));
+      document.querySelectorAll(SORTABLE).forEach(t => t.setAttribute('aria-sort', 'none'));
       th.setAttribute('aria-sort', next);
       state.sortKey = next === 'none' ? null : key; state.sortDir = next; state.page = 1;
       render();
-      announce(next === 'none' ? 'Sort removed.' : `Sorted by ${th.querySelector('.sort').textContent.trim().toLowerCase()}, ${next}.`);
+      announce(next === 'none' ? 'Sort removed.' : `Sorted by ${COLS[key].toLowerCase()}, ${next}.`);
     }
+
+    // ---------- column header: per-column filter menus (#261) ----------
+    function syncHeader(){
+      tbl.querySelectorAll('thead tr.cols th[data-key]').forEach(th => {
+        const on = state.filters.some(f => f.key === th.dataset.key);
+        th.setAttribute('data-filtered', String(on));
+        const b = th.querySelector('.colf');
+        if (b) b.setAttribute('aria-label', `${on ? 'Edit filter' : 'Filter'} by ${COLS[th.dataset.key].toLowerCase()}`);
+      });
+    }
+    function closeMenus(){
+      tbl.querySelectorAll('thead th[data-menu="open"]').forEach(th => {
+        th.removeAttribute('data-menu');
+        th.querySelector('.colf').setAttribute('aria-expanded', 'false');
+      });
+    }
+    tbl.querySelectorAll('.colf').forEach(btn => {
+      const th = btn.closest('th');
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const wasOpen = th.getAttribute('data-menu') === 'open';
+        closeMenus();
+        if (wasOpen) return;
+        th.setAttribute('data-menu', 'open'); btn.setAttribute('aria-expanded', 'true');
+        const inp = th.querySelector('.cf');
+        inp.value = (state.filters.find(f => f.key === th.dataset.key) || {term:''}).term;
+        inp.focus(); inp.select();
+      });
+    });
+    tbl.querySelectorAll('.cf').forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        e.stopPropagation();                       // the grid's arrow navigation stays out of the field
+        const key = inp.dataset.key, th = inp.closest('th');
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          const term = inp.value.trim();
+          state.filters = state.filters.filter(f => f.key !== key);
+          if (term) state.filters.push({key, term});
+          state.page = 1; closeMenus(); renderChips(); render(); setCurrent(th, true);
+          announce(term ? `${COLS[key]} filtered by ${term}. ${filtered().length} results.`
+                        : `${COLS[key]} filter removed. ${filtered().length} results.`);
+        } else if (e.key === 'Escape'){ e.preventDefault(); closeMenus(); setCurrent(th, true); }
+      });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('thead th')) closeMenus(); });
+
+    // ---------- column header: resize (#261) ----------
+    const cgrp = tbl.querySelector('colgroup');
+    function setColWidth(key, px, tell){
+      const col = cgrp.querySelector(`col[data-col="${key}"]`);
+      const h = tbl.querySelector(`th[data-key="${key}"] .rsz`);
+      const w = Math.max(96, Math.min(480, Math.round(px)));
+      col.style.width = w + 'px';
+      if (h) h.setAttribute('aria-valuenow', String(w));
+      markTruncation();
+      if (tell) announce(`${COLS[key]} column ${w} pixels wide.`);
+    }
+    tbl.querySelectorAll('.rsz').forEach(h => {
+      const th = h.closest('th'), key = th.dataset.key;
+      h.addEventListener('pointerdown', e => {
+        e.preventDefault(); h.setPointerCapture(e.pointerId);
+        const x0 = e.clientX, w0 = th.getBoundingClientRect().width;
+        dg.setAttribute('data-resizing', 'true'); h.setAttribute('data-active', 'true');
+        const move = ev => setColWidth(key, w0 + (ev.clientX - x0), false);
+        const up = () => {
+          h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up);
+          dg.removeAttribute('data-resizing'); h.removeAttribute('data-active');
+          announce(`${COLS[key]} column ${h.getAttribute('aria-valuenow')} pixels wide.`);
+        };
+        h.addEventListener('pointermove', move); h.addEventListener('pointerup', up);
+      });
+      h.addEventListener('keydown', e => {
+        e.stopPropagation();
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+          e.preventDefault();
+          const step = e.shiftKey ? 32 : 16;
+          setColWidth(key, +h.getAttribute('aria-valuenow') + (e.key === 'ArrowRight' ? step : -step), true);
+        } else if (e.key === 'Escape' || e.key === 'Enter'){ e.preventDefault(); setCurrent(th, true); }
+      });
+      h.addEventListener('focus', () => h.setAttribute('data-active', 'true'));
+      h.addEventListener('blur', () => h.removeAttribute('data-active'));
+    });
+
+    // ---------- column header: truncation gets a title, and only when it truncates ----------
+    function markTruncation(){
+      tbl.querySelectorAll('thead .lbl, thead .glabel').forEach(l => {
+        if (l.scrollWidth > l.clientWidth + 1) l.setAttribute('title', l.textContent.trim());
+        else l.removeAttribute('title');
+      });
+    }
+
+    // ---------- column header: density (comfortable | compact) ----------
+    document.querySelectorAll('.dgden button').forEach(b => b.addEventListener('click', () => {
+      dg.setAttribute('data-density', b.dataset.density);
+      document.querySelectorAll('.dgden button').forEach(x => {
+        const on = x === b; x.setAttribute('aria-pressed', String(on));
+        x.classList.toggle('t-cm-button', on);      /* 16/500 — pressed */
+        x.classList.toggle('t-cm-ctl-16', !on);     /* 16/400 — rest   */
+      });
+      markTruncation(); render();
+      announce(`${b.textContent.trim()} density.`);
+    }));
 
     // ---------- filters ----------
     const search = document.getElementById('dgSearch');
     search.addEventListener('keydown', e => {
       if (e.key === 'Enter' && search.value.trim()){
-        state.filters.push(search.value.trim()); search.value = ''; state.page = 1;
+        state.filters.push({key:null, term:search.value.trim()}); search.value = ''; state.page = 1;
         renderChips(); render(); announce(`Filter applied. ${filtered().length} results.`);
       }
     });
@@ -652,13 +963,15 @@
     function renderChips(){
       const bar = document.getElementById('fbar');
       bar.hidden = !state.filters.length;
-      bar.innerHTML = state.filters.map((t, i) => `<span class="fchip" role="listitem"><span class="t-cm-caption">${t}</span>
-        <button class="x" type="button" aria-label="Remove filter: ${t}"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></span>`).join('');
+      const label = f => f.key ? `${COLS[f.key]}: ${f.term}` : f.term;   // column filters name their column
+      bar.innerHTML = state.filters.map(f => `<span class="fchip" role="listitem"><span class="t-cm-caption">${label(f)}</span>
+        <button class="x" type="button" aria-label="Remove filter: ${label(f)}"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></span>`).join('');
       bar.querySelectorAll('.x').forEach((x, i) => x.addEventListener('click', () => {
-        const t = state.filters.splice(i, 1)[0]; state.page = 1;
-        renderChips(); render(); announce(`Filter removed: ${t}. ${filtered().length} results.`);
+        const f = state.filters.splice(i, 1)[0]; state.page = 1;
+        renderChips(); render(); announce(`Filter removed: ${label(f)}. ${filtered().length} results.`);
         const next = bar.querySelector('.x'); (next || search).focus();
       }));
+      syncHeader();
     }
     function clearFilters(){
       state.filters = []; state.page = 1;
@@ -696,7 +1009,11 @@
     // ---------- roving cell focus (APG grid) ----------
     let current = null;
     function cellMatrix(){
-      const rows = [Array.from(tbl.querySelectorAll('thead th'))];
+      const rows = [];
+      tbl.querySelectorAll('thead tr').forEach(tr => {
+        if (tr.classList.contains('grp') && dg.getAttribute('data-groups') === 'off') return;
+        rows.push(Array.from(tr.querySelectorAll('th')));
+      });
       tbl.querySelectorAll('tbody tr:not([aria-hidden])').forEach(tr => {
         const cells = Array.from(tr.querySelectorAll('th, td'));
         if (cells.length) rows.push(cells);
@@ -706,8 +1023,9 @@
     function wireCells(){
       const m = cellMatrix();
       m.flat().forEach(c => { if (!c.hasAttribute('tabindex')) c.setAttribute('tabindex', '-1'); });
-      if (!current || !document.contains(current)) current = m[0][1] || m[0][0];
+      if (!current || !document.contains(current)) current = tbl.querySelector('thead tr.cols th[data-key]') || m[0][0];
       current.setAttribute('tabindex', '0');
+      markTruncation();
     }
     function setCurrent(cell, focus){
       if (!cell) return;
@@ -725,6 +1043,17 @@
       const m = cellMatrix();
       let r = m.findIndex(row => row.includes(current)), c = r >= 0 ? m[r].indexOf(current) : 0;
       if (r < 0){ r = 0; c = 0; }
+      // #261 — the header cell's own two extra affordances, both on Alt so plain arrows still navigate
+      if (e.altKey && current.matches('thead tr.cols th[data-key]')){
+        if (e.key === 'ArrowDown'){
+          const b = current.querySelector('.colf');
+          if (b){ e.preventDefault(); b.click(); return; }
+        }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+          const h = current.querySelector('.rsz');
+          if (h){ e.preventDefault(); h.focus(); return; }        // resize mode: arrows size, Esc/Enter exits
+        }
+      }
       const nav = {ArrowRight:[0,1], ArrowLeft:[0,-1], ArrowDown:[1,0], ArrowUp:[-1,0]}[e.key];
       if (nav){
         e.preventDefault();
@@ -737,7 +1066,7 @@
       if (e.key === 'F2' && current.classList.contains('edit')){ e.preventDefault(); startEdit(current); return; }
       if (e.key === 'Enter' || e.key === ' '){
         const inCell = sel => current.querySelector(sel);
-        if (current.matches('thead th[data-key]')){ e.preventDefault(); cycleSort(current); }
+        if (current.matches('thead tr.cols th[data-key]:not([data-disabled])')){ e.preventDefault(); cycleSort(current); }
         else if (inCell('.cbx input')){ e.preventDefault(); const i = inCell('.cbx input'); i.checked = !i.checked; i.dispatchEvent(new Event('change', {bubbles:true})); }
         else if (e.key === 'Enter' && current.classList.contains('edit')){ e.preventDefault(); startEdit(current); }
       }
@@ -764,15 +1093,26 @@
   <!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
   <script>
     // demo state switcher — drives the component's own `state.mode` from outside it.
-    document.querySelectorAll('.dgseg button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.dgseg [data-state]').forEach(b => b.addEventListener('click', () => {
       state.mode = b.dataset.state;
-      document.querySelectorAll('.dgseg button').forEach(x => {
+      document.querySelectorAll('.dgseg [data-state]').forEach(x => {
         const on = x === b; x.setAttribute('aria-pressed', String(on)); x.disabled = on;
         x.classList.toggle('t-cm-button', on);      /* 16/500 — pressed */
         x.classList.toggle('t-cm-ctl-16', !on);     /* 16/400 — rest   */
       });
-      if (state.mode === 'empty'){ state.filters = ['no such payee']; renderChips(); }
-      else if (state.filters.length === 1 && state.filters[0] === 'no such payee'){ state.filters = []; renderChips(); }
+      if (state.mode === 'empty'){ state.filters = [{key:null, term:'no such payee'}]; renderChips(); }
+      else if (state.filters.length === 1 && state.filters[0].term === 'no such payee'){ state.filters = []; renderChips(); }
+      render();
+    }));
+    // group-header row on/off — the optional spanning row is a column-config decision, so the
+    // switch is harness chrome, not a control the component ships.
+    document.querySelectorAll('.dgseg [data-groups]').forEach(b => b.addEventListener('click', () => {
+      document.getElementById('dg').setAttribute('data-groups', b.dataset.groups);
+      document.querySelectorAll('.dgseg [data-groups]').forEach(x => {
+        const on = x === b; x.setAttribute('aria-pressed', String(on)); x.disabled = on;
+        x.classList.toggle('t-cm-button', on);
+        x.classList.toggle('t-cm-ctl-16', !on);
+      });
       render();
     }));
   </script>

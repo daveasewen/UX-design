@@ -5,19 +5,143 @@
   "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid.",
   "$composes": "Selection-controls (s258-D4 — the header select-all and every row checkbox ARE the .cn-selection-controls scope with Selection-controls' hidden-input + label + .box markup; class names KEPT so a diff proves the borrow, the grid supplying only the ids, aria-label and the indeterminate state). Search-field (the filter field's boxed chrome, FIELD-CHROME-COPY). Tags (the applied-filter chips, namespaced .fchip). Pagination (44px pager targets, aria-current border). Skeleton-loader (the loading state, by reference). Account-selector (aria-selected = tint + inset start bar). Button (sort headers, .full because they are cell-bound).",
   "props": [
-    { "name": "columns", "type": "array", "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)." },
-    { "name": "selection", "type": "enum", "values": ["none", "multi"], "default": "multi", "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial." },
-    { "name": "filters", "type": "array", "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns." },
-    { "name": "pageSize", "type": "enum", "values": ["8", "12", "24"], "default": "8", "$note": "Footer: range read-out · rows-per-page select · pagination (Pagination recipe: 44px targets, aria-current border)." },
-    { "name": "state", "type": "enum", "values": ["live", "loading", "empty"], "default": "live", "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action.", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
+    {
+      "name": "columns",
+      "type": "array",
+      "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)."
+    },
+    {
+      "name": "selection",
+      "type": "enum",
+      "values": [
+        "none",
+        "multi"
+      ],
+      "default": "multi",
+      "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial."
+    },
+    {
+      "name": "filters",
+      "type": "array",
+      "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns."
+    },
+    {
+      "name": "pageSize",
+      "type": "enum",
+      "values": [
+        "8",
+        "12",
+        "24"
+      ],
+      "default": "8",
+      "$note": "Footer: range read-out · rows-per-page select · pagination (Pagination recipe: 44px targets, aria-current border)."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "live",
+        "loading",
+        "empty"
+      ],
+      "default": "live",
+      "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action.",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+    },
+    {
+      "name": "density",
+      "type": "enum",
+      "values": [
+        "comfortable",
+        "compact"
+      ],
+      "default": "comfortable",
+      "$note": "#261: a real prop on .dg (data-density), not a demo dial. Compact drops --cell-py 10->4, the header row 44->32 and every control target 44->32 — above the 24px dial-down floor, never below (s116-D1). The switch mirrors Segmented-control (its group, not button-family: no press physics)."
+    },
+    {
+      "name": "groupHeader",
+      "type": "enum",
+      "values": [
+        "on",
+        "off"
+      ],
+      "default": "on",
+      "$note": "#261: an OPTIONAL spanning row above the column row (th scope=colgroup), sticky at top:0 with the column row sticking below it at top:var(--grp-h). It counts as a header row: aria-rowcount and every aria-rowindex shift by one when it is on."
+    },
+    {
+      "name": "columnFilters",
+      "type": "boolean",
+      "default": true,
+      "$note": "#261: per-column filter menu behind a 24px header button. Committing writes a {key, term} filter, which renders as a chip that names its column ('Payee: acme'); the toolbar filter is the same shape with key null. Amount ships WITHOUT one — the affordance is optional per column, and a contains-filter on money is the wrong control."
+    }
   ],
+  "variants": [
+    {
+      "name": "default",
+      "use": "group row on, comfortable density, a filter on every text column — the transactions board header"
+    },
+    {
+      "name": "compact",
+      "use": "data-density=compact: 32px header row, 32px targets, 4px cell padding; for a dense back-office console where the operator wants rows, not air"
+    },
+    {
+      "name": "no-group-row",
+      "use": "data-groups=off: the column row alone, sticky at top:0; aria-rowcount and every rowindex drop by one"
+    },
+    {
+      "name": "header-filters-off",
+      "use": "omit the .colf button per column (Amount ships this way): sort and resize stay, the toolbar filter still covers the text columns"
+    }
+  ],
+  "stateModel": {
+    "$scope": "the COLUMN HEADER (#261); the grid's live/loading/empty modes stay on the `state` prop",
+    "states": [
+      "rest",
+      "hover",
+      "focus-visible",
+      "sorted",
+      "filtered-active",
+      "menu-open",
+      "resizing",
+      "disabled",
+      "truncated"
+    ],
+    "sorted": "aria-sort ascending|descending + the direction glyph + a ground shift to tertiary/background/hover + a 3px form/border/active rule UNDER the cell. Four channels; colour is never alone.",
+    "filtered-active": "data-filtered=true + the SOLID library glyph (filter-active.svg, a different glyph, not a recolour) + a 3px form/border/active rule LEADING the cell + a chip in the bar that names the column. A different edge from sorted, so one column can be both.",
+    "menu-open": "aria-expanded=true on the filter button, the menu shown under its own cell, the field focused and pre-filled with the term in force; Esc closes and returns focus to the header cell.",
+    "resizing": "data-resizing on the grid (col-resize cursor, hover suppressed) + data-active on the separator (full-height accent grip); aria-valuenow tracks the live width and the commit is announced.",
+    "disabled": "aria-disabled + a disabled button + an alpha mute and NO sort glyph. text/disabled is #E1E1E1 and illegible on the header ground, so the mute is alpha, not that token.",
+    "truncated": "the label ellipsises and takes a title ONLY when scrollWidth actually exceeds clientWidth — re-measured after every resize and density change, so no phantom tooltips."
+  },
   "subComponents": {
-    "sort-header": { "use": "Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button's own guard)." },
-    "selection-checkbox": { "use": "COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent)." },
-    "filter-field": { "use": "Search-field boxed chrome (FIELD-CHROME-COPY — receipted field-family accretion evidence). Enter commits the term as a chip." },
-    "applied-chip": { "use": "Dismissible Tags recipe, namespaced .fchip (.tag/.chip are type.css-bound blast radii). Dismiss × = 24px button-family member; Tags' tactile × motion deliberately NOT copied (motion belongs to the partial, B-D7)." },
-    "edit-cell": { "use": "Reference column; Enter/F2/double-click opens; editing chrome = field ACTIVE recipe (border/active 4px bottom stroke + page fill); Esc cancels, Enter/blur commits; announced." },
-    "pagination": { "use": "Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)." }
+    "sort-header": {
+      "use": "Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button's own guard).",
+      "$261": "The button now sits inside .th-in beside the column filter and the resize handle; the label truncates (.lbl, text-box-edge:text text) and takes a title ONLY when measured to truncate; sorted paints a ground shift plus a 3px form/border/active rule UNDER the cell, and the disabled column (Reference) carries aria-disabled with no sort glyph at all."
+    },
+    "selection-checkbox": {
+      "use": "COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent)."
+    },
+    "filter-field": {
+      "use": "Search-field boxed chrome (FIELD-CHROME-COPY — receipted field-family accretion evidence). Enter commits the term as a chip."
+    },
+    "applied-chip": {
+      "use": "Dismissible Tags recipe, namespaced .fchip (.tag/.chip are type.css-bound blast radii). Dismiss × = 24px button-family member; Tags' tactile × motion deliberately NOT copied (motion belongs to the partial, B-D7)."
+    },
+    "edit-cell": {
+      "use": "Reference column; Enter/F2/double-click opens; editing chrome = field ACTIVE recipe (border/active 4px bottom stroke + page fill); Esc cancels, Enter/blur commits; announced."
+    },
+    "pagination": {
+      "use": "Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)."
+    },
+    "column-filter": {
+      "use": "#261. A 24px form-furniture button in the header cell (Search-field precedent — colour states, no press physics) opening a small menu anchored under its own cell: one labelled text input, Enter commits, Esc closes, an outside click closes. Off/on are two DISTINCT library glyphs (global-controls/filter.svg, filter-active.svg), never one glyph recoloured (icon-011). Filtered-active also paints a 3px accent rule LEADING the cell — a different edge from sorted, so one column can carry both states at once."
+    },
+    "column-resizer": {
+      "use": "#261. A 12px grip on the trailing edge of the header cell with a 24px hit area (the ::before bleed), role=separator + aria-orientation/valuenow/valuemin/valuemax, driving the <col> width in a table-layout:fixed table (96-480px clamp). Pointer drag, and keyboard from the header cell: Alt+Left/Right enters resize mode, arrows size (Shift for a 32px step), Esc/Enter returns to the cell — so the grid keeps its ONE tab stop."
+    },
+    "group-header": {
+      "use": "#261. Optional spanning row of th scope=colgroup above the column row; caption type at 60% alpha on table/column/background. Both rows are sticky and travel as one block. Sticky plus border-collapse drops cell borders while scrolling, so the header's rules are painted as inset shadows."
+    }
   },
   "tokens": {
     "row-chrome": "table/header/background · table/column/background · table/border — consumed from Table unchanged; cells background/default; row hover tertiary/background/hover",
@@ -26,22 +150,43 @@
     "type": "composites only via markup class — headers .t-cm-button · data .t-cm-label · amounts .t-cm-figure-5 (tabular) · captions .t-cm-caption · editor/search .t-cm-input",
     "physics": "component-type/button-family/press-travel + press-darken (manifest-bound); --phys-size 120 root, 44 .pbtn, 24 .fchip .x",
     "radius": "border-radius/control · surface · indicator role tokens (Mono resolves 0; themes flex, ADR-0010)",
-    "$survey": "Mined, never modified: Table (visual canon — row chrome, density, weights), Search-field (field chrome, BY COPY — receipted accretion evidence), Tags (chip recipe), Selection-controls (checkbox anatomy), Pagination (footer recipe), Skeleton-loader (bones, by reference), Account-selector (aria-selected idiom), Icon-button/Button (physics geometry + marker protocol)."
+    "$survey": "Mined, never modified: Table (visual canon — row chrome, density, weights), Search-field (field chrome, BY COPY — receipted accretion evidence), Tags (chip recipe), Selection-controls (checkbox anatomy), Pagination (footer recipe), Skeleton-loader (bones, by reference), Account-selector (aria-selected idiom), Icon-button/Button (physics geometry + marker protocol).",
+    "header": "#261 — thead ground table/header/background; group row table/column/background; sorted + filtered accents form/border/active (--bar); disabled column is an alpha mute, NOT text/disabled (#E1E1E1 is illegible on the header ground); every header rule is an inset shadow so sticky keeps it."
   },
   "motion": {
     "press": "Sort headers, chip dismiss ×, clear-filters, pagination = button-family members; empty AUTO-PARTIAL markers await injection on registration (ADR-0013; $members proposal in the worker receipt). No local press-shaped CSS anywhere.",
     "reducedMotion": "Global collapse + static bones; the injected partial carries its own override.",
-    "tokens": ["motion/press/travel", "motion/press/darken (via component-type/button-family/*)"]
+    "tokens": [
+      "motion/press/travel",
+      "motion/press/darken (via component-type/button-family/*)"
+    ]
   },
   "responsive": {
-    "rule": "Horizontal scroll region + sticky header — a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer-grid shape). Reflow duty is met by the passive Table; min-width 640px, container width demo-controlled to 320px.",
+    "rule": "Horizontal scroll region + sticky header — a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer-grid shape). Reflow duty is met by the passive Table; min-width 640px, container width demo-controlled to 320px. #261: the region also takes a vertical max-block-size (--dg-vh, 380px default) so the sticky header is a provable state; default column widths sum to the 760px min-width, so nothing is cut before the user resizes.",
     "tokens": []
   },
   "relationships": {
-    "livesInside": ["Transaction histories", "Payee management", "Batch approval screens", "Back-office consoles"],
+    "livesInside": [
+      "Transaction histories",
+      "Payee management",
+      "Batch approval screens",
+      "Back-office consoles"
+    ],
     "mustNotNeighbour": [],
-    "composes": ["selection-controls", "search-field", "tags", "pagination", "skeleton-loader", "account-selector", "button"],
-    "commonPatterns": ["transactions with filter chips + pagination", "multi-select then bulk action", "inline reference editing"]
+    "composes": [
+      "selection-controls",
+      "search-field",
+      "tags",
+      "pagination",
+      "skeleton-loader",
+      "account-selector",
+      "button"
+    ],
+    "commonPatterns": [
+      "transactions with filter chips + pagination",
+      "multi-select then bulk action",
+      "inline reference editing"
+    ]
   },
   "behaviour": {
     "script": "knowledge/snippets/Data-grid.reference.html#script",
@@ -51,24 +196,33 @@
       "change",
       "click",
       "dblclick",
-      "keydown"
+      "focus",
+      "keydown",
+      "pointerdown"
     ],
-    "fallback": "The table body is EMPTY — `<tbody id=\"tbody\">` carries only a comment and every row is rendered by the script, so with JS off there is no data at all: no rows, no chips, no pager buttons that do anything. The header, the search field, the rows-per-page select and the authored footer range text still paint; sorting, filtering, chip dismissal, paging, select-all, edit-in-place and the APG roving cell focus are all gone.",
+    "fallback": "The table body is EMPTY — `<tbody id=\"tbody\">` carries only a comment and every row is rendered by the script, so with JS off there is no data at all: no rows, no chips, no pager buttons that do anything. The COLUMN HEADER still paints in full — group row, labels, sort glyphs at aria-sort=none, the filter buttons, the resize handles and the density switch — but none of them act: sorting, column filtering, column resizing, the density toggle, truncation measurement, chip dismissal, paging, select-all, edit-in-place and the APG roving cell focus are all gone. The search field, the rows-per-page select and the authored footer range text still paint.",
     "$note": {
       "sort": "Header sort buttons cycle none -> ascending -> descending; the cycle re-renders the body and the pager.",
       "filter": "The search field filters on keydown and the chip bar mirrors the active filters; each chip's `x` drops one filter, the clear control drops them all.",
       "edit": "Double-click on a `td.edit` opens an inline input; keydown commits or cancels and blur commits.",
       "keyboard": "APG grid roving cell focus on the table: one tab stop, arrows move the current cell, and focus is restored across re-renders by cell id.",
-      "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe."
+      "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe.",
+      "header": "#261 — sort cycles on the header button and on Enter/Space from the cell; the column filter menu opens from the 24px button or Alt+Down and commits on Enter; the resize handle drags on pointer events and sizes on arrows after Alt+Left/Right; the density switch rewrites data-density; labels are re-measured for truncation after every render, resize and density change."
     }
   },
   "accessibility": {
-    "semantics": "Native <table> + role=grid; aria-rowcount/aria-rowindex track the FILTERED set across pages; columnheaders carry aria-sort; rows carry aria-selected.",
-    "keyboard": "APG grid: ONE tab stop, roving tabindex over cells — arrows move, Home/End row ends, Ctrl+Home/End grid ends; Enter/Space activates the cell's widget (sort · checkbox · edit); F2/double-click edits; Esc cancels. Widgets inside cells are tabindex=-1 so Tab exits the grid.",
+    "semantics": "Native <table> + role=grid; aria-rowcount/aria-rowindex track the FILTERED set across pages and COUNT the optional group row; columnheaders carry aria-sort (only the sortable ones — the disabled column carries aria-disabled and no aria-sort at all); the group row is th scope=colgroup; rows carry aria-selected.",
+    "keyboard": "APG grid: ONE tab stop, roving tabindex over cells — arrows move, Home/End row ends, Ctrl+Home/End grid ends; Enter/Space activates the cell's widget (sort · checkbox · edit); F2/double-click edits; Esc cancels. Widgets inside cells are tabindex=-1 so Tab exits the grid. #261 adds two header-cell affordances, both on Alt so plain arrows still navigate: Alt+Down opens that column's filter menu, Alt+Left/Right enters resize mode on the separator (arrows size, Shift for a bigger step, Esc/Enter returns).",
     "announcements": "Visually-hidden role=status (polite) narrates sort, selection counts, filter apply/remove, page, edit commit/cancel; the visible results count is aria-live too.",
-    "states": "Selected = tint + inset bar + checked box (1.4.1); loading = aria-busy + role=status text, bones aria-hidden (decorative); empty offers a real recovery action; focus ring 2px focus/ring, offset -2 (axs-004).",
+    "states": "Selected = tint + inset bar + checked box (1.4.1); loading = aria-busy + role=status text, bones aria-hidden (decorative); empty offers a real recovery action; focus ring 2px focus/ring, offset -2 (axs-004). #261 header states: hover · focus-visible (the cell's own ring) · sorted (ground + 3px accent under + glyph + aria-sort) · filtered-active (3px accent leading + the solid filter glyph + a chip naming the column) · resizing (accent grip + col-resize cursor) · disabled column (alpha mute, no sort affordance) · truncated label (ellipsis + a title only when measured to truncate).",
     "editing": "Editor is a labelled text input ('Edit reference for <payee>'); commit/cancel announced; grid navigation suspended while editing (keys stay in the editor).",
-    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "2.1.1 Keyboard", "4.1.2 Name Role Value", "1.4.11 Non-text Contrast"]
+    "relatedSC": [
+      "1.3.1 Info and Relationships",
+      "1.4.1 Use of Color",
+      "2.1.1 Keyboard",
+      "4.1.2 Name Role Value",
+      "1.4.11 Non-text Contrast"
+    ]
   },
   "antiPatterns": [
     "Bolting sort/selection onto the passive Table (decision A: they are distinct components)",
@@ -76,18 +230,22 @@
     "Sort direction by colour or icon-opacity alone (aria-sort + distinct glyphs here; icons stay full-ink, icon-011)",
     "Selection shown by tint alone (bar + checkbox carry it structurally)",
     "Local press physics on grid controls (button-family partial territory — the ratchet bites)",
-    "A second tab stop inside the grid (widgets are reached from cells, not Tab)"
+    "A second tab stop inside the grid (widgets are reached from cells, not Tab)",
+    "Sorting a column whose cells are editable (re-ordering rows under an open editor) — the Reference column's sort is disabled by design, and that is the shipped disabled-column example",
+    "Sorted and filtered sharing one edge of the header cell — they take different edges so a column can carry both",
+    "A resize handle as a second tab stop — it is a tabindex=-1 separator reached from the header cell with Alt+arrow"
   ],
   "tokenValidation": {
     "date": "2026-07-22",
     "against": "token store (semantic-colour.json + layout.json + component-types.json) via #token-manifest",
     "result": "PASS expected at build — every bound var resolved from the store this session (retrieval receipted in the worker receipt); contrast pairs declared for text on all three row grounds + reverse-on-pressed + on-inverse glyph + three ui borders/icons.",
-    "$note": "Built Phase-2 wave 2 (worker C, Data-grid lane, itinerary row 51). Open: error/validation state awaits the input-error null-slot ruling (A-Q2); density toggle + column show/hide deferred (View-options territory); virtualised rows out of scope for a reference snippet."
+    "$note": "Built Phase-2 wave 2 (worker C, Data-grid lane, itinerary row 51). Open: error/validation state awaits the input-error null-slot ruling (A-Q2); density toggle + column show/hide deferred (View-options territory); virtualised rows out of scope for a reference snippet. #261: density landed as a real prop; column show/hide still deferred. --grouphdr binds table/column/background, which resolves to the same hex as table/header/background in all four themes today — the group row reads by its caption type and its rule, not by ground; a theme may split them."
   },
   "provenance": {
-    "source": "gap-report",
+    "source": "gap-report; #261 design pass, Dave's nomination",
     "figma_node": "",
-    "code_path": ""
+    "code_path": "",
+    "$261": "#261 lane G — column-header design pass on Dave's #2 nominated dashboard element. Driven in Chromium, four themes x two modes: notes/_subreports/2026-09-08-261-G-grid-header.md, receipts from notes/_lanes/261-G-drive-grid-header.py, review page notes/_lanes/261-G-grid-header-review.html. Table was NOT touched: its header is a passive th scope=col that collapses to cards, a different contract, not shared with this one."
   },
   "slots": {
     "columns": {

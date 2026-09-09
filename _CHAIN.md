@@ -82,11 +82,11 @@
 
 ## ⬛ OPEN WORK — GENERATED from `_state.json`. **The row count IS the count.**
 
-> **607 items · 510 live · 230 Dave's · 280 mine · 593 carry a stated close condition · **14 UNCONDITIONED**.**
+> **608 items · 511 live · 231 Dave's · 280 mine · 594 carry a stated close condition · **14 UNCONDITIONED**.**
 > *Every figure in this block is computed from the store at generation time. No number here was typed by anyone — that is the point of it (#86 measured a typed inventory of "118 markers" against a real ~40; #85's "95 slots / 84 distinct" is not reproducible by any probe in this repo).*
 > ⚠ **DECLARED DEBT — 14 inherited items have NO close condition and therefore cannot close.** They are exempt as a FROZEN set (`_state.LEGACY_IDS`, size 19) which may only shrink; a NEW item is refused without one. **Each needs Dave's word — an agent inventing a close condition for his open work is the same overreach as inventing his ruling.**
 >
-> **DAVE'S (230) — 230 with a ratified `closes_when`, 0 with NONE · MINE (280). IDS, BODIES AND CLOSE CONDITIONS ARE IN THE STORE, NEVER HERE (s227-D2 shape, ids cut `s241-D2`): the counts above are the inventory; the rows are one command away, named on the next line.**
+> **DAVE'S (231) — 231 with a ratified `closes_when`, 0 with NONE · MINE (280). IDS, BODIES AND CLOSE CONDITIONS ARE IN THE STORE, NEVER HERE (s227-D2 shape, ids cut `s241-D2`): the counts above are the inventory; the rows are one command away, named on the next line.**
 >
 > ⚠ store gate: **PASS**. Bodies, conditions and provenance: `python3 knowledge/_state.py`.
 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid header — #261 lane G review (OLD vs NEW, all states, four themes)</title>
+<!--
+  REVIEW PAGE for the #261 column-header design pass on the Data grid (Dave's #2 nominated
+  dashboard element). Self-contained: no external CSS, no external script, no network. The
+  theme swatches carry the RESOLVED values measured out of the real cascade in Chromium
+  (notes/_lanes/261-G-theme-values.json), so what is drawn here is what the snippet paints.
+  The header markup below is a faithful copy of the shipped anatomy, stamped by a small
+  builder so every state and every theme shows the SAME markup with only its state changed.
+-->
+<style>
+  :root{
+    --uf:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ink:#1A1A1A; --paper:#FFFFFF; --rule:#E1E1E1; --mute:#626262;
+    --gap:24px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:40px 32px 96px; background:var(--paper); color:var(--ink); font-family:var(--uf);
+    font-size:16px; line-height:24px; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px; margin:0 auto;}
+  h1{font-size:40px; line-height:44px; font-weight:500; margin:0 0 8px; letter-spacing:-0.01em;}
+  h2{font-size:24px; line-height:28px; font-weight:500; margin:56px 0 4px;}
+  h3{font-size:16px; line-height:20px; font-weight:500; margin:24px 0 8px;}
+  p{margin:0 0 12px; max-width:78ch;}
+  .lede{color:var(--mute);}
+  .kicker{font-size:12px; line-height:16px; letter-spacing:.08em; color:var(--mute); margin:0 0 12px;}
+  .rule{height:1px; background:var(--ink); margin:12px 0 24px;}
+  .rule.thin{background:var(--rule);}
+  .cols2{display:grid; grid-template-columns:1fr; gap:var(--gap);}
+  .grid4{display:grid; grid-template-columns:1fr; gap:var(--gap);}
+  .cap{font-size:12px; line-height:16px; color:var(--mute); margin:8px 0 0;}
+  .cap b{color:var(--ink); font-weight:500;}
+  table.spec{border-collapse:collapse; width:100%; font-size:14px; line-height:20px;}
+  table.spec th,table.spec td{border:1px solid var(--rule); padding:8px 10px; text-align:left; vertical-align:top;}
+  table.spec th{background:#F0F0F0; font-weight:500;}
+  table.spec td.n{text-align:right; font-variant-numeric:tabular-nums;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; background:#F0F0F0; padding:1px 4px;}
+  ul{margin:0 0 12px; padding-left:20px; max-width:78ch;}
+  li{margin:0 0 4px;}
+
+  /* ---------- the specimen: a faithful copy of the shipped header anatomy ---------- */
+  .tk{--header:#F0F0F0; --cell:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --icon:#1A1A1A;
+      --hover:#F0F0F0; --page:#FFFFFF; --focus:#305A85; --fborder:#808080; --bar:#000000;
+      --grouphdr:#F0F0F0; --disabled:#E1E1E1; --hdr-min:44px; --grp-h:32px; --cell-py:10px; --cell-px:12px;
+      background:var(--page); color:var(--text); border:1px solid var(--border); padding:12px; overflow:auto;}
+  .tk[data-density="compact"]{--cell-py:4px; --hdr-min:32px; --grp-h:28px;}
+  .tk table{border-collapse:collapse; table-layout:fixed; width:100%; min-width:760px; background:var(--cell);
+    font-family:var(--uf); color:var(--text);}
+  .tk th,.tk td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;}
+  .tk thead th{background:var(--header); padding:0; position:relative;
+    box-shadow:inset 0 -1px 0 0 var(--border), inset -1px 0 0 0 var(--border);}
+  .tk thead tr.grp th{height:var(--grp-h); padding:0 var(--cell-px); background:var(--grouphdr);}
+  .tk .glabel{display:block; font-size:12px; line-height:16px; opacity:.6; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap;}
+  .tk .th-in{display:flex; align-items:stretch; min-height:var(--hdr-min);
+    box-shadow:var(--s-sort,0 0 transparent), var(--s-filt,0 0 transparent);}
+  .tk .th-in.mid{align-items:center; justify-content:center;}
+  .tk .sort{flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:8px;
+    padding:var(--cell-py) var(--cell-px); border:0; background:transparent; color:var(--text);
+    font:500 16px/20px var(--uf); cursor:pointer; text-align:left;}
+  .tk .sort .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tk .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
+  .tk .sort .ic svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .tk th[aria-sort="none"] .ic-none{display:inline-flex;}
+  .tk th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
+  .tk th[aria-sort="descending"] .ic-desc{display:inline-flex;}
+  .tk th[aria-sort="ascending"],.tk th[aria-sort="descending"]{background:var(--hover);}
+  .tk th[aria-sort="ascending"] .th-in,.tk th[aria-sort="descending"] .th-in{--s-sort:inset 0 -3px 0 0 var(--bar);}
+  .tk th.num .sort{flex-direction:row-reverse; text-align:right;}
+  .tk th.num .sort .ic{margin-left:0;}
+  .tk th[data-disabled] .sort{cursor:default; opacity:.48;}
+  .tk .colf{flex:none; align-self:center; width:24px; height:24px; margin-inline-end:4px; padding:0; border:0;
+    background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .tk .colf svg{width:16px; height:16px; fill:currentColor; display:block;}
+  .tk .colf .ic-on{display:none;}
+  .tk th[data-filtered="true"] .colf .ic-off{display:none;}
+  .tk th[data-filtered="true"] .colf .ic-on{display:block;}
+  .tk th[data-filtered="true"] .th-in{--s-filt:inset 3px 0 0 0 var(--bar);}
+  .tk .rsz{flex:none; width:12px; align-self:stretch; position:relative;}
+  .tk .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:2px; background:var(--fborder);}
+  .tk .rsz[data-active="true"]::after{background:var(--bar); top:0; bottom:0;}
+  .tk .cbx{display:inline-flex; align-items:center;}
+  .tk .cbx .box{width:22px; height:22px; border:2px solid var(--fborder); display:inline-flex;
+    align-items:center; justify-content:center;}
+  .tk .cbx .box svg{width:14px; height:14px;}
+  .tk .cbx .box path{stroke:var(--text); stroke-width:2.4; fill:none;}
+  .tk td.sel{text-align:center;}
+  .tk td{font:400 16px/20px var(--uf); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .tk td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  /* forced states, for the gallery only */
+  .tk .is-hover .sort{background:var(--hover);}
+  .tk .is-focus{outline:2px solid var(--focus); outline-offset:-2px;}
+  .tk .is-resizing .sort{background:transparent;}
+  .tk .colmenu{position:absolute; inset-inline-start:0; top:100%; z-index:6; min-width:216px; padding:8px;
+    background:var(--page); border:1px solid var(--fborder); text-align:left;}
+  .tk .colmenu .cml{display:block; font-size:12px; line-height:16px; opacity:.6; margin-bottom:4px;}
+  .tk .colmenu .fld{height:44px; border:1px solid var(--fborder); display:flex; align-items:center; padding:0 8px;
+    font:400 16px/20px var(--uf); box-shadow:inset 0 -4px 0 0 var(--bar);}
+  .tk .colmenu .cmh{display:block; font-size:12px; line-height:16px; opacity:.6; margin-top:8px;}
+
+  /* ---------- the OLD header, reproduced as it shipped before #261 ---------- */
+  .old thead th{padding:0;}
+  .old .sort{width:100%; min-height:44px;}
+  .old .th-in{box-shadow:none;}
+
+  .swatch{border:1px solid var(--rule);}
+  .swatch .lab{display:flex; justify-content:space-between; gap:8px; padding:6px 10px; border-bottom:1px solid var(--rule);
+    font-size:12px; line-height:16px;}
+  .swatch .lab b{font-weight:500;}
+  .swatch .lab span{color:var(--mute);}
+  .shot{width:100%; display:block; border:1px solid var(--rule);}
+  .pill{display:inline-block; border:1px solid var(--ink); padding:1px 8px; font-size:12px; line-height:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">APOLLO · #261 LANE G · 2026-09-08 · DATA GRID</p>
+  <h1>The column header</h1>
+  <div class="rule"></div>
+  <p class="lede">Dave's second nominated dashboard element. The header row was one full-cell sort button per
+  column. It is now a four-part anatomy — label, sort, an optional per-column filter, a resize handle — under an
+  optional spanning group row, with both header rows sticky, a comfortable/compact density, and a column that can
+  say no. Nothing was bolted onto the passive <b>Table</b>: its header is a plain <code>th scope="col"</code> that
+  collapses to cards, a different contract, and it is <b>not shared</b> with this one — Table is untouched.</p>
+
+  <h2>1 · Old versus new</h2>
+  <div class="rule thin"></div>
+  <div class="cols2">
+    <div class="swatch">
+      <div class="lab"><b>OLD</b><span>shipped through #260</span></div>
+      <div class="tk old" data-spec="old"></div>
+    </div>
+    <div class="swatch">
+      <div class="lab"><b>NEW</b><span>#261 lane G</span></div>
+      <div class="tk" data-spec="new"></div>
+    </div>
+  </div>
+  <p class="cap"><b>What moved.</b> The sort button gave up the whole cell and became one flex item, so a filter
+  button and a resize handle have somewhere to live that no label can ever collide with. The label truncates and
+  takes a <code>title</code> only when it measurably truncates. Numeric columns turn the label and its glyph to
+  the right edge, over the tabular figures. Sorting a column now shifts its ground and draws a rule under it —
+  the glyph alone was doing too much work at a glance across twelve columns.</p>
+
+  <h2>2 · Anatomy</h2>
+  <div class="rule thin"></div>
+  <table class="spec">
+    <thead><tr><th style="width:24%">Part</th><th style="width:12%">Target</th><th>Contract</th></tr></thead>
+    <tbody>
+      <tr><td>Select-all cell</td><td class="n">44 / 32</td><td>Composed from Selection-controls (s258-D4); indeterminate when the page is partly selected. Compact dials the label box to 32px — above the 24px floor, never below.</td></tr>
+      <tr><td>Label</td><td class="n">—</td><td>Truncates with <code>text-box-edge:text text</code>; <code>title</code> written only when <code>scrollWidth &gt; clientWidth</code>, re-measured after every resize and density change.</td></tr>
+      <tr><td>Sort</td><td class="n">44 / 32</td><td>Cell-bound button, <code>.full</code> so it cannot grow on hover. <code>aria-sort</code> none → ascending → descending, three distinct library glyphs.</td></tr>
+      <tr><td>Column filter</td><td class="n">24</td><td>Optional per column (Amount ships without one). Form furniture — colour states, no press physics. Off/on are two different library glyphs, never one recoloured.</td></tr>
+      <tr><td>Resize handle</td><td class="n">24 hit</td><td>12px grip, 24px hit area, <code>role="separator"</code> with live <code>aria-valuenow</code>; drives the <code>&lt;col&gt;</code> width, clamped 96–480px.</td></tr>
+      <tr><td>Group row</td><td class="n">32 / 28</td><td>Optional <code>th scope="colgroup"</code> row, sticky at <code>top:0</code> with the column row sticking below it. It counts: <code>aria-rowcount</code> and every <code>aria-rowindex</code> shift by one.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3 · States</h2>
+  <div class="rule thin"></div>
+  <p>Every state is doubled. Sorted and filtered take <b>different edges</b> of the cell — a rule under, a rule
+  leading — so one column can be sorted and filtered at once and still be read at a glance.</p>
+  <div class="grid4" id="states"></div>
+
+  <h2>4 · Four themes × two modes</h2>
+  <div class="rule thin"></div>
+  <p>Values below are the resolved cascade, measured in Chromium. Every theme is drawn sorted on Date and
+  filtered on Payee, so both accents are visible in each.</p>
+  <div class="grid4" id="themes"></div>
+
+  <h2>5 · Driven receipts</h2>
+  <div class="rule thin"></div>
+  <table class="spec">
+    <thead><tr><th>Probe</th><th>Measured</th><th>Reads</th></tr></thead>
+    <tbody>
+      <tr><td>Sticky, after scrolling the region 70px</td><td class="n">header top offset 33px</td><td>The column row parks at the group row's height + its rule — the two travel as one block.</td></tr>
+      <tr><td>Sort button, comfortable / compact</td><td class="n">44px / 32px</td><td>Both above the 24px dial-down floor (s116-D1).</td></tr>
+      <tr><td>Filter button, both densities</td><td class="n">24 × 24</td><td>At the floor by design — the Tags dismiss-× size. <code>_validate_hit_area.py</code> reports it ADVISORY against the 44px default, never BREACH-FLOOR.</td></tr>
+      <tr><td>Select-all label, comfortable / compact</td><td class="n">44px / 32px</td><td>Compact keeps a real target.</td></tr>
+      <tr><td>Keyboard resize (Alt+→ then →)</td><td class="n">aria-valuenow 176 → 192</td><td>Focus lands on the separator; arrows size in 16px steps, Shift 32px, Esc returns to the cell.</td></tr>
+      <tr><td>Sorted accent, mono light / dark</td><td class="n">inset 0 −3px #000 / #FFF</td><td>form/border/active in both modes.</td></tr>
+      <tr><td>Filtered accent, mono light / dark</td><td class="n">inset 3px 0 #000 / #FFF</td><td>Same token, the other edge.</td></tr>
+      <tr><td><code>aria-rowcount</code>, group row on, 16 matches</td><td class="n">18</td><td>16 rows + 2 header rows. Off, it reads 17.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6 · Keyboard</h2>
+  <div class="rule thin"></div>
+  <p>The grid keeps its <b>one tab stop</b>. Both new affordances hang off Alt so the plain arrows still navigate cells.</p>
+  <table class="spec">
+    <thead><tr><th style="width:26%">Key</th><th>On a column header</th></tr></thead>
+    <tbody>
+      <tr><td><code>← → ↑ ↓</code></td><td>Move between cells, including up into the group row.</td></tr>
+      <tr><td><code>Enter</code> / <code>Space</code></td><td>Cycle the sort. Nothing on a disabled column.</td></tr>
+      <tr><td><code>Alt</code> + <code>↓</code></td><td>Open that column's filter menu, field focused and pre-filled with the term in force. <code>Enter</code> commits, <code>Esc</code> closes and returns focus to the cell.</td></tr>
+      <tr><td><code>Alt</code> + <code>←</code> / <code>→</code></td><td>Enter resize mode on the separator. Arrows size (Shift for 32px), <code>Esc</code> or <code>Enter</code> returns to the cell.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>7 · Two things worth Dave's word</h2>
+  <div class="rule thin"></div>
+  <ul>
+    <li><b>The group row has no ground of its own.</b> It binds <code>table/column/background</code>, which resolves
+      to the same hex as <code>table/header/background</code> in all four themes today, so the row reads by its
+      caption type and its rule, not by colour. Either a theme splits the two tokens, or the group row stays a
+      typographic distinction. <span class="pill">split or type</span></li>
+    <li><b>The disabled column is muted with alpha, not <code>text/disabled</code>.</b> That token is #E1E1E1 and is
+      illegible on the #F0F0F0 header ground — the repo's own <code>.pbtn[disabled]</code> precedent only works
+      because pagination sits on the page, not on the header. <span class="pill">alpha or token</span></li>
+  </ul>
+
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="g-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
+  <symbol id="g-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
+  <symbol id="g-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+  <symbol id="g-filter" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/></symbol>
+  <symbol id="g-filter-on" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.205 12.5 3.327 13.118 2.941 14H0V16H2.941C3.327 16.882 4.205 17.5 5.23 17.5C6.255 17.5 7.133 16.882 7.519 16H18V14H7.519C7.133 13.118 6.255 12.5 5.23 12.5ZM7.519 2C7.133 1.118 6.255 0.5 5.23 0.5C4.205 0.5 3.327 1.118 2.941 2H0V4H2.941C3.327 4.882 4.205 5.5 5.23 5.5C6.255 5.5 7.133 4.882 7.519 4H18V2H7.519ZM12.77 6.5C11.745 6.5 10.867 7.118 10.481 8H0V10H10.481C10.867 10.882 11.745 11.5 12.77 11.5C13.795 11.5 14.673 10.882 15.059 10H18V8H15.059C14.673 7.118 13.795 6.5 12.77 6.5Z" fill="currentColor"/></symbol>
+  <symbol id="g-tick" viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></symbol>
+</svg>
+
+<script>
+// The specimen builder. One markup, many states — so a difference between two panels below is a
+// difference of STATE, never of markup.
+const THEMES = {
+ "mono/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
+ "mono/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
+ "legacy/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#333333","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
+ "legacy/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
+ "console/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
+ "console/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
+ "supercharge/light":{"--header":"#DFDEDC","--cell":"#F7F6F4","--border":"#CDC8C6","--text":"#13110E","--icon":"#13110E","--hover":"#DFDEDC","--page":"#F7F6F4","--focus":"#305A85","--fborder":"#524842","--bar":"#000000","--grouphdr":"#DFDEDC","--disabled":"#CDC8C6"},
+ "supercharge/dark":{"--header":"#2A2621","--cell":"#1A1A1A","--border":"#524842","--text":"#F7F6F4","--icon":"#F7F6F4","--hover":"#2E2A25","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#524842","--bar":"#F7F6F4","--grouphdr":"#2A2621","--disabled":"#524842"}
+};
+
+const glyphs = k => `<span class="ic ic-none"><svg viewBox="0 0 18 18"><use href="#g-sort"/></svg></span>
+  <span class="ic ic-asc"><svg viewBox="0 0 18 18"><use href="#g-up"/></svg></span>
+  <span class="ic ic-desc"><svg viewBox="0 0 18 18"><use href="#g-down"/></svg></span>`;
+const filterBtn = `<button class="colf" type="button" tabindex="-1">
+  <svg class="ic-off" viewBox="0 0 18 18"><use href="#g-filter"/></svg>
+  <svg class="ic-on" viewBox="0 0 18 18"><use href="#g-filter-on"/></svg></button>`;
+const handle = active => `<div class="rsz"${active ? ' data-active="true"' : ''}></div>`;
+
+// opts: {old, groups, sort:{key,dir}, filtered:[keys], hover:key, focus:key, menu:key,
+//        resizing:key, disabled:'ref', labels:{}, density}
+function header(o){
+  o = Object.assign({groups:true, filtered:[], labels:{}}, o);
+  const COL = [
+    {k:'date',   t:o.labels.date  || 'Date',   w:'140px'},
+    {k:'payee',  t:o.labels.payee || 'Payee',  w:'168px'},
+    {k:'ref',    t:'Reference',                w:'152px', off:true},
+    {k:'type',   t:'Type',                     w:'132px'},
+    {k:'amount', t:'Amount',                   w:'120px', num:true, nofilter:true}
+  ];
+  const cell = c => {
+    const sorted = o.sort && o.sort.key === c.k ? o.sort.dir : (c.off ? null : 'none');
+    const filt = o.filtered.indexOf(c.k) > -1;
+    const cls = [c.num ? 'num' : '', o.focus === c.k ? 'is-focus' : ''].filter(Boolean).join(' ');
+    const inCls = ['th-in', o.hover === c.k ? 'is-hover' : '', o.resizing === c.k ? 'is-resizing' : ''].filter(Boolean).join(' ');
+    return `<th scope="col" class="${cls}" ${sorted ? `aria-sort="${sorted}"` : ''}
+        ${c.off ? 'data-disabled="true"' : ''} ${filt ? 'data-filtered="true"' : ''}>
+      <div class="${inCls}">
+        <button class="sort" type="button" tabindex="-1"><span class="lbl">${c.t}</span>${c.off ? '' : glyphs(c.k)}</button>
+        ${o.old || c.nofilter ? '' : filterBtn}
+        ${o.old ? '' : handle(o.resizing === c.k)}
+      </div>
+      ${o.menu === c.k ? `<div class="colmenu"><span class="cml">${c.t} contains</span>
+         <div class="fld">acme</div><span class="cmh">Enter applies · Esc closes</span></div>` : ''}
+    </th>`;
+  };
+  const grp = o.groups ? `<tr class="grp">
+      <th class="sel"></th>
+      <th colspan="4"><span class="glabel">Transaction detail</span></th>
+      <th class="num"><span class="glabel">Value (GBP)</span></th></tr>` : '';
+  return `<table${o.old ? ' class="oldt"' : ''}>
+    <colgroup><col style="width:48px">${COL.map(c => `<col style="width:${c.w}">`).join('')}</colgroup>
+    <thead>${o.old ? '' : grp}<tr class="cols">
+      <th class="sel"><div class="th-in mid"><span class="cbx"><span class="box"><svg viewBox="0 0 18 18"><use href="#g-tick"/></svg></span></span></div></th>
+      ${COL.map(cell).join('')}
+    </tr></thead>
+    <tbody>
+      <tr><td class="sel"><span class="cbx"><span class="box"></span></span></td><td>21 Jul 2026</td><td>Thames Water</td><td>Water bill</td><td>Direct debit</td><td class="num">−£38.50</td></tr>
+      <tr><td class="sel"><span class="cbx"><span class="box"></span></span></td><td>20 Jul 2026</td><td>Acme Payroll</td><td>July salary</td><td>Credit</td><td class="num">£2,450.00</td></tr>
+    </tbody></table>`;
+}
+
+// --- section 1: old vs new ---
+document.querySelector('[data-spec="old"]').innerHTML = header({old:true, groups:false});
+document.querySelector('[data-spec="new"]').innerHTML = header({sort:{key:'date', dir:'descending'}, filtered:['payee']});
+
+// --- section 3: the state gallery ---
+const STATES = [
+  ['Rest',                'group row on, nothing sorted, nothing filtered', {}],
+  ['Hover',               'ground shift on the sort button only — the filter and the handle keep their own', {hover:'payee'}],
+  ['Focus-visible',       'the ring belongs to the CELL: the roving tab stop is the cell, not the button', {focus:'payee'}],
+  ['Sorted, ascending',   'aria-sort + chevron + ground + a rule UNDER the cell', {sort:{key:'date', dir:'ascending'}}],
+  ['Sorted, descending',  'the same four channels, the other glyph', {sort:{key:'date', dir:'descending'}}],
+  ['Filtered-active',     'solid glyph + a rule LEADING the cell + a chip elsewhere that names the column', {filtered:['payee']}],
+  ['Sorted AND filtered', 'both, on one column — the two rules take different edges', {sort:{key:'payee', dir:'ascending'}, filtered:['payee']}],
+  ['Menu open',           'anchored under its own cell, field pre-filled with the term in force', {menu:'payee', filtered:['payee']}],
+  ['Resizing',            'the grip goes full height in the accent; hover is suppressed while dragging', {resizing:'payee'}],
+  ['Disabled column',     'Reference: no sort glyph, alpha mute, aria-disabled — the filter still works', {}],
+  ['Truncation',          'the label ellipsises and takes a title ONLY when it measurably truncates', {labels:{payee:'Payee, counterparty and reference'}}],
+  ['Compact density',     '32px header row and 32px targets — above the 24px floor, never below', {density:'compact', sort:{key:'date', dir:'ascending'}}],
+  ['No group row',        'the column row alone, sticky at top:0; rowcount and rowindex drop by one', {groups:false}]
+];
+document.getElementById('states').innerHTML = STATES.map(([t, why, o]) => `
+  <div class="swatch">
+    <div class="lab"><b>${t}</b><span>${why}</span></div>
+    <div class="tk"${o.density ? ' data-density="compact"' : ''}>${header(o)}</div>
+  </div>`).join('');
+
+// --- section 4: four themes x two modes ---
+document.getElementById('themes').innerHTML = Object.keys(THEMES).map(key => {
+  const vars = Object.entries(THEMES[key]).map(([k, v]) => `${k}:${v}`).join(';');
+  const [t, m] = key.split('/');
+  return `<div class="swatch">
+    <div class="lab"><b>${t}</b><span>${m} · header ${THEMES[key]['--header']} · accent ${THEMES[key]['--bar']}</span></div>
+    <div class="tk" style="${vars}">${header({sort:{key:'date', dir:'descending'}, filtered:['payee']})}</div>
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>
