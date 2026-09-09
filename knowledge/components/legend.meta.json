@@ -1,0 +1,147 @@
+{
+  "name": "Legend",
+  "category": "molecule",
+  "$status": "PROPOSED #261 lane L (2026-09-09) — Dave's eye owed. NEW component: the legend has existed since #70 as engine JS only (knowledge/canon/dv-legend.js, the DV-D11…DV-D19 interaction model) and had no meta and no snippet, so it could not be PLACED. This meta and Legend.reference.html make it placeable; the behaviour is unchanged and unforked.",
+  "purpose": "The series key as a component a composer can place on its own — swatch, key letter, label, optional value/percent/delta, and the show-hide / isolate toggles — so one legend can serve a row of small multiples instead of every chart drawing its own. It CONSUMES canon/dv-legend.js (registered behaviour, dataviz group); it contains no legend behaviour of its own.",
+  "answers": "what-is-this",
+  "shape": "no-data × control",
+  "span": {
+    "cols": {
+      "min": 2,
+      "max": 12
+    }
+  },
+  "when": "series ≥ 2 AND label = text — a key is needed only where more than one series is drawn; a single-series chart names its series in the title (chart-sparkline's rule). Placed on its own only when the charts it keys are more than one (small multiples, a comparison row); a lone chart carries its legend inside its own figure, which is what every registered chart type already does.",
+  "with": [
+    {
+      "slug": "chart-panel",
+      "when": "two or more charts in one view draw the SAME series set — one shared key, placed once"
+    }
+  ],
+  "not-with": [
+    {
+      "slug": "chart-sparkline",
+      "when": "the only graphic in the view is axis-free and single-series — there is nothing to key"
+    }
+  ],
+  "props": [
+    { "name": "orientation", "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal", "$note": "horizontal = the default row form; vertical = .vert, the column form (min-width 190px) that carries the numeric group in an aligned column." },
+    { "name": "placement", "type": "enum", "values": ["top", "right", "bottom"], "default": "top", "$note": "Declared by the HOST (data-leg-place on .leg-host), not by the legend — the legend fills the cell it is given. LEFT is deliberately absent: it puts the key before the thing it keys, and no registered chart draws one." },
+    { "name": "overflow", "type": "enum", "values": ["wrap", "scroll"], "default": "wrap", "$note": "One is REQUIRED. A legend that neither wraps nor scrolls widens its own container, which is how a bento tile breaks (s248-D3)." },
+    { "name": "swatchShape", "type": "enum", "values": ["square", "triangle", "diamond", "bar", "line", "line-dashed", "line-dotted"], "default": "square", "$note": "The WCAG 1.4.1 second channel: colour is never the only carrier. Angular only — Badge and Avatar are the sole round components. The clip-path lands on the mark (::after), never on the 44px target (::before)." },
+    { "name": "values", "type": "boolean", "default": false, "$note": "Shows the trailing numeric group: value, share of total, and the period delta. Tabular figures (.t-cm-chart-value)." },
+    { "name": "reset", "type": "boolean", "default": true, "$note": "The B-D4 pattern: rendered DISABLED while nothing is hidden, enabling on any ghost or isolate. dv-legend owns the disabled state." },
+    { "name": "shared", "type": "boolean", "default": false, "$note": "Shared mode. TODAY the mechanism is SCOPE: dv-legend resolves marks with host.closest('figure'), so one legend and N canvases inside one <figure> is a shared legend by construction. `data-dv-controls=\"<chart id> …\"` is a declared CONTRACT the engine does not read yet — see $sharedContract." }
+  ],
+  "variants": [
+    { "name": "horizontal / top", "use": "The default. Above the canvas, wrapping onto a second row." },
+    { "name": "vertical / right", "use": "Long series names, or a numeric group that has to align in a column. Folds under the canvas below 640px." },
+    { "name": "shared / bottom", "use": "One key under a row of small multiples." },
+    { "name": "non-colour swatches", "use": "Colourblind-safe: shape for area marks, line style for line series." }
+  ],
+  "slots": {
+    "rows": {
+      "accepts": {
+        "capability": ["chart-dataset"]
+      },
+      "use": "One row per series: name, colour index, and optionally value, share and delta.",
+      "required": true,
+      "multiple": true
+    }
+  },
+  "tokens": {
+    "font-family": "type composites via markup class (DV-D08) — keys .t-cm-chart-key 12/700 · labels .t-cm-chart-label 12/500 · values .t-cm-chart-value 12/500 tabular. No new selector is bound in type.css: the legend wears the existing chart-text composites, so knowledge/canon/_type-bindings.json is untouched by this lane.",
+    "swatch": "data/series/1…5 (the ds-026 solid palette), hollow + data/control/swatch-off when unchecked",
+    "row": "border/subtle resting, text/default on hover and while isolated",
+    "disabled": "data/control/label-disabled/color on the Reset control (B2 label-led: the border returns to border/subtle and the label carries the distinction)",
+    "delta": "rag/success-ink / rag/error-ink — the s151-D1 two-red law INK seat, background-keyed: #137F3C / #DA1A00 light, #66CC8D / #F6604C dark",
+    "surface": "background/default"
+  },
+  "$hitTarget": "44px EVERYWHERE, via an invisible ::before on every control. Dave, 2026-07-25, quoted in the donut legend block: the swatch is ONE component, so 44 everywhere — a ruling that EXPLICITLY REVERSES the 24px dense-case proposal. The 24px dial-down floor (_validate_hit_area.py, s116-D1) is therefore the floor a dense legend variant WOULD sit on, and this component ships no dense variant. Re-opening it is Dave's, never a lane's.",
+  "$sharedContract": "s258-D1 permits authored JS, and a lane could have written a chart-id lookup this afternoon. It is NOT written, deliberately: dv-legend is a CANON behaviour consumed by fifteen registered chart members, and widening its resolution rule from `closest('figure')` to a document-wide id lookup changes what every one of those legends controls. That is an engine change with a blast radius, not a component's own business (the [[do-not-rule-list-cannot-fence-a-generator]] shape). So the attribute ships as a contract with a named consumer request, and figure-scope carries the shipped shared legend.",
+  "relationships": {
+    "livesInside": ["Chart panels (figure.dv — every registered chart type already carries one)", "Dashboard rows of small multiples", "Bento tiles"],
+    "mustNotNeighbour": ["A second legend for the same series set in the same view — that is the duplication this component exists to remove"],
+    "commonPatterns": ["shared key for small multiples", "vertical key with values", "wrapping key above a bar chart"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "The list is role=\"group\" with an aria-label naming both gestures. The swatch is role=\"checkbox\" + aria-checked (show/hide); the label is a native <button> + aria-pressed (isolate). One sr-only role=\"status\" aria-live=\"polite\" region per legend announces every state change.",
+    "name": "Every control carries an explicit aria-label ('Show or hide <series>' / 'Isolate <series>'); where the numeric group is shown the isolate label reads the value, share and delta too, so the numbers are not sight-only.",
+    "keyboard": "Swatch: tabindex 0, Space or Enter toggles (dv-legend supplies the activation a role=checkbox span does not get natively). Label: native button. Reset: native button, disabled until something is hidden. A scrolling legend is itself focusable so a keyboard user can reach rows below the fold.",
+    "focus": ":focus-visible = 2px text/default outline, offset 2, on every control.",
+    "nonText": "Swatch fills are the data/series palette (≥3:1 vs the page, dv-016). Colour is never alone: the key letter is always present and the swatch may take a shape or line style (WCAG 1.4.1).",
+    "liveRegionId": "The live region's id MUST be the legend's id with '-legend' replaced by '-live' — that string substitution is how dv-legend finds it (rec() in canon/dv-legend.js). A legend whose ids do not follow it is silent, and nothing fails.",
+    "relatedSC": ["1.4.1 Use of Colour", "1.4.11 Non-text Contrast", "2.5.5 Target Size", "4.1.2 Name Role Value", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "A second legend for a series set that already has one in the same view",
+    "Hiding a series by removing its marks (the model ghosts to 12%; removal reflows the chart under the user's cursor)",
+    "A legend that neither wraps nor scrolls (it widens its host — the bento break, s248-D3)",
+    "Colour as the only channel — no key letter, no shape",
+    "A round swatch (Badge and Avatar are the only round components)",
+    "A legend id whose live region is not <id minus -legend> + -live (silently unannounced)",
+    "Re-implementing show-hide or isolate in the consumer instead of consuming canon/dv-legend.js",
+    "A dense legend at 24px targets (Dave reversed that proposal on 2026-07-25 — 44 everywhere)"
+  ],
+  "tokenValidation": {
+    "date": "2026-09-09",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — _validate_snippets.py green; series 1–5, axis, and both delta ink seats declared and contrast-paired against background/default in both modes.",
+    "$note": "PROPOSED. The chrome is ported VERBATIM from the gated Chart-donut legend rather than re-drawn: a placeable legend that looked different from the legend inside the charts would be a second legend."
+  },
+  "interactive": true,
+  "stateModel": {
+    "rest": "every series shown; Reset disabled",
+    "check": "one or more swatches unchecked; the unchecked series ghost at 12% and the row's swatch is hollow",
+    "isolate": "a label is pressed; only that series (plus any swatch-added ones) reads active. DV-D19: the mode is LATCHED — a swatch click while isolated moves the whole set to check mode and never returns; a re-click on the seed label releases.",
+    "$note": "The three states and their transitions are OWNED by canon/dv-legend.js. This meta records them; it does not re-specify them."
+  },
+  "responsive": {
+    "rule": "s248-D3 — placeable means responsive. The right-placed vertical legend folds under the canvas below 640px and becomes the wrapping horizontal form; the small-multiples row becomes a column. No JS: the host grid and the flex wrap do all of it, so the behaviour gate's single-resize-listener rule is untouched.",
+    "tokens": []
+  },
+  "dimensions": {
+    "swatch": "12×12 mark, 44×44 target",
+    "row": "4px 8px padding, 8px internal gap, 1px border",
+    "verticalMinWidth": "190px",
+    "scrollViewport": "132px max-height"
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-legend.js",
+    "partial": [
+      "dv-legend"
+    ],
+    "fallback": "With CSS on and JS off the legend renders in full and is completely readable: swatches, key letters, names, values, shares and deltas are all authored markup, and the rows read as a static key — which is the form a printed legend takes anyway. The chart marks stay at full opacity, so nothing is dimmed or missing. Lost with JS off: show/hide, isolate, the hover/focus fade preview, the live-region announcements, and Reset (which renders in its authored disabled state and stays there). The swatch keeps aria-checked=\"true\" and the label aria-pressed=\"false\" — the authored resting state — so no control lies about a state it cannot change.",
+    "$note": "s245-D1 grammar (a) PATH: the behaviour begins at knowledge/canon/dv-legend.js, the ONE source of the legend interaction model, injected between this snippet's AUTO-BEHAVIOUR dv-legend markers by gen_component_partials.py. `partial` names the registered behaviour and matches the member's `consumes` in component-types.json. `events` is generated, never authored (s245-D4)."
+  },
+  "provenance": {
+    "source": "hand-authored",
+    "figma_node": "",
+    "code_path": "knowledge/canon/dv-legend.js"
+  },
+  "edges": {
+    "renderedBy": [
+      { "ref": "snippet:Legend.reference.html" }
+    ],
+    "containedBy": [
+      { "ref": "component:chart-bar", "$note": "and every other registered dataviz member — each already carries this legend inside its own figure" }
+    ],
+    "usedInContext": [
+      { "ref": "context:dashboards" },
+      { "ref": "context:small-multiples" }
+    ],
+    "commonPattern": [
+      { "ref": "pattern:shared-key-for-small-multiples" },
+      { "ref": "pattern:vertical-key-with-values" }
+    ],
+    "mustNotNeighbour": [
+      { "ref": null, "$note": "A second legend for the same series set in the same view" }
+    ],
+    "governedBy": [
+      { "ref": "ruling:s151-D1" },
+      { "ref": "ruling:s248-D3" },
+      { "ref": "ruling:s258-D1" }
+    ]
+  }
+}
