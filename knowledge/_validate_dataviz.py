@@ -1507,7 +1507,39 @@ def matrix():
     return 1 if gaps else 0
 
 
+def receipts_fresh(receipts_path=None, root=None):
+    """s263-D13 (Dave, 2026-09-09: "yes" to the dataviz gate joining the release set).
+    The cheap, write-nothing clause a RELEASE must pass: every driven receipt's pinned source
+    hashes still match the tree. Exit 1 on the first stale page, naming it. This exists because
+    v1.0.9 shipped a type.css no chart had been driven against and the nine release gates could
+    not see it (notes/_lanes/263-C-redrive-chart-engine.md). `--receipts PATH` drives it on a copy.
+    """
+    root = root or os.path.dirname(HERE)
+    rec = _load_receipts(receipts_path)
+    where = os.path.relpath(receipts_path or RECEIPTS_PATH, root)
+    if not rec or not (rec.get("pages") or {}):
+        print("❌ receipts-fresh: no driven receipts at %s. Drive: %s" % (where, DRIVE_CMD)); return 1
+    stale = []
+    for page, entry in sorted(rec["pages"].items()):
+        for rel, want in sorted((entry.get("sources") or {}).items()):
+            fp = os.path.join(root, rel)
+            got = _sha256(fp) if os.path.isfile(fp) else None
+            if got != want:
+                stale.append("%s ← %s%s" % (page, rel, " (missing)" if got is None else ""))
+    if stale:
+        print("❌ receipts-fresh: %d of %d driven receipt(s) STALE — a release may not be cut over "
+              "charts nobody has driven against the tree that ships. Re-drive: %s" % (len(stale), len(rec["pages"]), DRIVE_CMD))
+        for s_ in stale[:12]:
+            print("     ✗", s_)
+        return 1
+    print("✅ receipts-fresh: all %d driven receipt(s) match the tree (%s)" % (len(rec["pages"]), where))
+    return 0
+
+
 if __name__ == "__main__":
+    if "--receipts-fresh" in sys.argv:
+        rp = sys.argv[sys.argv.index("--receipts")+1] if "--receipts" in sys.argv else None
+        sys.exit(receipts_fresh(rp))
     if "--selftest" in sys.argv:
         sys.exit(selftest())
     if "--matrix" in sys.argv:

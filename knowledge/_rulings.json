@@ -7433,6 +7433,23 @@
     "chat #263 2026-09-09; enacted in the same commit"
    ],
    "status": "enacted #263"
+  },
+  {
+   "id": "s263-D13",
+   "ruled": "The dataviz gate joins the RELEASE gate set: `build-designer-pack.sh --release` runs `_validate_dataviz.py --receipts-fresh` (write-nothing) after require_clean and REFUSES if any driven receipt's pinned source hash differs from the tree. Selftest arm drives a mutated receipt RED and the real receipts as control. Ten release gates, not nine.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #263, asked whether _validate_dataviz.py should join the release gate set: \"yes\".",
+   "governs": [
+    "apollo-spider/build-designer-pack.sh",
+    "knowledge/_validate_dataviz.py",
+    "knowledge/_tests/chart-engine/_receipts.json"
+   ],
+   "evidence": [
+    "notes/_lanes/263-C-redrive-chart-engine.md — v1.0.9 shipped a type.css no chart had been driven against; 9/9 gates could not see it",
+    "selftest #263: 'green — one mutated source hash is refused, as it must' · 'green — the real receipts are FRESH (control)'"
+   ],
+   "status": "enacted #263"
   }
  ]
 }

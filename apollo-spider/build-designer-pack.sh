@@ -86,6 +86,16 @@ require_clean() {
   fi
 }
 
+# s263-D13 (Dave, 2026-09-09): the dataviz gate joins the release set. v1.0.9 shipped a type.css
+# no chart had been driven against; the nine gates could not see it because none of them reads
+# the driven receipts. This one does — write-nothing, so it cannot dirty the clean tree it guards.
+require_receipts_fresh() {
+  python3 "$ROOT/knowledge/_validate_dataviz.py" --receipts-fresh \
+    || die "the chart-engine receipts are STALE against this tree (s263-D13). A release may not
+         ship charts nobody has driven against the canon that ships. Re-drive, commit the receipts,
+         then cut: python3 knowledge/_drive_chart_engine.py"
+}
+
 ratified() {
   python3 - "$MANIFEST" <<'PY'
 import json, sys
@@ -116,6 +126,26 @@ selftest)
     echo "RED — a release was cut from a dirty tree"; exit 1
   else
     echo "green — refused, as it must"
+  fi
+  echo
+  echo "=== refusal: --release over STALE chart receipts (s263-D13) ==="
+  STALE_RCPT="$(mktemp "${TMPDIR:-/var/tmp}/stale-receipts-XXXXXX.json")"
+  python3 - "$ROOT/knowledge/_tests/chart-engine/_receipts.json" "$STALE_RCPT" <<'PY'
+import json, sys
+r = json.load(open(sys.argv[1])); pg = next(iter(r["pages"]))
+src = next(iter(r["pages"][pg]["sources"])); r["pages"][pg]["sources"][src] = "0" * 64
+json.dump(r, open(sys.argv[2], "w"))
+PY
+  if python3 "$ROOT/knowledge/_validate_dataviz.py" --receipts-fresh --receipts "$STALE_RCPT" >/dev/null 2>&1; then
+    echo "RED — a mutated (stale) receipt passed the freshness clause"; rm -f "$STALE_RCPT"; exit 1
+  else
+    echo "green — one mutated source hash is refused, as it must"
+  fi
+  rm -f "$STALE_RCPT"
+  if python3 "$ROOT/knowledge/_validate_dataviz.py" --receipts-fresh >/dev/null 2>&1; then
+    echo "green — the real receipts are FRESH (control)"
+  else
+    echo "RED — the real receipts are STALE; a release would be refused right now. Re-drive: python3 knowledge/_drive_chart_engine.py"; exit 1
   fi
   echo
   echo "=== refusal: --release without Dave's ratification ==="
@@ -174,6 +204,7 @@ dryrun|release)
 
   if [ "$MODE" = release ]; then
     require_clean
+    require_receipts_fresh
     ratified || die "the manifest's status is not RATIFIED. s219-D4(2): the exact cut is a
          proposed manifest for Dave's eye BEFORE the bake — release is his word, not the
          script's. Show him reviews/RELEASE-SPIDER-*.html, then set the status."
