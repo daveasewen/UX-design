@@ -52,10 +52,13 @@ salutation, and after the read-back in Arm 1:
 
 1. **Interview me** — if they pick this, reply *"describe what you would like as the kick-off"*,
    then run `skills/grill-me/SKILL.md`.
-2. **Typed prompt or brief** — they paste or type the brief. Then **offer** an interview
+2. **Typed prompt or brief** — they type or paste it. Then **offer** an interview
    (`skills/grill-me/SKILL.md`) to fill the gaps. Offer it; do not insist.
-3. **Describe the goal or vision** — vision level, no detail expected. Propose the shape you would
-   build and confirm it with them before you build it.
+3. **Describe the goal or vision** — vision level, no detail expected. Take it the way Claude
+   Code takes `/goal`: they state the goal once, and you hold it for the whole session as the
+   thing every step is checked against. Propose the shape you would build and confirm it with
+   them before you build anything, and report progress against the goal rather than against a
+   list of tasks.
 
 ⛔ Three options, not four. Do not invent a fourth, and do not turn the menu into a questionnaire —
 one line each, then wait.
