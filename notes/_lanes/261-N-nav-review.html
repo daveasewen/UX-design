@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>#261 N2 — nav family, Dave’s review enacted</title>
+<title>#261 N4 — nav family, labels uncropped and the selected state de-greyed</title>
 <link rel="stylesheet" href="../../knowledge/canon/type.css">
 <style>
   :root{ --nav-ease:160ms cubic-bezier(.4,0,.2,1); --nav-w:248px; --nav-w-rail:64px;
@@ -267,7 +267,7 @@
 </svg>
 
 <header class="lede">
-  <h1 class="t-ed-display-2">Nav family — #261 N2</h1>
+  <h1 class="t-ed-display-2">Nav family — #261 N4</h1>
   <p class="t-ed-body">Dave's ask, verbatim: <b>"tackle the nav design"</b>. No reference was supplied ("we'll prompt this"), so everything here is designed by judgment and every choice is <b>proposed, not ruled</b>.</p>
   <p class="t-ed-body">The three nav surfaces are now one family, and the family claim is <b>mechanical</b>: a shared item block (<code>.nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev</code>) that is byte-identical in all three snippets, and a shared token block that is byte-identical in two of them and extended by exactly two search-field vars in the third. If the surfaces drift, the blocks stop matching and it shows up in a diff.</p>
   <p class="t-ed-body"><b>Read the theme switcher honestly:</b> the projected cascade injected into these frames is built from the NEW <code>--nav-*</code> var names, so in Supercharge the "after" frames re-project to that theme's surfaces and the "before" frames stay on the mono values. That is a property of this review harness, not a defect in the old files — they simply did not carry these var names.</p>
@@ -280,6 +280,26 @@
     <li><b>Top nav</b> — "the selected state should just have the underscore, no background": the masthead destination opts out of the shared current-row fill.</li>
     <li><b>Top nav</b> — "align the bottom of the search bar with the bottom of its container": the bar's bottom padding is zero, so the field's baseline rule lands on the container's edge.</li>
     <li><b>Tab bar</b> — "the segmented island was better in the original, one change: I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu button": the island geometry never moved (both files rendered and measured), but the shared <code>.nv-ic</code> was overriding the selected glyph's colour and putting a near-black icon on the black fill — the glyph inherits again; and Menu leaves the exclusive group as an <code>aria-expanded</code> disclosure that no longer collapses the fill.</li>
+  </ol>
+  <p class="t-ed-body"><b>#261 N4 — two sentences from Dave, both enacted.</b> Verbatim:
+  <b>"the subagents need to be much more careful with the line-height cropping CSS pattern we have
+  for labels, remove the background grey on the selected state"</b>.</p>
+  <ol class="t-ed-body" style="max-width:78ch">
+    <li><b>The crop.</b> The leading-trim default pasted into each snippet was a bare
+    <code>:is(button,a,…,input[type=text],…)</code>. <code>:is()</code> takes the specificity of its
+    heaviest branch, so it sat at (0,1,1) — above every one-class label override in the same file.
+    <code>.nv-label{text-box-edge:text text}</code> was written and cascade-dead: the labels computed
+    <code>cap alphabetic</code>, the box ended on the baseline, and the <code>overflow:hidden</code>
+    that the ellipsis needs cut the descender off "Payments and transfers". The list is now wrapped in
+    <code>:where()</code>, exactly as canon.css wraps it and for the reason canon.css gives — a default
+    must not out-bid the authoring above it. <b>Driven in Chromium:</b> 336 label boxes × 4 themes × 2
+    modes, <b>272 clipped, worst cut 5.5px → 0 clipped, worst cut 0.0px</b>; the 16px label box goes
+    11px → 17px against 15px of ink. The specificity gate agrees: Sidebar-nav went from 4 cascade-dead
+    overrides to none.</li>
+    <li><b>The grey.</b> The current row's fill is removed on all three surfaces. It was the hover
+    state's own signal worn permanently, which left hover nothing of its own to say. Current is now
+    carried by <code>aria-current="page"</code>, the 3px indicator bar (a shape, not a hue) and a
+    weight step on the label (400 → 500); the grey fill means hover, and only hover.</li>
   </ol>
 </header>
 
@@ -330,7 +350,7 @@
 
      RAIL ACCESSIBLE NAMES SURVIVE COLLAPSE: the label is visually hidden, not removed, so the
      link keeps its text-derived accessible name and no aria-label has to restate it. --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -524,6 +544,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -858,7 +879,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
   &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N4 — labels uncropped, selected state de-greyed</figcaption>
         <iframe class="frame" data-frame title="Sidebar nav, after" height="820" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -896,7 +917,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
      TWO CARRIERS BEFORE COLOUR, never hue alone (Dave is astigmatic; red is a problem hue):
      aria-current=&quot;page&quot; for AT, plus the 3px bar whose presence/absence is a shape difference.
      See the manifest for the four-theme measurement of that bar and its Supercharge failure. --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -1090,11 +1111,19 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css &quot;#215 — `:where(.canon)`, NOT `.canon`&quot;): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off &quot;Payments and transfers&quot;.
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
      This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
@@ -1126,7 +1155,8 @@ nav.main a{text-box:trim-both cap alphabetic;}
        2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
           or absent, readable with no colour vision at all (sidebar: inline-start; top
           nav: block-end; tab bar: block-start)
-       3. a surface change to tertiary/background/hover
+       3. a WEIGHT step on the label (400 -&gt; 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row&#x27;s grey fill is REMOVED; grey is hover&#x27;s word now)
      Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
      Its brand red is COPIED from the gated masthead, not invented; the four-theme
      measurement (and the Supercharge failure) lives in the metas. */
@@ -1136,8 +1166,15 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
     width:18px; height:18px; color:var(--nav-icon);}
   .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  /* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim&#x27;s tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
   .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    text-align:left; text-box-edge:text text;}
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
   /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
@@ -1151,7 +1188,13 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-item:hover{background:var(--nav-hover);}
   .nv-item:active{background:var(--nav-pressed);}
   .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .nv-item[aria-current=&quot;page&quot;]{background:var(--nav-hover);}
+  /* #261 N4, Dave verbatim: &quot;remove the background grey on the selected state&quot;. The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state&#x27;s own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label&#x27;s weight step carry current; the fill now means hover
+     and only hover. */
+  .nv-item[aria-current=&quot;page&quot;]{background:transparent;}
+  .nv-item[aria-current=&quot;page&quot;] .nv-label{font-weight:500;}
   /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
      place in the reading order, and the count loses its fill so no contrast claim is made on
      a surface WCAG exempts anyway. */
@@ -1171,9 +1214,13 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .sn-frame{position:relative; display:flex; height:560px; border:1px solid var(--nav-rule);
             border-radius:var(--nav-radius); overflow:hidden; background:var(--nav-page);}
   .sn-canvas{flex:1; min-width:180px; padding:20px; display:flex; flex-direction:column; gap:12px;}
-  .sn-canvas span{display:block; height:12px; background:var(--nav-sub-rule);}
-  .sn-canvas span:nth-child(1){width:44%;} .sn-canvas span:nth-child(2){width:78%;}
-  .sn-canvas span:nth-child(3){width:66%;} .sn-canvas span:nth-child(4){width:84%;}
+  /* the greeked content bars. ⚠ CHILD combinator, not descendant (#261 N4): as `.sn-canvas span`
+     this specimen-chrome rule also matched the real `.sn-product` label nested in the topbar and
+     forced it to height:12px — a 16px label in a 12px box with overflow:hidden, 4.5px of the
+     descender gone. Specimen greeking must never reach a component&#x27;s own text. */
+  .sn-canvas &gt; span{display:block; height:12px; background:var(--nav-sub-rule);}
+  .sn-canvas &gt; span:nth-child(1){width:44%;} .sn-canvas &gt; span:nth-child(2){width:78%;}
+  .sn-canvas &gt; span:nth-child(3){width:66%;} .sn-canvas &gt; span:nth-child(4){width:84%;}
 
   /* ---- the column: 248px expanded, 64px rail. Both are TOKENISED widths so a shell can
          reserve the gutter without reading this file. ---- */
@@ -1750,7 +1797,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
       explicit `[hidden]{display:none}` rule, because an author `display:` beats the UA&#x27;s
       `[hidden]` sheet and a markup-hidden element then RENDERS while claiming to be absent.
 --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -1944,6 +1991,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -2260,7 +2308,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
   &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N4 — labels uncropped, selected state de-greyed</figcaption>
         <iframe class="frame" data-frame title="Navigations (top nav), after" height="300" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -2295,7 +2343,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
      CARRIED FORWARD (s218-D4, unchanged in substance): SEARCH is a disclosure revealing
      Search-field&#x27;s underline form; ACCOUNT is the APG menu-button pattern in Dropdown&#x27;s panel
      skin. Item copy is INVENTED and is Dave&#x27;s. --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -2489,6 +2537,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -2520,8 +2569,15 @@ nav.main a{text-box:trim-both cap alphabetic;}
 }
 /* ===== AUTO-TOKENS END ===== */
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css &quot;#215 — `:where(.canon)`, NOT `.canon`&quot;): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off &quot;Payments and transfers&quot;.
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
      This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
@@ -2556,7 +2612,8 @@ nav.main a{text-box:trim-both cap alphabetic;}
        2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
           or absent, readable with no colour vision at all (sidebar: inline-start; top
           nav: block-end; tab bar: block-start)
-       3. a surface change to tertiary/background/hover
+       3. a WEIGHT step on the label (400 -&gt; 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row&#x27;s grey fill is REMOVED; grey is hover&#x27;s word now)
      Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
      Its brand red is COPIED from the gated masthead, not invented; the four-theme
      measurement (and the Supercharge failure) lives in the metas. */
@@ -2566,8 +2623,15 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
     width:18px; height:18px; color:var(--nav-icon);}
   .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  /* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim&#x27;s tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
   .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    text-align:left; text-box-edge:text text;}
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
   /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
@@ -2581,7 +2645,13 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-item:hover{background:var(--nav-hover);}
   .nv-item:active{background:var(--nav-pressed);}
   .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .nv-item[aria-current=&quot;page&quot;]{background:var(--nav-hover);}
+  /* #261 N4, Dave verbatim: &quot;remove the background grey on the selected state&quot;. The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state&#x27;s own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label&#x27;s weight step carry current; the fill now means hover
+     and only hover. */
+  .nv-item[aria-current=&quot;page&quot;]{background:transparent;}
+  .nv-item[aria-current=&quot;page&quot;] .nv-label{font-weight:500;}
   /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
      place in the reading order, and the count loses its fill so no contrast claim is made on
      a surface WCAG exempts anyway. */
@@ -3024,7 +3094,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
           black with the glyph in white (inverts to white/dark in dark mode). The Menu island is part of the
           SAME exclusive group — only one item current at a time, so selecting Menu collapses the pill — and
           its selected state matches the segments with a 4px white (surface) ring. Menu matches the lozenge height. --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -3218,6 +3288,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -3365,7 +3436,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N4 — labels uncropped, selected state de-greyed</figcaption>
         <iframe class="frame" data-frame title="Tab bar, after" height="380" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -3406,7 +3477,7 @@ nav.main a{text-box:trim-both cap alphabetic;}
        B) segmented island — icon-only, elevated, spanning the full screen width; the selected
           fill is a pill that SLIDES between segments. Menu sits OUTSIDE the island and outside
           its exclusive group. --&gt;
-&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404'd (N3) */
+&lt;style&gt;/* BAKED from knowledge/canon/type.css - srcdoc has no base URL, the link 404&#x27;d (N3) */
 /* Apollo type composites — HAND-AUTHORED. Editorial + Component.
    (The header said &quot;generated 2026-07-17&quot; for a day. Nothing has ever generated this file; the
    line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
@@ -3600,11 +3671,19 @@ nav.main a{text-box:trim-both cap alphabetic;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-3 .em{font-weight:500;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4{font-weight:350;}
 [data-theme=&quot;dark&quot;] .t-ed-heading-4 .em{font-weight:500;}
+
 &lt;/style&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css &quot;#215 — `:where(.canon)`, NOT `.canon`&quot;): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off &quot;Payments and transfers&quot;.
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
      This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
@@ -3636,7 +3715,8 @@ nav.main a{text-box:trim-both cap alphabetic;}
        2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
           or absent, readable with no colour vision at all (sidebar: inline-start; top
           nav: block-end; tab bar: block-start)
-       3. a surface change to tertiary/background/hover
+       3. a WEIGHT step on the label (400 -&gt; 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row&#x27;s grey fill is REMOVED; grey is hover&#x27;s word now)
      Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
      Its brand red is COPIED from the gated masthead, not invented; the four-theme
      measurement (and the Supercharge failure) lives in the metas. */
@@ -3646,8 +3726,15 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
     width:18px; height:18px; color:var(--nav-icon);}
   .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  /* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim&#x27;s tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
   .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    text-align:left; text-box-edge:text text;}
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
   /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
@@ -3661,7 +3748,13 @@ nav.main a{text-box:trim-both cap alphabetic;}
   .nv-item:hover{background:var(--nav-hover);}
   .nv-item:active{background:var(--nav-pressed);}
   .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .nv-item[aria-current=&quot;page&quot;]{background:var(--nav-hover);}
+  /* #261 N4, Dave verbatim: &quot;remove the background grey on the selected state&quot;. The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state&#x27;s own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label&#x27;s weight step carry current; the fill now means hover
+     and only hover. */
+  .nv-item[aria-current=&quot;page&quot;]{background:transparent;}
+  .nv-item[aria-current=&quot;page&quot;] .nv-label{font-weight:500;}
   /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
      place in the reading order, and the count loses its fill so no contrast claim is made on
      a surface WCAG exempts anyway. */

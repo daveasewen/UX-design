@@ -63,8 +63,15 @@
 }
 /* ===== AUTO-TOKENS END ===== */
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css "#215 — `:where(.canon)`, NOT `.canon`"): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off "Payments and transfers".
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
      This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
@@ -99,7 +106,8 @@
        2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
           or absent, readable with no colour vision at all (sidebar: inline-start; top
           nav: block-end; tab bar: block-start)
-       3. a surface change to tertiary/background/hover
+       3. a WEIGHT step on the label (400 -> 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row's grey fill is REMOVED; grey is hover's word now)
      Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
      Its brand red is COPIED from the gated masthead, not invented; the four-theme
      measurement (and the Supercharge failure) lives in the metas. */
@@ -109,8 +117,15 @@
   .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
     width:18px; height:18px; color:var(--nav-icon);}
   .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  /* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim's tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
   .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    text-align:left; text-box-edge:text text;}
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
   /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
@@ -124,7 +139,13 @@
   .nv-item:hover{background:var(--nav-hover);}
   .nv-item:active{background:var(--nav-pressed);}
   .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .nv-item[aria-current="page"]{background:var(--nav-hover);}
+  /* #261 N4, Dave verbatim: "remove the background grey on the selected state". The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state's own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label's weight step carry current; the fill now means hover
+     and only hover. */
+  .nv-item[aria-current="page"]{background:transparent;}
+  .nv-item[aria-current="page"] .nv-label{font-weight:500;}
   /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
      place in the reading order, and the count loses its fill so no contrast claim is made on
      a surface WCAG exempts anyway. */

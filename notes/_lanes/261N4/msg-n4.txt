@@ -1,0 +1,37 @@
+#261 N4: the nav label crop was cascade-dead, and the selected row gives back the grey
+
+Dave, verbatim: "the subagents need to be much more careful with the line-height cropping
+CSS pattern we have for labels, remove the background grey on the selected state".
+
+THE CROP. The repo's pattern is native leading-trim (canon.css:945-966) plus the truncating-
+label exception (`text-box-edge:text text`, so the box does not end on the baseline where
+overflow:hidden then eats g/y/p). All three nav snippets had pasted the DEFAULT without
+canon's `:where()` wrapper. A bare `:is(button,a,...,input[type=text],...)` takes the
+specificity of its heaviest branch and sat at (0,1,1) - above every one-class override in
+the same file - so `.nv-label{text-box-edge:text text}` was written and dead, the label
+computed `cap alphabetic`, and the descender of "Payments and transfers" was cut.
+The list is now wrapped in `:where()` (zero specificity, identical match, exactly as
+canon.css wraps it and for the reason canon.css gives), and the trim is restated beside the
+edge on `.nv-label` so the pair reads as one decision. Also `.sn-canvas span` -> `>`: the
+specimen greeking rule was matching the real `.sn-product` label and forcing it to 12px.
+
+DRIVEN (Chromium, goto file://, ink from the font's own canvas metrics vs the element's
+clientHeight): 3 snippets x 4 themes x 2 modes, 336 .nv-label boxes.
+  before  272 clipped, worst descender cut 5.50px, 16px label in an 11px box
+  after     0 clipped, worst cut 0.00px, 17px box against 15px of ink
+_validate_descender_clip.py agrees: Sidebar-nav 4 cascade-dead overrides -> 0.
+
+THE GREY. The current row's fill is removed from the shared item block on all three
+surfaces. It was hover's own signal worn permanently, which left hover nothing of its own
+to say. Current is aria-current="page" + the 3px indicator bar (a shape) + a weight step on
+the label (400 -> 500); the grey means hover and only hover. Driven: the current row
+computes rgba(0,0,0,0) with rgb(219,0,17) 3px inset and label weight 500 in all 8
+theme x mode combos. The carrier claim is corrected in three metas and two manifests.
+
+Gates: snippets 137/0, coverage 137/137/0, behaviour OK, gen_showroom --check in sync,
+hit-area 106 targets / 0 findings --strict, state-contrast 0 fails (Navigations clean;
+declared holes only). The two descender reds that remain are not mine - `.demo-grid td` in
+Filter-toolbar-bar and `.kpi-lbl` in Kpi-tile, the same bare-`:is()` cause.
+
+Review page re-pointed at ORIGINAL 7647aaf vs #261 N4, N3's type.css bake reapplied to all
+six srcdocs, driven across four themes and two modes.
