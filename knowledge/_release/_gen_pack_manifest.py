@@ -1106,7 +1106,30 @@ def probe_gates(sha, stage_root=None, only=None, verbose=False, full_stage=None)
         ))
         if verbose:
             print("%-42s %-12s %s" % (base, verdict, why), flush=True)
-    return dict(commit=sha, timeout_s=PROBE_TIMEOUT, gates=results), tmp
+    # #261 M1 — THE SHIP SET IS DECIDED BY A FLAG, SO THE ARTEFACT MUST SAY WHICH SHAPE RAN.
+    # `--full-stage` arms the differential arm above; without it a gate that fails in the pack
+    # stays RUNNABLE instead of grading REPO-BOUND, and lane R measured two different ship sets
+    # (1678 vs 1679 files, different manifest sha) from the SAME commit. Nothing in the output
+    # said which shape produced which. It does now. Whether the flag should be optional at all
+    # is Dave's — this records the fact, it does not decide it.
+    return dict(commit=sha, timeout_s=PROBE_TIMEOUT,
+                differential_arm=("ARMED" if full_stage else "DISARMED"),
+                full_stage=(os.path.abspath(full_stage) if full_stage else None),
+                gates=results), tmp
+
+
+def arm_line(probe):
+    """One line naming which SHAPE of probe this is. `UNRECORDED` = a probe made before #261 M1."""
+    arm = probe.get("differential_arm")
+    if arm == "ARMED":
+        return ("  differential arm: ARMED (--full-stage %s) — pack reds were re-run against the "
+                "full tree, so REPO-BOUND verdicts are MEASURED" % (probe.get("full_stage") or "?"))
+    if arm == "DISARMED":
+        return ("  differential arm: DISARMED (no --full-stage) — no pack red was re-run against "
+                "the full tree, so NO gate can grade REPO-BOUND here and the ship set is the "
+                "WIDER one. Two shapes exist; this is the wide one.")
+    return ("  differential arm: UNRECORDED — this probe predates #261 M1 and does not say "
+            "whether --full-stage was used, so the ship set's shape is unknown from the artefact.")
 
 
 def extract(sha, paths, dest, tolerant=False):
@@ -2595,6 +2618,18 @@ def selftest():
         if got != want:
             fails.append("[%s] got %r, wanted %r %s" % (name, got, want, why))
 
+    # ---- #261 M1: the probe artefact must SAY which shape ran. Three states, three sentences,
+    # and the third exists because the tracked probe predates the field.
+    bite("arm/armed", "ARMED" in arm_line(dict(differential_arm="ARMED", full_stage="/var/tmp/f")),
+         True)
+    bite("arm/armed-names-stage", "/var/tmp/f" in arm_line(
+        dict(differential_arm="ARMED", full_stage="/var/tmp/f")), True)
+    bite("arm/disarmed", "DISARMED" in arm_line(dict(differential_arm="DISARMED")), True)
+    bite("arm/disarmed-names-consequence", "WIDER" in arm_line(dict(differential_arm="DISARMED")),
+         True, "a shape that changes the ship set must say so, not just name itself")
+    bite("arm/legacy-probe", "UNRECORDED" in arm_line(dict(commit="deadbeef")), True,
+         "a probe made before this field must not be reported as either shape")
+
     # ---- classifier: the verdicts are a function of the RUN, and each arm can fail
     v, w = classify(0, "all green", "", set())
     bite("classify/clean-pass", v, "RUNNABLE")
@@ -3498,6 +3533,7 @@ def main():
         os.makedirs(os.path.dirname(out), exist_ok=True)
         open(out, "w").write(canonical(probe))
         print("probe -> %s (stage %s)" % (out, tmp))
+        print(arm_line(probe))
         return
 
     if a.manifest:
@@ -3532,6 +3568,9 @@ def main():
         print("  commit %s  files %d  bytes %d  sha256 %s"
               % (sha[:12], man["totals"]["files"], man["totals"]["bytes"],
                  manifest_hash(text)[:16]))
+        # #261 M1: the file count and the sha above are a FUNCTION of the probe's shape, so the
+        # shape is printed beside them and never left to be remembered.
+        print(arm_line(probe))
         return
 
     if a.pack_copy:
