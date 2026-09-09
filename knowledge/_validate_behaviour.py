@@ -35,7 +35,8 @@ Usage:  python3 knowledge/_validate_behaviour.py             # the gate
         python3 knowledge/_validate_behaviour.py --mutate code-pad      # +4000 B code   → RED
         python3 knowledge/_validate_behaviour.py --mutate comment-pad   # +4000 B comment→ GREEN
         python3 knowledge/_validate_behaviour.py --mutate string-slash  # // in a string → code
-Writes _BEHAVIOUR-GATE.md; exits non-zero on any blocking failure."""
+Writes _BEHAVIOUR-GATE.md ONLY with --write (#261 M5: a gate must not grade its own
+record); the default run compares and REDS on drift. Exits non-zero on any blocking failure."""
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
 while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
@@ -328,7 +329,43 @@ def write_report(fails, rows, totals):
         L += [f"- {f}" for f in fails]
     else:
         L.append("## ✓ PASS — every behaviour source honours the contract.")
-    open(REPORT, "w").write("\n".join(L) + "\n")
+    return "\n".join(L) + "\n"
+
+
+# ---------- #261 M5 — THE GATE STOPPED GRADING ITS OWN LEDGER.
+# `knowledge/_BEHAVIOUR-GATE.md` is TRACKED and was rewritten by the very gate it records, so a
+# drift in the measured bytes was ABSORBED into the tracked file instead of showing as a red. It
+# is the SECOND instance of the class (`_validate_screen.py`'s `_screen-gate/` clobber is the
+# first, repaired at #261 M3), which is what makes it a class and not a wart.
+# THE SHAPE, and it is the repo's own `--check` convention (gen_showroom, gen_component_partials):
+# the write is OPT-IN (`--write`), and the default run COMPARES and REDS, naming the remedy. Two
+# default runs therefore produce no diff because they produce no WRITE, and two `--write` runs
+# produce no diff because the report carries no timestamp — it is a pure function of the sources.
+# ⚠ `_build_all.py` calls this with no arguments: that call is now the CHECKING form, which is
+# what a build gate should be. A legitimate change refreshes the ledger with `--write`, in the
+# same commit as the change that moved the numbers.
+def sync_report(text, write):
+    """Returns (drifted, message). Writes only when `write`."""
+    try:
+        on_disk = open(REPORT, encoding="utf-8").read()
+    except OSError:
+        on_disk = None
+    if write:
+        if on_disk == text:
+            return (False, "ledger already current (no write needed) — %s"
+                    % os.path.relpath(REPORT, os.path.dirname(HERE)))
+        open(REPORT, "w", encoding="utf-8").write(text)
+        return (False, "ledger REWRITTEN (--write) — %s" % os.path.relpath(REPORT, os.path.dirname(HERE)))
+    if on_disk == text:
+        return (False, "ledger in sync (not written — the gate does not grade its own record)")
+    if on_disk is None:
+        return (True, "LEDGER MISSING — %s does not exist. Write it: "
+                      "python3 knowledge/_validate_behaviour.py --write" % REPORT)
+    return (True, "LEDGER DRIFT — the tracked %s no longer matches what this gate measures, and "
+                  "this run did NOT overwrite it (#261 M5: a gate that rewrites its own record "
+                  "absorbs the drift instead of reporting it). Refresh it in the same commit as "
+                  "the change that moved the numbers: python3 knowledge/_validate_behaviour.py "
+                  "--write" % os.path.relpath(REPORT, os.path.dirname(HERE)))
 
 
 def selftest():
@@ -481,7 +518,10 @@ def main():
         print("_validate_behaviour selftest OK")
         return
     fails, rows, totals = run()
-    write_report(fails, rows, totals)
+    drifted, msg = sync_report(write_report(fails, rows, totals), "--write" in sys.argv)
+    print("  [ledger] " + msg)
+    if drifted:
+        fails = list(fails) + ["ledger: " + msg]
     if fails:
         print("Behaviour-contract gate FAILED:"); [print("  X " + f) for f in fails]
         sys.exit(1)
