@@ -25,8 +25,11 @@ in-session). Trigger: a component needs a canonical, token-faithful, build-verif
 5. **Embed the `#token-manifest`** JSON: `vars` (CSS var → token path), `contrastPairs`
    (fg/bg/context — only pairs that PASS), `requiredAria`. This manifest IS the proof-of-done.
 6. **Gate it:** `python3 knowledge/_validate_snippets.py` then `python3 knowledge/_build_all.py`.
-   Fix until green: declared values must match the store (light+dark), ARIA present, contrast passes,
-   a real focus indicator exists (interactive only).
+   Fix until green: declared values must match the store (light+dark), contrast passes,
+   a real focus indicator exists (interactive only). ⚠ `requiredAria` is NOT graded by
+   `_validate_snippets.py` (s263-D11 retired that source-text arm — it failed open on JS string
+   literals); the declared strings are graded against the RENDERED DOM by `_validate_dataviz.py`,
+   off a driven receipt from `_drive_chart_engine.py`.
 7. **Record findings** in the meta (`$finding` / `$darkDecision` / `$rebind`) — the rebinds, contrast
    caveats, and any defect surfaced. If a real **design decision** is needed (layout/structure not in
    canon), build a sensible baseline and **flag for review** rather than inventing canon.

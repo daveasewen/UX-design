@@ -268,21 +268,12 @@ def mut_token_drift(k):
     write(p, new)
 
 
-def mut_missing_aria(k):
-    """Remove the required ARIA from the MARKUP but leave the manifest's
-    declaration intact. (First attempt removed it everywhere — which silently
-    deleted the requirement itself and the gate passed. That is a real,
-    documented caveat: the gate enforces author-DECLARED requirements living in
-    the same file it validates. Hardening idea: cross-check requiredAria
-    against the component meta, coverage-style.)"""
-    def need(man, html):
-        return bool(man.get("requiredAria")) and man["requiredAria"][0] in html
-    p, html, man = first_snippet_with_manifest(k, need)
-    span = re.search(r'<script[^>]*id="token-manifest"[^>]*>.*?</script>', html, re.S).span()
-    body = html[:span[0]].replace(man["requiredAria"][0], "") \
-        + html[span[0]:span[1]] \
-        + html[span[1]:].replace(man["requiredAria"][0], "")
-    write(p, body)
+# mut_missing_aria — REMOVED with its CASES row, s263-D11 (Dave, #263).
+# It bit the source-text requiredAria arm of `_validate_snippets.py`, which is retired: that arm
+# failed open (a requiredAria string inside a JS literal satisfied it, so stripping every
+# role/aria-label at runtime still read GREEN — #261 D3, Finding 2). The rule's bite now lives
+# where the rule now lives: the DOM-driven arm in `_validate_dataviz.py`, bite-tested by
+# `knowledge/_tests/chart-engine/_probe_fail_open.py` (the `requiredAria` venue, `--expect red`).
 
 
 def mut_bad_contrast(k):
@@ -478,7 +469,7 @@ def mut_redefine_class(k):
 
 CASES = [
     ("snippet gate bites on token drift",        "drift",    "_validate_snippets.py",     mut_token_drift,     "DRIFT"),
-    ("snippet gate bites on missing ARIA",       "aria",     "_validate_snippets.py",     mut_missing_aria,    "required ARIA missing"),
+    # ("snippet gate bites on missing ARIA", …) — REMOVED s263-D11; see mut_missing_aria's note above.
     ("snippet gate bites on failing contrast",   "contrast", "_validate_snippets.py",     mut_bad_contrast,    "CONTRAST"),
     ("snippet gate bites on icon 4.5 dead-zone", "icon45",   "_validate_snippets.py",     mut_icon_dead_zone,  "icon-015"),
     ("snippet gate bites on missing focus",      "focus",    "_validate_snippets.py",     mut_no_focus,        ":focus-visible"),

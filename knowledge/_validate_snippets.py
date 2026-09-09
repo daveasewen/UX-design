@@ -5,7 +5,10 @@ For every knowledge/snippets/*.reference.html:
   1. TOKEN FIDELITY — each CSS var declared in the embedded #token-manifest must
      match its token's resolved value in BOTH light and dark (catches drift the
      moment the store changes and the snippet isn't updated).
-  2. ARIA — every requiredAria string must be present in the markup.
+  2. ARIA — RETIRED by s263-D11 (Dave, #263). This gate no longer checks
+     requiredAria at all: the source-text arm failed open (a string in a JS
+     literal satisfied it). The ONE gate for the rule is the DOM-driven arm in
+     `_validate_dataviz.py`, graded against the RENDERED DOM. See §2 in check().
   3. CONTRAST — every declared contrast pair must clear its threshold in both
      modes (text 4.5:1, ui/indicator 3:1).
   4. ALL-CAPS — no text-transform:uppercase anywhere, no multi-word ALL-CAPS runs
@@ -230,14 +233,21 @@ def validate(path):
                 else:
                     errors.append(f"{name}: DRIFT {var} ({mode}) = {declared} but {token} = {canon}")
 
-    # 2. ARIA — search OUTSIDE the manifest block. A bare declared string (e.g.
-    #    "aria-expanded") otherwise matches its own declaration in the manifest
-    #    JSON and the check can never fail. (Found by _tests/test_gates.py,
-    #    2026-07-02 — the self-test's first real catch.)
-    html_sans_manifest = html.replace(mm.group(0), "", 1)
-    for need in manifest.get("requiredAria", []):
-        if need not in html_sans_manifest:
-            errors.append(f"{name}: required ARIA missing: {need}")
+    # 2. ARIA — RETIRED, s263-D11 (Dave, #263: "P-11 ACCEPT").
+    #    The source-text arm that lived here asked whether each `requiredAria` string appeared
+    #    ANYWHERE in the snippet's bytes outside the #token-manifest. That FAILS OPEN: a string
+    #    inside a JS string literal satisfies it even when the attribute never reaches the DOM.
+    #    Proved at #261 (notes/_subreports/2026-09-08-261-D3-driver-scope.md, Finding 2): six
+    #    shipped snippets satisfy a requiredAria string ONLY from a JS literal — `role="img"` in
+    #    Chart-boxplot/-bullet/-candlestick/-scatter/-sparkline and `aria-pressed` in
+    #    Chart-histogram — so stripping every role/aria-label at RUNTIME still read GREEN here
+    #    while the driven arm read RED.
+    #    THE ONE GATE FOR THIS RULE IS NOW the DOM-driven arm in `_validate_dataviz.py`
+    #    (`driven_required_aria()`, receipts from `_drive_chart_engine.py`), which grades the
+    #    strings against the RENDERED DOM across 8 theme x mode combos. `_validate_dataviz.py`
+    #    runs in `_build_all.py` STEPS. No code path remains here — `requiredAria` in the
+    #    manifests is read by that gate, by `_drive_chart_engine.py`, and by
+    #    `_build_sutherland_fixtures.py` (contract export only).
 
     # 3. contrast pairs
     for p in manifest.get("contrastPairs", []):

@@ -18,7 +18,8 @@ declared 2.1 AA + partials. Contrast math is unchanged — the 2.2 delta is stru
 
 ## Summary
 Contrast (1.4.3 / 1.4.11) and name/role/value (4.1.2) are already **continuously enforced** by the
-existing `_validate_snippets.py` gate (token-resolved contrast pairs + `requiredAria`), so this pass
+existing `_validate_snippets.py` gate (token-resolved contrast pairs) and, for `requiredAria`, by the
+DOM-driven arm in `_validate_dataviz.py` (s263-D11 retired the source-text arm here — it failed open), so this pass
 focused on the criteria those gates don't cover: motion sensitivity, target size, focus, and live regions.
 
 **Issues found:** 30 · **Critical:** 0 · **Major:** 28 (reduced-motion) · **Minor:** 2 (target size)
@@ -67,7 +68,7 @@ Focus-trap completeness + AT announce order remain in the human/AT queue (V3).
 | 2.4.7 Visible focus | All interactive snippets carry `:focus-visible` (0 missing). |
 | 2.5.8 target size — other controls | Modals close 32, Reorder handle 32 / move 30, Search clear 24, Video controls 32 — all ≥24. |
 | 1.4.3 / 1.4.11 contrast | Enforced per-snippet by the snippet gate (resolved token pairs, light+dark). |
-| 4.1.2 name/role/value | Enforced per-snippet by `requiredAria`. |
+| 4.1.2 name/role/value | Enforced per-snippet by `requiredAria`, graded against the RENDERED DOM by `_validate_dataviz.py` (s263-D11 — `_validate_snippets.py` no longer checks it). |
 | Auto-playing media (2.2.2 / 1.4.2) | Video player has **no** `autoplay`; controls present. |
 | Live regions | Countdown-timer, Loading-indicator, Notifications expose status/live semantics. |
 
