@@ -106,17 +106,17 @@
       "disabled",
       "truncated"
     ],
-    "sorted": "aria-sort ascending|descending + the direction glyph + a ground shift to tertiary/background/hover + a 3px form/border/active rule UNDER the cell. Four channels; colour is never alone.",
-    "filtered-active": "data-filtered=true + the SOLID library glyph (filter-active.svg, a different glyph, not a recolour) + a 3px form/border/active rule LEADING the cell + a chip in the bar that names the column. A different edge from sorted, so one column can be both.",
+    "sorted": "aria-sort ascending|descending + the direction glyph + a ground shift to tertiary/background/hover + a 2px form/border/active UNDERLINE. Four channels; colour is never alone. #261 G2: the rule was 3px and Dave read it as a heavy black line — it is now 2px, and it is the ONLY edge the sorted state paints.",
+    "filtered-active": "data-filtered=true + the SOLID library glyph (filter-active.svg, a different glyph, not a recolour) + a held form/background/hover ground on the filter button + a chip in the bar that names the column. #261 G2: the 3px LEADING rule is REMOVED — sitting on a cell's start edge it read as the RIGHT-hand black line of the column before it (Dave, on the review specimen where Date was sorted and Payee filtered). Sorted and filtered still coexist on one column: they no longer share an edge because filtered no longer HAS one.",
     "menu-open": "aria-expanded=true on the filter button, the menu shown under its own cell, the field focused and pre-filled with the term in force; Esc closes and returns focus to the header cell.",
-    "resizing": "data-resizing on the grid (col-resize cursor, hover suppressed) + data-active on the separator (full-height accent grip); aria-valuenow tracks the live width and the commit is announced.",
+    "resizing": "data-resizing on the grid (col-resize cursor, hover suppressed) + data-active on the separator (full-height 2px form/border/default grip); aria-valuenow tracks the live width and the commit is announced. #261 G2: at REST the separator paints nothing — a 1px hairline appears on hover or focus-visible of the handle only.",
     "disabled": "aria-disabled + a disabled button + an alpha mute and NO sort glyph. text/disabled is #E1E1E1 and illegible on the header ground, so the mute is alpha, not that token.",
     "truncated": "the label ellipsises and takes a title ONLY when scrollWidth actually exceeds clientWidth — re-measured after every resize and density change, so no phantom tooltips."
   },
   "subComponents": {
     "sort-header": {
       "use": "Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button's own guard).",
-      "$261": "The button now sits inside .th-in beside the column filter and the resize handle; the label truncates (.lbl, text-box-edge:text text) and takes a title ONLY when measured to truncate; sorted paints a ground shift plus a 3px form/border/active rule UNDER the cell, and the disabled column (Reference) carries aria-disabled with no sort glyph at all."
+      "$261": "The button now sits inside .th-in beside the column filter and the resize handle; the label truncates (.lbl, text-box-edge:text text) and takes a title ONLY when measured to truncate; sorted paints a ground shift plus a 2px form/border/active UNDERLINE (3px until #261 G2), and the disabled column (Reference) carries aria-disabled with no sort glyph at all."
     },
     "selection-checkbox": {
       "use": "COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent)."
@@ -134,10 +134,10 @@
       "use": "Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)."
     },
     "column-filter": {
-      "use": "#261. A 24px form-furniture button in the header cell (Search-field precedent — colour states, no press physics) opening a small menu anchored under its own cell: one labelled text input, Enter commits, Esc closes, an outside click closes. Off/on are two DISTINCT library glyphs (global-controls/filter.svg, filter-active.svg), never one glyph recoloured (icon-011). Filtered-active also paints a 3px accent rule LEADING the cell — a different edge from sorted, so one column can carry both states at once."
+      "use": "#261. A 24px form-furniture button in the header cell (Search-field precedent — colour states, no press physics) opening a small menu anchored under its own cell: one labelled text input, Enter commits, Esc closes, an outside click closes. Off/on are two DISTINCT library glyphs (global-controls/filter.svg, filter-active.svg), never one glyph recoloured (icon-011). #261 G2: filtered-active paints NO edge rule — its channels are the distinct glyph, a held ground on the button and the named chip; the 3px leading accent was removed on Dave's review."
     },
     "column-resizer": {
-      "use": "#261. A 12px grip on the trailing edge of the header cell with a 24px hit area (the ::before bleed), role=separator + aria-orientation/valuenow/valuemin/valuemax, driving the <col> width in a table-layout:fixed table (96-480px clamp). Pointer drag, and keyboard from the header cell: Alt+Left/Right enters resize mode, arrows size (Shift for a 32px step), Esc/Enter returns to the cell — so the grid keeps its ONE tab stop."
+      "use": "#261. A 12px grip on the trailing edge of the header cell with a 24px hit area (the ::before bleed) and — since #261 G2, on Dave's 'remove the bars from the end of the column headers' — NO painted rule at rest: a 1px hairline shows on hover/focus-visible of the handle, the full-height grip only while resize mode is live. The affordance is unchanged (cursor, hit area, drag, keyboard). role=separator + aria-orientation/valuenow/valuemin/valuemax, driving the <col> width in a table-layout:fixed table (96-480px clamp). Pointer drag, and keyboard from the header cell: Alt+Left/Right enters resize mode, arrows size (Shift for a 32px step), Esc/Enter returns to the cell — so the grid keeps its ONE tab stop."
     },
     "group-header": {
       "use": "#261. Optional spanning row of th scope=colgroup above the column row; caption type at 60% alpha on table/column/background. Both rows are sticky and travel as one block. Sticky plus border-collapse drops cell borders while scrolling, so the header's rules are painted as inset shadows."
@@ -151,7 +151,7 @@
     "physics": "component-type/button-family/press-travel + press-darken (manifest-bound); --phys-size 120 root, 44 .pbtn, 24 .fchip .x",
     "radius": "border-radius/control · surface · indicator role tokens (Mono resolves 0; themes flex, ADR-0010)",
     "$survey": "Mined, never modified: Table (visual canon — row chrome, density, weights), Search-field (field chrome, BY COPY — receipted accretion evidence), Tags (chip recipe), Selection-controls (checkbox anatomy), Pagination (footer recipe), Skeleton-loader (bones, by reference), Account-selector (aria-selected idiom), Icon-button/Button (physics geometry + marker protocol).",
-    "header": "#261 — thead ground table/header/background; group row table/column/background; sorted + filtered accents form/border/active (--bar); disabled column is an alpha mute, NOT text/disabled (#E1E1E1 is illegible on the header ground); every header rule is an inset shadow so sticky keeps it."
+    "header": "#261 — thead ground table/header/background; group row table/column/background; the sorted 2px underline is form/border/active (--bar); filtered carries no rule (#261 G2); the resize hairline is form/border/default, painted on hover/focus only; disabled column is an alpha mute, NOT text/disabled (#E1E1E1 is illegible on the header ground); every header rule is an inset shadow so sticky keeps it."
   },
   "motion": {
     "press": "Sort headers, chip dismiss ×, clear-filters, pagination = button-family members; empty AUTO-PARTIAL markers await injection on registration (ADR-0013; $members proposal in the worker receipt). No local press-shaped CSS anywhere.",
@@ -214,7 +214,7 @@
     "semantics": "Native <table> + role=grid; aria-rowcount/aria-rowindex track the FILTERED set across pages and COUNT the optional group row; columnheaders carry aria-sort (only the sortable ones — the disabled column carries aria-disabled and no aria-sort at all); the group row is th scope=colgroup; rows carry aria-selected.",
     "keyboard": "APG grid: ONE tab stop, roving tabindex over cells — arrows move, Home/End row ends, Ctrl+Home/End grid ends; Enter/Space activates the cell's widget (sort · checkbox · edit); F2/double-click edits; Esc cancels. Widgets inside cells are tabindex=-1 so Tab exits the grid. #261 adds two header-cell affordances, both on Alt so plain arrows still navigate: Alt+Down opens that column's filter menu, Alt+Left/Right enters resize mode on the separator (arrows size, Shift for a bigger step, Esc/Enter returns).",
     "announcements": "Visually-hidden role=status (polite) narrates sort, selection counts, filter apply/remove, page, edit commit/cancel; the visible results count is aria-live too.",
-    "states": "Selected = tint + inset bar + checked box (1.4.1); loading = aria-busy + role=status text, bones aria-hidden (decorative); empty offers a real recovery action; focus ring 2px focus/ring, offset -2 (axs-004). #261 header states: hover · focus-visible (the cell's own ring) · sorted (ground + 3px accent under + glyph + aria-sort) · filtered-active (3px accent leading + the solid filter glyph + a chip naming the column) · resizing (accent grip + col-resize cursor) · disabled column (alpha mute, no sort affordance) · truncated label (ellipsis + a title only when measured to truncate).",
+    "states": "Selected = tint + inset bar + checked box (1.4.1); loading = aria-busy + role=status text, bones aria-hidden (decorative); empty offers a real recovery action; focus ring 2px focus/ring, offset -2 (axs-004). #261 header states: hover · focus-visible (the cell's own 2px focus/ring token at offset -2, never a black box) · sorted (ground + a 2px accent underline + glyph + aria-sort) · filtered-active (the solid filter glyph + a held button ground + a chip naming the column; NO edge rule) · resizing (accent grip + col-resize cursor) · disabled column (alpha mute, no sort affordance) · truncated label (ellipsis + a title only when measured to truncate).",
     "editing": "Editor is a labelled text input ('Edit reference for <payee>'); commit/cancel announced; grid navigation suspended while editing (keys stay in the editor).",
     "relatedSC": [
       "1.3.1 Info and Relationships",
@@ -232,7 +232,7 @@
     "Local press physics on grid controls (button-family partial territory — the ratchet bites)",
     "A second tab stop inside the grid (widgets are reached from cells, not Tab)",
     "Sorting a column whose cells are editable (re-ordering rows under an open editor) — the Reference column's sort is disabled by design, and that is the shipped disabled-column example",
-    "Sorted and filtered sharing one edge of the header cell — they take different edges so a column can carry both",
+    "A header state that paints a RIGHT-EDGE bar — #261 G2 removed the last one (filtered's leading accent, which read as the previous column's right edge); the only trailing rule is the 1px table/border column hairline",
     "A resize handle as a second tab stop — it is a tabindex=-1 separator reached from the header cell with Alt+arrow"
   ],
   "tokenValidation": {
@@ -245,7 +245,8 @@
     "source": "gap-report; #261 design pass, Dave's nomination",
     "figma_node": "",
     "code_path": "",
-    "$261": "#261 lane G — column-header design pass on Dave's #2 nominated dashboard element. Driven in Chromium, four themes x two modes: notes/_subreports/2026-09-08-261-G-grid-header.md, receipts from notes/_lanes/261-G-drive-grid-header.py, review page notes/_lanes/261-G-grid-header-review.html. Table was NOT touched: its header is a passive th scope=col that collapses to cards, a different contract, not shared with this one."
+    "$261": "#261 lane G — column-header design pass on Dave's #2 nominated dashboard element. Driven in Chromium, four themes x two modes: notes/_subreports/2026-09-08-261-G-grid-header.md, receipts from notes/_lanes/261-G-drive-grid-header.py, review page notes/_lanes/261-G-grid-header-review.html. Table was NOT touched: its header is a passive th scope=col that collapses to cards, a different contract, not shared with this one.",
+    "$261-G2": "#261 lane G2 — Dave's review of the header, ruled verbatim off notes/_lanes/261-G-grid-header-review.html: \"I like the new one, but can we remove the bars from the end of the column headers. and the odd (I assume selected state) black lines, bottom and right.\" Three changes, no others: (1) the resize handle's painted rule is invisible at rest — 1px hairline on hover/focus-visible of the handle only, 24px hit area and every resize behaviour kept; (2) the sorted rule 3px → 2px, the only edge sorted paints; (3) the filtered-active 3px LEADING rule removed (it read as the previous column's right edge). No state of this header paints a right-edge bar; the only trailing rule is the 1px table/border column hairline the sticky header carries as an inset shadow, and focus-visible is the canon focus/ring token."
   },
   "slots": {
     "columns": {

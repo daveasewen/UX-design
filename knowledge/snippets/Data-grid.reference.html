@@ -60,13 +60,24 @@
   handle — under an OPTIONAL spanning group row (scope=colgroup), with both header rows sticky,
   a comfortable/compact density prop, and a disabled column. Nothing was bolted onto the passive
   Table: Table's header is a plain <th scope="col"> that collapses to cards, a different contract,
-  and it is NOT shared with this one. States: hover · focus-visible · sorted (ground + 3px accent
-  UNDER the cell) · filtered-active (3px accent LEADING the cell + the solid filter glyph — a
-  different edge, so a column can be sorted and filtered at once) · resizing · disabled ·
+  and it is NOT shared with this one. States: hover · focus-visible (the canon --focus ring on the
+  CELL, never a black box) · sorted (ground + a 2px accent UNDERLINE, and nothing else) ·
+  filtered-active (the distinct filter-active glyph + a held ground on the filter button — no edge
+  rule at all, so a column can be sorted and filtered at once) · resizing · disabled ·
   truncated. Keyboard keeps the ONE tab stop: arrows navigate cells, Enter/Space sorts,
   Alt+Down opens the column filter, Alt+Left/Right enters resize mode (arrows size, Esc exits).
   No new button-family members: the filter button and the menu are form furniture (Search-field
   precedent), the density switch is a Segmented-control copy, the handle is a separator.
+
+  #261 G2 — DAVE'S REVIEW OF THE HEADER, ruled verbatim off notes/_lanes/261-G-grid-header-review.html:
+  "I like the new one, but can we remove the bars from the end of the column headers. and the odd
+  (I assume selected state) black lines, bottom and right." Three changes, no others: (1) the resize
+  handle's painted rule is INVISIBLE AT REST — hairline on hover/focus-visible only, 24px hit area
+  and every resize behaviour kept; (2) the sorted rule drops 3px → 2px and is the ONLY edge the
+  sorted state paints; (3) the filtered-active LEADING bar is REMOVED — on the review specimen
+  (Date sorted, Payee filtered) it sat against Date's trailing edge and read as its right-hand
+  black line. NO STATE of this header paints a right-edge bar; the only trailing rule left is the
+  1px --border column hairline that the sticky header carries as an inset shadow.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -206,7 +217,7 @@
 
   /* the cell interior — label, filter and handle can never collide, at either density */
   .th-in{display:flex; align-items:stretch; min-height:var(--hdr-min,44px);
-    box-shadow:var(--s-sort,0 0 transparent), var(--s-filt,0 0 transparent);}
+    box-shadow:var(--s-sort,0 0 transparent);}
   .th-in.mid{align-items:center; justify-content:center;}
 
   /* sort — full-cell button; type = .t-cm-button composite (16/500, the Table header weight) */
@@ -222,10 +233,12 @@
   th[aria-sort="none"] .ic-none{display:inline-flex;}
   th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
   th[aria-sort="descending"] .ic-desc{display:inline-flex;}
-  /* SORTED — ground shift plus a 3px accent rule under the cell; with the direction glyph and
-     aria-sort that is three channels, never colour alone */
+  /* SORTED — ground shift plus a 2px accent UNDERLINE, and nothing else; with the direction glyph
+     and aria-sort that is three channels, never colour alone. #261 G2 (Dave, on the review page:
+     "the odd (I assume selected state) black lines, bottom and right"): the rule was 3px and read
+     as a heavy black bar; it is now the single 2px underline, and NO state paints a cell EDGE bar. */
   th[aria-sort="ascending"],th[aria-sort="descending"]{background:var(--hover);}
-  th[aria-sort="ascending"] .th-in,th[aria-sort="descending"] .th-in{--s-sort:inset 0 -3px 0 0 var(--bar);}
+  th[aria-sort="ascending"] .th-in,th[aria-sort="descending"] .th-in{--s-sort:inset 0 -2px 0 0 var(--bar);}
 
   /* numeric column — label and glyph hug the right edge, over the tabular figures below */
   th.num .sort{flex-direction:row-reverse; text-align:right;}
@@ -249,9 +262,12 @@
   .colf .ic-on{display:none;}
   th[data-filtered="true"] .colf .ic-off{display:none;}
   th[data-filtered="true"] .colf .ic-on{display:block;}
-  /* FILTERED-ACTIVE — a LEADING accent rule: a different edge from sorted, so one column can
-     carry both states at once and stay readable */
-  th[data-filtered="true"] .th-in{--s-filt:inset 3px 0 0 0 var(--bar);}
+  /* FILTERED-ACTIVE — #261 G2: the 3px LEADING accent rule is REMOVED. It painted a heavy black
+     bar that, sitting on a cell's start edge, read as the RIGHT edge of the column before it —
+     half of Dave's "black lines, bottom and right". The state keeps two non-colour channels: the
+     DISTINCT active glyph (filter-active.svg, never one glyph recoloured) and a held ground on
+     the filter button, plus aria-expanded/data-filtered for AT. No edge bar in any state. */
+  th[data-filtered="true"] .colf{background:var(--fhover);}
 
   /* the column menu — anchored under its own header cell (sticky is a containing block).
      No buttons inside it: Enter commits, exactly as the toolbar filter does. */
@@ -266,15 +282,20 @@
   .colmenu .cmh{display:block; margin-top:8px; opacity:var(--alpha-60);}
 
   /* RESIZE handle — 12px grip on the trailing edge with a 24px hit area (the ::before bleed).
-     tabindex=-1 keeps the grid's ONE tab stop: Alt+←/→ on the header cell enters resize mode. */
+     tabindex=-1 keeps the grid's ONE tab stop: Alt+←/→ on the header cell enters resize mode.
+     #261 G2 (Dave: "can we remove the bars from the end of the column headers"): the painted rule
+     is GONE AT REST — invisible, but the affordance is untouched. The 24px hit area, the
+     col-resize cursor, the pointer drag and the keyboard resize mode all still exist; a 1px
+     hairline appears only on HOVER or FOCUS-VISIBLE of the handle, and the full-height 2px rule
+     only while resize mode is live (data-active, set on pointer drag and on handle focus). */
   .rsz{flex:none; width:12px; align-self:stretch; padding:0; border:0; background:transparent;
     cursor:col-resize; position:relative; touch-action:none;}
   .rsz::before{content:""; position:absolute; inset:0 -6px;}
-  .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:2px;
-    background:var(--fborder);}
-  .rsz:hover::after{background:var(--bar);}
+  .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:1px;
+    background:transparent; transition:background var(--ease);}
+  .rsz:hover::after,.rsz:focus-visible::after{background:var(--fborder);}
   .rsz:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .rsz[data-active="true"]::after{background:var(--bar); top:0; bottom:0;}
+  .rsz[data-active="true"]::after{background:var(--fborder); width:2px; top:0; bottom:0;}
   .dg[data-resizing="true"]{cursor:col-resize; user-select:none;}
   .dg[data-resizing="true"] .sort:hover{background:transparent;}
 
@@ -654,7 +675,8 @@
     "requiredAria": ["role=\"grid\"", "aria-sort", "aria-selected", "aria-rowcount", "aria-rowindex", "aria-current", "aria-busy", "aria-live", "role=\"status\"", "aria-label", "aria-expanded", "aria-disabled", "aria-pressed", "role=\"separator\"", "aria-valuenow"],
     "knownFindings": [
       "#261 design pass on the COLUMN HEADER (Dave's #2 nomination): group row (scope=colgroup, sticky above the column row) · per-column filter menu (two distinct library glyphs, filter.svg / filter-active.svg) · resize handle (role=separator, pointer + Alt+arrow keyboard) · density prop · disabled column · truncation title only when it truncates.",
-      "SORTED and FILTERED-ACTIVE take DIFFERENT EDGES of the cell (3px accent under vs 3px accent leading), so one column can carry both at once; each is doubled by a glyph and by aria, never colour alone.",
+      "#261 G2 (Dave, verbatim on the review page): 'I like the new one, but can we remove the bars from the end of the column headers. and the odd (I assume selected state) black lines, bottom and right.' The resize handle's rule is now INVISIBLE AT REST (hairline on hover/focus-visible of the handle only; 24px hit area, col-resize cursor, pointer drag and Alt+arrow resize mode all unchanged — the affordance survived the paint).",
+      "SORTED is a 2px accent UNDERLINE and nothing else (was 3px); FILTERED-ACTIVE no longer paints a leading edge rule at all (was 3px leading) — on the review specimen that bar sat against the previous column's trailing edge and read as its right-hand black line. The two states still coexist on one column and each still carries two non-colour channels: sorted = ground shift + direction glyph + aria-sort; filtered = the distinct filter-active glyph + a held ground on the filter button + data-filtered. NO STATE PAINTS A RIGHT-EDGE BAR — the only trailing rule is the 1px table/border column hairline the sticky header carries as an inset shadow, and focus-visible is the canon focus/ring token, never a black box.",
       "Sticky + border-collapse drops cell borders while scrolling, so the header's rules are inset shadows, not borders.",
       "Sorting is OFF on the editable Reference column by design (re-ordering rows under an open editor is the bug), and that is the shipped example of the disabled-column state.",
       "The INTERACTIVE sibling Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component'). Table stays passive/semantic; the grid owns sort/filter/select/edit on the APG grid pattern.",

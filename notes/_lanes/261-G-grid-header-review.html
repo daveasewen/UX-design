@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grid header — #261 lane G review (OLD vs NEW, all states, four themes)</title>
+<title>Grid header — #261 lane G / G2 review (original vs G vs G2, all states, four themes)</title>
 <!--
   REVIEW PAGE for the #261 column-header design pass on the Data grid (Dave's #2 nominated
   dashboard element). Self-contained: no external CSS, no external script, no network. The
@@ -11,6 +11,12 @@
   (notes/_lanes/261-G-theme-values.json), so what is drawn here is what the snippet paints.
   The header markup below is a faithful copy of the shipped anatomy, stamped by a small
   builder so every state and every theme shows the SAME markup with only its state changed.
+
+  #261 G2 — REVISED after Dave's review of this page, ruled verbatim: "I like the new one, but can
+  we remove the bars from the end of the column headers. and the odd (I assume selected state)
+  black lines, bottom and right." Every specimen on this page now paints the SHIPPED (G2) header;
+  the middle swatch in section 1 carries .tk.g1, the ONE place the reviewed #261 G paint survives,
+  so the three removals can be seen side by side. Section 1 reads ORIGINAL - #261 G - #261 G2.
 -->
 <style>
   :root{
@@ -31,6 +37,7 @@
   .rule{height:1px; background:var(--ink); margin:12px 0 24px;}
   .rule.thin{background:var(--rule);}
   .cols2{display:grid; grid-template-columns:1fr; gap:var(--gap);}
+  .cols3{display:grid; grid-template-columns:1fr; gap:var(--gap);}
   .grid4{display:grid; grid-template-columns:1fr; gap:var(--gap);}
   .cap{font-size:12px; line-height:16px; color:var(--mute); margin:8px 0 0;}
   .cap b{color:var(--ink); font-weight:500;}
@@ -45,7 +52,7 @@
   /* ---------- the specimen: a faithful copy of the shipped header anatomy ---------- */
   .tk{--header:#F0F0F0; --cell:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --icon:#1A1A1A;
       --hover:#F0F0F0; --page:#FFFFFF; --focus:#305A85; --fborder:#808080; --bar:#000000;
-      --grouphdr:#F0F0F0; --disabled:#E1E1E1; --hdr-min:44px; --grp-h:32px; --cell-py:10px; --cell-px:12px;
+      --grouphdr:#F0F0F0; --disabled:#E1E1E1; --fhover:#F0F0F0; --hdr-min:44px; --grp-h:32px; --cell-py:10px; --cell-px:12px;
       background:var(--page); color:var(--text); border:1px solid var(--border); padding:12px; overflow:auto;}
   .tk[data-density="compact"]{--cell-py:4px; --hdr-min:32px; --grp-h:28px;}
   .tk table{border-collapse:collapse; table-layout:fixed; width:100%; min-width:760px; background:var(--cell);
@@ -69,7 +76,7 @@
   .tk th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
   .tk th[aria-sort="descending"] .ic-desc{display:inline-flex;}
   .tk th[aria-sort="ascending"],.tk th[aria-sort="descending"]{background:var(--hover);}
-  .tk th[aria-sort="ascending"] .th-in,.tk th[aria-sort="descending"] .th-in{--s-sort:inset 0 -3px 0 0 var(--bar);}
+  .tk th[aria-sort="ascending"] .th-in,.tk th[aria-sort="descending"] .th-in{--s-sort:inset 0 -2px 0 0 var(--bar);}
   .tk th.num .sort{flex-direction:row-reverse; text-align:right;}
   .tk th.num .sort .ic{margin-left:0;}
   .tk th[data-disabled] .sort{cursor:default; opacity:.48;}
@@ -79,10 +86,11 @@
   .tk .colf .ic-on{display:none;}
   .tk th[data-filtered="true"] .colf .ic-off{display:none;}
   .tk th[data-filtered="true"] .colf .ic-on{display:block;}
-  .tk th[data-filtered="true"] .th-in{--s-filt:inset 3px 0 0 0 var(--bar);}
+  .tk th[data-filtered="true"] .colf{background:var(--fhover);}
   .tk .rsz{flex:none; width:12px; align-self:stretch; position:relative;}
-  .tk .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:2px; background:var(--fborder);}
-  .tk .rsz[data-active="true"]::after{background:var(--bar); top:0; bottom:0;}
+  .tk .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:1px; background:transparent; transition:background 140ms ease;}
+  .tk .rsz:hover::after,.tk .rsz:focus-visible::after{background:var(--fborder);}
+  .tk .rsz[data-active="true"]::after{background:var(--fborder); width:2px; top:0; bottom:0;}
   .tk .cbx{display:inline-flex; align-items:center;}
   .tk .cbx .box{width:22px; height:22px; border:2px solid var(--fborder); display:inline-flex;
     align-items:center; justify-content:center;}
@@ -101,6 +109,17 @@
   .tk .colmenu .fld{height:44px; border:1px solid var(--fborder); display:flex; align-items:center; padding:0 8px;
     font:400 16px/20px var(--uf); box-shadow:inset 0 -4px 0 0 var(--bar);}
   .tk .colmenu .cmh{display:block; font-size:12px; line-height:16px; opacity:.6; margin-top:8px;}
+
+  /* ---------- #261 G, AS DAVE REVIEWED IT — kept for the comparison only ----------
+     Every other specimen on this page is the SHIPPED (G2) paint. These three rules are the three
+     things his sentence removed: the handle's rule at rest, the 3px sorted bar, the leading bar.
+     "I like the new one, but can we remove the bars from the end of the column headers. and the
+     odd (I assume selected state) black lines, bottom and right." */
+  .tk.g1 .rsz::after{background:var(--fborder); width:2px; transition:none;}
+  .tk.g1 .rsz[data-active="true"]::after{background:var(--bar); width:2px; top:0; bottom:0;}
+  .tk.g1 th[aria-sort="ascending"] .th-in,.tk.g1 th[aria-sort="descending"] .th-in{--s-sort:inset 0 -3px 0 0 var(--bar);}
+  .tk.g1 th[data-filtered="true"] .th-in{--s-filt:inset 3px 0 0 0 var(--bar);}
+  .tk.g1 th[data-filtered="true"] .colf{background:transparent;}
 
   /* ---------- the OLD header, reproduced as it shipped before #261 ---------- */
   .old thead th{padding:0;}
@@ -128,19 +147,34 @@
   say no. Nothing was bolted onto the passive <b>Table</b>: its header is a plain <code>th scope="col"</code> that
   collapses to cards, a different contract, and it is <b>not shared</b> with this one — Table is untouched.</p>
 
-  <h2>1 · Old versus new</h2>
+  <h2>1 · Original · #261 G · #261 G2</h2>
   <div class="rule thin"></div>
-  <div class="cols2">
+  <div class="cols3">
     <div class="swatch">
-      <div class="lab"><b>OLD</b><span>shipped through #260</span></div>
+      <div class="lab"><b>ORIGINAL</b><span>shipped through #260</span></div>
       <div class="tk old" data-spec="old"></div>
     </div>
     <div class="swatch">
-      <div class="lab"><b>NEW</b><span>#261 lane G</span></div>
-      <div class="tk" data-spec="new"></div>
+      <div class="lab"><b>#261 G</b><span>the header Dave reviewed</span></div>
+      <div class="tk g1" data-spec="new"></div>
+    </div>
+    <div class="swatch">
+      <div class="lab"><b>#261 G2</b><span>his two removals — SHIPPED</span></div>
+      <div class="tk" data-spec="g2"></div>
     </div>
   </div>
-  <p class="cap"><b>What moved.</b> The sort button gave up the whole cell and became one flex item, so a filter
+  <p class="cap"><b>G2 — what Dave asked for, verbatim.</b> “I like the new one, but can we remove the bars from
+  the end of the column headers. and the odd (I assume selected state) black lines, bottom and right.” Three
+  changes and no others. <b>(1)</b> The resize handle no longer paints anything at rest — the affordance is
+  untouched (24px hit area, <code>col-resize</code> cursor, pointer drag, Alt+arrow keyboard), and a 1px hairline
+  appears only on hover or focus of the handle itself. <b>(2)</b> The sorted rule drops 3px → 2px and is the only
+  edge the sorted state paints. <b>(3)</b> The filtered-active leading bar is gone: on the middle specimen Date is
+  sorted and Payee is filtered, and Payee's black leading rule sat against Date's trailing edge — that was the
+  “right” line. Filtered now speaks through its distinct glyph, a held ground on the filter button and its named
+  chip. Driven in four themes × two modes: no state paints a right-edge bar; the only trailing rule left is the
+  1px <code>table/border</code> column hairline, and focus-visible is <code>#305A85</code> / <code>#4587A7</code>,
+  the focus/ring token, never a black box.</p>
+  <p class="cap"><b>What moved at #261 G.</b> The sort button gave up the whole cell and became one flex item, so a filter
   button and a resize handle have somewhere to live that no label can ever collide with. The label truncates and
   takes a <code>title</code> only when it measurably truncates. Numeric columns turn the label and its glyph to
   the right edge, over the tabular figures. Sorting a column now shifts its ground and draws a rule under it —
@@ -292,6 +326,8 @@ function header(o){
 // --- section 1: old vs new ---
 document.querySelector('[data-spec="old"]').innerHTML = header({old:true, groups:false});
 document.querySelector('[data-spec="new"]').innerHTML = header({sort:{key:'date', dir:'descending'}, filtered:['payee']});
+// #261 G2 — same specimen, same states: only the paint changed.
+document.querySelector('[data-spec="g2"]').innerHTML = header({sort:{key:'date', dir:'descending'}, filtered:['payee']});
 
 // --- section 3: the state gallery ---
 const STATES = [
