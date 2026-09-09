@@ -83,12 +83,11 @@
       "name": "deltaGlyph",
       "type": "enum",
       "values": [
-        "trend-mark",
-        "arrow"
+        "direction-rotated"
       ],
-      "default": "trend-mark",
-      "$note": "NEW #261, and the one DEPARTURE from Stat card this pass proposes. trend-mark = assets/icons/status-icons/trend-positive|trend-negative|indeterminate (the diagonal HSBC trend marks, geometry byte-matched, recoloured to currentColor); arrow = Stat card's arrows-and-chevrons/arrow-up|arrow-down solid triangles. Both are drawn side by side on notes/_lanes/261-K-kpi-tile-review.html so Dave can pick by eye. Direction never depends on the glyph alone — the sign on the number and the word 'up'/'down' carry it too.",
-      "$status": "PROPOSED #261 — Dave's eye owed, and a divergence from Stat card if he takes it"
+      "default": "direction-rotated",
+      "$note": "RULED BY DAVE'S REVIEW at #261 K2, verbatim: \"please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle\". So the glyph is the LIBRARY direction arrow and the 45 degrees is a CSS transform on the icon, never a new drawing: up-trend = assets/icons/global-controls/direction-up.svg + transform:rotate(45deg) scale(.78) (points up-right); down-trend = direction-down.svg + rotate(-45deg) scale(.78) (down-right); flat = direction-right.svg at 0 degrees. scale(.78) only keeps the rotated bounding box inside the 16px seat. The HSBC trend mark proposed at #261 K (status-icons/trend-positive|trend-negative|indeterminate) is DROPPED, and so is the 'arrow' alternative — the enum collapses to one value because Dave chose. Direction never depends on the glyph alone: the sign on the number and the word 'up'/'down' carry it too.",
+      "$status": "SETTLED #261 K2 by Dave's review — no longer a divergence question"
     },
     {
       "name": "target",
@@ -127,7 +126,7 @@
   "variants": [
     {
       "name": "default",
-      "use": "the board tile — span 3, 32px value, 40px spark, delta and period on their own rows"
+      "use": "the board tile — span 3, 32px value, 40px spark; ORIGINAL text layout (#261 K2, Dave: \"I prefer the text layout in the original\") — label above, big value, then ONE delta line reading \"▲ +12.4% up  vs February\" with the period inline"
     },
     {
       "name": "compact",
@@ -139,7 +138,7 @@
     },
     {
       "name": "with-sparkline",
-      "use": "additive slot — the Chart-sparkline atom at inline scale with a low-alpha area under the line; the slot owns the width, the atom carries none (s184-D1)"
+      "use": "additive slot — the Chart-sparkline atom at inline scale with a low-alpha area under the line and NO end-point dot (#261 K2); the slot owns the width, the atom carries none (s184-D1)"
     },
     {
       "name": "with-target",
@@ -206,6 +205,17 @@
     "stale": {
       "chip": "border/subtle border, text/default at alpha-80",
       "$note": "NEW #261 and deliberately NOT rag/warning — Dave is astigmatic and yellow is a problem hue."
+    },
+    "deltaGlyphGeometry": {
+      "up": "assets/icons/global-controls/direction-up.svg + CSS transform:rotate(45deg) scale(.78) — points up-right",
+      "down": "assets/icons/global-controls/direction-down.svg + CSS transform:rotate(-45deg) scale(.78) — points down-right",
+      "flat": "assets/icons/global-controls/direction-right.svg at 0deg, scale(.78)",
+      "$note": "#261 K2, Dave's review verbatim: \"please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle\". Geometry is byte-matched from the library; the diagonal exists only as a transform, so no glyph was drawn. Rotation is a static transform — no transition, nothing for prefers-reduced-motion to suppress. The HSBC trend mark of #261 K is dropped."
+    },
+    "spark": {
+      "line": "trendInk seat, stroke 2, no end-point dot (#261 K2, Dave: \"can we remove the dot at the end of the spark line\") — the .dv-end circle and its rules are deleted, not hidden",
+      "area": "trendInk seat at alpha-08",
+      "baseline": "text/default at grid alpha"
     }
   },
   "$finding-two-seats": "⛔⛔ THE LIVE TWO-RED QUESTION IS VISIBLE ON THIS ONE TILE, AND IS DELIBERATELY NOT RESOLVED HERE (lane brief: inherit the current binding, flag, do not resolve). The tile paints TWO green/red seats side by side because its two parents bind different ones and BOTH were inherited unchanged. The DELTA ARROW takes rag/success #66CC8D / rag/error #F6604C — the FILL seat, byte-for-byte from the gated Stat-card manifest; on a white card that green measures 1.980:1 (measured #203 with the repo's own _contrast_utils.contrast_ratio). The SPARK STROKE takes rag/success-ink #137F3C / rag/error-ink #DA1A00 — the INK seat that s182-D3 rules for this atom; on a white card that green measures 5.090:1. MEASURED ACROSS ALL FOUR THEMES #203 IN A REAL BROWSER, which CORRECTS the smaller claim first drafted here ('they converge in dark mode'): they converge in MONO DARK ONLY. The spark ink is theme-INVARIANT by ruling (s182-D3, measured #182: zero theme-level series overrides) while the arrow fill FORKS PER THEME, so the two seats disagree in SEVEN OF EIGHT PANES. Computed values read off the DOM — arrow vs spark, ratio against that pane's own surface: mono light #66CC8D 1.98 vs #137F3C 5.09 (arrow UNDER the 3:1 floor); mono dark #66CC8D 8.31 vs #66CC8D 8.31 (the one agreement); legacy light #00847F 4.56 vs #137F3C 5.09; legacy dark #00847F 3.62 vs #66CC8D 8.31; console light #5DAC7B 2.74 vs #137F3C 5.09 (arrow UNDER the floor); console dark #5DAC7B 6.01 vs #66CC8D 8.31; supercharge light #5DAC7B 2.54 vs #137F3C 4.71 (arrow UNDER the floor); supercharge dark #5DAC7B 5.48 vs #66CC8D 7.57. THREE of the four themes put the light-mode arrow under the 3:1 non-text floor, not one. s151-D1 clause 2 ('text AND atoms alike') reads as though it already governs the arrow, and Lane E measured the same leg independently this session; but rebinding a ruled colour seat is Dave's, the arrow-only fill treatment may have been deliberate, and surface-never-swap binds. WHICHEVER WAY IT GOES, Stat card and KPI tile must move TOGETHER — a fix to one that leaves the other is exactly how this seam arrived.",
@@ -257,7 +267,7 @@
   },
   "provenance": {
     "source": "gap-report",
-    "$note": "#261 design pass, Dave's nomination. Itinerary row 55 (2026-07-14), 'KPI / trend tile — Metric + delta + spark', P2 Depth. Built #203 Wave 3b Lane K from two gated parents (Stat-card, Chart-sparkline), both untouched. REDESIGNED #261 lane K on Dave's word that every cold run reached for this one element: bento spans made real, slot-aligned rows, the HSBC trend mark, a hue-free target row, four drawn states, and a whole-tile link rival to the icon CTA. Neither parent file was touched at #261 either. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+    "$note": "#261 design pass, Dave's nomination. Itinerary row 55 (2026-07-14), 'KPI / trend tile — Metric + delta + spark', P2 Depth. Built #203 Wave 3b Lane K from two gated parents (Stat-card, Chart-sparkline), both untouched. REDESIGNED #261 lane K on Dave's word that every cold run reached for this one element: bento spans made real, slot-aligned rows, a hue-free target row, four drawn states, and a whole-tile link rival to the icon CTA. REVIEWED BY DAVE at #261 K2 and corrected on his three words: the ORIGINAL text layout restored (period back inline on the delta line), the sparkline's end-point dot removed, and the delta glyph changed from the HSBC trend mark to the library `direction` arrow rotated 45 degrees by CSS. Neither parent file was touched at #261 either. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
   },
   "interactive": true,
   "stateModel": {

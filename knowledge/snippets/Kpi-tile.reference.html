@@ -24,20 +24,30 @@
      already legalises (cols 3–6): compact/default span 3, with-target span 4, hero span 6. Two
      breakpoints re-span rather than reflow (s248-D3 — anything placed in a bento tile must be
      responsive, because an edit mode is coming).
-  2. THE STACK IS SLOT-ALIGNED. Every row reserves `min-height:var(--slot)` — the height each
+  2. THE STACK IS SLOT-ALIGNED — but THE TEXT LAYOUT IS THE ORIGINAL'S (#261 K2). Dave, verbatim:
+     "I prefer the text layout in the original". So label · big value · ONE delta line reading
+     "▲ +12.4% up  vs February" — the period sits INSIDE the delta row, as it did at #203, not on
+     a fourth stacked line; and the value keeps the Amount-display recipe (no inter-part gap, no
+     dimmed unit). The slot reservation below is alignment, not typography, and survives.
+     Every row reserves `min-height:var(--slot)` — the height each
      type composite already publishes in type.css and which is inert until something reads it.
      Reading it here means the label / value / delta rows of NEIGHBOURING tiles line up even
      when one tile has no delta, which is the thing that makes a dense board look built rather
      than assembled. Leading-trim is on, so every gap is an explicit token (2/4/8/12).
-  3. THE DELTA GLYPH IS THE HSBC TREND MARK, not the solid triangle. Geometry byte-matched from
-     assets/icons/status-icons/trend-positive.svg · trend-negative.svg · indeterminate.svg,
-     recoloured to currentColor. ⚠ THIS IS A DEPARTURE from Stat-card, which uses
-     arrows-and-chevrons/arrow-up|down. It is drawn, not ruled: the before/after page puts the
-     two side by side (notes/_lanes/261-K-kpi-tile-review.html) so Dave can say which survives.
+  3. THE DELTA GLYPH IS THE LIBRARY `direction` ARROW, ROTATED. Dave's review of #261 K, verbatim:
+     "please use the arrow from the assets I think its called 'direction' there is only up down
+     left and right, maybe we can rotate to get the 45 degree angle". Enacted #261 K2: geometry
+     byte-matched from assets/icons/global-controls/direction-up.svg · direction-down.svg ·
+     direction-right.svg, and the diagonal is a CSS transform on the icon — up-trend rotate(45deg)
+     (points up-right), down-trend rotate(-45deg) (down-right), flat direction-right at 0°.
+     ⛔ THE HSBC TREND MARK DRAWN AT #261 K IS DROPPED. Nothing new is drawn; the rotation is the
+     only departure from a shipped asset, and it is Dave's own instruction.
      Direction still travels three ways — glyph, sign on the number, and the word — never hue.
   4. NEW SLOTS: an optional TARGET/PROGRESS row (neutral ink on a border/subtle track, no hue at
      all, with the figure spelled out in text) and a widened SPARK slot (28 compact / 40 default
-     / 56 hero) that now carries a low-alpha area under the line.
+     / 56 hero) that now carries a low-alpha area under the line. #261 K2: THE END-POINT DOT IS
+     GONE (Dave: "can we remove the dot at the end of the spark line"). The line ends bare; the
+     .dv-end circle and its three CSS rules are deleted, not hidden.
   5. FOUR STATES ARE DRAWN, not described: loading (skeleton), empty, error (with a real Retry
      control), stale-data (a neutral marker chip — deliberately NOT amber; Dave is astigmatic and
      yellow is a problem hue, so staleness is carried by a glyph and a sentence).
@@ -186,18 +196,31 @@
   .kpi-lbl{margin:0; opacity:var(--alpha-60); min-height:var(--slot); display:flex;
     align-items:center; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     text-box-edge:text text;}
-  .kpi-val{color:var(--text); display:flex; align-items:baseline; gap:2px; white-space:nowrap;
+  /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
+     the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
+     unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
+  .kpi-val{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
     font-variant-numeric:tabular-nums; letter-spacing:-.01em; min-height:var(--slot);}
-  .kpi-val .unit{opacity:var(--alpha-60);}
 
-  /* ---- the delta row — glyph wears the FILL seat; the number and the word stay ink ---- */
+  /* ---- the delta row — ORIGINAL single line: glyph + signed number + word + period ----
+     "▲ +12.4% up  vs February". The period is INSIDE this row again (#261 K2), not a fourth
+     stacked line. Glyph wears the FILL seat; the number, the word and the period stay ink. */
   .kpi-delta{display:flex; align-items:center; gap:4px; min-height:20px; min-width:0;}
   .kpi-delta .glyph{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
-  .kpi-delta .glyph svg{width:16px; height:16px; display:block; fill:currentColor;}
+  /* ROTATION IS THE GLYPH (s—, #261 K2, Dave: "please use the arrow from the assets ... maybe we
+     can rotate to get the 45 degree angle"). The library ships direction-up/down/left/right only,
+     so the diagonal is made by transform, never by a new drawing: up-trend = direction-up +45°
+     (up-right), down-trend = direction-down −45° (down-right), flat = direction-right at 0°.
+     scale(.78) keeps the rotated bounding box inside the 16px seat; overflow stays visible. */
+  .kpi-delta .glyph svg{width:16px; height:16px; display:block; fill:currentColor;
+    overflow:visible; transform-origin:50% 50%;}
   .kpi-delta.up .glyph{color:var(--up);}
+  .kpi-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
   .kpi-delta.down .glyph{color:var(--down);}
+  .kpi-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
   .kpi-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
-  .kpi-per{margin:0; opacity:var(--alpha-60); min-height:var(--slot); display:flex; align-items:center;}
+  .kpi-delta.flat .glyph svg{transform:scale(.78);}
+  .kpi-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
 
   /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
   .kpi-spark{margin-top:4px; width:100%;}
@@ -209,12 +232,9 @@
   .spark-inline .dv-area{stroke:none; fill:var(--flat-ink); fill-opacity:var(--alpha-08);}
   .spark-inline .dv-series{fill:none; stroke:var(--flat-ink); stroke-width:2;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-  .spark-inline .dv-end{fill:var(--flat-ink);}
   .spark-inline[data-trend="up"] .dv-series{stroke:var(--pos-ink);}
-  .spark-inline[data-trend="up"] .dv-end{fill:var(--pos-ink);}
   .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
   .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
-  .spark-inline[data-trend="down"] .dv-end{fill:var(--neg-ink);}
   .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
 
   /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
@@ -319,10 +339,13 @@
 </head>
 <body data-theme="light">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <!-- geometry byte-matched from assets/icons/status-icons/*.svg, recoloured to currentColor -->
-    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0H18V12L13.5 7.5L3 18L0 15L10.5 4.5L6 0Z" fill="currentColor"/></symbol>
-    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 6V18H6L10.5 13.5L0 3L3 0L13.5 10.5L18 6Z" fill="currentColor"/></symbol>
-    <symbol id="kpi-flat" viewBox="0 0 18 18"><rect y="8.3999" width="18" height="1.199" fill="currentColor"/></symbol>
+    <!-- #261 K2 — geometry byte-matched from assets/icons/global-controls/direction-up.svg ·
+         direction-down.svg · direction-right.svg, recoloured to currentColor. The HSBC trend
+         mark drawn at #261 K is DROPPED. The 45° diagonals are CSS rotations of these three
+         library icons (see .kpi-delta .glyph svg above) — no new glyph was drawn. -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7.06124L9 0L2 7.06124V8.77158L8.4 2.31744V18H9.6V2.31744L16 8.77158V7.06124Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 10.9388L9 18L16 10.9388V9.22842L9.6 15.6826V0H8.4V15.6826L2 9.22842V10.9388Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-flat" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9388 2L18 9L10.9388 16H9.22842L15.6826 9.6H0V8.4H15.6826L9.22842 2H10.9388Z" fill="currentColor"/></symbol>
     <!-- byte-matched: assets/icons/status-icons/error.svg (inner marks take the tile surface) -->
     <symbol id="kpi-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path class="inner" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path class="inner" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
     <!-- byte-matched: assets/icons/global-controls/refresh.svg -->
@@ -341,9 +364,8 @@
   <div class="board">
     <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
       <p class="kpi-lbl t-cm-caption">Net cash flow</p>
-      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>2,450.00</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <!-- The sparkline atom at its INLINE scale. PASSIVE and aria-hidden by design (s184-D1:
              "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's value and delta carry the
@@ -353,7 +375,6 @@
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
-          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
         </svg>
       </div>
     </div>
@@ -361,14 +382,12 @@
     <div class="kpi-tile" role="group" aria-label="Card spend, March">
       <p class="kpi-lbl t-cm-caption">Card spend</p>
       <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>9,200.00</span></span>
-      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
-          <circle class="dv-end" cx="197" cy="38.5" r="3"/>
         </svg>
       </div>
     </div>
@@ -376,8 +395,7 @@
     <div class="kpi-tile" role="group" aria-label="Pending payments">
       <p class="kpi-lbl t-cm-caption">Pending payments</p>
       <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>1,180.55</span></span>
-      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <!-- FLAT trend: the neutral rule glyph, "No change", full ink — and the spark takes the
              standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
@@ -386,7 +404,6 @@
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
-          <circle class="dv-end" cx="197" cy="24.0" r="3"/>
         </svg>
       </div>
     </div>
@@ -394,14 +411,12 @@
     <div class="kpi-tile" role="group" aria-label="Average payment value, March">
       <p class="kpi-lbl t-cm-caption">Average payment value</p>
       <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>318.40</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+4.9% up</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+4.9% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,34.0 20.6,31.5 38.3,35.0 55.9,29.0 73.5,30.5 91.2,25.0 108.8,27.5 126.5,21.0 144.1,23.5 161.7,17.0 179.4,15.5 197.0,11.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,34.0 20.6,31.5 38.3,35.0 55.9,29.0 73.5,30.5 91.2,25.0 108.8,27.5 126.5,21.0 144.1,23.5 161.7,17.0 179.4,15.5 197.0,11.0"/>
-          <circle class="dv-end" cx="197" cy="11.0" r="3"/>
         </svg>
       </div>
     </div>
@@ -443,28 +458,24 @@
     <div class="kpi-tile hero" role="group" aria-label="Total payments settled, twelve months to March">
       <p class="kpi-lbl t-cm-caption">Total payments settled</p>
       <span class="kpi-val t-cm-figure-2"><span class="unit">£</span><span>41.7m</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+18.2% up</span></span>
-      <p class="kpi-per t-cm-legal">vs the twelve months to last March</p>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+18.2% up</span><span class="kpi-per t-cm-legal">vs the twelve months to last March</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,40.0 20.6,42.5 38.3,35.0 55.9,37.5 73.5,29.0 91.2,31.5 108.8,24.0 126.5,26.5 144.1,17.0 161.7,19.5 179.4,10.0 197.0,4.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,40.0 20.6,42.5 38.3,35.0 55.9,37.5 73.5,29.0 91.2,31.5 108.8,24.0 126.5,26.5 144.1,17.0 161.7,19.5 179.4,10.0 197.0,4.0"/>
-          <circle class="dv-end" cx="197" cy="4.0" r="3"/>
         </svg>
       </div>
     </div>
     <div class="kpi-tile hero" role="group" aria-label="Operating cost per payment, March">
       <p class="kpi-lbl t-cm-caption">Operating cost per payment</p>
       <span class="kpi-val t-cm-figure-2"><span class="unit">£</span><span>0.041</span></span>
-      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−22.6% down</span></span>
-      <p class="kpi-per t-cm-legal">vs the twelve months to last March</p>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−22.6% down</span><span class="kpi-per t-cm-legal">vs the twelve months to last March</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,6.0 20.6,10.0 38.3,8.5 55.9,14.0 73.5,12.5 91.2,18.0 108.8,17.0 126.5,23.5 144.1,22.0 161.7,28.0 179.4,30.5 197.0,36.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,6.0 20.6,10.0 38.3,8.5 55.9,14.0 73.5,12.5 91.2,18.0 108.8,17.0 126.5,23.5 144.1,22.0 161.7,28.0 179.4,30.5 197.0,36.0"/>
-          <circle class="dv-end" cx="197" cy="36.0" r="3"/>
         </svg>
       </div>
     </div>
@@ -480,8 +491,7 @@
     <div class="kpi-tile wide" role="group" aria-label="New mandates, quarter to date">
       <p class="kpi-lbl t-cm-caption">New mandates</p>
       <span class="kpi-val t-cm-figure-4"><span>2,530</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+312 up</span></span>
-      <p class="kpi-per t-cm-legal">vs the same point last quarter</p>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+312 up</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
       <div class="kpi-target">
         <div class="tgt-track" role="img" aria-label="72 percent of the 3,500 quarterly target, with the pace marker at 66 percent">
           <span class="tgt-fill" style="width:72%"></span>
@@ -493,8 +503,7 @@
     <div class="kpi-tile wide" role="group" aria-label="Digital adoption, quarter to date">
       <p class="kpi-lbl t-cm-caption">Digital adoption</p>
       <span class="kpi-val t-cm-figure-4"><span>48.1</span><span class="unit">%</span></span>
-      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1.2 down</span></span>
-      <p class="kpi-per t-cm-legal">vs the same point last quarter</p>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1.2 down</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
       <div class="kpi-target">
         <div class="tgt-track" role="img" aria-label="48 percent against a 60 percent target, with the pace marker at 55 percent">
           <span class="tgt-fill" style="width:48%"></span>
@@ -506,8 +515,7 @@
     <div class="kpi-tile wide" role="group" aria-label="Complaints closed within five days, quarter to date">
       <p class="kpi-lbl t-cm-caption">Complaints closed in five days</p>
       <span class="kpi-val t-cm-figure-4"><span>91.4</span><span class="unit">%</span></span>
-      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span></span>
-      <p class="kpi-per t-cm-legal">vs the same point last quarter</p>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
       <div class="kpi-target">
         <div class="tgt-track" role="img" aria-label="91 percent against a 90 percent target, with the pace marker at 90 percent">
           <span class="tgt-fill" style="width:91%"></span>
@@ -566,15 +574,13 @@
   <div class="board">
     <div class="kpi-tile as-link" role="group" aria-label="Net cash flow, March">
       <p class="kpi-lbl t-cm-caption"><a class="kpi-link" href="#net-cash-flow">Net cash flow</a></p>
-      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>2,450.00</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
-          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
         </svg>
       </div>
       <span class="kpi-chev" aria-hidden="true"><svg><use href="#kpi-chev"/></svg></span>
@@ -585,15 +591,13 @@
         <svg aria-hidden="true"><use href="#kpi-table"/></svg>
       </button>
       <p class="kpi-lbl t-cm-caption">Net cash flow</p>
-      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>2,450.00</span></span>
-      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span></span>
-      <p class="kpi-per t-cm-legal">vs February</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
       <div class="kpi-spark">
         <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
           <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
           <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
           <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
-          <circle class="dv-end" cx="197" cy="3.0" r="3"/>
         </svg>
       </div>
     </div>
