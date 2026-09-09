@@ -1,11 +1,11 @@
 {
   "carries": {
     "name": "Memento — Gumdrop",
-    "version": "v1.0.8",
+    "version": "v1.0.9",
     "what": "A clean cut of Memento: the machinery, plus a cold start whose record is EMPTY on purpose — an empty task store and an empty rulings store with the shapes already right, and a starter _CHAIN.md that the first wrap replaces. Its version moves WITH the pack (s225-D3): every Gumdrop version line in the cut is stamped from this one, so the pack cannot disagree with itself about what it carries."
   },
-  "commit": "193c56772bfe557ca14c22bf780316f338a0a36f",
-  "commit_date": "2026-09-08T19:29:50+01:00",
+  "commit": "1e564c069c777f510283ebbd868bf7e9e903120e",
+  "commit_date": "2026-09-09T15:15:44+01:00",
   "excluded": [
     {
       "path": "reviews/",
@@ -101,7 +101,7 @@
     },
     {
       "path": "knowledge/_validate_* (repo-bound subset)",
-      "reason": "MEASURED, not assumed: 9 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
+      "reason": "MEASURED, not assumed: 10 validators crashed reaching for something the pack does not carry. Each is named with its reason in the gates group's verdict table."
     },
     {
       "path": "knowledge/_validate_evidence.py, knowledge/_claimtable.py",
@@ -113,7 +113,7 @@
     }
   ],
   "gate_probe": {
-    "commit": "193c56772bfe557ca14c22bf780316f338a0a36f",
+    "commit": "1e564c069c777f510283ebbd868bf7e9e903120e",
     "repo_bound": [
       {
         "gate": "_gate_doc_rows.py",
@@ -126,6 +126,10 @@
       {
         "gate": "_validate_assertions.py",
         "why": "crashed: AssertionError: file_contains must find a present needle"
+      },
+      {
+        "gate": "_validate_behaviour.py",
+        "why": "runs, but its verdict is about knowledge/_BEHAVIOUR-GATE.md, which the pack does not ship"
       },
       {
         "gate": "_validate_evidence.py",
@@ -210,8 +214,8 @@
       "title": "Tokens"
     },
     {
-      "bytes": 1532903,
-      "files": 140,
+      "bytes": 1640939,
+      "files": 141,
       "group": "engine-canon",
       "key": "engine-canon.components",
       "paths": [
@@ -288,6 +292,7 @@
         "knowledge/components/input-fields.meta.json",
         "knowledge/components/kpi-tile.meta.json",
         "knowledge/components/layout-utilities.meta.json",
+        "knowledge/components/legend.meta.json",
         "knowledge/components/limits-meter.meta.json",
         "knowledge/components/links.meta.json",
         "knowledge/components/list-items.meta.json",
@@ -360,8 +365,8 @@
       "title": "Component contracts"
     },
     {
-      "bytes": 4360513,
-      "files": 138,
+      "bytes": 4855436,
+      "files": 139,
       "group": "engine-canon",
       "key": "engine-canon.snippets",
       "paths": [
@@ -435,6 +440,7 @@
         "knowledge/snippets/Input-fields.reference.html",
         "knowledge/snippets/Kpi-tile.reference.html",
         "knowledge/snippets/Layout-utilities.reference.html",
+        "knowledge/snippets/Legend.reference.html",
         "knowledge/snippets/Limits-meter.reference.html",
         "knowledge/snippets/Links.reference.html",
         "knowledge/snippets/List-items.reference.html",
@@ -508,8 +514,8 @@
       "title": "Reference markup"
     },
     {
-      "bytes": 2209229,
-      "files": 20,
+      "bytes": 2273024,
+      "files": 26,
       "group": "engine-canon",
       "key": "engine-canon.canon",
       "paths": [
@@ -521,9 +527,15 @@
         "knowledge/canon/dv-donut-sweep.js",
         "knowledge/canon/dv-legend.js",
         "knowledge/canon/dv-render-bar.js",
+        "knowledge/canon/dv-render-boxplot.js",
+        "knowledge/canon/dv-render-bullet.js",
+        "knowledge/canon/dv-render-butterfly.js",
+        "knowledge/canon/dv-render-candlestick.js",
         "knowledge/canon/dv-render-combo.js",
         "knowledge/canon/dv-render-donut.js",
+        "knowledge/canon/dv-render-histogram.js",
         "knowledge/canon/dv-render-line.js",
+        "knowledge/canon/dv-render-scatter.js",
         "knowledge/canon/dv-render-sparkline.js",
         "knowledge/canon/dv-render-stacked-area.js",
         "knowledge/canon/dv-render.js",
@@ -1404,7 +1416,7 @@
       "title": "Design guidelines"
     },
     {
-      "bytes": 1441038,
+      "bytes": 2009544,
       "ci_template": [
         "apollo-spider/ci-template/README.md",
         "apollo-spider/ci-template/gates.yml",
@@ -1413,10 +1425,10 @@
       "counts": {
         "empty_population": 4,
         "needs_dep": 4,
-        "repo_bound": 9,
-        "runnable": 41
+        "repo_bound": 10,
+        "runnable": 40
       },
-      "files": 73,
+      "files": 72,
       "group": "gates",
       "key": "gates",
       "paths": [
@@ -1448,7 +1460,6 @@
         "knowledge/_type_ratchet.json",
         "knowledge/_validate_a11y.py",
         "knowledge/_validate_advisory.py",
-        "knowledge/_validate_behaviour.py",
         "knowledge/_validate_binds_ratchet.py",
         "knowledge/_validate_binds_resolve.py",
         "knowledge/_validate_compose.py",
@@ -1581,11 +1592,11 @@
         {
           "gate": "_validate_behaviour.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
-          "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "verdict": "REPO-BOUND",
+          "why": "runs, but its verdict is about knowledge/_BEHAVIOUR-GATE.md, which the pack does not ship"
         },
         {
           "gate": "_validate_binds_ratchet.py",
@@ -1599,11 +1610,11 @@
         {
           "gate": "_validate_binds_resolve.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: binds-resolve gate: 137 snippets (137 with manifests, 2321 vars) · 137 metas (116 binds addresses) · 136/137 canon blocks · 1 failure(s) / ⛔"
         },
         {
           "gate": "_validate_compose.py",
@@ -1653,20 +1664,20 @@
         {
           "gate": "_validate_dataviz.py",
           "invocation": "",
-          "population": "graded",
-          "selftest": "green",
+          "population": "",
+          "selftest": "red",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: [FAIL] snippets/Chart-bar.reference.html  (5 charts, 7 blocking, 20 advisory) / ✗ dv-004: the driven receipt for Chart-bar.reference.html is"
         },
         {
           "gate": "_validate_descender_clip.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: selftest OK — flags un-overridden ellipsis labels; accepts text-text / overflow-visible / same-rule / comma-group overrides; ignores contain"
         },
         {
           "gate": "_validate_descender_computed.py",
@@ -1720,11 +1731,11 @@
         {
           "gate": "_validate_grid.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: selftest OK — exempts font-size/letter/radius + hairline(1/3)/negative/square; catches off-grid height/padding. / ✗ off-grid: padding: 7px  "
         },
         {
           "gate": "_validate_help_gate.py",
@@ -1753,16 +1764,16 @@
             "playwright"
           ],
           "verdict": "NEEDS-DEP",
-          "why": "playwright install --with-deps chromium"
+          "why": "something this box does not have — see the refusal"
         },
         {
           "gate": "_validate_icons.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: icon-source audit → _ICON-SOURCE-AUDIT.md / 5 UNKNOWN, 102 bespoke, across 137 snippet(s); 750 library glyphs. / still UNKNOWN:"
         },
         {
           "gate": "_validate_intent_resolve.py",
@@ -1884,11 +1895,11 @@
         {
           "gate": "_validate_roles_resolve.py",
           "invocation": "",
-          "population": "graded",
+          "population": "",
           "selftest": "green",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: roles resolve — metas: 137 · carrying an interchangeability term: 27 · addresses resolved: 89 / field population: provides 24 · answers 26 ·"
         },
         {
           "gate": "_validate_screen.py",
@@ -1969,11 +1980,11 @@
         {
           "gate": "_validate_type_blast_radius.py",
           "invocation": "",
-          "population": "graded",
-          "selftest": "green",
+          "population": "",
+          "selftest": "red",
           "third_party": [],
           "verdict": "RUNNABLE",
-          "why": "ran clean, verdict PASS"
+          "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: [PASS] class         .btn (18) / [FAIL] scoped-element .seg button (13) / [PASS] class         .stateLabel (12)"
         },
         {
           "gate": "_validate_type_composites.py",
@@ -2019,8 +2030,8 @@
       "title": "Runbooks"
     },
     {
-      "bytes": 14750513,
-      "files": 289,
+      "bytes": 15452928,
+      "files": 290,
       "group": "library",
       "key": "library.showroom",
       "paths": [
@@ -2247,6 +2258,7 @@
         "showroom/input-fields.html",
         "showroom/kpi-tile.html",
         "showroom/layout-utilities.html",
+        "showroom/legend.html",
         "showroom/limits-meter.html",
         "showroom/links.html",
         "showroom/list-items.html",
@@ -2682,7 +2694,7 @@
   "ruling": "s219-D8 (naming) · s219-D5 (the five cards) · s219-D4 (the cut)",
   "schema": "apollo-designer-pack-manifest/1",
   "slug": "Apollo-Spider",
-  "status": "RATIFIED — s260-D4 names v1.0.8 in the store; s219-D4(2) satisfied by the store, not by prose",
+  "status": "PROPOSED — no ruling is keyed to v1.0.9 yet (s223-D3: the ratify check is re-keyed PER CUT). s219-D4(2): release = his word, and this cut has not had it.",
   "totals": {
     "by_group": {
       "cold-start": {
@@ -2690,20 +2702,20 @@
         "files": 10
       },
       "engine-canon": {
-        "bytes": 11279562,
-        "files": 1168
+        "bytes": 11946316,
+        "files": 1176
       },
       "gates": {
-        "bytes": 1441038,
-        "files": 73
+        "bytes": 2009544,
+        "files": 72
       },
       "gumdrop": {
         "bytes": 1992050,
         "files": 24
       },
       "library": {
-        "bytes": 28624692,
-        "files": 375
+        "bytes": 29327107,
+        "files": 376
       },
       "memento-clean-cut": {
         "bytes": 310061,
@@ -2718,10 +2730,10 @@
         "files": 7
       }
     },
-    "bytes": 43882477,
-    "files": 1688,
-    "pack_bytes": 43909134,
-    "pack_files": 1690
+    "bytes": 45820152,
+    "files": 1696,
+    "pack_bytes": 45846809,
+    "pack_files": 1698
   },
-  "version": "v1.0.8"
+  "version": "v1.0.9"
 }

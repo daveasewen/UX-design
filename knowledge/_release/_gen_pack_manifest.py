@@ -265,6 +265,19 @@ GATE_DATA_CANDIDATES = [
     "knowledge/_tests/chart-engine/sparkline.html",
     "knowledge/_tests/chart-engine/stacked-area.html",
     "knowledge/_drive_chart_engine.py",
+    # ⛔ #262 R — THE BEHAVIOUR LEDGER, and why it is now an INPUT rather than an output.
+    # `_validate_behaviour.py` used to WRITE `knowledge/_BEHAVIOUR-GATE.md` on every run, so the
+    # pack never needed it. #261 M5 stopped the gate grading its own record: the write is now
+    # opt-in (`--write`) and the DEFAULT run COMPARES the freshly computed report against the
+    # tracked ledger and REDS on drift. That flipped the file from output to input — and because
+    # no group's `match` claims `knowledge/_*.md`, it was unclaimed, the gate went RED inside the
+    # pack and GREEN in the full tree, the differential arm called it REPO-BOUND, and A GATE THAT
+    # SHIPPED IN v1.0.8 SILENTLY LEFT THE v1.0.9 CUT. Same shape as #260 R2's dataviz drop and
+    # #256's roles/shapes drop [[gate-cannot-pass-in-one-environment]]: a repair to a gate took
+    # the gate out of the pack. The ledger is a PURE FUNCTION of the behaviour sources (no
+    # timestamp — see sync_report's comment), and those sources ship, so the same file is in sync
+    # in both trees. 5 KB, committed, already the gate's own record.
+    "knowledge/_BEHAVIOUR-GATE.md",
 ]
 
 # ---------------------------------------------------------------------------------------------
