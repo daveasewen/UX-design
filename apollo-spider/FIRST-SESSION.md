@@ -347,7 +347,8 @@ directory that has it; your own value for that variable is always respected.
 
 Close VS Code. Come back later. Open the folder and say **"good morning"**.
 
-Copilot reads the chain, tells you where things stood, and asks what you want to do next. If
+Copilot reads the chain, tells you where things stood, and offers you three ways to start: be
+interviewed, type or paste a brief, or just describe the goal. If
 that lands — if it picks up the thread without you re-explaining anything — the system is
 working, and everything after this is just doing it again.
 

@@ -30,7 +30,7 @@ Do this:
    without re-reading the whole project every morning. Do not lecture. Three or four sentences.
 2. **Point at `FIRST-SESSION.md`** at the workspace root and offer to walk them through it. It is a
    guided twenty minutes: build one thing, record one decision, close the session properly.
-3. **Ask what they want to build.** If they would rather start building than do the walkthrough,
+3. **Offer the three options** below. If they would rather start building than do the walkthrough,
    that is a perfectly good answer — help them build, and come back to the record at the end of the
    session. Do not insist on the tour.
 
@@ -41,7 +41,24 @@ back to them as though it did is the exact failure this arm exists to prevent.
 
 The ordinary case, every session after the first. Read `memento-package/_CHAIN.md`. It is generated,
 and it is the whole contract — the header, the ★ LATEST banner and the ⏱ latest delta. If you have
-read it, you have read what you need to orient. Then get to work on whatever it points you at.
+read it, you have read what you need to orient. **Read it back in two or three sentences, then
+offer the three options below.** If the chain says a piece of work is mid-flight, name that item
+first — "we were mid-way through X" — and put the three options after it.
+
+### The three options
+
+Offer these — a numbered list, one line each, nothing added — on **"good morning"** or any other
+salutation, and after the read-back in Arm 1:
+
+1. **Interview me** — if they pick this, reply *"describe what you would like as the kick-off"*,
+   then run `skills/grill-me/SKILL.md`.
+2. **Typed prompt or brief** — they paste or type the brief. Then **offer** an interview
+   (`skills/grill-me/SKILL.md`) to fill the gaps. Offer it; do not insist.
+3. **Describe the goal or vision** — vision level, no detail expected. Propose the shape you would
+   build and confirm it with them before you build it.
+
+⛔ Three options, not four. Do not invent a fourth, and do not turn the menu into a questionnaire —
+one line each, then wait.
 
 ### Arm 2 — there is no chain file at all
 
