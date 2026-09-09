@@ -1143,7 +1143,15 @@
         }
       }
     }
-    if (lo > 0) { lo = 0; }                      /* dv-bar-009 — the baseline is zero, always */
+    /* dv-bar-009 — the zero baseline. THE RULE IS A BAR RULE (#260 A2, three reporters at #260 —
+       candlestick, boxplot, scatter — and two before them, line and sparkline): a bar's LENGTH is
+       its value, so it must start at zero; a price is a POSITION on a scale, and a series of
+       90.41–108.52 held to a zero floor spends the top 17% of the plot on hairlines.
+       `_validate_dataviz.py` already scopes its own dv-bar-009 check to BAR_FAMILY; only the engine
+       did not. A type may now say `fn.zeroBaseline = false` and scale to its own extent. Default
+       true — every type registered before this line is unchanged, and no type in the tree opts out
+       today: which types SHOULD is each type partial's own call, not the core's. */
+    if (draw.zeroBaseline !== false && lo > 0) { lo = 0; }
     var sc = nice(lo, hi, 4);
     var plotW = VW - PL - PR, plotH = VH - PT - PB, y0 = VH - PB;
     var span = sc.max - sc.min || 1;
