@@ -1046,7 +1046,13 @@
 
     svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
     svg.innerHTML = ctx.out.join('\n');
-    svg.setAttribute('aria-label', spec.label || autoLabel(spec));
+    /* #260 A6 — a type may name itself. `autoLabel` enumerates every series x category, which is
+       48 phrases for a 40-session candlestick; the partial's workaround was to write ctx.spec.label
+       behind a private flag, MUTATING the caller's spec — "which nothing forbids and nothing
+       sanctions". A registered `fn.label = fn(spec) -> string` is the sanctioned seam. Precedence
+       is unchanged where it matters: an AUTHORED spec.label still wins over both. */
+    svg.setAttribute('aria-label', spec.label ||
+      (typeof draw.label === 'function' ? draw.label(spec) : autoLabel(spec)) || autoLabel(spec));
     writeTable(fig, spec);
 
     /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).

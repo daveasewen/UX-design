@@ -8,7 +8,7 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-legend** — `knowledge/canon/dv-legend.js` · **7734 code-only bytes** (7.6 KB of 16 KB) · 15131 raw, 7397 comment/blank · 16 member(s)
 - **dataviz/dv-donut-sweep** — `knowledge/canon/dv-donut-sweep.js` · **3889 code-only bytes** (3.8 KB of 16 KB) · 5511 raw, 1622 comment/blank · 16 member(s)
 - **dataviz/dp08-anchor** — `knowledge/canon/dp08-anchor.js` · **1821 code-only bytes** (1.8 KB of 16 KB) · 3884 raw, 2063 comment/blank · 16 member(s)
-- **dataviz/dv-render** — `knowledge/canon/dv-render.js` · **9502 code-only bytes** (9.3 KB of 16 KB) · 20148 raw, 10646 comment/blank · 16 member(s)
+- **dataviz/dv-render** — `knowledge/canon/dv-render.js` · **9583 code-only bytes** (9.4 KB of 16 KB) · 20711 raw, 11128 comment/blank · 16 member(s)
 - **dataviz/dv-render-bar** — `knowledge/canon/dv-render-bar.js` · **4613 code-only bytes** (4.5 KB of 16 KB) · 9262 raw, 4649 comment/blank · 16 member(s)
 - **dataviz/dv-render-line** — `knowledge/canon/dv-render-line.js` · **3616 code-only bytes** (3.5 KB of 16 KB) · 9187 raw, 5571 comment/blank · 16 member(s)
 - **dataviz/dv-render-stacked-area** — `knowledge/canon/dv-render-stacked-area.js` · **4248 code-only bytes** (4.1 KB of 16 KB) · 10285 raw, 6037 comment/blank · 16 member(s)
@@ -23,7 +23,7 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-render-butterfly** — `knowledge/canon/dv-render-butterfly.js` · **4711 code-only bytes** (4.6 KB of 16 KB) · 10795 raw, 6084 comment/blank · 16 member(s)
 
 - **dataviz — page budget (worst member):** 34209 code-only bytes (33.4 KB of 34 KB, 98%) across 17 source(s)
-    - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 9502 code-only bytes, NOT charged to member figures
+    - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 9583 code-only bytes, NOT charged to member figures
     - `Chart-combo` — 34209 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
     - `Chart-donut` — 28546 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
     - `Chart-butterfly-h` — 25493 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
