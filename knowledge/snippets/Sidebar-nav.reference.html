@@ -24,6 +24,14 @@
      user slot at the bottom, tokenised widths, an OVERLAY mode for narrow viewports, and the
      rail TOOLTIP that closes #203's open finding without composing another component in.
 
+     ⬛ #261 N2 — DAVE'S REVIEW, three sentences, each enacted here and each quoted at the code
+     that answers it: "the original header is better" (the masterbrand lockup is withdrawn and
+     7647aaf's product row restored) · "the badge should be promoted to the category heading
+     when collapsed" (a shut group carries its children's total, computed from them) · "when the
+     menu is fully collapsed the submenu should collapse too and the badge promoted to the
+     category level" (the rail shuts every group, remembers what it shut, and hangs the promoted
+     chip ON THE GLYPH the way the tab bar does — it was floating below the icon before).
+
      TWO CARRIERS BEFORE COLOUR, never hue alone (Dave is astigmatic; red is a problem hue):
      aria-current="page" for AT, plus the 3px bar whose presence/absence is a shape difference.
      See the manifest for the four-theme measurement of that bar and its Supercharge failure. -->
@@ -119,14 +127,15 @@
       transition:width var(--nav-ease);}
   .sn.is-rail{width:var(--nav-w-rail);}
 
-  /* ---- PRODUCT LOCKUP SLOT (top). #261: the mark is the masterbrand SVG, never type set to
-         look like one — the #230 ruling, copied from the masthead rather than re-decided. ---- */
+  /* ---- PRODUCT LOCKUP SLOT (top). #261 N2, Dave verbatim: "the original header is better" —
+         the masterbrand SVG + product label lockup introduced at #261 is WITHDRAWN and the
+         ORIGINAL header row (a single product word beside the collapse control) is restored
+         byte-for-byte from 7647aaf. Nothing about the #230 mark ruling is contradicted: this
+         row never claimed to be the brand mark, and the masthead still carries it. ---- */
   .sn-head{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px 0 16px;
            border-bottom:1px solid var(--nav-sub-rule);}
-  .sn-lockup{flex:1; min-width:0; display:flex; align-items:center; gap:10px; overflow:hidden;}
-  .sn-lockup .logo-mark{height:20px; width:auto; display:block; flex:none;}
-  [data-theme="light"] .sn-lockup .logo-mark[data-mode="dark"]{display:none;}
-  [data-theme="dark"]  .sn-lockup .logo-mark[data-mode="light"]{display:none;}
+  .sn .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text; color:var(--nav-text);}
   .sn-product{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
               text-box-edge:text text; color:var(--nav-text);}
   .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
@@ -136,8 +145,7 @@
   .sn-toggle:hover{background:var(--nav-hover);}
   .sn-toggle:active{background:var(--nav-pressed);}
   .sn-toggle:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .sn.is-rail .sn-head{padding:0 10px; justify-content:center;}
-  .sn.is-rail .sn-lockup{flex:none;}
+  .sn.is-rail .sn-head{padding:0 12px; justify-content:center;}
 
   .sn-body{flex:1; min-height:0; overflow-y:auto; padding:8px 0; display:flex;
            flex-direction:column; gap:8px;}
@@ -150,6 +158,16 @@
   .sn .nv-item[aria-current="page"]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
   .sn-sub .nv-item{padding-left:48px;}
   .sn-sub[hidden]{display:none;}
+
+  /* ---- COUNT PROMOTION (#261 N2, Dave verbatim: "the badge should be promoted to the category
+         heading when collapsed"). A count that belongs to a child row cannot be reachable when
+         the group that holds it is shut, so the group heading carries the children's total
+         while it is closed and gives it back when it opens. The chip is the SAME .nv-count —
+         no second badge idiom — and the promoted chip is aria-hidden with the number restated
+         in the button's own accessible name, so a count is never read twice.
+         ⚠ the explicit [hidden] rule is load-bearing (the #218 W3 finding): an author
+         `display:inline-flex` beats the UA sheet's [hidden]{display:none}. ---- */
+  .sn .nv-count[hidden]{display:none;}
 
   /* ---- USER / ACCOUNT SLOT (bottom) ---- */
   .sn-foot{border-top:1px solid var(--nav-sub-rule); padding:8px 0;}
@@ -173,14 +191,19 @@
          TOOLTIP on hover and on keyboard focus. It is the SAME element, so the sighted mouse
          user and the screen-reader user are told the same word, and no aria-label restates
          anything. Nothing is composed in from another component. ---- */
-  .sn.is-rail .sn-group-label, .sn.is-rail .sn-product,
+  .sn.is-rail .sn-group-label, .sn.is-rail .sn-brand, .sn.is-rail .sn-product,
   .sn.is-rail .sn-who{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
     overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
   .sn.is-rail .nv-item{justify-content:center; padding:0; width:var(--nav-w-rail);
     min-height:var(--nav-row);}
   .sn.is-rail .nv-item .nv-chev{display:none;}
-  .sn.is-rail .nv-item .nv-count{position:absolute; top:2px; right:8px; min-width:18px; height:18px;
-    padding:0 4px;}
+  /* #261 N2, Dave verbatim: the rail badge "must be attached to the icon like the tab-bar
+     badges". It was pinned to the ROW's top-right corner and read as a chip floating in the
+     column. It is now hung off the glyph itself — the same 18px chip, the same −6px/+14px
+     offset from the glyph origin the tab bar uses — and because the glyph is centred in the
+     rail the offsets are written from the row's centre so they survive a taller row. */
+  .sn.is-rail .nv-item .nv-count{position:absolute; right:auto;
+    left:calc(50% + 5px); top:calc(50% - 15px); min-width:18px; height:18px; padding:0 4px;}
   .sn.is-rail .nv-label{position:absolute; left:calc(var(--nav-w-rail) - 4px); top:50%;
     transform:translateY(-50%); z-index:30; width:auto; max-width:180px; flex:none;
     padding:4px 8px; background:var(--nav-count-bg); color:var(--nav-count-fg);
@@ -234,7 +257,7 @@
         <div class="sn-frame">
           <nav class="sn" aria-label="Main">
             <div class="sn-head">
-              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
+              <span class="sn-brand t-cm-label">Business banking</span>
               <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body" aria-label="Collapse navigation">
                 <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
               </button>
@@ -254,6 +277,7 @@
                 <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn1-cards">
                   <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
                   <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-count t-cm-legal" data-group-count aria-hidden="true" hidden>3</span>
                   <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
                 </button>
                 <ul class="sn-sub" id="sn1-cards">
@@ -286,7 +310,7 @@
         <div class="sn-frame">
           <nav class="sn is-rail" aria-label="Main, collapsed">
             <div class="sn-head">
-              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
+              <span class="sn-brand t-cm-label">Business banking</span>
               <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body" aria-label="Expand navigation">
                 <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
               </button>
@@ -303,12 +327,13 @@
                 </ul>
               </div>
               <div class="sn-group">
-                <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn2-cards">
+                <button class="nv-item" type="button" aria-expanded="false" aria-controls="sn2-cards" aria-label="Cards, 3">
                   <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
                   <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-count t-cm-legal" data-group-count aria-hidden="true">3</span>
                   <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
                 </button>
-                <ul class="sn-sub" id="sn2-cards">
+                <ul class="sn-sub" id="sn2-cards" hidden>
                   <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Card list</span></a></li>
                   <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Limits and controls</span><span class="nv-count t-cm-legal">3</span></a></li>
                 </ul>
@@ -356,7 +381,7 @@
           <button class="sn-scrim" type="button" aria-label="Close navigation" hidden></button>
           <nav class="sn" aria-label="Main" data-open="false">
             <div class="sn-head">
-              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
+              <span class="sn-brand t-cm-label">Business banking</span>
               <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn3-body" aria-label="Collapse navigation">
                 <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
               </button>
@@ -376,6 +401,7 @@
                 <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn3-cards">
                   <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
                   <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-count t-cm-legal" data-group-count aria-hidden="true" hidden>3</span>
                   <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
                 </button>
                 <ul class="sn-sub" id="sn3-cards">
@@ -408,8 +434,7 @@
     </div>
   </div>
 
-  <script type="application/json" id="token-manifest">
-{
+  <script type="application/json" id="token-manifest">{
   "component": "Sidebar nav",
   "vars": {
     "--nav-page": "background/default",
@@ -466,13 +491,15 @@
     "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Sidebar-nav, Navigations and Tab-bar are now ONE FAMILY with one anatomy and one token set. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains; the .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev class grammar is the same in all three. The family claim is therefore checkable by diff, not by assertion.",
     "THE INDICATOR RULE, stated once for the family: the 3px current-location bar sits on the edge the nav touches the content. Sidebar inline-start, top nav block-end, tab bar block-start. That is why the three surfaces look related without any of them being a copy of another.",
     "CURRENT-LOCATION CARRIERS unchanged from #203 and still three: aria-current='page' (AT) + the bar (a SHAPE, present or absent) + a surface change to tertiary/background/hover. Colour is third and never alone.",
-    "THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes \u2014 primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave's eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.",
-    "#203's OPEN RAIL FINDING IS CLOSED HERE. It read: 'a rail item has no visible name, so a hovering mouse user gets nothing \u2014 composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.' #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.",
-    "COUNTS are new at #261 and are the one rounded thing in the column \u2014 Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.",
+    "THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave's eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.",
+    "#203's OPEN RAIL FINDING IS CLOSED HERE. It read: 'a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.' #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.",
+    "COUNTS are new at #261 and are the one rounded thing in the column — Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.",
     "DISABLED is aria-disabled + tabindex=-1, not a removed row: the destination still reads in order and still says why it is unavailable. The count on a disabled row drops its fill for a 1px outline so no contrast claim is made on a surface WCAG exempts.",
-    "44px MIN HIT AREA enforced by hand \u2014 no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.",
+    "44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.",
     "THE PRODUCT LOCKUP is the masterbrand SVG plus a product word, copied from the masthead (#230, Dave twice: 'use this as teh default logo masterbrand-light-colour'). Type set to look like a logo is the defect that ruling exists to stop.",
-    "The snippet gate resolves tokens against tokens/semantic-colour.json \u2014 the MONO base only \u2014 so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
+    "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.",
+    "#261 N2 (Dave's review, three sentences, verbatim). \"the original header is better\" - the #261 masterbrand+product lockup is WITHDRAWN and 7647aaf's header row restored (.sn-brand, one product word beside the collapse control). \"the badge should be promoted to the category heading when collapsed\" - a shut group carries its children's count total, READ from the children so it cannot drift from them; the chip is the same .nv-count, aria-hidden, with the number restated in the button's own accessible name so no count is read twice. \"when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level\" - entering the rail shuts every group, REMEMBERS what it shut, and hands it back on the way out.",
+    "#261 N2 RAIL BADGE ATTACHMENT. Dave's screenshot showed the rail count floating BELOW the glyph with nothing joining them - it was pinned to the row's top-right corner (top:2px right:8px) in a 64px column whose glyph is centred. It now hangs off the glyph itself at the tab bar's own offsets (18px chip, -6px above and +14px along from the glyph origin), written from the row's centre so a taller row cannot break the join."
   ],
   "requiredAria": [
     "<nav",
@@ -484,7 +511,7 @@
     "aria-disabled"
   ]
 }
-  </script>
+</script>
   <script type="application/json" id="behaviour-manifest">
 {
   "$generated": "by knowledge/gen_component_partials.py from knowledge/components/sidebar-nav.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
@@ -539,16 +566,44 @@
       // Collapsible group — the disclosure pattern, ARIA first: aria-expanded on the button,
       // `hidden` on the list it already names through aria-controls. The chevron rotation is CSS
       // on [aria-expanded="true"], so it follows the attribute too.
-      nav.querySelectorAll('button.nv-item[aria-controls]').forEach(function(btn){
+      // COUNT PROMOTION (#261 N2). A closed group hides rows that carry counts, so the heading
+      // shows their total while it is shut and gives it back when it opens. The number is READ
+      // from the children — it is never a second hand-authored figure that can drift from them.
+      function promote(btn, sub){
+        var chip = btn.querySelector('[data-group-count]');
+        if (!chip || !sub) return;
+        var total = 0;
+        sub.querySelectorAll('.nv-count').forEach(function(c){
+          var n = parseInt(c.textContent, 10); if (!isNaN(n)) total += n;
+        });
+        var shut = btn.getAttribute('aria-expanded') !== 'true';
+        var show = shut && total > 0;
+        chip.textContent = String(total);
+        chip.hidden = !show;
+        // the chip is aria-hidden, so the number is restated in the button's own name — a count
+        // read twice is a count read wrong (the masthead bell states the same rule).
+        var name = (btn.querySelector('.nv-label') || {}).textContent || '';
+        if (show) btn.setAttribute('aria-label', name.trim() + ', ' + total);
+        else btn.removeAttribute('aria-label');
+      }
+      var groups = Array.prototype.slice.call(nav.querySelectorAll('button.nv-item[aria-controls]'));
+      groups.forEach(function(btn){
         var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        promote(btn, sub);
         btn.addEventListener('click', function(){
           var open = btn.getAttribute('aria-expanded') === 'true';
           btn.setAttribute('aria-expanded', String(!open));
           if (sub) sub.hidden = open;
+          promote(btn, sub);
         });
       });
       // Collapse to the rail. The labels are hidden, never removed, so the accessible names
       // survive; only the width, the chevron and the nav's own name change.
+      // #261 N2, Dave verbatim: "when the menu is fully collapsed the submenu should collapse
+      // too and the badge promoted to the category level". A rail has no room for a child row,
+      // so every group shuts on the way in and its count moves up to the group's glyph. The
+      // state the user chose is REMEMBERED and handed back on the way out — the rail borrows
+      // the disclosure, it does not overwrite it.
       var toggle = nav.querySelector('.sn-toggle');
       if (toggle) toggle.addEventListener('click', function(){
         var toRail = !nav.classList.contains('is-rail');
@@ -558,6 +613,19 @@
         nav.setAttribute('aria-label', toRail ? 'Main, collapsed' : 'Main');
         var use = toggle.querySelector('use');
         if (use) use.setAttribute('href', toRail ? '#ic-chevron-right' : '#ic-chevron-left');
+        groups.forEach(function(btn){
+          var sub = document.getElementById(btn.getAttribute('aria-controls'));
+          if (toRail){
+            btn.dataset.wasOpen = btn.getAttribute('aria-expanded');
+            btn.setAttribute('aria-expanded', 'false');
+            if (sub) sub.hidden = true;
+          } else {
+            var back = btn.dataset.wasOpen === 'true';
+            btn.setAttribute('aria-expanded', String(back));
+            if (sub) sub.hidden = !back;
+          }
+          promote(btn, sub);
+        });
       });
     });
 

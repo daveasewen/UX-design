@@ -22,10 +22,22 @@
      NEW AT #261: the shared item and token set, counts riding the glyph, a stated disabled
      destination, and the 3px bar joining the filled-glyph swap as a second shape carrier.
 
+     ⬛ #261 N2 — DAVE'S REVIEW, verbatim: "the segmented island was better in the original, one
+     change: I ruled that entire lock-up was mutually exclusive, I've changed my mind about the
+     menu button." Both halves are enacted. (1) The island is BACK to 7647aaf: its geometry had
+     never moved (rendered and measured — identical track, segments, lozenge, radius and
+     elevation), but the shared .nv-ic was overriding the selected glyph's colour and putting a
+     near-black home icon on the black pill; the glyph inherits again. (2) The Menu button LEAVES
+     the exclusive group: it is a disclosure with aria-expanded, it does not clear the current
+     destination, and the fill no longer collapses. The prior decision it revises is the
+     2026-06-30 tab-bar design sign-off (knowledge/_REVIEW-SIGNOFF.md), which promoted the
+     islands with "Menu in the exclusive group" and marked them REVISIT — there is no numbered
+     ruling for it in _rulings.json. Nothing is inscribed here; the conductor inscribes.
+
        A) standard full-width bar with labels and counts.
        B) segmented island — icon-only, elevated, spanning the full screen width; the selected
-          fill is a pill that SLIDES between segments. The Menu island is part of the SAME
-          exclusive group, so selecting Menu collapses the pill. -->
+          fill is a pill that SLIDES between segments. Menu sits OUTSIDE the island and outside
+          its exclusive group. -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -104,8 +116,8 @@
   /* icon swap: line glyph by default, FILLED (-active) glyph when current. Colour is never the
      only signal (1.4.1) — the glyph CHANGES SHAPE, and the 3px bar is a second shape carrier. */
   .tabbar .nv-item .ic-fill, .menu-fab .ic-fill{ display:none; }
-  .tabbar .nv-item[aria-current="page"] .ic-line, .menu-fab[aria-current="page"] .ic-line{ display:none; }
-  .tabbar .nv-item[aria-current="page"] .ic-fill, .menu-fab[aria-current="page"] .ic-fill{ display:block; }
+  .tabbar .nv-item[aria-current="page"] .ic-line, .menu-fab[aria-expanded="true"] .ic-line{ display:none; }
+  .tabbar .nv-item[aria-current="page"] .ic-fill, .menu-fab[aria-expanded="true"] .ic-fill{ display:block; }
 
   /* ---- A · the standard bar: 3-5 equal destinations, icon over label ---- */
   .tabbar{display:flex; width:100%; max-width:420px; background:var(--nav-surface);
@@ -133,19 +145,32 @@
     justify-content:center; color:var(--nav-muted); background:transparent;
     transition:color var(--nav-slide);}
   .seg .nv-item:hover{background:transparent;}
-  .seg .nv-item .nv-ic{width:24px; height:24px;}
+  /* ⚠ #261 N2 — THE GLYPH MUST INHERIT, AND THAT IS WHY THE ORIGINAL LOOKED BETTER. Dave:
+     "the segmented island was better in the original". Measured, not guessed: the shared
+     .nv-ic sets its OWN colour to icon/default, which beat the current segment's
+     text/on-inverse and left a near-black glyph sitting on the black pill. The original had
+     no .nv-ic — the svg took currentColor straight off the item — so the selected glyph was
+     white. One declaration restores it, and the island geometry (352px track, 46px segments,
+     56px lozenge, 999px radius, 16px functional elevation) already matched 7647aaf to the
+     pixel, verified by rendering both. */
+  .seg .nv-item .nv-ic{width:24px; height:24px; color:inherit;}
   .seg .nv-item .nv-ic svg{width:24px; height:24px;}
   .seg .nv-item[aria-current="page"]{color:var(--nav-count-fg); background:transparent; box-shadow:none;}
   .seg .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px; border-radius:999px;}
+  /* THE MENU BUTTON IS NO LONGER IN THE ISLAND'S EXCLUSIVE GROUP (#261 N2). Dave verbatim:
+     "I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu
+     button". It is now a MENU DISCLOSURE, not a fifth destination: it carries aria-expanded,
+     it never clears the island's current destination, and the sliding fill no longer collapses
+     when it is pressed — you can be on Home AND have the menu open, which is what a menu is. */
   .menu-fab{width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex;
     align-items:center; justify-content:center; color:var(--nav-muted); text-decoration:none;
     cursor:pointer; background:var(--nav-surface); border:1px solid var(--nav-rule);
-    box-shadow:0 0 16px var(--nav-shadow);
+    box-shadow:0 0 16px var(--nav-shadow); padding:0;
     transition:color var(--nav-slide), background var(--nav-slide), box-shadow var(--nav-slide);}
   .menu-fab svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
   .menu-fab:hover{color:var(--nav-text);}
   .menu-fab:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px;}
-  .menu-fab[aria-current="page"]{background:var(--nav-count-bg); color:var(--nav-count-fg);
+  .menu-fab[aria-expanded="true"]{background:var(--nav-count-bg); color:var(--nav-count-fg);
     box-shadow:inset 0 0 0 4px var(--nav-surface), 0 0 16px var(--nav-shadow);}
 
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
@@ -178,7 +203,7 @@
     <a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu-a"/></svg></span><span class="nv-label t-cm-legal">Menu</span></a>
   </nav>
 
-  <div class="stateLabel t-cm-legal">B · segmented island — icon-only, elevated, full width; the fill slides between segments and collapses when Menu is current</div>
+  <div class="stateLabel t-cm-legal">B · segmented island — icon-only, elevated, full width; the fill slides between segments. Menu sits outside the island and is a disclosure, not a fifth destination, so it never collapses the fill.</div>
   <div class="tabbar-pills">
     <nav class="seg" aria-label="Primary, compact">
       <span class="ind" aria-hidden="true"></span>
@@ -187,11 +212,10 @@
       <a class="nv-item" href="#" aria-label="Payments"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-pay"/></svg></span></a>
       <a class="nv-item" href="#" aria-label="Insights"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-insight"/></svg></span></a>
     </nav>
-    <a class="menu-fab" href="#" aria-label="Menu"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu-a"/></svg></a>
+    <button class="menu-fab" type="button" aria-label="Menu" aria-expanded="false"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu-a"/></svg></button>
   </div>
 
-  <script type="application/json" id="token-manifest">
-{
+  <script type="application/json" id="token-manifest">{
   "component": "Tab-bar",
   "type": "molecule",
   "vars": {
@@ -258,21 +282,22 @@
   },
   "knownFindings": [
     "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Tab-bar is the MOBILE member of a three-surface family with Sidebar-nav and Navigations. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. A destination here is the same row as a destination in the sidebar, stacked instead of laid out inline.",
-    "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content \u2014 block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.",
-    "\u2b1b VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown'). Tab-bar's own meta has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave's.",
+    "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.",
+    "⬛ VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown'). Tab-bar's own meta has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave's.",
     "COUNTS are new at #261 and ride the GLYPH, not the row, so a four-destination bar keeps equal columns. Same .nv-count chip as the sidebar and the masthead: 18px on a glyph, 24px on a row.",
-    "DISABLED is aria-disabled + tabindex=-1 \u2014 the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.",
-    "THREE CARRIERS FOR CURRENT, colour last: aria-current='page', the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations use a surface change as their third carrier; Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 \u2014 the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).",
-    "VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group \u2014 selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.",
+    "DISABLED is aria-disabled + tabindex=-1 — the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.",
+    "THREE CARRIERS FOR CURRENT, colour last: aria-current='page', the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations use a surface change as their third carrier; Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 — the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).",
+    "VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group — selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.",
     "44px MIN HIT AREA: variant A rows are 56px tall and at least a quarter of a 420px bar wide; variant B segments are 48px tall inside a 56px track and the Menu island is 56x56."
   ],
   "requiredAria": [
     "aria-current=\"page\"",
     "aria-label",
-    "aria-disabled"
+    "aria-disabled",
+    "aria-expanded"
   ]
 }
-  </script>
+</script>
   <script type="application/json" id="behaviour-manifest">
 {
   "$generated": "by knowledge/gen_component_partials.py from knowledge/components/tab-bar.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
@@ -318,12 +343,19 @@
       });
     });
 
-    // B) segmented island + Menu = ONE exclusive group. The fill slides between segments and
-    // collapses to zero width when Menu, which sits outside the track, is current.
+    // B) THE EXCLUSIVE GROUP IS THE ISLAND ONLY (#261 N2). Dave: "I ruled that entire lock-up
+    // was mutually exclusive, I've changed my mind about the menu button." So the destinations
+    // inside the track are still a radio set — one current, the fill slides between them — and
+    // the Menu button outside the track is a disclosure that toggles its own aria-expanded and
+    // leaves the current destination exactly where it was. The fill never collapses now.
     document.querySelectorAll('.tabbar-pills').forEach(function(group){
       var seg = group.querySelector('.seg');
       var ind = seg ? seg.querySelector('.ind') : null;
-      var items = Array.prototype.slice.call(group.querySelectorAll('.seg .nv-item, .menu-fab'));
+      var items = Array.prototype.slice.call(group.querySelectorAll('.seg .nv-item'));
+      var fab  = group.querySelector('.menu-fab');
+      if (fab) fab.addEventListener('click', function(){
+        fab.setAttribute('aria-expanded', String(fab.getAttribute('aria-expanded') !== 'true'));
+      });
       function moveInd(){
         if (!ind || !seg) return;
         var a = seg.querySelector('.nv-item[aria-current="page"]');

@@ -23,6 +23,12 @@
      NEW AT #261: counts, a notification action, a signed-in account trigger, a stated disabled
      destination, and the 768px collapse to a hamburger + stacked panel.
 
+     ⬛ #261 N2 — DAVE'S REVIEW, two sentences, each enacted and quoted at the code that answers
+     it: "the selected state should just have the underscore, no background" (the masthead
+     destination opts out of the shared current-row fill) · "align the bottom of the search bar
+     with the bottom of its container" (the bar's bottom padding is zero, so the field's
+     baseline rule IS the container's bottom edge instead of floating above it).
+
      CARRIED FORWARD (s218-D4, unchanged in substance): SEARCH is a disclosure revealing
      Search-field's underline form; ACCOUNT is the APG menu-button pattern in Dropdown's panel
      skin. Item copy is INVENTED and is Dave's. -->
@@ -146,7 +152,13 @@
      indicator moves to the edge THIS nav touches the content: block-end. */
   nav.main{display:flex; gap:4px; margin-right:auto; min-width:0;}
   nav.main .nv-item{min-height:var(--nav-h); padding:0 12px; gap:8px;}
-  nav.main .nv-item[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--nav-indicator);}
+  /* #261 N2, Dave verbatim: "the selected state should just have the underscore, no background".
+     The shared item gives a current row a tertiary/background/hover fill; a masthead destination
+     opts OUT of it and keeps the underscore alone. Two carriers still stand without colour —
+     aria-current for AT, and the 3px rule whose presence or absence is a shape — so nothing is
+     left resting on hue. */
+  nav.main .nv-item[aria-current="page"]{background:transparent;
+    box-shadow:inset 0 -3px 0 var(--nav-indicator);}
   nav.main .nv-label{flex:none;}
 
   /* ---- the action rail: search / notifications / account ---- */
@@ -181,7 +193,13 @@
      beats the UA sheet's [hidden]{display:none}, so a markup-hidden element renders while
      telling AT it is gone. Declared here rather than discovered again. */
   .nav-searchbar[hidden]{display:none;}
-  .nav-searchbar{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:8px 32px;}
+  /* #261 N2, Dave verbatim: "align the bottom of the search bar with the bottom of its
+     container". The bar carried 8px of padding UNDER the field, so the field's baseline rule
+     floated with a gap beneath it and the container's own edge read as a second, unrelated
+     line. The bottom padding is now zero: the field's rule lands ON the container's bottom
+     edge, one terminating line instead of two. The 8px above is kept — the gap is only wrong
+     below, where two rules were competing. */
+  .nav-searchbar{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:8px 32px 0;}
   /* ⛔ #219 — THE FIELD WRAPPER IS `.nav-search`, NOT `.search`, AND THE NAME IS LOAD-BEARING:
      `.search input` is a GLOBAL BINDING SITE in canon/type.css (T-D9). A bare `.search` here
      made canon's binding reach a fifth file that never asked for it and the blast-radius gate
@@ -220,7 +238,7 @@
     .nv-burger{display:inline-flex;}
     nav.main{display:none;}
     .nv-acct .nv-label{display:none;}
-    .nav-searchbar{padding:8px 1rem;}
+    .nav-searchbar{padding:8px 1rem 0;}
   }
   @media (min-width:768px){
     .nav-drawer{display:none;}
@@ -289,8 +307,7 @@
     </div>
   </div>
 
-  <script type="application/json" id="token-manifest">
-{
+  <script type="application/json" id="token-manifest">{
   "component": "Navigations",
   "vars": {
     "--nav-page": "background/default",
@@ -357,15 +374,16 @@
   ],
   "knownFindings": [
     "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). This masthead is now the TOP-NAV member of a three-surface family with Sidebar-nav and Tab-bar. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. The masthead's primary row is literally the sidebar's row laid horizontally.",
-    "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content \u2014 block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.",
+    "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.",
     "COLLAPSE AT 768px is a REPLACEMENT, not a shrink: the primary row is hidden and a hamburger discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.",
-    "COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button's own accessible name already carries the number \u2014 a count read twice is a count read wrong.",
+    "COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button's own accessible name already carries the number — a count read twice is a count read wrong.",
     "THE ACCOUNT TRIGGER now shows who is signed in (avatar initials plus name) rather than a generic person glyph, and drops to the avatar alone below 768px. PROPOSED: initials as avatar content is a stand-in for a real product identity.",
-    "DISABLED destination (Support) is aria-disabled + tabindex=-1 \u2014 it keeps its place in the reading order rather than vanishing.",
+    "DISABLED destination (Support) is aria-disabled + tabindex=-1 — it keeps its place in the reading order rather than vanishing.",
     "CARRIED FORWARD FROM s218-D4, unchanged in substance: SEARCH is a DISCLOSURE revealing Search-field's underline form beneath the masthead (focus into the field, Escape closes and returns focus); ACCOUNT is the APG menu-button pattern wearing Dropdown's panel skin with that file's declared ARIA deviation. Item copy is INVENTED and is Dave's.",
-    "THE EXPLICIT [hidden]{display:none} RULE IS LOAD-BEARING \u2014 #218 W3 finding F1: an author display rule beats the UA [hidden] sheet and renders an element that tells AT it is gone. Declared, not rediscovered.",
-    "THE BAR IS BRAND RED BY PRECEDENT and is NOT declared as a contrastPair \u2014 the four-theme measurement, including the Supercharge failure, is in the meta and is shared with Sidebar-nav.",
-    "44px MIN HIT AREA by hand: every .nv-btn is 44x44, every primary item is 64px tall, every menu item is 44px."
+    "THE EXPLICIT [hidden]{display:none} RULE IS LOAD-BEARING — #218 W3 finding F1: an author display rule beats the UA [hidden] sheet and renders an element that tells AT it is gone. Declared, not rediscovered.",
+    "THE BAR IS BRAND RED BY PRECEDENT and is NOT declared as a contrastPair — the four-theme measurement, including the Supercharge failure, is in the meta and is shared with Sidebar-nav.",
+    "44px MIN HIT AREA by hand: every .nv-btn is 44x44, every primary item is 64px tall, every menu item is 44px.",
+    "#261 N2 (Dave's review, two sentences, verbatim). \"the selected state should just have the underscore, no background\" - a masthead destination opts out of the shared item's current-row fill and keeps the 3px block-end rule alone; two non-colour carriers still stand (aria-current, and the rule's presence or absence as a shape). \"align the bottom of the search bar with the bottom of its container\" - the disclosure bar carried 8px of padding UNDER the field, so the field's baseline rule floated above the container's own edge and the two read as competing lines; the bottom padding is now zero and the field's rule lands ON that edge. The 8px above is kept."
   ],
   "requiredAria": [
     "<nav",
@@ -381,7 +399,7 @@
     "aria-disabled"
   ]
 }
-  </script>
+</script>
   <script type="application/json" id="behaviour-manifest">
 {
   "$generated": "by knowledge/gen_component_partials.py from knowledge/components/navigations.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",

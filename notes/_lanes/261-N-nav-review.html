@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>#261 N — nav family design review</title>
+<title>#261 N2 — nav family, Dave’s review enacted</title>
 <link rel="stylesheet" href="../../knowledge/canon/type.css">
 <style>
   :root{ --nav-ease:160ms cubic-bezier(.4,0,.2,1); --nav-w:248px; --nav-w-rail:64px;
@@ -267,11 +267,20 @@
 </svg>
 
 <header class="lede">
-  <h1 class="t-ed-display-2">Nav family — #261 design review</h1>
+  <h1 class="t-ed-display-2">Nav family — #261 N2</h1>
   <p class="t-ed-body">Dave's ask, verbatim: <b>"tackle the nav design"</b>. No reference was supplied ("we'll prompt this"), so everything here is designed by judgment and every choice is <b>proposed, not ruled</b>.</p>
   <p class="t-ed-body">The three nav surfaces are now one family, and the family claim is <b>mechanical</b>: a shared item block (<code>.nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev</code>) that is byte-identical in all three snippets, and a shared token block that is byte-identical in two of them and extended by exactly two search-field vars in the third. If the surfaces drift, the blocks stop matching and it shows up in a diff.</p>
   <p class="t-ed-body"><b>Read the theme switcher honestly:</b> the projected cascade injected into these frames is built from the NEW <code>--nav-*</code> var names, so in Supercharge the "after" frames re-project to that theme's surfaces and the "before" frames stay on the mono values. That is a property of this review harness, not a defect in the old files — they simply did not carry these var names.</p>
   <p class="t-ed-body"><b>The indicator rule:</b> the 3px current-location bar sits on the edge the nav touches the content. Sidebar inline-start, top nav block-end, tab bar block-start. That is what makes the three look related without any of them being a copy.</p>
+  <p class="t-ed-body"><b>#261 N2 — what changed, and why.</b> Dave reviewed the page above and gave six sentences. Each is enacted, and each is quoted in the file that answers it so the next reader finds the reason beside the code rather than in a report.</p>
+  <ol class="t-ed-body" style="max-width:78ch">
+    <li><b>Sidebar</b> — "the original header is better": the #261 masterbrand lockup is withdrawn and 7647aaf's product row restored.</li>
+    <li><b>Sidebar</b> — "the badge should be promoted to the category heading when collapsed": a shut group carries its children's total, read from the children.</li>
+    <li><b>Sidebar</b> — "when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level": the rail shuts every group, remembers what it shut, and hangs the promoted chip <b>on the glyph</b> the way the tab bar does. It was floating below the icon.</li>
+    <li><b>Top nav</b> — "the selected state should just have the underscore, no background": the masthead destination opts out of the shared current-row fill.</li>
+    <li><b>Top nav</b> — "align the bottom of the search bar with the bottom of its container": the bar's bottom padding is zero, so the field's baseline rule lands on the container's edge.</li>
+    <li><b>Tab bar</b> — "the segmented island was better in the original, one change: I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu button": the island geometry never moved (both files rendered and measured), but the shared <code>.nv-ic</code> was overriding the selected glyph's colour and putting a near-black icon on the black fill — the glyph inherits again; and Menu leaves the exclusive group as an <code>aria-expanded</code> disclosure that no longer collapses the fill.</li>
+  </ol>
 </header>
 
 <div class="bar" role="group" aria-label="Theme and mode">
@@ -289,7 +298,7 @@
   <section class="pane" id="pane-sidebar-nav">
     <h2 class="t-ed-heading-2">Sidebar nav</h2>
     <div class="ab">
-      <figure><figcaption class="t-cm-legal">Before — #260</figcaption>
+      <figure><figcaption class="t-cm-legal">ORIGINAL — 7647aaf</figcaption>
         <iframe class="frame" data-frame title="Sidebar nav, before" height="820" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -321,7 +330,7 @@
 
      RAIL ACCESSIBLE NAMES SURVIVE COLLAPSE: the label is visually hidden, not removed, so the
      link keeps its text-derived accessible name and no aria-label has to restate it. --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -655,7 +664,7 @@
   &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">After — #261 nav design pass</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
         <iframe class="frame" data-frame title="Sidebar nav, after" height="820" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -682,10 +691,18 @@
      user slot at the bottom, tokenised widths, an OVERLAY mode for narrow viewports, and the
      rail TOOLTIP that closes #203&#x27;s open finding without composing another component in.
 
+     ⬛ #261 N2 — DAVE&#x27;S REVIEW, three sentences, each enacted here and each quoted at the code
+     that answers it: &quot;the original header is better&quot; (the masterbrand lockup is withdrawn and
+     7647aaf&#x27;s product row restored) · &quot;the badge should be promoted to the category heading
+     when collapsed&quot; (a shut group carries its children&#x27;s total, computed from them) · &quot;when the
+     menu is fully collapsed the submenu should collapse too and the badge promoted to the
+     category level&quot; (the rail shuts every group, remembers what it shut, and hangs the promoted
+     chip ON THE GLYPH the way the tab bar does — it was floating below the icon before).
+
      TWO CARRIERS BEFORE COLOUR, never hue alone (Dave is astigmatic; red is a problem hue):
      aria-current=&quot;page&quot; for AT, plus the 3px bar whose presence/absence is a shape difference.
      See the manifest for the four-theme measurement of that bar and its Supercharge failure. --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. */
@@ -777,14 +794,15 @@
       transition:width var(--nav-ease);}
   .sn.is-rail{width:var(--nav-w-rail);}
 
-  /* ---- PRODUCT LOCKUP SLOT (top). #261: the mark is the masterbrand SVG, never type set to
-         look like one — the #230 ruling, copied from the masthead rather than re-decided. ---- */
+  /* ---- PRODUCT LOCKUP SLOT (top). #261 N2, Dave verbatim: &quot;the original header is better&quot; —
+         the masterbrand SVG + product label lockup introduced at #261 is WITHDRAWN and the
+         ORIGINAL header row (a single product word beside the collapse control) is restored
+         byte-for-byte from 7647aaf. Nothing about the #230 mark ruling is contradicted: this
+         row never claimed to be the brand mark, and the masthead still carries it. ---- */
   .sn-head{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px 0 16px;
            border-bottom:1px solid var(--nav-sub-rule);}
-  .sn-lockup{flex:1; min-width:0; display:flex; align-items:center; gap:10px; overflow:hidden;}
-  .sn-lockup .logo-mark{height:20px; width:auto; display:block; flex:none;}
-  [data-theme=&quot;light&quot;] .sn-lockup .logo-mark[data-mode=&quot;dark&quot;]{display:none;}
-  [data-theme=&quot;dark&quot;]  .sn-lockup .logo-mark[data-mode=&quot;light&quot;]{display:none;}
+  .sn .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            text-box-edge:text text; color:var(--nav-text);}
   .sn-product{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
               text-box-edge:text text; color:var(--nav-text);}
   .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
@@ -794,8 +812,7 @@
   .sn-toggle:hover{background:var(--nav-hover);}
   .sn-toggle:active{background:var(--nav-pressed);}
   .sn-toggle:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
-  .sn.is-rail .sn-head{padding:0 10px; justify-content:center;}
-  .sn.is-rail .sn-lockup{flex:none;}
+  .sn.is-rail .sn-head{padding:0 12px; justify-content:center;}
 
   .sn-body{flex:1; min-height:0; overflow-y:auto; padding:8px 0; display:flex;
            flex-direction:column; gap:8px;}
@@ -808,6 +825,16 @@
   .sn .nv-item[aria-current=&quot;page&quot;]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
   .sn-sub .nv-item{padding-left:48px;}
   .sn-sub[hidden]{display:none;}
+
+  /* ---- COUNT PROMOTION (#261 N2, Dave verbatim: &quot;the badge should be promoted to the category
+         heading when collapsed&quot;). A count that belongs to a child row cannot be reachable when
+         the group that holds it is shut, so the group heading carries the children&#x27;s total
+         while it is closed and gives it back when it opens. The chip is the SAME .nv-count —
+         no second badge idiom — and the promoted chip is aria-hidden with the number restated
+         in the button&#x27;s own accessible name, so a count is never read twice.
+         ⚠ the explicit [hidden] rule is load-bearing (the #218 W3 finding): an author
+         `display:inline-flex` beats the UA sheet&#x27;s [hidden]{display:none}. ---- */
+  .sn .nv-count[hidden]{display:none;}
 
   /* ---- USER / ACCOUNT SLOT (bottom) ---- */
   .sn-foot{border-top:1px solid var(--nav-sub-rule); padding:8px 0;}
@@ -831,14 +858,19 @@
          TOOLTIP on hover and on keyboard focus. It is the SAME element, so the sighted mouse
          user and the screen-reader user are told the same word, and no aria-label restates
          anything. Nothing is composed in from another component. ---- */
-  .sn.is-rail .sn-group-label, .sn.is-rail .sn-product,
+  .sn.is-rail .sn-group-label, .sn.is-rail .sn-brand, .sn.is-rail .sn-product,
   .sn.is-rail .sn-who{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
     overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
   .sn.is-rail .nv-item{justify-content:center; padding:0; width:var(--nav-w-rail);
     min-height:var(--nav-row);}
   .sn.is-rail .nv-item .nv-chev{display:none;}
-  .sn.is-rail .nv-item .nv-count{position:absolute; top:2px; right:8px; min-width:18px; height:18px;
-    padding:0 4px;}
+  /* #261 N2, Dave verbatim: the rail badge &quot;must be attached to the icon like the tab-bar
+     badges&quot;. It was pinned to the ROW&#x27;s top-right corner and read as a chip floating in the
+     column. It is now hung off the glyph itself — the same 18px chip, the same −6px/+14px
+     offset from the glyph origin the tab bar uses — and because the glyph is centred in the
+     rail the offsets are written from the row&#x27;s centre so they survive a taller row. */
+  .sn.is-rail .nv-item .nv-count{position:absolute; right:auto;
+    left:calc(50% + 5px); top:calc(50% - 15px); min-width:18px; height:18px; padding:0 4px;}
   .sn.is-rail .nv-label{position:absolute; left:calc(var(--nav-w-rail) - 4px); top:50%;
     transform:translateY(-50%); z-index:30; width:auto; max-width:180px; flex:none;
     padding:4px 8px; background:var(--nav-count-bg); color:var(--nav-count-fg);
@@ -892,7 +924,7 @@
         &lt;div class=&quot;sn-frame&quot;&gt;
           &lt;nav class=&quot;sn&quot; aria-label=&quot;Main&quot;&gt;
             &lt;div class=&quot;sn-head&quot;&gt;
-              &lt;span class=&quot;sn-lockup&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../../knowledge/assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../../knowledge/assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;span class=&quot;sn-product t-cm-label&quot;&gt;Business banking&lt;/span&gt;&lt;/span&gt;
+              &lt;span class=&quot;sn-brand t-cm-label&quot;&gt;Business banking&lt;/span&gt;
               &lt;button class=&quot;sn-toggle&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;sn1-body&quot; aria-label=&quot;Collapse navigation&quot;&gt;
                 &lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-left&quot;/&gt;&lt;/svg&gt;
               &lt;/button&gt;
@@ -912,6 +944,7 @@
                 &lt;button class=&quot;nv-item&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;sn1-cards&quot;&gt;
                   &lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-card&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                   &lt;span class=&quot;nv-label t-cm-label&quot;&gt;Cards&lt;/span&gt;
+                  &lt;span class=&quot;nv-count t-cm-legal&quot; data-group-count aria-hidden=&quot;true&quot; hidden&gt;3&lt;/span&gt;
                   &lt;span class=&quot;nv-chev&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-down&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                 &lt;/button&gt;
                 &lt;ul class=&quot;sn-sub&quot; id=&quot;sn1-cards&quot;&gt;
@@ -944,7 +977,7 @@
         &lt;div class=&quot;sn-frame&quot;&gt;
           &lt;nav class=&quot;sn is-rail&quot; aria-label=&quot;Main, collapsed&quot;&gt;
             &lt;div class=&quot;sn-head&quot;&gt;
-              &lt;span class=&quot;sn-lockup&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../../knowledge/assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../../knowledge/assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;span class=&quot;sn-product t-cm-label&quot;&gt;Business banking&lt;/span&gt;&lt;/span&gt;
+              &lt;span class=&quot;sn-brand t-cm-label&quot;&gt;Business banking&lt;/span&gt;
               &lt;button class=&quot;sn-toggle&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;sn2-body&quot; aria-label=&quot;Expand navigation&quot;&gt;
                 &lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-right&quot;/&gt;&lt;/svg&gt;
               &lt;/button&gt;
@@ -961,12 +994,13 @@
                 &lt;/ul&gt;
               &lt;/div&gt;
               &lt;div class=&quot;sn-group&quot;&gt;
-                &lt;button class=&quot;nv-item&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;sn2-cards&quot;&gt;
+                &lt;button class=&quot;nv-item&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;sn2-cards&quot; aria-label=&quot;Cards, 3&quot;&gt;
                   &lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-card&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                   &lt;span class=&quot;nv-label t-cm-label&quot;&gt;Cards&lt;/span&gt;
+                  &lt;span class=&quot;nv-count t-cm-legal&quot; data-group-count aria-hidden=&quot;true&quot;&gt;3&lt;/span&gt;
                   &lt;span class=&quot;nv-chev&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-down&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                 &lt;/button&gt;
-                &lt;ul class=&quot;sn-sub&quot; id=&quot;sn2-cards&quot;&gt;
+                &lt;ul class=&quot;sn-sub&quot; id=&quot;sn2-cards&quot; hidden&gt;
                   &lt;li&gt;&lt;a class=&quot;nv-item&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-label t-cm-label&quot;&gt;Card list&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
                   &lt;li&gt;&lt;a class=&quot;nv-item&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-label t-cm-label&quot;&gt;Limits and controls&lt;/span&gt;&lt;span class=&quot;nv-count t-cm-legal&quot;&gt;3&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
                 &lt;/ul&gt;
@@ -1014,7 +1048,7 @@
           &lt;button class=&quot;sn-scrim&quot; type=&quot;button&quot; aria-label=&quot;Close navigation&quot; hidden&gt;&lt;/button&gt;
           &lt;nav class=&quot;sn&quot; aria-label=&quot;Main&quot; data-open=&quot;false&quot;&gt;
             &lt;div class=&quot;sn-head&quot;&gt;
-              &lt;span class=&quot;sn-lockup&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../../knowledge/assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../../knowledge/assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;span class=&quot;sn-product t-cm-label&quot;&gt;Business banking&lt;/span&gt;&lt;/span&gt;
+              &lt;span class=&quot;sn-brand t-cm-label&quot;&gt;Business banking&lt;/span&gt;
               &lt;button class=&quot;sn-toggle&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;sn3-body&quot; aria-label=&quot;Collapse navigation&quot;&gt;
                 &lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-left&quot;/&gt;&lt;/svg&gt;
               &lt;/button&gt;
@@ -1034,6 +1068,7 @@
                 &lt;button class=&quot;nv-item&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;sn3-cards&quot;&gt;
                   &lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-card&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                   &lt;span class=&quot;nv-label t-cm-label&quot;&gt;Cards&lt;/span&gt;
+                  &lt;span class=&quot;nv-count t-cm-legal&quot; data-group-count aria-hidden=&quot;true&quot; hidden&gt;3&lt;/span&gt;
                   &lt;span class=&quot;nv-chev&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-chevron-down&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
                 &lt;/button&gt;
                 &lt;ul class=&quot;sn-sub&quot; id=&quot;sn3-cards&quot;&gt;
@@ -1066,8 +1101,7 @@
     &lt;/div&gt;
   &lt;/div&gt;
 
-  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;
-{
+  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;{
   &quot;component&quot;: &quot;Sidebar nav&quot;,
   &quot;vars&quot;: {
     &quot;--nav-page&quot;: &quot;background/default&quot;,
@@ -1124,13 +1158,15 @@
     &quot;#261 NAV DESIGN PASS (Dave&#x27;s ask: &#x27;tackle the nav design&#x27;). Sidebar-nav, Navigations and Tab-bar are now ONE FAMILY with one anatomy and one token set. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains; the .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev class grammar is the same in all three. The family claim is therefore checkable by diff, not by assertion.&quot;,
     &quot;THE INDICATOR RULE, stated once for the family: the 3px current-location bar sits on the edge the nav touches the content. Sidebar inline-start, top nav block-end, tab bar block-start. That is why the three surfaces look related without any of them being a copy of another.&quot;,
     &quot;CURRENT-LOCATION CARRIERS unchanged from #203 and still three: aria-current=&#x27;page&#x27; (AT) + the bar (a SHAPE, present or absent) + a surface change to tertiary/background/hover. Colour is third and never alone.&quot;,
-    &quot;THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes \u2014 primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave&#x27;s eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.&quot;,
-    &quot;#203&#x27;s OPEN RAIL FINDING IS CLOSED HERE. It read: &#x27;a rail item has no visible name, so a hovering mouse user gets nothing \u2014 composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.&#x27; #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.&quot;,
-    &quot;COUNTS are new at #261 and are the one rounded thing in the column \u2014 Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.&quot;,
+    &quot;THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave&#x27;s eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.&quot;,
+    &quot;#203&#x27;s OPEN RAIL FINDING IS CLOSED HERE. It read: &#x27;a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.&#x27; #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.&quot;,
+    &quot;COUNTS are new at #261 and are the one rounded thing in the column — Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.&quot;,
     &quot;DISABLED is aria-disabled + tabindex=-1, not a removed row: the destination still reads in order and still says why it is unavailable. The count on a disabled row drops its fill for a 1px outline so no contrast claim is made on a surface WCAG exempts.&quot;,
-    &quot;44px MIN HIT AREA enforced by hand \u2014 no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.&quot;,
+    &quot;44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.&quot;,
     &quot;THE PRODUCT LOCKUP is the masterbrand SVG plus a product word, copied from the masthead (#230, Dave twice: &#x27;use this as teh default logo masterbrand-light-colour&#x27;). Type set to look like a logo is the defect that ruling exists to stop.&quot;,
-    &quot;The snippet gate resolves tokens against tokens/semantic-colour.json \u2014 the MONO base only \u2014 so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.&quot;
+    &quot;The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.&quot;,
+    &quot;#261 N2 (Dave&#x27;s review, three sentences, verbatim). \&quot;the original header is better\&quot; - the #261 masterbrand+product lockup is WITHDRAWN and 7647aaf&#x27;s header row restored (.sn-brand, one product word beside the collapse control). \&quot;the badge should be promoted to the category heading when collapsed\&quot; - a shut group carries its children&#x27;s count total, READ from the children so it cannot drift from them; the chip is the same .nv-count, aria-hidden, with the number restated in the button&#x27;s own accessible name so no count is read twice. \&quot;when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level\&quot; - entering the rail shuts every group, REMEMBERS what it shut, and hands it back on the way out.&quot;,
+    &quot;#261 N2 RAIL BADGE ATTACHMENT. Dave&#x27;s screenshot showed the rail count floating BELOW the glyph with nothing joining them - it was pinned to the row&#x27;s top-right corner (top:2px right:8px) in a 64px column whose glyph is centred. It now hangs off the glyph itself at the tab bar&#x27;s own offsets (18px chip, -6px above and +14px along from the glyph origin), written from the row&#x27;s centre so a taller row cannot break the join.&quot;
   ],
   &quot;requiredAria&quot;: [
     &quot;&lt;nav&quot;,
@@ -1142,7 +1178,7 @@
     &quot;aria-disabled&quot;
   ]
 }
-  &lt;/script&gt;
+&lt;/script&gt;
   &lt;script type=&quot;application/json&quot; id=&quot;behaviour-manifest&quot;&gt;
 {
   &quot;$generated&quot;: &quot;by knowledge/gen_component_partials.py from knowledge/components/sidebar-nav.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.&quot;,
@@ -1197,16 +1233,44 @@
       // Collapsible group — the disclosure pattern, ARIA first: aria-expanded on the button,
       // `hidden` on the list it already names through aria-controls. The chevron rotation is CSS
       // on [aria-expanded=&quot;true&quot;], so it follows the attribute too.
-      nav.querySelectorAll(&#x27;button.nv-item[aria-controls]&#x27;).forEach(function(btn){
+      // COUNT PROMOTION (#261 N2). A closed group hides rows that carry counts, so the heading
+      // shows their total while it is shut and gives it back when it opens. The number is READ
+      // from the children — it is never a second hand-authored figure that can drift from them.
+      function promote(btn, sub){
+        var chip = btn.querySelector(&#x27;[data-group-count]&#x27;);
+        if (!chip || !sub) return;
+        var total = 0;
+        sub.querySelectorAll(&#x27;.nv-count&#x27;).forEach(function(c){
+          var n = parseInt(c.textContent, 10); if (!isNaN(n)) total += n;
+        });
+        var shut = btn.getAttribute(&#x27;aria-expanded&#x27;) !== &#x27;true&#x27;;
+        var show = shut &amp;&amp; total &gt; 0;
+        chip.textContent = String(total);
+        chip.hidden = !show;
+        // the chip is aria-hidden, so the number is restated in the button&#x27;s own name — a count
+        // read twice is a count read wrong (the masthead bell states the same rule).
+        var name = (btn.querySelector(&#x27;.nv-label&#x27;) || {}).textContent || &#x27;&#x27;;
+        if (show) btn.setAttribute(&#x27;aria-label&#x27;, name.trim() + &#x27;, &#x27; + total);
+        else btn.removeAttribute(&#x27;aria-label&#x27;);
+      }
+      var groups = Array.prototype.slice.call(nav.querySelectorAll(&#x27;button.nv-item[aria-controls]&#x27;));
+      groups.forEach(function(btn){
         var sub = document.getElementById(btn.getAttribute(&#x27;aria-controls&#x27;));
+        promote(btn, sub);
         btn.addEventListener(&#x27;click&#x27;, function(){
           var open = btn.getAttribute(&#x27;aria-expanded&#x27;) === &#x27;true&#x27;;
           btn.setAttribute(&#x27;aria-expanded&#x27;, String(!open));
           if (sub) sub.hidden = open;
+          promote(btn, sub);
         });
       });
       // Collapse to the rail. The labels are hidden, never removed, so the accessible names
       // survive; only the width, the chevron and the nav&#x27;s own name change.
+      // #261 N2, Dave verbatim: &quot;when the menu is fully collapsed the submenu should collapse
+      // too and the badge promoted to the category level&quot;. A rail has no room for a child row,
+      // so every group shuts on the way in and its count moves up to the group&#x27;s glyph. The
+      // state the user chose is REMEMBERED and handed back on the way out — the rail borrows
+      // the disclosure, it does not overwrite it.
       var toggle = nav.querySelector(&#x27;.sn-toggle&#x27;);
       if (toggle) toggle.addEventListener(&#x27;click&#x27;, function(){
         var toRail = !nav.classList.contains(&#x27;is-rail&#x27;);
@@ -1216,6 +1280,19 @@
         nav.setAttribute(&#x27;aria-label&#x27;, toRail ? &#x27;Main, collapsed&#x27; : &#x27;Main&#x27;);
         var use = toggle.querySelector(&#x27;use&#x27;);
         if (use) use.setAttribute(&#x27;href&#x27;, toRail ? &#x27;#ic-chevron-right&#x27; : &#x27;#ic-chevron-left&#x27;);
+        groups.forEach(function(btn){
+          var sub = document.getElementById(btn.getAttribute(&#x27;aria-controls&#x27;));
+          if (toRail){
+            btn.dataset.wasOpen = btn.getAttribute(&#x27;aria-expanded&#x27;);
+            btn.setAttribute(&#x27;aria-expanded&#x27;, &#x27;false&#x27;);
+            if (sub) sub.hidden = true;
+          } else {
+            var back = btn.dataset.wasOpen === &#x27;true&#x27;;
+            btn.setAttribute(&#x27;aria-expanded&#x27;, String(back));
+            if (sub) sub.hidden = !back;
+          }
+          promote(btn, sub);
+        });
       });
     });
 
@@ -1254,7 +1331,7 @@
   <section class="pane" id="pane-navigations">
     <h2 class="t-ed-heading-2">Navigations (top nav)</h2>
     <div class="ab">
-      <figure><figcaption class="t-cm-legal">Before — #260</figcaption>
+      <figure><figcaption class="t-cm-legal">ORIGINAL — 7647aaf</figcaption>
         <iframe class="frame" data-frame title="Navigations (top nav), before" height="300" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -1285,7 +1362,7 @@
       explicit `[hidden]{display:none}` rule, because an author `display:` beats the UA&#x27;s
       `[hidden]` sheet and a markup-hidden element then RENDERS while claiming to be absent.
 --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 :root{
@@ -1429,7 +1506,7 @@
     &lt;/svg&gt;
 
     &lt;header class=&quot;masthead&quot;&gt;
-    &lt;span class=&quot;logo&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../../knowledge/assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../../knowledge/assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;logo&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;/span&gt;
     &lt;nav class=&quot;main&quot; aria-label=&quot;Primary&quot;&gt;
       &lt;a href=&quot;#&quot; aria-current=&quot;page&quot;&gt;Accounts&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Payments&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Cards&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Support&lt;/a&gt;
     &lt;/nav&gt;
@@ -1601,7 +1678,7 @@
   &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">After — #261 nav design pass</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
         <iframe class="frame" data-frame title="Navigations (top nav), after" height="300" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -1627,10 +1704,16 @@
      NEW AT #261: counts, a notification action, a signed-in account trigger, a stated disabled
      destination, and the 768px collapse to a hamburger + stacked panel.
 
+     ⬛ #261 N2 — DAVE&#x27;S REVIEW, two sentences, each enacted and quoted at the code that answers
+     it: &quot;the selected state should just have the underscore, no background&quot; (the masthead
+     destination opts out of the shared current-row fill) · &quot;align the bottom of the search bar
+     with the bottom of its container&quot; (the bar&#x27;s bottom padding is zero, so the field&#x27;s
+     baseline rule IS the container&#x27;s bottom edge instead of floating above it).
+
      CARRIED FORWARD (s218-D4, unchanged in substance): SEARCH is a disclosure revealing
      Search-field&#x27;s underline form; ACCOUNT is the APG menu-button pattern in Dropdown&#x27;s panel
      skin. Item copy is INVENTED and is Dave&#x27;s. --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 :root{
@@ -1750,7 +1833,13 @@
      indicator moves to the edge THIS nav touches the content: block-end. */
   nav.main{display:flex; gap:4px; margin-right:auto; min-width:0;}
   nav.main .nv-item{min-height:var(--nav-h); padding:0 12px; gap:8px;}
-  nav.main .nv-item[aria-current=&quot;page&quot;]{box-shadow:inset 0 -3px 0 var(--nav-indicator);}
+  /* #261 N2, Dave verbatim: &quot;the selected state should just have the underscore, no background&quot;.
+     The shared item gives a current row a tertiary/background/hover fill; a masthead destination
+     opts OUT of it and keeps the underscore alone. Two carriers still stand without colour —
+     aria-current for AT, and the 3px rule whose presence or absence is a shape — so nothing is
+     left resting on hue. */
+  nav.main .nv-item[aria-current=&quot;page&quot;]{background:transparent;
+    box-shadow:inset 0 -3px 0 var(--nav-indicator);}
   nav.main .nv-label{flex:none;}
 
   /* ---- the action rail: search / notifications / account ---- */
@@ -1785,7 +1874,13 @@
      beats the UA sheet&#x27;s [hidden]{display:none}, so a markup-hidden element renders while
      telling AT it is gone. Declared here rather than discovered again. */
   .nav-searchbar[hidden]{display:none;}
-  .nav-searchbar{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:8px 32px;}
+  /* #261 N2, Dave verbatim: &quot;align the bottom of the search bar with the bottom of its
+     container&quot;. The bar carried 8px of padding UNDER the field, so the field&#x27;s baseline rule
+     floated with a gap beneath it and the container&#x27;s own edge read as a second, unrelated
+     line. The bottom padding is now zero: the field&#x27;s rule lands ON the container&#x27;s bottom
+     edge, one terminating line instead of two. The 8px above is kept — the gap is only wrong
+     below, where two rules were competing. */
+  .nav-searchbar{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:8px 32px 0;}
   /* ⛔ #219 — THE FIELD WRAPPER IS `.nav-search`, NOT `.search`, AND THE NAME IS LOAD-BEARING:
      `.search input` is a GLOBAL BINDING SITE in canon/type.css (T-D9). A bare `.search` here
      made canon&#x27;s binding reach a fifth file that never asked for it and the blast-radius gate
@@ -1824,7 +1919,7 @@
     .nv-burger{display:inline-flex;}
     nav.main{display:none;}
     .nv-acct .nv-label{display:none;}
-    .nav-searchbar{padding:8px 1rem;}
+    .nav-searchbar{padding:8px 1rem 0;}
   }
   @media (min-width:768px){
     .nav-drawer{display:none;}
@@ -1852,7 +1947,7 @@
 
   &lt;header class=&quot;masthead&quot;&gt;
     &lt;button class=&quot;nv-btn nv-burger&quot; id=&quot;navBurger&quot; type=&quot;button&quot; aria-label=&quot;Open navigation&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;navDrawer&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#nv-menu&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;
-    &lt;span class=&quot;logo&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../../knowledge/assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../../knowledge/assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;logo&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;light&quot; src=&quot;../assets/logos/masterbrand-light-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;img class=&quot;logo-mark&quot; data-mode=&quot;dark&quot; src=&quot;../assets/logos/masterbrand-dark-colour.svg&quot; alt=&quot;HSBC&quot; width=&quot;315&quot; height=&quot;85&quot;&gt;&lt;/span&gt;
     &lt;nav class=&quot;main&quot; aria-label=&quot;Primary&quot;&gt;
       &lt;a class=&quot;nv-item t-cm-button&quot; href=&quot;#&quot; aria-current=&quot;page&quot;&gt;&lt;span class=&quot;nv-label&quot;&gt;Accounts&lt;/span&gt;&lt;/a&gt;&lt;a class=&quot;nv-item t-cm-button&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-label&quot;&gt;Payments&lt;/span&gt;&lt;span class=&quot;nv-count t-cm-legal&quot;&gt;12&lt;/span&gt;&lt;/a&gt;&lt;a class=&quot;nv-item t-cm-button&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-label&quot;&gt;Cards&lt;/span&gt;&lt;/a&gt;&lt;a class=&quot;nv-item t-cm-button&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-label&quot;&gt;Insights&lt;/span&gt;&lt;/a&gt;&lt;a class=&quot;nv-item t-cm-button&quot; href=&quot;#&quot; aria-disabled=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;span class=&quot;nv-label&quot;&gt;Support&lt;/span&gt;&lt;/a&gt;
     &lt;/nav&gt;
@@ -1893,8 +1988,7 @@
     &lt;/div&gt;
   &lt;/div&gt;
 
-  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;
-{
+  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;{
   &quot;component&quot;: &quot;Navigations&quot;,
   &quot;vars&quot;: {
     &quot;--nav-page&quot;: &quot;background/default&quot;,
@@ -1961,15 +2055,16 @@
   ],
   &quot;knownFindings&quot;: [
     &quot;#261 NAV DESIGN PASS (Dave&#x27;s ask: &#x27;tackle the nav design&#x27;). This masthead is now the TOP-NAV member of a three-surface family with Sidebar-nav and Tab-bar. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. The masthead&#x27;s primary row is literally the sidebar&#x27;s row laid horizontally.&quot;,
-    &quot;THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content \u2014 block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.&quot;,
+    &quot;THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.&quot;,
     &quot;COLLAPSE AT 768px is a REPLACEMENT, not a shrink: the primary row is hidden and a hamburger discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.&quot;,
-    &quot;COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button&#x27;s own accessible name already carries the number \u2014 a count read twice is a count read wrong.&quot;,
+    &quot;COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button&#x27;s own accessible name already carries the number — a count read twice is a count read wrong.&quot;,
     &quot;THE ACCOUNT TRIGGER now shows who is signed in (avatar initials plus name) rather than a generic person glyph, and drops to the avatar alone below 768px. PROPOSED: initials as avatar content is a stand-in for a real product identity.&quot;,
-    &quot;DISABLED destination (Support) is aria-disabled + tabindex=-1 \u2014 it keeps its place in the reading order rather than vanishing.&quot;,
+    &quot;DISABLED destination (Support) is aria-disabled + tabindex=-1 — it keeps its place in the reading order rather than vanishing.&quot;,
     &quot;CARRIED FORWARD FROM s218-D4, unchanged in substance: SEARCH is a DISCLOSURE revealing Search-field&#x27;s underline form beneath the masthead (focus into the field, Escape closes and returns focus); ACCOUNT is the APG menu-button pattern wearing Dropdown&#x27;s panel skin with that file&#x27;s declared ARIA deviation. Item copy is INVENTED and is Dave&#x27;s.&quot;,
-    &quot;THE EXPLICIT [hidden]{display:none} RULE IS LOAD-BEARING \u2014 #218 W3 finding F1: an author display rule beats the UA [hidden] sheet and renders an element that tells AT it is gone. Declared, not rediscovered.&quot;,
-    &quot;THE BAR IS BRAND RED BY PRECEDENT and is NOT declared as a contrastPair \u2014 the four-theme measurement, including the Supercharge failure, is in the meta and is shared with Sidebar-nav.&quot;,
-    &quot;44px MIN HIT AREA by hand: every .nv-btn is 44x44, every primary item is 64px tall, every menu item is 44px.&quot;
+    &quot;THE EXPLICIT [hidden]{display:none} RULE IS LOAD-BEARING — #218 W3 finding F1: an author display rule beats the UA [hidden] sheet and renders an element that tells AT it is gone. Declared, not rediscovered.&quot;,
+    &quot;THE BAR IS BRAND RED BY PRECEDENT and is NOT declared as a contrastPair — the four-theme measurement, including the Supercharge failure, is in the meta and is shared with Sidebar-nav.&quot;,
+    &quot;44px MIN HIT AREA by hand: every .nv-btn is 44x44, every primary item is 64px tall, every menu item is 44px.&quot;,
+    &quot;#261 N2 (Dave&#x27;s review, two sentences, verbatim). \&quot;the selected state should just have the underscore, no background\&quot; - a masthead destination opts out of the shared item&#x27;s current-row fill and keeps the 3px block-end rule alone; two non-colour carriers still stand (aria-current, and the rule&#x27;s presence or absence as a shape). \&quot;align the bottom of the search bar with the bottom of its container\&quot; - the disclosure bar carried 8px of padding UNDER the field, so the field&#x27;s baseline rule floated above the container&#x27;s own edge and the two read as competing lines; the bottom padding is now zero and the field&#x27;s rule lands ON that edge. The 8px above is kept.&quot;
   ],
   &quot;requiredAria&quot;: [
     &quot;&lt;nav&quot;,
@@ -1985,7 +2080,7 @@
     &quot;aria-disabled&quot;
   ]
 }
-  &lt;/script&gt;
+&lt;/script&gt;
   &lt;script type=&quot;application/json&quot; id=&quot;behaviour-manifest&quot;&gt;
 {
   &quot;$generated&quot;: &quot;by knowledge/gen_component_partials.py from knowledge/components/navigations.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.&quot;,
@@ -2135,7 +2230,7 @@
   <section class="pane" id="pane-tab-bar">
     <h2 class="t-ed-heading-2">Tab bar</h2>
     <div class="ab">
-      <figure><figcaption class="t-cm-legal">Before — #260</figcaption>
+      <figure><figcaption class="t-cm-legal">ORIGINAL — 7647aaf</figcaption>
         <iframe class="frame" data-frame title="Tab bar, before" height="380" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -2153,7 +2248,7 @@
           black with the glyph in white (inverts to white/dark in dark mode). The Menu island is part of the
           SAME exclusive group — only one item current at a time, so selecting Menu collapses the pill — and
           its selected state matches the segments with a 4px white (surface) ring. Menu matches the lozenge height. --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-30. */
@@ -2300,7 +2395,7 @@
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe></figure>
-      <figure><figcaption class="t-cm-legal">After — #261 nav design pass</figcaption>
+      <figure><figcaption class="t-cm-legal">#261 N2 — Dave's six sentences enacted</figcaption>
         <iframe class="frame" data-frame title="Tab bar, after" height="380" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -2325,11 +2420,23 @@
      NEW AT #261: the shared item and token set, counts riding the glyph, a stated disabled
      destination, and the 3px bar joining the filled-glyph swap as a second shape carrier.
 
+     ⬛ #261 N2 — DAVE&#x27;S REVIEW, verbatim: &quot;the segmented island was better in the original, one
+     change: I ruled that entire lock-up was mutually exclusive, I&#x27;ve changed my mind about the
+     menu button.&quot; Both halves are enacted. (1) The island is BACK to 7647aaf: its geometry had
+     never moved (rendered and measured — identical track, segments, lozenge, radius and
+     elevation), but the shared .nv-ic was overriding the selected glyph&#x27;s colour and putting a
+     near-black home icon on the black pill; the glyph inherits again. (2) The Menu button LEAVES
+     the exclusive group: it is a disclosure with aria-expanded, it does not clear the current
+     destination, and the fill no longer collapses. The prior decision it revises is the
+     2026-06-30 tab-bar design sign-off (knowledge/_REVIEW-SIGNOFF.md), which promoted the
+     islands with &quot;Menu in the exclusive group&quot; and marked them REVISIT — there is no numbered
+     ruling for it in _rulings.json. Nothing is inscribed here; the conductor inscribes.
+
        A) standard full-width bar with labels and counts.
        B) segmented island — icon-only, elevated, spanning the full screen width; the selected
-          fill is a pill that SLIDES between segments. The Menu island is part of the SAME
-          exclusive group, so selecting Menu collapses the pill. --&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;../../knowledge/canon/type.css&quot;&gt;
+          fill is a pill that SLIDES between segments. Menu sits OUTSIDE the island and outside
+          its exclusive group. --&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../canon/type.css&quot;&gt;
 &lt;style&gt;
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. */
@@ -2407,8 +2514,8 @@
   /* icon swap: line glyph by default, FILLED (-active) glyph when current. Colour is never the
      only signal (1.4.1) — the glyph CHANGES SHAPE, and the 3px bar is a second shape carrier. */
   .tabbar .nv-item .ic-fill, .menu-fab .ic-fill{ display:none; }
-  .tabbar .nv-item[aria-current=&quot;page&quot;] .ic-line, .menu-fab[aria-current=&quot;page&quot;] .ic-line{ display:none; }
-  .tabbar .nv-item[aria-current=&quot;page&quot;] .ic-fill, .menu-fab[aria-current=&quot;page&quot;] .ic-fill{ display:block; }
+  .tabbar .nv-item[aria-current=&quot;page&quot;] .ic-line, .menu-fab[aria-expanded=&quot;true&quot;] .ic-line{ display:none; }
+  .tabbar .nv-item[aria-current=&quot;page&quot;] .ic-fill, .menu-fab[aria-expanded=&quot;true&quot;] .ic-fill{ display:block; }
 
   /* ---- A · the standard bar: 3-5 equal destinations, icon over label ---- */
   .tabbar{display:flex; width:100%; max-width:420px; background:var(--nav-surface);
@@ -2436,19 +2543,32 @@
     justify-content:center; color:var(--nav-muted); background:transparent;
     transition:color var(--nav-slide);}
   .seg .nv-item:hover{background:transparent;}
-  .seg .nv-item .nv-ic{width:24px; height:24px;}
+  /* ⚠ #261 N2 — THE GLYPH MUST INHERIT, AND THAT IS WHY THE ORIGINAL LOOKED BETTER. Dave:
+     &quot;the segmented island was better in the original&quot;. Measured, not guessed: the shared
+     .nv-ic sets its OWN colour to icon/default, which beat the current segment&#x27;s
+     text/on-inverse and left a near-black glyph sitting on the black pill. The original had
+     no .nv-ic — the svg took currentColor straight off the item — so the selected glyph was
+     white. One declaration restores it, and the island geometry (352px track, 46px segments,
+     56px lozenge, 999px radius, 16px functional elevation) already matched 7647aaf to the
+     pixel, verified by rendering both. */
+  .seg .nv-item .nv-ic{width:24px; height:24px; color:inherit;}
   .seg .nv-item .nv-ic svg{width:24px; height:24px;}
   .seg .nv-item[aria-current=&quot;page&quot;]{color:var(--nav-count-fg); background:transparent; box-shadow:none;}
   .seg .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px; border-radius:999px;}
+  /* THE MENU BUTTON IS NO LONGER IN THE ISLAND&#x27;S EXCLUSIVE GROUP (#261 N2). Dave verbatim:
+     &quot;I ruled that entire lock-up was mutually exclusive, I&#x27;ve changed my mind about the menu
+     button&quot;. It is now a MENU DISCLOSURE, not a fifth destination: it carries aria-expanded,
+     it never clears the island&#x27;s current destination, and the sliding fill no longer collapses
+     when it is pressed — you can be on Home AND have the menu open, which is what a menu is. */
   .menu-fab{width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex;
     align-items:center; justify-content:center; color:var(--nav-muted); text-decoration:none;
     cursor:pointer; background:var(--nav-surface); border:1px solid var(--nav-rule);
-    box-shadow:0 0 16px var(--nav-shadow);
+    box-shadow:0 0 16px var(--nav-shadow); padding:0;
     transition:color var(--nav-slide), background var(--nav-slide), box-shadow var(--nav-slide);}
   .menu-fab svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
   .menu-fab:hover{color:var(--nav-text);}
   .menu-fab:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px;}
-  .menu-fab[aria-current=&quot;page&quot;]{background:var(--nav-count-bg); color:var(--nav-count-fg);
+  .menu-fab[aria-expanded=&quot;true&quot;]{background:var(--nav-count-bg); color:var(--nav-count-fg);
     box-shadow:inset 0 0 0 4px var(--nav-surface), 0 0 16px var(--nav-shadow);}
 
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
@@ -2481,7 +2601,7 @@
     &lt;a class=&quot;nv-item&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg class=&quot;ic-line&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu&quot;/&gt;&lt;/svg&gt;&lt;svg class=&quot;ic-fill&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu-a&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span class=&quot;nv-label t-cm-legal&quot;&gt;Menu&lt;/span&gt;&lt;/a&gt;
   &lt;/nav&gt;
 
-  &lt;div class=&quot;stateLabel t-cm-legal&quot;&gt;B · segmented island — icon-only, elevated, full width; the fill slides between segments and collapses when Menu is current&lt;/div&gt;
+  &lt;div class=&quot;stateLabel t-cm-legal&quot;&gt;B · segmented island — icon-only, elevated, full width; the fill slides between segments. Menu sits outside the island and is a disclosure, not a fifth destination, so it never collapses the fill.&lt;/div&gt;
   &lt;div class=&quot;tabbar-pills&quot;&gt;
     &lt;nav class=&quot;seg&quot; aria-label=&quot;Primary, compact&quot;&gt;
       &lt;span class=&quot;ind&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
@@ -2490,11 +2610,10 @@
       &lt;a class=&quot;nv-item&quot; href=&quot;#&quot; aria-label=&quot;Payments&quot;&gt;&lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-pay&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/a&gt;
       &lt;a class=&quot;nv-item&quot; href=&quot;#&quot; aria-label=&quot;Insights&quot;&gt;&lt;span class=&quot;nv-ic&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-insight&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;/a&gt;
     &lt;/nav&gt;
-    &lt;a class=&quot;menu-fab&quot; href=&quot;#&quot; aria-label=&quot;Menu&quot;&gt;&lt;svg class=&quot;ic-line&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu&quot;/&gt;&lt;/svg&gt;&lt;svg class=&quot;ic-fill&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu-a&quot;/&gt;&lt;/svg&gt;&lt;/a&gt;
+    &lt;button class=&quot;menu-fab&quot; type=&quot;button&quot; aria-label=&quot;Menu&quot; aria-expanded=&quot;false&quot;&gt;&lt;svg class=&quot;ic-line&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu&quot;/&gt;&lt;/svg&gt;&lt;svg class=&quot;ic-fill&quot; viewBox=&quot;0 0 18 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#ic-menu-a&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;
   &lt;/div&gt;
 
-  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;
-{
+  &lt;script type=&quot;application/json&quot; id=&quot;token-manifest&quot;&gt;{
   &quot;component&quot;: &quot;Tab-bar&quot;,
   &quot;type&quot;: &quot;molecule&quot;,
   &quot;vars&quot;: {
@@ -2561,21 +2680,22 @@
   },
   &quot;knownFindings&quot;: [
     &quot;#261 NAV DESIGN PASS (Dave&#x27;s ask: &#x27;tackle the nav design&#x27;). Tab-bar is the MOBILE member of a three-surface family with Sidebar-nav and Navigations. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. A destination here is the same row as a destination in the sidebar, stacked instead of laid out inline.&quot;,
-    &quot;THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content \u2014 block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.&quot;,
-    &quot;\u2b1b VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as &#x27;in-page section tabs, scrollable overflow with fade, underline indicator, counts&#x27;. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: &#x27;switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown&#x27;). Tab-bar&#x27;s own meta has said &#x27;App-level BOTTOM navigation ... NOT the in-page Tabs component&#x27; since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave&#x27;s.&quot;,
+    &quot;THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.&quot;,
+    &quot;⬛ VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as &#x27;in-page section tabs, scrollable overflow with fade, underline indicator, counts&#x27;. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: &#x27;switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown&#x27;). Tab-bar&#x27;s own meta has said &#x27;App-level BOTTOM navigation ... NOT the in-page Tabs component&#x27; since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave&#x27;s.&quot;,
     &quot;COUNTS are new at #261 and ride the GLYPH, not the row, so a four-destination bar keeps equal columns. Same .nv-count chip as the sidebar and the masthead: 18px on a glyph, 24px on a row.&quot;,
-    &quot;DISABLED is aria-disabled + tabindex=-1 \u2014 the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.&quot;,
-    &quot;THREE CARRIERS FOR CURRENT, colour last: aria-current=&#x27;page&#x27;, the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations use a surface change as their third carrier; Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 \u2014 the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).&quot;,
-    &quot;VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group \u2014 selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.&quot;,
+    &quot;DISABLED is aria-disabled + tabindex=-1 — the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.&quot;,
+    &quot;THREE CARRIERS FOR CURRENT, colour last: aria-current=&#x27;page&#x27;, the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations use a surface change as their third carrier; Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 — the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).&quot;,
+    &quot;VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group — selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.&quot;,
     &quot;44px MIN HIT AREA: variant A rows are 56px tall and at least a quarter of a 420px bar wide; variant B segments are 48px tall inside a 56px track and the Menu island is 56x56.&quot;
   ],
   &quot;requiredAria&quot;: [
     &quot;aria-current=\&quot;page\&quot;&quot;,
     &quot;aria-label&quot;,
-    &quot;aria-disabled&quot;
+    &quot;aria-disabled&quot;,
+    &quot;aria-expanded&quot;
   ]
 }
-  &lt;/script&gt;
+&lt;/script&gt;
   &lt;script type=&quot;application/json&quot; id=&quot;behaviour-manifest&quot;&gt;
 {
   &quot;$generated&quot;: &quot;by knowledge/gen_component_partials.py from knowledge/components/tab-bar.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.&quot;,
@@ -2621,12 +2741,19 @@
       });
     });
 
-    // B) segmented island + Menu = ONE exclusive group. The fill slides between segments and
-    // collapses to zero width when Menu, which sits outside the track, is current.
+    // B) THE EXCLUSIVE GROUP IS THE ISLAND ONLY (#261 N2). Dave: &quot;I ruled that entire lock-up
+    // was mutually exclusive, I&#x27;ve changed my mind about the menu button.&quot; So the destinations
+    // inside the track are still a radio set — one current, the fill slides between them — and
+    // the Menu button outside the track is a disclosure that toggles its own aria-expanded and
+    // leaves the current destination exactly where it was. The fill never collapses now.
     document.querySelectorAll(&#x27;.tabbar-pills&#x27;).forEach(function(group){
       var seg = group.querySelector(&#x27;.seg&#x27;);
       var ind = seg ? seg.querySelector(&#x27;.ind&#x27;) : null;
-      var items = Array.prototype.slice.call(group.querySelectorAll(&#x27;.seg .nv-item, .menu-fab&#x27;));
+      var items = Array.prototype.slice.call(group.querySelectorAll(&#x27;.seg .nv-item&#x27;));
+      var fab  = group.querySelector(&#x27;.menu-fab&#x27;);
+      if (fab) fab.addEventListener(&#x27;click&#x27;, function(){
+        fab.setAttribute(&#x27;aria-expanded&#x27;, String(fab.getAttribute(&#x27;aria-expanded&#x27;) !== &#x27;true&#x27;));
+      });
       function moveInd(){
         if (!ind || !seg) return;
         var a = seg.querySelector(&#x27;.nv-item[aria-current=&quot;page&quot;]&#x27;);

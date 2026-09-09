@@ -36,7 +36,7 @@
     },
     {
       "name": "segmented",
-      "use": "Segmented control spanning the full screen width, icon-only (Home / Cards / Payments / Insights), elevated; the selected fill is a PILL that slides between segments (same easing as the toggle / View-options), black + white glyph (inverts in dark). Menu is a separate circular island in the SAME exclusive group (selecting it collapses the pill); its selected state matches with a 4px surface ring; matches the lozenge height. EXPLORATION — rounding + elevation depart from the flat/angular brand; pending design sign-off."
+      "use": "Segmented control spanning the full screen width, icon-only (Home / Cards / Payments / Insights), elevated; the selected fill is a PILL that slides between segments (same easing as the toggle / View-options), black + white glyph (inverts in dark). #261 N2, Dave verbatim: \"the segmented island was better in the original, one change: I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu button\". So Menu is a separate circular button OUTSIDE the island AND outside its exclusive group: a disclosure carrying aria-expanded that never clears the island's current destination, and the fill no longer collapses. It matches the lozenge height and keeps the inverting fill + 4px surface ring for its open state. The island geometry is 7647aaf's, verified by rendering both. EXPLORATION — rounding + elevation depart from the flat/angular brand."
     }
   ],
   "tokens": {
@@ -50,7 +50,7 @@
     "shadow": "elevation/functional",
     "font-family": "typography/font-family/default",
     "$icon-convention": "current item swaps to the icon's -active (filled) variant; inactive items use the line variant — the icon-source rule.",
-    "$segmented-note": "segmented variant departures fenced as exploratory: border-radius:999px, box-shadow(elevation/functional), full-width sliding-pill selection, and an INVERTING selected state (secondary/background/default + text/on-inverse = black/white in light, white/dark in dark — a literal black pill would vanish on the dark island). REVISIT (Dave, 2026-06-30): the islands variant is promoted as fine-for-now but to be revisited further."
+    "$segmented-note": "segmented variant departures fenced as exploratory: border-radius:999px, box-shadow(elevation/functional), full-width sliding-pill selection, and an INVERTING selected state (secondary/background/default + text/on-inverse = black/white in light, white/dark in dark — a literal black pill would vanish on the dark island). REVISIT (Dave, 2026-06-30): the islands variant is promoted as fine-for-now but to be revisited further. REVISITED at #261 N2: the island stands as designed; the exclusive-group clause of that same 2026-06-30 sign-off row (knowledge/_REVIEW-SIGNOFF.md, 'Menu in the exclusive group') is the part Dave changed his mind about. There is no numbered ruling for it in _rulings.json — surfaced, not inscribed."
   },
   "relationships": {
     "livesInside": [
@@ -72,7 +72,7 @@
       "resize"
     ],
     "fallback": "Each item is a native `<a>` and takes keyboard focus; the authored `aria-current` stands; clicking another item moves nothing — the active pill stays where the markup put it.",
-    "$note": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
+    "$note": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the exclusive group is the ISLAND ONLY (#261 N2): the Menu button sits outside the track, carries aria-expanded rather than aria-current, and toggling it leaves the current destination and the sliding fill exactly where they were.",
     "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 4/4 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-tab-bar-{before,after}.png"
   },
   "motion": {
@@ -91,7 +91,8 @@
       "2.4.3 Focus Order"
     ],
     "disabledDestination": "aria-disabled=true + tabindex=-1; pointer events off and the arrow-key walk skips it. (#261)",
-    "keyboardWalk": "Left/Right/Home/End move FOCUS along the bar. Focus only — no roving tabindex: these are destinations in a nav landmark and every one must stay reachable by Tab. (#261)"
+    "keyboardWalk": "Left/Right/Home/End move FOCUS along the bar. Focus only — no roving tabindex: these are destinations in a nav landmark and every one must stay reachable by Tab. (#261)",
+    "$261N2": "The Menu control is a <button> with aria-expanded, not a destination link: a disclosure and a destination are different promises and the markup now says which one it is."
   },
   "antiPatterns": [
     "REVIEW (inferred): using a tab bar for in-page section switching — that is the Tabs component; a tab bar is app-level navigation.",
