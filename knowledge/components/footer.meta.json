@@ -95,15 +95,29 @@
     {
       "name": "minimal",
       "use": "an embedded, kiosk or single-purpose surface where the operator has no build to report and no data to age — version and legal only"
+    },
+    {
+      "name": "doormat",
+      "$status": "dormant",
+      "$why": "PARKED, NOT RETIRED — s263-D7, Dave at #263: 'park — keep the doormat as a dormant variant of Footer so it stays one component' → 'dormant variant'. Dormant means: declared here, recipe kept whole, NOT built, NOT in any snippet, NOT in the showroom, and NOT reachable from the live variant enum in props[] — the variant prop stays default | sticky | minimal until a marketing pass ships this one. The cost Dave accepted, in his own frame: Footer stays ONE component, at the price of a prop no app footer uses. ⛔ THE FIRST SHAPE OF THIS FILE IS THE FIRST SHAPE OF DORMANT IN THIS REPO — no other components/*.meta.json expresses dormancy (grepped #263, zero hits), so `status: \"dormant\"` + `why` + `recipe` is the shape offered, not a shape inherited.",
+      "use": "the marketing / servicing MEGA-FOOTER: the end matter of a marketing or servicing PAGE, not of an authenticated app screen — a banded mat of four named link columns under a brand statement and a back-to-top link, with its own legal bar. PARKED BY s263-D7: it is not shipped in any app footer, and no app surface may reach for it. The full recipe is in `recipe` below, kept verbatim from the #261 retirement note.",
+      "$recipe": {
+        "what": "variant / prop value: doormat (the mega-footer), and the props groups[] and backToTop that served it",
+        "retiredAt": "#261",
+        "rehomedAt": "#263 — s263-D7, from $retired to this dormant variant",
+        "reason": "OUT OF SCOPE, not wrong. Dave's scope for #261, verbatim: 'App footer for now' — no marketing or report variant. The doormat is the end matter of a marketing or servicing PAGE; nothing about it failed.",
+        "preserved": "Its whole design survives in this note so a later marketing pass restores rather than re-derives it: a <footer role=contentinfo aria-label='Site footer'> band on surface/subtle with a 1px divider/border/section top rule; an inner rail max-width 1120, padding 32/16; a brand statement block (max 52ch) sharing a row with a back-to-top arrow link (arrows-and-chevrons/arrow-up.svg, byte-matched, tip translateY(-3px) on hover and active); a .ft-mat auto-fit grid, minmax(180px, 1fr), gap 24/16, collapsing to one column below a 560px CONTAINER width; each column a <nav> with aria-labelledby pointing at its own .t-cm-section-label heading, so four named landmarks replace one anonymous list of forty links; then a legal bar with a 1px divider/border/subsection top rule. AND ITS TWO FINDINGS, WHICH ARE THE PART WORTH KEEPING: $finding-44px-cost (every link a 44px target at every width made the mat measurably taller than the compact typographic ideal, MEASURED in a browser because no gate reads the target token for hit area) and $finding-type-debt-conflict (see below — that one is NOT retired, it still governs).",
+        "$dormantProps": "⛔ THESE ARE NOT LIVE PROPS AND MUST NOT BE ADDED BACK TO props[]. They exist only inside this dormant variant, per the lane fence on s263-D7: groups[] — the four named link columns of the mat, each a <nav> with its own .t-cm-section-label heading and aria-labelledby; backToTop — the arrow link (arrows-and-chevrons/arrow-up.svg, byte-matched, tip translateY(-3px) on hover and active) sharing the brand-statement row. Restoring either to the live list is a BUILD decision and Dave's, not this file's.",
+        "$note": "⛔ RETIRED IS NOT REJECTED, AND DORMANT IS NOT RETIRED. #261 retired this; #263 re-homed it here as a dormant variant so Footer stays one component (s263-D7). If a marketing pass wants it back it is BUILT from this recipe under this name — see $decisionsForDave 4 — and this entry is the brief."
+      }
     }
   ],
   "$retired": [
     {
       "what": "variant / prop value: doormat (the mega-footer), and the props groups[] and backToTop that served it",
       "retiredAt": "#261",
-      "reason": "OUT OF SCOPE, not wrong. Dave's scope for #261, verbatim: 'App footer for now' — no marketing or report variant. The doormat is the end matter of a marketing or servicing PAGE; nothing about it failed.",
-      "preserved": "Its whole design survives in this note so a later marketing pass restores rather than re-derives it: a <footer role=contentinfo aria-label='Site footer'> band on surface/subtle with a 1px divider/border/section top rule; an inner rail max-width 1120, padding 32/16; a brand statement block (max 52ch) sharing a row with a back-to-top arrow link (arrows-and-chevrons/arrow-up.svg, byte-matched, tip translateY(-3px) on hover and active); a .ft-mat auto-fit grid, minmax(180px, 1fr), gap 24/16, collapsing to one column below a 560px CONTAINER width; each column a <nav> with aria-labelledby pointing at its own .t-cm-section-label heading, so four named landmarks replace one anonymous list of forty links; then a legal bar with a 1px divider/border/subsection top rule. AND ITS TWO FINDINGS, WHICH ARE THE PART WORTH KEEPING: $finding-44px-cost (every link a 44px target at every width made the mat measurably taller than the compact typographic ideal, MEASURED in a browser because no gate reads the target token for hit area) and $finding-type-debt-conflict (see below — that one is NOT retired, it still governs).",
-      "$note": "⛔ RETIRED IS NOT REJECTED. If Dave wants the marketing footer back it comes back as a variant of this component or as a second component — see $decisionsForDave 4 — and this entry is the brief."
+      "rehomedAt": "#263",
+      "reason": "retired #261 → re-homed as dormant variant s263-D7; the recipe now lives in variants[] under name `doormat`, status `dormant`."
     },
     {
       "what": "variant: slim",

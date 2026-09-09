@@ -31,7 +31,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 2g, 3, 4, 4b, 4c, 5, 5b)
+## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 2g, 3, 4, 4b, 4c, 4d, 5, 5b)
 
 *Steps **2e** and **2f** were added 2026-07-27 (GM-D1…D9, `notes/_MEMENTO-DECISIONS.md` § GM
 growth-contracts ruling). They extend the 2c/2d pattern — cap + archive sibling + verbatim move +
@@ -664,6 +664,24 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    you own (`--clean` does it), because the next session cannot. Orphans owned by dead sessions
    are reported as a total only — drift visibility, not action. ⚠ The wrap is the LAST moment
    this cleanup is possible; a skipped 4c is a permanent squatter, not a deferral.
+
+4d. **Re-render the rulings page — a STALE `notes/_RULINGS.html` is RED and BLOCKS the wrap.**
+   *(Added #263, `s263-D10`, ruled Dave: "`knowledge/_render_rulings.py --check` becomes a
+   WRAP-RITUAL GATE: the wrap fails if `notes/_RULINGS.html` is stale against `_rulings.json`.")*
+   ```
+   python3 knowledge/_render_rulings.py            # rebuild, then stage notes/_RULINGS.html
+   python3 knowledge/_render_rulings.py --check     # must print FRESH … (exit 0)
+   ```
+   The page is a **GENERATOR's output that Dave READS**, and `--check` compares the
+   `source-sha256` embedded in the on-disk HTML against the current sha256 of `_rulings.json` —
+   **content, never mtimes**, for the DV-D17 reason 2g gives. A wrap that inscribes a ruling and
+   does not re-render leaves the surface Dave consults one session behind: the #32 shape (2g's
+   retrieval index), on the record where being behind is worst. ⚠ **`--check` alone is not the
+   step** — it only reports; the rebuild is what closes it. **BLOCKING at birth by Dave's word**,
+   and wired the way 2g's freshness check is: `_capture_gate.py::rulings_page_freshness_check`
+   calls the renderer's OWN `check()` **in-process** (no subprocess — the sandbox call-boundary
+   lesson), so `--wrap` goes RED on stale and one implementation of the freshness rule exists.
+   It runs for **LANE wraps too**: `_rulings.json` is repo-wide and any seat can stale the page.
 
 5. **Commit + push.** Claude commits via `_git_commit.sh` (see `_RUNBOOK-git-commit.md`), which
    handles the lock dance. **Dave pushes via GitHub Desktop only** — never terminal push, never a

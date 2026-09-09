@@ -55,11 +55,13 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import ast                              # #82: the real-tier check must read STRUCTURE, not text
+import contextlib                       # s263-D10: capture the renderer's own FRESH/STALE line
 import datetime
 import difflib                           # s188-D2: the 2c carry gate's PAIRING guard (only)
 import glob
 import hashlib
 import importlib
+import io                               # s263-D10: ditto — stdout capture, no subprocess
 import json                             # #92: the rehearsal log is JSONL, machine lines only
 import os
 import re
@@ -5411,9 +5413,66 @@ def plan_block_check(repo):
     return fails, warns
 
 
+# ★ s263-D10 (Dave, #263, P-10 ACCEPT): `_render_rulings.py --check` becomes a WRAP-RITUAL GATE —
+# the wrap FAILS if `notes/_RULINGS.html` is stale against `knowledge/_rulings.json`. BLOCKING AT
+# BIRTH by Dave's own word; there is no tier constant to dial here on an agent's judgement.
+# ⚠ IN-PROCESS, never a subprocess (the sandbox call-boundary lesson, same as
+# `index_freshness_check` above): the renderer's OWN `check()` is imported and called, so the
+# freshness rule has one implementation and this gate cannot drift from the command Dave runs.
+# ⚠ CONTENT, never mtime — that is `check()`'s embedded `source-sha256` comparison, not ours.
+def rulings_page_freshness_check(repo):
+    """s263-D10 — `notes/_RULINGS.html` must be FRESH against `knowledge/_rulings.json`.
+
+    The rulings page is a GENERATOR's output that Dave READS. A wrap that inscribes a ruling
+    and does not re-render leaves the surface one session behind — the #32 shape
+    (`index_freshness_check`), on the record Dave actually consults. The fix is one command,
+    named in the failure string.
+
+    SKIPS OUT LOUD on a tree that carries no `_rulings.json` (a fixture tree is not a state
+    tree; a gate that fails on every temp dir gets muted rather than fixed).
+    """
+    fails, notes = [], []
+    src = os.path.join(repo, "knowledge", "_rulings.json")
+    out = os.path.join(repo, "notes", "_RULINGS.html")
+    if not os.path.exists(src):
+        return fails, [f"s263-D10 RULINGS PAGE check SKIPPED — no `knowledge/_rulings.json` "
+                       f"under {repo}, so this is not a state tree. NOT a pass."]
+    try:
+        sys.path.insert(0, os.path.join(repo, "knowledge"))
+        import _render_rulings as rr
+    except Exception as e:                                        # noqa: BLE001
+        fails.append(f"s263-D10 RULINGS PAGE: `_render_rulings.py` unimportable "
+                     f"({type(e).__name__}: {e}) — freshness cannot be graded; fix it, never "
+                     f"close blind.")
+        return fails, notes
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            rc = rr.check(src, out)
+    except Exception as e:                                        # noqa: BLE001
+        fails.append(f"s263-D10 RULINGS PAGE: the freshness check raised "
+                     f"({type(e).__name__}: {e}) — UNKNOWN is not met.")
+        return fails, notes
+    line = buf.getvalue().strip().splitlines()[-1] if buf.getvalue().strip() else "(no output)"
+    if rc != 0:
+        fails.append(f"s263-D10 RULINGS PAGE STALE — {line}. Run `python3 "
+                     f"knowledge/_render_rulings.py` then `python3 "
+                     f"knowledge/_render_rulings.py --check` and stage `notes/_RULINGS.html`. "
+                     f"A wrap may not close on a rulings surface that is behind the store "
+                     f"Dave rules into.")
+    else:
+        notes.append(f"s263-D10 RULINGS PAGE: {line}")
+    return fails, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
+    # ★ s263-D10 — runs for LANE wraps too, on purpose: `_rulings.json` is repo-wide and any
+    # seat can inscribe into it, so any seat can stale the page. BLOCKING at birth (Dave's word).
+    _rf, _rn = rulings_page_freshness_check(repo)
+    fails += _rf
+    notes += _rn
     _bf, _bw = plan_block_check(repo)           # B2 seam obligation — LANE wraps too: a lane
     fails += _bf                                # seam is the seam this block exists for.
     warns += _bw
