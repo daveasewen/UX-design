@@ -74,6 +74,13 @@
       ],
       "$note": "The regulator's row. The list is regulatory, it varies by market, and it is not this file's to fix — see $decisionsForDave 5.",
       "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "copyright",
+      "type": "string",
+      "default": "© HSBC Group 2026. All rights reserved.",
+      "$note": "ADDED #261 Ft3 on Dave's word: 'Be more generous with the spacing and add the copyright notice.' The string is the repo's EXISTING one, unaltered — it already appears verbatim in 17 other snippets — and it is NOT re-typed per surface. It sits at the far right, the last item in the regulator's cluster, and it shares one .ft-end box with the legal links so the two travel together when the row wraps rather than separating across a break. Full ink strength: $finding-opacity-is-not-hierarchy forbids the alpha-60 the #204 build put on exactly this line.",
+      "$status": "PROPOSED #261, Dave's eye owed"
     }
   ],
   "variants": [
@@ -127,9 +134,9 @@
   },
   "tokens": {
     "page": "background/default",
-    "surface": "surface/subtle — the footer band, so the end matter reads as a band rather than as more content",
-    "divider": "divider/border/section — the 1px rule between the content column and the footer",
-    "$pipsTakeTheSectionRule": "MEASURED AND CORRECTED IN THIS LANE: the pips between clusters were first painted with divider/border/subsection, which resolves to #F0F0F0 in light — i.e. surface/subtle, the band they sit on. They were invisible. They take divider/border/section instead (#E1E1E1 light / #808080 dark), the same token as the top rule. divider/border/subsection has no consumer in this component and is no longer declared.",
+    "surface": "surface/subtle — the app-shell rows in the specimen. ⛔ NO LONGER THE FOOTER BAND: see $reversedOutBand.",
+    "divider": "divider/border/section — the app-shell rules in the specimen. ⛔ NO LONGER THE FOOTER'S TOP RULE: the rule is GONE (#261 Ft3).",
+    "$pipsTakeTheSectionRule": "MEASURED AND CORRECTED TWICE. First: the pips were divider/border/subsection, which resolves to #F0F0F0 in light — the old surface/subtle band — and were invisible; they moved to divider/border/section. Then #261 Ft3 reversed the band out, and the section rule went invisible in the other direction. They now take border/strong (#808080 both modes), the one neutral that holds its edge on BOTH plates: 4.41:1 on #1A1A1A, 3.79:1 on #FAFAFA. divider/border/subsection has no consumer in this component.",
     "text": "text/default — EVERY string, at full strength; there is no muted text in this component",
     "icon": "icon/default",
     "focus": "focus/ring",
@@ -141,7 +148,12 @@
     "radius": "border-radius/control — the link focus shape and the environment chip; both square",
     "target": "target/min (44px) — bound so the drift gate reads the ruled default, though the LINKS use the 24px floor",
     "$rag": "PRESENT AT #261, and this is a change from #204 which declared RAG absent. Two roles only, both status-of-the-SYSTEM and never status-of-a-record: the environment chip fill (rag/warning-background, the salience-ramp fill rung with its ruled black ink) and the system dot (rag/success-glyph / rag/warning-glyph). No error red appears anywhere in this component — an outage is a Banner, not a footer pip.",
-    "$notATokenTargetFloor": "⚠ --target-floor:24px IS DECLARED IN CSS AND DELIBERATELY ABSENT FROM THE MANIFEST. 24 is the ruled dial-down hit-area floor, named verbatim in tokens/layout.json target.$description — 'Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below' — but the store carries NO LEAF for it: only target/min (44px) exists. Rather than invent a token in a shared file outside the lane fence, or bind a 44px token to a 24px box and lie to the drift gate, the value is declared locally with this note. Minting target/floor is $decisionsForDave 1."
+    "$notATokenTargetFloor": "⚠ --target-floor:24px IS DECLARED IN CSS AND DELIBERATELY ABSENT FROM THE MANIFEST. 24 is the ruled dial-down hit-area floor, named verbatim in tokens/layout.json target.$description — 'Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below' — but the store carries NO LEAF for it: only target/min (44px) exists. Rather than invent a token in a shared file outside the lane fence, or bind a 44px token to a 24px box and lie to the drift gate, the value is declared locally with this note. Minting target/floor is $decisionsForDave 1.",
+    "ft-band": "surface/action-primary — THE REVERSED-OUT PLATE. #1A1A1A light / #FAFAFA dark; supercharge warms it to #13110E / #F0EFED through the ADR-0014 ramp, driven and confirmed.",
+    "ft-ink": "text/on-inverse — the plate's ink. #FFFFFF light (17.4:1) / #333333 dark (12.0:1). Its own $note defines it as the 'Label for surfaces whose lightness INVERTS between modes', which is exactly this seat.",
+    "$reversedOutBand": "#261 Ft3. DAVE, VERBATIM: 'The footer should be reversed out in both light and dark. Do we have reversed-out tokens, a modifier for light mode?' ANSWER, both halves. (1) TOKENS: YES. surface/action-primary + text/on-inverse is the design system's inverse pair — the Mono primary-button plate — and it is the ONLY semantic surface whose lightness inverts between modes. Nothing was minted and no hex was invented. (2) A LIGHT-MODE MODIFIER: NO. There is no inverse/hero SURFACE ROLE, and its absence is already a logged gap: knowledge/_COMPONENT-GAPS.md row 'Inverse / hero surface', opened 2026-06-30, verbatim 'no light-mode dark-band role', whose proposed fix is to promote a semantic inverse/surface ramp. This component therefore COMPOSES the modifier locally from the two ruled tokens (--ft-band / --ft-ink) and FLAGS it here rather than promoting a role, which is Dave's to rule. The gap row's named failure is a component inventing a charcoal (#0E1014); this one does not. ⚠ WHAT DAVE SHOULD LOOK AT BEFORE HE RULES: a true inverse plate in DARK mode is a LIGHT band (#FAFAFA) under a #1A1A1A page — that is what 'reversed out in both' means and it is drawn honestly. If he wants the dark-mode band quieter the softer ruled pair is surface/action + text/reverse-secondary (#626262/#FFF light 6.1:1, #808080/#1A1A1A dark 5.32:1), one token swap, same shape.",
+    "$dotRing": "#261 Ft3: the status dot gained a 1px border/strong ring. It is not decoration-for-decoration's-sake — the RAG glyphs are MODE-INVARIANT by s122-D2 (#66CC8D / #E0A61F in both modes), so on the DARK-MODE plate (#FAFAFA, a LIGHT ground) the green dot alone measures ~1.9:1 and disappears. The dot remains decoration and the label still carries the meaning (1.4.1); a decoration you cannot see is simply not there.",
+    "$twoRedLawOnAnInverseSurface": "s151-D1 on this component: there is NO red text seat — no plus/minus numerals, no error string — and the only coloured marks are RAG dot fills, mode-invariant by s122-D2. Recorded because the law INVERTS on a reversed-out plate and the next author will need it: the red is keyed to the GROUND, not the mode, so a red here would be #F6604C on the light-mode plate (a dark ground) and #DA1A00 on the dark-mode plate (a light ground) — the opposite of the usual mapping. Nothing in the shipped file paints one."
   },
   "$finding-24px-floor": "★ THE APP FOOTER IS THE FIRST COMPONENT TO NEED THE DIAL-DOWN FLOOR AS A TOKEN, AND IT ISN'T ONE. The 44px standard is a hit-area guarantee for CONTROLS, and it is right for them. It is wrong for a one-row footer: four legal links at 44px make a 44px band, taller than the app toolbar above it, for the least-used links on the screen. The ruled floor of 24 exists precisely for this case and the WCAG 2.5.8 spacing exception is honoured literally here (24px of gap between adjacent 24px boxes, so no two targets are ever closer than 24px). But the floor lives only in a $description string, so every component that needs it must hardcode it and declare it, as this one does. MEASURED consequence of the alternative: a 44px footer is 40px taller than the shipped one, per screen, forever.",
   "$finding-opacity-is-not-hierarchy": "★ MEASURED, AND IT REVERSES THE PREVIOUS BUILD. #204 muted its copyright line and group headings with opacity:var(--alpha-60). Composited: #1A1A1A at 0.60 over surface/subtle #F0F0F0 = ~#706F6F, which is 4.41:1 against that ground — below the 4.5 text threshold, on 12px legal type. NO GATE CAUGHT IT, because the snippet gate reads the DECLARED contrast pairs and the declared pair was text/default on surface/subtle at full strength, which passes. Opacity is invisible to the pair check. The fix is not a bigger alpha; it is that an app footer has no muted text at all — hierarchy comes from type size (12px legal against 14px product) and from the 1px pips between clusters. Generalisable: ⛔ AN ALPHA APPLIED TO A TEXT ELEMENT DEFEATS THE CONTRAST GATE SILENTLY. That is a gate gap, reported, not a footer problem.",
@@ -206,28 +218,42 @@
   "interactive": true,
   "stateModel": "simple",
   "responsive": {
-    "wrap": "MEASURED in Chromium with the full content: 41px tall and ONE row at 1440px of viewport and above; two rows at 1280 (55px) and 1024 (57px); three at 768 (75px); a four-row stack at 375 (127px). Below a 640px CONTAINER width the legal row is forced onto its own line; everything above that is natural flex wrap. A CONTAINER query, so a footer in a narrow split pane wraps on a 27-inch monitor — which is the point. The provenance cluster is flex:0 1 auto, not 1 1 auto: MEASURED, a growing cluster ate 995px of a 1600px row and pushed the legal links onto a second line at every width.",
-    "stack": "below 375px everything stacks to a column and the pips are removed, because a vertical 1px rule between stacked rows reads as a divider rather than a separator.",
+    "wrap": "RE-MEASURED #261 Ft3 in Chromium with the full content (the copyright notice now included): default = ONE 56px row at 1600px of viewport and above; TWO rows, 92px, at 1440/1280/1024; THREE rows, 128px, at 768; a stack at 375, 228px. Sticky is 56 and minimal 48 down to 768. EVERY height at EVERY width is a multiple of 4 — driven, not claimed (notes/_lanes/261Ft3/_w2.py). ⚠ THE ONE-ROW WIDTH MOVED FROM 1440 TO 1600 and that is the price of Dave's copyright notice: the right-hand cluster grew by ~200px. Below a 640px CONTAINER width the legal/copyright cluster is forced onto its own line; everything above is natural flex wrap. A CONTAINER query, so a footer in a narrow split pane wraps on a 27-inch monitor — which is the point. The provenance cluster is flex:0 1 auto, not 1 1 auto: MEASURED, a growing cluster ate 995px of a 1600px row and pushed the legal links onto a second line at every width.",
+    "stack": "Below a 375px CONTAINER everything stacks to a column and EVERY pip is removed (not just the ones inside the provenance cluster), because a vertical 1px rule between stacked rows reads as a divider rather than a separator. Every stacked leaf keeps the 24px seat, so the stack lands on the grid at 228 rather than collapsing to 10.48px line boxes.",
     "targets": "MEASURED at 1600 / 1440 / 1280 / 1024 / 768 / 420 / 375: link height 24px and minimum gap between adjacent link boxes 24px at EVERY one. An earlier cut tightened the stacked gap to 16px, which broke the 2.5.8 spacing exception the whole 24px position rests on; it was measured, caught and reverted.",
     "$bentoNote": "s248-D3 — an edit mode is coming and every component placed in a bento tile must be responsive. This one is container-queried end to end and carries no viewport media query at all.",
     "$status": "PROPOSED #261, Dave's eye owed"
   },
   "dimensions": {
-    "rowMinHeight": 40,
-    "minimalRowMinHeight": 32,
-    "innerPaddingX": 16,
-    "innerPaddingY": 8,
+    "rowHeight": 56,
+    "minimalRowHeight": 48,
+    "wrappedRowHeight": 92,
+    "stackHeight375": 228,
+    "innerPaddingX": 24,
+    "innerPaddingY": 16,
+    "minimalPaddingY": 12,
     "clusterGap": [
-      8,
-      24
+      12,
+      32
     ],
+    "identityGap": [
+      8,
+      16
+    ],
+    "provenanceGap": [
+      8,
+      16
+    ],
+    "seatMinHeight": 24,
     "linkMinHeight": 24,
     "linkGap": 24,
-    "envChipMinHeight": 20,
+    "envChipMinHeight": 24,
+    "envChipPaddingX": 8,
     "dotSize": 8,
+    "pipHeight": 16,
     "wrapContainerWidth": 640,
     "stackContainerWidth": 375,
-    "$note": "innerPaddingX 16 is layout/app/margin. linkMinHeight 24 and linkGap 24 are the ruled dial-down floor plus the 2.5.8 spacing exception. rowMinHeight 40, the 20px chip and the 8px dot are specimen choices, not ruled. There is NO innerMaxWidth: the app footer takes the width of the shell's content column and centring is the shell's job, not the footer's — that is the change from the #204 doormat's 1120px rail."
+    "$note": "#261 Ft3, DAVE'S WORDS: 'One 41px row — I should never see a figure like 41, we have a 4px grid.' 41 was rowMinHeight 40 + a 1px border-top. The border-top is GONE (the reversed-out plate separates itself from the page by value, so the rule had no work left to do) and every figure here is a multiple of 4. MEASURED IN CHROMIUM at 1920/1600/1440/1280/1024/768/375 and across 4 themes x 2 modes on the showroom page: default 56 one-row (>=1600 of viewport, i.e. >=1558 of container), 92 two-row, 128 three-row at 768, 228 stacked at 375; sticky 56; minimal 48. EVERY height at EVERY width is a multiple of 4 — that is now a driven assertion, not a claim (notes/_lanes/261Ft3/_w2.py). Two mechanisms hold it: min-height 56/48 on .ft-inner (box-sizing is border-box, so the figure INCLUDES the padding and is the figure on the tape), and a 24px min-height on every cluster and, in the 375 stack, on every leaf — without the second one a wrapped line collapsed to a 10.48px line box and put 78.48 on the tape. The 1px pip WIDTH and the 1px chip border are hairlines, not spacing: they are the only non-multiples left. linkMinHeight 24 and linkGap 24 remain the ruled dial-down floor plus the 2.5.8 spacing exception. There is NO innerMaxWidth: the app footer takes the width of the shell's content column and centring is the shell's job — the change from the #204 doormat's 1120px rail. ONE ROW IS NO LONGER FREE AT 1440: the copyright notice Dave asked for costs ~200px on the right, so 1440 wraps to two rows and 1600+ stays one. Reported, not hidden."
   },
   "$decisionsForDave": [
     "1 · MINT target/floor = 24px? The dial-down floor is RULED and is named verbatim in tokens/layout.json's target $description, but it has no leaf token, so this component hardcodes 24 and declares it. Every future dense component will do the same. Mint it, or keep the floor as prose?",
