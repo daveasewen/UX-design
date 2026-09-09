@@ -61,23 +61,24 @@
   period); KPI tile states the SHAPE of the change (twelve points of history). A KPI tile with no
   series is a Stat card and should be one — do not ship an empty spark slot on a healthy tile.
 
-  ⛔⛔ THE LIVE TWO-RED QUESTION IS STILL VISIBLE ON THIS TILE — DAVE'S, STILL UNRESOLVED.
-  The tile paints TWO green/red seats side by side because its two parents bind different seats
-  and BOTH bindings are inherited unchanged, as briefed:
-    · the DELTA GLYPH takes rag/success #66CC8D / rag/error #F6604C — the FILL seat, inherited
-      byte-for-byte from the gated Stat-card manifest. On a white card that green measures
-      1.980:1 (measured #203 with the repo's own _contrast_utils.contrast_ratio).
-    · the SPARK STROKE takes rag/success-ink #137F3C / rag/error-ink #DA1A00 — the INK seat,
-      which s182-D3 RULES for this atom ("the rules for colours should just follow the red and
-      green ink colours for all themes"). On a white card that green measures 5.090:1.
-  Measured across all four themes at #203, the two seats disagree in SEVEN OF EIGHT PANES (they
-  converge in mono dark only): the spark ink is theme-INVARIANT by ruling while the glyph fill
-  FORKS PER THEME, and three of the four themes put the light-mode glyph UNDER the 3:1 non-text
-  floor. #261 RE-MEASURED the ink seat as TEXT and it clears 4.5:1 in both modes on this surface
-  (light #137F3C/#DA1A00 = 5.09:1; dark #66CC8D = 8.31:1, #F6604C = 5.26:1) — so the manifest now
-  declares both ink pairs at context "text" rather than "ui". That is a STRENGTHENING of a
-  declaration, not a rebinding of a seat. ⛔ THE SEAT ITSELF IS NOT REBOUND HERE. Rebinding a
-  ruled colour seat is Dave's; Stat card and KPI tile must move TOGETHER.
+  ✅ THE TWO-SEAT QUESTION IS CLOSED — DAVE RULED IT AT #261 K3, VERBATIM:
+  "We need to use the dark versions of the colours on the arrows."
+  It had stood open since #203: the tile painted TWO green/red seats side by side because its two
+  parents bound different ones — the DELTA GLYPH took the FILL seat (rag/success #66CC8D /
+  rag/error #F6604C, inherited byte-for-byte from the gated Stat-card manifest, 1.980:1 for that
+  green on a white card, measured #203) while the SPARK STROKE took the INK seat (rag/success-ink
+  #137F3C / rag/error-ink #DA1A00, which s182-D3 RULES for this atom — "the rules for colours
+  should just follow the red and green ink colours for all themes" — 5.090:1 on the same card).
+  Driven across all four themes at #203 the two seats disagreed in SEVEN OF EIGHT PANES.
+  #261 K3 MOVES THE ARROW ONTO THE INK SEAT. The tile now has ONE green/red seat:
+    light  — rag/success-ink #137F3C · rag/error-ink #DA1A00 (s151-D1: red on white)
+    dark   — rag/success-ink #66CC8D · rag/error-ink #F6604C (s151-D1: "the light red everywhere else")
+  and because rag/*-ink is declared once per MODE in canon.css with no [data-apollo-theme]
+  override, the arrow is now theme-INVARIANT and mode-FORKED, exactly like the stroke beside it —
+  driven and confirmed on all 4 themes × 2 modes at #261 K3. The seat clears 4.5:1 as TEXT in
+  both modes (light 5.09:1 both; dark #66CC8D 8.31:1, #F6604C 5.26:1), so the manifest declares
+  both pairs at context "text", and rag/success + rag/error leave this file entirely.
+  ⚠ STAT CARD HAS NOT MOVED. The two must travel together; its rebind is the owed follow-on.
 
   OPTIONAL TABLE CTA — s182-D2 standing direction, kept as an OPT-IN variant, still PROPOSED.
   s182-D2 governs "the future trend-card component: table CTA optional, icon-button form" and
@@ -138,9 +139,11 @@
   :root{ --ease:140ms ease; }
   [data-theme="light"]{
     --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --page:#FFFFFF; --focus:#305A85;
-    /* DELTA GLYPH — the FILL seat, INHERITED VERBATIM from the gated Stat-card. 1.980:1 on this
-       surface. Dave's call, flagged in the header, NOT resolved here. */
-    --up:#66CC8D; --down:#F6604C;
+    /* DELTA GLYPH — the FILL seat is GONE from this file. #261 K3, Dave ruled verbatim: "We need
+       to use the dark versions of the colours on the arrows." The arrow now wears the same INK
+       seat as the spark stroke below, so it forks by MODE (and is theme-invariant, because
+       rag/*-ink is declared once per mode in canon.css and no [data-apollo-theme] block
+       overrides it — checked at #261 K3, driven across 4 themes × 2 modes). */
     /* TREND INK — the INK seat, RULED for the sparkline by s182-D3 and inherited by the trend
        card per that ruling's own governs-list. Background-keyed: this is the on-white leg.
        #261 renamed these from --spark-* : the seat now also inks the target-miss caption and the
@@ -156,8 +159,7 @@
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
-    --up:#66CC8D; --down:#F6604C;
-    /* s182-D3 — the NON-WHITE leg of the same fork. Glyph and stroke CONVERGE here in mono. */
+    /* s182-D3 — the NON-WHITE leg of the same fork. Glyph and stroke now converge in EVERY pane. */
     --pos-ink:#66CC8D;      /* rag/success-ink dark — s155-D1 / s144-D1 */
     --neg-ink:#F6604C;      /* rag/error-ink dark — s151-D1 "the light red everywhere else" */
     --flat-ink:#FFFFFF;     /* Dave, s182-D3 verbatim: "white on dark" */
@@ -191,21 +193,26 @@
   .kpi-tile.compact{padding:12px; gap:4px;}
   .kpi-tile.hero{padding:24px; gap:12px;}
 
-  /* Every row reserves the slot height its own type composite publishes (--slot, type.css).
-     That is what makes neighbouring tiles line up when one of them has no delta row. */
-  .kpi-lbl{margin:0; opacity:var(--alpha-60); min-height:var(--slot); display:flex;
-    align-items:center; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-    text-box-edge:text text;}
+  /* #261 K3 — the --slot RESERVATIONS ARE REMOVED from label, value and delta. They were a #261 K
+     addition (tile-to-tile alignment) and they opened a 48px value→delta gap where the original
+     had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
+     concern and comes back, if it comes back, on the board's own grid rows — not by padding
+     every row of every tile. */
+  .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
+    text-overflow:ellipsis; text-box-edge:text text;}
   /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
      the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
      unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
   .kpi-val{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
-    font-variant-numeric:tabular-nums; letter-spacing:-.01em; min-height:var(--slot);}
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
 
   /* ---- the delta row — ORIGINAL single line: glyph + signed number + word + period ----
      "▲ +12.4% up  vs February". The period is INSIDE this row again (#261 K2), not a fourth
-     stacked line. Glyph wears the FILL seat; the number, the word and the period stay ink. */
-  .kpi-delta{display:flex; align-items:center; gap:4px; min-height:20px; min-width:0;}
+     stacked line. Glyph wears the INK seat (#261 K3); number, word and period stay standing ink.
+     VERTICAL RHYTHM IS THE ORIGINAL'S (#261 K3, Dave: "The type lock-up needs to be as tight as
+     the original") — no row reserves a --slot height any more; the tile's own 8px gap and the
+     composites' trimmed boxes set the rhythm, exactly as at 7647aaf. */
+  .kpi-delta{display:flex; align-items:center; gap:4px; min-width:0;}
   .kpi-delta .glyph{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
   /* ROTATION IS THE GLYPH (s—, #261 K2, Dave: "please use the arrow from the assets ... maybe we
      can rotate to get the 45 degree angle"). The library ships direction-up/down/left/right only,
@@ -214,9 +221,9 @@
      scale(.78) keeps the rotated bounding box inside the 16px seat; overflow stays visible. */
   .kpi-delta .glyph svg{width:16px; height:16px; display:block; fill:currentColor;
     overflow:visible; transform-origin:50% 50%;}
-  .kpi-delta.up .glyph{color:var(--up);}
+  .kpi-delta.up .glyph{color:var(--pos-ink);}
   .kpi-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
-  .kpi-delta.down .glyph{color:var(--down);}
+  .kpi-delta.down .glyph{color:var(--neg-ink);}
   .kpi-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
   .kpi-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
   .kpi-delta.flat .glyph svg{transform:scale(.78);}
@@ -660,14 +667,12 @@
     "$status": "PROPOSED #203, redesigned #261 on Dave's nomination, Dave's eye owed — the trend-card component is FLOATED, NOT RULED (s182-D2). This manifest is a proposal, not a proof-of-done.",
     "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default",
               "--page": "background/default", "--focus": "focus/ring",
-              "--up": "rag/success", "--down": "rag/error",
               "--pos-ink": "rag/success-ink", "--neg-ink": "rag/error-ink", "--flat-ink": "text/default",
               "--border-radius-surface": "border-radius/surface",
               "--tbl-header": "table/header/background", "--tbl-colhdr": "table/column/background",
               "--tbl-cell": "background/default", "--tbl-border": "table/border" },
     "contrastPairs": [
       { "fg": "text/default",     "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "rag/error",        "bg": "tertiary/background/default", "context": "ui" },
       { "fg": "rag/error-ink",    "bg": "tertiary/background/default", "context": "text" },
       { "fg": "rag/success-ink",  "bg": "tertiary/background/default", "context": "text" }
     ],
@@ -676,8 +681,9 @@
                "refresh": "global-controls/refresh.svg", "chevron-right": "arrows-and-chevrons/chevron-right.svg",
                "view-grid": "global-controls/view-grid.svg" },
     "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\"", "aria-busy=\"true\"", "role=\"status\"", "role=\"img\"", "role=\"region\"", "scope=\"col\"", "scope=\"row\"", "<caption"],
-    "$s261": "REDESIGN PASS, #261 lane K, on Dave's nomination of this tile as the dashboard element to fix first. Five changes, none of them a ruling: (1) the board is a real 12-column bento grid and every tile declares a span the meta already legalises (3 compact/default, 4 with-target, 6 hero), re-spanning at 900px and 560px per s248-D3; (2) every row reserves min-height:var(--slot) — the height each type composite already publishes in type.css — so neighbouring tiles align even when one has no delta; (3) the delta glyph moves from Stat-card's solid triangle to the HSBC trend mark (status-icons/trend-positive|negative|indeterminate), a DEPARTURE from Stat card that is drawn, not ruled, and put side by side with the old glyph on notes/_lanes/261-K-kpi-tile-review.html; (4) two new slots — a hue-free target/progress row (border/subtle track, standing-ink fill, one-pixel pace tick, every figure spelled out in the caption) and a spark slot that now carries a low-alpha area under the line at 28/40/56px; (5) four states are DRAWN — loading skeleton (aria-busy, opacity pulse killed by prefers-reduced-motion), empty, error (with a 44px retry control that names what it loads), and stale-data (a NEUTRAL marker chip, deliberately not amber — Dave is astigmatic and yellow is a problem hue). A second affordance is drawn beside s182-D2's icon button: the whole tile as a link, accessible name = the metric, focus ring on the tile. Both are in the file and the review page asks which survives.",
-    "$note": "DIFFERENCE FROM THE GATED Stat-card: Stat card is a passive ATOM (label/value/delta/period) and already carries full delta semantics — glyph + sign + wording — so 'metric + delta' was never the gap. KPI tile is a MOLECULE: Stat card's anatomy, the Chart-sparkline atom at its inline scale, and from #261 a target row and a state model. The one real difference: Stat card states the CHANGE, KPI tile states the SHAPE of the change. A KPI tile with no series is a Stat card. ⛔ TWO SEATS, STILL DELIBERATELY UNRESOLVED: the delta GLYPH inherits Stat card's FILL seat (rag/success 1.980:1 on white, measured #203) while the spark and the error glyph take the INK seat that s182-D3 RULES for this atom and says the trend card inherits (rag/success-ink 5.090:1 on white). Both bindings inherited unchanged; the seam is visible in seven of eight panes. Rebinding a ruled colour seat is Dave's — surface, never swap — and Stat card and KPI tile must move together. The ink pairs were RE-MEASURED at #261 and raised from context 'ui' to context 'text' (light 5.09:1 both; dark 8.31:1 success, 5.26:1 error): that strengthens a declaration, it does not rebind a seat. Not registered in component-types.json (shared file, outside this lane's fence) so no AUTO-BEHAVIOUR partial and no dv-render-sparkline injection — the spark is baked static and this file carries no script at all."
+    "$s261": "REDESIGN PASS, #261 lane K, on Dave's nomination of this tile as the dashboard element to fix first. Five changes, none of them a ruling: (1) the board is a real 12-column bento grid and every tile declares a span the meta already legalises (3 compact/default, 4 with-target, 6 hero), re-spanning at 900px and 560px per s248-D3; (2) [REVERSED at #261 K3] every row reserved min-height:var(--slot) so neighbouring tiles aligned even when one had no delta — Dave ruled the lock-up back to the original's rhythm and the reservations are gone; (3) the delta glyph moves from Stat-card's solid triangle to the HSBC trend mark (status-icons/trend-positive|negative|indeterminate), a DEPARTURE from Stat card that is drawn, not ruled, and put side by side with the old glyph on notes/_lanes/261-K-kpi-tile-review.html; (4) two new slots — a hue-free target/progress row (border/subtle track, standing-ink fill, one-pixel pace tick, every figure spelled out in the caption) and a spark slot that now carries a low-alpha area under the line at 28/40/56px; (5) four states are DRAWN — loading skeleton (aria-busy, opacity pulse killed by prefers-reduced-motion), empty, error (with a 44px retry control that names what it loads), and stale-data (a NEUTRAL marker chip, deliberately not amber — Dave is astigmatic and yellow is a problem hue). A second affordance is drawn beside s182-D2's icon button: the whole tile as a link, accessible name = the metric, focus ring on the tile. Both are in the file and the review page asks which survives.",
+    "$s261K3": "Dave's review of the K2 tile, ruled verbatim: 'We need to use the dark versions of the colours on the arrows. The type lock-up needs to be as tight as the original.' Two changes, both his. (1) THE SEAT: the delta arrow moves off Stat-card's FILL seat (rag/success #66CC8D / rag/error #F6604C) onto the INK seat the spark stroke already wears (rag/success-ink #137F3C light / #66CC8D dark, rag/error-ink #DA1A00 light / #F6604C dark, s151-D1 two-red law). rag/success and rag/error leave this file; the arrow is now theme-invariant and mode-forked, because canon.css declares rag/*-ink once per mode and no [data-apollo-theme] block overrides it — driven and read back on 4 themes x 2 modes. This CLOSES the two-seat seam open since #203, and leaves Stat card owing the same rebind. (2) THE LOCK-UP: the min-height:var(--slot) reservations added at #261 K on label, value and delta are REMOVED. They had opened a 48.00px value-to-delta step where 7647aaf has 30.02px. Measured in Chromium (both files rendered against the same canon/type.css, offsetTop deltas, 8 tiles paired by aria-label): label-to-value 22.00px original / 22.00px K3, value-to-delta 30.02px original / 30.02px K3 — 0.00px apart on every default tile, well inside the 1px acceptance. The .compact variant is a #261 addition the original has no counterpart for and sits 6.00/4.00px TIGHTER by its own 12px padding and 4px gap; reported, not held to the test. The spark and target rows keep their own margins below and .tgt-cap keeps its slot.",
+    "$note": "DIFFERENCE FROM THE GATED Stat-card: Stat card is a passive ATOM (label/value/delta/period) and already carries full delta semantics — glyph + sign + wording — so 'metric + delta' was never the gap. KPI tile is a MOLECULE: Stat card's anatomy, the Chart-sparkline atom at its inline scale, and from #261 a target row and a state model. The one real difference: Stat card states the CHANGE, KPI tile states the SHAPE of the change. A KPI tile with no series is a Stat card. ✅ THE TWO SEATS ARE NOW ONE, RULED BY DAVE AT #261 K3 ('use the dark versions of the colours on the arrows'): the delta glyph no longer inherits Stat card's FILL seat (rag/success 1.980:1 on white, measured #203) — it takes the INK seat that s182-D3 RULES for this atom and says the trend card inherits (rag/success-ink 5.090:1 on white), the same seat the spark stroke and the error glyph already wore. The seam that was visible in seven of eight panes is gone. The ink pairs were RE-MEASURED at #261 and raised from context 'ui' to context 'text' (light 5.09:1 both; dark 8.31:1 success, 5.26:1 error). ⚠ STAT CARD STILL WEARS THE FILL SEAT and owes the same move — the two must travel together. Not registered in component-types.json (shared file, outside this lane's fence) so no AUTO-BEHAVIOUR partial and no dv-render-sparkline injection — the spark is baked static and this file carries no script at all."
   }
   </script>
   </body>
