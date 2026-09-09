@@ -1,0 +1,441 @@
+########## chart-line
+--- knowledge/components/chart-line.meta.json	2026-09-08 17:46:28.437268265 +0100
++++ /tmp/kgs/knowledge/components/chart-line.meta.json	2026-09-09 21:41:02.586044438 +0100
+@@ -176,6 +176,17 @@
+       "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+     }
+   },
++  "behaviour": {
++    "script": "knowledge/canon/dv-render.js",
++    "partial": [
++      "dv-behaviour",
++      "dv-legend",
++      "dv-render",
++      "dv-render-line"
++    ],
++    "fallback": "With CSS on and JS off both engine-driven canvases (the single line and the multi-series overlay) render as EMPTY <svg> boxes and no chart is drawn — dvRender is what fills them. The data is still complete and still labelled: each figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). When the engine does run it REWRITES those same rows from the spec, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow in both axes, the legend filter/isolate, Copy CSV, the last-year and target overlays, and the monthly / year-to-date switch — which now re-renders from a second spec instead of toggling a second baked copy of the plot. The static empty-state figure is markup only and is unaffected.",
++    "$note": "Typed #259 by the LINE type lane, against the s249-D4 engine. `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-line.js is reached through its type registry (dvRender.types.line / .multiline) and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. `partial` lists ALL FOUR names the snippet carries, matching the registry's `consumes` for Chart-line — including dv-legend, which the multi-series canvas runs on. NOTE the divergence from chart-bar.meta.json, which lists three and flags dv-legend as an open question: the schema's own words are 'the AUTO-BEHAVIOUR name(s) … that the snippet carries', so all four are named here. Ruling-shaped, reported, not decided by this lane."
++  },
+   "edges": {
+     "renderedBy": [
+       {
+@@ -218,16 +229,5 @@
+         "ref": "ruling:s116-D2"
+       }
+     ]
+-  },
+-  "behaviour": {
+-    "script": "knowledge/canon/dv-render.js",
+-    "partial": [
+-      "dv-behaviour",
+-      "dv-legend",
+-      "dv-render",
+-      "dv-render-line"
+-    ],
+-    "fallback": "With CSS on and JS off both engine-driven canvases (the single line and the multi-series overlay) render as EMPTY <svg> boxes and no chart is drawn — dvRender is what fills them. The data is still complete and still labelled: each figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). When the engine does run it REWRITES those same rows from the spec, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow in both axes, the legend filter/isolate, Copy CSV, the last-year and target overlays, and the monthly / year-to-date switch — which now re-renders from a second spec instead of toggling a second baked copy of the plot. The static empty-state figure is markup only and is unaffected.",
+-    "$note": "Typed #259 by the LINE type lane, against the s249-D4 engine. `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-line.js is reached through its type registry (dvRender.types.line / .multiline) and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. `partial` lists ALL FOUR names the snippet carries, matching the registry's `consumes` for Chart-line — including dv-legend, which the multi-series canvas runs on. NOTE the divergence from chart-bar.meta.json, which lists three and flags dv-legend as an open question: the schema's own words are 'the AUTO-BEHAVIOUR name(s) … that the snippet carries', so all four are named here. Ruling-shaped, reported, not decided by this lane."
+   }
+ }
+########## data-grid
+--- knowledge/components/data-grid.meta.json	2026-09-09 21:35:31.289796881 +0100
++++ /tmp/kgs/knowledge/components/data-grid.meta.json	2026-09-09 21:41:02.591044438 +0100
+@@ -292,6 +292,14 @@
+       "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+     }
+   },
++  "with": [
++    "selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)",
++    "filter-toolbar-bar",
++    "pagination",
++    "search-field",
++    "tags",
++    "skeleton-loader"
++  ],
+   "edges": {
+     "renderedBy": [
+       {
+@@ -334,7 +342,7 @@
+       },
+       {
+         "ref": "component:selection-controls",
+-        "$note": "selection-checkbox: 22×22 box, tick/mixed bespoke control glyphs, checked = secondary/background/default + text/on-inverse (Selection-controls verbatim anatomy; colour states only — form-control precedent)."
++        "$note": "selection-checkbox: COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent)."
+       },
+       {
+         "ref": "component:search-field",
+@@ -351,15 +359,19 @@
+       {
+         "ref": "component:pagination",
+         "$note": "pagination: Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)."
++      },
++      {
++        "ref": null,
++        "$note": "column-filter: #261. A 24px form-furniture button in the header cell (Search-field precedent — colour states, no press physics) opening a small menu anchored under its own cell: one labelled text input, Enter commits, Esc closes, an outside click closes. Off/on are two DISTINCT library glyphs (global-controls/filter.svg, filter-active.svg), never one glyph recoloured (icon-011). #261 G2: filtered-active paints NO edge rule — its channels are the distinct glyph, a held ground on the button and the named chip; the 3px leading accent was removed on Dave's review."
++      },
++      {
++        "ref": null,
++        "$note": "column-resizer: #261. A 12px grip on the trailing edge of the header cell with a 24px hit area (the ::before bleed) and — since #261 G2, on Dave's 'remove the bars from the end of the column headers' — NO painted rule at rest: a 1px hairline shows on hover/focus-visible of the handle, the full-height grip only while resize mode is live. The affordance is unchanged (cursor, hit area, drag, keyboard). role=separator + aria-orientation/valuenow/valuemin/valuemax, driving the <col> width in a table-layout:fixed table (96-480px clamp). Pointer drag, and keyboard from the header cell: Alt+Left/Right enters resize mode, arrows size (Shift for a 32px step), Esc/Enter returns to the cell — so the grid keeps its ONE tab stop."
++      },
++      {
++        "ref": null,
++        "$note": "group-header: #261. Optional spanning row of th scope=colgroup above the column row; caption type at 60% alpha on table/column/background. Both rows are sticky and travel as one block. Sticky plus border-collapse drops cell borders while scrolling, so the header's rules are painted as inset shadows."
+       }
+     ]
+-  },
+-  "with": [
+-    "selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)",
+-    "filter-toolbar-bar",
+-    "pagination",
+-    "search-field",
+-    "tags",
+-    "skeleton-loader"
+-  ]
++  }
+ }
+########## filter-toolbar-bar
+--- knowledge/components/filter-toolbar-bar.meta.json	2026-09-09 08:23:30.422614689 +0100
++++ /tmp/kgs/knowledge/components/filter-toolbar-bar.meta.json	2026-09-09 21:41:02.600044438 +0100
+@@ -101,62 +101,38 @@
+   },
+   "edges": {
+     "renderedBy": [
+-      { "ref": "snippet:Filter-toolbar-bar.reference.html" }
+-    ],
+-    "composedOf": [
+-      { "ref": "component:search-field", "$note": "the query field, boxed and underline variants" },
+-      { "ref": "component:dropdown", "$note": "add-filter, date-range and export triggers + listboxes" },
+-      { "ref": "component:segmented-control", "$note": "view switch and density switch" },
+-      { "ref": "component:tags", "$note": "applied-filter chips, the +N overflow disclosure, and the dismiss mechanics" },
+-      { "ref": "component:links", "$note": "clear-all and retry, selector widened to admit a <button>" }
+-    ],
+-    "delegatesTo": [
+-      { "ref": "component:date-range-picker",
+-        "when": "the user picks `Custom range…` from the date-range trigger",
+-        "$note": "The bar owns the TRIGGER and the presets. The calendar body belongs to date-range-picker; copying part of it here would be the re-draw the Layer-2 cardinal rule forbids." }
+-    ],
+-    "drivesConsumer": [
+-      { "ref": "component:data-grid", "when": "shape=table AND the consumer declares data-apollo-filter-consumer" },
+-      { "ref": "component:table", "when": "shape=table AND the consumer declares data-apollo-filter-consumer" },
+-      { "ref": "component:list-items", "when": "shape=list AND the consumer declares data-apollo-filter-consumer" },
+-      { "ref": "component:kpi-tile", "when": "shape=tile AND the consumer declares data-apollo-filter-consumer" },
+-      { "ref": "component:chart-bar", "when": "shape=chart AND the consumer declares data-apollo-filter-consumer" }
++      {
++        "ref": "snippet:Filter-toolbar-bar.reference.html"
++      }
+     ],
+-    "$contract": {
+-      "$ruling": "s258-D1 — cross-component wiring (filter->grid/KPI/chart) is the author's to write. s258-D2 — every interactive element is assumed to work, on rich seeded data.",
+-      "$shape": "An EVENT + ATTRIBUTE contract. A consumer imports nothing; it declares an attribute and, if it wants to, listens.",
+-      "markers": {
+-        "data-apollo-filter-bar": "on the bar root — marks the driver.",
+-        "data-apollo-filter-target": "on the bar root, optional — a CSS selector for the consumer. Default: the first [data-apollo-filter-consumer] in the document.",
+-        "data-apollo-filter-consumer": "on the consumer root — marks anything that renders a result set."
++    "usedInContext": [
++      {
++        "ref": "context:page-above-a-table-data-grid-list-items-or-chart-region",
++        "$note": "Page (above a Table, Data-grid, List-items or chart region)"
+       },
+-      "emits": [
+-        { "event": "apollo:filter-change", "bubbles": true,
+-          "detail": "{ query: string, filters: [{key, facet, value, label}], range: {preset, days, label}, view: string, density: string }" },
+-        { "event": "apollo:filter-clear", "bubbles": true, "detail": "{}" },
+-        { "event": "apollo:filter-export", "bubbles": true, "detail": "{ format: 'csv'|'xlsx'|'pdf' }" }
+-      ],
+-      "writes": {
+-        "data-apollo-view": "written onto the consumer — so a CSS-only consumer can respond with no script at all.",
+-        "data-apollo-density": "written onto the consumer — the same dial the bar applies to itself."
++      {
++        "ref": "context:dashboard-template",
++        "$note": "Dashboard template"
+       },
+-      "readsBack": {
+-        "data-apollo-result-count": "the number matched, or \"\" while unknown",
+-        "data-apollo-result-total": "the size of the unfiltered set",
+-        "data-apollo-result-state": "ok | loading | empty | error — the bar moves its own data-ftb-state to match",
+-        "$why": "The bar never assumes the answer to the question it just asked. A driver that reports success because it dispatched an event is the lying-state defect this contract exists to close."
++      {
++        "ref": "context:list-index-template",
++        "$note": "List/index template"
++      },
++      {
++        "ref": "context:bento-tile",
++        "$note": "Bento tile"
+       }
+-    },
+-    "usedInContext": [
+-      { "ref": "context:page-above-a-table-or-list-items-region", "$note": "Page (above a Table, Data-grid, List-items or chart region)" },
+-      { "ref": "context:dashboard-template", "$note": "Dashboard template" },
+-      { "ref": "context:list-index-template", "$note": "List/index template" },
+-      { "ref": "context:bento-tile", "$note": "Bento tile (s248-D3: every component in a tile must be responsive — this one is container-queried throughout)" }
+     ],
+     "commonPattern": [
+-      { "ref": "pattern:search-filter-view-switch-toolbar" },
+-      { "ref": "pattern:compact-sort-bar-above-a-table" },
+-      { "ref": "pattern:filter-bar-driving-a-data-grid" }
++      {
++        "ref": "pattern:search-filter-view-switch-toolbar"
++      },
++      {
++        "ref": "pattern:compact-sort-bar-above-a-table"
++      },
++      {
++        "ref": "pattern:filter-bar-driving-a-data-grid"
++      }
+     ]
+   }
+ }
+########## footer
+--- knowledge/components/footer.meta.json	2026-09-09 21:35:26.165371524 +0100
++++ /tmp/kgs/knowledge/components/footer.meta.json	2026-09-09 21:41:02.601044438 +0100
+@@ -300,7 +300,7 @@
+       },
+       {
+         "ref": "context:template-dashboard",
+-        "$note": "Template — dashboard; the sticky variant's home if sticky is ever a default anywhere"
++        "$note": "Template — dashboard"
+       }
+     ],
+     "commonPattern": [
+########## legend
+--- knowledge/components/legend.meta.json	2026-09-09 21:42:46.784530036 +0100
++++ /tmp/kgs/knowledge/components/legend.meta.json	2026-09-09 21:41:02.607044438 +0100
+@@ -122,26 +122,40 @@
+   },
+   "edges": {
+     "renderedBy": [
+-      { "ref": "snippet:Legend.reference.html" }
+-    ],
+-    "containedBy": [
+-      { "ref": "component:chart-bar", "$note": "and every other registered dataviz member — each already carries this legend inside its own figure" }
++      {
++        "ref": "snippet:Legend.reference.html"
++      }
+     ],
+     "usedInContext": [
+-      { "ref": "context:dashboards" },
+-      { "ref": "context:dashboard-rows-of-small-multiples", "$note": "Dashboard rows of small multiples — id repointed #265-E to the node gen_kg_edges.py derives from this meta's own relationships.livesInside entry; the terse `context:small-multiples` was hand-slugged and is registered nowhere." }
++      {
++        "ref": "context:chart-panels-figure-dv-every-registered-chart-type-already-carries-one",
++        "$note": "Chart panels (figure.dv — every registered chart type already carries one)"
++      },
++      {
++        "ref": "context:dashboard-rows-of-small-multiples",
++        "$note": "Dashboard rows of small multiples"
++      },
++      {
++        "ref": "context:bento-tiles",
++        "$note": "Bento tiles"
++      }
+     ],
+     "commonPattern": [
+-      { "ref": "pattern:shared-key-for-small-multiples" },
+-      { "ref": "pattern:vertical-key-with-values" }
++      {
++        "ref": "pattern:shared-key-for-small-multiples"
++      },
++      {
++        "ref": "pattern:vertical-key-with-values"
++      },
++      {
++        "ref": "pattern:wrapping-key-above-a-bar-chart"
++      }
+     ],
+     "mustNotNeighbour": [
+-      { "ref": null, "$note": "A second legend for the same series set in the same view" }
+-    ],
+-    "governedBy": [
+-      { "ref": "ruling:s151-D1" },
+-      { "ref": "ruling:s248-D3" },
+-      { "ref": "ruling:s258-D1" }
++      {
++        "ref": null,
++        "$note": "A second legend for the same series set in the same view — that is the duplication this component exists to remove"
++      }
+     ]
+   }
+ }
+########## navigations
+--- knowledge/components/navigations.meta.json	2026-09-09 14:42:17.512969757 +0100
++++ /tmp/kgs/knowledge/components/navigations.meta.json	2026-09-09 21:41:02.613044438 +0100
+@@ -227,6 +227,31 @@
+     "code_path": "",
+     "$261": "#261 nav design pass, Dave's ask ('tackle the nav design'). No reference given — designed by judgment as ONE FAMILY with Sidebar-nav, Navigations and Tab-bar. Snippet rebuilt; see $navFamily and the snippet's knownFindings."
+   },
++  "responsive": {
++    "$note": "#261: the masthead collapses at 768px by REPLACEMENT — primary row out, hamburger plus stacked panel in. The action rail survives at every width; only the account trigger's name is dropped. PROPOSED, not ruled.",
++    "breakpoint": "768px",
++    "verifiedTo": "320px"
++  },
++  "$navFamily": {
++    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
++    "name": "nav family",
++    "members": [
++      "component:sidebar-nav",
++      "component:navigations",
++      "component:tab-bar"
++    ],
++    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
++    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
++    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
++    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
++    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
++    "openItems": [
++      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
++      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
++    ],
++    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
++  },
++  "$261N2": "#261 N2, Dave verbatim: \"the selected state should just have the underscore, no background\" — a masthead destination opts out of the shared item's current-row fill and keeps the 3px block-end rule alone (aria-current plus the rule's presence/absence still carry it without colour). And \"align the bottom of the search bar with the bottom of its container\" — the search disclosure's bottom padding is zero, so the field's baseline rule lands ON the container's bottom edge instead of floating 8px above it.",
+   "edges": {
+     "renderedBy": [
+       {
+@@ -276,30 +301,5 @@
+         "$note": "DECLARED at #261. Same family, same grade (SAME-ANSWER, s251-D4). Tab-bar is the MOBILE member: it is what Sidebar-nav becomes below 768px when a rail is the wrong density control. One direction only (s251-D6)."
+       }
+     ]
+-  },
+-  "responsive": {
+-    "$note": "#261: the masthead collapses at 768px by REPLACEMENT — primary row out, hamburger plus stacked panel in. The action rail survives at every width; only the account trigger's name is dropped. PROPOSED, not ruled.",
+-    "breakpoint": "768px",
+-    "verifiedTo": "320px"
+-  },
+-  "$navFamily": {
+-    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+-    "name": "nav family",
+-    "members": [
+-      "component:sidebar-nav",
+-      "component:navigations",
+-      "component:tab-bar"
+-    ],
+-    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+-    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+-    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+-    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+-    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
+-    "openItems": [
+-      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+-      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+-    ],
+-    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
+-  },
+-  "$261N2": "#261 N2, Dave verbatim: \"the selected state should just have the underscore, no background\" — a masthead destination opts out of the shared item's current-row fill and keeps the 3px block-end rule alone (aria-current plus the rule's presence/absence still carry it without colour). And \"align the bottom of the search bar with the bottom of its container\" — the search disclosure's bottom padding is zero, so the field's baseline rule lands ON the container's bottom edge instead of floating 8px above it."
++  }
+ }
+########## sidebar-nav
+--- knowledge/components/sidebar-nav.meta.json	2026-09-09 14:42:17.517183713 +0100
++++ /tmp/kgs/knowledge/components/sidebar-nav.meta.json	2026-09-09 21:41:02.623044438 +0100
+@@ -173,6 +173,25 @@
+     "component:navigations — OPEN: horizontal masthead vs persistent vertical frame. See $collision. Dave's.",
+     "component:tab-bar — app bottom tab bar — the mobile answer to the same job"
+   ],
++  "$navFamily": {
++    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
++    "name": "nav family",
++    "members": [
++      "component:sidebar-nav",
++      "component:navigations",
++      "component:tab-bar"
++    ],
++    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
++    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
++    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
++    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
++    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
++    "openItems": [
++      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
++      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
++    ],
++    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
++  },
+   "edges": {
+     "renderedBy": [
+       {
+@@ -202,24 +221,5 @@
+         "$note": "A second primary navigation on the same screen — one primary nav per screen"
+       }
+     ]
+-  },
+-  "$navFamily": {
+-    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+-    "name": "nav family",
+-    "members": [
+-      "component:sidebar-nav",
+-      "component:navigations",
+-      "component:tab-bar"
+-    ],
+-    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+-    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+-    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+-    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+-    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
+-    "openItems": [
+-      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+-      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+-    ],
+-    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
+   }
+ }
+########## tab-bar
+--- knowledge/components/tab-bar.meta.json	2026-09-09 14:42:17.515013234 +0100
++++ /tmp/kgs/knowledge/components/tab-bar.meta.json	2026-09-09 21:41:02.630044438 +0100
+@@ -126,6 +126,30 @@
+       "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+     }
+   },
++  "$vocabularyCollision": "⬛ SURFACED, NOT RESOLVED (#202 class, #261). The #261 lane brief described Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is the EXISTING gated Tabs component (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... a selected indicator, a bottom track, and an overflow dropdown'). Tab-bar's own purpose has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced by the journey gap report. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless, so the canon meaning was kept. The section-tab reading is drawn on the same nav tokens in notes/_lanes/261-N-nav-review.html as a PROPOSAL against Tabs. Dave's call: KEEP (recommended) or RENAME.",
++  "responsive": {
++    "$note": "#261: the bar is the MOBILE member of the nav family — it is what Sidebar-nav becomes below 768px when a rail is the wrong density control. Variant A is fluid to 320px with 3-5 equal columns; variant B's island fill is measured from layout, so it re-measures on a single rAF-debounced resize listener (ADR-0015).",
++    "verifiedTo": "320px"
++  },
++  "$navFamily": {
++    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
++    "name": "nav family",
++    "members": [
++      "component:sidebar-nav",
++      "component:navigations",
++      "component:tab-bar"
++    ],
++    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
++    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
++    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
++    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
++    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
++    "openItems": [
++      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
++      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
++    ],
++    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
++  },
+   "edges": {
+     "renderedBy": [
+       {
+@@ -152,29 +176,5 @@
+         "$note": "Tabs (in-page) — a tab bar is app navigation, not in-page section switching"
+       }
+     ]
+-  },
+-  "$vocabularyCollision": "⬛ SURFACED, NOT RESOLVED (#202 class, #261). The #261 lane brief described Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is the EXISTING gated Tabs component (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... a selected indicator, a bottom track, and an overflow dropdown'). Tab-bar's own purpose has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced by the journey gap report. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless, so the canon meaning was kept. The section-tab reading is drawn on the same nav tokens in notes/_lanes/261-N-nav-review.html as a PROPOSAL against Tabs. Dave's call: KEEP (recommended) or RENAME.",
+-  "responsive": {
+-    "$note": "#261: the bar is the MOBILE member of the nav family — it is what Sidebar-nav becomes below 768px when a rail is the wrong density control. Variant A is fluid to 320px with 3-5 equal columns; variant B's island fill is measured from layout, so it re-measures on a single rAF-debounced resize listener (ADR-0015).",
+-    "verifiedTo": "320px"
+-  },
+-  "$navFamily": {
+-    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+-    "name": "nav family",
+-    "members": [
+-      "component:sidebar-nav",
+-      "component:navigations",
+-      "component:tab-bar"
+-    ],
+-    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+-    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+-    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+-    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+-    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
+-    "openItems": [
+-      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+-      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+-    ],
+-    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
+   }
+ }
