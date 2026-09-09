@@ -127,9 +127,59 @@ def gate_composition(html):
 #     argument list — so a run that touches one subject still leaves the other six addressed.
 GATE_DIR = os.path.join(HERE, "_screen-gate")
 
+REPO = os.path.dirname(HERE)
+FOREIGN_DIR = os.path.join(os.environ.get("TMPDIR", "/var/tmp"), "apollo-screen-gate")
+
 def subject_file(name):
     """One home per subject. `name` is the screen's basename."""
     return os.path.join(GATE_DIR, re.sub(r"\.html?$", "", name) + ".md")
+
+# ---------- #261 M3 — THE ONE-HOME RULE KEYED ON BASENAME, AND BASENAMES REPEAT.
+# CARRIED SINCE #258, four observed clobbers: every cold run of the composed-screen work used the
+# same page NAME from a DIFFERENT directory (a /var/tmp copy, a rehearsal tree), and each run
+# rewrote the TRACKED row in `knowledge/_screen-gate/` that belonged to the repo's own screen.
+# #230 T5 fixed one-file-many-subjects; it left one-name-many-SOURCES.
+#
+# Two arms, both measurements, neither a policy:
+#   (a) a subject OUTSIDE this repo may not write a tracked ledger row at all — it goes to a
+#       scratch home and the run says so. (It could not stay anyway: dream-11 P4(b) refuses an
+#       index built over untracked members.)
+#   (b) an in-repo subject whose recorded `- source:` differs from this run's REFUSES rather than
+#       overwriting, and names both paths. `SCREEN_GATE_REBIND=1` is the legal form for a genuine
+#       move, so the refusal has a door and does not invite a workaround.
+def subject_home(path):
+    """(destination, source_label, foreign?) for one screen — the CLOBBER decision, measured."""
+    ap = os.path.abspath(path)
+    inside = os.path.commonpath([ap, REPO]) == REPO
+    if inside:
+        return subject_file(os.path.basename(path)), os.path.relpath(ap, REPO), False
+    return (os.path.join(FOREIGN_DIR, re.sub(r"\.html?$", "", os.path.basename(path)) + ".md"),
+            ap, True)
+
+def source_of(dest):
+    """The `- source:` this ledger row was last written for, or None (a pre-#261 M3 row)."""
+    try:
+        for line in open(dest, encoding="utf-8"):
+            if line.startswith("- source:"):
+                return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    return None
+
+def check_clobber(dest, source):
+    """Refuse to overwrite a row that belongs to a DIFFERENT source path."""
+    if os.environ.get("SCREEN_GATE_REBIND") == "1" or not os.path.exists(dest):
+        return
+    was = source_of(dest)
+    if was is not None and was != source:
+        raise SystemExit(
+            "⛔ SCREEN-GATE CLOBBER REFUSED — this row belongs to another screen with the same "
+            "basename.\n"
+            f"   row:        {os.path.relpath(dest, REPO)}\n"
+            f"   written for: {was}\n"
+            f"   this run:    {source}\n"
+            "   Overwriting it is how four tracked rows were lost between #258 and #260. Rename "
+            "the screen, or re-run with SCREEN_GATE_REBIND=1 if the subject genuinely MOVED.")
 
 def _untracked_subjects(files):
     """Which of `files` does git not track? ([] when git cannot answer — DECLARED, not faked.)
@@ -185,6 +235,7 @@ def main():
     files = args or sorted(glob.glob(os.path.join(HERE, "_fitness-test", "*.canon.html")))
     report = ["# Composed-screen gate — full pipeline on *.canon.html\n"]
     subjects = {}          # name -> its own lines (its own home)
+    subject_src = {}       # name -> the PATH it came from (#261 M3: the clobber key)
     ok = True
     for path in files:
         name = os.path.basename(path)
@@ -212,6 +263,7 @@ def main():
             ok = False
         lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf or cpf) else "FAIL ❌"))
         subjects[name] = lines
+        subject_src[name] = path
         report += lines[1:]
     if render:
         report.append("\n## state-contrast (rendered)")
@@ -228,9 +280,16 @@ def main():
         except Exception as e:
             report.append(f"- ⚠ could not run: {e}")
     os.makedirs(GATE_DIR, exist_ok=True)
+    # #261 M3: the destination is a function of the SOURCE PATH, not of the basename.
     for name, lines in subjects.items():
-        open(subject_file(name), "w", encoding="utf-8").write(
-            f"# {name}\n\n" + "\n".join(lines) + "\n")
+        dest, source, foreign = subject_home(subject_src[name])
+        check_clobber(dest, source)
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        open(dest, "w", encoding="utf-8").write(
+            f"# {name}\n\n- source: {source}\n" + "\n".join(lines) + "\n")
+        if foreign:
+            print(f"⚠ {name} is OUTSIDE this repo ({source}) — its row went to {dest}, NOT to the "
+                  "tracked knowledge/_screen-gate/ ledger (#261 M3).")
     write_index()
     print("\n".join(report))
     print("\nRESULT:", "PASS ✅" if ok else "FAIL ❌")

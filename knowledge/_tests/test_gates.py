@@ -47,9 +47,54 @@ IGNORE = shutil.ignore_patterns("__pycache__", "_tests", ".DS_Store")
 RESULTS = []
 
 
+# ---------- #261 M3 — THE HARNESS COPIED THE WORKING TREE, NOT THE CORPUS.
+# MEASURED here today: tracked `knowledge/` is ~93 MB; the WORKING `knowledge/assets` is 5.2 GB of
+# untracked bulk, so one `shutil.copytree` was ~5.3 GB and the 27-case suite could not reach its
+# own last case in this sandbox at all [[gate-cannot-pass-in-one-environment]] — the one instrument
+# whose job is to prove the other gates bite.
+# THE FIX COPIES WHAT GIT TRACKS. That is not the ⬛ `IGNORE`-the-assets decision #221 priced as a
+# handoff and did not take: no tracked file is withheld from any gate, so nothing is made blind.
+# It makes the local copy EQUAL to what a fresh CI checkout has — the environment the suite is
+# green in — instead of that plus whatever bulk happens to be sitting in the tree.
+# Falls back to the old copytree, LOUDLY, when git cannot answer.
+def _tracked_relpaths():
+    """Every git-tracked path under knowledge/, relative to it. None when git cannot answer."""
+    try:
+        r = subprocess.run(["git", "-C", KNOW, "ls-files", "-z", "--", "."],
+                           capture_output=True, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if r.returncode != 0:
+        return None
+    out = [p for p in r.stdout.decode("utf8", "replace").split("\0") if p]
+    return out or None
+
+
+_TRACKED = None
+
+
 def fresh_copy(tmp_root, tag):
+    global _TRACKED
     dst = os.path.join(tmp_root, tag)
-    shutil.copytree(KNOW, dst, ignore=IGNORE)
+    if _TRACKED is None:
+        _TRACKED = _tracked_relpaths() or False
+    if _TRACKED is False:
+        print("⚠ TRACKED-ONLY COPY UNAVAILABLE (git could not answer) — falling back to a full "
+              "copytree of the WORKING tree. On a box carrying untracked bulk under "
+              "knowledge/assets this is the #221 out-of-disk failure, and it is DECLARED here "
+              "rather than met as a traceback.")
+        shutil.copytree(KNOW, dst, ignore=IGNORE)
+        return dst
+    skip = ("_tests/", "__pycache__/")
+    for rel in _TRACKED:
+        if rel.startswith(skip) or "/__pycache__/" in rel or rel.endswith(".DS_Store"):
+            continue
+        src = os.path.join(KNOW, rel)
+        if not os.path.isfile(src):
+            continue                      # deleted-but-tracked: the copy mirrors the TREE
+        target = os.path.join(dst, rel)
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        shutil.copy2(src, target)
     return dst
 
 
