@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**5 UNKNOWN path(s)** across 137 snippet(s) (102 verified-bespoke). Library glyphs indexed: 750.
+**5 UNKNOWN path(s)** across 137 snippet(s) (102 verified-bespoke). Library glyphs indexed: 758.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
