@@ -3,7 +3,7 @@
   "interactive": true,
   "category": "organism",
   "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid.",
-  "$composes": "Selection-controls (s258-D4 — the header select-all and every row checkbox ARE the .cn-selection-controls scope with Selection-controls' hidden-input + label + .box markup; class names KEPT so a diff proves the borrow, the grid supplying only the ids, aria-label and the indeterminate state). Search-field (the filter field's boxed chrome, FIELD-CHROME-COPY). Tags (the applied-filter chips, namespaced .fchip). Pagination (44px pager targets, aria-current border). Skeleton-loader (the loading state, by reference). Account-selector (aria-selected = tint + inset start bar). Button (sort headers, .full because they are cell-bound).",
+  "$composes": "Selection-controls (s258-D4, TIGHTENED at #261 G3 on Dave's word — \"the grid header is fine except the checkbox is rendered oddly, can't we just use the check component?\". The header select-all and every row checkbox ARE the .cn-selection-controls scope; the grid no longer RESTATES the anatomy on its own vars. Selection-controls is not registered as a $partial in component-types.json, so the composition route of the #261 lane brief applies: its checkbox rule block is carried into the snippet BYTE-IDENTICALLY (only a `.cbx ` scope prefix added) and bound through an alias layer that maps its var names onto the grid's already-resolved tokens of the same semantic value — --ctrl-border=form/border/default, --ctrl-border-active, --glyph=text/on-inverse, --checked=secondary/background/default, --chip-hover=form/background/hover, --ctrl-border-disabled. Its OWN two glyphs are consumed: the animated stroke-draw tick for checked and its own dash for indeterminate, both declared data-bespoke and already verified in _ICON-SOURCE-AUDIT.md. Two grid-authored lines remain and both are marked in the snippet: the 44px label that carries the hit area (32px in compact, above the 24px floor), and a stroke-dasharray on .mixed without which the component's stroke-dashoffset is inert. The class names are KEPT so a diff proves the borrow; the grid supplies only the ids, aria-label and the indeterminate state.) Search-field (the filter field's boxed chrome, FIELD-CHROME-COPY). Tags (the applied-filter chips, namespaced .fchip). Pagination (44px pager targets, aria-current border). Skeleton-loader (the loading state, by reference). Account-selector (aria-selected = tint + inset start bar). Button (sort headers, .full because they are cell-bound).",
   "props": [
     {
       "name": "columns",
@@ -186,7 +186,23 @@
       "transactions with filter chips + pagination",
       "multi-select then bulk action",
       "inline reference editing"
-    ]
+    ],
+    "$composes-verbatim": {
+      "selection-controls": {
+        "route": "byte-identical rule block + alias layer (no $partial registered for the checkbox)",
+        "source": "knowledge/snippets/Selection-controls.reference.html — the `/* ---- checkbox (square) ---- */` block",
+        "consumer": "knowledge/snippets/Data-grid.reference.html — `.cbx` scope, header select-all + every row cell",
+        "glyphs": [
+          "tick M3.5 9.5 L7.5 13.5 L14.5 5 (checked)",
+          "dash M4 9 L14 9 (indeterminate)"
+        ],
+        "gridAuthored": [
+          "44px/32px label hit area",
+          ".mixed stroke-dasharray:22 (guard: the component's offset is inert without it)"
+        ],
+        "ruling": "#261 G3, Dave 2026-09-09"
+      }
+    }
   },
   "behaviour": {
     "script": "knowledge/snippets/Data-grid.reference.html#script",
@@ -336,5 +352,13 @@
         "$note": "pagination: Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)."
       }
     ]
-  }
+  },
+  "with": [
+    "selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)",
+    "filter-toolbar-bar",
+    "pagination",
+    "search-field",
+    "tags",
+    "skeleton-loader"
+  ]
 }

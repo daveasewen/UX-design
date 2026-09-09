@@ -52,7 +52,9 @@
   /* ---------- the specimen: a faithful copy of the shipped header anatomy ---------- */
   .tk{--header:#F0F0F0; --cell:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --icon:#1A1A1A;
       --hover:#F0F0F0; --page:#FFFFFF; --focus:#305A85; --fborder:#808080; --bar:#000000;
-      --grouphdr:#F0F0F0; --disabled:#E1E1E1; --fhover:#F0F0F0; --hdr-min:44px; --grp-h:32px; --cell-py:10px; --cell-px:12px;
+      --grouphdr:#F0F0F0; --disabled:#E1E1E1; --fhover:#F0F0F0;
+      --checked:#000000; --onchk:#FFFFFF;   /* secondary/background/default + text/on-inverse — the check component's own selected pair (#261 G3) */
+      --hdr-min:44px; --grp-h:32px; --cell-py:10px; --cell-px:12px;
       background:var(--page); color:var(--text); border:1px solid var(--border); padding:12px; overflow:auto;}
   .tk[data-density="compact"]{--cell-py:4px; --hdr-min:32px; --grp-h:28px;}
   .tk table{border-collapse:collapse; table-layout:fixed; width:100%; min-width:760px; background:var(--cell);
@@ -91,12 +93,40 @@
   .tk .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:1px; background:transparent; transition:background 140ms ease;}
   .tk .rsz:hover::after,.tk .rsz:focus-visible::after{background:var(--fborder);}
   .tk .rsz[data-active="true"]::after{background:var(--fborder); width:2px; top:0; bottom:0;}
-  .tk .cbx{display:inline-flex; align-items:center;}
-  .tk .cbx .box{width:22px; height:22px; border:2px solid var(--fborder); display:inline-flex;
+  /* ORIGINAL — the forked checkbox Dave photographed. KEPT, unchanged, for the section-8 comparison
+     only. The glyph is pulled through <use href="#g-tick">, and a descendant selector cannot reach
+     into a <use> shadow tree, so `fill:none` never lands: the browser paints the path's initial
+     fill:black and the open tick M3.5 9.5 L7.5 13.5 L14.5 5 closes into a small black TRIANGLE. */
+  .tk .oldcbx{display:inline-flex; align-items:center;}
+  .tk .oldcbx .box{width:22px; height:22px; border:2px solid var(--fborder); display:inline-flex;
     align-items:center; justify-content:center;}
+  .tk .oldcbx .box svg{width:14px; height:14px;}
+  .tk .oldcbx .box path{stroke:var(--text); stroke-width:2.4; fill:none;}
+
+  /* #261 G3 — the CHECK COMPONENT, consumed. Same alias layer + same verbatim rule block as
+     knowledge/snippets/Data-grid.reference.html, which takes them from Selection-controls. */
+  .tk .cbx{--ctrl-border:var(--fborder); --ctrl-border-active:var(--bar); --glyph:var(--onchk);
+    position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
+  .tk .cbx input{position:absolute; opacity:0; width:0; height:0;}
+  .tk .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    min-width:44px; min-height:44px;}
+  .tk .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); background:transparent;
+    display:flex; align-items:center; justify-content:center; transition:background 180ms cubic-bezier(.4,0,.2,1), border-color 180ms cubic-bezier(.4,0,.2,1);}
   .tk .cbx .box svg{width:14px; height:14px;}
-  .tk .cbx .box path{stroke:var(--text); stroke-width:2.4; fill:none;}
-  .tk td.sel{text-align:center;}
+  .tk .cbx .box path{stroke:var(--glyph); stroke-width:2.4; fill:none;}
+  .tk .cbx .box .tick{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset 180ms cubic-bezier(.4,0,.2,1);}
+  .tk .cbx .box .mixed{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset 180ms cubic-bezier(.4,0,.2,1);}
+  .tk .cbx label:hover .box{border-color:var(--ctrl-border-active);}
+  .tk .cbx input:checked + label .box,.tk .cbx input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
+  .tk .cbx input:checked + label .box .tick{stroke-dashoffset:0;}
+  .tk .cbx input:indeterminate + label .box .mixed{stroke-dashoffset:0;}
+  .tk .cbx input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
+  .cbxstates{display:flex; gap:8px; padding:10px; border-top:1px solid var(--rule); align-items:center;}
+  .cbxstates button{font:500 12px/16px var(--uf); padding:6px 10px; border:1px solid var(--rule);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .cbxstates button[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .cbxstates button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .tk td.sel{text-align:center; padding:0; overflow:visible; text-overflow:clip;}
   .tk td{font:400 16px/20px var(--uf); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .tk td.num{text-align:right; font-variant-numeric:tabular-nums;}
   /* forced states, for the gallery only */
@@ -247,6 +277,40 @@
       because pagination sits on the page, not on the header. <span class="pill">alpha or token</span></li>
   </ul>
 
+  <h2>8 · #261 G3 — the header checkbox IS the check component</h2>
+  <div class="rule thin"></div>
+  <p class="cap"><b>Dave, verbatim.</b> “the grid header is fine except the checkbox is rendered oddly, can't we just
+  use the check component?” He is right twice over. <b>What was wrong:</b> this review page drew its own checkbox and
+  pulled the tick through <code>&lt;use href="#g-tick"&gt;</code>. A descendant selector cannot reach into a
+  <code>&lt;use&gt;</code> shadow tree, so <code>.box path{fill:none}</code> never landed — the browser painted the
+  path's initial <code>fill:black</code> and the open tick <code>M3.5 9.5 L7.5 13.5 L14.5 5</code> closed into a small
+  black <b>triangle</b> sitting in an unfilled box. <b>What it is now:</b> the grid does not draw a checkbox at all.
+  <code>Selection-controls</code> is not registered as an injectable partial, so the composition rule applies — its
+  token block and its rule block are carried across byte for byte under an alias layer, and its own two glyphs are
+  used: the animated stroke-draw tick for <b>checked</b> and its own dash for <b>indeterminate</b>. The grid adds two
+  lines and states both: the 44px label that carries the hit area (32px in compact, above the 24px floor, never below),
+  and a <code>stroke-dasharray</code> on the dash, without which the offset is inert and the dash draws in every state.</p>
+  <div class="cols3">
+    <div class="swatch">
+      <div class="lab"><b>ORIGINAL</b><span>the triangle Dave photographed</span></div>
+      <div class="tk"><table><thead><tr class="cols">
+        <th class="sel"><div class="th-in mid"><span class="oldcbx"><span class="box"><svg viewBox="0 0 18 18"><use href="#g-tick"/></svg></span></span></div></th>
+        <th><div class="th-in"><button class="sort" type="button" tabindex="-1"><span class="lbl">Date</span></button></div></th>
+      </tr></thead><tbody>
+        <tr><td class="sel"><span class="oldcbx"><span class="box"></span></span></td><td>21 Jul 2026</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="swatch">
+      <div class="lab"><b>#261 G3</b><span>the check component — click a state</span></div>
+      <div class="tk" id="g3demo"></div>
+      <div class="cbxstates" id="g3states">
+        <button type="button" data-st="unchecked" aria-pressed="true">Unchecked</button>
+        <button type="button" data-st="indeterminate" aria-pressed="false">Indeterminate</button>
+        <button type="button" data-st="checked" aria-pressed="false">Checked</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -262,15 +326,31 @@
 // The specimen builder. One markup, many states — so a difference between two panels below is a
 // difference of STATE, never of markup.
 const THEMES = {
- "mono/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
- "mono/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
- "legacy/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#333333","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
- "legacy/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
- "console/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1"},
- "console/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080"},
- "supercharge/light":{"--header":"#DFDEDC","--cell":"#F7F6F4","--border":"#CDC8C6","--text":"#13110E","--icon":"#13110E","--hover":"#DFDEDC","--page":"#F7F6F4","--focus":"#305A85","--fborder":"#524842","--bar":"#000000","--grouphdr":"#DFDEDC","--disabled":"#CDC8C6"},
- "supercharge/dark":{"--header":"#2A2621","--cell":"#1A1A1A","--border":"#524842","--text":"#F7F6F4","--icon":"#F7F6F4","--hover":"#2E2A25","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#524842","--bar":"#F7F6F4","--grouphdr":"#2A2621","--disabled":"#524842"}
+ "mono/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1","--checked":"#000000","--onchk":"#FFFFFF"},
+ "mono/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080","--checked":"#FFFFFF","--onchk":"#333333"},
+ "legacy/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#333333","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1","--checked":"#000000","--onchk":"#FFFFFF"},
+ "legacy/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080","--checked":"#FFFFFF","--onchk":"#333333"},
+ "console/light":{"--header":"#F0F0F0","--cell":"#FFFFFF","--border":"#E1E1E1","--text":"#1A1A1A","--icon":"#1A1A1A","--hover":"#F0F0F0","--page":"#FFFFFF","--focus":"#305A85","--fborder":"#808080","--bar":"#000000","--grouphdr":"#F0F0F0","--disabled":"#E1E1E1","--checked":"#000000","--onchk":"#FFFFFF"},
+ "console/dark":{"--header":"#1F1F1F","--cell":"#1A1A1A","--border":"#808080","--text":"#FFFFFF","--icon":"#FFFFFF","--hover":"#232323","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#808080","--bar":"#FFFFFF","--grouphdr":"#1F1F1F","--disabled":"#808080","--checked":"#FFFFFF","--onchk":"#333333"},
+ "supercharge/light":{"--header":"#DFDEDC","--cell":"#F7F6F4","--border":"#CDC8C6","--text":"#13110E","--icon":"#13110E","--hover":"#DFDEDC","--page":"#F7F6F4","--focus":"#305A85","--fborder":"#524842","--bar":"#000000","--grouphdr":"#DFDEDC","--disabled":"#CDC8C6","--checked":"#000000","--onchk":"#FFFFFF"},
+ "supercharge/dark":{"--header":"#2A2621","--cell":"#1A1A1A","--border":"#524842","--text":"#F7F6F4","--icon":"#F7F6F4","--hover":"#2E2A25","--page":"#1A1A1A","--focus":"#4587A7","--fborder":"#524842","--bar":"#F7F6F4","--grouphdr":"#2A2621","--disabled":"#524842","--checked":"#FFFFFF","--onchk":"#333333"}
 };
+
+// ---- #261 G3: the CHECK COMPONENT, stamped. Markup and glyph paths are Selection-controls'
+// own (visually-hidden <input> + sibling <label> holding <span class="box">, tick
+// "M3.5 9.5 L7.5 13.5 L14.5 5" and indeterminate dash "M4 9 L14 9"), copied byte for byte.
+// Note both paths are written INLINE, not pulled through <use>: a descendant selector cannot
+// style into a <use> shadow tree, which is exactly what made the ORIGINAL glyph a black triangle.
+let CBXN = 0;
+const cbx = (state) => {
+  const id = 'g3cb-' + (++CBXN);
+  return `<span class="cbx"><input type="checkbox" id="${id}" tabindex="-1" data-state="${state || 'unchecked'}"
+      ${state === 'checked' ? 'checked' : ''} aria-label="Select all rows on this page">
+    <label for="${id}"><span class="box" aria-hidden="true"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></span>`;
+};
+// the ORIGINAL forked control, preserved verbatim for the section-8 comparison ONLY
+const OLDCBX = `<span class="oldcbx"><span class="box"><svg viewBox="0 0 18 18"><use href="#g-tick"/></svg></span></span>`;
+const OLDROW = `<span class="oldcbx"><span class="box"></span></span>`;
 
 const glyphs = k => `<span class="ic ic-none"><svg viewBox="0 0 18 18"><use href="#g-sort"/></svg></span>
   <span class="ic ic-asc"><svg viewBox="0 0 18 18"><use href="#g-up"/></svg></span>
@@ -314,17 +394,17 @@ function header(o){
   return `<table${o.old ? ' class="oldt"' : ''}>
     <colgroup><col style="width:48px">${COL.map(c => `<col style="width:${c.w}">`).join('')}</colgroup>
     <thead>${o.old ? '' : grp}<tr class="cols">
-      <th class="sel"><div class="th-in mid"><span class="cbx"><span class="box"><svg viewBox="0 0 18 18"><use href="#g-tick"/></svg></span></span></div></th>
+      <th class="sel"><div class="th-in mid">${o.oldcbx ? OLDCBX : cbx(o.cbx)}</div></th>
       ${COL.map(cell).join('')}
     </tr></thead>
     <tbody>
-      <tr><td class="sel"><span class="cbx"><span class="box"></span></span></td><td>21 Jul 2026</td><td>Thames Water</td><td>Water bill</td><td>Direct debit</td><td class="num">−£38.50</td></tr>
-      <tr><td class="sel"><span class="cbx"><span class="box"></span></span></td><td>20 Jul 2026</td><td>Acme Payroll</td><td>July salary</td><td>Credit</td><td class="num">£2,450.00</td></tr>
+      <tr><td class="sel">${o.oldcbx ? OLDROW : cbx('unchecked')}</td><td>21 Jul 2026</td><td>Thames Water</td><td>Water bill</td><td>Direct debit</td><td class="num">−£38.50</td></tr>
+      <tr><td class="sel">${o.oldcbx ? OLDROW : cbx('unchecked')}</td><td>20 Jul 2026</td><td>Acme Payroll</td><td>July salary</td><td>Credit</td><td class="num">£2,450.00</td></tr>
     </tbody></table>`;
 }
 
 // --- section 1: old vs new ---
-document.querySelector('[data-spec="old"]').innerHTML = header({old:true, groups:false});
+document.querySelector('[data-spec="old"]').innerHTML = header({old:true, groups:false, oldcbx:true});
 document.querySelector('[data-spec="new"]').innerHTML = header({sort:{key:'date', dir:'descending'}, filtered:['payee']});
 // #261 G2 — same specimen, same states: only the paint changed.
 document.querySelector('[data-spec="g2"]').innerHTML = header({sort:{key:'date', dir:'descending'}, filtered:['payee']});
@@ -360,6 +440,20 @@ document.getElementById('themes').innerHTML = Object.keys(THEMES).map(key => {
     <div class="tk" style="${vars}">${header({sort:{key:'date', dir:'descending'}, filtered:['payee']})}</div>
   </div>`;
 }).join('');
+// --- section 8: #261 G3, the composed control with a working three-state toggle ---
+document.getElementById('g3demo').innerHTML = header({groups:false});
+const setG3 = st => {
+  const i = document.querySelector('#g3demo thead .cbx input');
+  i.checked = (st === 'checked');
+  i.indeterminate = (st === 'indeterminate');
+  if (st === 'indeterminate') i.setAttribute('aria-checked', 'mixed'); else i.removeAttribute('aria-checked');
+  document.querySelectorAll('#g3states button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.st === st)));
+};
+document.getElementById('g3states').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (b) setG3(b.dataset.st);
+});
+setG3('unchecked');
 </script>
 </body>
 </html>

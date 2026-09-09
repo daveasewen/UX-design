@@ -323,29 +323,54 @@
   .dg :is(th,td):focus{outline:none;}
   .dg :is(th,td):focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 
-  /* selection checkbox — COMPOSED from Selection-controls (s258-D4). The wrapper carries the
-     canon scope class .cn-selection-controls and the markup is Selection-controls' own pattern:
-     visually-hidden <input> + sibling <label> holding <span class="box">, so a verbatim copy of
-     this grid into a canon.css page inherits the reviewed control (and passes the compose gate)
-     instead of re-inventing one. The rules below are the grid-local restatement of that anatomy,
-     on the grid's own token vars. Colour states only: form-control precedent (Account-selector),
-     NO scale physics — that experiment stays Selection-controls' own. */
+  /* selection checkbox — CONSUMED from Selection-controls, not restated (#261 G3).
+     Dave 2026-09-09: "the grid header is fine except the checkbox is rendered oddly, can't we just
+     use the check component?" The grid used to carry its OWN restatement of the anatomy — same
+     shape, but display:none/block instead of the component's stroke-draw, so the two could (and
+     did) drift. There is no registered $partial for the checkbox, so the composition rule of the
+     lane brief applies: bring the component's token block and its rules across BYTE-IDENTICALLY
+     and bind them with an alias layer. Nothing below is grid-authored except the alias map, the
+     hit-area line and the one guard, each marked.
+
+     ALIAS LAYER — Selection-controls' var names, bound to the grid's already-resolved tokens.
+     The VALUES are the same semantic tokens in both documents (form/border/default #808080,
+     secondary/background/default #000 light / #FFF dark, text/on-inverse, form/background/hover,
+     form/border/disabled), so this is a rename, not a re-decision. */
   th.sel,td.sel{padding:0; width:44px;}
-  .cbx{position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
-  .cbx input{position:absolute; opacity:0; width:0; height:0;}   /* native control drives state + a11y */
-  .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-    min-width:var(--tap,44px); min-height:var(--tap,44px);}   /* compact dials to 32px — above the 24px floor */
-  .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
-    background:transparent; display:inline-flex; align-items:center; justify-content:center;
-    transition:background var(--ease), border-color var(--ease);}
+  .cbx{--ctrl-border:var(--fborder); --ctrl-border-active:var(--bar); --ctrl-border-disabled:var(--disabled);
+       --glyph:var(--onchk); --chip-hover:var(--fhover); --label-disabled:var(--disabled);
+       position:relative; display:inline-flex; align-items:center; vertical-align:middle;}   /* grid-authored: table-cell seating */
+
+  /* ---- checkbox (square) — VERBATIM from knowledge/snippets/Selection-controls.reference.html,
+         only the `.cbx ` scope prefix added so the rules cannot leak onto the grid's other svgs. */
+  .cbx input{position:absolute; opacity:0; width:0; height:0;}     /* native control drives state + a11y */
+  .cbx input:disabled + label{cursor:not-allowed; color:var(--label-disabled);}
+  .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:var(--border-radius-control); background:transparent;
+    display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
   .cbx .box svg{width:14px; height:14px;}
-  .cbx .box path{stroke:var(--onchk); stroke-width:2.4; fill:none;}
-  .cbx .box .tick,.cbx .box .mixed{display:none;}
-  .cbx label:hover .box{border-color:var(--bar);}
+  .cbx .box path,.cbx .box rect{stroke:var(--glyph); stroke-width:2.4; fill:none;}
+  .cbx .box .tick{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  .cbx .box .mixed{stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  .cbx label:hover .box{border-color:var(--ctrl-border-active);}
   .cbx input:checked + label .box,.cbx input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
-  .cbx input:checked + label .box .tick{display:block;}
-  .cbx input:indeterminate + label .box .mixed{display:block;}
+  .cbx input:checked + label .box .tick{stroke-dashoffset:0;}
+  .cbx input:indeterminate + label .box .mixed{stroke-dashoffset:0;}
+  .cbx input:active + label .box{background:var(--chip-hover);}
   .cbx input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
+  .cbx input:disabled + label .box{border-color:var(--ctrl-border-disabled);}
+  /* ---- end verbatim block ---- */
+
+  /* grid-authored, ADDITIVE — two lines, both stated so the drift is legible:
+     (1) HIT AREA. Selection-controls seats its control in a 44px-min label with a text label beside
+         it; the grid cell has no text, so the label itself carries the target. --tap dials to 32px
+         in compact — above the 24px floor, never below (_validate_hit_area.py).
+     (2) DASH GUARD. `.mixed` carries stroke-dashoffset with no stroke-dasharray, so the offset is
+         inert and the dash is drawn in every state. In Selection-controls that is invisible (white
+         glyph on the white page); on the grid's #F0F0F0 header it would show. Give it the same
+         dasharray the tick has, so the component's own draw semantics actually hold here. */
+  .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    min-width:var(--tap,44px); min-height:var(--tap,44px);}
+  .cbx .box .mixed{stroke-dasharray:22;}
 
   /* edit-in-place — the Reference column. Edit affordance appears on hover/cell focus (full-ink
      glyph, icon-011); editing chrome = the field ACTIVE recipe (border/active 4px bottom stroke
@@ -511,7 +536,7 @@
           <tr class="cols" aria-rowindex="2">
             <th class="sel" scope="col">
               <div class="th-in mid"><span class="cn-selection-controls cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
-                <label for="selAll"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label>
+                <label for="selAll"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, animated stroke-draw control glyph + indeterminate dash, animated control glyph — both consumed verbatim from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label>
               </span></div>
             </th>
             <th scope="col" aria-sort="none" data-key="date">
@@ -809,7 +834,7 @@
         return `<tr aria-rowindex="${start + i + 1 + hdrRows}" aria-selected="${on}" data-id="${r.id}">
           <td class="sel"><span class="cn-selection-controls cbx"><input type="checkbox" id="selRow-${r.id}" tabindex="-1" ${on ? 'checked' : ''}
               aria-label="Select row: ${r.payee}, ${fmtDate(r.date)}">
-            <label for="selRow-${r.id}"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></span></td>
+            <label for="selRow-${r.id}"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, animated stroke-draw control glyph + indeterminate dash, animated control glyph — both consumed verbatim from Selection-controls" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></span></td>
           <td><span class="t-cm-label">${fmtDate(r.date)}</span></td>
           <td><span class="t-cm-label">${r.payee}</span></td>
           <td class="edit" data-id="${r.id}"><span class="val"><span class="t-cm-label">${r.ref}</span>
