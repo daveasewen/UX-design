@@ -18,6 +18,15 @@ GATING: exits non-zero on any UNKNOWN (path that doesn't match the library, or a
 Shape-only icons — an <svg> built from <circle>/<rect>/<ellipse>/<polygon> with NO <path> to byte-match
 (e.g. a 3-circle kebab) — are now flagged too (use the library glyph, or mark the <svg> data-bespoke).
 
+TWIN ARM (#264, s264-D1/D2 — the defect that made it): a nav row carries a line glyph (`.ic-line`)
+and its filled twin (`.ic-fill`), and s262-D3 says the current row shows the twin. Nothing checked
+that the two were the SAME asset in two states — Sidebar-nav shipped a pie chart at rest and a
+lightbulb when current, both library-matched, so the byte-match arm was green. Every
+`.ic-line` / `.ic-fill` pair is now resolved to its library slug(s) and the fill must be the
+line's `-active` file (`x` → `x-active`, `x-badge` → `x-active-badge`). A pair whose line has
+NO `-active` file in the library is reported, not failed (the library, not the snippet, is short).
+Failure word: MIS-TWINNED.
+
 Usage:  python3 _validate_icons.py [name-filter ...]      (default: all snippets)
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -51,6 +60,50 @@ def build_library():
             lib.setdefault(norm(d), os.path.relpath(f, HERE))
     return lib
 
+def build_library_by_shape():
+    """shape (sorted tuple of normalised d= strings) → [slug, …] — a whole-file match, for the twin arm."""
+    lib = {}
+    for f in glob.glob(os.path.join(ICONS, "**", "*.svg"), recursive=True):
+        try:
+            s = open(f, encoding="utf-8").read()
+        except Exception:
+            continue
+        key = tuple(sorted(norm(d) for d in DRE.findall(s)))
+        if key:
+            lib.setdefault(key, []).append(os.path.basename(f)[:-4])
+    return lib
+
+
+SYMRE = re.compile(r'<symbol id="([^"]+)"[^>]*>(.*?)</symbol>', re.S)
+PAIRRE = re.compile(r'class="ic-line"[^>]*>\s*<use href="#([^"]+)"\s*/>\s*</svg>\s*'
+                    r'<svg class="ic-fill"[^>]*>\s*<use href="#([^"]+)"\s*/>', re.S)
+
+
+def active_names(slug):
+    if slug.endswith("-badge"):
+        return {slug[:-len("-badge")] + "-active-badge"}
+    return {slug + "-active"}
+
+
+def twin_check(html, shapes):
+    """Return (mistwinned, untwinned): lists of (line_id, line_slugs, fill_id, fill_slugs)."""
+    syms = dict(SYMRE.findall(html))
+    mis, untw = [], []
+    for line_id, fill_id in sorted(set(PAIRRE.findall(html))):
+        def slugs(i):
+            return shapes.get(tuple(sorted(norm(d) for d in DRE.findall(syms.get(i, "")))), [])
+        ls, fs = slugs(line_id), slugs(fill_id)
+        if not ls or not fs:
+            continue  # the byte-match arm owns unresolved glyphs
+        expected = set().union(*(active_names(x) for x in ls))
+        if expected & set(fs):
+            continue
+        library_has_twin = any(os.path.exists(os.path.join(ICONS, sub, e + ".svg"))
+                               for e in expected for sub in os.listdir(ICONS) if os.path.isdir(os.path.join(ICONS, sub)))
+        (mis if library_has_twin else untw).append((line_id, ls, fill_id, fs))
+    return mis, untw
+
+
 def declared_icons(html):
     m = re.search(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', html, re.S)
     if not m:
@@ -63,6 +116,7 @@ def declared_icons(html):
 
 def run(filters):
     lib = build_library()
+    shapes = build_library_by_shape()
     files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
     if filters:
         files = [f for f in files if any(x.lower() in os.path.basename(f).lower() for x in filters)]
@@ -88,6 +142,13 @@ def run(filters):
             if not paths and SHAPERE.search(blk):
                 ntot += 1
                 unknown.append("(shape-only icon: " + re.sub(r"\s+", " ", blk)[:60] + "…)")
+        mis, untw = twin_check(html, shapes)
+        for line_id, ls, fill_id, fs in mis:
+            print(f"  ⛔ {name}: MIS-TWINNED — .ic-line #{line_id} ({'/'.join(ls)}) paired with .ic-fill #{fill_id} ({'/'.join(fs)})")
+            unknown.append(f"(MIS-TWINNED: .ic-line #{line_id} = {'/'.join(ls)} but .ic-fill #{fill_id} = {'/'.join(fs)}; "
+                           f"expected {'/'.join(sorted(set().union(*(active_names(x) for x in ls))))})")
+        for line_id, ls, fill_id, fs in untw:
+            print(f"  ⚠ {name}: #{line_id} ({'/'.join(ls)}) has no -active twin in the library; fill is #{fill_id} ({'/'.join(fs)}) — reported, not failed")
         total_unknown += len(unknown)
         total_bespoke += bespoke
         decl = declared_icons(html)

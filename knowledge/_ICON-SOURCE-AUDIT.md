@@ -116,7 +116,7 @@
 | 108 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 109 | Stepper | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 110 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 111 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
+| 111 | Tab-bar | 14 | 14 | 0 | 0 | yes | ✅ verified |
 | 112 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 113 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 114 | Tags-input | 4 | 4 | 0 | 0 | yes | ✅ verified |

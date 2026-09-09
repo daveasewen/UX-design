@@ -400,6 +400,16 @@ def mut_unknown_icon(k):
     write(p, html.replace("</body>", rogue + "</body>", 1))
 
 
+def mut_mistwinned_icon(k):
+    """#264 twin arm: point Sidebar-nav's Spending fill slot at a DIFFERENT library glyph (settings-active).
+    Both glyphs byte-match the library, so the source arm stays green — only the twin arm can see it."""
+    p = os.path.join(k, "snippets", "Sidebar-nav.reference.html")
+    html = read(p)
+    mutated = re.sub(r'(<svg class="ic-fill"[^>]*>\s*<use href="#)ic-chart-a("/>)', r"\1ic-settings-a\2", html, count=1)
+    assert mutated != html, "mutation did not apply — the Spending row's fill slot moved"
+    write(p, mutated)
+
+
 def mut_shape_only_icon(k):
     p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
     rogue = '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>'
@@ -485,6 +495,7 @@ CASES = [
     ("a11y gate bites on sub-24 target floor",   "target24", "_validate_a11y.py",         mut_target_floor,    "2.5.8"),
     ("icon gate bites on invented path",         "icon",     "_validate_icons.py",        mut_unknown_icon,    "UNKNOWN"),
     ("icon gate bites on shape-only icon",       "shape",    "_validate_icons.py",        mut_shape_only_icon, "UNKNOWN"),
+    ("icon gate bites on mis-twinned fill glyph","twin",     "_validate_icons.py",        mut_mistwinned_icon, "MIS-TWINNED"),
     ("coverage gate bites on orphan snippet",    "orphan",   "_validate_coverage.py",     mut_orphan_snippet,  "no meta"),
     ("coverage gate bites on meta w/o snippet",  "ghost",    "_validate_coverage.py",     mut_ghost_meta,      "no gated snippet"),
     ("dark-surface gate bites on flat white",    "flat",     "_validate_dark_surfaces.py",mut_flat_white_dark, "#FFFFFF"),
