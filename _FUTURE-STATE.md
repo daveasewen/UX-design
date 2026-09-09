@@ -12,6 +12,24 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ ONE LEGEND WIRED TO MULTIPLE CHARTS — Dave: "it's an interesting idea… but not required at this stage" (2026-09-09 #263)
+
+provenance: 263 · 2026-09-09
+status: floated
+
+His words, verbatim, from the `s263-D9` ruling on P-09: *"accept contract-only, it's an interesting
+idea to wire one legend to multiple charts but not required at this stage."* ⛔ **The ruling is an
+ACCEPT with its scope cut to the CONTRACT** — `data-dv-controls` is declared and documented and
+nothing reads it — and the wider behaviour is parked HERE, in his words, rather than dropped with
+the half he did not take.
+
+What it would mean if it is ever picked up: one `Legend` instance driving the visibility/highlight
+state of **N** chart figures on a page, which is a cross-component behaviour and therefore a
+`behaviour` meta plus a DRIVEN receipt (`s260-D3`), not a snippet change. **Unscoped, unbuilt, and
+not a plan.** Ledger: `knowledge/_rulings.json` § `s263-D9`. Enactment of the contract half:
+`knowledge/canon/dv-legend.js`.
+
+
 ## ★★ Context-aware responsive behaviours — one component, N strategies (Dave, 2026-09-08 #258, post-wrap)
 
 **What (his words, verbatim):**
