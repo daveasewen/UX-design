@@ -1228,14 +1228,27 @@
   var U = window.dvRender.util, n1 = U.n1, esc = U.esc;
   var KEYS = 'ABCDEF', RAD = Math.PI / 180;
 
-  function pt(cx, cy, r, a) { return [n1(cx + r * Math.cos(a * RAD)), n1(cy + r * Math.sin(a * RAD))]; }
+  /* #261 M4 · the 2dp RADIAL emission (core request B1, filed by #260 F2 with a driven receipt,
+     re-driven and reproduced by #260 I at 19:35:36Z; unenacted until now).
+     A ring's authored gap is 2.2px and the drawn one measured 2.109px — the shortfall IS the
+     one-decimal emission: on a RADIAL edge a 0.05 rounding lands on both the outer and the inner
+     radius and on the two endpoints, and the errors do not cancel the way a cartesian rect's do.
+     n2 is used ONLY for path geometry — the coordinates that decide where the edge falls.
+     ⛔ NOT DONE HERE, and both are ⬛ Dave's by the #260 carry: GAP stays 2.2 (F2: the 0.2 is the
+     CARTESIAN rounding budget and the two mechanisms are independent), and the pie's magic
+     `0.35 · ro` judging constant is untouched — a pie has no inner edge, so its 2.108 → 2.134 is
+     NOT the same defect and this patch does not claim to fix it.
+     The `data-*` attributes below keep n1: they are the tip/label contract, not the drawn edge. */
+  function n2(v) { return (Math.round(v * 100) / 100).toFixed(2); }
+
+  function pt(cx, cy, r, a) { return [n2(cx + r * Math.cos(a * RAD)), n2(cy + r * Math.sin(a * RAD))]; }
   /* ri = 0 draws a PIE wedge (centre → arc → centre); anything else draws a ring segment. */
   function arc(cx, cy, ro, ri, a1, a2) {
     var b = a2 - a1 > 180 ? 1 : 0;
-    var head = 'M' + pt(cx, cy, ro, a1).join(' ') + ' A' + n1(ro) + ' ' + n1(ro) + ' 0 ' + b + ' 1 ' +
+    var head = 'M' + pt(cx, cy, ro, a1).join(' ') + ' A' + n2(ro) + ' ' + n2(ro) + ' 0 ' + b + ' 1 ' +
       pt(cx, cy, ro, a2).join(' ');
-    if (!ri) { return head + ' L' + n1(cx) + ' ' + n1(cy) + ' Z'; }
-    return head + ' L' + pt(cx, cy, ri, a2).join(' ') + ' A' + n1(ri) + ' ' + n1(ri) + ' 0 ' + b +
+    if (!ri) { return head + ' L' + n2(cx) + ' ' + n2(cy) + ' Z'; }
+    return head + ' L' + pt(cx, cy, ri, a2).join(' ') + ' A' + n2(ri) + ' ' + n2(ri) + ' 0 ' + b +
       ' 0 ' + pt(cx, cy, ri, a1).join(' ') + ' Z';
   }
 
