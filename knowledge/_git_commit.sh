@@ -47,6 +47,28 @@ INSTRUMENTATION_PATHS=(
   "notes/_dream/_GRADE-DECISIONS.jsonl|_checkin.py B3 grade alerts / _gardener.py --grade-decision|NOT excluded — its POLICY is ⬛ DAVE'S, unruled (dream pass 6 P2)"
 )
 
+# ── #261 M2: THE SANCTIONED COMMIT PATH COULD NEVER LEAVE A CLEAN TREE ────────────────────────
+# MEASURED at #261 (commit 68daf1f): `notes/_REHEARSAL-LOG.jsonl` md5 d17ca683 → 16c70ab4 across
+# ONE ruled commit that staged a single unrelated file. The gates this script runs BEFORE staging
+# (`_capture_gate.py --wrap` at the wrap-gate consumer) append to the tracked instrumentation
+# logs, nothing stages them, and the tree is dirty the instant the commit lands. `require_clean`
+# in `apollo-spider/build-designer-pack.sh` takes a bare `git status --porcelain`, so `--release`
+# and the ruled commit path were mutually exclusive by construction (#260 lane R3 worked around
+# it rather than editing either).
+#
+# THE FIX IS THE NARROWEST OF THE THREE THE CARRY NAMED: the script COMMITS THE DIRT THE SCRIPT
+# MADE. Only a declared instrumentation path whose bytes changed BETWEEN this script's start and
+# the staging call is auto-staged — measured, never a pattern. `s137-D1`'s push-gate exclusion is
+# UNTOUCHED (this stages, it does not exclude), `require_clean` is UNTOUCHED, and the ⬛ POLICY
+# question for the other two logs is still Dave's — this only stops the tool dirtying its own
+# result. Opt out with `INSTRUMENT_AUTOSTAGE=0` (then the old behaviour, and the old impossibility).
+INSTRUMENT_AUTOSTAGE="${INSTRUMENT_AUTOSTAGE:-1}"
+_instr_hash() { [ -f "$1" ] && { md5sum "$1" 2>/dev/null || shasum "$1" 2>/dev/null; } | cut -d' ' -f1; }
+INSTR_SNAP=()
+for _rec in "${INSTRUMENTATION_PATHS[@]}"; do
+  INSTR_SNAP+=("$(_instr_hash "${_rec%%|*}")")
+done
+
 declare_instrumentation_dirt() {
   # $1 = a `git status --short` blob (may be empty). Prints a DECLARED block naming any of the
   # three instrumentation appends inside it. Emits nothing when none of them are dirty.
@@ -673,6 +695,24 @@ if [ "${#PATHS[@]}" -eq 0 ]; then
   echo "  or, if the reconciliation really covered all of them, add --all-dirty. Dirty paths now:"
   git status --short
   exit 1
+fi
+# #261 M2 — the instrumentation the gates above just wrote, staged with the work it dirtied.
+if [ "$INSTRUMENT_AUTOSTAGE" -eq 1 ]; then
+  _i=0
+  for _rec in "${INSTRUMENTATION_PATHS[@]}"; do
+    _p="${_rec%%|*}"
+    if [ "$(_instr_hash "$_p")" != "${INSTR_SNAP[$_i]}" ]; then
+      _already=0
+      for _q in "${PATHS[@]}"; do [ "$_q" = "$_p" ] && _already=1; done
+      if [ "$_already" -eq 0 ]; then
+        PATHS+=("$_p")
+        echo "— AUTO-STAGED (#261 M2): $_p — THIS RUN's own gates appended to it (bytes changed"
+        echo "  between script start and staging). Committing it is what leaves a clean tree;"
+        echo "  ⚠ any append another process made to the same file rides along in the blob."
+      fi
+    fi
+    _i=$((_i + 1))
+  done
 fi
 for _p in "${PATHS[@]}"; do
   git add -- "$_p" 2>/dev/null || fail "could not stage '$_p' — named in the reconciliation but git refused it"
