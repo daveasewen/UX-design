@@ -1,0 +1,23 @@
+#261 M4: the 2dp radial emission applied — donut's drawn gap 2.109 -> 2.194, driven
+
+Core request B1, filed by #260 F2 with a driven receipt and reproduced by #260 I,
+unenacted since. A ring's authored gap is 2.2px; one-decimal path emission put the
+drawn edge at 2.109px because a 0.05 rounding lands on both radii and both endpoints
+of a RADIAL edge and the errors do not cancel as a cartesian rect's do.
+
+Local n2 (2 decimals) in dv-render-donut.js, used ONLY for path geometry — pt() and
+arc(). data-* attributes keep n1: they are the tip/label contract, not the drawn edge.
+The same swap in the two injected AUTO-BEHAVIOUR copies (Chart-donut, Chart-pie), so
+gen_component_partials --check is byte-exact for both.
+
+⛔ NOT DONE, both ⬛ Dave's by the #260 carry: GAP stays 2.2 (F2: the 0.2 is the
+CARTESIAN budget, an independent mechanism), and the pie's magic 0.35*ro judging
+constant is untouched — a pie has no inner edge, so its 2.108 -> 2.134 is a different
+thing and this patch does not claim to fix it.
+
+Receipt, re-driven on Chromium 151.0.7922.34, 4 themes x 2 modes per page:
+  dv-004 donut.html/fig-donut 2.194px (worst of 8) — F2 predicted exactly 2.194
+  _drive_chart_engine.py --check: all 27 receipt(s) FRESH
+  _validate_dataviz.py --check: PASS, 15 chart surface files
+  _validate_snippets.py: 137 snippets, 0 failures
+  _validate_behaviour.py: dataviz page budget PASS (comments are not code-only bytes)

@@ -1,0 +1,15 @@
+#261 M1: --full-stage records WHICH shape ran — the probe artefact and both stdout lines
+
+The flag decides the ship set (lane R measured 1678 vs 1679 files and two manifest
+shas from one commit) and nothing in the output said which shape produced which.
+
+probe_gates() now returns differential_arm ARMED/DISARMED plus the full-stage path;
+arm_line() renders three states (the third, UNRECORDED, is a probe made before this
+field — the tracked _pack_gate_probe.json is one). Printed by --probe and beside the
+file count and sha256 on --manifest, because those numbers are a function of it.
+
+Whether the flag should be optional at all is UNTOUCHED and still Dave's.
+
+Receipt: --selftest 216 -> 221 bites, 0 fail (5 new arm bites). Two real probe runs
+at HEAD --only _validate_dataviz.py: without the flag the line reads DISARMED, with
+--full-stage /var/tmp/m1full it reads ARMED and names the stage.

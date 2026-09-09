@@ -1,0 +1,22 @@
+#261 M3: the screen gate stops clobbering tracked rows, and the bite harness fits on disk
+
+TWO gates that could not be run as they stood.
+
+(a) _validate_screen.py keyed its one-home rule on BASENAME. REPRODUCED: a /var/tmp
+copy of canon-gallery.canon.html with one rogue hex added rewrote the TRACKED row
+knowledge/_screen-gate/canon-gallery.canon.md from PASS to FAIL (md5 a3332287 ->
+a91e56b6) — the same clobber observed four times between #258 and #260. Now the
+destination is a function of the SOURCE PATH: a subject outside the repo writes to
+$TMPDIR/apollo-screen-gate/ and says so, and an in-repo row whose recorded
+- source: differs REFUSES and names both paths (SCREEN_GATE_REBIND=1 is the legal
+form for a real move). Rows written before this carry no source and are unprotected
+until their next run, when they gain one.
+
+(b) knowledge/_tests/test_gates.py copytree'd the WORKING knowledge/ — 5.3 GB here
+against 3.1 GB free, so the 27-case suite could not reach its own last case. It now
+copies what git TRACKS: 108 MB, 2028 files, 2.2s per case, which is what a fresh CI
+checkout has. No tracked file is withheld, so the ⛔ IGNORE-the-assets question #221
+priced as a handoff is NOT taken here. Falls back to copytree, loudly, without git.
+
+Receipt: python3 knowledge/_tests/test_gates.py — 31 test(s), 0 failure(s), exit 0.
+First time the suite has completed in this sandbox.

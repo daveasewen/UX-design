@@ -1,0 +1,21 @@
+#261 M5: the behaviour gate stops grading its own ledger — the write is opt-in
+
+knowledge/_BEHAVIOUR-GATE.md is TRACKED and was rewritten by the gate that grades it,
+so a drift in the measured bytes was ABSORBED into the tracked file instead of going
+red. Second instance of the class (the _screen-gate clobber repaired at M3 is the
+first), which is what makes it a class rather than a wart.
+
+The repo's own --check convention: --write refreshes the ledger; the DEFAULT run
+compares and REDS, naming the remedy. The report carries no timestamp, so it is a
+pure function of the sources. _build_all.py's no-argument call is now the CHECKING
+form, which is what a build gate should be.
+
+Receipts:
+  two default runs — md5 ab4fbdb2 -> ab4fbdb2 -> ab4fbdb2, NO DIFF (no write at all)
+  two --write runs — ab4fbdb2 -> ab4fbdb2, NO DIFF (idempotent)
+  drift probe: one appended line -> default run exits 1 with LEDGER DRIFT and the
+  ledger md5 is UNCHANGED after the red (65b0e367), i.e. not absorbed; --write
+  restores it byte-identical to the pre-probe file
+  --selftest green
+
+The ledger body committed here is the refresh owed by M4's donut numbers.

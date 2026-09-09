@@ -1,0 +1,13 @@
+after #261 2026-09-09 — #261 M2: the ruled commit path stages the dirt its own gates made — clean tree, no ruling spent
+
+REPRODUCED at 68daf1f: one ruled commit staging a single unrelated file moved
+notes/_REHEARSAL-LOG.jsonl from md5 d17ca683 to 16c70ab4 and left it dirty. The
+pre-staging wrap-gate consumer (_capture_gate.py --wrap) appends the row; nothing
+staged it. apollo-spider/build-designer-pack.sh require_clean takes a bare
+git status --porcelain, so --release and this script were mutually exclusive.
+
+Narrowest of the three fixes the carry named: hash each declared INSTRUMENTATION_PATHS
+entry at script start, and at staging auto-stage only the ones THIS RUN changed.
+s137-D1's push-gate exclusion is untouched (this stages, it does not exclude);
+require_clean is untouched; the unruled policy for the other two logs is untouched.
+INSTRUMENT_AUTOSTAGE=0 restores the old behaviour, and the old impossibility.
