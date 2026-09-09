@@ -211,6 +211,9 @@
 ## Layout-utilities.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Legend.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Limits-meter.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 

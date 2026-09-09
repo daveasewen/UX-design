@@ -1,6 +1,6 @@
 # Type-binding blast-radius gate — guards canon/type.css
 
-Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (150 files).
+Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (151 files).
 
 | radius | kind | selector | status |
 |---:|---|---|---|
@@ -9,32 +9,37 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 | 12 | class | `.stateLabel` | PASS |
 | 12 | class | `.status` | PASS |
 | 9 | class | `.chip` | PASS |
-| 7 | scoped-element | `.seg.sm button` | PASS |
+| 6 | scoped-element | `.seg.sm button` | PASS |
 | 5 | class | `.spec-h` | PASS |
 | 4 | class | `.label` | PASS |
 | 4 | scoped-element | `.search input` | PASS |
 | 3 | class | `.badge` | PASS |
 | 3 | class | `.confirm .btn` | PASS |
 | 3 | class | `.eyebrow` | PASS |
-| 3 | scoped-element | `.seg.md button` | PASS |
 | 2 | class | `.avatar` | PASS |
 | 2 | class | `.hero .cta` | PASS |
 | 2 | class | `.pg .ctrl` | PASS |
 | 2 | class | `.qbtn` | PASS |
 | 2 | scoped-element | `.pg a` | PASS |
+| 2 | scoped-element | `.seg.l button` | PASS |
+| 2 | scoped-element | `.seg.md button` | PASS |
 | 1 | class | `.action-bar .btn` | PASS |
 | 1 | class | `.loader` | PASS |
 | 1 | class | `.sim` | PASS |
-| 1 | class | `.tabbar .tabbar__item` | PASS |
 | 1 | class | `.time` | PASS |
 | 1 | scoped-element | `.nav button` | PASS |
 | 1 | scoped-element | `.note.global .actions button` | PASS |
 | 1 | scoped-element | `.seg.lg button` | PASS |
 | 1 | scoped-element | `nav.main a` | PASS |
+| 0 | class | `.tabbar .tabbar__item` | PASS |
 
 ## Findings
 
 - ✓ every appended selector is registered and within its acknowledged blast radius.
+
+## Housekeeping (non-gating)
+
+- shrunk: `.tabbar .tabbar__item` no longer matches ['Tab-bar.reference.html'] (safe; tidy the registry with --update).
 
 ---
 Guard-rail for the T-D9 binding mechanism (T-D12 §5). Waived entries are DEBT to burn down (namespace them) — priority `h2` (25 files) in the non-/1 batch. This gate does NOT reopen T-D9.

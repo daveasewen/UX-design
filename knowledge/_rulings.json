@@ -6820,7 +6820,7 @@
    ],
    "evidence": [
     "chat #257 2026-09-08 - quoted in says",
-    "frozen gate refusal: recorded 398c695a405d, measured 85f4f4db8043 at the same version"
+    "chat #257 2026-09-08 - the frozen gate refusal quoted in-session: recorded 398c695a405d, measured 85f4f4db8043 at the same version"
    ],
    "status": "ruled"
   },
@@ -6921,86 +6921,240 @@
    ],
    "status": "ruled"
   },
- {
-  "id": "s260-D1",
-  "ruled": "PAGE BUDGET: the shared engine core (knowledge/canon/dv-render.js) is priced ONCE PER PAGE in _validate_behaviour's page sum, not once per member partial. PAGE_BYTES 34,816 (s250-D1) is UNMOVED today. CAVEAT, Dave's: the literal may need raising at some point in the future - that is a SEPARATE ruling when it comes, not a licence to raise now.",
-  "date": "2026-09-08",
-  "by": "Dave",
-  "says": "Dave at #260, offered three shapes for the s250-D1 red (1 price the core once per page, 2 raise the budget, 3 drop dv-legend where the engine draws its own legend): \"11 but I feel like the budget might have to be raised at some point in the future\" - read as option 1 with the caveat carried.",
-  "governs": [
-   "knowledge/_validate_behaviour.py",
-   "knowledge/_BEHAVIOUR-GATE.md",
-   "docs/decisions/ADR-0015-behaviour-partials-dataviz.md"
-  ],
-  "evidence": [
-   "chat #260 2026-09-08"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s260-D2",
-  "ruled": "STOP LINE REPRICED FOR DELEGATED WRAPS: the s214-D4 conditional band ENTERS FORCE. When the wrap is DELEGATED the advisory start-wrap-by line is 180,000 real; when the wrap runs INLINE the advisory stays 150,929. The 200,000 working wall and 256,000 hard wall are UNTOUCHED. s214-D4's staging condition (n>=2 measured delegated hand-overs) is met: #254 delta 4,077, #255 4,154, #256 4,799, #257 10,434, #258 10,382, #259 ~9,870 - 180,000 leaves 20,000 reserve against a max measured hand-over of 10,434.",
-  "date": "2026-09-08",
-  "by": "Dave",
-  "says": "Dave at #259: \"dude if you are delegating teh wrap do we really have to stop at 145?\"; the conductor recommended ~180K for delegated wraps, 150,929 kept for in-window ones; Dave at #260: \"can we reprice the token ceiling\" then, on the one-word ask, \"yes\".",
-  "governs": [
-   "knowledge/_checkin.py",
-   "knowledge/_gauge_tokens.py",
-   "notes/_GAUGE-LOG.md"
-  ],
-  "evidence": [
-   "chat #260 2026-09-08",
-   "chat #259 2026-09-08"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s260-D3",
-  "ruled": "DRIVEN RECEIPTS BECOME THE GATE FOR ENGINE-DRAWN CHARTS. Where a dataviz rule reads static geometry (dv-004 and its siblings) and the chart is drawn at runtime by knowledge/canon/dv-render.js, _validate_dataviz accepts a COMMITTED driven receipt (a Playwright measurement recorded from knowledge/_tests/chart-engine/) as the evidence for that rule - the gate is 'static OR driven', never skipped. Option (b), an engine-emitted self-report marker trusted by the static gate, is REFUSED as an instrument without a consumer.",
-  "date": "2026-09-08",
-  "by": "Dave",
-  "says": "Dave at #260, offered (a) the gate accepts a driven receipt for engine-drawn charts or (b) the engine emits a marker the static gate trusts, with (a) recommended: \"a\".",
-  "governs": [
-   "knowledge/_validate_dataviz.py",
-   "knowledge/_tests/chart-engine/",
-   "knowledge/canon/dv-render.js"
-  ],
-  "evidence": [
-   "chat #260 2026-09-08"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s260-D4",
-  "ruled": "v1.0.8 IS RATIFIED - Dave's word on the PROPOSED cut at 193c56772bfe; RATIFY_IDS['v1.0.8'] keyed to this id, the manifest regenerated RATIFIED at the same cut commit, dist/Apollo-Spider-v1.0.8.zip baked (expected sha256 9b90edcbfb5976e6b8036f21dc368f5820ad1c48a65ff4c9d9288d5f52ca7b51, byte-identical to the twice-proved dry run) and the frozen ledger re-seeded at v1.0.8 - a version bump, never a same-version re-bake (s114-D4 laundering, #257 Finding 2).",
-  "date": "2026-09-08",
-  "by": "Dave",
-  "says": "Dave at #260, shown the PROPOSED v1.0.8 cut (1,688 files, manifest sha256 5a27b0df8df38c46 at 193c567, zip baked twice to 9b90edcb..., --check GREEN, probe 41 RUNNABLE / 4 NEEDS-DEP / 9 REPO-BOUND, the dataviz gate driven and mutation-proven inside the unzipped pack, release gates 7/9 with the known pre-bake pair red) and asked the one-word question 'Say \"Ratify v1.0.8.\" and I release it': 'ratified... go for it'. Fresh RATIFYING word, distinct from the authorisation that named the cut (s223-D3 / s228-D1).",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "apollo-spider/dist/Apollo-Spider-v1.0.8.zip",
-   "knowledge/_release/_frozen-releases.json"
-  ],
-  "evidence": [
-   "chat #260 2026-09-08 - Dave's ratifying word, quoted in says"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s260-D5",
-  "ruled": "THE UNROLLABLE #259 STRATUM IS RENAMED, NOT EXEMPTED. The `#### 2026-09-08 #259 - ceiling discharge` heading in notes/_GAUGE-LOG.md is renamed to the META form the retrieval index already permits (`#### META - ceiling discharge, 2026-09-08 (#259)`) so the session key `2026-09-08 #259` is free for the #259 stratum to roll. STRATA_EXEMPT stays a closed list of three. Standing rule by the same word: a discharge line NEVER uses the `#### <date> #<N>` session-key form; it uses `#### META - <title>`.",
-  "date": "2026-09-08",
-  "by": "Dave",
-  "says": "Dave at #260, offered exempt / rename / change the heading format: \"rename I think exempting feels like a loose end\".",
-  "governs": [
-   "notes/_GAUGE-LOG.md",
-   "knowledge/_capture_gate.py",
-   "knowledge/_build_memento_index.py"
-  ],
-  "evidence": [
-   "chat #260 2026-09-08"
-  ],
-  "status": "ruled"
- }
+  {
+   "id": "s260-D1",
+   "ruled": "PAGE BUDGET: the shared engine core (knowledge/canon/dv-render.js) is priced ONCE PER PAGE in _validate_behaviour's page sum, not once per member partial. PAGE_BYTES 34,816 (s250-D1) is UNMOVED today. CAVEAT, Dave's: the literal may need raising at some point in the future - that is a SEPARATE ruling when it comes, not a licence to raise now.",
+   "date": "2026-09-08",
+   "by": "Dave",
+   "says": "Dave at #260, offered three shapes for the s250-D1 red (1 price the core once per page, 2 raise the budget, 3 drop dv-legend where the engine draws its own legend): \"11 but I feel like the budget might have to be raised at some point in the future\" - read as option 1 with the caveat carried.",
+   "governs": [
+    "knowledge/_validate_behaviour.py",
+    "knowledge/_BEHAVIOUR-GATE.md",
+    "docs/decisions/ADR-0015-behaviour-partials-dataviz.md"
+   ],
+   "evidence": [
+    "chat #260 2026-09-08"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s260-D2",
+   "ruled": "STOP LINE REPRICED FOR DELEGATED WRAPS: the s214-D4 conditional band ENTERS FORCE. When the wrap is DELEGATED the advisory start-wrap-by line is 180,000 real; when the wrap runs INLINE the advisory stays 150,929. The 200,000 working wall and 256,000 hard wall are UNTOUCHED. s214-D4's staging condition (n>=2 measured delegated hand-overs) is met: #254 delta 4,077, #255 4,154, #256 4,799, #257 10,434, #258 10,382, #259 ~9,870 - 180,000 leaves 20,000 reserve against a max measured hand-over of 10,434.",
+   "date": "2026-09-08",
+   "by": "Dave",
+   "says": "Dave at #259: \"dude if you are delegating teh wrap do we really have to stop at 145?\"; the conductor recommended ~180K for delegated wraps, 150,929 kept for in-window ones; Dave at #260: \"can we reprice the token ceiling\" then, on the one-word ask, \"yes\".",
+   "governs": [
+    "knowledge/_checkin.py",
+    "knowledge/_gauge_tokens.py",
+    "notes/_GAUGE-LOG.md"
+   ],
+   "evidence": [
+    "chat #260 2026-09-08",
+    "chat #259 2026-09-08"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s260-D3",
+   "ruled": "DRIVEN RECEIPTS BECOME THE GATE FOR ENGINE-DRAWN CHARTS. Where a dataviz rule reads static geometry (dv-004 and its siblings) and the chart is drawn at runtime by knowledge/canon/dv-render.js, _validate_dataviz accepts a COMMITTED driven receipt (a Playwright measurement recorded from knowledge/_tests/chart-engine/) as the evidence for that rule - the gate is 'static OR driven', never skipped. Option (b), an engine-emitted self-report marker trusted by the static gate, is REFUSED as an instrument without a consumer.",
+   "date": "2026-09-08",
+   "by": "Dave",
+   "says": "Dave at #260, offered (a) the gate accepts a driven receipt for engine-drawn charts or (b) the engine emits a marker the static gate trusts, with (a) recommended: \"a\".",
+   "governs": [
+    "knowledge/_validate_dataviz.py",
+    "knowledge/_tests/chart-engine/",
+    "knowledge/canon/dv-render.js"
+   ],
+   "evidence": [
+    "chat #260 2026-09-08"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s260-D4",
+   "ruled": "v1.0.8 IS RATIFIED - Dave's word on the PROPOSED cut at 193c56772bfe; RATIFY_IDS['v1.0.8'] keyed to this id, the manifest regenerated RATIFIED at the same cut commit, dist/Apollo-Spider-v1.0.8.zip baked (expected sha256 9b90edcbfb5976e6b8036f21dc368f5820ad1c48a65ff4c9d9288d5f52ca7b51, byte-identical to the twice-proved dry run) and the frozen ledger re-seeded at v1.0.8 - a version bump, never a same-version re-bake (s114-D4 laundering, #257 Finding 2).",
+   "date": "2026-09-08",
+   "by": "Dave",
+   "says": "Dave at #260, shown the PROPOSED v1.0.8 cut (1,688 files, manifest sha256 5a27b0df8df38c46 at 193c567, zip baked twice to 9b90edcb..., --check GREEN, probe 41 RUNNABLE / 4 NEEDS-DEP / 9 REPO-BOUND, the dataviz gate driven and mutation-proven inside the unzipped pack, release gates 7/9 with the known pre-bake pair red) and asked the one-word question 'Say \"Ratify v1.0.8.\" and I release it': 'ratified... go for it'. Fresh RATIFYING word, distinct from the authorisation that named the cut (s223-D3 / s228-D1).",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "apollo-spider/dist/Apollo-Spider-v1.0.8.zip",
+    "knowledge/_release/_frozen-releases.json"
+   ],
+   "evidence": [
+    "chat #260 2026-09-08 - Dave's ratifying word, quoted in says"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s260-D5",
+   "ruled": "THE UNROLLABLE #259 STRATUM IS RENAMED, NOT EXEMPTED. The `#### 2026-09-08 #259 - ceiling discharge` heading in notes/_GAUGE-LOG.md is renamed to the META form the retrieval index already permits (`#### META - ceiling discharge, 2026-09-08 (#259)`) so the session key `2026-09-08 #259` is free for the #259 stratum to roll. STRATA_EXEMPT stays a closed list of three. Standing rule by the same word: a discharge line NEVER uses the `#### <date> #<N>` session-key form; it uses `#### META - <title>`.",
+   "date": "2026-09-08",
+   "by": "Dave",
+   "says": "Dave at #260, offered exempt / rename / change the heading format: \"rename I think exempting feels like a loose end\".",
+   "governs": [
+    "notes/_GAUGE-LOG.md",
+    "knowledge/_capture_gate.py",
+    "knowledge/_build_memento_index.py"
+   ],
+   "evidence": [
+    "chat #260 2026-09-08"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D1",
+   "ruled": "v1.0.9's SCOPE IS DASHBOARD COMPONENTS, IDEATION AND BACKLOG - PLUS THE NAV AND THE FOOTER. The #261 design wave is seated by this word: the components a dashboard is built from are designed/ideated rather than specified up front, backlog items are picked up alongside them, and the nav family and the footer are IN SCOPE by his own addition. v1.0.9 was NOT cut at #261 - the six components landed and nothing was bumped or baked.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, asked what the next release should carry: \"we need to work on some of the components that we'll be using for dashboards... ideate... pick up some backlog items\", and then \"I also want to tackle the nav and footer design\".",
+   "governs": [
+    "knowledge/snippets/",
+    "knowledge/_state.json",
+    "apollo-spider/",
+    "notes/_subreports/2026-09-08-261-K-kpi-tile.md"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D2",
+   "ruled": "THE NAV DESIGN TAKES NO REFERENCE - IT IS PROMPTED. The nav lane was offered a reference artefact to work from and Dave declined it: the family is designed from his prompts in-session, so a lane may not go looking for a reference to anchor the nav and may not treat an existing screen as one.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, offered a reference for the nav work: \"no reference we'll prompt this\".",
+   "governs": [
+    "notes/_subreports/2026-09-08-261-N-nav.md",
+    "knowledge/snippets/Navigations.reference.html",
+    "knowledge/snippets/Sidebar-nav.reference.html",
+    "knowledge/snippets/Tab-bar.reference.html"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D3",
+   "ruled": "THE FOOTER IS AN APP FOOTER, FOR NOW. The footer redesign is scoped to the in-application footer - the slim band under a working screen - and NOT to a marketing/doormat footer. \"For now\" is his own hedge and travels with the ruling: a doormat form is not refused forever, it is simply not this piece of work.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, asked which footer the lane should design: \"App footer for now\".",
+   "governs": [
+    "notes/_subreports/2026-09-08-261-Ft-footer.md",
+    "knowledge/snippets/Footer.reference.html"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D4",
+   "ruled": "THE KPI TILE'S REVIEW, FIVE CHANGES. (1) The ORIGINAL text layout is the one to keep - the lane's re-layout is reverted. (2) The dot at the end of the spark line is REMOVED. (3) The delta arrow is the `direction` arrow from assets, ROTATED to the 45-degree angle - not a drawn or substituted glyph. (4) The arrows wear the DARK versions of the colours. (5) The type lock-up must be as TIGHT as the original.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, reviewing the K lane's KPI tile: \"I prefer the text layout in the original, remove the dot at the end of the spark line, use the arrow from the assets... 'direction'... rotate to get the 45 degree angle\", and then \"use the dark versions of the colours on the arrows. The type lock-up needs to be as tight as the original\".",
+   "governs": [
+    "knowledge/snippets/Kpi-tile.reference.html",
+    "knowledge/metas/kpi-tile.meta.json",
+    "assets/icons/"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D5",
+   "ruled": "THE GRID HEADER'S REVIEW, TWO REMOVALS AND ONE REUSE. (1) The bars at the END of the column headers are removed, and so are the odd black lines at the BOTTOM and RIGHT of the header. (2) The header's checkbox is not to be re-drawn: it IS the check component, used as a component. A rendered glyph that merely looks like a checkbox is the defect he saw.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, reviewing the G lane's data-grid header: \"remove the bars from the end of the column headers, and the odd black lines bottom and right\" and \"the checkbox is rendered oddly, can't we just use the check component?\".",
+   "governs": [
+    "knowledge/snippets/Data-grid.reference.html",
+    "knowledge/metas/data-grid.meta.json"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D6",
+   "ruled": "THE FILTER TOOLBAR IS ACCEPTED, WITH THREE CHANGES. The bar itself is good. (1) Use the LARGER segmented control so it matches the size of the buttons beside it. (2) Add a variant of the dropdown that carries the CATEGORY as a heading - his example, 'Currency'. (3) The export labels are the SHORT forms: CSV, Excel, PDF.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, reviewing the F lane's filter/toolbar bar: \"use the larger seg-control to match the size of the buttons; a variant of this dropdown that has the category as a heading... 'Currency'; short versions CSV, Excel, PDF\", and separately \"filter tool bar is good\".",
+   "governs": [
+    "knowledge/snippets/Filter-toolbar-bar.reference.html",
+    "knowledge/snippets/Segmented-control.reference.html",
+    "knowledge/snippets/Dropdown.reference.html"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D7",
+   "ruled": "THE NAV FAMILY'S REVIEW - AND THE MENU-BUTTON EXCLUSIVITY IS REVERSED BY HIS OWN WORD. V-NAV: the ORIGINAL header is better; the badge is PROMOTED to the category heading when the nav is collapsed; when it is FULLY collapsed the submenu collapses too and the badge promotes to the CATEGORY level. TOP-NAV: the selected state is the UNDERSCORE ALONE, with no background; the bottom of the search bar aligns with the bottom of its container. TAB BAR: the segmented ISLAND of the original is the one to keep. SUPERSESSION: this REVERSES the 2026-06-30 tab-bar sign-off row in knowledge/_REVIEW-SIGNOFF.md, which put Menu in the mutually-exclusive group - Dave: \"I've changed my mind about the menu button\". The old row stays verbatim and carries a struck note naming this id.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, reviewing the N lane's nav family in six sentences: \"V-nav - the original header is better; the badge should be promoted to the category heading when collapsed; when fully collapsed the submenu should collapse too and the badge promoted to the category level. Top-nav - selected state should just have the underscore, no background; align the bottom of the search bar with the bottom of its container. Tab bar - the segmented island was better in the original; I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu button\".",
+   "governs": [
+    "knowledge/snippets/Sidebar-nav.reference.html",
+    "knowledge/snippets/Navigations.reference.html",
+    "knowledge/snippets/Tab-bar.reference.html",
+    "knowledge/_REVIEW-SIGNOFF.md"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D8",
+   "ruled": "USER-VISIBLE PRODUCT COPY IS HSBC; APOLLO IS THE SYSTEM NAME ONLY - AND THE FOOTER IS REVIEWED FULL WIDTH. Any copy a user of the product can read says HSBC; 'Apollo' names the design system in OUR record and must not surface as product copy in a snippet, a showroom page or a review pane. And a footer is reviewed at FULL WIDTH: a narrow pane is not the artefact he asked to see.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, reviewing the Ft lane's footer: \"I need to see the full width version\", and then \"It mentions Apollo, this is for HSBC\".",
+   "governs": [
+    "knowledge/snippets/Footer.reference.html",
+    "showroom/",
+    "reviews/"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s261-D9",
+   "ruled": "THE RULINGS PAGE IS REFERENCE, NEVER A READING LIST. notes/_RULINGS.html exists so Dave can look a ruling UP - it is not something he is expected to read through, and a wrap or an opener may not put it in front of him as a body of work to get through. Only WEIGHT-BEARING rulings are surfaced to him; the rest stay retrievable and silent. The page is not retired by this - it is scoped.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #261, shown the R lane's rulings page: \"what do I do with this doc? ... this is a lot and will impede our progress\".",
+   "governs": [
+    "notes/_RULINGS.html",
+    "knowledge/_render_rulings.py",
+    "knowledge/_RUNBOOK-capture-ritual.md"
+   ],
+   "evidence": [
+    "chat #261 - session opened 2026-09-08 evening and ran into 2026-09-09 (WRAP DATE SPLIT, the #241/#248 shape); the hour of the ruling was not recorded at this seat, so the date carried is the session's COMMIT date, never a claim about the hour",
+    "commit d57a1e9 (the #261 wave; the ritual commit adds this entry)"
+   ],
+   "status": "ruled"
+  }
  ]
 }

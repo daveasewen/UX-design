@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 136 snippet(s) (97 verified-bespoke). Library glyphs indexed: 750.
+**5 UNKNOWN path(s)** across 137 snippet(s) (102 verified-bespoke). Library glyphs indexed: 750.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -41,32 +41,32 @@
 | 33 | Chart-butterfly-v | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 34 | Chart-candlestick | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 35 | Chart-combo | 3 | 3 | 0 | 0 | — | ✅ verified |
-| 36 | Chart-donut | 16 | 6 | 10 | 0 | — | ✅ verified · 10 bespoke |
+| 36 | Chart-donut | 11 | 6 | 5 | 0 | — | ✅ verified · 5 bespoke |
 | 37 | Chart-histogram | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 38 | Chart-line | 6 | 6 | 0 | 0 | — | ✅ verified |
-| 39 | Chart-pie | 16 | 6 | 10 | 0 | — | ✅ verified · 10 bespoke |
+| 39 | Chart-pie | 11 | 6 | 5 | 0 | — | ✅ verified · 5 bespoke |
 | 40 | Chart-scatter | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 41 | Chart-sparkline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 42 | Chart-stacked-area | 6 | 3 | 3 | 0 | — | ✅ verified · 3 bespoke |
+| 42 | Chart-stacked-area | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 43 | Combobox | 15 | 4 | 11 | 0 | yes | ✅ verified · 11 bespoke |
 | 44 | Command-palette | 6 | 6 | 0 | 0 | — | ✅ verified |
 | 45 | Confirmation | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 46 | Countdown-timer | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 47 | Data-grid | 13 | 9 | 4 | 0 | yes | ✅ verified · 4 bespoke |
+| 47 | Data-grid | 15 | 11 | 4 | 0 | yes | ✅ verified · 4 bespoke |
 | 48 | Date-picker | 11 | 11 | 0 | 0 | yes | ✅ verified |
 | 49 | Date-range-picker | 10 | 10 | 0 | 0 | yes | ✅ verified |
 | 50 | Divider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 51 | Document-row | 4 | 4 | 0 | 0 | — | ✅ verified |
 | 52 | Drawer | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 53 | Dropdown | 10 | 0 | 10 | 0 | — | ✅ verified · 10 bespoke |
+| 53 | Dropdown | 17 | 0 | 17 | 0 | — | ✅ verified · 17 bespoke |
 | 54 | Empty-state | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 55 | Eyebrow | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 56 | Fab | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 57 | Feature-grid-lockup | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 58 | File-upload | 8 | 8 | 0 | 0 | yes | ✅ verified |
-| 59 | Filter-toolbar-bar | 9 | 3 | 6 | 0 | — | ✅ verified · 6 bespoke |
+| 59 | Filter-toolbar-bar | 28 | 11 | 17 | 0 | — | ✅ verified · 17 bespoke |
 | 60 | Footer-doormat-lockup | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 61 | Footer | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 61 | Footer | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 62 | Form-layout | 5 | 5 | 0 | 0 | yes | ✅ verified |
 | 63 | Headers | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 64 | Hero-variants | 3 | 3 | 0 | 0 | — | ✅ verified |
@@ -74,75 +74,82 @@
 | 66 | Icon-button | 5 | 5 | 0 | 0 | — | ✅ verified |
 | 67 | Image-block | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 68 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 69 | Kpi-tile | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 69 | Kpi-tile | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 70 | Layout-utilities | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 71 | Limits-meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 72 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 73 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 74 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 75 | Meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 76 | Modal-lightbox | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 77 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 78 | Multi-select | 13 | 5 | 8 | 0 | yes | ✅ verified · 8 bespoke |
-| 79 | Navigations | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 80 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
-| 81 | Page-header-lockup | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 82 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 83 | Payment-card-visual | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 84 | Popconfirm | 2 | 2 | 0 | 0 | yes | ✅ verified |
-| 85 | Popover | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 86 | Progress-bar | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 87 | Progress-tracker | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 88 | Qr-code | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 89 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 90 | Range-slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 91 | Rating | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 92 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
-| 93 | Runway-bar | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 94 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 95 | Section-heading-lockup | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 96 | Secure-entry | 5 | 5 | 0 | 0 | yes | ✅ verified |
-| 97 | Segmented-control | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 98 | Selection-controls | 8 | 0 | 8 | 0 | — | ✅ verified · 8 bespoke |
-| 99 | Sidebar-nav | 9 | 9 | 0 | 0 | — | ✅ verified |
-| 100 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 101 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 102 | Split-button | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 103 | Splitter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 104 | Standing-order-mandate-row | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 105 | Stat-card | 2 | 2 | 0 | 0 | yes | ✅ verified |
-| 106 | Stats-band-lockup | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 107 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 108 | Stepper | 4 | 4 | 0 | 0 | yes | ✅ verified |
-| 109 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 110 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
-| 111 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 112 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 113 | Tags-input | 4 | 4 | 0 | 0 | yes | ✅ verified |
-| 114 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 115 | Template-auth | 5 | 5 | 0 | 0 | yes | ✅ verified |
-| 116 | Template-confirmation | 4 | 4 | 0 | 0 | yes | ✅ verified |
-| 117 | Template-create-edit | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 118 | Template-dashboard-bento | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 119 | Template-dashboard | 13 | 13 | 0 | 0 | yes | ✅ verified |
-| 120 | Template-detail | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 121 | Template-empty | 5 | 5 | 0 | 0 | yes | ✅ verified |
-| 122 | Template-error | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 123 | Template-list-index | 25 | 13 | 12 | 0 | yes | ✅ verified · 12 bespoke |
-| 124 | Template-report | 9 | 9 | 0 | 0 | yes | ✅ verified |
-| 125 | Template-settings | 6 | 4 | 2 | 0 | yes | ✅ verified · 2 bespoke |
-| 126 | Template-wizard | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 127 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 128 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
-| 129 | Timeline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 130 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 131 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
-| 132 | Transaction-row | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 133 | Transfer-list | 11 | 4 | 7 | 0 | — | ✅ verified · 7 bespoke |
-| 134 | Tree | 2 | 2 | 0 | 0 | yes | ✅ verified |
-| 135 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 136 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 71 | Legend | 5 | 0 | 0 | 5 | — | ⚠ 5 UNKNOWN |
+| 72 | Limits-meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 73 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 74 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 75 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 76 | Meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 77 | Modal-lightbox | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 78 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 79 | Multi-select | 13 | 5 | 8 | 0 | yes | ✅ verified · 8 bespoke |
+| 80 | Navigations | 6 | 6 | 0 | 0 | — | ✅ verified |
+| 81 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
+| 82 | Page-header-lockup | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 83 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 84 | Payment-card-visual | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 85 | Popconfirm | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 86 | Popover | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 87 | Progress-bar | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 88 | Progress-tracker | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 89 | Qr-code | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 90 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 91 | Range-slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 92 | Rating | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 93 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
+| 94 | Runway-bar | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 95 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 96 | Section-heading-lockup | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 97 | Secure-entry | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 98 | Segmented-control | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 99 | Selection-controls | 8 | 0 | 8 | 0 | — | ✅ verified · 8 bespoke |
+| 100 | Sidebar-nav | 11 | 11 | 0 | 0 | — | ✅ verified |
+| 101 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 102 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 103 | Split-button | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 104 | Splitter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 105 | Standing-order-mandate-row | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 106 | Stat-card | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 107 | Stats-band-lockup | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 108 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 109 | Stepper | 4 | 4 | 0 | 0 | yes | ✅ verified |
+| 110 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 111 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
+| 112 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 113 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 114 | Tags-input | 4 | 4 | 0 | 0 | yes | ✅ verified |
+| 115 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 116 | Template-auth | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 117 | Template-confirmation | 4 | 4 | 0 | 0 | yes | ✅ verified |
+| 118 | Template-create-edit | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 119 | Template-dashboard-bento | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 120 | Template-dashboard | 13 | 13 | 0 | 0 | yes | ✅ verified |
+| 121 | Template-detail | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 122 | Template-empty | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 123 | Template-error | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 124 | Template-list-index | 25 | 13 | 12 | 0 | yes | ✅ verified · 12 bespoke |
+| 125 | Template-report | 9 | 9 | 0 | 0 | yes | ✅ verified |
+| 126 | Template-settings | 6 | 4 | 2 | 0 | yes | ✅ verified · 2 bespoke |
+| 127 | Template-wizard | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 128 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 129 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
+| 130 | Timeline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 131 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 132 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
+| 133 | Transaction-row | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 134 | Transfer-list | 11 | 4 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 135 | Tree | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 136 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 137 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
 
 ## UNKNOWN detail
 
-*(none — every inline path is library-matched or marked bespoke)*
+### Legend — 5 UNKNOWN of 5 path(s)
+- `d="(shape-only icon: <svg class="dv-svg" viewBox="0 0 480 120" role="img"…"`
+- `d="(shape-only icon: <svg class="dv-svg" viewBox="0 0 360 160" role="img"…"`
+- `d="(shape-only icon: <svg class="dv-svg" id="lgC-chart-a" viewBox="0 0 16…"`
+- `d="(shape-only icon: <svg class="dv-svg" id="lgC-chart-b" viewBox="0 0 16…"`
+- `d="(shape-only icon: <svg class="dv-svg" id="lgC-chart-c" viewBox="0 0 16…"`
+
