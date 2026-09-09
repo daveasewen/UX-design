@@ -73,3 +73,12 @@ self-contained, with theme / mode / width controls. Builders: `261-F-shoot.py`, 
   red on `data-grid.meta.json`, another lane's in-flight file. Both outside this fence, absorbed.
 - **Behaviour budget headroom is 86%** (14,145 / 16,384 code-only bytes in one source). Anything else
   added to this bar's script needs the source split or the demo consumer moved out.
+
+## F2 — Dave's review
+
+- **Seg-control now matches the buttons.** Both groups move from the `md`/`sm` ordinals onto the segmented atom's minted `l` SCALE. Measured in Chromium @1400px: view **38 → 48**, density **34 → 48**; `.trigger` (Export/Add filter) and the search field are **48**. Compact density dials the seg to 40px with its neighbours.
+- **`.seg.l button` had no type binding.** Appended to `.t-cm-ctl-16` in `canon/type.css` (16/400, exactly as `.seg.lg`) and registered in `canon/_type-bindings.json` — the blast radius is 2 files, gate green. Restored the unrelated `.tabbar .tabbar__item` row `--update` had emptied; that is the nav lane's.
+- **GROUPED dropdown variant** added to `Dropdown.reference.html` + `dropdown.meta.json` and consumed by the add-filter menu: `listbox > role="group"` (aria-labelledby → heading) `> role="option"` through a `role="presentation"` list. Category once, bare values beneath. Driven: 3 ArrowDowns from GBP land on `pending` inside `Status`; the minted chip reads `Currency: GBP` because a chip has no heading above it.
+- **Export options are CSV · Excel · PDF**, long form kept as `title` only — the accessible name is the short word.
+- Gates: snippets 137/0 · coverage 137/137/0 · behaviour OK · a11y 137/0 · showroom `--check` in sync · type-blast green. Hit-area is ADVISORY and only reports the already-ruled 24px dial-down floor (chip dismiss, `Clear all`) — no `BREACH-FLOOR`. 4 themes × 2 modes × 2 snippets = 16 driven renders, all green.
+- **Not done / caveats:** `_validate_type_composites.py` is corpus-red at HEAD (1084 violations, 88 files) and `Dropdown.reference.html` is one of them — it does not link `canon/type.css`, so its fonts are inline and my `.grp{font:500 12px/1.3}` adds one more TYPE-002 to a file already carrying six. `Filter-toolbar-bar` has none. The review page's `#261 F` frame is a LARGER document than the snippet at HEAD (type.css inlined for `srcdoc`); the F2 frame is built the same way, so the three panes are comparable.
