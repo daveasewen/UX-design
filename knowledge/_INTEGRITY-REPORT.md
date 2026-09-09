@@ -7,7 +7,7 @@
 ## Errors (14)
 
 **Data grid**
-- schema: relationships: Additional properties are not allowed ('$composes-verbatim', 'composes' were unexpected)
+- schema: relationships: Additional properties are not allowed ('composes', '$composes-verbatim' were unexpected)
 - schema: stateModel: {'$scope': "the COLUMN HEADER (#261); the grid's live/loading/empty modes stay on the `state` prop", 'states': ['rest', 
 - schema: with/0: 'selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)' is not of type 'object'
 - schema: with/1: 'filter-toolbar-bar' is not of type 'object'
@@ -17,7 +17,7 @@
 - schema: with/5: 'skeleton-loader' is not of type 'object'
 
 **Filter-toolbar-bar**
-- schema: edges: Additional properties are not allowed ('delegatesTo', '$contract', 'drivesConsumer', 'composedOf' were unexpected)
+- schema: edges: Additional properties are not allowed ('drivesConsumer', 'delegatesTo', 'composedOf', '$contract' were unexpected)
 - schema: stateModel: {'attribute': 'data-ftb-state', 'states': [{'name': 'no-filters', 'shows': 'the total count and a `No filters applied` h
 
 **KPI tile**
