@@ -105,7 +105,7 @@
 | 97 | Secure-entry | 5 | 5 | 0 | 0 | yes | ✅ verified |
 | 98 | Segmented-control | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 99 | Selection-controls | 8 | 0 | 8 | 0 | — | ✅ verified · 8 bespoke |
-| 100 | Sidebar-nav | 19 | 19 | 0 | 0 | — | ✅ verified |
+| 100 | Sidebar-nav | 17 | 17 | 0 | 0 | — | ✅ verified |
 | 101 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 102 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 103 | Split-button | 4 | 4 | 0 | 0 | — | ✅ verified |
