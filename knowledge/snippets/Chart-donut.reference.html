@@ -1187,11 +1187,25 @@
       (typeof draw.label === 'function' ? draw.label(spec) : autoLabel(spec)) || autoLabel(spec));
     writeTable(fig, spec);
 
+    /* #260 A7 — the spec is REMEMBERED on the figure so a caller can ask for a real re-render.
+       dvRender dispatches one `resize`, which re-FITS; it never re-DRAWS, so any decision a partial
+       took from the plot width (scatter's tick strategy, histogram's label thinning — measured: 11
+       of 20 bin labels at 1074px stay 11 at 654px) is frozen at first-render width. */
+    fig.__dvSpec = spec;
+
     /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).
        dv-behaviour's one rAF-debounced listener re-derives x from data-fx and caches y. */
     window.dispatchEvent(new Event('resize'));
     return fig;
   }
+
+  /* #260 A7 — the re-entry point, and deliberately NOT an automatic width watcher: ADR-0015 §4
+     allows exactly one rAF-debounced resize listener in this group and it is dv-behaviour's. A
+     caller that wants width-sensitive marks calls this from inside its own existing handler. */
+  dvRender.redraw = function (fig) {
+    if (!fig || !fig.__dvSpec) { bad('redraw: this figure has not been rendered yet'); }
+    return dvRender(fig, fig.__dvSpec);
+  };
 
   dvRender.types = TYPES;
   dvRender.util = { esc: esc, n1: n1, f4: f4, nice: nice, fmt: fmt, fill: fillOf };
