@@ -216,6 +216,32 @@ def case_selftest_arms():
         record(name, r.returncode == 0, f"exit={r.returncode}, out={out[-200:]!r}")
 
 
+# ---------- #265-B — s263-D10's WRAP CHECK, GIVEN A RUNNER HERE TOO.
+# `rulings_page_freshness_check` is BLOCKING at birth (Dave's word, #263 P-10) and shipped with no
+# registered failure class; its arms now live in `_capture_gate.py::selftest_rulings_freshness`.
+# ⛔ IT CANNOT BE A `CASES` ROW, and the reason is structural, not stylistic — stated so the next
+# reader does not try: a `CASES` row is (mutate a copy of `knowledge/`) → (`python3
+# knowledge/<script>.py`) → (exit != 0 + marker). This check is (a) a FUNCTION inside a wrap
+# sequence, never a script with an exit code — `_capture_gate.py` with no mode REFUSES by the argv
+# contract and never reaches `wrap_checks()`; and (b) REPO-scoped: it reads `knowledge/_rulings.
+# json` AND `notes/_RULINGS.html`, and `fresh_copy` copies `knowledge/` alone, so a copy has no
+# `notes/` for the page to be stale against. So it gets its own case, run as a subprocess for
+# isolation and costing one interpreter start — no `fresh_copy`, no ~5 GB copytree.
+# ⚠ `_capture_gate.py --selftest` ENTIRE is NOT run here: it is minutes long and exceeds the
+# sandbox call wall, which is precisely how this arm would stop being run again. One arm, named.
+CG_ARM_SRC = ("import sys; sys.path.insert(0, %r); import _capture_gate as cg; "
+              "sys.exit(1 if cg.selftest_rulings_freshness() else 0)")
+
+
+def case_capture_gate_rulings_arm():
+    r = subprocess.run([sys.executable, "-c", CG_ARM_SRC % KNOW],
+                       capture_output=True, text=True, timeout=120)
+    out = (r.stdout + r.stderr).strip()
+    record("s263-D10 rulings-page wrap check bites a stale page (4 arms, #265-B)",
+           r.returncode == 0 and "[FAIL]" not in out,
+           f"exit={r.returncode}, out={out[-300:]!r}")
+
+
 def bite(tmp, name, tag, gate, mutate, marker):
     """Copy → mutate → run gate → assert it bites with the expected complaint.
 
@@ -513,6 +539,7 @@ def main():
         case_control(tmp)
         case_write_gate(tmp)
         case_selftest_arms()
+        case_capture_gate_rulings_arm()          # ★ #265-B — s263-D10, see the note above
         for name, tag, gate, mutate, marker in CASES:
             bite(tmp, name, tag, gate, mutate, marker)
     finally:

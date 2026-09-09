@@ -8090,6 +8090,80 @@ def selftest_index_freshness():
     return failures
 
 
+# ★ s263-D10 BITE ARM — added #265 lane B. `rulings_page_freshness_check` was born BLOCKING at
+# #263 lane E and shipped with NO registered failure class: its two arms were driven BY HAND once,
+# in a lane note, and nothing has re-driven them since [[instrument-without-a-consumer]]. A gate
+# whose bites live in prose is a gate a later edit can fail-open silently — the exact class this
+# suite exists for. This arm is the consumer.
+# ⚠ THE MUTATION TESTS THE CLAUSE, NOT THE FEATURE [[mutation-tests-the-clause-not-the-feature]]:
+# arm 3 asserts a STALE tree turns the check RED, so any fail-open edit to the check body (drop
+# the `rc != 0` branch · append to `notes` instead of `fails` · return early) makes arm 3 FAIL.
+# Proven by meta-mutation at #265-B — see notes/_subreports/2026-09-09-265-B-d10-bite-arm.md.
+# ⚠ AND THE GREEN CONTROL IS LOAD-BEARING (the #32 / DV-D17 lesson stated in `selftest_index_
+# freshness` above): arm 2 asserts the check goes GREEN on a fresh page AND says FRESH in its
+# notes, so a revert that DELETES the comparison entirely kills arm 2 too, not just arm 3.
+# ⚠ NO COPY OF `knowledge/` IS TAKEN. The check reads exactly two files, so the fixture builds
+# them from nothing — the harness cost is bytes, not the ~5 GB `_tests/test_gates.py::fresh_copy`
+# pays [[gate-cannot-pass-in-one-environment]].
+def selftest_rulings_freshness():
+    """s263-D10 — four bites over a fixture repo the arm builds itself.
+
+    ARM 0 the SKIP path · ARM 1 the never-generated page · ARM 2 the GREEN control (fresh page
+    passes AND says so) · ARM 3 the defect itself (page behind the store ⇒ RED, naming the fix).
+
+    ⚠ `_render_rulings` is imported HERE, from the real `knowledge/`, before the check is called:
+    the fixture tree carries no generator, and the check's own `import _render_rulings` resolves
+    off `sys.modules`. That is deliberate and it is DECLARED — this arm grades the FRESHNESS
+    CLAUSE, not the unimportable-generator branch, which no fixture tree can exercise honestly.
+    """
+    print("\n-- rulings page freshness (s263-D10) --")
+    failures = []
+
+    def bite(name, cond):
+        print(f"[{'OK' if cond else 'FAIL'}] rulings-freshness: {name}")
+        if not cond:
+            failures.append(f"rulings-freshness: {name}")
+
+    sys.path.insert(0, HERE)
+    import _render_rulings as rr
+    fixture = {"rulings": [{"id": "s999-D1", "ruled": "#999", "date": "2026-09-09",
+                            "by": "Dave", "status": "RULED",
+                            "says": "fixture ruling — the s263-D10 bite arm's own store"}]}
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "knowledge"))
+        os.makedirs(os.path.join(td, "notes"))
+        src = os.path.join(td, "knowledge", "_rulings.json")
+        out = os.path.join(td, "notes", "_RULINGS.html")
+
+        # ARM 0 — a tree with no store is not a state tree: skip, out loud, never a pass.
+        f_, n_ = rulings_page_freshness_check(td)
+        bite("no _rulings.json ⇒ SKIPPED out loud and declared NOT a pass",
+             not f_ and any("SKIPPED" in x and "NOT a pass" in x for x in n_))
+
+        with open(src, "w", encoding="utf-8") as f:
+            json.dump(fixture, f, indent=2)
+
+        # ARM 1 — the store exists, the page never did.
+        f_, _ = rulings_page_freshness_check(td)
+        bite("a never-generated _RULINGS.html FAILS", any("STALE" in x for x in f_))
+
+        rr.build(src, out)
+
+        # ARM 2 — THE GREEN CONTROL, and it is half the point (see the header note).
+        f_, n_ = rulings_page_freshness_check(td)
+        bite("a FRESH page passes AND reports FRESH (the detectable-when-present half)",
+             not f_ and any("FRESH" in x for x in n_))
+
+        # ARM 3 — THE DEFECT ITSELF: inscribe into the store, do not re-render.
+        fixture["rulings"][0]["says"] = "MUTATED after the render — the #263 lane-E RED arm"
+        with open(src, "w", encoding="utf-8") as f:
+            json.dump(fixture, f, indent=2)
+        f_, _ = rulings_page_freshness_check(td)
+        bite("a page STALE against the store FAILS, and the failure names the fix command",
+             any("STALE" in x and "_render_rulings.py" in x for x in f_))
+    return failures
+
+
 def _handoff_fixture(td, session_no, claim_line, log_keys=(), gm_archive_keys=(),
                      ls_archive_keys=(), banners=2, deltas=3, heading_note=None):
     """A minimal repo for `roll_claim_check` fixtures — a ★ LATEST banner naming `session_no`,
@@ -9659,6 +9733,7 @@ def _selftest_body():
                 + selftest_subs_line()                    # ★ #168 — the optional `subs` line
                 + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
+                + selftest_rulings_freshness()   # ★ s263-D10 — #265-B, the arm #263 lane E owed
                 + selftest_stale_top()                    # ★ s161-D4, RULED #161
                 + selftest_handoff_history()
                 + selftest_rehearsal())    # #92 — wired HERE, at write time: a suite a new

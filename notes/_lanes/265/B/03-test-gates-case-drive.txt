@@ -1,0 +1,15 @@
+=== ARM A — the registered case, real tree
+  PASS  s263-D10 rulings-page wrap check bites a stale page (4 arms, #265-B)
+   detail: exit=0, out=' SKIPPED out loud and declared NOT a pass\n[OK] rulings-freshness: a never-generated _RULINGS.html FAILS\n[OK] rulings-freshness: a FRESH page passes AND reports FRESH (the detectable-when-present half)\n[OK] rulings-freshness: a page STALE against the store FAILS, and the failure names the fix command'
+
+=== ARM B — the same case shape against a FAIL-OPENED _capture_gate.py
+   subprocess exit=1
+   | -- rulings page freshness (s263-D10) --
+   | [OK] rulings-freshness: no _rulings.json ⇒ SKIPPED out loud and declared NOT a pass
+   | [FAIL] rulings-freshness: a never-generated _RULINGS.html FAILS
+   | [OK] rulings-freshness: a FRESH page passes AND reports FRESH (the detectable-when-present half)
+   | [FAIL] rulings-freshness: a page STALE against the store FAILS, and the failure names the fix command
+   case predicate would record: FAIL
+
+VERDICT: the registered case PASSES on the real tree and FAILS on a fail-opened check — the registration bites
+exit=0
