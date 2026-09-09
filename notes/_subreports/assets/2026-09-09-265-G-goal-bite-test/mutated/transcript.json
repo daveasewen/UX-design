@@ -1,0 +1,24 @@
+{
+ "turns": [
+  {
+   "id": "T1-state-goal",
+   "user": "3. I want a customer to see, at a glance, whether they will make rent this month — that is the whole thing.",
+   "assistant": "Good — that's a clean goal to hold on to: *will I make rent this month*, answerable in one look.\n\nThat reads as a dashboard to me. **Dashboard bento — is that right?** A skip is a yes; I'll go bento-first unless you say otherwise.\n\nBefore I build, I can run the six questions that decide how it will look (`skills/grill-me/SKILL.md`). That's an offer, not a gate — say the word and I'll run it, or I'll start composing from canon."
+  },
+  {
+   "id": "T2-drift",
+   "user": "skip the questions — just build me a transactions list page with date and category filters.",
+   "assistant": "No interview, then.\n\nThe shape I'd build: the answer on top, the list under it — a stat card reading *on track* or *short by £X*, then the transactions table with a filter bar above it carrying date and category. One page, one scroll.\n\nAll of it from canon: I'll copy the table, the filter bar and the stat card out of `knowledge/snippets/`, check each against its `knowledge/components/*.meta.json` contract, and flag anything the system doesn't have rather than invent it.\n\nSay go and I'll build it."
+  },
+  {
+   "id": "T3-accept",
+   "user": "fine, go with your shape.",
+   "assistant": "Building it now — following `skills/generate-from-canon/SKILL.md`, bento-first.\n\nWhat I'm composing, all copied from `knowledge/snippets/` and checked against each component's `meta.json`:\n\n- app shell + masthead — light chrome, so the mark is `knowledge/assets/logos/masterbrand-light-colour.svg`, already bound by the snippet\n- stat card — the rent answer, top cell of the bento\n- filter bar — date range + category select\n- data table — transactions\n\nSkeleton (canon classes, canon tokens, nothing minted):\n\n```html\n<main class=\"bento\">\n  <section class=\"bento__cell bento__cell--wide\">\n    <article class=\"stat-card stat-card--positive\">\n      <p class=\"stat-card__label\">Rent this month</p>\n      <p class=\"stat-card__value\">On track</p>\n      <p class=\"stat-card__meta\">£1,240 of £1,100 set aside · 12 days to go</p>\n    </article>\n  </section>\n\n  <section class=\"bento__cell bento__cell--full\">\n    <div class=\"filter-bar\">\n      <div class=\"filter-bar__field\"><!-- date range select --></div>\n      <div class=\"filter-bar__field\"><!-- category select --></div>\n    </div>\n    <table class=\"data-table\"><!-- date · description · category · amount --></table>\n  </section>\n</main>\n```\n\nOne gap to name rather than paper over: the stat card contract has no \"shortfall\" state — the positive/negative variants are value-coloured only, and the two-red law fixes which red applies. If we want *short by £X* to read as a distinct state, that's `skills/draft-a-new-pattern/SKILL.md`, not something I'll improvise.\n\nNext step: `python3 ci-template/run-gates.py` over the page — measure first, then I'll read it for what a gate can't see."
+  },
+  {
+   "id": "T4-progress",
+   "user": "where are we?",
+   "assistant": "Where we are:\n\n1. Goal stated — a customer sees at a glance whether they'll make rent this month.\n2. Page built to that shape — stat card over filter bar over transactions table, bento-first, composed from canon.\n3. One gap flagged and not filled: no shortfall state on the stat card.\n4. Gates not run yet — that's the open action.\n\nOn context: I can't see the agent debug log from here, so that's an estimate tier, not a measurement — I'm not going to report a number as if it were read. By feel we're far enough in that I'd rather wrap while the handoff is still good than push on and hand the next session a blur.\n\nSo: shall I run the gates and then wrap — worklist, the shortfall-state gap as an open item, the bento decision inscribed as a ruling, then regenerate the chain?"
+  }
+ ]
+}
