@@ -14,7 +14,8 @@
     { "name": "single-select (non-native)", "use": "Custom dropdown, one option." },
     { "name": "filterable single-select (non-native)", "use": "Custom dropdown with a filter/search field; adds an 'active message' state." },
     { "name": "multi-select (non-native)", "use": "Custom dropdown, multiple options (checkbox-style list items)." },
-    { "name": "native", "use": "Browser-native select; fewer states (default/hover/completed/disabled/error)." }
+    { "name": "native", "use": "Browser-native select; fewer states (default/hover/completed/disabled/error)." },
+    { "name": "grouped (non-native)", "use": "Options carried in labelled groups: the category is said ONCE as a group heading ('Currency', 'Status', 'Channel') and each option carries the bare value ('GBP', 'pending', 'standing order') instead of repeating the category on every row. A 1px divider/border/section separates groups.", "$ruling": "#261 F2, Dave verbatim: \"can we have a variant of this dropdown that has the category of selection as a heading so that it isn't repeated, eg. 'Currency'. The short versions of these options is fine.\"", "$semantics": "listbox > role=\"group\" (aria-labelledby -> the heading) > role=\"option\", the options reached through a role=\"presentation\" list so nothing is invented in the accessibility tree. The heading is NOT decoration: it is the group's accessible name, so the category is still announced with the option. On selection the TRIGGER re-attaches the category ('Currency: GBP') because the closed trigger has no heading beside it.", "$notFor": "A grouped menu is not a substitute for multi-select: it groups the choices, it does not change how many can be chosen." }
   ],
   "tokens": {
     "trigger-text": "text/default",
@@ -41,7 +42,8 @@
     "keyboard": "REVIEW (inferred): full keyboard operation — open/close, arrow navigation, type-ahead, Enter/Escape; native family inherits browser behaviour",
     "roles": "REVIEW (inferred): non-native must implement combobox/listbox semantics (aria-expanded, aria-activedescendant, option roles, aria-selected); prefer native where possible for robustness",
     "states": "Disabled and error states exposed programmatically; error not conveyed by colour/inner-shadow alone — pair with a message (the 'active message'/error message states exist)",
-    "targetArea": "List items 44px tall (meets target size)",
+    "targetArea": "List items 44px tall (meets target size); a group heading is not a target and is not focusable",
+    "grouping": "GROUPED variant (#261 F2): each group is role=\"group\" with aria-labelledby pointing at its heading, so the category reaches assistive tech exactly once per group rather than once per option. The heading carries no role of its own and is never focusable; the divider between groups is decorative (role=\"presentation\" is unnecessary — it is a CSS border, not an element).",
     "relatedSC": ["1.3.1", "1.4.1 Use of Color", "1.4.11 Non-text Contrast", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
   },
   "antiPatterns": [

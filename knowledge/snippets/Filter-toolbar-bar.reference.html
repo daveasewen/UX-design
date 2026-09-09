@@ -93,6 +93,9 @@
     /* ---- Segmented-control.reference.html, verbatim ---- */
     --surface:#FFFFFF; --sel:#000000; --on-sel:#FFFFFF; --hit:44px;
     --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
+    /* #261 F2 — the `l` SCALE, imported so the segmented track can carry the atom's minted
+       48px outer height and stand level with the 48px .trigger buttons beside it. */
+    --seg-h-l:48px; --seg-pad-l:4px; --seg-inset-l:20px; --seg-rad-l:0; --seg-thumb-l:0;
     /* ---- #261 design pass: the toolbar's own status + consumer bindings ----
        TWO-RED LAW s151-D1: minus/red is rag/error-ink (#DA1A00 light, #F6604C dark); plus/green
        pairs with it as rag/success-ink (#137F3C / #66CC8D). Plus/minus numerals are the ONLY
@@ -110,6 +113,9 @@
     --border-radius-control:0; --border-radius-surface:0;
     --surface:#1F1F1F; --sel:#FFFFFF; --on-sel:#333333; --hit:44px;
     --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
+    /* #261 F2 — the `l` SCALE, imported so the segmented track can carry the atom's minted
+       48px outer height and stand level with the 48px .trigger buttons beside it. */
+    --seg-h-l:48px; --seg-pad-l:4px; --seg-inset-l:20px; --seg-rad-l:0; --seg-thumb-l:0;
     --error-ink:#F6604C; --pos-ink:#66CC8D;
     --tbl-head:#1F1F1F; --tbl-border:#808080;
   }
@@ -178,14 +184,26 @@
   .opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
   .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .sep{height:1px; background:var(--divider); margin:8px 0;}
+  /* ---- Dropdown's GROUPED variant, verbatim (#261 F2). Dave: "can we have a variant of this
+     dropdown that has the category of selection as a heading so that it isn't repeated, eg.
+     'Currency'." The add-filter menu is the consumer: the facet is said ONCE as a group heading
+     and the option carries the bare value. `role="group"` + `aria-labelledby` keeps the category
+     in the accessibility tree, so "Currency, GBP" is still what a screen reader announces — and
+     the CHIP the bar mints re-attaches it too ("Currency: GBP"), because a chip has no heading
+     above it. The `.grp` font is OMITTED — the markup carries `t-cm-ctl-12` (12/500, the mini
+     control ramp step the Dropdown atom's own heading uses). ---- */
+  .optgrp{display:block;}
+  .optgrp + .optgrp{border-top:1px solid var(--divider); margin-top:4px; padding-top:4px;}
+  .grp{display:block; padding:8px 12px 4px; color:var(--text); opacity:var(--alpha-72);}
+  .grp-list{margin:0; padding:0; list-style:none;}
 
   /* ===== Segmented-control.reference.html, verbatim ===== */
   /* A1 REPAIR (#227) — the atom's own construction is copied verbatim: scale-selected locals,
      repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time derivation
      (s200-D1) puts concrete numbers on disk and the CSS only READS them. */
-  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
-    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
-  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
+  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-pad:2px;
+    position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad); border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+  .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
   .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}   /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
   .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}    /* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
   /* .seg button fonts are OMITTED — canon/type.css binds `.seg.sm button` (12/500) and
@@ -199,6 +217,17 @@
   .seg.sm button{height:28px; padding:0 8px;}
   .seg.md button{height:32px; padding:0 12px;}
   .seg.icons button{padding:0; width:44px;}
+  /* ---- #261 F2, Dave verbatim: "can we use the larger seg-control to match the size of the
+     buttons." The atom's TIER-1 MINTED SCALE (Segmented-control.reference.html, s201-D1) copied
+     verbatim for the one step this bar needs: `l` = 48px TOTAL OUTER height, the same 48px the
+     `.trigger` buttons carry, so track and button share a baseline instead of the 32px `md` /
+     28px `sm` the bar shipped with. The track owns the height; the buttons fill it. Type for
+     `.seg.l button` is bound in canon/type.css (.t-cm-ctl-16, 16/400) exactly as `.seg.lg` is —
+     registered in canon/_type-bindings.json, so the binding is a conscious act, not a leak. ---- */
+  .seg.l{--seg-h:var(--seg-h-l); --seg-pad:var(--seg-pad-l); --seg-rad:var(--seg-rad-l); --seg-thumb:var(--seg-thumb-l); --seg-inset:var(--seg-inset-l); height:var(--seg-h);}
+  .seg.l button{height:100%; padding:0 var(--seg-inset);}
+  /* hit zone s201-D2/D3: max(44, the control's own minted height) — l keeps its natural 48. */
+  .seg.l button::before{min-height:max(var(--hit), var(--seg-h));}
   .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit); min-height:var(--hit); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
   /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
      (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
@@ -313,7 +342,8 @@
           stay on the 4px grid (DEF-005) and clear the 44px control target at full / the 24px
           dial-down floor at compact (s116-D1). ---- */
   .ftb-outer[data-density="compact"] .search,
-  .ftb-outer[data-density="compact"] .trigger{height:40px;}
+  .ftb-outer[data-density="compact"] .trigger,
+  .ftb-outer[data-density="compact"] .seg.l{height:40px;}   /* #261 F2: the seg dials WITH its neighbours */
   .ftb-outer[data-density="compact"] .ftb{padding:8px 0;}
 
   /* ---- THE FIVE STATES. One attribute, `data-ftb-state`; every state-scoped node declares the
@@ -419,16 +449,36 @@
                   <span class="ddval">Add filter</span><span class="chev" aria-hidden="true">▾</span>
                 </button>
                 <ul class="menu" id="ftbAddM" role="listbox" aria-labelledby="ftbAddL" tabindex="-1">
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="GBP">Currency: GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="EUR">Currency: EUR <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="USD">Currency: USD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="sep" role="presentation"></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Pending">Status: pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Settled">Status: settled <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="sep" role="presentation"></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Standing order">Channel: standing order <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Card">Channel: card <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="direction" data-value="Debits only">Debits only <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <!-- GROUPED (#261 F2): the facet is the group HEADING, the option is the bare
+                       value. No "Currency:" on three consecutive rows. -->
+                  <li class="optgrp" role="group" aria-labelledby="ftbGrpCur">
+                    <span class="grp t-cm-ctl-12" id="ftbGrpCur">Currency</span>
+                    <ul class="grp-list" role="presentation">
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="GBP">GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="EUR">EUR <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="USD">USD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    </ul>
+                  </li>
+                  <li class="optgrp" role="group" aria-labelledby="ftbGrpSt">
+                    <span class="grp t-cm-ctl-12" id="ftbGrpSt">Status</span>
+                    <ul class="grp-list" role="presentation">
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Pending">pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Settled">settled <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    </ul>
+                  </li>
+                  <li class="optgrp" role="group" aria-labelledby="ftbGrpCh">
+                    <span class="grp t-cm-ctl-12" id="ftbGrpCh">Channel</span>
+                    <ul class="grp-list" role="presentation">
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Standing order">standing order <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Card">card <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    </ul>
+                  </li>
+                  <li class="optgrp" role="group" aria-labelledby="ftbGrpDir">
+                    <span class="grp t-cm-ctl-12" id="ftbGrpDir">Direction</span>
+                    <ul class="grp-list" role="presentation">
+                      <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="direction" data-value="Debits only">debits only <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
 
@@ -451,14 +501,14 @@
 
               <div class="ftb-actions">
                 <div class="ftb-ctl">
-                  <div class="seg md" role="group" aria-label="View as" id="ftbView">
+                  <div class="seg l" role="group" aria-label="View as" id="ftbView">
                     <span class="ind" aria-hidden="true"></span>
                     <button type="button" aria-pressed="true" data-view="table">Table</button>
                     <button type="button" aria-pressed="false" data-view="cards">Cards</button>
                   </div>
                 </div>
                 <div class="ftb-ctl">
-                  <div class="seg sm" role="group" aria-label="Row density" id="ftbDensity">
+                  <div class="seg l" role="group" aria-label="Row density" id="ftbDensity">
                     <span class="ind" aria-hidden="true"></span>
                     <button type="button" aria-pressed="true" data-density="full">Comfortable</button>
                     <button type="button" aria-pressed="false" data-density="compact">Compact</button>
@@ -471,9 +521,12 @@
                     <span class="ddval">Export</span><span class="chev" aria-hidden="true">▾</span>
                   </button>
                   <ul class="menu" id="ftbExportM" role="listbox" aria-labelledby="ftbExportL" tabindex="-1">
-                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="csv">Comma-separated values <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="xlsx">Excel workbook <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="pdf">Portable document <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <!-- SHORT labels (#261 F2, Dave: "The short versions of these options is fine.
+                         CSV, Excel, PDF"). The long form survives as `title` — a hover/tooltip
+                         gloss, never the accessible name, so the name stays the short word. -->
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="csv" title="Comma-separated values">CSV <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="xlsx" title="Excel workbook">Excel <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="pdf" title="Portable document format">PDF <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
                   </ul>
                 </div>
               </div>
@@ -629,7 +682,7 @@
     <div>
       <p class="demo-tier">B — compact bar above a table/list, and the same bar at 375px</p>
       <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
-      <p class="demo-note">Left: the dense arrangement (underline search + sm segmented control). Right: the full bar in a 375px container — every control full width, chips one per row, no horizontal scroll.</p>
+      <p class="demo-note">Left: the dense arrangement (underline search + the l segmented control, dialled to 40px by compact density so it stands level with the search beside it). Right: the full bar in a 375px container — every control full width, chips one per row, no horizontal scroll.</p>
       <!-- ===== APOLLO-DEMO note END ===== -->
       <div class="demo-quad">
         <div class="demo-col w600">
@@ -642,7 +695,7 @@
                   <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
                 </div></div>
                 <div class="ftb-actions">
-                  <div class="ftb-ctl"><div class="seg sm" role="group" aria-label="Sort by">
+                  <div class="ftb-ctl"><div class="seg l" role="group" aria-label="Sort by">
                     <span class="ind" aria-hidden="true"></span>
                     <button type="button" aria-pressed="true">Date</button>
                     <button type="button" aria-pressed="false">Amount</button>
@@ -668,12 +721,22 @@
                     <span class="ddval">Add filter</span><span class="chev" aria-hidden="true">▾</span>
                   </button>
                   <ul class="menu" id="ftbMobM" role="listbox" aria-labelledby="ftbMobL" tabindex="-1">
-                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Currency: GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Status: pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="optgrp" role="group" aria-labelledby="ftbMobGrpCur">
+                      <span class="grp t-cm-ctl-12" id="ftbMobGrpCur">Currency</span>
+                      <ul class="grp-list" role="presentation">
+                        <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      </ul>
+                    </li>
+                    <li class="optgrp" role="group" aria-labelledby="ftbMobGrpSt">
+                      <span class="grp t-cm-ctl-12" id="ftbMobGrpSt">Status</span>
+                      <ul class="grp-list" role="presentation">
+                        <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                      </ul>
+                    </li>
                   </ul>
                 </div>
                 <div class="ftb-actions">
-                  <div class="ftb-ctl"><div class="seg md" role="group" aria-label="View as">
+                  <div class="ftb-ctl"><div class="seg l" role="group" aria-label="View as">
                     <span class="ind" aria-hidden="true"></span>
                     <button type="button" aria-pressed="true">Table</button>
                     <button type="button" aria-pressed="false">Cards</button>
@@ -704,6 +767,8 @@
     "vars": {
       "--seg-rad-s": "border-radius/segmented-container/s", "--seg-thumb-s": "border-radius/segmented-thumb/s",
       "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-thumb-xs": "border-radius/segmented-thumb/xs",
+      "--seg-rad-l": "border-radius/segmented-container/l", "--seg-thumb-l": "border-radius/segmented-thumb/l",
+      "--seg-h-l": "size/segmented-control/l", "--seg-pad-l": "padding/segmented-control/l", "--seg-inset-l": "padding/fixed/large",
       "--hover": "form/background/hover", "--border": "form/border/default", "--border-active": "form/border/active",
       "--text": "text/default", "--icon": "icon/default", "--page": "background/default",
       "--field-bg-hover": "form/background/hover", "--menu-surface": "background/default", "--menu-border": "elevation/border",
@@ -752,6 +817,12 @@
     });
 
     /* ===== Dropdown.reference.html JS, unedited except the documented `choose` hook ===== */
+    /* GROUPED menus (#261 F2): the option's own text is the bare value ("GBP"), so anything that
+       leaves the open menu — the trigger's own label, and the CHIP this bar mints — re-attaches
+       the category read off the group heading. Inside the list the category is said once; outside
+       it, where there is no heading, it is said with the value. Ungrouped menus are unaffected. */
+    function ddLabel(o){ const g=o.closest('[role=group]'), h=g&&g.querySelector('.grp');
+      return (h ? h.textContent.trim()+': ' : '') + o.firstChild.textContent.trim(); }
     function wireDD(dd, onChoose){
       const trig=dd.querySelector('.trigger'), menu=dd.querySelector('.menu'),
             val=dd.querySelector('.ddval'), opts=[...menu.querySelectorAll('[role=option]')];
@@ -759,7 +830,7 @@
         if(o){ const sel=opts.find(x=>x.getAttribute('aria-selected')==='true')||opts[0]; sel.focus(); } }
       function choose(o){
         if(onChoose && onChoose(o, val)===false){ open(false); trig.focus(); return; }   /* the hook may decline to latch */
-        opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=o.firstChild.textContent.trim(); open(false); trig.focus(); }
+        opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=ddLabel(o); open(false); trig.focus(); }
       trig.addEventListener('click', ()=> open(menu.getAttribute('data-open')!=='true'));
       trig.addEventListener('keydown', e=>{ if(['ArrowDown','Enter',' '].includes(e.key)){ e.preventDefault(); open(true);} });
       opts.forEach(o=>{ o.addEventListener('click',()=>choose(o));
@@ -903,7 +974,7 @@
       wireDD(document.getElementById('ftbAdd'), (o)=>{
         const key=o.dataset.facet+':'+o.dataset.value;
         if(!state.filters.some(f=>f.key===key))
-          state.filters.push({key:key, facet:o.dataset.facet, value:o.dataset.value, label:o.firstChild.textContent.trim()});
+          state.filters.push({key:key, facet:o.dataset.facet, value:o.dataset.value, label:ddLabel(o)});
         apply(); return false;                                   /* the trigger keeps its own label */
       });
       wireDD(document.getElementById('ftbRange'), (o)=>{
