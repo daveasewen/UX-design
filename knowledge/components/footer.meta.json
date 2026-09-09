@@ -1,88 +1,161 @@
 {
   "name": "Footer",
   "category": "organism",
-  "$status": "PROPOSED #204, Dave's eye owed. Nothing in this file is a ruling. Built in Lane M of the s203-D2 PM-topology trial from itinerary row 81 ('Footer — Incl. doormat / mega-footer', Layout & containers, P2), verified genuinely absent first-hand.",
-  "purpose": "The SITE FOOTER: the contentinfo landmark at the end of a page, carrying the link groups a reader goes looking for, the legal links a regulator requires, and the copyright line. Two forms — a doormat (mega-footer) for pages a reader browses, and a slim legal bar for authenticated application screens where a four-column mat would be in the way.",
-  "$vocabularyCollision": "★★ DECLARED BEFORE ANYTHING ELSE, because this is the s202-D3 class — the class where Dave rejected a build because one word carried two meanings and every assertion stayed green. In this repo 'footer' ALREADY means the LAYOUT FOOTER of a container: Drawer's footer actions, Modals' dialog footer, Data-grid's pagination footer, Command-palette's hint bar. The gated ACTION-BAR describes itself, verbatim, as 'A footer bar that pins a screen/flow's actions'. This component is the OTHER footer — the document's end matter. The two can appear on the same screen (an Action-bar pinned above a site Footer) and they are not variants of one another. ⛔ IF THIS COMPONENT KEEPS THE NAME 'Footer' IT INHERITS THE COLLISION. Renaming is Dave's; nothing here renames anything.",
+  "$status": "PROPOSED #261, Dave's eye owed. Nothing in this file is a ruling. A REDESIGN of the PROPOSED #204 build (Lane M, itinerary row 81 'Footer — Incl. doormat / mega-footer'), re-cut at #261 to Dave's scope in his own words: 'App footer for now'. The marketing forms are RETIRED IN THIS FILE, not deleted — see $retired.",
+  "purpose": "The APP FOOTER: the contentinfo landmark at the bottom of an authenticated application's content column, carrying what an operator needs at the one moment they look down — WHAT AM I LOOKING AT, IS IT REAL, AND HOW OLD IS IT? Product and build identity, the environment badge, data freshness, system status, locale and time zone on the operator's side; privacy, terms, accessibility and support on the regulator's side. One row, inside the content column, never sticky by default.",
+  "$redesign-261": "★ THIS COMPONENT ALREADY EXISTED. knowledge/components/footer.meta.json, knowledge/snippets/Footer.reference.html and showroom/footer.html were all built at #204. #261 did not create a component; it re-cut one. What changed, and why, in one place: (1) SCOPE — Dave: 'App footer for now'. The doormat / mega-footer is a marketing and servicing artefact and is out of that scope; it is retired below with its findings preserved so a later marketing pass restores rather than re-derives. (2) TARGETS REVERSED — #204 made every link a 44px target at every width and its own $finding-44px-cost called the height a visible design cost. A one-row app footer cannot pay it: the row would out-grow the app's own toolbar. #261 uses 24px, the ruled dial-down floor (WCAG 2.5.8 AA + the spacing exception), honoured literally with 24px between adjacent link boxes. (3) OPACITY REMOVED — #204 muted its copyright and group headings with alpha-60. MEASURED: #1A1A1A at 0.60 over surface/subtle #F0F0F0 blends to ~#706F6F = 4.41:1, BELOW 4.5, on 12px legal type. Every string is now text/default at full strength; the band is quiet by TYPE SIZE and by 1px cluster pips, not by weakened ink. (4) FOUR THINGS ADDED that only an application footer owes anyone: build identity, environment badge, data freshness, system status.",
+  "$vocabularyCollision": "★★ DECLARED BEFORE ANYTHING ELSE AND STILL UNRESOLVED AT #261, because this is the s202-D3 class — the class where Dave rejected a build because one word carried two meanings and every assertion stayed green. In this repo 'footer' ALREADY means the LAYOUT FOOTER of a container: Drawer's footer actions, Modals' dialog footer, Data-grid's pagination footer, Command-palette's hint bar. The gated ACTION-BAR describes itself, verbatim, as 'A footer bar that pins a screen/flow's actions'. This component is the OTHER footer: the document's end matter. THE COLLISION GOT SHARPER AT #261, NOT SOFTER — an app footer and an Action-bar now share a surface, a width and a horizontal one-row shape, and both sit at the bottom of the same screen. They are still not variants: an Action-bar carries the TASK's actions and changes per screen; this carries the SESSION's provenance and does not. ⛔ IF THIS COMPONENT KEEPS THE NAME 'Footer' IT INHERITS THE COLLISION. Renaming is Dave's; nothing here renames anything.",
   "$differsFromNeighbours": {
-    "Links": "Links owns the link ATOM and already ships .related, which its own source calls 'the footer / utility pattern' — a wrapping list of related links. Footer is the REGION that arranges them: the landmark, the named columns, the legal bar, the copyright, the rule that separates the page from its end matter. THE TELL: strip the landmark and the group headings from a Footer and what is left is a .related list, and it should be one. links.meta.json already declares context:footer with a Footer relationship — the component graph anticipated this component before it existed.",
-    "Action-bar": "See $vocabularyCollision. Action-bar pins the ACTIONS of a flow and belongs to the task; its contents change per screen. Footer is the end of the DOCUMENT and belongs to the site; its contents do not change per screen.",
-    "Headers": "The masthead sibling. A header carries wayfinding a reader is about to use; a footer carries the links they went looking for and the text the regulator requires. A doormat that simply duplicates the masthead is a doormat that has stopped being read.",
-    "Navigations / Sidebar-nav": "Those model STATE — current page, expansion, sections, disclosure. A doormat is flat and stateless; the only state it carries is aria-current=\"page\", inherited from the Links atom unchanged."
+    "Action-bar": "See $vocabularyCollision — and read it at #261, because the redesign brought the two shapes closer. Action-bar pins the ACTIONS of a flow, belongs to the task, and its contents change per screen. Footer states the PROVENANCE of the session — which build, which environment, how old the data — and its contents do not change per screen. THE TELL: nothing in a Footer is a thing you do.",
+    "Status-indicator": "Status-indicator owns the dot + label ATOM and this component composes it, form A, unchanged. The Footer is not a status surface: it carries ONE system-level dot as the last of four identity facts, never a per-record status. If the status needs its own row, its own colour ramp or its own history, it is a Banner or a status page, not a footer.",
+    "Links": "Links owns the link ATOM and ships .related, which its own source calls 'the footer / utility pattern'. Footer is the REGION that arranges them: the landmark, the legal row, the rule that separates content from end matter. THE TELL: strip the landmark and the identity cluster and what is left is a .related list, and it should be one.",
+    "Headers": "The masthead sibling. A header carries wayfinding a reader is about to use. An app footer carries the facts a reader needs to trust what the header brought them to — and, unlike a header, it is read only when something looks wrong.",
+    "Navigations / Sidebar-nav": "Those model STATE — current page, expansion, sections, disclosure. An app footer is flat: its only state is the environment and the system status, and both are inputs from the shell, not user state."
   },
   "props": [
     {
-      "name": "form",
+      "name": "variant",
       "type": "enum",
       "values": [
-        "doormat",
-        "slim"
+        "default",
+        "sticky",
+        "minimal"
       ],
-      "default": "doormat",
-      "$note": "doormat = brand statement + back-to-top + named link columns + legal bar. slim = legal bar and copyright only. Which surfaces get which is a product decision and is NOT settled here.",
-      "$status": "PROPOSED #204, Dave's eye owed"
+      "default": "default",
+      "$note": "default = the full one-row app footer, in document flow at the end of the content column. sticky = the same row pinned to the bottom edge, for a dashboard whose grid genuinely never ends. minimal = version + legal only.",
+      "$status": "PROPOSED #261, Dave's eye owed"
     },
     {
-      "name": "groups",
+      "name": "environment",
+      "type": "enum",
+      "values": [
+        "prod",
+        "uat",
+        "staging",
+        "dev"
+      ],
+      "default": "prod",
+      "$note": "Set as data-env on the footer element; the paint is CSS, so a shell that switches environment cannot forget to restyle anything. prod is a QUIET outlined chip (border/strong + text/default) because production is the normal case and a permanent alarm is no alarm. Every other value takes rag/warning-background with rag/text/on-light ink — 9.16:1, mode-invariant, the ruled 'amber is always black text' pair (R-D3). The label is real text in the markup, never generated content and never an ALL-CAPS run.",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "systemStatus",
+      "type": "enum",
+      "values": [
+        "ok",
+        "degraded"
+      ],
+      "default": "ok",
+      "$note": "Set as data-system. Dot + label, never colour alone (1.4.1); wrapped in role=\"status\" so a degradation announced while the operator is elsewhere on the page is still heard. Only two values by intent: a footer that needs a third has outgrown a footer.",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "dataFreshness",
+      "type": "object",
+      "default": null,
+      "$note": "data-updated (ISO timestamp) plus an optional data-now. Renders an absolute <time> ALWAYS and a relative age as progressive enhancement, with the relative string already present in the markup as the JS-off fallback (s245-D5). data-now is fixed rather than Date.now() so a driven screenshot is byte-deterministic.",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": null,
+      "$note": "Language and time zone as one string ('en-GB · Europe/London (GMT+1)'). It belongs beside the freshness because a timestamp without a zone is not a timestamp — that is the whole reason this pair sits together.",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "legalLinks",
       "type": "array",
-      "default": [],
-      "$note": "Each group is a <nav> with aria-labelledby pointing at its own heading, so a screen-reader user gets four named navigation landmarks rather than one anonymous list of forty links. The specimen shows four groups; the auto-fit track floor is 180px.",
-      "$status": "PROPOSED #204, Dave's eye owed"
-    },
-    {
-      "name": "backToTop",
-      "type": "boolean",
-      "default": true,
-      "$note": "The arrow link from the gated Links atom, rotated to point up, glyph byte-matched from arrows-and-chevrons/arrow-up.svg. 44px tall.",
-      "$status": "PROPOSED #204, Dave's eye owed"
+      "default": [
+        "privacy",
+        "terms",
+        "accessibility",
+        "support"
+      ],
+      "$note": "The regulator's row. The list is regulatory, it varies by market, and it is not this file's to fix — see $decisionsForDave 5.",
+      "$status": "PROPOSED #261, Dave's eye owed"
     }
   ],
   "variants": [
     {
-      "name": "doormat",
-      "use": "the end of a marketing or servicing page — the reader may still be looking for something"
+      "name": "default",
+      "use": "the end of an authenticated application screen — one row inside the content column, in document flow"
     },
     {
-      "name": "slim",
-      "use": "the end of an authenticated application screen — the reader came to do one thing and is finishing it"
+      "name": "sticky",
+      "use": "a dashboard whose grid genuinely never ends, where the operator would otherwise never reach the footer. A VARIANT and never the default: a band that follows the operator down costs a row of data on every screen."
+    },
+    {
+      "name": "minimal",
+      "use": "an embedded, kiosk or single-purpose surface where the operator has no build to report and no data to age — version and legal only"
+    }
+  ],
+  "$retired": [
+    {
+      "what": "variant / prop value: doormat (the mega-footer), and the props groups[] and backToTop that served it",
+      "retiredAt": "#261",
+      "reason": "OUT OF SCOPE, not wrong. Dave's scope for #261, verbatim: 'App footer for now' — no marketing or report variant. The doormat is the end matter of a marketing or servicing PAGE; nothing about it failed.",
+      "preserved": "Its whole design survives in this note so a later marketing pass restores rather than re-derives it: a <footer role=contentinfo aria-label='Site footer'> band on surface/subtle with a 1px divider/border/section top rule; an inner rail max-width 1120, padding 32/16; a brand statement block (max 52ch) sharing a row with a back-to-top arrow link (arrows-and-chevrons/arrow-up.svg, byte-matched, tip translateY(-3px) on hover and active); a .ft-mat auto-fit grid, minmax(180px, 1fr), gap 24/16, collapsing to one column below a 560px CONTAINER width; each column a <nav> with aria-labelledby pointing at its own .t-cm-section-label heading, so four named landmarks replace one anonymous list of forty links; then a legal bar with a 1px divider/border/subsection top rule. AND ITS TWO FINDINGS, WHICH ARE THE PART WORTH KEEPING: $finding-44px-cost (every link a 44px target at every width made the mat measurably taller than the compact typographic ideal, MEASURED in a browser because no gate reads the target token for hit area) and $finding-type-debt-conflict (see below — that one is NOT retired, it still governs).",
+      "$note": "⛔ RETIRED IS NOT REJECTED. If Dave wants the marketing footer back it comes back as a variant of this component or as a second component — see $decisionsForDave 4 — and this entry is the brief."
+    },
+    {
+      "what": "variant: slim",
+      "retiredAt": "#261",
+      "reason": "SUPERSEDED BY NAME, NOT BY CAUSE. 'slim' at #204 was the legal bar and copyright only, described as 'the end of an authenticated application screen'. That is what the #261 default and minimal variants now are, done properly: the app footer is what slim was reaching for, plus the four facts an application screen actually owes its operator. The legal-only cut kept the job and lost the name; it is called 'minimal' now, because 'slim' described a size and 'minimal' describes a content decision.",
+      "preserved": "The slim recipe was: .ft.slim .ft-inner{padding:8px 16px} and a legal bar with its top rule and margin removed."
+    },
+    {
+      "what": "prop: form (enum doormat | slim)",
+      "retiredAt": "#261",
+      "reason": "Both of its values are retired above; the axis it modelled (marketing vs application) is no longer a prop of this component but a question about whether there are two components at all. Replaced by the variant prop (default | sticky | minimal), which models a within-app decision."
     }
   ],
   "slots": {
-    "brand": {
-      "accepts": {
-        "capability": [
-          "statement"
-        ]
-      },
-      "required": false,
-      "use": "the short statement or brand line that opens a mega-footer, beside the back-to-top link",
-      "$status": "PROPOSED #204, Dave's eye owed"
+    "$note": "The #261 app footer has NO content slots and that is deliberate — every cluster is a named, typed fact, and a footer with a free slot becomes an Action-bar within one sprint. The #204 'brand' slot (a statement line beside the back-to-top link) is retired with the doormat.",
+    "$retired": {
+      "brand": {
+        "accepts": {
+          "capability": [
+            "statement"
+          ]
+        },
+        "required": false,
+        "use": "the short statement or brand line that opened the mega-footer, beside the back-to-top link",
+        "retiredAt": "#261"
+      }
     }
   },
   "tokens": {
     "page": "background/default",
-    "surface": "surface/subtle — the footer band, so the end matter reads as a band rather than as more page",
-    "divider": "divider/border/section — the 1px rule between the page and the footer",
-    "subdivider": "divider/border/subsection — inside the footer, between the brand block, the mat and the legal bar",
-    "text": "text/default",
-    "muted": "text/secondary",
+    "surface": "surface/subtle — the footer band, so the end matter reads as a band rather than as more content",
+    "divider": "divider/border/section — the 1px rule between the content column and the footer",
+    "$pipsTakeTheSectionRule": "MEASURED AND CORRECTED IN THIS LANE: the pips between clusters were first painted with divider/border/subsection, which resolves to #F0F0F0 in light — i.e. surface/subtle, the band they sit on. They were invisible. They take divider/border/section instead (#E1E1E1 light / #808080 dark), the same token as the top rule. divider/border/subsection has no consumer in this component and is no longer declared.",
+    "text": "text/default — EVERY string, at full strength; there is no muted text in this component",
     "icon": "icon/default",
     "focus": "focus/ring",
-    "radius": "border-radius/control — the link focus shape only; there is no other radius in this component",
-    "target": "target/min (44px)",
-    "$rag": "NONE. No RAG value appears anywhere in this component — there is no status here to carry."
+    "border-strong": "border/strong — the production environment chip outline",
+    "env-alert": "rag/warning-background — every NON-production environment",
+    "env-alert-ink": "rag/text/on-light — amber is ALWAYS black text (R-D3), 9.16:1, mode-invariant",
+    "ok": "rag/success-glyph — the system dot only",
+    "degraded": "rag/warning-glyph — the system dot only",
+    "radius": "border-radius/control — the link focus shape and the environment chip; both square",
+    "target": "target/min (44px) — bound so the drift gate reads the ruled default, though the LINKS use the 24px floor",
+    "$rag": "PRESENT AT #261, and this is a change from #204 which declared RAG absent. Two roles only, both status-of-the-SYSTEM and never status-of-a-record: the environment chip fill (rag/warning-background, the salience-ramp fill rung with its ruled black ink) and the system dot (rag/success-glyph / rag/warning-glyph). No error red appears anywhere in this component — an outage is a Banner, not a footer pip.",
+    "$notATokenTargetFloor": "⚠ --target-floor:24px IS DECLARED IN CSS AND DELIBERATELY ABSENT FROM THE MANIFEST. 24 is the ruled dial-down hit-area floor, named verbatim in tokens/layout.json target.$description — 'Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below' — but the store carries NO LEAF for it: only target/min (44px) exists. Rather than invent a token in a shared file outside the lane fence, or bind a 44px token to a 24px box and lie to the drift gate, the value is declared locally with this note. Minting target/floor is $decisionsForDave 1."
   },
-  "$finding-44px-cost": "⚠ EVERY footer link is a >= 44px target at EVERY width, not only when stacked. That is STRICTER than the gated Links .related pattern, which grows its targets only at <=420px, and it is a visible design cost: a four-column doormat with four links per column becomes measurably taller than the compact typographic ideal a footer usually aims for. The trade is a design decision, not a technicality — see $decisionsForDave 2. No gate reads the target token for hit area, so this was MEASURED in a real browser rather than assumed.",
-  "$finding-type-debt-conflict": "★★ 'COPY THE APPROVED ARTEFACT VERBATIM' AND 'ADD ZERO TO THE SHRINK-ONLY TYPE RATCHET' CONFLICT WHEN THE APPROVED ARTEFACT IS ITSELF IN DEBT. The gated Links atom writes font-weight:500 twice in its own CSS — on a.arrow and on a.lnk[aria-current=\"page\"] — and those are exactly the raw declarations TYPE-002 counts. Copying them verbatim DROVE _validate_type_composites.py red on this file (measured #204: 2 violations). The emphasis therefore arrives here through canon/type.css's own .t-ed-body-small .em modifier, applied in the MARKUP (the T-D14 markup-class route): identical rendered weight, zero added debt. Links itself was NOT edited — it is a gated shared artefact and its two declarations are the BUILD-PM's to retire. THE DIVERGENCE FROM THE PARENT IS DECLARED, NOT HIDDEN.",
+  "$finding-24px-floor": "★ THE APP FOOTER IS THE FIRST COMPONENT TO NEED THE DIAL-DOWN FLOOR AS A TOKEN, AND IT ISN'T ONE. The 44px standard is a hit-area guarantee for CONTROLS, and it is right for them. It is wrong for a one-row footer: four legal links at 44px make a 44px band, taller than the app toolbar above it, for the least-used links on the screen. The ruled floor of 24 exists precisely for this case and the WCAG 2.5.8 spacing exception is honoured literally here (24px of gap between adjacent 24px boxes, so no two targets are ever closer than 24px). But the floor lives only in a $description string, so every component that needs it must hardcode it and declare it, as this one does. MEASURED consequence of the alternative: a 44px footer is 40px taller than the shipped one, per screen, forever.",
+  "$finding-opacity-is-not-hierarchy": "★ MEASURED, AND IT REVERSES THE PREVIOUS BUILD. #204 muted its copyright line and group headings with opacity:var(--alpha-60). Composited: #1A1A1A at 0.60 over surface/subtle #F0F0F0 = ~#706F6F, which is 4.41:1 against that ground — below the 4.5 text threshold, on 12px legal type. NO GATE CAUGHT IT, because the snippet gate reads the DECLARED contrast pairs and the declared pair was text/default on surface/subtle at full strength, which passes. Opacity is invisible to the pair check. The fix is not a bigger alpha; it is that an app footer has no muted text at all — hierarchy comes from type size (12px legal against 14px product) and from the 1px pips between clusters. Generalisable: ⛔ AN ALPHA APPLIED TO A TEXT ELEMENT DEFEATS THE CONTRAST GATE SILENTLY. That is a gate gap, reported, not a footer problem.",
+  "$finding-type-debt-conflict": "★★ CARRIED FORWARD FROM #204, STILL GOVERNING. 'COPY THE APPROVED ARTEFACT VERBATIM' AND 'ADD ZERO TO THE SHRINK-ONLY TYPE RATCHET' CONFLICT WHEN THE APPROVED ARTEFACT IS ITSELF IN DEBT. The gated Links atom writes font-weight:500 twice in its own CSS — on a.arrow and on a.lnk[aria-current=\"page\"] — and those are exactly the raw declarations TYPE-002 counts. Copying them verbatim DROVE _validate_type_composites.py red on this file at #204 (measured: 2 violations). The emphasis therefore arrives through canon/type.css's own .em modifier applied in the MARKUP (the T-D14 markup-class route): identical rendered weight, zero added debt. Links itself was NOT edited — it is a gated shared artefact and its two declarations are the BUILD-PM's to retire. THE DIVERGENCE FROM THE PARENT IS DECLARED, NOT HIDDEN.",
   "relationships": {
     "livesInside": [
-      "Template — page",
-      "Template — authenticated app shell"
+      "Template — authenticated app shell",
+      "Template — dashboard"
     ],
     "commonPatterns": [
-      "site end matter",
+      "app end matter",
       "legal bar",
-      "utility navigation"
+      "build and environment identity",
+      "data freshness"
     ],
     "mustNotNeighbour": []
   },
@@ -92,73 +165,84 @@
       "1.4.1",
       "1.4.3",
       "1.4.10",
+      "1.4.11",
       "2.4.1",
       "2.4.4",
       "2.4.7",
-      "2.4.8",
-      "2.5.8"
+      "2.5.8",
+      "4.1.3"
     ],
-    "landmark": "<footer role=\"contentinfo\"> with an aria-label naming which footer it is ('Site footer' / 'Legal footer'), so a page carrying both a doormat and a slim bar does not present two anonymous contentinfo landmarks.",
-    "grouping": "Each link column is a <nav> with aria-labelledby pointing at its own visible heading. Forty links in one anonymous list is not navigable; four named landmarks are.",
-    "currentPage": "aria-current=\"page\" marked by WEIGHT plus a persistent 2px underline — never colour alone. Inherited from the Links atom; the weight arrives by composite modifier rather than by raw declaration (see $finding-type-debt-conflict).",
-    "linkText": "Every link names its destination. No 'click here', no 'more', no 'read more' — the aca-004 class the snippet gate blocks.",
-    "targetSize": "Every link is a >= 44px target at every width. MEASURED, not assumed; no gate reads the target token for hit area.",
-    "colourIsNeverAlone": "Links are distinguished by an underline, not by colour. No RAG value appears in this component at all."
+    "landmark": "<footer role=\"contentinfo\"> with aria-label=\"Application footer\", so a screen on which an Action-bar or a Data-grid pagination row also renders does not present two anonymous contentinfo regions.",
+    "grouping": "The legal links are a <nav aria-label=\"Legal and support\">. The identity and provenance clusters are NOT navigation and are not marked as such — four facts are not a landmark.",
+    "systemStatus": "role=\"status\" on the dot+label pair, so a degradation that appears while the operator is elsewhere on the page is announced. The dot is aria-hidden; the LABEL carries the meaning (1.4.1).",
+    "colourIsNeverAlone": "The environment is a word before it is a colour ('Production' / 'User acceptance testing'). The system status is a sentence before it is a dot. Links are underlined, never distinguished by colour.",
+    "targetSize": "Legal links are 24px — the ruled dial-down floor — with 24px of gap between adjacent boxes, which is the WCAG 2.5.8 AA spacing exception honoured literally rather than cited. NOT 44px, and that is a deliberate reversal of the #204 position: see $finding-24px-floor.",
+    "declaredAbsence": "THE STATUS DOT'S OWN CONTRAST IS A DECLARED ABSENCE, on the Status-indicator precedent whose meta already records that the amber dot is below 3:1 standalone. It is decoration; the label is the accessibility channel. The environment chip is NOT an absence — its ink is a gated pair at 9.16:1.",
+    "linkText": "Every link names its destination. No 'click here', no 'more', no 'read more' — the aca-004 class the snippet gate blocks."
   },
   "antiPatterns": [
-    "Never let a doormat duplicate the masthead navigation. A footer that repeats the header is a footer that has stopped being read.",
-    "Never put the primary task's actions in a site Footer. That is an Action-bar, and the two are different components that share a word.",
-    "Never ship an anonymous <footer> with no aria-label on a page that also has a container footer — a screen-reader user then has two contentinfo regions and no way to tell them apart.",
-    "Never let a link column exceed what a reader will scan. If a group needs more than about six links it is two groups, or it is a page.",
+    "Never make the app footer sticky by default. A band that follows the operator down an infinite grid costs a row of data on every screen; sticky is a variant, chosen, for the dashboard that genuinely never ends.",
+    "Never put the primary task's actions in a Footer. That is an Action-bar, and at #261 the two shapes are close enough that the mistake is easy — the test is whether the thing is something you DO.",
+    "Never leave the environment badge off a non-production build. Acting on user-acceptance data believing it is production is the single most expensive mistake a banking console permits, and this badge is the cheapest guard against it.",
+    "Never show a timestamp without its time zone. A freshness figure with no zone is not a fact; that is why locale and time zone sit in the same cluster.",
+    "Never mute footer text with opacity. It defeats the contrast gate silently — MEASURED at 4.41:1 in the previous build. Quietness comes from type size.",
+    "Never let the system dot carry a per-record status, a third colour or a history. One system-level fact, two values; anything more is a Banner or a status page.",
+    "Never ship an anonymous <footer> on a screen that also has a container footer — a screen-reader user then has two contentinfo regions and no way to tell them apart.",
     "Never carry legal text as an image or a PDF-only link with no text alternative in the bar itself.",
-    "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the 44px trade and the band colour are all open."
+    "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #261, and the name, the 24px floor and the RAG-in-a-footer position are all open."
   ],
   "tokenValidation": {
-    "date": "2026-08-19",
+    "date": "2026-09-09",
     "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
-    "result": "PASS — snippet gate rc=0, 0 failures repo-wide with this file present. Every declared var matches the store in BOTH modes. a11y gate rc=0. Type-composite gate rc=0 on this file after the .em rebind; repo-wide 1097, unchanged — this file adds 0 to the shrink-only ratchet.",
-    "declaredAbsence": "No RAG pair is declared because no RAG value is painted. The declared pairs are the four neutral ones: text/default and text/secondary on surface/subtle, icon/default on surface/subtle (held to 4.5 by icon-015), and text/default on background/default.",
-    "notRun": "_validate_state_contrast.py was NOT run: a filtered run overwrites the tracked _STATE-CONTRAST-AUDIT.md and Lane M held no shared-file licence. Declared and owed to the BUILD-PM.",
-    "notRegistered": "Absent from knowledge/component-types.json (a shared file, outside the lane fence).",
-    "renderProof": "See the receipt at notes/_receipts/2026-08-19-204-wave-laneM-feedback-layout.md for the driven figures."
+    "result": "PASS — snippet gate rc=0, 136 snippets / 0 failures repo-wide with this file present. Behaviour gate rc=0. Type-composite gate rc=0. Showroom --check rc=0. Every declared var matches the store in BOTH modes.",
+    "declaredAbsence": "The system dot's own contrast (rag/success-glyph and rag/warning-glyph against surface/subtle) is NOT declared as a pair: it is decoration on the Status-indicator precedent, and the label is the accessibility channel. --target-floor (24px) is not declared as a var because no leaf token exists for it — see tokens.$notATokenTargetFloor.",
+    "notRun": "_validate_state_contrast.py and _validate_hit_area.py were NOT run: both need Chromium and a filtered run overwrites tracked audit files outside this lane's fence. Declared and owed.",
+    "notRegistered": "Absent from knowledge/component-types.json (a shared file, outside the lane fence). The #261 JS is progressive enhancement with a rendered fallback, not an injected behaviour, so no $behaviour row is claimed."
   },
   "provenance": {
-    "source": "gap-report",
-    "$note": "Itinerary row 81 (2026-07-14 sheet): 'Footer — Incl. doormat / mega-footer', Layout & containers, P2. Confirmed a TRUE gap at #204 by filename greps under every plausible alias, a content grep over knowledge/snippets and knowledge/components (whose five 'footer' hits are all the OTHER footer — Drawer, Modals, Data-grid, Command-palette, Action-bar), and a direct grep of knowledge/_rulings.json (the store itself, not the retrieval index, which _capture_gate.py --selftest reports STALE). Built #204 Lane M from one gated parent (Links), untouched. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+    "source": "redesign",
+    "$note": "#261 app-footer design pass, Dave's ask — app only. His scope, verbatim: 'App footer for now'. Redesigns the PROPOSED #204 build (Lane M, itinerary row 81 of the 2026-07-14 sheet: 'Footer — Incl. doormat / mega-footer', Layout & containers, P2), which is preserved rather than deleted — see $retired. No reference artefact was supplied for the app form; the anatomy, the 24px reversal, the opacity finding and the environment-badge treatment are this lane's judgment, offered for Dave's eye and not ruled. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it. Parents composed unchanged: Links (a.lnk) and Status-indicator (form A dot + label)."
   },
   "interactive": true,
   "stateModel": "simple",
   "responsive": {
-    "mat": "auto-fit grid, minmax(180px, 1fr), collapsing to one column below a 560px CONTAINER width — a container query, so a footer inside a narrow panel collapses on a wide screen",
-    "legal": "the legal list stacks below the same container width; the copyright line moves beneath it",
-    "targets": "nothing has to grow at narrow widths because everything is already 44px at every width — that is the point of deciding it once",
-    "$status": "PROPOSED #204, Dave's eye owed"
+    "wrap": "MEASURED in Chromium with the full content: 41px tall and ONE row at 1440px of viewport and above; two rows at 1280 (55px) and 1024 (57px); three at 768 (75px); a four-row stack at 375 (127px). Below a 640px CONTAINER width the legal row is forced onto its own line; everything above that is natural flex wrap. A CONTAINER query, so a footer in a narrow split pane wraps on a 27-inch monitor — which is the point. The provenance cluster is flex:0 1 auto, not 1 1 auto: MEASURED, a growing cluster ate 995px of a 1600px row and pushed the legal links onto a second line at every width.",
+    "stack": "below 375px everything stacks to a column and the pips are removed, because a vertical 1px rule between stacked rows reads as a divider rather than a separator.",
+    "targets": "MEASURED at 1600 / 1440 / 1280 / 1024 / 768 / 420 / 375: link height 24px and minimum gap between adjacent link boxes 24px at EVERY one. An earlier cut tightened the stacked gap to 16px, which broke the 2.5.8 spacing exception the whole 24px position rests on; it was measured, caught and reverted.",
+    "$bentoNote": "s248-D3 — an edit mode is coming and every component placed in a bento tile must be responsive. This one is container-queried end to end and carries no viewport media query at all.",
+    "$status": "PROPOSED #261, Dave's eye owed"
   },
   "dimensions": {
-    "innerMaxWidth": 1120,
+    "rowMinHeight": 40,
+    "minimalRowMinHeight": 32,
     "innerPaddingX": 16,
-    "innerPaddingY": 32,
-    "matMinTrack": 180,
-    "matGap": [
-      24,
-      16
+    "innerPaddingY": 8,
+    "clusterGap": [
+      8,
+      24
     ],
-    "linkMinHeight": 44,
-    "$note": "innerPaddingX 16 is layout/app/margin. linkMinHeight 44 is target/min. innerMaxWidth 1120, matMinTrack 180 and the 32px vertical padding are specimen choices, not ruled."
+    "linkMinHeight": 24,
+    "linkGap": 24,
+    "envChipMinHeight": 20,
+    "dotSize": 8,
+    "wrapContainerWidth": 640,
+    "stackContainerWidth": 375,
+    "$note": "innerPaddingX 16 is layout/app/margin. linkMinHeight 24 and linkGap 24 are the ruled dial-down floor plus the 2.5.8 spacing exception. rowMinHeight 40, the 20px chip and the 8px dot are specimen choices, not ruled. There is NO innerMaxWidth: the app footer takes the width of the shell's content column and centring is the shell's job, not the footer's — that is the change from the #204 doormat's 1120px rail."
   },
   "$decisionsForDave": [
-    "1 · THE NAME. 'Footer' already means a container's action row in this repo, and the gated Action-bar uses the word about itself. Site-footer? End-matter? Doormat? Renaming is yours, and this file deliberately does not do it.",
-    "2 · THE 44px TRADE. Every footer link here is a 44px target at every width, which makes a doormat noticeably taller than the compact ideal. Accept the height, or grow targets only when stacked as the gated Links .related pattern does?",
-    "3 · THE BAND COLOUR. The footer sits on surface/subtle so it reads as a band. In Mono light that is #F0F0F0 against a #FFFFFF page — a quiet distinction. Should it be a band at all, or should the section rule carry the whole separation?",
-    "4 · TWO FORMS OR TWO COMPONENTS? The doormat and the slim bar share a landmark, a legal row and a link atom, and share nothing else. One component with a form prop, or two components?",
-    "5 · WHAT BELONGS IN THE LEGAL BAR. Privacy, terms, cookies and accessibility are the specimen's four. That list is regulatory, it varies by market, and it is not mine to fix.",
-    "6 · BACK-TO-TOP. Present by default here. On a short page it is noise; on a long one it is the most-used link in the footer. Default on, default off, or a consumer decision?"
+    "1 · MINT target/floor = 24px? The dial-down floor is RULED and is named verbatim in tokens/layout.json's target $description, but it has no leaf token, so this component hardcodes 24 and declares it. Every future dense component will do the same. Mint it, or keep the floor as prose?",
+    "2 · THE NAME, STILL. 'Footer' already means a container's action or pagination row in this repo, and the gated Action-bar uses the word about itself. #261 made the collision WORSE, not better: an app footer and an Action-bar now share a surface, a width and a one-row shape at the bottom of the same screen. App-bar? Status-bar? Session-bar? Renaming is yours and this file deliberately does not do it.",
+    "3 · RAG IN A FOOTER — a change from #204, which declared RAG absent. The environment chip takes the ruled amber fill and the system dot takes success or warning. It is the loudest thing on an otherwise silent band, deliberately, because a non-production badge that is quiet has failed. Accept the amber, or should a non-production environment be marked some other way?",
+    "4 · TWO COMPONENTS OR ONE, RE-ASKED. #204 asked this about doormat vs slim. #261 answers half of it by retiring the doormat out of scope. The other half is yours: when the marketing footer comes back, is it a variant of this component or a second component (Site-footer) with its own meta?",
+    "5 · WHAT BELONGS IN THE LEGAL ROW. Privacy, terms, accessibility and support are the specimen's four; cookies was dropped as a marketing concern that rarely applies inside an authenticated app. That list is regulatory, it varies by market, and it is not mine to fix.",
+    "6 · STICKY'S DEFAULT. Shipped OFF here, with the reasoning that a following band costs a row of data per screen. On a genuinely infinite grid the opposite argument is that the operator never sees the footer at all. Off by default, or on for dashboard templates specifically?"
   ],
   "$copiedFrom": [
-    "Links (the a.lnk inline link atom and the a.arrow CTA link, both verbatim)",
+    "Links (the a.lnk inline link atom, verbatim)",
+    "Status-indicator (the form-A inline dot + label status atom)",
     "Sidebar-nav / Drawer (the 1px section-divider recipe)"
   ],
-  "$relationshipsNote": "May legitimately appear on the same screen as an Action-bar. They are not variants; see $vocabularyCollision.",
+  "$relationshipsNote": "May legitimately appear on the same screen as an Action-bar, and at #261 they look more alike than they did. They are not variants; see $vocabularyCollision.",
   "edges": {
     "renderedBy": [
       {
@@ -167,23 +251,36 @@
     ],
     "usedInContext": [
       {
-        "ref": "context:template-page",
-        "$note": "Template — page"
-      },
-      {
         "ref": "context:template-authenticated-app-shell",
         "$note": "Template — authenticated app shell"
+      },
+      {
+        "ref": "context:template-dashboard",
+        "$note": "Template — dashboard; the sticky variant's home if sticky is ever a default anywhere"
       }
     ],
     "commonPattern": [
       {
-        "ref": "pattern:site-end-matter"
+        "ref": "pattern:app-end-matter"
       },
       {
         "ref": "pattern:legal-bar"
       },
       {
-        "ref": "pattern:utility-navigation"
+        "ref": "pattern:build-and-environment-identity"
+      },
+      {
+        "ref": "pattern:data-freshness"
+      }
+    ],
+    "composes": [
+      {
+        "ref": "component:links",
+        "$note": "the a.lnk atom, verbatim"
+      },
+      {
+        "ref": "component:status-indicator",
+        "$note": "the form-A dot + label"
       }
     ]
   }

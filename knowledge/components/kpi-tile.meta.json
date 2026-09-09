@@ -1,9 +1,9 @@
 {
   "name": "KPI tile",
   "category": "molecule",
-  "$status": "PROPOSED #203, Dave's eye owed",
+  "$status": "PROPOSED #203, redesigned #261 (Dave's nomination), Dave's eye owed",
   "$floated": "⛔ THE COMPONENT ITSELF IS FLOATED, NOT RULED. s182-D2 (#182) names it and explicitly declines to rule it — Dave, verbatim, quoted in that ruling: 'might be a partially built trend card with option, I haven't decided yet', and the ruling's own words: 'FLOATED, NOT RULED: the trend-card component itself — never launder into a ruling.' Itinerary row 55 is therefore NOT an ordinary gap a worker may close. This meta is a drawn proposal for Dave's eye; nothing in it is a ruling, and it must not be promoted, gated or registered without his word.",
-  "purpose": "A dashboard tile that states a metric, how it changed, and the SHAPE of that change: label, value, delta and period (the Stat-card anatomy, verbatim) plus the Chart-sparkline atom at its inline scale in a slot. Use it when the reader needs to see how a number moved over time, not merely whether it moved. A KPI tile with no series is a Stat card and should be one.",
+  "purpose": "A dashboard tile that states a metric, how it changed, and the SHAPE of that change: label, value, delta and comparison period, with two optional slots — a sparkline at the Chart-sparkline inline scale, and a hue-free target/progress row. Use it when the reader needs to see how a number moved over time, not merely whether it moved. A KPI tile with no series and no target is a Stat card and should be one.",
   "provides": "headline-metric",
   "answers": [
     "one-number",
@@ -38,12 +38,13 @@
       "name": "size",
       "type": "enum",
       "values": [
+        "hero",
         "display",
         "compact"
       ],
       "default": "display",
-      "$note": "display = .t-cm-figure-4 (32px) value; compact = .t-cm-figure-3 (24px) for dense boards. Inherited from Stat card unchanged.",
-      "$status": "PROPOSED #203, Dave's eye owed"
+      "$note": "hero = .t-cm-figure-2 (40px) at span 6, one big number; display = .t-cm-figure-4 (32px) at span 3; compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5). Sizes are the only thing that changes with this prop — the anatomy is identical.",
+      "$status": "PROPOSED #203, hero added #261, Dave's eye owed"
     },
     {
       "name": "trend",
@@ -59,7 +60,7 @@
         "down": "rag.error-ink",
         "flat": "text.default"
       },
-      "$note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's governs-list says the future trend card inherits it when built.",
+      "$note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's own governs-list says the future trend card inherits it when built. #261 extends the same ink to the area fill under the line (alpha-08) and to the error-state glyph.",
       "$status": "RULED for the stroke by s182-D3; the tile's use of it is PROPOSED #203"
     },
     {
@@ -75,29 +76,82 @@
         "up": "rag.success",
         "down": "rag.error"
       },
-      "$note": "⛔ INHERITED UNCHANGED FROM THE GATED Stat-card — the FILL seat, not the ink seat. This is the LIVE two-red question and it is Dave's; see $finding-two-seats. Flat deltas take no arrow and no colour at all ('No change', full ink).",
+      "$note": "⛔ INHERITED UNCHANGED FROM THE GATED Stat-card — the FILL seat, not the ink seat. This is the LIVE two-red question and it is Dave's; see $finding-two-seats. Flat deltas take the neutral rule glyph at alpha-60 and the words 'No change', never a colour.",
       "$status": "INHERITED from Stat card, FLAGGED not resolved — Dave's"
     },
     {
-      "name": "tableCta",
-      "type": "boolean",
-      "default": false,
-      "$note": "Opt-in icon-button affordance enacting s182-D2's standing direction for this component: 'table CTA optional, icon-button form'. No visible label — Dave: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool'. Accessible name survives as aria-label. 44x44.",
-      "$status": "PROPOSED #203, Dave's eye owed"
+      "name": "deltaGlyph",
+      "type": "enum",
+      "values": [
+        "trend-mark",
+        "arrow"
+      ],
+      "default": "trend-mark",
+      "$note": "NEW #261, and the one DEPARTURE from Stat card this pass proposes. trend-mark = assets/icons/status-icons/trend-positive|trend-negative|indeterminate (the diagonal HSBC trend marks, geometry byte-matched, recoloured to currentColor); arrow = Stat card's arrows-and-chevrons/arrow-up|arrow-down solid triangles. Both are drawn side by side on notes/_lanes/261-K-kpi-tile-review.html so Dave can pick by eye. Direction never depends on the glyph alone — the sign on the number and the word 'up'/'down' carry it too.",
+      "$status": "PROPOSED #261 — Dave's eye owed, and a divergence from Stat card if he takes it"
+    },
+    {
+      "name": "target",
+      "type": "object",
+      "default": null,
+      "$note": "NEW #261. { value, target, pace } drives the optional progress row: a border/subtle track, a standing-ink fill, a one-pixel pace tick at alpha-60, and a caption that spells out every figure the bar draws. NO HUE AT ALL, deliberately: whether 48% against a 60% target is a problem is the reader's judgement, not the tile's, and a hue-free bar cannot be misread by a reader who separates colours poorly.",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "ready",
+        "loading",
+        "empty",
+        "error",
+        "stale"
+      ],
+      "default": "ready",
+      "$note": "NEW #261 — see stateModel. Drawn, not described: loading is a skeleton with aria-busy and an opacity pulse that prefers-reduced-motion kills; empty renders an em-dash value plus a sentence saying why; error renders an em-dash, a rag/error-ink glyph and a 44px retry control that names what it will load; stale renders the full tile plus a NEUTRAL marker chip. Stale is not amber on purpose (Dave is astigmatic; yellow is a problem hue).",
+      "$status": "PROPOSED #261, Dave's eye owed"
+    },
+    {
+      "name": "affordance",
+      "type": "enum",
+      "values": [
+        "none",
+        "link",
+        "tableCta"
+      ],
+      "default": "none",
+      "$note": "link is NEW #261 and is the RIVAL to tableCta: the whole tile becomes the hit area via a stretched ::after on the label's anchor, the accessible name is the metric, and the focus ring lands on the tile rather than on four words of label. tableCta is s182-D2's standing direction unchanged — opt-in icon button, 44x44, no visible label, accessible name only, Dave verbatim: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool'. Both are in the snippet; the review page asks which survives.",
+      "$status": "tableCta PROPOSED #203; link PROPOSED #261 — Dave's eye owed"
     }
   ],
   "variants": [
     {
-      "name": "display",
-      "use": "the default board tile — 32px value, full-width spark beneath the delta"
+      "name": "default",
+      "use": "the board tile — span 3, 32px value, 40px spark, delta and period on their own rows"
     },
     {
       "name": "compact",
-      "use": "dense boards where many tiles share a row — 24px value, same spark"
+      "use": "the DP-06 four-tile row (s246-D5) — span 3, 12px label, 24px value, 4px gaps, period inline with the delta, spark optional at 28px"
+    },
+    {
+      "name": "hero",
+      "use": "one big number — span 6, 40px value, 24px padding, 12px gaps, 56px spark; for the one figure a board is actually about"
+    },
+    {
+      "name": "with-sparkline",
+      "use": "additive slot — the Chart-sparkline atom at inline scale with a low-alpha area under the line; the slot owns the width, the atom carries none (s184-D1)"
+    },
+    {
+      "name": "with-target",
+      "use": "additive slot — span 4, a hue-free progress track with a pace tick and a caption that spells out every figure"
+    },
+    {
+      "name": "as-link",
+      "use": "the whole tile is the affordance; stretched ::after on the label anchor, chevron at bottom-right, focus ring on the tile (NEW #261, rival to with-table-cta)"
     },
     {
       "name": "with-table-cta",
-      "use": "the tile can hand off to a tabular view of the same series (s182-D2 standing direction)"
+      "use": "the tile can hand off to a tabular view of the same series (s182-D2 standing direction) — opt-in 44x44 icon button, no label"
     }
   ],
   "slots": {
@@ -108,8 +162,18 @@
         ]
       },
       "required": false,
-      "use": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Empty slot means the tile should have been a Stat card.",
-      "$status": "PROPOSED #203, Dave's eye owed"
+      "use": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Heights are 28 compact / 40 default / 56 hero. Baked static — this component is not registered in component-types.json, so no dv-render-sparkline partial is injected and JS-off renders identically.",
+      "$status": "PROPOSED #203, heights re-scaled #261"
+    },
+    "target": {
+      "accepts": {
+        "capability": [
+          "measure-against-target"
+        ]
+      },
+      "required": false,
+      "use": "holds the progress row: track (border/subtle), fill (text/default), pace tick (text/default at alpha-60), caption (.t-cm-legal). Carries no hue and no RAG rung.",
+      "$status": "PROPOSED #261, Dave's eye owed"
     }
   },
   "tokens": {
@@ -121,12 +185,27 @@
     "radius": "border-radius/surface (0 — square; no exemption applies)",
     "delta": {
       "up": "rag/success — the FILL seat, inherited from Stat card, FLAGGED",
-      "down": "rag/error — the FILL seat, inherited from Stat card, FLAGGED"
+      "down": "rag/error — the FILL seat, inherited from Stat card, FLAGGED",
+      "flat": "text/default at alpha-60 — the neutral rule glyph, no colour"
     },
-    "spark": {
-      "up": "rag/success-ink — the INK seat, ruled for this atom by s182-D3",
-      "down": "rag/error-ink — the INK seat, ruled for this atom by s182-D3",
+    "trendInk": {
+      "up": "rag/success-ink — the INK seat, ruled for this atom by s182-D3; #261 extends it to the area fill (alpha-08)",
+      "down": "rag/error-ink — the INK seat, ruled for this atom by s182-D3; #261 extends it to the error-state glyph",
       "flat": "text/default — the standing ink (s182-D3, Dave: 'the default ink near-black colours are fine for the neutrals, white on dark')"
+    },
+    "target": {
+      "track": "border/subtle",
+      "fill": "text/default",
+      "pace": "text/default at alpha-60",
+      "$note": "NEW #261 and deliberately hue-free — no RAG rung is bound anywhere in the target row."
+    },
+    "skeleton": {
+      "block": "text/default at alpha-08, pulsing to alpha-16",
+      "$note": "NEW #261; the pulse is killed by prefers-reduced-motion."
+    },
+    "stale": {
+      "chip": "border/subtle border, text/default at alpha-80",
+      "$note": "NEW #261 and deliberately NOT rag/warning — Dave is astigmatic and yellow is a problem hue."
     }
   },
   "$finding-two-seats": "⛔⛔ THE LIVE TWO-RED QUESTION IS VISIBLE ON THIS ONE TILE, AND IS DELIBERATELY NOT RESOLVED HERE (lane brief: inherit the current binding, flag, do not resolve). The tile paints TWO green/red seats side by side because its two parents bind different ones and BOTH were inherited unchanged. The DELTA ARROW takes rag/success #66CC8D / rag/error #F6604C — the FILL seat, byte-for-byte from the gated Stat-card manifest; on a white card that green measures 1.980:1 (measured #203 with the repo's own _contrast_utils.contrast_ratio). The SPARK STROKE takes rag/success-ink #137F3C / rag/error-ink #DA1A00 — the INK seat that s182-D3 rules for this atom; on a white card that green measures 5.090:1. MEASURED ACROSS ALL FOUR THEMES #203 IN A REAL BROWSER, which CORRECTS the smaller claim first drafted here ('they converge in dark mode'): they converge in MONO DARK ONLY. The spark ink is theme-INVARIANT by ruling (s182-D3, measured #182: zero theme-level series overrides) while the arrow fill FORKS PER THEME, so the two seats disagree in SEVEN OF EIGHT PANES. Computed values read off the DOM — arrow vs spark, ratio against that pane's own surface: mono light #66CC8D 1.98 vs #137F3C 5.09 (arrow UNDER the 3:1 floor); mono dark #66CC8D 8.31 vs #66CC8D 8.31 (the one agreement); legacy light #00847F 4.56 vs #137F3C 5.09; legacy dark #00847F 3.62 vs #66CC8D 8.31; console light #5DAC7B 2.74 vs #137F3C 5.09 (arrow UNDER the floor); console dark #5DAC7B 6.01 vs #66CC8D 8.31; supercharge light #5DAC7B 2.54 vs #137F3C 4.71 (arrow UNDER the floor); supercharge dark #5DAC7B 5.48 vs #66CC8D 7.57. THREE of the four themes put the light-mode arrow under the 3:1 non-text floor, not one. s151-D1 clause 2 ('text AND atoms alike') reads as though it already governs the arrow, and Lane E measured the same leg independently this session; but rebinding a ruled colour seat is Dave's, the arrow-only fill treatment may have been deliberate, and surface-never-swap binds. WHICHEVER WAY IT GOES, Stat card and KPI tile must move TOGETHER — a fix to one that leaves the other is exactly how this seam arrived.",
@@ -151,45 +230,73 @@
       "2.5.8",
       "1.3.1"
     ],
-    "role": "Each tile is role=\"group\" with an aria-label naming the metric and its period — inherited from Stat card unchanged.",
+    "role": "Each tile is role=\"group\" with an aria-label naming the metric and its period. The loading tile adds aria-busy=\"true\"; the error tile carries role=\"status\" on its message; the target track is role=\"img\" with an aria-label that states the value, the target and the pace.",
     "spark": "The inline spark is aria-hidden and PASSIVE by design (s184-D1: 'INLINE-44px KPI SPECIMEN STAYS PASSIVE'). The tile's value and delta carry the meaning; the line is ambient. It is therefore not a focus stop and needs no per-point markers.",
-    "colourIsNeverAlone": "Direction is carried three ways — the arrow glyph, the sign on the number, and the word 'up'/'down' — never by colour. Flat deltas say 'No change' and take no colour at all. The spark additionally declares its direction as data-trend. Dave is astigmatic and red/yellow are problem hues, so nothing here leans on hue.",
-    "targetSize": "The optional table CTA is 44x44, the ruled min-hit-area, enforced BY HAND — no gate reads the target token (measured and stated, not assumed)."
+    "colourIsNeverAlone": "Direction is carried three ways — the trend glyph, the sign on the number, and the word 'up'/'down' — never by colour. Flat deltas take the neutral rule glyph and say 'No change'. The spark declares data-trend. The TARGET ROW and the STALE MARKER carry no hue at all. Dave is astigmatic and red/yellow are problem hues, so nothing here leans on hue.",
+    "targetSize": "Interactive parts only: the optional table CTA is 44x44, the retry control is 44px tall, and the whole-tile link's hit area is the tile. The stale chip and the target track are not targets. Enforced BY HAND — no gate reads the target token in a snippet."
   },
   "antiPatterns": [
-    "Never ship a KPI tile with an empty spark slot — that is a Stat card, and it should be one.",
-    "Never let the delta text wear the delta colour. Dark rag/error measures 3.66 and fails 4.5 as text; the arrow glyph carries the colour at the 3:1 atom floor and the number stays ink (R-D5/R-D6, inherited from Stat card).",
+    "Never ship a KPI tile with an empty spark slot AND no target row — that is a Stat card, and it should be one.",
+    "Never let the delta text wear the delta colour. Dark rag/error measures 3.66 as text; the glyph carries the colour at the 3:1 atom floor and the number stays ink (R-D5/R-D6, inherited from Stat card).",
     "Never give the inline spark per-point focus stops or hover markers — a spark is ambient and the markers fight the axis-free idiom (receipted at #182).",
+    "Never colour the target row. It is hue-free by design; a red bar for 'behind target' makes the tile pass judgement, which is the reader's job.",
+    "Never render the stale marker in amber. Age is carried by the glyph and the sentence — Dave is astigmatic and yellow is a problem hue.",
+    "Never render an empty metric as 0. A zero is a measurement; an em-dash plus a sentence is an absence.",
+    "Never label the retry control 'Retry'. Name what it will load, so it survives being read out of context.",
     "Never label the table affordance 'View as table'. s182-D2: icon-button form, accessible name only.",
-    "Never fix the arrow seat here alone. Stat card and KPI tile bind the same delta seat and must move together.",
+    "Never fix the glyph seat here alone. Stat card and KPI tile bind the same delta seat and must move together.",
     "REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it."
   ],
   "tokenValidation": {
-    "date": "2026-08-19",
+    "date": "2026-09-08",
     "against": "knowledge/tokens/semantic-colour.json + layout.json, resolved through _validate_snippets.resolve()",
-    "result": "PASS — snippet gate rc=0, 0 failures on this file. Every declared var matches the store in BOTH modes. No new token minted and none wanted: both values the arrow question would need (rag/success-ink, rag/error-ink) already exist and are already ruled.",
-    "declaredAbsence": "rag/success on tertiary/background/default is NOT declared as a passing contrast pair — it measures 1.980:1. Per s151-D2 the rag-on-neutral class belongs to the RENDERING gate (_validate_state_contrast.py) where the non-colour carrier is checkable against real DOM. The absence is DECLARED, not silent, and it is the flagged arrow-seat question.",
+    "result": "PASS — snippet gate rc=0, 0 failures across 137 snippets after the #261 redesign. Every declared var matches the store in BOTH modes. No new token minted and none wanted: the target row, the skeleton and the stale chip are all built from border/subtle, text/default and the alpha ramp.",
+    "declaredAbsence": "rag/success on tertiary/background/default is NOT declared as a passing contrast pair — it measures 1.980:1. Per s151-D2 the rag-on-neutral class belongs to the RENDERING gate (_validate_state_contrast.py) where the non-colour carrier is checkable against real DOM. The absence is DECLARED, not silent, and it is the flagged glyph-seat question. #261 RAISED the two INK pairs from context 'ui' to context 'text' after re-measuring them — light #137F3C and #DA1A00 on #FFFFFF both 5.09:1, dark #66CC8D 8.31:1 and #F6604C 5.26:1 on #1F1F1F — which strengthens a declaration and does not rebind a seat.",
     "notRegistered": "This file is absent from knowledge/component-types.json (a shared file, outside the lane fence), so it takes no AUTO-BEHAVIOUR dataviz partial and its spark is baked static. Declared, not an omission — the conductor's call whether registration is wanted.",
-    "renderProof": "Driven in Chromium via goto(file://…), never set_content(). 8/8 panes rendered, 0 page errors, all four themes forking correctly (console radius 20px present, supercharge surface #F7F6F4/#2A2621, legacy text #333333). Font asserted by canvas measurement against three controls, never fonts.check(): target 'Univers Next for HSBC' = 390, alias 'Univers Next HSBC' = 390, DejaVu Sans = 416, nonexistent face = 351 — the real HSBC cut, both aliases landing on it. Table CTA measured 44x44 in 8/8 panes."
+    "renderProof": "#203 receipt retained (8/8 panes, Chromium via goto(file://…), never set_content()). The #261 redesign was NOT re-driven: Chromium is unavailable in this sandbox — see notes/_subreports/2026-09-08-261-K-kpi-tile.md, COULD-NOT-DRIVE."
   },
   "provenance": {
     "source": "gap-report",
-    "$note": "Itinerary row 55 (2026-07-14), 'KPI / trend tile — Metric + delta + spark', P2 Depth. Built #203 Wave 3b Lane K from two gated parents (Stat-card, Chart-sparkline), both untouched. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
+    "$note": "#261 design pass, Dave's nomination. Itinerary row 55 (2026-07-14), 'KPI / trend tile — Metric + delta + spark', P2 Depth. Built #203 Wave 3b Lane K from two gated parents (Stat-card, Chart-sparkline), both untouched. REDESIGNED #261 lane K on Dave's word that every cold run reached for this one element: bento spans made real, slot-aligned rows, the HSBC trend mark, a hue-free target row, four drawn states, and a whole-tile link rival to the icon CTA. Neither parent file was touched at #261 either. No Figma node binds this component; provenance.figma_node stays empty until a design owner binds it."
   },
-  "interactive": false,
-  "stateModel": "simple",
+  "interactive": true,
+  "stateModel": {
+    "states": [
+      "ready",
+      "loading",
+      "empty",
+      "error",
+      "stale"
+    ],
+    "loading": "role=group + aria-busy=true, an sr-only sentence naming the metric, and four skeleton blocks at text/default alpha-08 with a 1.6s opacity pulse that prefers-reduced-motion kills. No spinner, no JS.",
+    "empty": "label + em-dash value at alpha-40 + a sentence saying WHY there is no figure ('The account opened in March'), with the neutral rule glyph. Never a zero — a zero is a measurement.",
+    "error": "label + em-dash value + role=status sentence + a 44px control whose label names what it will load ('Load settlement volume again'), never the bare word 'Retry'. The only coloured mark is the rag/error-ink glyph, whose inner marks take the tile surface.",
+    "stale": "the full, real tile PLUS a neutral marker chip ('Last updated 3 days ago') with the refresh glyph. The number is not dimmed — dimming a real figure to signal age costs contrast and says 'unimportant', which is the wrong word.",
+    "$note": "NEW #261. Replaces the bare string 'simple'. Every state is DRAWN in the snippet, not described."
+  },
   "responsive": {
-    "board": "grid auto-fill, minmax(240px, 1fr), 16px gap — inherited from Stat card",
-    "spark": "carries NO width of its own (s184-D1, 'responsive to its enclosure by default'); the tile's slot owns the width and the atom fills it. Height 44px is NOT ruled and is not changed here.",
-    "$status": "PROPOSED #203, Dave's eye owed"
+    "board": "12-column bento grid, 16px gap; tiles declare spans the meta legalises (compact/default 3, with-target 4, hero 6)",
+    "breakpoints": "at 900px every tile re-spans to 6 and hero to 12; at 560px everything spans 12. Re-spanning, never reflowing — s248-D3, because an edit mode is coming and anything placed in a bento tile must be responsive.",
+    "rows": "every row reserves min-height:var(--slot) — the height its own type composite publishes in type.css — so neighbouring tiles align their label, value and delta rows even when one tile has no delta.",
+    "spark": "carries NO width of its own (s184-D1, 'responsive to its enclosure by default'); the tile's slot owns the width and the atom fills it.",
+    "$status": "PROPOSED #203, rebuilt #261"
   },
   "dimensions": {
     "padding": 16,
+    "paddingCompact": 12,
+    "paddingHero": 24,
     "gap": 8,
-    "sparkHeight": 44,
-    "arrowGlyph": 16,
+    "gapCompact": 4,
+    "gapHero": 12,
+    "sparkHeight": 40,
+    "sparkHeightCompact": 28,
+    "sparkHeightHero": 56,
+    "deltaGlyph": 16,
+    "targetTrack": 4,
+    "retry": 44,
+    "staleChip": 24,
     "tableCta": 44,
-    "$note": "sparkHeight 44 and the 200x48 viewBox are Chart-sparkline's inline scale, unchanged. tableCta 44 is the ruled min-hit-area."
+    "$note": "tableCta 44 and retry 44 are the ruled min-hit-area. The stale chip is a 24px NON-interactive marker, so the 24px dial-down floor is not in play — it is not a target. The 200x48 spark viewBox is Chart-sparkline's inline scale, unchanged; only the rendered slot height moves."
   },
   "edges": {
     "renderedBy": [
