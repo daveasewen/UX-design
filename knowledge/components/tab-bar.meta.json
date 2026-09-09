@@ -4,12 +4,40 @@
   "category": "molecule",
   "purpose": "App-level BOTTOM navigation: 3–5 equal-width destinations, each an icon + label. The current destination uses the filled (-active) glyph + text/default label and aria-current='page'; the rest use the line glyph + text/secondary. NOT the in-page Tabs component. Surfaced as a missing pattern by the journey gap report.",
   "props": [
-    { "name": "items", "type": "number", "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets." },
-    { "name": "current", "type": "string", "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'.", "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
+    {
+      "name": "items",
+      "type": "number",
+      "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets."
+    },
+    {
+      "name": "current",
+      "type": "string",
+      "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'.",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+    },
+    {
+      "name": "count",
+      "type": "string",
+      "$note": "Optional count chip riding the GLYPH, not the row, so a four- or five-destination bar keeps equal columns. 18px here, 24px on a sidebar row.",
+      "$since": "#261"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "$note": "aria-disabled=true + tabindex=-1. A bottom bar's column count is part of its layout, so an unavailable destination stays and says so rather than shifting everything.",
+      "$since": "#261"
+    }
   ],
   "variants": [
-    { "name": "standard", "use": "Full-width bar with icon + label per destination; current item filled." },
-    { "name": "segmented", "use": "Segmented control spanning the full screen width, icon-only (Home / Cards / Payments / Insights), elevated; the selected fill is a PILL that slides between segments (same easing as the toggle / View-options), black + white glyph (inverts in dark). Menu is a separate circular island in the SAME exclusive group (selecting it collapses the pill); its selected state matches with a 4px surface ring; matches the lozenge height. EXPLORATION — rounding + elevation depart from the flat/angular brand; pending design sign-off." }
+    {
+      "name": "standard",
+      "use": "Full-width bar with icon + label per destination; current item filled."
+    },
+    {
+      "name": "segmented",
+      "use": "Segmented control spanning the full screen width, icon-only (Home / Cards / Payments / Insights), elevated; the selected fill is a PILL that slides between segments (same easing as the toggle / View-options), black + white glyph (inverts in dark). Menu is a separate circular island in the SAME exclusive group (selecting it collapses the pill); its selected state matches with a 4px surface ring; matches the lozenge height. EXPLORATION — rounding + elevation depart from the flat/angular brand; pending design sign-off."
+    }
   ],
   "tokens": {
     "surface": "tertiary/background/default",
@@ -25,9 +53,16 @@
     "$segmented-note": "segmented variant departures fenced as exploratory: border-radius:999px, box-shadow(elevation/functional), full-width sliding-pill selection, and an INVERTING selected state (secondary/background/default + text/on-inverse = black/white in light, white/dark in dark — a literal black pill would vanish on the dark island). REVISIT (Dave, 2026-06-30): the islands variant is promoted as fine-for-now but to be revisited further."
   },
   "relationships": {
-    "livesInside": ["App shell / mobile screen (pinned to the bottom)"],
-    "mustNotNeighbour": ["Tabs (in-page) — a tab bar is app navigation, not in-page section switching"],
-    "commonPatterns": ["Home / Cards / Payments / Menu bottom nav", "persistent primary navigation on mobile"]
+    "livesInside": [
+      "App shell / mobile screen (pinned to the bottom)"
+    ],
+    "mustNotNeighbour": [
+      "Tabs (in-page) — a tab bar is app navigation, not in-page section switching"
+    ],
+    "commonPatterns": [
+      "Home / Cards / Payments / Menu bottom nav",
+      "persistent primary navigation on mobile"
+    ]
   },
   "behaviour": {
     "script": "knowledge/snippets/Tab-bar.reference.html#script",
@@ -49,7 +84,14 @@
     "colourIndependence": "active state = filled icon + text/default + aria-current, never colour alone (1.4.1).",
     "targetSize": "each item is ≥44px tall (min-height 56px) and equal-width — comfortable touch targets.",
     "focusVisible": "2px focus ring inset (outline-offset:-2px) so it is not clipped by the bar's top border.",
-    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.3.1 Info and Relationships", "2.4.3 Focus Order"]
+    "relatedSC": [
+      "1.4.1 Use of Color",
+      "1.4.3 Contrast (Minimum)",
+      "1.3.1 Info and Relationships",
+      "2.4.3 Focus Order"
+    ],
+    "disabledDestination": "aria-disabled=true + tabindex=-1; pointer events off and the arrow-key walk skips it. (#261)",
+    "keyboardWalk": "Left/Right/Home/End move FOCUS along the bar. Focus only — no roving tabindex: these are destinations in a nav landmark and every one must stay reachable by Tab. (#261)"
   },
   "antiPatterns": [
     "REVIEW (inferred): using a tab bar for in-page section switching — that is the Tabs component; a tab bar is app-level navigation.",
@@ -67,7 +109,8 @@
     "source": "gap-report",
     "figma_node": "",
     "code_path": "",
-    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated."
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated.",
+    "$261": "#261 nav design pass, Dave's ask ('tackle the nav design'). No reference given — designed by judgment as ONE FAMILY with Sidebar-nav, Navigations and Tab-bar. Snippet rebuilt; see $navFamily and the snippet's knownFindings."
   },
   "slots": {
     "items": {
@@ -108,5 +151,29 @@
         "$note": "Tabs (in-page) — a tab bar is app navigation, not in-page section switching"
       }
     ]
+  },
+  "$vocabularyCollision": "⬛ SURFACED, NOT RESOLVED (#202 class, #261). The #261 lane brief described Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is the EXISTING gated Tabs component (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... a selected indicator, a bottom track, and an overflow dropdown'). Tab-bar's own purpose has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced by the journey gap report. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless, so the canon meaning was kept. The section-tab reading is drawn on the same nav tokens in notes/_lanes/261-N-nav-review.html as a PROPOSAL against Tabs. Dave's call: KEEP (recommended) or RENAME.",
+  "responsive": {
+    "$note": "#261: the bar is the MOBILE member of the nav family — it is what Sidebar-nav becomes below 768px when a rail is the wrong density control. Variant A is fluid to 320px with 3-5 equal columns; variant B's island fill is measured from layout, so it re-measures on a single rAF-debounced resize listener (ADR-0015).",
+    "verifiedTo": "320px"
+  },
+  "$navFamily": {
+    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+    "name": "nav family",
+    "members": [
+      "component:sidebar-nav",
+      "component:navigations",
+      "component:tab-bar"
+    ],
+    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A surface change to tertiary/background/hover in Sidebar-nav and Navigations; Tab-bar SUBSTITUTES the glyph swap for the surface change, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. MEASURED at #261 (notes/_lanes/261-N-nav-probe.json, 24 driven probes): the current tab-bar row computes background rgba(0,0,0,0) in all four themes, both modes — the substitution is a fact in the file, not an intention. Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.",
+    "openItems": [
+      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+    ],
+    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
   }
 }

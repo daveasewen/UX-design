@@ -25,6 +25,31 @@
       "name": "footerItems",
       "type": "array",
       "$note": "Persistent utilities pinned below the scrolling body — settings, help, sign out."
+    },
+    {
+      "name": "count",
+      "type": "string",
+      "$note": "Optional per-row count chip (.nv-count). 24px on a row, 18px in the rail. Rounded — Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row.",
+      "$since": "#261"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "$note": "Renders aria-disabled=true + tabindex=-1. The row keeps its place in the reading order rather than vanishing.",
+      "$since": "#261"
+    },
+    {
+      "name": "user",
+      "type": "object",
+      "$note": "The bottom account slot: avatar initials, name, role, chevron. Hidden to a name-only tooltip in the rail.",
+      "$since": "#261"
+    },
+    {
+      "name": "lockup",
+      "type": "object",
+      "$note": "The top product slot: masterbrand SVG (#230) plus a product word. Type set to look like a logo is the defect that ruling exists to stop.",
+      "$since": "#261"
     }
   ],
   "variants": [
@@ -35,6 +60,11 @@
     {
       "name": "rail",
       "use": "collapsed to 64px, icon-only, labels visually hidden but present in the accessibility tree"
+    },
+    {
+      "name": "overlay",
+      "use": "Under 768px the same column slides in over a scrim from a menu button. Escape or the scrim closes it and focus returns to the button. One class (.is-narrow on the frame), no forked markup.",
+      "$since": "#261"
     }
   ],
   "tokens": {
@@ -86,7 +116,7 @@
     "currentLocation": "aria-current=\"page\" on exactly one link — 'page' because the destination IS a different page (Anchor nav uses aria-current=\"true\" for the same reason inverted).",
     "collapse": "The toggle is a real button with aria-expanded and aria-controls naming the body it collapses.",
     "collapsibleGroup": "A group heading that opens a sub-list is a button with aria-expanded and aria-controls, not a link.",
-    "railNames": "Rail labels are visually hidden (clip-path), NOT removed and NOT replaced by aria-label — the link keeps a text-derived accessible name, so nothing has to be restated and nothing can drift out of sync.",
+    "railNames": "Labels are visually hidden (clip-path), never removed, so every rail item keeps a text-derived accessible name and no aria-label restates it. #261 CLOSES THE #203 OPEN FINDING: in the rail the SAME hidden label is re-shown in place as a tooltip on :hover and :focus-visible, so the sighted mouse user and the screen-reader user are told the same word. Tooltip is not composed in; nothing was invented.",
     "targetArea": "Every link is min-height 44px; the rail item is 64x44; the collapse toggle is 44x44.",
     "colourIndependence": "Current location is carried by aria-current + a bar whose presence/absence is a shape difference + a surface change. Colour is third, never alone.",
     "relatedSC": [
@@ -98,7 +128,9 @@
       "2.4.7 Focus Visible",
       "2.5.8 Target Size (Minimum)",
       "4.1.2"
-    ]
+    ],
+    "disabledRows": "A disabled destination is aria-disabled=true + tabindex=-1, not a removed row. Pointer events are off, the arrow-key walk skips it, and its count chip drops its fill for a 1px outline so no contrast claim is made on a surface WCAG exempts. (#261)",
+    "overlay": "The overlay is a DISCLOSURE, not a dialog: no role=dialog, no aria-modal, no focus trap — the column is still the same <nav> landmark and claiming otherwise would lie to AT. What it owes the keyboard is the return trip: Escape or the scrim closes and focus goes back to the menu button. (#261)"
   },
   "antiPatterns": [
     "Marking the current item with the red bar ONLY — it measures 2.73:1 in Supercharge dark and is a problem hue for an astigmatic reader either way",
@@ -128,10 +160,13 @@
     "code_path": "knowledge/snippets/Sidebar-nav.reference.html",
     "$note": "Not derived from a Figma node. Built from Apollo's own gated grammar: the Navigations current-item indicator, the List-items row rhythm, the Icon-button target sizing.",
     "$review": "reviews/REVIEW-203-sidebar-nav-four-themes-v1.html — 4 themes x light/dark, the real gated markup through the generated canon.css (#203)",
-    "$slots": "brand: Product or workspace name in the header. Hidden in the rail.; item.icon: 18px library glyph. In the rail it is the only visible identifier — see the antiPattern about rails without tooltips.; item.label: Single line, truncating. .t-cm-label."
+    "$slots": "brand: Product or workspace name in the header. Hidden in the rail.; item.icon: 18px library glyph. In the rail it is the only visible identifier — see the antiPattern about rails without tooltips.; item.label: Single line, truncating. .t-cm-label.",
+    "$261": "#261 nav design pass, Dave's ask ('tackle the nav design'). No reference given — designed by judgment as ONE FAMILY with Sidebar-nav, Navigations and Tab-bar. Snippet rebuilt; see $navFamily and the snippet's knownFindings."
   },
   "responsive": {
-    "$note": "Below the desktop breakpoint the correct answer is almost certainly a Drawer, not a rail. NOT specified here — that is a placement ruling, and the gated Drawer already exists to be composed. PROPOSED #203."
+    "$note": "#261 ANSWERS THE #203 DEFERRAL. It read: 'Below the desktop breakpoint the correct answer is almost certainly a Drawer, not a rail. NOT specified here.' Specified now, PROPOSED not ruled: below 768px the column becomes an OVERLAY over a scrim, opened from a menu button in a compact top bar. It is the same markup and the same class grammar — only .is-narrow on the frame and data-open on the column change. The rail stays the DESKTOP density control, not the mobile answer.",
+    "breakpoint": "768px",
+    "verifiedTo": "320px"
   },
   "$distinctFrom": [
     "component:navigations — OPEN: horizontal masthead vs persistent vertical frame. See $collision. Dave's.",
@@ -166,5 +201,24 @@
         "$note": "A second primary navigation on the same screen — one primary nav per screen"
       }
     ]
+  },
+  "$navFamily": {
+    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+    "name": "nav family",
+    "members": [
+      "component:sidebar-nav",
+      "component:navigations",
+      "component:tab-bar"
+    ],
+    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A surface change to tertiary/background/hover in Sidebar-nav and Navigations; Tab-bar SUBSTITUTES the glyph swap for the surface change, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. MEASURED at #261 (notes/_lanes/261-N-nav-probe.json, 24 driven probes): the current tab-bar row computes background rgba(0,0,0,0) in all four themes, both modes — the substitution is a fact in the file, not an intention. Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.",
+    "openItems": [
+      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+    ],
+    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
   }
 }

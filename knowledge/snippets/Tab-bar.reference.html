@@ -3,70 +3,160 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tab bar — reference candidate (gap-pattern → review)</title>
-<!-- CANDIDATE REFERENCE for Tab bar (app-level BOTTOM navigation — NOT the in-page Tabs component;
-     surfaced by the journey gap report, NOT yet design-reviewed — meta carries REVIEW flags).
-     INTERACTIVE demo: tap a destination to make it current. The current item swaps to the FILLED
-     (-active) glyph + text/default + aria-current='page' (icon-source convention; colour is never the
-     only signal — 1.4.1). Icons come from a <symbol> sprite + <use> (canon icon approach).
-       A) standard full-width bar with labels.
-       B) segmented control — icon-only, elevated (elevation/functional), spanning the FULL screen width;
-          the SELECTED fill is a PILL that SLIDES between segments (same easing as the toggle / View-options),
-          black with the glyph in white (inverts to white/dark in dark mode). The Menu island is part of the
-          SAME exclusive group — only one item current at a time, so selecting Menu collapses the pill — and
-          its selected state matches the segments with a 4px white (surface) ring. Menu matches the lozenge height. -->
+<title>Tab bar — reference candidate (#261 nav design pass)</title>
+<!-- CANDIDATE REFERENCE for Tab bar — app-level BOTTOM navigation, 3-5 equal-width
+     destinations. ⛔ NOT the in-page Tabs component: Tabs switches between peer panels inside
+     one context; this switches DESTINATIONS inside an app. See the vocabulary-collision note in
+     the manifest before renaming anything.
+
+     ⬛ #261 NAV DESIGN PASS — Dave's ask, verbatim: "tackle the nav design". No reference was
+     given ("we'll prompt this"), so this is designed by judgment and every choice is PROPOSED.
+
+     THE FAMILY CLAIM IS MECHANICAL, NOT RHETORICAL. Sidebar-nav, Navigations and Tab-bar share
+     (a) one NAV FAMILY TOKEN SET block, byte-identical in all three files bar the two
+     search-field vars only the masthead uses, and (b) one SHARED ITEM block giving .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev the same meaning in
+     all three. THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav
+     touches the content — block-start here, inline-start in the sidebar, block-end in the
+     masthead.
+
+     NEW AT #261: the shared item and token set, counts riding the glyph, a stated disabled
+     destination, and the 3px bar joining the filled-glyph swap as a second shape carrier.
+
+       A) standard full-width bar with labels and counts.
+       B) segmented island — icon-only, elevated, spanning the full screen width; the selected
+          fill is a pill that SLIDES between segments. The Menu island is part of the SAME
+          exclusive group, so selecting Menu collapses the pill. -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. Added 2026-06-30. */
+   enhancement; headings/body excluded. */
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
-  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; --slide:200ms cubic-bezier(.4,0,.2,1); }   /* --slide matches the toggle / View-options */
-  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --muted:#1A1A1A; --text:#1A1A1A; --sel-bg:#000000; --sel-fg:#FFFFFF; --focus:#305A85; --shadow:#00000033; --page:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --muted:#FFFFFF; --text:#FFFFFF; --sel-bg:#FFFFFF; --sel-fg:#333333; --focus:#4587A7; --shadow:#000000D9; --page:#1A1A1A; }
+  /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
+     This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
+     exactly two extra vars (--field-border, --field-active) for the search field it alone
+     contains, and nothing else. That is the
+     family claim made mechanical: if the three surfaces drift, this block stops matching
+     and the drift is visible in a diff rather than in a demo. Every value is a resolved
+     SEMANTIC token (see the manifest below), never an invented hex. */
+  :root{ --nav-ease:160ms cubic-bezier(.4,0,.2,1); --nav-slide:200ms cubic-bezier(.4,0,.2,1);
+         --nav-w:248px; --nav-w-rail:64px; --nav-h:64px; --nav-row:44px; }
+  [data-theme="light"]{
+    --nav-page:#FFFFFF; --nav-surface:#FFFFFF; --nav-text:#1A1A1A; --nav-muted:#1A1A1A;
+    --nav-icon:#1A1A1A; --nav-rule:#E1E1E1; --nav-sub-rule:#F0F0F0; --nav-hover:#F0F0F0;
+    --nav-pressed:#CECECE; --nav-indicator:#DB0011; --nav-focus:#305A85;
+    --nav-disabled:#B7B7B7; --nav-count-bg:#000000; --nav-count-fg:#FFFFFF;
+    --nav-shadow:#00000033; --nav-scrim:#00000033; --nav-radius:0; }
+  [data-theme="dark"]{
+    --nav-page:#1A1A1A; --nav-surface:#1F1F1F; --nav-text:#FFFFFF; --nav-muted:#FFFFFF;
+    --nav-icon:#FFFFFF; --nav-rule:#808080; --nav-sub-rule:#808080; --nav-hover:#232323;
+    --nav-pressed:#484848; --nav-indicator:#DB0011; --nav-focus:#4587A7;
+    --nav-disabled:#808080; --nav-count-bg:#FFFFFF; --nav-count-fg:#333333;
+    --nav-shadow:#000000D9; --nav-scrim:#000000D9; --nav-radius:0; }
+
+  /* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
+     One anatomy, three surfaces. The same class names carry the same meaning in all three
+     files, so a reader who has learned one nav has learned the family.
+     CURRENT LOCATION has THREE carriers and colour is always the third:
+       1. aria-current="page"                     — the machine-readable fact
+       2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
+          or absent, readable with no colour vision at all (sidebar: inline-start; top
+          nav: block-end; tab bar: block-start)
+       3. a surface change to tertiary/background/hover
+     Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
+     Its brand red is COPIED from the gated masthead, not invented; the four-theme
+     measurement (and the Supercharge failure) lives in the metas. */
+  .nv-item{display:flex; align-items:center; gap:12px; min-height:var(--nav-row); padding:0 16px;
+    position:relative; color:var(--nav-text); text-decoration:none; background:transparent;
+    border:0; cursor:pointer; border-radius:var(--nav-radius); transition:background var(--nav-ease);}
+  .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; color:var(--nav-icon);}
+  .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-align:left; text-box-edge:text text;}
+  /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
+     square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
+     floor, so it never reads as a control the finger cannot land on. */
+  .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--nav-count-bg); color:var(--nav-count-fg);}
+  .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:12px; height:12px; color:var(--nav-icon); transition:transform var(--nav-ease);}
+  .nv-chev svg{width:12px; height:12px; fill:currentColor;}
+  [aria-expanded="true"] > .nv-chev{transform:rotate(180deg);}
+  .nv-item:hover{background:var(--nav-hover);}
+  .nv-item:active{background:var(--nav-pressed);}
+  .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+  .nv-item[aria-current="page"]{background:var(--nav-hover);}
+  /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
+     place in the reading order, and the count loses its fill so no contrast claim is made on
+     a surface WCAG exempts anyway. */
+  .nv-item[aria-disabled="true"]{color:var(--nav-disabled); cursor:default; pointer-events:none;}
+  .nv-item[aria-disabled="true"] .nv-ic{color:var(--nav-disabled);}
+  .nv-item[aria-disabled="true"] .nv-count{background:transparent; color:var(--nav-disabled);
+    box-shadow:inset 0 0 0 1px var(--nav-disabled);}
+
   *{box-sizing:border-box;}
-  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.75rem 0 .6rem;}
+  body{margin:0; padding:2.5rem; background:var(--nav-page); color:var(--nav-text);
+       -webkit-font-smoothing:antialiased; transition:background var(--nav-ease), color var(--nav-ease);}
+  .stateLabel{color:var(--nav-muted); margin:1.75rem 0 .6rem;}
 
-  /* ---- Tab bar (bottom navigation) ---- */
-  /* icon swap: line glyph by default, FILLED (-active) glyph when current/open */
-  .tabbar__item .ic-fill, .menu-fab .ic-fill{ display:none; }
-  .tabbar__item.is-active .ic-line, .menu-fab.is-active .ic-line{ display:none; }
-  .tabbar__item.is-active .ic-fill, .menu-fab.is-active .ic-fill{ display:block; }
-  .tabbar__item svg, .menu-fab svg{ width:24px; height:24px; fill:currentColor; pointer-events:none; }
+  /* icon swap: line glyph by default, FILLED (-active) glyph when current. Colour is never the
+     only signal (1.4.1) — the glyph CHANGES SHAPE, and the 3px bar is a second shape carrier. */
+  .tabbar .nv-item .ic-fill, .menu-fab .ic-fill{ display:none; }
+  .tabbar .nv-item[aria-current="page"] .ic-line, .menu-fab[aria-current="page"] .ic-line{ display:none; }
+  .tabbar .nv-item[aria-current="page"] .ic-fill, .menu-fab[aria-current="page"] .ic-fill{ display:block; }
 
-  /* A) standard full-width bar with labels */
-  .tabbar{ display:flex; max-width:420px; background:var(--surface); border-top:1px solid var(--border); }
-  .tabbar .tabbar__item{ flex:1; min-height:56px; padding:8px 0 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
-    /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); text-decoration:none; cursor:pointer; background:transparent; border:0; transition:color var(--ease); }
-  .tabbar .tabbar__item:hover{ color:var(--text); }
-  .tabbar .tabbar__item:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
-  .tabbar .tabbar__item.is-active{ color:var(--text); }
+  /* ---- A · the standard bar: 3-5 equal destinations, icon over label ---- */
+  .tabbar{display:flex; width:100%; max-width:420px; background:var(--nav-surface);
+          border-top:1px solid var(--nav-rule);}
+  .tabbar .nv-item{flex:1; min-width:0; min-height:56px; padding:8px 4px; gap:3px;
+    flex-direction:column; align-items:center; justify-content:center; color:var(--nav-muted);}
+  .tabbar .nv-item .nv-ic{position:relative; width:24px; height:24px;}
+  .tabbar .nv-item .nv-ic svg{width:24px; height:24px;}
+  .tabbar .nv-label{flex:none; width:100%; text-align:center;}
+  /* the indicator sits on the edge THIS nav touches the content — block-start */
+  .tabbar .nv-item[aria-current="page"]{color:var(--nav-text); background:transparent;
+    box-shadow:inset 0 3px 0 var(--nav-indicator);}
+  /* the count rides the glyph, so a 4-destination bar keeps its equal columns */
+  .tabbar .nv-item .nv-count{position:absolute; top:-6px; left:14px; min-width:18px; height:18px;
+    padding:0 4px;}
 
-  /* B) segmented control (sliding pill) — icon-only, elevated, full-width; the selected fill slides
-        between segments on the toggle / View-options easing; Menu is a separate circular island */
-  .tabbar-pills{ display:flex; align-items:center; gap:12px; width:100%; max-width:420px; }   /* spans the full (mobile) screen width */
-  .seg{ position:relative; flex:1; display:flex; align-items:center; height:56px; padding:4px; background:var(--surface); border:1px solid var(--border); border-radius:999px; box-shadow:0 0 16px var(--shadow); }   /* the lozenge / segmented track */
-  .seg .ind{ position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--sel-bg); border-radius:999px; z-index:0; transition:left var(--slide), width var(--slide); }   /* SLIDING pill — left+width set by JS from the current segment (same animation as the toggle) */
-  .seg__item{ position:relative; z-index:1; flex:1; height:100%; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); text-decoration:none; cursor:pointer; transition:color var(--slide); }   /* each segment fills its share of the track; colour transitions on the SAME easing as the slide */
-  .seg__item[aria-current="page"]{ color:var(--sel-fg); }   /* glyph turns white as the pill arrives (inverts to dark in dark mode) */
-  .seg__item:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; border-radius:999px; }
-  .seg__item svg{ width:24px; height:24px; fill:currentColor; pointer-events:none; }
-  .menu-fab{ width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
-    color:var(--muted); text-decoration:none; cursor:pointer; background:var(--surface); border:1px solid var(--border); box-shadow:0 0 16px var(--shadow); transition:color var(--slide), background var(--slide), box-shadow var(--slide); }
-  .menu-fab:hover{ color:var(--text); }
-  .menu-fab:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
-  .menu-fab[aria-current="page"]{ background:var(--sel-bg); color:var(--sel-fg); box-shadow: inset 0 0 0 4px var(--surface), 0 0 16px var(--shadow); }   /* SELECTED — same inverting fill + a 4px white(surface) ring, matching the lozenge surround */
+  /* ---- B · the segmented island: icon-only, elevated, the fill SLIDES ---- */
+  .tabbar-pills{display:flex; align-items:center; gap:12px; width:100%; max-width:420px;}
+  .seg{position:relative; flex:1; display:flex; align-items:center; height:56px; padding:4px;
+    background:var(--nav-surface); border:1px solid var(--nav-rule); border-radius:999px;
+    box-shadow:0 0 16px var(--nav-shadow);}
+  .seg .ind{position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--nav-count-bg);
+    border-radius:999px; z-index:0; transition:left var(--nav-slide), width var(--nav-slide);}
+  .seg .nv-item{position:relative; z-index:1; flex:1; min-width:0; height:100%; padding:0;
+    justify-content:center; color:var(--nav-muted); background:transparent;
+    transition:color var(--nav-slide);}
+  .seg .nv-item:hover{background:transparent;}
+  .seg .nv-item .nv-ic{width:24px; height:24px;}
+  .seg .nv-item .nv-ic svg{width:24px; height:24px;}
+  .seg .nv-item[aria-current="page"]{color:var(--nav-count-fg); background:transparent; box-shadow:none;}
+  .seg .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px; border-radius:999px;}
+  .menu-fab{width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex;
+    align-items:center; justify-content:center; color:var(--nav-muted); text-decoration:none;
+    cursor:pointer; background:var(--nav-surface); border:1px solid var(--nav-rule);
+    box-shadow:0 0 16px var(--nav-shadow);
+    transition:color var(--nav-slide), background var(--nav-slide), box-shadow var(--nav-slide);}
+  .menu-fab svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
+  .menu-fab:hover{color:var(--nav-text);}
+  .menu-fab:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px;}
+  .menu-fab[aria-current="page"]{background:var(--nav-count-bg); color:var(--nav-count-fg);
+    box-shadow:inset 0 0 0 4px var(--nav-surface), 0 0 16px var(--nav-shadow);}
 
-  /* WCAG 2.3.3 — honour reduced-motion (minimal motion here, kept for consistency) */
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
-    .seg .ind{ transition:none !important; }
   }
 </style>
 </head>
 <body data-theme="light">
-  <!-- icon sprite — snippet preview only (consumers provide their own sprite, as the journey does) -->
+
+  <!-- icon sprite — snippet preview only (consumers provide their own sprite) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z"/></symbol>
     <symbol id="ic-home-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V12H10V18H17V8L9 0Z"/></symbol>
@@ -79,84 +169,183 @@
     <symbol id="ic-menu-a" viewBox="0 0 18 18"><path d="M0 15.6H18V13.6H0V15.6ZM0 2.40002V4.40002H18V2.40002H0ZM0 10H18V8.00002H0V10Z"/></symbol>
   </svg>
 
-  
-  <div class="stateLabel">A · standard bar with labels — tap to switch</div>
+  <div class="stateLabel t-cm-legal">A · standard bar with labels and counts — tap to switch. Insights is disabled and says so.</div>
   <nav class="tabbar" data-tabgroup aria-label="Primary">
-    <a class="tabbar__item is-active" href="#" aria-current="page"><svg class="ic-line" aria-hidden="true"><use href="#ic-home"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-home-a"/></svg>Home</a>
-    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-cards"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-cards-a"/></svg>Cards</a>
-    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-pay"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-pay-a"/></svg>Payments</a>
-    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-menu-a"/></svg>Menu</a>
+    <a class="nv-item" href="#" aria-current="page"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home-a"/></svg></span><span class="nv-label t-cm-legal">Home</span></a>
+    <a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-cards"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-cards-a"/></svg><span class="nv-count t-cm-legal">3</span></span><span class="nv-label t-cm-legal">Cards</span></a>
+    <a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-pay"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-pay-a"/></svg><span class="nv-count t-cm-legal">12</span></span><span class="nv-label t-cm-legal">Payments</span></a>
+    <a class="nv-item" href="#" aria-disabled="true" tabindex="-1"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-insight"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-insight"/></svg></span><span class="nv-label t-cm-legal">Insights</span></a>
+    <a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu-a"/></svg></span><span class="nv-label t-cm-legal">Menu</span></a>
   </nav>
 
-  <div class="stateLabel">B · segmented control — icon-only, full width; the pill slides between segments — tap to switch</div>
+  <div class="stateLabel t-cm-legal">B · segmented island — icon-only, elevated, full width; the fill slides between segments and collapses when Menu is current</div>
   <div class="tabbar-pills">
-    <nav class="seg" aria-label="Primary">
+    <nav class="seg" aria-label="Primary, compact">
       <span class="ind" aria-hidden="true"></span>
-      <a class="seg__item" href="#" aria-current="page" aria-label="Home"><svg aria-hidden="true"><use href="#ic-home"/></svg></a>
-      <a class="seg__item" href="#" aria-label="Cards"><svg aria-hidden="true"><use href="#ic-cards"/></svg></a>
-      <a class="seg__item" href="#" aria-label="Payments"><svg aria-hidden="true"><use href="#ic-pay"/></svg></a>
-      <a class="seg__item" href="#" aria-label="Insights"><svg aria-hidden="true"><use href="#ic-insight"/></svg></a>
+      <a class="nv-item" href="#" aria-label="Home" aria-current="page"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span></a>
+      <a class="nv-item" href="#" aria-label="Cards"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-cards"/></svg></span></a>
+      <a class="nv-item" href="#" aria-label="Payments"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-pay"/></svg></span></a>
+      <a class="nv-item" href="#" aria-label="Insights"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-insight"/></svg></span></a>
     </nav>
-    <a class="menu-fab" href="#" aria-label="Menu"><svg aria-hidden="true"><use href="#ic-menu"/></svg></a>
+    <a class="menu-fab" href="#" aria-label="Menu"><svg class="ic-line" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu-a"/></svg></a>
   </div>
 
   <script type="application/json" id="token-manifest">
-  {
-    "component": "Tab-bar",
-    "type": "molecule",
-    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--muted": "text/secondary", "--text": "text/default", "--sel-bg": "secondary/background/default", "--sel-fg": "text/on-inverse", "--focus": "focus/ring", "--shadow": "elevation/functional", "--page": "background/default" },
-    "contrastPairs": [
-      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "ui" }
-    ],
-    "icons": {
-      "#ic-home": "assets/icons/global-controls/home.svg",
-      "#ic-home-a": "assets/icons/global-controls/home-active.svg",
-      "#ic-cards": "assets/icons/global-controls/card-manage.svg",
-      "#ic-cards-a": "assets/icons/global-controls/card-manage-active.svg",
-      "#ic-pay": "assets/icons/products-and-services/payments-and-transfers.svg",
-      "#ic-pay-a": "assets/icons/products-and-services/payments-and-transfers-active.svg",
-      "#ic-insight": "assets/icons/products-and-services/insight.svg",
-      "#ic-menu": "assets/icons/global-controls/menu.svg",
-      "#ic-menu-a": "assets/icons/global-controls/menu-active.svg"
+{
+  "component": "Tab-bar",
+  "type": "molecule",
+  "vars": {
+    "--nav-page": "background/default",
+    "--nav-surface": "tertiary/background/default",
+    "--nav-text": "text/default",
+    "--nav-muted": "text/secondary",
+    "--nav-icon": "icon/default",
+    "--nav-rule": "divider/border/section",
+    "--nav-sub-rule": "divider/border/subsection",
+    "--nav-hover": "tertiary/background/hover",
+    "--nav-pressed": "form/background/pressed",
+    "--nav-indicator": "primary/border/default",
+    "--nav-focus": "focus/ring",
+    "--nav-disabled": "tertiary/text/disabled",
+    "--nav-count-bg": "secondary/background/default",
+    "--nav-count-fg": "text/on-inverse",
+    "--nav-shadow": "elevation/functional",
+    "--nav-scrim": "elevation/functional",
+    "--nav-radius": "border-radius/surface"
+  },
+  "contrastPairs": [
+    {
+      "fg": "text/default",
+      "bg": "tertiary/background/default",
+      "context": "text"
     },
-    "requiredAria": ["aria-current=\"page\"", "aria-label"]
-  }
+    {
+      "fg": "text/secondary",
+      "bg": "tertiary/background/default",
+      "context": "text"
+    },
+    {
+      "fg": "icon/default",
+      "bg": "tertiary/background/default",
+      "context": "ui"
+    },
+    {
+      "fg": "text/default",
+      "bg": "tertiary/background/hover",
+      "context": "text"
+    },
+    {
+      "fg": "icon/default",
+      "bg": "tertiary/background/hover",
+      "context": "ui"
+    },
+    {
+      "fg": "text/on-inverse",
+      "bg": "secondary/background/default",
+      "context": "ui"
+    }
+  ],
+  "icons": {
+    "#ic-home": "assets/icons/global-controls/home.svg",
+    "#ic-home-a": "assets/icons/global-controls/home-active.svg",
+    "#ic-cards": "assets/icons/global-controls/card-manage.svg",
+    "#ic-cards-a": "assets/icons/global-controls/card-manage-active.svg",
+    "#ic-pay": "assets/icons/products-and-services/payments-and-transfers.svg",
+    "#ic-pay-a": "assets/icons/products-and-services/payments-and-transfers-active.svg",
+    "#ic-insight": "assets/icons/products-and-services/insight.svg",
+    "#ic-menu": "assets/icons/global-controls/menu.svg",
+    "#ic-menu-a": "assets/icons/global-controls/menu-active.svg"
+  },
+  "knownFindings": [
+    "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Tab-bar is the MOBILE member of a three-surface family with Sidebar-nav and Navigations. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. A destination here is the same row as a destination in the sidebar, stacked instead of laid out inline.",
+    "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content \u2014 block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.",
+    "\u2b1b VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown'). Tab-bar's own meta has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave's.",
+    "COUNTS are new at #261 and ride the GLYPH, not the row, so a four-destination bar keeps equal columns. Same .nv-count chip as the sidebar and the masthead: 18px on a glyph, 24px on a row.",
+    "DISABLED is aria-disabled + tabindex=-1 \u2014 the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.",
+    "THREE CARRIERS FOR CURRENT, colour last: aria-current='page', the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations use a surface change as their third carrier; Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 \u2014 the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).",
+    "VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group \u2014 selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.",
+    "44px MIN HIT AREA: variant A rows are 56px tall and at least a quarter of a 420px bar wide; variant B segments are 48px tall inside a 56px track and the Menu island is 56x56."
+  ],
+  "requiredAria": [
+    "aria-current=\"page\"",
+    "aria-label",
+    "aria-disabled"
+  ]
+}
   </script>
   <script type="application/json" id="behaviour-manifest">
-  {
-    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/tab-bar.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
-    "component": "component:tab-bar",
-    "script": "knowledge/snippets/Tab-bar.reference.html#script",
-    "partial": null,
-    "events": [
-      "click",
-      "resize"
-    ],
-    "fallback": "Each item is a native `<a>` and takes keyboard focus; the authored `aria-current` stands; clicking another item moves nothing — the active pill stays where the markup put it."
-  }
+{
+  "$generated": "by knowledge/gen_component_partials.py from knowledge/components/tab-bar.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+  "component": "component:tab-bar",
+  "script": "knowledge/snippets/Tab-bar.reference.html#script",
+  "partial": null,
+  "events": [
+    "click",
+    "keydown",
+    "resize"
+  ],
+  "fallback": "Each destination is a native <a> and takes keyboard focus; the authored aria-current stands and every carrier bound to it in CSS follows \u2014 the filled glyph, the 3px bar, the label colour. What goes: clicking another destination moves nothing, the arrow/Home/End focus walk is gone, and variant B's sliding fill stays where the markup put it."
+}
   </script>
+
   <script>
-    
-    /* A) standard bar — radio set: tapping a destination makes it current (filled glyph + aria-current) */
-    document.querySelectorAll('.tabbar[data-tabgroup]').forEach(group=>{
-      group.addEventListener('click', e=>{
-        const item = e.target.closest('.tabbar__item'); if(!item) return; e.preventDefault();
-        group.querySelectorAll('.tabbar__item').forEach(a=>{ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
-        item.classList.add('is-active'); item.setAttribute('aria-current','page');
+    // A) the standard bar — a radio set: tapping a destination makes it current. aria-current is
+    // the state and every carrier (filled glyph, 3px bar, label colour) is bound to it in CSS,
+    // so none of them is set a second time here.
+    document.querySelectorAll('.tabbar[data-tabgroup]').forEach(function(group){
+      var items = function(){
+        return Array.prototype.slice.call(group.querySelectorAll('.nv-item'))
+          .filter(function(x){ return x.getAttribute('aria-disabled') !== 'true'; });
+      };
+      group.addEventListener('click', function(e){
+        var item = e.target.closest && e.target.closest('.nv-item');
+        if (!item || item.getAttribute('aria-disabled') === 'true') return;
+        e.preventDefault();
+        group.querySelectorAll('.nv-item').forEach(function(a){ a.removeAttribute('aria-current'); });
+        item.setAttribute('aria-current','page');
+      });
+      // Arrow keys walk the bar. FOCUS ONLY — no roving tabindex: these are destinations in a nav
+      // landmark and every one must stay reachable by Tab.
+      group.addEventListener('keydown', function(e){
+        var item = e.target.closest && e.target.closest('.nv-item');
+        if (!item) return;
+        var list = items(), i = list.indexOf(item), n = null;
+        if (e.key === 'ArrowRight') n = (i + 1) % list.length;
+        else if (e.key === 'ArrowLeft') n = (i - 1 + list.length) % list.length;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = list.length - 1;
+        if (n !== null && list.length){ e.preventDefault(); list[n].focus(); }
       });
     });
-    /* B) segmented control + Menu fab = ONE exclusive group — only one current at a time; the pill slides
-       between island segments and collapses when Menu (outside the lozenge) is current */
-    document.querySelectorAll('.tabbar-pills').forEach(group=>{
-      const seg = group.querySelector('.seg'), ind = seg ? seg.querySelector('.ind') : null;
-      const items = [...group.querySelectorAll('.seg__item, .menu-fab')];
-      function moveInd(){ if(!ind||!seg) return; const a = seg.querySelector('.seg__item[aria-current="page"]');
-        if(a){ ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px'; } else { ind.style.width='0px'; } }
-      items.forEach(it=> it.addEventListener('click', e=>{ e.preventDefault();
-        items.forEach(x=>x.removeAttribute('aria-current')); it.setAttribute('aria-current','page'); moveInd(); }));
-      addEventListener('resize', moveInd); moveInd();
+
+    // B) segmented island + Menu = ONE exclusive group. The fill slides between segments and
+    // collapses to zero width when Menu, which sits outside the track, is current.
+    document.querySelectorAll('.tabbar-pills').forEach(function(group){
+      var seg = group.querySelector('.seg');
+      var ind = seg ? seg.querySelector('.ind') : null;
+      var items = Array.prototype.slice.call(group.querySelectorAll('.seg .nv-item, .menu-fab'));
+      function moveInd(){
+        if (!ind || !seg) return;
+        var a = seg.querySelector('.nv-item[aria-current="page"]');
+        if (a){ ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px'; }
+        else { ind.style.width = '0px'; }
+      }
+      items.forEach(function(it){
+        it.addEventListener('click', function(e){
+          e.preventDefault();
+          items.forEach(function(x){ x.removeAttribute('aria-current'); });
+          it.setAttribute('aria-current','page');
+          moveInd();
+        });
+      });
+      // ONE rAF-debounced resize listener for the page (ADR-0015).
+      var queued = false;
+      addEventListener('resize', function(){
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(function(){ queued = false; moveInd(); });
+      });
+      moveInd();
     });
   </script>
 </body>

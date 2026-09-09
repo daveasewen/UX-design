@@ -3,118 +3,208 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sidebar nav — reference implementation (gated)</title>
-<!-- CANONICAL REFERENCE for Sidebar / nav rail (gated). Itinerary row 36, P2.
-     The PERSISTENT VERTICAL nav of a desktop application frame: a full-height column of
-     destinations, grouped, with one current location, that collapses to an icon-only RAIL
-     without losing its accessible names.
+<title>Sidebar nav — reference implementation (gated; #261 nav design pass)</title>
+<!-- CANONICAL REFERENCE for Sidebar nav — the persistent vertical column of a desktop
+     application frame: grouped destinations, exactly one current location, collapsing to an
+     icon-only RAIL without losing its accessible names.
 
-     HOW THIS DIFFERS FROM THE GATED Navigations FAMILY — the collision was checked, not assumed:
-       • Navigations.reference.html renders ONE thing: a horizontal web MASTHEAD. Its meta
-         additionally CLAIMS a family (anchors, app nav-bar-bottom, nav-bar-top) that the
-         artefact does not contain, and the meta's own $finding says so ("a web masthead only").
-       • Nothing in that family is a persistent vertical column, and nothing in it collapses.
-         The masthead is page CHROME on a content site; this is the FRAME of an application.
-       • The app nav-bar-bottom in that meta is the MOBILE answer to the same job. This is the
-         desktop answer. PROPOSED #203, Dave's eye owed: whether Sidebar nav stands alone or
-         is absorbed as a `type` of Navigations. Component promotion is Dave's, so it is
-         surfaced here and not resolved.
+     ⬛ #261 NAV DESIGN PASS — Dave's ask, verbatim: "tackle the nav design". No reference was
+     given ("we'll prompt this"), so this is designed by judgment and every choice below is
+     PROPOSED, not ruled.
 
-     TWO CARRIERS FOR "YOU ARE HERE", never hue alone (Dave is astigmatic; red/yellow are
-     problem hues): aria-current="page" for AT, plus a 3px leading BAR whose presence/absence
-     is a shape difference readable without colour. The bar takes brand red
-     (primary/border/default) because that is what the one gated navigation artefact already
-     does for its current item (Navigations.reference.html:27) — copy the approved artefact,
-     never re-draw. See the meta for the four-theme measurement of that bar.
+     THE FAMILY CLAIM IS MECHANICAL, NOT RHETORICAL. Sidebar-nav, Navigations and Tab-bar now
+     share (a) one NAV FAMILY TOKEN SET block, byte-identical in all three files bar the two
+     search-field vars only the masthead uses, and (b) one SHARED ITEM block giving .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev the same
+     meaning in all three. If the surfaces drift the blocks stop matching and the drift shows
+     up in a diff. THE INDICATOR RULE for the family: the 3px current-location bar sits on the
+     edge the nav touches the content — sidebar inline-start, top nav block-end, tab bar
+     block-start.
 
-     RAIL ACCESSIBLE NAMES SURVIVE COLLAPSE: the label is visually hidden, not removed, so the
-     link keeps its text-derived accessible name and no aria-label has to restate it. -->
+     NEW AT #261: counts on rows, a stated disabled state, a product lockup slot at the top, a
+     user slot at the bottom, tokenised widths, an OVERLAY mode for narrow viewports, and the
+     rail TOOLTIP that closes #203's open finding without composing another component in.
+
+     TWO CARRIERS BEFORE COLOUR, never hue alone (Dave is astigmatic; red is a problem hue):
+     aria-current="page" for AT, plus the 3px bar whose presence/absence is a shape difference.
+     See the manifest for the four-theme measurement of that bar and its Supercharge failure. -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. Added 2026-06-29. */
+   enhancement; headings/body excluded. */
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
-  /* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
-     a .t-cm-* composite from canon/type.css (the Progress-bar precedent, #174). */
-  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --page:#FFFFFF; --panel:#FFFFFF; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --rule:#E1E1E1; --sub-rule:#F0F0F0; --hover:#F0F0F0; --pressed:#CECECE; --indicator:#DB0011; --focus:#305A85; --radius:0; }
-  [data-theme="dark"]{ --page:#1A1A1A; --panel:#1F1F1F; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --rule:#808080; --sub-rule:#808080; --hover:#232323; --pressed:#484848; --indicator:#DB0011; --focus:#4587A7; --radius:0; }
-  *{box-sizing:border-box;}
-  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
+     This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
+     exactly two extra vars (--field-border, --field-active) for the search field it alone
+     contains, and nothing else. That is the
+     family claim made mechanical: if the three surfaces drift, this block stops matching
+     and the drift is visible in a diff rather than in a demo. Every value is a resolved
+     SEMANTIC token (see the manifest below), never an invented hex. */
+  :root{ --nav-ease:160ms cubic-bezier(.4,0,.2,1); --nav-slide:200ms cubic-bezier(.4,0,.2,1);
+         --nav-w:248px; --nav-w-rail:64px; --nav-h:64px; --nav-row:44px; }
+  [data-theme="light"]{
+    --nav-page:#FFFFFF; --nav-surface:#FFFFFF; --nav-text:#1A1A1A; --nav-muted:#1A1A1A;
+    --nav-icon:#1A1A1A; --nav-rule:#E1E1E1; --nav-sub-rule:#F0F0F0; --nav-hover:#F0F0F0;
+    --nav-pressed:#CECECE; --nav-indicator:#DB0011; --nav-focus:#305A85;
+    --nav-disabled:#B7B7B7; --nav-count-bg:#000000; --nav-count-fg:#FFFFFF;
+    --nav-shadow:#00000033; --nav-scrim:#00000033; --nav-radius:0; }
+  [data-theme="dark"]{
+    --nav-page:#1A1A1A; --nav-surface:#1F1F1F; --nav-text:#FFFFFF; --nav-muted:#FFFFFF;
+    --nav-icon:#FFFFFF; --nav-rule:#808080; --nav-sub-rule:#808080; --nav-hover:#232323;
+    --nav-pressed:#484848; --nav-indicator:#DB0011; --nav-focus:#4587A7;
+    --nav-disabled:#808080; --nav-count-bg:#FFFFFF; --nav-count-fg:#333333;
+    --nav-shadow:#000000D9; --nav-scrim:#000000D9; --nav-radius:0; }
 
+  /* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
+     One anatomy, three surfaces. The same class names carry the same meaning in all three
+     files, so a reader who has learned one nav has learned the family.
+     CURRENT LOCATION has THREE carriers and colour is always the third:
+       1. aria-current="page"                     — the machine-readable fact
+       2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
+          or absent, readable with no colour vision at all (sidebar: inline-start; top
+          nav: block-end; tab bar: block-start)
+       3. a surface change to tertiary/background/hover
+     Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
+     Its brand red is COPIED from the gated masthead, not invented; the four-theme
+     measurement (and the Supercharge failure) lives in the metas. */
+  .nv-item{display:flex; align-items:center; gap:12px; min-height:var(--nav-row); padding:0 16px;
+    position:relative; color:var(--nav-text); text-decoration:none; background:transparent;
+    border:0; cursor:pointer; border-radius:var(--nav-radius); transition:background var(--nav-ease);}
+  .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; color:var(--nav-icon);}
+  .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+  .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-align:left; text-box-edge:text text;}
+  /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
+     square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
+     floor, so it never reads as a control the finger cannot land on. */
+  .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--nav-count-bg); color:var(--nav-count-fg);}
+  .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:12px; height:12px; color:var(--nav-icon); transition:transform var(--nav-ease);}
+  .nv-chev svg{width:12px; height:12px; fill:currentColor;}
+  [aria-expanded="true"] > .nv-chev{transform:rotate(180deg);}
+  .nv-item:hover{background:var(--nav-hover);}
+  .nv-item:active{background:var(--nav-pressed);}
+  .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+  .nv-item[aria-current="page"]{background:var(--nav-hover);}
+  /* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
+     place in the reading order, and the count loses its fill so no contrast claim is made on
+     a surface WCAG exempts anyway. */
+  .nv-item[aria-disabled="true"]{color:var(--nav-disabled); cursor:default; pointer-events:none;}
+  .nv-item[aria-disabled="true"] .nv-ic{color:var(--nav-disabled);}
+  .nv-item[aria-disabled="true"] .nv-count{background:transparent; color:var(--nav-disabled);
+    box-shadow:inset 0 0 0 1px var(--nav-disabled);}
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--nav-page); color:var(--nav-text);
+       -webkit-font-smoothing:antialiased; transition:background var(--nav-ease), color var(--nav-ease);}
   .specimens{display:flex; flex-direction:column; gap:32px;}
-  .spec-note{color:var(--muted);}                   /* explicit gap above — leading-trim is ON */
+  .spec-note{color:var(--nav-muted);}
   .frames{display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;}
 
   /* ---- the app frame: bounded, so the column is visible at rest in any still ---- */
-  .sn-frame{display:flex; height:540px; border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; background:var(--page);}
+  .sn-frame{position:relative; display:flex; height:560px; border:1px solid var(--nav-rule);
+            border-radius:var(--nav-radius); overflow:hidden; background:var(--nav-page);}
   .sn-canvas{flex:1; min-width:180px; padding:20px; display:flex; flex-direction:column; gap:12px;}
-  .sn-canvas span{display:block; height:12px; background:var(--sub-rule);}
+  .sn-canvas span{display:block; height:12px; background:var(--nav-sub-rule);}
   .sn-canvas span:nth-child(1){width:44%;} .sn-canvas span:nth-child(2){width:78%;}
   .sn-canvas span:nth-child(3){width:66%;} .sn-canvas span:nth-child(4){width:84%;}
 
-  /* ---- the nav column ---- */
-  .sn{flex:none; width:248px; display:flex; flex-direction:column; background:var(--panel);
-      border-right:1px solid var(--rule); transition:width var(--ease);}
-  .sn.is-rail{width:64px;}
+  /* ---- the column: 248px expanded, 64px rail. Both are TOKENISED widths so a shell can
+         reserve the gutter without reading this file. ---- */
+  .sn{flex:none; width:var(--nav-w); display:flex; flex-direction:column; min-height:0;
+      background:var(--nav-surface); border-right:1px solid var(--nav-rule);
+      transition:width var(--nav-ease);}
+  .sn.is-rail{width:var(--nav-w-rail);}
 
-  .sn-head{display:flex; align-items:center; gap:8px; min-height:56px; padding:0 8px 0 16px;
-           border-bottom:1px solid var(--sub-rule);}
-  .sn .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-            text-box-edge:text text; color:var(--text);}
-  .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--icon);
+  /* ---- PRODUCT LOCKUP SLOT (top). #261: the mark is the masterbrand SVG, never type set to
+         look like one — the #230 ruling, copied from the masthead rather than re-decided. ---- */
+  .sn-head{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px 0 16px;
+           border-bottom:1px solid var(--nav-sub-rule);}
+  .sn-lockup{flex:1; min-width:0; display:flex; align-items:center; gap:10px; overflow:hidden;}
+  .sn-lockup .logo-mark{height:20px; width:auto; display:block; flex:none;}
+  [data-theme="light"] .sn-lockup .logo-mark[data-mode="dark"]{display:none;}
+  [data-theme="dark"]  .sn-lockup .logo-mark[data-mode="light"]{display:none;}
+  .sn-product{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+              text-box-edge:text text; color:var(--nav-text);}
+  .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
              cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-             border-radius:var(--radius);}
+             border-radius:var(--nav-radius);}
   .sn-toggle svg{width:16px; height:16px; fill:currentColor;}
-  .sn-toggle:hover{background:var(--hover);}
-  .sn-toggle:active{background:var(--pressed);}
-  .sn-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .sn.is-rail .sn-head{padding:0 12px; justify-content:center;}
+  .sn-toggle:hover{background:var(--nav-hover);}
+  .sn-toggle:active{background:var(--nav-pressed);}
+  .sn-toggle:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+  .sn.is-rail .sn-head{padding:0 10px; justify-content:center;}
+  .sn.is-rail .sn-lockup{flex:none;}
 
-  .sn-body{flex:1; overflow-y:auto; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+  .sn-body{flex:1; min-height:0; overflow-y:auto; padding:8px 0; display:flex;
+           flex-direction:column; gap:8px;}
   .sn-group{display:flex; flex-direction:column; gap:2px;}
-  .sn-group + .sn-group{border-top:1px solid var(--sub-rule); padding-top:8px;}
-  .sn-group-label{display:block; padding:8px 16px; color:var(--muted); opacity:.72;}
+  .sn-group + .sn-group{border-top:1px solid var(--nav-sub-rule); padding-top:8px;}
+  .sn-group-label{display:block; padding:8px 16px; color:var(--nav-muted); opacity:.72;}
   .sn ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
 
-  .sn-link{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
-           color:var(--text); text-decoration:none; position:relative;
-           transition:background var(--ease);}
-  .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
-  .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
-  .sn .sn-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  /* the indicator sits on the edge the column touches the content — inline-start */
+  .sn .nv-item[aria-current="page"]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
+  .sn-sub .nv-item{padding-left:48px;}
+  .sn-sub[hidden]{display:none;}
+
+  /* ---- USER / ACCOUNT SLOT (bottom) ---- */
+  .sn-foot{border-top:1px solid var(--nav-sub-rule); padding:8px 0;}
+  .sn-avatar{flex:none; width:24px; height:24px; border-radius:50%; display:inline-flex;
+             align-items:center; justify-content:center; background:var(--nav-count-bg);
+             color:var(--nav-count-fg);}
+  /* ⚠ THE USER SLOT DOES NOT WEAR .nv-label, AND THAT IS LOAD-BEARING (#261, measured).
+     In the rail .nv-label is repurposed as a tooltip on the inverted count surface. A two-line
+     user block carrying that class inherited the tooltip fill but kept text/secondary ink, and
+     _validate_state_contrast.py measured it at 1.21:1 light / 1:1 dark — four TEXT fails. The
+     slot therefore carries its own ellipsis rules and is hidden outright in the rail. */
+  .sn-who{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; text-align:left;
+          overflow:hidden;}
+  .sn-who b{font-weight:inherit; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
             text-box-edge:text text;}
-  .sn-link:hover{background:var(--hover);}
-  .sn-link:active{background:var(--pressed);}
-  .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  /* CURRENT LOCATION — aria-current for AT + a 3px leading bar (a SHAPE, present or absent)
-     + a surface change. Colour is the third carrier, never the only one. */
-  .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
+  .sn-who small{color:var(--nav-muted); opacity:.72; overflow:hidden; text-overflow:ellipsis;
+                white-space:nowrap; text-box-edge:text text;}
 
-  /* collapsible group heading */
-  .sn-group-toggle{display:flex; align-items:center; gap:12px; width:100%; min-height:44px;
-                   padding:0 16px; border:0; background:transparent; color:var(--text);
-                   cursor:pointer; text-align:left; border-radius:var(--radius);}
-  .sn-group-toggle .sc{flex:none; display:inline-flex; width:12px; height:12px; color:var(--icon);
-                       transition:transform var(--ease);}
-  .sn-group-toggle .sc svg{width:12px; height:12px; fill:currentColor;}
-  .sn-group-toggle[aria-expanded="true"] .sc{transform:rotate(180deg);}
-  .sn-group-toggle .sn-label{flex:1;}
-  .sn-group-toggle:hover{background:var(--hover);}
-  .sn-group-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .sn-sub .sn-link{padding-left:48px;}
-
-  .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
-
-  /* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse ---- */
-  .sn.is-rail .sn-group-label,
-  .sn.is-rail .sn-brand{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
-                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
-  .sn.is-rail .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
-                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
-  .sn.is-rail .sn-link{justify-content:center; padding:0; width:64px; min-height:44px;}
+  /* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse.
+         #261 closes the #203 open finding: in the rail the hidden label is re-shown as a
+         TOOLTIP on hover and on keyboard focus. It is the SAME element, so the sighted mouse
+         user and the screen-reader user are told the same word, and no aria-label restates
+         anything. Nothing is composed in from another component. ---- */
+  .sn.is-rail .sn-group-label, .sn.is-rail .sn-product,
+  .sn.is-rail .sn-who{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  .sn.is-rail .nv-item{justify-content:center; padding:0; width:var(--nav-w-rail);
+    min-height:var(--nav-row);}
+  .sn.is-rail .nv-item .nv-chev{display:none;}
+  .sn.is-rail .nv-item .nv-count{position:absolute; top:2px; right:8px; min-width:18px; height:18px;
+    padding:0 4px;}
+  .sn.is-rail .nv-label{position:absolute; left:calc(var(--nav-w-rail) - 4px); top:50%;
+    transform:translateY(-50%); z-index:30; width:auto; max-width:180px; flex:none;
+    padding:4px 8px; background:var(--nav-count-bg); color:var(--nav-count-fg);
+    box-shadow:0 2px 8px var(--nav-shadow); opacity:0; pointer-events:none;
+    transition:opacity var(--nav-ease);}
+  .sn.is-rail .nv-item:hover .nv-label,
+  .sn.is-rail .nv-item:focus-visible .nv-label{opacity:1;}
   .sn.is-rail .sn-group + .sn-group{padding-top:8px;}
+
+  /* ---- OVERLAY (mobile): the same column, off-canvas, over a scrim. One class, no fork. ---- */
+  .sn-frame.is-narrow{width:360px;}
+  .is-narrow .sn{position:absolute; inset:0 auto 0 0; z-index:20;
+    transform:translateX(-100%); transition:transform var(--nav-slide);}
+  .is-narrow .sn[data-open="true"]{transform:none; box-shadow:0 0 24px var(--nav-shadow);}
+  .sn-scrim{position:absolute; inset:0; z-index:10; background:var(--nav-scrim); border:0;
+            padding:0; cursor:pointer;}
+  .sn-scrim[hidden]{display:none;}
+  .sn-burger{width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
+             cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .sn-burger:hover{background:var(--nav-hover);}
+  .sn-burger:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+  .sn-burger svg{width:18px; height:18px; fill:currentColor;}
+  .sn-topbar{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px;
+             border-bottom:1px solid var(--nav-rule);}
 
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
@@ -134,197 +224,311 @@
     <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
     <symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
     <symbol id="ic-chevron-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+    <symbol id="ic-alert" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z" fill="currentColor"/></symbol>
   </svg>
 
   <div class="specimens">
-
     <div>
-      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names</p>
+      <p class="spec-note t-cm-caption">Expanded and collapsed to a rail — the same nav, the same accessible names. In the rail the hidden label returns as a tooltip on hover and on focus.</p>
       <div class="frames">
-
-        <!-- 1 · EXPANDED -->
         <div class="sn-frame">
           <nav class="sn" aria-label="Main">
             <div class="sn-head">
-              <span class="sn-brand t-cm-label">Business banking</span>
+              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
               <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn1-body" aria-label="Collapse navigation">
                 <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
               </button>
             </div>
-
             <div class="sn-body" id="sn1-body">
-              <div class="sn-group">
-                <ul>
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
-                </ul>
-              </div>
-
+              <div class="sn-group"><ul>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="nv-label t-cm-label">Overview</span></a></li>
+              </ul></div>
               <div class="sn-group">
                 <span class="sn-group-label t-cm-caption" id="sn1-g1">Money</span>
                 <ul aria-labelledby="sn1-g1">
-                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
+                  <li><a class="nv-item" href="#" aria-current="page"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="nv-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="nv-label t-cm-label">Payments and transfers</span><span class="nv-count t-cm-legal">12</span></a></li>
                 </ul>
               </div>
-
               <div class="sn-group">
-                <button class="sn-group-toggle" type="button" aria-expanded="true" aria-controls="sn1-cards">
-                  <span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
-                  <span class="sn-label t-cm-label">Cards</span>
-                  <span class="sc" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn1-cards">
+                  <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
                 </button>
                 <ul class="sn-sub" id="sn1-cards">
-                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Card list</span></a></li>
-                  <li><a class="sn-link" href="#"><span class="sn-label t-cm-label">Limits and controls</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Card list</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Limits and controls</span><span class="nv-count t-cm-legal">3</span></a></li>
                 </ul>
               </div>
-
               <div class="sn-group">
                 <span class="sn-group-label t-cm-caption" id="sn1-g2">Insight</span>
                 <ul aria-labelledby="sn1-g2">
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="nv-label t-cm-label">Spending</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-alert"/></svg></span><span class="nv-label t-cm-label">Alerts</span><span class="nv-count t-cm-legal">2</span></a></li>
+                  <li><a class="nv-item" href="#" aria-disabled="true" tabindex="-1"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Statements</span></a></li>
                 </ul>
               </div>
             </div>
-
             <div class="sn-foot">
               <ul>
-                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Settings</span></a></li>
+                <li><a class="nv-item" href="#">
+                  <span class="sn-avatar t-cm-legal" aria-hidden="true">RT</span>
+                  <span class="sn-who"><b class="t-cm-label">Ravi Tan</b><small class="t-cm-legal">Treasury operations</small></span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </a></li>
               </ul>
             </div>
           </nav>
           <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         </div>
-
-        <!-- 2 · RAIL (collapsed) -->
         <div class="sn-frame">
           <nav class="sn is-rail" aria-label="Main, collapsed">
             <div class="sn-head">
-              <span class="sn-brand t-cm-label">Business banking</span>
+              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
               <button class="sn-toggle" type="button" aria-expanded="false" aria-controls="sn2-body" aria-label="Expand navigation">
                 <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg>
               </button>
             </div>
-
             <div class="sn-body" id="sn2-body">
-              <div class="sn-group">
-                <ul>
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
-                </ul>
-              </div>
+              <div class="sn-group"><ul>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="nv-label t-cm-label">Overview</span></a></li>
+              </ul></div>
               <div class="sn-group">
                 <span class="sn-group-label t-cm-caption" id="sn2-g1">Money</span>
                 <ul aria-labelledby="sn2-g1">
-                  <li><a class="sn-link" href="#" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="sn-label t-cm-label">Payments and transfers</span></a></li>
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span><span class="sn-label t-cm-label">Cards</span></a></li>
+                  <li><a class="nv-item" href="#" aria-current="page"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="nv-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="nv-label t-cm-label">Payments and transfers</span><span class="nv-count t-cm-legal">12</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn2-cards">
+                  <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn2-cards">
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Card list</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Limits and controls</span><span class="nv-count t-cm-legal">3</span></a></li>
                 </ul>
               </div>
               <div class="sn-group">
                 <span class="sn-group-label t-cm-caption" id="sn2-g2">Insight</span>
                 <ul aria-labelledby="sn2-g2">
-                  <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="sn-label t-cm-label">Spending</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="nv-label t-cm-label">Spending</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-alert"/></svg></span><span class="nv-label t-cm-label">Alerts</span><span class="nv-count t-cm-legal">2</span></a></li>
+                  <li><a class="nv-item" href="#" aria-disabled="true" tabindex="-1"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Statements</span></a></li>
                 </ul>
               </div>
             </div>
-
             <div class="sn-foot">
               <ul>
-                <li><a class="sn-link" href="#"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Settings</span></a></li>
+                <li><a class="nv-item" href="#">
+                  <span class="sn-avatar t-cm-legal" aria-hidden="true">RT</span>
+                  <span class="sn-who"><b class="t-cm-label">Ravi Tan</b><small class="t-cm-legal">Treasury operations</small></span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </a></li>
               </ul>
             </div>
           </nav>
           <div class="sn-canvas" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         </div>
-
       </div>
     </div>
 
+    <div>
+      <p class="spec-note t-cm-caption">Overlay — under 768px the same column slides in over a scrim instead of holding a gutter. Open it from the menu button; Escape or the scrim closes it and focus returns.</p>
+      <div class="frames">
+        <div class="sn-frame is-narrow" data-overlay>
+          <div class="sn-canvas" aria-hidden="true" style="padding:0">
+            <div class="sn-topbar">
+              <button class="sn-burger" type="button" aria-expanded="false" aria-controls="sn3-body" aria-label="Open navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></svg>
+              </button>
+              <span class="sn-product t-cm-label">Accounts</span>
+            </div>
+            <div style="padding:20px; display:flex; flex-direction:column; gap:12px">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <button class="sn-scrim" type="button" aria-label="Close navigation" hidden></button>
+          <nav class="sn" aria-label="Main" data-open="false">
+            <div class="sn-head">
+              <span class="sn-lockup"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"><span class="sn-product t-cm-label">Business banking</span></span>
+              <button class="sn-toggle" type="button" aria-expanded="true" aria-controls="sn3-body" aria-label="Collapse navigation">
+                <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg>
+              </button>
+            </div>
+            <div class="sn-body" id="sn3-body">
+              <div class="sn-group"><ul>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-home"/></svg></span><span class="nv-label t-cm-label">Overview</span></a></li>
+              </ul></div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn3-g1">Money</span>
+                <ul aria-labelledby="sn3-g1">
+                  <li><a class="nv-item" href="#" aria-current="page"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span><span class="nv-label t-cm-label">Accounts</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span><span class="nv-label t-cm-label">Payments and transfers</span><span class="nv-count t-cm-legal">12</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <button class="nv-item" type="button" aria-expanded="true" aria-controls="sn3-cards">
+                  <span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                  <span class="nv-label t-cm-label">Cards</span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </button>
+                <ul class="sn-sub" id="sn3-cards">
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Card list</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-label t-cm-label">Limits and controls</span><span class="nv-count t-cm-legal">3</span></a></li>
+                </ul>
+              </div>
+              <div class="sn-group">
+                <span class="sn-group-label t-cm-caption" id="sn3-g2">Insight</span>
+                <ul aria-labelledby="sn3-g2">
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chart"/></svg></span><span class="nv-label t-cm-label">Spending</span></a></li>
+                  <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-alert"/></svg></span><span class="nv-label t-cm-label">Alerts</span><span class="nv-count t-cm-legal">2</span></a></li>
+                  <li><a class="nv-item" href="#" aria-disabled="true" tabindex="-1"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Statements</span></a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="sn-foot">
+              <ul>
+                <li><a class="nv-item" href="#"><span class="nv-ic" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-settings"/></svg></span><span class="nv-label t-cm-label">Settings</span></a></li>
+                <li><a class="nv-item" href="#">
+                  <span class="sn-avatar t-cm-legal" aria-hidden="true">RT</span>
+                  <span class="sn-who"><b class="t-cm-label">Ravi Tan</b><small class="t-cm-legal">Treasury operations</small></span>
+                  <span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span>
+                </a></li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="application/json" id="token-manifest">
-  {
-    "component": "Sidebar nav",
-    "vars": {
-      "--page": "background/default",
-      "--panel": "tertiary/background/default",
-      "--text": "text/default",
-      "--muted": "text/secondary",
-      "--icon": "icon/default",
-      "--rule": "divider/border/section",
-      "--sub-rule": "divider/border/subsection",
-      "--hover": "tertiary/background/hover",
-      "--pressed": "form/background/pressed",
-      "--indicator": "primary/border/default",
-      "--focus": "focus/ring",
-      "--radius": "border-radius/surface"
+{
+  "component": "Sidebar nav",
+  "vars": {
+    "--nav-page": "background/default",
+    "--nav-surface": "tertiary/background/default",
+    "--nav-text": "text/default",
+    "--nav-muted": "text/secondary",
+    "--nav-icon": "icon/default",
+    "--nav-rule": "divider/border/section",
+    "--nav-sub-rule": "divider/border/subsection",
+    "--nav-hover": "tertiary/background/hover",
+    "--nav-pressed": "form/background/pressed",
+    "--nav-indicator": "primary/border/default",
+    "--nav-focus": "focus/ring",
+    "--nav-disabled": "tertiary/text/disabled",
+    "--nav-count-bg": "secondary/background/default",
+    "--nav-count-fg": "text/on-inverse",
+    "--nav-shadow": "elevation/functional",
+    "--nav-scrim": "elevation/functional",
+    "--nav-radius": "border-radius/surface"
+  },
+  "contrastPairs": [
+    {
+      "fg": "text/default",
+      "bg": "tertiary/background/default",
+      "context": "text"
     },
-    "contrastPairs": [
-      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
-      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
-      { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" }
-    ],
-    "knownFindings": [
-      "COLLISION CHECKED, NOT ASSUMED (#203 step 0). Navigations.reference.html renders a horizontal masthead only — 64 lines, one <header>. Its meta CLAIMS a wider family (anchors, nav-bar-bottom, nav-bar-top) that the artefact does not contain, and its own $finding admits 'a web masthead only'. Nothing in that family is a persistent vertical column and nothing in it collapses. PROPOSED #203, Dave's eye owed: stand alone, or become a `type` of Navigations. Component promotion is on the DO-NOT-RULE list, so this is surfaced and left open.",
-      "CURRENT-LOCATION CARRIERS: aria-current=\"page\" (AT) + a 3px leading BAR whose presence/absence is a shape difference + a surface change to tertiary/background/hover. Colour is the third carrier and never the only one, because Dave is astigmatic and red is a problem hue.",
-      "THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION. Navigations.reference.html:27 marks its current masthead item with an inset box-shadow in the same brand red. This copies the approved artefact. IT IS NOT DECLARED AS A contrastPair, and here is the measurement that decided it, taken against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover, the surface the bar actually sits beside on a current row: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. On the resting raised surface the same red is 5.22/3.16 in three themes and 4.84/2.88 FAIL in Supercharge dark. Declaring it would be a green that cannot fail in the theme where it is false — the exact green the #174 receipt refused to write. This is why the SHAPE carrier (bar present or absent) plus aria-current do the work, and why colour is third. PROPOSED #203, Dave's eye owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.",
-      "RAIL ACCESSIBLE NAMES SURVIVE THE COLLAPSE: labels are visually hidden (clip-path), not removed, so each link keeps a text-derived accessible name and no aria-label restates it. PROPOSED #203: a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here (it would be inventing a composition rule).",
-      "44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .sn-link is min-height:44px, the rail item is 64x44, the collapse toggle is 44x44, the group toggle is min-height:44px.",
-      "SQUARE CORNERS throughout (border-radius/surface resolves 0). Console's ruled 20px surface radius (s199-D3) arrives through canon.css at the review layer, not from this file.",
-      "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
-    ],
-    "requiredAria": ["<nav", "aria-label", "aria-current=\"page\"", "aria-expanded", "aria-controls", "aria-labelledby"]
-  }
+    {
+      "fg": "text/secondary",
+      "bg": "tertiary/background/default",
+      "context": "text"
+    },
+    {
+      "fg": "icon/default",
+      "bg": "tertiary/background/default",
+      "context": "ui"
+    },
+    {
+      "fg": "text/default",
+      "bg": "tertiary/background/hover",
+      "context": "text"
+    },
+    {
+      "fg": "icon/default",
+      "bg": "tertiary/background/hover",
+      "context": "ui"
+    },
+    {
+      "fg": "text/on-inverse",
+      "bg": "secondary/background/default",
+      "context": "ui"
+    }
+  ],
+  "knownFindings": [
+    "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Sidebar-nav, Navigations and Tab-bar are now ONE FAMILY with one anatomy and one token set. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains; the .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev class grammar is the same in all three. The family claim is therefore checkable by diff, not by assertion.",
+    "THE INDICATOR RULE, stated once for the family: the 3px current-location bar sits on the edge the nav touches the content. Sidebar inline-start, top nav block-end, tab bar block-start. That is why the three surfaces look related without any of them being a copy of another.",
+    "CURRENT-LOCATION CARRIERS unchanged from #203 and still three: aria-current='page' (AT) + the bar (a SHAPE, present or absent) + a surface change to tertiary/background/hover. Colour is third and never alone.",
+    "THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes \u2014 primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave's eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.",
+    "#203's OPEN RAIL FINDING IS CLOSED HERE. It read: 'a rail item has no visible name, so a hovering mouse user gets nothing \u2014 composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.' #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.",
+    "COUNTS are new at #261 and are the one rounded thing in the column \u2014 Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.",
+    "DISABLED is aria-disabled + tabindex=-1, not a removed row: the destination still reads in order and still says why it is unavailable. The count on a disabled row drops its fill for a 1px outline so no contrast claim is made on a surface WCAG exempts.",
+    "44px MIN HIT AREA enforced by hand \u2014 no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.",
+    "THE PRODUCT LOCKUP is the masterbrand SVG plus a product word, copied from the masthead (#230, Dave twice: 'use this as teh default logo masterbrand-light-colour'). Type set to look like a logo is the defect that ruling exists to stop.",
+    "The snippet gate resolves tokens against tokens/semantic-colour.json \u2014 the MONO base only \u2014 so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
+  ],
+  "requiredAria": [
+    "<nav",
+    "aria-label",
+    "aria-current=\"page\"",
+    "aria-expanded",
+    "aria-controls",
+    "aria-labelledby",
+    "aria-disabled"
+  ]
+}
   </script>
   <script type="application/json" id="behaviour-manifest">
-  {
-    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/sidebar-nav.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
-    "component": "component:sidebar-nav",
-    "script": "knowledge/snippets/Sidebar-nav.reference.html#script",
-    "partial": null,
-    "events": [
-      "click",
-      "keydown"
-    ],
-    "fallback": "Every row is a native `<a>` and stays focusable and in the tab order; the authored `aria-current=\"page\"` stands and both its visual carriers (the 3px leading bar and the surface change) follow it, because they are bound to the attribute in CSS. What goes: clicking another row never moves `aria-current`, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group cannot be toggled (it renders in the `aria-expanded`/`hidden` state the markup authors), and the rail collapse toggle does nothing."
-  }
+{
+  "$generated": "by knowledge/gen_component_partials.py from knowledge/components/sidebar-nav.meta.json `behaviour` (s234-D5 \u2014 the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+  "component": "component:sidebar-nav",
+  "script": "knowledge/snippets/Sidebar-nav.reference.html#script",
+  "partial": null,
+  "events": [
+    "click",
+    "keydown"
+  ],
+  "fallback": "Every destination is a native <a>, focusable and in the tab order; the authored aria-current=\"page\" stands and both its visual carriers (the 3px leading bar and the surface change) follow it, because they are bound to the attribute in CSS. The rail tooltip still appears on hover and focus \u2014 it is CSS, not script. What goes: clicking another row never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group renders in whatever aria-expanded/hidden state the markup authors, the rail collapse toggle does nothing, and the overlay cannot be opened or closed."
+}
   </script>
 
   <script>
-    // BEHAVIOUR. "You are here" is a STATE, not an authored fact: the measured defect was a static
-    // aria-current that no interaction could move. Selection now moves the attribute, and both
-    // visual carriers (the 3px leading bar, the surface change) are bound to [aria-current="page"]
-    // in CSS above — so they follow the attribute rather than being set a second time in script.
-    // Each <nav class="sn"> is its own scope: the two specimens do not share a current location.
+    // BEHAVIOUR. "You are here" is a STATE, not an authored fact: the measured defect at #203 was
+    // a static aria-current that no interaction could move. Selection moves the attribute; both
+    // visual carriers are bound to [aria-current="page"] in CSS, so they follow it rather than
+    // being set a second time here. Each <nav class="sn"> is its own scope.
     document.querySelectorAll('nav.sn').forEach(function(nav){
-      var links = function(){ return Array.prototype.slice.call(nav.querySelectorAll('.sn-link')); };
-
+      var rows = function(){ return Array.prototype.slice.call(nav.querySelectorAll('a.nv-item')); };
       function setCurrent(link){
-        links().forEach(function(l){
+        rows().forEach(function(l){
           if (l === link){ l.setAttribute('aria-current','page'); }
           else { l.removeAttribute('aria-current'); }
         });
       }
-
       nav.addEventListener('click', function(e){
-        var link = e.target.closest && e.target.closest('.sn-link');
-        if (!link) return;
+        var link = e.target.closest && e.target.closest('a.nv-item');
+        if (!link || link.getAttribute('aria-disabled') === 'true') return;
         e.preventDefault();            // href="#" is a specimen stub, not a destination
         setCurrent(link);
       });
-
       nav.addEventListener('keydown', function(e){
-        var link = e.target.closest && e.target.closest('.sn-link');
+        var link = e.target.closest && e.target.closest('a.nv-item');
         if (!link) return;
-        // Enter already activates a link natively (it fires click, handled above). Space does not,
-        // so it is added by hand — a destination row reads as a control and users press both.
+        // Enter activates a link natively. Space does not, so it is added by hand — a destination
+        // row reads as a control and users press both.
         if (e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); setCurrent(link); return; }
         // Arrow keys walk the column. FOCUS ONLY — no roving tabindex: a nav list is not a
         // composite widget, and taking its destinations out of the tab order would be a
-        // regression for anyone who tabs. Hidden rows (a collapsed group) are skipped.
-        var visible = links().filter(function(l){ return l.offsetParent !== null; });
+        // regression for anyone who tabs. Hidden and disabled rows are skipped.
+        var visible = rows().filter(function(l){
+          return l.offsetParent !== null && l.getAttribute('aria-disabled') !== 'true'; });
         var i = visible.indexOf(link), n = null;
         if (e.key === 'ArrowDown') n = (i + 1) % visible.length;
         else if (e.key === 'ArrowUp') n = (i - 1 + visible.length) % visible.length;
@@ -332,11 +536,10 @@
         else if (e.key === 'End') n = visible.length - 1;
         if (n !== null && visible.length){ e.preventDefault(); visible[n].focus(); }
       });
-
-      // Collapsible group — Accordion.reference.html's disclosure, ARIA first: aria-expanded on
-      // the button, `hidden` on the list it already names through aria-controls. The chevron
-      // rotation is CSS on [aria-expanded="true"], so it follows the attribute too.
-      nav.querySelectorAll('.sn-group-toggle').forEach(function(btn){
+      // Collapsible group — the disclosure pattern, ARIA first: aria-expanded on the button,
+      // `hidden` on the list it already names through aria-controls. The chevron rotation is CSS
+      // on [aria-expanded="true"], so it follows the attribute too.
+      nav.querySelectorAll('button.nv-item[aria-controls]').forEach(function(btn){
         var sub = document.getElementById(btn.getAttribute('aria-controls'));
         btn.addEventListener('click', function(){
           var open = btn.getAttribute('aria-expanded') === 'true';
@@ -344,10 +547,8 @@
           if (sub) sub.hidden = open;
         });
       });
-
-      // Collapse to the rail — mechanics copied from App-shell-side-nav.reference.html, scoped to
-      // this column instead of a shell. The labels are hidden, never removed, so the accessible
-      // names survive the collapse; only the width, the chevron and the nav's own name change.
+      // Collapse to the rail. The labels are hidden, never removed, so the accessible names
+      // survive; only the width, the chevron and the nav's own name change.
       var toggle = nav.querySelector('.sn-toggle');
       if (toggle) toggle.addEventListener('click', function(){
         var toRail = !nav.classList.contains('is-rail');
@@ -357,6 +558,32 @@
         nav.setAttribute('aria-label', toRail ? 'Main, collapsed' : 'Main');
         var use = toggle.querySelector('use');
         if (use) use.setAttribute('href', toRail ? '#ic-chevron-right' : '#ic-chevron-left');
+      });
+    });
+
+    // OVERLAY. A disclosure over a scrim, not a dialog: no role, no trap, no aria-modal — the
+    // column is still the same <nav> landmark and claiming otherwise would lie to AT. What it
+    // owes the keyboard is the return trip: Escape closes and focus goes back to the button.
+    document.querySelectorAll('[data-overlay]').forEach(function(frame){
+      var burger = frame.querySelector('.sn-burger');
+      var scrim  = frame.querySelector('.sn-scrim');
+      var col    = frame.querySelector('nav.sn');
+      if (!burger || !col) return;
+      function setOpen(open){
+        col.setAttribute('data-open', String(open));
+        burger.setAttribute('aria-expanded', String(open));
+        burger.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+        if (scrim) scrim.hidden = !open;
+        if (open){ var first = col.querySelector('a.nv-item'); if (first) first.focus(); }
+      }
+      burger.addEventListener('click', function(){
+        setOpen(col.getAttribute('data-open') !== 'true');
+      });
+      if (scrim) scrim.addEventListener('click', function(){ setOpen(false); burger.focus(); });
+      frame.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && col.getAttribute('data-open') === 'true'){
+          setOpen(false); burger.focus();
+        }
       });
     });
   </script>
