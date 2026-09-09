@@ -3,31 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Filter/toolbar bar — reference (Layer 2 composition)</title>
-<!-- LAYER-2 LOCK-UP, itinerary row 120 ("Lock-up — filter / toolbar bar", notes: "Above
-     tables/lists."). ⛔ THE CARDINAL RULE OF LAYER 2 — COMPOSE, NEVER RE-DRAW. Every visible
-     atom below is BORROWED VERBATIM from a gated reference file:
+<title>Filter/toolbar bar — reference implementation (PROPOSED #261, design pass)</title>
+<!-- STATUS: PROPOSED (not ruled). SESSION: #261, lane F — Dave's #3 nominated dashboard element.
+     GOVERNING RULINGS, quoted verbatim:
+       s258-D1 — "Rule 2a of ADS-generate-from-canon ('Copy the script address with the markup;
+         author no JS') is REMOVED. The author MAY write JavaScript - cross-component wiring
+         (filter->grid/KPI/chart, nav state->storage) and beyond; Dave wants the creativity, not
+         only the wiring."
+       s258-D2 — "Builds are AMBITIOUS BY DEFAULT: every interactive element on a generated page is
+         assumed to work; generated mock data is rich and deep (entities, currencies, time series,
+         relationships) so that behaviours and interactions have something to act on. Writing code
+         is an avenue to innovation - the interface is tied down, the code is not."
+     So THIS BAR DRIVES A GRID. The contract it emits is documented in the meta under `edges`
+     (`drivesConsumer`), and the demo consumer below (`.demo-grid`, chrome — the real grid is the
+     `data-grid` component's business) subscribes to it. Nothing here reaches the network.
+
+     ⛔ THE CARDINAL RULE OF LAYER 2 — COMPOSE, NEVER RE-DRAW. Every visible atom below is
+     BORROWED VERBATIM from a gated reference file:
        Search-field.reference.html      -> .search / .mag / .clear (boxed variant)
        Dropdown.reference.html          -> .dd / .trigger / .menu / .opt (boxed variant)
        Segmented-control.reference.html -> .seg / .ind / button (PROMOTED from View-options,
-                                            Dave 2026-07-24 — this is the general atom now, so
-                                            the toolbar's view switch consumes Segmented-control,
-                                            not the superseded View-options file)
+                                            Dave 2026-07-24)
        Tags.reference.html              -> .tag / .x / .filterbar (dismissible applied-filter
                                             chips, incl. its own container-query collapse)
-     NOTHING HERE IS A NEW ATOM. The `.ftb-*` classes are LAYOUT ONLY (the Meter organism
-     precedent: zero new visual vocabulary at the organism layer). Custom-property names are
-     kept IDENTICAL to each source file — a straight grep against any of the four originals is
-     a valid diff (no var was renamed; every value cross-checked collision-free at build time).
+       Links.reference.html             -> .lnk (clear-all / retry). ONE DECLARED DEVIATION: the
+                                            source selector is `a.lnk`; the toolbar's clear-all and
+                                            retry are ACTIONS, not destinations, so they must be
+                                            <button> (4.1.2). The selector is widened to
+                                            `:is(a.lnk,button.lnk)` and a button reset is added —
+                                            the PAINT is unmodified. Declared, not silent.
+     NOTHING HERE IS A NEW ATOM. The `.ftb-*` classes are LAYOUT + STATE ONLY.
 
-     ⚑ s210-D3 DISCIPLINE (carried from the Meter organism, #210): THE BAR DECLARES NO WIDTH OF
-     ITS OWN. `.ftb-*` never sets `max-width`/`width` — the CONTAINER does (`.demo-*` below is
-     DEMO CHROME ONLY, deletable without changing the component).
+     ⚑ s210-D3 DISCIPLINE: THE BAR DECLARES NO WIDTH OF ITS OWN. `.ftb-*` never sets
+     `max-width`/`width` — the CONTAINER does (`.demo-*` is DEMO CHROME ONLY, deletable).
 
-     TWO ARRANGEMENTS: A — full toolbar (search + two filter dropdowns + view switch) with an
-     applied-filters chip row underneath (Tags' own container-query collapse, untouched).
-     B — compact/dense toolbar for "above a table/list" (underline search + sm segmented
-     control), the itinerary row's own stated context. -->
+     ⚑ THE DATE RANGE IS A TRIGGER, NOT A CALENDAR. Presets resolve here; "Custom range…" hands
+     off to the `date-range-picker` component (meta edge `delegatesTo`). Partially copying that
+     component's calendar body would be exactly the re-draw the cardinal rule forbids.
+
+     TWO ROWS THAT COLLAPSE TO ONE. Controls row + context row (count · chips · clear-all).
+     >=1400px container: one row. <=680px: search claims the row. <=400px (375px phone, WCAG
+     1.4.10 reachable to 320px): everything stacks full width, no horizontal scroll.
+
+     FIVE STATES on `[data-ftb-state]`: no-filters · filtered · loading · empty · error. -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -75,6 +93,13 @@
     /* ---- Segmented-control.reference.html, verbatim ---- */
     --surface:#FFFFFF; --sel:#000000; --on-sel:#FFFFFF; --hit:44px;
     --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
+    /* ---- #261 design pass: the toolbar's own status + consumer bindings ----
+       TWO-RED LAW s151-D1: minus/red is rag/error-ink (#DA1A00 light, #F6604C dark); plus/green
+       pairs with it as rag/success-ink (#137F3C / #66CC8D). Plus/minus numerals are the ONLY
+       coloured text here — the error MESSAGE also carries a triangle glyph + a text label, so the
+       state is never signalled by colour alone (1.4.1). */
+    --error-ink:#DA1A00; --pos-ink:#137F3C;
+    --tbl-head:#F0F0F0; --tbl-border:#E1E1E1;
   }
   [data-theme="dark"]{
     --bg:#FFFFFF00; --hover:#232323; --border:#808080; --border-active:#FFFFFF; --text:#FFFFFF; --icon:#FFFFFF; --page:#1A1A1A;
@@ -85,8 +110,15 @@
     --border-radius-control:0; --border-radius-surface:0;
     --surface:#1F1F1F; --sel:#FFFFFF; --on-sel:#333333; --hit:44px;
     --seg-rad-s:0; --seg-thumb-s:0; --seg-rad-xs:0; --seg-thumb-xs:0;
+    --error-ink:#F6604C; --pos-ink:#66CC8D;
+    --tbl-head:#1F1F1F; --tbl-border:#808080;
   }
   *{box-sizing:border-box;}
+  /* THE [hidden] REMEDY (#218 W3 F1 class, s218-D5 clause 3). Several nodes here are painted by a
+     display rule of their own (`.ftb-msg{display:flex}`, `.demo-cards{display:grid}`, a <table>),
+     and the UA's `[hidden]{display:none}` is specificity (0,1,0) — it LOSES to every one of them.
+     Without this line an element would render while `hidden` told assistive tech it was gone. */
+  [hidden]{display:none !important;}
   body{margin:0; padding:2.5rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 
@@ -110,10 +142,7 @@
   .search:focus-within{box-shadow:inset 0 -2px 0 var(--border-active);}
   .search input:focus-visible{outline:none;}
   /* BOXED (full border) — s227-D7 L8: "search radius moves to the boxed variant only, underline
-     stays straight." The reuse above borrows Search-field's boxed variant, so it takes the same
-     radius; only HALF the ruling had landed (the .cn-search-field site had it, this one did not),
-     which left a square box between an 8px dropdown and 8px chips on one toolbar row. The
-     underline `.search` above is deliberately untouched — that is the other half of the ruling. */
+     stays straight." */
   .search.boxed{border:1px solid var(--border); padding:0 8px; border-radius:var(--border-radius-control);}
   .search.boxed:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
   .clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
@@ -123,12 +152,7 @@
 
   /* ===== Dropdown.reference.html, verbatim (boxed) ===== */
   .dd{position:relative; min-width:0;}
-  /* .dd > label rule DROPPED — the label is sr-only in this bar (inline-styled, see markup), so no
-     visible font declaration is needed for it (TYPE-002: nothing to bind for an off-screen node). */
-  /* .trigger's font is OMITTED here exactly as it is in the closest-fitting canon composite —
-     the markup carries `t-cm-button` (16/500, exact match) instead of the raw font (TYPE-002 fix;
-     Dropdown.reference.html itself still carries this raw declaration — untouched, this lane's
-     file only routes ITS OWN copy through the composite). */
+  /* .trigger's font is OMITTED — the markup carries `t-cm-button` (16/500, exact match). */
   .trigger{width:100%; height:48px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; gap:8px;
     background:var(--field-bg); color:var(--text); border:0; border-bottom:1px solid var(--border); border-radius:var(--border-radius-control);
     cursor:pointer; transition:background var(--ease), border-color var(--ease), box-shadow var(--ease); white-space:nowrap;}
@@ -144,10 +168,8 @@
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
   .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
-  /* .opt's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-label` (16/400, exact match)
-     instead. The selected-state bold (`font-weight:500`) is DROPPED as a deliberate simplification
-     — selection is already signalled without colour alone by the .tick checkmark + aria-selected,
-     so no second (font-weight) channel is required; declared, not a silent omission. */
+  /* .opt's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-label` (16/400). Selection is
+     signalled by the .tick checkmark + aria-selected, never by colour alone. */
   .opt{display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:0 12px;
     color:var(--text); cursor:pointer;}
   .opt:hover{background:var(--item-hover);}
@@ -158,24 +180,16 @@
   .sep{height:1px; background:var(--divider); margin:8px 0;}
 
   /* ===== Segmented-control.reference.html, verbatim ===== */
-/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
-     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
-     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
-     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
-     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
-     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
-     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
-     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
-     thumb radii are geometrically correct for this construction. */
+  /* A1 REPAIR (#227) — the atom's own construction is copied verbatim: scale-selected locals,
+     repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time derivation
+     (s200-D1) puts concrete numbers on disk and the CSS only READS them. */
   .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
     position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
   .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
   .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}   /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
   .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}    /* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
-  /* .seg button / .seg.sm button fonts are OMITTED here exactly as they are in
-     Segmented-control.reference.html itself — canon/type.css already binds `.seg.sm button` (12/500)
-     and `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9); every instance in this file's
-     markup carries an explicit `.sm`/`.md` size class, so the composite always resolves. */
+  /* .seg button fonts are OMITTED — canon/type.css binds `.seg.sm button` (12/500) and
+     `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9). */
   .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text); cursor:pointer; transition:color var(--ease);}
   .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
@@ -188,8 +202,7 @@
   .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit); min-height:var(--hit); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
   /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
      (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
-     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
-     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file. */
   /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
 /* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
    registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
@@ -201,9 +214,7 @@
   /* ===== AUTO-PARTIAL seg-concentric END ===== */
 
   /* ===== Tags.reference.html, verbatim (dismissible + applied-filters bar) ===== */
-  /* .tag's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-caption` (14/400, exact match)
-     instead of the raw font (Tags.reference.html itself still carries this raw declaration —
-     untouched; this lane's file only routes ITS OWN copy through the composite). */
+  /* .tag's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-caption` (14/400). */
   .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control);
     background:transparent; color:var(--text); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--tags-ease), opacity var(--tags-ease), margin var(--tags-ease), padding var(--tags-ease), border-width var(--tags-ease);}
@@ -224,45 +235,146 @@
     .filterbar .tag{ width:100%; height:auto; min-height:2.4em; justify-content:space-between; margin:0 0 8px 0; }
   }
 
+  /* ===== Links.reference.html, verbatim paint — selector widened to admit a <button> ===== */
+  :is(a.lnk,button.lnk){color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; cursor:pointer;}
+  :is(a.lnk,button.lnk):hover{text-decoration-thickness:2px;}
+  :is(a.lnk,button.lnk):active{text-decoration-thickness:2px;}                 /* pressed == hover (combined state) */
+  :is(a.lnk,button.lnk):focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+  :is(a.lnk,button.lnk)[aria-disabled="true"]{color:var(--text-disabled); text-decoration-color:var(--text-disabled); pointer-events:none;}
+  /* the button reset + the 24px hit floor (s116-D1 dial-down floor; the visible run of text is
+     shorter than 24px tall, so the target is grown by a centred pseudo-element, exactly the idiom
+     Tags' own `.x` uses) */
+  button.lnk{position:relative; padding:0; border:0; background:transparent;}
+  button.lnk::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:calc(100% + 8px); height:24px;}
+
   /* ============================================================================
-     THE ORGANISM — .ftb-* ARRANGEMENT ONLY. s210-D3: no width declared here.
+     THE ORGANISM — .ftb-* ARRANGEMENT + STATE ONLY. s210-D3: no width declared here.
      ============================================================================ */
-  .ftb-outer{container-type:inline-size;}
-  .ftb{display:flex; flex-direction:column; gap:16px;}
-  .ftb-row{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;}
-  .ftb-search{flex:1 1 240px; min-width:200px;}
-  .ftb-filter{flex:0 1 200px; min-width:160px;}
-  .ftb-view{flex:none; margin-left:auto;}
-  .ftb-chips{display:flex; flex-wrap:wrap; align-items:center; gap:8px 0;}
-  /* RESPONSIVE COLLAPSE — container-query, matching Tags'/Button's own house idiom:
-     wide → one row, search grows, filters share space, view switch pinned right.
-     ≤680px container → filters + view switch wrap to their own row under the search field.
-     ≤400px (incl. 320px, WCAG 1.4.10) → every control goes full width, stacked. */
+  .ftb-outer{container-type:inline-size; position:sticky; top:var(--ftb-top,0px); z-index:30;
+    background:var(--page); transition:box-shadow var(--ease);}
+  .ftb-outer[data-stuck="true"]{box-shadow:0 4px 16px var(--shadow);}
+  .ftb{display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px;
+    padding:12px 0; border-bottom:1px solid var(--divider);}
+
+  /* ---- row 1: the controls ---- */
+  .ftb-primary{display:flex; flex:1 1 100%; flex-wrap:wrap; align-items:flex-end; gap:8px 12px; min-width:0;}
+  .ftb-search{flex:1 1 220px; min-width:180px;}
+  .ftb-ctl{flex:0 0 auto; min-width:0;}
+  .ftb-actions{display:flex; align-items:flex-end; gap:8px; flex:0 0 auto; margin-left:auto;}
+
+  /* ---- row 2: the context (count · chips · clear-all) ---- */
+  .ftb-context{display:flex; flex:1 1 100%; flex-wrap:wrap; align-items:center; gap:4px 12px; min-width:0;}
+  .ftb-status{display:flex; align-items:center; gap:8px; min-width:0; white-space:nowrap;}
+  .ftb-status .num{color:var(--text);}
+  .ftb-hint{opacity:var(--alpha-64);}
+  /* THE CHIP GROUP HAS A FLOOR. Measured at #261: with `flex:0 1 auto` and no min-width the group
+     was shrunk by its neighbours to ~10px and every chip rendered as a single clipped letter. A
+     chip row that cannot show a chip is worse than a chip row that wraps. */
+  .ftb-chips{flex:1 1 200px; min-width:200px;}
+  .ftb-chips .row{display:flex; flex-wrap:wrap; align-items:center; min-width:0;}
+  .ftb-clear{flex:0 0 auto; margin-left:auto;}
+
+  /* the overflow chip: a Tags chip acting as a disclosure. No new vocabulary — the +N is a
+     BUTTON element carrying .tag, so it takes the chip paint and the chip's own hit floor. */
+  button.tag{cursor:pointer; font-size:inherit;}
+  button.tag:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .tag[hidden]{display:none;}
+
+  /* ---- TWO ROWS COLLAPSE TO ONE on a wide container ---- */
+  /* Both groups declare a BASIS and a floor, and `.ftb` wraps. So the two rows become one only
+     while both groups fit at their floors — the collapse is a consequence of the measurement, not
+     a claim the author makes about the width. */
+  @container (min-width: 1400px){
+    .ftb-primary{flex:1 1 620px;}
+    .ftb-context{flex:1 1 360px; min-width:360px; justify-content:flex-end;}
+  }
+  /* ---- reflow: 680 → search owns the row; 400 → everything stacks (375px phone, no h-scroll) ---- */
   @container (max-width: 680px){
     .ftb-search{flex-basis:100%;}
+    .ftb-actions{margin-left:0;}
   }
   @container (max-width: 400px){
-    .ftb-row{flex-direction:column; align-items:stretch;}
-    .ftb-filter,.ftb-view{flex-basis:auto; width:100%; margin-left:0;}
-    .ftb-view .seg{width:100%;}
-    .ftb-view .seg button{flex:1;}
+    .ftb-primary{flex-direction:column; align-items:stretch;}
+    .ftb-ctl,.ftb-actions{flex-basis:auto; width:100%; margin-left:0;}
+    .ftb-actions{flex-direction:column; align-items:stretch;}
+    .ftb-ctl .seg,.ftb-actions .seg{width:100%;}
+    .ftb-ctl .seg button,.ftb-actions .seg button{flex:1;}
+    .ftb-clear{margin-left:0;}
+    .ftb-chips{min-width:0;}
+  }
+  /* At the one-chip-per-row collapse Tags' label may still be longer than the phone. Truncate it
+     HERE, scoped to the toolbar's own group — Tags' `.lbl{overflow:visible}` is untouched. The
+     `text-box-edge:text text` is the runbook's descender rule for a truncating label. */
+  @container (max-width: 360px){
+    .ftb-chips .tag .lbl{overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
   }
 
-  /* ---- demo chrome — NOT the component (s210-D3) ---- */
-  .demo-tier{border-top:1px solid var(--border-disabled); padding-top:8px; margin:0 0 4px;}
+  /* ---- DENSITY. The toolbar's own dial, and the one it hands to its consumer. Both heights
+          stay on the 4px grid (DEF-005) and clear the 44px control target at full / the 24px
+          dial-down floor at compact (s116-D1). ---- */
+  .ftb-outer[data-density="compact"] .search,
+  .ftb-outer[data-density="compact"] .trigger{height:40px;}
+  .ftb-outer[data-density="compact"] .ftb{padding:8px 0;}
+
+  /* ---- THE FIVE STATES. One attribute, `data-ftb-state`; every state-scoped node declares the
+          states it belongs to in `data-when`. Nodes with no `data-when` are always present. ---- */
+  .ftb-outer[data-ftb-state="no-filters"] [data-when]:not([data-when~="no-filters"]),
+  .ftb-outer[data-ftb-state="filtered"]   [data-when]:not([data-when~="filtered"]),
+  .ftb-outer[data-ftb-state="loading"]    [data-when]:not([data-when~="loading"]),
+  .ftb-outer[data-ftb-state="empty"]      [data-when]:not([data-when~="empty"]),
+  .ftb-outer[data-ftb-state="error"]      [data-when]:not([data-when~="error"]){display:none;}
+
+  /* loading — a determinate-looking skeleton, never a spinner that hides the count's position */
+  .ftb-skel{display:inline-block; width:104px; height:12px; background:var(--hover); position:relative; overflow:hidden; vertical-align:middle;}
+  .ftb-skel::after{content:""; position:absolute; inset:0; transform:translateX(-100%);
+    background:linear-gradient(90deg, transparent, var(--page), transparent); animation:ftb-sheen 1.1s ease-in-out infinite;}
+  @keyframes ftb-sheen{to{transform:translateX(100%);}}
+  .ftb-outer[data-ftb-state="loading"] .ftb-chips{opacity:var(--alpha-48);}
+
+  /* empty / error message block — the icon + the words carry the state; colour is the third
+     channel, never the only one (1.4.1). */
+  .ftb-msg{display:flex; align-items:flex-start; gap:8px; padding:24px 0;}
+  .ftb-msg .ic{flex:none; width:18px; height:18px; margin-top:2px; color:var(--icon);}
+  .ftb-msg .ic svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .ftb-msg .body{display:flex; flex-direction:column; gap:8px; align-items:flex-start; min-width:0;}
+  .ftb-msg .ttl{color:var(--text);}
+  .ftb-msg .sub{color:var(--text); opacity:var(--alpha-64); text-box-trim:normal;}
+  .ftb-msg.is-error .ic{color:var(--error-ink);}
+  .ftb-msg.is-error .ttl{color:var(--error-ink);}
+  .ftb-msg .knock{fill:var(--page);}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   }
+
+  /* ---- demo chrome — NOT the component (s210-D3) ---- */
+  .demo-tier{border-top:1px solid var(--border-disabled); padding-top:8px; margin:0 0 4px;}
+  /* THE CONSUMER. A stand-in for the `data-grid` component so the wiring contract has something
+     real to drive (s258-D2). It subscribes to `apollo:filter-change` and answers with
+     `data-apollo-result-count` / `data-apollo-result-state` — the return leg of the contract. */
+  .demo-grid{width:100%; border-collapse:collapse; table-layout:fixed;}
+  .demo-grid th{text-align:left; background:var(--tbl-head); border-bottom:1px solid var(--tbl-border); padding:8px 12px; white-space:nowrap;}
+  .demo-grid td{border-bottom:1px solid var(--tbl-border); padding:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+  .demo-grid[data-apollo-density="compact"] td{padding:4px 12px;}
+  .demo-grid .amt{text-align:right;}
+  .demo-grid .pos{color:var(--pos-ink);}
+  .demo-grid .neg{color:var(--error-ink);}
+  .demo-grid tr:hover td{background:var(--hover);}
+  .demo-scroll{max-height:340px; overflow:auto;}
+  .demo-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px;}
+  .demo-card{border:1px solid var(--tbl-border); padding:12px; display:flex; flex-direction:column; gap:4px;}
   /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
-  /* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope, _validate_type_composites.py)
-     — these are page-annotation captions, not component text. */
+  /* .demo-note carries the CHROME_SEL "demo-" prefix (TYPE-002 scope) — page annotation, not
+     component text. */
   .demo-note{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 12px;}
   .demo-stack{display:flex; flex-direction:column; gap:56px;}
-  /* s258-D3: the demo frame's width is now a fenced modifier class, not an inline
-     --demo-width dial that travelled with the copied markup. */
+  /* s258-D3: the demo frame's width is a fenced modifier class, not an inline --demo-width dial. */
   .demo-col{width:900px; max-width:100%; border:1px dashed var(--hover); padding:20px;}
   .demo-col.w640{width:640px;}
+  .demo-col.w375{width:375px;}
+  .demo-col.w1440{width:1440px;}
+  .demo-col.w600{width:600px;}
+  .demo-quad{display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;}
   /* ===== APOLLO-DEMO css END ===== */
 </style>
 </head>
@@ -271,86 +383,310 @@
     <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
     <symbol id="ic-clear" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
     <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-filter" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/></symbol>
+    <symbol id="ic-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+    <symbol id="ic-export" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.3 15.8H1.7V2.2H7.5V1H0.5V17H16.5V11H15.3V15.8ZM6.9 13H8.1V8.5C8.1 7.177 9.177 6.1 10.5 6.1H15.202L11.302 10H12.998L17.499 5.5L12.998 1H11.301L15.201 4.9H10.5C8.515 4.9 6.9 6.514 6.9 8.5V13Z" fill="currentColor"/></symbol>
+    <symbol id="ic-alert" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z" fill="currentColor"/></symbol>
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path class="knock" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path class="knock" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.2 7H18V1.2L16.8 0V4.536C15.25 1.829 12.343 0 9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9H16.8C16.8 13.301 13.301 16.8 9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C12.16 1.2 14.88 3.092 16.103 5.8H11L12.2 7Z" fill="currentColor"/></symbol>
   </svg>
 
   <div class="demo-stack">
 
+    <!-- ============================ A — the dashboard toolbar, driving a grid ============ -->
     <div>
-      <p class="demo-tier">A — full toolbar: search · two filter dropdowns · view switch · applied filters</p>
+      <p class="demo-tier">A — dashboard toolbar, wired to a consumer (s258-D1/D2): search · applied-filter chips · add filter · date range · view switch · results count · clear all · export · density</p>
       <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
-      <p class="demo-note">≤680px container: search claims the full row, filters/view wrap below. ≤400px: every control stacks full-width. Chips collapse to one-per-row at ≤360px (Tags' own rule, untouched).</p>
+      <p class="demo-note">Everything works. Type in the search, add a filter, remove a chip, switch view or density — the table below re-queries 24 seeded transactions and answers back with its count. Narrow the pane: ≥1400px is one row, ≤680px the search claims the row, ≤400px everything stacks.</p>
       <!-- ===== APOLLO-DEMO note END ===== -->
-      <div class="ftb-outer demo-col">
-        <div class="ftb">
-          <div class="ftb-row">
-            <div class="ftb-search">
-              <div class="search boxed">
-                <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
-                <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="">
-                <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      <div class="demo-col w1440">
+        <div class="ftb-outer" data-apollo-filter-bar data-apollo-filter-target="#demo-consumer"
+             data-ftb-state="filtered" data-density="full" data-stuck="false" id="ftbA">
+          <form class="ftb" role="search" aria-label="Filter transactions" onsubmit="return false;">
+            <div class="ftb-primary">
+              <div class="ftb-search">
+                <div class="search boxed">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+                  <input type="search" id="ftbQ" aria-label="Search transactions" placeholder="Search payee, reference or account" value="">
+                  <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+                </div>
+              </div>
+
+              <div class="ftb-ctl dd boxed" id="ftbAdd">
+                <label id="ftbAddL" for="ftbAddT" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Add filter</label>
+                <button class="trigger t-cm-button" id="ftbAddT" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbAddM" aria-labelledby="ftbAddL ftbAddT">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-filter"/></svg></span>
+                  <span class="ddval">Add filter</span><span class="chev" aria-hidden="true">▾</span>
+                </button>
+                <ul class="menu" id="ftbAddM" role="listbox" aria-labelledby="ftbAddL" tabindex="-1">
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="GBP">Currency: GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="EUR">Currency: EUR <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="currency" data-value="USD">Currency: USD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="sep" role="presentation"></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Pending">Status: pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="status" data-value="Settled">Status: settled <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="sep" role="presentation"></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Standing order">Channel: standing order <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="channel" data-value="Card">Channel: card <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-facet="direction" data-value="Debits only">Debits only <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                </ul>
+              </div>
+
+              <div class="ftb-ctl dd boxed" id="ftbRange">
+                <label id="ftbRangeL" for="ftbRangeT" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Date range</label>
+                <button class="trigger t-cm-button" id="ftbRangeT" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbRangeM" aria-labelledby="ftbRangeL ftbRangeT">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></span>
+                  <span class="ddval">Last 30 days</span><span class="chev" aria-hidden="true">▾</span>
+                </button>
+                <ul class="menu" id="ftbRangeM" role="listbox" aria-labelledby="ftbRangeL" tabindex="-1">
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-days="7">Last 7 days <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1" data-days="30">Last 30 days <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-days="90">Last 90 days <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  <li class="sep" role="presentation"></li>
+                  <!-- HAND-OFF, not a re-draw: the calendar body belongs to date-range-picker
+                       (meta edge `delegatesTo`). This bar only owns the trigger and the presets. -->
+                  <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-days="custom">Custom range… <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                </ul>
+              </div>
+
+              <div class="ftb-actions">
+                <div class="ftb-ctl">
+                  <div class="seg md" role="group" aria-label="View as" id="ftbView">
+                    <span class="ind" aria-hidden="true"></span>
+                    <button type="button" aria-pressed="true" data-view="table">Table</button>
+                    <button type="button" aria-pressed="false" data-view="cards">Cards</button>
+                  </div>
+                </div>
+                <div class="ftb-ctl">
+                  <div class="seg sm" role="group" aria-label="Row density" id="ftbDensity">
+                    <span class="ind" aria-hidden="true"></span>
+                    <button type="button" aria-pressed="true" data-density="full">Comfortable</button>
+                    <button type="button" aria-pressed="false" data-density="compact">Compact</button>
+                  </div>
+                </div>
+                <div class="ftb-ctl dd boxed" id="ftbExport">
+                  <label id="ftbExportL" for="ftbExportT" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Export results</label>
+                  <button class="trigger t-cm-button" id="ftbExportT" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbExportM" aria-labelledby="ftbExportL ftbExportT">
+                    <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-export"/></svg></span>
+                    <span class="ddval">Export</span><span class="chev" aria-hidden="true">▾</span>
+                  </button>
+                  <ul class="menu" id="ftbExportM" role="listbox" aria-labelledby="ftbExportL" tabindex="-1">
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="csv">Comma-separated values <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="xlsx">Excel workbook <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-format="pdf">Portable document <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  </ul>
+                </div>
               </div>
             </div>
-            <div class="ftb-filter dd boxed">
-              <label id="ftbLabel1" for="ftbTrigger1" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Account</label>
-              <button class="trigger t-cm-button" id="ftbTrigger1" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMenu1" aria-labelledby="ftbLabel1 ftbTrigger1">
-                <span class="ddval">All accounts</span><span class="chev" aria-hidden="true">▾</span>
-              </button>
-              <ul class="menu" id="ftbMenu1" role="listbox" aria-labelledby="ftbLabel1" tabindex="-1">
-                <li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1">All accounts <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Current account <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Savings <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-              </ul>
-            </div>
-            <div class="ftb-filter dd boxed">
-              <label id="ftbLabel2" for="ftbTrigger2" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Date range</label>
-              <button class="trigger t-cm-button" id="ftbTrigger2" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMenu2" aria-labelledby="ftbLabel2 ftbTrigger2">
-                <span class="ddval">Last 30 days</span><span class="chev" aria-hidden="true">▾</span>
-              </button>
-              <ul class="menu" id="ftbMenu2" role="listbox" aria-labelledby="ftbLabel2" tabindex="-1">
-                <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Last 7 days <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                <li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1">Last 30 days <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-                <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">This year <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-              </ul>
-            </div>
-            <div class="ftb-view">
-              <div class="seg md" role="group" aria-label="View as">
-                <span class="ind" aria-hidden="true"></span>
-                <button type="button" aria-pressed="true">List</button>
-                <button type="button" aria-pressed="false">Table</button>
+
+            <div class="ftb-context">
+              <p class="ftb-status t-cm-caption" id="ftbStatusA" role="status" aria-live="polite" aria-atomic="true">
+                <span data-when="loading"><span class="ftb-skel" aria-hidden="true"></span> <span>Updating results</span></span>
+                <span data-when="no-filters filtered empty error"><span class="num t-cm-figure-6" id="ftbCountA">9</span> of <span class="num t-cm-figure-6">24</span> transactions</span>
+              </p>
+              <span class="ftb-hint t-cm-caption" data-when="no-filters">No filters applied</span>
+              <div class="ftb-chips filterbar" id="ftbChipsA" tabindex="-1" data-when="filtered loading empty error"
+                   aria-label="Applied filters" role="group">
+                <div class="row"></div>
+              </div>
+              <div class="ftb-clear" data-when="filtered loading empty error">
+                <button type="button" class="lnk t-cm-caption" data-ftb-clear>Clear all</button>
               </div>
             </div>
+          </form>
+        </div>
+
+        <!-- THE CONSUMER (demo chrome). Declares itself, and answers the bar's questions. -->
+        <div id="demo-consumer" data-apollo-filter-consumer data-apollo-view="table" data-apollo-density="full">
+          <div class="ftb-msg" data-ftb-empty hidden>
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-alert"/></svg></span>
+            <span class="body">
+              <span class="ttl t-cm-label">No transactions match these filters</span>
+              <span class="sub t-ed-body-small">Try widening the date range, or remove one of the applied filters.</span>
+              <button type="button" class="lnk t-cm-caption" data-ftb-clear>Clear all filters</button>
+            </span>
           </div>
-          <div class="ftb-chips filterbar" id="ftb-chips" tabindex="-1">
-            <div class="row" style="display:flex; flex-wrap:wrap;">
-              <span class="tag t-cm-caption"><span class="lbl">GBP</span><button class="x" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
-              <span class="tag t-cm-caption"><span class="lbl">Last 30 days</span><button class="x" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
-              <span class="tag t-cm-caption"><span class="lbl" title="Standing orders to overseas payees">Standing orders to overseas payees</span><button class="x" aria-label="Remove filter: Standing orders to overseas payees"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
-            </div>
+          <div class="ftb-msg is-error" data-ftb-error hidden data-carries="symbol label">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-error"/></svg></span>
+            <span class="body">
+              <span class="ttl t-cm-label">Results could not be loaded</span>
+              <span class="sub t-ed-body-small">The filter was applied, but the result set did not come back. Nothing was changed.</span>
+              <button type="button" class="lnk t-cm-caption" data-ftb-retry>Try again</button>
+            </span>
+          </div>
+          <div class="demo-scroll" data-ftb-results>
+            <table class="demo-grid" data-density="full">
+              <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Transactions matching the applied filters</caption>
+              <thead><tr>
+                <th scope="col" class="t-cm-caption">Payee</th>
+                <th scope="col" class="t-cm-caption">Account</th>
+                <th scope="col" class="t-cm-caption">Channel</th>
+                <th scope="col" class="t-cm-caption">Status</th>
+                <th scope="col" class="t-cm-caption">Date</th>
+                <th scope="col" class="t-cm-caption amt">Amount</th>
+              </tr></thead>
+              <tbody id="demoRows"></tbody>
+            </table>
+            <div class="demo-cards" id="demoCards" hidden></div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- ============================ THE FIVE STATES ==================================== -->
     <div>
-      <p class="demo-tier">B — compact toolbar above a table/list (itinerary row 120's own stated context)</p>
+      <p class="demo-tier">The five states — no filters · filtered · loading · zero results · error</p>
       <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
-      <p class="demo-note">Underline search + sm segmented control — dense, sits directly above a Table/List-items region.</p>
+      <p class="demo-note">Static instances, one per state. The state is one attribute, <code>data-ftb-state</code>; every state-scoped node declares which states it belongs to.</p>
       <!-- ===== APOLLO-DEMO note END ===== -->
-      <div class="ftb-outer demo-col w640">
-        <div class="ftb">
-          <div class="ftb-row">
-            <div class="ftb-search" style="flex-basis:220px;">
-              <div class="search">
-                <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
-                <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
-                <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      <div class="demo-quad">
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="no-filters" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-primary">
+                <div class="ftb-search"><div class="search boxed">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+                  <input type="search" aria-label="Search transactions" placeholder="Search payee, reference or account" value="">
+                  <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+                </div></div>
+              </div>
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption"><span class="num t-cm-figure-6">24</span> transactions</p>
+                <span class="ftb-hint t-cm-caption" data-when="no-filters">No filters applied</span>
               </div>
             </div>
-            <div class="ftb-view">
-              <div class="seg sm" role="group" aria-label="Sort by">
-                <button type="button" aria-pressed="true">Date</button>
-                <button type="button" aria-pressed="false">Amount</button>
-                <span class="ind" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="filtered" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption"><span class="num t-cm-figure-6">9</span> of <span class="num t-cm-figure-6">24</span> transactions</p>
+                <div class="ftb-chips filterbar" role="group" aria-label="Applied filters"><div class="row">
+                  <span class="tag t-cm-caption"><span class="lbl">Currency: GBP</span><button class="x" type="button" aria-label="Remove filter: currency GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                  <span class="tag t-cm-caption"><span class="lbl">Status: pending</span><button class="x" type="button" aria-label="Remove filter: status pending"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                  <button type="button" class="tag t-cm-caption" aria-expanded="false"><span class="lbl">+3 more</span></button>
+                </div></div>
+                <div class="ftb-clear"><button type="button" class="lnk t-cm-caption">Clear all</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="loading" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption" role="status" aria-live="polite" aria-busy="true">
+                  <span data-when="loading"><span class="ftb-skel" aria-hidden="true"></span> <span>Updating results</span></span>
+                </p>
+                <div class="ftb-chips filterbar" role="group" aria-label="Applied filters"><div class="row">
+                  <span class="tag t-cm-caption"><span class="lbl">Currency: GBP</span><button class="x" type="button" aria-label="Remove filter: currency GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                </div></div>
+                <div class="ftb-clear"><button type="button" class="lnk t-cm-caption">Clear all</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="empty" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption"><span class="num t-cm-figure-6">0</span> of <span class="num t-cm-figure-6">24</span> transactions</p>
+                <div class="ftb-clear"><button type="button" class="lnk t-cm-caption">Clear all</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="ftb-msg">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-alert"/></svg></span>
+            <span class="body">
+              <span class="ttl t-cm-label">No transactions match these filters</span>
+              <span class="sub t-ed-body-small">Try widening the date range, or remove one of the applied filters.</span>
+            </span>
+          </div>
+        </div>
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="error" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption"><span class="num t-cm-figure-6">—</span> transactions</p>
+                <div class="ftb-clear"><button type="button" class="lnk t-cm-caption">Clear all</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="ftb-msg is-error" data-carries="symbol label">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-error"/></svg></span>
+            <span class="body">
+              <span class="ttl t-cm-label">Results could not be loaded</span>
+              <span class="sub t-ed-body-small">The filter was applied, but the result set did not come back. Nothing was changed.</span>
+              <button type="button" class="lnk t-cm-caption"><span>Try again</span></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ B — compact bar (375px) ============================= -->
+    <div>
+      <p class="demo-tier">B — compact bar above a table/list, and the same bar at 375px</p>
+      <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+      <p class="demo-note">Left: the dense arrangement (underline search + sm segmented control). Right: the full bar in a 375px container — every control full width, chips one per row, no horizontal scroll.</p>
+      <!-- ===== APOLLO-DEMO note END ===== -->
+      <div class="demo-quad">
+        <div class="demo-col w600">
+          <div class="ftb-outer" data-ftb-state="no-filters" data-density="compact" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-primary">
+                <div class="ftb-search"><div class="search">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+                  <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
+                  <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+                </div></div>
+                <div class="ftb-actions">
+                  <div class="ftb-ctl"><div class="seg sm" role="group" aria-label="Sort by">
+                    <span class="ind" aria-hidden="true"></span>
+                    <button type="button" aria-pressed="true">Date</button>
+                    <button type="button" aria-pressed="false">Amount</button>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-col w375">
+          <div class="ftb-outer" data-ftb-state="filtered" data-density="full" style="position:static;">
+            <div class="ftb">
+              <div class="ftb-primary">
+                <div class="ftb-search"><div class="search boxed">
+                  <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+                  <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="">
+                  <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+                </div></div>
+                <div class="ftb-ctl dd boxed">
+                  <label id="ftbMobL" for="ftbMobT" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Add filter</label>
+                  <button class="trigger t-cm-button" id="ftbMobT" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMobM" aria-labelledby="ftbMobL ftbMobT">
+                    <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-filter"/></svg></span>
+                    <span class="ddval">Add filter</span><span class="chev" aria-hidden="true">▾</span>
+                  </button>
+                  <ul class="menu" id="ftbMobM" role="listbox" aria-labelledby="ftbMobL" tabindex="-1">
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Currency: GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                    <li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1">Status: pending <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+                  </ul>
+                </div>
+                <div class="ftb-actions">
+                  <div class="ftb-ctl"><div class="seg md" role="group" aria-label="View as">
+                    <span class="ind" aria-hidden="true"></span>
+                    <button type="button" aria-pressed="true">Table</button>
+                    <button type="button" aria-pressed="false">Cards</button>
+                  </div></div>
+                </div>
+              </div>
+              <div class="ftb-context">
+                <p class="ftb-status t-cm-caption"><span class="num t-cm-figure-6">9</span> of <span class="num t-cm-figure-6">24</span> transactions</p>
+                <div class="ftb-chips filterbar" role="group" aria-label="Applied filters"><div class="row">
+                  <span class="tag t-cm-caption"><span class="lbl">Currency: GBP</span><button class="x" type="button" aria-label="Remove filter: currency GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                  <span class="tag t-cm-caption"><span class="lbl" title="Standing orders to overseas payees">Standing orders to overseas payees</span><button class="x" type="button" aria-label="Remove filter: standing orders to overseas payees"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                </div></div>
+                <div class="ftb-clear"><button type="button" class="lnk t-cm-caption">Clear all</button></div>
               </div>
             </div>
           </div>
@@ -374,16 +710,21 @@
       "--shadow": "elevation/functional", "--divider": "divider/border/section",
       "--focus": "focus/ring", "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
       "--surface": "tertiary/background/default", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse",
-      "--hit": "target/min"
+      "--hit": "target/min",
+      "--error-ink": "rag/error-ink", "--pos-ink": "rag/success-ink",
+      "--tbl-head": "table/header/background", "--tbl-border": "table/border"
     },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
       { "fg": "form/border/active", "bg": "background/default", "context": "ui" },
       { "fg": "icon/default", "bg": "background/default", "context": "ui" },
-      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" }
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "rag/error-ink", "bg": "background/default", "context": "text" },
+      { "fg": "rag/success-ink", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "table/header/background", "context": "text" }
     ],
-    "requiredAria": ["type=\"search\"", "aria-label", "role=\"combobox\"", "role=\"listbox\"", "role=\"option\"", "aria-pressed"]
+    "requiredAria": ["type=\"search\"", "aria-label", "role=\"combobox\"", "role=\"listbox\"", "role=\"option\"", "aria-pressed", "role=\"status\"", "aria-live"]
   }
   </script>
   <script type="application/json" id="behaviour-manifest">
@@ -394,27 +735,31 @@
     "partial": null,
     "events": [
       "click",
+      "input",
       "keydown",
       "resize",
       "transitionend"
     ],
-    "fallback": "Everything the markup authors still paints and every control still takes focus: the search input types, the dropdown triggers are real buttons, the segmented buttons keep the `aria-pressed` the markup authors, and the chips stay. What goes: the search clear button does nothing, the dropdown menus never open (`aria-expanded` stays false and `data-open` stays false), the segmented indicator never moves off its authored position (it is placed by script, including on resize), and chips cannot be dismissed."
+    "fallback": "JS off: every control still paints and still takes focus — the search input types, the three dropdown triggers are real buttons, the two segmented groups keep the `aria-pressed` the markup authors, the chips the markup authors stay, and the results count reads the number the markup authors. What goes: the search clear button does nothing, the menus never open (`aria-expanded` stays false, `data-open` stays false), the segmented indicator never leaves its authored position, chips cannot be dismissed, the +N overflow never expands, and no `apollo:filter-*` event is emitted — so the consumer keeps the unfiltered set the server rendered. The bar degrades to an honest, inert description of the current query, never to a lying one."
   }
   </script>
 
   <script>
     /* ===== Search-field.reference.html JS, unedited ===== */
     document.querySelectorAll('.search .clear').forEach(btn=>{
-      btn.addEventListener('click', ()=>{ const inp=btn.parentNode.querySelector('input'); inp.value=''; inp.focus(); });
+      btn.addEventListener('click', ()=>{ const inp=btn.parentNode.querySelector('input'); inp.value=''; inp.focus();
+        inp.dispatchEvent(new Event('input',{bubbles:true})); });
     });
 
-    /* ===== Dropdown.reference.html JS, unedited ===== */
-    function wireDD(dd){
+    /* ===== Dropdown.reference.html JS, unedited except the documented `choose` hook ===== */
+    function wireDD(dd, onChoose){
       const trig=dd.querySelector('.trigger'), menu=dd.querySelector('.menu'),
             val=dd.querySelector('.ddval'), opts=[...menu.querySelectorAll('[role=option]')];
       function open(o){ menu.setAttribute('data-open',String(o)); trig.setAttribute('aria-expanded',String(o));
         if(o){ const sel=opts.find(x=>x.getAttribute('aria-selected')==='true')||opts[0]; sel.focus(); } }
-      function choose(o){ opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=o.firstChild.textContent.trim(); open(false); trig.focus(); }
+      function choose(o){
+        if(onChoose && onChoose(o, val)===false){ open(false); trig.focus(); return; }   /* the hook may decline to latch */
+        opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=o.firstChild.textContent.trim(); open(false); trig.focus(); }
       trig.addEventListener('click', ()=> open(menu.getAttribute('data-open')!=='true'));
       trig.addEventListener('keydown', e=>{ if(['ArrowDown','Enter',' '].includes(e.key)){ e.preventDefault(); open(true);} });
       opts.forEach(o=>{ o.addEventListener('click',()=>choose(o));
@@ -424,11 +769,10 @@
           else if(e.key==='Enter'||e.key===' '){e.preventDefault(); choose(o);}
           else if(e.key==='Escape'){open(false); trig.focus();} }); });
     }
-    document.querySelectorAll('.dd').forEach(wireDD);
     document.addEventListener('click', e=>{ if(!e.target.closest('.dd')){
       document.querySelectorAll('.dd').forEach(dd=>{ dd.querySelector('.menu').setAttribute('data-open','false'); dd.querySelector('.trigger').setAttribute('aria-expanded','false'); }); } });
 
-    /* ===== Segmented-control.reference.html JS, unedited ===== */
+    /* ===== Segmented-control.reference.html JS — indicator placement, unedited ===== */
     function moveInd(seg){ const ind=seg.querySelector('.ind'); if(!ind) return;
       const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
       const sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
@@ -438,44 +782,238 @@
       seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
         seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); moveInd(seg); }));
     });
-    addEventListener('resize', placeAll);
+    /* ADR-0015: EXACTLY ONE window resize listener on this page, rAF-debounced. */
+    var _raf=0;
+    addEventListener('resize', function(){ if(_raf) cancelAnimationFrame(_raf); _raf=requestAnimationFrame(function(){ _raf=0; placeAll(); }); });
     placeAll();
 
-    /* ===== Tags.reference.html JS — kept in step with Tags, repaired there first ===== */
-    /* ⛔ THE DISMISS REMOVED NOTHING — MEASURED #218 lane cB by driving it. 3 chips in, 3 chips out — the chip stayed CONNECTED at max-width:0,
-       an invisible ghost still in the tab order and the accessibility tree.
-       Alert's wave-3 defect (β/R1), reproduced here verbatim, both halves:
-       (a) `{once:true}` COUNTS DELIVERIES, NOT MATCHES. This element transitions many
-           properties; `end:border-bottom-width` arrived first, failed the propertyName guard, did
-           nothing — and the one-shot listener had ALREADY unsubscribed. `end:max-width` landed
-           later with nothing listening, so the `.remove()` it gated never ran. `end:max-width` DID arrive here (run and end both observed);
-           only the listening was gone, which isolates half (a) on its own.
-       (b) `max-width:0 !important` in the .removing rule routes the zero through an
-           author-IMPORTANT declaration. The collapse is now ALSO driven inline->inline so the
-           removal can never depend on that importance change starting a transition.
-       The handler below unsubscribes only when its OWN property arrives, and a fallback timer
-       guarantees the removal: a dismiss that depends on an event that may not fire is the
-       exact defect this repair exists to close. FOCUS (2.4.3): removing the element that
-       holds focus strands activeElement on BODY, so focus moves to the next remaining
-       dismiss in the same group, or to the group itself when the last one goes. */
-    document.querySelectorAll('.tag .x').forEach(x=> x.addEventListener('click', ()=>{
-      const c=x.closest('.tag');
-      if(c.dataset.going) return; c.dataset.going='1';
-      const group=x.closest('.ftb-chips') || c.parentElement;
-      const rest=[...group.querySelectorAll('.tag .x')].filter(b=> b!==x && !b.closest('.tag').dataset.going);
-      const nextFocus = rest[0] || group;
-      let done=false;
-      const finish=()=>{ if(done) return; done=true; c.remove();
-        if(document.body.contains(nextFocus)) nextFocus.focus(); };
-      c.style.maxWidth=c.offsetWidth+'px';
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        c.classList.add('removing'); c.style.maxWidth='0px';
-      }));
-      const onEnd=ev=>{ if(ev.target!==c || ev.propertyName!=='max-width') return;   /* NOT {once:true} — see the ⛔ note */
-        c.removeEventListener('transitionend', onEnd); finish(); };
-      c.addEventListener('transitionend', onEnd);
-      setTimeout(finish, 600);                                   /* fallback — never orphan the control */
-    }));
+    /* ===== Tags.reference.html JS — kept in step with Tags, repaired there first =====
+       ⛔ THE DISMISS REMOVED NOTHING — MEASURED #218 lane cB by driving it. 3 chips in, 3 chips out
+       — the chip stayed CONNECTED at max-width:0, an invisible ghost still in the tab order and the
+       accessibility tree. Both halves of Alert's wave-3 defect, verbatim:
+         (a) `{once:true}` COUNTS DELIVERIES, NOT MATCHES. `end:border-bottom-width` arrived first,
+             failed the propertyName guard, did nothing — and the one-shot listener had ALREADY
+             unsubscribed, so the `.remove()` `end:max-width` gated never ran.
+         (b) `max-width:0 !important` routes the zero through an author-IMPORTANT declaration, so
+             the collapse is ALSO driven inline->inline.
+       The handler unsubscribes only when its OWN property arrives, and a fallback timer guarantees
+       the removal. FOCUS (2.4.3): focus moves to the next remaining dismiss, or to the group. */
+    function wireDismiss(x, after){
+      x.addEventListener('click', ()=>{
+        const c=x.closest('.tag');
+        if(c.dataset.going) return; c.dataset.going='1';
+        const group=x.closest('.ftb-chips') || c.parentElement;
+        const rest=[...group.querySelectorAll('.tag .x')].filter(b=> b!==x && !b.closest('.tag').dataset.going);
+        const nextFocus = rest[0] || group;
+        let done=false;
+        const finish=()=>{ if(done) return; done=true; c.remove();
+          if(document.body.contains(nextFocus)) nextFocus.focus(); if(after) after(); };
+        c.style.maxWidth=c.offsetWidth+'px';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{ c.classList.add('removing'); c.style.maxWidth='0px'; }));
+        const onEnd=ev=>{ if(ev.target!==c || ev.propertyName!=='max-width') return;   /* NOT {once:true} — see the ⛔ note */
+          c.removeEventListener('transitionend', onEnd); finish(); };
+        c.addEventListener('transitionend', onEnd);
+        setTimeout(finish, 600);                                   /* fallback — never orphan the control */
+      });
+    }
+    document.querySelectorAll('.tag .x').forEach(x=> wireDismiss(x));
+
+    /* =====================================================================================
+       THE TOOLBAR ITSELF (s258-D1 — the author MAY write JavaScript).
+
+       THE CONTRACT, in full. The bar is the DRIVER; anything that renders a result set is a
+       CONSUMER. It is an event + attribute contract, so a consumer needs no import.
+
+         bar   [data-apollo-filter-bar]                     marks the driver
+               [data-apollo-filter-target="<selector>"]     optional; default = the first
+                                                            [data-apollo-filter-consumer] in the document
+         out   apollo:filter-change  detail {query, filters[], range, view, density, count}
+               apollo:filter-clear   detail {}
+               apollo:filter-export  detail {format}
+               (all bubble from the bar; `filters[]` entries are {facet, value, label})
+         out   the bar WRITES [data-apollo-view] and [data-apollo-density] onto the consumer,
+               so a CSS-only consumer can respond without any script at all.
+         in    the consumer answers by setting, on itself:
+                 [data-apollo-result-count]  the number matched  (or "" while unknown)
+                 [data-apollo-result-total]  the size of the unfiltered set
+                 [data-apollo-result-state]  ok | loading | empty | error
+               The bar OBSERVES those attributes and moves its own [data-ftb-state] and its
+               results count to match. It never assumes the answer it asked for.
+
+       No network, no timers-as-polling, no external script — ADR-0015 holds. ===================== */
+    (function(){
+      const bar=document.getElementById('ftbA'); if(!bar) return;
+      const consumer=document.querySelector(bar.getAttribute('data-apollo-filter-target')||'[data-apollo-filter-consumer]');
+      const chipRow=bar.querySelector('#ftbChipsA .row'), countEl=bar.querySelector('#ftbCountA');
+      const MAXCHIPS=3;
+      const state={query:'', filters:[], range:{preset:'30d', days:30, label:'Last 30 days'}, view:'table', density:'full'};
+
+      function emit(name, detail){ bar.dispatchEvent(new CustomEvent(name,{bubbles:true, detail:detail})); }
+      function snapshot(){ return {query:state.query, filters:state.filters.slice(), range:Object.assign({},state.range),
+                                   view:state.view, density:state.density}; }
+
+      /* ---- chips ---- */
+      function chipNode(f){
+        const s=document.createElement('span'); s.className='tag t-cm-caption';
+        const l=document.createElement('span'); l.className='lbl'; l.textContent=f.label; l.title=f.label;
+        const b=document.createElement('button'); b.type='button'; b.className='x';
+        b.setAttribute('aria-label','Remove filter: '+f.label.toLowerCase());
+        b.innerHTML='<svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg>';
+        s.appendChild(l); s.appendChild(b);
+        wireDismiss(b, ()=>{ state.filters=state.filters.filter(x=>x.key!==f.key); apply(); });
+        return s;
+      }
+      function renderChips(expanded){
+        chipRow.textContent='';
+        state.filters.forEach((f,i)=>{ const n=chipNode(f); if(!expanded && i>=MAXCHIPS) n.hidden=true; chipRow.appendChild(n); });
+        const over=state.filters.length-MAXCHIPS;
+        if(over>0){
+          const m=document.createElement('button'); m.type='button'; m.className='tag t-cm-caption';
+          m.setAttribute('aria-expanded', String(!!expanded));
+          m.innerHTML='<span class="lbl"></span>';
+          m.querySelector('.lbl').textContent = expanded ? 'Show fewer' : '+'+over+' more';
+          m.addEventListener('click', ()=>{ renderChips(!expanded); });
+          chipRow.appendChild(m);
+        }
+      }
+
+      /* ---- the ask ---- */
+      function apply(){
+        renderChips(false);
+        if(consumer){ consumer.setAttribute('data-apollo-view', state.view);
+                      consumer.setAttribute('data-apollo-density', state.density); }
+        emit('apollo:filter-change', snapshot());
+        readBack();
+      }
+      /* ---- the answer (the bar never assumes it) ---- */
+      function readBack(){
+        const st=consumer? (consumer.getAttribute('data-apollo-result-state')||'ok') : 'ok';
+        const n=consumer? consumer.getAttribute('data-apollo-result-count') : null;
+        if(n!==null && n!=='' && countEl) countEl.textContent=n;
+        const has=state.filters.length>0 || state.query.trim()!=='';
+        bar.setAttribute('data-ftb-state',
+          st==='loading' ? 'loading' : st==='error' ? 'error' : st==='empty' ? 'empty' : has ? 'filtered' : 'no-filters');
+        bar.setAttribute('data-density', state.density);
+      }
+
+      /* ---- controls ---- */
+      const q=bar.querySelector('#ftbQ');
+      q.addEventListener('input', ()=>{ state.query=q.value; apply(); });
+
+      wireDD(document.getElementById('ftbAdd'), (o)=>{
+        const key=o.dataset.facet+':'+o.dataset.value;
+        if(!state.filters.some(f=>f.key===key))
+          state.filters.push({key:key, facet:o.dataset.facet, value:o.dataset.value, label:o.firstChild.textContent.trim()});
+        apply(); return false;                                   /* the trigger keeps its own label */
+      });
+      wireDD(document.getElementById('ftbRange'), (o)=>{
+        const d=o.dataset.days;
+        if(d==='custom'){ /* HAND-OFF: date-range-picker owns the calendar (meta edge delegatesTo) */
+          state.range={preset:'custom', days:null, label:'Custom range'};
+        } else { state.range={preset:d+'d', days:+d, label:o.firstChild.textContent.trim()}; }
+        apply(); return true;
+      });
+      wireDD(document.getElementById('ftbExport'), (o)=>{ emit('apollo:filter-export',{format:o.dataset.format}); return false; });
+
+      document.getElementById('ftbView').querySelectorAll('button').forEach(b=>
+        b.addEventListener('click', ()=>{ state.view=b.dataset.view; apply(); }));
+      document.getElementById('ftbDensity').querySelectorAll('button').forEach(b=>
+        b.addEventListener('click', ()=>{ state.density=b.dataset.density; apply(); }));
+
+      document.querySelectorAll('[data-ftb-clear]').forEach(b=> b.addEventListener('click', ()=>{
+        state.filters=[]; state.query=''; q.value=''; emit('apollo:filter-clear',{}); apply(); q.focus(); }));
+      document.querySelectorAll('[data-ftb-retry]').forEach(b=> b.addEventListener('click', ()=>{ apply(); }));
+
+      /* ---- sticky affordance: the bar earns its shadow only once it is actually stuck ---- */
+      const sentinel=document.createElement('div'); sentinel.setAttribute('aria-hidden','true');
+      bar.parentNode.insertBefore(sentinel, bar);
+      if(window.IntersectionObserver){
+        new IntersectionObserver(es=>{ bar.setAttribute('data-stuck', String(!es[0].isIntersecting)); },{threshold:1}).observe(sentinel);
+      }
+
+      /* =================================================================================
+         THE CONSUMER (demo chrome). 24 seeded transactions — payees, accounts, channels,
+         currencies, statuses, dates and signed amounts (s258-D2: rich enough that the
+         behaviours have something to act on). It listens for the contract and answers it.
+         ================================================================================= */
+      const DATA=[
+        ['Thames Water','Current ••4471','Standing order','Settled','GBP',-62.4,2],
+        ['Crown Estate Ltd','Business ••8802','Faster payment','Settled','GBP',-14250,3],
+        ['Payroll — August','Business ••8802','Bacs','Settled','GBP',-98420.55,5],
+        ['Refund: Iberia','Current ••4471','Card','Settled','EUR',186.3,5],
+        ['Aviva Insurance','Current ••4471','Direct debit','Settled','GBP',-44.1,7],
+        ['Nordwind GmbH','Business ••8802','SWIFT','Pending','EUR',-8900,8],
+        ['Interest — savings','Savings ••1120','Internal','Settled','GBP',312.88,9],
+        ['Kirkland Partners','Business ••8802','Faster payment','Pending','GBP',-6400,11],
+        ['AWS EMEA','Business ••8802','Card','Settled','USD',-2214.09,12],
+        ['Sato Trading KK','Business ••8802','SWIFT','Settled','USD',41200,13],
+        ['British Gas','Current ••4471','Direct debit','Settled','GBP',-118.72,14],
+        ['Transfer to savings','Current ••4471','Internal','Settled','GBP',-2000,15],
+        ['Transfer from current','Savings ••1120','Internal','Settled','GBP',2000,15],
+        ['Waitrose Canary Wharf','Current ••4471','Card','Settled','GBP',-84.16,17],
+        ['Camden Council','Current ••4471','Standing order','Settled','GBP',-192,18],
+        ['Meridian Freight','Business ••8802','Faster payment','Settled','GBP',-3380.4,21],
+        ['Client — Halcyon Ltd','Business ••8802','Faster payment','Settled','GBP',18600,23],
+        ['Client — Vale & Co','Business ••8802','Faster payment','Pending','GBP',7450,24],
+        ['Office rent','Business ••8802','Standing order','Settled','GBP',-5200,26],
+        ['Deutsche Telekom','Business ••8802','SEPA','Settled','EUR',-640.2,29],
+        ['Card — Eurostar','Current ••4471','Card','Settled','EUR',-138,34],
+        ['HMRC — VAT','Business ••8802','Bacs','Settled','GBP',-22140,41],
+        ['Client — Orrell Group','Business ••8802','SWIFT','Settled','USD',26800,52],
+        ['Legacy: Blackwell LLP','Business ••8802','Cheque','Settled','GBP',-980,77]
+      ];
+      const rows=document.getElementById('demoRows'), cards=document.getElementById('demoCards'),
+            results=consumer.querySelector('[data-ftb-results]'),
+            emptyEl=consumer.querySelector('[data-ftb-empty]'), errEl=consumer.querySelector('[data-ftb-error]'),
+            table=consumer.querySelector('.demo-grid');
+      function money(cur,v){ const s=v<0?'−':''; const a=Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+        return s+({GBP:'£',EUR:'€',USD:'$'}[cur]||'')+a; }
+      function dayLabel(d){ return d+' day'+(d===1?'':'s')+' ago'; }
+      function matches(r, s){
+        const [payee,acct,chan,stat,cur,amt,age]=r;
+        if(s.range.days!==null && age>s.range.days) return false;
+        const qq=s.query.trim().toLowerCase();
+        if(qq && !(payee+' '+acct+' '+chan).toLowerCase().includes(qq)) return false;
+        for(const f of s.filters){
+          if(f.facet==='currency' && cur!==f.value) return false;
+          if(f.facet==='status'   && stat!==f.value) return false;
+          if(f.facet==='channel'  && chan!==f.value) return false;
+          if(f.facet==='direction'&& f.value==='Debits only' && amt>=0) return false;
+        }
+        return true;
+      }
+      function render(s){
+        const hit=DATA.filter(r=>matches(r,s));
+        rows.textContent=''; cards.textContent='';
+        hit.forEach(r=>{
+          const [payee,acct,chan,stat,cur,amt,age]=r;
+          const tr=document.createElement('tr');
+          [[payee,''],[acct,''],[chan,''],[stat,''],[dayLabel(age),'']].forEach(([t])=>{
+            const td=document.createElement('td'); td.className='t-cm-caption'; td.textContent=t; td.title=t; tr.appendChild(td); });
+          const td=document.createElement('td'); td.className='amt t-cm-figure-6 '+(amt<0?'neg':'pos');
+          td.setAttribute('data-carries','label'); td.textContent=money(cur,amt); tr.appendChild(td);
+          rows.appendChild(tr);
+          const c=document.createElement('div'); c.className='demo-card';
+          c.innerHTML='<span class="t-cm-label"></span><span class="t-cm-caption"></span><span class="t-cm-figure-6 '+(amt<0?'neg':'pos')+'" data-carries="label"></span>';
+          c.children[0].textContent=payee; c.children[1].textContent=chan+' · '+dayLabel(age);
+          c.children[2].textContent=money(cur,amt);
+          cards.appendChild(c);
+        });
+        table.hidden = s.view!=='table'; cards.hidden = s.view==='cards' ? false : true;
+        table.setAttribute('data-density', s.density);
+        const st = hit.length? 'ok' : 'empty';
+        emptyEl.hidden = st!=='empty'; errEl.hidden = true; results.hidden = st==='empty';
+        consumer.setAttribute('data-apollo-result-count', String(hit.length));
+        consumer.setAttribute('data-apollo-result-total', String(DATA.length));
+        consumer.setAttribute('data-apollo-result-state', st);
+      }
+      bar.addEventListener('apollo:filter-change', e=> render(e.detail));
+
+      /* seed: two filters applied, so the bar opens in its most informative state */
+      state.filters=[{key:'currency:GBP',facet:'currency',value:'GBP',label:'Currency: GBP'},
+                     {key:'channel:Standing order',facet:'channel',value:'Standing order',label:'Channel: standing order'}];
+      apply();
+    })();
   </script>
 </body>
 </html>
