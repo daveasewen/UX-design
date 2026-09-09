@@ -110,13 +110,24 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.8"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.9"                     # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ s261-D1 IS THE SCOPE RULING FOR v1.0.9 — Dave at #261, asked what the next release should
+# carry: "we need to work on some of the components that we'll be using for dashboards…
+# ideate… pick up some backlog items", then "I also want to tackle the nav and footer design".
+# The cut therefore carries the six dashboard components landed at #261 — KPI tile, grid
+# header, filter/toolbar, the nav family (sidebar-nav / navigations / tab-bar), the app footer
+# and the legend — plus #262's three rulings on them: s262-D1 (the whole KPI card is the
+# affordance and may contain a link, no underline), s262-D2 (24px is a rare floor, the
+# invisible hit area carries the rest) and s262-D3 (the current nav item carries the SELECTED
+# version of the icon).
+# ⛔ NO RATIFY_IDS ROW IS KEYED TO v1.0.9 — see the block at RATIFY_IDS. The cut reads
+# PROPOSED until Dave's fresh ratifying word (s219-D4(2) / s223-D3, derived per s237-D9).
 MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # ⛔ s225-D3 — ONE VERSION STORY. The Gumdrop cut versions WITH the pack, and every Gumdrop
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.8"
+MEMENTO_CUT_VERSION = "v1.0.9"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -757,6 +768,13 @@ RATIFY_IDS = {
                             # at the SAME cut commit → --release → move the frozen literal and
                             # --seed. ⛔ Never a same-version re-bake: #257 Finding 2 is the whole
                             # reason v1.0.7 exists at all.
+    # ⛔ v1.0.9 (#262) HAS NO ROW, AND THAT IS THE POINT — NOT AN OMISSION. The cut was scoped by
+    # s261-D1, which is Dave asking for dashboard components, nav and footer — an AUTHORISATION
+    # naming what the release carries, never the RATIFYING word (s223-D3's whole distinction).
+    # s262-D1/D2/D3 are rulings ON the components, not on the pack. No ruling in the store
+    # carries his release word for v1.0.9, so `ratification_status()` derives PROPOSED and
+    # `--release` refuses (build-designer-pack.sh: `ratified || die`) — the machine doing its
+    # job. ⬛ WHEN DAVE RATIFIES, add the row keyed to THAT fresh ruling id.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
