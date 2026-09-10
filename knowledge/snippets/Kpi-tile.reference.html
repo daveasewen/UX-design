@@ -253,7 +253,12 @@
   .tgt-fill{position:absolute; top:0; bottom:0; left:0; background:var(--text);}
   .tgt-mark{position:absolute; top:-3px; bottom:-3px; width:1px; background:var(--text);
     opacity:var(--alpha-60);}
-  .tgt-cap{margin:0; opacity:var(--alpha-60); display:flex; align-items:center; min-height:var(--slot);}
+  /* #267 lane N — the last --slot RESERVATION, missed by the K3 reversal above: --slot is
+     defined nowhere in this file, so `min-height:var(--slot)` was already invalid-at-
+     computed-value-time (= auto) and rendered nothing. Removed to match K3's own words
+     ("no row reserves a --slot height any more"). No visual change; it reddened the
+     compose gate the moment canon.css was regenerated from this snippet. */
+  .tgt-cap{margin:0; opacity:var(--alpha-60); display:flex; align-items:center;}
 
   /* ---- STATE: loading (skeleton) ---- */
   .kpi-tile.is-loading .sk{display:block; background:var(--text); opacity:var(--alpha-08);

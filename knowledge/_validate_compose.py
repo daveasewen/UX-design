@@ -85,8 +85,20 @@ def check_canon():
     code = strip_css_comments(css)
     defs = set(re.findall(r'(--[\w-]+)\s*:', code))
     refs = set(re.findall(r'var\((--[\w-]+)', code))
+    # #267 lane N — PARSE IN THE CONSUMER'S GRAMMAR (same discipline as strip_css_comments).
+    # `var(--x, 380px)` is NOT an unresolved reference: the browser substitutes the fallback,
+    # so the declaration renders exactly as authored. Only a BARE `var(--x)` with no definition
+    # renders nothing. Measured when canon.css was regenerated from the #261 snippets: the three
+    # newly-projected page-owned dials --dg-vh (Data-grid, `var(--dg-vh, 380px)`) and --ftb-top
+    # (Filter-toolbar-bar, `var(--ftb-top,0px)`) turned this gate red although both carry a real
+    # default — the s258-D3 `-max` allowance above is the same family, keyed on a name suffix
+    # instead of on the grammar. A ref is exempt only if EVERY occurrence carries a fallback;
+    # one bare use anywhere still fails (that is how --slot stayed red and got fixed at source).
+    bare_refs = set(re.findall(r'var\(\s*(--[\w-]+)\s*\)', code))
+    with_fallback_only = refs - bare_refs
     inline_defs = inline_scope_vars()
-    missing = sorted(r for r in refs if r not in defs and not _is_runtime(r))  # s258-D3
+    missing = sorted(r for r in refs if r not in defs and not _is_runtime(r)
+                     and r not in with_fallback_only)  # s258-D3 + #267 fallback grammar
     # split out vars resolved via inline-scope (set on markup, not in CSS) —
     # report as a distinct provenance, don't fold them into "defs" or silently drop them
     # (#101 finding: --sc is set inline in snippets, e.g. style="--sc:var(--data-series-1)",
