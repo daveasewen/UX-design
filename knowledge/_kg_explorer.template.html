@@ -171,7 +171,7 @@ const unresolved=new Map();
 EDGES.forEach((e,k)=>{e.k=k;if(!e.t){(unresolved.get(e.s)||unresolved.set(e.s,[]).get(e.s)).push(e);return;}
   adj.get(e.s).push({e,other:e.t,out:true});adj.get(e.t).push({e,other:e.s,out:false});e.a=1;e.ta=1;});
 const typeOn={};ALLTYPES.forEach(t=>typeOn[t]=1);
-const famOn={structure:1,usage:1,render:1,rules:1,governance:1,guidelines:1};
+const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0}; // the two v1.2 layers load OFF: the page opens as v1.1 and Dave adds a layer by chip
 // v1.2: a node from a new family answers to BOTH its type chip and its family chip. Base nodes
 // carry no `fam`, so with both new family chips off the page is exactly the v1.1 graph.
 const famOK=o=>!o.fam||famOn[o.fam];

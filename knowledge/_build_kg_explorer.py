@@ -38,6 +38,7 @@ def extract(K=K):
     nodes, edges = {}, []
     def add(id, label=None, **kw):
         n = nodes.setdefault(id, {'id': id, 'type': id.split(':')[0], 'label': label or id.split(':', 1)[1]})
+        if label: n['label'] = label  # a component referenced before its own meta is read keeps the slug otherwise
         n.update({k: v for k, v in kw.items() if v})
     for f in ['_nodes-pattern.json', '_nodes-context.json']:
         fp = os.path.join(K, 'components', f)
