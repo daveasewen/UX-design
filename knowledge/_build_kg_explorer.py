@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.8"  # … 1.7 halo dots above labels · 1.8 the 3D halo is a ring in the camera plane that turns with the camera (no neighbour ever hides behind the focus or another)
+VERSION = "1.9"  # … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 

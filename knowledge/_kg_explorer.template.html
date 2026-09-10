@@ -237,9 +237,20 @@ function draw(){
   const posE=(s,t)=>(halo.has(s.id)&&halo.has(t.id))?0:Math.min(DOF_BLUR.length-1,((s.bd||0)+(t.bd||0))/2/DOF_BAND);
   const wt=(pos,band)=>band<0?1:Math.max(0,1-Math.abs(pos-band));
   const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
+  // v1.9 occlusion mitigation (the sphere costs some): a halo dot whose projected centre lands inside the
+  // focus disc is nudged radially outward in SCREEN space, capped at 12px; any dot still inside after the
+  // nudge is painted AFTER the focus so its centre pixel is its own colour. World positions are untouched.
+  const NUDGE_MAX=12;
+  const FR=(three&&focus)?(()=>{const p=P(focus);return {x:p.x,y:p.y,r:Math.max(0.4,focus.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*1.9*p.s)+4}})():null;
+  const rad=n=>Math.max(0.4,n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*P(n).s);
+  const scr=n=>{const pn=P(n);if(!FR||n===focus||!halo.has(n.id))return {x:pn.x,y:pn.y,s:pn.s,d:pn.d,inside:false};
+    const dx=pn.x-FR.x,dy=pn.y-FR.y;const dd=Math.hypot(dx,dy)||0.0001;const need=FR.r+rad(n);
+    if(dd>=need)return {x:pn.x,y:pn.y,s:pn.s,d:pn.d,inside:false};
+    const k=Math.min(NUDGE_MAX,need-dd);const ux=dx/dd,uy=dy/dd;
+    return {x:pn.x+ux*k,y:pn.y+uy*k,s:pn.s,d:pn.d,inside:(dd+k)<need}};
   const dot=(n,band)=>{if(!alive(n))return;const wn=wt(posN(n),band);if(wn<=0.02)return;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
     if(hover&&!focus){a=(n===hover||adj.get(hover.id).some(x=>x.other===n.id&&alive(x.e)))?1:0.12}
-    if(a<0.03)return;const pn=P(n);ctx.globalAlpha=(three?a*(0.5+0.5*pn.s):a)*wn;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s*(band>0?1+band*0.35:1);
+    if(a<0.03)return;const pn=scr(n);n._sx=pn.x;n._sy=pn.y;ctx.globalAlpha=(three?a*(0.5+0.5*pn.s):a)*wn;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s*(band>0?1+band*0.35:1);
     ctx.fillStyle=C.t[n.type];ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r),0,7);ctx.fill();
     if(n===focus||(pathNodes&&pathNodes.has(n.id))){ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle=C.ink;ctx.lineWidth=1;ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r)+3,0,7);ctx.stroke();}};
   const passes=(three&&dof)?DOF_BLUR.map((b,i)=>i).reverse():[-1];
@@ -273,19 +284,14 @@ function draw(){
     if(three){ctx.shadowColor=C.bg;ctx.shadowBlur=4;ctx.lineWidth=3;ctx.strokeStyle=C.bg;ctx.globalAlpha=0.85;ctx.strokeText(t,x,y);ctx.shadowBlur=0;ctx.globalAlpha=1}
     else{ctx.fillStyle=C.bg;ctx.globalAlpha=0.7;const w=ctx.measureText(t).width;ctx.fillRect(x-2,y-7,w+4,14);ctx.globalAlpha=1;}
     ctx.fillStyle=n===focus?C.ink:C.ink2;if(n===focus)ctx.font='bold 12px "Helvetica Neue",Helvetica,Arial,sans-serif';ctx.fillText(t,x,y);ctx.font='11px "Helvetica Neue",Helvetica,Arial,sans-serif';}
-  // halo dots on top of the labels
-  if(focus){for(const n of ORDER){if(halo.has(n.id)&&n!==focus)dot(n,-1)}dot(focus,-1)}
-  // sector labels in focus mode
+  // sector labels in focus mode — BEFORE the halo dots (v1.9: the sector text was painting over node centres)
   if(focus&&sectors){ctx.font='10px Menlo,monospace';ctx.textAlign='center';for(const s of sectors){ctx.globalAlpha=0.9;ctx.fillStyle=C.f[FAMILY[s.type]];
-    const R=s.R*(three?1.5:1)+(three?60:26);let q;if(three){const {R:Rv,U}=basis();const rr=s.R*1.5*0.8+40,ca=Math.cos(s.mid)*rr,sa=Math.sin(s.mid)*rr;q=proj(focus.x+ca*Rv[0]+sa*U[0],focus.y+ca*Rv[1]+sa*U[1],focus.z+ca*Rv[2]+sa*U[2])}else q=proj(focus.x+Math.cos(s.mid)*R,focus.y+Math.sin(s.mid)*R,focus.z);ctx.fillText(s.type.toUpperCase()+' · '+s.n,q.x,q.y);}ctx.textAlign='left';}
+    const R=s.R*(three?1.5:1)+(three?60:26);let q;if(three&&s.dir){const [cx,cy,cz]=base(focus);q=proj(cx+s.dir[0],cy+s.dir[1],cz+s.dir[2])}else q=proj(focus.x+Math.cos(s.mid)*R,focus.y+Math.sin(s.mid)*R,focus.z);ctx.fillText(s.type.toUpperCase()+' · '+s.n,q.x,q.y);}ctx.textAlign='left';}
+  // halo dots last — above node labels AND sector labels (v1.7 rule, extended in v1.9)
+  if(focus){const occ=[];for(const n of ORDER){if(halo.has(n.id)&&n!==focus){if(scr(n).inside)occ.push(n);else dot(n,-1)}}dot(focus,-1);for(const n of occ)dot(n,-1)}
 }
-// camera basis in world space (inverse of proj's rotation): the halo ring lies in the screen plane and turns WITH the camera
-function basis(){const cy=Math.cos(rot.y),sy=Math.sin(rot.y),cx=Math.cos(rot.x),sx=Math.sin(rot.x);return {R:[cy,0,sy],U:[sx*sy,cx,-sx*cy]}}
-let HALO=[];  // [{n,a,r}] while a 3D focus is live
-function placeHalo(){if(!three||!focus)return;const {R,U}=basis();const [cx,cy,cz]=base(focus);
-  for(const h of HALO){const ca=Math.cos(h.a)*h.r,sa=Math.sin(h.a)*h.r;h.n.tx=cx+ca*R[0]+sa*U[0];h.n.ty=cy+ca*R[1]+sa*U[1];h.n.tz=cz+ca*R[2]+sa*U[2];
-    if(h.snap){h.n.x=h.n.tx;h.n.y=h.n.ty;h.n.z=h.n.tz}}}
-function tick(){placeHalo();let more=false;for(const n of NODES){const dx=n.tx-n.x,dy=n.ty-n.y,dz=n.tz-n.z,da=n.ta-n.a;if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)+Math.abs(da)*40>0.4){more=true;n.x+=dx*0.16;n.y+=dy*0.16;n.z+=dz*0.16;n.a+=da*0.16}else{n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=n.ta}}
+// v1.9: no camera-plane basis. The dig is a WORLD-SPACE sphere again (v1.6 geometry) — spin gives parallax.
+function tick(){let more=false;for(const n of NODES){const dx=n.tx-n.x,dy=n.ty-n.y,dz=n.tz-n.z,da=n.ta-n.a;if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)+Math.abs(da)*40>0.4){more=true;n.x+=dx*0.16;n.y+=dy*0.16;n.z+=dz*0.16;n.a+=da*0.16}else{n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=n.ta}}
   if(three&&spin){if(!drag)rot.y+=0.0035;more=true}
   for(const e of GROW){if(e.gd>0){e.gd--;more=true}else if(e.g<1){e.g=Math.min(1,e.g+0.045);more=true}}
   try{draw()}catch(err){console.warn('draw',err)}if(more)anim=requestAnimationFrame(tick);else anim=null}
@@ -299,22 +305,23 @@ function applyFocus(){
   const groups=new Map();for(const x of nb){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   const total=nb.length||1, R1=Math.max(120,Math.min(260,60+total*7)), gap=0.06;
-  let ang=-Math.PI/2; sectors=[]; const placed=new Set([f.id]); GROW=[]; let gi=0; HALO=[];
-  for(const t of order){const g=groups.get(t);const span=(Math.PI*2-gap*order.length)*(g.length/total);const start=ang+gap/2;
+  let ang=-Math.PI/2; sectors=[]; const placed=new Set([f.id]); GROW=[]; let gi=0;
+  for(const t of order){const g=groups.get(t);const span=(Math.PI*2-gap*order.length)*(g.length/total);const start=ang+gap/2;let sx=0,sy=0,sz=0;
     // spread evenly, alternate radius a little when dense
     g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label));
     g.forEach((x,i)=>{x.e.g=0;x.e.gd=Math.floor(gi++*2);GROW.push(x.e);const a=start+span*((i+0.5)/g.length);const r=three?R1*1.5:R1+(g.length>14?(i%2)*34:0);const n=byId.get(x.other);
-      if(three){HALO.push({n,a,r:r*0.8})}else{n.tx=cx+Math.cos(a)*r;n.ty=cy+Math.sin(a)*r;n.tz=cz}n.ta=1;placed.add(n.id)});
-    sectors.push({type:t,n:g.length,mid:start+span/2,R:R1+(g.length>14?34:0)});ang+=span+gap;}
+      if(three){const ph=((i%5)-2)*0.32;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r;sx+=n.tx-cx;sy+=n.ty-cy;sz+=n.tz-cz}else{n.tx=cx+Math.cos(a)*r;n.ty=cy+Math.sin(a)*r;n.tz=cz}n.ta=1;placed.add(n.id)});
+    // v1.9: the sector label rides the SAME world-space sphere as its own nodes — the mean offset of the sector, pushed out 1.25x
+    sectors.push({type:t,n:g.length,mid:start+span/2,R:R1+(g.length>14?34:0),dir:three?[sx/g.length*1.25,sy/g.length*1.25,sz/g.length*1.25]:null});ang+=span+gap;}
   if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&famOn[FAMILY[y.e.type]]&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
-    const uniq=[...new Set(second)];uniq.forEach((id,i)=>{const n=byId.get(id);const a=-Math.PI/2+Math.PI*2*(i/uniq.length);if(three){HALO.push({n,a,r:R2*1.2})}else{n.tx=cx+Math.cos(a)*R2;n.ty=cy+Math.sin(a)*R2;n.tz=cz}n.ta=0.45;placed.add(id)})}
+    const uniq=[...new Set(second)];uniq.forEach((id,i)=>{const n=byId.get(id);const a=-Math.PI/2+Math.PI*2*(i/uniq.length);if(three){const r=R2*1.5,ph=((i%7)-3)*0.25;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*R2;n.ty=cy+Math.sin(a)*R2;n.tz=cz}n.ta=0.45;placed.add(id)})}
   for(const n of NODES){if(!placed.has(n.id)){[n.tx,n.ty,n.tz]=base(n);n.ta=0.05}}
   // centre the view on the focus
-  if(three){ctr=[cx,cy,cz];view.x=0;view.y=0;view.k=Math.min(W,H)/(2*(R1*1.2+(depth2?180:0)+160))}else{view.x=-cx;view.y=-cy;view.k=Math.max(view.k,Math.min(W,H)/(2*(R1+(depth2?150:0)+140)))}
+  if(three){ctr=[cx,cy,cz];view.x=0;view.y=0;view.k=Math.min(W,H)/(2*(R1*1.5+(depth2?225:0)+200))}else{view.x=-cx;view.y=-cy;view.k=Math.max(view.k,Math.min(W,H)/(2*(R1+(depth2?150:0)+140)))}
   animate(); renderPanel(f,nb);
 }
 function setFocus(n,push=true){pathNodes=pathEdges=null;focus=n;if(push){if(trail[trail.length-1]!==n)trail.push(n)}renderCrumbs();applyFocus()}
-function surface(){focus=null;sectors=null;ctr=[0,0,0];HALO=[];pathNodes=pathEdges=null;trail=[];for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.ta=1}renderCrumbs();animate();renderEmpty()}
+function surface(){focus=null;sectors=null;ctr=[0,0,0];pathNodes=pathEdges=null;trail=[];for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.ta=1}renderCrumbs();animate();renderEmpty()}
 function renderCrumbs(){const el=document.getElementById('crumbs');if(!trail.length){el.innerHTML='';return}
   el.innerHTML=`<button data-i="-1">Surface</button>`+trail.map((n,i)=>`<span class="sep">→</span><button data-i="${i}" class="${n===focus?'cur':''}">${esc(n.label)}</button>`).join('');
   el.querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i<0)return surface();trail=trail.slice(0,i+1);setFocus(trail[i],false)});}
@@ -410,7 +417,7 @@ function flyTo(n,cb){if(three){const c0=ctr.slice(),c1=base(n),t0=performance.no
   hover=null;(function step(){const u=Math.min(1,(performance.now()-t0)/D),s=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.x=x0+(x1-x0)*s;view.y=y0+(y1-y0)*s;view.k=k0+(k1-k0)*s;draw();if(u<1)requestAnimationFrame(step);else cb()})()}
 function choose(i){const n=cur[i];if(!n)return;hits.classList.remove('on');q.value='';q.blur();trail=[];
   if(n.fam&&!famOn[n.fam]){famOn[n.fam]=1;recount();renderStats();renderLegend()}if(!typeOn[n.type]){typeOn[n.type]=1;renderLegend()}surfaceQuiet();flyTo(n,()=>setFocus(n))}
-function surfaceQuiet(){focus=null;sectors=null;ctr=[0,0,0];HALO=[];pathNodes=pathEdges=null;for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.ta=1;n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=1}draw()}
+function surfaceQuiet(){focus=null;sectors=null;ctr=[0,0,0];pathNodes=pathEdges=null;for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.ta=1;n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=1}draw()}
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))hits.classList.remove('on')});
 
 // ---------- scrub line
