@@ -117,6 +117,9 @@ VERSION = "v1.0.10"                    # Spider's own lineage starts here; v1/v2
 # `local_imports()` could not see `__import__("gen_provenance_receipt")`, so the pack told its
 # designer to run a mint that was not in the zip. Nothing else is claimed for this cut; the
 # component work stays where s261-D1 put it, in v1.0.9.
+# ★ v1.0.10 IS RATIFIED — s267-D2, Dave's word "okay inscribe" (#267, 2026-09-10) to the go/no-go
+# v2 page's one question "Ratify v1.0.10 at a9218cc?", keyed in the RATIFY_IDS block below. The
+# status is DERIVED from the store, never typed (s237-D9).
 # ⛔ s261-D1 IS THE SCOPE RULING FOR v1.0.9 — Dave at #261, asked what the next release should
 # carry: "we need to work on some of the components that we'll be using for dashboards…
 # ideate… pick up some backlog items", then "I also want to tackle the nav and footer design".
@@ -853,6 +856,18 @@ RATIFY_IDS = {
                             # the /goal-modelled salutation opener. Keyed at the bake, the #257 /
                             # #260 shape: key → regenerate the manifest RATIFIED at the SAME cut
                             # commit → --release → move the frozen literal and --seed.
+    # ⛔ v1.0.10 (#267) HAD NO ROW through TWO PROPOSED cuts. 625be64 was cut and then HELD by
+    # s267-D1 — Dave's "Hold — re-cut with the chart pages shipped", an instruction ON the cut and
+    # not a word ratifying it (s223-D3's distinction again). The re-cut at a9218cc stood PROPOSED
+    # until s267-D2, and until it did `ratification_status()` derived PROPOSED and `--release`
+    # refused (build-designer-pack.sh: `ratified || die`) — the machine doing its job, twice.
+    "v1.0.10": "s267-D2",   # #267, Dave's word "okay inscribe" (2026-09-10) to the go/no-go v2
+                            # page's one question, on the PROPOSED re-cut at a9218cc06e8f — the
+                            # two helpers three releases never shipped, plus the chart-engine
+                            # pages that ship BY MEASUREMENT off the dataviz gate's own receipt
+                            # (s267-D1). Keyed at the bake, the #257 / #260 / #262 shape: key →
+                            # regenerate the manifest RATIFIED at the SAME cut commit →
+                            # --release → move the frozen literal and --seed.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
