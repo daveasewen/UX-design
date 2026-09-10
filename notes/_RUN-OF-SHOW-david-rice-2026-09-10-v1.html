@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run of show — David Rice, HSBC — v1</title>
+<style>
+:root{
+  --accent:#DA1A00;               /* TWO-RED LAW s151-D1 — on white */
+  --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --bg:var(--white); --fg:var(--black);
+  --panel:var(--grey-1); --rule:var(--grey-2); --rule-2:var(--grey-3);
+  --muted:var(--grey-6); --muted-2:var(--grey-7); --deco:var(--grey-3);
+  --slot:#FFF3F1;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --accent:#F6604C;             /* TWO-RED LAW s151-D1 — off white */
+    --bg:#0E0E0E; --fg:#FFF;
+    --panel:#1A1A1A; --rule:#2A2A2A; --rule-2:#3A3A3A;
+    --muted:#A8A8A8; --muted-2:#C4C4C4; --deco:#333;
+    --slot:#241814;
+  }
+}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;font-weight:400}
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+a{color:inherit}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:.5rem;margin:0 0 1rem}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+
+header{padding:6rem 0 3rem}
+h1{font-size:57px;font-weight:300;line-height:1.05;letter-spacing:0;margin:0 0 1.5rem}
+.hdr{display:grid;grid-template-columns:3fr 1fr 4fr;gap:4rem;align-items:start}
+.divider{border-left:1px solid var(--rule-2);min-height:120px}
+.meta{font-size:14px;color:var(--muted-2);line-height:1.6}
+.meta b{font-weight:500}
+
+hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
+section{padding:4rem 0}
+h2{font-size:34px;font-weight:300;line-height:1.15;margin:0 0 1.5rem;letter-spacing:-.01em}
+h3{font-size:19px;font-weight:500;margin:0 0 .5rem;letter-spacing:0}
+p{margin:0 0 1rem}
+.small{font-size:14px;line-height:1.6}
+.cap{font-size:12px;line-height:1.55;color:var(--muted);letter-spacing:.02em}
+
+/* ---- timing strip ---- */
+table.strip{width:100%;border-collapse:collapse;font-size:14px;line-height:1.5}
+table.strip th{text-align:left;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--rule-2);padding:0 1rem .6rem 0;vertical-align:bottom}
+table.strip td{border-bottom:1px solid var(--rule);padding:.75rem 1rem .75rem 0;vertical-align:top}
+table.strip td.n{font-weight:500;white-space:nowrap;width:52px}
+table.strip td.t{white-space:nowrap;color:var(--muted-2);width:104px}
+table.strip td.m{white-space:nowrap;width:64px}
+table.strip tr.beat td{background:var(--panel);font-weight:500}
+table.strip tr.beat td.n{color:var(--accent)}
+table.strip tr.sum td{border-bottom:0;border-top:1px solid var(--rule-2);font-weight:500}
+
+/* ---- beat cards ---- */
+.beat{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;padding:3rem 0;
+  border-top:1px solid var(--rule)}
+.idx{font-size:84px;font-weight:200;line-height:1;color:var(--deco);margin:0 0 .5rem}
+.aside .cap{margin-top:1rem}
+.row{display:grid;grid-template-columns:112px 1fr;gap:1.5rem;padding:1rem 0;border-top:1px solid var(--rule)}
+.row:first-of-type{border-top:0}
+.k{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.5;padding-top:.35rem}
+.v{margin:0}
+.say{font-size:19px;font-weight:400;line-height:1.55}
+.say em{font-style:normal;border-bottom:1px solid var(--accent)}
+.screen{font-size:14px}
+.screen .mono{color:var(--muted-2)}
+.break{font-size:14px;color:var(--muted-2)}
+
+/* ---- open slots ---- */
+.slot{background:var(--slot);border-left:2px solid var(--accent);padding:.75rem 1rem;margin:.5rem 0;font-size:14px;line-height:1.6}
+.slot b{font-weight:500}
+.slot::before{content:'\2B1B\00a0 DAVE\2019S:\00a0';font-weight:500;letter-spacing:.04em}
+
+/* ---- operator card ---- */
+.ops{background:var(--panel);margin:0;padding:4rem 0}
+.ops .wrap{max-width:1200px}
+.risks{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule-2);border:1px solid var(--rule-2);margin-top:2rem}
+.risk{background:var(--bg);padding:1.5rem}
+.risk .n{font-size:12px;font-weight:500;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin:0 0 .5rem}
+.risk p{margin:0;font-size:14px;line-height:1.6}
+.risk p+p{margin-top:.5rem;color:var(--muted-2)}
+
+ul{margin:0 0 1rem;padding-left:1.1rem}li{margin-bottom:.4rem}
+.quote{border-top:1px solid var(--rule-2);padding-top:1rem;margin-top:1rem;font-size:19px;line-height:1.5}
+footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color:var(--muted-2)}
+@media (max-width:900px){
+  .hdr{grid-template-columns:1fr;gap:2rem}.divider{display:none}
+  .beat{grid-template-columns:1fr;gap:1.5rem}.idx{font-size:57px}
+  .row{grid-template-columns:1fr;gap:.25rem}
+  .risks{grid-template-columns:1fr}
+  h1{font-size:43px}h2{font-size:27px}
+}
+</style></head><body>
+
+<div class="wrap">
+<header>
+  <p class="label">Run of show · v1 · #267 · 2026-09-10</p>
+  <div class="hdr">
+    <div>
+      <h1>Apollo,<br>to David Rice</h1>
+      <p class="small">Chief AI Officer, HSBC. Fifteen to twenty minutes, five beats, twelve plot points.
+      One live build, one live graph, no deck.</p>
+    </div>
+    <div class="divider"></div>
+    <div class="meta">
+      <p><b>Sum of the strip: 18:00</b> — inside the 15–20 band with two minutes of slack for his
+      interruptions. He will interrupt; the slack is the plan, not an accident.</p>
+      <p><b>Audience note.</b> <i>“He will judge Apollo as an operator, not a designer.”</i>
+      — <span class="mono">notes/_DEMO-PREP-david-rice-hsbc.html</span>. Lead with throughput.
+      Governance is a selling point, not a caveat. No design-system vocabulary in the headline,
+      no token detail up front, nothing that reads as a pilot.</p>
+      <p><b>Every figure on this page carries its source path.</b> Where the repo has no figure,
+      the slot is marked <b>⬛ DAVE’S</b> and left empty. Nothing is invented.</p>
+    </div>
+  </div>
+</header>
+</div>
+
+<hr class="rule">
+
+<!-- ============ TIMING STRIP ============ -->
+<div class="wrap">
+<section>
+  <p class="label">The strip — one screen</p>
+  <h2>Beat · minutes · what is on screen · who talks</h2>
+  <table class="strip">
+    <thead><tr><th class="n">#</th><th class="m">Mins</th><th class="t">Clock</th><th>Plot point</th><th>On screen</th><th>Who talks</th></tr></thead>
+    <tbody>
+      <tr class="beat"><td class="n">B1</td><td class="m">2:00</td><td class="t">0:00–2:00</td><td colspan="3">INTRO</td></tr>
+      <tr><td class="n">01</td><td class="m">1:00</td><td class="t">0:00–1:00</td><td>Why I am here, in one sentence</td><td>Title card (this page, printed or shared)</td><td>Dave</td></tr>
+      <tr><td class="n">02</td><td class="m">1:00</td><td class="t">1:00–2:00</td><td>What you will see in the next sixteen minutes</td><td>The strip above</td><td>Dave</td></tr>
+
+      <tr class="beat"><td class="n">B2</td><td class="m">4:00</td><td class="t">2:00–6:00</td><td colspan="3">GOAL · PRACTICAL BENEFITS · PREDICTED KPIs</td></tr>
+      <tr><td class="n">03</td><td class="m">1:30</td><td class="t">2:00–3:30</td><td>The problem, in his metaphor</td><td>⬛ DAVE’S diagram slot (car plant / gearbox)</td><td>Dave</td></tr>
+      <tr><td class="n">04</td><td class="m">1:00</td><td class="t">3:30–4:30</td><td>The claim: six months into ⬛ N weeks</td><td>⬛ DAVE’S number card</td><td>Dave</td></tr>
+      <tr><td class="n">05</td><td class="m">1:30</td><td class="t">4:30–6:00</td><td>The only measured before-and-after we own</td><td><span class="mono">reviews/COLDRUN-258-2026-09-08-v5.html</span></td><td>Dave</td></tr>
+
+      <tr class="beat"><td class="n">B3</td><td class="m">5:30</td><td class="t">6:00–11:30</td><td colspan="3">RUN THE DEMO — the frozen prompt, cold</td></tr>
+      <tr><td class="n">06</td><td class="m">0:30</td><td class="t">6:00–6:30</td><td>The prompt goes in, unedited</td><td>VS Code, Apollo-Spider v1.0.10 installed</td><td>Dave</td></tr>
+      <tr><td class="n">07</td><td class="m">2:00</td><td class="t">6:30–8:30</td><td>Dead air A — what inspired it</td><td>The build scrolling. Do not switch away.</td><td>Dave</td></tr>
+      <tr><td class="n">08</td><td class="m">1:30</td><td class="t">8:30–10:00</td><td>Dead air B — how it developed</td><td>Timeline card, if the build is still running</td><td>Dave</td></tr>
+      <tr><td class="n">09</td><td class="m">1:30</td><td class="t">10:00–11:30</td><td>The page lands. Drive it.</td><td>The generated <span class="mono">dashboard.html</span>, light theme</td><td>Dave · Rice interrupts here</td></tr>
+
+      <tr class="beat"><td class="n">B4</td><td class="m">4:30</td><td class="t">11:30–16:00</td><td colspan="3">THE SYSTEM, SIMPLY — “he will be very interested in the KG”</td></tr>
+      <tr><td class="n">10</td><td class="m">1:30</td><td class="t">11:30–13:00</td><td>Four moving parts, no black box</td><td>Four-part diagram (from the July sponsor deck)</td><td>Dave</td></tr>
+      <tr><td class="n">11</td><td class="m">3:00</td><td class="t">13:00–16:00</td><td>The knowledge graph — dig, scrub, trace, and ask it why</td><td><span class="mono">notes/_KG-EXPLORER.html</span> v1.9</td><td>Dave · Rice drives if he wants</td></tr>
+
+      <tr class="beat"><td class="n">B5</td><td class="m">2:00</td><td class="t">16:00–18:00</td><td colspan="3">AMBITION · REQUIREMENTS · THE ASK</td></tr>
+      <tr><td class="n">12</td><td class="m">2:00</td><td class="t">16:00–18:00</td><td>Where it goes, what it needs, what I am asking for</td><td>⬛ DAVE’S ask card</td><td>Dave, then silence</td></tr>
+
+      <tr class="sum"><td class="n"></td><td class="m">18:00</td><td class="t"></td><td colspan="3">Stated sum. Band 15–20. Two minutes of deliberate slack.</td></tr>
+    </tbody>
+  </table>
+  <p class="cap" style="margin-top:1.5rem">Twelve plot points at roughly eighteen minutes were accepted in principle at #266 and nothing was written
+  (<span class="mono">_DECISION-HISTORY/2026-09-10-266-kg-explorer-demo-pivot.md</span> § 4). This page is the first writing of them.
+  The five beats and their order are his, verbatim, from the same file § 2.</p>
+</section>
+</div>
+
+<hr class="rule">
+
+<!-- ============ BEAT 1 ============ -->
+<div class="wrap">
+<div class="beat" style="border-top:0">
+  <div class="aside">
+    <p class="idx">01</p>
+    <p class="label">Beat 1 · Intro</p>
+    <h3>2:00 — 0:00 to 2:00</h3>
+    <p class="cap"><b>Goal of the beat:</b> he knows in ninety seconds why this is worth his next
+    sixteen minutes, and that it will end with an ask. Nothing is demonstrated yet.</p>
+    <p class="cap"><b>Room note:</b> settle who else is present before you start — his team,
+    Shamtani’s, or design leadership changes how much platform depth to carry
+    (<span class="mono">_DEMO-PREP</span> § 03).</p>
+  </div>
+  <div>
+    <div class="row"><p class="k">01 · Say</p><p class="v say">I have spent the summer building something that generates
+      bank-grade interfaces from our own component library, and refuses to hand you one it cannot account for.
+      I want to show you it working, live, and then ask you for something.</p></div>
+    <div class="row"><p class="k">On screen</p><p class="v screen">Title card only. Do not open the tools yet —
+      opening them invites a question you have not earned the right to answer.</p></div>
+    <div class="row"><p class="k">02 · Say</p><p class="v say">Three things in sixteen minutes: the number I think we can
+      move, one prompt run cold in front of you, and the graph underneath it. Then the ask.</p></div>
+    <div class="row"><p class="k">Transition</p><p class="v break">“Let me start with what the problem actually is.”</p></div>
+    <div class="row"><p class="k">If it breaks</p><p class="v break">Nothing to break. If the room is late, cut plot point 02 to
+      one line and take the minute back into beat 3.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ BEAT 2 ============ -->
+<div class="wrap">
+<div class="beat">
+  <div class="aside">
+    <p class="idx">02</p>
+    <p class="label">Beat 2 · Goal, benefits, predicted KPIs</p>
+    <h3>4:00 — 2:00 to 6:00</h3>
+    <p class="cap"><b>Goal of the beat:</b> put a measurable claim on the table before you demonstrate anything,
+    so the demo is evidence for a claim rather than a tour.</p>
+    <p class="cap"><b>His metric shape:</b> gen-AI is tied to the group RoTE target of &gt;17% for 2026–28 through
+    automation and efficiency; his job is turning tool access into measurable process change
+    (<span class="mono">_DEMO-PREP</span> § 02).</p>
+  </div>
+  <div>
+    <div class="row"><p class="k">03 · Say</p><p class="v say">⬛ The metaphor is his and it is not written down anywhere
+      in the repo — leave it spoken, in his words.</p>
+      <div class="slot"><b>the car-plant / gearbox metaphor.</b> A full-text sweep of <span class="mono">notes/</span>,
+      <span class="mono">_DECISION-HISTORY/</span>, <span class="mono">reviews/</span>, <span class="mono">docs/</span>,
+      <span class="mono">digital-experience-transformation/</span> and <span class="mono">README.md</span> for
+      <i>gearbox, car plant, assembly line, production line, factory floor</i> returns no such passage
+      (<span class="mono">notes/_lanes/2026-09-10-266-T-timeline-trawl.md</span> § 3). It is yours. Write the two sentences here,
+      and say whether it wants a diagram or just the words.</div></div>
+    <div class="row"><p class="k">On screen</p><p class="v screen">⬛ DAVE’S diagram slot. If no diagram, hold the title card —
+      a metaphor lands better with an empty screen than a decorative one.</p></div>
+
+    <div class="row"><p class="k">04 · Say</p><p class="v say">The goal is compressing a six-month project into <em>⬛ N weeks</em>.</p>
+      <div class="slot"><b>N.</b> ⛔ No “six months → N weeks” claim exists anywhere in the repo
+      (<span class="mono">…266-T-timeline-trawl.md</span> § 3.2, verbatim: <i>“Do not invent one.”</i>).
+      Give me the number and I will put the working behind it. Until then the sentence is spoken with your figure or not at all.</div>
+      <p class="v cap" style="margin-top:.5rem"><b>Defensible fallback if you would rather not name N in the room:</b> three observable facts, each checkable —
+      the component library was inventoried in one week (17–18 June, git); nine releases shipped in fifteen days
+      (26 Aug – 9 Sep, <span class="mono">apollo-spider/dist/</span>); the one-shot score moved two of four axes in a single day
+      (8 Sep, #258).</p></div>
+
+    <div class="row"><p class="k">05 · Say</p><p class="v say">This is the only before-and-after in the project that was
+      measured rather than asserted. Four axes — rich, full, persistent, interactive, nought to three each.
+      We started at 2/2/0/2. Five blind runs in one day, each one finding a real defect, ended at 3/3/3/2.
+      Persistence went nought to three on the strength of two decisions.</p></div>
+    <div class="row"><p class="k">On screen</p><p class="v screen"><span class="mono">reviews/COLDRUN-258-2026-09-08-v5.html</span>
+      — the fifth run’s review page. Source for the series:
+      <span class="mono">_DECISION-HISTORY/2026-09-08-258-five-cold-runs-and-the-sentence-2a-forbade.md</span>.</p></div>
+    <div class="row"><p class="k">KPIs</p><p class="v">
+      <div class="slot"><b>which KPIs you want predicted.</b> The repo holds counts, not forecasts. Real and checkable today:
+      137 gated reference components · 138 component criteria files · 441 rulings · 102-node / 172-edge decision graph ·
+      56 gate scripts · 17 runbooks · 17 ADRs · 217 session dossiers · 10 releases v1.0.0–v1.0.10 ·
+      1,245 commits 31 May–9 Sep (all sourced in <span class="mono">…266-T-timeline-trawl.md</span> § 3).
+      ⚠ Industry figures in <span class="mono">digital-experience-transformation/strategy/</span> (“40–60% faster”, “~10x throughput”)
+      are <b>sourced but not ours</b> — say so if you use them. Name the two or three KPIs you want to predict and I will build the card.</div></p></div>
+    <div class="row"><p class="k">Transition</p><p class="v break">“Rather than tell you it works, let me run it cold in front of you.”</p></div>
+    <div class="row"><p class="k">If it breaks</p><p class="v break">If he challenges the 3/3/3/2 as self-scored: it is self-scored, and every
+      point was verified by driving the page in a browser, not by reading the source. Say that plainly; do not defend the score.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ BEAT 3 ============ -->
+<div class="wrap">
+<div class="beat">
+  <div class="aside">
+    <p class="idx">03</p>
+    <p class="label">Beat 3 · Run the demo</p>
+    <h3>5:30 — 6:00 to 11:30</h3>
+    <p class="cap"><b>Goal of the beat:</b> one prompt, one compliant dashboard, in front of him, with nothing
+    edited. The dead-air talk is the origin story — that is his own instruction for this beat.</p>
+    <p class="cap"><b>Theme:</b> demo in the <b>light</b> theme (#266 lane R recommendation).
+    Dark works — C6 verified the toggle — but light is the rehearsed path.</p>
+  </div>
+  <div>
+    <div class="row"><p class="k">06 · On screen</p><p class="v screen">VS Code, Apollo-Spider installed
+      (<span class="mono">apollo-spider/dist/Apollo-Spider-v1.0.10.zip</span>; v1.0.9 is the last version driven cold —
+      <span class="mono">notes/_subreports/2026-09-10-267-C6-cold-run-6.md</span>). Paste the frozen prompt, unedited:</p>
+      <p class="v mono" style="margin-top:.5rem;padding:.75rem 1rem;background:var(--panel)">/generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</p>
+      <p class="v cap" style="margin-top:.5rem">Source: <span class="mono">notes/_briefs/2026-09-10-267-cold-run-6-brief.md</span> line 16.
+      The typo is in the frozen prompt. Leave it — it is the same sentence every run has used.</p></div>
+    <div class="row"><p class="k">06 · Say</p><p class="v say">That is the whole instruction. I am not going to touch the keyboard again
+      until it stops.</p></div>
+
+    <div class="row"><p class="k">07 · Dead air A</p><p class="v say">Two minutes, <b>what inspired it</b>. Beats, in order:
+      the first version was a bespoke pipeline, and abandoning it was the good decision. On 2 July we archived the runtime and
+      ratified the pivot: generation is a commodity, and this is the layer around any generator. Within hours of that we pointed
+      the engine at GOV.UK, a completely different design system, and it still worked. So it was never about writing a better generator —
+      it was about writing down what we already know well enough that a machine can be held to it.</p>
+      <p class="v cap" style="margin-top:.5rem">Sources: <span class="mono">docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md</span>;
+      <span class="mono">second-system-govuk/</span>, git 2026-07-02; README: <i>“Generation is a commodity — this repo is the layer around any generator.”</i></p></div>
+    <div class="row"><p class="k">Do not</p><p class="v break">Do not alt-tab while it builds. Watching your own build is the point;
+      switching away tells the room you do not trust it.</p></div>
+
+    <div class="row"><p class="k">08 · Dead air B</p><p class="v say">Ninety seconds, <b>how it developed</b>. Four acts:
+      June, we took the inventory — twenty-odd components with criteria in a week, then the checks acquired the power to withhold “done”.
+      July, the pivot, and the project started keeping a record that could prove its own honesty. August, it became a product with releases —
+      ten of them since 26 August. September, one sentence: get the dashboard one-shottable. That is the sentence you are watching run.</p>
+      <p class="v cap" style="margin-top:.5rem">Sources: git 2026-06-17/18/19 and 2026-06-22→29;
+      <span class="mono">docs/decisions/ADR-0007-project-memory-decision-graph.md</span>; <span class="mono">apollo-spider/dist/</span>;
+      <span class="mono">_DECISION-HISTORY/2026-09-05-246-the-library-dictates.md</span> (Dave: <i>“the focus is getting the dashboards one-shotable.”</i>).</p></div>
+    <div class="row"><p class="k">Overrun</p><p class="v break">If the build is still going at 10:00, the third dead-air card is the recovery story:
+      a release that refuses to cut over stale receipts (#263, the tenth gate), and a build script the machinery caught before step 1 (#164).
+      Never fill dead air with the KG — that is beat 4 and it needs its own three minutes.</p></div>
+
+    <div class="row"><p class="k">09 · Drive it</p><p class="v screen">Fixed click path, in this order:
+      <b>1)</b> switch view (Payments) <b>2)</b> filter currency to EUR <b>3)</b> sort a column
+      <b>4)</b> copy the URL, open it in a fresh tab — the state comes back
+      <b>5)</b> toggle dark, toggle back to light.
+      All five were driven under assertion at C6 (<span class="mono">outputs/coldrun-267/drive.json</span>:
+      cold reload of <span class="mono">?view=payments&amp;ccy=EUR&amp;sort=counterparty&amp;dir=asc&amp;pp=24&amp;mode=dark</span> restored 5 of 5 keys).</p></div>
+    <div class="row"><p class="k">09 · Say</p><p class="v say">Sixty-eight payments, five entities, five currencies, twelve months of series —
+      one data object driving every view. Nothing on this page is a placeholder, and the charts are drawn by the library’s own engine, not by
+      arithmetic the model made up. And the state is in the URL, so I can send you this exact screen.</p></div>
+    <div class="row"><p class="k">Transition</p><p class="v break">“That took about four minutes. The interesting part is not the page — it is what it read.”</p></div>
+    <div class="row"><p class="k">If it breaks</p><p class="v break"><b>Have the C6 arm open in a second tab before you start</b>
+      (<span class="mono">outputs/coldrun-267/arm-A-blind/dashboard.html</span>). If the live build fails or overruns badly, say
+      “this one ran blind yesterday, same prompt, same pack” and drive that instead. You lose nothing but the theatre.
+      ⚠ Two known live defects — see the operator card. Both are in the sidebar/toolbar chrome, not in the demo click path above.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ BEAT 4 ============ -->
+<div class="wrap">
+<div class="beat">
+  <div class="aside">
+    <p class="idx">04</p>
+    <p class="label">Beat 4 · The system, simply</p>
+    <h3>4:30 — 11:30 to 16:00</h3>
+    <p class="cap"><b>Goal of the beat:</b> he understands the mechanism well enough to ask a governance question,
+    and gets an answer. His brief: <i>“he will be very interested in the KG.”</i></p>
+    <p class="cap"><b>Longest single plot point on the page.</b> The KG explorer is three minutes because he will drive it.
+    Dave’s own line on this class of artefact: <i>“Honestly every presentation and demo I give this is the show-stopper usually.”</i></p>
+  </div>
+  <div>
+    <div class="row"><p class="k">10 · Say</p><p class="v say">Four moving parts, no black box. The canon — everything we know about
+      a component, written down. The gates — checks with the power to refuse. The runbooks — the method, written for a machine that
+      wakes up with no memory. And a host agent, which is whichever model you already have. It is model-agnostic; it runs where the
+      designer’s tools already run.</p>
+      <p class="v cap" style="margin-top:.5rem">Frame from <span class="mono">reviews/PRESENTATION-2026-07-14-apollo-sponsor.html</span>
+      (<i>“Four moving parts. No black box.”</i>). ⚠ That deck’s KPI row says “38 reviewed components” — <b>stale</b>; the figure is now 137 gated
+      reference components / 138 criteria files. If you reuse a slide from it, fix the number first, and note its accent is the old
+      <span class="mono">#DB0011</span>, not the ruled <span class="mono">#DA1A00</span>.</p></div>
+    <div class="row"><p class="k">Platform answer</p><p class="v break">He does not own the model platform — Mario Shamtani does. Expect
+      “which models, where does it run, how does it plug into the central AI platform.” One line, ready:
+      <b>model-agnostic engine plus a skills pack; it runs where the designer’s tools run, and it is not welded to one component library —
+      we proved that on GOV.UK.</b></p></div>
+
+    <div class="row"><p class="k">11 · On screen</p><p class="v screen"><span class="mono">notes/_KG-EXPLORER.html</span> v1.9,
+      opened from disk. Self-contained, data inlined, zero dependencies. Path, in order:
+      <b>1)</b> it opens spinning — let it, and say nothing for three seconds
+      <b>2)</b> search a component he will recognise (Table, or Button) → fly to it
+      <b>3)</b> one dig, one level — its relations bloom
+      <b>4)</b> drag the timeline scrub from May to today
+      <b>5)</b> hand him the mouse.</p></div>
+    <div class="row"><p class="k">11 · Say</p><p class="v say">This is the library as the machine sees it. Every dot is a component,
+      a pattern, a context, a snippet or a decision, and every line is a relation somebody authored — none of them inferred by a model.
+      The scrub is real history: fifty-one daily snapshots from the thirty-first of May to yesterday, each one taken from the repository
+      at that date and measured with the same instrument as today’s. So you are not watching an animation of a graph. You are watching
+      the graph actually grow.</p></div>
+    <div class="row"><p class="k">Figures</p><p class="v screen">At HEAD <span class="mono">6d3b61e</span>, printed by
+      <span class="mono">knowledge/_build_kg_explorer.py</span>: <b>889 nodes / 1,176 relations / 137 components</b> live;
+      <b>2,780 nodes / 4,828 edges</b> with the governance and guidelines layers on; <b>51 snapshots, 2026-05-31 → 2026-09-09</b>;
+      <b>826 <span class="mono">appliesTo</span> matched, 0 unmatched</b>.
+      ⚠ An earlier brief carried 1,261 relations and 2,771/4,791 — both readings are named in
+      <span class="mono">_DECISION-HISTORY/2026-09-10-266-kg-explorer-demo-pivot.md</span> § 6. <b>Quote the generator’s figures, which can be
+      re-taken with one command.</b> Do not average them and do not invent a third.</p></div>
+    <div class="row"><p class="k">11 · Close</p><p class="v say">And when you ask why a button is that colour, you do not get an opinion.
+      You get a ruling — an identifier, a date, and the words the human used. Four hundred and forty-one of them so far, and a page a
+      non-engineer can read.</p>
+      <p class="v cap" style="margin-top:.5rem">Have <span class="mono">notes/_RULINGS.html</span> open in a background tab.
+      Open it only if he asks — the graph is the beat, the rulings page is the answer to a question.</p></div>
+    <div class="row"><p class="k">Transition</p><p class="v break">“So that is what exists. Here is where I want to take it, and what I need.”</p></div>
+    <div class="row"><p class="k">If it breaks</p><p class="v break">⚠ <b>Open live defect:</b> “3D is broken when we dig deeper” — reported at the close of
+      #266 and <b>not reproduced</b> by a headless probe, which is not evidence it is absent
+      (<span class="mono">…266-kg-explorer-demo-pivot.md</span> § 7). <b>Rehearse the exact dig you intend to do, at least twice, on the machine you
+      will present from.</b> If the spin stops mid-demo: reload the page — a drag-release used to kill the frame loop and reload re-arms it.
+      If a second dig looks wrong, do not dig again; scrub the timeline instead and carry on. Do not narrate a defect he has not noticed.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ BEAT 5 ============ -->
+<div class="wrap">
+<div class="beat">
+  <div class="aside">
+    <p class="idx">05</p>
+    <p class="label">Beat 5 · Ambition, requirements, the ask</p>
+    <h3>2:00 — 16:00 to 18:00</h3>
+    <p class="cap"><b>Goal of the beat:</b> he leaves knowing exactly what you want and what it costs him.
+    ⚠ <span class="mono">_DEMO-PREP</span> § 03 flags this as unsettled: <i>“Is the ask sponsorship, a pilot site,
+    or a platform slot? The one-shot dashboard proves capability; the ask decides the close.”</i></p>
+  </div>
+  <div>
+    <div class="row"><p class="k">12 · Ambition</p><p class="v say">Design-time is the first vehicle, not the last one. The same
+      engine pointed at run-time gives you a landing surface assembled per user from certified cards, where entitlement is a verification
+      check on card eligibility rather than a nice-to-have — you can only ever see what you are entitled to, provably.</p>
+      <p class="v cap" style="margin-top:.5rem">Source: <span class="mono">notes/_VISION-contextual-dashboard_2026-06-29.md</span>
+      (<i>“The hard part was never generating an interface; it’s generating one you can trust.”</i>).
+      Use this only if the ask is a platform slot; if the ask is sponsorship, cut it to one sentence.</p></div>
+    <div class="row"><p class="k">12 · Requirements</p><p class="v screen">Three, kept short: a real project to point it at;
+      access to the component library as the binding target; and a decision on external model use for design artefacts —
+      which <span class="mono">_DEMO-PREP</span> § 03 predicts will be his first governance question anyway. Answer it before he asks it.</p></div>
+    <div class="row"><p class="k">12 · The ask</p><p class="v">
+      <div class="slot"><b>the ask — amount and shape.</b> The repo has no figure and the July sponsor deck said explicitly
+      <i>“No budget ask today”</i> (<span class="mono">reviews/PRESENTATION-2026-07-14-apollo-sponsor.html</span>), so there is nothing to carry forward.
+      Decide: sponsorship (how much, over how long), a lighthouse project (which one), or a slot on Shamtani’s platform. Then the closing
+      sentence writes itself and I will set it here.</div></p></div>
+    <div class="row"><p class="k">Then</p><p class="v break">Say the ask and stop talking. Do not soften it, do not add a fallback option
+      in the same breath, and do not offer a pilot — he was hired to move past pilots (<span class="mono">_DEMO-PREP</span> § Verdict).</p></div>
+    <div class="row"><p class="k">If it breaks</p><p class="v break">If you are at 19:00 when you reach here, drop the ambition paragraph entirely
+      and go straight to the ask. The ask is the only part of beat 5 that cannot be cut.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ OPERATOR CARD ============ -->
+<div class="ops">
+<div class="wrap">
+  <p class="label">Operator card — print this one</p>
+  <h2>What is actually broken today</h2>
+  <p class="small" style="max-width:62ch">Every line below is measured, not suspected, and comes from the sixth cold run
+  (<span class="mono">notes/_subreports/2026-09-10-267-C6-cold-run-6.md</span>) or from #266’s close. Read it once the morning of.
+  <b>None of the top three touches the rehearsed click path in plot point 09</b> — that is why the path is the one written above.</p>
+
+  <div class="risks">
+    <div class="risk"><p class="n">Risk 1 · live, on screen</p>
+      <p><b>The sidebar nav renders unstyled in a blind build.</b> <span class="mono">grep -c "nv-item" canon.css</span> = 0 while the
+      snippet’s own <span class="mono">&lt;style&gt;</span> has 18 — canon.css has diverged from the snippet markup it ships.</p>
+      <p>Mitigation: do not point at the left nav; navigate by the view control in the body. If he notices, name it as a packaging bug
+      found by our own blind run yesterday — that is a governance story, not an excuse.</p></div>
+
+    <div class="risk"><p class="n">Risk 2 · live, pointer-dead</p>
+      <p><b>Both dropdown menus are unreachable with a mouse.</b> Playwright timed out at 30s:
+      <span class="mono">#ftbStatus … intercepts pointer events</span>. Same root cause as risk 1 —
+      <span class="mono">.ftb-*</span> and <span class="mono">.th-in</span> classes have 0 occurrences in canon.css.</p>
+      <p>Mitigation: <b>never click a dropdown in the demo.</b> Filter via the URL or the visible controls. This is the single most
+      likely thing to freeze the room.</p></div>
+
+    <div class="risk"><p class="n">Risk 3 · the KG explorer</p>
+      <p><b>“3D is broken when we dig deeper”</b> — Dave’s report at the close of #266. A headless probe (search → follow → Depth 2 → follow)
+      <b>reproduced nothing</b>, and that is not evidence the defect is absent. The screenshot is still owed.</p>
+      <p>Mitigation: rehearse the exact dig twice on the presenting machine. If the spin stops, reload — a drag-release once killed the frame
+      loop and reload re-arms it (v1.3, <span class="mono">05d6097</span>). Do not dig a second time on stage.</p></div>
+
+    <div class="risk"><p class="n">Risk 4 · only if he asks for the pack</p>
+      <p><b>The released zip cannot pass its own gates.</b> <span class="mono">gen_provenance_receipt.py</span> is in the repo tree and in none of
+      v1.0.7 / v1.0.8 / v1.0.9, so <span class="mono">_validate_receipt.py</span> can only answer <span class="mono">FAIL:NO-RECEIPT</span>.</p>
+      <p>Mitigation: do not run a gate live. If he asks to see one refuse, show a recorded refusal instead — the tenth release gate (#263)
+      refusing over stale receipts is the better story anyway.</p></div>
+
+    <div class="risk"><p class="n">Risk 5 · only if he asks about the graph’s health</p>
+      <p><b><span class="mono">_validate_kg.py</span> is FAIL</b> — an inherited red from #265. Four of five fails are one file
+      (<span class="mono">filter-toolbar-bar.meta.json</span>) declaring four edge keys the schema does not know; the fifth is stale resolutions.</p>
+      <p>Mitigation: <b>do not report the KG as green in the room.</b> The data reads fine; the gate objects to schema registration, not to the
+      edges existing. Say that, in that order. ⛔ Never run <span class="mono">gen_kg_edges.py</span> to “refresh” anything.</p></div>
+
+    <div class="risk"><p class="n">Risk 6 · figures</p>
+      <p><b>Two live readings exist for the graph counts</b> (1,176 vs 1,261 relations; 2,780/4,828 vs 2,771/4,791) and the July deck’s
+      “38 reviewed components” is stale against today’s 137/138.</p>
+      <p>Mitigation: quote the generator’s figures only — they can be re-taken with one command. Re-run
+      <span class="mono">knowledge/_build_kg_explorer.py</span> the morning of and read the numbers off its own output.</p></div>
+  </div>
+
+  <p class="quote">The record’s own instruction for this room: <i>“Bring the proof, not just the deck — a live or recorded walk
+  of the journey is worth more than any slide.”</i><br>
+  <span class="cap"><span class="mono">digital-experience-transformation/strategy/05_narrative-and-deck-outline.md</span></span></p>
+</div>
+</div>
+
+<!-- ============ OPEN SLOTS ============ -->
+<div class="wrap">
+<section>
+  <p class="label">Open slots — nothing here was invented</p>
+  <h2>Four things only Dave can fill</h2>
+  <div class="slot"><b>N,</b> in “compressing a six-month project into N weeks” (plot point 04).
+  No such claim exists in the repo; the trawl’s instruction is verbatim <i>“Do not invent one.”</i></div>
+  <div class="slot"><b>the car-plant / gearbox metaphor</b> (plot point 03). Spoken, his, and absent from every searched directory.
+  Two sentences, and whether it wants a diagram.</div>
+  <div class="slot"><b>the sponsorship ask — amount and shape</b> (plot point 12). Sponsorship, a lighthouse project, or a platform slot.
+  The July deck explicitly made no budget ask, so there is no precedent to inherit.</div>
+  <div class="slot"><b>which KPIs to predict</b> (plot point 05). The repo holds counts, not forecasts. Name two or three and the card gets built.</div>
+</section>
+</div>
+
+<footer><div class="wrap">
+  <p><b>Run of show v1</b> · written at #267, 2026-09-10 · <span class="mono">notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html</span><br>
+  Sources: <span class="mono">notes/_DEMO-PREP-david-rice-hsbc.html</span> ·
+  <span class="mono">_DECISION-HISTORY/2026-09-10-266-kg-explorer-demo-pivot.md</span> ·
+  <span class="mono">notes/_lanes/2026-09-10-266-T-timeline-trawl.md</span> ·
+  <span class="mono">notes/_lanes/2026-09-10-266-K-kg-and-decks.md</span> ·
+  <span class="mono">notes/_subreports/2026-09-10-267-C6-cold-run-6.md</span>.<br>
+  ⛔ This page is a draft for Dave’s eye. Nothing on it is a ruling.</p>
+</div></footer>
+
+</body></html>
