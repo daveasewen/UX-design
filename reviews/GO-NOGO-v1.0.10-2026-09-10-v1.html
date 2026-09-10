@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go / no-go — Apollo — Spider v1.0.10</title>
+<style>
+  :root{
+    --accent:#DA1A00; --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);color:var(--black);
+       font:400 16px/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+  nav{position:sticky;top:0;z-index:10;background:var(--white);
+      border-bottom:1px solid var(--grey-2)}
+  nav .wrap{height:56px;display:flex;align-items:center;justify-content:space-between}
+  nav .back{font-size:14px;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+  nav .ctx{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6)}
+  .label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+  .label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+  section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+  section.tight{padding:var(--s6) 0}
+  section.band{background:var(--grey-1)}
+  h1{font-size:57px;line-height:1.04;font-weight:300;letter-spacing:0;margin:0 0 var(--s4)}
+  h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+  h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+  p{margin:0 0 var(--s2);max-width:66ch}
+  .head{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+  .meta{font-size:14px;line-height:1.6;color:var(--grey-7)}
+  .meta b{color:var(--black);font-weight:500}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+  .stat .n{font-size:43px;font-weight:200;line-height:1.05}
+  .stat .c{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-5);
+           margin-top:var(--s1)}
+  .dim{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+  .idx{font-size:57px;font-weight:200;color:var(--grey-3);line-height:1}
+  .dim .lab{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);
+            margin-top:var(--s2)}
+  .prop{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start}
+  .rulecol{border-left:1px solid var(--grey-2);min-height:120px}
+  code,.mono{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px}
+  code{background:var(--grey-1);padding:1px 4px}
+  pre{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px;line-height:1.6;
+      background:var(--grey-1);padding:var(--s3);overflow-x:auto;margin:0 0 var(--s3)}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--grey-2);vertical-align:top}
+  th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);
+     font-weight:500;border-bottom:1px solid var(--grey-3)}
+  td.n{white-space:nowrap}
+  .pass{font-weight:500}
+  .red{color:var(--accent);font-weight:500}
+  .delta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);
+         margin-top:var(--s4)}
+  .delta > div{background:var(--white);padding:var(--s4)}
+  .delta .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 var(--s3);
+            color:var(--grey-6)}
+  .delta .h.acc{color:var(--accent)}
+  ul{margin:0 0 var(--s2);padding-left:1.1rem;max-width:66ch}
+  li{margin-bottom:6px}
+  .q{border-top:1px solid var(--grey-3);padding-top:var(--s4);margin-top:var(--s5)}
+  .q .ask{font-size:43px;font-weight:300;line-height:1.15;margin:0 0 var(--s3)}
+  footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+  @media (max-width:860px){
+    .head,.dim,.prop,.delta{grid-template-columns:1fr}
+    .rulecol{display:none}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    h1{font-size:43px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="back" href="RELEASE-SPIDER-2026-08-26-v1.html">&larr; Release manifest page</a>
+    <span class="ctx">Apollo — Spider · release decision</span>
+  </div>
+</nav>
+
+<section>
+  <div class="wrap">
+    <p class="label">Go / no-go · session #267 · 2026-09-10</p>
+    <div class="head">
+      <div>
+        <h1>v1.0.10 —<br>the packaging hole,<br>closed.</h1>
+      </div>
+      <div class="meta">
+        <p><b>Cut commit</b> <span class="mono">625be6470f4a5249587de095c32443eadab711f5</span><br>
+        <b>Fix commit</b> <span class="mono">fee25720583cf24e48ee5c47d5fa95a533220839</span><br>
+        <b>Cut recorded at</b> <span class="mono">fbd9c141b6fb672df5322bbe03732b137275436b</span><br>
+        <b>Status</b> PROPOSED — no <span class="mono">RATIFY_IDS</span> row is keyed to v1.0.10,
+        so <span class="mono">--release</span> refuses. Release is your word (s219-D4(2)).</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">1706</div><div class="c">files in the cut</div></div>
+      <div class="stat"><div class="n">9</div><div class="c">added</div></div>
+      <div class="stat"><div class="n">1</div><div class="c">removed — a red</div></div>
+      <div class="stat"><div class="n">8/10</div><div class="c">release gates green</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">The finding</p>
+    <div class="prop">
+      <div>
+        <h2>Three releases told the designer to run a file that was not in the zip.</h2>
+      </div>
+      <div class="rulecol"></div>
+      <div>
+        <p><code>knowledge/gen_provenance_receipt.py</code> is in the tree and in
+        <b>none</b> of the last three packs:</p>
+        <pre>unzip -l apollo-spider/dist/Apollo-Spider-v1.0.7.zip | grep -c gen_provenance_receipt  →  0
+unzip -l apollo-spider/dist/Apollo-Spider-v1.0.8.zip | grep -c gen_provenance_receipt  →  0
+unzip -l apollo-spider/dist/Apollo-Spider-v1.0.9.zip | grep -c gen_provenance_receipt  →  0</pre>
+        <p>Meanwhile the pack's own shipped skill,
+        <code>apollo-spider/skills/generate-from-canon/SKILL.md:291</code>, tells the designer to
+        run <code>python3 knowledge/gen_provenance_receipt.py --mint …</code> — and both receipt
+        gates name that same command as the remedy for a missing receipt. A consumer of the pack
+        could not mint, so could not pass the receipt gate. No gate parsed it, three times.</p>
+        <p><code>gen_component_partials.py</code> is also absent from all three zips, but the AST
+        and grep say it is <b>not needed</b>: every mention in a shipped file is prose
+        (<code>_validate_behaviour.py:5,30,340</code>), never an import or an invocation. It is
+        correctly out, and this cut leaves it out.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">The mechanism, fixed</p>
+    <div class="dim">
+      <div>
+        <div class="idx">01</div>
+        <div class="lab">A string call is not a node</div>
+      </div>
+      <div>
+        <p><code>local_imports()</code> read only <code>ast.Import</code> and
+        <code>ast.ImportFrom</code> nodes. The gate reaches its helper by string, deliberately —
+        so that gate and generator have no import cycle:</p>
+        <pre><b>knowledge/_validate_receipt.py:635</b>
+gen = __import__("gen_provenance_receipt")          # lazy: no cycle at import time</pre>
+        <p>The scan saw nothing, so <code>helper_closure()</code> in <code>build_manifest()</code>
+        never claimed the file, and it never shipped.</p>
+
+        <h3>Before — <span class="mono">_gen_pack_manifest.py:851</span> (at fee2572~1)</h3>
+        <pre>local = {m for m in mods if (m + ".py") in knowledge_files or m in HELPER_HOMES}</pre>
+
+        <h3>After — <span class="mono">_gen_pack_manifest.py:870, :913</span></h3>
+        <pre>def string_call_imports(tree):
+    """Module names named as a string LITERAL to __import__() / importlib.import_module()."""
+    …
+
+local |= {m for m in string_call_imports(t)
+          if (m + ".py") in knowledge_files or m in HELPER_HOMES}</pre>
+
+        <p><b>Why here and not in <code>HELPER_HOMES</code>.</b> That table is a typed seed whose
+        own comment says it must stay small: a name typed there is a claim that ages, and the
+        next lazily-imported helper would be missing again. This seat is the measurement — the
+        closure now claims whatever the source actually reaches for.</p>
+        <p><b>Why only the local side moves.</b> A string call naming something that is not ours
+        stays out of <code>third_party</code> on purpose:
+        <code>_validate_dataviz.py:277</code> does <code>__import__("hashlib")</code>,
+        <code>_validate_type_composites.py:323</code> does <code>__import__('datetime')</code>,
+        and <code>importlib.import_module("tiktoken")</code> is a guarded soft probe. Folding
+        those in would invent NEEDS-DEP verdicts out of optional code paths.</p>
+        <p>Five new bites, mutation-tested both directions:
+        <code>python3 knowledge/_release/_gen_pack_manifest.py --selftest</code> →
+        <b>226 bites, 0 fail(s)</b>, exit 0.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Manifest delta · v1.0.9 → v1.0.10</p>
+    <div class="dim">
+      <div>
+        <div class="idx">02</div>
+        <div class="lab">1698 → 1706 files</div>
+      </div>
+      <div>
+        <p>Probe run with the differential arm <b>ARMED</b> against a full
+        <code>git archive</code> stage, so REPO-BOUND verdicts are measured, not assumed — the
+        same shape #262 used. Manifest sha256 <span class="mono">0106040dd9ff9658</span>.</p>
+        <div class="delta">
+          <div>
+            <p class="h">Added — 9</p>
+            <ul>
+              <li><code>knowledge/gen_provenance_receipt.py</code> <span class="mono">[gates]</span>
+              — the fix, working</li>
+              <li>eight <code>*-active.svg</code> glyphs
+              <span class="mono">[engine-canon.icons]</span> — #264's derived set, landed in the
+              tree after v1.0.9's cut commit. Ordinary tree drift, not this cut's scope.</li>
+            </ul>
+          </div>
+          <div>
+            <p class="h acc">Removed — 1 · a red</p>
+            <ul>
+              <li><code>knowledge/_validate_dataviz.py</code> <span class="mono">[gates]</span> —
+              v1.0.9 shipped this gate. v1.0.10 as cut does <b>not</b>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">The red · reported, not routed around</p>
+    <div class="dim">
+      <div>
+        <div class="idx">03</div>
+        <div class="lab">The dataviz gate falls out of the pack</div>
+      </div>
+      <div>
+        <p>At v1.0.9 the probe graded <code>_validate_dataviz.py</code> RUNNABLE for a reason
+        that has since expired. Its recorded verdict at <span class="mono">dd129e8</span>:
+        <i>"ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging
+        fence"</i>, on stale chart receipts. #263 re-drove the receipts
+        (<span class="mono">521a751</span>), the staleness red went away, and the next layer
+        surfaced:</p>
+        <ul>
+          <li>the shipped <code>knowledge/_tests/chart-engine/_receipts.json</code> names
+          <b>13</b> chart pages;</li>
+          <li><code>GATE_DATA_CANDIDATES</code>
+          (<code>_gen_pack_manifest.py:266-272</code>) ships <b>six</b>;</li>
+          <li>so inside the pack the gate dies on
+          <code>_tests/chart-engine/boxplot.html</code>, the armed differential proves it passes
+          on the full tree, and the verdict is <span class="red">REPO-BOUND</span> — out of the
+          ship set.</li>
+        </ul>
+        <p>Probe verdict at the cut, verbatim: <i>"runs, but its verdict is about
+        _tests/chart-engine/boxplot.html, which the pack does not ship"</i>.</p>
+        <p><b>Not fixed here, deliberately.</b> The scope of this cut is one commit. The remedy —
+        ship the seven missing pages, or teach the gate to grade only what it can see — is a
+        decision, not a typo, and it belongs to whoever rules on it. It is the same
+        stale-typed-list class the fix above just removed from the import scan, one list along.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Dry-run fingerprints</p>
+    <div class="prop">
+      <div><h2>Baked twice, byte-identical.</h2></div>
+      <div class="rulecol"></div>
+      <div>
+        <pre>bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/dry10a --commit 625be64
+bash apollo-spider/build-designer-pack.sh --dry-run --out-dir /var/tmp/dry10b --commit 625be64
+
+sha256  47b4191fb00f1e04e560905ef55f055dfecf656291cc075f88402cb7cd65b1a2   (both)
+cmp     rc 0
+size    21M · Apollo-Spider-v1.0.10.zip
+
+unzip -l … | grep gen_provenance_receipt
+  20018  Apollo-Spider-v1.0.10/knowledge/gen_provenance_receipt.py</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">Consumer gate proof</p>
+    <div class="dim">
+      <div>
+        <div class="idx">04</div>
+        <div class="lab">Run from the unzipped pack, on a copy of the #267 cold-run dashboard</div>
+      </div>
+      <div>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Pack</th><th>Command</th><th>Exit</th><th>What it said</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="n">v1.0.9</td>
+              <td><code>python3 knowledge/gen_provenance_receipt.py --mint consumer-dashboard.html</code></td>
+              <td class="n red">2</td>
+              <td><span class="mono">can't open file … No such file or directory</span></td>
+            </tr>
+            <tr>
+              <td class="n">v1.0.9</td>
+              <td><code>python3 knowledge/_validate_receipt.py consumer-dashboard.html</code></td>
+              <td class="n red">1</td>
+              <td>FAIL:NO-RECEIPT — <i>"mint one with <span class="mono">python3
+              knowledge/gen_provenance_receipt.py --mint …</span>"</i>, naming a file that is not
+              in the zip</td>
+            </tr>
+            <tr>
+              <td class="n">v1.0.10</td>
+              <td><code>python3 knowledge/gen_provenance_receipt.py --mint consumer-dashboard.html</code></td>
+              <td class="n pass">0</td>
+              <td><span class="mono">minted receipt into consumer-dashboard.html</span></td>
+            </tr>
+            <tr>
+              <td class="n">v1.0.10</td>
+              <td><code>python3 knowledge/_validate_receipt.py consumer-dashboard.html</code></td>
+              <td class="n pass">0</td>
+              <td><b>RESULT: PASS</b> (+1 UNPROVEN: retrievalSet, rC Q4, open)</td>
+            </tr>
+            <tr>
+              <td class="n">v1.0.10</td>
+              <td><code>python3 knowledge/_validate_screen.py consumer-dashboard.html</code></td>
+              <td class="n">1</td>
+              <td>receipt ✅ · compose ✅ · a11y ✅ · icon-source ❌ 1 UNKNOWN
+              (<span class="mono">path d="' + arc(cx, cy, ro, ri, a1, a2) + '…"</span>) — a
+              <b>content</b> red in the dashboard's own inline arc, not a packaging red</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p style="margin-top:var(--s3)">The frozen cold-run arm was never touched: the dashboard
+        was copied into the dry-run stage before minting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Ten release gates</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>#</th><th>Gate</th><th>Exit</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td><code>_gate_frozen_release.py --check</code></td><td class="n pass">0</td><td>PASS — 3 arms asked, no frozen surface moved</td></tr>
+        <tr><td class="n">2</td><td><code>_gate_frozen_release.py --selftest</code></td><td class="n pass">0</td><td>14 bites, 0 fail(s)</td></tr>
+        <tr><td class="n">3</td><td><code>_gate_release_audit.py --check</code></td><td class="n pass">0</td><td>manifest byte-identical to a fresh generation at <span class="mono">625be6470f4a</span> (1706 files, sha256 <span class="mono">0106040dd9ff9658</span>)</td></tr>
+        <tr><td class="n">4</td><td><code>_gate_release_audit.py --selftest</code></td><td class="n red">1</td><td><span class="red">RED — PRE-BAKE STATE.</span> One bite, <span class="mono">pack/frozen-history-is-skipped-not-failed</span> (<code>_gate_release_audit.py:266</code>), asserts gate 5's <span class="mono">rc == 0</span>. 9 of 10 bites green.</td></tr>
+        <tr><td class="n">5</td><td><code>_gate_release_audit.py --pack</code></td><td class="n red">1</td><td><span class="red">RED — PRE-BAKE STATE.</span> <i>"the manifest reads version 'v1.0.10' and NO zip in dist/ carries it — the manifest names a release nobody baked"</i> (<code>:253</code>). True of every cut before its bake; re-run after <span class="mono">--release</span>.</td></tr>
+        <tr><td class="n">6</td><td><code>_gate_ci_template.py --check</code></td><td class="n pass">0</td><td>PASS — the template parses, ships what it calls, hides nothing</td></tr>
+        <tr><td class="n">7</td><td><code>_gate_ci_template.py --selftest</code></td><td class="n pass">0</td><td>10 bites, 0 fail(s)</td></tr>
+        <tr><td class="n">8</td><td><code>build-designer-pack.sh --selftest</code></td><td class="n pass">0</td><td>226 generator bites + all four refusals green, including <i>"manifest status is PROPOSED, so --release cannot run"</i></td></tr>
+        <tr><td class="n">9</td><td><code>cold-start/gen_projections.py --check</code></td><td class="n pass">0</td><td>3 projections and 3 PLACED host files in sync</td></tr>
+        <tr><td class="n">10</td><td><code>_validate_dataviz.py --receipts-fresh</code></td><td class="n pass">0</td><td>all 27 driven receipts match the tree (s263-D13)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:var(--s4)"><b>8 PASS, 2 red, and both reds are the same fact:</b> no zip
+    carries v1.0.10 yet, because the bake is your word. Neither is a claim about the pack's
+    contents. They must be re-run after <code>--release</code>, exactly as #262 did
+    (<span class="mono">2026-09-09-262-W-release-and-wrap.md</span>: "the nine release gates,
+    post-bake — 9/9 GREEN").</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">The decision</p>
+    <div class="q" style="border-top-color:var(--grey-3)">
+      <p class="ask">Ratify v1.0.10 at <span class="mono" style="font-size:34px">625be64</span>?</p>
+      <p style="max-width:70ch">A yes keys <code>RATIFY_IDS</code> to the ruling, moves the
+      manifest to RATIFIED, moves the frozen literal v1.0.9 → v1.0.10, and lets
+      <code>--release</code> run. The dataviz gate falling out of the pack is an open red on this
+      page and is not ruled by this question.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Apollo — Spider · go / no-go · v1.0.10 PROPOSED at 625be64 · session #267 · 2026-09-10 ·
+    generated by lane P, nothing on this page is ratified.
+  </div>
+</footer>
+
+</body>
+</html>
