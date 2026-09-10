@@ -110,7 +110,13 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.9"                     # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.10"                    # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ v1.0.10 (#267) IS A PACKAGING CUT AND CARRIES ONE THING: the two helpers three releases
+# never shipped. Dave at #267, on the recommendation "bump to v1.0.10 tomorrow morning with the
+# two scripts in the manifest": "lets do this now". The scope is the commit at cause —
+# `local_imports()` could not see `__import__("gen_provenance_receipt")`, so the pack told its
+# designer to run a mint that was not in the zip. Nothing else is claimed for this cut; the
+# component work stays where s261-D1 put it, in v1.0.9.
 # ⛔ s261-D1 IS THE SCOPE RULING FOR v1.0.9 — Dave at #261, asked what the next release should
 # carry: "we need to work on some of the components that we'll be using for dashboards…
 # ideate… pick up some backlog items", then "I also want to tackle the nav and footer design".
@@ -127,7 +133,7 @@ MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.9"
+MEMENTO_CUT_VERSION = "v1.0.10"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
