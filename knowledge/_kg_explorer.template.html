@@ -133,7 +133,7 @@ aside{overflow:auto;background:var(--bg)}
     <canvas id="cv"></canvas>
     <div class="crumbs" id="crumbs"></div>
     <div class="tools">
-      <button id="three" title="Switch to a 3D view and spin it">3D</button><button id="spin" title="Auto-rotate (3D)" hidden>Spin</button><button id="depth" title="Show second-hop neighbours">Depth 2</button>
+      <button id="three" title="Switch to a 3D view and spin it">3D</button><button id="spin" title="Auto-rotate (3D)" hidden>Spin</button><button id="dof" title="Depth of field — blur grows with distance from the focal plane (3D)" hidden>Depth</button><button id="depth" title="Show second-hop neighbours">Depth 2</button>
       <button id="pathBtn" title="Shift-click a second node to trace the shortest path">Path</button>
       <button id="fit">Fit</button><button id="theme" title="Auto / dark / light">Auto</button>
     </div>
@@ -208,8 +208,9 @@ legend.addEventListener('click',ev=>{const c=ev.target.closest('.chip');if(!c)re
   if(focus)applyFocus();draw();});
 
 // ---------- canvas
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),stage=document.getElementById('stage');
+const cv=document.getElementById('cv'),MAIN=cv.getContext('2d');let ctx=MAIN;const OFF=[];stage=document.getElementById('stage');
 let W,H,DPR,view={x:0,y:0,k:0.42};
+let dof=false;const DOF_BLUR=[0,0.6,1.4,2.6,4.5],DOF_BAND=170;
 let three=false,spin=true,rot={x:0.35,y:0},ctr=[0,0,0];const F=2600;
 function proj(x,y,z){if(!three)return {x:W/2+(x+view.x)*view.k,y:H/2+(y+view.y)*view.k,s:1,d:0};
   x-=ctr[0];y-=ctr[1];z-=ctr[2];const cy=Math.cos(rot.y),sy_=Math.sin(rot.y),cx=Math.cos(rot.x),sx_=Math.sin(rot.x);
@@ -227,8 +228,14 @@ let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=nu
 function draw(){
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
   ctx.lineWidth=focus?0.9:0.5;
+  const focalD=(three&&focus)?P(focus).d:0;
+  const bandOf=d=>Math.min(DOF_BLUR.length-1,Math.floor(Math.abs(d-focalD)/DOF_BAND));
+  const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
+  const passes=(three&&dof)?DOF_BLUR.map((b,i)=>i).reverse():[-1];
+  for(const band of passes){if(band>=0){if(!OFF[band]){OFF[band]=document.createElement('canvas')}const o=OFF[band];if(o.width!==cv.width||o.height!==cv.height){o.width=cv.width;o.height=cv.height}ctx=o.getContext('2d');ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H)}
   // edges
   for(const e of EDGES){if(!e.t||!alive(e))continue;const s=byId.get(e.s),t=byId.get(e.t);
+    if(band>=0&&bandOf((P(s).d+P(t).d)/2)!==band)continue;
     const on=NODEON(s)&&NODEON(t)&&famOn[FAMILY[e.type]];
     let a=on?Math.min(s.a,t.a)*(focus?0.9:0.32):0.04; if(pathEdges){a=pathEdges.has(e.k)?1:a*0.15}
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
@@ -240,13 +247,13 @@ function draw(){
     ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
   ctx.setLineDash([]);
   // nodes
-  const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
-  for(const n of ORDER){if(!alive(n))continue;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
+  for(const n of ORDER){if(!alive(n))continue;if(band>=0&&bandOf(P(n).d)!==band)continue;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
     if(hover&&!focus){a=(n===hover||adj.get(hover.id).some(x=>x.other===n.id&&alive(x.e)))?1:0.12}
     if(a<0.03)continue;const pn=P(n);ctx.globalAlpha=three?a*(0.5+0.5*pn.s):a;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s;
     ctx.fillStyle=C.t[n.type];ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r),0,7);ctx.fill();
     if(n===focus||(pathNodes&&pathNodes.has(n.id))){ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle=C.ink;ctx.lineWidth=1;ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r)+3,0,7);ctx.stroke();}
   }
+  if(band>=0){ctx=MAIN;ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.filter=band>0?`blur(${DOF_BLUR[band]*DPR}px)`:'none';ctx.drawImage(OFF[band],0,0);ctx.filter='none';ctx.setTransform(DPR,0,0,DPR,0,0)}}
   // labels
   ctx.globalAlpha=1;ctx.font='11px "Helvetica Neue",Helvetica,Arial,sans-serif';ctx.textBaseline='middle';
   const lab=[];
@@ -365,9 +372,10 @@ addEventListener('mouseup',e=>{if(!drag)return;cv.classList.remove('grabbing');c
 cv.addEventListener('wheel',e=>{e.preventDefault();const r=cv.getBoundingClientRect();const mx=e.clientX-r.left-W/2,my=e.clientY-r.top-H/2;const k0=view.k;view.k=Math.max(0.12,Math.min(6,view.k*Math.exp(-e.deltaY*0.0016)));
   view.x-=mx/k0-mx/view.k;view.y-=my/k0-my/view.k;draw()},{passive:false});
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(pathNodes){pathNodes=pathEdges=null;renderPanel(focus,adj.get(focus.id));animate()}else if(focus)surface();document.getElementById('hits').classList.remove('on')}});
-document.getElementById('three').onclick=function(){three=!three;this.classList.toggle('on',three);document.getElementById('spin').hidden=!three;
+document.getElementById('three').onclick=function(){three=!three;this.classList.toggle('on',three);document.getElementById('spin').hidden=!three;document.getElementById('dof').hidden=!three;
   for(const n of NODES){[n.tx,n.ty,n.tz]=base(n)}if(focus)applyFocus();else{ctr=[0,0,0];fit()}animate()};
 document.getElementById('spin').onclick=function(){spin=!spin;this.classList.toggle('on',spin);animate()};
+document.getElementById('dof').onclick=function(){dof=!dof;this.classList.toggle('on',dof);animate()};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)animate()});
 document.getElementById('spin').classList.add('on');
 document.getElementById('depth').onclick=function(){depth2=!depth2;this.classList.toggle('on',depth2);if(focus)applyFocus()};
