@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.6"  # … 1.5 depth of field · 1.6 Depth→Macro cycle, halo always sharp, smoothed bands (no flicker), blurred dots glow instead of vanishing
+VERSION = "1.8"  # … 1.7 halo dots above labels · 1.8 the 3D halo is a ring in the camera plane that turns with the camera (no neighbour ever hides behind the focus or another)
 from collections import defaultdict
 import numpy as np
 
