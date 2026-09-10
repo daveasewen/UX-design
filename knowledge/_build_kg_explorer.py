@@ -12,7 +12,8 @@ Born #266 (2026-09-10). Zero runtime dependencies in the page; numpy at build ti
 Islands (disconnected components) are laid on a ring around the giant component; isolated
 registered nodes (degree 0) are listed in the page as orphans, not hidden.
 """
-import json, glob, os, sys, datetime
+import json, glob, os, sys, datetime, subprocess
+VERSION = "1.1"  # 1.0 #266 sector dig + 3D · 1.1 #266 scrub line (history)
 from collections import defaultdict
 import numpy as np
 
@@ -20,19 +21,25 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 K = os.path.join(ROOT, 'knowledge')
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'notes', '_KG-EXPLORER.html')
 
-def extract():
+def extract(K=K):
     nodes, edges = {}, []
     def add(id, label=None, **kw):
         n = nodes.setdefault(id, {'id': id, 'type': id.split(':')[0], 'label': label or id.split(':', 1)[1]})
         n.update({k: v for k, v in kw.items() if v})
     for f in ['_nodes-pattern.json', '_nodes-context.json']:
-        for n in json.load(open(os.path.join(K, 'components', f))):
+        fp = os.path.join(K, 'components', f)
+        if not os.path.exists(fp): continue
+        for n in json.load(open(fp)):
             add(n['id'], n.get('label'), sources=n.get('sources'), registered=True)
-    rul = {x['id']: x for x in json.load(open(os.path.join(K, '_rulings.json')))['rulings'] if isinstance(x, dict)}
+    rp = os.path.join(K, '_rulings.json')
+    rul = {x['id']: x for x in json.load(open(rp)).get('rulings', []) if isinstance(x, dict)} if os.path.exists(rp) else {}
     for f in sorted(glob.glob(os.path.join(K, 'components', '*.meta.json'))):
         slug = os.path.basename(f)[:-10]
         if slug.startswith('EXAMPLE-'): continue  # the schema's worked example, not a component
-        m = json.load(open(f)); cid = 'component:' + slug
+        try: m = json.load(open(f))
+        except Exception: continue
+        if not isinstance(m, dict): continue
+        cid = 'component:' + slug
         add(cid, m.get('name'), purpose=(m.get('purpose') or '')[:260], category=m.get('category'), interactive=m.get('interactive'))
         for et, lst in (m.get('edges') or {}).items():
             if et.startswith('$') or not isinstance(lst, list): continue
@@ -99,8 +106,40 @@ def layout(nodes, edges, dim):
     pos /= np.abs(pos).max(); pos *= 1000
     return pos, cs, orphans
 
+def with_history(nodes, edges):
+    hp = os.path.join(K, '_kg_history.json')
+    if not os.path.exists(hp): return nodes, edges, []
+    hist = json.load(open(hp)); days = sorted(hist)
+    byid = {n['id']: n for n in nodes}; ekey = lambda e: f"{e['s']}|{e['t']}|{e['type']}"
+    ekeys = {ekey(e) for e in edges if e['t']}
+    born_n, died_n, born_e, died_e = {}, {}, {}, {}
+    for i, d in enumerate(days):
+        for nid in hist[d]['nodes']: born_n.setdefault(nid, i); died_n[nid] = None
+        for k in hist[d]['edges']: born_e.setdefault(k, i); died_e[k] = None
+        # anything born earlier and absent today died today (first absence after presence)
+        pn, pe = set(hist[d]['nodes']), set(hist[d]['edges'])
+        for nid in list(born_n):
+            if nid not in pn and died_n.get(nid) is None and born_n[nid] < i: died_n[nid] = i
+        for k in list(born_e):
+            if k not in pe and died_e.get(k) is None and born_e[k] < i: died_e[k] = i
+    # dead nodes/edges join the graph so the scrub can show them
+    for nid, b in born_n.items():
+        if nid not in byid:
+            n = {'id': nid, 'type': nid.split(':')[0], 'label': nid.split(':', 1)[1].replace('.reference.html', ''), 'dead': True}
+            nodes.append(n); byid[nid] = n
+    for k, b in born_e.items():
+        if k not in ekeys:
+            s_, t_, ty = k.split('|'); edges.append({'s': s_, 't': t_, 'type': ty, 'note': '', 'dead': True})
+    for n in nodes:
+        n['born'] = born_n.get(n['id'], len(days) - 1); n['died'] = died_n.get(n['id'])
+    for e in edges:
+        if e['t']: e['born'] = born_e.get(ekey(e), len(days) - 1); e['died'] = died_e.get(ekey(e))
+    snaps = [{'date': d, 'commit': hist[d]['commit'], 'nodes': len(hist[d]['nodes']), 'edges': len(hist[d]['edges']), 'unresolved': hist[d]['unresolved']} for d in days]
+    return nodes, edges, snaps
+
 def main():
     nodes, edges = extract()
+    nodes, edges, snaps = with_history(nodes, edges)
     p2, cs, orphans = layout(nodes, edges, 2)
     p3, _, _ = layout(nodes, edges, 3)
     deg = defaultdict(int)
@@ -110,13 +149,19 @@ def main():
         n['x'], n['y'] = round(float(p2[i, 0]), 1), round(float(p2[i, 1]), 1)
         n['x3'], n['y3'], n['z3'] = (round(float(v), 1) for v in p3[i])
         n['deg'] = deg[n['id']]
-    islands = [[nodes[i]['id'] for i in c] for c in cs[1:] if len(c) > 1]
-    data = {'generated': datetime.date.today().isoformat(), 'nodes': nodes, 'edges': edges,
-            'islands': islands, 'orphans': [nodes[i]['id'] for i in orphans]}
+    # islands + orphans are a LIVE finding: recompute on today's graph, dead edges excluded
+    live_nodes = [n for n in nodes if not n.get('dead')]
+    live_edges = [e for e in edges if e['t'] and not e.get('dead') and e.get('died') is None]
+    _, cs_live, orph_live = layout(live_nodes, live_edges, 2) if live_nodes else (None, [], [])
+    islands = [[live_nodes[i]['id'] for i in c] for c in cs_live[1:] if len(c) > 1]
+    orphans = [live_nodes[i]['id'] for i in orph_live]
+    sha = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    data = {'generated': datetime.date.today().isoformat(), 'version': VERSION, 'commit': sha, 'nodes': nodes, 'edges': edges,
+            'islands': islands, 'orphans': orphans, 'snaps': snaps}
     tpl = open(os.path.join(K, '_kg_explorer.template.html')).read()
-    html = tpl.replace('__KG__', json.dumps(data, separators=(',', ':')).replace('</script', '<\\/script')).replace('__DATE__', data['generated'])
+    html = tpl.replace('__KG__', json.dumps(data, separators=(',', ':')).replace('</script', '<\\/script')).replace('__DATE__', f"v{VERSION} · {data['generated']} · {sha}")
     open(OUT, 'w').write(html)
-    print(f"wrote {OUT} · nodes {len(nodes)} · edges {len(edges)} · islands {len(islands)} · orphans {len(orphans)} · {os.path.getsize(OUT):,} B")
+    print(f"wrote {OUT} · v{VERSION} · snaps {len(snaps)} · nodes {len(nodes)} · edges {len(edges)} · islands {len(islands)} · orphans {len(orphans)} · {os.path.getsize(OUT):,} B")
 
 if __name__ == '__main__':
     main()
