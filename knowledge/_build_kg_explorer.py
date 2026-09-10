@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.3"  # 1.0 #266 sector dig + 3D · 1.1 scrub line · 1.2 governance + guidelines · 1.3 spin never stalls, theme toggle, search flies in and edges grow out
+VERSION = "1.4"  # 1.0 #266 sector dig + 3D · 1.1 scrub line · 1.2 governance + guidelines · 1.3 theme toggle, search flies + edges grow · 1.4 the stall: a node behind the 3D camera threw in arc() and killed the frame loop; projection clamped, loop survives, fly-to in 3D
 from collections import defaultdict
 import numpy as np
 
