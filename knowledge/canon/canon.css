@@ -1708,7 +1708,18 @@
 
 /* ============================================================
    Navigations  (from snippets/Navigations.reference.html)
-   Aria: <nav, aria-current, aria-label, aria-haspopup="menu", aria-expanded, aria-controls, role="menu", role="menuitem", role="search", type="search"
+   Aria: <nav, aria-current, aria-label, aria-haspopup="menu", aria-expanded, aria-controls, role="menu", role="menuitem", role="search", type="search", aria-disabled
+   Finding: #261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). This masthead is now the TOP-NAV member of a three-surface family with Sidebar-nav and Tab-bar. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. The masthead's primary row is literally the sidebar's row laid horizontally.
+   Finding: THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.
+   Finding: COLLAPSE AT 768px is a REPLACEMENT, not a shrink: the primary row is hidden and a hamburger discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.
+   Finding: COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button's own accessible name already carries the number — a count read twice is a count read wrong.
+   Finding: THE ACCOUNT TRIGGER now shows who is signed in (avatar initials plus name) rather than a generic person glyph, and drops to the avatar alone below 768px. PROPOSED: initials as avatar content is a stand-in for a real product identity.
+   Finding: DISABLED destination (Support) is aria-disabled + tabindex=-1 — it keeps its place in the reading order rather than vanishing.
+   Finding: CARRIED FORWARD FROM s218-D4, unchanged in substance: SEARCH is a DISCLOSURE revealing Search-field's underline form beneath the masthead (focus into the field, Escape closes and returns focus); ACCOUNT is the APG menu-button pattern wearing Dropdown's panel skin with that file's declared ARIA deviation. Item copy is INVENTED and is Dave's.
+   Finding: THE EXPLICIT [hidden]{display:none} RULE IS LOAD-BEARING — #218 W3 finding F1: an author display rule beats the UA [hidden] sheet and renders an element that tells AT it is gone. Declared, not rediscovered.
+   Finding: THE BAR IS BRAND RED BY PRECEDENT and is NOT declared as a contrastPair — the four-theme measurement, including the Supercharge failure, is in the meta and is shared with Sidebar-nav.
+   Finding: 44px MIN HIT AREA by hand: every .nv-btn is 44x44, every primary item is 64px tall, every menu item is 44px.
+   Finding: #261 N2 (Dave's review, two sentences, verbatim). "the selected state should just have the underscore, no background" - a masthead destination opts out of the shared item's current-row fill and keeps the 3px block-end rule alone; two non-colour carriers still stand (aria-current, and the rule's presence or absence as a shape). "align the bottom of the search bar with the bottom of its container" - the disclosure bar carried 8px of padding UNDER the field, so the field's baseline rule floated above the container's own edge and the two read as competing lines; the bottom padding is now zero and the field's rule lands ON that edge. The 8px above is kept.
    Scope: .cn-navigations   ============================================================ */
 .cn-navigations{
   --alpha-04: 0.04;
@@ -1735,109 +1746,207 @@
   --alpha-88: 0.88;
   --alpha-92: 0.92;
   --alpha-96: 0.96;
-  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
-  --ease: 140ms ease;
-  --surface: var(--background-default);
-  --text: var(--text-default);
-  --icon: var(--icon-default);
-  --rule: var(--divider-border-section);
-  --logo: var(--primary-background-default);
-  --hover: var(--form-background-hover);
-  --focus: var(--focus-ring);
-  --page: var(--background-default);
-  --menu-surface: var(--background-default);
-  --menu-border: var(--elevation-border);
-  --shadow: var(--elevation-functional);
+  --nav-ease: 160ms cubic-bezier(.4,0,.2,1);
+  --nav-slide: 200ms cubic-bezier(.4,0,.2,1);
+  --nav-w: 248px;
+  --nav-w-rail: 64px;
+  --nav-h: 64px;
+  --nav-row: 44px;
+  --nav-page: var(--background-default);
+  --nav-surface: var(--tertiary-background-default);
+  --nav-text: var(--text-default);
+  --nav-muted: var(--text-secondary);
+  --nav-icon: var(--icon-default);
+  --nav-rule: var(--divider-border-section);
+  --nav-sub-rule: var(--divider-border-subsection);
+  --nav-hover: var(--tertiary-background-hover);
+  --nav-pressed: var(--form-background-pressed);
+  --nav-indicator: var(--primary-border-default);
+  --nav-focus: var(--focus-ring);
+  --nav-disabled: var(--tertiary-text-disabled);
+  --nav-count-bg: var(--secondary-background-default);
+  --nav-count-fg: var(--text-on-inverse);
+  --nav-shadow: var(--elevation-functional);
+  --nav-scrim: var(--elevation-functional);
+  --nav-radius: var(--border-radius-surface);
   --field-border: var(--form-border-default);
   --field-active: var(--form-border-active);
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 /* ===== AUTO-TOKENS END ===== */
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. Added 2026-06-29. */
-:where(.cn-navigations) :is(button, :where(.cn-navigations) a, :where(.cn-navigations) label, :where(.cn-navigations) span, :where(.cn-navigations) small, :where(.cn-navigations) strong, :where(.cn-navigations) em, :where(.cn-navigations) b, :where(.cn-navigations) i, :where(.cn-navigations) th, :where(.cn-navigations) td, :where(.cn-navigations) dt, :where(.cn-navigations) dd, :where(.cn-navigations) li, :where(.cn-navigations) figcaption, :where(.cn-navigations) legend, :where(.cn-navigations) caption, :where(.cn-navigations) summary, :where(.cn-navigations) output, :where(.cn-navigations) time, :where(.cn-navigations) input[type=text], :where(.cn-navigations) input[type=search], :where(.cn-navigations) input[type=email], :where(.cn-navigations) input[type=tel], :where(.cn-navigations) input[type=url], :where(.cn-navigations) input[type=password], :where(.cn-navigations) input[type=number], :where(.cn-navigations) input:not([type]), :where(.cn-navigations) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-:where(.cn-navigations) .masthead{display:flex; align-items:center; gap:28px; height:64px; padding:0 2rem; background:var(--surface); border-bottom:1px solid var(--rule);}
-:where(.cn-navigations) .logo{font-weight:500; font-size:20px; color:var(--logo); letter-spacing:-.01em;}
-/* ---- the masthead mark — #230, Dave's ruling: the masterbrand IS the default ----
-     His words, twice, minutes apart: "use this as teh default logo 'masterbrand-light-colour'"
-     and "use this for dark mode masterbrand-dark-colour". Until #230 this file set the mark as
-     LITERAL TEXT (`<span class="sh-logo">HSBC</span>`) while twelve official SVGs sat unbound in
-     knowledge/assets/logos/ — so a builder obeying "copy the markup" shipped a type wordmark,
-     silently, and never asked (#230 rehearsal, F3). The <img> idiom is COPIED, not invented: it
-     is Template-auth.reference.html's, verbatim in shape, for the reason its header records —
-     _validate_icons.py byte-matches inlined paths against assets/icons/ only, so an inlined logo
-     would land UNKNOWN, indistinguishable from an invented mark. */
-:where(.cn-navigations) .logo{display:inline-flex; align-items:center;}
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css "#215 — `:where(.canon)`, NOT `.canon`"): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off "Payments and transfers".
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(.cn-navigations) :where(button, :where(.cn-navigations) a, :where(.cn-navigations) label, :where(.cn-navigations) span, :where(.cn-navigations) small, :where(.cn-navigations) strong, :where(.cn-navigations) em, :where(.cn-navigations) b, :where(.cn-navigations) i, :where(.cn-navigations) th, :where(.cn-navigations) td, :where(.cn-navigations) dt, :where(.cn-navigations) dd, :where(.cn-navigations) li, :where(.cn-navigations) figcaption, :where(.cn-navigations) legend, :where(.cn-navigations) caption, :where(.cn-navigations) summary, :where(.cn-navigations) output, :where(.cn-navigations) time, :where(.cn-navigations) input[type=text], :where(.cn-navigations) input[type=search], :where(.cn-navigations) input[type=email], :where(.cn-navigations) input[type=tel], :where(.cn-navigations) input[type=url], :where(.cn-navigations) input[type=password], :where(.cn-navigations) input[type=number], :where(.cn-navigations) input:not([type]), :where(.cn-navigations) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
+     This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
+     exactly two extra vars (--field-border, --field-active) for the search field it alone
+     contains, and nothing else. That is the
+     family claim made mechanical: if the three surfaces drift, this block stops matching
+     and the drift is visible in a diff rather than in a demo. Every value is a resolved
+     SEMANTIC token (see the manifest below), never an invented hex. */
+/* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
+     One anatomy, three surfaces. The same class names carry the same meaning in all three
+     files, so a reader who has learned one nav has learned the family.
+     CURRENT LOCATION has THREE carriers and colour is always the third:
+       1. aria-current="page"                     — the machine-readable fact
+       2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
+          or absent, readable with no colour vision at all (sidebar: inline-start; top
+          nav: block-end; tab bar: block-start)
+       3. a WEIGHT step on the label (400 -> 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row's grey fill is REMOVED; grey is hover's word now)
+     Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
+     Its brand red is COPIED from the gated masthead, not invented; the four-theme
+     measurement (and the Supercharge failure) lives in the metas. */
+:where(.cn-navigations) .nv-item{display:flex; align-items:center; gap:12px; min-height:var(--nav-row); padding:0 16px;
+    position:relative; color:var(--nav-text); text-decoration:none; background:transparent;
+    border:0; cursor:pointer; border-radius:var(--nav-radius); transition:background var(--nav-ease);}
+:where(.cn-navigations) .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; color:var(--nav-icon);}
+:where(.cn-navigations) .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+/* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim's tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
+:where(.cn-navigations) .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
+/* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
+     square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
+     floor, so it never reads as a control the finger cannot land on. */
+:where(.cn-navigations) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--nav-count-bg); color:var(--nav-count-fg);}
+:where(.cn-navigations) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:12px; height:12px; color:var(--nav-icon); transition:transform var(--nav-ease);}
+:where(.cn-navigations) .nv-chev svg{width:12px; height:12px; fill:currentColor;}
+[aria-expanded="true"] :where(.cn-navigations) > .nv-chev{transform:rotate(180deg);}
+:where(.cn-navigations) .nv-item:hover{background:var(--nav-hover);}
+:where(.cn-navigations) .nv-item:active{background:var(--nav-pressed);}
+:where(.cn-navigations) .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+/* #261 N4, Dave verbatim: "remove the background grey on the selected state". The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state's own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label's weight step carry current; the fill now means hover
+     and only hover. */
+:where(.cn-navigations) .nv-item[aria-current="page"]{background:transparent;}
+:where(.cn-navigations) .nv-item[aria-current="page"] .nv-label{font-weight:500;}
+/* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
+     place in the reading order, and the count loses its fill so no contrast claim is made on
+     a surface WCAG exempts anyway. */
+:where(.cn-navigations) .nv-item[aria-disabled="true"]{color:var(--nav-disabled); cursor:default; pointer-events:none;}
+:where(.cn-navigations) .nv-item[aria-disabled="true"] .nv-ic{color:var(--nav-disabled);}
+:where(.cn-navigations) .nv-item[aria-disabled="true"] .nv-count{background:transparent; color:var(--nav-disabled);
+    box-shadow:inset 0 0 0 1px var(--nav-disabled);}
+/* ---- the masthead ---- */
+:where(.cn-navigations) .masthead{display:flex; align-items:center; gap:24px; min-height:var(--nav-h); padding:0 2rem;
+            background:var(--nav-surface); border-bottom:1px solid var(--nav-rule);}
+/* the mark — #230, Dave twice: the masterbrand SVG IS the default, never type set to look
+     like a logo. The <img> idiom is copied from Template-auth, not invented: _validate_icons.py
+     byte-matches inlined paths against assets/icons only, so an inlined logo lands UNKNOWN. */
+:where(.cn-navigations) .logo{display:inline-flex; align-items:center; flex:none;}
 :where(.cn-navigations) .logo-mark{height:28px; width:auto; display:block;}
 [data-theme="light"] :where(.cn-navigations) .logo-mark[data-mode="dark"]{display:none;}
 [data-theme="dark"] :where(.cn-navigations) .logo-mark[data-mode="light"]{display:none;}
-:where(.cn-navigations) nav.main{display:flex; gap:4px; margin-right:auto;}
-:where(.cn-navigations) nav.main a{padding:0 12px; height:64px; display:inline-flex; align-items:center; color:var(--text); text-decoration:none; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */}
-:where(.cn-navigations) nav.main a:hover{background:var(--hover);}
-:where(.cn-navigations) nav.main a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--logo);}
-:where(.cn-navigations) nav.main a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-navigations) .actions{display:flex; gap:8px;}
-:where(.cn-navigations) .actions button{width:44px; height:44px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
-:where(.cn-navigations) .actions button:hover{background:var(--hover);}
-:where(.cn-navigations) .actions svg{width:22px; height:22px; fill:currentColor;}
-:where(.cn-navigations) .actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-/* ---- PROPOSED (s218-D4) · THE ACCOUNT MENU -------------------------------------------------
-     Dropdown's `.menu`/`.opt`/`.sep` positioning CSS, copied via Card-header-lockup (#210) with the
-     same DECLARED ARIA deviation: the floating-panel skin of a listbox worn by a role="menu"
-     ACTIONS panel. Item hover binds this file's own --hover (form/background/hover) so every var
-     the panel uses is gate-checked. 44px item height = the ruled min-hit-area, by hand. */
+/* primary items — the shared .nv-item, laid out in a row instead of a column, and the
+     indicator moves to the edge THIS nav touches the content: block-end. */
+:where(.cn-navigations) nav.main{display:flex; gap:4px; margin-right:auto; min-width:0;}
+:where(.cn-navigations) nav.main .nv-item{min-height:var(--nav-h); padding:0 12px; gap:8px;}
+/* #261 N2, Dave verbatim: "the selected state should just have the underscore, no background".
+     The shared item gives a current row a tertiary/background/hover fill; a masthead destination
+     opts OUT of it and keeps the underscore alone. Two carriers still stand without colour —
+     aria-current for AT, and the 3px rule whose presence or absence is a shape — so nothing is
+     left resting on hue. */
+:where(.cn-navigations) nav.main .nv-item[aria-current="page"]{background:transparent;
+    box-shadow:inset 0 -3px 0 var(--nav-indicator);}
+:where(.cn-navigations) nav.main .nv-label{flex:none;}
+/* ---- the action rail: search / notifications / account ---- */
+:where(.cn-navigations) .actions{display:flex; align-items:center; gap:4px; flex:none;}
+:where(.cn-navigations) .nv-btn{position:relative; width:44px; height:44px; border:0; background:transparent;
+    color:var(--nav-icon); cursor:pointer; display:inline-flex; align-items:center;
+    justify-content:center; border-radius:var(--nav-radius);}
+:where(.cn-navigations) .nv-btn:hover{background:var(--nav-hover);}
+:where(.cn-navigations) .nv-btn:active{background:var(--nav-pressed);}
+:where(.cn-navigations) .nv-btn:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+:where(.cn-navigations) .nv-btn svg{width:20px; height:20px; fill:currentColor;}
+/* the notification count is the SAME .nv-count as the sidebar row, parked on the glyph.
+     It is aria-hidden because the button's own accessible name already carries the number —
+     a count read twice is a count read wrong. */
+:where(.cn-navigations) .nv-btn .nv-count{position:absolute; top:2px; right:2px; min-width:18px; height:18px; padding:0 4px;}
+:where(.cn-navigations) .nv-avatar{width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center;
+    justify-content:center; background:var(--nav-count-bg); color:var(--nav-count-fg);}
+:where(.cn-navigations) .nv-acct{width:auto; padding:0 8px; gap:8px;}
+/* ---- account menu (APG menu button; Dropdown's panel skin) ---- */
 :where(.cn-navigations) .nav-menuwrap{position:relative; display:inline-flex;}
-:where(.cn-navigations) .nav-menu{position:absolute; right:0; top:calc(100% + 4px); z-index:20; min-width:200px;
-    margin:0; padding:4px 0; background:var(--menu-surface); border:1px solid var(--menu-border);
-    box-shadow:0 4px 16px var(--shadow); opacity:0; transform:translateY(-4px); pointer-events:none;
-    transition:opacity var(--ease), transform var(--ease);}
+:where(.cn-navigations) .nav-menu{position:absolute; right:0; top:calc(100% + 4px); z-index:20; min-width:220px;
+    margin:0; padding:4px 0; background:var(--nav-surface); border:1px solid var(--nav-rule);
+    box-shadow:0 4px 16px var(--nav-shadow); opacity:0; transform:translateY(-4px);
+    pointer-events:none; transition:opacity var(--nav-ease), transform var(--nav-ease);}
 :where(.cn-navigations) .nav-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
-:where(.cn-navigations) .actions .nav-menu .opt{display:flex; width:100%; height:auto; min-height:44px; padding:0 12px;
-    align-items:center; justify-content:flex-start; text-align:left; white-space:nowrap;
-    border:0; background:transparent; color:var(--text); cursor:pointer;}
-:where(.cn-navigations) .actions .nav-menu .opt:hover{background:var(--hover);}
-:where(.cn-navigations) .actions .nav-menu .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-navigations) .nav-menu .sep{height:1px; margin:4px 0; background:var(--rule);}
-/* ---- PROPOSED (s218-D4) · THE SEARCH DISCLOSURE --------------------------------------------
-     The revealed bar, and inside it Search-field's UNDERLINE form copied verbatim (chrome, mag
-     glyph, and the clear × that exists only while the field holds a value).
-     ⚠ THE EXPLICIT [hidden] RULE IS LOAD-BEARING — #218 W3 finding F1: an author `display:` beats
-     the UA sheet's `[hidden]{display:none}`, so a markup-hidden element renders while telling AT
-     it is gone. Declared here rather than discovered again. */
+:where(.cn-navigations) .nav-menu .nv-item{width:100%; white-space:nowrap;}
+:where(.cn-navigations) .nav-menu .sep{height:1px; margin:4px 0; background:var(--nav-rule);}
+/* ---- search disclosure ----
+     ⚠ THE EXPLICIT [hidden] RULE IS LOAD-BEARING — #218 W3 finding F1: an author `display:`
+     beats the UA sheet's [hidden]{display:none}, so a markup-hidden element renders while
+     telling AT it is gone. Declared here rather than discovered again. */
 :where(.cn-navigations) .nav-searchbar[hidden]{display:none;}
-:where(.cn-navigations) .nav-searchbar{background:var(--surface); border-bottom:1px solid var(--rule); padding:8px 32px;}
-/* ⛔ #219 — THE FIELD WRAPPER IS `.nav-search`, NOT `.search`, AND THE NAME IS LOAD-BEARING.
-     `.search input` is a GLOBAL BINDING SITE in canon/type.css (T-D9): it is appended beside
-     `.t-cm-label` and carries that composite's declarations for Search-field and
-     Filter-toolbar-bar, which both OMIT the font on purpose and rely on the binding. This
-     searchbar does not — its input carries `class="t-cm-label"` explicitly and re-declares its
-     own geometry against its own tokens. So a bare `.search` here made canon's binding reach a
-     fifth file that never asked for it: `_validate_type_blast_radius.py` read ESCAPED and the
-     pack's copy of that gate shipped red (one of the four s219-D5(Q5) reds). Namespaced at
-     cause rather than `--update`-ing a fifth site into the registry — recording a binding site
-     the file does not consume is exactly the unacknowledged reach the registry exists to stop.
-     ⚠ PIXEL-NEUTRAL, and that is measured, not hoped: `.search input` and `.t-cm-label` are the
-     SAME rule in type.css (font-size 16px, weight 400, line-height 1, --slot 20px), so the
-     input rendered identically before and after. Related class: #202 vocabulary collision. */
+/* #261 N2, Dave verbatim: "align the bottom of the search bar with the bottom of its
+     container". The bar carried 8px of padding UNDER the field, so the field's baseline rule
+     floated with a gap beneath it and the container's own edge read as a second, unrelated
+     line. The bottom padding is now zero: the field's rule lands ON the container's bottom
+     edge, one terminating line instead of two. The 8px above is kept — the gap is only wrong
+     below, where two rules were competing. */
+:where(.cn-navigations) .nav-searchbar{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:8px 32px 0;}
+/* ⛔ #219 — THE FIELD WRAPPER IS `.nav-search`, NOT `.search`, AND THE NAME IS LOAD-BEARING:
+     `.search input` is a GLOBAL BINDING SITE in canon/type.css (T-D9). A bare `.search` here
+     made canon's binding reach a fifth file that never asked for it and the blast-radius gate
+     read ESCAPED. Namespaced at cause. Related: #202 vocabulary collision. */
 :where(.cn-navigations) .nav-searchbar .nav-search{position:relative; display:flex; align-items:center; height:48px;
     border-bottom:1px solid var(--field-border); background:transparent;}
-:where(.cn-navigations) .nav-searchbar .nav-search:hover{background:var(--hover);}
+:where(.cn-navigations) .nav-searchbar .nav-search:hover{background:var(--nav-hover);}
 :where(.cn-navigations) .nav-searchbar .nav-search:focus-within{box-shadow:inset 0 -2px 0 var(--field-active);}
 :where(.cn-navigations) .nav-searchbar .mag{flex:none; display:inline-flex; align-items:center; justify-content:center;
-    width:20px; height:20px; color:var(--icon); margin:0 12px;}
+    width:20px; height:20px; color:var(--nav-icon); margin:0 12px;}
 :where(.cn-navigations) .nav-searchbar .mag svg{width:20px; height:20px; fill:currentColor;}
 :where(.cn-navigations) .nav-searchbar input{flex:1; min-width:0; height:100%; border:0; background:transparent;
-    color:var(--text); outline:none;}
-:where(.cn-navigations) .nav-searchbar input::placeholder{color:var(--text); opacity:var(--alpha-48,.48);}
+    color:var(--nav-text); outline:none;}
+:where(.cn-navigations) .nav-searchbar input::placeholder{color:var(--nav-text); opacity:var(--alpha-48,.48);}
 :where(.cn-navigations) .nav-searchbar input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
 :where(.cn-navigations) .nav-searchbar input:focus-visible{outline:none;}
 :where(.cn-navigations) .nav-searchbar .clear{flex:none; width:24px; height:24px; margin:0 12px; padding:0; border:0;
-    background:transparent; color:var(--icon); cursor:pointer; display:inline-flex;
+    background:transparent; color:var(--nav-icon); cursor:pointer; display:inline-flex;
     align-items:center; justify-content:center;}
 :where(.cn-navigations) .nav-searchbar .clear svg{width:12px; height:12px; fill:currentColor;}
 :where(.cn-navigations) .nav-searchbar .clear:focus-visible{outline:2px solid var(--field-active); outline-offset:2px;}
 :where(.cn-navigations) .nav-searchbar input:placeholder-shown ~ .clear{display:none;}
-/* not actionable until there is something to clear */
+/* ---- COLLAPSE AT 768px ----
+     The primary row does not shrink into unreadability: below 768px it is REPLACED by a
+     hamburger that discloses the same destinations as a stacked panel. The <a> elements in
+     the panel are the same .nv-item, so the current-location carriers come along unchanged —
+     except the indicator, which follows the family rule and moves to the edge the panel
+     touches the content (inline-start), exactly as the sidebar does. */
+:where(.cn-navigations) .nv-burger{display:none;}
+:where(.cn-navigations) .nav-drawer[hidden]{display:none;}
+:where(.cn-navigations) .nav-drawer{background:var(--nav-surface); border-bottom:1px solid var(--nav-rule); padding:4px 0;}
+:where(.cn-navigations) .nav-drawer .nv-item[aria-current="page"]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
+@media (max-width:767px){
+:where(.cn-navigations) .masthead{padding:0 1rem; gap:8px;}
+:where(.cn-navigations) .nv-burger{display:inline-flex;}
+:where(.cn-navigations) nav.main{display:none;}
+:where(.cn-navigations) .nv-acct .nv-label{display:none;}
+:where(.cn-navigations) .nav-searchbar{padding:8px 1rem 0;}
+}
+@media (min-width:768px){
+:where(.cn-navigations) .nav-drawer{display:none;}
+}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -3456,7 +3565,7 @@
 
 /* ============================================================
    Dropdown  (from snippets/Dropdown.reference.html)
-   Aria: role="combobox", aria-expanded, role="listbox", role="option", aria-selected
+   Aria: role="combobox", aria-expanded, role="listbox", role="option", aria-selected, role="group", aria-labelledby
    Scope: .cn-dropdown   ============================================================ */
 .cn-dropdown{
   --alpha-04: 0.04;
@@ -3544,6 +3653,20 @@
 :where(.cn-dropdown) .opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
 :where(.cn-dropdown) .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 :where(.cn-dropdown) .sep{height:1px; background:var(--divider); margin:8px 0;}
+/* ===== GROUPED variant (#261 F2) — Dave, verbatim: "can we have a variant of this dropdown
+     that has the category of selection as a heading so that it isn't repeated, eg. 'Currency'.
+     The short versions of these options is fine."
+     The facet name is said ONCE, as a group heading; each option carries the bare value. The
+     heading is NOT decoration: `role="group"` + `aria-labelledby` pointing at it means a screen
+     reader still announces "Currency, GBP" — the category survives, the repetition does not.
+     Options stay direct listbox descendants through a `role="presentation"` list, so the
+     accessibility tree is listbox > group > option with nothing invented in between.
+     A divider separates groups (same 1px divider/border/section the .sep uses). ===== */
+:where(.cn-dropdown) .optgrp{display:block;}
+:where(.cn-dropdown) .optgrp + .optgrp{border-top:1px solid var(--divider); margin-top:4px; padding-top:4px;}
+:where(.cn-dropdown) .grp{display:block; padding:8px 12px 4px; font:500 12px/1.3 var(--font); color:var(--text);
+    opacity:var(--alpha-72);   /* secondary ink, still >=4.5:1 in both modes — never colour alone */}
+:where(.cn-dropdown) .grp-list{margin:0; padding:0; list-style:none;}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -10284,13 +10407,18 @@
 
 /* ============================================================
    Data-grid  (from snippets/Data-grid.reference.html)
-   Aria: role="grid", aria-sort, aria-selected, aria-rowcount, aria-rowindex, aria-current, aria-busy, aria-live, role="status", aria-label
+   Aria: role="grid", aria-sort, aria-selected, aria-rowcount, aria-rowindex, aria-current, aria-busy, aria-live, role="status", aria-label, aria-expanded, aria-disabled, aria-pressed, role="separator", aria-valuenow
+   Finding: #261 design pass on the COLUMN HEADER (Dave's #2 nomination): group row (scope=colgroup, sticky above the column row) · per-column filter menu (two distinct library glyphs, filter.svg / filter-active.svg) · resize handle (role=separator, pointer + Alt+arrow keyboard) · density prop · disabled column · truncation title only when it truncates.
+   Finding: #261 G2 (Dave, verbatim on the review page): 'I like the new one, but can we remove the bars from the end of the column headers. and the odd (I assume selected state) black lines, bottom and right.' The resize handle's rule is now INVISIBLE AT REST (hairline on hover/focus-visible of the handle only; 24px hit area, col-resize cursor, pointer drag and Alt+arrow resize mode all unchanged — the affordance survived the paint).
+   Finding: SORTED is a 2px accent UNDERLINE and nothing else (was 3px); FILTERED-ACTIVE no longer paints a leading edge rule at all (was 3px leading) — on the review specimen that bar sat against the previous column's trailing edge and read as its right-hand black line. The two states still coexist on one column and each still carries two non-colour channels: sorted = ground shift + direction glyph + aria-sort; filtered = the distinct filter-active glyph + a held ground on the filter button + data-filtered. NO STATE PAINTS A RIGHT-EDGE BAR — the only trailing rule is the 1px table/border column hairline the sticky header carries as an inset shadow, and focus-visible is the canon focus/ring token, never a black box.
+   Finding: Sticky + border-collapse drops cell borders while scrolling, so the header's rules are inset shadows, not borders.
+   Finding: Sorting is OFF on the editable Reference column by design (re-ordering rows under an open editor is the bug), and that is the shipped example of the disabled-column state.
    Finding: The INTERACTIVE sibling Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component'). Table stays passive/semantic; the grid owns sort/filter/select/edit on the APG grid pattern.
    Finding: Responsive = horizontal scroll + sticky header, a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer shape: Carbon/Ant/AG-Grid). Reflow duty lives with the passive Table.
    Finding: Field chrome (search filter + edit-cell active stroke) is COPIED from Search-field/Input-fields — marked FIELD-CHROME-COPY, receipted as field-family accretion evidence (ADR-0013 ruling 3, cross-lane duplication now ≥8 files).
    Finding: Loading bones re-state Skeleton-loader's recipe minimally (by-reference consumption forced into duplication — receipted; skeleton-family = accretion candidate).
    Finding: No error/validation state in v1 — the input-error null slot (ADR-0010) is an open Dave question (wave-1 A-Q2); edit commits are unvalidated free text.
-   Finding: No density toggle in v1 (View-options territory) and no column show/hide — deferred; view-column glyph exists in the library when it lands.
+   Finding: Density landed at #261 (comfortable | compact, a real prop on .dg); column show/hide is still deferred — view-column glyph exists in the library when it lands.
    Finding: --selbg and --bone resolve to the same hex as hovers in Mono; they bind DISTINCT semantic sources (form/background/hover, tertiary/background/hover) so themes can split them.
    Scope: .cn-data-grid   ============================================================ */
 .cn-data-grid{
@@ -10344,6 +10472,7 @@
   --onpressed: var(--text-reverse);
   --currentbd: var(--tertiary-border-default);
   --bone: var(--tertiary-background-hover);
+  --grouphdr: var(--table-column-background);
   --press-travel: var(--component-type-button-family-press-travel);
   --press-darken: var(--component-type-button-family-press-darken);
 }
@@ -10396,19 +10525,39 @@
     transition:color var(--ease), transform var(--spring), filter var(--press);}
 :where(.cn-data-grid) .fchip .x svg{width:12px; height:12px; fill:currentColor;}
 :where(.cn-data-grid) .fchip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-/* the scroll region — horizontal overflow, NOT card-collapse (see header comment) */
-:where(.cn-data-grid) .dg-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--border-radius-surface);}
-:where(.cn-data-grid) table{border-collapse:collapse; width:100%; min-width:640px; background:var(--cell);}
+/* the scroll region — horizontal overflow, NOT card-collapse (see header comment). #261: a
+     vertical max-block-size too, so the STICKY header is a provable state and not a promise. */
+:where(.cn-data-grid) .dg-scroll{overflow:auto; max-block-size:var(--dg-vh, 380px);
+    border:1px solid var(--border); border-radius:var(--border-radius-surface);}
+:where(.cn-data-grid) table{border-collapse:collapse; table-layout:fixed; width:100%; min-width:760px; background:var(--cell);}
 :where(.cn-data-grid) th, :where(.cn-data-grid) td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
     color:var(--text);}
-:where(.cn-data-grid) thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}
-/* the sort button carries the padding */
 :where(.cn-data-grid) td.num{text-align:right;}
-:where(.cn-data-grid) td.num .t-cm-figure-5{display:inline-block;}
-/* sort headers — full-cell buttons; type = .t-cm-button composite (16/500, the Table header weight) */
-:where(.cn-data-grid) .sort{display:flex; width:100%; min-height:44px; align-items:center; gap:8px; padding:var(--cell-py) var(--cell-px);
-    border:0; background:transparent; color:var(--text); cursor:pointer; text-align:left;
+:where(.cn-data-grid) td.num .t-cm-figure-5{display:inline-block; font-variant-numeric:tabular-nums;}
+/* ================= THE COLUMN HEADER (#261 design pass — Dave's nomination) =================
+     Anatomy, in one flex row per cell: label · sort affordance · column filter · resize handle.
+     Above it an OPTIONAL spanning group row; both rows are sticky, so the header travels as one
+     block. Sticky + border-collapse drops cell borders while scrolling in every engine, so the
+     header paints its rules as INSET SHADOWS — those sticky keeps. */
+:where(.cn-data-grid) thead th{background:var(--header); padding:0; position:sticky; z-index:2;
+    box-shadow:inset 0 -1px 0 0 var(--border), inset -1px 0 0 0 var(--border);}
+:where(.cn-data-grid) thead tr.grp th{top:0; z-index:3; height:var(--grp-h,32px); padding:0 var(--cell-px);
+    background:var(--grouphdr);}
+:where(.cn-data-grid) thead tr.cols th{top:var(--grp-h,32px);}
+:where(.cn-data-grid) .dg[data-groups="off"] thead tr.grp{display:none;}
+:where(.cn-data-grid) .dg[data-groups="off"] thead tr.cols th{top:0;}
+:where(.cn-data-grid) thead tr.grp .glabel{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text; opacity:var(--alpha-60);}
+/* the cell interior — label, filter and handle can never collide, at either density */
+:where(.cn-data-grid) .th-in{display:flex; align-items:stretch; min-height:var(--hdr-min,44px);
+    box-shadow:var(--s-sort,0 0 transparent);}
+:where(.cn-data-grid) .th-in.mid{align-items:center; justify-content:center;}
+/* sort — full-cell button; type = .t-cm-button composite (16/500, the Table header weight) */
+:where(.cn-data-grid) .sort{flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:8px;
+    padding:var(--cell-py) var(--cell-px); border:0; background:transparent; color:var(--text);
+    cursor:pointer; text-align:left;
     transition:background var(--ease), transform var(--spring), filter var(--press);}
+:where(.cn-data-grid) .sort .lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
 :where(.cn-data-grid) .sort:hover{background:var(--hover);}
 :where(.cn-data-grid) .sort:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 :where(.cn-data-grid) .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
@@ -10416,6 +10565,80 @@
 :where(.cn-data-grid) th[aria-sort="none"] .ic-none{display:inline-flex;}
 :where(.cn-data-grid) th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
 :where(.cn-data-grid) th[aria-sort="descending"] .ic-desc{display:inline-flex;}
+/* SORTED — ground shift plus a 2px accent UNDERLINE, and nothing else; with the direction glyph
+     and aria-sort that is three channels, never colour alone. #261 G2 (Dave, on the review page:
+     "the odd (I assume selected state) black lines, bottom and right"): the rule was 3px and read
+     as a heavy black bar; it is now the single 2px underline, and NO state paints a cell EDGE bar. */
+:where(.cn-data-grid) th[aria-sort="ascending"], :where(.cn-data-grid) th[aria-sort="descending"]{background:var(--hover);}
+:where(.cn-data-grid) th[aria-sort="ascending"] .th-in, :where(.cn-data-grid) th[aria-sort="descending"] .th-in{--s-sort:inset 0 -2px 0 0 var(--bar);}
+/* numeric column — label and glyph hug the right edge, over the tabular figures below */
+:where(.cn-data-grid) th.num .sort{flex-direction:row-reverse; text-align:right;}
+:where(.cn-data-grid) th.num .sort .ic{margin-left:0;}
+/* DISABLED column — no sort affordance at all. Reference is the editable column: re-ordering
+     rows under an open editor is the bug, so sorting is off there by design, not by omission. */
+:where(.cn-data-grid) th[data-disabled] .sort{cursor:default; opacity:var(--alpha-48);}
+/* --disabled ink is #E1E1E1: illegible on the header ground, so the mute is alpha */
+:where(.cn-data-grid) th[data-disabled] .sort:hover{background:transparent;}
+/* per-column filter — form furniture (Search-field precedent): colour states, no press physics.
+     Off and on are two DISTINCT library glyphs (filter.svg / filter-active.svg), never one glyph
+     recoloured (icon-011). */
+:where(.cn-data-grid) .colf{flex:none; align-self:center; width:24px; height:24px; margin-inline-end:4px; padding:0;
+    border:0; background:transparent; color:var(--icon); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+:where(.cn-data-grid) .colf svg{width:16px; height:16px; fill:currentColor; display:block;}
+:where(.cn-data-grid) .colf:hover{background:var(--fhover);}
+:where(.cn-data-grid) .colf:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-data-grid) .colf[aria-expanded="true"]{background:var(--fhover);}
+:where(.cn-data-grid) .colf .ic-on{display:none;}
+:where(.cn-data-grid) th[data-filtered="true"] .colf .ic-off{display:none;}
+:where(.cn-data-grid) th[data-filtered="true"] .colf .ic-on{display:block;}
+/* FILTERED-ACTIVE — #261 G2: the 3px LEADING accent rule is REMOVED. It painted a heavy black
+     bar that, sitting on a cell's start edge, read as the RIGHT edge of the column before it —
+     half of Dave's "black lines, bottom and right". The state keeps two non-colour channels: the
+     DISTINCT active glyph (filter-active.svg, never one glyph recoloured) and a held ground on
+     the filter button, plus aria-expanded/data-filtered for AT. No edge bar in any state. */
+:where(.cn-data-grid) th[data-filtered="true"] .colf{background:var(--fhover);}
+/* the column menu — anchored under its own header cell (sticky is a containing block).
+     No buttons inside it: Enter commits, exactly as the toolbar filter does. */
+:where(.cn-data-grid) .colmenu{display:none; position:absolute; inset-inline-start:0; top:100%; z-index:6; min-width:232px;
+    padding:8px; background:var(--page); border:1px solid var(--fborder); border-radius:var(--border-radius-surface);}
+:where(.cn-data-grid) th.num .colmenu{inset-inline-start:auto; inset-inline-end:0;}
+:where(.cn-data-grid) th[data-menu="open"] .colmenu{display:block;}
+:where(.cn-data-grid) .colmenu .cml{display:block; margin-bottom:4px; opacity:var(--alpha-60);}
+:where(.cn-data-grid) .colmenu input{width:100%; height:44px; padding:0 8px; border:1px solid var(--fborder);
+    border-radius:var(--border-radius-control); background:transparent; color:var(--text); outline:none;}
+:where(.cn-data-grid) .colmenu input:focus-visible{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar);}
+:where(.cn-data-grid) .colmenu .cmh{display:block; margin-top:8px; opacity:var(--alpha-60);}
+/* RESIZE handle — 12px grip on the trailing edge with a 24px hit area (the ::before bleed).
+     tabindex=-1 keeps the grid's ONE tab stop: Alt+←/→ on the header cell enters resize mode.
+     #261 G2 (Dave: "can we remove the bars from the end of the column headers"): the painted rule
+     is GONE AT REST — invisible, but the affordance is untouched. The 24px hit area, the
+     col-resize cursor, the pointer drag and the keyboard resize mode all still exist; a 1px
+     hairline appears only on HOVER or FOCUS-VISIBLE of the handle, and the full-height 2px rule
+     only while resize mode is live (data-active, set on pointer drag and on handle focus). */
+:where(.cn-data-grid) .rsz{flex:none; width:12px; align-self:stretch; padding:0; border:0; background:transparent;
+    cursor:col-resize; position:relative; touch-action:none;}
+:where(.cn-data-grid) .rsz::before{content:""; position:absolute; inset:0 -6px;}
+:where(.cn-data-grid) .rsz::after{content:""; position:absolute; top:8px; bottom:8px; inset-inline-end:5px; width:1px;
+    background:transparent; transition:background var(--ease);}
+:where(.cn-data-grid) .rsz:hover::after, :where(.cn-data-grid) .rsz:focus-visible::after{background:var(--fborder);}
+:where(.cn-data-grid) .rsz:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-data-grid) .rsz[data-active="true"]::after{background:var(--fborder); width:2px; top:0; bottom:0;}
+:where(.cn-data-grid) .dg[data-resizing="true"]{cursor:col-resize; user-select:none;}
+:where(.cn-data-grid) .dg[data-resizing="true"] .sort:hover{background:transparent;}
+/* DENSITY — a real prop (comfortable | compact), not a demo dial. Compact holds a 32px header
+     row and 32px control targets: above the 24px dial-down floor, never below (s116-D1). */
+:where(.cn-data-grid) .dg{--hdr-min:44px; --tap:44px; --grp-h:32px;}
+:where(.cn-data-grid) .dg[data-density="compact"]{--cell-py:4px; --hdr-min:32px; --tap:32px; --grp-h:28px;}
+/* the density switch mirrors Segmented-control (its group, not button-family — no press physics) */
+:where(.cn-data-grid) .dgden{display:inline-flex; margin-inline-start:auto; border:1px solid var(--fborder);
+    border-radius:var(--border-radius-control);}
+:where(.cn-data-grid) .dgden button{min-height:44px; padding:0 12px; border:0; border-inline-start:1px solid var(--fborder);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+:where(.cn-data-grid) .dgden button:first-of-type{border-inline-start:0;}
+:where(.cn-data-grid) .dgden button:hover{background:var(--hover);}
+:where(.cn-data-grid) .dgden button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-data-grid) .dgden button[aria-pressed="true"]{background:var(--header);}
 /* rows — hover (Table's affordance) · selected = tint + inset start bar + checked box (never colour alone) */
 :where(.cn-data-grid) tbody tr{transition:background var(--ease);}
 :where(.cn-data-grid) tbody tr:hover td{background:var(--hover);}
@@ -10424,30 +10647,54 @@
 /* cell focus — the roving tab stop is the CELL */
 :where(.cn-data-grid) .dg :is(th, :where(.cn-data-grid) td):focus{outline:none;}
 :where(.cn-data-grid) .dg :is(th, :where(.cn-data-grid) td):focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-/* selection checkbox — COMPOSED from Selection-controls (s258-D4). The wrapper carries the
-     canon scope class .cn-selection-controls and the markup is Selection-controls' own pattern:
-     visually-hidden <input> + sibling <label> holding <span class="box">, so a verbatim copy of
-     this grid into a canon.css page inherits the reviewed control (and passes the compose gate)
-     instead of re-inventing one. The rules below are the grid-local restatement of that anatomy,
-     on the grid's own token vars. Colour states only: form-control precedent (Account-selector),
-     NO scale physics — that experiment stays Selection-controls' own. */
+/* selection checkbox — CONSUMED from Selection-controls, not restated (#261 G3).
+     Dave 2026-09-09: "the grid header is fine except the checkbox is rendered oddly, can't we just
+     use the check component?" The grid used to carry its OWN restatement of the anatomy — same
+     shape, but display:none/block instead of the component's stroke-draw, so the two could (and
+     did) drift. There is no registered $partial for the checkbox, so the composition rule of the
+     lane brief applies: bring the component's token block and its rules across BYTE-IDENTICALLY
+     and bind them with an alias layer. Nothing below is grid-authored except the alias map, the
+     hit-area line and the one guard, each marked.
+
+     ALIAS LAYER — Selection-controls' var names, bound to the grid's already-resolved tokens.
+     The VALUES are the same semantic tokens in both documents (form/border/default #808080,
+     secondary/background/default #000 light / #FFF dark, text/on-inverse, form/background/hover,
+     form/border/disabled), so this is a rename, not a re-decision. */
 :where(.cn-data-grid) th.sel, :where(.cn-data-grid) td.sel{padding:0; width:44px;}
-:where(.cn-data-grid) .cbx{position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
+:where(.cn-data-grid) .cbx{--ctrl-border:var(--fborder); --ctrl-border-active:var(--bar); --ctrl-border-disabled:var(--disabled);
+       --glyph:var(--onchk); --chip-hover:var(--fhover); --label-disabled:var(--disabled);
+       position:relative; display:inline-flex; align-items:center; vertical-align:middle;}
+/* grid-authored: table-cell seating */
+/* ---- checkbox (square) — VERBATIM from knowledge/snippets/Selection-controls.reference.html,
+         only the `.cbx ` scope prefix added so the rules cannot leak onto the grid's other svgs. */
 :where(.cn-data-grid) .cbx input{position:absolute; opacity:0; width:0; height:0;}
 /* native control drives state + a11y */
-:where(.cn-data-grid) .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-    min-width:44px; min-height:44px;}
-:where(.cn-data-grid) .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
-    background:transparent; display:inline-flex; align-items:center; justify-content:center;
-    transition:background var(--ease), border-color var(--ease);}
+:where(.cn-data-grid) .cbx input:disabled + label{cursor:not-allowed; color:var(--label-disabled);}
+:where(.cn-data-grid) .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:var(--border-radius-control); background:transparent;
+    display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
 :where(.cn-data-grid) .cbx .box svg{width:14px; height:14px;}
-:where(.cn-data-grid) .cbx .box path{stroke:var(--onchk); stroke-width:2.4; fill:none;}
-:where(.cn-data-grid) .cbx .box .tick, :where(.cn-data-grid) .cbx .box .mixed{display:none;}
-:where(.cn-data-grid) .cbx label:hover .box{border-color:var(--bar);}
+:where(.cn-data-grid) .cbx .box path, :where(.cn-data-grid) .cbx .box rect{stroke:var(--glyph); stroke-width:2.4; fill:none;}
+:where(.cn-data-grid) .cbx .box .tick{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+:where(.cn-data-grid) .cbx .box .mixed{stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+:where(.cn-data-grid) .cbx label:hover .box{border-color:var(--ctrl-border-active);}
 :where(.cn-data-grid) .cbx input:checked + label .box, :where(.cn-data-grid) .cbx input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
-:where(.cn-data-grid) .cbx input:checked + label .box .tick{display:block;}
-:where(.cn-data-grid) .cbx input:indeterminate + label .box .mixed{display:block;}
+:where(.cn-data-grid) .cbx input:checked + label .box .tick{stroke-dashoffset:0;}
+:where(.cn-data-grid) .cbx input:indeterminate + label .box .mixed{stroke-dashoffset:0;}
+:where(.cn-data-grid) .cbx input:active + label .box{background:var(--chip-hover);}
 :where(.cn-data-grid) .cbx input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-data-grid) .cbx input:disabled + label .box{border-color:var(--ctrl-border-disabled);}
+/* ---- end verbatim block ---- */
+/* grid-authored, ADDITIVE — two lines, both stated so the drift is legible:
+     (1) HIT AREA. Selection-controls seats its control in a 44px-min label with a text label beside
+         it; the grid cell has no text, so the label itself carries the target. --tap dials to 32px
+         in compact — above the 24px floor, never below (_validate_hit_area.py).
+     (2) DASH GUARD. `.mixed` carries stroke-dashoffset with no stroke-dasharray, so the offset is
+         inert and the dash is drawn in every state. In Selection-controls that is invisible (white
+         glyph on the white page); on the grid's #F0F0F0 header it would show. Give it the same
+         dasharray the tick has, so the component's own draw semantics actually hold here. */
+:where(.cn-data-grid) .cbx label{cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    min-width:var(--tap,44px); min-height:var(--tap,44px);}
+:where(.cn-data-grid) .cbx .box .mixed{stroke-dasharray:22;}
 /* edit-in-place — the Reference column. Edit affordance appears on hover/cell focus (full-ink
      glyph, icon-011); editing chrome = the field ACTIVE recipe (border/active 4px bottom stroke
      + page fill) — FIELD-CHROME-COPY (partial), see worker receipt. */
@@ -11602,7 +11849,7 @@
 
 /* ============================================================
    Filter-toolbar-bar  (from snippets/Filter-toolbar-bar.reference.html)
-   Aria: type="search", aria-label, role="combobox", role="listbox", role="option", aria-pressed
+   Aria: type="search", aria-label, role="combobox", role="listbox", role="option", aria-pressed, role="status", aria-live
    Scope: .cn-filter-toolbar-bar   ============================================================ */
 .cn-filter-toolbar-bar{
   --alpha-04: 0.04;
@@ -11637,6 +11884,11 @@
   --seg-thumb-s: var(--border-radius-segmented-thumb-s);
   --seg-rad-xs: var(--border-radius-segmented-container-xs);
   --seg-thumb-xs: var(--border-radius-segmented-thumb-xs);
+  --seg-rad-l: var(--border-radius-segmented-container-l);
+  --seg-thumb-l: var(--border-radius-segmented-thumb-l);
+  --seg-h-l: var(--size-segmented-control-l);
+  --seg-pad-l: var(--padding-segmented-control-l);
+  --seg-inset-l: var(--padding-fixed-large);
   --hover: var(--form-background-hover);
   --border: var(--form-border-default);
   --border-active: var(--form-border-active);
@@ -11653,6 +11905,10 @@
   --sel: var(--secondary-background-default);
   --on-sel: var(--text-on-inverse);
   --hit: var(--target-min);
+  --error-ink: var(--rag-error-ink);
+  --pos-ink: var(--rag-success-ink);
+  --tbl-head: var(--table-header-background);
+  --tbl-border: var(--table-border);
   --bg: #FFFFFF00;
   --field-bg: #FFFFFF00;
   --border-disabled: #D7D8D6;
@@ -11673,6 +11929,11 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 :where(.cn-filter-toolbar-bar) :is(button, :where(.cn-filter-toolbar-bar) a, :where(.cn-filter-toolbar-bar) label, :where(.cn-filter-toolbar-bar) span, :where(.cn-filter-toolbar-bar) small, :where(.cn-filter-toolbar-bar) strong, :where(.cn-filter-toolbar-bar) em, :where(.cn-filter-toolbar-bar) b, :where(.cn-filter-toolbar-bar) i, :where(.cn-filter-toolbar-bar) th, :where(.cn-filter-toolbar-bar) td, :where(.cn-filter-toolbar-bar) dt, :where(.cn-filter-toolbar-bar) dd, :where(.cn-filter-toolbar-bar) li, :where(.cn-filter-toolbar-bar) figcaption, :where(.cn-filter-toolbar-bar) legend, :where(.cn-filter-toolbar-bar) caption, :where(.cn-filter-toolbar-bar) summary, :where(.cn-filter-toolbar-bar) output, :where(.cn-filter-toolbar-bar) time, :where(.cn-filter-toolbar-bar) input[type=text], :where(.cn-filter-toolbar-bar) input[type=search], :where(.cn-filter-toolbar-bar) input[type=email], :where(.cn-filter-toolbar-bar) input[type=tel], :where(.cn-filter-toolbar-bar) input[type=url], :where(.cn-filter-toolbar-bar) input[type=password], :where(.cn-filter-toolbar-bar) input[type=number], :where(.cn-filter-toolbar-bar) input:not([type]), :where(.cn-filter-toolbar-bar) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* THE [hidden] REMEDY (#218 W3 F1 class, s218-D5 clause 3). Several nodes here are painted by a
+     display rule of their own (`.ftb-msg{display:flex}`, `.demo-cards{display:grid}`, a <table>),
+     and the UA's `[hidden]{display:none}` is specificity (0,1,0) — it LOSES to every one of them.
+     Without this line an element would render while `hidden` told assistive tech it was gone. */
+:where(.cn-filter-toolbar-bar) [hidden]{display:none !important;}
 /* ===== Search-field.reference.html, verbatim (boxed) ===== */
 :where(.cn-filter-toolbar-bar) .search{position:relative; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);
     transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);
@@ -11693,10 +11954,7 @@
 :where(.cn-filter-toolbar-bar) .search:focus-within{box-shadow:inset 0 -2px 0 var(--border-active);}
 :where(.cn-filter-toolbar-bar) .search input:focus-visible{outline:none;}
 /* BOXED (full border) — s227-D7 L8: "search radius moves to the boxed variant only, underline
-     stays straight." The reuse above borrows Search-field's boxed variant, so it takes the same
-     radius; only HALF the ruling had landed (the .cn-search-field site had it, this one did not),
-     which left a square box between an 8px dropdown and 8px chips on one toolbar row. The
-     underline `.search` above is deliberately untouched — that is the other half of the ruling. */
+     stays straight." */
 :where(.cn-filter-toolbar-bar) .search.boxed{border:1px solid var(--border); padding:0 8px; border-radius:var(--border-radius-control);}
 :where(.cn-filter-toolbar-bar) .search.boxed:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
 :where(.cn-filter-toolbar-bar) .clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
@@ -11705,12 +11963,7 @@
 :where(.cn-filter-toolbar-bar) .search input:placeholder-shown ~ .clear{display:none;}
 /* ===== Dropdown.reference.html, verbatim (boxed) ===== */
 :where(.cn-filter-toolbar-bar) .dd{position:relative; min-width:0;}
-/* .dd > label rule DROPPED — the label is sr-only in this bar (inline-styled, see markup), so no
-     visible font declaration is needed for it (TYPE-002: nothing to bind for an off-screen node). */
-/* .trigger's font is OMITTED here exactly as it is in the closest-fitting canon composite —
-     the markup carries `t-cm-button` (16/500, exact match) instead of the raw font (TYPE-002 fix;
-     Dropdown.reference.html itself still carries this raw declaration — untouched, this lane's
-     file only routes ITS OWN copy through the composite). */
+/* .trigger's font is OMITTED — the markup carries `t-cm-button` (16/500, exact match). */
 :where(.cn-filter-toolbar-bar) .trigger{width:100%; height:48px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; gap:8px;
     background:var(--field-bg); color:var(--text); border:0; border-bottom:1px solid var(--border); border-radius:var(--border-radius-control);
     cursor:pointer; transition:background var(--ease), border-color var(--ease), box-shadow var(--ease); white-space:nowrap;}
@@ -11726,10 +11979,8 @@
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-filter-toolbar-bar) .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
-/* .opt's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-label` (16/400, exact match)
-     instead. The selected-state bold (`font-weight:500`) is DROPPED as a deliberate simplification
-     — selection is already signalled without colour alone by the .tick checkmark + aria-selected,
-     so no second (font-weight) channel is required; declared, not a silent omission. */
+/* .opt's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-label` (16/400). Selection is
+     signalled by the .tick checkmark + aria-selected, never by colour alone. */
 :where(.cn-filter-toolbar-bar) .opt{display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:0 12px;
     color:var(--text); cursor:pointer;}
 :where(.cn-filter-toolbar-bar) .opt:hover{background:var(--item-hover);}
@@ -11738,27 +11989,31 @@
 :where(.cn-filter-toolbar-bar) .opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
 :where(.cn-filter-toolbar-bar) .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 :where(.cn-filter-toolbar-bar) .sep{height:1px; background:var(--divider); margin:8px 0;}
+/* ---- Dropdown's GROUPED variant, verbatim (#261 F2). Dave: "can we have a variant of this
+     dropdown that has the category of selection as a heading so that it isn't repeated, eg.
+     'Currency'." The add-filter menu is the consumer: the facet is said ONCE as a group heading
+     and the option carries the bare value. `role="group"` + `aria-labelledby` keeps the category
+     in the accessibility tree, so "Currency, GBP" is still what a screen reader announces — and
+     the CHIP the bar mints re-attaches it too ("Currency: GBP"), because a chip has no heading
+     above it. The `.grp` font is OMITTED — the markup carries `t-cm-ctl-12` (12/500, the mini
+     control ramp step the Dropdown atom's own heading uses). ---- */
+:where(.cn-filter-toolbar-bar) .optgrp{display:block;}
+:where(.cn-filter-toolbar-bar) .optgrp + .optgrp{border-top:1px solid var(--divider); margin-top:4px; padding-top:4px;}
+:where(.cn-filter-toolbar-bar) .grp{display:block; padding:8px 12px 4px; color:var(--text); opacity:var(--alpha-72);}
+:where(.cn-filter-toolbar-bar) .grp-list{margin:0; padding:0; list-style:none;}
 /* ===== Segmented-control.reference.html, verbatim ===== */
-/* A1 REPAIR (#227) — this file RE-DECLARES `.seg` locally, which used to shadow the segmented
-     atom's radius bindings away: the atom binds border-radius on `.seg` / `.seg .ind`, but a
-     page carrying `.cn-chart-*` / `.cn-filter-toolbar-bar` / `.cn-template-settings` (not
-     `.cn-segmented-control`) got this radius-less copy instead, so board-wide segmented changes
-     never reached those toolbars. The atom's own construction is copied verbatim: scale-selected
-     locals, repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time
-     derivation (s200-D1) puts concrete numbers on disk and the CSS only READS them. The track
-     inset here is 2px, matching the minted padding/segmented-control at xs and s, so the minted
-     thumb radii are geometrically correct for this construction. */
-:where(.cn-filter-toolbar-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
-    position:relative; display:inline-flex; padding:2px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
-:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
+/* A1 REPAIR (#227) — the atom's own construction is copied verbatim: scale-selected locals,
+     repointed by the size class. ⛔ NEVER hardcode a radius here — the mint-time derivation
+     (s200-D1) puts concrete numbers on disk and the CSS only READS them. */
+:where(.cn-filter-toolbar-bar) .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-pad:2px;
+    position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad); border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+:where(.cn-filter-toolbar-bar) .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0; transition:left var(--ease), width var(--ease);}
 :where(.cn-filter-toolbar-bar) .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
 /* ordinal map sm->xs, PROPOSED not ruled — mirrors the atom */
 :where(.cn-filter-toolbar-bar) .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
 /* ordinal map md->s,  PROPOSED not ruled — mirrors the atom */
-/* .seg button / .seg.sm button fonts are OMITTED here exactly as they are in
-     Segmented-control.reference.html itself — canon/type.css already binds `.seg.sm button` (12/500)
-     and `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9); every instance in this file's
-     markup carries an explicit `.sm`/`.md` size class, so the composite always resolves. */
+/* .seg button fonts are OMITTED — canon/type.css binds `.seg.sm button` (12/500) and
+     `.seg.md button` (14/500) into the mini ctl ramp (T-D15/T-D9). */
 :where(.cn-filter-toolbar-bar) .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
     height:32px; padding:0 12px; border:0; background:transparent; color:var(--text); cursor:pointer; transition:color var(--ease);}
 :where(.cn-filter-toolbar-bar) .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
@@ -11768,11 +12023,21 @@
 :where(.cn-filter-toolbar-bar) .seg.sm button{height:28px; padding:0 8px;}
 :where(.cn-filter-toolbar-bar) .seg.md button{height:32px; padding:0 12px;}
 :where(.cn-filter-toolbar-bar) .seg.icons button{padding:0; width:44px;}
+/* ---- #261 F2, Dave verbatim: "can we use the larger seg-control to match the size of the
+     buttons." The atom's TIER-1 MINTED SCALE (Segmented-control.reference.html, s201-D1) copied
+     verbatim for the one step this bar needs: `l` = 48px TOTAL OUTER height, the same 48px the
+     `.trigger` buttons carry, so track and button share a baseline instead of the 32px `md` /
+     28px `sm` the bar shipped with. The track owns the height; the buttons fill it. Type for
+     `.seg.l button` is bound in canon/type.css (.t-cm-ctl-16, 16/400) exactly as `.seg.lg` is —
+     registered in canon/_type-bindings.json, so the binding is a conscious act, not a leak. ---- */
+:where(.cn-filter-toolbar-bar) .seg.l{--seg-h:var(--seg-h-l); --seg-pad:var(--seg-pad-l); --seg-rad:var(--seg-rad-l); --seg-thumb:var(--seg-thumb-l); --seg-inset:var(--seg-inset-l); height:var(--seg-h);}
+:where(.cn-filter-toolbar-bar) .seg.l button{height:100%; padding:0 var(--seg-inset);}
+/* hit zone s201-D2/D3: max(44, the control's own minted height) — l keeps its natural 48. */
+:where(.cn-filter-toolbar-bar) .seg.l button::before{min-height:max(var(--hit), var(--seg-h));}
 :where(.cn-filter-toolbar-bar) .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit); min-height:var(--hit); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
      (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
-     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
-     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
+     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file. */
 /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
 /* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
    registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
@@ -11783,9 +12048,7 @@
 :where(.cn-filter-toolbar-bar) .seg button{border-radius:var(--seg-thumb);}
 /* ===== AUTO-PARTIAL seg-concentric END ===== */
 /* ===== Tags.reference.html, verbatim (dismissible + applied-filters bar) ===== */
-/* .tag's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-caption` (14/400, exact match)
-     instead of the raw font (Tags.reference.html itself still carries this raw declaration —
-     untouched; this lane's file only routes ITS OWN copy through the composite). */
+/* .tag's font is OMITTED (TYPE-002 fix) — the markup carries `t-cm-caption` (14/400). */
 :where(.cn-filter-toolbar-bar) .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control);
     background:transparent; color:var(--text); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--tags-ease), opacity var(--tags-ease), margin var(--tags-ease), padding var(--tags-ease), border-width var(--tags-ease);}
@@ -11805,34 +12068,120 @@
 :where(.cn-filter-toolbar-bar) .filterbar .row{flex-direction:column; align-items:stretch;}
 :where(.cn-filter-toolbar-bar) .filterbar .tag{width:100%; height:auto; min-height:2.4em; justify-content:space-between; margin:0 0 8px 0;}
 }
+/* ===== Links.reference.html, verbatim paint — selector widened to admit a <button> ===== */
+:where(.cn-filter-toolbar-bar) :is(a.lnk, :where(.cn-filter-toolbar-bar) button.lnk){color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; cursor:pointer;}
+:where(.cn-filter-toolbar-bar) :is(a.lnk, :where(.cn-filter-toolbar-bar) button.lnk):hover{text-decoration-thickness:2px;}
+:where(.cn-filter-toolbar-bar) :is(a.lnk, :where(.cn-filter-toolbar-bar) button.lnk):active{text-decoration-thickness:2px;}
+/* pressed == hover (combined state) */
+:where(.cn-filter-toolbar-bar) :is(a.lnk, :where(.cn-filter-toolbar-bar) button.lnk):focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
+:where(.cn-filter-toolbar-bar) :is(a.lnk, :where(.cn-filter-toolbar-bar) button.lnk)[aria-disabled="true"]{color:var(--text-disabled); text-decoration-color:var(--text-disabled); pointer-events:none;}
+/* the button reset + the 24px hit floor (s116-D1 dial-down floor; the visible run of text is
+     shorter than 24px tall, so the target is grown by a centred pseudo-element, exactly the idiom
+     Tags' own `.x` uses) */
+:where(.cn-filter-toolbar-bar) button.lnk{position:relative; padding:0; border:0; background:transparent;}
+:where(.cn-filter-toolbar-bar) button.lnk::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:calc(100% + 8px); height:24px;}
 /* ============================================================================
-     THE ORGANISM — .ftb-* ARRANGEMENT ONLY. s210-D3: no width declared here.
+     THE ORGANISM — .ftb-* ARRANGEMENT + STATE ONLY. s210-D3: no width declared here.
      ============================================================================ */
-:where(.cn-filter-toolbar-bar) .ftb-outer{container-type:inline-size;}
-:where(.cn-filter-toolbar-bar) .ftb{display:flex; flex-direction:column; gap:16px;}
-:where(.cn-filter-toolbar-bar) .ftb-row{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;}
-:where(.cn-filter-toolbar-bar) .ftb-search{flex:1 1 240px; min-width:200px;}
-:where(.cn-filter-toolbar-bar) .ftb-filter{flex:0 1 200px; min-width:160px;}
-:where(.cn-filter-toolbar-bar) .ftb-view{flex:none; margin-left:auto;}
-:where(.cn-filter-toolbar-bar) .ftb-chips{display:flex; flex-wrap:wrap; align-items:center; gap:8px 0;}
-/* RESPONSIVE COLLAPSE — container-query, matching Tags'/Button's own house idiom:
-     wide → one row, search grows, filters share space, view switch pinned right.
-     ≤680px container → filters + view switch wrap to their own row under the search field.
-     ≤400px (incl. 320px, WCAG 1.4.10) → every control goes full width, stacked. */
+:where(.cn-filter-toolbar-bar) .ftb-outer{container-type:inline-size; position:sticky; top:var(--ftb-top,0px); z-index:30;
+    background:var(--page); transition:box-shadow var(--ease);}
+:where(.cn-filter-toolbar-bar) .ftb-outer[data-stuck="true"]{box-shadow:0 4px 16px var(--shadow);}
+:where(.cn-filter-toolbar-bar) .ftb{display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px;
+    padding:12px 0; border-bottom:1px solid var(--divider);}
+/* ---- row 1: the controls ---- */
+:where(.cn-filter-toolbar-bar) .ftb-primary{display:flex; flex:1 1 100%; flex-wrap:wrap; align-items:flex-end; gap:8px 12px; min-width:0;}
+:where(.cn-filter-toolbar-bar) .ftb-search{flex:1 1 220px; min-width:180px;}
+:where(.cn-filter-toolbar-bar) .ftb-ctl{flex:0 0 auto; min-width:0;}
+:where(.cn-filter-toolbar-bar) .ftb-actions{display:flex; align-items:flex-end; gap:8px; flex:0 0 auto; margin-left:auto;}
+/* ---- row 2: the context (count · chips · clear-all) ---- */
+:where(.cn-filter-toolbar-bar) .ftb-context{display:flex; flex:1 1 100%; flex-wrap:wrap; align-items:center; gap:4px 12px; min-width:0;}
+:where(.cn-filter-toolbar-bar) .ftb-status{display:flex; align-items:center; gap:8px; min-width:0; white-space:nowrap;}
+:where(.cn-filter-toolbar-bar) .ftb-status .num{color:var(--text);}
+:where(.cn-filter-toolbar-bar) .ftb-hint{opacity:var(--alpha-64);}
+/* THE CHIP GROUP HAS A FLOOR. Measured at #261: with `flex:0 1 auto` and no min-width the group
+     was shrunk by its neighbours to ~10px and every chip rendered as a single clipped letter. A
+     chip row that cannot show a chip is worse than a chip row that wraps. */
+:where(.cn-filter-toolbar-bar) .ftb-chips{flex:1 1 200px; min-width:200px;}
+:where(.cn-filter-toolbar-bar) .ftb-chips .row{display:flex; flex-wrap:wrap; align-items:center; min-width:0;}
+:where(.cn-filter-toolbar-bar) .ftb-clear{flex:0 0 auto; margin-left:auto;}
+/* the overflow chip: a Tags chip acting as a disclosure. No new vocabulary — the +N is a
+     BUTTON element carrying .tag, so it takes the chip paint and the chip's own hit floor. */
+:where(.cn-filter-toolbar-bar) button.tag{cursor:pointer; font-size:inherit;}
+:where(.cn-filter-toolbar-bar) button.tag:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-filter-toolbar-bar) .tag[hidden]{display:none;}
+/* ---- TWO ROWS COLLAPSE TO ONE on a wide container ---- */
+/* Both groups declare a BASIS and a floor, and `.ftb` wraps. So the two rows become one only
+     while both groups fit at their floors — the collapse is a consequence of the measurement, not
+     a claim the author makes about the width. */
+@container (min-width: 1400px){
+:where(.cn-filter-toolbar-bar) .ftb-primary{flex:1 1 620px;}
+:where(.cn-filter-toolbar-bar) .ftb-context{flex:1 1 360px; min-width:360px; justify-content:flex-end;}
+}
+/* ---- reflow: 680 → search owns the row; 400 → everything stacks (375px phone, no h-scroll) ---- */
 @container (max-width: 680px){
 :where(.cn-filter-toolbar-bar) .ftb-search{flex-basis:100%;}
+:where(.cn-filter-toolbar-bar) .ftb-actions{margin-left:0;}
 }
 @container (max-width: 400px){
-:where(.cn-filter-toolbar-bar) .ftb-row{flex-direction:column; align-items:stretch;}
-:where(.cn-filter-toolbar-bar) .ftb-filter, :where(.cn-filter-toolbar-bar) .ftb-view{flex-basis:auto; width:100%; margin-left:0;}
-:where(.cn-filter-toolbar-bar) .ftb-view .seg{width:100%;}
-:where(.cn-filter-toolbar-bar) .ftb-view .seg button{flex:1;}
+:where(.cn-filter-toolbar-bar) .ftb-primary{flex-direction:column; align-items:stretch;}
+:where(.cn-filter-toolbar-bar) .ftb-ctl, :where(.cn-filter-toolbar-bar) .ftb-actions{flex-basis:auto; width:100%; margin-left:0;}
+:where(.cn-filter-toolbar-bar) .ftb-actions{flex-direction:column; align-items:stretch;}
+:where(.cn-filter-toolbar-bar) .ftb-ctl .seg, :where(.cn-filter-toolbar-bar) .ftb-actions .seg{width:100%;}
+:where(.cn-filter-toolbar-bar) .ftb-ctl .seg button, :where(.cn-filter-toolbar-bar) .ftb-actions .seg button{flex:1;}
+:where(.cn-filter-toolbar-bar) .ftb-clear{margin-left:0;}
+:where(.cn-filter-toolbar-bar) .ftb-chips{min-width:0;}
 }
-/* ---- demo chrome — NOT the component (s210-D3) ---- */
-:where(.cn-filter-toolbar-bar) .demo-tier{border-top:1px solid var(--border-disabled); padding-top:8px; margin:0 0 4px;}
+/* At the one-chip-per-row collapse Tags' label may still be longer than the phone. Truncate it
+     HERE, scoped to the toolbar's own group — Tags' `.lbl{overflow:visible}` is untouched. The
+     `text-box-edge:text text` is the runbook's descender rule for a truncating label. */
+@container (max-width: 360px){
+:where(.cn-filter-toolbar-bar) .ftb-chips .tag .lbl{overflow:hidden; text-overflow:ellipsis; text-box-edge:text text;}
+}
+/* ---- DENSITY. The toolbar's own dial, and the one it hands to its consumer. Both heights
+          stay on the 4px grid (DEF-005) and clear the 44px control target at full / the 24px
+          dial-down floor at compact (s116-D1). ---- */
+:where(.cn-filter-toolbar-bar) .ftb-outer[data-density="compact"] .search, :where(.cn-filter-toolbar-bar) .ftb-outer[data-density="compact"] .trigger, :where(.cn-filter-toolbar-bar) .ftb-outer[data-density="compact"] .seg.l{height:40px;}
+/* #261 F2: the seg dials WITH its neighbours */
+:where(.cn-filter-toolbar-bar) .ftb-outer[data-density="compact"] .ftb{padding:8px 0;}
+/* ---- THE FIVE STATES. One attribute, `data-ftb-state`; every state-scoped node declares the
+          states it belongs to in `data-when`. Nodes with no `data-when` are always present. ---- */
+:where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="no-filters"] [data-when]:not([data-when~="no-filters"]), :where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="filtered"]   [data-when]:not([data-when~="filtered"]), :where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="loading"]    [data-when]:not([data-when~="loading"]), :where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="empty"]      [data-when]:not([data-when~="empty"]), :where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="error"]      [data-when]:not([data-when~="error"]){display:none;}
+/* loading — a determinate-looking skeleton, never a spinner that hides the count's position */
+:where(.cn-filter-toolbar-bar) .ftb-skel{display:inline-block; width:104px; height:12px; background:var(--hover); position:relative; overflow:hidden; vertical-align:middle;}
+:where(.cn-filter-toolbar-bar) .ftb-skel::after{content:""; position:absolute; inset:0; transform:translateX(-100%);
+    background:linear-gradient(90deg, transparent, var(--page), transparent); animation:cn-filter-toolbar-bar-ftb-sheen 1.1s ease-in-out infinite;}
+@keyframes cn-filter-toolbar-bar-ftb-sheen{to{transform:translateX(100%);}}
+:where(.cn-filter-toolbar-bar) .ftb-outer[data-ftb-state="loading"] .ftb-chips{opacity:var(--alpha-48);}
+/* empty / error message block — the icon + the words carry the state; colour is the third
+     channel, never the only one (1.4.1). */
+:where(.cn-filter-toolbar-bar) .ftb-msg{display:flex; align-items:flex-start; gap:8px; padding:24px 0;}
+:where(.cn-filter-toolbar-bar) .ftb-msg .ic{flex:none; width:18px; height:18px; margin-top:2px; color:var(--icon);}
+:where(.cn-filter-toolbar-bar) .ftb-msg .ic svg{width:18px; height:18px; display:block; fill:currentColor;}
+:where(.cn-filter-toolbar-bar) .ftb-msg .body{display:flex; flex-direction:column; gap:8px; align-items:flex-start; min-width:0;}
+:where(.cn-filter-toolbar-bar) .ftb-msg .ttl{color:var(--text);}
+:where(.cn-filter-toolbar-bar) .ftb-msg .sub{color:var(--text); opacity:var(--alpha-64); text-box-trim:normal;}
+:where(.cn-filter-toolbar-bar) .ftb-msg.is-error .ic{color:var(--error-ink);}
+:where(.cn-filter-toolbar-bar) .ftb-msg.is-error .ttl{color:var(--error-ink);}
+:where(.cn-filter-toolbar-bar) .ftb-msg .knock{fill:var(--page);}
 @media (prefers-reduced-motion: reduce){
 
 }
+/* ---- demo chrome — NOT the component (s210-D3) ---- */
+:where(.cn-filter-toolbar-bar) .demo-tier{border-top:1px solid var(--border-disabled); padding-top:8px; margin:0 0 4px;}
+/* THE CONSUMER. A stand-in for the `data-grid` component so the wiring contract has something
+     real to drive (s258-D2). It subscribes to `apollo:filter-change` and answers with
+     `data-apollo-result-count` / `data-apollo-result-state` — the return leg of the contract. */
+:where(.cn-filter-toolbar-bar) .demo-grid{width:100%; border-collapse:collapse; table-layout:fixed;}
+:where(.cn-filter-toolbar-bar) .demo-grid th{text-align:left; background:var(--tbl-head); border-bottom:1px solid var(--tbl-border); padding:8px 12px; white-space:nowrap;}
+:where(.cn-filter-toolbar-bar) .demo-grid td{border-bottom:1px solid var(--tbl-border); padding:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-box-edge:text text;}
+:where(.cn-filter-toolbar-bar) .demo-grid[data-apollo-density="compact"] td{padding:4px 12px;}
+:where(.cn-filter-toolbar-bar) .demo-grid .amt{text-align:right;}
+:where(.cn-filter-toolbar-bar) .demo-grid .pos{color:var(--pos-ink);}
+:where(.cn-filter-toolbar-bar) .demo-grid .neg{color:var(--error-ink);}
+:where(.cn-filter-toolbar-bar) .demo-grid tr:hover td{background:var(--hover);}
+:where(.cn-filter-toolbar-bar) .demo-scroll{max-height:340px; overflow:auto;}
+:where(.cn-filter-toolbar-bar) .demo-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px;}
+:where(.cn-filter-toolbar-bar) .demo-card{border:1px solid var(--tbl-border); padding:12px; display:flex; flex-direction:column; gap:4px;}
 
 /* ============================================================
    Footer-doormat-lockup  (from snippets/Footer-doormat-lockup.reference.html)
@@ -11933,7 +12282,7 @@
 
 /* ============================================================
    Footer  (from snippets/Footer.reference.html)
-   Aria: role="contentinfo", aria-label, aria-labelledby, aria-current="page"
+   Aria: role="contentinfo", aria-label, role="status", aria-hidden="true"
    Scope: .cn-footer   ============================================================ */
 .cn-footer{
   --alpha-04: 0.04;
@@ -11961,14 +12310,19 @@
   --alpha-92: 0.92;
   --alpha-96: 0.96;
   --ease: 140ms ease;
+  --target-floor: 24px;
   --page: var(--background-default);
   --surface: var(--surface-subtle);
   --divider: var(--divider-border-section);
-  --subdivider: var(--divider-border-subsection);
   --text: var(--text-default);
-  --muted: var(--text-secondary);
   --icon: var(--icon-default);
   --focus: var(--focus-ring);
+  --ft-band: var(--surface-action-primary);
+  --ft-ink: var(--text-on-inverse);
+  --env-alert: var(--rag-warning-background);
+  --env-alert-ink: var(--rag-text-on-light);
+  --ok: var(--rag-success-glyph);
+  --degraded: var(--rag-warning-glyph);
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 /* ===== AUTO-TOKENS END ===== */
@@ -11978,63 +12332,126 @@
      is the mandatory route and the reason this file contributes 0 to the shrink-only ratchet. */
 :where(.cn-footer) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-/* ---- the region ---- */
-:where(.cn-footer) .ft{background:var(--surface); color:var(--text); border-top:1px solid var(--divider);
-    container-type:inline-size;}
-:where(.cn-footer) .ft-inner{max-width:1120px; margin:0 auto; padding:32px 16px;}
-/* 16px = layout/app/margin */
-/* ---- the doormat: named link groups ---- */
-:where(.cn-footer) .ft-mat{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:24px 16px;}
-:where(.cn-footer) .ft-group > h2{margin:0 0 4px; opacity:var(--alpha-60);}
-:where(.cn-footer) .ft-group ul{list-style:none; margin:0; padding:0;}
-/* EVERY footer link is a full 44px target, at EVERY width — see the header note; this is
-     stricter than the gated Links .related pattern and it is a declared design decision. */
-:where(.cn-footer) .ft-group a{display:flex; align-items:center; min-height:var(--target-min); padding:0;}
+/* ---- the region ------------------------------------------------------------------
+     Inside the app-shell CONTENT COLUMN, not full-bleed: the band takes the column's own
+     width and the inner rail matches the shell's gutter. container-type so the wrap
+     decision is made by the COLUMN, not the viewport — a footer in a narrow split pane
+     stacks on a 27-inch monitor, which is the whole point of a container query. */
+/* THE BAND IS REVERSED OUT (#261 Ft3, Dave). No border-top: the plate separates itself from
+     the page by its own value, and a 1px rule was ALSO what put a 41 on the tape — 40px of
+     min-height plus 1px of border MEASURED 41. Every figure below is on the 4px grid and the
+     ROW ITSELF now measures 56 (16 + 24 + 16), with the minimal cut at 48 (12 + 24 + 12). */
+:where(.cn-footer) .ft{background:var(--ft-band); color:var(--ft-ink); container-type:inline-size;}
+/* box-sizing is border-box, so min-height INCLUDES the padding: 16 + 24 + 16 = 56, stated as
+     the figure Dave will read off the tape rather than left to the content to reach. */
+:where(.cn-footer) .ft-inner{display:flex; flex-wrap:wrap; align-items:center; gap:12px 32px;
+    padding:16px 24px; min-height:56px;}
+/* EVERY CLUSTER IS 24 TALL — the target floor — so a WRAPPED row is on the grid too, not just
+     the one-row case: two rows measure 16+24+12+24+16 = 92, a four-row stack at 375 measures 164.
+     Without this a wrapped line collapsed to its 10.48px line box and put a 78.48 on the tape. */
+:where(.cn-footer) .ft-id, :where(.cn-footer) .ft-meta, :where(.cn-footer) .ft-end{min-height:24px;}
+/* and every LEAF too, at every width — not only in the 375 stack. Without it the 420px column
+     (legal row on its own line, provenance still wrapping) collapsed lines to 10.48px boxes and
+     MEASURED 171. Every seat is 24 now and 420 measures 224 — every width on the tape is a
+     multiple of 4: 56 · 92 · 128 · 224 · 228, and 48 for the minimal cut. */
+/* gap:4px is LOAD-BEARING, not decoration: flexing these seats turns their inline children
+     into flex items and collapses the source whitespace, which rendered "Data as of09:41· 3
+     minutes ago". 4px is the gap/fixed step and reads as the space it replaces. */
+:where(.cn-footer) .ft-id > *, :where(.cn-footer) .ft-meta > *, :where(.cn-footer) .ft-end > .ft-copy{min-height:24px;
+    display:flex; align-items:center; gap:4px;}
+/* the links stay INLINE (the 2.5.8 inline exception the hit-area gate reads); only their line
+     box is snapped to the 24px seat, so a wrapped legal row is on the grid too. */
+:where(.cn-footer) .ft-links li{min-height:24px; line-height:24px;}
+/* ---- cluster 1: identity — product · version · environment · status ---- */
+:where(.cn-footer) .ft-id{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; flex:0 0 auto;}
+:where(.cn-footer) .ft-prod{color:var(--ft-ink);}
+:where(.cn-footer) .ft-ver{color:var(--ft-ink); font-variant-numeric:tabular-nums;}
+/* environment chip. Square (no radius outside Badge + Avatar). Production is QUIET;
+     every other environment takes the ruled amber fill with black ink. */
+:where(.cn-footer) .ft-env{display:inline-flex; align-items:center; min-height:24px; padding:0 8px;
+    border:1px solid var(--border-strong); color:var(--ft-ink);
+    border-radius:var(--border-radius-control); white-space:nowrap;}
+:where(.cn-footer) .ft[data-env="uat"] .ft-env, :where(.cn-footer) .ft[data-env="dev"] .ft-env, :where(.cn-footer) .ft[data-env="staging"] .ft-env{background:var(--env-alert); border-color:var(--env-alert);
+    color:var(--env-alert-ink);}
+/* status — dot + label (Status-indicator form A). The dot is the one round shape here. */
+:where(.cn-footer) .ft-status{display:inline-flex; align-items:center; gap:8px; color:var(--ft-ink);}
+/* the 1px ring is REQUIRED on a reversed-out band: the RAG glyphs are MODE-INVARIANT by
+     s122-D2 (#66CC8D / #E0A61F in both modes), so on the DARK-MODE plate (#FAFAFA, a LIGHT
+     ground) the green dot alone measures ~1.9:1 and vanishes. border/strong holds its edge on
+     both plates (4.41:1 on #1A1A1A, 3.79:1 on #FAFAFA). The dot is still decoration — the
+     label carries the meaning — but a decoration you cannot see is not a decoration. */
+:where(.cn-footer) .ft-dot{width:8px; height:8px; border-radius:50%; background:var(--ok); flex:0 0 auto;
+    box-shadow:0 0 0 1px var(--border-strong);}
+:where(.cn-footer) .ft[data-system="degraded"] .ft-dot{background:var(--degraded);}
+/* ---- cluster 2: provenance — freshness · locale and time zone ---- */
+/* flex:0 1 auto, NOT 1 1 auto — MEASURED: a growing provenance cluster ate 995px of a 1600px row
+     and pushed the legal links onto a second line at every width. The cluster hugs its content and
+     the links are pushed right by their own auto margin instead. */
+:where(.cn-footer) .ft-meta{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; flex:0 1 auto;
+    color:var(--ft-ink);}
+:where(.cn-footer) .ft-meta time{font-variant-numeric:tabular-nums;}
+/* the pip between clusters — a rule, not a middle dot glyph, so it never reads as content */
+/* MEASURED AND CORRECTED TWICE: divider/border/subsection resolved to #F0F0F0 in light (= the
+     old surface/subtle band) so the pips were invisible; they moved to the SECTION rule. Now the
+     band is REVERSED OUT, and the section rule is invisible again in the other direction. They
+     take border/strong, the one neutral that holds its edge on BOTH plates. Height 16, on grid. */
+:where(.cn-footer) .ft-pip{display:inline-block; width:1px; height:16px; background:var(--border-strong);
+    flex:0 0 auto;}
+/* ---- cluster 3: the regulator's row — legal + support + the copyright notice ---- */
+/* Dave: "Be more generous with the spacing and add the copyright notice." The notice is the
+     LAST thing in the row — the regulator's cluster ends with it — and it travels with the links
+     when the row wraps, which is why they share one .ft-end box rather than two auto margins. */
+:where(.cn-footer) .ft-end{display:flex; flex-wrap:wrap; align-items:center; gap:12px 32px; flex:0 0 auto;
+    margin-inline-start:auto;}
+:where(.cn-footer) .ft-copy{color:var(--ft-ink); flex:0 0 auto;}
+/* full strength — header note 1, no alpha */
+:where(.cn-footer) .ft-links{flex:0 0 auto;}
+:where(.cn-footer) .ft-links ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap;
+    align-items:center; gap:0 24px;}
+/* 24px gap = the 2.5.8 spacing exception, honoured */
+/* 24px, the ruled dial-down floor — NOT 44px. See header note 2: a one-row app footer
+     cannot spend 44px per link without out-growing the app's own toolbar. */
+/* vertical-align:top kills the baseline descender under the inline-flex box: without it the
+     list line box measures 25 and the whole band lands on 49 instead of 48 (found on the review
+     page, which has no leading-trim of its own — the snippet's type.css was hiding it). */
+:where(.cn-footer) .ft-links a{display:inline-flex; align-items:center; min-height:var(--target-floor);
+    vertical-align:top;}
 /* ---- the link atom, copied verbatim from Links.reference.html ---- */
-:where(.cn-footer) a.lnk{color:var(--text); text-decoration:underline; text-underline-offset:3px;
+:where(.cn-footer) a.lnk{color:var(--ft-ink); text-decoration:underline; text-underline-offset:3px;
     text-decoration-thickness:1px; cursor:pointer; border-radius:var(--border-radius-control);
     transition:text-decoration-thickness var(--ease);}
 :where(.cn-footer) a.lnk:hover{text-decoration-thickness:2px;}
 :where(.cn-footer) a.lnk:active{text-decoration-thickness:2px;}
 /* pressed == hover (combined state) */
-:where(.cn-footer) a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
-/* current page — WEIGHT plus a persistent thick underline, never colour alone (1.4.1).
-     ⚠ THE WEIGHT ARRIVES BY COMPOSITE, NOT BY DECLARATION. The gated Links atom writes
-     `font-weight:500` here in its own CSS, which is exactly the raw declaration the shrink-only
-     type ratchet counts (Links carries that debt today). This file adds ZERO to that debt: the
-     emphasis rides on canon/type.css's own `.t-ed-body-small .em` modifier, applied in the
-     MARKUP. Same rendered weight, no new violation — the T-D14 markup-class route. */
+:where(.cn-footer) a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--ft-ink);}
 :where(.cn-footer) a.lnk[aria-current="page"]{text-decoration-thickness:2px;}
-/* ARROW link — Links.reference.html, verbatim; the tip glyph is em-scaled so it tracks the type */
-:where(.cn-footer) a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text);
-    min-height:var(--target-min);}
-/* weight via the .em composite modifier in markup, not here */
-:where(.cn-footer) a.arrow .tip{display:inline-flex; color:var(--icon); transition:transform var(--ease);}
-:where(.cn-footer) a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}
-:where(.cn-footer) a.arrow:hover .tip, :where(.cn-footer) a.arrow:active .tip{transform:translateY(-3px);}
-:where(.cn-footer) a.arrow:hover .lbl, :where(.cn-footer) a.arrow:active .lbl{text-decoration:underline; text-underline-offset:3px;}
-:where(.cn-footer) a.arrow:focus-visible{outline:none;}
-:where(.cn-footer) a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
-/* ---- the brand / statement block that opens a mega-footer ---- */
-:where(.cn-footer) .ft-brand{display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
-    gap:16px; padding-bottom:24px; margin-bottom:24px; border-bottom:1px solid var(--subdivider);}
-:where(.cn-footer) .ft-brand p{margin:0; max-width:52ch; color:var(--muted); opacity:var(--alpha-84);}
-/* ---- the legal bar ---- */
-:where(.cn-footer) .ft-legal{display:flex; flex-wrap:wrap; align-items:center; gap:0 24px;
-    padding-top:24px; margin-top:24px; border-top:1px solid var(--subdivider);}
-:where(.cn-footer) .ft-legal ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 24px;
-    flex:1 1 auto;}
-:where(.cn-footer) .ft-legal a{display:inline-flex; align-items:center; min-height:var(--target-min);}
-:where(.cn-footer) .ft-legal .copy{margin:0; opacity:var(--alpha-60); flex:0 0 auto;}
-/* ---- the SLIM form: no doormat, legal bar only ---- */
-:where(.cn-footer) .ft.slim .ft-inner{padding:8px 16px;}
-:where(.cn-footer) .ft.slim .ft-legal{padding-top:0; margin-top:0; border-top:0;}
-/* Narrow: the mat collapses to one column and the legal bar stacks. Targets are already 44px
-     at every width, so nothing has to grow here — that is the point of deciding it once. */
-@container (max-width: 560px){
-:where(.cn-footer) .ft-mat{grid-template-columns:1fr; gap:16px;}
-:where(.cn-footer) .ft-legal{flex-direction:column; align-items:flex-start; gap:0;}
-:where(.cn-footer) .ft-legal ul{flex-direction:column; gap:0;}
+/* ---- VARIANT: sticky — for a dashboard whose grid genuinely never ends ---- */
+:where(.cn-footer) .ft.sticky{position:sticky; bottom:0; z-index:2;}
+/* ---- VARIANT: minimal — version + legal only, nothing an operator did not ask for ---- */
+:where(.cn-footer) .ft.minimal .ft-inner{padding:12px 24px; min-height:48px; justify-content:space-between;}
+/* ---- responsive (CONTAINER, not viewport) ------------------------------------------
+     640px: the regulator's row drops to its own line, identity and provenance stay together.
+     375px: everything stacks; the pips are removed because a vertical rule between stacked
+     rows reads as a divider, not a separator. Targets do not change — 24px is already the
+     floor and the 24px gap survives the stack as a 4px row gap plus the 24px box height. */
+@container (max-width: 640px){
+:where(.cn-footer) .ft-inner{align-items:flex-start;}
+:where(.cn-footer) .ft-end{flex:1 0 100%; margin-inline-start:0;}
+}
+@container (max-width: 375px){
+:where(.cn-footer) .ft-inner{flex-direction:column; align-items:flex-start; gap:12px;}
+:where(.cn-footer) .ft-meta{flex-direction:column; align-items:flex-start; gap:8px;}
+:where(.cn-footer) .ft-end{flex-direction:column; align-items:flex-start; gap:12px;}
+/* EVERY pip goes, not just the ones inside the provenance cluster: a 1px vertical rule
+       between STACKED rows reads as a divider, not a separator. */
+:where(.cn-footer) .ft-inner .ft-pip{display:none;}
+/* and every stacked leaf keeps the 24px seat, so the stack stays on the 4px grid
+       (16 + 4x24 + 3x12 + 16 = 164) instead of collapsing to 10.48px line boxes. */
+:where(.cn-footer) .ft-id, :where(.cn-footer) .ft-meta, :where(.cn-footer) .ft-end{align-items:flex-start;}
+/* ⚠ the horizontal gap STAYS 24px in the stack. An earlier cut tightened it to 16 and
+       MEASURED 16px between adjacent 24px targets — that breaks the 2.5.8 spacing exception the
+       whole 24px position rests on. A wrapped row gets vertical room instead. */
+:where(.cn-footer) .ft-links ul{gap:4px 24px;}
 }
 @media (prefers-reduced-motion: reduce){
 
@@ -12558,7 +12975,7 @@
 
 /* ============================================================
    Kpi-tile  (from snippets/Kpi-tile.reference.html)
-   Aria: role="group", aria-label, aria-hidden="true", role="region", scope="col", scope="row", <caption
+   Aria: role="group", aria-label, aria-hidden="true", aria-busy="true", role="status", role="img", role="region", scope="col", scope="row", <caption
    Scope: .cn-kpi-tile   ============================================================ */
 .cn-kpi-tile{
   --alpha-04: 0.04;
@@ -12593,11 +13010,9 @@
   --text: var(--text-default);
   --page: var(--background-default);
   --focus: var(--focus-ring);
-  --up: var(--rag-success);
-  --down: var(--rag-error);
-  --spark-up: var(--rag-success-ink);
-  --spark-down: var(--rag-error-ink);
-  --spark-flat: var(--text-default);
+  --pos-ink: var(--rag-success-ink);
+  --neg-ink: var(--rag-error-ink);
+  --flat-ink: var(--text-default);
   --tbl-header: var(--table-header-background);
   --tbl-colhdr: var(--table-column-background);
   --tbl-cell: var(--background-default);
@@ -12612,58 +13027,150 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
 :where(.cn-kpi-tile) :is(button, :where(.cn-kpi-tile) a, :where(.cn-kpi-tile) label, :where(.cn-kpi-tile) span, :where(.cn-kpi-tile) small, :where(.cn-kpi-tile) strong, :where(.cn-kpi-tile) b, :where(.cn-kpi-tile) th, :where(.cn-kpi-tile) td, :where(.cn-kpi-tile) dt, :where(.cn-kpi-tile) dd, :where(.cn-kpi-tile) li, :where(.cn-kpi-tile) figcaption, :where(.cn-kpi-tile) legend, :where(.cn-kpi-tile) caption, :where(.cn-kpi-tile) summary, :where(.cn-kpi-tile) output, :where(.cn-kpi-tile) time, :where(.cn-kpi-tile) input[type=text], :where(.cn-kpi-tile) input[type=search], :where(.cn-kpi-tile) input[type=email], :where(.cn-kpi-tile) input[type=tel], :where(.cn-kpi-tile) input[type=url], :where(.cn-kpi-tile) input[type=password], :where(.cn-kpi-tile) input[type=number], :where(.cn-kpi-tile) input:not([type]), :where(.cn-kpi-tile) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* NOTE: this snippet declares NO raw font-family on body — every text element carries a
-     .t-cm-* composite from canon/type.css, which is the mandatory route. The usual
-     `body{font-family:var(--font)}` boilerplate is exactly the declaration the shrink-only
-     ratchet counts, and it is redundant once every element is composed. Progress-bar
-     (the #174 walked example) is the precedent; Stat-card and Chart-sparkline both still
-     carry it and each contributes 3 to the debt. TYPE-002 contribution here: 0. */
+     .t-cm-* composite from canon/type.css, which is the mandatory route. */
 :where(.cn-kpi-tile) .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-:where(.cn-kpi-tile) .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
-/* ---- the tile — Stat-card's Cards surface recipe, unchanged ---- */
-:where(.cn-kpi-tile) .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
-    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
-:where(.cn-kpi-tile) .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
-/* ---- the value — the Amount-display atom, verbatim via Stat-card ---- */
-:where(.cn-kpi-tile) .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+/* ==== THE BENTO BOARD — 12 columns, spans declared per tile (meta span.cols 3..6) ========= */
+:where(.cn-kpi-tile) .board{display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:16px; max-width:1040px;}
+:where(.cn-kpi-tile) .kpi-tile{grid-column:span 3;}
+:where(.cn-kpi-tile) .kpi-tile.wide{grid-column:span 4;}
+:where(.cn-kpi-tile) .kpi-tile.hero{grid-column:span 6;}
+@media (max-width:900px){
+:where(.cn-kpi-tile) .kpi-tile, :where(.cn-kpi-tile) .kpi-tile.wide{grid-column:span 6;}
+:where(.cn-kpi-tile) .kpi-tile.hero{grid-column:span 12;}
+}
+@media (max-width:560px){
+:where(.cn-kpi-tile) .kpi-tile, :where(.cn-kpi-tile) .kpi-tile.wide, :where(.cn-kpi-tile) .kpi-tile.hero{grid-column:span 12;}
+}
+/* ==== THE TILE ============================================================================ */
+:where(.cn-kpi-tile) .kpi-tile{background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--border-radius-surface); padding:16px; position:relative; min-width:0;
+    display:flex; flex-direction:column; gap:8px; align-items:stretch;}
+:where(.cn-kpi-tile) .kpi-tile.compact{padding:12px; gap:4px;}
+:where(.cn-kpi-tile) .kpi-tile.hero{padding:24px; gap:12px;}
+/* #261 K3 — the --slot RESERVATIONS ARE REMOVED from label, value and delta. They were a #261 K
+     addition (tile-to-tile alignment) and they opened a 48px value→delta gap where the original
+     had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
+     concern and comes back, if it comes back, on the board's own grid rows — not by padding
+     every row of every tile. */
+:where(.cn-kpi-tile) .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
+    text-overflow:ellipsis; text-box-edge:text text;}
+/* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
+     the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
+     unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
+:where(.cn-kpi-tile) .kpi-val{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
     font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
-/* ---- the delta row — Stat-card verbatim. Arrow wears the FILL seat; text stays ink. ---- */
-:where(.cn-kpi-tile) .delta{display:flex; align-items:center; gap:4px;}
-:where(.cn-kpi-tile) .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
-:where(.cn-kpi-tile) .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
-:where(.cn-kpi-tile) .delta.up .arrow{color:var(--up);}
-:where(.cn-kpi-tile) .delta.down .arrow{color:var(--down);}
-:where(.cn-kpi-tile) .delta .per{opacity:var(--alpha-60); margin-left:4px;}
-/* ---- THE ONE NEW PART: the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
+/* ---- the delta row — ORIGINAL single line: glyph + signed number + word + period ----
+     "▲ +12.4% up  vs February". The period is INSIDE this row again (#261 K2), not a fourth
+     stacked line. Glyph wears the INK seat (#261 K3); number, word and period stay standing ink.
+     VERTICAL RHYTHM IS THE ORIGINAL'S (#261 K3, Dave: "The type lock-up needs to be as tight as
+     the original") — no row reserves a --slot height any more; the tile's own 8px gap and the
+     composites' trimmed boxes set the rhythm, exactly as at 7647aaf. */
+:where(.cn-kpi-tile) .kpi-delta{display:flex; align-items:center; gap:4px; min-width:0;}
+:where(.cn-kpi-tile) .kpi-delta .glyph{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+/* ROTATION IS THE GLYPH (s—, #261 K2, Dave: "please use the arrow from the assets ... maybe we
+     can rotate to get the 45 degree angle"). The library ships direction-up/down/left/right only,
+     so the diagonal is made by transform, never by a new drawing: up-trend = direction-up +45°
+     (up-right), down-trend = direction-down −45° (down-right), flat = direction-right at 0°.
+     scale(.78) keeps the rotated bounding box inside the 16px seat; overflow stays visible. */
+:where(.cn-kpi-tile) .kpi-delta .glyph svg{width:16px; height:16px; display:block; fill:currentColor;
+    overflow:visible; transform-origin:50% 50%;}
+:where(.cn-kpi-tile) .kpi-delta.up .glyph{color:var(--pos-ink);}
+:where(.cn-kpi-tile) .kpi-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
+:where(.cn-kpi-tile) .kpi-delta.down .glyph{color:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
+:where(.cn-kpi-tile) .kpi-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+:where(.cn-kpi-tile) .kpi-delta.flat .glyph svg{transform:scale(.78);}
+:where(.cn-kpi-tile) .kpi-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
+/* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
 :where(.cn-kpi-tile) .kpi-spark{margin-top:4px; width:100%;}
-:where(.cn-kpi-tile) .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+:where(.cn-kpi-tile) .compact .kpi-spark{margin-top:2px;}
+:where(.cn-kpi-tile) .spark-inline{display:block; width:100%; height:40px; overflow:visible;}
+:where(.cn-kpi-tile) .compact .spark-inline{height:28px;}
+:where(.cn-kpi-tile) .hero .spark-inline{height:56px;}
 :where(.cn-kpi-tile) .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-:where(.cn-kpi-tile) .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
+:where(.cn-kpi-tile) .spark-inline .dv-area{stroke:none; fill:var(--flat-ink); fill-opacity:var(--alpha-08);}
+:where(.cn-kpi-tile) .spark-inline .dv-series{fill:none; stroke:var(--flat-ink); stroke-width:2;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-:where(.cn-kpi-tile) .spark-inline .dv-end{fill:var(--spark-flat);}
-:where(.cn-kpi-tile) .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
-:where(.cn-kpi-tile) .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
-:where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
-:where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
+:where(.cn-kpi-tile) .spark-inline[data-trend="up"] .dv-series{stroke:var(--pos-ink);}
+:where(.cn-kpi-tile) .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
+:where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
+:where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+/* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
+     fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out
+     in words underneath. Deliberate: a bank CAIO reads "72% of the £3.5m target", and a reader
+     who cannot separate the fill from the track still has the sentence. ---- */
+:where(.cn-kpi-tile) .kpi-target{display:flex; flex-direction:column; gap:4px; margin-top:4px;}
+:where(.cn-kpi-tile) .tgt-track{position:relative; width:100%; height:4px; background:var(--border);}
+:where(.cn-kpi-tile) .tgt-fill{position:absolute; top:0; bottom:0; left:0; background:var(--text);}
+:where(.cn-kpi-tile) .tgt-mark{position:absolute; top:-3px; bottom:-3px; width:1px; background:var(--text);
+    opacity:var(--alpha-60);}
+/* #267 lane N — the last --slot RESERVATION, missed by the K3 reversal above: --slot is
+     defined nowhere in this file, so `min-height:var(--slot)` was already invalid-at-
+     computed-value-time (= auto) and rendered nothing. Removed to match K3's own words
+     ("no row reserves a --slot height any more"). No visual change; it reddened the
+     compose gate the moment canon.css was regenerated from this snippet. */
+:where(.cn-kpi-tile) .tgt-cap{margin:0; opacity:var(--alpha-60); display:flex; align-items:center;}
+/* ---- STATE: loading (skeleton) ---- */
+:where(.cn-kpi-tile) .kpi-tile.is-loading .sk{display:block; background:var(--text); opacity:var(--alpha-08);
+    animation:cn-kpi-tile-kpi-sk 1.6s ease-in-out infinite;}
+@keyframes cn-kpi-tile-kpi-sk{0%,100%{opacity:var(--alpha-08);} 50%{opacity:var(--alpha-16);}}
+:where(.cn-kpi-tile) .sk-lbl{height:12px; width:56%;}
+:where(.cn-kpi-tile) .sk-val{height:28px; width:72%;}
+:where(.cn-kpi-tile) .sk-delta{height:12px; width:44%;}
+:where(.cn-kpi-tile) .sk-spark{height:40px; width:100%; margin-top:4px;}
+/* ---- STATE: empty / error / stale — one shared note row, no hue except the error glyph ---- */
+:where(.cn-kpi-tile) .kpi-note{display:flex; align-items:flex-start; gap:4px; margin:0; opacity:var(--alpha-60);}
+:where(.cn-kpi-tile) .kpi-note .glyph{flex:none; width:16px; height:16px; display:inline-flex;}
+:where(.cn-kpi-tile) .kpi-note .glyph svg{width:16px; height:16px; display:block; fill:currentColor;}
+:where(.cn-kpi-tile) .kpi-tile.is-empty .kpi-val{opacity:var(--alpha-40);}
+:where(.cn-kpi-tile) .kpi-tile.is-error .kpi-note{opacity:var(--alpha-96);}
+:where(.cn-kpi-tile) .kpi-tile.is-error .kpi-note .glyph{color:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-tile.is-error .kpi-note .glyph .inner{fill:var(--surface);}
+:where(.cn-kpi-tile) .kpi-retry{align-self:flex-start; min-height:44px; padding:0 12px; margin-top:4px;
+    display:inline-flex; align-items:center; gap:8px; background:transparent;
+    border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    color:var(--text); cursor:pointer; transition:border-color var(--ease);}
+:where(.cn-kpi-tile) .kpi-retry svg{width:16px; height:16px; display:block; fill:currentColor; opacity:var(--alpha-60);}
+/* HOVER MOVES THE BORDER, NOT THE FILL. A border/subtle hover fill measured 3.95:1 against the
+     label in dark mode — caught by _validate_state_contrast.py at #261, which is exactly the
+     undeclared state×theme combo that gate exists to find. The ground stays the tile surface. */
+:where(.cn-kpi-tile) .kpi-retry:hover{border-color:var(--text);}
+:where(.cn-kpi-tile) .kpi-retry:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* stale-data: a NEUTRAL marker. Not amber — Dave is astigmatic and yellow is a problem hue,
+     so age is carried by the glyph and the sentence, never by a colour rung. */
+:where(.cn-kpi-tile) .kpi-stale{align-self:flex-start; display:inline-flex; align-items:center; gap:4px;
+    min-height:24px; padding:0 8px; margin-top:4px; border:1px solid var(--border);
+    color:var(--text); opacity:var(--alpha-80);}
+:where(.cn-kpi-tile) .kpi-stale svg{width:12px; height:12px; display:block; fill:currentColor;}
+/* ---- VARIANT: the whole tile is the affordance (new #261, RIVAL to the icon CTA) ---- */
+:where(.cn-kpi-tile) .kpi-link{color:var(--text); text-decoration:none;}
+:where(.cn-kpi-tile) .kpi-link::after{content:""; position:absolute; top:0; right:0; bottom:0; left:0;}
+:where(.cn-kpi-tile) .kpi-link:focus-visible{outline:none;}
+:where(.cn-kpi-tile) .kpi-tile.as-link:has(.kpi-link:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-kpi-tile) .kpi-tile.as-link:hover{border-color:var(--text);}
+/* the chevron sits on the LABEL line, not the bottom corner — at the bottom it collided with
+     the spark's endpoint dot (seen in the #261 mono render before this fix). */
+:where(.cn-kpi-tile) .kpi-chev{position:absolute; right:16px; top:16px; width:16px; height:16px;
+    opacity:var(--alpha-40);}
+:where(.cn-kpi-tile) .kpi-tile.as-link .kpi-lbl{padding-right:24px;}
+:where(.cn-kpi-tile) .kpi-chev svg{width:16px; height:16px; display:block; fill:currentColor;}
 /* ---- OPT-IN table CTA (s182-D2 standing direction) — icon-button form, no label ---- */
-:where(.cn-kpi-tile) .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
+:where(.cn-kpi-tile) .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none; z-index:1;
     display:inline-flex; align-items:center; justify-content:center; padding:0;
     background:transparent; border:0; border-radius:var(--border-radius-surface);
     color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
 :where(.cn-kpi-tile) .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
 :where(.cn-kpi-tile) .kpi-cta:hover{opacity:var(--alpha-96);}
 :where(.cn-kpi-tile) .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
-:where(.cn-kpi-tile) .kpi-tile.has-cta .lbl16{padding-right:40px;}
+:where(.cn-kpi-tile) .kpi-tile.has-cta .kpi-lbl{padding-right:40px;}
 /* ---- PROPOSED (s218-D4) · THE TABLE PANEL, DRAWN AS A SPECIMEN AND WIRED TO NOTHING --------
      This file's own header forbids inventing the panel, verbatim: "The PANEL it would open is NOT
      built: s116-D2's table molecule is a composition-level artefact and inventing one here would be
-     canon by improvisation." That prohibition STANDS. What #218 adds is not a panel wired to the
+     canon by improvisation." That prohibition STANDS. What #218 added is not a panel wired to the
      CTA — it is a DRAWING of what the panel would contain, placed BESIDE the tile and marked, so
      Dave can rule the thing by eye instead of from a description. The CTA remains inert; no
-     aria-controls, no aria-expanded, no script in this file at all.
-     The table is Table.reference.html's markup and cell seats, copied: caption + <th scope> +
-     focusable role="region", passive, no sort. Cell padding goes through vars (Table's own idiom)
-     rather than literals. ---- */
+     aria-controls, no aria-expanded, no script in this file at all. ---- */
 :where(.cn-kpi-tile) .kpi-panel-spec{max-width:800px; margin-top:16px;}
 :where(.cn-kpi-tile) .kpi-panel-spec .spec-mark{display:inline-flex; align-items:center; min-height:24px; padding:0 8px;
     margin-bottom:8px; border:1px solid var(--tbl-border); color:var(--text);}
@@ -12673,9 +13180,6 @@
 :where(.cn-kpi-tile) .kpi-panel-spec caption{text-align:left; padding:0 0 8px; color:var(--text);}
 :where(.cn-kpi-tile) .kpi-panel-spec th, :where(.cn-kpi-tile) .kpi-panel-spec td{padding:var(--tbl-cell-py) var(--tbl-cell-px);
     border:1px solid var(--tbl-border); text-align:left; color:var(--text); white-space:nowrap;}
-/* NO raw font-weight here — the 500 arrives on-ramp via .t-cm-ctl-14 in the markup. Table's own
-     header rules carry a raw font-weight:500 that counts against the shrink-only TYPE-002 debt;
-     the geometry and the colour are copied, the raw type declaration deliberately is not. */
 :where(.cn-kpi-tile) .kpi-panel-spec thead th{background:var(--tbl-header);}
 :where(.cn-kpi-tile) .kpi-panel-spec tbody th[scope="row"]{background:var(--tbl-colhdr);}
 :where(.cn-kpi-tile) .kpi-panel-spec td.num{text-align:right; font-variant-numeric:tabular-nums;}
@@ -12828,6 +13332,176 @@
 :where(.cn-layout-utilities) .l-split > *{grid-column:1 / -1;}
 }
 :where(.cn-layout-utilities) :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Legend  (from snippets/Legend.reference.html)
+   Aria: role="group", aria-label, role="checkbox", aria-checked, aria-pressed, role="status", aria-live
+   Scope: .cn-legend   ============================================================ */
+.cn-legend{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --line: var(--border-subtle);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
+  --delta-up: var(--rag-success-ink);
+  --delta-down: var(--rag-error-ink);
+  --data-control-swatch-off: currentColor;
+}
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. */
+:where(.cn-legend) :is(button, :where(.cn-legend) a, :where(.cn-legend) label, :where(.cn-legend) span, :where(.cn-legend) small, :where(.cn-legend) strong, :where(.cn-legend) b, :where(.cn-legend) th, :where(.cn-legend) td, :where(.cn-legend) dt, :where(.cn-legend) dd, :where(.cn-legend) li, :where(.cn-legend) figcaption, :where(.cn-legend) legend, :where(.cn-legend) caption, :where(.cn-legend) summary, :where(.cn-legend) output, :where(.cn-legend) time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* NOTE — this snippet declares NO raw font rule anywhere: every text element carries a
+     .t-ed-* / .t-cm-* composite from canon/type.css, which is the mandatory route (T-D12), and
+     `body{font-family:…}` boilerplate is exactly the declaration the shrink-only TYPE-002 ratchet
+     counts. Progress-bar is the walked example. TYPE-002 contribution of this file: 0. */
+:where(.cn-legend) h2{/* type: t-ed-body-small */ opacity:var(--alpha-60); margin:2rem 0 .75rem;}
+:where(.cn-legend) p.note{/* type: t-ed-body-small */ opacity:var(--alpha-68); max-width:72ch; margin:0 0 12px;
+    text-box-trim:normal;}
+:where(.cn-legend) figure{margin:0 0 8px; padding:16px; border:1px solid var(--line); background:transparent;
+    border-radius:var(--border-radius-surface);}
+:where(.cn-legend) .sr-only, :where(.cn-legend) .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+:where(.cn-legend) .toggle{/* type: t-cm-chart-label */ position:fixed; top:12px; right:12px; z-index:9; padding:8px 12px;
+    min-height:44px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+:where(.cn-legend) .toggle:hover{border-color:var(--ink);}
+:where(.cn-legend) .toggle:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* ============================================================ THE LEGEND
+     The chrome is the .dv-leg* block ported VERBATIM from the gated Chart-donut snippet (which
+     ported it from reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html). Ported, not
+     re-drawn: a placeable legend that looked different from the legend inside the charts would be
+     a second legend, which is the thing this component exists to prevent. */
+:where(.cn-legend) .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+/* ORIENTATION — horizontal is the default; .vert is the column form. */
+:where(.cn-legend) .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
+/* OVERFLOW — wrap (rows re-flow onto a second line) or scroll (a fixed viewport with a
+     scrollbar). Every legend must declare one: a legend that neither wraps nor scrolls pushes its
+     own container wider, which is how a bento tile breaks (s248-D3). */
+:where(.cn-legend) .dv-leg.ovf-wrap{flex-wrap:wrap; row-gap:12px;}
+:where(.cn-legend) .dv-leg.ovf-scroll{flex-wrap:nowrap; overflow:auto; max-height:132px; padding-right:4px;}
+:where(.cn-legend) .dv-leg.ovf-scroll:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
+:where(.cn-legend) .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line);
+    border-radius:var(--border-radius-control); padding:4px 8px; background:transparent;
+    transition:border-color var(--ease), background var(--ease);}
+:where(.cn-legend) .dv-leg.vert .dv-legrow{width:100%;}
+:where(.cn-legend) .dv-legrow:hover{border-color:var(--ink);}
+:where(.cn-legend) .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+/* SWATCH = checkbox — filled when shown; hollow + grey-primitive border when hidden.
+     HIT AREA: 44px via an invisible ::before, growing LEFT into the gutter so the target never
+     overlaps the isolate label. 44 EVERYWHERE (Dave 2026-07-25) — the 24px dial-down floor is
+     recorded in the meta, not spent here. */
+:where(.cn-legend) .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:transparent; border:0; transition:opacity var(--ease);}
+:where(.cn-legend) .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+/* the MARK itself is ::after, so the shape variants below can clip the mark without clipping the
+     44px target sitting in ::before. */
+:where(.cn-legend) .dv-leg-sw::after{content:""; position:absolute; z-index:1; inset:0; background:var(--sc);
+    border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+:where(.cn-legend) .dv-leg-sw[aria-checked="false"]::after{background:transparent; border-color:var(--data-control-swatch-off);}
+:where(.cn-legend) .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* NON-COLOUR SWATCH SHAPES (colourblind safety, WCAG 1.4.1 use-of-colour). Optional and
+     opt-in per row: the swatch keeps its series colour AND takes a second, redundant channel.
+     Square corners hold — no circle swatch (the angular rule; Badge and Avatar are the only
+     round components). Clip-path lands on ::after only, so the target box is untouched. */
+:where(.cn-legend) .dv-leg-sw.sw-square::after{clip-path:none;}
+:where(.cn-legend) .dv-leg-sw.sw-triangle::after{clip-path:polygon(50% 0%, 100% 100%, 0% 100%); border:0; background:var(--sc);}
+:where(.cn-legend) .dv-leg-sw.sw-diamond::after{clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); border:0; background:var(--sc);}
+:where(.cn-legend) .dv-leg-sw.sw-bar::after{clip-path:polygon(0% 25%, 100% 25%, 100% 75%, 0% 75%); border:0; background:var(--sc);}
+/* LINE-STYLE swatches for line series — solid / dashed / dotted, drawn with borders (no
+     gradients: dv-009 bans them on the chart side and the legend must not disagree). */
+:where(.cn-legend) .dv-leg-sw.sw-line::after{inset:auto 0; top:50%; height:0; background:transparent;
+    border:0; border-top:3px solid var(--sc); transform:translateY(-50%);}
+:where(.cn-legend) .dv-leg-sw.sw-line-dashed::after{border-top-style:dashed;}
+:where(.cn-legend) .dv-leg-sw.sw-line-dotted::after{border-top-style:dotted;}
+:where(.cn-legend) .dv-leg-sw[aria-checked="false"].sw-line::after{border-top-color:var(--data-control-swatch-off);}
+/* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
+:where(.cn-legend) .dv-leg-item{/* type: t-cm-chart-label */ display:inline-flex; align-items:center; gap:8px; flex:1 1 auto;
+    position:relative; margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left;}
+:where(.cn-legend) .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+:where(.cn-legend) .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+:where(.cn-legend) .dv-leg-item > *{position:relative; z-index:1;}
+:where(.cn-legend) .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:var(--alpha-72);}
+:where(.cn-legend) .dv-leg-name{white-space:nowrap;}
+/* OPTIONAL value / percent / delta — the trailing numeric group. Tabular figures, pushed right
+     in the vertical form so the numerals align in a column. */
+:where(.cn-legend) .dv-leg-nums{display:inline-flex; align-items:center; gap:8px; margin-left:auto; padding-left:12px;}
+:where(.cn-legend) .dv-leg-pct{opacity:var(--alpha-68);}
+:where(.cn-legend) .dv-leg-delta.up{color:var(--delta-up);}
+:where(.cn-legend) .dv-leg-delta.down{color:var(--delta-down);}
+/* Reset — default DISABLED (token colours, still VISIBLE), enables on any ghost or isolate. */
+:where(.cn-legend) .dv-leg-reset-wrap{display:flex;}
+:where(.cn-legend) .dv-leg-reset{/* type: t-cm-chart-label */ position:relative; padding:4px 12px; width:100%;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+:where(.cn-legend) .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+:where(.cn-legend) .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+:where(.cn-legend) .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+:where(.cn-legend) .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
+/* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides. */
+:where(.cn-legend) .is-faded{opacity:var(--alpha-24) !important;}
+:where(.cn-legend) .is-ghost{opacity:var(--alpha-12) !important;}
+:where(.cn-legend) .is-peek{opacity:var(--alpha-24) !important;}
+/* ============================================================ PLACEMENT
+     The legend is placed by its HOST, not by itself: the host declares the grid and the legend
+     fills its cell. Three placements ship — top, right, bottom. Left is deliberately absent: a
+     left legend puts the key before the thing it keys, and the charts have never drawn one. */
+:where(.cn-legend) .leg-host{display:grid; gap:16px;}
+:where(.cn-legend) .leg-host[data-leg-place="top"]{grid-template-rows:auto auto;}
+:where(.cn-legend) .leg-host[data-leg-place="bottom"]{grid-template-rows:auto auto;}
+:where(.cn-legend) .leg-host[data-leg-place="bottom"] .leg-slot{order:2;}
+:where(.cn-legend) .leg-host[data-leg-place="right"]{grid-template-columns:minmax(0,1fr) auto; align-items:start;}
+@media (max-width:640px){
+/* s248-D3 — a placed component must be responsive. The right legend folds under the canvas
+       and becomes the wrapping horizontal form; nothing is lost, only re-placed. */
+:where(.cn-legend) .leg-host[data-leg-place="right"]{grid-template-columns:minmax(0,1fr);}
+:where(.cn-legend) .leg-host[data-leg-place="right"] .dv-leg.vert{flex-direction:row; flex-wrap:wrap; row-gap:12px; min-width:0;}
+}
+:where(.cn-legend) .leg-canvas{display:grid; gap:12px;}
+:where(.cn-legend) .leg-multiples{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+@media (max-width:640px){
+:where(.cn-legend) .leg-multiples{grid-template-columns:minmax(0,1fr);}
+}
+:where(.cn-legend) .mult-cap{/* type: t-ed-caption */ opacity:var(--alpha-68);}
+:where(.cn-legend) .dv-svg{display:block; width:100%; height:auto;}
+:where(.cn-legend) .dv-series{transition:opacity var(--ease);}
+:where(.cn-legend) .dv-baseline{stroke:var(--data-axis); stroke-opacity:var(--axis-alpha); stroke-width:1;}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion. */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -14679,101 +15353,236 @@
 
 /* ============================================================
    Sidebar-nav  (from snippets/Sidebar-nav.reference.html)
-   Aria: <nav, aria-label, aria-current="page", aria-expanded, aria-controls, aria-labelledby
-   Finding: COLLISION CHECKED, NOT ASSUMED (#203 step 0). Navigations.reference.html renders a horizontal masthead only — 64 lines, one <header>. Its meta CLAIMS a wider family (anchors, nav-bar-bottom, nav-bar-top) that the artefact does not contain, and its own $finding admits 'a web masthead only'. Nothing in that family is a persistent vertical column and nothing in it collapses. PROPOSED #203, Dave's eye owed: stand alone, or become a `type` of Navigations. Component promotion is on the DO-NOT-RULE list, so this is surfaced and left open.
-   Finding: CURRENT-LOCATION CARRIERS: aria-current="page" (AT) + a 3px leading BAR whose presence/absence is a shape difference + a surface change to tertiary/background/hover. Colour is the third carrier and never the only one, because Dave is astigmatic and red is a problem hue.
-   Finding: THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION. Navigations.reference.html:27 marks its current masthead item with an inset box-shadow in the same brand red. This copies the approved artefact. IT IS NOT DECLARED AS A contrastPair, and here is the measurement that decided it, taken against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover, the surface the bar actually sits beside on a current row: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. On the resting raised surface the same red is 5.22/3.16 in three themes and 4.84/2.88 FAIL in Supercharge dark. Declaring it would be a green that cannot fail in the theme where it is false — the exact green the #174 receipt refused to write. This is why the SHAPE carrier (bar present or absent) plus aria-current do the work, and why colour is third. PROPOSED #203, Dave's eye owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.
-   Finding: RAIL ACCESSIBLE NAMES SURVIVE THE COLLAPSE: labels are visually hidden (clip-path), not removed, so each link keeps a text-derived accessible name and no aria-label restates it. PROPOSED #203: a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here (it would be inventing a composition rule).
-   Finding: 44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .sn-link is min-height:44px, the rail item is 64x44, the collapse toggle is 44x44, the group toggle is min-height:44px.
-   Finding: SQUARE CORNERS throughout (border-radius/surface resolves 0). Console's ruled 20px surface radius (s199-D3) arrives through canon.css at the review layer, not from this file.
+   Aria: <nav, aria-label, aria-current="page", aria-expanded, aria-controls, aria-labelledby, aria-disabled
+   Finding: #261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Sidebar-nav, Navigations and Tab-bar are now ONE FAMILY with one anatomy and one token set. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains; the .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev class grammar is the same in all three. The family claim is therefore checkable by diff, not by assertion.
+   Finding: THE INDICATOR RULE, stated once for the family: the 3px current-location bar sits on the edge the nav touches the content. Sidebar inline-start, top nav block-end, tab bar block-start. That is why the three surfaces look related without any of them being a copy of another.
+   Finding: CURRENT-LOCATION CARRIERS still three, colour still last: aria-current='page' (AT) + the bar (a SHAPE, present or absent) + a WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: "remove the background grey on the selected state" - the surface fill that was carrier 3 is REMOVED; it was the hover state's own signal worn permanently, so hover had nothing of its own to say. Measured at #261 N4: the current row computes background rgba(0,0,0,0) in all four themes, both modes.
+   Finding: THE BAR IS BRAND RED BY PRECEDENT, NOT BY INVENTION, and it is NOT declared as a contrastPair. The measurement that decided that, against the real canon.css in all four themes — primary/border/default (#DB0011) on tertiary/background/hover: mono 4.58 light / 3.01 dark, legacy 4.58 / 3.01, console 4.58 / 3.01, SUPERCHARGE 3.89 light / 2.73 dark FAIL. Declaring it would be a green that cannot fail in the theme where it is false. PROPOSED, Dave's eye still owed: Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme.
+   Finding: #203's OPEN RAIL FINDING IS CLOSED HERE. It read: 'a rail item has no visible name, so a hovering mouse user gets nothing — composing the gated Tooltip onto rail items is the obvious answer and is NOT built here.' #261 does not compose Tooltip in. The visually-hidden .nv-label is re-shown in place on :hover and :focus-visible. Same element, same word, no aria-label restating anything, no composition rule invented.
+   Finding: COUNTS are new at #261 and are the one rounded thing in the column — Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row. 24px tall, the dial-down floor. In the rail the count shrinks to an 18px corner chip so it does not eat the 64x44 target.
+   Finding: DISABLED is aria-disabled + tabindex=-1, not a removed row: the destination still reads in order and still says why it is unavailable. The count on a disabled row drops its fill for a 1px outline so no contrast claim is made on a surface WCAG exempts.
+   Finding: 44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .nv-item is min-height 44px, the rail item is 64x44, the collapse toggle, the burger and the scrim close are 44x44.
+   Finding: THE PRODUCT LOCKUP is the masterbrand SVG plus a product word, copied from the masthead (#230, Dave twice: 'use this as teh default logo masterbrand-light-colour'). Type set to look like a logo is the defect that ruling exists to stop.
    Finding: The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css.
+   Finding: #261 N2 (Dave's review, three sentences, verbatim). "the original header is better" - the #261 masterbrand+product lockup is WITHDRAWN and 7647aaf's header row restored (.sn-brand, one product word beside the collapse control). "the badge should be promoted to the category heading when collapsed" - a shut group carries its children's count total, READ from the children so it cannot drift from them; the chip is the same .nv-count, aria-hidden, with the number restated in the button's own accessible name so no count is read twice. "when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level" - entering the rail shuts every group, REMEMBERS what it shut, and hands it back on the way out.
+   Finding: #261 N2 RAIL BADGE ATTACHMENT. Dave's screenshot showed the rail count floating BELOW the glyph with nothing joining them - it was pinned to the row's top-right corner (top:2px right:8px) in a 64px column whose glyph is centred. It now hangs off the glyph itself at the tab bar's own offsets (18px chip, -6px above and +14px along from the glyph origin), written from the row's centre so a taller row cannot break the join.
    Scope: .cn-sidebar-nav   ============================================================ */
 .cn-sidebar-nav{
-  --ease: 160ms cubic-bezier(.4,0,.2,1);
-  --page: var(--background-default);
-  --panel: var(--tertiary-background-default);
-  --text: var(--text-default);
-  --muted: var(--text-secondary);
-  --icon: var(--icon-default);
-  --rule: var(--divider-border-section);
-  --sub-rule: var(--divider-border-subsection);
-  --hover: var(--tertiary-background-hover);
-  --pressed: var(--form-background-pressed);
-  --indicator: var(--primary-border-default);
-  --focus: var(--focus-ring);
-  --radius: var(--border-radius-surface);
+  --nav-ease: 160ms cubic-bezier(.4,0,.2,1);
+  --nav-slide: 200ms cubic-bezier(.4,0,.2,1);
+  --nav-w: 248px;
+  --nav-w-rail: 64px;
+  --nav-h: 64px;
+  --nav-row: 44px;
+  --nav-page: var(--background-default);
+  --nav-surface: var(--tertiary-background-default);
+  --nav-text: var(--text-default);
+  --nav-muted: var(--text-secondary);
+  --nav-icon: var(--icon-default);
+  --nav-rule: var(--divider-border-section);
+  --nav-sub-rule: var(--divider-border-subsection);
+  --nav-hover: var(--tertiary-background-hover);
+  --nav-pressed: var(--form-background-pressed);
+  --nav-indicator: var(--primary-border-default);
+  --nav-focus: var(--focus-ring);
+  --nav-disabled: var(--tertiary-text-disabled);
+  --nav-count-bg: var(--secondary-background-default);
+  --nav-count-fg: var(--text-on-inverse);
+  --nav-shadow: var(--elevation-functional);
+  --nav-scrim: var(--elevation-functional);
+  --nav-radius: var(--border-radius-surface);
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. Added 2026-06-29. */
-:where(.cn-sidebar-nav) :is(button, :where(.cn-sidebar-nav) a, :where(.cn-sidebar-nav) label, :where(.cn-sidebar-nav) span, :where(.cn-sidebar-nav) small, :where(.cn-sidebar-nav) strong, :where(.cn-sidebar-nav) em, :where(.cn-sidebar-nav) b, :where(.cn-sidebar-nav) i, :where(.cn-sidebar-nav) th, :where(.cn-sidebar-nav) td, :where(.cn-sidebar-nav) dt, :where(.cn-sidebar-nav) dd, :where(.cn-sidebar-nav) li, :where(.cn-sidebar-nav) figcaption, :where(.cn-sidebar-nav) legend, :where(.cn-sidebar-nav) caption, :where(.cn-sidebar-nav) summary, :where(.cn-sidebar-nav) output, :where(.cn-sidebar-nav) time, :where(.cn-sidebar-nav) input[type=text], :where(.cn-sidebar-nav) input[type=search], :where(.cn-sidebar-nav) input[type=email], :where(.cn-sidebar-nav) input[type=tel], :where(.cn-sidebar-nav) input[type=url], :where(.cn-sidebar-nav) input[type=password], :where(.cn-sidebar-nav) input[type=number], :where(.cn-sidebar-nav) input:not([type]), :where(.cn-sidebar-nav) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-/* NOTE: no raw font-family, font-size or font-weight anywhere — every text element carries
-     a .t-cm-* composite from canon/type.css (the Progress-bar precedent, #174). */
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css "#215 — `:where(.canon)`, NOT `.canon`"): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off "Payments and transfers".
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(.cn-sidebar-nav) :where(button, :where(.cn-sidebar-nav) a, :where(.cn-sidebar-nav) label, :where(.cn-sidebar-nav) span, :where(.cn-sidebar-nav) small, :where(.cn-sidebar-nav) strong, :where(.cn-sidebar-nav) em, :where(.cn-sidebar-nav) b, :where(.cn-sidebar-nav) i, :where(.cn-sidebar-nav) th, :where(.cn-sidebar-nav) td, :where(.cn-sidebar-nav) dt, :where(.cn-sidebar-nav) dd, :where(.cn-sidebar-nav) li, :where(.cn-sidebar-nav) figcaption, :where(.cn-sidebar-nav) legend, :where(.cn-sidebar-nav) caption, :where(.cn-sidebar-nav) summary, :where(.cn-sidebar-nav) output, :where(.cn-sidebar-nav) time, :where(.cn-sidebar-nav) input[type=text], :where(.cn-sidebar-nav) input[type=search], :where(.cn-sidebar-nav) input[type=email], :where(.cn-sidebar-nav) input[type=tel], :where(.cn-sidebar-nav) input[type=url], :where(.cn-sidebar-nav) input[type=password], :where(.cn-sidebar-nav) input[type=number], :where(.cn-sidebar-nav) input:not([type]), :where(.cn-sidebar-nav) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
+     This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
+     exactly two extra vars (--field-border, --field-active) for the search field it alone
+     contains, and nothing else. That is the
+     family claim made mechanical: if the three surfaces drift, this block stops matching
+     and the drift is visible in a diff rather than in a demo. Every value is a resolved
+     SEMANTIC token (see the manifest below), never an invented hex. */
+/* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
+     One anatomy, three surfaces. The same class names carry the same meaning in all three
+     files, so a reader who has learned one nav has learned the family.
+     CURRENT LOCATION has THREE carriers and colour is always the third:
+       1. aria-current="page"                     — the machine-readable fact
+       2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
+          or absent, readable with no colour vision at all (sidebar: inline-start; top
+          nav: block-end; tab bar: block-start)
+       3. a WEIGHT step on the label (400 -> 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row's grey fill is REMOVED; grey is hover's word now)
+     Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
+     Its brand red is COPIED from the gated masthead, not invented; the four-theme
+     measurement (and the Supercharge failure) lives in the metas. */
+:where(.cn-sidebar-nav) .nv-item{display:flex; align-items:center; gap:12px; min-height:var(--nav-row); padding:0 16px;
+    position:relative; color:var(--nav-text); text-decoration:none; background:transparent;
+    border:0; cursor:pointer; border-radius:var(--nav-radius); transition:background var(--nav-ease);}
+:where(.cn-sidebar-nav) .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; color:var(--nav-icon);}
+:where(.cn-sidebar-nav) .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+/* s262-D3: the current row carries the SELECTED (library -active) glyph — line and fill are twins, one shown */
+:where(.cn-sidebar-nav) .nv-ic .ic-fill{display:none;}
+:where(.cn-sidebar-nav) .nv-item[aria-current="page"] .ic-line{display:none;}
+:where(.cn-sidebar-nav) .nv-item[aria-current="page"] .ic-fill{display:block;}
+/* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim's tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
+:where(.cn-sidebar-nav) .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
+/* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
+     square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
+     floor, so it never reads as a control the finger cannot land on. */
+:where(.cn-sidebar-nav) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--nav-count-bg); color:var(--nav-count-fg);}
+:where(.cn-sidebar-nav) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:12px; height:12px; color:var(--nav-icon); transition:transform var(--nav-ease);}
+:where(.cn-sidebar-nav) .nv-chev svg{width:12px; height:12px; fill:currentColor;}
+[aria-expanded="true"] :where(.cn-sidebar-nav) > .nv-chev{transform:rotate(180deg);}
+:where(.cn-sidebar-nav) .nv-item:hover{background:var(--nav-hover);}
+:where(.cn-sidebar-nav) .nv-item:active{background:var(--nav-pressed);}
+:where(.cn-sidebar-nav) .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+/* #261 N4, Dave verbatim: "remove the background grey on the selected state". The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state's own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label's weight step carry current; the fill now means hover
+     and only hover. */
+:where(.cn-sidebar-nav) .nv-item[aria-current="page"]{background:transparent;}
+:where(.cn-sidebar-nav) .nv-item[aria-current="page"] .nv-label{font-weight:500;}
+/* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
+     place in the reading order, and the count loses its fill so no contrast claim is made on
+     a surface WCAG exempts anyway. */
+:where(.cn-sidebar-nav) .nv-item[aria-disabled="true"]{color:var(--nav-disabled); cursor:default; pointer-events:none;}
+:where(.cn-sidebar-nav) .nv-item[aria-disabled="true"] .nv-ic{color:var(--nav-disabled);}
+:where(.cn-sidebar-nav) .nv-item[aria-disabled="true"] .nv-count{background:transparent; color:var(--nav-disabled);
+    box-shadow:inset 0 0 0 1px var(--nav-disabled);}
 :where(.cn-sidebar-nav) .specimens{display:flex; flex-direction:column; gap:32px;}
-:where(.cn-sidebar-nav) .spec-note{color:var(--muted);}
-/* explicit gap above — leading-trim is ON */
+:where(.cn-sidebar-nav) .spec-note{color:var(--nav-muted);}
 :where(.cn-sidebar-nav) .frames{display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;}
 /* ---- the app frame: bounded, so the column is visible at rest in any still ---- */
-:where(.cn-sidebar-nav) .sn-frame{display:flex; height:540px; border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; background:var(--page);}
+:where(.cn-sidebar-nav) .sn-frame{position:relative; display:flex; height:560px; border:1px solid var(--nav-rule);
+            border-radius:var(--nav-radius); overflow:hidden; background:var(--nav-page);}
 :where(.cn-sidebar-nav) .sn-canvas{flex:1; min-width:180px; padding:20px; display:flex; flex-direction:column; gap:12px;}
-:where(.cn-sidebar-nav) .sn-canvas span{display:block; height:12px; background:var(--sub-rule);}
-:where(.cn-sidebar-nav) .sn-canvas span:nth-child(1){width:44%;}
-:where(.cn-sidebar-nav) .sn-canvas span:nth-child(2){width:78%;}
-:where(.cn-sidebar-nav) .sn-canvas span:nth-child(3){width:66%;}
-:where(.cn-sidebar-nav) .sn-canvas span:nth-child(4){width:84%;}
-/* ---- the nav column ---- */
-:where(.cn-sidebar-nav) .sn{flex:none; width:248px; display:flex; flex-direction:column; background:var(--panel);
-      border-right:1px solid var(--rule); transition:width var(--ease);}
-:where(.cn-sidebar-nav) .sn.is-rail{width:64px;}
-:where(.cn-sidebar-nav) .sn-head{display:flex; align-items:center; gap:8px; min-height:56px; padding:0 8px 0 16px;
-           border-bottom:1px solid var(--sub-rule);}
+/* the greeked content bars. ⚠ CHILD combinator, not descendant (#261 N4): as `.sn-canvas span`
+     this specimen-chrome rule also matched the real `.sn-product` label nested in the topbar and
+     forced it to height:12px — a 16px label in a 12px box with overflow:hidden, 4.5px of the
+     descender gone. Specimen greeking must never reach a component's own text. */
+:where(.cn-sidebar-nav) .sn-canvas > span{display:block; height:12px; background:var(--nav-sub-rule);}
+:where(.cn-sidebar-nav) .sn-canvas > span:nth-child(1){width:44%;}
+:where(.cn-sidebar-nav) .sn-canvas > span:nth-child(2){width:78%;}
+:where(.cn-sidebar-nav) .sn-canvas > span:nth-child(3){width:66%;}
+:where(.cn-sidebar-nav) .sn-canvas > span:nth-child(4){width:84%;}
+/* ---- the column: 248px expanded, 64px rail. Both are TOKENISED widths so a shell can
+         reserve the gutter without reading this file. ---- */
+:where(.cn-sidebar-nav) .sn{flex:none; width:var(--nav-w); display:flex; flex-direction:column; min-height:0;
+      background:var(--nav-surface); border-right:1px solid var(--nav-rule);
+      transition:width var(--nav-ease);}
+:where(.cn-sidebar-nav) .sn.is-rail{width:var(--nav-w-rail);}
+/* ---- PRODUCT LOCKUP SLOT (top). #261 N2, Dave verbatim: "the original header is better" —
+         the masterbrand SVG + product label lockup introduced at #261 is WITHDRAWN and the
+         ORIGINAL header row (a single product word beside the collapse control) is restored
+         byte-for-byte from 7647aaf. Nothing about the #230 mark ruling is contradicted: this
+         row never claimed to be the brand mark, and the masthead still carries it. ---- */
+:where(.cn-sidebar-nav) .sn-head{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px 0 16px;
+           border-bottom:1px solid var(--nav-sub-rule);}
 :where(.cn-sidebar-nav) .sn .sn-brand{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-            text-box-edge:text text; color:var(--text);}
-:where(.cn-sidebar-nav) .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--icon);
+            text-box-edge:text text; color:var(--nav-text);}
+:where(.cn-sidebar-nav) .sn-product{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+              text-box-edge:text text; color:var(--nav-text);}
+:where(.cn-sidebar-nav) .sn-toggle{flex:none; width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
              cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-             border-radius:var(--radius);}
+             border-radius:var(--nav-radius);}
 :where(.cn-sidebar-nav) .sn-toggle svg{width:16px; height:16px; fill:currentColor;}
-:where(.cn-sidebar-nav) .sn-toggle:hover{background:var(--hover);}
-:where(.cn-sidebar-nav) .sn-toggle:active{background:var(--pressed);}
-:where(.cn-sidebar-nav) .sn-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-sidebar-nav) .sn-toggle:hover{background:var(--nav-hover);}
+:where(.cn-sidebar-nav) .sn-toggle:active{background:var(--nav-pressed);}
+:where(.cn-sidebar-nav) .sn-toggle:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
 :where(.cn-sidebar-nav) .sn.is-rail .sn-head{padding:0 12px; justify-content:center;}
-:where(.cn-sidebar-nav) .sn-body{flex:1; overflow-y:auto; padding:8px 0; display:flex; flex-direction:column; gap:8px;}
+:where(.cn-sidebar-nav) .sn-body{flex:1; min-height:0; overflow-y:auto; padding:8px 0; display:flex;
+           flex-direction:column; gap:8px;}
 :where(.cn-sidebar-nav) .sn-group{display:flex; flex-direction:column; gap:2px;}
-:where(.cn-sidebar-nav) .sn-group + .sn-group{border-top:1px solid var(--sub-rule); padding-top:8px;}
-:where(.cn-sidebar-nav) .sn-group-label{display:block; padding:8px 16px; color:var(--muted); opacity:.72;}
+:where(.cn-sidebar-nav) .sn-group + .sn-group{border-top:1px solid var(--nav-sub-rule); padding-top:8px;}
+:where(.cn-sidebar-nav) .sn-group-label{display:block; padding:8px 16px; color:var(--nav-muted); opacity:.72;}
 :where(.cn-sidebar-nav) .sn ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
-:where(.cn-sidebar-nav) .sn-link{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
-           color:var(--text); text-decoration:none; position:relative;
-           transition:background var(--ease);}
-:where(.cn-sidebar-nav) .sn-link .si{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
-:where(.cn-sidebar-nav) .sn-link .si svg{width:18px; height:18px; fill:currentColor;}
-:where(.cn-sidebar-nav) .sn .sn-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+/* the indicator sits on the edge the column touches the content — inline-start */
+:where(.cn-sidebar-nav) .sn .nv-item[aria-current="page"]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
+:where(.cn-sidebar-nav) .sn-sub .nv-item{padding-left:48px;}
+:where(.cn-sidebar-nav) .sn-sub[hidden]{display:none;}
+/* ---- COUNT PROMOTION (#261 N2, Dave verbatim: "the badge should be promoted to the category
+         heading when collapsed"). A count that belongs to a child row cannot be reachable when
+         the group that holds it is shut, so the group heading carries the children's total
+         while it is closed and gives it back when it opens. The chip is the SAME .nv-count —
+         no second badge idiom — and the promoted chip is aria-hidden with the number restated
+         in the button's own accessible name, so a count is never read twice.
+         ⚠ the explicit [hidden] rule is load-bearing (the #218 W3 finding): an author
+         `display:inline-flex` beats the UA sheet's [hidden]{display:none}. ---- */
+:where(.cn-sidebar-nav) .sn .nv-count[hidden]{display:none;}
+/* ---- USER / ACCOUNT SLOT (bottom) ---- */
+:where(.cn-sidebar-nav) .sn-foot{border-top:1px solid var(--nav-sub-rule); padding:8px 0;}
+:where(.cn-sidebar-nav) .sn-avatar{flex:none; width:24px; height:24px; border-radius:50%; display:inline-flex;
+             align-items:center; justify-content:center; background:var(--nav-count-bg);
+             color:var(--nav-count-fg);}
+/* ⚠ THE USER SLOT DOES NOT WEAR .nv-label, AND THAT IS LOAD-BEARING (#261, measured).
+     In the rail .nv-label is repurposed as a tooltip on the inverted count surface. A two-line
+     user block carrying that class inherited the tooltip fill but kept text/secondary ink, and
+     _validate_state_contrast.py measured it at 1.21:1 light / 1:1 dark — four TEXT fails. The
+     slot therefore carries its own ellipsis rules and is hidden outright in the rail. */
+:where(.cn-sidebar-nav) .sn-who{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; text-align:left;
+          overflow:hidden;}
+:where(.cn-sidebar-nav) .sn-who b{font-weight:inherit; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
             text-box-edge:text text;}
-:where(.cn-sidebar-nav) .sn-link:hover{background:var(--hover);}
-:where(.cn-sidebar-nav) .sn-link:active{background:var(--pressed);}
-:where(.cn-sidebar-nav) .sn-link:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-/* CURRENT LOCATION — aria-current for AT + a 3px leading bar (a SHAPE, present or absent)
-     + a surface change. Colour is the third carrier, never the only one. */
-:where(.cn-sidebar-nav) .sn-link[aria-current="page"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--indicator);}
-/* collapsible group heading */
-:where(.cn-sidebar-nav) .sn-group-toggle{display:flex; align-items:center; gap:12px; width:100%; min-height:44px;
-                   padding:0 16px; border:0; background:transparent; color:var(--text);
-                   cursor:pointer; text-align:left; border-radius:var(--radius);}
-:where(.cn-sidebar-nav) .sn-group-toggle .sc{flex:none; display:inline-flex; width:12px; height:12px; color:var(--icon);
-                       transition:transform var(--ease);}
-:where(.cn-sidebar-nav) .sn-group-toggle .sc svg{width:12px; height:12px; fill:currentColor;}
-:where(.cn-sidebar-nav) .sn-group-toggle[aria-expanded="true"] .sc{transform:rotate(180deg);}
-:where(.cn-sidebar-nav) .sn-group-toggle .sn-label{flex:1;}
-:where(.cn-sidebar-nav) .sn-group-toggle:hover{background:var(--hover);}
-:where(.cn-sidebar-nav) .sn-group-toggle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-sidebar-nav) .sn-sub .sn-link{padding-left:48px;}
-:where(.cn-sidebar-nav) .sn-foot{border-top:1px solid var(--sub-rule); padding:8px 0;}
-/* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse ---- */
-:where(.cn-sidebar-nav) .sn.is-rail .sn-group-label, :where(.cn-sidebar-nav) .sn.is-rail .sn-brand{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
-                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
-:where(.cn-sidebar-nav) .sn.is-rail .sn-label{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
-                        overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
-:where(.cn-sidebar-nav) .sn.is-rail .sn-link{justify-content:center; padding:0; width:64px; min-height:44px;}
+:where(.cn-sidebar-nav) .sn-who small{color:var(--nav-muted); opacity:.72; overflow:hidden; text-overflow:ellipsis;
+                white-space:nowrap; text-box-edge:text text;}
+/* ---- RAIL: labels are HIDDEN, not removed — the accessible name survives the collapse.
+         #261 closes the #203 open finding: in the rail the hidden label is re-shown as a
+         TOOLTIP on hover and on keyboard focus. It is the SAME element, so the sighted mouse
+         user and the screen-reader user are told the same word, and no aria-label restates
+         anything. Nothing is composed in from another component. ---- */
+:where(.cn-sidebar-nav) .sn.is-rail .sn-group-label, :where(.cn-sidebar-nav) .sn.is-rail .sn-brand, :where(.cn-sidebar-nav) .sn.is-rail .sn-product, :where(.cn-sidebar-nav) .sn.is-rail .sn-who{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+:where(.cn-sidebar-nav) .sn.is-rail .nv-item{justify-content:center; padding:0; width:var(--nav-w-rail);
+    min-height:var(--nav-row);}
+:where(.cn-sidebar-nav) .sn.is-rail .nv-item .nv-chev{display:none;}
+/* #261 N2, Dave verbatim: the rail badge "must be attached to the icon like the tab-bar
+     badges". It was pinned to the ROW's top-right corner and read as a chip floating in the
+     column. It is now hung off the glyph itself — the same 18px chip, the same −6px/+14px
+     offset from the glyph origin the tab bar uses — and because the glyph is centred in the
+     rail the offsets are written from the row's centre so they survive a taller row. */
+:where(.cn-sidebar-nav) .sn.is-rail .nv-item .nv-count{position:absolute; right:auto;
+    left:calc(50% + 5px); top:calc(50% - 15px); min-width:18px; height:18px; padding:0 4px;}
+:where(.cn-sidebar-nav) .sn.is-rail .nv-label{position:absolute; left:calc(var(--nav-w-rail) - 4px); top:50%;
+    transform:translateY(-50%); z-index:30; width:auto; max-width:180px; flex:none;
+    padding:4px 8px; background:var(--nav-count-bg); color:var(--nav-count-fg);
+    box-shadow:0 2px 8px var(--nav-shadow); opacity:0; pointer-events:none;
+    transition:opacity var(--nav-ease);}
+:where(.cn-sidebar-nav) .sn.is-rail .nv-item:hover .nv-label, :where(.cn-sidebar-nav) .sn.is-rail .nv-item:focus-visible .nv-label{opacity:1;}
 :where(.cn-sidebar-nav) .sn.is-rail .sn-group + .sn-group{padding-top:8px;}
+/* ---- OVERLAY (mobile): the same column, off-canvas, over a scrim. One class, no fork. ---- */
+:where(.cn-sidebar-nav) .sn-frame.is-narrow{width:360px;}
+:where(.cn-sidebar-nav) .is-narrow .sn{position:absolute; inset:0 auto 0 0; z-index:20;
+    transform:translateX(-100%); transition:transform var(--nav-slide);}
+:where(.cn-sidebar-nav) .is-narrow .sn[data-open="true"]{transform:none; box-shadow:0 0 24px var(--nav-shadow);}
+:where(.cn-sidebar-nav) .sn-scrim{position:absolute; inset:0; z-index:10; background:var(--nav-scrim); border:0;
+            padding:0; cursor:pointer;}
+:where(.cn-sidebar-nav) .sn-scrim[hidden]{display:none;}
+:where(.cn-sidebar-nav) .sn-burger{width:44px; height:44px; border:0; background:transparent; color:var(--nav-icon);
+             cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+:where(.cn-sidebar-nav) .sn-burger:hover{background:var(--nav-hover);}
+:where(.cn-sidebar-nav) .sn-burger:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+:where(.cn-sidebar-nav) .sn-burger svg{width:18px; height:18px; fill:currentColor;}
+:where(.cn-sidebar-nav) .sn-topbar{display:flex; align-items:center; gap:8px; min-height:var(--nav-h); padding:0 8px;
+             border-bottom:1px solid var(--nav-rule);}
 /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
 
@@ -15639,62 +16448,173 @@
 
 /* ============================================================
    Tab-bar  (from snippets/Tab-bar.reference.html)
-   Aria: aria-current="page", aria-label
+   Aria: aria-current="page", aria-label, aria-disabled, aria-expanded
+   Finding: #261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). Tab-bar is the MOBILE member of a three-surface family with Sidebar-nav and Navigations. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. A destination here is the same row as a destination in the sidebar, stacked instead of laid out inline.
+   Finding: THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-start here (the bar sits above the glyph, against the content the bar is docked below), inline-start in the sidebar, block-end in the masthead.
+   Finding: ⬛ VOCABULARY COLLISION, SURFACED NOT RESOLVED (#202 class). The #261 lane brief asked for Tab-bar as 'in-page section tabs, scrollable overflow with fade, underline indicator, counts'. That is what the EXISTING gated Tabs component is (knowledge/components/tabs.meta.json: 'switch between peer views/panels within the same context ... selected indicator, bottom track, overflow dropdown'). Tab-bar's own meta has said 'App-level BOTTOM navigation ... NOT the in-page Tabs component' since it was surfaced. Redefining Tab-bar to the brief would have made two components mean the same thing and left the mobile bottom bar homeless. Built to the canon meaning; the section-tab reading is drawn on these same tokens in the #261 review page as a PROPOSAL against Tabs, and the choice is Dave's.
+   Finding: COUNTS are new at #261 and ride the GLYPH, not the row, so a four-destination bar keeps equal columns. Same .nv-count chip as the sidebar and the masthead: 18px on a glyph, 24px on a row.
+   Finding: DISABLED is aria-disabled + tabindex=-1 — the destination keeps its place in the reading order rather than vanishing from a bar whose column count is part of the layout.
+   Finding: THREE CARRIERS FOR CURRENT, colour last: aria-current='page', the FILLED (-active) glyph swap (a shape change), and the 3px bar. The icon-source convention supplies the filled pair from assets, so the shape carrier is byte-matched, not drawn. NOTE THE FAMILY SUBSTITUTION: Sidebar-nav and Navigations carry a WEIGHT step on the label as their third carrier (#261 N4 removed the surface fill from all three - the grey means hover and only hover now); Tab-bar uses the glyph swap instead, because a full-width fill on a 56px bottom row reads as a pressed button rather than as a place. Measured at #261 — the current row computes background rgba(0,0,0,0) in all four themes, both modes (notes/_lanes/261-N-nav-probe.json).
+   Finding: VARIANT B keeps the sliding fill and the Menu island as ONE exclusive group — selecting Menu collapses the pill. The island fill is secondary/background/default with text/on-inverse glyphs, the same pair the count chip declares, so the family has one inverted surface and not two.
+   Finding: 44px MIN HIT AREA: variant A rows are 56px tall and at least a quarter of a 420px bar wide; variant B segments are 48px tall inside a 56px track and the Menu island is 56x56.
    Scope: .cn-tab-bar   ============================================================ */
 .cn-tab-bar{
-  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
-  --ease: 140ms ease;
-  --slide: 200ms cubic-bezier(.4,0,.2,1);
-  --surface: var(--tertiary-background-default);
-  --border: var(--border-subtle);
-  --muted: var(--text-secondary);
-  --text: var(--text-default);
-  --sel-bg: var(--secondary-background-default);
-  --sel-fg: var(--text-on-inverse);
-  --focus: var(--focus-ring);
-  --shadow: var(--elevation-functional);
-  --page: var(--background-default);
+  --nav-ease: 160ms cubic-bezier(.4,0,.2,1);
+  --nav-slide: 200ms cubic-bezier(.4,0,.2,1);
+  --nav-w: 248px;
+  --nav-w-rail: 64px;
+  --nav-h: 64px;
+  --nav-row: 44px;
+  --nav-page: var(--background-default);
+  --nav-surface: var(--tertiary-background-default);
+  --nav-text: var(--text-default);
+  --nav-muted: var(--text-secondary);
+  --nav-icon: var(--icon-default);
+  --nav-rule: var(--divider-border-section);
+  --nav-sub-rule: var(--divider-border-subsection);
+  --nav-hover: var(--tertiary-background-hover);
+  --nav-pressed: var(--form-background-pressed);
+  --nav-indicator: var(--primary-border-default);
+  --nav-focus: var(--focus-ring);
+  --nav-disabled: var(--tertiary-text-disabled);
+  --nav-count-bg: var(--secondary-background-default);
+  --nav-count-fg: var(--text-on-inverse);
+  --nav-shadow: var(--elevation-functional);
+  --nav-scrim: var(--elevation-functional);
+  --nav-radius: var(--border-radius-surface);
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. Added 2026-06-30. */
-:where(.cn-tab-bar) :is(button, :where(.cn-tab-bar) a, :where(.cn-tab-bar) label, :where(.cn-tab-bar) span, :where(.cn-tab-bar) small, :where(.cn-tab-bar) strong, :where(.cn-tab-bar) em, :where(.cn-tab-bar) b, :where(.cn-tab-bar) i, :where(.cn-tab-bar) th, :where(.cn-tab-bar) td, :where(.cn-tab-bar) dt, :where(.cn-tab-bar) dd, :where(.cn-tab-bar) li, :where(.cn-tab-bar) figcaption, :where(.cn-tab-bar) legend, :where(.cn-tab-bar) caption, :where(.cn-tab-bar) summary, :where(.cn-tab-bar) output, :where(.cn-tab-bar) time, :where(.cn-tab-bar) input[type=text], :where(.cn-tab-bar) input[type=search], :where(.cn-tab-bar) input[type=email], :where(.cn-tab-bar) input[type=tel], :where(.cn-tab-bar) input[type=url], :where(.cn-tab-bar) input[type=password], :where(.cn-tab-bar) input[type=number], :where(.cn-tab-bar) input:not([type]), :where(.cn-tab-bar) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-/* --slide matches the toggle / View-options */
-/* ---- Tab bar (bottom navigation) ---- */
-/* icon swap: line glyph by default, FILLED (-active) glyph when current/open */
-:where(.cn-tab-bar) .tabbar__item .ic-fill, :where(.cn-tab-bar) .menu-fab .ic-fill{display:none;}
-:where(.cn-tab-bar) .tabbar__item.is-active .ic-line, :where(.cn-tab-bar) .menu-fab.is-active .ic-line{display:none;}
-:where(.cn-tab-bar) .tabbar__item.is-active .ic-fill, :where(.cn-tab-bar) .menu-fab.is-active .ic-fill{display:block;}
-:where(.cn-tab-bar) .tabbar__item svg, :where(.cn-tab-bar) .menu-fab svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
-/* A) standard full-width bar with labels */
-:where(.cn-tab-bar) .tabbar{display:flex; max-width:420px; background:var(--surface); border-top:1px solid var(--border);}
-:where(.cn-tab-bar) .tabbar .tabbar__item{flex:1; min-height:56px; padding:8px 0 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
-    /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); text-decoration:none; cursor:pointer; background:transparent; border:0; transition:color var(--ease);}
-:where(.cn-tab-bar) .tabbar .tabbar__item:hover{color:var(--text);}
-:where(.cn-tab-bar) .tabbar .tabbar__item:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-tab-bar) .tabbar .tabbar__item.is-active{color:var(--text);}
-/* B) segmented control (sliding pill) — icon-only, elevated, full-width; the selected fill slides
-        between segments on the toggle / View-options easing; Menu is a separate circular island */
+   enhancement; headings/body excluded.
+   ⚠ #261 N4 — the list is wrapped in :where(), exactly as canon.css wraps it, and for the same
+   reason (canon.css "#215 — `:where(.canon)`, NOT `.canon`"): this is a DEFAULT, not an authoring
+   decision. Bare, the :is() list took its specificity from its heaviest branch (input[type=text])
+   and sat at (0,1,1) — ABOVE every one-class ds-005 override in this file, so `.nv-label
+   {text-box-edge:text text}` was cascade-dead and every label computed `cap alphabetic`: the box
+   ended at the baseline and overflow:hidden cut the descender off "Payments and transfers".
+   :where() contributes zero specificity and matches identically. ⛔ Do not unwrap it. */
+:where(.cn-tab-bar) :where(button, :where(.cn-tab-bar) a, :where(.cn-tab-bar) label, :where(.cn-tab-bar) span, :where(.cn-tab-bar) small, :where(.cn-tab-bar) strong, :where(.cn-tab-bar) em, :where(.cn-tab-bar) b, :where(.cn-tab-bar) i, :where(.cn-tab-bar) th, :where(.cn-tab-bar) td, :where(.cn-tab-bar) dt, :where(.cn-tab-bar) dd, :where(.cn-tab-bar) li, :where(.cn-tab-bar) figcaption, :where(.cn-tab-bar) legend, :where(.cn-tab-bar) caption, :where(.cn-tab-bar) summary, :where(.cn-tab-bar) output, :where(.cn-tab-bar) time, :where(.cn-tab-bar) input[type=text], :where(.cn-tab-bar) input[type=search], :where(.cn-tab-bar) input[type=email], :where(.cn-tab-bar) input[type=tel], :where(.cn-tab-bar) input[type=url], :where(.cn-tab-bar) input[type=password], :where(.cn-tab-bar) input[type=number], :where(.cn-tab-bar) input:not([type]), :where(.cn-tab-bar) textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
+     This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
+     exactly two extra vars (--field-border, --field-active) for the search field it alone
+     contains, and nothing else. That is the
+     family claim made mechanical: if the three surfaces drift, this block stops matching
+     and the drift is visible in a diff rather than in a demo. Every value is a resolved
+     SEMANTIC token (see the manifest below), never an invented hex. */
+/* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
+     One anatomy, three surfaces. The same class names carry the same meaning in all three
+     files, so a reader who has learned one nav has learned the family.
+     CURRENT LOCATION has THREE carriers and colour is always the third:
+       1. aria-current="page"                     — the machine-readable fact
+       2. a 3px INDICATOR BAR on the edge the nav touches the content — a SHAPE, present
+          or absent, readable with no colour vision at all (sidebar: inline-start; top
+          nav: block-end; tab bar: block-start)
+       3. a WEIGHT step on the label (400 -> 500) — a shape, not a hue, and not a fill
+          (#261 N4: the current row's grey fill is REMOVED; grey is hover's word now)
+     Dave is astigmatic and red is a problem hue, so the bar is never asked to work alone.
+     Its brand red is COPIED from the gated masthead, not invented; the four-theme
+     measurement (and the Supercharge failure) lives in the metas. */
+:where(.cn-tab-bar) .nv-item{display:flex; align-items:center; gap:12px; min-height:var(--nav-row); padding:0 16px;
+    position:relative; color:var(--nav-text); text-decoration:none; background:transparent;
+    border:0; cursor:pointer; border-radius:var(--nav-radius); transition:background var(--nav-ease);}
+:where(.cn-tab-bar) .nv-ic{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; color:var(--nav-icon);}
+:where(.cn-tab-bar) .nv-ic svg{width:18px; height:18px; fill:currentColor;}
+/* THE LABEL IS A TRUNCATING LABEL, so it takes the canon truncating-label treatment
+     (canon.css, `.row .title`): keep the trim's tightness but trim to the FULL text box
+     (`text text`, over-edge to under-edge) — `cap alphabetic` ends the box ON the baseline, and
+     the overflow:hidden that ellipsis needs then crops every descender (g, y, p). The trim is
+     restated here, not inherited, so the pair is read as one decision. Driven at #261 N4:
+     16px label, box 11px → 16.5px, descender clipped 5.5px → 0px, all 3 surfaces × 4 themes
+     × 2 modes. ⛔ never pair `cap alphabetic` with `overflow:hidden` on a label. */
+:where(.cn-tab-bar) .nv-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-align:left; text-box-trim:trim-both; text-box-edge:text text;}
+/* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
+     square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
+     floor, so it never reads as a control the finger cannot land on. */
+:where(.cn-tab-bar) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--nav-count-bg); color:var(--nav-count-fg);}
+:where(.cn-tab-bar) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:12px; height:12px; color:var(--nav-icon); transition:transform var(--nav-ease);}
+:where(.cn-tab-bar) .nv-chev svg{width:12px; height:12px; fill:currentColor;}
+[aria-expanded="true"] :where(.cn-tab-bar) > .nv-chev{transform:rotate(180deg);}
+:where(.cn-tab-bar) .nv-item:hover{background:var(--nav-hover);}
+:where(.cn-tab-bar) .nv-item:active{background:var(--nav-pressed);}
+:where(.cn-tab-bar) .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:-2px;}
+/* #261 N4, Dave verbatim: "remove the background grey on the selected state". The current row
+     no longer takes a fill on ANY of the three surfaces — the fill was the hover state's own
+     signal, and a row wearing it permanently left hover with nothing of its own to say. The
+     indicator bar (a SHAPE) and the label's weight step carry current; the fill now means hover
+     and only hover. */
+:where(.cn-tab-bar) .nv-item[aria-current="page"]{background:transparent;}
+:where(.cn-tab-bar) .nv-item[aria-current="page"] .nv-label{font-weight:500;}
+/* DISABLED is a stated fact, not a greyed guess: aria-disabled tells AT, the row keeps its
+     place in the reading order, and the count loses its fill so no contrast claim is made on
+     a surface WCAG exempts anyway. */
+:where(.cn-tab-bar) .nv-item[aria-disabled="true"]{color:var(--nav-disabled); cursor:default; pointer-events:none;}
+:where(.cn-tab-bar) .nv-item[aria-disabled="true"] .nv-ic{color:var(--nav-disabled);}
+:where(.cn-tab-bar) .nv-item[aria-disabled="true"] .nv-count{background:transparent; color:var(--nav-disabled);
+    box-shadow:inset 0 0 0 1px var(--nav-disabled);}
+/* icon swap: line glyph by default, FILLED (-active) glyph when current. Colour is never the
+     only signal (1.4.1) — the glyph CHANGES SHAPE, and the 3px bar is a second shape carrier. */
+:where(.cn-tab-bar) .tabbar .nv-item .ic-fill, :where(.cn-tab-bar) .menu-fab .ic-fill{display:none;}
+:where(.cn-tab-bar) .tabbar .nv-item[aria-current="page"] .ic-line, :where(.cn-tab-bar) .menu-fab[aria-expanded="true"] .ic-line{display:none;}
+:where(.cn-tab-bar) .tabbar .nv-item[aria-current="page"] .ic-fill, :where(.cn-tab-bar) .menu-fab[aria-expanded="true"] .ic-fill{display:block;}
+/* ---- A · the standard bar: 3-5 equal destinations, icon over label ---- */
+:where(.cn-tab-bar) .tabbar{display:flex; width:100%; max-width:420px; background:var(--nav-surface);
+          border-top:1px solid var(--nav-rule);}
+:where(.cn-tab-bar) .tabbar .nv-item{flex:1; min-width:0; min-height:56px; padding:8px 4px; gap:3px;
+    flex-direction:column; align-items:center; justify-content:center; color:var(--nav-muted);}
+:where(.cn-tab-bar) .tabbar .nv-item .nv-ic{position:relative; width:24px; height:24px;}
+:where(.cn-tab-bar) .tabbar .nv-item .nv-ic svg{width:24px; height:24px;}
+:where(.cn-tab-bar) .tabbar .nv-label{flex:none; width:100%; text-align:center;}
+/* the indicator sits on the edge THIS nav touches the content — block-start */
+:where(.cn-tab-bar) .tabbar .nv-item[aria-current="page"]{color:var(--nav-text); background:transparent;
+    box-shadow:inset 0 3px 0 var(--nav-indicator);}
+/* the count rides the glyph, so a 4-destination bar keeps its equal columns */
+:where(.cn-tab-bar) .tabbar .nv-item .nv-count{position:absolute; top:-6px; left:14px; min-width:18px; height:18px;
+    padding:0 4px;}
+/* ---- B · the segmented island: icon-only, elevated, the fill SLIDES ---- */
 :where(.cn-tab-bar) .tabbar-pills{display:flex; align-items:center; gap:12px; width:100%; max-width:420px;}
-/* spans the full (mobile) screen width */
-:where(.cn-tab-bar) .seg{position:relative; flex:1; display:flex; align-items:center; height:56px; padding:4px; background:var(--surface); border:1px solid var(--border); border-radius:999px; box-shadow:0 0 16px var(--shadow);}
-/* the lozenge / segmented track */
-:where(.cn-tab-bar) .seg .ind{position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--sel-bg); border-radius:999px; z-index:0; transition:left var(--slide), width var(--slide);}
-/* SLIDING pill — left+width set by JS from the current segment (same animation as the toggle) */
-:where(.cn-tab-bar) .seg__item{position:relative; z-index:1; flex:1; height:100%; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); text-decoration:none; cursor:pointer; transition:color var(--slide);}
-/* each segment fills its share of the track; colour transitions on the SAME easing as the slide */
-:where(.cn-tab-bar) .seg__item[aria-current="page"]{color:var(--sel-fg);}
-/* glyph turns white as the pill arrives (inverts to dark in dark mode) */
-:where(.cn-tab-bar) .seg__item:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:999px;}
-:where(.cn-tab-bar) .seg__item svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
-:where(.cn-tab-bar) .menu-fab{width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
-    color:var(--muted); text-decoration:none; cursor:pointer; background:var(--surface); border:1px solid var(--border); box-shadow:0 0 16px var(--shadow); transition:color var(--slide), background var(--slide), box-shadow var(--slide);}
-:where(.cn-tab-bar) .menu-fab:hover{color:var(--text);}
-:where(.cn-tab-bar) .menu-fab:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-:where(.cn-tab-bar) .menu-fab[aria-current="page"]{background:var(--sel-bg); color:var(--sel-fg); box-shadow: inset 0 0 0 4px var(--surface), 0 0 16px var(--shadow);}
-/* SELECTED — same inverting fill + a 4px white(surface) ring, matching the lozenge surround */
-/* WCAG 2.3.3 — honour reduced-motion (minimal motion here, kept for consistency) */
+:where(.cn-tab-bar) .seg{position:relative; flex:1; display:flex; align-items:center; height:56px; padding:4px;
+    background:var(--nav-surface); border:1px solid var(--nav-rule); border-radius:999px;
+    box-shadow:0 0 16px var(--nav-shadow);}
+:where(.cn-tab-bar) .seg .ind{position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--nav-count-bg);
+    border-radius:999px; z-index:0; transition:left var(--nav-slide), width var(--nav-slide);}
+:where(.cn-tab-bar) .seg .nv-item{position:relative; z-index:1; flex:1; min-width:0; height:100%; padding:0;
+    justify-content:center; color:var(--nav-muted); background:transparent;
+    transition:color var(--nav-slide);}
+:where(.cn-tab-bar) .seg .nv-item:hover{background:transparent;}
+/* ⚠ #261 N2 — THE GLYPH MUST INHERIT, AND THAT IS WHY THE ORIGINAL LOOKED BETTER. Dave:
+     "the segmented island was better in the original". Measured, not guessed: the shared
+     .nv-ic sets its OWN colour to icon/default, which beat the current segment's
+     text/on-inverse and left a near-black glyph sitting on the black pill. The original had
+     no .nv-ic — the svg took currentColor straight off the item — so the selected glyph was
+     white. One declaration restores it, and the island geometry (352px track, 46px segments,
+     56px lozenge, 999px radius, 16px functional elevation) already matched 7647aaf to the
+     pixel, verified by rendering both. */
+:where(.cn-tab-bar) .seg .nv-item .nv-ic{width:24px; height:24px; color:inherit;}
+:where(.cn-tab-bar) .seg .nv-item .nv-ic svg{width:24px; height:24px;}
+:where(.cn-tab-bar) .seg .nv-item[aria-current="page"]{color:var(--nav-count-fg); background:transparent; box-shadow:none;}
+:where(.cn-tab-bar) .seg .nv-item:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px; border-radius:999px;}
+/* THE MENU BUTTON IS NO LONGER IN THE ISLAND'S EXCLUSIVE GROUP (#261 N2). Dave verbatim:
+     "I ruled that entire lock-up was mutually exclusive, I've changed my mind about the menu
+     button". It is now a MENU DISCLOSURE, not a fifth destination: it carries aria-expanded,
+     it never clears the island's current destination, and the sliding fill no longer collapses
+     when it is pressed — you can be on Home AND have the menu open, which is what a menu is. */
+:where(.cn-tab-bar) .menu-fab{width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex;
+    align-items:center; justify-content:center; color:var(--nav-muted); text-decoration:none;
+    cursor:pointer; background:var(--nav-surface); border:1px solid var(--nav-rule);
+    box-shadow:0 0 16px var(--nav-shadow); padding:0;
+    transition:color var(--nav-slide), background var(--nav-slide), box-shadow var(--nav-slide);}
+:where(.cn-tab-bar) .menu-fab svg{width:24px; height:24px; fill:currentColor; pointer-events:none;}
+:where(.cn-tab-bar) .menu-fab:hover{color:var(--nav-text);}
+:where(.cn-tab-bar) .menu-fab:focus-visible{outline:2px solid var(--nav-focus); outline-offset:2px;}
+:where(.cn-tab-bar) .menu-fab[aria-expanded="true"]{background:var(--nav-count-bg); color:var(--nav-count-fg);
+    box-shadow:inset 0 0 0 4px var(--nav-surface), 0 0 16px var(--nav-shadow);}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
 @media (prefers-reduced-motion: reduce){
-:where(.cn-tab-bar) .seg .ind{transition:none !important;}
+
 }
 
 /* ============================================================
@@ -21752,6 +22672,7 @@
   --ink: #333333;
   --line: #D7D8D6;
   --spark-flat: #333333;
+  --status-neutral: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="common"][data-theme="dark"] .cn-chart-sparkline,
@@ -21760,6 +22681,7 @@
   --ink: #FFFFFF;
   --line: #404040;
   --spark-flat: #FFFFFF;
+  --status-neutral: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-chart-stacked-area,
 [data-apollo-theme="common"] .cn-chart-stacked-area{
@@ -22059,14 +22981,18 @@
 }
 [data-apollo-theme="legacy"] .cn-footer,
 [data-apollo-theme="common"] .cn-footer{
-  --muted: #545454;
+  --degraded: #FFBB33;
+  --env-alert: #FFBB33;
+  --ok: #00847F;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-footer,
 [data-apollo-theme="common"][data-theme="dark"] .cn-footer,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-footer,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-footer{
-  --muted: #9B9B9B;
+  --degraded: #FFBB33;
+  --env-alert: #FFBB33;
+  --ok: #00847F;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-form-layout,
@@ -22208,20 +23134,16 @@
 [data-apollo-theme="legacy"] .cn-kpi-tile,
 [data-apollo-theme="common"] .cn-kpi-tile{
   --border: #D7D8D6;
-  --down: #A8000B;
-  --spark-flat: #333333;
+  --flat-ink: #333333;
   --text: #333333;
-  --up: #00847F;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="common"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-kpi-tile{
   --border: #404040;
-  --down: #A8000B;
-  --spark-flat: #FFFFFF;
+  --flat-ink: #FFFFFF;
   --text: #FFFFFF;
-  --up: #00847F;
 }
 [data-apollo-theme="legacy"] .cn-layout-utilities,
 [data-apollo-theme="common"] .cn-layout-utilities{
@@ -22234,6 +23156,18 @@
 [data-apollo-theme="common"] [data-theme="dark"] .cn-layout-utilities{
   --border: #404040;
   --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-legend,
+[data-apollo-theme="common"] .cn-legend{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-legend,
+[data-apollo-theme="common"][data-theme="dark"] .cn-legend,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-legend,
+[data-apollo-theme="common"] [data-theme="dark"] .cn-legend{
+  --ink: #FFFFFF;
+  --line: #404040;
 }
 [data-apollo-theme="legacy"] .cn-limits-meter,
 [data-apollo-theme="common"] .cn-limits-meter{
@@ -22383,13 +23317,15 @@
 }
 [data-apollo-theme="legacy"] .cn-navigations,
 [data-apollo-theme="common"] .cn-navigations{
-  --text: #333333;
+  --nav-muted: #545454;
+  --nav-text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-navigations,
 [data-apollo-theme="common"][data-theme="dark"] .cn-navigations,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-navigations,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-navigations{
-  --text: #FFFFFF;
+  --nav-muted: #9B9B9B;
+  --nav-text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-notifications,
 [data-apollo-theme="common"] .cn-notifications{
@@ -22713,15 +23649,15 @@
 }
 [data-apollo-theme="legacy"] .cn-sidebar-nav,
 [data-apollo-theme="common"] .cn-sidebar-nav{
-  --muted: #545454;
-  --text: #333333;
+  --nav-muted: #545454;
+  --nav-text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="common"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-sidebar-nav{
-  --muted: #9B9B9B;
-  --text: #FFFFFF;
+  --nav-muted: #9B9B9B;
+  --nav-text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-skeleton-loader,
 [data-apollo-theme="common"] .cn-skeleton-loader{
@@ -22935,17 +23871,15 @@
 }
 [data-apollo-theme="legacy"] .cn-tab-bar,
 [data-apollo-theme="common"] .cn-tab-bar{
-  --border: #D7D8D6;
-  --muted: #545454;
-  --text: #333333;
+  --nav-muted: #545454;
+  --nav-text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-tab-bar,
 [data-apollo-theme="common"][data-theme="dark"] .cn-tab-bar,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-tab-bar,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-tab-bar{
-  --border: #404040;
-  --muted: #9B9B9B;
-  --text: #FFFFFF;
+  --nav-muted: #9B9B9B;
+  --nav-text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-table,
 [data-apollo-theme="common"] .cn-table{
@@ -24291,8 +25225,12 @@
 [data-apollo-theme="console"] .cn-filter-toolbar-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-h-l: 48px;
+  --seg-pad-l: 4px;
+  --seg-rad-l: 12px;
   --seg-rad-s: 8px;
   --seg-rad-xs: 6px;
+  --seg-thumb-l: 8px;
   --seg-thumb-s: 6px;
   --seg-thumb-xs: 4px;
 }
@@ -24300,8 +25238,12 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-filter-toolbar-bar{
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
+  --seg-h-l: 48px;
+  --seg-pad-l: 4px;
+  --seg-rad-l: 12px;
   --seg-rad-s: 8px;
   --seg-rad-xs: 6px;
+  --seg-thumb-l: 8px;
   --seg-thumb-s: 6px;
   --seg-thumb-xs: 4px;
 }
@@ -24314,10 +25256,16 @@
 }
 [data-apollo-theme="console"] .cn-footer{
   --border-radius-control: 8px;
+  --degraded: #D5990B;
+  --env-alert: #D5990B;
+  --ok: #5DAC7B;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-footer,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-footer{
   --border-radius-control: 8px;
+  --degraded: #D5990B;
+  --env-alert: #D5990B;
+  --ok: #5DAC7B;
 }
 [data-apollo-theme="console"] .cn-form-layout{
   --border-radius-control: 8px;
@@ -24370,20 +25318,25 @@
 }
 [data-apollo-theme="console"] .cn-kpi-tile{
   --border-radius-surface: 20px;
-  --down: #B92F1E;
-  --up: #5DAC7B;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-kpi-tile{
   --border-radius-surface: 20px;
-  --down: #B92F1E;
-  --up: #5DAC7B;
 }
 [data-apollo-theme="console"] .cn-layout-utilities{
   --border-radius-surface: 20px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-layout-utilities,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-layout-utilities{
+  --border-radius-surface: 20px;
+}
+[data-apollo-theme="console"] .cn-legend{
+  --border-radius-control: 8px;
+  --border-radius-surface: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-legend,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-legend{
+  --border-radius-control: 8px;
   --border-radius-surface: 20px;
 }
 [data-apollo-theme="console"] .cn-limits-meter{
@@ -24474,6 +25427,13 @@
   --border-radius-control: 8px;
   --border-radius-surface: 20px;
   --error: #B92F1E;
+}
+[data-apollo-theme="console"] .cn-navigations{
+  --nav-radius: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-navigations,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-navigations{
+  --nav-radius: 20px;
 }
 [data-apollo-theme="console"] .cn-notifications{
   --border-radius-surface: 20px;
@@ -24683,11 +25643,11 @@
   --error-atom: var(--error);  /* s151-D1: fork keeps its OWN red for the atom — this is a NO-OP guard, not a new fork value */
 }
 [data-apollo-theme="console"] .cn-sidebar-nav{
-  --radius: 20px;
+  --nav-radius: 20px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-sidebar-nav{
-  --radius: 20px;
+  --nav-radius: 20px;
 }
 [data-apollo-theme="console"] .cn-skeleton-loader{
   --border-radius-indicator: 4px;
@@ -24824,6 +25784,13 @@
   --border-radius-indicator: 4px;
   --error: #B92F1E;
   --step-fill: #5DAC7B;
+}
+[data-apollo-theme="console"] .cn-tab-bar{
+  --nav-radius: 20px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-tab-bar,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-tab-bar{
+  --nav-radius: 20px;
 }
 [data-apollo-theme="console"] .cn-table{
   --border-radius-control: 8px;
@@ -26490,6 +27457,7 @@
   --page: #F7F6F4;
   --pop-border: #FFFFFF00;
   --spark-flat: #13110E;
+  --status-neutral: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-sparkline{
@@ -26498,6 +27466,7 @@
   --page: #1A1A1A;
   --pop-border: #524842;
   --spark-flat: #F7F6F4;
+  --status-neutral: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-chart-stacked-area{
   --baseline: #13110E;
@@ -26613,6 +27582,7 @@
   --disabled: #CDC8C6;
   --fborder: #524842;
   --fhover: #DFDEDC;
+  --grouphdr: #DFDEDC;
   --header: #DFDEDC;
   --hover: #DFDEDC;
   --icon: #13110E;
@@ -26634,6 +27604,7 @@
   --disabled: #524842;
   --fborder: #524842;
   --fhover: #2E2A25;
+  --grouphdr: #2A2621;
   --header: #2A2621;
   --hover: #2E2A25;
   --icon: #F7F6F4;
@@ -26943,6 +27914,8 @@
   --menu-surface: #F7F6F4;
   --page: #F7F6F4;
   --surface: #F7F6F4;
+  --tbl-border: #CDC8C6;
+  --tbl-head: #DFDEDC;
   --text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-filter-toolbar-bar,
@@ -26957,6 +27930,8 @@
   --menu-surface: #1A1A1A;
   --page: #1A1A1A;
   --surface: #2A2621;
+  --tbl-border: #524842;
+  --tbl-head: #2A2621;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-footer-doormat-lockup{
@@ -26979,21 +27954,29 @@
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-footer{
+  --border-strong: #524842;
+  --degraded: #D5990B;
   --divider: #CDC8C6;
+  --env-alert: #D5990B;
+  --env-alert-ink: #13110E;
+  --ft-band: #13110E;
   --icon: #13110E;
-  --muted: #13110E;
+  --ok: #5DAC7B;
   --page: #F7F6F4;
-  --subdivider: #DFDEDC;
   --surface: #DFDEDC;
   --text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-footer,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-footer{
+  --border-strong: #524842;
+  --degraded: #D5990B;
   --divider: #524842;
+  --env-alert: #D5990B;
+  --env-alert-ink: #13110E;
+  --ft-band: #F0EFED;
   --icon: #F7F6F4;
-  --muted: #F7F6F4;
+  --ok: #5DAC7B;
   --page: #1A1A1A;
-  --subdivider: #524842;
   --surface: #2A2621;
   --text: #F7F6F4;
 }
@@ -27204,30 +28187,26 @@
 }
 [data-apollo-theme="supercharge"] .cn-kpi-tile{
   --border: #CDC8C6;
-  --down: #B92F1E;
+  --flat-ink: #13110E;
   --page: #F7F6F4;
-  --spark-flat: #13110E;
   --surface: #F7F6F4;
   --tbl-border: #CDC8C6;
   --tbl-cell: #F7F6F4;
   --tbl-colhdr: #DFDEDC;
   --tbl-header: #DFDEDC;
   --text: #13110E;
-  --up: #5DAC7B;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-kpi-tile{
   --border: #524842;
-  --down: #B92F1E;
+  --flat-ink: #F7F6F4;
   --page: #1A1A1A;
-  --spark-flat: #F7F6F4;
   --surface: #2A2621;
   --tbl-border: #524842;
   --tbl-cell: #1A1A1A;
   --tbl-colhdr: #2A2621;
   --tbl-header: #2A2621;
   --text: #F7F6F4;
-  --up: #5DAC7B;
 }
 [data-apollo-theme="supercharge"] .cn-layout-utilities{
   --border: #CDC8C6;
@@ -27243,6 +28222,21 @@
   --page: #1A1A1A;
   --surface: #2A2621;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-legend{
+  --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-legend,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-legend{
+  --data-axis: #635750;
+  --data-control-label-disabled: #524842;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
 }
 [data-apollo-theme="supercharge"] .cn-limits-meter{
   --border: #CDC8C6;
@@ -27453,27 +28447,31 @@
 [data-apollo-theme="supercharge"] .cn-navigations{
   --field-active: #000000;
   --field-border: #524842;
-  --hover: #DFDEDC;
-  --icon: #13110E;
-  --menu-border: #FFFFFF00;
-  --menu-surface: #F7F6F4;
-  --page: #F7F6F4;
-  --rule: #CDC8C6;
-  --surface: #F7F6F4;
-  --text: #13110E;
+  --nav-disabled: #B7B7B7;
+  --nav-hover: #DFDEDC;
+  --nav-icon: #13110E;
+  --nav-muted: #13110E;
+  --nav-page: #F7F6F4;
+  --nav-pressed: #AA9B92;
+  --nav-rule: #CDC8C6;
+  --nav-sub-rule: #DFDEDC;
+  --nav-surface: #F7F6F4;
+  --nav-text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-navigations,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-navigations{
   --field-active: #F7F6F4;
   --field-border: #524842;
-  --hover: #2E2A25;
-  --icon: #F7F6F4;
-  --menu-border: #524842;
-  --menu-surface: #1A1A1A;
-  --page: #1A1A1A;
-  --rule: #524842;
-  --surface: #1A1A1A;
-  --text: #F7F6F4;
+  --nav-disabled: #524842;
+  --nav-hover: #2E2A25;
+  --nav-icon: #F7F6F4;
+  --nav-muted: #F7F6F4;
+  --nav-page: #1A1A1A;
+  --nav-pressed: #413934;
+  --nav-rule: #524842;
+  --nav-sub-rule: #524842;
+  --nav-surface: #2A2621;
+  --nav-text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-notifications{
   --err: #B92F1E;
@@ -27935,27 +28933,29 @@
   --reverse: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-sidebar-nav{
-  --hover: #DFDEDC;
-  --icon: #13110E;
-  --muted: #13110E;
-  --page: #F7F6F4;
-  --panel: #F7F6F4;
-  --pressed: #AA9B92;
-  --rule: #CDC8C6;
-  --sub-rule: #DFDEDC;
-  --text: #13110E;
+  --nav-disabled: #B7B7B7;
+  --nav-hover: #DFDEDC;
+  --nav-icon: #13110E;
+  --nav-muted: #13110E;
+  --nav-page: #F7F6F4;
+  --nav-pressed: #AA9B92;
+  --nav-rule: #CDC8C6;
+  --nav-sub-rule: #DFDEDC;
+  --nav-surface: #F7F6F4;
+  --nav-text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-sidebar-nav{
-  --hover: #2E2A25;
-  --icon: #F7F6F4;
-  --muted: #F7F6F4;
-  --page: #1A1A1A;
-  --panel: #2A2621;
-  --pressed: #413934;
-  --rule: #524842;
-  --sub-rule: #524842;
-  --text: #F7F6F4;
+  --nav-disabled: #524842;
+  --nav-hover: #2E2A25;
+  --nav-icon: #F7F6F4;
+  --nav-muted: #F7F6F4;
+  --nav-page: #1A1A1A;
+  --nav-pressed: #413934;
+  --nav-rule: #524842;
+  --nav-sub-rule: #524842;
+  --nav-surface: #2A2621;
+  --nav-text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-skeleton-loader{
   --bone: #DFDEDC;
@@ -28237,19 +29237,29 @@
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-tab-bar{
-  --border: #CDC8C6;
-  --muted: #13110E;
-  --page: #F7F6F4;
-  --surface: #F7F6F4;
-  --text: #13110E;
+  --nav-disabled: #B7B7B7;
+  --nav-hover: #DFDEDC;
+  --nav-icon: #13110E;
+  --nav-muted: #13110E;
+  --nav-page: #F7F6F4;
+  --nav-pressed: #AA9B92;
+  --nav-rule: #CDC8C6;
+  --nav-sub-rule: #DFDEDC;
+  --nav-surface: #F7F6F4;
+  --nav-text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-tab-bar,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-tab-bar{
-  --border: #524842;
-  --muted: #F7F6F4;
-  --page: #1A1A1A;
-  --surface: #2A2621;
-  --text: #F7F6F4;
+  --nav-disabled: #524842;
+  --nav-hover: #2E2A25;
+  --nav-icon: #F7F6F4;
+  --nav-muted: #F7F6F4;
+  --nav-page: #1A1A1A;
+  --nav-pressed: #413934;
+  --nav-rule: #524842;
+  --nav-sub-rule: #524842;
+  --nav-surface: #2A2621;
+  --nav-text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-table{
   --border: #CDC8C6;
