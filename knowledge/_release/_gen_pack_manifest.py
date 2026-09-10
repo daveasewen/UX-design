@@ -263,13 +263,21 @@ GATE_DATA_CANDIDATES = [
     # that ships the red without the remedy hands them a dead end. (It is not routed through
     # DOOR_COMPANIONS because that closure fills a companion BESIDE a door that landed elsewhere;
     # here door and driver both land in `knowledge/`, so the seed would be a no-op copy.)
+    # ⛔ s267-D1 (Dave, 2026-09-10: "Hold — re-cut with the chart pages shipped"). THE SIX TEST
+    # PAGES ARE NO LONGER TYPED HERE. They were, and the typed list went stale inside one
+    # session: #259 landed eight more chart types, the receipt grew to name THIRTEEN pages, this
+    # list still said six, and at the v1.0.10 cut (`fbd9c14`) `_validate_dataviz.py` died in-pack
+    # on `knowledge/_tests/chart-engine/boxplot.html` ("file is missing"), went green on the full
+    # tree, and the differential arm called it REPO-BOUND — the gate LEFT THE PACK. Measured, not
+    # recalled: with the six, the in-pack run reds on boxplot/bullet/butterfly-h/candlestick/
+    # histogram/scatter; with the receipt-named set it exits 0 on 14 chart surfaces.
+    #
+    # The seat is `receipt_named_chart_pages(sha)` below: the pages come from the RECEIPT, at the
+    # commit being cut, because the receipt is the same artefact `driven_dv004()` re-hashes on
+    # disk. Same discipline as `fee2572`'s import scan — a second copy of a list the tool already
+    # holds is a list that drifts [[stale-typed-list]]. This is the same class of defect one list
+    # along, and the remedy is the same: measure it.
     "knowledge/_tests/chart-engine/_receipts.json",
-    "knowledge/_tests/chart-engine/bar.html",
-    "knowledge/_tests/chart-engine/combo.html",
-    "knowledge/_tests/chart-engine/donut.html",
-    "knowledge/_tests/chart-engine/line.html",
-    "knowledge/_tests/chart-engine/sparkline.html",
-    "knowledge/_tests/chart-engine/stacked-area.html",
     "knowledge/_drive_chart_engine.py",
     # ⛔ #262 R — THE BEHAVIOUR LEDGER, and why it is now an INPUT rather than an output.
     # `_validate_behaviour.py` used to WRITE `knowledge/_BEHAVIOUR-GATE.md` on every run, so the
@@ -673,6 +681,53 @@ def commit_epoch(sha):
 def tree_paths(sha):
     out = git("ls-tree", "-r", "--name-only", sha)
     return [l for l in out.split("\n") if l]
+
+
+CHART_RECEIPTS_PATH = "knowledge/_tests/chart-engine/_receipts.json"
+CHART_PAGES_DIR = "knowledge/_tests/chart-engine/"
+
+
+def receipt_named_chart_pages(sha):
+    """The chart-engine test pages `_validate_dataviz.py` re-hashes — READ OFF THE RECEIPT.
+
+    s267-D1. `driven_dv004()` walks each receipt entry's `sources` map and re-hashes every row
+    ON DISK before it will grade a chart; the rows under `knowledge/_tests/chart-engine/` are
+    the pages. Ship the receipt without them and the freshness check reads "file is missing"
+    and the gate is BLOCKING-red in the pack for a reason the designer cannot fix.
+
+    READ AT THE COMMIT BEING CUT (`git show <sha>:<path>`), never from the working tree: the cut
+    is a function of the commit, and a working-tree read would make two bakes of the same commit
+    able to differ. Missing or unparseable receipt returns () — the gate then reds honestly on
+    its own missing evidence rather than this generator inventing a list.
+
+    Everything else those `sources` maps name (`knowledge/canon/*`, `knowledge/snippets/Chart-*`)
+    is already owned by another group and is claimed there; only the pages were unclaimed.
+    """
+    try:
+        raw = git("show", "%s:%s" % (sha, CHART_RECEIPTS_PATH))
+    except RuntimeError:
+        return ()
+    return chart_pages_from_receipt(raw)
+
+
+def chart_pages_from_receipt(raw):
+    """The pure half of `receipt_named_chart_pages` — bite-testable without a commit."""
+    try:
+        rec = json.loads(raw)
+    except ValueError:
+        return ()
+    out = set()
+    for entry in (rec.get("pages") or {}).values():
+        for rel in (entry.get("sources") or {}):
+            if rel.startswith(CHART_PAGES_DIR) and rel.endswith(".html"):
+                out.add(rel)
+    return tuple(sorted(out))
+
+
+def gate_data_candidates(sha):
+    """`GATE_DATA_CANDIDATES` plus the measured chart pages. One seat, two call sites."""
+    return list(GATE_DATA_CANDIDATES) + [p for p in receipt_named_chart_pages(sha)
+                                         if p not in GATE_DATA_CANDIDATES]
 
 
 def blob_sizes(sha, paths):
@@ -1095,7 +1150,7 @@ def probe_gates(sha, stage_root=None, only=None, verbose=False, full_stage=None)
     stage = os.path.join(tmp, "pack")
     if not os.path.isdir(stage):
         os.makedirs(stage, exist_ok=True)
-        extract(sha, non_gate + GATE_DATA_CANDIDATES, stage, tolerant=True)
+        extract(sha, non_gate + gate_data_candidates(sha), stage, tolerant=True)
 
     shipped = set(non_gate)
     results = []
@@ -1860,7 +1915,7 @@ def build_manifest(sha, probe):
                              for m in r["local_imports"]
                              for h in [HELPER_HOMES.get(m, "knowledge/%s.py" % m)]
                              if h in paths})
-    gate_data = [p for p in GATE_DATA_CANDIDATES if p in paths]
+    gate_data = [p for p in gate_data_candidates(sha) if p in paths]
 
     # ---- THE CI TEMPLATE RIDES WITH THE GATES (#219 R2, s219-D4(3)). ---------------------------
     # The pack-side half of "CI both halves" is a workflow a designer copies into their own repo,
@@ -2752,6 +2807,36 @@ def selftest():
     _lz, _th = local_imports('x = __import__(name)\n', _KF)
     bite("lazy/non-literal-ignored", (len(_lz), len(_th)), (0, 0),
          "a computed module name is UNKNOWN, and unknown is not a claim")
+
+    # ---- s267-D1: the chart pages the dataviz gate re-hashes must ship BY MEASUREMENT. The
+    # typed six went stale against a receipt naming thirteen and the gate left the v1.0.10 cut.
+    _fake = json.dumps({"pages": {
+        "boxplot.html": {"sources": {"knowledge/_tests/chart-engine/boxplot.html": "aa",
+                                     "knowledge/canon/dv-render-boxplot.js": "bb",
+                                     "knowledge/canon/type.css": "cc",
+                                     "knowledge/snippets/Chart-boxplot.reference.html": "ee"}},
+        "bar.html": {"sources": {"knowledge/_tests/chart-engine/bar.html": "dd"}}}})
+    bite("chartpages/from-receipt", chart_pages_from_receipt(_fake),
+         ("knowledge/_tests/chart-engine/bar.html",
+          "knowledge/_tests/chart-engine/boxplot.html"),
+         "only the pages — canon/* is engine-canon's and already claimed")
+    bite("chartpages/bad-json-empty", chart_pages_from_receipt("{not json"), (),
+         "an unreadable receipt must not make this generator invent a ship list")
+    bite("chartpages/no-pages-empty", chart_pages_from_receipt('{"pages": {}}'), ())
+    _named = receipt_named_chart_pages("HEAD")
+    _cands = gate_data_candidates("HEAD")
+    bite("chartpages/head-has-many", len(_named) >= 13, True,
+         "_receipts.json at HEAD names the chart-engine pages dv-004 re-hashes; #259 landed "
+         "eight more types and six was already stale")
+    bite("chartpages/every-named-page-is-a-candidate",
+         sorted(p for p in _named if p not in _cands), [],
+         "THE BITE THE v1.0.10 CUT NEEDED: a receipt-named page absent from the cut is the "
+         "dataviz gate leaving the pack as REPO-BOUND")
+    bite("chartpages/receipt-rides-too", CHART_RECEIPTS_PATH in _cands, True)
+    bite("chartpages/no-typed-pages-left",
+         [p for p in GATE_DATA_CANDIDATES if p.startswith(CHART_PAGES_DIR)
+          and p.endswith(".html")], [],
+         "a second copy of the page list is a list that drifts")
 
     # ---- classifier: the verdicts are a function of the RUN, and each arm can fail
     v, w = classify(0, "all green", "", set())
