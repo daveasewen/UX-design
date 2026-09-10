@@ -833,6 +833,60 @@ def status_word():
 STD = set(sys.stdlib_module_names)
 
 
+# ⛔ #267 — THE LAZY IMPORT THE AST SCAN COULD NOT SEE, AND THE PACKAGING HOLE IT LEFT.
+#
+# `knowledge/_validate_receipt.py:635` reaches its mint helper as `gen = __import__(
+# "gen_provenance_receipt")` — deliberately lazy, so the gate and the generator have no import
+# cycle. `_validate_screen.py` reaches its own helpers the same way via
+# `importlib.import_module(...)`. A STRING CALL is not an `ast.Import` node, so the scan below
+# saw nothing, `helper_closure` in build_manifest() never claimed the file, and
+# `gen_provenance_receipt.py` shipped in NONE of v1.0.7 / v1.0.8 / v1.0.9
+# (`unzip -l … | grep -c gen_provenance_receipt` = 0 for all three) — while the pack's own
+# shipped skill, `apollo-spider/skills/generate-from-canon/SKILL.md:291`, tells the designer to
+# run `python3 knowledge/gen_provenance_receipt.py --mint …`, and both `_validate_receipt.py`
+# and `_validate_screen.py` name that command as the remedy for a missing receipt. Three
+# releases; a consumer could not mint, so a consumer could not pass the receipt gate.
+#
+# WHY HERE AND NOT IN `HELPER_HOMES`. `HELPER_HOMES` is a TYPED seed and its own comment says it
+# must stay small: a name typed there is a claim that ages, and the next lazily-imported helper
+# would be missing again [[gate-dont-patch]]. This seat is the MEASUREMENT — the closure now
+# claims the helper because the source says so, whatever the helper is called.
+#
+# WHY ONLY THE `local` SIDE MOVES. A string call whose argument is NOT one of ours is left out
+# of `third` on purpose: `_validate_dataviz.py:277` does `__import__("hashlib")` and
+# `_validate_type_composites.py:323` does `__import__('datetime')` inside a f-string, and a
+# guarded `importlib.import_module("tiktoken")` is a soft probe, not a dependency. Folding
+# those into `third_party` would invent NEEDS-DEP verdicts out of optional code paths. The
+# defect being fixed is a file that failed to SHIP, not a verdict that was wrong.
+_STR_IMPORT_FUNCS = ("__import__", "import_module", "importlib.import_module")
+
+
+def string_call_imports(tree):
+    """Module names named as a string LITERAL to `__import__()` / `importlib.import_module()`.
+
+    Anywhere in the file, function bodies included — unlike `analyse_imports`, whose module-level
+    scope is the right one for "can this file be imported at all". The question here is
+    different: "does this file REACH for a sibling of ours at any point", and a helper reached
+    only from inside a function still has to be in the zip."""
+    out = set()
+    for n in ast.walk(tree):
+        if not isinstance(n, ast.Call) or not n.args:
+            continue
+        f, dotted = n.func, []
+        while isinstance(f, ast.Attribute):
+            dotted.append(f.attr)
+            f = f.value
+        if isinstance(f, ast.Name):
+            dotted.append(f.id)
+        name = ".".join(reversed(dotted))
+        if name not in _STR_IMPORT_FUNCS:
+            continue
+        a = n.args[0]
+        if isinstance(a, ast.Constant) and isinstance(a.value, str):
+            out.add(a.value.split(".")[0])
+    return out
+
+
 def local_imports(src_text, knowledge_files):
     """AST scan for imports that resolve to a module living in knowledge/. Used to decide what
     to COPY into the probe stage — never to decide the verdict."""
@@ -849,6 +903,9 @@ def local_imports(src_text, knowledge_files):
             if n.module:
                 mods.add(n.module.split(".")[0])
     local = {m for m in mods if (m + ".py") in knowledge_files or m in HELPER_HOMES}
+    # #267: the lazy string-call imports, local side only — see the block above.
+    local |= {m for m in string_call_imports(t)
+              if (m + ".py") in knowledge_files or m in HELPER_HOMES}
     third = {m for m in mods if m not in STD and m not in local}
     return local, third
 
@@ -2664,6 +2721,31 @@ def selftest():
          True, "a shape that changes the ship set must say so, not just name itself")
     bite("arm/legacy-probe", "UNRECORDED" in arm_line(dict(commit="deadbeef")), True,
          "a probe made before this field must not be reported as either shape")
+
+    # ---- #267: the LAZY string-call import the AST scan could not see. Mutation-tested both
+    # ways — the local helper must be claimed, and the stdlib/optional ones must NOT become deps.
+    _KF = {"gen_provenance_receipt.py", "_validate_icons.py"}
+    _lz, _th = local_imports(
+        'import os\n'
+        'def f():\n'
+        '    gen = __import__("gen_provenance_receipt")\n', _KF)
+    bite("lazy/str-call-claimed", "gen_provenance_receipt" in _lz, True,
+         "_validate_receipt.py:635 reaches the mint helper by string; three releases shipped "
+         "without it because this scan only read ast.Import nodes")
+    _lz, _th = local_imports(
+        'import importlib\nicons = importlib.import_module("_validate_icons")\n', _KF)
+    bite("lazy/importlib-claimed", "_validate_icons" in _lz, True)
+    _lz, _th = local_imports('h = __import__("hashlib").sha256()\n', _KF)
+    bite("lazy/stdlib-not-claimed", ("hashlib" in _lz, "hashlib" in _th), (False, False),
+         "_validate_dataviz.py:277 — a stdlib string call is not a shipped helper and not a dep")
+    _lz, _th = local_imports(
+        'def probe():\n    try:\n        importlib.import_module("tiktoken")\n'
+        '    except Exception:\n        pass\n', _KF)
+    bite("lazy/optional-not-a-dep", "tiktoken" in _th, False,
+         "a guarded soft probe must not invent a NEEDS-DEP verdict")
+    _lz, _th = local_imports('x = __import__(name)\n', _KF)
+    bite("lazy/non-literal-ignored", (len(_lz), len(_th)), (0, 0),
+         "a computed module name is UNKNOWN, and unknown is not a claim")
 
     # ---- classifier: the verdicts are a function of the RUN, and each arm can fail
     v, w = classify(0, "all green", "", set())
