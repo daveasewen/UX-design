@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go / no-go v2 — Apollo — Spider v1.0.10</title>
+<style>
+  :root{
+    --accent:#DA1A00; --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);color:var(--black);
+       font:400 16px/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+  nav{position:sticky;top:0;z-index:10;background:var(--white);
+      border-bottom:1px solid var(--grey-2)}
+  nav .wrap{height:56px;display:flex;align-items:center;justify-content:space-between}
+  nav .back{font-size:14px;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+  nav .ctx{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6)}
+  .label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+  .label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+  section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+  section.tight{padding:var(--s6) 0}
+  section.band{background:var(--grey-1)}
+  h1{font-size:57px;line-height:1.04;font-weight:300;letter-spacing:0;margin:0 0 var(--s4)}
+  h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+  h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+  p{margin:0 0 var(--s2);max-width:66ch}
+  .head{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+  .meta{font-size:14px;line-height:1.6;color:var(--grey-7)}
+  .meta b{color:var(--black);font-weight:500}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+  .stat .n{font-size:43px;font-weight:200;line-height:1.05}
+  .stat .c{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-5);
+           margin-top:var(--s1)}
+  .dim{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+  .idx{font-size:57px;font-weight:200;color:var(--grey-3);line-height:1}
+  .dim .lab{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);
+            margin-top:var(--s2)}
+  .prop{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start}
+  .rulecol{border-left:1px solid var(--grey-2);min-height:120px}
+  code,.mono{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px}
+  code{background:var(--grey-1);padding:1px 4px}
+  pre{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px;line-height:1.6;
+      background:var(--grey-1);padding:var(--s3);overflow-x:auto;margin:0 0 var(--s3)}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--grey-2);vertical-align:top}
+  th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);
+     font-weight:500;border-bottom:1px solid var(--grey-3)}
+  td.n{white-space:nowrap}
+  .pass{font-weight:500}
+  .red{color:var(--accent);font-weight:500}
+  .delta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);
+         margin-top:var(--s4)}
+  .delta > div{background:var(--white);padding:var(--s4)}
+  .delta .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 var(--s3);
+            color:var(--grey-6)}
+  .delta .h.acc{color:var(--accent)}
+  ul{margin:0 0 var(--s2);padding-left:1.1rem;max-width:66ch}
+  li{margin-bottom:6px}
+  .q{border-top:1px solid var(--grey-3);padding-top:var(--s4);margin-top:var(--s5)}
+  .q .ask{font-size:43px;font-weight:300;line-height:1.15;margin:0 0 var(--s3)}
+  footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+  @media (max-width:860px){
+    .head,.dim,.prop,.delta{grid-template-columns:1fr}
+    .rulecol{display:none}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    h1{font-size:43px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="back" href="GO-NOGO-v1.0.10-2026-09-10-v1.html">&larr; Go / no-go v1 (the held cut)</a>
+    <span class="ctx">Apollo — Spider · release decision · v2</span>
+  </div>
+</nav>
+
+<section>
+  <div class="wrap">
+    <p class="label">Go / no-go v2 · session #267 · 2026-09-10</p>
+    <div class="head">
+      <div>
+        <h1>v1.0.10 —<br>re-cut with the<br>chart pages shipped.</h1>
+      </div>
+      <div class="meta">
+        <p><b>s267-D1</b> (your word, commit <code>185946f</code>):<br>
+        &ldquo;Hold — re-cut with the chart pages shipped. lets get this sorted&rdquo;</p>
+        <p>Done. The dataviz gate is back in the ship set, and it is back because the cut rule now
+        <b>measures</b> which chart pages it needs rather than carrying a list of six.</p>
+        <p>Status: <b>PROPOSED</b>. Nothing is ratified, baked, or pushed.</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">a9218cc</div><div class="c">re-cut commit</div></div>
+      <div class="stat"><div class="n">1714</div><div class="c">files (was 1706)</div></div>
+      <div class="stat"><div class="n">+16 / &minus;0</div><div class="c">vs v1.0.9</div></div>
+      <div class="stat"><div class="n">rc 0</div><div class="c">dataviz gate, in&#8209;pack</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">What changed since v1</p>
+    <div class="prop">
+      <div>
+        <h2>One list, deleted.<br>One measurement, added.</h2>
+      </div>
+      <div class="rulecol"></div>
+      <div>
+        <p>v1 held because <code>knowledge/_validate_dataviz.py</code> fell out of the cut as
+        REPO-BOUND. The cause was a typed list: <code>GATE_DATA_CANDIDATES</code> named
+        <b>six</b> chart-engine test pages, and <code>_tests/chart-engine/_receipts.json</code>
+        names <b>thirteen</b>. #259 landed eight more chart types; the list did not move.</p>
+        <p>The fix is at cause and it is not a longer list. <code>_gen_pack_manifest.py:690</code>
+        <code>receipt_named_chart_pages(sha)</code> reads the receipt <b>at the commit being cut</b>
+        (<code>git show</code>) and returns its <code>sources</code> rows under
+        <code>knowledge/_tests/chart-engine/</code> — the same rows <code>driven_dv004()</code>
+        re-hashes on disk before it will grade a chart. <code>gate_data_candidates(sha)</code>
+        (<code>:727</code>) is the one seat both call sites use
+        (<code>:1153</code> the probe stage, <code>:1918</code> the manifest).</p>
+        <p>Same discipline as <code>fee2572</code>'s import scan, one list along. The typed page
+        lines are gone from <code>:266</code>, and a bite fails if they come back.</p>
+        <p class="mono">Fix commit <b>a9218cc06e8f24a5db1b7fe5648610e17d1f83f5</b> ·
+        7 new bites · <code>_gen_pack_manifest.py --selftest</code> 233 bites, 0 fail ·
+        <code>build-designer-pack.sh --selftest</code> rc 0.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">The measurement, not the recollection</p>
+    <div class="dim">
+      <div>
+        <div class="idx">01</div>
+        <div class="lab">Driven in an unzipped stage</div>
+      </div>
+      <div>
+        <p>The 13-vs-6 was re-measured, not inherited. <code>_validate_dataviz.py</code> was copied
+        into a copy of the v1 dry-run stage and run as a consumer would run it.</p>
+        <div class="scroll"><table>
+          <tr><th>Stage</th><th>Chart pages present</th><th>Result</th></tr>
+          <tr><td>v1 cut (<code>fbd9c14</code>), six pages</td><td class="n">6</td>
+              <td class="red">FAIL — 6 blocking dv-004 reds: boxplot, bullet, butterfly-h,
+              candlestick, histogram, scatter, each &ldquo;file is missing&rdquo;</td></tr>
+          <tr><td>+ the seven receipt-named pages</td><td class="n">13</td>
+              <td class="pass">PASS — rc 0, 14 chart surfaces</td></tr>
+        </table></div>
+        <p>Nothing else was missing: every other <code>sources</code> row
+        (<code>knowledge/canon/*</code>, <code>knowledge/snippets/Chart-*.reference.html</code>) is
+        already owned by engine-canon and already ships. Seven pages is the whole of it —
+        no &ldquo;while we&rsquo;re here&rdquo; copy-list.</p>
+        <p><b>butterfly-v.html rides too</b> and is named, not smuggled: the receipt names it, and
+        whether a snippet is engine-drawn is a property of its markup that can change without any
+        edit here. The receipt is the measurement; <code>ENGINE_TEST_PAGE</code> would be a second
+        typed list to depend on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <p class="label">The bites that would have caught it</p>
+    <div class="scroll"><table>
+      <tr><th>Bite</th><th>What it asserts</th><th>Mutation that bit</th></tr>
+      <tr><td class="mono">chartpages/every-named-page-is-a-candidate</td>
+          <td>every receipt-named page is in the cut</td>
+          <td>truncate the derived list to 2 &rarr; RED naming 11 absent pages</td></tr>
+      <tr><td class="mono">chartpages/from-receipt</td>
+          <td>only the pages, not every <code>.html</code> row</td>
+          <td>drop the directory filter &rarr; RED, a snippet leaks in</td></tr>
+      <tr><td class="mono">chartpages/no-typed-pages-left</td>
+          <td>no page path may return to the typed list</td><td>—</td></tr>
+      <tr><td class="mono">chartpages/bad-json-empty</td>
+          <td>an unreadable receipt returns (), never an invented list</td><td>—</td></tr>
+      <tr><td class="mono">chartpages/head-has-many</td>
+          <td>HEAD's receipt names &ge; 13 pages</td><td>—</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">The cut</p>
+    <div class="dim">
+      <div>
+        <div class="idx">02</div>
+        <div class="lab">Manifest deltas</div>
+      </div>
+      <div>
+        <div class="delta">
+          <div>
+            <p class="h">vs v1 (<code>fbd9c14</code>) — +8, &minus;0</p>
+            <ul>
+              <li><code>knowledge/_validate_dataviz.py</code> (the gate itself, back)</li>
+              <li>boxplot · bullet · butterfly-h · butterfly-v · candlestick · histogram · scatter
+                  <br><span class="mono">knowledge/_tests/chart-engine/*.html</span></li>
+            </ul>
+            <p class="mono">REMOVED: none.</p>
+          </div>
+          <div>
+            <p class="h acc">vs v1.0.9 (<code>3cab7c3</code>) — +16, &minus;0</p>
+            <ul>
+              <li>the 7 chart pages above</li>
+              <li><code>knowledge/gen_provenance_receipt.py</code> — the mint helper the lazy
+                  <code>__import__</code> hid for three releases</li>
+              <li>8 derived <code>-active</code> icons (#264)</li>
+            </ul>
+            <p class="mono">REMOVED: <b>none</b> — nothing that shipped in v1.0.9 leaves this cut.
+            That was the finding to watch, and it is clean.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Fingerprints</p>
+    <pre>commit          a9218cc06e8f24a5db1b7fe5648610e17d1f83f5
+manifest        1714 files · 45,967,883 bytes · sha256 4cd9229adb2df432
+differential    ARMED (--full-stage /var/tmp/full10b) — REPO-BOUND verdicts MEASURED
+zip (twice)     d76ffd507319ae53ccc96f4ea4090baa0369e2761985231954b7250eca5dc488
+cmp             rc 0 — /var/tmp/dry10c vs /var/tmp/dry10d, byte-identical
+probe           41 RUNNABLE · 4 NEEDS-DEP · 9 REPO-BOUND
+                _validate_dataviz.py  RUNNABLE · population "graded" · "ran clean, verdict PASS"
+status          PROPOSED — no ruling keyed to v1.0.10, RATIFY_IDS untouched</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Proved from inside the pack</p>
+    <div class="dim">
+      <div>
+        <div class="idx">03</div>
+        <div class="lab">Run as a consumer runs it</div>
+      </div>
+      <div>
+        <p>From the unzipped dry-run stage <code>/var/tmp/dry10c/Apollo-Spider-v1.0.10</code>,
+        with the frozen cold-run arm untouched (the receipt proof ran on a <b>copy</b> of
+        <code>outputs/coldrun-267/arm-A-blind/dashboard.html</code>;
+        <code>git status</code> on that folder is clean).</p>
+        <div class="scroll"><table>
+          <tr><th>Run</th><th>rc</th><th>First line</th></tr>
+          <tr><td><code>python3 knowledge/_validate_dataviz.py</code></td><td class="n pass">0</td>
+              <td>&#10004; DataViz gate passed (14 chart surface file(s)) — 14 PASS, 0 blocking</td></tr>
+          <tr><td><code>gen_provenance_receipt.py --mint &lt;copy&gt;</code></td><td class="n pass">0</td>
+              <td>minted receipt into /var/tmp/dash-p2.html</td></tr>
+          <tr><td><code>_validate_receipt.py &lt;copy&gt;</code> before the mint</td><td class="n red">1</td>
+              <td>FAIL:NO-RECEIPT — the honest red, and it names the mint by path</td></tr>
+          <tr><td><code>_validate_receipt.py &lt;copy&gt;</code> after the mint</td><td class="n pass">0</td>
+              <td>RESULT: PASS &#10004; (+1 UNPROVEN)</td></tr>
+        </table></div>
+        <p>That second pair is the v1.0.9 hole closed: in a v1.0.9 stage the mint helper is not
+        in the zip at all, so the same sequence cannot start.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <p class="label">Ten release gates — 8 PASS, 2 pre-bake</p>
+    <div class="scroll"><table>
+      <tr><th>#</th><th>Gate</th><th>rc</th><th>Line</th></tr>
+      <tr><td class="n">1</td><td><code>_gate_frozen_release.py</code></td><td class="n pass">0</td>
+          <td>PASS — 3 arm(s) asked, no frozen surface moved.</td></tr>
+      <tr><td class="n">2</td><td><code>_gate_frozen_release.py --selftest</code></td><td class="n pass">0</td>
+          <td>selftest: 14 bites, 0 fail(s)</td></tr>
+      <tr><td class="n">3</td><td><code>_gate_release_audit.py --check</code></td><td class="n pass">0</td>
+          <td>PASS — byte-identical to a fresh generation at a9218cc06e8f (1714 files, 4cd9229adb2df432)</td></tr>
+      <tr><td class="n">4</td><td><code>_gate_release_audit.py --selftest</code></td><td class="n red">1</td>
+          <td class="red">RED [pack/frozen-history-is-skipped-not-failed] — it drives the
+          <code>--pack</code> arm, which cannot pass pre-bake. Same fact as gate 5.</td></tr>
+      <tr><td class="n">5</td><td><code>_gate_release_audit.py --pack</code></td><td class="n red">1</td>
+          <td class="red">the manifest reads v1.0.10 and no zip in dist/ carries it — true, and
+          correct: <b>nobody has baked it, because baking is your word.</b></td></tr>
+      <tr><td class="n">6</td><td><code>_gate_ci_template.py --check</code></td><td class="n pass">0</td>
+          <td>PASS — the template parses, ships what it calls, and hides nothing.</td></tr>
+      <tr><td class="n">7</td><td><code>_gate_ci_template.py --selftest</code></td><td class="n pass">0</td>
+          <td>selftest: 10 bites, 0 fail(s)</td></tr>
+      <tr><td class="n">8</td><td><code>build-designer-pack.sh --selftest</code></td><td class="n pass">0</td>
+          <td>refusal arms green: stale chart receipts refused; PROPOSED blocks <code>--release</code></td></tr>
+      <tr><td class="n">9</td><td><code>cold-start/gen_projections.py --check</code></td><td class="n pass">0</td>
+          <td>OK — 3 projection(s) and 3 PLACED host file(s) in sync</td></tr>
+      <tr><td class="n">10</td><td><code>_gate_pack_docs.py --stage &lt;stage&gt;</code></td><td class="n pass">0</td>
+          <td>221 finding(s). ADVISORY — exiting 0 (pre-existing runbook path names)</td></tr>
+    </table></div>
+    <p>Gates 4 and 5 go green the moment the zip exists, and not before. They were red on the same
+    fact at v1's cut too; this is the pre-bake state, declared, not a regression.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">What is still not done</p>
+    <div class="dim">
+      <div>
+        <div class="idx">04</div>
+        <div class="lab">Declared, not routed around</div>
+      </div>
+      <div>
+        <ul>
+          <li>No <code>--release</code>, no push, no ratification, no <code>_rulings.json</code>
+            edit. <b>5 commits local and unpushed.</b></li>
+          <li><code>RATIFY_IDS</code>, <code>_gate_frozen_release.py:134</code>'s
+            <code>v1.0.9</code> literal, <code>_frozen-releases.json</code> and <code>dist/</code>
+            are all untouched.</li>
+          <li><code>reviews/RELEASE-SPIDER-2026-08-26-v1.html</code> was regenerated by
+            <code>--manifest</code>/<code>--dry-run</code> (the script does that itself) and the
+            review overlay re-injected. It now describes v1.0.10 at a9218cc.</li>
+          <li>The 9 REPO-BOUND gates that stay out are the same nine as v1.0.9's cut — none of them
+            is the dataviz gate any more.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="q">
+      <p class="label">The one question</p>
+      <p class="ask">Ratify v1.0.10 at <span class="mono">a9218cc</span>?</p>
+      <p>A yes inscribes a new ruling, keys <code>RATIFY_IDS</code> to it, moves the frozen
+      literal to v1.0.10, bakes, verifies, and re-seeds the frozen ledger — five serial steps,
+      each with its #262 precedent commit, listed in
+      <code>notes/_lanes/2026-09-10-267-P2-v1010-recut.md</code>. Nothing runs until you say it.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Apollo — Spider · go / no-go v2 · v1.0.10 PROPOSED at a9218cc (re-cut commit 4a7adb8) ·
+    session #267 · 2026-09-10 · s267-D1 · lane P2. Nothing on this page is ratified.
+    v1 stays as the record of the held cut.
+  </div>
+</footer>
+
+</body>
+</html>
