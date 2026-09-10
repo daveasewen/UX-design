@@ -210,7 +210,7 @@ legend.addEventListener('click',ev=>{const c=ev.target.closest('.chip');if(!c)re
 // ---------- canvas
 const cv=document.getElementById('cv'),MAIN=cv.getContext('2d');let ctx=MAIN;const OFF=[];stage=document.getElementById('stage');
 let W,H,DPR,view={x:0,y:0,k:0.42};
-let dof=false;const DOF_BLUR=[0,0.6,1.4,2.6,4.5],DOF_BAND=170;
+let dof=0;const DOF_PROFILES=[null,{blur:[0,0.5,1,1.8,2.8,4,5.5],band:120,label:'Depth'},{blur:[0,1.2,2.6,4.5,7,10,14],band:80,label:'Macro'}];let DOF_BLUR=[],DOF_BAND=1;
 let three=false,spin=true,rot={x:0.35,y:0},ctr=[0,0,0];const F=2600;
 function proj(x,y,z){if(!three)return {x:W/2+(x+view.x)*view.k,y:H/2+(y+view.y)*view.k,s:1,d:0};
   x-=ctr[0];y-=ctr[1];z-=ctr[2];const cy=Math.cos(rot.y),sy_=Math.sin(rot.y),cx=Math.cos(rot.x),sx_=Math.sin(rot.x);
@@ -229,17 +229,23 @@ function draw(){
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
   ctx.lineWidth=focus?0.9:0.5;
   const focalD=(three&&focus)?P(focus).d:0;
-  const bandOf=d=>Math.min(DOF_BLUR.length-1,Math.floor(Math.abs(d-focalD)/DOF_BAND));
+  // smoothed depth distance per node — band membership no longer pops frame to frame (the flicker)
+  const halo=new Set();if(focus){halo.add(focus.id);for(const x of adj.get(focus.id)){if(alive(x.e))halo.add(x.other)}}
+  if(three&&dof){for(const n of NODES){const d=Math.abs(P(n).d-focalD);n.bd=(n.bd==null)?d:n.bd+(d-n.bd)*0.25}}
+  // band POSITION is continuous; each item is drawn into its two nearest bands with cross-fade weights, so blur never pops
+  const posN=n=>halo.has(n.id)?0:Math.min(DOF_BLUR.length-1,(n.bd||0)/DOF_BAND);
+  const posE=(s,t)=>(halo.has(s.id)&&halo.has(t.id))?0:Math.min(DOF_BLUR.length-1,((s.bd||0)+(t.bd||0))/2/DOF_BAND);
+  const wt=(pos,band)=>band<0?1:Math.max(0,1-Math.abs(pos-band));
   const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
   const passes=(three&&dof)?DOF_BLUR.map((b,i)=>i).reverse():[-1];
   for(const band of passes){if(band>=0){if(!OFF[band]){OFF[band]=document.createElement('canvas')}const o=OFF[band];if(o.width!==cv.width||o.height!==cv.height){o.width=cv.width;o.height=cv.height}ctx=o.getContext('2d');ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H)}
   // edges
   for(const e of EDGES){if(!e.t||!alive(e))continue;const s=byId.get(e.s),t=byId.get(e.t);
-    if(band>=0&&bandOf((P(s).d+P(t).d)/2)!==band)continue;
+    const we=wt(posE(s,t),band);if(we<=0.02)continue;
     const on=NODEON(s)&&NODEON(t)&&famOn[FAMILY[e.type]];
     let a=on?Math.min(s.a,t.a)*(focus?0.9:0.32):0.04; if(pathEdges){a=pathEdges.has(e.k)?1:a*0.15}
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
-    if(a<0.02)continue; ctx.globalAlpha=a;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
+    if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
     ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:0.6;
     ctx.setLineDash(e.derived?[4,3]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them
     let ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);
@@ -247,9 +253,9 @@ function draw(){
     ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
   ctx.setLineDash([]);
   // nodes
-  for(const n of ORDER){if(!alive(n))continue;if(band>=0&&bandOf(P(n).d)!==band)continue;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
+  for(const n of ORDER){if(!alive(n))continue;const wn=wt(posN(n),band);if(wn<=0.02)continue;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
     if(hover&&!focus){a=(n===hover||adj.get(hover.id).some(x=>x.other===n.id&&alive(x.e)))?1:0.12}
-    if(a<0.03)continue;const pn=P(n);ctx.globalAlpha=three?a*(0.5+0.5*pn.s):a;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s;
+    if(a<0.03)continue;const pn=P(n);ctx.globalAlpha=(three?a*(0.5+0.5*pn.s):a)*wn;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s*(band>0?1+band*0.35:1);
     ctx.fillStyle=C.t[n.type];ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r),0,7);ctx.fill();
     if(n===focus||(pathNodes&&pathNodes.has(n.id))){ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle=C.ink;ctx.lineWidth=1;ctx.beginPath();ctx.arc(pn.x,pn.y,Math.max(0.4,r)+3,0,7);ctx.stroke();}
   }
@@ -262,7 +268,9 @@ function draw(){
   if(pathNodes)for(const id of pathNodes)lab.push(byId.get(id));
   const seen=new Set();
   for(const n of lab){if(seen.has(n.id))continue;seen.add(n.id);const pn=P(n);const x=pn.x+n.r*pn.s+5,y=pn.y;const t=n.label.length>34?n.label.slice(0,33)+'…':n.label;
-    ctx.fillStyle=C.bg;ctx.globalAlpha=0.75;const w=ctx.measureText(t).width;ctx.fillRect(x-2,y-7,w+4,14);ctx.globalAlpha=1;
+    // 2D: a plate behind the label. 3D: NO plate — plates were sitting on neighbouring dots (the "missing nodes"); a text halo instead
+    if(three){ctx.shadowColor=C.bg;ctx.shadowBlur=4;ctx.lineWidth=3;ctx.strokeStyle=C.bg;ctx.globalAlpha=0.85;ctx.strokeText(t,x,y);ctx.shadowBlur=0;ctx.globalAlpha=1}
+    else{ctx.fillStyle=C.bg;ctx.globalAlpha=0.7;const w=ctx.measureText(t).width;ctx.fillRect(x-2,y-7,w+4,14);ctx.globalAlpha=1;}
     ctx.fillStyle=n===focus?C.ink:C.ink2;if(n===focus)ctx.font='bold 12px "Helvetica Neue",Helvetica,Arial,sans-serif';ctx.fillText(t,x,y);ctx.font='11px "Helvetica Neue",Helvetica,Arial,sans-serif';}
   // sector labels in focus mode
   if(focus&&sectors){ctx.font='10px Menlo,monospace';ctx.textAlign='center';for(const s of sectors){ctx.globalAlpha=0.9;ctx.fillStyle=C.f[FAMILY[s.type]];
@@ -375,7 +383,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(pathNodes){pathNodes=path
 document.getElementById('three').onclick=function(){three=!three;this.classList.toggle('on',three);document.getElementById('spin').hidden=!three;document.getElementById('dof').hidden=!three;
   for(const n of NODES){[n.tx,n.ty,n.tz]=base(n)}if(focus)applyFocus();else{ctr=[0,0,0];fit()}animate()};
 document.getElementById('spin').onclick=function(){spin=!spin;this.classList.toggle('on',spin);animate()};
-document.getElementById('dof').onclick=function(){dof=!dof;this.classList.toggle('on',dof);animate()};
+document.getElementById('dof').onclick=function(){dof=(dof+1)%3;const pr=DOF_PROFILES[dof];this.classList.toggle('on',!!pr);this.textContent=pr?pr.label:'Depth';if(pr){DOF_BLUR=pr.blur;DOF_BAND=pr.band}for(const n of NODES)n.bd=null;animate()};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)animate()});
 document.getElementById('spin').classList.add('on');
 document.getElementById('depth').onclick=function(){depth2=!depth2;this.classList.toggle('on',depth2);if(focus)applyFocus()};

@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.5"  # 1.0 #266 sector dig + 3D · 1.1 scrub line · 1.2 governance + guidelines · 1.3 theme, search fly + grow · 1.4 the stall fixed · 1.5 depth of field (optional, 3D)
+VERSION = "1.6"  # … 1.5 depth of field · 1.6 Depth→Macro cycle, halo always sharp, smoothed bands (no flicker), blurred dots glow instead of vanishing
 from collections import defaultdict
 import numpy as np
 
