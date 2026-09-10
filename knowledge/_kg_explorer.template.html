@@ -9,20 +9,26 @@
   --bg:#FFFFFF;--ink:#111111;--ink-2:#555555;--ink-3:#8A8A8A;--rule:#E3E3E3;--panel:#F6F6F6;
   --accent:#DA1A00;
   --c-component:#DA1A00;--c-snippet:#7A7A7A;--c-pattern:#1F4FBF;--c-context:#0E8A5F;--c-ruling:#111111;
+  --c-session:#5E5E5E;--c-artefact:#8A7A66;--c-evidence:#A99C8B;--c-sc:#7A4B00;--c-guideline:#A06A16;--c-principle:#4A3000;--c-policy:#1F6B5B;--c-standard:#2F5488;--c-axe:#5B4B9E;
   --f-structure:#111111;--f-usage:#1F4FBF;--f-render:#7A7A7A;--f-rules:#DA1A00;
+  /* v1.2 — governance reuses the rules red (authored solid, derived dashed); guidelines is an
+     amber that passes on white. TWO-RED LAW s151-D1 untouched: --accent is the only red token. */
+  --f-governance:#DA1A00;--f-guidelines:#7A4B00;
   --mono:"SF Mono",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#0C0C0C;--ink:#F2F2F2;--ink-2:#B5B5B5;--ink-3:#7A7A7A;--rule:#262626;--panel:#161616;
     --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;
-    --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;
+    --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
+    --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0C0C0C;--ink:#F2F2F2;--ink-2:#B5B5B5;--ink-3:#7A7A7A;--rule:#262626;--panel:#161616;
   --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;
-  --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;
+  --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
+  --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -45,7 +51,7 @@ header{grid-column:1/3;display:grid;grid-template-columns:auto 1fr auto;align-it
 .stage{position:relative;overflow:hidden;border-right:1px solid var(--rule)}
 canvas{display:block;width:100%;height:100%;cursor:grab}
 canvas.grabbing{cursor:grabbing}
-.legend{position:absolute;left:24px;bottom:20px;display:flex;flex-direction:column;gap:14px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
+.legend{position:absolute;left:24px;bottom:20px;max-width:calc(100% - 300px);display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
 .legend .row{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
 .chip{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--rule);background:var(--bg);cursor:pointer;user-select:none;min-height:30px}
 .chip.off{opacity:.35}
@@ -61,19 +67,22 @@ canvas.grabbing{cursor:grabbing}
 .tools button.on{border-color:var(--ink);background:var(--ink);color:var(--bg)}
 .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);padding:6px 9px;font-size:12px;font-family:var(--mono);white-space:nowrap;display:none;z-index:10;transform:translate(12px,-50%)}
 .tip small{opacity:.6;margin-right:6px;text-transform:uppercase;font-size:10px}
-.scrub{position:absolute;left:24px;right:24px;bottom:104px;display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.03em}
+.scrub{position:absolute;left:24px;right:24px;bottom:158px;display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.03em}
 .scrub button{border:1px solid var(--rule);background:var(--bg);color:var(--ink);font:inherit;padding:7px 10px;cursor:pointer;min-height:30px;border-radius:0;text-transform:uppercase}
 .scrub button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .scrub .date{min-width:150px;color:var(--ink)}.scrub .date b{font-weight:600}
 .scrub .counts{color:var(--ink-3);text-align:right;min-width:230px}.scrub .counts b{color:var(--ink);font-weight:600}
 .scrub input[type=range]{width:100%;height:30px;margin:0;accent-color:var(--accent);background:transparent;cursor:pointer}
 .scrub.past .date b{color:var(--accent)}
-.hint{position:absolute;right:20px;bottom:20px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.6}
+.hint{position:absolute;right:20px;bottom:20px;max-width:270px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.6}
 aside{overflow:auto;background:var(--bg)}
 .empty{padding:28px 24px;color:var(--ink-2)}
 .empty h2{font-size:22px;letter-spacing:-.02em;margin:0 0 14px;color:var(--ink);font-weight:700;line-height:1.15}
 .empty p{margin:0 0 12px;max-width:34ch}
 .empty a.orph{color:var(--ink);text-decoration:underline;text-underline-offset:3px}.empty a.orph b{color:var(--ink-3);font-weight:400;font-family:var(--mono);font-size:11px}
+.empty p.plus{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.02em;margin-top:-6px}
+.empty code{font-family:var(--mono);font-size:11px}
+.head p.src{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:10px;line-height:1.5}
 .empty .k{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-top:22px}
 .head{padding:22px 24px 18px;border-bottom:1px solid var(--rule)}
 .kind{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
@@ -83,6 +92,14 @@ aside{overflow:auto;background:var(--bg)}
 .head p{margin:12px 0 0;color:var(--ink-2);font-size:13px}
 .head .meta{display:flex;gap:18px;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
 .head .meta b{color:var(--ink);font-weight:600}
+.head .sc{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin-top:14px;font-family:var(--mono);font-size:11px}
+.head .sc dt{color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.head .sc dd{margin:0;color:var(--ink-2)}
+.head .sc dd b{color:var(--ink);font-weight:600}
+.head .sc a{color:var(--ink);text-underline-offset:3px}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);color:var(--ink-3);padding:1px 4px;margin-left:6px}
+.chip.edge.dash i{background:repeating-linear-gradient(90deg,var(--c) 0 4px,transparent 4px 7px)}
+.group h3 i.dash{background:repeating-linear-gradient(90deg,var(--c) 0 4px,transparent 4px 7px)}
 .group{border-bottom:1px solid var(--rule)}
 .group h3{display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:10px;margin:0;padding:12px 24px;font-size:12px;font-family:var(--mono);letter-spacing:.04em;cursor:pointer;user-select:none}
 .group h3 i{width:14px;height:2px;background:var(--c)}
@@ -110,7 +127,7 @@ aside{overflow:auto;background:var(--bg)}
   <header>
     <div class="brand"><b>Apollo · knowledge graph</b><span>as of __DATE__</span></div>
     <div class="stats" id="stats"></div>
-    <div class="search"><input id="q" placeholder="Search a node — component, pattern, context, ruling…" autocomplete="off"><div class="hits" id="hits"></div></div>
+    <div class="search"><input id="q" placeholder="Search a node — component, pattern, ruling, 1.4.3…" autocomplete="off"><div class="hits" id="hits"></div></div>
   </header>
   <div class="stage" id="stage">
     <canvas id="cv"></canvas>
@@ -132,33 +149,58 @@ aside{overflow:auto;background:var(--bg)}
 const KG=JSON.parse(document.getElementById('kg').textContent);
 const NODES=KG.nodes, EDGES=KG.edges;
 const byId=new Map(NODES.map(n=>[n.id,n]));
+const RAD={session:3.4,artefact:1.9,evidence:1.7,sc:4.6,guideline:5.2,principle:7.5,policy:7,standard:7,axe:2.1};
 const SNAPS=KG.snaps||[];let T=SNAPS.length?SNAPS.length-1:0;const alive=o=>o.born==null||(o.born<=T&&(o.died==null||o.died>T));
-NODES.forEach((n,i)=>{n.i=i;n.ox=n.x;n.oy=n.y;n.z=0;n.tz=0;n.tx=n.x;n.ty=n.y;n.a=1;n.ta=1;n.r=n.type==='component'?4.2+Math.min(n.deg,29)*0.16:n.type==='ruling'?4.5:2.6});
+NODES.forEach((n,i)=>{n.i=i;n.ox=n.x;n.oy=n.y;n.z=0;n.tz=0;n.tx=n.x;n.ty=n.y;n.a=1;n.ta=1;n.r=n.type==='component'?4.2+Math.min(n.deg,29)*0.16:n.type==='ruling'?4.5:RAD[n.type]||2.6});
 const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure',family:'structure',groupsWith:'structure',partial:'structure',reuses:'structure',delegatesTo:'structure',
   usedInContext:'usage',commonPattern:'usage',renderedBy:'render',
-  governedBy:'rules',mustNotNeighbour:'rules',consumes:'rules',triggeredBy:'rules',drivesConsumer:'rules'};
-const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring'};
-const READ={containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by']};
+  governedBy:'rules',mustNotNeighbour:'rules',consumes:'rules',triggeredBy:'rules',drivesConsumer:'rules',
+  governs:'governance',evidencedBy:'governance',ruledIn:'governance',mentions:'governance',
+  appliesTo:'guidelines',under:'guidelines',enClause:'guidelines',boundBy:'guidelines',checkedBy:'guidelines',verifiedBy:'guidelines'};
+const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring',governance:'Governance',guidelines:'Guidelines'};
+const NEWFAM=['governance','guidelines'];
+const READ={containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
+  governs:['governs','is governed by'],evidencedBy:['is evidenced by','is evidence for'],ruledIn:['was ruled in','ruled'],mentions:['mentions','is mentioned by'],
+  appliesTo:['applies to','must satisfy'],under:['sits under','contains'],enClause:['has EN 301 549 clause','is the clause for'],
+  boundBy:['is bound by','binds'],checkedBy:['is checked by','can check'],verifiedBy:['is verified by','verifies']};
 const TYPES=['component','snippet','pattern','context','ruling'];
+const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe'];
+const ALLTYPES=TYPES.concat(TYPES2);
 const adj=new Map(NODES.map(n=>[n.id,[]]));
 const unresolved=new Map();
 EDGES.forEach((e,k)=>{e.k=k;if(!e.t){(unresolved.get(e.s)||unresolved.set(e.s,[]).get(e.s)).push(e);return;}
   adj.get(e.s).push({e,other:e.t,out:true});adj.get(e.t).push({e,other:e.s,out:false});e.a=1;e.ta=1;});
-const typeOn={component:1,snippet:1,pattern:1,context:1,ruling:1}, famOn={structure:1,usage:1,render:1,rules:1};
+const typeOn={};ALLTYPES.forEach(t=>typeOn[t]=1);
+const famOn={structure:1,usage:1,render:1,rules:1,governance:1,guidelines:1};
+// v1.2: a node from a new family answers to BOTH its type chip and its family chip. Base nodes
+// carry no `fam`, so with both new family chips off the page is exactly the v1.1 graph.
+const famOK=o=>!o.fam||famOn[o.fam];
+const NODEON=n=>typeOn[n.type]&&famOK(n);
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2'),ink3:css('--ink-3'),rule:css('--rule'),
-  t:{component:css('--c-component'),snippet:css('--c-snippet'),pattern:css('--c-pattern'),context:css('--c-context'),ruling:css('--c-ruling')},
-  f:{structure:css('--f-structure'),usage:css('--f-usage'),render:css('--f-render'),rules:css('--f-rules')}}}
+  t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
+  f:Object.fromEntries(Object.keys(FAMLABEL).map(f=>[f,css('--f-'+f)]))}}
 palette();matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{palette();draw()});
 
 // ---------- stats + legend
-const LIVE=NODES.filter(n=>!n.dead&&n.died==null),LIVEE=EDGES.filter(e=>!e.dead&&e.died==null);const count={};LIVE.forEach(n=>count[n.type]=(count[n.type]||0)+1);
-document.getElementById('stats').innerHTML=`<span><b>${LIVE.length}</b> nodes</span><span><b>${LIVEE.length.toLocaleString()}</b> relations</span><span><b>${Object.keys(FAMILY).length}</b> edge types</span><span><b>${count.component}</b> components</span><span><b>${[...unresolved.values()].reduce((a,b)=>a+b.length,0)}</b> declared, unresolved</span>`;
+const LIVE=NODES.filter(n=>!n.dead&&n.died==null),LIVEE=EDGES.filter(e=>!e.dead&&e.died==null);
+const XTRA=KG.extra||{};
+// counts follow the FAMILY chips only (never the type chips), so with governance + guidelines
+// off the strip and the headline read the v1.1 numbers to the digit.
+let SHOWN=[],SHOWNE=[],count={};
+function recount(){SHOWN=LIVE.filter(famOK);
+  SHOWNE=LIVEE.filter(e=>famOK(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
+  count={};SHOWN.forEach(n=>count[n.type]=(count[n.type]||0)+1);}
+const UNRES=[...unresolved.values()].reduce((a,b)=>a+b.length,0);
+function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]).length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
-legend.innerHTML=`<div class="row">${TYPES.map(t=>`<span class="chip" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]}</b></span>`).join('')}</div>
-<div class="row">${Object.keys(FAMLABEL).map(f=>`<span class="chip edge" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`).join('')}</div>`;
+const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
+function renderLegend(){legend.innerHTML=`<div class="row">${TYPES.map(chipT).join('')}</div>
+<div class="row">${TYPES2.map(chipT).join('')}</div>
+<div class="row">${Object.keys(FAMLABEL).map(f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`).join('')}</div>`;}
+recount();renderStats();renderLegend();
 legend.addEventListener('click',ev=>{const c=ev.target.closest('.chip');if(!c)return;
-  if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off')}else{famOn[c.dataset.fam]^=1;c.classList.toggle('off')}
+  if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off')}else{famOn[c.dataset.fam]^=1;c.classList.toggle('off');recount();renderStats();renderLegend();if(!focus)renderEmpty()}
   if(focus)applyFocus();draw();});
 
 // ---------- canvas
@@ -174,7 +216,7 @@ function base(n){return three?[n.x3,n.y3,n.z3]:[n.ox,n.oy,0]}
 function resize(){DPR=devicePixelRatio||1;W=stage.clientWidth;H=stage.clientHeight;cv.width=W*DPR;cv.height=H*DPR;draw()}
 addEventListener('resize',resize);
 
-function fit(){view={x:0,y:0,k:Math.min(W,H)/(three?2600:2300)};draw()}
+function fit(){const wide=NEWFAM.some(f=>famOn[f]);view={x:0,y:0,k:Math.min(W,H)/(wide?(three?6600:6200):(three?2600:2300))};draw()}
 
 let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=null, pathEdges=null, anim=null;
 function draw(){
@@ -182,15 +224,17 @@ function draw(){
   ctx.lineWidth=focus?0.9:0.5;
   // edges
   for(const e of EDGES){if(!e.t||!alive(e))continue;const s=byId.get(e.s),t=byId.get(e.t);
-    const on=typeOn[s.type]&&typeOn[t.type]&&famOn[FAMILY[e.type]];
+    const on=NODEON(s)&&NODEON(t)&&famOn[FAMILY[e.type]];
     let a=on?Math.min(s.a,t.a)*(focus?0.9:0.32):0.04; if(pathEdges){a=pathEdges.has(e.k)?1:a*0.15}
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
     if(a<0.02)continue; ctx.globalAlpha=a;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
     ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:0.6;
+    ctx.setLineDash(e.derived?[4,3]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them
     const ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
+  ctx.setLineDash([]);
   // nodes
   const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
-  for(const n of ORDER){if(!alive(n))continue;let a=typeOn[n.type]?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
+  for(const n of ORDER){if(!alive(n))continue;let a=NODEON(n)?n.a:0.05; if(pathNodes){a=pathNodes.has(n.id)?1:a*0.2}
     if(hover&&!focus){a=(n===hover||adj.get(hover.id).some(x=>x.other===n.id&&alive(x.e)))?1:0.12}
     if(a<0.03)continue;const pn=P(n);ctx.globalAlpha=three?a*(0.5+0.5*pn.s):a;const r=n.r*Math.max(0.7,Math.min(1.6,view.k*1.6))*(n===focus?1.9:1)*pn.s;
     ctx.fillStyle=C.t[n.type];ctx.beginPath();ctx.arc(pn.x,pn.y,r,0,7);ctx.fill();
@@ -219,7 +263,7 @@ function animate(){if(!anim)anim=requestAnimationFrame(tick)}
 let sectors=null;
 function applyFocus(){
   const f=focus; const [cx,cy,cz]=base(f); f.tx=cx;f.ty=cy;f.tz=cz;f.ta=1;
-  const nb=adj.get(f.id).filter(x=>alive(x.e)&&alive(byId.get(x.other))&&typeOn[byId.get(x.other).type]&&famOn[FAMILY[x.e.type]]);
+  const nb=adj.get(f.id).filter(x=>alive(x.e)&&alive(byId.get(x.other))&&NODEON(byId.get(x.other))&&famOn[FAMILY[x.e.type]]&&famOK(x.e));
   const groups=new Map();for(const x of nb){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   const total=nb.length||1, R1=Math.max(120,Math.min(260,60+total*7)), gap=0.06;
@@ -230,7 +274,7 @@ function applyFocus(){
     g.forEach((x,i)=>{const a=start+span*((i+0.5)/g.length);const r=three?R1*1.5:R1+(g.length>14?(i%2)*34:0);const n=byId.get(x.other);
       if(three){const ph=((i%5)-2)*0.32;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*r;n.ty=cy+Math.sin(a)*r;n.tz=cz}n.ta=1;placed.add(n.id)});
     sectors.push({type:t,n:g.length,mid:start+span/2,R:R1+(g.length>14?34:0)});ang+=span+gap;}
-  if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&!placed.has(y.other)&&alive(byId.get(y.other))&&typeOn[byId.get(y.other).type])second.push(y.other)}}
+  if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&famOn[FAMILY[y.e.type]]&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
     const uniq=[...new Set(second)];uniq.forEach((id,i)=>{const n=byId.get(id);const a=-Math.PI/2+Math.PI*2*(i/uniq.length);if(three){const r=R2*1.5,ph=((i%7)-3)*0.25;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*R2;n.ty=cy+Math.sin(a)*R2;n.tz=cz}n.ta=0.45;placed.add(id)})}
   for(const n of NODES){if(!placed.has(n.id)){[n.tx,n.ty,n.tz]=base(n);n.ta=0.05}}
   // centre the view on the focus
@@ -246,26 +290,38 @@ function renderCrumbs(){const el=document.getElementById('crumbs');if(!trail.len
 // ---------- panel
 const panel=document.getElementById('panel');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${LIVE.length} nodes. ${LIVEE.length.toLocaleString()} relations. Every one declared by a component, none invented.</h2>
-<p>The graph is authored from the inside out: each of the ${count.component} components states what it contains, where it is used, which patterns it follows, what renders it and which rulings govern it. Patterns, contexts, snippets and rulings are the things those statements point at.</p>
+function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} nodes. ${SHOWNE.length.toLocaleString()} relations. Every one declared by a component, none invented.</h2>
+<p class="plus">+ ${XTRA.rulings||0} rulings &middot; ${XTRA.sc||0} success criteria &middot; ${XTRA.derived||0} derived edges (dashed, unratified)</p>
+<p>The graph is authored from the inside out: each of the ${count.component||0} components states what it contains, where it is used, which patterns it follows, what renders it and which rulings govern it. Patterns, contexts, snippets and rulings are the things those statements point at.</p>
 <p>Click any node to dig. The node moves to the centre and its relations fan out in sectors, one per relationship type; click a neighbour to follow the thread. Shift-click two nodes to see the shortest path between them.</p>
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
-<div class="k">Node types</div><p>${TYPES.map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
-<div class="k">Edge families</div><p>${Object.keys(FAMLABEL).map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
+<div class="k">Governance &amp; guidelines</div><p>Two additive families, each behind its own chip. Governance is every ruling in the store — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Guidelines is the WCAG success criteria, the guidelines and principles above them, EN 301 549, the HSBC policy and the axe-core rules that can check them. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it.</p>
+<div class="k">Node types</div><p>${ALLTYPES.filter(t=>count[t]).map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
+<div class="k">Edge families</div><p>${Object.keys(FAMLABEL).filter(f=>famOn[f]).map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
 function renderPanel(n,nb){
   const isComp=n.type==='component';
   let h=`<div class="head"><span class="kind" style="--c:var(--c-${n.type})"><i></i>${n.type}</span><h2>${esc(n.label)}</h2><div class="id">${esc(n.id)}</div>`;
   if(n.purpose)h+=`<p>${esc(n.purpose)}</p>`; if(n.text)h+=`<p>“${esc(n.text)}”</p>`;
+  if(n.type==='sc'){h+=`<dl class="sc">`+
+    [['level',esc(n.level||'—')],['severity',esc(n.severity||'—')],
+     ['check',`${esc(n.checkType||'—')}${n.threshold?' · '+esc(n.threshold):''}`],
+     ['verified',n.verified?'<b>yes</b> — a check runs in this build':'no — asserted only'],
+     ['axe rules',`<b>${n.axeCount||0}</b> off-the-shelf`],
+     ['EN 301 549',esc(n.enClause||'—')],
+     ['WCAG',esc((n.versions||[]).join(' · ')||'—')+(n.wcagUrl?` · <a href="${esc(n.wcagUrl)}">understanding</a>`:'')],
+     ['policy',esc(n.policy||'—')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`;
+    if(n.checkDesc)h+=`<p>${esc(n.checkDesc)}</p>`;}
+  if(n.status)h+=`<p class="src">${esc(n.status)}</p>`;
   h+=`<div class="meta"><span><b>${adj.get(n.id).filter(x=>alive(x.e)).length}</b> relations</span>${SNAPS.length&&n.born!=null?`<span>born ${SNAPS[n.born].date}</span>`:''}${n.died!=null?`<span style="color:var(--accent)">gone ${SNAPS[n.died].date}</span>`:''}${n.category?`<span>${esc(n.category)}</span>`:''}${n.date?`<span>ruled ${esc(n.date)}${n.ruled?' · '+esc(n.ruled):''}</span>`:''}${n.sources?`<span><b>${n.sources.length}</b> sources</span>`:''}</div></div>`;
   if(pathNodes){h+=renderPath()}
-  const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e))continue;(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
+  const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e)||!famOK(x.e)||!famOK(byId.get(x.other)))continue;(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
-    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i></i><span>${t}<span class="dir">${esc(dir)}</span></span><b>${g.length}</b></h3><div class="rows">`;
+    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}</span><b>${g.length}</b></h3><div class="rows">`;
     for(const x of g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
-      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small></div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div></div>`}
+      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div></div>`}
     h+=`</div></div>`}
   const un=unresolved.get(n.id);if(un&&un.length){h+=`<div class="group closed"><h3 style="--c:var(--ink-3)"><i></i><span>declared, unresolved<span class="dir">ref:null · awaiting Dave's-eye migration</span></span><b>${un.length}</b></h3><div class="rows">`;
     for(const e of un)h+=`<div class="rel unres" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div></div>`;h+=`</div></div>`}
@@ -278,7 +334,7 @@ function renderPath(){if(!pathNodes)return '';const ids=[...pathNodes];const ste
 
 // ---------- shortest path (BFS)
 let pathEdgeList=[];
-function shortestPath(a,b){const prev=new Map([[a.id,null]]);const q=[a.id];while(q.length){const id=q.shift();if(id===b.id)break;for(const x of adj.get(id)){if(alive(x.e)&&alive(byId.get(x.other))&&!prev.has(x.other)&&typeOn[byId.get(x.other).type]){prev.set(x.other,{from:id,e:x.e});q.push(x.other)}}}
+function shortestPath(a,b){const prev=new Map([[a.id,null]]);const q=[a.id];while(q.length){const id=q.shift();if(id===b.id)break;for(const x of adj.get(id)){if(alive(x.e)&&famOK(x.e)&&alive(byId.get(x.other))&&!prev.has(x.other)&&NODEON(byId.get(x.other))){prev.set(x.other,{from:id,e:x.e});q.push(x.other)}}}
   if(!prev.has(b.id))return null;const ids=[],es=[];let cur=b.id;while(cur){ids.unshift(cur);const p=prev.get(cur);if(p){es.unshift(p.e);cur=p.from}else cur=null}return {ids,es}}
 function showPath(a,b){const p=shortestPath(a,b);if(!p){alert('No path between these two with the current filters.');return}
   pathNodes=new Set(p.ids);pathEdges=new Set(p.es.map(e=>e.k));pathEdgeList=p.es;
@@ -288,7 +344,7 @@ function showPath(a,b){const p=shortestPath(a,b);if(!p){alert('No path between t
 
 // ---------- interaction
 let drag=null,moved=false;
-function pick(mx,my){let best=null,bd=1e9;for(const n of NODES){if(n.a<0.2||!typeOn[n.type]||!alive(n))continue;const pn=P(n);const dx=pn.x-mx,dy=pn.y-my;const d=dx*dx+dy*dy;const r=Math.max(7,n.r*view.k*1.6*pn.s+3);if(d<r*r&&d<bd){bd=d;best=n}}return best}
+function pick(mx,my){let best=null,bd=1e9;for(const n of NODES){if(n.a<0.2||!NODEON(n)||!alive(n))continue;const pn=P(n);const dx=pn.x-mx,dy=pn.y-my;const d=dx*dx+dy*dy;const r=Math.max(7,n.r*view.k*1.6*pn.s+3);if(d<r*r&&d<bd){bd=d;best=n}}return best}
 cv.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y,rx:rot.x,ry:rot.y,rotate:three&&!e.shiftKey};moved=false;cv.classList.add('grabbing')});
 addEventListener('mousemove',e=>{if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3)moved=true;if(drag.rotate){rot.y=drag.ry+dx*0.006;rot.x=Math.max(-1.4,Math.min(1.4,drag.rx+dy*0.006))}else{view.x=drag.vx+dx/view.k;view.y=drag.vy+dy/view.k}draw();return}
   const r=cv.getBoundingClientRect();const n=pick(e.clientX-r.left,e.clientY-r.top);const tip=document.getElementById('tip');
@@ -312,7 +368,7 @@ document.getElementById('fit').onclick=()=>{if(focus)applyFocus();else fit()};
 // ---------- search
 const q=document.getElementById('q'),hits=document.getElementById('hits');let sel=0,cur=[];
 q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits.classList.remove('on');return}
-  cur=NODES.filter(n=>alive(n)&&(n.label.toLowerCase().includes(s)||n.id.toLowerCase().includes(s))).sort((a,b)=>(b.type==='component')-(a.type==='component')||b.deg-a.deg).slice(0,40);sel=0;
+  cur=NODES.filter(n=>alive(n)&&NODEON(n)&&(n.label.toLowerCase().includes(s)||n.id.toLowerCase().includes(s))).sort((a,b)=>(b.type==='component')-(a.type==='component')||b.deg-a.deg).slice(0,40);sel=0;
   hits.innerHTML=cur.map((n,i)=>`<div class="hit ${i===0?'sel':''}" data-i="${i}"><small>${n.type}</small><span>${esc(n.label)}</span><small>${adj.get(n.id).length}</small></div>`).join('')||`<div class="hit"><small></small><span>nothing</span></div>`;
   hits.classList.add('on');hits.querySelectorAll('.hit[data-i]').forEach(h=>h.onclick=()=>choose(+h.dataset.i))});
 q.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){sel=Math.min(cur.length-1,sel+1)}else if(e.key==='ArrowUp'){sel=Math.max(0,sel-1)}else if(e.key==='Enter'){choose(sel);return}else return;hits.querySelectorAll('.hit').forEach((h,i)=>h.classList.toggle('sel',i===sel))});
@@ -323,7 +379,7 @@ document.addEventListener('click',e=>{if(!e.target.closest('.search'))hits.class
 const sr=document.getElementById('srange'),sd=document.getElementById('sdate'),sc=document.getElementById('scounts'),scrub=document.getElementById('scrub');
 let playing=false,playT=null;
 function setT(i){T=Math.max(0,Math.min(SNAPS.length-1,i));sr.value=T;const s=SNAPS[T];
-  const nn=NODES.filter(alive).length,ne=EDGES.filter(e=>e.t&&alive(e)).length;
+  const nn=NODES.filter(n=>alive(n)&&famOK(n)).length,ne=EDGES.filter(e=>e.t&&alive(e)&&famOK(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
   sd.innerHTML=`<b>${s.date}</b> · ${s.commit}`;sc.innerHTML=`<b>${nn}</b> nodes · <b>${ne.toLocaleString()}</b> relations · ${s.unresolved} unresolved`;
   scrub.classList.toggle('past',T<SNAPS.length-1);
   if(focus){applyFocus()}else if(!anim)draw();}

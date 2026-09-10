@@ -1,0 +1,2002 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposed ruling edges — #266</title>
+<!-- #266 lane V. Self-contained: everything inline, no external resources of any kind.
+     Generated from knowledge/_rulings.json via knowledge/_build_kg_explorer.py's derived
+     `mentions` extraction — one card per mention that carries a proposedType. -->
+<style>
+:root{
+  --accent:#DA1A00;              /* TWO-RED LAW s151-D1: #DA1A00 on white */
+  --bg:#FFFFFF; --panel:#F6F6F5; --rule:#E3E3E1; --rule-2:#C9C9C6;
+  --ink:#000000; --ink-2:#333333; --ink-3:#545454; --ink-4:#767676;
+  --quote-bg:#F7F7F5; --mark:#FFF0B3; --mark-ink:#000000;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem;
+  --max:820px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --accent:#F6604C;            /* TWO-RED LAW s151-D1: the light red everywhere else */
+    --bg:#0C0C0C; --panel:#161616; --rule:#2A2A2A; --rule-2:#3A3A3A;
+    --ink:#F2F2F2; --ink-2:#DCDCDC; --ink-3:#B8B8B8; --ink-4:#8E8E8E;
+    --quote-bg:#141414; --mark:#4A3A00; --mark-ink:#FFE9A3;
+  }
+}
+/* NOTE: there is deliberately NO [data-theme] arm. #263 shipped one with no toggle to set it —
+   dead CSS pretending to be a feature. This page follows the OS scheme and nothing else. */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.7 var(--sans);overflow-wrap:break-word;overflow-x:hidden}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s3)}
+code{font-family:var(--mono);font-size:.875em}
+code.path{color:var(--ink-2);overflow-wrap:anywhere}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 2px;font-weight:500}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.k{display:block;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+header.mast{padding:var(--s5) 0 var(--s3);border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s2)}
+.eyebrow::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:500;line-height:1.05;margin:0 0 var(--s3)}
+.standfirst{max-width:56ch;color:var(--ink-2);margin:0 0 var(--s3);font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s2);border-top:1px solid var(--rule);padding-top:var(--s3)}
+.stat b{display:block;font-size:clamp(1.4rem,4vw,2rem);font-weight:200;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-top:4px}
+.bar{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--rule);padding:var(--s1) 0}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s2);align-items:center}
+.tally{font-family:var(--mono);font-size:13px;color:var(--ink-4);white-space:nowrap}
+.tally b{color:var(--accent);font-weight:500}
+/* 44px on EVERY control in the bar too — #263's bar buttons were 30px, a known defect */
+.bar button,.bar label.tog{font:400 13px/1.4 var(--sans);color:var(--ink);background:var(--bg);
+  border:1px solid var(--rule-2);border-radius:0;padding:10px 14px;min-height:44px;cursor:pointer;letter-spacing:.04em;white-space:nowrap}
+.bar label.tog{display:flex;align-items:center;gap:8px}
+.bar button:hover{border-color:var(--accent)}
+main{padding-bottom:var(--s6)}
+article.card{border-top:1px solid var(--rule);padding:var(--s3) 0}
+.chead{display:flex;gap:var(--s2);align-items:baseline;flex-wrap:wrap;margin:0 0 var(--s2)}
+.pid{font-family:var(--mono);font-size:14px;color:var(--ink-4);flex:none}
+h2.ctitle{font-size:18px;font-weight:400;line-height:1.35;margin:0;flex:1 1 260px;min-width:0}
+h2.ctitle code{font-size:15px;color:var(--ink)}
+h2.ctitle b.pt{color:var(--accent);font-weight:500}
+.when{font-family:var(--mono);font-size:11px;color:var(--ink-4);flex:none}
+blockquote.rec{margin:0 0 var(--s2);background:var(--quote-bg);border-left:2px solid var(--accent);
+  padding:var(--s2) var(--s3);font-size:15px;line-height:1.6;color:var(--ink-2)}
+.src{font-size:13px;color:var(--ink-4);margin:0}
+.rule-row{border-top:1px solid var(--rule);padding-top:var(--s2);margin-top:var(--s2);
+  display:flex;flex-wrap:wrap;gap:var(--s1) var(--s2);align-items:center}
+.rule-row .k{flex:0 0 100%;margin-bottom:2px}
+.btns{display:flex;gap:0;flex:none}
+button.rb{font:400 14px/1.2 var(--sans);color:var(--ink-2);background:var(--bg);border:1px solid var(--rule-2);
+  border-radius:0;padding:10px 16px;min-height:44px;min-width:88px;margin-left:-1px;cursor:pointer;letter-spacing:.04em}
+button.rb:first-child{margin-left:0}
+button.rb:hover{border-color:var(--accent);position:relative;z-index:1}
+button.rb[aria-checked="true"]{border-color:var(--accent);color:var(--ink);box-shadow:inset 0 -3px 0 0 var(--accent);position:relative;z-index:2;font-weight:500}
+label.notew{flex:1 1 240px;min-width:0;max-width:100%}
+input.note{width:100%;min-width:0;font:400 14px/1.4 var(--sans);color:var(--ink);background:var(--bg);
+  border:0;border-bottom:1px solid var(--rule-2);border-radius:0;padding:10px 2px;min-height:44px}
+input.note:focus{outline:none;border-bottom-color:var(--accent)}
+article.card[data-ruled="1"] .pid{color:var(--ink)}
+body.only .card[data-ruled="1"]{display:none}
+body.hidebody .cbody{display:none}
+section.export{border-top:1px solid var(--rule);padding-top:var(--s3);margin-top:var(--s4)}
+section.export h2{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 var(--s2)}
+pre.out{background:var(--panel);border:1px solid var(--rule);margin:var(--s2) 0 0;padding:var(--s2);
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-2)}
+footer{border-top:1px solid var(--rule);padding:var(--s3) 0;font-size:13px;color:var(--ink-4)}
+@media (max-width:760px){
+  .wrap{padding:0 var(--s2)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  blockquote.rec{padding:var(--s2)}
+  .btns{flex:1 1 100%}
+  button.rb{flex:1 1 0;min-width:0;padding:10px 8px}
+}
+@media print{.bar{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  article.card{break-inside:avoid;page-break-inside:avoid}
+  blockquote.rec{background:transparent;border-left:2px solid #DA1A00}}
+</style>
+</head>
+<body>
+<header class="mast"><div class="wrap">
+  <p class="eyebrow">#266 &middot; KG explorer v1.2 &middot; derived, not authored</p>
+  <h1>78 proposed ruling edges — ratify each</h1>
+  <p class="standfirst">The explorer's governance family draws a <code>mentions</code> edge wherever one
+  ruling names another. 78 of those mentions sit within 80 characters of a verb that would make the
+  edge mean something stronger — <em>supersedes</em>, <em>retires</em>, <em>enacts</em>. A regex is not a
+  ruling, so the edge type stays <code>mentions</code> and the verb travels as a proposal only. Accept it
+  and the edge earns its type; reword it and the verb changes; reject it and it stays a mention.
+  Nothing below is pre-selected.</p>
+  <div class="stats">
+    <div class="stat"><b>78</b><span>proposed</span></div>
+    <div class="stat"><b>14</b><span>supersedes</span></div><div class="stat"><b>13</b><span>retires</span></div><div class="stat"><b>12</b><span>enacts</span></div>
+    <div class="stat"><b id="sRuled">0</b><span>ruled here</span></div>
+  </div>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <span class="tally"><b id="tallyN">0</b> / 78 ruled</span>
+  <button type="button" id="exportBtn">Export rulings</button>
+  <button type="button" id="clearBtn">Clear all</button>
+  <label class="tog"><input type="checkbox" id="only"> Hide the ones I have ruled</label>
+  <label class="tog"><input type="checkbox" id="terse"> Decision only</label>
+</div></div>
+
+<main><div class="wrap">
+<article class="card" id="M-001" data-pid="M-001" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-001</span>
+    <h2 class="ctitle"><code>s157-D2</code> <b class="pt">confirms</b> <code>s122-D2</code>?</h2>
+    <span class="when">#157 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…d a solid, best practice solution... solid but flexible in the future&#x27;. Confirmed against the #122 RAG controller (full screen, in-window): mono lane <mark>s122-D2</mark>, console+supercharge lane s122-D3 (fence lifted s122-D4), legacy lane s122-D1/D5 - values already in the token files, 12 of 16 console/supercharge ra…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s157-D2 &mdash;mentions&rarr; ruling:s122-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-001">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-001</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-002" data-pid="M-002" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-002</span>
+    <h2 class="ctitle"><code>s168-D1</code> <b class="pt">confirms</b> <code>s162-D1</code>?</h2>
+    <span class="when">#168 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">THE DASHBOARD REVIEW, RULED FROM DAVE&#x27;S OWN EXPORT (verbatim artifact in chat). (DC1) tooltip.tip is CONFIRMED CLOSED per <mark>s162-D1</mark> - no store row for it ever existed, so nothing is owed and the s142-D1 &#x27;open: tooltip.tip unruled&#x27; clause is SUPERSEDED (see that entry&#x27;s added super…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s168-D1 &mdash;mentions&rarr; ruling:s162-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-002">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-002</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-003" data-pid="M-003" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-003</span>
+    <h2 class="ctitle"><code>s176-D1</code> <b class="pt">confirms</b> <code>s175-D1</code>?</h2>
+    <span class="when">#176 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…- the store already embodies the principle; this ruling adds the PRINCIPLE plus its RATIONALE (halation), neither previously recorded. DISCHARGES the <mark>s175-D1</mark>(f) open generalisation. Read back and confirmed firm: &#x27;Ink&#x27; for any component means the theme&#x27;s own darkest text colour, resolved through the alias c…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s176-D1 &mdash;mentions&rarr; ruling:s175-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-003">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-003</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-004" data-pid="M-004" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-004</span>
+    <h2 class="ctitle"><code>s181-D1</code> <b class="pt">confirms</b> <code>s172-D3</code>?</h2>
+    <span class="when">#181 &middot; 2026-08-15 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ss remains de-backticking with a prose &#x27;not yet built&#x27; declaration. Timing was confirmed to be Dave&#x27;s decision - the chain does not schedule it; only <mark>s172-D3</mark>(e) (never build the instrument in the same breath as the finding) constrains it, already satisfied.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s181-D1 &mdash;mentions&rarr; ruling:s172-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-004">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-004</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-005" data-pid="M-005" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-005</span>
+    <h2 class="ctitle"><code>s202-D2</code> <b class="pt">confirms</b> <code>s199-D3</code>?</h2>
+    <span class="when">#202 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ON&#x27;S EARLIER MISREADING. Dave pasted the tuner v4 export (reading &#x27;offset&#x27;, dial 6) and confirmed &#x27;Yes - rule it, mint it&#x27;. The session first misread <mark>s199-D3</mark>&#x27;s &#x27;switch&#x27; as a two-state Off/On variant and minted border-radius/segmented-switch/{xs,s,m,l} console tokens; Dave&#x27;s rejections (&#x27;the switch is still…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s202-D2 &mdash;mentions&rarr; ruling:s199-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-005">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-005</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-006" data-pid="M-006" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-006</span>
+    <h2 class="ctitle"><code>s214-D4</code> <b class="pt">confirms</b> <code>s214-D1</code>?</h2>
+    <span class="when">ADVISORY-LINE RE-DERIVATION RULED, STAGED ON DATA &middot; 2026-08-21 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…opener. The outer lines are UNTOUCHED by this ruling: 200,000 working and 256,000 hard hold exactly where the #58b sourcing put them (re-confirmed by <mark>s214-D1</mark>/s214-D2). Derivation and pitfalls: notes/_briefs/2026-08-21-214-context-territory-strategy-v1.md (row W-99x).</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s214-D4 &mdash;mentions&rarr; ruling:s214-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-006">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-006</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-007" data-pid="M-007" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-007</span>
+    <h2 class="ctitle"><code>s214-D4</code> <b class="pt">confirms</b> <code>s214-D2</code>?</h2>
+    <span class="when">ADVISORY-LINE RE-DERIVATION RULED, STAGED ON DATA &middot; 2026-08-21 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…The outer lines are UNTOUCHED by this ruling: 200,000 working and 256,000 hard hold exactly where the #58b sourcing put them (re-confirmed by s214-D1/<mark>s214-D2</mark>). Derivation and pitfalls: notes/_briefs/2026-08-21-214-context-territory-strategy-v1.md (row W-99x).</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s214-D4 &mdash;mentions&rarr; ruling:s214-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-007">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-007</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-008" data-pid="M-008" data-pt="confirms">
+  <div class="chead">
+    <span class="pid">M-008</span>
+    <h2 class="ctitle"><code>s214-D6</code> <b class="pt">confirms</b> <code>s214-D4</code>?</h2>
+    <span class="when">THE BOOT-REDUCTION PAIR IS ENACTED (the s208-D1 rider&#x27;s option, taken) &middot; 2026-08-21 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… trim hooks to overflow files, never delete memory files (the established #140/#147/#153/#177 mechanics). Per the standing arithmetic re-confirmed at <mark>s214-D4</mark>: a cheaper boot moves the ROOM, never the LINE.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s214-D6 &mdash;mentions&rarr; ruling:s214-D4</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>confirms</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-008">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-008</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-009" data-pid="M-009" data-pt="corrects">
+  <div class="chead">
+    <span class="pid">M-009</span>
+    <h2 class="ctitle"><code>ds-034</code> <b class="pt">corrects</b> <code>ds-035</code>?</h2>
+    <span class="when">#108 &middot; 2026-08-06 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ere value-checked (#108-D2). Extends his own #107-D1 &#x27;partition first, then rule&#x27; one level deeper. CORRECTED BY THIS SAME SESSION&#x27;S OWN FINDING (see <mark>ds-035</mark>): the sweep must test value agreement PER THEME, not globally - a global sweep would have manufactured roughly 35 false findings, because --pri-hover…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:ds-034 &mdash;mentions&rarr; ruling:ds-035</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>corrects</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-009">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-009</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-010" data-pid="M-010" data-pt="corrects">
+  <div class="chead">
+    <span class="pid">M-010</span>
+    <h2 class="ctitle"><code>ds-035</code> <b class="pt">corrects</b> <code>ds-034</code>?</h2>
+    <span class="when">#108 &middot; 2026-08-06 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…-collision sweep: apparent divergence between themes on the same semantic token name is EXPECTED and must not be treated as a defect by default - see <mark>ds-034</mark>&#x27;s corrected per-theme sweep spec.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:ds-035 &mdash;mentions&rarr; ruling:ds-034</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>corrects</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-010">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-010</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-011" data-pid="M-011" data-pt="corrects">
+  <div class="chead">
+    <span class="pid">M-011</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">corrects</b> <code>s158-D4</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…st said &#x27;okay go&#x27; to option C (theme-key the semantic store). The build sub STOPPED before enacting it, correctly: option C&#x27;s MECHANISM collides with <mark>s158-D4</mark> single-source - per-theme RAG values ALREADY LIVE in the palette tier (tokens/palettes/rag/*.json, addressed via tokens/themes/_themes.json ragPalett…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s158-D4</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>corrects</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-011">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-011</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-012" data-pid="M-012" data-pt="corrects">
+  <div class="chead">
+    <span class="pid">M-012</span>
+    <h2 class="ctitle"><code>s224-D1</code> <b class="pt">corrects</b> <code>s223-D2</code>?</h2>
+    <span class="when">THE NEXT CUT IS v1.0.3, PATCH-CLASS - TIER-1 PORT-BACK ONLY: THE RUNBOOK&#x27;S FALSE COPILOT PREMISE CORRECTED, THE COPILOT TELEMETRY SETTINGS FILE SHIPPED, THE FIRST-SESSION STEP UPDATED &middot; 2026-08-29 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ved that false. The cut corrects the premise in the runbook, ships the 217-byte settings file, and updates the FIRST-SESSION step. Patch-class by the <mark>s223-D2</mark> logic: it corrects a false statement the pack ships, no new capability. Per s223-D3 the ratify gate is re-keyed per cut - this ruling is the store en…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s224-D1 &mdash;mentions&rarr; ruling:s223-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>corrects</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-012">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-012</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-013" data-pid="M-013" data-pt="corrects">
+  <div class="chead">
+    <span class="pid">M-013</span>
+    <h2 class="ctitle"><code>s224-D1</code> <b class="pt">corrects</b> <code>s223-D3</code>?</h2>
+    <span class="when">THE NEXT CUT IS v1.0.3, PATCH-CLASS - TIER-1 PORT-BACK ONLY: THE RUNBOOK&#x27;S FALSE COPILOT PREMISE CORRECTED, THE COPILOT TELEMETRY SETTINGS FILE SHIPPED, THE FIRST-SESSION STEP UPDATED &middot; 2026-08-29 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ings file, and updates the FIRST-SESSION step. Patch-class by the s223-D2 logic: it corrects a false statement the pack ships, no new capability. Per <mark>s223-D3</mark> the ratify gate is re-keyed per cut - this ruling is the store entry naming v1.0.3 that --release requires.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s224-D1 &mdash;mentions&rarr; ruling:s223-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>corrects</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-013">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-013</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-014" data-pid="M-014" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-014</span>
+    <h2 class="ctitle"><code>s143-D1</code> <b class="pt">enacts</b> <code>s142-D1</code>?</h2>
+    <span class="when">#143 &middot; 2026-08-10 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">Two verdicts on the <mark>s142-D1</mark> enactment&#x27;s live findings: (A) size is TWO ADDITIVE AXES - keep both; (B) amount-display.sign stays Treatment A with an a11y colour-value adjustment …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s143-D1 &mdash;mentions&rarr; ruling:s142-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-014">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-014</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-015" data-pid="M-015" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-015</span>
+    <h2 class="ctitle"><code>s151-D2</code> <b class="pt">enacts</b> <code>s151-D1</code>?</h2>
+    <span class="when">#151 &middot; 2026-08-11 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ct inverse) + default ink #FFFFFF = 9.74. The pressed label REVERSAL (color:var(--reverse)) is REMOVED - labels never leave the default ink, enacting <mark>s151-D1</mark> clause 3. SCOPE: the neutral DNA tier (--form-background-pressed, canon.css base 283/638), inherited by MONO; supercharge/legacy/console fork their o…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s151-D2 &mdash;mentions&rarr; ruling:s151-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-015">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-015</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-016" data-pid="M-016" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-016</span>
+    <h2 class="ctitle"><code>s161-D4</code> <b class="pt">enacts</b> <code>s142-D1</code>?</h2>
+    <span class="when">#161 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…top item&#x27; (or equivalent owed-work claim) that cites a ruling id whose _rulings.json status already says ENACTED - the #159/#160 defect that carried &#x27;<mark>s142-D1</mark> wave enactment owed&#x27; two sessions past its fact, refuted the whole time by the store the wrap already parses. Conductor recommended block-not-warn (a…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s161-D4 &mdash;mentions&rarr; ruling:s142-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-016">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-016</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-017" data-pid="M-017" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-017</span>
+    <h2 class="ctitle"><code>s191-D3</code> <b class="pt">enacts</b> <code>s182-D2</code>?</h2>
+    <span class="when">Dataviz var-resolution gate promoted to BLOCKING; DV-J2b record clash reconciled by annotation &middot; 2026-08-17 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…number remain as picked. (b) The DV-J2b redundant-record clash (GOOD-MORNING.md + knowledge/_state.json W-0c both claiming FOLDED+ENACTED #67 against <mark>s182-D2</mark>&#x27;s deletion) is reconciled BY ANNOTATION: the old lines are marked OVERTAKEN with s182-D2 named as the operative closure — ratified record annotated, …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s191-D3 &mdash;mentions&rarr; ruling:s182-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-017">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-017</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-018" data-pid="M-018" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-018</span>
+    <h2 class="ctitle"><code>s194-D1</code> <b class="pt">enacts</b> <code>s169-D1</code>?</h2>
+    <span class="when">#194 &middot; 2026-08-17 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… gating errors. This generalises the per-instance precedent: s116-D5 (MARK_TIER=warn), s114-D3 (decorations are a gate-scoping matter, not failures), <mark>s169-D1</mark> (fix the instrument&#x27;s reader) and s172-D1(6) (base red 30 parked). ENACTMENT SHAPE: the #194 theme-scoped exclusion for mono on-dark x error-backgrou…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s194-D1 &mdash;mentions&rarr; ruling:s169-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-018">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-018</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-019" data-pid="M-019" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-019</span>
+    <h2 class="ctitle"><code>s194-D1</code> <b class="pt">enacts</b> <code>s172-D1</code>?</h2>
+    <span class="when">#194 &middot; 2026-08-17 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…nstance precedent: s116-D5 (MARK_TIER=warn), s114-D3 (decorations are a gate-scoping matter, not failures), s169-D1 (fix the instrument&#x27;s reader) and <mark>s172-D1</mark>(6) (base red 30 parked). ENACTMENT SHAPE: the #194 theme-scoped exclusion for mono on-dark x error-background is converted from row-removal to a WARN…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s194-D1 &mdash;mentions&rarr; ruling:s172-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-019">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-019</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-020" data-pid="M-020" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-020</span>
+    <h2 class="ctitle"><code>s198-D2</code> <b class="pt">enacts</b> <code>s198-D1</code>?</h2>
+    <span class="when">#198 &middot; 2026-08-17 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">THE TWO RE-DERIVED --pri-hover VALUES GET MINTED PRIMITIVES. Dave picked, from four options presented after <mark>s198-D1</mark>&#x27;s enactment went red on _validate_token_tiers.py (the re-derived @0.68 hovers #636363 light / #B2B2B2 dark sit on no neutral-ramp step): MINT TWO NEW…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s198-D2 &mdash;mentions&rarr; ruling:s198-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-020">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-020</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-021" data-pid="M-021" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-021</span>
+    <h2 class="ctitle"><code>s201-D1</code> <b class="pt">enacts</b> <code>s200-D3</code>?</h2>
+    <span class="when">#201 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…xport (xs 24/2/6 thumb 4 - s 36/2/8 thumb 6 - m 44/4/10 thumb 6 - l 48/4/12 thumb 8) and answered the enact question &#x27;mint now&#x27;. MINTS (console only, <mark>s200-D3</mark> scope): size/padding/segmented-container/segmented-thumb tokens at xs 24/2/6/4, m 44/4/10/6, l 48/4/12/8, joining the standing s (36/2/8/6, s200-D4).…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s201-D1 &mdash;mentions&rarr; ruling:s200-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-021">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-021</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-022" data-pid="M-022" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-022</span>
+    <h2 class="ctitle"><code>s218-D3</code> <b class="pt">enacts</b> <code>s217-D3</code>?</h2>
+    <span class="when">PHOTOGRAPHY PAGE: PER-THEME GALLERY SETTINGS FROM DAVE&#x27;S FOUR EXPORTS, ALL 251 PHOTOGRAPHS LAZY-LOADED, MONO CAPTIONS ON DARKEST GREY WITH WHITE TEXT &middot; 2026-08-24 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ext-reverse) is the conductor&#x27;s PROPOSED shade, Dave&#x27;s eye owed. His exports&#x27; edge:square is RECORDED NOT ENACTED - the gallery squaring exemption is <mark>s217-D3</mark>&#x27;s and reopening it is his. Receipts verbatim: notes/_receipts/2026-08-24-218-photography-theme-settings.md.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s218-D3 &mdash;mentions&rarr; ruling:s217-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-022">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-022</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-023" data-pid="M-023" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-023</span>
+    <h2 class="ctitle"><code>s218-D6</code> <b class="pt">enacts</b> <code>s217-D3</code>?</h2>
+    <span class="when">PHOTOGRAPHY AND GRID PAGE CALLS: THE MONO CAPTION GREY IS RATIFIED, THE OVERLAY GOES BEHIND, THE FIVE HEAVY DERIVATIVES STAND, AND THE PHOTOGRAPHY GALLERY WALL IS SQUARED &middot; 2026-08-25 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…age&#x27;s gallery wall and last-row photos may re-span to close holes. SCOPE: this enacts edge:square for the photography page&#x27;s wall; the GALLERY ROLE&#x27;s <mark>s217-D3</mark> exemption elsewhere is untouched until he says wider.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s218-D6 &mdash;mentions&rarr; ruling:s217-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-023">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-023</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-024" data-pid="M-024" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-024</span>
+    <h2 class="ctitle"><code>s225-D1</code> <b class="pt">enacts</b> <code>s224-D1</code>?</h2>
+    <span class="when">v1.0.3 IS RATIFIED - DAVE&#x27;S FRESH WORD, IN THE STORE &middot; 2026-08-30 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…25 opener decision surface (ratify question, recommendation first) and answered &#x27;Ratify - bake it&#x27;. Enacted same session: RATIFY_IDS gains &#x27;v1.0.3&#x27;: &#x27;<mark>s224-D1</mark>&#x27; at commit 1e028a1, manifest regenerated to status RATIFIED at a9e6f37, zip baked byte-identical to dry-run (sha256 fadd3eac59cf2e2b...) at 3d7c115, …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s225-D1 &mdash;mentions&rarr; ruling:s224-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-024">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-024</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-025" data-pid="M-025" data-pt="enacts">
+  <div class="chead">
+    <span class="pid">M-025</span>
+    <h2 class="ctitle"><code>s225-D2</code> <b class="pt">enacts</b> <code>s214-D6</code>?</h2>
+    <span class="when">THE CHAIN CARRY LIST MOVES TO ITS OWN GENERATED HOME WITH RECEIPTS; THE BANNER CARRIES A POINTER + COUNT &middot; 2026-08-30 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…g GM past 113,765 to game the denominator, or moving the &lt;40 percent floor). Dave: &#x27;I&#x27;ll go with the recommendation&#x27;. The enactment must satisfy BOTH <mark>s214-D6</mark> commands at once - shorter banner AND no carries dropped - by moving carries to a generated home with their receipts intact and leaving a probeable p…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s225-D2 &mdash;mentions&rarr; ruling:s214-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>enacts</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-025">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-025</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-026" data-pid="M-026" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-026</span>
+    <h2 class="ctitle"><code>s135-D1</code> <b class="pt">extends</b> <code>s134-D4</code>?</h2>
+    <span class="when">#135 &middot; 2026-08-08 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…e re-dial flows through. SCOPE: contextual variant only — inline is already borderless everywhere; Global (solid) and Snackbar untouched. Extends the <mark>s134-D4</mark> tint-only idiom from the mono alert to mono+console notification shells.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s135-D1 &mdash;mentions&rarr; ruling:s134-D4</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-026">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-026</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-027" data-pid="M-027" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-027</span>
+    <h2 class="ctitle"><code>s136-D1</code> <b class="pt">extends</b> <code>s135-D3</code>?</h2>
+    <span class="when">#136 &middot; 2026-08-08 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ee hex/px forbidden; token spine wire format = W3C DTCG (stable Oct 2025). (B) VARIANTS: switches live as mutation-keys on their owning node (extends <mark>s135-D3</mark>); a variant is never a new node and TRAVELS with its node through any slot — a shell never enumerates its contents&#x27; variants. (C) SLOTS: content inje…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s136-D1 &mdash;mentions&rarr; ruling:s135-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-027">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-027</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-028" data-pid="M-028" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-028</span>
+    <h2 class="ctitle"><code>s160-D2</code> <b class="pt">extends</b> <code>s149-D1</code>?</h2>
+    <span class="when">#160 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…irs keep a REPORTED warn-tier figure wherever contrast reports are emitted; never a build failure. (4) Badge numeral -&gt; #1A1A1A dark ink, both modes, <mark>s149-D1</mark> extended from tab badges to Badge proper - TEXT seat, stays gated at 4.5, passes 5.55.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s160-D2 &mdash;mentions&rarr; ruling:s149-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-028">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-028</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-029" data-pid="M-029" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-029</span>
+    <h2 class="ctitle"><code>s174-D1</code> <b class="pt">extends</b> <code>s173-D1</code>?</h2>
+    <span class="when">#174 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">GATES 2-6 OF THE COMPONENT-SCAFFOLD BRIEF ARE CLOSED, ALL FIVE ON A PLAIN-PROSE READ-BACK IN CHAT, EXTENDING <mark>s173-D1</mark> WHICH CLOSED GATE 1. WITH THIS ENTRY ALL SIX GATES OF _BRIEF-component-scaffold-2026-08-14-v1.md ARE CLOSED AND THE BRIEF IS CONSUMED. GATE 2 - BUILD…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s174-D1 &mdash;mentions&rarr; ruling:s173-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-029">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-029</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-030" data-pid="M-030" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-030</span>
+    <h2 class="ctitle"><code>s218-D1</code> <b class="pt">extends</b> <code>s217-D3</code>?</h2>
+    <span class="when">CORNER KEYLINES - EVERY TILE KEYLINED, THE RADIUS ONLY ON THE FOUR OUTER CORNERS OF EACH SUB-BENTO; AMENDS THE s217-D8 OPEN-STOP ENACTMENT; DASHBOARD-ONLY FOR NOW &middot; 2026-08-24 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…lorer: &#x27;Yay it works. very happy with this.&#x27; Scope option-selected by Dave the same sitting: DASHBOARD ONLY for now - brochureware/gallery keep their <mark>s217-D3</mark> radius behaviour until he extends it.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s218-D1 &mdash;mentions&rarr; ruling:s217-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-030">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-030</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-031" data-pid="M-031" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-031</span>
+    <h2 class="ctitle"><code>s234-D2</code> <b class="pt">extends</b> <code>s230-D1</code>?</h2>
+    <span class="when">THE FACTORY GOAL, BROADENED - the output is a page ranked against solid UI/UX standards, accessibility and code standards, ready to hand to a developer for wiring; the bento grouping and behaviour-contract work are IN SCOPE of this goal, not beside it &middot; 2026-09-02 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…tokens, snippet-faithful, nothing invented) with &#x27;ready to hand to a dev&#x27; as the pass condition - nothing needs redesigning, only connecting. Extends <mark>s230-D1</mark> (the demo goal) rather than replacing it. His earlier framing the same morning: the missing layers are the designer&#x27;s UX/UI composition rules (groupi…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s234-D2 &mdash;mentions&rarr; ruling:s230-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-031">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-031</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-032" data-pid="M-032" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-032</span>
+    <h2 class="ctitle"><code>s235-D1</code> <b class="pt">extends</b> <code>s234-D6</code>?</h2>
+    <span class="when">THE RECEIPT IS KEYED ON A CONTENT HASH, NOT A FILENAME OR SLUG - the provenance receipt a generated page carries identifies its source snippet by a content hash of the spliced region (the #231 borrow-ledger precedent), because filenames and slugs can be renamed without the page changing; filename/slug/pack version may ride along in the receipt for the human reader but the gate COMPARES on the hash &middot; 2026-09-02 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…cepted with it: the hash changes on every regen serial, so a receipt is valid against the pack version it was minted from, never across cuts. Extends <mark>s234-D6</mark> (the gate parses the receipt first) and names its key.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s235-D1 &mdash;mentions&rarr; ruling:s234-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-032">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-032</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-033" data-pid="M-033" data-pt="extends">
+  <div class="chead">
+    <span class="pid">M-033</span>
+    <h2 class="ctitle"><code>s251-D11</code> <b class="pt">extends</b> <code>s251-D4</code>?</h2>
+    <span class="when">META RSQ 3 is CLOSED by s251-D4, no new weight model: `priority` (integer) orders providers of a role, `when` (predicate, s251-D5) gates them; no 0-1 weights. META RSQ 4: `answers` EXTENDS `knowledge/chart-intents.json` to non-charts (status-of-N, one-number, what-needs-me, ...) - option (a): one closed list, one resolver; no sibling vocabulary. &middot; 2026-09-07 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… verbatim (chat #251, 2026-09-07): &quot;q3. consider closed: both: `priority` orders providers of a role, `when` gates them. I&#x27;d record q3 as settled by `<mark>s251-D4</mark>`&quot; / &quot;q4. I&#x27;ll go with your read&quot; (the conductor&#x27;s read: (a) extend chart-intents)</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s251-D11 &mdash;mentions&rarr; ruling:s251-D4</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>extends</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-033">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-033</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-034" data-pid="M-034" data-pt="narrows">
+  <div class="chead">
+    <span class="pid">M-034</span>
+    <h2 class="ctitle"><code>s175-D1</code> <b class="pt">narrows</b> <code>s151-D1</code>?</h2>
+    <span class="when">#175 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ischarges the #174 ink float (notes/_FLOAT-174-dave-ink-clarification.md) at its NARROWEST of three readings - reading 3, this component family only. <mark>s151-D1</mark> THE TWO-RED LAW and s149-D1 THE MONO ERROR INK CAMP ARE UNTOUCHED AND NOT REOPENED. (f) RATIFIED AS AN INSTANCE, NOT AS A PRINCIPLE: shown that Super…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s175-D1 &mdash;mentions&rarr; ruling:s151-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>narrows</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-034">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-034</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-035" data-pid="M-035" data-pt="narrows">
+  <div class="chead">
+    <span class="pid">M-035</span>
+    <h2 class="ctitle"><code>s200-D3</code> <b class="pt">narrows</b> <code>s200-D2</code>?</h2>
+    <span class="when">#200 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">SCOPE NARROWED: THE <mark>s200-D2</mark> MINT IS FOR CONSOLE ONLY - Dave, live, two words: &#x27;for console&#x27;. His clarification arrived immediately after s200-D2 was inscribed, so the narrowing …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s200-D3 &mdash;mentions&rarr; ruling:s200-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>narrows</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-035">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-035</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-036" data-pid="M-036" data-pt="narrows">
+  <div class="chead">
+    <span class="pid">M-036</span>
+    <h2 class="ctitle"><code>s223-D7</code> <b class="pt">narrows</b> <code>s223-D6</code>?</h2>
+    <span class="when">v1.0.2 IS RATIFIED - DAVE&#x27;S FRESH WORD FOR THIS CUT, GIVEN AFTER THE RELEASE PAGE AND THE FULL PRE-BAKE RECEIPT; THE BAKE MAY RUN: --release INTO dist/, LEDGER SEEDED AT THE BAKE PER s223-D5(3), COMMIT, PUSH, CI READ BACK &middot; 2026-08-28 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…receipt in front of him: three commits pushed (5efd667 rulings+repairs, 004ddc9 roster narrow, 6afab15 release surface), gates group at his ruled 58 (<mark>s223-D6</mark>, derived not tuned), delta-gate arm 2 opening the packed shim (s223-D4), dry-run twice byte-identical at 19,850,748 bytes sha256 26eb33c3, manifest g…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s223-D7 &mdash;mentions&rarr; ruling:s223-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>narrows</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-036">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-036</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-037" data-pid="M-037" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-037</span>
+    <h2 class="ctitle"><code>s158-D4</code> <b class="pt">overrides</b> <code>s122-D1</code>?</h2>
+    <span class="when">#158 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…emes x error/warning/success/information x bare/-glyph/-background) leave the override sets. LAW ON THE MOVE: every $note carrying ruling provenance (<mark>s122-D1</mark>/D3, s123-D1, s131-D1, s132-D1 ...) is relocated into the corresponding palette key BY ADDITION FIRST and verified verbatim-present, and only THEN are…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s158-D4 &mdash;mentions&rarr; ruling:s122-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-037">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-037</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-038" data-pid="M-038" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-038</span>
+    <h2 class="ctitle"><code>s158-D4</code> <b class="pt">overrides</b> <code>s157-D2</code>?</h2>
+    <span class="when">#158 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">OPTION B - THE OVERRIDE FILES GO SINGLE-SOURCE. <mark>s157-D2</mark> built the named-palette tier but left every palette-owned rag key ALSO hand-carried in the three ratified override sets, so the palette projection wa…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s158-D4 &mdash;mentions&rarr; ruling:s157-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-038">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-038</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-039" data-pid="M-039" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-039</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">overrides</b> <code>s122-D3</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…eme TOKEN OVERRIDES, and apollo-legacy overrides rag/text/on-information to #FFFFFF at tokens/themes/apollo-legacy.overrides.json:203 (s131-D1), with <mark>s122-D3</mark>, s122-D5, s132-D1 and s149-D1&#x27;s scope line all pointing to white-on-error OUTSIDE mono. SO THE THREE NEW FAILURES ARE LIKELY ARTEFACTS OF THE UNAPPLI…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s122-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-039">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-039</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-040" data-pid="M-040" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-040</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">overrides</b> <code>s122-D5</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… OVERRIDES, and apollo-legacy overrides rag/text/on-information to #FFFFFF at tokens/themes/apollo-legacy.overrides.json:203 (s131-D1), with s122-D3, <mark>s122-D5</mark>, s132-D1 and s149-D1&#x27;s scope line all pointing to white-on-error OUTSIDE mono. SO THE THREE NEW FAILURES ARE LIKELY ARTEFACTS OF THE UNAPPLIED OVERRI…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s122-D5</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-040">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-040</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-041" data-pid="M-041" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-041</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">overrides</b> <code>s131-D1</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…et apply per-theme TOKEN OVERRIDES, and apollo-legacy overrides rag/text/on-information to #FFFFFF at tokens/themes/apollo-legacy.overrides.json:203 (<mark>s131-D1</mark>), with s122-D3, s122-D5, s132-D1 and s149-D1&#x27;s scope line all pointing to white-on-error OUTSIDE mono. SO THE THREE NEW FAILURES ARE LIKELY ARTEFACTS…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s131-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-041">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-041</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-042" data-pid="M-042" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-042</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">overrides</b> <code>s132-D1</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…S, and apollo-legacy overrides rag/text/on-information to #FFFFFF at tokens/themes/apollo-legacy.overrides.json:203 (s131-D1), with s122-D3, s122-D5, <mark>s132-D1</mark> and s149-D1&#x27;s scope line all pointing to white-on-error OUTSIDE mono. SO THE THREE NEW FAILURES ARE LIKELY ARTEFACTS OF THE UNAPPLIED OVERRIDE LEG - …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s132-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-042">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-042</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-043" data-pid="M-043" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-043</span>
+    <h2 class="ctitle"><code>s169-D1</code> <b class="pt">overrides</b> <code>s149-D1</code>?</h2>
+    <span class="when">#169 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…o-legacy overrides rag/text/on-information to #FFFFFF at tokens/themes/apollo-legacy.overrides.json:203 (s131-D1), with s122-D3, s122-D5, s132-D1 and <mark>s149-D1</mark>&#x27;s scope line all pointing to white-on-error OUTSIDE mono. SO THE THREE NEW FAILURES ARE LIKELY ARTEFACTS OF THE UNAPPLIED OVERRIDE LEG - THAT IS A RE…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s169-D1 &mdash;mentions&rarr; ruling:s149-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-043">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-043</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-044" data-pid="M-044" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-044</span>
+    <h2 class="ctitle"><code>s170-D2</code> <b class="pt">overrides</b> <code>s131-D1</code>?</h2>
+    <span class="when">#170 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…NSOLE AND APOLLO-SUPERCHARGE: rag/text/on-information overridden to #FFFFFF (light and dark) in both themes&#x27; override sets, mirroring apollo-legacy&#x27;s <mark>s131-D1</mark> entry. This joins every prior white-on-error ruling outside mono (s122-D3, s122-D5, s131-D1, s132-D1, s149-D1&#x27;s mono-only scope). Adjudicates two of …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s170-D2 &mdash;mentions&rarr; ruling:s131-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-044">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-044</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-045" data-pid="M-045" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-045</span>
+    <h2 class="ctitle"><code>s170-D4</code> <b class="pt">overrides</b> <code>s170-D3</code>?</h2>
+    <span class="when">#170 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ICON GOES WHITE, mirroring its sibling label: button/primary/icon/default -&gt; #FFFFFF (light and dark) in apollo-legacy&#x27;s override set. Closes the gap <mark>s170-D3</mark>&#x27;s honest state-pairing surfaced (mono #333333 on legacy&#x27;s #DB0011 CTA = 2.42:1 vs 3.0:1). Dave, verbatim: &#x27;needs fixing for sure&#x27;. Also ruled in the …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s170-D4 &mdash;mentions&rarr; ruling:s170-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-045">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-045</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-046" data-pid="M-046" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-046</span>
+    <h2 class="ctitle"><code>s176-D2</code> <b class="pt">overrides</b> <code>s176-D1</code>?</h2>
+    <span class="when">#176 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…-absence handling of the six sub-3:1 light fill cells. (e) LEGACY BAR: progress/complete override #333333 light / #FFFFFF dark (&#x27;both are true&#x27; — the <mark>s176-D1</mark> Legacy ink applied to the bar, declared per the fall-through class). (f) LEGACY DARK TICK #1A1A1A is a DECLARED EXCEPTION taken by the build (exact r…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s176-D2 &mdash;mentions&rarr; ruling:s176-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-046">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-046</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-047" data-pid="M-047" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-047</span>
+    <h2 class="ctitle"><code>s202-D1</code> <b class="pt">overrides</b> <code>s201-D5</code>?</h2>
+    <span class="when">#202 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…layout.json sizes+radii, spacing.json paddings) so mono (the base theme) and the two override-less square themes resolve them; radii mint 0/0/0/0 per <mark>s201-D5</mark> (squares stay square). Console keeps its own override set. min-hit-area 44 carried to base. Enacted this session by an Opus work sub under conductor …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s202-D1 &mdash;mentions&rarr; ruling:s201-D5</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-047">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-047</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-048" data-pid="M-048" data-pt="overrides">
+  <div class="chead">
+    <span class="pid">M-048</span>
+    <h2 class="ctitle"><code>s216-D1</code> <b class="pt">overrides</b> <code>s200-D1</code>?</h2>
+    <span class="when">THEME PUBLISHING: THE DELIVERABLE IS MINTED, DEV-READY, THEME-SPECIFIC CODE — ADR-0011 AMENDED WITH A PUBLISH TIER, NOT REVERSED &middot; 2026-08-22 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ets go with your recommendation&#x27;): authoring stays exactly as ADR-0011 ruled — one store, override sets, never a hand-managed fork — and a MINT step (<mark>s200-D1</mark> discipline) compiles store + overrides into a self-contained per-theme stylesheet (e.g. console.compiled.css): every value concrete, primitives as cu…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s216-D1 &mdash;mentions&rarr; ruling:s200-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>overrides</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-048">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-048</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-049" data-pid="M-049" data-pt="refines">
+  <div class="chead">
+    <span class="pid">M-049</span>
+    <h2 class="ctitle"><code>s151-D3</code> <b class="pt">refines</b> <code>s151-D2</code>?</h2>
+    <span class="when">#151 &middot; 2026-08-11 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">….66 pair is a reconstruction, UNPROVEN - verify the exact failing pair against the gate line before enacting. (3) PRESSED RAMP NORMALISATION (refines <mark>s151-D2</mark>): &#x27;normalise them to the ramp, just choose the closest, no new neutrals&#x27; - light pressed = color/neutral/11 #CECECE, dark = color/neutral/6 #484848; …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s151-D3 &mdash;mentions&rarr; ruling:s151-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>refines</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-049">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-049</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-050" data-pid="M-050" data-pt="refines">
+  <div class="chead">
+    <span class="pid">M-050</span>
+    <h2 class="ctitle"><code>s200-D1</code> <b class="pt">refines</b> <code>s199-D3</code>?</h2>
+    <span class="when">#200 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…cimen page before it touches canon); no derived value lands in canon until Dave has seen it rendered - &#x27;lets do it and see what we get&#x27;. This REFINES <mark>s199-D3</mark>: no free-standing segmented-switch token is minted; the carve-out is satisfied by derivation with padding as the tuned input.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s200-D1 &mdash;mentions&rarr; ruling:s199-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>refines</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-050">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-050</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-051" data-pid="M-051" data-pt="refines">
+  <div class="chead">
+    <span class="pid">M-051</span>
+    <h2 class="ctitle"><code>s219-D2</code> <b class="pt">refines</b> <code>s219-D1</code>?</h2>
+    <span class="when">THREE GALLERY SUPERSESSIONS BY THE LATEST EXPORTS: MONO CAPTIONS GO LIGHT GREY, SQUARE BECOMES THE GALLERY-ROLE DEFAULT, CONSOLE ROUNDING DEFAULTS CAPSULE &middot; 2026-08-25 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…T in all four themes - widening s218-D6(4) beyond the photography wall; the s217-D3 exemption yields as a default. Edge remains an edit-pass dial per <mark>s219-D1</mark>. The orphan/flattening refinement (the W-99zi third bend, incl. the stocksy-6629948 case) is expressly NOT ruled here. (3) CONSOLE GALLERY ROUNDING D…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D2 &mdash;mentions&rarr; ruling:s219-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>refines</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-051">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-051</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-052" data-pid="M-052" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-052</span>
+    <h2 class="ctitle"><code>s123-D1</code> <b class="pt">retires</b> <code>s122-D1</code>?</h2>
+    <span class="when">#123 &middot; 2026-08-07 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…gacy warning/information BACKGROUNDS restored to the pre-#122 values #F0B13A / #7DABCD, declared explicitly in legacy&#x27;s overrides (mode-invariant per <mark>s122-D1</mark>; information&#x27;s old dark leg #5F92B9 retired to the note). The #122 fall-through to the mono values #E0A61F/#78A7E8 was accidental, not ruled - picked…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s123-D1 &mdash;mentions&rarr; ruling:s122-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-052">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-052</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-053" data-pid="M-053" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-053</span>
+    <h2 class="ctitle"><code>s168-D5</code> <b class="pt">retires</b> <code>s144-D1</code>?</h2>
+    <span class="when">#168 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…DA1A00 and #137F3C are retired AS GRAPHIC LEGS ONLY - they REMAIN THE RULED INK/TEXT VALUES elsewhere (rag/error-ink light and rag/success-ink light, <mark>s144-D1</mark>/s151-D1/s155-D1), which this ruling does NOT touch. #3F6FB5 is retired as a graphic leg outright (it was never an ink value). MEASURED FIRST-HAND AT …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s168-D5 &mdash;mentions&rarr; ruling:s144-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-053">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-053</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-054" data-pid="M-054" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-054</span>
+    <h2 class="ctitle"><code>s168-D5</code> <b class="pt">retires</b> <code>s151-D1</code>?</h2>
+    <span class="when">#168 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…nd #137F3C are retired AS GRAPHIC LEGS ONLY - they REMAIN THE RULED INK/TEXT VALUES elsewhere (rag/error-ink light and rag/success-ink light, s144-D1/<mark>s151-D1</mark>/s155-D1), which this ruling does NOT touch. #3F6FB5 is retired as a graphic leg outright (it was never an ink value). MEASURED FIRST-HAND AT THIS SIT…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s168-D5 &mdash;mentions&rarr; ruling:s151-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-054">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-054</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-055" data-pid="M-055" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-055</span>
+    <h2 class="ctitle"><code>s168-D5</code> <b class="pt">retires</b> <code>s155-D1</code>?</h2>
+    <span class="when">#168 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…3C are retired AS GRAPHIC LEGS ONLY - they REMAIN THE RULED INK/TEXT VALUES elsewhere (rag/error-ink light and rag/success-ink light, s144-D1/s151-D1/<mark>s155-D1</mark>), which this ruling does NOT touch. #3F6FB5 is retired as a graphic leg outright (it was never an ink value). MEASURED FIRST-HAND AT THIS SITTING, no…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s168-D5 &mdash;mentions&rarr; ruling:s155-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-055">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-055</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-056" data-pid="M-056" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-056</span>
+    <h2 class="ctitle"><code>s178-D1</code> <b class="pt">retires</b> <code>s124-D1</code>?</h2>
+    <span class="when">#178 &middot; 2026-08-15 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…old into the fenced residual list; attribution re-probe and varied tally queries are DEAD with positive discharge evidence (s129-D1/s171-D1 re-bases; <mark>s124-D1</mark> demote retirement) - delete; AND the fold MINTS a new item: knowledge/_surface_recorder.py has ONE sample (session 113) in ~64 sessions - an instrume…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s178-D1 &mdash;mentions&rarr; ruling:s124-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-056">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-056</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-057" data-pid="M-057" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-057</span>
+    <h2 class="ctitle"><code>s178-D1</code> <b class="pt">retires</b> <code>s129-D1</code>?</h2>
+    <span class="when">#178 &middot; 2026-08-15 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ody-grep gate are LIVE - fold into the fenced residual list; attribution re-probe and varied tally queries are DEAD with positive discharge evidence (<mark>s129-D1</mark>/s171-D1 re-bases; s124-D1 demote retirement) - delete; AND the fold MINTS a new item: knowledge/_surface_recorder.py has ONE sample (session 113) in …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s178-D1 &mdash;mentions&rarr; ruling:s129-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-057">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-057</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-058" data-pid="M-058" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-058</span>
+    <h2 class="ctitle"><code>s178-D1</code> <b class="pt">retires</b> <code>s171-D1</code>?</h2>
+    <span class="when">#178 &middot; 2026-08-15 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… gate are LIVE - fold into the fenced residual list; attribution re-probe and varied tally queries are DEAD with positive discharge evidence (s129-D1/<mark>s171-D1</mark> re-bases; s124-D1 demote retirement) - delete; AND the fold MINTS a new item: knowledge/_surface_recorder.py has ONE sample (session 113) in ~64 sess…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s178-D1 &mdash;mentions&rarr; ruling:s171-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-058">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-058</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-059" data-pid="M-059" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-059</span>
+    <h2 class="ctitle"><code>s188-D3</code> <b class="pt">retires</b> <code>s188-D2</code>?</h2>
+    <span class="when">#188 &middot; 2026-08-16 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… the hook FILE) SUPERSEDES the P1 clause of s183-D1 (the light version: index-line grading + companion count + refusal-string fix), which is RETIRED. <mark>s188-D2</mark> (receipt-required retraction carve-out) stands as a STRENGTHENING AMENDMENT to s183-D1&#x27;s P2 clause, not a reversal. Dave&#x27;s word: &#x27;I just want the mos…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s188-D3 &mdash;mentions&rarr; ruling:s188-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-059">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-059</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-060" data-pid="M-060" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-060</span>
+    <h2 class="ctitle"><code>s201-D1</code> <b class="pt">retires</b> <code>s200-D1</code>?</h2>
+    <span class="when">#201 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…ted-thumb tokens at xs 24/2/6/4, m 44/4/10/6, l 48/4/12/8, joining the standing s (36/2/8/6, s200-D4). Thumb radii CONCRETE, derived at mint time per <mark>s200-D1</mark> (container - padding). RETIRES: the padding-first small/medium/large segmented set of s200-D2/D3 (paddings 2/4/6, thumbs 18/16/14) - removed from apo…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s201-D1 &mdash;mentions&rarr; ruling:s200-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-060">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-060</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-061" data-pid="M-061" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-061</span>
+    <h2 class="ctitle"><code>s201-D1</code> <b class="pt">retires</b> <code>s200-D2</code>?</h2>
+    <span class="when">#201 &middot; 2026-08-18 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…200-D4). Thumb radii CONCRETE, derived at mint time per s200-D1 (container - padding). RETIRES: the padding-first small/medium/large segmented set of <mark>s200-D2</mark>/D3 (paddings 2/4/6, thumbs 18/16/14) - removed from apollo-console.overrides.json in the same motion, per the v3 export&#x27;s own supersession note; the …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s201-D1 &mdash;mentions&rarr; ruling:s200-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-061">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-061</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-062" data-pid="M-062" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-062</span>
+    <h2 class="ctitle"><code>s217-D8</code> <b class="pt">retires</b> <code>s217-D6</code>?</h2>
+    <span class="when">KEYLINES HUG THE MODULES — NO LINE EVER RUNS DOWN THE MIDDLE OF THE SPACING; SUPERSEDES THE TREATMENT-C CENTRED-GUTTER CONSTRUCTION &middot; 2026-08-24 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…and the tiles carry their own edges; at the 1px flush stop, where tiles cannot carry lines, the rounded group border + flush hairline construction of <mark>s217-D6</mark>-era remains. The centred-gutter &#x27;treatment C&#x27; construction is retired for dashboards.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s217-D8 &mdash;mentions&rarr; ruling:s217-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-062">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-062</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-063" data-pid="M-063" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-063</span>
+    <h2 class="ctitle"><code>s219-D3</code> <b class="pt">retires</b> <code>s219-D1</code>?</h2>
+    <span class="when">ONE VOCABULARY, THREE PERMISSION LEVELS: GENERATION SHIPS DEFAULTS, EDIT PICKS WITHIN THE RAILS, AUTHORING WIDENS THEM; OPTIONS COME IN CHORDS; PAGEBG LEAVES THE BENTO GRAMMAR AND BENTOBG IS THE SECTION GROUND &middot; 2026-08-25 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…capsule + caption ground from the grey ramp INCLUDING dark grey with reversed-out text (the s219-D2(1)-retired DEFAULT returns as an OPTION, which is <mark>s219-D1</mark>&#x27;s default-vs-option split working); chord two - four rounded corners on images + transparent caption background. Mono&#x27;s access to the dark-caption ch…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D3 &mdash;mentions&rarr; ruling:s219-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-063">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-063</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-064" data-pid="M-064" data-pt="retires">
+  <div class="chead">
+    <span class="pid">M-064</span>
+    <h2 class="ctitle"><code>s219-D3</code> <b class="pt">retires</b> <code>s219-D2</code>?</h2>
+    <span class="when">ONE VOCABULARY, THREE PERMISSION LEVELS: GENERATION SHIPS DEFAULTS, EDIT PICKS WITHIN THE RAILS, AUTHORING WIDENS THEM; OPTIONS COME IN CHORDS; PAGEBG LEAVES THE BENTO GRAMMAR AND BENTOBG IS THE SECTION GROUND &middot; 2026-08-25 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… console example, SCOPE CONSOLE GALLERY: chord one - full capsule + caption ground from the grey ramp INCLUDING dark grey with reversed-out text (the <mark>s219-D2</mark>(1)-retired DEFAULT returns as an OPTION, which is s219-D1&#x27;s default-vs-option split working); chord two - four rounded corners on images + transparen…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D3 &mdash;mentions&rarr; ruling:s219-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>retires</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-064">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-064</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-065" data-pid="M-065" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-065</span>
+    <h2 class="ctitle"><code>s130-D1</code> <b class="pt">supersedes</b> <code>s123-D3</code>?</h2>
+    <span class="when">#130 &middot; 2026-08-08 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… LABELLED (arc 198, receipt 189, measured-#130 198) - a measurement taken today describes today&#x27;s tree and does NOT adjudicate what #123 saw; (b) the <mark>s123-D3</mark> TLS clause is annotated [superseded #129] BY ADDITION, no dated stratum edited.</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s130-D1 &mdash;mentions&rarr; ruling:s123-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-065">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-065</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-066" data-pid="M-066" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-066</span>
+    <h2 class="ctitle"><code>s132-D1</code> <b class="pt">supersedes</b> <code>s122-D3</code>?</h2>
+    <span class="when">#132 &middot; 2026-08-08 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…nk-mark camp, leaving error the SOLE white mark on console/SC. Console + Supercharge continue to share ONE RAG map, MODE-INVARIANT (dark = light) per <mark>s122-D3</mark> - this ruling supersedes s122-D3&#x27;s information VALUE and MARK, keeps its structure. Ruled by Dave off the info-blue controller export (his own pasted…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s132-D1 &mdash;mentions&rarr; ruling:s122-D3</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-066">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-066</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-067" data-pid="M-067" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-067</span>
+    <h2 class="ctitle"><code>s163-D1</code> <b class="pt">supersedes</b> <code>ds-021</code>?</h2>
+    <span class="when">#163 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…its); (2) the 3 remaining hits cleared BY DECLARATION, never rephrasing: _BANKRUPTCY-ARCHIVE.md #87 batch (historical marker) and _DS-IMPROVEMENTS.md <mark>ds-021</mark> status block (SUPERSEDED marker - the #84-named true positive); (3) the audit WIRED BLOCKING in the gate&#x27;s md sweep, ending its #84 parked state. Sco…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s163-D1 &mdash;mentions&rarr; ruling:ds-021</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-067">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-067</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-068" data-pid="M-068" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-068</span>
+    <h2 class="ctitle"><code>s163-D1</code> <b class="pt">supersedes</b> <code>s161-D2</code>?</h2>
+    <span class="when">#163 &middot; 2026-08-12 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">G18 CLOSED - retired_unit_prose_audit FLIPPED TO BLOCK. Supersedes <mark>s161-D2</mark>&#x27;s provisional WARN, per its own close condition (&#x27;Dave confirms warn as final or flips to block&#x27;); Dave picked &#x27;Flip to block (Recommended)&#x27; from the…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s163-D1 &mdash;mentions&rarr; ruling:s161-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-068">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-068</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-069" data-pid="M-069" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-069</span>
+    <h2 class="ctitle"><code>s168-D1</code> <b class="pt">supersedes</b> <code>s142-D1</code>?</h2>
+    <span class="when">#168 &middot; 2026-08-13 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">… EXPORT (verbatim artifact in chat). (DC1) tooltip.tip is CONFIRMED CLOSED per s162-D1 - no store row for it ever existed, so nothing is owed and the <mark>s142-D1</mark> &#x27;open: tooltip.tip unruled&#x27; clause is SUPERSEDED (see that entry&#x27;s added superseded-by note; its text is untouched). (DC2) THE EFFORT LENGTH-PROXY IS…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s168-D1 &mdash;mentions&rarr; ruling:s142-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-069">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-069</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-070" data-pid="M-070" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-070</span>
+    <h2 class="ctitle"><code>s176-D2</code> <b class="pt">supersedes</b> <code>s175-D1</code>?</h2>
+    <span class="when">#176 &middot; 2026-08-14 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…rning red&#x27; -&gt; &#x27;Legacy error, sorry my mistake&#x27; (#A8000B) -&gt; off the v1 page, &#x27;Use the primary red for Legacy&#x27; (#DB0011, FINAL). Dark=white SUPERSEDES <mark>s175-D1</mark>&#x27;s Legacy red-both-modes, by his word (&#x27;both are true&#x27;). (c) GLYPHS: thick tick (canon yes-thick.svg) for ALL; Mono/Console/SC tick = dark ink #1A1A1A…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s176-D2 &mdash;mentions&rarr; ruling:s175-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-070">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-070</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-071" data-pid="M-071" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-071</span>
+    <h2 class="ctitle"><code>s177-D1</code> <b class="pt">supersedes</b> <code>s129-D1</code>?</h2>
+    <span class="when">#177 &middot; 2026-08-15 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…stay-in-band rule is not violated. P4a - _governs.py skips provenance anchors on superseded rulings and PRINTS every skipped anchor (never swallows), <mark>s129-D1</mark> gains superseded_by: s171-D1; the skip must be MUTATION-PROVEN (mislabel a live ruling in a scratch copy, the print must fire) before it counts as en…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s177-D1 &mdash;mentions&rarr; ruling:s129-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-071">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-071</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-072" data-pid="M-072" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-072</span>
+    <h2 class="ctitle"><code>s188-D3</code> <b class="pt">supersedes</b> <code>s183-D1</code>?</h2>
+    <span class="when">#188 &middot; 2026-08-16 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">SUPERSESSION, EXPLICIT: s188-D1 (grader reads the hook FILE) SUPERSEDES the P1 clause of <mark>s183-D1</mark> (the light version: index-line grading + companion count + refusal-string fix), which is RETIRED. s188-D2 (receipt-required retraction carve-out) sta…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s188-D3 &mdash;mentions&rarr; ruling:s183-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-072">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-072</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-073" data-pid="M-073" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-073</span>
+    <h2 class="ctitle"><code>s188-D3</code> <b class="pt">supersedes</b> <code>s188-D1</code>?</h2>
+    <span class="when">#188 &middot; 2026-08-16 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">SUPERSESSION, EXPLICIT: <mark>s188-D1</mark> (grader reads the hook FILE) SUPERSEDES the P1 clause of s183-D1 (the light version: index-line grading + companion count + refusal-string fix), whic…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s188-D3 &mdash;mentions&rarr; ruling:s188-D1</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-073">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-073</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-074" data-pid="M-074" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-074</span>
+    <h2 class="ctitle"><code>s207-D1</code> <b class="pt">supersedes</b> <code>s133-D2</code>?</h2>
+    <span class="when">PUSH AT THE CONDUCTOR&#x27;S JUDGMENT — the on-Dave&#x27;s-word half of the push split is retired &middot; 2026-08-19 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…&#x27;btw, you are free to push whanevr you like, im comfortable with that now.&#x27; This supersedes the &#x27;push still only on Dave&#x27;s explicit word&#x27; half of the <mark>s133-D2</mark> split, which stood from #133. What does NOT move: the ruled call form stays `bash knowledge/_git_commit.sh --push` (master, ff-only, verified - s133-…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s207-D1 &mdash;mentions&rarr; ruling:s133-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-074">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-074</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-075" data-pid="M-075" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-075</span>
+    <h2 class="ctitle"><code>s219-D2</code> <b class="pt">supersedes</b> <code>s218-D6</code>?</h2>
+    <span class="when">THREE GALLERY SUPERSESSIONS BY THE LATEST EXPORTS: MONO CAPTIONS GO LIGHT GREY, SQUARE BECOMES THE GALLERY-ROLE DEFAULT, CONSOLE ROUNDING DEFAULTS CAPSULE &middot; 2026-08-25 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">(1) MONO CAPTION SUPERSESSION: the mono gallery caption ground is light grey rgb(240,240,240) per the #219 mono gallery export, SUPERSEDING <mark>s218-D6</mark>(1)&#x27;s #1A1A1A/white ground - Dave, asked which governs: &#x27;I changed my mind just go with the latest and change in the library.&#x27; Applies to the gallery …</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D2 &mdash;mentions&rarr; ruling:s218-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-075">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-075</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-076" data-pid="M-076" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-076</span>
+    <h2 class="ctitle"><code>s219-D7</code> <b class="pt">supersedes</b> <code>s219-D6</code>?</h2>
+    <span class="when">SUPERSEDES s219-D6: THE PACK IS APOLLO - SNOOPY, CARRYING MEMENTO - GUMDROP; TWO NAME FAMILIES, TYPE-CORRECT &middot; 2026-08-26 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…eady implies). Cross-mission pairing is deliberately fine; module TYPE correctness is the rule (his &#x27;oh bother&#x27; was a type error, not a pairing one). <mark>s219-D6</mark>&#x27;s Apollo - Gumdrop is SUPERSEDED, history frozen. Eagle/Columbia stay in reserve. Rename wave: dir, zip (Apollo-Snoopy-v1.0.0.zip), manifest, frozen-…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D7 &mdash;mentions&rarr; ruling:s219-D6</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-076">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-076</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-077" data-pid="M-077" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-077</span>
+    <h2 class="ctitle"><code>s219-D8</code> <b class="pt">supersedes</b> <code>s219-D7</code>?</h2>
+    <span class="when">SUPERSEDES s219-D7 ON THE PACK NAME: APOLLO - SPIDER CARRYING MEMENTO - GUMDROP; RELEASES TAKE ONE MISSION&#x27;S WHOLE PAIR &middot; 2026-08-26 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…r/), Memento cut = Memento - Gumdrop v1.0.0. Next release is Apollo 10&#x27;s pair (Snoopy / Charlie Brown), then 11 (Eagle / Columbia), in mission order. <mark>s219-D7</mark>&#x27;s Snoopy naming is SUPERSEDED before any commit carried it; the two-family type rule from D7 stands (LM = pack, CM = Memento).</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s219-D8 &mdash;mentions&rarr; ruling:s219-D7</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-077">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-077</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+<article class="card" id="M-078" data-pid="M-078" data-pt="supersedes">
+  <div class="chead">
+    <span class="pid">M-078</span>
+    <h2 class="ctitle"><code>s220-D2</code> <b class="pt">supersedes</b> <code>s219-D2</code>?</h2>
+    <span class="when">THE FOUR CAPTION TREATMENTS ARE ALL LEGAL OPTIONS - NO REMOVAL, NO REFUSAL FLOOR; THE CONSOLE GALLERY DEFAULT BECOMES CHORD TWO (ROUNDED-CORNER IMAGE + TRANSPARENT CAPTION), BOTH MODES &middot; 2026-08-27 &middot; Dave</span>
+  </div>
+  <div class="cbody">
+    <p class="k">What the source ruling says</p>
+    <blockquote class="rec">…modes&#x27; - the console gallery DEFAULT becomes chord two (rounding: corners on the image, capBg: transparent), identical in light and dark, SUPERSEDING <mark>s219-D2</mark>(3)&#x27;s capsule default and the console-gallery capsule+grey rows of the s219-D1(3) tuner exports - his word outranks his own export, the s219-D2(1) lat…</blockquote>
+    <p class="src"><span class="k">Edge as built</span><code class="path">ruling:s220-D2 &mdash;mentions&rarr; ruling:s219-D2</code>
+    &middot; type stays <code>mentions</code> &middot; <code>authored:false</code> &middot; drawn dashed &middot; proposed <code>supersedes</code></p>
+  </div>
+  <div class="rule-row">
+    <span class="k">Your ruling</span>
+    <div class="btns" role="radiogroup" aria-label="Ruling for M-078">
+      <button type="button" class="rb" data-v="ACCEPT" role="radio" aria-checked="false">Accept</button>
+      <button type="button" class="rb" data-v="REWORD" role="radio" aria-checked="false">Reword</button>
+      <button type="button" class="rb" data-v="REJECT" role="radio" aria-checked="false">Reject</button>
+    </div>
+    <label class="notew"><span class="vh">Reword or note for M-078</span>
+      <input type="text" class="note" placeholder="reword the verb, or one line — your words, optional" maxlength="240"></label>
+  </div>
+</article>
+
+<section class="export">
+  <h2>Export — for the wrap to inscribe verbatim</h2>
+  <p class="src">One line per ruled edge, in card order. <code class="path">knowledge/_rulings.json</code>
+  is written through <code class="path">_inscribe_ruling.py</code>; nothing here is inscribed by this page,
+  and no edge changes type in the explorer until it is.</p>
+  <pre class="out" id="out">Press &ldquo;Export rulings&rdquo;.</pre>
+</section>
+</div></main>
+
+<footer><div class="wrap">#266 lane V &middot; derived by <code class="path">knowledge/_build_kg_explorer.py</code> v1.2
+from <code class="path">knowledge/_rulings.json</code> (441 rulings, 284 mention edges, 78 with a proposed type).
+Selections are stored in this browser only (localStorage), never sent anywhere.</div></footer>
+
+<script>
+(function(){
+  var KEY = 'apollo-proposed-266-edges';
+  var TITLES = {"M-001": "s157-D2 confirms s122-D2", "M-002": "s168-D1 confirms s162-D1", "M-003": "s176-D1 confirms s175-D1", "M-004": "s181-D1 confirms s172-D3", "M-005": "s202-D2 confirms s199-D3", "M-006": "s214-D4 confirms s214-D1", "M-007": "s214-D4 confirms s214-D2", "M-008": "s214-D6 confirms s214-D4", "M-009": "ds-034 corrects ds-035", "M-010": "ds-035 corrects ds-034", "M-011": "s169-D1 corrects s158-D4", "M-012": "s224-D1 corrects s223-D2", "M-013": "s224-D1 corrects s223-D3", "M-014": "s143-D1 enacts s142-D1", "M-015": "s151-D2 enacts s151-D1", "M-016": "s161-D4 enacts s142-D1", "M-017": "s191-D3 enacts s182-D2", "M-018": "s194-D1 enacts s169-D1", "M-019": "s194-D1 enacts s172-D1", "M-020": "s198-D2 enacts s198-D1", "M-021": "s201-D1 enacts s200-D3", "M-022": "s218-D3 enacts s217-D3", "M-023": "s218-D6 enacts s217-D3", "M-024": "s225-D1 enacts s224-D1", "M-025": "s225-D2 enacts s214-D6", "M-026": "s135-D1 extends s134-D4", "M-027": "s136-D1 extends s135-D3", "M-028": "s160-D2 extends s149-D1", "M-029": "s174-D1 extends s173-D1", "M-030": "s218-D1 extends s217-D3", "M-031": "s234-D2 extends s230-D1", "M-032": "s235-D1 extends s234-D6", "M-033": "s251-D11 extends s251-D4", "M-034": "s175-D1 narrows s151-D1", "M-035": "s200-D3 narrows s200-D2", "M-036": "s223-D7 narrows s223-D6", "M-037": "s158-D4 overrides s122-D1", "M-038": "s158-D4 overrides s157-D2", "M-039": "s169-D1 overrides s122-D3", "M-040": "s169-D1 overrides s122-D5", "M-041": "s169-D1 overrides s131-D1", "M-042": "s169-D1 overrides s132-D1", "M-043": "s169-D1 overrides s149-D1", "M-044": "s170-D2 overrides s131-D1", "M-045": "s170-D4 overrides s170-D3", "M-046": "s176-D2 overrides s176-D1", "M-047": "s202-D1 overrides s201-D5", "M-048": "s216-D1 overrides s200-D1", "M-049": "s151-D3 refines s151-D2", "M-050": "s200-D1 refines s199-D3", "M-051": "s219-D2 refines s219-D1", "M-052": "s123-D1 retires s122-D1", "M-053": "s168-D5 retires s144-D1", "M-054": "s168-D5 retires s151-D1", "M-055": "s168-D5 retires s155-D1", "M-056": "s178-D1 retires s124-D1", "M-057": "s178-D1 retires s129-D1", "M-058": "s178-D1 retires s171-D1", "M-059": "s188-D3 retires s188-D2", "M-060": "s201-D1 retires s200-D1", "M-061": "s201-D1 retires s200-D2", "M-062": "s217-D8 retires s217-D6", "M-063": "s219-D3 retires s219-D1", "M-064": "s219-D3 retires s219-D2", "M-065": "s130-D1 supersedes s123-D3", "M-066": "s132-D1 supersedes s122-D3", "M-067": "s163-D1 supersedes ds-021", "M-068": "s163-D1 supersedes s161-D2", "M-069": "s168-D1 supersedes s142-D1", "M-070": "s176-D2 supersedes s175-D1", "M-071": "s177-D1 supersedes s129-D1", "M-072": "s188-D3 supersedes s183-D1", "M-073": "s188-D3 supersedes s188-D1", "M-074": "s207-D1 supersedes s133-D2", "M-075": "s219-D2 supersedes s218-D6", "M-076": "s219-D7 supersedes s219-D6", "M-077": "s219-D8 supersedes s219-D7", "M-078": "s220-D2 supersedes s219-D2"};
+  var cards = Array.prototype.slice.call(document.querySelectorAll('article.card'));
+  var state = {};
+  function load(){
+    try { var raw = localStorage.getItem(KEY); if (raw) state = JSON.parse(raw) || {}; }
+    catch (e) { state = {}; }
+    if (!state || typeof state !== 'object') state = {};
+  }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function tally(){
+    var n = 0;
+    cards.forEach(function(c){ var s = state[c.dataset.pid]; if (s && s.v) n++; });
+    document.getElementById('tallyN').textContent = n;
+    document.getElementById('sRuled').textContent = n;
+  }
+  function paint(c){
+    var s = state[c.dataset.pid] || {};
+    c.setAttribute('data-ruled', s.v ? '1' : '0');
+    c.querySelectorAll('button.rb').forEach(function(b){
+      b.setAttribute('aria-checked', (s.v === b.dataset.v) ? 'true' : 'false');
+    });
+    var note = c.querySelector('input.note');
+    if (note && document.activeElement !== note) note.value = s.note || '';
+  }
+  cards.forEach(function(c){
+    c.querySelectorAll('button.rb').forEach(function(b){
+      b.addEventListener('click', function(){
+        var id = c.dataset.pid, s = state[id] || {};
+        s.v = (s.v === b.dataset.v) ? '' : b.dataset.v;   /* click again to unset */
+        state[id] = s; save(); paint(c); tally();
+      });
+    });
+    var note = c.querySelector('input.note');
+    note.addEventListener('input', function(){
+      var id = c.dataset.pid, s = state[id] || {};
+      s.note = note.value; state[id] = s; save();
+    });
+  });
+  document.getElementById('only').addEventListener('change', function(){
+    document.body.classList.toggle('only', this.checked);
+  });
+  document.getElementById('terse').addEventListener('change', function(){
+    document.body.classList.toggle('hidebody', this.checked);
+  });
+  document.getElementById('clearBtn').addEventListener('click', function(){
+    state = {}; save(); cards.forEach(paint); tally();
+    document.getElementById('out').textContent = 'Cleared.';
+  });
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var lines = [], d = 0;
+    cards.forEach(function(c){
+      var id = c.dataset.pid, s = state[id] || {};
+      if (!s.v) return;
+      d++;
+      lines.push('s266-E' + d + ' \u00b7 ' + id + ' \u00b7 ' + s.v + ' \u00b7 ' +
+                 TITLES[id] + ' \u00b7 note: ' + ((s.note || '').trim() || '\u2014'));
+    });
+    var missing = cards.filter(function(c){ return !(state[c.dataset.pid] || {}).v; })
+                       .map(function(c){ return c.dataset.pid; });
+    var out = lines.length ? lines.join('\n') : '(nothing ruled yet)';
+    if (missing.length) out += '\n\nNOT RULED (' + missing.length + '): ' + missing.join(' ');
+    document.getElementById('out').textContent = out;
+  });
+  load(); cards.forEach(paint); tally();
+})();
+</script>
+</body></html>
