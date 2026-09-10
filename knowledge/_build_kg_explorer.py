@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.9"  # … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.10"  # 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -78,7 +78,34 @@ MENTION_RX = re.compile(r's\d{2,3}-D\d+|ds-\d{3}|DV-D\d+|ADR-\d{4}(?:-A\d)?|T-D\
 VERB_STEMS = {'supersedes': 'supersed', 'retires': 'retir', 'narrows': 'narrow', 'refines': 'refin',
               'corrects': 'correct', 'enacts': 'enact', 'extends': 'extend', 'bounds': 'bound',
               'confirms': 'confirm', 'overrides': 'overrid'}
-VERB_RX = {k: re.compile(r'\b' + v, re.I) for k, v in VERB_STEMS.items()}
+# #267 s267-D3 defect 1 (lane E, :81): the stem had a LEFT boundary only, so `enact` hit
+# "enactment", `overrid` hit "override sets"/"overrides.json", `narrow` hit "NARROWEST",
+# `correct` hit "correctly", `refin` hit "refinement". A right boundary + an explicit inflection
+# set fixes those. LIMIT, declared: a regex has no part of speech — a bare infinitive
+# ("supersede") is not matched, and a plural noun spelled like a verb ("the overrides") still is;
+# only the file-extension form ("overrides.json") is excluded, by the lookahead.
+VERB_RX = {k: re.compile(r'\b' + v + r'(?:s|es|d|ed|ing)?\b(?!\.[a-z])', re.I)
+           for k, v in VERB_STEMS.items()}
+RULING_EDGES = '_ruling_edges.json'
+
+
+def ruling_edges(K=K):
+    """The AUTHORED ruling->ruling edges ratified by s267-D3. Returns (edges, suppress_pairs)."""
+    fp = os.path.join(K, RULING_EDGES)
+    if not os.path.exists(fp): return [], set()
+    try: d = json.load(open(fp))
+    except Exception: return [], set()
+    E = [e for e in d.get('edges', []) if isinstance(e, dict) and e.get('s') and e.get('t')]
+    sup = set()
+    for e in E:
+        sup.add((e['s'], e['t']))
+        fp2 = e.get('from_pair')
+        if isinstance(fp2, list) and len(fp2) == 2: sup.add(tuple(fp2))
+    plain = set()
+    for p in d.get('ratified_plain_mentions', []):
+        pr = p.get('pair') if isinstance(p, dict) else p
+        if isinstance(pr, list) and len(pr) == 2: plain.add(tuple(pr))
+    return E, (sup, plain)
 PRINCIPLE = {'1': 'perceivable', '2': 'operable', '3': 'understandable', '4': 'robust'}
 POLICY_ID = 'policy:hsbc-digital-accessibility-framework'
 STANDARD_ID = 'standard:en-301-549'
@@ -132,6 +159,7 @@ def extract_extra(base_nodes, base_edges, K=K):
 
     nodes, edges = {}, []
     rep = defaultdict(int); rep['unmatched_applies_to'] = []; rep['proposed'] = defaultdict(int)
+    rep['authored_by_type'] = defaultdict(int)
 
     def add(id, label, fam, **kw):
         n = nodes.setdefault(id, {'id': id, 'type': id.split(':')[0], 'label': label, 'fam': fam})
@@ -177,20 +205,58 @@ def extract_extra(base_nodes, base_edges, K=K):
         if m:
             sid = add('session:' + m.group(1), '#' + m.group(1), 'governance')
             link(rid, sid, 'ruledIn', 'governance', note=str(r['ruled'])[:60])
+    # ---- A2. AUTHORED ruling -> ruling edges (s267-D3, #267). Solid, never re-proposed below.
+    AUTH, supsets = ruling_edges(K)
+    SUPPRESS, PLAIN = (supsets if supsets else (set(), set()))
+    for e in AUTH:
+        if e['s'] not in rid_set or e['t'] not in rid_set:
+            rep['authored_ruling_edges_skipped'] += 1; continue
+        ev = ' · '.join(str(x) for x in (e.get('evidence') or []))
+        link('ruling:' + e['s'], 'ruling:' + e['t'], e['type'], 'governance',
+             authored=True, derived=False, ratified=e.get('ratified'),
+             note=((e.get('ratified') or '') + ' · ' + ev).strip(' ·')[:300])
+        rep['authored_ruling_edges'] += 1
+        rep['authored_by_type'][e['type']] += 1
+
     # mentions — DERIVED, dashed, unratified
     seen = set()
     for r in R:
         says = r.get('says') or ''
-        for m in MENTION_RX.finditer(says):
+        ms = [m for m in MENTION_RX.finditer(says)]
+        for i, m in enumerate(ms):
             t = m.group(0)
             if t not in rid_set or t == r['id'] or (r['id'], t) in seen: continue
             seen.add((r['id'], t))
-            win = says[max(0, m.start() - 80):m.end() + 80]
-            proposed = next((k for k, rx in VERB_RX.items() if rx.search(win)), None)
-            if proposed: rep['proposed'][proposed] += 1
+            pair = (r['id'], t)
+            if pair in SUPPRESS:  # an AUTHORED edge already carries this pair — no citation, no proposal
+                rep['mentions_suppressed_authored'] += 1; continue
+            # defect 2 (:188): the +-80 window must not cross a NEIGHBOURING mention id — a list
+            # ("s122-D1, s123-D1, s131-D1") used to hand one verb to every id in it.
+            lo = ms[i - 1].end() if i else 0
+            hi = ms[i + 1].start() if i + 1 < len(ms) else len(says)
+            a, b = max(lo, m.start() - 80), min(hi, m.end() + 80)
+            win = says[a:b]
+            hit = None
+            for k, rx in VERB_RX.items():
+                mm = rx.search(win)
+                if mm and (hit is None or mm.start() < hit[1]): hit = (k, mm.start())
+            proposed = hit[0] if hit else None
+            # defect 3 (:191): no direction test. Simplest honest version — if the verb reads AFTER
+            # the mention ("<t> supersedes this"), the subject is t, so the proposal runs t -> s.
+            # LIMIT, declared: passive voice and parenthetical citation ("CORRECTED BY ... (see X)")
+            # still read s -> t, and a third ruling named as the actor is not detected at all.
+            pdir = None
+            if proposed:
+                if a + hit[1] >= m.end(): pdir = 't->s'
+                else: pdir = 's->t'
+            if pair in PLAIN:  # ratified as a PLAIN citation by s267-D3 — cite, never re-propose
+                proposed = pdir = None
+                rep['mentions_ratified_plain'] += 1
+            if proposed: rep['proposed'][proposed] += 1; rep['proposed_total'] += 1
             link('ruling:' + r['id'], 'ruling:' + t, 'mentions', 'governance', authored=False,
-                 derived=True, proposedType=proposed, at=m.start(),
-                 note=(('proposed ' + proposed + ' · ') if proposed else '') + win.strip()[:200])
+                 derived=True, proposedType=proposed, proposedDir=pdir, at=m.start(),
+                 note=(('proposed ' + proposed + (' (' + pdir + ')' if pdir else '') + ' · ')
+                       if proposed else '') + win.strip()[:200])
             rep['mentions'] += 1
 
     # ---- B. guidelines
@@ -244,6 +310,7 @@ def extract_extra(base_nodes, base_edges, K=K):
     rep['nodes'] = len(nodes); rep['edges'] = len(edges)
     rep['unmatched_applies_to'] = sorted(rep['unmatched_applies_to'])
     rep['proposed'] = dict(rep['proposed'])
+    rep['authored_by_type'] = dict(rep['authored_by_type'])
     return list(nodes.values()), edges, dict(rep)
 
 
@@ -434,7 +501,12 @@ def main():
           f" · governs→component {rep.get('governs_to_component', 0)} / →artefact {rep.get('governs_to_artefact', 0)}"
           f" · appliesTo matched {rep.get('applies_to_matched', 0)} unmatched {rep.get('applies_to_unmatched', 0)}"
           f" · verifiedBy {rep.get('verifiedBy', 0)}")
-    print(f"  proposedType: {rep.get('proposed', {})}")
+    print(f"  proposedType: {rep.get('proposed', {})} · PROPOSED TOTAL {rep.get('proposed_total', 0)}"
+          f" (pairs already judged by s267-D3: {rep.get('mentions_suppressed_authored', 0)} suppressed as authored,"
+          f" {rep.get('mentions_ratified_plain', 0)} ratified plain mentions)")
+    print(f"  authored ruling→ruling edges (s267-D3): {rep.get('authored_ruling_edges', 0)}"
+          f" {rep.get('authored_by_type', {})}"
+          + (f" · SKIPPED (unknown ruling id) {rep['authored_ruling_edges_skipped']}" if rep.get('authored_ruling_edges_skipped') else ''))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':

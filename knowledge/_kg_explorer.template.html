@@ -156,11 +156,22 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   usedInContext:'usage',commonPattern:'usage',renderedBy:'render',
   governedBy:'rules',mustNotNeighbour:'rules',consumes:'rules',triggeredBy:'rules',drivesConsumer:'rules',
   governs:'governance',evidencedBy:'governance',ruledIn:'governance',mentions:'governance',
+  // #267 s267-D3 — AUTHORED ruling->ruling edges. Same governance red as `mentions`; they are
+  // SOLID because they are authored (dashed stays reserved for derived), and `supersedesClause`
+  // (supersession of ONE CLAUSE) is drawn in the same red DOTTED, so it reads as a lighter
+  // supersedes without inventing a colour or breaking the TWO-RED LAW (s151-D1).
+  supersedes:'governance',supersedesClause:'governance',retires:'governance',narrows:'governance',
+  refines:'governance',corrects:'governance',enacts:'governance',extends:'governance',
+  bounds:'governance',confirms:'governance',overrides:'governance',
   appliesTo:'guidelines',under:'guidelines',enClause:'guidelines',boundBy:'guidelines',checkedBy:'guidelines',verifiedBy:'guidelines'};
 const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring',governance:'Governance',guidelines:'Guidelines'};
 const NEWFAM=['governance','guidelines'];
 const READ={containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
   governs:['governs','is governed by'],evidencedBy:['is evidenced by','is evidence for'],ruledIn:['was ruled in','ruled'],mentions:['mentions','is mentioned by'],
+  supersedes:['supersedes','is superseded by'],supersedesClause:['supersedes a clause of','has a clause superseded by'],
+  retires:['retires','is retired by'],narrows:['narrows','is narrowed by'],refines:['refines','is refined by'],
+  corrects:['corrects','is corrected by'],enacts:['enacts','is enacted by'],extends:['extends','is extended by'],
+  bounds:['bounds','is bounded by'],confirms:['confirms','is confirmed by'],overrides:['overrides','is overridden by'],
   appliesTo:['applies to','must satisfy'],under:['sits under','contains'],enClause:['has EN 301 549 clause','is the clause for'],
   boundBy:['is bound by','binds'],checkedBy:['is checked by','can check'],verifiedBy:['is verified by','verifies']};
 const TYPES=['component','snippet','pattern','context','ruling'];
@@ -263,7 +274,7 @@ function draw(){
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
     if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
     ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:0.6;
-    ctx.setLineDash(e.derived?[4,3]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them
+    ctx.setLineDash(e.derived?[4,3]:e.type==='supersedesClause'?[1.5,2.5]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them. #267: supersedesClause is AUTHORED but DOTTED — a clause, not the whole ruling.
     let ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);
     if(e.g!=null&&e.g<1&&focus){const f=(e.s===focus.id)?ps:pt,o=(e.s===focus.id)?pt:ps;if(e.gd>0)continue;const g=1-Math.pow(1-e.g,3);pt={x:f.x+(o.x-f.x)*g,y:f.y+(o.y-f.y)*g};ps=f}
     ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
@@ -336,7 +347,7 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
-<div class="k">Governance &amp; guidelines</div><p>Two additive families, each behind its own chip. Governance is every ruling in the store — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Guidelines is the WCAG success criteria, the guidelines and principles above them, EN 301 549, the HSBC policy and the axe-core rules that can check them. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it.</p>
+<div class="k">Governance &amp; guidelines</div><p>Two additive families, each behind its own chip. Governance is every ruling in the store — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Guidelines is the WCAG success criteria, the guidelines and principles above them, EN 301 549, the HSBC policy and the axe-core rules that can check them. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it. <b>Solid</b> ruling&rarr;ruling edges are AUTHORED: the 48 in <code>knowledge/_ruling_edges.json</code>, ratified by <b>s267-D3</b>; <code>supersedesClause</code> (dotted) supersedes or retires ONE CLAUSE of its target, not the ruling. A pair carried by an authored edge, or ratified as a plain citation, is never re-proposed.</p>
 <div class="k">Node types</div><p>${ALLTYPES.filter(t=>count[t]).map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
 <div class="k">Edge families</div><p>${Object.keys(FAMLABEL).filter(f=>famOn[f]).map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
 function renderPanel(n,nb){
@@ -358,7 +369,7 @@ function renderPanel(n,nb){
   const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e)||!famOK(x.e)||!famOK(byId.get(x.other)))continue;(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
-    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}</span><b>${g.length}</b></h3><div class="rows">`;
+    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
     for(const x of g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
       h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div></div>`}
     h+=`</div></div>`}
