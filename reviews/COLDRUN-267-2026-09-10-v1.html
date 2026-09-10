@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold run 6 — the frozen prompt against Apollo Spider v1.0.9</title>
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75;font-weight:400;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+section{padding:var(--s7) 0;border-top:1px solid var(--grey-2)}
+section:first-of-type{border-top:0}
+.band{background:var(--grey-1)}
+h1,h2,h3,h4{margin:0;letter-spacing:0;font-weight:400}
+h1{font-size:5.25rem;line-height:1.02;font-weight:300}
+h2{font-size:2.6875rem;line-height:1.15;margin-bottom:var(--s4)}
+h3{font-size:2.125rem;line-height:1.2;margin-bottom:var(--s3);font-weight:400}
+h4{font-size:1.1875rem;line-height:1.3;font-weight:500;margin-bottom:var(--s1)}
+p{margin:0 0 var(--s2)}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.lede{font-size:1.1875rem;line-height:1.6;max-width:62ch}
+.meta{font-size:.875rem;color:var(--grey-7);line-height:1.6}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8125rem}
+.dim{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.split{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s5);align-items:start}
+.split .rule{border-left:1px solid var(--grey-3);min-height:120px}
+.idx{font-size:5.25rem;line-height:1;font-weight:200;color:var(--grey-3);display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2)}
+.stat{background:var(--white);padding:var(--s4)}
+.stat b{display:block;font-size:2.6875rem;line-height:1;font-weight:200}
+.stat span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.scroll{overflow-x:auto;margin:var(--s3) 0}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:640px}
+th,td{text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--grey-2);vertical-align:top;line-height:1.5}
+thead th{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);font-weight:500;border-bottom:1px solid var(--black)}
+td.num,th.num{text-align:right}
+.pass{color:#0a6b2e;font-weight:500}
+.fail{color:var(--accent);font-weight:500}
+.warn{color:#8a5a00;font-weight:500}
+figure{margin:0 0 var(--s5)}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--grey-2)}
+figcaption{font-size:.75rem;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase;margin-top:var(--s1)}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+.find{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s4)}
+.find:first-of-type{border-top:1px solid var(--black)}
+.find .n{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.proof{background:var(--grey-1);padding:var(--s2);margin-top:var(--s2);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.75rem;line-height:1.6;overflow-x:auto}
+.rsq{border-top:1px solid var(--grey-3);padding-top:var(--s3);margin-top:var(--s4)}
+.rsq p:first-child{font-size:1.1875rem;margin-bottom:var(--s1)}
+.verdict{font-size:2.125rem;line-height:1.25;font-weight:400;max-width:34ch}
+footer{padding:var(--s5) 0;border-top:1px solid var(--grey-2);font-size:.875rem;color:var(--grey-6)}
+@media (max-width:860px){
+  h1{font-size:2.6875rem}h2{font-size:2.125rem}
+  .dim,.split{grid-template-columns:1fr;gap:var(--s4)}
+  .split .rule{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .shots{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<section>
+  <div class="wrap">
+    <p class="label">Cold run 6 · 10 September 2026</p>
+    <h1>The sixth<br>cold run</h1>
+    <p class="lede" style="margin-top:var(--s4)">The frozen prompt, driven blind against the <b>Apollo Spider v1.0.9 ZIP</b> — not the repo tree.
+      One arm. No render, no gate, no browser during the build. Everything below was measured after the arm was frozen.</p>
+    <div class="scroll" style="margin-top:var(--s5)">
+      <table>
+        <tbody>
+        <tr><th style="width:30%">The prompt (verbatim, frozen)</th><td class="mono">/generate-from-canon build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</td></tr>
+        <tr><th>Pack under test</th><td class="mono">apollo-spider/dist/Apollo-Spider-v1.0.9.zip<br>sha256 736d0fb034b71048e0ef7789206837afa7ef76c33330117fa0be3410c149c780<br>1,703 files · 6 skills · 145 showroom entries</td></tr>
+        <tr><th>Arm</th><td class="mono">outputs/coldrun-267/arm-A-blind/dashboard.html<br>166,443 bytes · sha256 2667c781cff476f5cd96896ebe8cb91cf292fc86a3994d04a7e4d7a6f2d8266a<br>frozen before any render; copy kept as dashboard.FROZEN.html</td></tr>
+        <tr><th>Theme</th><td><b>Mono, light</b> — grill-me fired (no <span class="mono">briefs/</span> in the pack), all six questions recorded <i>skipped/defaulted</i>, and mono announced before the build. Mono makes every radius zero.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">The scores</p>
+    <div class="stats">
+      <div class="stat"><b>2</b><span>Visually rich</span></div>
+      <div class="stat"><b>3</b><span>Full</span></div>
+      <div class="stat"><b>3</b><span>Persistent</span></div>
+      <div class="stat"><b>2</b><span>Interactive</span></div>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th style="width:16%">Score</th><th>The one fact that earned it</th></tr></thead>
+        <tbody>
+        <tr><td><b>2</b> visually rich</td><td>Fifteen canon components across four groups, three engine-drawn charts, four sparkline KPIs, a real footer, no horizontal scroll at 1440 or 820, and no authored hex — <b>but the whole sidebar navigation renders unstyled</b>: its row vocabulary (<span class="mono">nv-item · nv-ic · nv-label · nv-count · nv-chev</span>) has <b>zero occurrences in canon.css</b>, so the 18px icons paint at full column width in both modes. That is F1 below, and it is the pack's, not the build's.</td></tr>
+        <tr><td><b>3</b> full</td><td>68 seeded payments · 5 legal entities · 5 currencies with live FX · 6 corridors · 6 channels · 5 statuses · 12 months of per-entity liquidity, all derived from one <span class="mono">DATA</span> object; no number typed twice; footer present; page height 3,693px at 1440 with <span class="mono">scrollWidth &gt; innerWidth = false</span>.</td></tr>
+        <tr><td><b>3</b> persistent</td><td>A cold reload of <span class="mono">?view=payments&amp;ccy=EUR&amp;sort=counterparty&amp;dir=asc&amp;pp=24&amp;mode=dark</span> came back with all five keys restored — currency EUR, theme dark, view "Cross-border payments", rows-per-page 24, sort ascending (<span class="mono">drive.json → persistence</span>).</td></tr>
+        <tr><td><b>2</b> interactive</td><td>Nineteen controls driven, every one of them moved something, <b>0 pageerrors and 0 console errors</b> across the whole drive — <b>but both filter dropdown menus are unreachable with a mouse</b>: playwright timed out at 30s on <span class="mono">#ddEntityM li</span> with <i>"#ftbStatus … intercepts pointer events"</i>. The handler is fine; the menu is not positioned, because the toolbar's layout classes are also missing from canon.css.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">What it looks like</p>
+    <h2>Renders</h2>
+    <div class="shots">
+      <figure><img src="../outputs/coldrun-267/renders/1440-light.png" alt="The dashboard at 1440 wide in light mode"><figcaption>1440 · mono · light — the demo condition</figcaption></figure>
+      <figure><img src="../outputs/coldrun-267/renders/1440-dark.png" alt="The dashboard at 1440 wide in dark mode"><figcaption>1440 · mono · dark</figcaption></figure>
+      <figure><img src="../outputs/coldrun-267/renders/820-light.png" alt="The dashboard at 820 wide in light mode"><figcaption>820 · mono · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-267/renders/820-dark.png" alt="The dashboard at 820 wide in dark mode"><figcaption>820 · mono · dark</figcaption></figure>
+    </div>
+    <p class="meta">The wall, the KPI row, all three charts, the exception panel, the balances panel and the grid are right in both modes at both widths. The left column is the wreck, and it is the same wreck in all four.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">F01 and F02 — the two live defects from cold run 5</p>
+    <h2>Both are gone</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th style="width:12%">Defect</th><th style="width:14%">Reproduces?</th><th>The playwright assertion</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><b>F01</b><br>dark theme killed</td>
+          <td class="pass">NO</td>
+          <td><span class="mono">data-theme</span> is on <span class="mono">&lt;html&gt;</span> (<span class="mono">'dark'</span>) and <b>not</b> on <span class="mono">&lt;body&gt;</span> (<span class="mono">null</span>); the body carries the scope class <span class="mono">cn-template-dashboard-bento tpl-bento-body</span>. Toggling ⇒ <span class="mono">getComputedStyle(body).color</span> <span class="mono">rgb(26,26,26) → rgb(255,255,255)</span> and <span class="mono">.stat-card</span> background <span class="mono">rgb(255,255,255) → rgb(31,31,31)</span>. The dark render above is the picture of it.
+          <div class="proof">drive.json → F01.reproduces = false</div>
+          <b>Why it is gone:</b> v1.0.9's skill step 3 now says the shape out loud — <i>"The &lt;html&gt; element — not &lt;body&gt;, and never the same element that carries a .cn-* scope class"</i> — and names cold run 5 as the reporter. The prose fixed it. No gate checks it.</td>
+        </tr>
+        <tr>
+          <td><b>F02</b><br>rendered controls dead</td>
+          <td class="pass">NO</td>
+          <td>Clicking <span class="mono">#kpiRow .kpi-tile:first-child .kpi-cta</span> — markup written by <span class="mono">render()</span>, never present at load — flipped <span class="mono">html[data-kpi-opened]</span> from <span class="mono">null</span> to <span class="mono">'Payment value'</span> and opened <span class="mono">details.dv-tbl</span> (<span class="mono">.open = true</span>).
+          <div class="proof">drive.json → F02.reproduces = false</div>
+          <b>Why it is gone:</b> rule 14 now carries the convention and the worked example — <i>"Wire by delegation… attach one listener to a static ancestor and dispatch on event.target.closest('[data-action]'). Cold run 5: two KPI CTAs died on exactly this."</i> A blind build following the rule cannot hit it.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="meta">Both fixes are <b>documentation</b> fixes. Neither is enforced by a gate, so both remain reachable by a consumer who does not read the rule.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Cold run 5 → cold run 6</p>
+    <h2>The delta</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th style="width:22%">Row</th><th style="width:26%">C5 · v1.0.7-era tree</th><th style="width:26%">C6 · v1.0.9 ZIP</th><th>The difference, as a fact</th></tr></thead>
+        <tbody>
+        <tr><td>Scores</td><td>3 / 3 / 3 / 2</td><td>2 / 3 / 3 / 2</td><td><i>rich</i> fell 3→2 on the sidebar-nav CSS gap; <i>interactive</i> holds at 2 for a <b>different</b> reason (C5: dead KPI CTAs; C6: pointer-blocked dropdowns).</td></tr>
+        <tr><td>Subject under test</td><td>the repo <b>tree</b> at <span class="mono">c9bf745</span></td><td>the released <b>ZIP</b></td><td>This is the first cold run against the artefact a customer actually receives, and it is where the two gate failures come from.</td></tr>
+        <tr><td><span class="mono">_validate_receipt.py</span></td><td class="pass">PASS</td><td class="fail">FAIL:NO-RECEIPT (exit 1)</td><td>The minter <span class="mono">gen_provenance_receipt.py</span> is <b>not in the zip</b> — nor in v1.0.7's or v1.0.8's. C5 passed because the tree has it.</td></tr>
+        <tr><td><span class="mono">_validate_screen.py</span></td><td class="pass">PASS</td><td class="fail">FAIL (exit 1)</td><td>Two lines: <span class="mono">receipt: UNPROVEN:NO-RECEIPT</span> (same root cause) and <span class="mono">icon-source: ❌ 1 UNKNOWN</span> — the unknown glyph is a string <b>inside the pack's own dv-render-donut.js</b>. <span class="mono">compose ✅</span> and <span class="mono">a11y ✅</span>.</td></tr>
+        <tr><td>Chart geometry</td><td>authored by hand against dv-behaviour's <span class="mono">data-fx</span> grammar (C5 F03: "rule 2 cannot be obeyed for a data-driven chart")</td><td><b>drawn by the library</b> — <span class="mono">dvRender(figure, spec)</span></td><td>C5's F03 is <b>closed by the engine</b>. Three charts (column, multiline, donut) render from three specs; zero geometry authored. This is the biggest single change in the pack.</td></tr>
+        <tr><td>Chart completeness</td><td>partial — geometry re-drawn</td><td><b>7 / 7 byte-identical</b></td><td>Every borrowed script's sha256 matches the ZIP source exactly: dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-donut, Sidebar-nav#script.</td></tr>
+        <tr><td>Chart types used</td><td>1 of 11</td><td><b>3 of 11</b></td><td>column · multiline · donut. Eight still unused for the sixth run running.</td></tr>
+        <tr><td>Components used</td><td>16</td><td>15</td><td>C6 adds <span class="mono">sidebar-nav</span>, <span class="mono">chart-line</span>, <span class="mono">chart-donut</span>; drops the drawer.</td></tr>
+        <tr><td>Data depth</td><td>54 payments · 6 entities · 8 currencies</td><td>68 payments · 5 entities · 5 currencies · 12-month × 5-entity series</td><td>Comparable. Both plausible corporate international banking; neither placeholder.</td></tr>
+        <tr><td>Console</td><td>0 pageerrors, 0 errors</td><td>0 pageerrors, 0 errors</td><td>Unchanged, across four viewport/mode loads and a 19-step drive with two reloads.</td></tr>
+        <tr><td>Persistence</td><td>URL + localStorage for theme</td><td>URL only, theme included</td><td>Equivalent; C6 puts the theme in the shareable place too.</td></tr>
+        <tr><td>APOLLO-DEMO fences</td><td>0 in the page</td><td>0 in the page</td><td><span class="mono">grep -c APOLLO-DEMO dashboard.html = 0</span>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">Measured</p>
+    <h2>Gates, inventory, charts, controls</h2>
+
+    <div class="dim" style="margin-bottom:var(--s6)">
+      <div><span class="idx">01</span><h4>Gates</h4><p class="meta">Both run from the unzipped pack against the frozen page. Logs in <span class="mono">outputs/coldrun-267/</span>.</p></div>
+      <div>
+        <div class="proof">$ python3 knowledge/_validate_receipt.py …/dashboard.html      EXIT 1
+  FAIL:NO-RECEIPT — no &lt;script type="application/json" id="provenance-receipt"&gt; block;
+  mint one with `python3 knowledge/gen_provenance_receipt.py --mint dashboard.html`
+  verdict: FAIL:NO-RECEIPT                                    RESULT: FAIL
+
+$ python3 knowledge/_validate_screen.py …/dashboard.html       EXIT 1
+  - receipt:     UNPROVEN:NO-RECEIPT
+  - compose:     ✅
+  - composition: UNPROVEN: C9 bands
+  - icon-source: ❌ 1 UNKNOWN — d="' + arc(cx, cy, ro, ri, a1, a2) + '…"
+  - a11y:        ✅                                            RESULT: FAIL
+
+$ unzip -l Apollo-Spider-v1.0.9.zip | grep -c gen_provenance_receipt.py   →  0
+$ ls knowledge/gen_provenance_receipt.py            (repo tree)           →  present</div>
+      </div>
+    </div>
+
+    <div class="dim" style="margin-bottom:var(--s6)">
+      <div><span class="idx">02</span><h4>Inventory</h4><p class="meta">Used, and available-but-unused from the dashboard set.</p></div>
+      <div>
+        <p><b>Used (15).</b> template-dashboard-bento <span class="meta">(template)</span> · sidebar-nav, data-grid, chart-bar, chart-line, chart-donut <span class="meta">(pattern)</span> · filter-toolbar-bar, page-header-lockup <span class="meta">(block)</span> · kpi-tile, stat-card, summary, status-indicator, button, segmented-control, search-field <span class="meta">(element)</span>.</p>
+        <p><b>Available and not used (22).</b> chart-pie · chart-sparkline · chart-combo · chart-scatter · chart-stacked-area · chart-bullet · chart-histogram · chart-boxplot · chart-butterfly-h · chart-butterfly-v · chart-candlestick · runway-bar · limits-meter · quick-actions · stats-band-lockup · template-dashboard · app-shell-side-nav · app-shell-top-nav · app-shell-nav-rail · empty-state · anchor-nav · feature-grid-lockup.</p>
+        <p class="meta"><b>runway-bar</b> and <b>limits-meter</b> are the two most conspicuous misses for this brief — a facility with 18% drawn is exactly a limits meter, and the page reached for a plain sentence instead. Both are in <span class="mono">showroom/index.json</span> under the aliases the prompt implies; neither surfaced.</p>
+      </div>
+    </div>
+
+    <div class="dim" style="margin-bottom:var(--s6)">
+      <div><span class="idx">03</span><h4>Chart completeness</h4><p class="meta">sha256 of each inlined script against the ZIP source.</p></div>
+      <div>
+        <div class="scroll"><table>
+          <thead><tr><th>Source in the ZIP</th><th>sha256 (first 16)</th><th>In the page</th></tr></thead>
+          <tbody>
+          <tr><td class="mono">knowledge/canon/dv-behaviour.js</td><td class="mono">daba629f174a463a</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">knowledge/canon/dv-legend.js</td><td class="mono">e5513830eb6a974f</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">knowledge/canon/dv-render.js</td><td class="mono">d1365b905aacb818</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">knowledge/canon/dv-render-bar.js</td><td class="mono">8c3f431476ef424e</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">knowledge/canon/dv-render-line.js</td><td class="mono">e7446fd3451b1d0b</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">knowledge/canon/dv-render-donut.js</td><td class="mono">d97fd7d37a5a2c40</td><td class="pass">identical</td></tr>
+          <tr><td class="mono">Sidebar-nav.reference.html#script</td><td class="mono">7c2242632fafb6c4</td><td class="pass">identical</td></tr>
+          </tbody>
+        </table></div>
+        <p class="meta">Marks actually drawn at 1440/light: corridor column <b>6 rects + 6 labels</b>, liquidity <b>5 polylines</b>, donut <b>7 arc paths</b>, and the chart's table lockup carries <b>6 rows written by the engine from the same spec</b>. Tooltip and legend chrome present; animation classes present (<span class="mono">.dv-animate</span> + <span class="mono">data-grow</span>).</p>
+      </div>
+    </div>
+
+    <div class="dim">
+      <div><span class="idx">04</span><h4>Controls driven</h4><p class="meta">19 steps, playwright, chromium 151. Full log: <span class="mono">outputs/coldrun-267/drive.json</span>.</p></div>
+      <div>
+        <div class="scroll"><table>
+          <thead><tr><th style="width:26%">Control</th><th style="width:12%">Verdict</th><th>Assertion</th></tr></thead>
+          <tbody>
+          <tr><td>Nav — 4 destinations (masthead + rail)</td><td class="pass">works</td><td>each click changed <span class="mono">#viewTitle</span> and put <span class="mono">view=</span> in the URL; the wall's groups show and hide per view</td></tr>
+          <tr><td>Filter — entity = DE</td><td class="pass">works</td><td>grid <span class="mono">68 → 10 results</span>, corridor bar heights <span class="mono">[210,117,265] → [256,1,175]</span>, KPI 1 <span class="mono">£96.1m → £18.4m</span>, liquidity chart <span class="mono">5 → 1 polyline</span> — grid <b>and</b> KPIs <b>and</b> both charts, in one pass</td></tr>
+          <tr><td>Filter — currency = USD</td><td class="pass">works</td><td>grid <span class="mono">68 → 15</span>; balances panel <span class="mono">5 → 1 row</span>; donut re-rendered</td></tr>
+          <tr><td>Dropdown menus — mouse</td><td class="fail">dead to a pointer</td><td>playwright 30s timeout: <span class="mono">&lt;p id="ftbStatus"&gt; from &lt;div class="ftb-context"&gt; subtree intercepts pointer events</span>. Driven by JS dispatch instead, which works.</td></tr>
+          <tr><td>Segmented — status = Failed</td><td class="pass">works</td><td><span class="mono">aria-pressed=true</span>; grid <span class="mono">68 → 3</span></td></tr>
+          <tr><td>Search "Meridian"</td><td class="pass">works</td><td>grid <span class="mono">68 → 5</span>; one chip appears in <span class="mono">#ftbChips</span>; the chip's × returns it to <span class="mono">68</span></td></tr>
+          <tr><td>Chart sort — Descending</td><td class="pass">works</td><td>rect heights <span class="mono">[210,117,265,128,225,95] → [265,225,210,128,117,95]</span> (monotonic); the table lockup's 6 rows re-order with it</td></tr>
+          <tr><td>Grid sort — Counterparty</td><td class="pass">works</td><td><span class="mono">aria-sort=ascending</span>; first row <span class="mono">Vantaa Energy Oyj → Aurora Textiles Ltd</span></td></tr>
+          <tr><td>Pager → 3 · rows-per-page → 24</td><td class="pass">works</td><td><span class="mono">#dgRange = "25–36 of 68"</span>; <span class="mono">#tbody tr = 24</span></td></tr>
+          <tr><td>Sidebar rail collapse</td><td class="pass">works</td><td><span class="mono">nav.sn.is-rail = true</span> — the borrowed Sidebar-nav script, verbatim</td></tr>
+          <tr><td>KPI table CTA (data-rendered)</td><td class="pass">works</td><td>see F02 above</td></tr>
+          <tr><td>Theme toggle</td><td class="pass">works</td><td>see F01 above</td></tr>
+          <tr><td>Persistence — nav + reload</td><td class="pass">works</td><td>5 of 5 keys restored from the URL after a cold reload</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Findings</p>
+    <h2>Seven, each with the file that proves it</h2>
+
+    <div class="find">
+      <p class="n">Finding 1 · blocking for a consumer</p>
+      <h4>canon.css and the snippets have diverged. Two components ship markup that canon.css cannot style.</h4>
+      <p>The skill's rule 2 says copy the snippet; step 3 says link <span class="mono">canon.css</span>. Do both, exactly, and the sidebar navigation and the filter toolbar come out unstyled — because the class names in the snippets' markup are <b>not in canon.css at all</b>. They live only inside each snippet's own private <span class="mono">&lt;style&gt;</span> block, which rule 3 never tells you to copy.</p>
+      <div class="proof">$ grep -c "nv-item"    knowledge/canon/canon.css                       → 0
+$ sed -n '39,265p' knowledge/snippets/Sidebar-nav.reference.html | grep -c nv-item   → 18
+canon.css's .cn-sidebar-nav scope carries  .sn-link / .si / .si svg   (an OLDER vocabulary)
+the snippet's markup carries              .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev
+
+$ grep -c "ftb-primary" knowledge/canon/canon.css                    → 0   (also 0: ftb-trailing,
+   ftb-ctl, ftb-context, ftb-status, ftb-hint, ftb-clear, th-in)
+canon.css's .cn-filter-toolbar-bar scope carries .ftb-row / .ftb-view / .ftb-filter</div>
+      <p class="meta">This is what took <i>rich</i> from 3 to 2, and it is what makes the dropdown menus pointer-dead (they are not positioned, so a live region in normal flow sits over them). The skill's own claim — <i>"canon.css (all tokens, aliases, utilities and all 135 components)"</i> — is not true of these two.</p>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 2 · blocking for a consumer</p>
+      <h4>The released ZIP cannot pass its own two gates, because the receipt minter is not in it.</h4>
+      <p>Step 5 says: mint the receipt first with <span class="mono">gen_provenance_receipt.py --mint</span>, then run <span class="mono">_validate_receipt.py</span>. That file is in three release zips zero times. Without it the receipt gate stops at <span class="mono">FAIL:NO-RECEIPT</span> and never inspects the page — so every later check (behaviour loaded, no demo chrome copied) never runs either, exactly as the skill warns.</p>
+      <div class="proof">v1.0.7.zip · v1.0.8.zip · v1.0.9.zip   grep -c gen_provenance_receipt.py  →  0  0  0
+repo tree  knowledge/gen_provenance_receipt.py                        →  present
+knowledge/gen_*.py in the zip  →  gen_snippet_tokens.py   (that is the whole list)
+also absent from the zip: gen_component_partials.py — which 30+ snippet comments tell you to run</div>
+      <p class="meta">Cold run 5 passed both gates because it ran against the tree. This is the first run against the artefact a customer receives, and it is why the gate column flipped.</p>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 3 · the good news</p>
+      <h4>The chart engine works, and it closes cold run 5's F03.</h4>
+      <p>C5's third finding was <i>"rule 2 cannot be obeyed for a data-driven chart"</i> — every chart snippet was baked SVG, so a moving chart had to be hand-drawn. In v1.0.9 a blind build wrote <b>three data specs and three <span class="mono">dvRender()</span> calls</b> and drew no geometry at all. Six rects, five polylines and seven arcs all came from the library, all re-render on a filter, and the table lockup is rewritten from the same numbers.</p>
+      <div class="proof">dv-render.js:1  "THE DATA-DRIVEN CHART ENGINE, core (s249-D4, built #259)"
+dv-render.js:25 "It REPLACES rule 18 of ADS-generate-from-canon"
+all six engine files inlined byte-identical (sha256 table above)</div>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 4 · discoverability</p>
+      <h4>Rule 18 of the skill still teaches the interim recipe the engine replaced.</h4>
+      <p>The rule reads <i>"A library engine replaces this in v1.0.9; until then, author the geometry yourself"</i> and then gives a 15-line <span class="mono">renderBars()</span> to copy. It is v1.0.9 now. The engine's own header says it replaces that rule. A blind consumer who reads the skill top to bottom — the intended path — hand-authors arithmetic the library owns. This build only found the engine by opening the last script in <span class="mono">Chart-bar.reference.html</span>.</p>
+      <div class="proof">skills/generate-from-canon/SKILL.md rule 18 — unedited interim recipe, still present
+knowledge/canon/dv-render.js:25    — "It REPLACES rule 18"
+Two files in the same pack disagree about which is the current instruction.</div>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 5 · gate quality</p>
+      <h4>The pack's own engine trips the pack's own icon gate.</h4>
+      <p>The single <span class="mono">icon-source: ❌ 1 UNKNOWN</span> on the screen gate is not authored markup. It is the string <span class="mono">'&nbsp;d="' + arc(cx, cy, ro, ri, a1, a2) + '"'</span> at <span class="mono">dv-render-donut.js:113</span> — the donut engine building a path at run time. The gate reads inlined JavaScript as if it were an icon in the document.</p>
+      <div class="proof">$ grep -n 'arc(cx, cy, ro, ri' knowledge/canon/dv-render-donut.js  → 70, 113
+A page carrying the engine verbatim, as rule 2a asks, is refused by the icon gate for doing so.</div>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 6 · composition</p>
+      <h4>Chart chrome needs a second nested scope inside a bento tile, and nothing says so.</h4>
+      <p><span class="mono">.cn-template-dashboard-bento</span> carries <span class="mono">dv-head · dv-title · dv-stage · dv-chart-area · dv-svg · dv-grid · dv-series</span> — but not <span class="mono">.dv-tbl</span>, <span class="mono">.dv-tablepanel</span>, <span class="mono">.dv-controls</span>, <span class="mono">.dv-label</span> or <span class="mono">.dv-legend</span>. So a chart in a bento tile that wants its table lockup, its sort control or its axis labels has to be wrapped in a second <span class="mono">.cn-chart-*</span> scope inside the tile. Trap (a) in rule 18 warns you the wrapper matters; it does not say you will need two.</p>
+      <div class="proof">grep -o "\.cn-template-dashboard-bento[^{,]*" canon.css | sort -u   →  196 selectors, none .dv-tbl
+Consequence seen in the render: the donut, authored WITHOUT a details.dv-tbl lockup, shows the
+engine-written &lt;table class="dv-table"&gt; as bare rows under the ring.</div>
+    </div>
+
+    <div class="find">
+      <p class="n">Finding 7 · retrieval</p>
+      <h4>Eight of eleven chart types, and both facility components, unused again.</h4>
+      <p>Sixth run running. The brief says <i>corporate international banking</i>; the page carries a committed facility at 18% drawn as a sentence of plain text, while <span class="mono">limits-meter</span> and <span class="mono">runway-bar</span> sit in the index unused. The bento template's own specimen writes that line as plain text, and rule 2 says copy the specimen — so the specimen, not the index, decided what got used.</p>
+      <div class="proof">showroom/index.json — 145 entries. Used: 15. Dashboard-set available and unused: 22.
+Unused chart types: pie · sparkline · combo · scatter · stacked-area · bullet · histogram ·
+boxplot · butterfly-h · butterfly-v · candlestick</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="label">For Dave</p>
+    <h2>Ruling-shaped questions</h2>
+    <p class="lede">Not answered here. Each one is a decision only you can make, and each has a fact above attached to it.</p>
+
+    <div class="rsq">
+      <p><b>RSQ-1.</b> Does v1.0.9 ship tomorrow with a released pack that cannot pass its own two gates?</p>
+      <p class="meta">Finding 2. The fix is a packaging line, not a code change — <span class="mono">gen_provenance_receipt.py</span> (and probably <span class="mono">gen_component_partials.py</span>) into the zip. It has been missing since v1.0.7, so it is not a v1.0.9 regression; it is a v1.0.9 opportunity.</p>
+    </div>
+    <div class="rsq">
+      <p><b>RSQ-2.</b> Is canon.css's divergence from the Sidebar-nav and Filter-toolbar-bar snippets a release blocker, or a known-issue note?</p>
+      <p class="meta">Finding 1. It is the only reason a score moved down. A demo that shows a side navigation will show this.</p>
+    </div>
+    <div class="rsq">
+      <p><b>RSQ-3.</b> Should rule 18 of ADS-generate-from-canon be cut to a pointer at <span class="mono">dvRender</span> before the demo, or after it?</p>
+      <p class="meta">Finding 4. It is a documentation edit with no code risk, and it is the difference between the engine being found and being found by accident.</p>
+    </div>
+    <div class="rsq">
+      <p><b>RSQ-4.</b> Should the icon gate skip <span class="mono">&lt;script&gt;</span> content, or should the engine be linked rather than inlined?</p>
+      <p class="meta">Finding 5. Two different answers, one of which changes the "single self-contained file" output rule.</p>
+    </div>
+    <div class="rsq">
+      <p><b>RSQ-5.</b> Should a chart inside a bento tile need two nested <span class="mono">.cn-*</span> scopes — or should the template scope carry the dv chrome?</p>
+      <p class="meta">Finding 6. This is a canon shape question, not a lane's.</p>
+    </div>
+    <div class="rsq">
+      <p><b>RSQ-6.</b> F01 and F02 were both fixed in prose and neither is gated. Is that enough, or does each want a check?</p>
+      <p class="meta">Both are gone in this run, which is the evidence that prose works when it is read. It is also the evidence that nothing catches a consumer who does not read it.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <p class="label">Recommendation</p>
+        <p class="verdict">Ship v1.0.9 with a caveat.</p>
+      </div>
+      <div class="rule"></div>
+      <div>
+        <p><b>SHIP-WITH-CAVEAT.</b> The thing v1.0.9 was cut for works: a blind build wrote three data specs, drew no geometry, and got three live charts that re-render on every filter — with all six engine files byte-identical to the pack (sha256 table above) and zero console errors across the drive. Both of cold run 5's live defects are gone under a playwright assertion.</p>
+        <p>The caveat is two lines long and neither is about the engine: <b>the released zip is missing <span class="mono">gen_provenance_receipt.py</span></b>, so no consumer of the pack can pass either gate; and <b><span class="mono">canon.css</span> cannot style the Sidebar-nav or Filter-toolbar-bar markup it ships</b>, which is the one thing in the render that looks broken. Both are one-line facts with named files, and both are yours to rule.</p>
+        <p class="meta">A recommendation, not a ruling.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Cold run 6 · lane C6 · session #267 · 10 September 2026 · dated period record (ADR-0017).<br>
+    Arm: <span class="mono">outputs/coldrun-267/arm-A-blind/dashboard.html</span> · logs and drive: <span class="mono">outputs/coldrun-267/</span> · subreport: <span class="mono">notes/_subreports/2026-09-10-267-C6-cold-run-6.md</span><br>
+    Read-only against canon, knowledge, showroom and apollo-spider. Nothing moved. Nothing ruled.</p>
+  </div>
+</footer>
+
+</body>
+</html>
