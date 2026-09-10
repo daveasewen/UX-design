@@ -1,7 +1,7 @@
 {
-  "commit": "dd129e8efa7910c435a58b1a51ed5f1b4cc0ae5a",
+  "commit": "625be6470f4a5249587de095c32443eadab711f5",
   "differential_arm": "ARMED",
-  "full_stage": "/var/tmp/full9r",
+  "full_stage": "/var/tmp/full10",
   "gates": [
     {
       "differential": "",
@@ -280,9 +280,9 @@
       "why": "ran clean, verdict PASS"
     },
     {
-      "differential": "full-tree FAIL too",
+      "differential": "",
       "exit": 1,
-      "fail_head": "[FAIL] snippets/Chart-bar.reference.html  (5 charts, 7 blocking, 20 advisory) / ✗ dv-004: the driven receipt for Chart-bar.reference.html is STALE — knowledge/canon/type.css has changed since it was driven. Re-drive: python3 knowledge/_drive_chart_engine.py / ✗ dv-009/016/017/line-011: the driven re",
+      "fail_head": "",
       "gate": "_validate_dataviz.py",
       "invocation": "",
       "local_imports": [
@@ -292,8 +292,8 @@
       "population": "",
       "selftest": "red",
       "third_party": [],
-      "verdict": "RUNNABLE",
-      "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: [FAIL] snippets/Chart-bar.reference.html  (5 charts, 7 blocking, 20 advisory) / ✗ dv-004: the driven receipt for Chart-bar.reference.html is"
+      "verdict": "REPO-BOUND",
+      "why": "runs, but its verdict is about _tests/chart-engine/boxplot.html, which the pack does not ship"
     },
     {
       "differential": "full-tree FAIL too",
@@ -470,20 +470,20 @@
       "why": "something this box does not have — see the refusal"
     },
     {
-      "differential": "full-tree FAIL too",
-      "exit": 1,
-      "fail_head": "icon-source audit → _ICON-SOURCE-AUDIT.md / 5 UNKNOWN, 102 bespoke, across 137 snippet(s); 750 library glyphs. / still UNKNOWN:",
+      "differential": "",
+      "exit": 0,
+      "fail_head": "",
       "gate": "_validate_icons.py",
       "invocation": "",
       "local_imports": [
         "_helpgate"
       ],
       "path": "knowledge/_validate_icons.py",
-      "population": "",
+      "population": "graded",
       "selftest": "green",
       "third_party": [],
       "verdict": "RUNNABLE",
-      "why": "ran, verdict FAIL in the pack AND in the full repo — a live red, not a packaging fence: icon-source audit → _ICON-SOURCE-AUDIT.md / 5 UNKNOWN, 102 bespoke, across 137 snippet(s); 750 library glyphs. / still UNKNOWN:"
+      "why": "ran clean, verdict PASS"
     },
     {
       "differential": "",
@@ -686,7 +686,9 @@
       "invocation": "",
       "local_imports": [
         "_helpgate",
-        "_htmlmask"
+        "_htmlmask",
+        "_validate_receipt",
+        "gen_provenance_receipt"
       ],
       "path": "knowledge/_validate_receipt.py",
       "population": "",
@@ -718,10 +720,17 @@
       "gate": "_validate_screen.py",
       "invocation": "",
       "local_imports": [
+        "_a11y_target",
+        "_could_not_ask",
         "_helpgate",
         "_htmlmask",
+        "_validate_a11y",
+        "_validate_compose",
         "_validate_composition",
-        "_validate_receipt"
+        "_validate_icons",
+        "_validate_receipt",
+        "_validate_state_contrast",
+        "gen_provenance_receipt"
       ],
       "path": "knowledge/_validate_screen.py",
       "population": "graded",
