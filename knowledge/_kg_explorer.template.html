@@ -135,7 +135,7 @@ aside{overflow:auto;background:var(--bg)}
     <div class="tools">
       <button id="three" title="Switch to a 3D view and spin it">3D</button><button id="spin" title="Auto-rotate (3D)" hidden>Spin</button><button id="depth" title="Show second-hop neighbours">Depth 2</button>
       <button id="pathBtn" title="Shift-click a second node to trace the shortest path">Path</button>
-      <button id="fit">Fit</button>
+      <button id="fit">Fit</button><button id="theme" title="Auto / dark / light">Auto</button>
     </div>
     <div class="legend" id="legend"></div>
     <div class="tip" id="tip"></div>
@@ -181,6 +181,10 @@ let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2
   t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
   f:Object.fromEntries(Object.keys(FAMLABEL).map(f=>[f,css('--f-'+f)]))}}
 palette();matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{palette();draw()});
+const THEMES=['auto','dark','light'];let themeI=0;try{themeI=Math.max(0,THEMES.indexOf(localStorage.getItem('kg-theme')||'auto'))}catch(e){}
+function applyTheme(){const th=THEMES[themeI];if(th==='auto')delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=th;
+  const b=document.getElementById('theme');if(b){b.textContent=th;b.classList.toggle('on',th!=='auto')}try{localStorage.setItem('kg-theme',th)}catch(e){}palette();if(typeof W!=='undefined'&&W)draw()}
+
 
 // ---------- stats + legend
 const LIVE=NODES.filter(n=>!n.dead&&n.died==null),LIVEE=EDGES.filter(e=>!e.dead&&e.died==null);
@@ -218,6 +222,7 @@ addEventListener('resize',resize);
 
 function fit(){const wide=NEWFAM.some(f=>famOn[f]);view={x:0,y:0,k:Math.min(W,H)/(wide?(three?6600:6200):(three?2600:2300))};draw()}
 
+let GROW=[];
 let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=null, pathEdges=null, anim=null;
 function draw(){
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
@@ -230,7 +235,9 @@ function draw(){
     if(a<0.02)continue; ctx.globalAlpha=a;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
     ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:0.6;
     ctx.setLineDash(e.derived?[4,3]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them
-    const ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
+    let ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);
+    if(e.g!=null&&e.g<1&&focus){const f=(e.s===focus.id)?ps:pt,o=(e.s===focus.id)?pt:ps;if(e.gd>0)continue;const g=1-Math.pow(1-e.g,3);pt={x:f.x+(o.x-f.x)*g,y:f.y+(o.y-f.y)*g};ps=f}
+    ctx.beginPath();ctx.moveTo(ps.x,ps.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();}
   ctx.setLineDash([]);
   // nodes
   const ORDER=three?[...NODES].sort((a,b)=>P(b).d-P(a).d):NODES;
@@ -255,7 +262,8 @@ function draw(){
     const R=s.R*(three?1.5:1)+(three?60:26);const q=three?proj(focus.x+Math.cos(s.mid)*R,focus.y+R*0.55,focus.z+Math.sin(s.mid)*R):proj(focus.x+Math.cos(s.mid)*R,focus.y+Math.sin(s.mid)*R,focus.z);ctx.fillText(s.type.toUpperCase()+' · '+s.n,q.x,q.y);}ctx.textAlign='left';}
 }
 function tick(){let more=false;for(const n of NODES){const dx=n.tx-n.x,dy=n.ty-n.y,dz=n.tz-n.z,da=n.ta-n.a;if(Math.abs(dx)+Math.abs(dy)+Math.abs(dz)+Math.abs(da)*40>0.4){more=true;n.x+=dx*0.16;n.y+=dy*0.16;n.z+=dz*0.16;n.a+=da*0.16}else{n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=n.ta}}
-  if(three&&spin&&!drag){rot.y+=0.0035;more=true}
+  if(three&&spin){if(!drag)rot.y+=0.0035;more=true}
+  for(const e of GROW){if(e.gd>0){e.gd--;more=true}else if(e.g<1){e.g=Math.min(1,e.g+0.045);more=true}}
   draw();if(more)anim=requestAnimationFrame(tick);else anim=null}
 function animate(){if(!anim)anim=requestAnimationFrame(tick)}
 
@@ -267,11 +275,11 @@ function applyFocus(){
   const groups=new Map();for(const x of nb){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   const total=nb.length||1, R1=Math.max(120,Math.min(260,60+total*7)), gap=0.06;
-  let ang=-Math.PI/2; sectors=[]; const placed=new Set([f.id]);
+  let ang=-Math.PI/2; sectors=[]; const placed=new Set([f.id]); GROW=[]; let gi=0;
   for(const t of order){const g=groups.get(t);const span=(Math.PI*2-gap*order.length)*(g.length/total);const start=ang+gap/2;
     // spread evenly, alternate radius a little when dense
     g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label));
-    g.forEach((x,i)=>{const a=start+span*((i+0.5)/g.length);const r=three?R1*1.5:R1+(g.length>14?(i%2)*34:0);const n=byId.get(x.other);
+    g.forEach((x,i)=>{x.e.g=0;x.e.gd=Math.floor(gi++*2);GROW.push(x.e);const a=start+span*((i+0.5)/g.length);const r=three?R1*1.5:R1+(g.length>14?(i%2)*34:0);const n=byId.get(x.other);
       if(three){const ph=((i%5)-2)*0.32;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*r;n.ty=cy+Math.sin(a)*r;n.tz=cz}n.ta=1;placed.add(n.id)});
     sectors.push({type:t,n:g.length,mid:start+span/2,R:R1+(g.length>14?34:0)});ang+=span+gap;}
   if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&famOn[FAMILY[y.e.type]]&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
@@ -349,7 +357,7 @@ cv.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY,vx:view.x,vy:v
 addEventListener('mousemove',e=>{if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3)moved=true;if(drag.rotate){rot.y=drag.ry+dx*0.006;rot.x=Math.max(-1.4,Math.min(1.4,drag.rx+dy*0.006))}else{view.x=drag.vx+dx/view.k;view.y=drag.vy+dy/view.k}draw();return}
   const r=cv.getBoundingClientRect();const n=pick(e.clientX-r.left,e.clientY-r.top);const tip=document.getElementById('tip');
   if(n!==hover){hover=n;draw()} if(n){tip.style.display='block';tip.style.left=(e.clientX-r.left)+'px';tip.style.top=(e.clientY-r.top)+'px';tip.innerHTML=`<small>${n.type}</small>${esc(n.label)} · ${adj.get(n.id).length}`}else tip.style.display='none'});
-addEventListener('mouseup',e=>{if(!drag)return;cv.classList.remove('grabbing');const was=drag;drag=null;if(moved)return;
+addEventListener('mouseup',e=>{if(!drag)return;cv.classList.remove('grabbing');const was=drag;drag=null;animate();if(moved)return;
   const r=cv.getBoundingClientRect();const n=pick(e.clientX-r.left,e.clientY-r.top);
   if(!n){if(focus&&!e.shiftKey)surface();return}
   if((e.shiftKey||pathMode)&&focus&&n!==focus){showPath(focus,n);return}
@@ -360,6 +368,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(pathNodes){pathNodes=path
 document.getElementById('three').onclick=function(){three=!three;this.classList.toggle('on',three);document.getElementById('spin').hidden=!three;
   for(const n of NODES){[n.tx,n.ty,n.tz]=base(n)}if(focus)applyFocus();else{ctr=[0,0,0];fit()}animate()};
 document.getElementById('spin').onclick=function(){spin=!spin;this.classList.toggle('on',spin);animate()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)animate()});
 document.getElementById('spin').classList.add('on');
 document.getElementById('depth').onclick=function(){depth2=!depth2;this.classList.toggle('on',depth2);if(focus)applyFocus()};
 document.getElementById('pathBtn').onclick=function(){pathMode=!pathMode;this.classList.toggle('on',pathMode)};
@@ -372,7 +381,10 @@ q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits
   hits.innerHTML=cur.map((n,i)=>`<div class="hit ${i===0?'sel':''}" data-i="${i}"><small>${n.type}</small><span>${esc(n.label)}</span><small>${adj.get(n.id).length}</small></div>`).join('')||`<div class="hit"><small></small><span>nothing</span></div>`;
   hits.classList.add('on');hits.querySelectorAll('.hit[data-i]').forEach(h=>h.onclick=()=>choose(+h.dataset.i))});
 q.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){sel=Math.min(cur.length-1,sel+1)}else if(e.key==='ArrowUp'){sel=Math.max(0,sel-1)}else if(e.key==='Enter'){choose(sel);return}else return;hits.querySelectorAll('.hit').forEach((h,i)=>h.classList.toggle('sel',i===sel))});
-function choose(i){const n=cur[i];if(!n)return;hits.classList.remove('on');q.value='';q.blur();trail=[];setFocus(n)}
+function flyTo(n,cb){if(three){cb();return}const k1=Math.max(view.k,1.1),x0=view.x,y0=view.y,k0=view.k,x1=-n.x,y1=-n.y,t0=performance.now(),D=650;
+  hover=null;(function step(){const u=Math.min(1,(performance.now()-t0)/D),s=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.x=x0+(x1-x0)*s;view.y=y0+(y1-y0)*s;view.k=k0+(k1-k0)*s;draw();if(u<1)requestAnimationFrame(step);else cb()})()}
+function choose(i){const n=cur[i];if(!n)return;hits.classList.remove('on');q.value='';q.blur();trail=[];surfaceQuiet();flyTo(n,()=>setFocus(n))}
+function surfaceQuiet(){focus=null;sectors=null;ctr=[0,0,0];pathNodes=pathEdges=null;for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.ta=1;n.x=n.tx;n.y=n.ty;n.z=n.tz;n.a=1}draw()}
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))hits.classList.remove('on')});
 
 // ---------- scrub line
@@ -388,6 +400,7 @@ document.getElementById('play').onclick=function(){playing=!playing;this.classLi
   if(playing){if(T>=SNAPS.length-1)setT(0);const step=()=>{if(!playing)return;if(T>=SNAPS.length-1){playing=false;document.getElementById('play').classList.remove('on');document.getElementById('play').textContent='Play';return}
     setT(T+1);const d=SNAPS[T],p=SNAPS[T-1];playT=setTimeout(step,(d.nodes-p.nodes)+(d.edges-p.edges)>50?1400:450)};step()}else clearTimeout(playT)};
 addEventListener('keydown',e=>{if(e.target===q)return;if(e.key==='ArrowLeft')setT(T-1);if(e.key==='ArrowRight')setT(T+1)});
+document.getElementById('theme').onclick=()=>{themeI=(themeI+1)%3;applyTheme()};applyTheme();
 resize();fit();renderEmpty();
 </script>
 </body>
