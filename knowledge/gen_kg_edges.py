@@ -75,7 +75,30 @@ NODES_PATTERN = COMPONENTS / "_nodes-pattern.json"
 NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
 # s245-D7 — edge types that are AUTHORED in the meta (ruled, Dave's-eye) rather than derived
 # from prose by this generator. The generator carries them through a regeneration verbatim.
-DECLARED_EDGE_TYPES = ("groupsWith",)
+# s268-D6 (a) (Dave, #268: "both now") — WIDENED from the single entry ("groupsWith",) to
+# EVERY schema-legal edge type this generator does not derive from prose. Authored is now the
+# DEFAULT for anything with no prose source: a type reaching the schema without reaching this
+# tuple was the loss lane E measured (441-line diff, notes/_subreports/2026-09-09-265-E-kg-red.md).
+# Derived from the schema at import time so the two can never drift apart again — a NEW schema
+# seat is carried the moment it is minted, without a second edit here.
+DERIVED_EDGE_TYPES = (
+    "renderedBy", "containedBy", "usedInContext", "commonPattern",
+    "mustNotNeighbour", "triggeredBy", "consumes", "reuses",
+    "hasPart", "partial", "family", "governedBy",
+)
+
+
+def _schema_edge_types():
+    """Every edge-type key the meta schema declares. Read, never typed — a typed
+    copy of a list that lives elsewhere is the drift this function exists to stop."""
+    path = COMPONENTS / "meta.schema.json"
+    try:
+        return tuple(json.loads(path.read_text(encoding="utf-8"))["properties"]["edges"]["properties"].keys())
+    except Exception:
+        return ()
+
+
+DECLARED_EDGE_TYPES = tuple(t for t in _schema_edge_types() if t not in DERIVED_EDGE_TYPES)
 
 # s135-D4 — the ruled verdicts file is a GENERATOR INPUT, not a hand-patch.
 RESOLUTIONS = ROOT.parent / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
@@ -248,12 +271,124 @@ def apply_promotions(edges, fname, res):
         for e in arr:
             key = (fname, etype, e.get("$note"))
             target = res["promotes"].get(key)
+            if target is None and etype == "hasPart":
+                # #268, lane E finding 4 + RSQ 1(b) — THE JOIN KEY, FIXED WHERE IT ROTS.
+                # A `hasPart` edge's note is generated as "<part>: <use>", and `use` is
+                # mutable prose (#258 rewrote selection-checkbox's into ~700 characters),
+                # so an exact-$note join binds a RULED VERDICT to a string that changes
+                # under it. The stable identity of the edge is the PART NAME. Re-keying
+                # the review file instead would fix today and rot again at the next prose
+                # edit — the conflated-fix shape, and lane E named it as such. Nothing
+                # fuzzy is added: the fallback is an exact match on an exactly-delimited
+                # substring, and it is REFUSED when it is not unique.
+                pname = _part_name(e.get("$note"))
+                hits = [(k, v) for k, v in res["promotes"].items()
+                        if k[0] == fname and k[1] == "hasPart" and _part_name(k[2]) == pname]
+                if len(hits) == 1:
+                    key, target = hits[0][0], hits[0][1]
+                elif len(hits) > 1:
+                    raise ResolutionsError(
+                        f"PROMOTE PART-NAME JOIN AMBIGUOUS — {fname} / hasPart / part "
+                        f"'{pname}' matches {len(hits)} ruled rows; the verdicts file must "
+                        f"name the part once."
+                    )
             if target is None:
                 continue
             e["ref"] = target
             res["landed"]["promote"][key] = res["landed"]["promote"].get(key, 0) + 1
             n += 1
     return n
+
+
+def _registry_refs(edges):
+    """Every pattern:/context: ref a meta's FINAL edge set points at — derived and
+    carried alike. The registry writer uses it to keep carried nodes alive."""
+    out = []
+    for etype, arr in edges.items():
+        if not isinstance(arr, list):
+            continue
+        for e in arr:
+            ref = e.get("ref") if isinstance(e, dict) else None
+            if isinstance(ref, str) and (ref.startswith("pattern:") or ref.startswith("context:")):
+                out.append(ref)
+    return out
+
+
+def _part_name(note):
+    """The stable identity of a `hasPart` edge: the part NAME, which is everything
+    before the first colon of the generated `<part>: <use>` note. The `use` prose
+    after it is mutable (#258 rewrote one of them into 700 characters) and must not
+    be a primary key — that is the stale-join defect lane E named."""
+    if not note:
+        return None
+    return norm(note.split(":", 1)[0])
+
+
+def match_prior_edge(etype, gen_edge, prior_list, taken):
+    """Find the existing (authored-or-previously-generated) edge that the freshly
+    derived one REFRESHES, or None if it is genuinely new. s268-D6 (c).
+
+    Four keys, tried in order, first hit wins — each one narrower than a wholesale
+    replace and each one named, because an unnamed fuzzy match in this script is
+    exactly what the DO-NOT-RULE list forbids:
+      1. $note identical            — the same prose, re-derived
+      2. ref identical (non-null)   — the same target, prose edited
+      3. hasPart part name          — the mutable `use` moved (lane E finding 4)
+      4. $note prefix, either way   — the prose was EXTENDED by hand (a sticky-variant
+                                      note) or SHORTENED at source; same edge either way
+    """
+    gnote = gen_edge.get("$note")
+    gref = gen_edge.get("ref")
+    candidates = [(i, p) for i, p in enumerate(prior_list) if i not in taken and isinstance(p, dict)]
+    for key in ("note", "ref", "part", "prefix"):
+        for i, p in candidates:
+            pnote, pref = p.get("$note"), p.get("ref")
+            if key == "note" and gnote is not None and pnote == gnote:
+                return i
+            if key == "ref" and gref is not None and pref == gref:
+                return i
+            if key == "part" and etype == "hasPart" and gnote and pnote and _part_name(gnote) == _part_name(pnote):
+                return i
+            if key == "prefix" and gnote and pnote:
+                a, b = norm(gnote), norm(pnote)
+                if a.startswith(b) or b.startswith(a):
+                    return i
+    return None
+
+
+def merge_edges(prior_edges, gen_edges):
+    """s268-D6 (c), Dave, #268: "both now" — THE GENERATOR NEVER WIPES `edges`.
+
+    Result = the meta's own edges, with ONLY the derived types refreshed:
+      * a type the generator did not derive for this meta is left exactly as it is
+        (this is what carries Legend's containedBy/governedBy and Filter-toolbar-bar's
+        composedOf / delegatesTo / drivesConsumer / $contract);
+      * inside a derived type, each generated edge is matched to the existing edge it
+        refreshes (match_prior_edge) and the EXISTING entry is kept — only its `ref` is
+        refreshed, and only when the derivation resolved one. A hand-extended $note
+        therefore survives byte-for-byte;
+      * generated edges that match nothing are APPENDED, in generator order;
+      * nothing is ever deleted. Key order is the meta's own, so a meta whose edges did
+        not change serialises byte-identically.
+    """
+    out = {k: v for k, v in prior_edges.items()}
+    for etype, gen_list in gen_edges.items():
+        prior_list = out.get(etype)
+        if not isinstance(prior_list, list):
+            out[etype] = gen_list
+            continue
+        merged = [dict(p) if isinstance(p, dict) else p for p in prior_list]
+        taken, appended = set(), []
+        for g in gen_list:
+            i = match_prior_edge(etype, g, merged, taken)
+            if i is None:
+                appended.append(g)
+                continue
+            taken.add(i)
+            if isinstance(merged[i], dict) and g.get("ref") is not None:
+                merged[i]["ref"] = g["ref"]
+        out[etype] = merged + appended
+    return out
 
 
 def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, fname):
@@ -371,6 +506,51 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
     return edges
 
 
+def _edges_block_span(raw):
+    """(start, end) of the existing top-level `edges` object VALUE in the raw text,
+    or None. Used to splice IN PLACE (s268-D6): a meta whose edges did not change
+    comes out byte-identical, instead of having `edges` moved to the end of the file
+    on every run — the field-ORDER churn lane E measured on four untouched metas."""
+    idx = raw.find('"edges"')
+    if idx == -1:
+        return None
+    brace_start = raw.find("{", idx)
+    if brace_start == -1:
+        return None
+    depth, i, in_str, esc = 0, brace_start, False, False
+    while i < len(raw):
+        ch = raw[i]
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+        elif ch == '"':
+            in_str = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return (brace_start, i + 1)
+        i += 1
+    return None
+
+
+def splice_edges_in_place(raw, edges):
+    """Replace the existing `edges` VALUE where it already sits. Returns None when
+    the file has no `edges` key (caller falls back to splice_edges, which appends)."""
+    span = _edges_block_span(raw)
+    if span is None:
+        return None
+    edges_json = json.dumps(edges, indent=2, ensure_ascii=False)
+    lines = edges_json.split("\n")
+    indented = lines[0] + "\n" + "\n".join("  " + l for l in lines[1:])
+    return raw[: span[0]] + indented + raw[span[1] :]
+
+
 def splice_edges(raw, edges):
     """Insert/replace the top-level `edges` key by pure text splice — never
     re-serialises the rest of the file, so non-edges content is byte-for-byte
@@ -438,6 +618,7 @@ def main():
     context_registry = {}
 
     counts = {}
+    carried_refs = set()
     resolved = {"consumes": 0, "reuses": 0, "containedBy": 0}
     unresolved = {"consumes": 0, "reuses": 0, "containedBy": 0}
 
@@ -447,18 +628,23 @@ def main():
         data_before = json.loads(raw_clean)
         stem = f.name[: -len(".meta.json")]
 
-        edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name)
-        # s245-D7 (#245): DECLARED edge types are CARRIED, never derived. `groupsWith` is the
-        # composition edge whose ONE home is the meta itself (s234-D4: grouping lives once in
-        # the KG) — it has no prose field to derive from, so a regeneration that rebuilt `edges`
-        # from prose alone would silently DROP it (the freshness arm of _validate_kg.py caught
-        # exactly that). Carried verbatim from the file's own `edges`, appended last.
+        gen_edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name)
+        # s245-D7 (#245) + s268-D6 (#268): DECLARED edge types are CARRIED, never derived —
+        # and since s268-D6 (c) the CARRY IS THE DEFAULT rather than a list lookup: merge_edges
+        # starts from the meta's own `edges` and refreshes only what was derived, so a type the
+        # generator has no prose source for survives whether or not anyone remembered to name
+        # it. DECLARED_EDGE_TYPES is still computed (from the schema) and is asserted below, so
+        # the widening of (a) is a checked fact and not only a comment.
         prior_edges = json.loads(raw).get("edges", {}) if '"edges"' in raw else {}
+        edges = merge_edges(prior_edges, gen_edges)
         for etype in DECLARED_EDGE_TYPES:
-            if etype in prior_edges:
-                edges[etype] = prior_edges[etype]
+            if etype in prior_edges and edges.get(etype) != prior_edges[etype]:
+                print(f"DECLARED EDGE TYPE ALTERED — {f.name} / {etype}", file=sys.stderr)
+                sys.exit(1)
 
         for etype, arr in edges.items():
+            if not isinstance(arr, list):
+                continue  # $-prefixed annotation (s268-D5 `$contract`) — carried, not counted
             counts[etype] = counts.get(etype, 0) + len(arr)
             if etype in resolved:
                 for e in arr:
@@ -466,8 +652,10 @@ def main():
                         resolved[etype] += 1
                     else:
                         unresolved[etype] += 1
+        for ref in _registry_refs(edges):
+            carried_refs.add(ref)
 
-        new_raw = splice_edges(raw_clean, edges)
+        new_raw = splice_edges_in_place(raw, edges) or splice_edges(raw_clean, edges)
 
         # verify: parses, and non-edges content is unchanged from ORIGINAL file
         new_data = json.loads(new_raw)
@@ -499,6 +687,29 @@ def main():
         for u in unlanded:
             print(f"  x {u}", file=sys.stderr)
         sys.exit(1)
+
+    # s268-D6 (c) — CARRY THE NODES THE CARRIED EDGES POINT AT. An authored edge that
+    # survives a regeneration is a dangling ref if the registry entry for its node is
+    # dropped in the same act (lane E finding 6 measured exactly this: a regeneration
+    # would REMOVE context:page-above-a-table-or-list-items-region while a live meta
+    # still referenced it). Carried VERBATIM from the registry's own previous content —
+    # nothing is worded here, so no node is invented; a ref with no entry to carry is
+    # named LOUDLY and left for _validate_kg.py to red, never papered over.
+    dangling = []
+    for path, registry, kind in ((NODES_PATTERN, pattern_registry, "pattern"),
+                                 (NODES_CONTEXT, context_registry, "context")):
+        existing = {}
+        if path.exists():
+            existing = {e["id"]: e for e in json.loads(path.read_text(encoding="utf-8"))}
+        for ref in sorted(carried_refs):
+            if not ref.startswith(kind + ":") or ref in registry:
+                continue
+            if ref in existing:
+                registry[ref] = existing[ref]
+            else:
+                dangling.append(ref)
+    if dangling:
+        print(f"CARRIED EDGE REFS WITH NO REGISTRY ENTRY TO CARRY: {sorted(dangling)}", file=sys.stderr)
 
     # write registries (sorted for determinism)
     pattern_list = [pattern_registry[k] for k in sorted(pattern_registry)]
