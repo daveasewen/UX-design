@@ -7689,6 +7689,44 @@
   "status": "ruled",
   "conductor_note": "THE 12 -> 13 SUBSTITUTION IS THE CONDUCTOR'S, NOT DAVE'S. His proposal named v1.0.12 as \"the one that goes to the designers\" because v1.0.13 did not exist when he said it. Between the proposal and this inscription v1.0.13 was cut and released (s268-D3, cold-run-9 14/14), so the designer pack is v1.0.13 and the internal-history range is 7-12, not 7-11. The LOGIC is his verbatim; only the version number moved, and it moved because the facts did. NOTE ALSO: this ruling was asked for as s268-D3, which was already taken by the v1.0.13 ratification; it is inscribed at the next free id.",
   "watch": "A RE-CUT IS NOT A SILENT RE-BAKE. The permission is to reuse the NUMBER, never to move a zip quietly: dist record and changelog must both say 're-cut' and carry both shas. And the received/unreceived question is answered by knowledge/_received.json, never by memory - if a version is in that register the old rule stands and you BUMP."
+ },
+ {
+  "id": "s268-D5",
+  "ruled": "THE FOUR UNSEATED EDGE-TYPE KEYS ARE MINTED. Dave's word on lane E's RSQ 3 (lane C's RSQ 3, same content) is \"mint all four\": `composedOf`, `delegatesTo`, `drivesConsumer` and `$contract` get a SEAT in knowledge/components/meta.schema.json under `edges.properties`, with the semantics the corpus already carries and no more. composedOf / delegatesTo / drivesConsumer are arrays of the standard {ref, $note} edge; delegatesTo and drivesConsumer additionally carry an optional `when` string (the trigger, and the condition under which a consumer is driven), so `when` is added to the shared edge definition as an optional property named to those two types. `$contract` is a $-PREFIXED ANNOTATION, not an edge list: a free-form object holding the s263-D4 / s258-D1 marker contract the drivesConsumer edges are drawn from - it carries no refs and is therefore resolved against no registry. _validate_kg.py check (d) is taught the one distinction it lacked: a schema-declared $-prefixed key inside `edges` is an annotation and is not required to be an array of edges. Nothing beyond what filter-toolbar-bar.meta.json already states is minted - the seats describe the authored content, they do not extend it.",
+  "date": "2026-09-11",
+  "by": "Dave",
+  "says": "Dave, chat, 2026-09-11: \"mint all four\" - in answer to lane E's RSQ 3, the four filter-toolbar-bar edge-type keys with no seat in the meta schema.",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/components/filter-toolbar-bar.meta.json",
+   "knowledge/_validate_kg.py"
+  ],
+  "evidence": [
+   "chat #268 2026-09-11 - his word \"mint all four\"",
+   "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 1(a), the four keys classified",
+   "s258-D1 / s263-D4 - the filter contract the $contract block records"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s268-D6",
+  "ruled": "AUTHORED EDGES SURVIVE A REGENERATION, BY BOTH MECHANISMS AT ONCE. Dave's word on lane E's RSQ 2 is \"both now\" - option (a) NOW and option (c) NOW, not (c) later. (a) DECLARED_EDGE_TYPES in knowledge/gen_kg_edges.py is widened from its single entry (\"groupsWith\") to EVERY schema-legal edge type the generator does not derive from prose: composedOf, delegatesTo, drivesConsumer, $contract, groupsWith. Authored is now the DEFAULT for any type the generator has no prose source for. (c) The generator NEVER WIPES `edges` again. It reads the meta's existing edges, refreshes only the types it actually derives, and leaves every other type untouched; within a derived type it matches each generated edge against the existing ones (exact $note, then ref, then hasPart part-name, then either-way $note prefix) and KEEPS the authored entry - refreshing only its `ref` - so a hand-extended $note is not truncated by a regeneration. Unmatched generated edges are appended; nothing is deleted. The splice is IN PLACE, so a meta whose edges did not change is byte-identical after a run. Because carried edges may reference registry nodes the derivation no longer mints, the two node registries carry those entries forward verbatim from their own previous content rather than dropping a live-referenced node. s245-D7's carry mechanism is unchanged in kind: this widens it, and makes the loss structurally impossible rather than list-dependent.",
+  "date": "2026-09-11",
+  "by": "Dave",
+  "says": "Dave, chat, 2026-09-11: \"both now (a) now - widen DECLARED_EDGE_TYPES to every schema-legal type the generator doesn't derive; (c) later - generator never wipes edges, only refreshes derived types.\" - in answer to lane E's RSQ 2.",
+  "governs": [
+   "knowledge/gen_kg_edges.py",
+   "knowledge/components/",
+   "knowledge/components/_nodes-pattern.json",
+   "knowledge/components/_nodes-context.json"
+  ],
+  "evidence": [
+   "chat #268 2026-09-11 - his word, quoted in full in `says`",
+   "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 5, the 441-line diff measuring what a regeneration would delete",
+   "s245-D7 - the one-entry carry list this ruling widens"
+  ],
+  "status": "ruled",
+  "conductor_note": "HIS SENTENCE CARRIED BOTH A \"now\" AND A \"later\", AND THE FIRST TWO WORDS DECIDE IT. The quoted \"(c) later\" is the text of the QUESTION he was answering - lane E recommended \"(a) now, (c) as the real fix\" - and his own words in front of it are \"both now\". Enacted as both, at #268."
  }
  ]
 }
