@@ -949,6 +949,22 @@ RATIFY_IDS = {
                             # not a patch. Keyed at the bake, the #257 / #260 / #262 / #267 /
                             # #268 shape: key → regenerate the manifest RATIFIED at the SAME cut
                             # commit → --release → move the frozen literal → --seed.
+    "v1.0.13": "s268-D3",   # #268, Dave's word "okay do 13" (2026-09-11), on the PROPOSED cut at
+                            # 08e315dca376 — the descender crop closed at the level it actually
+                            # lives at (108 absorbed component copies of the leading-trim default,
+                            # not just canon's base one), plus `_validate_demo_page.py`, the
+                            # pre-bake gate that drives the run-of-show's own plot-point-09 page
+                            # from the STAGED pack, and the designer-facing changelog v1.0.7 →
+                            # v1.0.13 in the pack's README (his: the last release the designers
+                            # were given was v1.0.6). ⛔ THE PRE-BAKE DRIVE IS THE NEW STEP AND IT
+                            # IS THE REASON 11 AND 12 BOTH SLIPPED: both were green at the pin and
+                            # both shipped a clipped sidebar, because the only thing that had ever
+                            # been driven was a fixture built to contain the fix. This cut was
+                            # driven against the dry zip BEFORE ratification — 7/7 assertions,
+                            # 4/4 themes, 0.00px — and only then ratified. ⛔ v1.0.12 STAYS IN dist
+                            # UNTOUCHED. Keyed at the bake, the #257 / #260 / #262 / #267 / #268
+                            # shape: key → regenerate the manifest RATIFIED at the SAME cut commit
+                            # → --release → move the frozen literal → --seed.
     "v1.0.11": "s268-D1",   # #268, Dave's word "check and ratify" (2026-09-11), on the PROPOSED
                             # cut at 0c78eee518e4 — the regenerated canon.css, which restores the
                             # nav and dropdown rules the v1.0.10 zip shipped without (cold-run-6
