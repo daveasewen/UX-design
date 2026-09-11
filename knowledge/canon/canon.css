@@ -957,7 +957,21 @@
    labels clipped. `:where()` contributes zero specificity and matches identically, so the trim
    sits at (0,1,2) — a base default that any authored override can beat, which is what a default
    is for. Measured #215: 49 cascade-dead overrides -> 0. ⛔ Do not unwrap it. */
-:where(.canon) :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)),
+/* #268 — the ELEMENT LIST is `:where(...)`, NOT `:is(...)`, for the SAME reason and it is the
+   SAME class of bug. `:is()` takes its most specific argument: `input[type=text]` is (0,1,1),
+   plus `:not(:has(svg))` (0,0,1), so this DEFAULT sat at (0,1,2) — above every SINGLE-class
+   ds-005 override in the file. Cold run 7 measured it on the released v1.0.11 zip: the nav
+   labels rendered "Pavments"/"Liauiditv"/"Settinas" because
+   `:where(.cn-sidebar-nav) .nv-label{text-box-edge:text text}` is (0,1,0) and LOST to this rule,
+   so every label computed `cap alphabetic` and its own overflow:hidden cut the descender off.
+   The reference snippets that carry a private copy of this list (Sidebar-nav, Tab-bar,
+   Navigations) were repaired to `:where(...)` at #261 — canon's copy was not, which is exactly
+   why "the snippet fixed it and canon.css did not". `:where()` matches the identical element
+   set and contributes zero, so the default now sits at (0,0,1) (the `:not(:has(svg))` alone) —
+   beatable by any one-class authored override, which is what a default is for. Driven #268 in
+   chromium, 4 themes: box 11.6px -> 21px, computed edge `cap alphabetic` -> `text`, g/y/p
+   fully visible. ⛔ Do not re-tighten it to `:is()`. */
+:where(.canon) :where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)),
 :where(.canon) :is(.c-eyebrow,.c-summary__k,.c-summary__v,.c-stat-cell__label,.c-stat-cell__value,.c-choice-row__title,.c-choice-row__sub){
   text-box-trim:trim-both; text-box-edge:cap alphabetic;
 }
