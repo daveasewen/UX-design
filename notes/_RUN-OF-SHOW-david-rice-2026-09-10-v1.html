@@ -88,6 +88,11 @@ table.strip tr.sum td{border-bottom:0;border-top:1px solid var(--rule-2);font-we
 .risk .n{font-size:12px;font-weight:500;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin:0 0 .5rem}
 .risk p{margin:0;font-size:14px;line-height:1.6}
 .risk p+p{margin-top:.5rem;color:var(--muted-2)}
+.risk.retired{opacity:.72}
+.risk.retired .n{color:var(--muted-2)}
+.risk.retired .was{text-decoration:line-through;text-decoration-thickness:1px;color:var(--muted-2)}
+.risk p.fixed{margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--rule-2);color:var(--fg)}
+.risk p.fixed b{color:var(--accent)}
 
 ul{margin:0 0 1rem;padding-left:1.1rem}li{margin-bottom:.4rem}
 .quote{border-top:1px solid var(--rule-2);padding-top:1rem;margin-top:1rem;font-size:19px;line-height:1.5}
@@ -420,18 +425,33 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
   <b>None of the top three touches the rehearsed click path in plot point 09</b> — that is why the path is the one written above.</p>
 
   <div class="risks">
-    <div class="risk"><p class="n">Risk 1 · live, on screen</p>
-      <p><b>The sidebar nav renders unstyled in a blind build.</b> <span class="mono">grep -c "nv-item" canon.css</span> = 0 while the
+    <div class="risk retired"><p class="n">Risk 1 · RETIRED in the v1.0.11 cut</p>
+      <p class="was"><b>The sidebar nav renders unstyled in a blind build.</b> <span class="mono">grep -c "nv-item" canon.css</span> = 0 while the
       snippet’s own <span class="mono">&lt;style&gt;</span> has 18 — canon.css has diverged from the snippet markup it ships.</p>
-      <p>Mitigation: do not point at the left nav; navigate by the view control in the body. If he notices, name it as a packaging bug
-      found by our own blind run yesterday — that is a governance story, not an excuse.</p></div>
+      <p class="was">Mitigation: do not point at the left nav; navigate by the view control in the body. If he notices, name it as a packaging bug
+      found by our own blind run yesterday — that is a governance story, not an excuse.</p>
+      <p class="fixed"><b>Retired 2026-09-11 (#268).</b> It was never a divergence — canon.css is a GENERATED file and nobody had re-run its
+      generator. #267 regenerated it (<span class="mono">e470ae0</span>), which landed <i>after</i> the v1.0.10 bake, so the shipped zip still
+      carried the stale copy. Re-cut as <b>v1.0.11</b> at <span class="mono">0c78eee</span> (<span class="mono">8e8e2f2</span>):
+      in the zip’s canon.css <span class="mono">.nv-item</span> = 59 (was 0), and all 34 Sidebar-nav and 28 Navigations
+      <span class="mono">&lt;style&gt;</span> classes resolve to a rule — 0 unresolved, against 11 and 10 in the v1.0.10 zip.
+      ⚠ <b>v1.0.11 is PROPOSED, not released</b> — the bake waits on Dave’s ratifying word. Until it is baked, the mitigation above still
+      applies to anything demoed <i>from the zip</i>; the repo tree is already correct.</p></div>
 
-    <div class="risk"><p class="n">Risk 2 · live, pointer-dead</p>
-      <p><b>Both dropdown menus are unreachable with a mouse.</b> Playwright timed out at 30s:
+    <div class="risk retired"><p class="n">Risk 2 · RETIRED in the v1.0.11 cut</p>
+      <p class="was"><b>Both dropdown menus are unreachable with a mouse.</b> Playwright timed out at 30s:
       <span class="mono">#ftbStatus … intercepts pointer events</span>. Same root cause as risk 1 —
       <span class="mono">.ftb-*</span> and <span class="mono">.th-in</span> classes have 0 occurrences in canon.css.</p>
-      <p>Mitigation: <b>never click a dropdown in the demo.</b> Filter via the URL or the visible controls. This is the single most
-      likely thing to freeze the room.</p></div>
+      <p class="was">Mitigation: <b>never click a dropdown in the demo.</b> Filter via the URL or the visible controls. This is the single most
+      likely thing to freeze the room.</p>
+      <p class="fixed"><b>Retired 2026-09-11 (#268),</b> by the same regen and the same cut — <span class="mono">0c78eee</span> /
+      <span class="mono">8e8e2f2</span>. In the v1.0.11 zip’s canon.css <span class="mono">.ftb-*</span> = 45 (was 12) and
+      <span class="mono">.th-in</span> = 3 (was 0); of Filter-toolbar-bar’s 73 <span class="mono">&lt;style&gt;</span> classes, 7 are
+      unresolved against 25 before, and all seven are the reference page’s own viewport harness
+      (<span class="mono">demo-note</span>, <span class="mono">demo-quad</span>, <span class="mono">demo-stack</span>,
+      <span class="mono">w375/w600/w640/w1440</span>), not component classes.
+      ⚠ <b>Measured statically, not driven</b> — no browser was pointed at the pack, so “the dropdown opens” is not yet a claim anyone has
+      watched. And as with risk 1, <b>v1.0.11 is PROPOSED</b>: until the bake, the mitigation above stands for the zip.</p></div>
 
     <div class="risk"><p class="n">Risk 3 · the KG explorer</p>
       <p><b>“3D is broken when we dig deeper”</b> — Dave’s report at the close of #266. A headless probe (search → follow → Depth 2 → follow)
@@ -440,8 +460,10 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       loop and reload re-arms it (v1.3, <span class="mono">05d6097</span>). Do not dig a second time on stage.</p></div>
 
     <div class="risk"><p class="n">Risk 4 · only if he asks for the pack</p>
-      <p><b>The released zip cannot pass its own gates.</b> <span class="mono">gen_provenance_receipt.py</span> is in the repo tree and in none of
-      v1.0.7 / v1.0.8 / v1.0.9, so <span class="mono">_validate_receipt.py</span> can only answer <span class="mono">FAIL:NO-RECEIPT</span>.</p>
+      <p><b>Fixed in the released zip, but only from v1.0.10 on.</b> <span class="mono">gen_provenance_receipt.py</span> was in the repo tree and in
+      none of v1.0.7 / v1.0.8 / v1.0.9, so <span class="mono">_validate_receipt.py</span> could only answer
+      <span class="mono">FAIL:NO-RECEIPT</span>. <b>v1.0.10 (released 2026-09-10, <span class="mono">de8ed57</span>) ships it</b>, and so does the
+      v1.0.11 cut. If an older zip is on the machine, the old answer is what you will get — check which one you are opening.</p>
       <p>Mitigation: do not run a gate live. If he asks to see one refuse, show a recorded refusal instead — the tenth release gate (#263)
       refusing over stale receipts is the better story anyway.</p></div>
 
