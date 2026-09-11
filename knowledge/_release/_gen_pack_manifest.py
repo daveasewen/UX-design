@@ -122,12 +122,13 @@ VERSION = "v1.0.11"                    # Spider's own lineage starts here; v1/v2
 # recorded on the run-of-show operator card, and neither fixable by anything but a fresh bake.
 # Nothing else is claimed for this cut. The two helpers stay where #267 put them, in v1.0.10;
 # the component work stays where s261-D1 put it, in v1.0.9.
-# ⛔ v1.0.11 IS **PROPOSED**, NOT RATIFIED — it has NO ROW in RATIFY_IDS below, and that is
-# deliberate. The word that reached this lane was "just fix it", relayed through a conductor:
-# an instruction ON the cut, which s223-D3 distinguishes precisely from the word that RATIFIES
-# one. `ratification_status()` therefore derives PROPOSED and `--release` refuses
-# (build-designer-pack.sh: `ratified || die`) — the machine doing its job. ⬛ DAVE'S: the
-# ratifying word. When it lands, key the row to THAT ruling id and follow the #257 / #260 /
+# ★ v1.0.11 IS RATIFIED — s268-D1, Dave's word "check and ratify" (#268, 2026-09-11), keyed in
+# the RATIFY_IDS block below. The status is DERIVED from the store, never typed (s237-D9).
+# ⛔ IT STOOD PROPOSED FIRST, and that was deliberate. The word that reached the CUT lane was
+# "just fix it", relayed through a conductor: an instruction ON the cut, which s223-D3
+# distinguishes precisely from the word that RATIFIES one. Until s268-D1 landed,
+# `ratification_status()` derived PROPOSED and `--release` refused (build-designer-pack.sh:
+# `ratified || die`) — the machine doing its job. The key then followed the #257 / #260 /
 # #262 / #267 shape — key → regenerate the manifest RATIFIED at the SAME cut commit →
 # --release → move the frozen literal → --seed.
 # ⛔ v1.0.10 (#267) IS A PACKAGING CUT AND CARRIES ONE THING: the two helpers three releases
@@ -887,6 +888,15 @@ RATIFY_IDS = {
                             # (s267-D1). Keyed at the bake, the #257 / #260 / #262 shape: key →
                             # regenerate the manifest RATIFIED at the SAME cut commit →
                             # --release → move the frozen literal and --seed.
+    "v1.0.11": "s268-D1",   # #268, Dave's word "check and ratify" (2026-09-11), on the PROPOSED
+                            # cut at 0c78eee518e4 — the regenerated canon.css, which restores the
+                            # nav and dropdown rules the v1.0.10 zip shipped without (cold-run-6
+                            # risks 1 and 2), plus the chart-engine receipts re-driven against it
+                            # (13 of 27 were stale, s263-D13). The cut had NO ROW while the only
+                            # word on it was "just fix it" — an instruction ON the cut, not the
+                            # word that ratifies one (s223-D3). Keyed at the bake, the #257 /
+                            # #260 / #262 / #267 shape: key → regenerate the manifest RATIFIED at
+                            # the SAME cut commit → --release → move the frozen literal → --seed.
 }
 
 RULINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_rulings.json")
