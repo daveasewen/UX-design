@@ -909,6 +909,17 @@ RATIFY_IDS = {
                             # (s267-D1). Keyed at the bake, the #257 / #260 / #262 shape: key →
                             # regenerate the manifest RATIFIED at the SAME cut commit →
                             # --release → move the frozen literal and --seed.
+    "v1.0.12": "s268-D2",   # #268, Dave's word "12" (2026-09-11) in answer to "cut 12 or ship
+                            # 11", on the PROPOSED cut at 782537d1c136 — the version sweep
+                            # COMPLETED (v1.0.11 moved one of four staged literals and its
+                            # --check went red after the pin) and the nav label descender crop
+                            # fixed at cause (cold-run-7 finding 2: canon's base leading-trim
+                            # list was :is(...) at (0,1,2) and killed the (0,1,0) ds-005
+                            # override). ⛔ v1.0.11 STAYS IN dist UNTOUCHED — a recorded zip is
+                            # never re-baked at its own version, which is why this is a bump and
+                            # not a patch. Keyed at the bake, the #257 / #260 / #262 / #267 /
+                            # #268 shape: key → regenerate the manifest RATIFIED at the SAME cut
+                            # commit → --release → move the frozen literal → --seed.
     "v1.0.11": "s268-D1",   # #268, Dave's word "check and ratify" (2026-09-11), on the PROPOSED
                             # cut at 0c78eee518e4 — the regenerated canon.css, which restores the
                             # nav and dropdown rules the v1.0.10 zip shipped without (cold-run-6
