@@ -397,6 +397,24 @@ directory. The ship list is \`_MANIFEST.json\`, which is generated, not hand-kep
 the same commit against the same manifest produce a **byte-identical zip**, so any difference
 between two packs is a real difference and can be audited.
 
+## What changed since v1.0.6
+
+If the last pack you were handed was **v1.0.6**, this is everything that has happened since, in
+the order it happened — one line per release, and each line is what it means for your work
+rather than what moved in the repo.
+
+| version | what it means when you build with it |
+|---|---|
+| \`v1.0.7\` | The skills are prefixed \`ADS-\` so you can find them in a long command list. |
+| \`v1.0.8\` | Charts are drawn by the library's own engine, not by arithmetic a model invented — and the pack ships the driven evidence for each chart page. |
+| \`v1.0.9\` | Six dashboard components arrive with contracts: KPI tile, grid header, filter/toolbar, the nav family, the app footer and the legend. A whole KPI card is clickable, and 24px is the floor for a hit area. |
+| \`v1.0.10\` | The pack can now run its own instructions: the two helper scripts the setup steps told you to run were missing from three previous zips. |
+| \`v1.0.11\` | The sidebar nav and both toolbar dropdowns are styled and clickable again — the canon CSS in v1.0.10 was a stale generated file and shipped without their rules. |
+| \`v1.0.12\` | Every version line inside the pack agrees about which pack you are holding, and the first half of the nav label fix lands. |
+| \`v1.0.13\` | **Nav labels no longer lose their descenders** — "Payments" stopped reading "Pavments" — in all four themes, on a real generated page and not just a test fixture. |
+
+The detail behind any line is in \`_MANIFEST.json\` and in the commit it names.
+
 ## What is in here
 
 - \`skills/\` — the five skills, at the root where you will find them. Four are written against

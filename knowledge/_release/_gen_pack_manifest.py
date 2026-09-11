@@ -110,7 +110,36 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.12"                    # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.13"                    # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ v1.0.13 (#268) — THE DESCENDER CROP, CLOSED AT THE LEVEL IT ACTUALLY LIVES AT, AND THE FIRST
+# CUT DRIVEN AGAINST THE REAL DEMO PAGE BEFORE THE PIN. Dave at #268: "okay do 13".
+# ⛔ THIS IS THE DESIGNER-FACING PACK. Dave, same session: "the last release I gave to the
+# designers was 6, this is getting sort of silly" — six cuts have landed since the designers
+# last saw one, so the pack's own README now carries a WHAT CHANGED SINCE v1.0.6 section,
+# written in the designer's register, one line per release. That section is the changelog; it is
+# stamped in build-designer-pack.sh beside the provenance table, which is the only place a
+# designer holding the zip will look.
+# Two things are claimed for this cut, and nothing else:
+#   1. THE CROP, ONE LEVEL OUT. v1.0.12 fixed the base leading-trim default in canon.css
+#      (`:is(...)` at (0,1,2) → `:where(...)` at (0,0,1)) and cold run 8 still read
+#      "Pavments"/"Liauiditv"/"Settinas" off the released zip, in all four themes, 5.50px of
+#      clip. The reason: EVERY component absorbed into canon carries its OWN private copy of
+#      that default, and 108 of them were still `:is(...)`. One of them
+#      (`cn-template-dashboard-bento`) matches the nav label two scopes away and outranks the
+#      (0,1,0) ds-005 override, so a real page clipped where the fixture did not. Fixed at the
+#      SNIPPET in `7ddab70` — 108 reference snippets, canon regenerated (137 components, 111
+#      copies `:where()`, 0 `:is()`), chart-engine receipts re-driven. Driven on the real page:
+#      edge `text`, box 21px, 0.00px clip, 4/4 themes.
+#      ★ [[conflated-fix-guarantees-recurrence]]: v1.0.12's fix was mutation-tested against a
+#      page BUILT TO CONTAIN THE FIX. This one was tested against the page the finding came from.
+#   2. THE PRE-BAKE DRIVE, NOW AN INSTRUMENT. `knowledge/_validate_demo_page.py` unzips the pack
+#      that is about to ship, stages the run-of-show's own plot-point-09 page against the PACK's
+#      canon, serves it over http and drives it in chromium: descender clip per theme, nav
+#      styled, both dropdowns. BLOCKING with playwright, COULD-NOT-ASK (77) without. It is the
+#      consumer for a measurement nothing was consuming — nine release gates parsed the manifest
+#      and the file list, and not one opened the pack and LOOKED at the demo
+#      [[no-gate-parses-the-artefact]]. Mutation-tested both ways: green on this tree's canon,
+#      red on the released v1.0.12 zip, reproducing cold run 8's 5.50px exactly.
 # ⛔ v1.0.12 (#268) — VERSION SWEEP COMPLETE (3 LITERALS MISSED IN 11); NAV LABEL DESCENDER CROP
 # FIXED (cold-run-7 finding 2). Dave at #268, asked "cut 12 or ship 11": "12".
 # Two things, both of them the v1.0.11 cut's own residue:
@@ -177,7 +206,7 @@ MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.12"
+MEMENTO_CUT_VERSION = "v1.0.13"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
