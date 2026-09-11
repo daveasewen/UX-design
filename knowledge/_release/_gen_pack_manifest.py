@@ -110,7 +110,26 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.10"                    # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.11"                    # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ v1.0.11 (#268) IS A ONE-FILE CUT: canon.css regen — nav + dropdown rules restored
+# (cold-run-6 risks 1/2). #267 lane N regenerated `knowledge/canon/canon.css` from the #261/#263
+# snippets (`e470ae0`) — the divergence C6 reported was a STALE GENERATED OUTPUT, an un-run
+# generator, not a hand-kept file that drifted. That regen landed AFTER the v1.0.10 bake
+# (`e470ae0` is NOT an ancestor of the cut commit `a9218cc`), so the shipped v1.0.10 zip carries
+# the pre-regen canon.css: `.nv-item` 0 occurrences, `.th-in` 0, against 59 and 3 in the tree.
+# That is cold-run-6's risk 1 (the sidebar nav renders unstyled in a blind build) and risk 2
+# (both dropdown menus are pointer-dead, `.ftb-*` 12 in the zip against 45 in the tree) — both
+# recorded on the run-of-show operator card, and neither fixable by anything but a fresh bake.
+# Nothing else is claimed for this cut. The two helpers stay where #267 put them, in v1.0.10;
+# the component work stays where s261-D1 put it, in v1.0.9.
+# ⛔ v1.0.11 IS **PROPOSED**, NOT RATIFIED — it has NO ROW in RATIFY_IDS below, and that is
+# deliberate. The word that reached this lane was "just fix it", relayed through a conductor:
+# an instruction ON the cut, which s223-D3 distinguishes precisely from the word that RATIFIES
+# one. `ratification_status()` therefore derives PROPOSED and `--release` refuses
+# (build-designer-pack.sh: `ratified || die`) — the machine doing its job. ⬛ DAVE'S: the
+# ratifying word. When it lands, key the row to THAT ruling id and follow the #257 / #260 /
+# #262 / #267 shape — key → regenerate the manifest RATIFIED at the SAME cut commit →
+# --release → move the frozen literal → --seed.
 # ⛔ v1.0.10 (#267) IS A PACKAGING CUT AND CARRIES ONE THING: the two helpers three releases
 # never shipped. Dave at #267, on the recommendation "bump to v1.0.10 tomorrow morning with the
 # two scripts in the manifest": "lets do this now". The scope is the commit at cause —
@@ -136,7 +155,7 @@ MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.10"
+MEMENTO_CUT_VERSION = "v1.0.11"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
