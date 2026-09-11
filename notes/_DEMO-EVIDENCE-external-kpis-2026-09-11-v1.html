@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>External KPI evidence — Apollo demo beat 2, David Rice (HSBC CAIO)</title>
+<style>
+:root{
+  --accent:#DA1A00; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --bg:var(--white); --ink:var(--black); --ink-2:var(--grey-7); --band:var(--grey-1); --rule:var(--grey-2); --rule-2:var(--grey-3); --deco:var(--grey-5);
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;
+  --max:1200px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --accent:#F6604C; --bg:#111; --ink:#fff; --ink-2:#B7B7B7; --band:#1A1A1A; --rule:#2A2A2A; --rule-2:#3A3A3A; --deco:#5A5A5A; }
+}
+:root[data-theme="dark"]{ --accent:#F6604C; --bg:#111; --ink:#fff; --ink-2:#B7B7B7; --band:#1A1A1A; --rule:#2A2A2A; --rule-2:#3A3A3A; --deco:#5A5A5A; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--rule);height:56px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.05em}
+nav a{color:var(--ink-2);text-decoration:none}
+nav a:hover{color:var(--ink)}
+nav .tag{color:var(--ink);font-weight:500}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--rule)}
+section.minor{padding:var(--s6) 0}
+section.band{background:var(--band)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:clamp(34px,5vw,57px);line-height:1.06;font-weight:400;letter-spacing:0;margin:0 0 var(--s4)}
+h2{font-size:34px;line-height:1.15;font-weight:400;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:14px;line-height:1.6;color:var(--ink-2)}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.prop{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s5);align-items:start}
+.prop .div{border-left:1px solid var(--rule-2);min-height:120px}
+.idx{font-size:84px;line-height:1;font-weight:200;color:var(--deco);margin:0 0 var(--s2)}
+.say{font-size:clamp(22px,2.6vw,30px);line-height:1.35;font-weight:400;margin:0 0 var(--s4)}
+.slot{display:inline-block;padding:0 .35em;border:1px solid var(--accent);color:var(--accent);font-weight:500;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4)}
+.stat b{display:block;font-size:43px;line-height:1.05;font-weight:200}
+.stat span{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:var(--s1)}
+.stat small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5;margin-top:4px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+th{font-weight:500;text-align:left;letter-spacing:.06em;text-transform:uppercase;font-size:12px;color:var(--ink-2);padding:var(--s1) var(--s2) var(--s1) 0;border-bottom:1px solid var(--ink);vertical-align:bottom}
+td{padding:var(--s1) var(--s2) var(--s1) 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td code,p code,li code{font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink-2);word-break:break-all}
+.v{font-weight:500;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+.v.ok{color:var(--ink)} .v.part{color:var(--ink-2)} .v.no{color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule-2)}
+.grid2>div{background:var(--bg);padding:var(--s4)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule-2)}
+.grid3>div{background:var(--bg);padding:var(--s4)}
+.grid3 .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0 0 var(--s2)}
+.grid3 .k.rec{color:var(--accent)}
+.quote{border-top:1px solid var(--rule);padding-top:var(--s3);font-size:19px;line-height:1.5;margin-top:var(--s4)}
+ul{padding-left:1.2em;margin:0 0 var(--s2)} li{margin-bottom:var(--s1)}
+figure{margin:0}
+figcaption{font-size:12px;color:var(--ink-2);line-height:1.6;margin-top:var(--s2)}
+svg text{font:400 11px "Helvetica Neue",Helvetica,Arial,sans-serif;fill:var(--ink-2)}
+.warn{border-left:2px solid var(--accent);padding-left:var(--s2);margin:var(--s3) 0}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--ink-2);line-height:1.6}
+@media (max-width:820px){.split,.prop{grid-template-columns:1fr}.prop .div{display:none}.stats{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}.idx{font-size:57px}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span><a href="_RUN-OF-SHOW-david-rice-2026-09-10-v1.html">← Run of show</a>&nbsp;&nbsp;·&nbsp;&nbsp;<span class="tag">Beat 2 · external comparators</span></span>
+  <span class="meta">#268 research lane · 2026-09-11 · v1 · observed, nothing ruled</span>
+</div></nav>
+
+<!-- 1. THE SENTENCE UNDER TEST -->
+<section>
+  <div class="wrap">
+    <p class="label">The claim this page tests</p>
+    <h1>What the published evidence does — and does not — say about "six months becomes six weeks"</h1>
+    <p class="say">Dave's estimate, said as an estimate (<code>s268-D8</code>): <em>"a six month project may become six weeks or even less if we use AI in research and user testing."</em> Six months to six weeks is a <strong>77% reduction in elapsed delivery time — a 4.3× compression.</strong> No published study measures anything that size on a whole project. The largest controlled effect on a whole <em>task</em> is 55.8%. The largest bank-scale effect anyone has published is <strong>15%</strong> — and it is HSBC's own.</p>
+
+    <div class="stats" style="margin-top:var(--s5)">
+      <div class="stat"><b>15%</b><span>HSBC's own published figure</span><small>"More than 20,000 developers are using coding assistants, enabling a 15% efficiency in time spent coding." <code>hsbc.com/who-we-are/hsbc-and-digital/hsbc-and-ai/transforming-hsbc-with-ai</code></small></div>
+      <div class="stat"><b>55.8%</b><span>largest controlled task speed-up</span><small>Copilot RCT, 95 developers, one self-contained JavaScript task. <code>arxiv.org/abs/2302.06590</code></small></div>
+      <div class="stat"><b>+19%</b><span>slower, in the hardest test</span><small>METR RCT 2025: experienced devs on their own mature repos took 19% <em>longer</em> with AI. <code>metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/</code></small></div>
+      <div class="stat"><b>47%</b><span>from the parts bin alone, pre-AI</span><small>Same form, from scratch 4.2 h vs 2.0 h with IBM Carbon, 8 developers. <code>sparkbox.com/foundry/design_system_roi_impact_of_design_systems_business_value_carbon_design_system</code></small></div>
+    </div>
+
+    <div class="warn" style="margin-top:var(--s5)"><p class="meta" style="margin:0">Read the 77% arithmetic before the room does. 26 weeks → 6 weeks requires every phase to compress, including the phases no study touches: procurement, stakeholder alignment, compliance sign-off, recruiting real participants, and waiting for a change window. The evidence below compresses the <em>making</em> and the <em>analysing</em>. It says nothing about the waiting.</p></div>
+  </div>
+</section>
+
+<!-- 2. THE TABLE -->
+<section>
+  <div class="wrap">
+    <p class="label">The evidence, one screen</p>
+    <h2>Sixteen published numbers, each with its population and its catch</h2>
+    <p class="meta" style="max-width:56em">Primary sources only. Vendor-commissioned studies are named as such. Every URL is the source that carries the number, not a write-up of it. One row is marked UNVERIFIED: the figure is widely repeated but I could not reach a primary source for it, so it is shown rather than dropped.</p>
+    <div class="scroll" style="margin-top:var(--s5)">
+    <table>
+      <thead><tr><th>Source</th><th>Yr</th><th>Metric</th><th class="n">Number</th><th>Population</th><th>Caveat</th><th>What it says about 6 months → 6 weeks</th></tr></thead>
+      <tbody>
+
+        <tr><td colspan="7" style="border-bottom:1px solid var(--ink);padding-top:var(--s3)"><strong>A · Software delivery with AI coding assistants</strong></td></tr>
+
+        <tr>
+          <td>Peng, Kalliamvakou, Cihon &amp; Demirer (Microsoft / GitHub), <em>The Impact of AI on Developer Productivity</em><br><code>arxiv.org/abs/2302.06590</code></td>
+          <td>2023</td><td>Task completion time, RCT</td><td class="n">−55.8%</td>
+          <td>95 professional developers (45 treatment / 50 control)</td>
+          <td>One self-contained greenfield task — a JavaScript HTTP server. 71.2 min vs 160.9 min. Wide CI [21%, 89%]. Vendor-authored (GitHub/Microsoft). Not a project, not a codebase.</td>
+          <td><span class="v part">Bounds it</span> The ceiling on a clean, well-specified build task is ~2.3×, not 4.3× — and only for the coding part.</td>
+        </tr>
+
+        <tr>
+          <td>Paradis et al. (Google), <em>How much does AI impact development speed? An enterprise-based RCT</em><br><code>arxiv.org/abs/2410.12944</code></td>
+          <td>2024</td><td>Time on task, RCT</td><td class="n">≈−21%</td>
+          <td>96 full-time Google engineers</td>
+          <td>96 min vs 114 min, p=.038, "confidence interval is large". Realistic enterprise task: 10 files, 474 LOC, real internal tooling. Neither seniority nor AI-tool frequency changed the effect.</td>
+          <td><span class="v no">Contradicts</span> The best enterprise-realistic RCT gives 1.27×. This is the number to expect inside a bank, not 4.3×.</td>
+        </tr>
+
+        <tr>
+          <td>METR, <em>Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity</em><br><code>metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/</code> · <code>arxiv.org/abs/2507.09089</code></td>
+          <td>2025</td><td>Task completion time, RCT</td><td class="n">+19%<br>(slower)</td>
+          <td>16 experienced devs, 246 real issues, mature repos (22k+ stars, 1M+ LOC)</td>
+          <td>CI [+2%, +39%]. The same developers <em>forecast</em> −24% and, after the fact, still <em>believed</em> −20%. METR explicitly does not claim this generalises beyond experienced devs on repos they know deeply.</td>
+          <td><span class="v no">Contradicts</span> On mature, high-standard codebases with implicit quality requirements, AI made expert humans slower. Rice will raise this.</td>
+        </tr>
+
+        <tr>
+          <td>METR, <em>We are Changing our Developer Productivity Experiment Design</em><br><code>metr.org/blog/2026-02-24-uplift-update/</code></td>
+          <td>2026</td><td>Follow-up RCT, late-2025 tools</td><td class="n">−18% / −4%</td>
+          <td>57 devs, 143 repos, 800+ tasks (10 returning, 47 new)</td>
+          <td>METR's own words: unreliable signal. Returning devs −18% (CI −38% to +9%), new devs −4% (CI −15% to +9%) — both CIs cross zero. 30–50% of devs withheld tasks they didn't want to do without AI, so the estimate is a <em>lower</em> bound.</td>
+          <td><span class="v part">Bounds it</span> The best honest 2026 read: the slowdown has turned into a modest speed-up, but nobody can yet measure how big. Cite this <em>with</em> the 2025 result or you are quoting stale evidence.</td>
+        </tr>
+
+        <tr>
+          <td>METR, <em>Measuring the Self-Reported Impact of Early-2026 AI on Technical Worker Productivity</em><br><code>metr.org/blog/2026-05-11-ai-usage-survey/</code></td>
+          <td>2026</td><td>Self-reported value of work</td><td class="n">1.4–2× (median)</td>
+          <td>349 technical workers</td>
+          <td>Self-reported, and METR itself says there are "reasons to be skeptical of the magnitude". Summary line read off METR's own site; the underlying post was not opened for this page.</td>
+          <td><span class="v part">Bounds it</span> Even the most generous <em>self-report</em> tops out around 2×. 4.3× exceeds what practitioners claim about themselves.</td>
+        </tr>
+
+        <tr>
+          <td>DORA / Google Cloud, <em>2025 State of AI-Assisted Software Development</em><br><code>cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report</code></td>
+          <td>2025</td><td>Adoption, throughput, stability</td><td class="n">90% / 80% / 30%</td>
+          <td>~5,000 technology professionals, 100+ hrs qualitative</td>
+          <td>90% use AI at work; &gt;80% believe it raised their productivity; 30% report little or no trust in AI-generated code. AI adoption correlates <em>positively</em> with throughput (reversing 2024) and <em>negatively</em> with delivery stability.</td>
+          <td><span class="v part">Bounds it</span> "AI doesn't fix a team; it amplifies what's already there." The governed library is the amplifier's foundation — this is the report that makes Apollo's argument for it.</td>
+        </tr>
+
+        <tr>
+          <td>McKinsey, <em>Unleashing developer productivity with generative AI</em><br><code>mckinsey.com/~/media/mckinsey/business%20functions/mckinsey%20digital/our%20insights/unleashing%20developer%20productivity%20with%20generative%20ai/unleashing-developer-productivity-with-generative-ai.pdf</code></td>
+          <td>2023</td><td>Time per task type, lab study</td><td class="n">~2× / ~50% / &lt;10%</td>
+          <td>40+ developers, US and Asia, several weeks</td>
+          <td>Documentation in half the time; new code written ~2× faster; optimisation in ~two-thirds the time. But time savings <strong>shrank to under 10% on tasks the developers rated highly complex</strong> — e.g. an unfamiliar framework. Consultancy study, not peer-reviewed.</td>
+          <td><span class="v part">Bounds it</span> The gains are largest exactly where the work is most routine. Bank delivery is not routine.</td>
+        </tr>
+
+        <tr>
+          <td>Dell'Acqua et al. (Harvard / MIT / Wharton with BCG), <em>Navigating the Jagged Technological Frontier</em><br><code>hbs.edu/ris/Publication%20Files/24-013_d9b45b68-9e74-42d6-a1c6-c72fb70c7282.pdf</code> · <code>papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321</code></td>
+          <td>2023</td><td>Field experiment, knowledge work</td><td class="n">+12.2% tasks<br>−25.1% time</td>
+          <td>758 BCG consultants, 18 realistic tasks</td>
+          <td>40% of the AI group produced higher-quality output. But on tasks <em>outside</em> AI's capability frontier, AI users were <strong>19 percentage points less likely</strong> to reach the correct answer. Vendor participant (BCG), academic authors.</td>
+          <td><span class="v part">Bounds it</span> The closest analogue to design work: ~1.33× throughput, with a real accuracy penalty on the wrong tasks.</td>
+        </tr>
+
+        <tr><td colspan="7" style="border-bottom:1px solid var(--ink);padding-top:var(--s3)"><strong>B · Design, UX and research acceleration</strong></td></tr>
+
+        <tr>
+          <td>Nielsen (NN/g), <em>AI Improves Employee Productivity by 66%</em><br><code>nngroup.com/articles/ai-tools-productivity-gains/</code></td>
+          <td>2023</td><td>Throughput, 3 pooled studies</td><td class="n">+66% avg<br><strong>+33% for UX</strong></td>
+          <td>Support agents (Brynjolfsson/Li/Raymond), business writers (Noy/Zhang), programmers (Peng et al.)</td>
+          <td>The 66% is an average of +13.8%, +59% and +126%. The <strong>+33% for UX is Nielsen's own explicit estimate, not a measurement</strong> — he assumes half of UX work can be AI-supported at +100% and half cannot be sped up at all.</td>
+          <td><span class="v no">Contradicts</span> The most-cited UX authority's own estimate for AI-assisted UX work is <strong>1.33×</strong>. Dave's estimate is 4.3×. This is the single hardest number in the room.</td>
+        </tr>
+
+        <tr>
+          <td>Nielsen (NN/g), same article, on observational research<br><code>nngroup.com/articles/ai-tools-productivity-gains/</code></td>
+          <td>2023</td><td>Field-research time</td><td class="n">0%</td>
+          <td>—</td>
+          <td>Verbatim: "conducting a one-hour customer visit consumes an hour, so there's no productivity speed-up." Discovery and usability testing still need humans watching real people.</td>
+          <td><span class="v no">Contradicts</span> The <em>research and user testing</em> half of Dave's sentence is precisely where NN/g says the clock cannot be compressed. Analysis can; fieldwork cannot.</td>
+        </tr>
+
+        <tr>
+          <td>Mathis et al., <em>Comparing the Efficacy and Efficiency of Human and Generative AI: Qualitative Thematic Analyses</em>, JMIR Formative Research<br><code>ncbi.nlm.nih.gov/pmc/articles/PMC11329846/</code></td>
+          <td>2024</td><td>Analysis time, human vs GenAI</td><td class="n">−97%</td>
+          <td>One SMS corpus; human coding teams vs ChatGPT and Bard</td>
+          <td>Inductive: 492 human-minutes vs <strong>15 min</strong>. Deductive: 705 vs 25 min. Theme consistency with human coders 71–90%. <strong>Analysis step only</strong> — the interviews still had to happen.</td>
+          <td><span class="v ok">Supports — narrowly</span> The strongest acceleration number on this page, and it applies to one step. This is the honest evidence behind "AI in research".</td>
+        </tr>
+
+        <tr>
+          <td>Rosala &amp; Moran (NN/g), <em>Synthetic Users: If, When, and How to Use AI-Generated "Research"</em><br><code>nngroup.com/articles/synthetic-users/</code></td>
+          <td>2024</td><td>Qualitative evaluation</td><td class="n">—</td>
+          <td>NN/g re-ran three of its own real-user studies against Synthetic Users and ChatGPT</td>
+          <td>Findings: sycophantic, one-dimensional, "too shallow to be useful" for prioritisation; synthetic users claimed to have completed courses real users abandoned. NN/g's rule: "Do not use synthetic-user research as a replacement for real-user research."</td>
+          <td><span class="v no">Contradicts</span> If the six-week plan depends on replacing participants with synthetic ones, the best-known authority in UX has published against it. Do not put synthetic users in beat 2.</td>
+        </tr>
+
+        <tr>
+          <td>Forrester Consulting for Figma, <em>Total Economic Impact of Figma Dev Mode</em><br><code>tei.forrester.com/go/Figma/DevMode/</code></td>
+          <td>2023</td><td>Composite ROI, dev output</td><td class="n">351% ROI<br>+20–30%</td>
+          <td>Composite org from 4 interviewed decision-makers, 100–1,000 designers/devs</td>
+          <td><strong>Vendor-commissioned.</strong> $10.1m benefits vs $2.2m costs over 3 years; &gt;90 min/week saved per developer. A modelled composite, not a measured population.</td>
+          <td><span class="v part">Bounds it</span> Even the vendor's own best case is +20–30% output, not 4.3×. Useful only to show the design-to-code seam is worth money.</td>
+        </tr>
+
+        <tr><td colspan="7" style="border-bottom:1px solid var(--ink);padding-top:var(--s3)"><strong>C · Pre-AI: what the parts bin alone compresses</strong></td></tr>
+
+        <tr>
+          <td>Sparkbox, <em>Yes, Design Systems Do Improve Developer Efficiency and Design Consistency</em><br><code>sparkbox.com/foundry/design_system_roi_impact_of_design_systems_business_value_carbon_design_system</code></td>
+          <td>2021</td><td>Build time, same form, within-subject</td><td class="n">−47%</td>
+          <td>8 developers, junior to senior, each built the form twice</td>
+          <td>Median 4.2 h from scratch vs 2.0 h with IBM Carbon — <strong>including the time spent learning Carbon</strong>. Scratch always built first. Small n, agency staff, one component-heavy page. Visual consistency improved for 5 of 8; accessibility barely moved (these devs were already accessibility specialists).</td>
+          <td><span class="v ok">Supports</span> This is Dave's parts-bin metaphor, measured, with no AI in it at all. Half the time, on the making, from reuse alone.</td>
+        </tr>
+
+        <tr>
+          <td>Spotify / Backstage — onboarding time to 10th merged PR<br><code>blog.container-solutions.com/how-developer-experience-portal-backstage-solved-spotifys-complexity</code></td>
+          <td>2020</td><td>Time-to-productivity</td><td class="n">60 d → &lt;20 d<br><span class="v no">UNVERIFIED</span></td>
+          <td>Spotify engineering</td>
+          <td><strong>UNVERIFIED.</strong> Widely repeated as Spotify's own measure; I could not reach a Spotify-authored primary source for the figure within this lane. Do not say it aloud unless someone re-sources it.</td>
+          <td><span class="v part">Would support</span> If verified, it is the golden-path analogue: a platform tripling time-to-productivity for newcomers, pre-AI.</td>
+        </tr>
+
+        <tr>
+          <td>DORA 2025, on platform engineering<br><code>cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report</code></td>
+          <td>2025</td><td>Platform adoption</td><td class="n">90%</td>
+          <td>~5,000 technology professionals</td>
+          <td>90% of organisations have adopted at least one internal platform, and DORA reports a direct correlation between internal-platform quality and the ability to unlock AI's value. Survey correlation, not causation.</td>
+          <td><span class="v ok">Supports</span> The library is not a nice-to-have next to the AI — DORA says it is the precondition for the AI paying off.</td>
+        </tr>
+
+        <tr><td colspan="7" style="border-bottom:1px solid var(--ink);padding-top:var(--s3)"><strong>D · The bank itself, and the quality bill</strong></td></tr>
+
+        <tr>
+          <td>HSBC, <em>Transforming HSBC with AI</em><br><code>hsbc.com/who-we-are/hsbc-and-digital/hsbc-and-ai/transforming-hsbc-with-ai</code></td>
+          <td>2025</td><td>Coding-time efficiency</td><td class="n">15%</td>
+          <td>"More than 20,000 developers"</td>
+          <td>HSBC's own public words: "More than 20,000 developers are using coding assistants, enabling a 15% efficiency in time spent coding." Also on the page: 600+ AI use cases in operation; a GenAI assistant supporting 3 million client interactions a year; Group CIO Stuart Riley's line that "many significantly underestimate its long-term potential."</td>
+          <td><span class="v no">Contradicts — and this is the one that matters</span> Rice's own bank publishes 15% on the coding step. Any claim you make must be framed so it does not contradict his own published number.</td>
+        </tr>
+
+        <tr>
+          <td>HSBC / Georges Elhedery, Q4 2025 earnings call, reported<br><code>bankingdive.com/news/hsbc-generative-ai-leading-investment-elhedery/813353/</code></td>
+          <td>2026</td><td>Vulnerability patching</td><td class="n">5×</td>
+          <td>HSBC engineering</td>
+          <td>"Five times faster patching of code, patching of vulnerabilities" — CEO, on an earnings call, reported by trade press; ~85% of employees have GenAI access. <strong>Secondary source; no HSBC-published figure found.</strong> A narrow, highly-patterned task.</td>
+          <td><span class="v part">Bounds it</span> HSBC's own 5× exists — on <em>patching</em>, the most templated task in the shop. Not on delivery.</td>
+        </tr>
+
+        <tr>
+          <td>GitClear, <em>AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones</em><br><code>gitclear.com/ai_assistant_code_quality_2025_research</code></td>
+          <td>2025</td><td>Duplication and reuse in commits</td><td class="n">8× dupes<br>&lt;10% moved</td>
+          <td>211 million changed lines of code</td>
+          <td>Blocks of 5+ duplicated lines rose 8× during 2024; refactored/moved lines fell from ~25% of changed lines in 2021 to under 10% in 2024 — 2024 was the first year copy/paste exceeded moved code. Vendor research, observational, no causal design.</td>
+          <td><span class="v no">The bill</span> AI writes fast and reuses badly. This is the precise defect a governed component library exists to prevent — and the reason reuse rate belongs in the KPI set.</td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+    <p class="meta" style="margin-top:var(--s3)">Tally: 3 rows support the claim (all narrowly), 8 bound it, 6 contradict it, 1 UNVERIFIED. No published figure anywhere on this page reaches 4.3× on a whole project.</p>
+  </div>
+</section>
+
+<!-- 3. WHAT RICE ALREADY KNOWS -->
+<section class="band">
+  <div class="wrap">
+    <p class="label">Assume he has read these</p>
+    <div class="split">
+      <div>
+        <div class="idx">3</div>
+        <h2>The three a Chief AI Officer has certainly already read</h2>
+        <p class="meta">A CAIO at a G-SIB spends his week being pitched AI productivity numbers. These three are the ones that survive his filter, and two of them cut against the claim. Name them before he does — quoting the evidence against yourself is the fastest way to be believed on the rest.</p>
+      </div>
+      <div>
+        <div class="grid3">
+          <div>
+            <p class="k">1 · His own bank's number</p>
+            <h3>15%, more than 20,000 developers</h3>
+            <p>It is on hsbc.com. He either signed it off or was in the room when it was. <strong>Never state a delivery claim that implicitly calls his own published figure timid.</strong> The safe move is to adopt it: "your published number is 15% on coding time — we are not arguing with it; we are arguing about the other 85% of the project, which is the part that isn't coding."</p>
+            <p class="meta"><code>hsbc.com/who-we-are/hsbc-and-digital/hsbc-and-ai/transforming-hsbc-with-ai</code></p>
+          </div>
+          <div>
+            <p class="k">2 · The study everyone quotes at AI optimists</p>
+            <h3>METR: 19% slower — and the 2026 walk-back</h3>
+            <p>If you claim big acceleration without naming METR, he will name it for you. Say it first, and say the whole thing: the 2025 RCT found experts <em>19% slower</em> on their own mature repos while believing they were 20% faster; METR's own February 2026 follow-up estimates a modest speed-up (−18% for returning devs) but calls its own data unreliable because devs now refuse to work without AI.</p>
+            <p class="meta"><code>metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/</code> · <code>metr.org/blog/2026-02-24-uplift-update/</code></p>
+          </div>
+          <div>
+            <p class="k rec">3 · The one that makes Apollo's case</p>
+            <h3>DORA 2025: AI amplifies what is already there</h3>
+            <p>~5,000 respondents. 90% use AI; throughput correlates positively with adoption; <strong>stability correlates negatively</strong>; and internal-platform quality is the thing that determines whether AI pays. This is the report that says a governed component library is the precondition, not the garnish — and it is Google's, not ours.</p>
+            <p class="meta"><code>cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report</code></p>
+          </div>
+        </div>
+        <div class="warn"><p class="meta" style="margin:0">Runner-up, if he is a reader: Dell'Acqua et al.'s "jagged frontier" (758 BCG consultants, +12.2% tasks at −25.1% time, but 19 points <em>worse</em> outside the frontier). It is the standard citation for "AI helps, until it confidently doesn't" — the single best framing for why every Apollo output passes a gate.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. RECOMMENDED KPI SET -->
+<section>
+  <div class="wrap">
+    <p class="label">Beat 2 · recommended KPI set</p>
+    <div class="prop">
+      <h2>Five KPIs, each with an external baseline and a way to measure it on the first live project</h2>
+      <div class="div"></div>
+      <p>Chosen so that every one is (a) anchored to a published number someone else produced, (b) measurable inside a bank in the first eight weeks, and (c) unembarrassing if the first project misses it. Two of the five are deliberately <em>quality</em> KPIs — a speed-only set is what DORA and GitClear predict will fail.</p>
+    </div>
+    <div class="scroll" style="margin-top:var(--s5)">
+    <table>
+      <thead><tr><th>KPI</th><th>Baseline (external source)</th><th>Target on a first live project</th><th>How it is measured</th><th>Why this one</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>K1 · Time to first reviewable, gated screen</strong><br>Brief accepted → a working UI that passes every build gate</td>
+          <td>Sparkbox: median <strong>4.2 h from scratch</strong> for one form; 2.0 h with a design system — <code>sparkbox.com/foundry/design_system_roi_impact_of_design_systems_business_value_carbon_design_system</code></td>
+          <td><strong>Same day</strong> for a multi-screen flow, versus a week to a first clickable in a conventional cycle</td>
+          <td>Wall clock, prompt to green gate run. The demo's own live run (beat 3) is the first datapoint — the clock in the room is real evidence.</td>
+          <td>It is the only KPI the demo itself produces live. Everything else he has to take on trust.</td>
+        </tr>
+        <tr>
+          <td><strong>K2 · Library reuse rate</strong><br>% of shipped UI composed from gated components vs bespoke markup</td>
+          <td>GitClear: duplicated 5+ line blocks up <strong>8×</strong> in 2024; moved/refactored lines fell below <strong>10%</strong> — <code>gitclear.com/ai_assistant_code_quality_2025_research</code></td>
+          <td><strong>≥ 80%</strong> of rendered UI from the library; duplication flat or falling against the team's pre-AI baseline</td>
+          <td>A build-time gate counts library atoms vs novel markup per page, per release. The repo already gates coverage and integrity; this is one more counter.</td>
+          <td>This is the KPI that answers GitClear. AI's known failure is writing new code instead of reusing; a governed library plus a gate is the fix, and reuse rate proves it worked.</td>
+        </tr>
+        <tr>
+          <td><strong>K3 · Change failure rate and rework, AI-assisted vs not</strong></td>
+          <td>DORA 2025: AI adoption correlates <strong>negatively with delivery stability</strong>, ~5,000 respondents — <code>cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report</code></td>
+          <td><strong>No worse than the team's own pre-AI rate</strong> — explicitly not an improvement target</td>
+          <td>The bank's existing DORA instrumentation, unchanged, split by whether the change came through the Apollo path. Plus gate-refusal counts per build.</td>
+          <td>Volunteering the metric most likely to go the wrong way is what makes the other four credible. Rice will be scored on incidents, not velocity.</td>
+        </tr>
+        <tr>
+          <td><strong>K4 · Research-analysis cycle time</strong><br>Interview corpus → themes signed off. Fieldwork hours reported separately and <em>unchanged</em>.</td>
+          <td>JMIR 2024: <strong>492 human-minutes → 15 minutes</strong> (−97%) for inductive thematic analysis, 71–90% theme consistency — <code>ncbi.nlm.nih.gov/pmc/articles/PMC11329846/</code><br>NN/g: fieldwork is <strong>0%</strong> compressible — <code>nngroup.com/articles/ai-tools-productivity-gains/</code></td>
+          <td><strong>≥ 70% reduction on the analysis step</strong>, with a human researcher signing every theme. Sessions-run count and participant hours unchanged.</td>
+          <td>Timestamped analysis log; themes double-coded by a human on the first two studies to establish local consistency against the 71–90% published band.</td>
+          <td>It is the honest version of "AI in research and user testing". It also states out loud what is <em>not</em> being claimed: we are not replacing participants.</td>
+        </tr>
+        <tr>
+          <td><strong>K5 · Coding-time efficiency, org-level</strong></td>
+          <td>HSBC's own: <strong>15%</strong>, more than 20,000 developers — <code>hsbc.com/who-we-are/hsbc-and-digital/hsbc-and-ai/transforming-hsbc-with-ai</code><br>Google enterprise RCT: <strong>~21%</strong>, 96 engineers — <code>arxiv.org/abs/2410.12944</code></td>
+          <td><strong>At least match HSBC's published 15%</strong> on the front-end build portion; do not promise more</td>
+          <td>Whatever instrument produced HSBC's own 15%. Adopt his measure rather than proposing a new one.</td>
+          <td>Deliberately unambitious. Adopting a CAIO's own published number as your floor is worth more than beating it with one of yours.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="meta" style="margin-top:var(--s3)">Deliberately excluded: designer-hours saved (no baseline exists, in the repo or outside it — see <code>notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html</code>), headcount reduction (a different conversation, and not one to start), and any "×" multiplier on whole-project delivery time.</p>
+  </div>
+</section>
+
+<!-- 5. THE HONEST BOUND -->
+<section>
+  <div class="wrap">
+    <p class="label">The honest bound</p>
+    <h2>What this evidence does not support saying</h2>
+    <div class="grid3" style="margin-top:var(--s5)">
+      <div>
+        <div class="idx">1</div>
+        <h3>"Six months becomes six weeks" — as a benchmark</h3>
+        <p>No published study measures a 77% compression of an end-to-end delivery. The largest controlled effect on a single, self-contained task is 55.8%; the largest enterprise-realistic RCT is ~21%; NN/g's own estimate for AI-assisted UX work is +33%. Even multiplying the two independent effects that <em>are</em> measured — 47% from the parts bin and ~55% from the assistant — compresses the <strong>making</strong> by roughly 76%, and the making is not the whole project.</p>
+        <p class="meta">Sayable: it is Dave's estimate, offered as an estimate (<code>s268-D8</code>), and the room is told which half is measured and which is predicted. Not sayable: "the research shows six months becomes six weeks."</p>
+      </div>
+      <div>
+        <div class="idx">2</div>
+        <h3>"AI compresses user research"</h3>
+        <p>It compresses the <em>analysis</em> of research — 492 minutes to 15 in the one controlled comparison found. It does not compress fieldwork: NN/g's own line is that a one-hour customer visit consumes an hour. And the shortcut that <em>would</em> compress it — synthetic participants — has been tested by NN/g against three of its own real studies and found sycophantic and shallow, with an explicit instruction not to substitute it for real users.</p>
+        <p class="meta">Sayable: "we cut the analysis, not the interviews." Not sayable: anything involving synthetic users in front of a bank that answers to the FCA on customer outcomes.</p>
+      </div>
+      <div>
+        <div class="idx">3</div>
+        <h3>"Faster, with no bill"</h3>
+        <p>Three independent findings say speed buys instability. DORA 2025: AI adoption correlates negatively with delivery stability across ~5,000 respondents. GitClear: 8× growth in duplicated blocks across 211 million changed lines, with reuse falling below 10%. Dell'Acqua et al.: 19 percentage points <em>worse</em> on tasks outside AI's frontier. And METR's 2025 RCT is the standing proof that a confident practitioner's sense of speed-up can be wrong by 39 points.</p>
+        <p class="meta">Sayable: "the gates are the reason the speed is safe, and reuse rate is the metric that proves it." Not sayable: a speed number without a quality number beside it.</p>
+      </div>
+    </div>
+    <p class="quote">The defensible sentence for beat 2: <em>"The published range for AI on software delivery runs from 19% slower to 56% faster depending on how hard and how familiar the work is — your own bank publishes 15% on coding time. What none of those studies had is a governed parts bin: the one controlled test of that, pre-AI, cut build time 47% on its own. Our claim is about stacking the two, and here are the five things we would measure to find out whether it holds."</em></p>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  #268 research lane · 2026-09-11 · observed, nothing ruled · companion to <code>notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html</code> (the repo-measured half) · governed by <code>s268-D7</code> (comparator dropped from the demo) and <code>s268-D8</code> (plot point 04 states measured and predicted, labelled differently) · all sixteen figures carry their source URL in the table above; one row is marked UNVERIFIED and must be re-sourced or dropped before use.
+</div></footer>
+</body>
+</html>
