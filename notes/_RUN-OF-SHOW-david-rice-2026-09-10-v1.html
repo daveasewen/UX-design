@@ -247,8 +247,8 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       <span class="mono">_DECISION-HISTORY/2026-09-08-258-five-cold-runs-and-the-sentence-2a-forbade.md</span>.</p></div>
     <div class="row"><p class="k">KPIs</p><p class="v">
       <div class="slot"><b>which KPIs you want predicted.</b> The repo holds counts, not forecasts. Real and checkable today:
-      137 gated reference components · 138 component criteria files · 445 rulings · 102-node / 172-edge decision graph ·
-      56 gate scripts · 17 runbooks · 17 ADRs · 220 session dossiers · 10 releases v1.0.0–v1.0.10 ·
+      137 gated reference components · 138 component criteria files · 446 rulings · 102-node / 172-edge decision graph ·
+      56 gate scripts · 17 runbooks · 17 ADRs · 220 session dossiers · 11 releases v1.0.0–v1.0.11 ·
       1,287 commits 31 May–10 Sep (all sourced in <span class="mono">…266-T-timeline-trawl.md</span> § 3; counts re-taken at #268,
       <span class="mono">202fa30</span>).
       ⚠ Industry figures in <span class="mono">digital-experience-transformation/strategy/</span> (“40–60% faster”, “~10x throughput”)
@@ -367,7 +367,7 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       <span class="mono">_DECISION-HISTORY/2026-09-10-266-kg-explorer-demo-pivot.md</span> § 6. <b>Quote the generator’s figures, which can be
       re-taken with one command.</b> Do not average them and do not invent a third.</p></div>
     <div class="row"><p class="k">11 · Close</p><p class="v say">And when you ask why a button is that colour, you do not get an opinion.
-      You get a ruling — an identifier, a date, and the words the human used. Four hundred and forty-five of them so far, and a page a
+      You get a ruling — an identifier, a date, and the words the human used. Four hundred and forty-six of them so far, and a page a
       non-engineer can read.</p>
       <p class="v cap" style="margin-top:.5rem">Have <span class="mono">notes/_RULINGS.html</span> open in a background tab.
       Open it only if he asks — the graph is the beat, the rulings page is the answer to a question.</p></div>
@@ -425,7 +425,7 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
   <b>None of the top three touches the rehearsed click path in plot point 09</b> — that is why the path is the one written above.</p>
 
   <div class="risks">
-    <div class="risk retired"><p class="n">Risk 1 · RETIRED in the v1.0.11 cut</p>
+    <div class="risk retired"><p class="n">Risk 1 · RETIRED — v1.0.11 released, cold-run-7 green</p>
       <p class="was"><b>The sidebar nav renders unstyled in a blind build.</b> <span class="mono">grep -c "nv-item" canon.css</span> = 0 while the
       snippet’s own <span class="mono">&lt;style&gt;</span> has 18 — canon.css has diverged from the snippet markup it ships.</p>
       <p class="was">Mitigation: do not point at the left nav; navigate by the view control in the body. If he notices, name it as a packaging bug
@@ -435,10 +435,14 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       carried the stale copy. Re-cut as <b>v1.0.11</b> at <span class="mono">0c78eee</span> (<span class="mono">8e8e2f2</span>):
       in the zip’s canon.css <span class="mono">.nv-item</span> = 59 (was 0), and all 34 Sidebar-nav and 28 Navigations
       <span class="mono">&lt;style&gt;</span> classes resolve to a rule — 0 unresolved, against 11 and 10 in the v1.0.10 zip.
-      ⚠ <b>v1.0.11 is PROPOSED, not released</b> — the bake waits on Dave’s ratifying word. Until it is baked, the mitigation above still
-      applies to anything demoed <i>from the zip</i>; the repo tree is already correct.</p></div>
+      <b>RELEASED 2026-09-11</b> on Dave’s word “check and ratify” (s268-D1) — <span class="mono">Apollo-Spider-v1.0.11.zip</span>,
+      sha256 <span class="mono">97fc82d8…</span>, 21,201,555 B. <b>Driven, not just grepped:</b> the released zip’s canon.css was put under
+      cold run 7 against cold-run-6’s own frozen arm page and the nav assertions flip from FAIL to PASS — <span class="mono">.nv-item</span>
+      matched by 53 rules (0 before), <span class="mono">display:flex</span> (was <span class="mono">inline</span>), padding
+      <span class="mono">0 16px</span> (was 0), no underline, row 44px. The v1.0.9 control fails all four, so the test discriminates.
+      <a href="_subreports/2026-09-11-268-cold-run-7.md">cold run 7 →</a></p></div>
 
-    <div class="risk retired"><p class="n">Risk 2 · RETIRED in the v1.0.11 cut</p>
+    <div class="risk retired"><p class="n">Risk 2 · RETIRED — v1.0.11 released, cold-run-7 green</p>
       <p class="was"><b>Both dropdown menus are unreachable with a mouse.</b> Playwright timed out at 30s:
       <span class="mono">#ftbStatus … intercepts pointer events</span>. Same root cause as risk 1 —
       <span class="mono">.ftb-*</span> and <span class="mono">.th-in</span> classes have 0 occurrences in canon.css.</p>
@@ -450,8 +454,15 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       unresolved against 25 before, and all seven are the reference page’s own viewport harness
       (<span class="mono">demo-note</span>, <span class="mono">demo-quad</span>, <span class="mono">demo-stack</span>,
       <span class="mono">w375/w600/w640/w1440</span>), not component classes.
-      ⚠ <b>Measured statically, not driven</b> — no browser was pointed at the pack, so “the dropdown opens” is not yet a claim anyone has
-      watched. And as with risk 1, <b>v1.0.11 is PROPOSED</b>: until the bake, the mitigation above stands for the zip.</p></div>
+      <b>RELEASED 2026-09-11</b> (s268-D1) and now <b>driven</b>: cold run 7 clicked both triggers on the released zip’s canon — each returns
+      <span class="mono">aria-expanded=true</span> with the menu in the box tree, <b>no pointer-intercept timeout</b>, 0 console errors.
+      The geometry is the real evidence: the two triggers go from 1144px-wide stacked blocks to <b>95px and 119px side by side</b>, with
+      <span class="mono">#ftbStatus</span> 122px and clear of both.
+      ⚠ <b>Two honest caveats.</b> The 30s timeout did <i>not</i> reproduce in the v1.0.9 control either, so risk 2 is retired on the measured
+      cause, not on the click. And the menu that opens paints nothing — it computes <span class="mono">opacity:0</span> because that arm page’s
+      script sets <span class="mono">aria-expanded</span> but not <span class="mono">data-open</span>, which the pack’s own Dropdown snippet
+      does set. <b>So: still do not click a dropdown in the demo unless the page you are showing sets <span class="mono">data-open</span>.</b>
+      <a href="_subreports/2026-09-11-268-cold-run-7.md">cold run 7 →</a></p></div>
 
     <div class="risk"><p class="n">Risk 3 · the KG explorer</p>
       <p><b>“3D is broken when we dig deeper”</b> — Dave’s report at the close of #266. A headless probe (search → follow → Depth 2 → follow)
@@ -463,7 +474,7 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
       <p><b>Fixed in the released zip, but only from v1.0.10 on.</b> <span class="mono">gen_provenance_receipt.py</span> was in the repo tree and in
       none of v1.0.7 / v1.0.8 / v1.0.9, so <span class="mono">_validate_receipt.py</span> could only answer
       <span class="mono">FAIL:NO-RECEIPT</span>. <b>v1.0.10 (released 2026-09-10, <span class="mono">de8ed57</span>) ships it</b>, and so does the
-      v1.0.11 cut. If an older zip is on the machine, the old answer is what you will get — check which one you are opening.</p>
+      <b>released v1.0.11</b> (2026-09-11, s268-D1). If an older zip is on the machine, the old answer is what you will get — check which one you are opening.</p>
       <p>Mitigation: do not run a gate live. If he asks to see one refuse, show a recorded refusal instead — the tenth release gate (#263)
       refusing over stale receipts is the better story anyway.</p></div>
 
@@ -507,6 +518,13 @@ footer{padding:4rem 0 6rem;border-top:1px solid var(--rule);font-size:14px;color
   <b>Mechanics pass at #268, 2026-09-10</b> (<span class="mono">202fa30</span>): ruling count 441→445, KG explorer v1.9→v1.10 and its
   node/edge figures re-taken, release count nine→ten, session/commit counts re-taken, one decaying relative date fixed, and the
   N-weeks evidence page linked. <b>No wording, no risk and no claim was changed</b> — the content questions are listed back to Dave, unruled.<br>
+  <b>Release pass at #268, 2026-09-11</b>: v1.0.11 RATIFIED on Dave’s “check and ratify” (s268-D1) and RELEASED —
+  <span class="mono">Apollo-Spider-v1.0.11.zip</span>, sha256 <span class="mono">97fc82d8…</span>, 21,201,555 B, byte-identical to the
+  dry bake. Risks 1 and 2 re-stated from PROPOSED to RELEASED and <b>driven</b> by
+  <a href="_subreports/2026-09-11-268-cold-run-7.md">cold run 7</a>; ruling count 445→446; release count ten→eleven.
+  ⚠ Risk 2 keeps a live caveat and a new one (<span class="mono">opacity:0</span> menus on pages that omit
+  <span class="mono">data-open</span>) — read it before the room. ⛔ The KG explorer was <b>not</b> regenerated: the release runbook does
+  not make that part of a release, and its stamp (<span class="mono">v1.10 · 61587a5</span>) is now behind HEAD and predates s268-D1.<br>
   Sources: <span class="mono">notes/_DEMO-PREP-david-rice-hsbc.html</span> ·
   <span class="mono">notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html</span> ·
   <span class="mono">_DECISION-HISTORY/2026-09-10-266-kg-explorer-demo-pivot.md</span> ·
