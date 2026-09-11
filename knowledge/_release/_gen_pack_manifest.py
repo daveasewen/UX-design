@@ -149,6 +149,17 @@ VERSION = "v1.0.13"                    # Spider's own lineage starts here; v1/v2
 #      headers as repo blobs that no longer match what shipped — release gates 4 and 5 red on a
 #      released zip. Synced at source in `4d60ad6`, after the pin, which is why they are being
 #      re-cut rather than patched: a recorded zip is never re-baked at its own version.
+#      ⛔ s268-D4 (2026-09-11) NARROWS THAT LINE, AND ONLY THAT LINE. Dave: "lets apply this
+#      logic from now on" — A RELEASE NO ONE OUTSIDE THE REPO HAS RECEIVED MAY BE RE-CUT AT THE
+#      SAME VERSION. "Received" means handed to someone outside: the designers, a demo audience.
+#      The authority is `knowledge/_received.json` and never memory — a version in that register
+#      is RECEIVED and still BUMPS (s257-D2/D3 unchanged, and `_gate_frozen_release.py` still
+#      refuses RE-RECORDED WITHOUT A VERSION BUMP for it); a version absent from it is
+#      unreceived and may reuse its own number. The permission is to reuse the NUMBER, never to
+#      move a zip in silence: THE DIST RECORD AND THE CHANGELOG MUST BOTH SAY "re-cut" AND CARRY
+#      BOTH SHAS — the superseded one and the new one. No gate can measure that sentence; it is
+#      yours to write. Standing facts at inscription: v1.0.6 was the last pack the designers
+#      received, v1.0.13 is the next designer pack, and 7-12 are internal history.
 #      ⛔ THE FOUR ARE: apollo-spider/FIRST-SESSION.md · apollo-spider/gumdrop/_state.json ·
 #      gumdrop/runbooks/_RUNBOOK-capture-ritual.md · gumdrop/runbooks/_RUNBOOK-context-gauge.md,
 #      plus VERSION and MEMENTO_CUT_VERSION here. Sweep all six or `--check` will say so.
@@ -913,8 +924,12 @@ RATIFY_IDS = {
                             # 193c56772bfe — the chart engine + the driven-receipt evidence. Keyed
                             # at the bake, the #257 shape: key → regenerate the manifest RATIFIED
                             # at the SAME cut commit → --release → move the frozen literal and
-                            # --seed. ⛔ Never a same-version re-bake: #257 Finding 2 is the whole
-                            # reason v1.0.7 exists at all.
+                            # --seed. ⛔ Never a same-version re-bake OF A RECEIVED RELEASE: #257
+                            # Finding 2 is the whole reason v1.0.7 exists at all, and v1.0.6 had
+                            # gone to the designers. s268-D4 narrows this to the received case —
+                            # an UNRECEIVED version may be re-cut at its own number, declared as
+                            # a "re-cut" with both shas; `knowledge/_received.json` is what
+                            # answers received-or-not.
     # ⛔ v1.0.9 (#262) HAD NO ROW until Dave's ratifying word landed later the same session. The
     # cut was scoped by s261-D1, which is Dave asking for dashboard components, nav and footer —
     # an AUTHORISATION naming what the release carries, never the RATIFYING word (s223-D3's whole

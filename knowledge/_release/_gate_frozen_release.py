@@ -84,6 +84,41 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_ROOT = os.path.dirname(os.path.dirname(HERE))
 LEDGER_REL = "knowledge/_release/_frozen-releases.json"
 
+# THE RECEIVED REGISTER — s268-D4 (Dave, chat, 2026-09-11: "lets apply this logic from now on").
+# A version listed in `_received.json` has been HANDED TO SOMEONE OUTSIDE THE REPO (the designers,
+# a demo audience) and is frozen the old way: it never moves at its own number, and the laundering
+# arm below refuses a same-version content move for it. A version ABSENT from the register is
+# UNRECEIVED — nobody outside holds it — so re-cutting it at its own number edits nothing anyone
+# has, and s268-D4 permits it. The permission is to reuse the NUMBER, never to move a zip in
+# silence: the dist record and the changelog must both say "re-cut" and carry BOTH shas, which is
+# a discipline this gate cannot measure and the runbook therefore states.
+# ⛔ A MISSING REGISTER IS NOT A LICENCE. If `_received.json` is absent or unreadable the arm
+# behaves EXACTLY as it did before s268-D4 — every same-version move is laundering — because a
+# register that cannot be read cannot testify that nobody received the version
+# [[refusal-names-the-first-obstacle]].
+RECEIVED_REL = "knowledge/_received.json"
+
+
+def received_versions(root):
+    """The versions recorded as handed outside the repo, or None when there is no register.
+
+    None is NOT the empty set. An empty register says "we checked, nobody has received
+    anything"; None says "nothing can be asked", and the caller must then refuse every
+    same-version move exactly as it did before s268-D4.
+    """
+    p = os.path.join(root, RECEIVED_REL)
+    if not os.path.exists(p):
+        return None
+    try:
+        with open(p, encoding="utf-8") as f:
+            reg = json.load(f)
+    except (ValueError, OSError):
+        return None
+    got = reg.get("received")
+    if not isinstance(got, dict):
+        return None
+    return set(got)
+
 # The surfaces, and the ONE place they are declared. A release's surface is a set of path
 # prefixes, because "the release" is not always a whole directory: Spider's frozen surface is the
 # BAKED ZIP, not the build script and not the skills — those are the machinery that makes the
@@ -312,6 +347,7 @@ def arm_laundering(root, rev, led):
         return ["the ledger at %s is not valid JSON (%s) — a corrupt baseline cannot certify "
                 "anything" % (parent[:12], e.__class__.__name__)], None
     was = {r["id"]: r for r in prev.get("releases", [])}
+    received = received_versions(root)
     fails = []
     claimed_old_ids = set()
     for row in led["releases"]:
@@ -344,13 +380,29 @@ def arm_laundering(root, rev, led):
             # green direction (empty -> Apollo-Spider-v1.0.0.zip at v1.0.0).
             if old.get("content_sha256") == _EMPTY_SURFACE_SHA:
                 continue
+            # ⚠ THE UNRECEIVED CLAUSE (s268-D4). A version nobody outside the repo holds may be
+            # RE-CUT at its own number: there is no designer and no demo audience whose copy this
+            # would silently contradict, which is the whole harm the arm exists to prevent. The
+            # register is the only authority — memory is not (s268-D4's `watch`) — so a version
+            # PRESENT in `_received.json`, or a register that will not read, falls straight
+            # through to the refusal below. This narrows s257-D2/s257-D3, and narrows nothing
+            # else: s114-D4 stands whole for received releases.
+            if received is not None and row.get("version") not in received:
+                continue
             fails.append("RE-RECORDED WITHOUT A VERSION BUMP: %s still says version %s, but its "
                          "recording moved (%s -> %s). s114-D4: a release is explicit and "
                          "VERSIONED — re-seeding the ledger is not a substitute for cutting a "
-                         "new version."
+                         "new version. %s"
                          % (row["id"], row.get("version", "?"),
                             (old.get("content_sha256") or "?")[:12],
-                            (row.get("content_sha256") or "?")[:12]))
+                            (row.get("content_sha256") or "?")[:12],
+                            ("s268-D4's unreceived re-cut does not apply: %s records this "
+                             "version as RECEIVED, so someone outside the repo holds it."
+                             % RECEIVED_REL) if received is not None else
+                            ("s268-D4's unreceived re-cut could not be asked: there is no "
+                             "readable register at %s, and a register that cannot be read "
+                             "cannot testify that nobody received this version. Write it, or "
+                             "bump." % RECEIVED_REL)))
 
     # THE VANISHED-ROW ARM. A row recorded at the parent and gone now is a frozen release that
     # stopped being tracked — either dropped, or renamed without saying so. Either way the
@@ -427,6 +479,14 @@ def _fixture(tmp):
         f.write("v2 pack, shipped and frozen\n")
     with open(os.path.join(root, "designer-skills-v2", "SKILL.md"), "w") as f:
         f.write("# a skill\n")
+    # s268-D4: the fixture's v1/v2 are RECEIVED packs — designers hold them — so the laundering
+    # arm must still bite for them. The unreceived direction is driven separately, below, by
+    # taking v2 back out of this register and asserting the same commit goes green.
+    with open(os.path.join(root, RECEIVED_REL), "w") as f:
+        f.write(json.dumps({"received": {"v1": {"to": "designers", "date": "unknown"},
+                                         "v2": {"to": "designers", "date": "unknown"},
+                                         "v2.0.1": {"to": "designers", "date": "unknown"}}},
+                           indent=1) + "\n")
     git(root, "add", "-A")
     git(root, "commit", "-q", "-m", "v2")
     return root
@@ -487,6 +547,31 @@ def selftest():
         rc, out = _run(root, "--no-worktree")
         bite("laundering/bites", rc == 1 and "WITHOUT A VERSION BUMP" in out,
              "re-seeding a moved surface without bumping the version must stay RED: " + out[-400:])
+
+        # ---- s268-D4, BOTH DIRECTIONS ON THE SAME COMMIT. The tree does not move between these
+        # three runs; only the RECEIVED REGISTER does. That is what makes this a mutation test of
+        # the CLAUSE rather than of the arm [[mutation-tests-the-clause-not-the-feature]].
+        _reg = os.path.join(root, RECEIVED_REL)
+        _reg_text = open(_reg, encoding="utf-8").read()
+        with open(_reg, "w") as f:
+            f.write(json.dumps({"received": {"v1": {"to": "designers", "date": "unknown"}}},
+                               indent=1) + "\n")
+        rc, out = _run(root, "--no-worktree")
+        bite("unreceived/allows-the-re-cut", rc == 0 and "WITHOUT A VERSION BUMP" not in out,
+             "s268-D4: a version NOBODY OUTSIDE THE REPO HOLDS may be re-cut at its own number — "
+             "same commit, v2 out of the register, must be green: " + out[-400:])
+        os.remove(_reg)
+        rc, out = _run(root, "--no-worktree")
+        bite("unreceived/missing-register-is-not-a-licence",
+             rc == 1 and "WITHOUT A VERSION BUMP" in out,
+             "a register that is absent cannot testify that nobody received the version, so the "
+             "arm must behave exactly as it did before s268-D4: " + out[-400:])
+        with open(_reg, "w") as f:
+            f.write(_reg_text)
+        rc, out = _run(root, "--no-worktree")
+        bite("received/still-bites", rc == 1 and "WITHOUT A VERSION BUMP" in out,
+             "put v2 back in the register and the same commit must go red again — the clause is "
+             "keyed on the register and nothing else: " + out[-400:])
 
         # ---- the escape hatch WORKS: same move, version bumped, green
         led = read_ledger(root)

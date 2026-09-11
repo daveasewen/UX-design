@@ -6822,7 +6822,12 @@
     "chat #257 2026-09-08 - quoted in says",
     "chat #257 2026-09-08 - the frozen gate refusal quoted in-session: recorded 398c695a405d, measured 85f4f4db8043 at the same version"
    ],
-   "status": "ruled"
+   "status": "ruled",
+   "supersedesClause": {
+    "by": "s268-D4",
+    "date": "2026-09-11",
+    "scope": "THE UNRECEIVED CASE ONLY. s268-D4 lifts the same-version bump requirement for a release that has NOT been handed to anyone outside the repo: such a version may be RE-CUT at its own number, declared as a 're-cut' in the dist record and the changelog with BOTH shas. EVERYTHING ELSE IN THIS RULING STANDS - v1.0.6 had been received by the designers, so the v1.0.6 re-bake WAS laundering and the bump to v1.0.7 was right, and any future RECEIVED release still bumps. The register that answers received-or-not is knowledge/_received.json; a version absent from it is unreceived."
+   }
   },
   {
    "id": "s257-D3",
@@ -7663,6 +7668,27 @@
    "pre-bake drive of the dry zip 5d4df132b1f57f17 - 7/7 assertions, 4/4 themes, 0.00px clip"
   ],
   "status": "ruled"
+ },
+ {
+  "id": "s268-D4",
+  "ruled": "AN UNRECEIVED RELEASE MAY BE RE-CUT AT THE SAME VERSION. 'Received' means handed to anyone outside the repo - the designers, a demo audience. A re-cut of an UNRECEIVED version records 're-cut' in the dist record and in the changelog, with BOTH shas (the superseded one and the new one), so the move is declared rather than silent. A RECEIVED release still bumps: the s257 laundering rule is unchanged for anything that has left the repo, and _gate_frozen_release.py still refuses RE-RECORDED WITHOUT A VERSION BUMP for those. Designer-facing packs: v1.0.6 was the last received; v1.0.13 is the next designer pack; bumps 7-12 stay as internal history. The register of what has been received is knowledge/_received.json - a version absent from it is unreceived, and the laundering arm's same-version clause is lifted for exactly those.",
+  "date": "2026-09-11",
+  "by": "Dave",
+  "says": "Dave, chat, 2026-09-11: \"lets apply this logic from now on\" - applying, verbatim, the proposal put to him: \"A release no one outside the repo has received may be re-cut at the same version; the dist record and changelog say 're-cut' with both shas. Bumps 7-12 stay as history; 12 becomes the one that goes to the designers.\"",
+  "governs": [
+   "knowledge/_release/_gate_frozen_release.py",
+   "knowledge/_release/_gen_pack_manifest.py",
+   "knowledge/_received.json",
+   "apollo-spider/dist/"
+  ],
+  "evidence": [
+   "chat #268 2026-09-11 - his word \"lets apply this logic from now on\", quoted in full in `says`",
+   "s257-D2 / s257-D3 - the laundering bump this ruling narrows to the RECEIVED case",
+   "s114-D4 - versioned releases are frozen; unchanged for received releases"
+  ],
+  "status": "ruled",
+  "conductor_note": "THE 12 -> 13 SUBSTITUTION IS THE CONDUCTOR'S, NOT DAVE'S. His proposal named v1.0.12 as \"the one that goes to the designers\" because v1.0.13 did not exist when he said it. Between the proposal and this inscription v1.0.13 was cut and released (s268-D3, cold-run-9 14/14), so the designer pack is v1.0.13 and the internal-history range is 7-12, not 7-11. The LOGIC is his verbatim; only the version number moved, and it moved because the facts did. NOTE ALSO: this ruling was asked for as s268-D3, which was already taken by the v1.0.13 ratification; it is inscribed at the next free id.",
+  "watch": "A RE-CUT IS NOT A SILENT RE-BAKE. The permission is to reuse the NUMBER, never to move a zip quietly: dist record and changelog must both say 're-cut' and carry both shas. And the received/unreceived question is answered by knowledge/_received.json, never by memory - if a version is in that register the old rule stands and you BUMP."
  }
  ]
 }
