@@ -149,6 +149,14 @@ def check_edge_schema(edges, known_edge_types, edge_props, edge_required):
         if etype not in known_edge_types:
             reasons.append(f"unknown edge-type key '{etype}' (not in meta.schema.json edges.properties)")
             continue
+        # s268-D5 (Dave, #268: "mint all four") — a SCHEMA-DECLARED $-prefixed key inside
+        # `edges` is an ANNOTATION, not an edge list: it carries no refs, so it is resolved
+        # against no registry and is not required to be an array of {ref, $note}. The only
+        # instance today is `$contract`, the s263-D4 marker contract the drivesConsumer edges
+        # are drawn from. An UNdeclared $-key still fails above, which is what keeps this
+        # from becoming a hole: the schema, not the prefix, is the permission.
+        if etype.startswith("$"):
+            continue
         if not isinstance(arr, list):
             reasons.append(f"edge-type '{etype}' value is not an array")
             continue

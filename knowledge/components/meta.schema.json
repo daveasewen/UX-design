@@ -243,6 +243,10 @@
         },
         "$note": {
           "type": "string"
+        },
+        "when": {
+          "type": "string",
+          "description": "s268-D5 (Dave, #268: 'mint all four'). OPTIONAL, and used by exactly two edge types today: `delegatesTo` (the trigger that hands control to the referenced component) and `drivesConsumer` (the condition under which the referenced consumer is driven). Prose, one line, read by a human — no gate parses it. It sits on the shared edge definition because the two types otherwise use the standard {ref, $note} form exactly; it is not an invitation to condition other edge types."
         }
       }
     },
@@ -830,6 +834,31 @@
           "items": {
             "$ref": "#/definitions/edge"
           }
+        },
+        "composedOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "RULED s268-D5 (Dave, #268: 'mint all four'; lane E finding 1(a) / lane C RSQ 3). The BUILD list: the registered components this one is composed FROM rather than re-drawing. AUTHORED — there is no prose field gen_kg_edges.py can derive it from, so it is a DECLARED type under s268-D6 and is carried verbatim through a regeneration. $note names which part of the referenced component is used (filter-toolbar-bar: search-field 'the query field, boxed and underline variants'; dropdown, segmented-control, tags, links). It is the positive face of the Layer-2 cardinal rule: what is composed here is what must NOT be drawn here."
+        },
+        "delegatesTo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "RULED s268-D5. The HAND-OFF edge: this component owns a trigger, and the referenced component owns the thing the trigger opens. Optional `when` states the trigger (filter-toolbar-bar -> date-range-picker, when: 'the user picks `Custom range…` from the date-range trigger'), and the $note says why the boundary is where it is — 'copying part of it here would be the re-draw the Layer-2 cardinal rule forbids'. AUTHORED, hence DECLARED under s268-D6. Distinct from composedOf: nothing of the referenced component is present here, only the way in."
+        },
+        "drivesConsumer": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "RULED s268-D5. The RUNTIME WIRING edge of the s263-D4 marker contract (s258-D1: cross-component wiring is the author's to write): the referenced component is a CONSUMER this one drives at runtime by dispatching events and writing attributes — never by import, and the consumer imports nothing. Optional `when` carries the pairing condition as the corpus states it, 'shape=<table|list|tile|chart> AND the consumer declares data-apollo-filter-consumer'. AUTHORED, hence DECLARED under s268-D6. The contract these edges are drawn from is the sibling `$contract` annotation."
+        },
+        "$contract": {
+          "type": "object",
+          "description": "RULED s268-D5. A $-PREFIXED ANNOTATION, NOT AN EDGE LIST — the one key inside `edges` that is an object rather than an array, and it carries no refs, so nothing in it is resolved against the node registries (_validate_kg.py check (d) is taught exactly this distinction). It holds the machine-readable contract the drivesConsumer edges are drawn from: the s263-D4 data-apollo-filter-* markers ($shape 'An EVENT + ATTRIBUTE contract'), the events emitted, the attributes written onto the consumer, and the read-back leg the driver uses so it never assumes the answer to the question it just asked. Free-form under this description because the corpus holds one instance (filter-toolbar-bar) and a typed shape inferred from n=1 would be invention. AUTHORED, hence DECLARED under s268-D6."
         }
       }
     }
