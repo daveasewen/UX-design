@@ -110,7 +110,28 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.11"                    # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.12"                    # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ v1.0.12 (#268) — VERSION SWEEP COMPLETE (3 LITERALS MISSED IN 11); NAV LABEL DESCENDER CROP
+# FIXED (cold-run-7 finding 2). Dave at #268, asked "cut 12 or ship 11": "12".
+# Two things, both of them the v1.0.11 cut's own residue:
+#   1. THE SWEEP. v1.0.11's version sweep moved ONE of the four staged literals. The stage stamps
+#      the Gumdrop literal itself (build-designer-pack.sh's stamp block), so the bake was green
+#      and `--check` went RED afterwards, naming `gumdrop/_state.json` and the two gumdrop runbook
+#      headers as repo blobs that no longer match what shipped — release gates 4 and 5 red on a
+#      released zip. Synced at source in `4d60ad6`, after the pin, which is why they are being
+#      re-cut rather than patched: a recorded zip is never re-baked at its own version.
+#      ⛔ THE FOUR ARE: apollo-spider/FIRST-SESSION.md · apollo-spider/gumdrop/_state.json ·
+#      gumdrop/runbooks/_RUNBOOK-capture-ritual.md · gumdrop/runbooks/_RUNBOOK-context-gauge.md,
+#      plus VERSION and MEMENTO_CUT_VERSION here. Sweep all six or `--check` will say so.
+#   2. THE CROP. Cold run 7 drove the released v1.0.11 zip and read "Pavments"/"Liauiditv"/
+#      "Settinas" off the sidebar: `:where(.cn-sidebar-nav) .nv-label{text-box-edge:text text}`
+#      is (0,1,0) and the base leading-trim default at canon.css:960 was `:is(...)` at (0,1,2),
+#      so the ds-005 override was cascade-dead and overflow:hidden cut every descender. Fixed at
+#      cause — the element list is `:where(...)` now, the same repair #261 made to the three nav
+#      snippets — and driven both ways in chromium, 4 themes x 2 modes: shipped edge `text`,
+#      box 21px, 0/48 clipped; the pre-fix cascade re-injected, edge `cap alphabetic`, box 12px,
+#      48/48 clipped. Chart-engine receipts re-driven because the canon.css bytes moved.
+# Nothing else is claimed for this cut.
 # ⛔ v1.0.11 (#268) IS A ONE-FILE CUT: canon.css regen — nav + dropdown rules restored
 # (cold-run-6 risks 1/2). #267 lane N regenerated `knowledge/canon/canon.css` from the #261/#263
 # snippets (`e470ae0`) — the divergence C6 reported was a STALE GENERATED OUTPUT, an un-run
@@ -156,7 +177,7 @@ MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.11"
+MEMENTO_CUT_VERSION = "v1.0.12"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
