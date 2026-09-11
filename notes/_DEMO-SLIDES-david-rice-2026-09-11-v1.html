@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo — on-screen cards, David Rice — v1</title>
+<style>
+/* ============================================================
+   Apollo — on-screen cards for the David Rice demo, v1 (#268)
+   Built strictly from notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html.
+   Nothing invented. Every figure carries its source on the card.
+   Light theme only (the room). Two-red law s151-D1: #DA1A00 on white.
+   Type: descenders are NEVER trimmed here — no text-box trim, no
+   overflow:hidden on any label. Label line-height >= 1.35 (#261).
+   ============================================================ */
+:root{
+  --accent:#DA1A00;
+  --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --uf:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;
+  --W:1280px; --H:720px;
+  --pad:72px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--grey-8);
+  font-family:var(--uf);
+  color:var(--black);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+#stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+}
+#scaler{
+  width:var(--W); height:var(--H);
+  transform:scale(var(--k,1));
+  transform-origin:center center;
+  position:relative;
+  background:var(--white);
+}
+.slide{
+  position:absolute; inset:0;
+  width:var(--W); height:var(--H);
+  background:var(--white);
+  padding:var(--pad);
+  display:none;
+  flex-direction:column;
+}
+.slide.on{display:flex}
+
+/* ---- the label pattern (accent dash + caps eyebrow) ---- */
+.label{
+  font-size:12px; font-weight:500; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent);
+  line-height:1.4;                 /* descenders intact — never trimmed */
+  display:flex; align-items:center; gap:8px;
+  overflow:visible;
+}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+.label.plain{color:var(--grey-6)}
+.label.plain::before{background:var(--grey-3)}
+
+.plot{
+  margin-top:10px;
+  font-size:19px; font-weight:400; line-height:1.45; color:var(--grey-7);
+}
+.rule{height:1px;background:var(--grey-2);margin:24px 0}
+.spacer{flex:1 1 auto}
+
+.foot{
+  border-top:1px solid var(--grey-2);
+  padding-top:14px; margin-top:auto;
+  font-size:12px; line-height:1.55; color:var(--grey-6);
+  display:flex; gap:32px; flex-wrap:wrap;
+}
+.foot b{font-weight:500;color:var(--grey-8)}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:11px}
+
+/* ---- 1 · title ---- */
+.t-huge{font-size:120px;font-weight:300;line-height:1.0;letter-spacing:-0.01em}
+.t-big{font-size:84px;font-weight:300;line-height:1.06}
+.t-mid{font-size:57px;font-weight:300;line-height:1.1}
+.t-sub{font-size:19px;font-weight:400;line-height:1.7;color:var(--grey-7);max-width:760px}
+.t-body{font-size:16px;font-weight:400;line-height:1.75;color:var(--grey-8)}
+
+#s1 .grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;flex:1}
+#s1 .meta{font-size:14px;line-height:1.8;color:var(--grey-7)}
+#s1 .meta .k{color:var(--grey-6);letter-spacing:.08em;text-transform:uppercase;font-size:11px;line-height:1.5}
+
+/* ---- 2 · the strip ---- */
+#s2{padding:52px var(--pad) 44px}
+table.strip{width:100%;border-collapse:collapse;font-size:13px;line-height:1.4}
+table.strip th{
+  text-align:left;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--grey-6);padding:0 10px 7px 0;border-bottom:1px solid var(--grey-3);line-height:1.5;
+}
+table.strip td{padding:3.5px 10px 3.5px 0;border-bottom:1px solid var(--grey-2);vertical-align:baseline}
+table.strip tr.beat td{
+  background:var(--grey-1);font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  font-size:11px;color:var(--black);padding-top:5px;padding-bottom:5px;line-height:1.5;
+}
+table.strip tr.beat td.b-id{color:var(--accent)}
+table.strip td.num{font-variant-numeric:tabular-nums;color:var(--grey-6);width:38px}
+table.strip td.clk{font-variant-numeric:tabular-nums;color:var(--grey-7);width:110px}
+table.strip td.mm{font-variant-numeric:tabular-nums;color:var(--grey-7);width:62px}
+table.strip td.scr{color:var(--grey-6);width:330px}
+table.strip tr.sum td{border-bottom:none;padding-top:10px;font-weight:500}
+
+/* ---- 3 · metaphor title card ---- */
+#s3 .centre{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* ---- 4 · number card ---- */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;flex:1;align-items:center}
+.nums .cell{padding-right:40px;border-right:1px solid var(--grey-2)}
+.nums .cell:last-child{border-right:none;padding-right:0;padding-left:0}
+.nums .cell+.cell{padding-left:40px}
+.fig{font-size:104px;font-weight:200;line-height:1.0;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.fig.small{font-size:60px}
+.fig .q{color:var(--accent)}
+.nlab{margin-top:20px;font-size:14px;font-weight:500;line-height:1.5}
+.ndesc{margin-top:6px;font-size:13px;font-weight:400;line-height:1.6;color:var(--grey-7)}
+
+/* ---- 5 · before / after ---- */
+.score{display:grid;grid-template-columns:1fr auto 1fr;gap:48px;align-items:center;flex:1}
+.axes{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.axis{border-right:1px solid var(--grey-2);padding:0 16px}
+.axis:first-child{padding-left:0}
+.axis:last-child{border-right:none}
+.axis .v{font-size:80px;font-weight:200;line-height:1;font-variant-numeric:tabular-nums}
+.axis .v.was{color:var(--grey-6)}
+.axis .v.now{color:var(--black)}
+.axis .n{margin-top:14px;font-size:12px;font-weight:500;line-height:1.5;letter-spacing:.02em}
+.arrow{font-size:44px;font-weight:200;color:var(--accent);line-height:1}
+.stamp{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin-bottom:14px}
+
+/* ---- 6 · KPI ---- */
+table.kpi{width:100%;border-collapse:collapse;font-size:14px;line-height:1.5;margin-top:8px}
+table.kpi th{
+  text-align:left;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--grey-6);padding:0 16px 8px 0;border-bottom:1px solid var(--grey-3);line-height:1.5;
+}
+table.kpi td{padding:12px 16px 12px 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+table.kpi td.k{width:60px;color:var(--accent);font-weight:500;font-variant-numeric:tabular-nums}
+table.kpi td.nm{width:290px;font-weight:500}
+table.kpi td.bl{color:var(--grey-7);width:330px}
+table.kpi td.tg{color:var(--black)}
+
+/* ---- 7 / 8 · holding cards ---- */
+.hold{flex:1;display:flex;flex-direction:column;justify-content:center}
+.switch{
+  margin-top:40px;font-size:14px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);line-height:1.5;display:flex;align-items:center;gap:12px;
+}
+.switch::before{content:"";width:44px;height:1px;background:var(--accent)}
+
+/* ---- 9 · the ask ---- */
+.draft{
+  display:inline-block;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--white);background:var(--accent);padding:5px 10px;line-height:1.45;margin-bottom:28px;
+}
+.ask{font-size:40px;font-weight:300;line-height:1.35;max-width:1060px}
+.ask em{font-style:normal;font-weight:500}
+
+/* ---- 10 · closing ---- */
+#s10{justify-content:center}
+#s10 .count{margin-top:32px;font-size:16px;letter-spacing:.06em;color:var(--grey-6);line-height:1.6}
+
+/* ---- chrome ---- */
+#counter{
+  position:fixed;right:20px;bottom:16px;z-index:20;
+  font-family:var(--uf);font-size:12px;letter-spacing:.1em;color:#fff;opacity:.6;
+  font-variant-numeric:tabular-nums;line-height:1.5;
+}
+#help{
+  position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.88);color:#fff;
+  display:none;align-items:center;justify-content:center;
+}
+#help.on{display:flex}
+#help .box{width:520px}
+#help h2{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#F6604C;line-height:1.4;margin-bottom:24px}
+#help dl{display:grid;grid-template-columns:150px 1fr;gap:12px 24px;font-size:14px;line-height:1.6}
+#help dt{color:#fff;font-weight:500}
+#help dd{color:#B7B7B7}
+
+/* ---- print: one slide per landscape page ---- */
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html,body{overflow:visible;background:#fff;height:auto}
+  #stage{position:static;display:block}
+  #scaler{width:auto;height:auto;transform:none;background:none}
+  #counter,#help{display:none!important}
+  .slide{
+    position:relative;display:flex!important;inset:auto;
+    width:var(--W);height:var(--H);
+    transform:scale(0.865);transform-origin:top left;
+    break-after:page;page-break-after:always;
+  }
+  .slide:last-of-type{break-after:auto;page-break-after:auto}
+}
+</style>
+</head>
+<body>
+<div id="stage"><div id="scaler">
+
+<!-- ===== 1 · Title card (plot point 01) ===================== -->
+<section class="slide on" id="s1">
+  <p class="label">Plot point 01 · Why I am here, in one sentence</p>
+  <div class="grid">
+    <div>
+      <h1 class="t-huge">Apollo,</h1>
+      <h2 class="t-mid" style="margin-top:12px">to David Rice</h2>
+    </div>
+    <div>
+      <p class="t-sub">Chief AI Officer, HSBC. Fifteen to twenty minutes, five beats,
+        twelve plot points. One live build, one live graph, no deck.</p>
+      <div class="rule"></div>
+      <p class="meta"><span class="k">Presented by</span><br>Dave Ewen</p>
+      <p class="meta" style="margin-top:14px"><span class="k">Cards prepared</span><br>2026-09-11</p>
+    </div>
+  </div>
+  <div class="foot">
+    <span><b>Source</b> notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html — header</span>
+  </div>
+</section>
+
+<!-- ===== 2 · The strip (plot point 02) ====================== -->
+<section class="slide" id="s2">
+  <p class="label">Plot point 02</p>
+  <h2 class="plot" style="font-size:28px;color:var(--black);margin-top:8px;margin-bottom:18px">
+    What you will see in the next sixteen minutes</h2>
+  <table class="strip">
+    <thead><tr><th class="num">#</th><th class="mm">Mins</th><th class="clk">Clock</th>
+      <th>Plot point</th><th class="scr">On screen</th></tr></thead>
+    <tbody>
+      <tr class="beat"><td class="b-id">B1</td><td>2:00</td><td>0:00–2:00</td><td colspan="2">Intro</td></tr>
+      <tr><td class="num">01</td><td class="mm">1:00</td><td class="clk">0:00–1:00</td><td>Why I am here, in one sentence</td><td class="scr">Title card</td></tr>
+      <tr><td class="num">02</td><td class="mm">1:00</td><td class="clk">1:00–2:00</td><td>What you will see in the next sixteen minutes</td><td class="scr">The strip above</td></tr>
+
+      <tr class="beat"><td class="b-id">B2</td><td>4:00</td><td>2:00–6:00</td><td colspan="2">Goal · practical benefits · predicted KPIs</td></tr>
+      <tr><td class="num">03</td><td class="mm">1:30</td><td class="clk">2:00–3:30</td><td>The problem, in his metaphor</td><td class="scr">Title card — metaphor spoken, no diagram</td></tr>
+      <tr><td class="num">04</td><td class="mm">1:00</td><td class="clk">3:30–4:30</td><td>The claim: two measured gains, stacked — and the hypothesis the pilot tests</td><td class="scr">Number card — 15% · 47% · 6 mo → 6 wk?</td></tr>
+      <tr><td class="num">05</td><td class="mm">1:30</td><td class="clk">4:30–6:00</td><td>The only measured before-and-after we own</td><td class="scr">COLDRUN-258-2026-09-08-v5</td></tr>
+
+      <tr class="beat"><td class="b-id">B3</td><td>5:30</td><td>6:00–11:30</td><td colspan="2">Run the demo — the frozen prompt, cold</td></tr>
+      <tr><td class="num">06</td><td class="mm">0:30</td><td class="clk">6:00–6:30</td><td>The prompt goes in, unedited</td><td class="scr">VS Code, Apollo-Spider v1.0.13</td></tr>
+      <tr><td class="num">07</td><td class="mm">2:00</td><td class="clk">6:30–8:30</td><td>Dead air A — what inspired it</td><td class="scr">The build scrolling. Do not switch away.</td></tr>
+      <tr><td class="num">08</td><td class="mm">1:30</td><td class="clk">8:30–10:00</td><td>Dead air B — how it developed</td><td class="scr">Timeline card, if the build is still running</td></tr>
+      <tr><td class="num">09</td><td class="mm">1:30</td><td class="clk">10:00–11:30</td><td>The page lands. Drive it.</td><td class="scr">The generated dashboard.html, light theme</td></tr>
+
+      <tr class="beat"><td class="b-id">B4</td><td>4:30</td><td>11:30–16:00</td><td colspan="2">The system, simply</td></tr>
+      <tr><td class="num">10</td><td class="mm">1:30</td><td class="clk">11:30–13:00</td><td>Four moving parts, no black box</td><td class="scr">Four-part diagram</td></tr>
+      <tr><td class="num">11</td><td class="mm">3:00</td><td class="clk">13:00–16:00</td><td>The knowledge graph — dig, scrub, trace, and ask it why</td><td class="scr">notes/_KG-EXPLORER.html v1.10</td></tr>
+
+      <tr class="beat"><td class="b-id">B5</td><td>2:00</td><td>16:00–18:00</td><td colspan="2">Ambition · requirements · the ask</td></tr>
+      <tr><td class="num">12</td><td class="mm">2:00</td><td class="clk">16:00–18:00</td><td>Where it goes, what it needs, what I am asking for</td><td class="scr">The ask card, then silence</td></tr>
+
+      <tr class="sum"><td class="num"></td><td class="mm">18:00</td><td class="clk"></td><td colspan="2">Stated sum. Band 15–20. Two minutes of deliberate slack.</td></tr>
+    </tbody>
+  </table>
+  <div class="foot">
+    <span><b>Source</b> notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html — “The strip — one screen”</span>
+  </div>
+</section>
+
+<!-- ===== 3 · The metaphor title card (plot point 03) ======== -->
+<section class="slide" id="s3">
+  <p class="label">Plot point 03 · The problem, in his metaphor</p>
+  <div class="centre">
+    <h2 class="t-big">The parts bin</h2>
+    <p class="t-sub" style="margin-top:36px;max-width:840px">
+      An assembly line is only as fast as its parts bin — and our designers have been
+      hand-machining the gearbox every time a car comes down the line.</p>
+  </div>
+  <div class="foot">
+    <span><b>On screen</b> Title card only. The metaphor is spoken — no diagram.</span>
+    <span><b>Source</b> Run of show, plot point 03 (filled #268, Dave’s words)</span>
+  </div>
+</section>
+
+<!-- ===== 4 · Number card (plot point 04) ==================== -->
+<section class="slide" id="s4">
+  <p class="label">Plot point 04 · The claim: two measured gains, stacked — and the hypothesis the pilot tests</p>
+  <div class="nums">
+    <div class="cell">
+      <div class="fig">15%</div>
+      <p class="nlab">HSBC’s own</p>
+      <p class="ndesc">Published coding-time efficiency,<br>20,000+ developers.</p>
+    </div>
+    <div class="cell">
+      <div class="fig">47%</div>
+      <p class="nlab">IBM Carbon, no AI</p>
+      <p class="ndesc">Same form, 4.2 h → 2.0 h with a<br>design system. The library alone.</p>
+    </div>
+    <div class="cell">
+      <div class="fig small">6 months<br>→ 6 weeks<span class="q">?</span></div>
+      <p class="nlab">Hypothesis, measured by the pilot</p>
+      <p class="ndesc">Not a result. “How do you know six<br>weeks?” — “I don’t. That is K1.”</p>
+    </div>
+  </div>
+  <div class="foot">
+    <span><b>15%</b> hsbc.com/who-we-are/hsbc-and-digital/hsbc-and-ai</span>
+    <span><b>47%</b> sparkbox.com — Carbon design-system ROI</span>
+    <span><b>Sources</b> notes/_DEMO-EVIDENCE-external-kpis-2026-09-11-v1.html</span>
+  </div>
+</section>
+
+<!-- ===== 5 · Before and after (plot point 05) =============== -->
+<section class="slide" id="s5">
+  <p class="label">Plot point 05 · The only measured before-and-after we own</p>
+  <div class="score">
+    <div>
+      <p class="stamp">Before — 8 September, first run</p>
+      <div class="axes">
+        <div class="axis"><div class="v was">2</div><p class="n">Visually rich</p></div>
+        <div class="axis"><div class="v was">2</div><p class="n">Full</p></div>
+        <div class="axis"><div class="v was">0</div><p class="n">Persistent</p></div>
+        <div class="axis"><div class="v was">2</div><p class="n">Interactive</p></div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div>
+      <p class="stamp">After — same day, fifth blind run</p>
+      <div class="axes">
+        <div class="axis"><div class="v now">3</div><p class="n">Visually rich</p></div>
+        <div class="axis"><div class="v now">3</div><p class="n">Full</p></div>
+        <div class="axis"><div class="v now">3</div><p class="n">Persistent</p></div>
+        <div class="axis"><div class="v now">2</div><p class="n">Interactive</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="t-body" style="margin-bottom:22px;max-width:1000px">
+    Four axes — visually rich, full, persistent, interactive — nought to three each.
+    Five blind runs in one day, each one finding a real defect. Self-scored, and every point
+    verified by driving the page in a browser, not by reading the source.</p>
+  <div class="foot">
+    <span><b>Card</b> reviews/COLDRUN-258-2026-09-08-v5.html — 2026-09-08</span>
+    <span><b>Arm</b> outputs/coldrun-258-v5/arm-A-blind/dashboard.html · 29 recorded drive steps · 0 page errors</span>
+  </div>
+</section>
+
+<!-- ===== 6 · KPI card (plot point 05, KPIs) ================= -->
+<section class="slide" id="s6">
+  <p class="label">Plot point 05 · Predicted KPIs — five, each with an external baseline</p>
+  <table class="kpi">
+    <thead><tr><th class="k"></th><th class="nm">Name</th><th class="bl">Baseline</th><th class="tg">Target on the first live project</th></tr></thead>
+    <tbody>
+      <tr><td class="k">K1</td><td class="nm">Time to first gated screen</td><td class="bl">Sparkbox 4.2 h → 2.0 h</td><td class="tg">Same-day for a multi-screen flow — the only KPI the demo produces live</td></tr>
+      <tr><td class="k">K2</td><td class="nm">Library reuse rate</td><td class="bl">GitClear: AI duplication up 8×</td><td class="tg">≥80% of rendered UI from gated components</td></tr>
+      <tr><td class="k">K3</td><td class="nm">Change-failure rate</td><td class="bl">DORA 2025: AI adoption correlates with worse stability</td><td class="tg">No worse than the team’s pre-AI rate — explicitly not an improvement</td></tr>
+      <tr><td class="k">K4</td><td class="nm">Research-analysis cycle time</td><td class="bl">JMIR 2024: 492 → 15 min, 71–90% consistency</td><td class="tg">≥70% on the analysis step; fieldwork hours unchanged and reported separately</td></tr>
+      <tr><td class="k">K5</td><td class="nm">Coding-time efficiency</td><td class="bl">HSBC’s own 15%</td><td class="tg">Match it on the front-end build. Promise no more.</td></tr>
+    </tbody>
+  </table>
+  <div class="foot">
+    <span><b>Excluded deliberately</b> designer-hours saved · headcount · any “×” multiplier</span>
+    <span><b>Full table with URLs</b> notes/_DEMO-EVIDENCE-external-kpis-2026-09-11-v1.html</span>
+  </div>
+</section>
+
+<!-- ===== 7 · Beat 3 holding card =========================== -->
+<section class="slide" id="s7">
+  <p class="label">Beat 3 · Run the demo</p>
+  <div class="hold">
+    <h2 class="t-big">Live build</h2>
+    <p class="t-sub" style="margin-top:28px;max-width:820px">
+      v1.0.13, the frozen prompt, cold. One prompt, one compliant dashboard,
+      nothing edited.</p>
+    <p class="switch">Switch to VS Code</p>
+  </div>
+  <div class="foot">
+    <span><b>On screen</b> VS Code, Apollo-Spider v1.0.13 installed — then the generated dashboard.html, light theme</span>
+  </div>
+</section>
+
+<!-- ===== 8 · Beat 4 holding card =========================== -->
+<section class="slide" id="s8">
+  <p class="label">Beat 4 · The system, simply</p>
+  <div class="hold">
+    <h2 class="t-big">Four moving parts.<br>No black box.</h2>
+    <p class="t-sub" style="margin-top:28px;max-width:820px">
+      Live graph — 2,837 nodes · 4,902 edges.</p>
+    <p class="switch">Switch to the KG explorer</p>
+  </div>
+  <div class="foot">
+    <span><b>On screen</b> notes/_KG-EXPLORER.html v1.10, opened from disk</span>
+    <span><b>Figures</b> printed by knowledge/_build_kg_explorer.py, re-run 2026-09-11 · 51 snapshots, 2026-05-31 → 2026-09-09</span>
+  </div>
+</section>
+
+<!-- ===== 9 · The ask (plot point 12) ======================== -->
+<section class="slide" id="s9">
+  <p class="label">Plot point 12 · Where it goes, what it needs, what I am asking for</p>
+  <div class="hold">
+    <span class="draft">Draft — the ask slot is Dave’s and is not ruled</span>
+    <p class="ask">
+      One live project, sponsored — <em>six weeks on the clock</em>, K1–K5 measured
+      against your own fifteen percent. If it doesn’t beat your number, you’ve lost six
+      weeks. If it does, you own the stack.</p>
+  </div>
+  <div class="foot">
+    <span><b>Status</b> Run of show carries ■ DAVE’S for the ask — amount and shape undecided. This wording is a conductor draft, not a ruling.</span>
+  </div>
+</section>
+
+<!-- ===== 10 · Closing ====================================== -->
+<section class="slide" id="s10">
+  <h2 class="t-huge">Apollo</h2>
+  <p class="count">2,837 nodes · 4,902 edges</p>
+</section>
+
+</div></div>
+
+<div id="counter">01 / 10</div>
+
+<div id="help"><div class="box">
+  <h2>Keyboard</h2>
+  <dl>
+    <dt>→ · ↓ · Space</dt><dd>Next card</dd>
+    <dt>← · ↑</dt><dd>Previous card</dd>
+    <dt>Click</dt><dd>Next card</dd>
+    <dt>Home · End</dt><dd>First · last card</dd>
+    <dt>1 – 9, 0</dt><dd>Jump to that card (0 = card 10)</dd>
+    <dt>?</dt><dd>Show / hide this list</dd>
+    <dt>Esc</dt><dd>Close this list</dd>
+    <dt>Cmd / Ctrl + P</dt><dd>Print — one card per landscape page</dd>
+  </dl>
+</div></div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0, counter = document.getElementById('counter'), help = document.getElementById('help');
+  var pad = function(n){ return (n<10?'0':'')+n; };
+
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach(function(s,x){ s.classList.toggle('on', x===i); });
+    counter.textContent = pad(i+1)+' / '+pad(slides.length);
+    if (location.hash !== '#'+(i+1)) history.replaceState(null,'','#'+(i+1));
+  }
+  function fit(){
+    var sc = document.getElementById('scaler');
+    var k = Math.min(window.innerWidth/1280, window.innerHeight/720);
+    sc.style.setProperty('--k', k);
+  }
+  window.addEventListener('resize', fit);
+  window.fitDeck = fit;
+
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === '?' || (k === '/' && e.shiftKey)) { help.classList.toggle('on'); e.preventDefault(); return; }
+    if (k === 'Escape') { help.classList.remove('on'); return; }
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown') { show(i+1); e.preventDefault(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { show(i-1); e.preventDefault(); }
+    else if (k === 'Home') { show(0); e.preventDefault(); }
+    else if (k === 'End') { show(slides.length-1); e.preventDefault(); }
+    else if (/^[0-9]$/.test(k)) { show(k === '0' ? 9 : parseInt(k,10)-1); e.preventDefault(); }
+  });
+  document.getElementById('stage').addEventListener('click', function(){
+    if (!help.classList.contains('on')) show(i+1);
+  });
+  help.addEventListener('click', function(e){ e.stopPropagation(); help.classList.remove('on'); });
+
+  var start = parseInt((location.hash||'').replace('#',''),10);
+  fit(); show(isNaN(start) ? 0 : start-1);
+  window.deckGo = show;
+})();
+</script>
+</body>
+</html>
