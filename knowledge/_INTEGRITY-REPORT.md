@@ -2,9 +2,9 @@
 
 > CI gate over the authored canon. **ERROR** = the graph is inconsistent (fix before relying on it); **WARNING** = best-effort / probably fine but worth a look. Regenerate: `python3 knowledge/_build_integrity.py` (exits non-zero on any ERROR).
 
-**Result:** FAIL ❌ — 14 errors, 25 warnings. Schema: 133/137 metas valid. Token store: 1035 leaf tokens, groups 42.
+**Result:** FAIL ❌ — 13 errors, 25 warnings. Schema: 133/137 metas valid. Token store: 1035 leaf tokens, groups 42.
 
-## Errors (14)
+## Errors (13)
 
 **Data grid**
 - schema: relationships: Additional properties are not allowed ('composes', '$composes-verbatim' were unexpected)
@@ -17,7 +17,6 @@
 - schema: with/5: 'skeleton-loader' is not of type 'object'
 
 **Filter-toolbar-bar**
-- schema: edges: Additional properties are not allowed ('$contract', 'drivesConsumer', 'delegatesTo', 'composedOf' were unexpected)
 - schema: stateModel: {'attribute': 'data-ftb-state', 'states': [{'name': 'no-filters', 'shows': 'the total count and a `No filters applied` h
 
 **KPI tile**

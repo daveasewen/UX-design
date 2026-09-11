@@ -101,26 +101,60 @@
   },
   "edges": {
     "renderedBy": [
-      { "ref": "snippet:Filter-toolbar-bar.reference.html" }
+      {
+        "ref": "snippet:Filter-toolbar-bar.reference.html"
+      }
     ],
     "composedOf": [
-      { "ref": "component:search-field", "$note": "the query field, boxed and underline variants" },
-      { "ref": "component:dropdown", "$note": "add-filter, date-range and export triggers + listboxes" },
-      { "ref": "component:segmented-control", "$note": "view switch and density switch" },
-      { "ref": "component:tags", "$note": "applied-filter chips, the +N overflow disclosure, and the dismiss mechanics" },
-      { "ref": "component:links", "$note": "clear-all and retry, selector widened to admit a <button>" }
+      {
+        "ref": "component:search-field",
+        "$note": "the query field, boxed and underline variants"
+      },
+      {
+        "ref": "component:dropdown",
+        "$note": "add-filter, date-range and export triggers + listboxes"
+      },
+      {
+        "ref": "component:segmented-control",
+        "$note": "view switch and density switch"
+      },
+      {
+        "ref": "component:tags",
+        "$note": "applied-filter chips, the +N overflow disclosure, and the dismiss mechanics"
+      },
+      {
+        "ref": "component:links",
+        "$note": "clear-all and retry, selector widened to admit a <button>"
+      }
     ],
     "delegatesTo": [
-      { "ref": "component:date-range-picker",
+      {
+        "ref": "component:date-range-picker",
         "when": "the user picks `Custom range…` from the date-range trigger",
-        "$note": "The bar owns the TRIGGER and the presets. The calendar body belongs to date-range-picker; copying part of it here would be the re-draw the Layer-2 cardinal rule forbids." }
+        "$note": "The bar owns the TRIGGER and the presets. The calendar body belongs to date-range-picker; copying part of it here would be the re-draw the Layer-2 cardinal rule forbids."
+      }
     ],
     "drivesConsumer": [
-      { "ref": "component:data-grid", "when": "shape=table AND the consumer declares data-apollo-filter-consumer" },
-      { "ref": "component:table", "when": "shape=table AND the consumer declares data-apollo-filter-consumer" },
-      { "ref": "component:list-items", "when": "shape=list AND the consumer declares data-apollo-filter-consumer" },
-      { "ref": "component:kpi-tile", "when": "shape=tile AND the consumer declares data-apollo-filter-consumer" },
-      { "ref": "component:chart-bar", "when": "shape=chart AND the consumer declares data-apollo-filter-consumer" }
+      {
+        "ref": "component:data-grid",
+        "when": "shape=table AND the consumer declares data-apollo-filter-consumer"
+      },
+      {
+        "ref": "component:table",
+        "when": "shape=table AND the consumer declares data-apollo-filter-consumer"
+      },
+      {
+        "ref": "component:list-items",
+        "when": "shape=list AND the consumer declares data-apollo-filter-consumer"
+      },
+      {
+        "ref": "component:kpi-tile",
+        "when": "shape=tile AND the consumer declares data-apollo-filter-consumer"
+      },
+      {
+        "ref": "component:chart-bar",
+        "when": "shape=chart AND the consumer declares data-apollo-filter-consumer"
+      }
     ],
     "$contract": {
       "$ruling": "s258-D1 — cross-component wiring (filter->grid/KPI/chart) is the author's to write. s258-D2 — every interactive element is assumed to work, on rich seeded data.",
@@ -131,10 +165,21 @@
         "data-apollo-filter-consumer": "on the consumer root — marks anything that renders a result set."
       },
       "emits": [
-        { "event": "apollo:filter-change", "bubbles": true,
-          "detail": "{ query: string, filters: [{key, facet, value, label}], range: {preset, days, label}, view: string, density: string }" },
-        { "event": "apollo:filter-clear", "bubbles": true, "detail": "{}" },
-        { "event": "apollo:filter-export", "bubbles": true, "detail": "{ format: 'csv'|'xlsx'|'pdf' }" }
+        {
+          "event": "apollo:filter-change",
+          "bubbles": true,
+          "detail": "{ query: string, filters: [{key, facet, value, label}], range: {preset, days, label}, view: string, density: string }"
+        },
+        {
+          "event": "apollo:filter-clear",
+          "bubbles": true,
+          "detail": "{}"
+        },
+        {
+          "event": "apollo:filter-export",
+          "bubbles": true,
+          "detail": "{ format: 'csv'|'xlsx'|'pdf' }"
+        }
       ],
       "writes": {
         "data-apollo-view": "written onto the consumer — so a CSS-only consumer can respond with no script at all.",
@@ -148,15 +193,33 @@
       }
     },
     "usedInContext": [
-      { "ref": "context:page-above-a-table-or-list-items-region", "$note": "Page (above a Table, Data-grid, List-items or chart region)" },
-      { "ref": "context:dashboard-template", "$note": "Dashboard template" },
-      { "ref": "context:list-index-template", "$note": "List/index template" },
-      { "ref": "context:bento-tile", "$note": "Bento tile (s248-D3: every component in a tile must be responsive — this one is container-queried throughout)" }
+      {
+        "ref": "context:page-above-a-table-data-grid-list-items-or-chart-region",
+        "$note": "Page (above a Table, Data-grid, List-items or chart region)"
+      },
+      {
+        "ref": "context:dashboard-template",
+        "$note": "Dashboard template"
+      },
+      {
+        "ref": "context:list-index-template",
+        "$note": "List/index template"
+      },
+      {
+        "ref": "context:bento-tile",
+        "$note": "Bento tile (s248-D3: every component in a tile must be responsive — this one is container-queried throughout)"
+      }
     ],
     "commonPattern": [
-      { "ref": "pattern:search-filter-view-switch-toolbar" },
-      { "ref": "pattern:compact-sort-bar-above-a-table" },
-      { "ref": "pattern:filter-bar-driving-a-data-grid" }
+      {
+        "ref": "pattern:search-filter-view-switch-toolbar"
+      },
+      {
+        "ref": "pattern:compact-sort-bar-above-a-table"
+      },
+      {
+        "ref": "pattern:filter-bar-driving-a-data-grid"
+      }
     ]
   }
 }
