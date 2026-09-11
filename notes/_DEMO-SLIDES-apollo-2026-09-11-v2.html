@@ -6,7 +6,23 @@
 <title>Apollo — on-screen cards — v2</title>
 <style>
 /* ============================================================
-   Apollo — on-screen cards, v2 (#268). Audience-agnostic.
+   Apollo — on-screen cards, v2.1 (#268). Audience-agnostic.
+
+   v2.1, on Dave's brief for the title card — "as if we are at the centre
+   of a galaxy … slowly rotating … a bit of fun … forget the technical
+   detail":
+     · the camera sits at the graph's CENTROID and the x-axis islands are
+       folded, so the field surrounds us and wheels around (90 s, as before);
+     · the procedural band reads as a band — denser, with a luminous haze
+       composited under it and a few flared stars;
+     · a soft radial shade sits between the field and the type, so the
+       wordmark is never crossed by a node;
+     · the technical caption is gone. Title card = eyebrow, "Apollo",
+       one subtitle line, nothing else;
+     · every footer is one short plain-English source line — no file
+       paths, no script names, no commit hashes. The evidence pages keep
+       the detail; the cards do not.
+
    Structure from v1 (run of show). Voice, the four-part diagram
    and the closing line taken from reviews/PRESENTATION-2026-07-14-
    apollo-sponsor.html. No addressee named anywhere.
@@ -104,11 +120,23 @@ body{
   display:block;
 }
 #skyPrint{display:none}
+/* The text shade. Drawn BETWEEN the field and the type, so the wordmark
+   is never crossed by a node. Radial, never a box: an opaque core over the
+   wordmark that falls away softly, a second soft pool under the eyebrow,
+   and a bottom ramp to seat the subtitle. */
 #s1 .vignette{
   position:absolute; inset:0;
   background:
-    radial-gradient(115% 90% at 24% 64%, rgba(12,12,12,.82) 0%, rgba(12,12,12,.44) 36%, rgba(12,12,12,0) 70%),
-    linear-gradient(to top, rgba(12,12,12,.80) 0%, rgba(12,12,12,0) 46%);
+    /* the opaque core must clear the ASCENDERS as well as the baseline:
+       the glyph box is x 72–567, y 389–599 in card px, and the stop at
+       54% of a 48%/40% ellipse at 26%/69% covers x 1–665, y 341–653. */
+    radial-gradient(48% 40% at 26% 69%,
+      rgba(12,12,12,1) 0%, rgba(12,12,12,1) 54%,
+      rgba(12,12,12,.76) 72%, rgba(12,12,12,.32) 88%, rgba(12,12,12,0) 100%),
+    radial-gradient(30% 26% at 20% 13%,
+      rgba(12,12,12,.97) 0%, rgba(12,12,12,.66) 46%, rgba(12,12,12,0) 100%),
+    linear-gradient(to top,
+      rgba(12,12,12,.90) 0%, rgba(12,12,12,.38) 24%, rgba(12,12,12,0) 50%);
   pointer-events:none;
 }
 #s1 .type{
@@ -128,11 +156,8 @@ body{
   font-size:22px; font-weight:300; line-height:1.55; color:var(--kg-ink-2);
   max-width:820px;
 }
-#s1 .credit{
-  margin-top:26px;
-  font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
-  font-size:11px; letter-spacing:.08em; line-height:1.6; color:var(--kg-ink-3);
-}
+/* No caption on the title card. Eyebrow, wordmark, one subtitle line — nothing
+   else. The technical detail lives on the evidence pages, not here. */
 
 /* ---- 2 · the strip ---- */
 #s2{padding:52px var(--pad) 44px}
@@ -300,7 +325,6 @@ table.kpi td.tg{color:var(--black)}
     <p class="label">Apollo · design-system engine</p>
     <h1 class="wordmark">Apollo</h1>
     <p class="sub">A governed engine for designing with AI — on brand, accessible, at speed.</p>
-    <p class="credit">The bright field is the Apollo knowledge graph — 2,837 nodes in their real 3D positions, seen from the inside. The dust behind it is procedural.</p>
   </div>
 </section>
 
@@ -339,7 +363,7 @@ table.kpi td.tg{color:var(--black)}
     </tbody>
   </table>
   <div class="foot">
-    <span><b>Source</b> Run of show v1, 2026-09-10 — “The strip — one screen”</span>
+    <span>Source: the run of show, 10 September 2026.</span>
   </div>
 </section>
 
@@ -353,8 +377,7 @@ table.kpi td.tg{color:var(--black)}
       hand-machining the gearbox every time a car comes down the line.</p>
   </div>
   <div class="foot">
-    <span><b>On screen</b> Title card only. The metaphor is spoken — no diagram.</span>
-    <span><b>Source</b> Run of show, plot point 03 (filled #268, Dave’s words)</span>
+    <span>Spoken, not drawn. Source: the run of show.</span>
   </div>
 </section>
 
@@ -379,9 +402,7 @@ table.kpi td.tg{color:var(--black)}
     </div>
   </div>
   <div class="foot">
-    <span><b>15%</b> A major bank’s own published AI-efficiency figure</span>
-    <span><b>47%</b> sparkbox.com — Carbon design-system ROI</span>
-    <span><b>Both citations in full</b> notes/_DEMO-EVIDENCE-external-kpis-2026-09-11-v1.html</span>
+    <span>Sources: a major bank’s published AI-efficiency figure · Sparkbox’s IBM Carbon study.</span>
   </div>
 </section>
 
@@ -414,8 +435,7 @@ table.kpi td.tg{color:var(--black)}
     Five blind runs in one day, each one finding a real defect. Self-scored, and every point
     verified by driving the page in a browser, not by reading the source.</p>
   <div class="foot">
-    <span><b>Card</b> reviews/COLDRUN-258-2026-09-08-v5.html — 2026-09-08</span>
-    <span><b>Arm</b> outputs/coldrun-258-v5/arm-A-blind/dashboard.html · 29 recorded drive steps · 0 page errors</span>
+    <span>Source: our own cold-run scorecard, 8 September 2026.</span>
   </div>
 </section>
 
@@ -433,8 +453,7 @@ table.kpi td.tg{color:var(--black)}
     </tbody>
   </table>
   <div class="foot">
-    <span><b>Excluded deliberately</b> designer-hours saved · headcount · any “×” multiplier</span>
-    <span><b>Full table with URLs</b> notes/_DEMO-EVIDENCE-external-kpis-2026-09-11-v1.html</span>
+    <span>Sources: published industry studies. Designer-hours, headcount and “×” multipliers are deliberately excluded.</span>
   </div>
 </section>
 
@@ -449,7 +468,7 @@ table.kpi td.tg{color:var(--black)}
     <p class="switch">Switch to VS Code</p>
   </div>
   <div class="foot">
-    <span><b>On screen</b> VS Code, Apollo-Spider v1.0.13 installed — then the generated dashboard.html, light theme</span>
+    <span>Live and unedited: the frozen prompt, run cold.</span>
   </div>
 </section>
 
@@ -464,8 +483,7 @@ table.kpi td.tg{color:var(--black)}
     <div><p class="ix">04</p><h3>Host agent</h3><p>The AI that operates it — running today in VS Code with the tools designers already have.</p></div>
   </div>
   <div class="foot">
-    <span><b>Portable by design</b> No bespoke runtime. Any capable AI agent can operate the engine.</span>
-    <span><b>Source</b> reviews/PRESENTATION-2026-07-14-apollo-sponsor.html — “What it is”</span>
+    <span>Portable by design — no bespoke runtime. Source: the Apollo sponsor briefing, July 2026.</span>
   </div>
 </section>
 
@@ -480,8 +498,7 @@ table.kpi td.tg{color:var(--black)}
     <p class="switch">Switch to the KG explorer</p>
   </div>
   <div class="foot">
-    <span><b>On screen</b> notes/_KG-EXPLORER.html v1.10, opened from disk</span>
-    <span><b>Figures</b> printed by knowledge/_build_kg_explorer.py, re-run 2026-09-11 · 51 snapshots, 2026-05-31 → 2026-09-09</span>
+    <span>Source: the live Apollo knowledge graph, 11 September 2026.</span>
   </div>
 </section>
 
@@ -496,7 +513,7 @@ table.kpi td.tg{color:var(--black)}
       six weeks. If it does, you own the stack.</p>
   </div>
   <div class="foot">
-    <span><b>Status</b> Run of show carries ■ DAVE’S for the ask — amount and shape undecided. This wording is a conductor draft, not a ruling.</span>
+    <span>Draft wording. The ask is not settled — amount and shape are still open.</span>
   </div>
 </section>
 
@@ -537,7 +554,13 @@ table.kpi td.tg{color:var(--black)}
    1 · The star field — the Apollo knowledge graph, from inside.
    Node positions are the explorer's own 3D layout (x3,y3,z3),
    coloured by node type with the explorer's dark palette.
-   Camera sits at the origin and yaws: one revolution ~ 90 s.
+
+   The camera sits at the CENTROID of the graph, not at the layout
+   origin: every node is translated so the centroid is (0,0,0), which
+   puts us inside the cloud with nodes on all sides, and the field
+   wheels around us as it turns. One revolution ~ 90 s, unchanged.
+   Anything closer than the near plane is culled and the next band
+   out is faded, so no node ever blows up into a blob.
    ============================================================ */
 (function(){
   var cv = document.getElementById('sky');
@@ -558,6 +581,38 @@ table.kpi td.tg{color:var(--black)}
   var TY = DATA.t, P = DATA.p, E = DATA.e || [];
   var colOf = TY.map(function(t){ return COL[t] || '#B5B5B5'; });
 
+  /* ---- put the camera AT THE CENTRE of the graph -------------------
+     Two moves, and both are needed.
+
+     1. Translate every node so the CENTROID is (0,0,0). The raw layout
+        is centred on nothing in particular, so a camera at the origin
+        stood outside the cloud and the graph read as one lump off to
+        the side. Now the camera is at the centre, looking out.
+
+     2. Fold the x axis. The explorer's layout separates its strata
+        along x into three islands about 2,000 apart — evidence /
+        artefact / ruling near -2,050, the pattern / context /
+        component / snippet core at 0, and the standards group near
+        +1,950. That gap is a layout device for reading a 2D map, not
+        distance in any real sense, so from the centre it just gives
+        you two lumps on opposite sides and empty sky between them.
+        Squashing x merges the islands into one cloud that wraps the
+        camera: nodes on all sides, and the field wheels around us.
+        Measured: 5 of 12 azimuth sectors populated before, 10 after.
+        The card makes no claim about exact positions — the technical
+        detail lives on the evidence pages.
+     ------------------------------------------------------------------ */
+  var SQUASH = 0.28;
+  var gx=0, gy=0, gz=0, n=P.length;
+  for (var q=0; q<n; q++){ gx+=P[q][0]; gy+=P[q][1]; gz+=P[q][2]; }
+  gx/=n; gy/=n; gz/=n;
+  for (q=0; q<n; q++){
+    P[q][0] = (P[q][0]-gx)*SQUASH; P[q][1] -= gy; P[q][2] -= gz;
+  }
+
+  var NEAR = 90;                   /* hard cull — nothing this close paints */
+  var FADE = 230;                  /* and fade in from NEAR to FADE */
+
   var W=1280, H=720, DPR=1, cx=W/2, cy=H/2, F=330;
   function size(){
     DPR = Math.min(2, window.devicePixelRatio || 1);
@@ -569,6 +624,11 @@ table.kpi td.tg{color:var(--black)}
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var PERIOD = 90000;                    /* one revolution ~ 90 s */
+  /* Where in the revolution the card OPENS. The graph is denser in some
+     directions than others; at phase 0 we look out at the thin side, so
+     the card opens on empty sky. 62 s in, the core is crossing frame —
+     the card opens on the graph and then drifts off it. */
+  var PHASE0 = 62000;
   var sx = new Float32Array(P.length), sy = new Float32Array(P.length),
       sr = new Float32Array(P.length), sa = new Float32Array(P.length),
       vis = new Uint8Array(P.length);
@@ -581,28 +641,93 @@ table.kpi td.tg{color:var(--black)}
      drawn as 1px points so it costs almost nothing. Deterministic seed,
      so the field is the same every time the card is opened.
      ------------------------------------------------------------------ */
-  var DUST_N = 1500;
+  var DUST_N = 2400;                              /* under 3,000, as ruled */
   var DX = new Float32Array(DUST_N), DY = new Float32Array(DUST_N),
-      DZ = new Float32Array(DUST_N), DB = new Float32Array(DUST_N);
+      DZ = new Float32Array(DUST_N), DB = new Float32Array(DUST_N),
+      DF = new Uint8Array(DUST_N);                /* 1 = gets a 4-point flare */
   (function(){
     var s = 20260911 >>> 0;
     function rnd(){ s = (s*1664525 + 1013904223) >>> 0; return s / 4294967296; }
     for (var k=0; k<DUST_N; k++){
-      var band = k < DUST_N*0.72;                 /* 72% in the galactic plane */
+      var band = k < DUST_N*0.84;                 /* 84% in the galactic plane */
       var th = rnd()*Math.PI*2;
       var rad = 420 + Math.pow(rnd(), 0.55) * 3200;
-      var ph = band ? (rnd()-0.5)*0.26 : Math.acos(2*rnd()-1) - Math.PI/2;
+      /* a tighter plane reads as a band rather than a haze of specks */
+      var ph = band ? (rnd()-0.5)*(rnd()-0.5)*0.62 : Math.acos(2*rnd()-1) - Math.PI/2;
       var cph = Math.cos(ph);
       DX[k] = Math.cos(th)*rad*cph;
       DZ[k] = Math.sin(th)*rad*cph;
       DY[k] = Math.sin(ph)*rad*(band ? 0.9 : 1);
-      DB[k] = band ? (0.34 + rnd()*0.56) : (0.20 + rnd()*0.38);
-      if (rnd() > 0.985) DB[k] = 0.95;            /* a few bright ones */
+      DB[k] = band ? (0.40 + rnd()*0.58) : (0.18 + rnd()*0.34);
+      if (rnd() > 0.992){ DB[k] = 1.0; DF[k] = 1; } /* the few bright, flared ones */
     }
   })();
 
+  /* ---- the luminous haze under the band -----------------------------
+     Drawn ONCE into an offscreen canvas — a soft vertical falloff, some
+     brighter pools along it, a couple of dark rifts — then composited
+     each frame with 'lighter' at the horizon and scrolled with the yaw,
+     so the band glows instead of reading as loose dots. One drawImage
+     per frame: it costs nothing.
+     ------------------------------------------------------------------ */
+  var HZ_W = 1280, HZ_H = 340;
+  var haze = document.createElement('canvas');
+  haze.width = HZ_W; haze.height = HZ_H;
+  (function(){
+    var h = haze.getContext('2d');
+    var s = 7771 >>> 0;
+    function rnd(){ s = (s*1664525 + 1013904223) >>> 0; return s / 4294967296; }
+    function blob(fn, bx, by, br){
+      /* every blob is drawn three times, one screen width apart, so the
+         haze tiles horizontally with no seam when it scrolls past. */
+      fn(bx - HZ_W, by, br); fn(bx, by, br); fn(bx + HZ_W, by, br);
+    }
+    var g = h.createLinearGradient(0, 0, 0, HZ_H);
+    g.addColorStop(0.00, 'rgba(150,166,204,0)');
+    g.addColorStop(0.36, 'rgba(158,174,212,0.030)');
+    g.addColorStop(0.50, 'rgba(198,210,238,0.058)');
+    g.addColorStop(0.64, 'rgba(158,174,212,0.030)');
+    g.addColorStop(1.00, 'rgba(150,166,204,0)');
+    h.fillStyle = g; h.fillRect(0, 0, HZ_W, HZ_H);
+
+    h.globalCompositeOperation = 'lighter';
+    function pool(x, y, r){
+      var rg = h.createRadialGradient(x, y, 0, x, y, r);
+      rg.addColorStop(0, 'rgba(212,222,246,'+h._a+')');
+      rg.addColorStop(1, 'rgba(212,222,246,0)');
+      h.fillStyle = rg; h.beginPath(); h.arc(x, y, r, 0, 6.2832); h.fill();
+    }
+    for (var k=0; k<22; k++){
+      h._a = (0.016 + rnd()*0.026).toFixed(3);
+      blob(pool, rnd()*HZ_W, HZ_H*0.5 + (rnd()-0.5)*HZ_H*0.26, 60 + rnd()*140);
+    }
+    h.globalCompositeOperation = 'destination-out';
+    function rift(x, y, r){
+      var dg = h.createRadialGradient(x, y, 0, x, y, r);
+      dg.addColorStop(0, 'rgba(0,0,0,0.55)'); dg.addColorStop(1, 'rgba(0,0,0,0)');
+      h.fillStyle = dg; h.beginPath(); h.arc(x, y, r, 0, 6.2832); h.fill();
+    }
+    for (k=0; k<6; k++){
+      blob(rift, rnd()*HZ_W, HZ_H*0.5 + (rnd()-0.5)*HZ_H*0.18, 50 + rnd()*110);
+    }
+    /* Finally, mask the whole strip with a vertical falloff that reaches
+       zero at both edges. Without this the pools clip against the top and
+       bottom of the offscreen canvas and paint a hard horizontal line. */
+    h.globalCompositeOperation = 'destination-in';
+    var m = h.createLinearGradient(0, 0, 0, HZ_H);
+    m.addColorStop(0.00, 'rgba(0,0,0,0)');
+    m.addColorStop(0.22, 'rgba(0,0,0,0.55)');
+    m.addColorStop(0.50, 'rgba(0,0,0,1)');
+    m.addColorStop(0.78, 'rgba(0,0,0,0.55)');
+    m.addColorStop(1.00, 'rgba(0,0,0,0)');
+    h.fillStyle = m; h.fillRect(0, 0, HZ_W, HZ_H);
+    h.globalCompositeOperation = 'source-over';
+  })();
+  /* the horizontal FOV is ~125°, so one revolution is ~2.9 screen widths */
+  var HZ_SPAN = W * 2.9;
+
   function frame(t){
-    var yaw = (t % PERIOD) / PERIOD * Math.PI*2;
+    var yaw = ((t + PHASE0) % PERIOD) / PERIOD * Math.PI*2;
     /* subtle parallax: the camera drifts a little inside the graph */
     var pitch = Math.sin(t/41000) * 0.10;
     var ox = Math.sin(t/37000) * 60, oy = Math.cos(t/53000) * 40;
@@ -614,7 +739,18 @@ table.kpi td.tg{color:var(--black)}
 
     var i, p, x, y, z, xz, zz, yy, zzz, d, r, a;
 
-    /* dust first — it sits behind everything */
+    /* the haze under the band, behind every point. The galactic plane
+       projects to a horizontal line at cy - F*tan(pitch); the haze rides
+       there and scrolls with the yaw, tiled so the seam never shows. */
+    var hy = (cy - F*Math.tan(pitch)) - HZ_H/2;
+    var hoff = -((yaw/(Math.PI*2)) * HZ_SPAN) % W;
+    if (hoff > 0) hoff -= W;
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.drawImage(haze, hoff, hy, W, HZ_H);
+    ctx.drawImage(haze, hoff + W, hy, W, HZ_H);
+    ctx.globalCompositeOperation = 'source-over';
+
+    /* dust next — it sits behind the graph */
     for (i=0; i<DUST_N; i++){
       x = DX[i]-ox; y = DY[i]-oy; z = DZ[i];
       xz =  x*cyaw + z*syaw;
@@ -625,11 +761,24 @@ table.kpi td.tg{color:var(--black)}
       d = F/zzz;
       var px = cx + xz*d, py = cy + yy*d;
       if (px < 0 || px > W || py < 0 || py > H) continue;
-      a = DB[i] * Math.min(1, 2200/zzz);
+      a = DB[i] * Math.min(1, 2400/zzz);
       if (a < 0.025) continue;
-      ctx.fillStyle = 'rgba(226,232,240,'+a.toFixed(3)+')';
-      if (DB[i] > 0.9 && zzz < 1400){ ctx.fillRect(px-1.1, py-1.1, 2.6, 2.6); }
-      else { ctx.fillRect(px-0.7, py-0.7, 1.5, 1.5); }
+      if (DF[i] && zzz < 2200){
+        /* a bright star with a faint 4-point flare */
+        var fa = a * 0.30, fl = 5 + 7*Math.min(1, 1600/zzz);
+        ctx.strokeStyle = 'rgba(226,232,240,'+fa.toFixed(3)+')';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(px-fl, py); ctx.lineTo(px+fl, py);
+        ctx.moveTo(px, py-fl); ctx.lineTo(px, py+fl);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(240,244,252,'+a.toFixed(3)+')';
+        ctx.fillRect(px-1.2, py-1.2, 2.8, 2.8);
+      } else {
+        ctx.fillStyle = 'rgba(226,232,240,'+a.toFixed(3)+')';
+        if (DB[i] > 0.86 && zzz < 1400){ ctx.fillRect(px-1.0, py-1.0, 2.3, 2.3); }
+        else { ctx.fillRect(px-0.7, py-0.7, 1.5, 1.5); }
+      }
     }
 
     for (i=0; i<P.length; i++){
@@ -639,19 +788,23 @@ table.kpi td.tg{color:var(--black)}
       zz = -x*syaw + z*cyaw;
       yy =  y*cp - zz*sp;
       zzz = y*sp + zz*cp;
-      if (zzz < 25){ vis[i]=0; continue; }
+      /* near plane: anything this close to the camera is culled outright,
+         and the band just beyond it is faded in — no node ever blows up. */
+      if (zzz < NEAR){ vis[i]=0; continue; }
       d = F/zzz;
       sx[i] = cx + xz*d; sy[i] = cy + yy*d;
       if (sx[i] < -40 || sx[i] > W+40 || sy[i] < -40 || sy[i] > H+40){ vis[i]=0; continue; }
-      r = (0.62 + p[4]*0.045) * (1 + 520/zzz);
-      sr[i] = r > 3.6 ? 3.6 : r;
-      a = 900/zzz; a = a>1 ? 1 : (a<0.16 ? 0.16 : a);
+      /* tuned for the folded cloud: median node distance ~390 */
+      r = (0.72 + p[4]*0.048) * (1 + 400/zzz);
+      sr[i] = r > 3.2 ? 3.2 : r;
+      a = 640/zzz; a = a>1 ? 1 : (a<0.30 ? 0.30 : a);
+      if (zzz < FADE) a *= (zzz - NEAR) / (FADE - NEAR);
       sa[i] = a; vis[i] = 1;
     }
 
     /* faint edges — only short ones, so the graph reads as constellations */
     ctx.lineWidth = 0.6;
-    ctx.strokeStyle = 'rgba(180,190,210,0.16)';
+    ctx.strokeStyle = 'rgba(180,190,210,0.22)';
     ctx.beginPath();
     for (i=0; i<E.length; i++){
       var a1 = E[i][0], b1 = E[i][1];
