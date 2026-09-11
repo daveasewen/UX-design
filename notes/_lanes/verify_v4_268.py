@@ -27,34 +27,78 @@ with sync_playwright() as pw:
 
     R["stats"] = pg.evaluate("window.skyStats()")
 
-    # --- canvas lit + no-void grid, over 18 phases of the 90 s revolution
+    # --- VISUAL no-void grid, over 18 phases of the 90 s revolution.
+    #     v4's check passed on stars nobody could see. The bar is now:
+    #     per 12x7 cell, mean luminance >= 8 AND >= 6 star peaks at L >= 120.
     probe = pg.evaluate("""() => {
       const out=[]; const cv=document.getElementById('sky');
       const c=document.createElement('canvas'); c.width=cv.width; c.height=cv.height;
       const g=c.getContext('2d');
+      const CW=Math.floor(c.width/12), CH=Math.floor(c.height/7);
       for(let i=0;i<18;i++){
         const t=i*90000/18; window.skyFrame(t);
         const v=window.skyVoidCheck(12,7);
         g.clearRect(0,0,c.width,c.height); g.drawImage(cv,0,0);
-        // per-cell max luminance of the RIGHT half (away from the vignette+type)
-        let lit=0, cellmin=1e9;
+        const D=g.getImageData(0,0,c.width,c.height).data;
+        const W=c.width;
+        // full-frame luminance map, once
+        const L=new Float32Array(c.width*c.height);
+        for(let k=0,n=0;k<D.length;k+=4,n++) L[n]=(D[k]*2+D[k+1]*5+D[k+2])/8;
+        let minMean=1e9, maxMean=0, minPeaks=1e9, maxLum=0, sumAll=0, nAll=0;
         for(let r=0;r<7;r++) for(let col=0;col<12;col++){
-          const x=Math.floor(col*c.width/12), y=Math.floor(r*c.height/7);
-          const w=Math.floor(c.width/12), h=Math.floor(c.height/7);
-          const d=g.getImageData(x,y,w,h).data; let mx=0,sum=0;
-          for(let k=0;k<d.length;k+=16){const L=(d[k]*2+d[k+1]*5+d[k+2])/8; if(L>mx)mx=L; sum+=L;}
-          if(mx>lit) lit=mx; if(mx<cellmin) cellmin=mx;
+          const x0=col*CW, y0=r*CH;
+          let sum=0, n=0, peaks=0, mx=0;
+          for(let y=y0;y<y0+CH;y++){
+            const row=y*W;
+            for(let x=x0;x<x0+CW;x++){
+              const l=L[row+x]; sum+=l; n++; if(l>mx)mx=l;
+              if(l>=120 && x>0 && x<W-1 && y>0 && y<c.height-1){
+                if(l>=L[row+x-1] && l>=L[row+x+1] && l>=L[row-W+x] && l>=L[row+W+x]) peaks++;
+              }
+            }
+          }
+          const mean=sum/n;
+          if(mean<minMean)minMean=mean; if(mean>maxMean)maxMean=mean;
+          if(peaks<minPeaks)minPeaks=peaks; if(mx>maxLum)maxLum=mx;
+          sumAll+=sum; nAll+=n;
         }
-        out.push({phase:i, min:v.min, max:v.max, maxLum:Math.round(lit), minCellPeakLum:Math.round(cellmin)});
+        out.push({phase:i, starMin:v.min, starMax:v.max, visMin:v.minVisible,
+                  cellMeanMin:Math.round(minMean*10)/10,
+                  cellMeanMax:Math.round(maxMean*10)/10,
+                  cellPeaksMin:minPeaks, maxLum:Math.round(maxLum),
+                  frameMean:Math.round(sumAll/nAll*10)/10});
       }
       return out;
     }""")
     R["phases18"] = probe
-    R["void_min_over_18"] = min(p["min"] for p in probe)
-    R["cellpeak_min_over_18"] = min(p["minCellPeakLum"] for p in probe)
+    R["void_min_over_18"]      = min(p["starMin"] for p in probe)
+    R["visible_star_min"]      = min(p["visMin"] for p in probe)
+    R["cell_mean_lum_min"]     = min(p["cellMeanMin"] for p in probe)
+    R["cell_star_peaks_min"]   = min(p["cellPeaksMin"] for p in probe)
 
-    # --- wordmark unobstructed: mean luminance of the canvas region behind the
-    #     type block, measured through the vignette, over the same 18 phases
+    # --- exposure OUTSIDE the text vignette: the right 55% of the frame,
+    #     which the vignette's 52%x44%@31% core never reaches.
+    R["exposure_outside_vignette"] = pg.evaluate("""() => {
+      const cv=document.getElementById('sky');
+      const c=document.createElement('canvas'); c.width=cv.width; c.height=cv.height;
+      const g=c.getContext('2d');
+      const x0=Math.floor(cv.width*0.55), w=cv.width-x0;
+      let lo=1e9, hi=0, acc=0;
+      for(let i=0;i<18;i++){
+        window.skyFrame(i*90000/18);
+        g.clearRect(0,0,c.width,c.height); g.drawImage(cv,0,0);
+        const d=g.getImageData(x0,0,w,cv.height).data;
+        let s=0,n=0; for(let k=0;k<d.length;k+=4){s+=(d[k]*2+d[k+1]*5+d[k+2])/8;n++;}
+        const m=s/n; acc+=m; if(m<lo)lo=m; if(m>hi)hi=m;
+      }
+      return {min:Math.round(lo*10)/10, max:Math.round(hi*10)/10,
+              mean:Math.round(acc/18*10)/10};
+    }""")
+
+    R["nebula_seat"] = pg.evaluate("window.skyNebula()")
+
+    # --- wordmark: mean luminance of the canvas region behind the type,
+    #     measured through the vignette, over the same 18 phases
     R["wordmark_backdrop"] = pg.evaluate("""() => {
       const wm=document.querySelector('#s1 .wordmark').getBoundingClientRect();
       const cv=document.getElementById('sky');
@@ -71,6 +115,51 @@ with sync_playwright() as pw:
       }
       return {worstMeanLum: Math.round(worst*10)/10};
     }""")
+
+    # --- wordmark contrast, COMPOSITED: 18 phases, type hidden, screenshot
+    #     exactly the glyph-ink rect. Contrast is white vs the worst pixel.
+    from PIL import Image
+    import io as _io
+    ink = pg.evaluate("""() => {
+      const wm=document.querySelector('#s1 .wordmark');
+      const r=document.createRange(); r.selectNodeContents(wm);
+      const b=r.getBoundingClientRect();
+      return {x:Math.floor(b.left), y:Math.floor(b.top),
+              width:Math.ceil(b.width), height:Math.ceil(b.height)};
+    }""")
+    pg.evaluate("window.skyStop && window.skyStop()")
+    pg.evaluate("document.querySelector('#s1 .type').style.visibility='hidden'")
+
+    def lin(v):
+        v = v / 255.0
+        return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+    worst_mean = 0.0
+    worst_max = 0
+    worst_phase = 0
+    for k in range(18):
+        pg.evaluate("(ms)=>window.skyFrame(ms)", k * 90000 / 18.0)
+        im = Image.open(_io.BytesIO(pg.screenshot(clip=ink))).convert("RGB")
+        px = list(im.getdata())
+        lums = [(2 * r + 5 * g + b) / 8.0 for (r, g, b) in px]
+        m = sum(lums) / len(lums)
+        mx = max(lums)
+        if m > worst_mean:
+            worst_mean, worst_phase = m, k
+        if mx > worst_max:
+            worst_max = mx
+        if k in (0, 9):
+            im.save(str(OUT / f"wordmark-phase-{k:02d}.png"))
+    pg.evaluate("document.querySelector('#s1 .type').style.visibility=''")
+    pg.evaluate("window.skyFrame(0)")
+    R["wordmark_contrast"] = {
+        "worstMeanL": round(worst_mean, 1),
+        "worstMaxL": round(worst_max, 1),
+        "worstPhase": worst_phase,
+        "contrast_vs_mean": round(1.05 / (lin(worst_mean) + 0.05), 2),
+        "contrast_vs_brightest_px": round(1.05 / (lin(worst_max) + 0.05), 2),
+        "note": "white #fff wordmark against the composited backdrop through the vignette, 18 phases",
+    }
 
     # --- fps over 3 s of the live loop
     pg.evaluate("window.skyStart && window.skyStart()")
