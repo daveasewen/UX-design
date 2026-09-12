@@ -692,7 +692,7 @@ table.kpi td.tg{color:var(--black)}
   /* ---- c · the nudge ------------------------------------------------ */
   var NUDGE_MAX = 0.12;        /* per axis, in local island radii        */
   var BOUND     = 0.90;        /* hard clamp on |offset|, same units     */
-  var TAU_LIVE  = 0.80;        /* critically damped, mouse live          */
+  var TAU_LIVE  = 1.20;        /* critically damped, mouse live          */
   var TAU_HOME  = 0.40;        /* ... and returning to the path          */
   var IDLE_MS   = 600;         /* no mousemove for this long = "stopped" */
   var LOOK_K    = 0.30;        /* the look target takes 30% of the offset*/
@@ -723,10 +723,12 @@ table.kpi td.tg{color:var(--black)}
   }
 
   function updateNudge(t, dt, Rl){
-    var live = mouseSeen && (t - lastMove) < IDLE_MS;
+    /* v6.3 — no return-to-path (Dave: "too jerky"). The offset simply
+       follows wherever the mouse last was; nothing snaps back on idle. */
+    var live = mouseSeen;
     var tA = live ?  mnx * NUDGE_MAX * Rl : 0;
     var tB = live ? -mny * NUDGE_MAX * Rl : 0;
-    var w  = 1/(live ? TAU_LIVE : TAU_HOME);
+    var w  = 1/TAU_LIVE;
     /* substep so a dropped frame cannot make the spring explode */
     var left = dt, h;
     while (left > 1e-5){
