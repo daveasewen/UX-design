@@ -114,14 +114,21 @@ p{margin:0 0 var(--s2);}
 #kg{opacity:1}
 body.fgonly #sky{display:none!important}
 body.bgonly #kg{display:none!important}
-/* The text shade, drawn BETWEEN the field and the type so the wordmark is
-   never crossed by a star. Radial, never a box: an opaque core under the
-   v-centred block, a bottom ramp so the counter and the hint stay legible. */
+/* The text shade, drawn BETWEEN the field and the type so NO part of the
+   text block is ever crossed by a star. Radial, never a box: an opaque
+   core under the WHOLE v-centred block — eyebrow, wordmark AND the
+   one-line subtitle, with margin — then a soft ramp out, plus a bottom
+   ramp so the counter and the hint stay legible.
+   v5.1: the old 52% x 44% at 31% was cut for the wordmark alone; the
+   subtitle at 34em runs to x≈1257 of 1920, well past its .88 stop, so a
+   foreground node could land on "speed." The ellipse is re-centred on the
+   ink box of the block (x 400..1257, y 419..661 → centre 43% / 50%) and
+   sized so that block + ~60px of margin sits inside the near-opaque core. */
 #s1 .vignette{position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(52% 44% at 31% 50%,
-      rgba(12,12,12,.96) 0%, rgba(12,12,12,.88) 40%,
-      rgba(12,12,12,.62) 62%, rgba(12,12,12,.26) 82%, rgba(12,12,12,0) 100%),
+    radial-gradient(58% 38% at 43% 50%,
+      rgba(12,12,12,.96) 0%, rgba(12,12,12,.94) 46%,
+      rgba(12,12,12,.72) 62%, rgba(12,12,12,.30) 82%, rgba(12,12,12,0) 100%),
     linear-gradient(to top,
       rgba(12,12,12,.72) 0%, rgba(12,12,12,.26) 18%, rgba(12,12,12,0) 38%);
 }
@@ -1182,11 +1189,12 @@ table.kpi td.tg{color:var(--black)}
    revolution opening at PHASE0 = 62 s.
 
    What is gone, on Dave's word — "strike the colors and edges, just
-   white nodes": the family colour table and every edge. Nothing else
-   changed. Size is still degree-driven, alpha is still depth-driven
-   (nearer = brighter), and the only colour left is the depth warmth:
-   pure white in front, a warm white far off, which keeps the cloud
-   from reading as a flat sheet of dots.
+   white nodes": the family colour table and every edge. Still gone in
+   v5.1 — the brief stands. What v5.1 DOES change is the read of the
+   cloud: alpha over the full 0.18..1.0 depth range, a three-step
+   degree hierarchy for radius (leaf / mid / hub), a soft glow on the
+   top ~5% by degree, and warm white near / cool white far. See the
+   v5.1 block by NEAR/FADE below.
 
    The v3 procedural dust and haze are NOT redrawn here — the v4.1
    Milky Way panorama underneath is the field now, at half opacity and
@@ -1218,6 +1226,41 @@ table.kpi td.tg{color:var(--black)}
 
   var NEAR = 90;                   /* hard cull — nothing this close paints */
   var FADE = 230;                  /* and fade in from NEAR to FADE */
+  var DEPTH = 1800;                /* nearness ramp: NEAR = 1, DEPTH+ = 0 */
+
+  /* v5.1 · DEPTH, NOT CONFETTI.
+     The v5 layer drew every node as a hard white disc at a narrow alpha
+     band, so the cloud sat ON the panorama instead of IN it. Three things
+     give it depth, and none of them is an edge or a family colour:
+       1  alpha runs the full 0.18 .. 1.0 — far nodes are nearly gone;
+       2  radius is a DEGREE HIERARCHY, not a smooth ramp — leaves
+          1..1.5 px, mid 2 px, hubs 3..4 px (p95 of the degree
+          distribution over 2,837 nodes is 10, so HUB_DEG = 10 is the
+          top ~5%);
+       3  hubs carry a soft 6..8 px glow at low alpha, so they read as
+          bright stars among the background panorama's spiked ones.
+     Colour is depth only: warm white #F4F1EA near, cool white far. */
+  var HUB_DEG = 10, MID_DEG = 3;
+
+  function baseRadius(deg){
+    if (deg >= HUB_DEG) return 3.0 + Math.min(1, (deg - HUB_DEG) / 20);  /* 3..4 */
+    if (deg >= MID_DEG) return 2.0;                                      /* mid  */
+    return 1.0 + (deg >= 2 ? 0.5 : 0);                                   /* 1..1.5 */
+  }
+
+  /* one cached glow sprite, drawn scaled — a createRadialGradient per hub
+     per frame would cost the 50 fps floor. */
+  var GLOW = (function(){
+    var g = document.createElement('canvas'); g.width = g.height = 64;
+    var gc = g.getContext('2d');
+    var rg = gc.createRadialGradient(32, 32, 0, 32, 32, 32);
+    rg.addColorStop(0,   'rgba(247,244,238,0.85)');
+    rg.addColorStop(0.28,'rgba(247,244,238,0.34)');
+    rg.addColorStop(0.62,'rgba(240,240,245,0.10)');
+    rg.addColorStop(1,   'rgba(240,240,245,0)');
+    gc.fillStyle = rg; gc.fillRect(0, 0, 64, 64);
+    return g;
+  })();
 
   var W=1280, H=720, DPR=1, cx=W/2, cy=H/2, F=330;
   function size(){
@@ -1260,16 +1303,29 @@ table.kpi td.tg{color:var(--black)}
       d = F/zzz;
       var px = cx + xz*d, py = cy + yy*d;
       if (px < -40 || px > W+40 || py < -40 || py > H+40) continue;
-      r = (0.72 + ND[i]*0.048) * (1 + 400/zzz);   /* degree-driven, as before */
-      if (r > 3.2) r = 3.2;
-      a = 640/zzz; a = a>1 ? 1 : (a<0.30 ? 0.30 : a);
+      /* nearness: 1 at the cull plane, 0 at DEPTH and beyond */
+      var near = (DEPTH - zzz) / (DEPTH - NEAR);
+      if (near < 0) near = 0; else if (near > 1) near = 1;
+
+      var deg = ND[i];
+      r = baseRadius(deg) * (0.80 + 0.35*near);   /* degree hierarchy, depth-nudged */
+      if (r > 4.2) r = 4.2; else if (r < 0.7) r = 0.7;
+
+      a = 760/zzz; a = a>1 ? 1 : (a<0.18 ? 0.18 : a);   /* full 0.18 .. 1.0 */
       if (zzz < FADE) a *= (zzz - NEAR) / (FADE - NEAR);
-      /* the only colour left: pure white near, warm white far */
-      var warm = zzz > 1600 ? 1 : (zzz - NEAR)/(1600 - NEAR);
-      if (warm < 0) warm = 0;
-      var gch = Math.round(255 - 6*warm), bch = Math.round(255 - 16*warm);
+
+      /* colour is depth: warm white #F4F1EA near, cool white far */
+      var rch = Math.round(226 + 18*near),
+          gch = Math.round(234 +  7*near),
+          bch = Math.round(245 - 11*near);
+
+      if (deg >= HUB_DEG){                        /* hubs read as bright stars */
+        var gr = 6 + 2*near;                      /* 6..8 px glow radius */
+        ctx.globalAlpha = a * 0.22;
+        ctx.drawImage(GLOW, px - gr, py - gr, gr*2, gr*2);
+      }
       ctx.globalAlpha = a;
-      ctx.fillStyle = 'rgb(255,'+gch+','+bch+')';
+      ctx.fillStyle = 'rgb('+rch+','+gch+','+bch+')';
       ctx.beginPath();
       ctx.arc(px, py, r, 0, 6.2832);
       ctx.fill();

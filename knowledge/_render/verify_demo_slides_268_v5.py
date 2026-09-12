@@ -96,8 +96,8 @@ MEASURE = r"""
 """
 
 INK_RECT = r"""
-() => {
-  const wm = document.querySelector('#s1 .wordmark');
+(sel) => {
+  const wm = document.querySelector(sel);
   const r = document.createRange(); r.selectNodeContents(wm);
   const b = r.getBoundingClientRect();
   return {x: Math.floor(b.left), y: Math.floor(b.top),
@@ -263,29 +263,43 @@ def main():
         if bad:
             fails.append(f"foreground occupies < 8/12 azimuth sectors at phases {bad}")
 
-        # ---- wordmark unobstructed across 18 phases, BOTH layers ---------------
-        ink = pg.evaluate(INK_RECT)
+        # ---- TEXT BLOCK unobstructed across 18 phases, BOTH layers -------------
+        # v5.1: the wordmark alone was never the whole of what the vignette has
+        # to protect. The subtitle went to one line at 34em and ran out past the
+        # old ellipse, so a foreground node landed on "speed." at t=60 s. Every
+        # line of the block — eyebrow, wordmark, subtitle — is probed here.
+        ink = pg.evaluate(INK_RECT, "#s1 .wordmark")
+        sub_ink = pg.evaluate(INK_RECT, "#s1 .sub")
+        eb_ink = pg.evaluate(INK_RECT, "#s1 .label")
         report["wordmark_ink_rect"] = ink
+        report["subtitle_ink_rect"] = sub_ink
+        report["eyebrow_ink_rect"] = eb_ink
         pg.evaluate("()=>{document.querySelector('#s1 .type').style.visibility='hidden';}")
-        phases = []
+        targets = [("wordmark", ink), ("subtitle", sub_ink), ("eyebrow", eb_ink)]
+        buckets = {name: [] for name, _ in targets}
         for k in range(18):
             ms = k * (FG_PERIOD / 18.0)
             pg.evaluate("(ms)=>{window.skyFrame(ms); window.kgFrame(ms);}", ms)
-            shot = pg.screenshot(clip=ink)
-            im = Image.open(_io.BytesIO(shot)).convert("L")
-            px = list(im.getdata())
-            phases.append({"phase": k, "ms": int(ms), "max": max(px),
-                           "px_over_40": sum(1 for v in px if v > 40), "px": len(px)})
-            if k in (0, 9):
-                im.save(str(OUT / f"wordmark-phase-{k:02d}.png"))
+            for name, rect in targets:
+                shot = pg.screenshot(clip=rect)
+                im = Image.open(_io.BytesIO(shot)).convert("L")
+                px = list(im.getdata())
+                buckets[name].append({"phase": k, "ms": int(ms), "max": max(px),
+                                      "px_over_40": sum(1 for v in px if v > 40),
+                                      "px": len(px)})
+                if name == "wordmark" and k in (0, 9):
+                    im.save(str(OUT / f"wordmark-phase-{k:02d}.png"))
+                if name == "subtitle" and k in (0, 9, 12):
+                    im.save(str(OUT / f"subtitle-phase-{k:02d}.png"))
         pg.evaluate("()=>{document.querySelector('#s1 .type').style.visibility='';}")
-        report["wordmark_phases"] = phases
-        worst = max(phases, key=lambda r: r["px_over_40"])
-        report["wordmark_worst"] = worst
-        if worst["px_over_40"] > 0:
-            fails.append(
-                f"wordmark obstructed at phase {worst['phase']}: "
-                f"{worst['px_over_40']} px above the ground (max {worst['max']})")
+        report["wordmark_phases"] = buckets["wordmark"]
+        for name, _ in targets:
+            worst_n = max(buckets[name], key=lambda r: r["px_over_40"])
+            report[f"{name}_worst"] = worst_n
+            if worst_n["px_over_40"] > 0:
+                fails.append(
+                    f"{name} obstructed at phase {worst_n['phase']}: "
+                    f"{worst_n['px_over_40']} px above the ground (max {worst_n['max']})")
 
         # ---- the three title frames t = 0 / 30 / 60 s --------------------------
         for t in (0, 30000, 60000):
@@ -388,7 +402,8 @@ def main():
                        "sky_canvas", "kg_canvas",
                        "sky_running_on_title", "kg_running_on_title",
                        "sky_running_off_title", "kg_running_off_title",
-                       "reduced_motion", "wordmark_worst", "snap_src_len",
+                       "reduced_motion", "wordmark_worst", "subtitle_worst",
+                       "eyebrow_worst", "snap_src_len",
                        "pdf_bytes", "pdf_page_objects", "console", "fails")}, indent=2))
     return 1 if fails else 0
 
