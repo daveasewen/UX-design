@@ -23,6 +23,16 @@ New to v6:
      node-density centroid must be a real reading at each.
   D  60 fps WITH THE MOUSE MOVING.
 
+New to v6.1 (the art-director pass):
+
+  E  THE LENS. 85-95 deg horizontal FOV, a principal point pushed off
+     centre so the flight runs clear of the text block, and a far plane
+     at least 1.5 island-diameters ahead — asserted off window.kgLens().
+  F  VISUAL DENSITY, not node counts. The share of FRAME PIXELS lit
+     above L = 40 OUTSIDE the text block, at t = 5 / 30 / 50 s. This is
+     the gate v6 did not have and the reason v6 shipped a card that
+     verified green and read empty. Targets 6% / 15% / 6%.
+
 Usage (same bash call):
   source knowledge/_render/seat_env.sh && \
     python3 knowledge/_render/verify_demo_slides_268_v6.py
@@ -313,8 +323,71 @@ def main():
         if min(r["bright_px"] for r in ink_seq) < 200:
             fails.append(f"a traverse phase renders almost no ink: {ink_seq}")
 
-        # ---- the four traverse frames ------------------------------------------
-        for t in (5000, 20000, 35000, 50000):
+        # ---- E · THE LENS -------------------------------------------------------
+        lens = pg.evaluate("()=>window.kgLens()")
+        report["lens"] = lens
+        if not (85.0 <= lens["hfov_deg"] <= 95.0):
+            fails.append(f"horizontal FOV {lens['hfov_deg']} deg outside 85..95")
+        if lens["ppx"] <= 0.55 or lens["ppy"] >= 0.45:
+            fails.append(f"principal point ({lens['ppx']}, {lens['ppy']}) is not aimed "
+                         f"into the right/upper part of the card")
+        # the far plane must stand at least 1.5 island DIAMETERS ahead
+        want_far = 1.5 * 2 * min(isl["radii"])
+        report["far_plane_want_min"] = round(want_far, 1)
+        if lens["far"] < want_far:
+            fails.append(f"far plane {round(lens['far'],1)} < 1.5 island diameters "
+                         f"({round(want_far,1)})")
+
+        # ---- F · VISUAL DENSITY, measured on the FRAME -------------------------
+        # The share of pixels lit above L = 40 OUTSIDE the text block. v6
+        # passed every mechanical assertion and still read as a few dozen
+        # dots, because nothing here measured the PICTURE.
+        blk = pg.evaluate(INK_RECT, "#s1 .label")
+        blk2 = pg.evaluate(INK_RECT, "#s1 .wordmark")
+        blk3 = pg.evaluate(INK_RECT, "#s1 .sub")
+        bx0 = min(r["x"] for r in (blk, blk2, blk3)) - 60
+        by0 = min(r["y"] for r in (blk, blk2, blk3)) - 60
+        bx1 = max(r["x"] + r["width"] for r in (blk, blk2, blk3)) + 60
+        by1 = max(r["y"] + r["height"] for r in (blk, blk2, blk3)) + 60
+        text_block = {"x": bx0, "y": by0, "width": bx1 - bx0, "height": by1 - by0}
+        report["density_text_block"] = text_block
+        DENSITY_FLOOR = {5: 6.0, 30: 15.0, 50: 6.0}
+        dens = []
+        for t in (5000, 30000, 50000):
+            pg.evaluate("(ms)=>window.kgFrame(ms)", t)
+            pg.wait_for_timeout(90)
+            im = Image.open(_io.BytesIO(pg.screenshot())).convert("L")
+            h_all = im.histogram()
+            h_blk = im.crop((bx0, by0, bx1, by1)).histogram()
+            lit = sum(h_all[41:]) - sum(h_blk[41:])
+            tot = (im.width * im.height) - (bx1 - bx0) * (by1 - by0)
+            pct = round(100.0 * lit / tot, 2)
+            vis = pg.evaluate("()=>window.kgProbe(8).visible")
+            # THE CEILING, so a red reading here says WHY. Every node on
+            # screen drawn at the LARGEST radius the ink permits (6.5 px for
+            # leaf/mid, the clamp in the deck) is the most ink this
+            # population can put on the card. Where the ceiling is under the
+            # floor, the floor is not a tuning target — it is arithmetic
+            # against the number of nodes the island actually has.
+            ceil_pct = round(100.0 * vis * 3.14159 * 6.5 * 6.5 / tot, 2)
+            dens.append({"t_s": t // 1000, "pct_lit_over_L40": pct,
+                         "lit_px": lit, "frame_px_outside_text": tot,
+                         "visible_nodes": vis,
+                         "px_per_node": round(lit / max(1, vis), 1),
+                         "ceiling_pct_all_nodes_at_max_radius": ceil_pct,
+                         "floor_pct": DENSITY_FLOOR[t // 1000]})
+        report["visual_density"] = dens
+        for d in dens:
+            if d["pct_lit_over_L40"] < d["floor_pct"]:
+                fails.append(
+                    f"visual density at t={d['t_s']}s is {d['pct_lit_over_L40']}% of the "
+                    f"frame outside the text block, floor {d['floor_pct']}% "
+                    f"({d['visible_nodes']} nodes on screen; ceiling with every one of "
+                    f"them at the 6.5 px clamp is "
+                    f"{d['ceiling_pct_all_nodes_at_max_radius']}%)")
+
+        # ---- the traverse frames ------------------------------------------------
+        for t in (5000, 20000, 30000, 35000, 50000):
             pg.evaluate("(ms)=>window.kgFrame(ms)", t)
             pg.wait_for_timeout(120)
             pg.screenshot(path=str(OUT / f"title-t{t//1000:02d}s.png"))
@@ -455,6 +528,7 @@ def main():
                        "bound_max_ratio", "bound_worst", "cam_parked_top_right",
                        "return_residual_ratio", "cam_after_return",
                        "island_sequence", "island_sequence_ids", "island_ink",
+                       "lens", "far_plane_want_min", "density_text_block", "visual_density",
                        "reduced_motion", "wordmark_worst", "subtitle_worst",
                        "eyebrow_worst", "snap_src_len", "snap_island",
                        "pdf_bytes", "pdf_page_objects", "console", "fails")}, indent=2))
