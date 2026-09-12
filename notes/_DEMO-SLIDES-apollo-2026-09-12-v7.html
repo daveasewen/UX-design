@@ -200,7 +200,10 @@ p{margin:0 0 var(--s2);}
    ============================================================ */
 #s2{background:transparent;border-bottom:0;}
 #s2 .invert{position:absolute;inset:0;background:#fff;mix-blend-mode:difference;pointer-events:none;}
-#s2 .lift{position:absolute;inset:0;background:rgba(255,255,255,.55);pointer-events:none;}
+#s2 .lift{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(48% 46% at 50% 50%, rgba(255,255,255,.78) 0%, rgba(255,255,255,.74) 70%, rgba(255,255,255,.45) 100%),
+    rgba(255,255,255,.45);}  /* v7.1: text halo on the white card, mirrors §1's ~30% see-through */
 #s2 .inner{position:relative;z-index:3;}
 #s2 .pagenum{z-index:3;}
 /* v7 MEASURED FIX, and the only token this card moves: the reversed-out
@@ -987,8 +990,8 @@ table.kpi td.tg{color:var(--black)}
           bch = Math.round(245 - 11*near);
 
       if (deg >= HUB_DEG){
-        var gr = r + 3.2;
-        ctx.globalAlpha = a * 0.24;
+        var gr = r + 1.6;                      /* v7.1: tighter glow — read as grey blobs on the white card */
+        ctx.globalAlpha = a * 0.16;
         ctx.drawImage(GLOW, sx - gr, sy - gr, gr*2, gr*2);
       }
       ctx.globalAlpha = a;
