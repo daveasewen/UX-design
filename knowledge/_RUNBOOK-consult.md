@@ -117,3 +117,29 @@ tokens on the records you need, not on the corpus.
 negative `none — <why>`. FORM-checked by `_capture_gate.py::consult_receipt_probe`,
 ADVISORY at birth; promotion to BLOCKING is Dave's word. Ritual runbook step 2f has the
 one-line contract.
+
+## n-gram doors (#269, 2026-09-13) — ADVISORY, read-only, NOT in the pack
+
+Research `_RESEARCH-ngram-lookups-2026-09-13-v1.html`; Dave's word *"as long as it's safe and
+you test the usual dependencies and externalities lets go for it"*. Three files, all in
+`knowledge/`, none shipped (`_search_core.py` / `_memento_search.py` are pinned byte-identical
+to the memento-package by `_validate_package_delta.py`, so nothing here touches them):
+
+- `knowledge/_ngram.py` — the library: word bigrams (`phrase_score`), character-trigram
+  vocabulary (`Vocabulary.nearest` — "ratifed" → "ratified"), word shingles + Jaccard.
+  `--selftest` bites (11).
+- `knowledge/_quote_gate.py "<phrase>"` — **are these his words, verbatim?** FOUND with
+  id · file:line, or NOT FOUND with the nearest real phrase (longest run of words in common)
+  and a *did you mean* for any word the record has never used. `--file <page>` checks every
+  quoted span of 4+ words in a page. Marker `QUOTE-GATE ADVISORY`; exit 0 unless `--strict`.
+  Probed at birth: *"six month project…"* 0 hits, *"6 month project…"* 2 — the paraphrase
+  the gate exists to catch.
+- `knowledge/_near_dupes.py` — **which records say the same thing twice?** 8-word shingle
+  overlap over the archive kinds (+ briefs, dreams); pairs ≥ 0.5 Jaccard, best first, as
+  candidates for the dream pass. At birth: 22 pairs, one at 1.00 (a GM-archive section
+  archived twice, `_GM-ARCHIVE.md:4940` and `:6133`).
+
+⛔ **Open, Dave's:** (1) whether the quote gate becomes a STEP in the capture ritual (today it
+is a door anyone may call); (2) phrase-aware RANKING inside `_memento_search.py` — a pack
+change, therefore a release; (3) `_quote_gate.py` cannot see the memory hooks
+(`memory/*.md` are not indexed) — *"keep them if they are cheap"* is a miss for that reason.

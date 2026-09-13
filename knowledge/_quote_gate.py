@@ -40,6 +40,7 @@ import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import _search_core as core
+import _ngram as ng
 
 INDEX_PATH = os.path.join(HERE, "_memento-index.json")
 MARK = "QUOTE-GATE ADVISORY"
@@ -82,7 +83,14 @@ def longest_common_run(a, b):
     return a[best_i - best:best_i]
 
 
-def check_phrase(records, phrase, texts=None):
+def build_vocab(texts):
+    vocab = set()
+    for t in texts:
+        vocab.update(words(t))
+    return ng.Vocabulary(vocab)
+
+
+def check_phrase(records, phrase, texts=None, vocab=None):
     q = norm(phrase)
     texts = texts if texts is not None else [record_text(r) for r in records]
     hits = [i for i, t in enumerate(texts) if q in t]
@@ -110,6 +118,11 @@ def check_phrase(records, phrase, texts=None):
                           "line": records[best].get("line"),
                           "shared_bigrams": f"{best_score} of {len(qb)}",
                           "longest_common_run": " ".join(run)}
+    if vocab is not None:
+        # words the corpus has never used — a typo, or a word that is yours not his
+        unknown = [w for w in qw if len(w) >= 4 and w not in vocab]
+        if unknown:
+            out["unknown_words"] = {w: [c for c, _, _ in vocab.nearest(w)] for w in unknown}
     return out
 
 
@@ -149,6 +162,8 @@ def report(results, as_json=False):
                   f"\n       longest run in common: \"{n['longest_common_run']}\"")
         else:
             print("       no record shares even two adjacent words with it")
+        for w, sugg in (r.get("unknown_words") or {}).items():
+            print(f"       \"{w}\" is not a word the record uses" + (f" — did you mean {', '.join(sugg)}?" if sugg else ""))
 
 
 # ------------------------------------------------------------------ selftest
@@ -180,6 +195,11 @@ def selftest():
     bite("curly quotes, case, double spaces and a full stop are normalised", r["found"] and r["count"] == 1)
     r = check_phrase(recs, "zebra crossing at dawn", texts)
     bite("a phrase sharing no bigram has no nearest", not r["found"] and "nearest" not in r)
+    vocab = build_vocab(texts)
+    r = check_phrase(recs, "6 month projct may become 6 weeks", texts, vocab)
+    bite("a misspelt word is named with 'did you mean'", r.get("unknown_words") == {"projct": ["project"]})
+    r = check_phrase(recs, "6 month project may become 6 weeks", texts, vocab)
+    bite("a verbatim hit carries no unknown words", r["found"] and "unknown_words" not in r)
     # mutation: the finder must be able to go red — a corrupted normaliser would find the paraphrase
     bite("mutation: 'six'≠'6' is preserved by norm()", norm("six") != norm("6"))
     # file span extraction
@@ -227,7 +247,8 @@ def main():
         raise SystemExit("quote-gate: nothing to check — give a phrase, or --file <path> with quoted spans. See --help.")
     records = core.load_records_or_refuse(INDEX_PATH, "quote-gate")["records"]
     texts = [record_text(r) for r in records]
-    results = [check_phrase(records, p, texts) for p in phrases]
+    vocab = build_vocab(texts)
+    results = [check_phrase(records, p, texts, vocab) for p in phrases]
     report(results, as_json)
     if strict and any(not r["found"] for r in results):
         sys.exit(1)
