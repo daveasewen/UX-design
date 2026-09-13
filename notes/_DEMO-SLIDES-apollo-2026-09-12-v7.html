@@ -911,7 +911,7 @@ table.kpi td.tg{color:var(--black)}
     H = Math.max(240, host.clientHeight || window.innerHeight);
     ccx = W*PPX; ccy = H*PPY;
     F  = W * 0.5;                  /* 90 deg horizontal FOV at any width */
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    DPR = Math.min(1.5, window.devicePixelRatio || 1);   /* v7.7 */
     cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
     cv.style.width = W+'px'; cv.style.height = H+'px';
     ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -1127,7 +1127,8 @@ table.kpi td.tg{color:var(--black)}
   size();
 
   var raf = null, running = false, paused = false;
-  function loop(now){ frame(now); raf = requestAnimationFrame(loop); }
+  var _fpsCap = 30, _minDt = 1000/_fpsCap, _lastDraw = 0;   /* v7.7: 30 fps cap — Dave: "this lane is a bit hot" */
+  function loop(now){ if (now - _lastDraw >= _minDt - 1){ _lastDraw = now; frame(now); } raf = requestAnimationFrame(loop); }
   function start(){ if (running || reduce || paused) return; running = true; lastT = -1; raf = requestAnimationFrame(loop); }
   function stop(){ running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
 
@@ -1251,6 +1252,8 @@ table.kpi td.tg{color:var(--black)}
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) stop();
   });
+  window.addEventListener('blur', stop);   /* v7.7 */
+  window.addEventListener('focus', function(){ if (vis.s1 || vis.s2) start(); });
 
   var rt = null;
   window.addEventListener('resize', function(){
@@ -1627,7 +1630,7 @@ table.kpi td.tg{color:var(--black)}
     var host = cv.parentNode;
     W = Math.max(240, host.clientWidth || 800);
     H = Math.max(200, host.clientHeight || 600);
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    DPR = Math.min(1.5, window.devicePixelRatio || 1);   /* v7.7 */
     cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
     cv.style.width = W+'px'; cv.style.height = H+'px';
     ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -1952,7 +1955,8 @@ table.kpi td.tg{color:var(--black)}
 
   size();
   var raf = null, running = false, paused = false;
-  function loop(now){ frame(now); raf = requestAnimationFrame(loop); }
+  var _fpsCap = 30, _minDt = 1000/_fpsCap, _lastDraw = 0;   /* v7.7: 30 fps cap — Dave: "this lane is a bit hot" */
+  function loop(now){ if (now - _lastDraw >= _minDt - 1){ _lastDraw = now; frame(now); } raf = requestAnimationFrame(loop); }
   function start(){ if (running || reduce || paused) return; running = true; lastT = -1; raf = requestAnimationFrame(loop); }
   function stop(){ running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
 
@@ -1965,6 +1969,8 @@ table.kpi td.tg{color:var(--black)}
     var s3 = document.getElementById('s3'); if (s3) io3.observe(s3);
   } else start();
   document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); });
+  window.addEventListener('blur', stop);   /* v7.7: no drawing while the window is behind another */
+  window.addEventListener('focus', function(){ var s3=document.getElementById('s3'), r=s3&&s3.getBoundingClientRect(); if (r && r.bottom>0 && r.top<innerHeight) start(); });
 
   var rt3 = null;
   window.addEventListener('resize', function(){
