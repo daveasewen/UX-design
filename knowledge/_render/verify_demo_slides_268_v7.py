@@ -438,7 +438,10 @@ def main():
         im2 = shot(pg, OUT / "s2-settled.png")
 
         # ---- W4 · contrast of the strip against the MEASURED ground -----------
-        strip = pg.evaluate(INK_RECT, "#s2 table.strip")
+        # v7.3 replaced the run-of-show table with the five-chapter list, so
+        # the selector this whole block reads is `#s2 .chapters` now — the
+        # inherited `#s2 table.strip` matches nothing and crashed the driver.
+        strip = pg.evaluate(INK_RECT, "#s2 .chapters")
         report["strip_rect"] = strip
         box = (max(0, strip["x"]), max(0, strip["y"]),
                min(1920, strip["x"] + strip["width"]),
@@ -450,7 +453,7 @@ def main():
         # pure white, so this has to read the DOM.
         used = pg.evaluate("""()=>{
           const o = {};
-          document.querySelectorAll('#s2 table.strip th, #s2 table.strip td').forEach(el=>{
+          document.querySelectorAll('#s2 .chapters b, #s2 .chapters em, #s2 .chapters p, #s2 .chapters .n').forEach(el=>{
             if (!(el.textContent||'').trim()) return;
             const c = getComputedStyle(el).color;
             const f = Math.round(parseFloat(getComputedStyle(el).fontSize));

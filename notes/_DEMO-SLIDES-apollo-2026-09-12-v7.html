@@ -239,7 +239,7 @@ table.strip td.scr{color:var(--g6);width:300px}
 table.strip tr.sum td{border-bottom:none;padding-top:12px;font-weight:500}
 
 /* ---- 3 · the parts bin — the gearbox ----
-   v7.4 (#268). The card is WHITE and opaque: the fixed fly-through layer
+   v7.5 (#268). The card is WHITE and opaque: the fixed fly-through layer
    sits at z-index -1 and must not read through this one. Type on the
    left, the drawing on the right ~60%, vertically centred, nothing else.
    The drawing's own canvas is white-filled, so it is its own ground. */
@@ -1297,26 +1297,41 @@ table.kpi td.tg{color:var(--black)}
   window.kgSnap = snap;
 })();
 /* ============================================================
-   3 · THE PARTS BIN — a line-drawn 3D gearbox. v7.4 (#268).
+   3 · THE PARTS BIN — a line-drawn 3D gearbox. v7.5 (#268).
 
    Dave, verbatim: "The parts bin — do you think we could have a line
    drawn 'engineering' style 3d diagram of a gearbox, it might even
    respond to mouse movements too??"
 
-   The metaphor is SPOKEN. The card carries the eyebrow, the h2 and this
-   drawing, and nothing else. So the drawing has to be the argument: a
-   real mechanism, correctly meshed, that you could hand to a machinist —
-   because the point of the metaphor is that our designers are machining
-   one of these by hand every time a car comes down the line.
+   v7.5 is an ART-DIRECTION pass on v7.4. The engineering was right and
+   the picture was a tangle: three shafts stacked so the gears overlapped,
+   a view that showed the teeth edge-on, 572 dashed segments competing
+   with 1,718 solid, and a full box housing on top of all of it. Four
+   changes, none of them to the mechanism:
+
+     1  THE TRAIN IS A ROW. The three shafts sit in ONE horizontal plane,
+        side by side — input LEFT, intermediate CENTRE, output RIGHT — so
+        the drawing reads as three circles meshing in a line, the classic
+        reduction-gearbox elevation. The centre distances are untouched
+        and still EQUAL the sums of the pitch radii.
+     2  THE VIEW IS ON THE FACES. A 3/4 view, yaw 35 deg / pitch 20 deg,
+        the gear axes receding to the right and back. The disc opening is
+        cos(pitch)cos(yaw) = 0.77, so every gear reads as a toothed DISC
+        at rest, not an edge-on comb. The mouse orbits around that.
+     3  HIDDEN LINE, NOT WIREFRAME. Dashes are kept for ONE thing — the
+        run of each shaft that passes BEHIND the gear it carries, from
+        the gear's away face to where it leaves the tip circle. That is
+        the bit that explains the mechanism. Teeth and hubs carry none;
+        the away face of every gear is drawn as its OUTLINE (the tip
+        circle) instead of 5N tooth-flank edges.
+     4  THE HOUSING IS A BASE. No end plates. A base plate as a thin
+        outline, and two short bearing pedestals per shaft as plain
+        rectangles with a bearing eye — enough to say "mounted".
 
    WHAT IT IS. A two-stage reduction train, built in JS, no libraries:
      stage 1  12T pinion (input shaft) -> 30T spur gear
      stage 2  14T pinion (same intermediate shaft) -> 36T output gear
      i = (30/12) x (36/14) = 6.43 : 1
-   Three parallel shafts on a common axis direction (+X), gears in the
-   YZ plane, two bearing rings per shaft, and an open housing — a base
-   plate and two end plates — drawn as outlines only so the train stays
-   visible through it.
 
    MESHING IS CONSTRUCTED, NOT TUNED. Each gear's angle is written so a
    tooth of the driver sits ON the line of centres while a GAP of the
@@ -1330,16 +1345,15 @@ table.kpi td.tg{color:var(--black)}
    plane, so a Sutherland-Hodgman clip is an exact interpenetration
    test, sampled at 12 phases.
 
-   THE LOOK IS HIDDEN-LINE. Every solid is a polar profile extruded
-   along X, so each edge has exactly two adjacent faces and the back-face
-   test is arithmetic, not a guess:
-     face edge (profile)  both faces back  -> dashed #BDBDBD 4/3
-     silhouette (quad facing differs)      -> solid
-     hard edge (dihedral > 20 deg)         -> solid if either quad faces
-                                              us, dashed if neither
-     soft edge (a 24-gon's facets)         -> not drawn at all
-   That last line is what keeps a 24-sided shaft from reading as a
-   barrel of stripes. No shading, no fills.
+   AXES. Model coordinates are (u, a, b): u along the gear axes, a the
+   horizontal row the three shafts sit on, b vertical. The projection is
+   a plain yaw/pitch:
+     screen x =  m00 a + m02 u
+     screen y = (m10 a + m11 b + m12 u), flipped
+     depth    =  m20 a + m21 b + m22 u
+   A face normal is +/-u, so the back-face test is arithmetic (m22), and
+   a side-wall normal lives in (a,b), so its test is (m20,m21). Nothing
+   is guessed.
 
    ONE ACCENT, per the two-red law s151-D1: the OUTPUT gear's pitch
    circle in #DA1A00 on the white card. Everything else is #111 hairline,
@@ -1347,9 +1361,9 @@ table.kpi td.tg{color:var(--black)}
 
    MOUSE. Orbit only, and it STAYS WHERE THE MOUSE LEFT IT — Dave
    rejected return-to-centre in section 1 ("too jerky") and the same
-   ruling binds here. Cursor x -> yaw +/-25 deg about a resting 3/4 view,
-   cursor y -> pitch +/-12 deg, critically damped, tau = 1.0 s, the same
-   springStep the fly-through uses.
+   ruling binds here. Cursor x -> yaw +/-25 deg about the resting 3/4
+   view, cursor y -> pitch +/-12 deg, critically damped, tau = 1.0 s,
+   the same springStep the fly-through uses.
    ============================================================ */
 (function(){
   var cv = document.getElementById('gb');
@@ -1364,12 +1378,13 @@ table.kpi td.tg{color:var(--black)}
   var RPM_IN = 6, W_IN = RPM_IN * 2*Math.PI/60; /* rad/s on the input    */
   var RA = MOD*NA/2, RB = MOD*NB/2, RC = MOD*NC/2, RD = MOD*ND/2;
 
-  /* shaft centres in the YZ plane; the centre distances ARE the sums of
-     the pitch radii, so the mesh is geometric and not fitted by eye. */
-  var S2 = [0, 0];
-  var S1 = [RA+RB, 0];
-  var D23 = RC+RD;
-  var S3 = [-135, Math.sqrt(D23*D23 - 135*135)];
+  /* THE ROW. Shaft centres in the (a,b) plane, all at b = 0 — one
+     horizontal plane, input left, intermediate centre, output right.
+     The centre distances ARE the sums of the pitch radii, so the mesh is
+     geometric and not fitted by eye. */
+  var S1 = [-(RA+RB), 0];        /* input        a = -126 */
+  var S2 = [0, 0];               /* intermediate a =    0 */
+  var S3 = [RC+RD, 0];           /* output       a = +150 */
   var PHI_AB = Math.atan2(S2[1]-S1[1], S2[0]-S1[0]);
   var PHI_CD = Math.atan2(S3[1]-S2[1], S3[0]-S2[0]);
   var W_B = -W_IN * NA/NB, W_D = -W_B * NC/ND;
@@ -1412,7 +1427,7 @@ table.kpi td.tg{color:var(--black)}
     var a = [], i; for (i=0;i<n;i++) a.push(rad, i*2*Math.PI/n);
     return mkProf(a);
   }
-  /* a 24-gon shaft with one keyway, depth kd, half-angle kw, at a = 0 */
+  /* a shaft n-gon with one keyway, depth kd, half-angle kw, at a = 0 */
   function shaftProf(rs, n, kd, kw){
     var a = [], i, ang, st = 2*Math.PI/n;
     a.push(rs, kw);
@@ -1421,54 +1436,67 @@ table.kpi td.tg{color:var(--black)}
     return mkProf(a);
   }
 
+  var RS = 14;                                   /* shaft radius          */
   var PG = {A:gearProf(NA), B:gearProf(NB), C:gearProf(NC), D:gearProf(ND)};
-  var P_BORE = ngonProf(14, 24), P_SHAFT = shaftProf(14, 24, 5, 0.16),
-      P_BRG_O = ngonProf(26, 24), P_BRG_I = ngonProf(14, 24);
+  var P_BORE = ngonProf(RS, 20), P_SHAFT = shaftProf(RS, 20, 5, 0.16);
 
   /* ---- 3 · the parts ------------------------------------------------- */
-  var GW = 18;                                   /* gear face width      */
-  var X1 = -40, X2 = 40;                         /* the two gear stations */
-  var parts = [];
-  function part(prof, x0, x1, c, spin, inward, tag){
-    parts.push({prof:prof, x0:x0, x1:x1, cy:c[0], cz:c[1], spin:spin, inward:!!inward, tag:tag});
+  var GW = 18;                                   /* gear face width       */
+  var X1 = -34, X2 = 34;                         /* the two gear stations */
+  var SH0 = -86, SH1 = 86;                       /* the shaft ends        */
+  var parts = [], GEARS = [];
+  function part(o){ parts.push(o); return o; }
+  function gear(prof, x, c, spin, tag){
+    var p = part({prof:prof, x0:x-GW/2, x1:x+GW/2, cy:c[0], cz:c[1], spin:spin,
+                  inward:0, tag:tag, sides:1, hid:0,
+                  far:{r:prof.rt, n:24, dash:false}});
+    GEARS.push({p:p, rt:prof.rt});
+    return p;
   }
-  part(PG.A, X1-GW/2, X1+GW/2, S1, thA, 0, 'gearA');
-  part(PG.B, X1-GW/2, X1+GW/2, S2, thB, 0, 'gearB');
-  part(PG.C, X2-GW/2, X2+GW/2, S2, thC, 0, 'gearC');
-  part(PG.D, X2-GW/2, X2+GW/2, S3, thD, 0, 'gearD');
-  part(P_BORE, X1-GW/2, X1+GW/2, S1, thA, 1, 'boreA');
-  part(P_BORE, X1-GW/2, X1+GW/2, S2, thB, 1, 'boreB');
-  part(P_BORE, X2-GW/2, X2+GW/2, S2, thC, 1, 'boreC');
-  part(P_BORE, X2-GW/2, X2+GW/2, S3, thD, 1, 'boreD');
-  part(P_SHAFT, -140, 140, S1, thA, 0, 'shaft1');
-  part(P_SHAFT, -140, 140, S2, thB, 0, 'shaft2');
-  part(P_SHAFT, -140, 140, S3, thD, 0, 'shaft3');
-  [[S1,thA],[S2,thB],[S3,thD]].forEach(function(s, i){
-    [[-122,-104],[104,122]].forEach(function(b){
-      part(P_BRG_O, b[0], b[1], s[0], null, 0, 'brgO'+i);
-      part(P_BRG_I, b[0], b[1], s[0], null, 1, 'brgI'+i);
-    });
+  function bore(x, c, spin, tag){
+    /* the hub bore on the camera-side face only — the away one would be a
+       ring of 20 short dashes, which is the wireframe look v7.5 cuts. */
+    return part({prof:P_BORE, x0:x-GW/2, x1:x+GW/2, cy:c[0], cz:c[1], spin:spin,
+                 inward:1, tag:tag, sides:0, hid:0, far:{r:0, n:0, dash:false}});
+  }
+  gear(PG.A, X1, S1, thA, 'gearA');
+  gear(PG.B, X1, S2, thB, 'gearB');
+  gear(PG.C, X2, S2, thC, 'gearC');
+  gear(PG.D, X2, S3, thD, 'gearD');
+  bore(X1, S1, thA, 'boreA');
+  bore(X1, S2, thB, 'boreB');
+  bore(X2, S2, thC, 'boreC');
+  bore(X2, S3, thD, 'boreD');
+  var SHAFTS = [];
+  [[S1,thA,'shaft1'],[S2,thB,'shaft2'],[S3,thD,'shaft3']].forEach(function(s){
+    part({prof:P_SHAFT, x0:SH0, x1:SH1, cy:s[0][0], cz:s[0][1], spin:s[1],
+          inward:0, tag:s[2], sides:0, hid:0, far:{r:RS, n:20, dash:false}});
+    SHAFTS.push({cy:s[0][0], cz:s[0][1],
+                 gears:GEARS.filter(function(g){ return g.p.cy === s[0][0] && g.p.cz === s[0][1]; })});
   });
 
-  /* the open housing: outlines only, so the train stays visible */
-  var HX = 126, HY0 = -266, HY1 = 178, HZ0 = -112, HZ1 = 194, BT = 12;
+  /* ---- 3b · the housing: a base plate and six short pedestals --------- */
+  var PED = [[SH0+8, SH0+26], [SH1-26, SH1-8]];  /* two stations per shaft */
+  var BASE_T = -128, BASE_B = -142;              /* the base plate in b    */
   function box(x0,x1,y0,y1,z0,z1){
     var v = [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],
              [x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]];
     var e = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
     return e.map(function(p){ return [v[p[0]], v[p[1]]]; });
   }
-  var HOUSING = box(-150,150, HY0, HY0+BT, HZ0, HZ1);
-  [-HX, HX].forEach(function(x){
-    HOUSING.push([[x,HY0,HZ0],[x,HY1,HZ0]], [[x,HY1,HZ0],[x,HY1,HZ1]],
-                 [[x,HY1,HZ1],[x,HY0,HZ1]], [[x,HY0,HZ1],[x,HY0,HZ0]]);
-    /* the bearing bores. Without them the end plates read as two panes of
-       glass standing in front of the train; with them they read as what
-       they are, and the whole drawing snaps into being a gearbox. */
-    [S1,S2,S3].forEach(function(c){
-      var n = 40, i, prev = null;
+  var HOUSING = box(SH0, SH1, S1[0]-64, S3[0]+64, BASE_B, BASE_T);
+  [S1,S2,S3].forEach(function(c){
+    PED.forEach(function(st){
+      var um = (st[0]+st[1])/2, w = 30, top = -20;
+      /* a plain rectangle standing on the base plate, in the plane u = um */
+      HOUSING.push([[um, c[0]-w, BASE_T], [um, c[0]+w, BASE_T]],
+                   [[um, c[0]+w, BASE_T], [um, c[0]+w, top]],
+                   [[um, c[0]+w, top],    [um, c[0]-w, top]],
+                   [[um, c[0]-w, top],    [um, c[0]-w, BASE_T]]);
+      /* the bearing eye it carries */
+      var n = 16, i, prev = null;
       for (i=0;i<=n;i++){
-        var a = i*2*Math.PI/n, q = [x, c[0]+30*Math.cos(a), c[1]+30*Math.sin(a)];
+        var a = i*2*Math.PI/n, q = [um, c[0] + 24*Math.cos(a), c[1] + 24*Math.sin(a)];
         if (prev) HOUSING.push([prev, q]);
         prev = q;
       }
@@ -1478,13 +1506,15 @@ table.kpi td.tg{color:var(--black)}
   /* construction geometry: a centre-line down each shaft, a pitch circle
      on each gear. The output gear's is the card's ONE accent. */
   var CENTRELINES = [S1,S2,S3].map(function(s){
-    return [[-158, s[0], s[1]], [158, s[0], s[1]]];
+    return [[SH0-16, s[0], s[1]], [SH1+16, s[0], s[1]]];
   });
   var PITCH = [{c:S1, r:RA, x:X1}, {c:S2, r:RB, x:X1},
                {c:S2, r:RC, x:X2}, {c:S3, r:RD, x:X2, accent:true}];
 
   /* ---- 4 · the camera ------------------------------------------------ */
-  var YAW0 = 32*Math.PI/180, PIT0 = 22*Math.PI/180;
+  /* yaw 35 deg about the vertical, pitch 20 deg: the gear axes recede to
+     the right and BACK, so we are looking at the gear FACES. */
+  var YAW0 = -35*Math.PI/180, PIT0 = 20*Math.PI/180;
   var YAW_R = 25*Math.PI/180, PIT_R = 12*Math.PI/180;
   var TAU = 1.0;
   var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
@@ -1542,6 +1572,11 @@ table.kpi td.tg{color:var(--black)}
        cannot walk out of the card when the mouse swings the view. */
     var lo = [1e9,1e9], hi = [-1e9,-1e9], i, j, k, q, t;
     var saved = [m00,m02,m10,m11,m12,m20,m21,m22];
+    function hit(u, a, b){
+      var sx = m00*a + m02*u, sy = m10*a + m11*b + m12*u;
+      if (sx<lo[0]) lo[0]=sx; if (sx>hi[0]) hi[0]=sx;
+      if (sy<lo[1]) lo[1]=sy; if (sy>hi[1]) hi[1]=sy;
+    }
     for (i=-1;i<=1;i++) for (j=-1;j<=1;j++){
       setView(YAW0 + i*YAW_R, PIT0 + j*PIT_R);
       for (t=0; t<3; t++){
@@ -1550,26 +1585,41 @@ table.kpi td.tg{color:var(--black)}
           var p = parts[q], th = p.spin ? p.spin(tt) : 0, rad = p.prof.rad, P = p.prof.P;
           for (k=0;k<P;k++){
             var r = rad[2*k], a = rad[2*k+1] + th;
-            var y = p.cy + r*Math.cos(a), z = p.cz + r*Math.sin(a);
-            [p.x0, p.x1].forEach(function(x){
-              var sx = m00*x + m02*z, sy = m10*x + m11*y + m12*z;
-              if (sx<lo[0]) lo[0]=sx; if (sx>hi[0]) hi[0]=sx;
-              if (sy<lo[1]) lo[1]=sy; if (sy>hi[1]) hi[1]=sy;
-            });
+            var ay = p.cy + r*Math.cos(a), bz = p.cz + r*Math.sin(a);
+            hit(p.x0, ay, bz); hit(p.x1, ay, bz);
           }
         }
         HOUSING.concat(CENTRELINES).forEach(function(sg){
-          sg.forEach(function(v){
-            var sx = m00*v[0] + m02*v[2], sy = m10*v[0] + m11*v[1] + m12*v[2];
-            if (sx<lo[0]) lo[0]=sx; if (sx>hi[0]) hi[0]=sx;
-            if (sy<lo[1]) lo[1]=sy; if (sy>hi[1]) hi[1]=sy;
-          });
+          sg.forEach(function(v){ hit(v[0], v[1], v[2]); });
         });
       }
     }
+    /* the RESTING box on its own, into a fresh accumulator: the fit needs
+       both, or the drawing sits small in the card so that a hard-over
+       orbit would still fit — which is what v7.4 did. */
+    var rlo = [1e9,1e9], rhi = [-1e9,-1e9];
+    (function(){
+      var slo = lo, shi = hi; lo = rlo; hi = rhi;
+      setView(YAW0, PIT0);
+      for (var t2=0; t2<3; t2++){
+        var tt = t2 * (2*Math.PI/NA) / W_IN / 3;
+        for (var q2=0;q2<parts.length;q2++){
+          var p = parts[q2], th = p.spin ? p.spin(tt) : 0, rad = p.prof.rad, P = p.prof.P;
+          for (var k2=0;k2<P;k2++){
+            var r = rad[2*k2], a = rad[2*k2+1] + th;
+            var ay = p.cy + r*Math.cos(a), bz = p.cz + r*Math.sin(a);
+            hit(p.x0, ay, bz); hit(p.x1, ay, bz);
+          }
+        }
+        HOUSING.concat(CENTRELINES).forEach(function(sg){
+          sg.forEach(function(v){ hit(v[0], v[1], v[2]); });
+        });
+      }
+      lo = slo; hi = shi;
+    })();
     m00=saved[0]; m02=saved[1]; m10=saved[2]; m11=saved[3]; m12=saved[4];
     m20=saved[5]; m21=saved[6]; m22=saved[7];
-    return {lo:lo, hi:hi};
+    return {lo:lo, hi:hi, rlo:rlo, rhi:rhi};
   }
   var BOXU = null;
 
@@ -1581,75 +1631,149 @@ table.kpi td.tg{color:var(--black)}
     cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
     cv.style.width = W+'px'; cv.style.height = H+'px';
     ctx.setTransform(DPR,0,0,DPR,0,0);
-    PAD_X = Math.min(96, W*0.11); PAD_Y = Math.min(34, H*0.05);
+    PAD_X = Math.min(96, W*0.09); PAD_Y = Math.min(48, H*0.07);
     if (!BOXU) BOXU = sweepBox();
-    var bw = BOXU.hi[0]-BOXU.lo[0], bh = BOXU.hi[1]-BOXU.lo[1];
+    /* scale off the RESTING box, allowed to grow K of the way toward the
+       full-orbit box. K is the composition knob: 0 fills the card at rest
+       and clips hard over, 1 is v7.4's small drawing in a big card. */
+    var K = 0.42;
+    var rw = BOXU.rhi[0]-BOXU.rlo[0], rh = BOXU.rhi[1]-BOXU.rlo[1];
+    var bw = rw + K*((BOXU.hi[0]-BOXU.lo[0]) - rw);
+    var bh = rh + K*((BOXU.hi[1]-BOXU.lo[1]) - rh);
     SC = Math.min((W - 2*PAD_X)/bw, (H - 2*PAD_Y)/bh) * 0.98;
-    OX = W/2 - (BOXU.lo[0]+BOXU.hi[0])/2 * SC;
-    OY = H/2 + (BOXU.lo[1]+BOXU.hi[1])/2 * SC;
+    OX = W/2 - (BOXU.rlo[0]+BOXU.rhi[0])/2 * SC;
+    OY = H/2 + (BOXU.rlo[1]+BOXU.rhi[1])/2 * SC;
   }
 
   /* ---- 6 · the ink --------------------------------------------------- */
   var SOL = new Float64Array(24000), SOLN = 0,
-      HID = new Float64Array(24000), HIDN = 0,
+      HID = new Float64Array(4000),  HIDN = 0,
       CON = new Float64Array(6000),  CONN = 0,
       ACC = new Float64Array(2000),  ACCN = 0;
   function put(which, x0, y0, x1, y1){
     if (which === 0){ if (SOLN < 23996){ SOL[SOLN++]=x0; SOL[SOLN++]=y0; SOL[SOLN++]=x1; SOL[SOLN++]=y1; } }
-    else            { if (HIDN < 23996){ HID[HIDN++]=x0; HID[HIDN++]=y0; HID[HIDN++]=x1; HID[HIDN++]=y1; } }
+    else            { if (HIDN <  3996){ HID[HIDN++]=x0; HID[HIDN++]=y0; HID[HIDN++]=x1; HID[HIDN++]=y1; } }
   }
-  var probe = {solid:null, hidden:null};
-  var audit = {front_solid:0, front_hidden:0, back_solid:0, back_hidden:0};
+  function pt3(u, a, b){
+    return [OX + (m00*a + m02*u)*SC, OY - (m10*a + m11*b + m12*u)*SC];
+  }
+  /* screen derivatives of the three model axes, one model unit each */
+  function dU(){ return [m02*SC, -m12*SC]; }
+  function dA(){ return [m00*SC, -m10*SC]; }
+  function dB(){ return [0,      -m11*SC]; }
 
   function buildPart(p, t){
-    var rad = p.prof.rad, P = p.prof.P, hard = p.prof.hard, i, j, k;
+    var prof = p.prof, rad = prof.rad, P = prof.P, hard = prof.hard, i, j, k;
     var th = p.spin ? p.spin(t) : 0;
     for (i=0;i<P;i++){
       var r = rad[2*i], a = rad[2*i+1] + th;
       YY[i] = p.cy + r*Math.cos(a); ZZ[i] = p.cz + r*Math.sin(a);
     }
     for (i=0;i<P;i++){
-      var y = YY[i], z = ZZ[i];
-      FX[i] = OX + (m00*p.x1 + m02*z)*SC;
-      FY[i] = OY - (m10*p.x1 + m11*y + m12*z)*SC;
-      BX[i] = OX + (m00*p.x0 + m02*z)*SC;
-      BY[i] = OY - (m10*p.x0 + m11*y + m12*z)*SC;
+      var a2 = YY[i], b2 = ZZ[i];
+      FX[i] = OX + (m00*a2 + m02*p.x1)*SC;
+      FY[i] = OY - (m10*a2 + m11*b2 + m12*p.x1)*SC;
+      BX[i] = OX + (m00*a2 + m02*p.x0)*SC;
+      BY[i] = OY - (m10*a2 + m11*b2 + m12*p.x0)*SC;
     }
-    var fv = m20 > 0, bv = -m20 > 0;           /* face normals are +/-X  */
+    var nearF = m22 > 0;          /* true: the x1 face is the camera side */
     for (i=0;i<P;i++){
       j = (i+1)%P;
       var dy = YY[j]-YY[i], dz = ZZ[j]-ZZ[i];
       var ny = dz, nz = -dy; if (p.inward){ ny = -ny; nz = -nz; }
-      QV[i] = (m21*ny + m22*nz) > 0 ? 1 : 0;
+      QV[i] = (m20*ny + m21*nz) > 0 ? 1 : 0;
     }
-    var isD = (p.tag === 'gearD');
     for (i=0;i<P;i++){
       j = (i+1)%P; k = (i+P-1)%P;
-      var wF = (fv || QV[i]) ? 0 : 1, wB = (bv || QV[i]) ? 0 : 1;
-      put(wF, FX[i], FY[i], FX[j], FY[j]);
-      put(wB, BX[i], BY[i], BX[j], BY[j]);
-      recProbe(wF, FX[i], FY[i], FX[j], FY[j], p.tag);
-      recProbe(wB, BX[i], BY[i], BX[j], BY[j], p.tag);
-      if (isD){ (wF ? audit.front_hidden++ : audit.front_solid++);
-                (wB ? audit.back_hidden++  : audit.back_solid++); }
-      if (QV[i] !== QV[k]){      put(0, FX[i], FY[i], BX[i], BY[i]);
-                                 recProbe(0, FX[i], FY[i], BX[i], BY[i], p.tag); }
-      else if (hard[i]){         put(QV[i] ? 0 : 1, FX[i], FY[i], BX[i], BY[i]);
-                                 recProbe(QV[i] ? 0 : 1, FX[i], FY[i], BX[i], BY[i], p.tag); }
+      /* the camera-side face: always solid, always the true profile */
+      if (nearF) put(0, FX[i], FY[i], FX[j], FY[j]);
+      else       put(0, BX[i], BY[i], BX[j], BY[j]);
+      /* the away face: an OUTLINE when p.far says so (awayOutline),
+         otherwise the profile under the hidden-line rule */
+      if (!p.far){
+        var w = QV[i] ? 0 : 1;
+        if (w === 0 || p.hid){
+          if (nearF) put(w, BX[i], BY[i], BX[j], BY[j]);
+          else       put(w, FX[i], FY[i], FX[j], FY[j]);
+        }
+      }
+      /* side walls: the silhouette always; a hard edge only where asked */
+      if (p.sides){
+        if (QV[i] !== QV[k]) put(0, FX[i], FY[i], BX[i], BY[i]);
+        else if (p.sides === 2 && hard[i]){
+          if (QV[i]) put(0, FX[i], FY[i], BX[i], BY[i]);
+          else if (p.hid) put(1, FX[i], FY[i], BX[i], BY[i]);
+        }
+      }
+    }
+    if (p.far && p.far.r > 0) awayOutline(p);
+  }
+  /* the away face of a gear is its OUTLINE — the tip circle — and not 5N
+     tooth-flank edges. This is the single biggest cut in v7.5. */
+  function awayOutline(p){
+    var u = (m22 > 0) ? p.x0 : p.x1, n = p.far.n, i, prev = null;
+    for (i=0;i<=n;i++){
+      var a = i*2*Math.PI/n;
+      var q = pt3(u, p.cy + p.far.r*Math.cos(a), p.cz + p.far.r*Math.sin(a));
+      if (prev) put(p.far.dash ? 1 : 0, prev[0], prev[1], q[0], q[1]);
+      prev = q;
     }
   }
-  /* the spot-check surface: the LONGEST solid and the LONGEST hidden edge
-     in the frame, with the part each belongs to. Long enough to sample
-     pixels along, which a 15 px gear-tooth flank is not. gbEdgeProbe()
-     then narrows these to an edge that is CLEAR of every other line in
-     the frame — a dashed edge sitting under a solid one would read
-     continuous and the spot-check would be measuring the wrong ink. */
-  function recProbe(w, x0, y0, x1, y1, tag){
-    var L = Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0));
-    var slot = w ? 'hidden' : 'solid';
-    if (!probe[slot] || L > probe[slot].len)
-      probe[slot] = {x0:x0, y0:y0, x1:x1, y1:y1, len:L, tag:tag};
+
+  /* THE ONLY HIDDEN LINES. A shaft is two silhouette lines; they run SOLID
+     where the shaft is in the open and DASHED where the gear it carries is
+     between them and the camera — from the gear's away face back to where
+     the shaft leaves the tip circle, plus the width of the hub itself. That
+     is the one thing hidden line is here to say: the shaft goes THROUGH.
+     Drawn here rather than by buildPart, because the solid run and the
+     dashed run are the same two lines and only one of them may be inked. */
+  function shaftLines(){
+    var du = dU(), da = dA(), db = dB();
+    var nearHi = m22 > 0;                         /* x1 is the camera side */
+    var nx = -du[1], ny = du[0], nl = Math.sqrt(nx*nx + ny*ny) || 1;
+    nx /= nl; ny /= nl;                           /* screen normal to u    */
+    var ext = RS * Math.sqrt(Math.pow(nx*da[0] + ny*da[1], 2) +
+                             Math.pow(nx*db[0] + ny*db[1], 2));
+    SHAFTS.forEach(function(s){
+      var iv = [];
+      s.gears.forEach(function(g){
+        var ea = [da[0]*g.rt, da[1]*g.rt], eb = [db[0]*g.rt, db[1]*g.rt];
+        var det = ea[0]*eb[1] - ea[1]*eb[0];
+        if (!det) return;
+        /* du in the (ea, eb) basis: the tip ellipse is the unit circle there,
+           so |du|^-1 is the run of shaft the gear hides, in model units. */
+        var q0 = ( eb[1]*du[0] - eb[0]*du[1]) / det;
+        var q1 = (-ea[1]*du[0] + ea[0]*du[1]) / det;
+        var m = Math.sqrt(q0*q0 + q1*q1);
+        if (!m) return;
+        var tEx = 1/m;
+        if (nearHi) iv.push([Math.max(SH0, g.p.x0 - tEx), g.p.x1]);
+        else        iv.push([g.p.x0, Math.min(SH1, g.p.x1 + tEx)]);
+      });
+      iv.sort(function(a,b){ return a[0]-b[0]; });
+      var mg = [];
+      iv.forEach(function(v){
+        var last = mg[mg.length-1];
+        if (last && v[0] <= last[1]) last[1] = Math.max(last[1], v[1]);
+        else mg.push([v[0], v[1]]);
+      });
+      var segs = [], cur = SH0;
+      mg.forEach(function(v){
+        var a0 = Math.max(SH0, v[0]), a1 = Math.min(SH1, v[1]);
+        if (a0 > cur) segs.push([cur, a0, 0]);
+        if (a1 > Math.max(cur, a0)) segs.push([Math.max(cur, a0), a1, 1]);
+        cur = Math.max(cur, a1);
+      });
+      if (cur < SH1) segs.push([cur, SH1, 0]);
+      segs.forEach(function(sg){
+        if (sg[1] - sg[0] < 0.5) return;
+        var p0 = pt3(sg[0], s.cy, s.cz), p1 = pt3(sg[1], s.cy, s.cz);
+        put(sg[2], p0[0]+nx*ext, p0[1]+ny*ext, p1[0]+nx*ext, p1[1]+ny*ext);
+        put(sg[2], p0[0]-nx*ext, p0[1]-ny*ext, p1[0]-nx*ext, p1[1]-ny*ext);
+      });
+    });
   }
+
   function segDist(px, py, x0, y0, x1, y1){
     var dx = x1-x0, dy = y1-y0, L2 = dx*dx + dy*dy;
     var t = L2 ? ((px-x0)*dx + (py-y0)*dy)/L2 : 0;
@@ -1658,14 +1782,17 @@ table.kpi td.tg{color:var(--black)}
     return Math.sqrt(qx*qx + qy*qy);
   }
   /* the longest segment of `arr` whose interior stays >= CLR px from every
-     other line drawn this frame */
+     other line drawn this frame — a dashed edge sitting under a solid one
+     would read continuous, and a spot-check would measure the wrong ink. */
   function clearest(arr, n, minLen){
-    var CLR = 5, cand = [], i;
+    var CLR = 5, cand = [], i, longest = null;
     for (i=0;i<n;i+=4){
       var L = Math.sqrt((arr[i+2]-arr[i])*(arr[i+2]-arr[i]) +
                         (arr[i+3]-arr[i+1])*(arr[i+3]-arr[i+1]));
+      if (!longest || L > longest[0]) longest = [L, i];
       if (L >= minLen) cand.push([L, i]);
     }
+    if (!cand.length){ if (!longest) return null; cand.push(longest); }
     cand.sort(function(a,b){ return b[0]-a[0]; });
     var groups = [[SOL,SOLN],[HID,HIDN],[CON,CONN],[ACC,ACCN]];
     var best = null;
@@ -1692,9 +1819,6 @@ table.kpi td.tg{color:var(--black)}
     return best;
   }
 
-  function pt3(x, y, z){
-    return [OX + (m00*x + m02*z)*SC, OY - (m10*x + m11*y + m12*z)*SC];
-  }
   function buildStatic(){
     HOUSING.forEach(function(s){
       var a = pt3(s[0][0],s[0][1],s[0][2]), b = pt3(s[1][0],s[1][1],s[1][2]);
@@ -1728,49 +1852,61 @@ table.kpi td.tg{color:var(--black)}
   }
 
   /* ---- 7 · the callouts ---------------------------------------------- */
-  var MONO = '11px ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace';
-  var LABELS = [{g:PITCH[0], t:NA+'T'}, {g:PITCH[1], t:NB+'T'},
-                {g:PITCH[2], t:NC+'T'}, {g:PITCH[3], t:ND+'T'}];
+  /* short leaders that land ON the gear they name — not two stacked
+     columns in the margins with 400 px of leader crossing the drawing. */
+  var MONO = '12px ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace';
+  /* direction out of the gear, and the leader length — never over 120 px */
+  var LABELS = [{g:PITCH[0], t:NA+'T', d:[-0.62,-0.78], k: 30},
+                {g:PITCH[1], t:NB+'T', d:[-0.20,-0.98], k: 34},
+                /* the 14T pinion is enclosed by the 30T it shares a shaft
+                   with and the 36T it drives; the one direction that clears
+                   both outlines is up and to the right, over the output. */
+                {g:PITCH[2], t:NC+'T', d:[ 0.22,-0.98], k:118},
+                {g:PITCH[3], t:ND+'T', d:[ 0.88, 0.47], k: 34}];
   var lastInk = null, drawBox = [0,0,0,0];
+  /* the point of a gear's pitch ellipse that faces direction d */
+  function rimPoint(g, d){
+    var da = dA(), db = dB();
+    var ex = da[0]*g.r, ey = da[1]*g.r, fx = db[0]*g.r, fy = db[1]*g.r;
+    var c = pt3(g.x, g.c[0], g.c[1]);
+    var best = null, i;
+    for (i=0;i<96;i++){
+      var a = i*2*Math.PI/96, ca = Math.cos(a), sa = Math.sin(a);
+      var px = ex*ca + fx*sa, py = ey*ca + fy*sa;
+      var L = Math.sqrt(px*px + py*py) || 1;
+      var dot = (px/L)*d[0] + (py/L)*d[1];
+      if (!best || dot > best.dot) best = {dot:dot, x:c[0]+px, y:c[1]+py};
+    }
+    return best;
+  }
   function callouts(){
     ctx.font = MONO; ctx.textBaseline = 'middle';
-    var rows = LABELS.map(function(L){
-      var c = pt3(L.g.x, L.g.c[0], L.g.c[1]);
-      var right = c[0] > W/2;
-      return {t:L.t, cx:c[0], cy:c[1], r:L.g.r*SC, right:right,
-              y:Math.max(18, Math.min(H-40, c[1]))};
-    });
-    /* swiss: the labels live in the two margins, pushed apart, never stacked */
-    [true, false].forEach(function(side){
-      var col = rows.filter(function(r){ return r.right === side; })
-                    .sort(function(a,b){ return a.y - b.y; });
-      for (var i=1;i<col.length;i++)
-        if (col[i].y - col[i-1].y < 24) col[i].y = col[i-1].y + 24;
-    });
     var minX = drawBox[0], minY = drawBox[1], maxX = drawBox[2], maxY = drawBox[3];
-    rows.forEach(function(r){
-      var tw = ctx.measureText(r.t).width;
-      var lx = r.right ? W - 6 - tw : 6;
-      var anchor = r.right ? lx - 8 : lx + tw + 8;
-      /* leader: margin -> a point on the pitch circle facing the label */
-      var dx = anchor - r.cx, dy = r.y - r.cy, d = Math.sqrt(dx*dx+dy*dy) || 1;
-      var px = r.cx + dx/d * r.r, py = r.cy + dy/d * r.r;
-      ctx.beginPath();
-      ctx.moveTo(anchor, r.y); ctx.lineTo(px, py);
-      ctx.strokeStyle = '#BDBDBD'; ctx.lineWidth = 1; ctx.stroke();
-      ctx.beginPath(); ctx.arc(px, py, 1.6, 0, 6.2832);
+    LABELS.forEach(function(L){
+      var r = rimPoint(L.g, L.d);
+      var ax = r.x + L.d[0]*L.k, ay = r.y + L.d[1]*L.k;
+      var tw = ctx.measureText(L.t).width;
+      var tx = (L.d[0] >= 0) ? ax + 5 : ax - 5 - tw;
+      if (tx < 6) tx = 6; else if (tx + tw > W-6) tx = W-6-tw;
+      if (ay < 12) ay = 12; else if (ay > H-38) ay = H-38;
+      ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(ax, ay);
+      ctx.strokeStyle = '#9B9B9B'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(r.x, r.y, 1.6, 0, 6.2832);
       ctx.fillStyle = '#767676'; ctx.fill();
-      ctx.fillStyle = '#333'; ctx.textAlign = 'left'; ctx.fillText(r.t, lx, r.y);
-      minX = Math.min(minX, lx, px); maxX = Math.max(maxX, lx+tw, px);
-      minY = Math.min(minY, r.y-7, py); maxY = Math.max(maxY, r.y+7, py);
+      ctx.fillStyle = '#111'; ctx.textAlign = 'left'; ctx.fillText(L.t, tx, ay);
+      minX = Math.min(minX, tx, r.x); maxX = Math.max(maxX, tx+tw, r.x);
+      minY = Math.min(minY, ay-7, r.y); maxY = Math.max(maxY, ay+7, r.y);
     });
-    /* the ratio block, bottom left, under a hairline rule */
-    var by = H - 14;
-    ctx.beginPath(); ctx.moveTo(6, by-16); ctx.lineTo(86, by-16);
+    /* the ratio block, bottom left OF THE DRAWING, under a hairline rule —
+       tied to the ink, not to the foot of the canvas, or it strands itself
+       in white when the drawing does not reach the bottom. */
+    var bx = Math.max(6, Math.min(drawBox[0], W-110));
+    var by = Math.min(H - 8, drawBox[3] + 44);
+    ctx.beginPath(); ctx.moveTo(bx, by-16); ctx.lineTo(bx+94, by-16);
     ctx.strokeStyle = '#111'; ctx.lineWidth = 1; ctx.stroke();
     ctx.fillStyle = '#111'; ctx.textAlign = 'left';
-    ctx.fillText('i = ' + RATIO.toFixed(2) + ':1', 6, by-4);
-    minX = Math.min(minX, 6); maxX = Math.max(maxX, 90);
+    ctx.fillText('i = ' + RATIO.toFixed(2) + ' : 1', bx, by-4);
+    minX = Math.min(minX, bx); maxX = Math.max(maxX, bx+94);
     maxY = Math.max(maxY, by+3); minY = Math.min(minY, by-17);
     lastInk = {minX:minX, minY:minY, maxX:maxX, maxY:maxY};
   }
@@ -1778,13 +1914,13 @@ table.kpi td.tg{color:var(--black)}
   /* ---- 8 · the frame -------------------------------------------------- */
   var tSec = 0, lastT = -1, lastDT = 0.016;
   function render(t){
-    SOLN = 0; HIDN = 0; probe.solid = null; probe.hidden = null;
-    audit = {front_solid:0, front_hidden:0, back_solid:0, back_hidden:0};
+    SOLN = 0; HIDN = 0;
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
     ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
     buildStatic();
     for (var i=0;i<parts.length;i++) buildPart(parts[i], t);
+    shaftLines();
     drawBox = [1e9,1e9,-1e9,-1e9];
     [[SOL,SOLN],[HID,HIDN],[CON,CONN],[ACC,ACCN]].forEach(function(g){
       for (var q=0;q<g[1];q+=2){
@@ -1794,7 +1930,7 @@ table.kpi td.tg{color:var(--black)}
         if (g[0][q+1] > drawBox[3]) drawBox[3] = g[0][q+1];
       }
     });
-    strokeGroup(HID, HIDN, '#BDBDBD', [4,3], 1);
+    strokeGroup(HID, HIDN, '#BDBDBD', [5,4], 1);
     strokeGroup(CON, CONN, '#9B9B9B', [9,3,2,3], 1);
     strokeGroup(ACC, ACCN, '#DA1A00', [9,3,2,3], 1);
     strokeGroup(SOL, SOLN, '#111', [], 1);
@@ -1938,6 +2074,8 @@ table.kpi td.tg{color:var(--black)}
             faces:P + parts.length*2, edges_possible:P*3,
             solid_segments:SOLN/4, hidden_segments:HIDN/4,
             construction_segments:CONN/4, accent_segments:ACCN/4,
+            shafts_coplanar:(S1[1] === S2[1] && S2[1] === S3[1]),
+            shaft_row_a:[S1[0], S2[0], S3[0]],
             draw_box:drawBox.map(function(v){return +v.toFixed(1);}),
             centre_distance_1:+Math.hypot(S1[0]-S2[0], S1[1]-S2[1]).toFixed(3),
             centre_distance_2:+Math.hypot(S3[0]-S2[0], S3[1]-S2[1]).toFixed(3),
@@ -1951,6 +2089,7 @@ table.kpi td.tg{color:var(--black)}
             pitch_off_deg:+(pitOff*180/Math.PI).toFixed(2),
             yaw_range_deg:+(YAW_R*180/Math.PI).toFixed(2),
             pitch_range_deg:+(PIT_R*180/Math.PI).toFixed(2),
+            face_opening:+Math.abs(m22).toFixed(3),
             tau:TAU, t:+tSec.toFixed(3), mouse:[mnx, mny], seen:mouseSeen};
   };
   window.gbBBox = function(){
@@ -1965,14 +2104,13 @@ table.kpi td.tg{color:var(--black)}
     var r = cv.getBoundingClientRect(), out = {};
     var clear = {solid: clearest(SOL, SOLN, minLen), hidden: clearest(HID, HIDN, minLen)};
     ['solid','hidden'].forEach(function(k){
-      var e = clear[k] || probe[k];
-      if (clear[k]) clear[k].tag = 'clear/' + clear[k].clear + 'px';
+      var e = clear[k];
       out[k] = e ? {x0:+(r.left+e.x0).toFixed(2), y0:+(r.top+e.y0).toFixed(2),
                     x1:+(r.left+e.x1).toFixed(2), y1:+(r.top+e.y1).toFixed(2),
-                    len:+e.len.toFixed(2), part:e.tag,
-                    clear:(e.clear != null ? e.clear : null)} : null;
+                    len:+e.len.toFixed(2), clear:e.clear} : null;
     });
-    out.output_gear_faces = audit;
+    out.counts = {solid:SOLN/4, hidden:HIDN/4,
+                  construction:CONN/4, accent:ACCN/4};
     return out;
   };
   window.gbRunning = function(){ return running; };
