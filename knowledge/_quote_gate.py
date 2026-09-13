@@ -94,6 +94,32 @@ def build_vocab(texts):
     return ng.Vocabulary(vocab)
 
 
+def spelling_match(qw, tw, max_dist=2):
+    """Slide the phrase over the record's words; a window matches if every word is equal or
+    a small misspelling (edit distance ≤ max_dist, both words ≥ 4 letters, digits never).
+    Returns [(his_word, corrected_word)] for the first matching window, or None.
+    Ruled Dave 2026-09-13: 'obviously this should be corrected, I have very dyslexic
+    fingers' — a corrected spelling is still his words; a changed word is not."""
+    n = len(qw)
+    if n == 0 or len(tw) < n:
+        return None
+    for i in range(len(tw) - n + 1):
+        diffs = []
+        ok = True
+        for a, b in zip(qw, tw[i:i + n]):
+            if a == b:
+                continue
+            if (len(a) >= 4 and len(b) >= 4 and not a.isdigit() and not b.isdigit()
+                    and ng.edit_distance(a, b) <= max_dist):
+                diffs.append((b, a))
+            else:
+                ok = False
+                break
+        if ok:
+            return diffs
+    return None
+
+
 def check_phrase(records, phrase, texts=None, vocab=None):
     q = norm(phrase)
     texts = texts if texts is not None else [record_text(r) for r in records]
@@ -117,7 +143,16 @@ def check_phrase(records, phrase, texts=None, vocab=None):
         if s > best_score:
             best, best_score = i, s
     if best is not None and best_score:
-        run = longest_common_run(qw, words(texts[best]))
+        tw = words(texts[best])
+        sp = spelling_match(qw, tw)
+        if sp is not None:
+            out["found"] = True
+            out["spelling_corrected"] = [{"his": h, "corrected": c} for h, c in sp]
+            out["records"] = [{"id": records[best]["id"], "file": records[best].get("file"),
+                               "line": records[best].get("line")}]
+            out["count"] = 1
+            return out
+        run = longest_common_run(qw, tw)
         out["nearest"] = {"id": records[best]["id"], "file": records[best].get("file"),
                           "line": records[best].get("line"),
                           "shared_bigrams": f"{best_score} of {len(qb)}",
@@ -158,6 +193,8 @@ def report(results, as_json=False):
         first = r["records"][0]
         more = f" (+{r['count'] - 1} more)" if r["count"] > 1 else ""
         print(f"  ✅ \"{r['phrase']}\"\n       {first['id']} · {first['file']}:{first['line']}{more}")
+        for d in r.get("spelling_corrected", []):
+            print(f"       spelling corrected: his \"{d['his']}\" → \"{d['corrected']}\" (his words, ruled 2026-09-13)")
     for r in missed:
         print(f"  ❌ \"{r['phrase']}\"")
         n = r.get("nearest")
@@ -204,11 +241,22 @@ def selftest():
     bite("a comma and markdown bold are transcription, not a miss", r["found"] and r["records"][0]["id"] == "R-4")
     r = check_phrase(recs, "an operator not a designer", texts)
     bite("…but a changed word still misses", not r["found"])
+    recs.append({"id": "R-5", "kind": "x", "file": "e.md", "line": 50, "head": "typo",
+                 "text": "or even less if we use AI in resaech and user testing"})
+    texts = [record_text(r) for r in recs]
+    r = check_phrase(recs, "if we use AI in research and user testing", texts)
+    bite("a corrected spelling is still his words (resaech → research)",
+         r["found"] and r.get("spelling_corrected") == [{"his": "resaech", "corrected": "research"}])
+    r = check_phrase(recs, "if we use AI in resaech and user testing", texts)
+    bite("…and the uncorrected original is a plain verbatim hit", r["found"] and "spelling_corrected" not in r)
+    r = check_phrase(recs, "6 month project may become 9 weeks", texts)
+    bite("mutation: a changed DIGIT is never 'spelling'", not r["found"])
     r = check_phrase(recs, "zebra crossing at dawn", texts)
     bite("a phrase sharing no bigram has no nearest", not r["found"] and "nearest" not in r)
     vocab = build_vocab(texts)
-    r = check_phrase(recs, "6 month projct may become 6 weeks", texts, vocab)
-    bite("a misspelt word is named with 'did you mean'", r.get("unknown_words") == {"projct": ["project"]})
+    r = check_phrase(recs, "6 month projct may become 9 weeks", texts, vocab)
+    bite("on a real miss, a misspelt word is named with 'did you mean'",
+         not r["found"] and r.get("unknown_words") == {"projct": ["project"]})
     r = check_phrase(recs, "6 month project may become 6 weeks", texts, vocab)
     bite("a verbatim hit carries no unknown words", r["found"] and "unknown_words" not in r)
     # mutation: the finder must be able to go red — a corrupted normaliser would find the paraphrase
