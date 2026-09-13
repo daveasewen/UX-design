@@ -609,6 +609,10 @@ def remove_existing_edges_field(raw):
 
 
 def main():
+    try:  # #269 PARKED-WITH-A-TRIPWIRE hook: advisory print before generation, never a gate
+        import _parked; _parked.notice("kg-edge-gen")
+    except BaseException:
+        pass
     files = collect_files()
     comp_idx = component_stem_index(files)
     snip_idx = snippet_index()

@@ -314,7 +314,12 @@ def main():
     if a.selftest:
         sys.exit(0 if selftest() else 1)
     if a.manifest_check or a.check:
-        sys.exit(manifest_check())
+        rc = manifest_check()
+        try:  # #269 PARKED-WITH-A-TRIPWIRE hook: advisory print, never touches the verdict
+            import _parked; _parked.notice("release-cut")  # knowledge/ is on sys.path via the help gate
+        except BaseException:
+            pass
+        sys.exit(rc)
     if a.pack:
         sys.exit(pack_check())
     if a.drift:

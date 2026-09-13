@@ -1,0 +1,55 @@
+{
+  "$comment": [
+    "HAND-AUTHORED — the register of PARKED-WITH-A-TRIPWIRE items (knowledge/_parked.py reads it, never writes it).",
+    "Born #269 2026-09-13 on Dave's word: 'store them for future sake, can they be triggered, or can we have a hook so they don't get missed at the appropriate time'.",
+    "A row is added when Dave parks something; its status moves to enacted/dropped by hand when he rules. Rows are never deleted — history is data.",
+    "Trigger kinds: pack-version-bump (due when _release/_pack_manifest.json version ≠ parked.at_version) · file-changed {path} (due when the path has a commit after parked.at_commit) · event {name} (due when that moment asks: --due <name>)."
+  ],
+  "items": [
+    {
+      "id": "P-269-1",
+      "parked": {"date": "2026-09-13", "session": 269, "at_version": "v1.0.13", "at_commit": "6fd65b4"},
+      "what": "Phrase-aware RANKING in the search door — score a record higher when the query's words are ADJACENT (word bigrams via knowledge/_ngram.py), so 'six weeks' (5 verbatim) outranks 'six … weeks' (49 loose).",
+      "why": "_search_core.py / _memento_search.py are pinned byte-identical to the memento-package by _validate_package_delta.py — a change is a pack change, therefore a RELEASE, therefore Dave's, and not before the David Rice demo. Research: _RESEARCH-ngram-lookups-2026-09-13-v1.html use 2.",
+      "owner": "Dave (release); a lane builds once ruled",
+      "trigger": {"kind": "pack-version-bump"},
+      "status": "parked"
+    },
+    {
+      "id": "P-269-2",
+      "parked": {"date": "2026-09-13", "session": 269, "at_version": "v1.0.13", "at_commit": "6fd65b4"},
+      "what": "Typo tolerance in the search door — map a misspelt query word to the corpus's real word (knowledge/_ngram.py Vocabulary.nearest: 'ratifed' → 'ratified') before search runs, with the substitution shown in the receipt.",
+      "why": "Same pin as P-269-1 — the door ships in the pack. The 'did you mean' already lives in _quote_gate.py; this is the same lookup moved into retrieval. Research use 3.",
+      "owner": "Dave (release); a lane builds once ruled",
+      "trigger": {"kind": "pack-version-bump"},
+      "status": "parked"
+    },
+    {
+      "id": "P-269-3",
+      "parked": {"date": "2026-09-13", "session": 269, "at_version": "v1.0.13", "at_commit": "b858080"},
+      "what": "KG edge candidates carry a measured shingle-overlap score (knowledge/_ngram.py shingles + jaccard) so proposed edges reach Dave RANKED by evidence, not bare.",
+      "why": "At #267, 52 of 78 generated edges were wrong. Advisory ranking only — it never generates or ratifies an edge, and gen_kg_edges.py stays fenced behind lane-E RSQ 2. Research use 5. Due the next time the edge file moves.",
+      "owner": "a lane, when the next edge batch is briefed",
+      "trigger": {"kind": "file-changed", "path": "knowledge/_ruling_edges.json", "event": "kg-edge-gen"},
+      "status": "parked"
+    },
+    {
+      "id": "P-269-4",
+      "parked": {"date": "2026-09-13", "session": 269, "at_version": "v1.0.13", "at_commit": "6fd65b4"},
+      "what": "Dream pass opens with the near-duplicate candidate list: python3 knowledge/_near_dupes.py — 22 pairs ≥0.5 at birth, one EXACT duplicate (_GM-ARCHIVE.md:4940 = :6133).",
+      "why": "Consolidation candidates by measurement instead of by eye. The merge is the pass's proposal and Dave's ruling. Research use 4.",
+      "owner": "the dream pass lane",
+      "trigger": {"kind": "event", "name": "dream-pass"},
+      "status": "parked"
+    },
+    {
+      "id": "P-269-5",
+      "parked": {"date": "2026-09-13", "session": 269, "at_version": "v1.0.13", "at_commit": "6fd65b4"},
+      "what": "Lexicon suggestions from bigram co-occurrence — propose synonym entries into a review page (never write _consult-lexicon.json).",
+      "why": "Lowest weight of the six; only worth it after P-269-1/2 exist because it reuses their index. Research use 6.",
+      "owner": "Dave — decide with P-269-1/2",
+      "trigger": {"kind": "pack-version-bump"},
+      "status": "parked"
+    }
+  ]
+}

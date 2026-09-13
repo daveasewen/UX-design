@@ -51,6 +51,9 @@ dreamer spec: `.claude/agents/dreamer.md`.*
    noticed. It sits between the commit and the gate because the commit is what makes the pass real
    and the gate is what checks the file is fresh — a status written before the commit describes an
    intention, and one written after the gate is a status the gate never saw.
+7b. **Parked items due at this pass (#269):** `python3 knowledge/_parked.py --due dream-pass` — the
+   tripwire register; open the pass with `python3 knowledge/_near_dupes.py` (near-duplicate
+   candidates by measurement) while P-269-4 stands. Print-only; nothing here rules.
 8. **Gate:** `python3 knowledge/_capture_gate.py --wrap --lane` (S-D2/S-D3: GM-header check
    skipped-and-printed; stdout-only).
 9. **Fixed report to Dave:** lane · routing · reads · lock/state · pass shape · proposals
