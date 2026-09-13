@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n-gram lookups for Memento and Apollo — research v1</title>
+<style>
+:root{
+  --accent:#DA1A00;--black:#000;--white:#fff;
+  --grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;
+  --max:1200px;--gutter:2rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:56px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.05em}
+nav a{color:var(--grey-6);text-decoration:none}nav a:hover{color:var(--black)}
+nav .ctx{color:var(--black)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.rule{border:0;border-top:1px solid var(--grey-2);margin:0}
+section{padding:var(--s7) 0}
+header.profile{padding:var(--s7) 0 var(--s6)}
+header.profile .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{font-size:57px;line-height:1.05;font-weight:400;margin:0;letter-spacing:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3);letter-spacing:0}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:14px;color:var(--grey-7);line-height:1.6}
+.verdict{font-size:19px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4) var(--s6);margin-top:var(--s6)}
+.stat b{display:block;font-size:43px;font-weight:200;line-height:1.05}
+.stat span{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+.dim .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim .idx{font-size:96px;font-weight:100;line-height:1;color:var(--grey-3);display:block;margin-bottom:var(--s2)}
+.dim .name{font-size:19px;font-weight:500}
+ol,ul{padding-left:1.25rem;margin:0 0 var(--s3)}li{margin-bottom:var(--s2)}
+.uses{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2)}
+.use{background:var(--grey-1);padding:var(--s4)}.use:hover{background:var(--white)}
+.use .n{font-size:12px;color:var(--accent);letter-spacing:.14em;font-weight:500}
+.use h3{margin-top:var(--s1)}
+.use .m{font-size:14px;color:var(--grey-7);border-top:1px solid var(--grey-3);padding-top:var(--s2);margin-top:var(--s2)}
+.cmp{background:var(--grey-1)}
+.cmp .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.cmp .big{font-size:34px;line-height:1.2;font-weight:400}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin-bottom:var(--s2)}
+.dist .ours .h{color:var(--accent)}
+.quote{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s4);font-size:19px}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+pre{background:var(--grey-1);padding:var(--s3);overflow-x:auto;line-height:1.5;margin:0 0 var(--s2)}
+details{border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+summary{cursor:pointer;font-weight:500;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 var(--s3)}
+th,td{text-align:left;padding:var(--s1) var(--s2) var(--s1) 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+th{font-weight:500}
+footer{padding:var(--s5) 0;font-size:14px;color:var(--grey-6);display:flex;justify-content:space-between}
+footer a{color:var(--grey-6)}
+@media (max-width:760px){header.profile .grid,.dim .grid,.cmp .grid,.uses,.dist{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}h1{font-size:43px}.dim .idx{font-size:64px}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="#">← Apollo / Memento</a><span class="ctx">Research · retrieval</span><span>#269 · 2026-09-13 · v1</span></div></nav>
+
+<header class="profile"><div class="wrap">
+  <p class="label">Research</p>
+  <div class="grid">
+    <div><h1>n-gram lookups for Memento and Apollo</h1></div>
+    <div class="meta">Can an n-gram index earn a place on the retrieval spine? Measured against the live index (2,154 records) on 2026-09-13, not proposed from theory. External references are behind <strong>Sources</strong>.</div>
+  </div>
+</div></header>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Verdict</p>
+  <p class="verdict"><strong>Yes — six uses, and the first one is a gate, not a search feature.</strong> An exact-phrase lookup would enforce a law you already ruled — "test against Dave's own words" — which today has no instrument. The probe caught me paraphrasing you inside this very session: I searched for "six month project" and the record says "6 month project". Zero hits for mine, two for yours.</p>
+  <p class="verdict"><strong>Recommendation:</strong> build the quote gate first as an advisory on the existing spine, pure Python, no new dependency. Everything else in this page is a ranking improvement that can follow at its own pace.</p>
+  <div class="stats">
+    <div class="stat"><b>2,154</b><span>records in the Memento index</span></div>
+    <div class="stat"><b>24.6M</b><span>characters searched by substring today</span></div>
+    <div class="stat"><b>0.07 s</b><span>one search today — speed is not the problem</span></div>
+    <div class="stat"><b>0 → 2</b><span>"six month" vs "6 month" verbatim hits</span></div>
+    <div class="stat"><b>5 vs 49</b><span>"six weeks" as a phrase vs as two words</span></div>
+    <div class="stat"><b>22</b><span>near-duplicate archive pairs found by shingles</span></div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">01</span><span class="name">What it is</span></div>
+  <div>
+    <p><strong>An n-gram is a short run of adjacent things</strong> — two words in a row (a word bigram), or three letters in a row (a character trigram). An n-gram index is a lookup table from each run to the records that contain it.</p>
+    <p><strong>Why it matters here:</strong> the record is made of sentences you spoke. Sentences carry their meaning in word order, and a bag of single words throws the order away. A phrase lookup keeps it.</p>
+    <p><strong>Two families, two jobs.</strong> Word n-grams answer "who said these words in this order". Character n-grams answer "what word did he mean" — they survive typos, plurals and hyphens because most of the letter-runs still match.</p>
+    <p><strong>What it is not.</strong> It is not a vector database and not an LLM. It is exact, cheap, explainable, and it refuses honestly — the same fail-loud contract the spine already keeps.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">02</span><span class="name">How Memento matches today</span></div>
+  <div>
+    <p><strong>Substring, then count.</strong> The spine lowercases the record, splits the query into single words, and scores a record by how many words appear anywhere in it. Word order is invisible; "six weeks" scores the same as a record that says "six" on line 3 and "weeks" on line 90.</p>
+    <p><strong>Spelling is handled by chopping.</strong> "fonts" finds "font-size" because the first six letters are tried as a substring. A single-letter slip ("ratifed") finds nothing.</p>
+    <p><strong>Synonyms are hand-fed.</strong> The lexicon grows on miss, one entry at a time, 93 lines today. Nothing proposes entries.</p>
+    <p><strong>Nothing in the repo uses n-grams.</strong> A grep for n-gram, BM25 or tf-idf across the Python and notes returns zero. This is untouched ground, not a rebuild.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Six uses, ranked by weight</p>
+  <div class="uses">
+    <div class="use"><span class="n">1 · GATE</span><h3>Quote verification — "are these his words?"</h3>
+      <p>Before a lane, a wrap or a deck card presents a sentence as yours, look the phrase up verbatim. Found: green with file and line. Not found: red, with the nearest real phrase. This is the instrument for the conflated-fix law — it tests against your own words instead of a memory of them.</p>
+      <div class="m">Measured: "6 month project may become 6 weeks" — 2 records. My paraphrase "six month…" — 0. "we are getting somewhere" — 8. Brute-force over 24.6M chars is already fast enough; a suffix array is not needed at this size.</div></div>
+    <div class="use"><span class="n">2 · RANKING</span><h3>Phrase-aware ranking</h3>
+      <p>Score a record higher when the query's words appear adjacent, not just present. "six weeks on the clock" should surface the five records that say it before the 44 that merely contain both words.</p>
+      <div class="m">Measured: 434,902 distinct word bigrams over the corpus, built in 2.9 s. Runs on the same spine, so <code>_consult.py</code> (the Apollo door) gets it for free.</div></div>
+    <div class="use"><span class="n">3 · TOLERANCE</span><h3>Typo and spelling tolerance</h3>
+      <p>Index the 18,650 words the corpus actually uses as character trigrams. A misspelt query word is mapped to its nearest real word before search runs — silently, with the substitution shown in the receipt.</p>
+      <div class="m">Measured on four slips: descendor→descender, salutaton→salutation, ratifed→ratified (clean); chromuim tied with "chromatic" (would need a second signal — edit distance — to break the tie).</div></div>
+    <div class="use"><span class="n">4 · DREAM PASS</span><h3>Near-duplicate detection for consolidation</h3>
+      <p>Eight-word shingles and a Jaccard score find records that say the same thing twice. The dream pass could open with a measured list of candidates to merge instead of reading the archive by eye.</p>
+      <div class="m">Measured: 22 pairs above 0.5 overlap among GM/LS archive sections and briefs — e.g. the 08-28/08-29/08-30 GM batches at 0.56–0.58. Candidates only; the merge stays yours.</div></div>
+    <div class="use"><span class="n">5 · KG</span><h3>Edge candidates with a measured overlap</h3>
+      <p>At #267, 52 of 78 generated edges were wrong. Shingle overlap between two nodes is a cheap, explainable signal to rank candidates before they reach you — a number on each proposed edge, not a guess.</p>
+      <div class="m">Not measured this session; the same shingle code as use 4 applies to <code>pattern-node</code> and <code>context-node</code> records (602 of them). Advisory only — never runs <code>gen_kg_edges.py</code> on its own.</div></div>
+    <div class="use"><span class="n">6 · LEXICON</span><h3>Synonym suggestions from co-occurrence</h3>
+      <p>When two words keep appearing in the same bigram neighbourhoods ("descender" / "crop", "amber" / "ochre"), propose them as lexicon entries. Grow-on-miss becomes grow-on-evidence, with you still the one who accepts.</p>
+      <div class="m">Not measured; lowest weight. Worth doing only once uses 1–3 are on the spine, because it reuses their index.</div></div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section class="cmp"><div class="wrap"><div class="grid">
+  <div><p class="label">Comparison</p><p class="big">Keep it on the spine, in pure Python, at this corpus size.</p></div>
+  <div>
+    <p><strong>The internet-scale tools are the wrong size.</strong> Infini-gram and its FM-index successor index trillions of tokens with suffix arrays; they exist so researchers can count phrases across the whole web. Our corpus is 25 MB. A Python dictionary built in three seconds at index time does the same job with no new dependency — which matters because <code>_search_core.py</code> ships byte-identical inside the memento-package.</p>
+    <p><strong>Hybrid retrieval literature agrees on the shape.</strong> The 2026 guides on RAG retrieval put character n-gram overlap alongside BM25 as a lexical signal and fuse the rankings. We do not need the dense-vector half: the record is small, exact, and the fail-loud contract wants explainable hits, not similarity scores.</p>
+    <div class="dist">
+      <div><div class="h">Today — substring spine</div>Single words, any position, count the matches. No phrase, no typo tolerance, no way to prove a quote is verbatim. Fast enough already.</div>
+      <div class="ours"><div class="h">Proposed — n-gram layer on the same spine</div>Word bigrams for phrase rank and quote proof; character trigrams for spelling; shingles for near-duplicates. One index build step, one file, no external library, same two-stage refs-then-fetch shape.</div>
+    </div>
+    <p class="quote">"Retrieval-not-recall now reaches the project's own memory: quote the record, never reconstruct it." — the spine's own docstring. An n-gram lookup is the first instrument that can check the quote.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Costs and cautions</p>
+  <ol>
+    <li><strong>Index growth (estimate).</strong> 435K bigram keys plus postings will add roughly 5–15 MB on disk to a 25 MB index; needs one measurement in <code>_build_memento_index.py</code> before it is a number.</li>
+    <li><strong>The quote gate must be advisory first.</strong> A gate that goes red on every legitimate paraphrase would block wraps. It should report, not refuse, until its false-red rate is seen on a real session.</li>
+    <li><strong>The lexicon file is hand-authored by rule.</strong> Use 6 may only propose entries into a review page; it never writes the lexicon.</li>
+    <li><strong>Nothing here touches the KG generator.</strong> Use 5 ranks candidates; it does not create or ratify edges.</li>
+  </ol>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Next step</p>
+  <p class="verdict"><strong>Yours:</strong> one word on whether the quote gate is built as an advisory on the spine before anything else in this page. I would take it — it is the only one of the six that enforces a ruling rather than improving a ranking.</p>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <details><summary>Technical</summary>
+    <p style="margin-top:var(--s3)"><strong>Corpus probed:</strong> <code>knowledge/_memento-index.json</code> (mtime 2026-09-13 20:13), 2,154 records, 24,610,378 lowercase chars of id+kind+file+head+text. Kinds: ls-archive-section 485 · pattern-node 380 · gauge-block 250 · gm-archive-section 238 · context-node 222 · brief 205 · component-meta 139 · ledger-section 86 · runbook-section 56 · carries-section 46 · gm-section 20 · dream 12 · ls-section 11 · lane 4.</p>
+    <p><strong>Engine today:</strong> <code>knowledge/_search_core.py</code> — <code>tokenize</code> (≥3 chars, 30 stopwords), <code>stem_candidates</code> (strip -ing/-es/-s, first-6 prefix), <code>score_record</code> = 2×original matches + 1×lexicon matches, substring on <code>record_blob</code>. Lexicon <code>_consult-lexicon.json</code> 3,361 bytes, hand-authored, grow-on-miss.</p>
+    <p><strong>Grep:</strong> <code>ngram|n-gram|bm25|tf-idf</code> across <code>*.py *.md</code> excluding <code>_to_delete</code> → 0 hits.</p>
+    <table>
+      <tr><th>Probe</th><th>Result</th></tr>
+      <tr><td>current <code>core.search("six weeks on the clock", --all)</code></td><td>0.07 s · 638 hits</td></tr>
+      <tr><td>verbatim <code>"six weeks"</code> / both tokens present</td><td>5 / 49 records</td></tr>
+      <tr><td>bigram index build (word, adjacent pairs)</td><td>2.86 s · 18,650 unigrams · 434,902 bigrams</td></tr>
+      <tr><td>char-trigram fuzzy on vocabulary</td><td>descendor→descender .67 · salutaton→salutation .78 · ratifed→ratified .71 · chromuim→tie at .50</td></tr>
+      <tr><td>verbatim <code>"6 month project may become 6 weeks"</code> / <code>"six month …"</code></td><td>2 / 0</td></tr>
+      <tr><td>verbatim <code>"we are getting somewhere"</code> · <code>"keep them if they are cheap"</code></td><td>8 · 0 (the latter lives in the memory hook, not the index — a gap the gate would name)</td></tr>
+      <tr><td>8-word shingles, Jaccard &gt; 0.5, kinds gm-archive/ls-archive/brief</td><td>22 pairs; top: gm-archive batch 08-30 ↔ 08-29 (.56), 08-29 ↔ 08-28 (.58), gm-archive 08-13-167 ↔ ls-archive prior-delta 08-13 (.69)</td></tr>
+    </table>
+    <p><strong>Shape if built:</strong> <code>_build_memento_index.py</code> emits an optional <code>ngrams</code> block (bigram→record ids, vocabulary trigrams); <code>_search_core.py</code> gains <code>phrase_hits(q)</code>, <code>nearest_word(w)</code>, <code>shingle_overlap(a,b)</code>; a new door <code>_quote_gate.py "<phrase>"</code> returns file:line or REFUSES with the nearest real phrase. Advisory in <code>_capture_gate.py</code> until a false-red rate is measured. No new imports.</p>
+    <p><strong>Sources:</strong>
+      <a href="https://infini-gram.io/">infini-gram (suffix-array n-gram engine)</a> ·
+      <a href="https://arxiv.org/pdf/2506.12229">Infini-gram mini — FM-index exact n-gram search (2025)</a> ·
+      <a href="https://arxiv.org/pdf/2401.17377">Infini-gram: unbounded n-gram LMs to a trillion tokens</a> ·
+      <a href="https://www.digitalapplied.com/blog/hybrid-search-bm25-vector-reranking-reference-2026">Hybrid search reference 2026 — BM25, vectors, reranking</a> ·
+      <a href="https://denser.ai/blog/hybrid-search-for-rag/">Hybrid search for RAG (2026 guide)</a> ·
+      <a href="https://www.theaiautomators.com/secret-to-high-precision-rag-agents/">Pattern-based retrieval (trigram/fuzzy) for small corpora</a>
+    </p>
+  </details>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;width:100%"><span>← <a href="_RESEARCH-graph-engineering-2026-08-05-v2.html">Graph engineering research</a></span><span>Memento · research v1 · 2026-09-13</span></div></footer>
+</body>
+</html>
