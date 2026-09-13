@@ -17,9 +17,10 @@ ADVISORY BY RULING SHAPE: exit 0 always, marker `QUOTE-GATE ADVISORY`. `--strict
 miss exit 1 — nothing in the repo calls it strict; wiring it into `_capture_gate.py` is
 a gate change and is Dave's, not this file's. This door NEVER writes.
 
-Normalisation (both sides): lowercase · curly quotes → straight · runs of whitespace →
-one space · a trailing full stop on the phrase ignored. Nothing else — "six" ≠ "6" on
-purpose; that difference IS the finding.
+Normalisation (both sides): lowercase · words and digits only — punctuation, markdown
+marks (`**`, `_`, quotes) and whitespace runs collapse to one space, because a comma or a
+bold marker is transcription, not his words. Spelling is never touched: "six" ≠ "6",
+"resaech" ≠ "research" — that difference IS the finding.
 
 Usage:
   python3 knowledge/_quote_gate.py "6 month project may become 6 weeks"
@@ -50,10 +51,13 @@ _QUOTES = {"“": '"', "”": '"', "‘": "'", "’": "'", " ": " "}
 
 
 def norm(s):
+    """Words and digits only, single-spaced. Punctuation and markdown marks (`,` `.` `**`
+    `_` `"`) are transcription, not his words — "operator, not" must equal "**operator not**".
+    Spelling is his: "six" ≠ "6", "resaech" ≠ "research"."""
     for k, v in _QUOTES.items():
         s = s.replace(k, v)
-    s = re.sub(r"\s+", " ", s.lower()).strip()
-    return s.rstrip(".")
+    s = re.sub(r"[^a-z0-9']+", " ", s.lower())
+    return s.strip()
 
 
 def words(s):
@@ -193,6 +197,13 @@ def selftest():
     bite("…with the longest common run", r["nearest"]["longest_common_run"] == "month project may become 6 weeks")
     r = check_phrase(recs, "Keep them if they are cheap.", texts)
     bite("curly quotes, case, double spaces and a full stop are normalised", r["found"] and r["count"] == 1)
+    recs.append({"id": "R-4", "kind": "x", "file": "d.md", "line": 40, "head": "bold",
+                 "text": "ex-COO CIB, **an operator not a platform owner**. Open"})
+    texts = [record_text(r) for r in recs]
+    r = check_phrase(recs, "an operator, not a platform owner", texts)
+    bite("a comma and markdown bold are transcription, not a miss", r["found"] and r["records"][0]["id"] == "R-4")
+    r = check_phrase(recs, "an operator not a designer", texts)
+    bite("…but a changed word still misses", not r["found"])
     r = check_phrase(recs, "zebra crossing at dawn", texts)
     bite("a phrase sharing no bigram has no nearest", not r["found"] and "nearest" not in r)
     vocab = build_vocab(texts)
