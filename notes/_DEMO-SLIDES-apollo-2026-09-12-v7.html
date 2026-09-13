@@ -205,6 +205,15 @@ p{margin:0 0 var(--s2);}
     radial-gradient(48% 46% at 50% 50%, rgba(255,255,255,.78) 0%, rgba(255,255,255,.74) 70%, rgba(255,255,255,.45) 100%),
     rgba(255,255,255,.45);}  /* v7.1: text halo on the white card, mirrors §1's ~30% see-through */
 #s2 .inner{position:relative;z-index:3;}
+/* §2 chapters — audience-facing, no run schedule (Dave, #268) */
+.chapters{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s4);
+  border-top:1px solid var(--g3);}
+.chapters li{padding-top:var(--s3);border-top:2px solid transparent;}
+.chapters .n{display:block;font-size:clamp(56px,6vw,84px);font-weight:300;line-height:1;color:var(--accent);letter-spacing:-.02em;margin-bottom:var(--s2);}
+.chapters b{display:block;font-weight:600;font-size:clamp(17px,1.3vw,21px);line-height:1.25;margin-bottom:var(--s1);}
+.chapters p{margin:0;font-size:clamp(13px,1vw,15px);line-height:1.5;color:var(--g7);max-width:18em;}
+@media (max-width:900px){.chapters{grid-template-columns:1fr 1fr}}
+
 #s2 .pagenum{z-index:3;}
 /* v7 MEASURED FIX, and the only token this card moves: the reversed-out
    ground tops out at 250, not 255 (|255-12| = 243, lifted 55% to 248).
@@ -357,39 +366,16 @@ table.kpi td.tg{color:var(--black)}
   <div class="lift"></div>
   <img id="kgPrint2" alt="">
   <div class="inner">
-    <p class="label rv">Plot point 02</p>
-    <h2 class="rv d1" style="font-size:clamp(24px,2.6vw,32px);margin-bottom:var(--s3)">
-      What you will see in the next sixteen minutes</h2>
-    <table class="strip rv d2">
-      <thead><tr><th class="num">#</th><th class="mm">Mins</th><th class="clk">Clock</th>
-        <th>Plot point</th><th class="scr">On screen</th></tr></thead>
-      <tbody>
-        <tr class="beat"><td class="b-id">B1</td><td>2:00</td><td>0:00–2:00</td><td colspan="2">Intro</td></tr>
-        <tr><td class="num">01</td><td class="mm">1:00</td><td class="clk">0:00–1:00</td><td>Why I am here, in one sentence</td><td class="scr">Title card</td></tr>
-        <tr><td class="num">02</td><td class="mm">1:00</td><td class="clk">1:00–2:00</td><td>What you will see in the next sixteen minutes</td><td class="scr">The strip above</td></tr>
-
-        <tr class="beat"><td class="b-id">B2</td><td>4:00</td><td>2:00–6:00</td><td colspan="2">Goal · practical benefits · predicted KPIs</td></tr>
-        <tr><td class="num">03</td><td class="mm">1:30</td><td class="clk">2:00–3:30</td><td>The problem, in one metaphor</td><td class="scr">Title card — metaphor spoken, no diagram</td></tr>
-        <tr><td class="num">04</td><td class="mm">1:00</td><td class="clk">3:30–4:30</td><td>The claim: two measured gains, stacked — and the hypothesis the pilot tests</td><td class="scr">Number card — 15% · 47% · 6 mo → 6 wk?</td></tr>
-        <tr><td class="num">05</td><td class="mm">1:30</td><td class="clk">4:30–6:00</td><td>The only measured before-and-after we own</td><td class="scr">The cold-run scorecard</td></tr>
-
-        <tr class="beat"><td class="b-id">B3</td><td>5:30</td><td>6:00–11:30</td><td colspan="2">Run the demo — the frozen prompt, cold</td></tr>
-        <tr><td class="num">06</td><td class="mm">0:30</td><td class="clk">6:00–6:30</td><td>The prompt goes in, unedited</td><td class="scr">The editor, the released skill pack</td></tr>
-        <tr><td class="num">07</td><td class="mm">2:00</td><td class="clk">6:30–8:30</td><td>Dead air A — what inspired it</td><td class="scr">The build scrolling. Do not switch away.</td></tr>
-        <tr><td class="num">08</td><td class="mm">1:30</td><td class="clk">8:30–10:00</td><td>Dead air B — how it developed</td><td class="scr">Timeline card, if the build is still running</td></tr>
-        <tr><td class="num">09</td><td class="mm">1:30</td><td class="clk">10:00–11:30</td><td>The page lands. Drive it.</td><td class="scr">The generated dashboard, light theme</td></tr>
-
-        <tr class="beat"><td class="b-id">B4</td><td>4:30</td><td>11:30–16:00</td><td colspan="2">The system, simply</td></tr>
-        <tr><td class="num">10</td><td class="mm">1:30</td><td class="clk">11:30–13:00</td><td>Four moving parts, no black box</td><td class="scr">Four-part diagram</td></tr>
-        <tr><td class="num">11</td><td class="mm">3:00</td><td class="clk">13:00–16:00</td><td>The knowledge graph — dig, scrub, trace, and ask it why</td><td class="scr">The knowledge-graph explorer</td></tr>
-
-        <tr class="beat"><td class="b-id">B5</td><td>2:00</td><td>16:00–18:00</td><td colspan="2">Ambition · requirements · the ask</td></tr>
-        <tr><td class="num">12</td><td class="mm">2:00</td><td class="clk">16:00–18:00</td><td>Where it goes, what it needs, what I am asking for</td><td class="scr">The ask card, then silence</td></tr>
-
-        <tr class="sum"><td class="num"></td><td class="mm">18:00</td><td class="clk"></td><td colspan="2">Stated sum. Band 15–20. Two minutes of deliberate slack.</td></tr>
-      </tbody>
-    </table>
-    <p class="foot rv d3">Source: the run of show, 10 September 2026.</p>
+    <p class="label rv">In the next sixteen minutes</p>
+    <h2 class="rv d1" style="font-size:clamp(28px,3vw,40px);margin-bottom:var(--s5);max-width:22em;text-wrap:balance">
+      Five chapters. One live build, one live graph, no&nbsp;deck.</h2>
+    <ol class="chapters rv d2">
+      <li><span class="n">1</span><b>Why I am here</b><p>One sentence, and the shape of the next quarter-hour.</p></li>
+      <li><span class="n">2</span><b>The problem, and the claim</b><p>An assembly line is only as fast as its parts bin. Two measured gains, and the hypothesis the pilot tests.</p></li>
+      <li><span class="n">3</span><b>The demo, cold</b><p>A frozen prompt goes in, unedited. We watch it build, then drive what lands.</p></li>
+      <li><span class="n">4</span><b>The system, simply</b><p>Four moving parts, no black box — and the knowledge graph underneath, which you can ask why.</p></li>
+      <li><span class="n">5</span><b>The ask</b><p>Where it goes, what it needs, and what I am asking for.</p></li>
+    </ol>
   </div>
   <div class="pagenum">02 / 11</div>
 </section>
