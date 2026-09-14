@@ -1,0 +1,426 @@
+{
+ "$description": "#271 harvest lane A — PROPOSED `when` predicates for input + action + feedback + overlay, s253-D1 shape (gate half + prose half). NOTHING ENACTED. No meta, schema, rules index, runbook or gate was touched by this lane.",
+ "$shape": "s253-D1: gate half = machine-checkable clause; prose half = beats/yields sentence naming the sibling and quoting its when where one exists.",
+ "$confidence_scale": {
+  "canon": "a predicate already adopted in our own repo — the work is a copy, not an invention",
+  "consensus-external": "3+ public systems state the same KIND of criterion",
+  "single-external": "one system states it, or the systems conflict on the cut",
+  "none": "no source found; the predicate is proposed from our own meta prose or is a declared guess"
+ },
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$already_done": [
+  {"component":"selection-controls","see":"notes/_lanes/270/when-research/PROPOSED-WHEN.json — RADIO / CHECKBOX / SWITCH","note":"do not redo; radio→dropdown cut is s270-D1 (5, provisional)"},
+  {"component":"dropdown","see":"#270 PROPOSED-WHEN","note":"s270-D1 fixes the lower edge at 5; the dropdown→combobox edge is still Dave's"},
+  {"component":"combobox","see":"#270 PROPOSED-WHEN","note":"extended below only where search-field collides with it"},
+  {"component":"multi-select","see":"#270 PROPOSED-WHEN","note":"extended below only where transfer-list and tags-input collide with it"},
+  {"component":"segmented-control","see":"#270 PROPOSED-WHEN","note":"unchanged"}
+ ],
+ "proposals": [
+  {
+   "component": "input-fields",
+   "when_gate": "entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret",
+   "when_prose": "the default text-entry field; beats textarea (proposed \"the answer may span multiple lines\") whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there \"is likely to result in an error\").",
+   "confidence": "consensus-external",
+   "sources": ["GOV.UK text-input","USWDS text-input","Carbon text-input","Fluent 2 field","Apple HIG text-fields","Atlassian textfield"],
+   "disagreements": ["none on the one-line-vs-many split — six systems state it. The placeholder-is-not-a-label rule is also 6/6 and is already ours (copy-040)."],
+   "daves_call": "whether input-fields keeps claiming multi-line AND date entry in its purpose. Three metas (input-fields, textarea, date-picker) currently claim the same two jobs; the predicate above assumes input-fields gives them up."
+  },
+  {
+   "component": "textarea",
+   "when_gate": "entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists",
+   "when_prose": "beats input-fields (proposed \"the answer fits one line\") the moment a sentence is expected rather than a value — notes to approvers, a reason for payment, a secure message body; yields to input-fields for anything shorter (GOV.UK, verbatim: \"enter shorter answers no longer than a single line, such as a phone number\"); the counter is added only when a limit genuinely exists (GOV.UK: \"Only use the character count component when there is a good reason for limiting\").",
+   "confidence": "consensus-external",
+   "sources": ["GOV.UK textarea","GOV.UK character-count","USWDS text-input","Carbon text-input","Fluent 2 textarea","Atlassian textarea","Spectrum text-area"],
+   "disagreements": ["none. Seven systems agree on the line-count split. This is the cleanest predicate in the slice."],
+   "daves_call": "nothing on the split. One question only: does our counter appear by default or only under a declared limit? Our meta warns at 90% of a limit and says nothing about when a limit is legitimate."
+  },
+  {
+   "component": "amount-input",
+   "when_gate": "entry = a currency amount AND figures are tabular AND the field normalises to grouped thousands + two decimals on blur AND input is text + inputmode=decimal (never type=number)",
+   "when_prose": "beats input-fields (proposed \"free text, one line\") whenever the value is money, because the currency prefix, the tabular figures and the blur-time normalisation are contractual, not decorative; is the entry twin of amount-display, which reads the same value back; never accepts a negative (our meta) and never uses type=number, which GOV.UK also forbids in general terms.",
+   "confidence": "single-external",
+   "sources": ["OUR meta amount-input.purpose + antiPatterns[0..3]","GOV.UK text-input (\"Do not use <input type=\\\"number\\\">\")"],
+   "disagreements": ["EXTERNAL SILENCE on a dedicated money field. Not one of the eleven systems has a currency-amount component. Our predicate is domain-specific and has no analogue to conflict with — expected silence, not a gap."],
+   "daves_call": "confirm this is a banking fence (money only), or say whether any other formatted numeric — an account number, a sort code — belongs here too."
+  },
+  {
+   "component": "search-field",
+   "when_gate": "the field FILTERS a corpus already on the other side of a submit or a result list AND the answer is NOT a form value AND no value is committed to a record",
+   "when_prose": "beats combobox (#270 proposed \"options >= 16, closed list\") on one test: a combobox commits a value from a list into a form, a search field hands a query to a result set and commits nothing; beats a bare links entry point on a home page (USWDS, verbatim: \"the search function should appear as a search box instead of a link\"); yields to combobox in every payment or payee field, and to a plain button trigger when search is a secondary action on a crowded bar (M3).",
+   "confidence": "single-external",
+   "sources": ["OUR meta search-field.purpose","OUR meta combobox.purpose + antiPatterns[4]","USWDS search","Carbon search (\"Do not use when there is small or limited amounts of data\")","M3 search"],
+   "disagreements": ["THE COLLISION IS OURS, NOT THEIRS. Our search-field carries an \"optional predictive-search (autocomplete) dropdown\" — that is a combobox by another name. No external system resolves it because no external system ships both. The commit test above is the lane's proposal, not a quote."],
+   "daves_call": "whether the predictive-search variant stays in search-field or moves to combobox. They are currently two metas describing one widget."
+  },
+  {
+   "component": "date-picker",
+   "when_gate": "the answer is ONE date AND typing is always available AND the panel opens from the tail button only AND the date is near enough that a month grid helps (roughly within a year either side)",
+   "when_prose": "the default date field; beats calendar (proposed \"a month is being READ, not picked\") because picking is transient and reading is not — our own calendar meta draws that line already; beats a bare input-fields date because the panel exists, but never replaces typing (Polaris, verbatim: \"always give users the option to enter the date using a text field component\"); yields to date-range-picker when two endpoints are wanted, and to three plain text boxes when the date is a memorable one the user already knows (GOV.UK's date input).",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta date-picker.purpose + antiPatterns[0,3]","GOV.UK date-input","GOV.UK dates pattern","USWDS date-picker","Polaris date-picker","Atlassian calendar","M3 date-pickers"],
+   "disagreements": ["THE DEEPEST DISAGREEMENT IN THE INPUT FAMILY. GOV.UK: for a memorable date use three text boxes and no calendar at all, and \"Only use a calendar control if users need to\" pick near dates or see relationships between dates. Carbon, M3, Ant and Spectrum treat the calendar panel as the default. Our meta sits with the latter."],
+   "daves_call": "whether a date of birth in our system is a Date-picker or three plain fields. Every other date question follows from that one."
+  },
+  {
+   "component": "date-range-picker",
+   "when_gate": "the answer is TWO dates that bound one period AND both endpoints share ONE calendar panel AND an out-of-order pair errors rather than silently swapping",
+   "when_prose": "beats two Date-pickers side by side (our own antiPatterns[0]: \"Two independent single-date pickers with no shared panel or cross-field check\") because order errors otherwise surface too late; beats date-picker whenever the question is a statement period, a transaction search window or a custom reporting window; yields to date-picker whenever only one date is asked for.",
+   "confidence": "none",
+   "sources": ["OUR meta date-range-picker.purpose + antiPatterns[0,1]","Carbon date-picker (range variant)"],
+   "disagreements": ["EXTERNAL NEAR-SILENCE. Only Carbon ships a range variant and it gives no choice criterion. The shared-panel requirement is ours alone."],
+   "daves_call": "confirm the shared panel is REQUIRED (it makes two adjacent Date-pickers illegal), or leave it as guidance."
+  },
+  {
+   "component": "time-picker",
+   "when_gate": "the answer is a time of day AND 24-hour HH:MM typing is accepted AND the offered slots are 30 minutes apart AND the list is a Dropdown listbox, not a grid",
+   "when_prose": "beats input-fields for any scheduled payment or appointment because the slot list removes the format question; beats a dial or clock face because typing is the banking path (M3 concedes the point: \"Time pickers are not ideal for nuanced or granular time selection\"); yields to input-fields wherever a time to the minute is genuinely required, which the 30-minute slots cannot express.",
+   "confidence": "single-external",
+   "sources": ["OUR meta time-picker.purpose + antiPatterns[0,5]","M3 time-pickers","Ant time-picker"],
+   "disagreements": ["the 30-MINUTE GRANULARITY IS OURS ALONE. No system names an interval. M3 warns the pattern is bad at granularity without saying what granularity it has."],
+   "daves_call": "whether 30 minutes is the ruled interval or a default a consumer can override. Today it is baked into the meta with no ruling behind it."
+  },
+  {
+   "component": "calendar",
+   "when_gate": "a whole month is READ in page flow (not opened to pick) AND out-of-month days are drawn, not hidden AND width comes from the container",
+   "when_prose": "beats date-picker (proposed \"one date, panel from the tail button\") only when the month itself is the content — an appointment month, a statement month, a payments calendar — because Date-picker's panel is \"a transient act of picking\" (our own antiPatterns[0]); yields to date-picker for every ordinary date field, which is where Atlassian also lands: \"For most situations, use the date picker or date time picker components\".",
+   "confidence": "single-external",
+   "sources": ["OUR meta calendar.purpose + antiPatterns[0]","Atlassian calendar","GOV.UK dates pattern"],
+   "disagreements": ["GOV.UK goes further than we do and restricts the calendar CONTROL itself to near dates and relational reading. Atlassian demotes its Calendar to an edge case. Nobody defends a standalone month grid as a default."],
+   "daves_call": "the calendar meta says PROPOSED, NOT RULED and that every question in its receipt is yours. This predicate does not change that — it only names the read-vs-pick test so the pair can be ruled together with date-picker."
+  },
+  {
+   "component": "file-upload",
+   "when_gate": "the user must attach one or more files AND a browse button exists alongside any dropzone AND nothing auto-submits AND rejected files stage a visible error row",
+   "when_prose": "the only attachment path in the library; drag-and-drop is never the only route (our antiPatterns[0], and WCAG 2.1.1 behind it); staging is not submission — the form's action bar submits (our antiPatterns[1]); shows a determinate bar rather than a spinner because upload progress is knowable, which is the same test that separates progress-bar from loading-indicator.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta file-upload.purpose + antiPatterns[0..4]","GOV.UK file-upload","USWDS file-input","Ant upload","Polaris drop-zone","Carbon file-uploader"],
+   "disagreements": ["MULTIPLICITY. USWDS, verbatim: \"Prefer one file per input.\" Our component stages a LIST of files against one dropzone, and Carbon warns against multi-file upload inside a modal. Also: only Polaris names a size cap (20MB) — ours names none."],
+   "daves_call": "two: (1) is multi-file staging our default or an option, given USWDS's one-file-per-input line; (2) do we carry a size cap at all, and if so what number."
+  },
+  {
+   "component": "slider",
+   "when_gate": "the value is numeric AND the exact number does NOT matter AND both bounds are fixed and known AND the range is neither tiny (under ~5 steps) nor vast AND the change takes effect immediately",
+   "when_prose": "beats input-fields (proposed \"free text, one line\") only where approximation is acceptable — Fluent 2, verbatim: \"Use a slider for imprecise values\"; yields to input-fields the moment a specific value matters (Atlassian: \"Don't use a range if choosing a specific value is important\"), to selection-controls for a handful of discrete options, and to range-slider when two handles bound a span; pairs with a linked numeric field whenever both precision and feel are wanted (NN/g, Apple HIG).",
+   "confidence": "consensus-external",
+   "sources": ["Fluent 2 slider","Atlassian range","Carbon slider","M3 sliders","Spectrum slider","NN/g sliders-knobs","Apple HIG sliders","OUR meta slider.antiPatterns[2]"],
+   "disagreements": ["GOV.UK REJECTS THE COMPONENT OUTRIGHT: \"Avoid using range slider questions, where the user needs to click and drag\", and has no slider at all. Carbon and Atlassian both fence out 1-3 ranges; Carbon also fences out 1-1000. Nobody agrees on where 'too large' begins."],
+   "daves_call": "whether a slider is legal in a banking FORM at all, or only in filters and settings. GOV.UK's position is the strongest anti-position found anywhere in this harvest."
+  },
+  {
+   "component": "range-slider",
+   "when_gate": "the answer is a MIN/MAX pair on one bounded numeric scale AND both handles are real range inputs AND the same imprecision test as slider holds",
+   "when_prose": "beats slider (proposed \"one value, imprecise, fixed bounds\") exactly when two values bound a span — Carbon reaches the same line from the other side: \"range within the slider track, use the range slider instead\"; yields to two linked amount-inputs whenever the exact bounds matter, because the slider's whole case is that they do not.",
+   "confidence": "single-external",
+   "sources": ["OUR meta range-slider.purpose","Carbon slider","M3 sliders (\"Range sliders select two values on one slider to create a range\")"],
+   "disagreements": ["inherits EVERY slider disagreement, including GOV.UK's outright rejection. If slider is ruled out of forms, range-slider goes with it."],
+   "daves_call": "nothing separate. Rule slider and this follows."
+  },
+  {
+   "component": "rating",
+   "when_gate": "the value is a 1-5 star score AND the INPUT variant is a fieldset of native radios AND the READ-ONLY variant carries role=img with a text value beside it AND the two never swap",
+   "when_prose": "two components in one record: the input SETS a score, the display SHOWS an aggregate; the split is real and Fluent 2 is the only external system that confirms it (\"Rating displays are used to show ratings that have already been submitted\"); the input stops at whole stars (Apple HIG agrees a rating indicator \"doesn't display partial symbols\") and the read-only carries fractions; yields to nothing — there is no sibling.",
+   "confidence": "single-external",
+   "sources": ["OUR meta rating.purpose + antiPatterns[2,3]","Fluent 2 rating","Apple HIG rating-indicators","Spectrum rating (\"ratings should always have 5 available stars\")","Ant rate"],
+   "disagreements": ["Ant and Spectrum treat rating as ONE component with no input/display split. Only Fluent 2 splits it as we do. The 5-star scale is stated only by Spectrum."],
+   "daves_call": "whether rating belongs in a BANKING library at all. It has no journey in the itinerary beyond 'product/order review', and no HSBC surface uses it."
+  },
+  {
+   "component": "tags-input",
+   "when_gate": "the committed values are the USER'S OWN words AND no option list can be offered AND each value becomes a removable Tags chip AND a half-typed value is committed on blur, never discarded",
+   "when_prose": "beats combobox (#270: \"options >= 16, closed list\") and multi-select (#270: \"the answer is a set\") on the single test our meta already states — is there a list at all; where a list exists the answer belongs to one of those two, and where it does not, only this component is honest (it explicitly does not claim role=combobox without a list, our antiPatterns[3]); the chip itself is the gated Tags atom, so any chip change lands in Tags first.",
+   "confidence": "none",
+   "sources": ["OUR meta tags-input.purpose + antiPatterns[0..4]","Carbon tag (overflow at five lines)"],
+   "disagreements": ["EXTERNAL SILENCE on the choice. Nobody outside distinguishes a free-entry token field from a multi-select; Carbon's only contribution is an overflow limit (five lines) that we do not carry."],
+   "daves_call": "everything, as in #270's multi-select. Either rule the no-list test yourself or leave tags-input with no `when`. And say whether Carbon's five-line overflow becomes ours."
+  },
+  {
+   "component": "transfer-list",
+   "when_gate": "the user builds a SUBSET from a larger set AND both the chosen and the unchosen sets must be visible at the same time AND move controls are operable by keyboard AND each panel's header checkbox recomputes after every move",
+   "when_prose": "beats multi-select (#270: \"the answer is a set, options >= 10, chips stay visible\") only when the UNCHOSEN set also has to be readable — assigning accounts to a payee group, picking recipients for a standing instruction; yields to multi-select whenever a compact field would do, which our own meta concedes is the usual case; is never faked by two List-items instances with no shared move mechanism (our mustNotNeighbour).",
+   "confidence": "single-external",
+   "sources": ["OUR meta transfer-list.purpose + mustNotNeighbour","Ant transfer (\"Transfer can display more information for items and take up more space\")"],
+   "disagreements": ["only Ant ships this component. Ant frames the trade as information-vs-space; ours frames it as seeing-both-sets. Close, but not the same test."],
+   "daves_call": "confirm 'both sets visible' is the discriminator rather than 'the set is large'. They pick different components for a 200-item list where only the chosen matter."
+  },
+  {
+   "component": "secure-entry",
+   "when_gate": "the value is a one-time code or PIN of known length AND each digit has its own cell AND whole-code paste is accepted AND the result of verify-on-fill reaches a live region",
+   "when_prose": "beats input-fields (proposed \"free text, one line\") for OTP and PIN only, because the per-digit cells buy per-digit announcement and the resend countdown belongs to the same contract; never blocks paste, which is the OTP happy path (our antiPatterns[1]); yields to input-fields for a password, which is a secure field but not a segmented one (Apple HIG: \"Use secure text fields to hide private data\").",
+   "confidence": "none",
+   "sources": ["OUR meta secure-entry.purpose + antiPatterns[0..4]","Apple HIG text-fields","GOV.UK password-input"],
+   "disagreements": ["USWDS CONTRADICTS THE FORM DIRECTLY, verbatim: \"Avoid breaking numbers with distinct sections into separate input fields.\" That is exactly what segmented OTP cells do. No system in the set ships a segmented code field."],
+   "daves_call": "whether USWDS's objection lands. If it does, secure-entry becomes one field with a format hint and the component as built is wrong."
+  },
+  {
+   "component": "form-layout",
+   "when_gate": "two or more fields are submitted together AND every field has a visible label above it AND related fields are grouped in a fieldset with a legend AND submit is never disabled to prevent errors AND a form-level error summary appears whenever any field is in error, with focus moved to it",
+   "when_prose": "the container every input in this slice lives inside; the error-summary clause is the only 'always' found anywhere in the harvest (GOV.UK, verbatim: \"Always show an error summary when there is a validation error, even if there's only one\"); the never-disable clause is already our antiPatterns[3] and Atlassian's (\"Avoid disabling buttons, especially in forms\"); yields to stepper when the form is long enough to split into validated steps.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta form-layout.purpose + antiPatterns[0..4]","GOV.UK error-summary","GOV.UK question-pages","NN/g form-design-white-space","Atlassian button/textfield","Carbon form","Fluent 2 field"],
+   "disagreements": ["DENSITY. GOV.UK: \"Asking just one question per question page helps users\" — one thing per page. Carbon, Fluent and NN/g all assume multi-field forms (NN/g: \"a 3-part form with 4-6 fields\"). Our Form-layout is built for the latter."],
+   "daves_call": "whether the error summary becomes a GATED requirement (it would fail every existing form screen that lacks one), and whether one-thing-per-page applies to any HSBC journey or none."
+  },
+  {
+   "component": "stepper",
+   "when_gate": "a flow has 3 or more steps AND each step validates before Next AND only COMPLETED steps are navigable AND exactly one step indicator exists for the flow",
+   "when_prose": "the interactive flow driver; beats progress-tracker (proposed \"display-only, the flow is driven elsewhere\") because this one owns the Next gate and the back-navigation, which our own meta states outright; beats form-layout alone once the form is long enough that a single page would be a wall; yields to form-layout under three steps (Atlassian: \"If there are less than three steps, consider using a button labelled 'Next'\"), and never coexists with a second progress indicator (our mustNotNeighbour).",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta stepper.purpose + mustNotNeighbour + antiPatterns[0,3]","Atlassian progress-tracker","Atlassian progress-indicator","USWDS step-indicator","Carbon progress-indicator","Ant steps"],
+   "disagreements": ["THE CEILING. Atlassian says six in one page and seven in another — the same system disagrees with itself. Nobody else names a maximum. The floor of 3 is agreed by Atlassian, USWDS and Carbon."],
+   "daves_call": "the step ceiling (none proposed), and whether the floor of 3 is a rule or guidance. The floor is 3/3 among systems that speak."
+  },
+  {
+   "component": "progress-tracker",
+   "when_gate": "a flow has 3 or more steps AND the tracker is DISPLAY-ONLY (no step is clickable) AND a 'Step X of Y' label accompanies the fill AND exactly one step indicator exists for the flow",
+   "when_prose": "beats stepper (proposed \"validated Next, completed steps navigable\") only where something else drives the flow and this is a read-out; yields to stepper wherever the component must gate progress; yields to nothing at all under three steps (USWDS, verbatim: \"If a form or process has fewer than three sections, don't use a step indicator\").",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta progress-tracker.antiPatterns[0,1]","OUR meta stepper.purpose","USWDS step-indicator","Carbon progress-indicator","Atlassian progress-tracker","GOV.UK question-pages"],
+   "disagreements": ["GOV.UK FORBIDS THE WHOLE SHAPE: \"Do not use progress indicators that do all of the following: / allow navigation to previous questions / show the current question\" — which is exactly our Stepper. One government system has removed a 12-step tracker with no effect on completion."],
+   "daves_call": "GOV.UK's prohibition is aimed at the combination, and our Stepper is that combination. Rule whether it stands, or whether Stepper drops back-navigation."
+  },
+  {
+   "component": "reorder",
+   "when_gate": "a list's ORDER is user-owned AND a keyboard path to the same reorder exists AND the drag handle has an accessible name AND the drop target is marked by more than colour",
+   "when_prose": "an affordance, not a choice: it attaches to List-items or Quick-actions when order is meaningful; the keyboard clause is not optional (our antiPatterns[0], WCAG 2.1.1) and NN/g adds the precondition nobody else states — drag-and-drop earns its place only where \"There is no reasonable alternative with lower interaction cost\".",
+   "confidence": "single-external",
+   "sources": ["OUR meta reorder.antiPatterns[0,1,2]","NN/g drag-drop"],
+   "disagreements": ["no component-choice disagreement — this is an affordance. The only substantive external addition is NN/g's lower-interaction-cost precondition, which we do not carry."],
+   "daves_call": "whether NN/g's precondition becomes ours. It would make 'add drag-to-reorder' a justified change rather than a default."
+  },
+  {
+   "component": "button",
+   "when_gate": "the control performs an ACTION on the current page AND the label is text AND at most ONE primary exists in the context AND the label is a verb phrase of roughly 1-3 words",
+   "when_prose": "CANON — the predicate is already on the meta and in roles.json (\"the default of the role\"); yields to icon-button (roles.json: \"space is tight and the glyph is universal\"), to split-button (\"one main action plus a menu of related ones\"), and to links (\"the action is navigation inside running text\"); the one-primary clause is the most widely agreed rule in this entire harvest.",
+   "confidence": "canon",
+   "sources": ["knowledge/roles.json roles.action.providers[button] — ADOPTED s252-D1","OUR meta button.when","Carbon button","Atlassian button","Fluent 2 button","Ant button","Polaris button","NN/g button-states"],
+   "disagreements": ["THE PRIMARY COUNT. Carbon, Atlassian, Fluent, Ant and Polaris all say ONE. Spectrum says: \"Don't use more than 3 accent buttons in the same view.\" And the SCOPE of 'one' differs: per screen (Carbon), per page (Atlassian), per layout (Fluent), per section (Ant, Polaris). Our meta says 'in a single context' and defines no context."],
+   "daves_call": "the SCOPE word for one-primary: screen, page, layout or section. Our antiPatterns[0] says 'context', which no gate can check."
+  },
+  {
+   "component": "icon-button",
+   "when_gate": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label",
+   "when_prose": "CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous — our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.",
+   "confidence": "canon",
+   "sources": ["knowledge/roles.json roles.action.providers[icon-button] — ADOPTED s252-D1","OUR meta icon-button.purpose + antiPatterns[0,2,3]","Atlassian tooltip","Polaris tooltip","M3 buttons/icon-buttons","Spectrum action-button","Apple HIG buttons (44pt)"],
+   "disagreements": ["none on the criterion. The open question is whether the tooltip is REQUIRED (2 systems say yes) or merely recommended (ours says 'without a tooltip/label', i.e. either)."],
+   "daves_call": "whether an icon-button without a visible tooltip is a gate failure. It is checkable and it would fail real screens today."
+  },
+  {
+   "component": "split-button",
+   "when_gate": "there is ONE main action plus a menu of RELATED alternatives AND the main action and the caret are two separately operable controls with two names AND the menu uses role=menu, not role=listbox AND the primary action is the main button, never a menu item",
+   "when_prose": "CANON on the criterion (roles.json: \"one main action plus a menu of related ones\"); beats button when a default exists among siblings — send now / schedule / save as template; beats a plain dropdown menu because that one surfaces no default (Fluent 2, verbatim: \"Unlike the split button, the menu button does not surface a primary action\"); yields to action-bar when the actions are unrelated rather than alternatives.",
+   "confidence": "canon",
+   "sources": ["knowledge/roles.json roles.action.providers[split-button] — ADOPTED s252-D1","OUR meta split-button.purpose + antiPatterns[0,1,3]","Fluent 2 button","Ant button (\"more than three operations, you can group some of them into a Dropdown\")"],
+   "disagreements": ["Carbon has NO split-button (404, recorded as measured silence); GOV.UK, USWDS and Polaris have none either. Four of eleven systems do not ship the component at all."],
+   "daves_call": "only the copy onto the meta. The criterion is already yours. The meta still says PROPOSED #209, NOT GATED, NOT RULED — that is the open item, not the when."
+  },
+  {
+   "component": "fab",
+   "when_gate": "viewport = mobile AND the screen has exactly ONE decisive action AND no page header or toolbar exists to hold it AND exactly one FAB is on screen AND it does not collide with back-to-top",
+   "when_prose": "beats action-bar and icon-button only where the chrome that would normally hold the action is absent — a full-bleed list; the count rule is already ours (antiPatterns[2]) and M3 states it in the same words (\"Don't display multiple FABs on a single screen\"); yields to the page header or toolbar whenever one exists, which our own antiPatterns[4] already says as a REVIEW note and M3 says as a rule (\"Don't use FABs for minor, overflow, unclear, or destructive actions\").",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta fab.purpose + antiPatterns[2,4] + mustNotNeighbour","M3 floating-action-button","Ant float-button"],
+   "disagreements": ["PLATFORM. Our meta fences the FAB to a mobile viewport. Ant's float button is explicitly global and desktop (\"Buttons that can be seen wherever you browse\"). Also unresolved in our own meta: the back-to-top collision, and the 56px/24px raw constants pending your mint-or-accept."],
+   "daves_call": "two: (1) mobile-only or any viewport; (2) the back-to-top collision, which our own meta records as unresolved."
+  },
+  {
+   "component": "action-bar",
+   "when_gate": "a screen or flow step commits AND the bar holds at most 3 actions AND exactly one is primary AND Back is the lowest emphasis AND DOM order reaches Cancel before Confirm",
+   "when_prose": "the footer that ends a form or a flow step; beats loose buttons in the page body because the commit point should be in one predictable place; the 3-action ceiling is ours as a REVIEW guess and is independently stated by Carbon (\"Any more than three actions should be grouped\") and Ant (\"more than three operations, you can group some of them into a Dropdown\"); yields to split-button when the overflow actions are alternatives to the main one rather than separate jobs.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta action-bar.antiPatterns[0..4]","Carbon button","Ant button","GOV.UK question-pages (Continue, not Next; left-aligned)"],
+   "disagreements": ["ALIGNMENT. GOV.UK aligns the continue button LEFT so users do not miss it; our meta assumes a right-aligned Cancel/Confirm pair and warns only about DOM order. Nobody else in the set states a side."],
+   "daves_call": "(1) is ~3 the ruled ceiling or still a REVIEW guess; (2) button alignment in the bar, which GOV.UK alone calls out."
+  },
+  {
+   "component": "quick-actions",
+   "when_gate": "the surface is a home or account screen AND each item is a shortcut to an existing destination or task AND every item has a visible label AND reordering has a keyboard path",
+   "when_prose": "beats a row of buttons because the items are user-configurable shortcuts rather than the screen's own actions; beats navigations because these are tasks, not a structure; yields to action-bar whenever the actions belong to the screen's commit point rather than to the user's shortcuts.",
+   "confidence": "none",
+   "sources": ["OUR meta quick-actions.purpose + antiPatterns[0,1]","M3 buttons (low-priority actions in overflow)"],
+   "disagreements": ["EXTERNAL SILENCE. No system in the set ships a configurable shortcut grid. The predicate is entirely from our own prose."],
+   "daves_call": "everything, or leave quick-actions with no `when` and say so. There is nothing external to lean on."
+  },
+  {
+   "component": "links",
+   "when_gate": "activating it NAVIGATES — a URL, an anchor, a document download — AND it changes no data and commits no state AND it is underlined or otherwise distinguished by more than colour",
+   "when_prose": "CANON on the criterion (roles.json: \"the action is navigation inside running text\"); beats button whenever the destination changes and nothing else does (Atlassian, verbatim: \"Links navigate to a new page or anchor location, changing the URL\"); yields to button for anything that submits, saves, deletes or toggles.",
+   "confidence": "consensus-external",
+   "sources": ["knowledge/roles.json roles.action.providers[links] — ADOPTED s252-D1","OUR meta links.purpose","Carbon link","Atlassian link","Fluent 2 link","Polaris button/link","Spectrum link"],
+   "disagreements": ["OUR OWN PROSE BREAKS THE CONSENSUS. links.meta.json purpose says links may \"instigate actions (e.g. 'download pdf', 'open in a new window')\". Carbon, Atlassian and Fluent 2 all forbid that in terms (Fluent 2: \"Don't use links for triggering actions other than navigation\"). Spectrum breaks it the other way, letting BUTTONS navigate. Four systems draw the line; two libraries — theirs and ours — cross it."],
+   "daves_call": "THE BIGGEST SINGLE WORD IN THIS SLICE. Is a 'download PDF' a link or a button in our system? Our meta says link; three systems say button; the answer decides the semantics of every document row in the library."
+  },
+  {
+   "component": "cta-lockup",
+   "when_gate": "a band closes a page or section with a heading, a supporting line and EXACTLY ONE action pair (secondary + primary) AND no third button AND no invented urgency copy AND width comes from the container",
+   "when_prose": "beats a loose button pair because the band is an arrangement with a heading that earns the action; yields to action-bar whenever the actions commit a form rather than invite a next step; the single-pair ceiling is ours (antiPatterns[3]) and is consistent with the one-primary rule five systems state for button.",
+   "confidence": "none",
+   "sources": ["OUR meta cta-lockup.purpose + antiPatterns[1,2,3]","Atlassian empty-state (\"Include too many call to action buttons on one page\")"],
+   "disagreements": ["EXTERNAL SILENCE on marketing bands — none of the eleven systems ships one; they are product systems, not marketing systems. Expected silence, not a gap."],
+   "daves_call": "confirm the exactly-one-pair ceiling, or allow a single-button variant. Today a lone CTA has no legal shape."
+  },
+  {
+   "component": "alert",
+   "when_gate": "the message is IN FLOW (inside the page or form it refers to) AND it persists until resolved or dismissed AND it carries a status glyph and a title, never colour alone AND an error alert never auto-dismisses",
+   "when_prose": "CANON-ADJACENT — our own purpose already states the three-way rule: \"Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors\"; beats toast (proposed \"transient, no answer required\") whenever the reader must act; beats banner (proposed \"the condition governs the whole page or session\") whenever the message belongs to one form or section — Atlassian draws the identical line: \"For messages with information affecting the whole site, use a banner\"; yields to inline field validation for a single control.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta alert.purpose + mustNotNeighbour + antiPatterns[0,2]","Atlassian section-message","Spectrum in-line alert","Carbon notification","Fluent 2 messagebar","NN/g error-message-guidelines","Ant alert"],
+   "disagreements": ["none on the in-flow-vs-page-level cut — six systems agree. Fluent 2 adds a requirement we do not carry: \"Error and Warning messages must have either a link to content or a button.\""],
+   "daves_call": "whether an error alert with no action becomes illegal (Fluent 2's rule). Everything else here is already yours and only needs copying onto the meta."
+  },
+  {
+   "component": "banner",
+   "when_gate": "the condition governs the WHOLE PAGE OR SESSION AND exactly one banner is on screen AND it carries EITHER actions OR a dismiss, never both AND it persists until the condition clears",
+   "when_prose": "the page-level member of the feedback family; beats alert (proposed \"in flow, belongs to one form or section\") only when the condition is the page's, not the form's — outage, device verification, card expiry; yields to alert for validation (GOV.UK forbids the other way explicitly) and to toast for anything transient; never appears twice (our antiPatterns[2], Atlassian and GOV.UK say the same).",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta banner.purpose + antiPatterns[0,2,3]","GOV.UK notification-banner","Atlassian banner","Spectrum alert-banner","Polaris banner","Carbon notification"],
+   "disagreements": ["DISMISSIBILITY. Atlassian, verbatim: \"Banners should appear one at a time, are not dismissible\". Polaris: \"Be dismissible unless they contain critical information\". Ours allows dismiss but forbids dismiss-plus-actions. Three positions, three systems. GOV.UK adds a fourth note: people often miss banners entirely."],
+   "daves_call": "is our banner dismissible? Our either/or shape rule already half-answers it; a ruling would settle whether a dismissible banner is legal at all."
+  },
+  {
+   "component": "toast",
+   "when_gate": "the message CONFIRMS a completed event AND requires no answer AND auto-dismisses after ~6 seconds with pause on hover/focus AND is never an error AND any action it offers also exists in the persistent UI AND no more than ~3 are queued",
+   "when_prose": "the transient member of the family; beats alert (proposed \"in flow, persists until resolved\") only where nothing needs answering; the no-error clause is ours and Atlassian states it in the same breath (\"Never use auto dismiss flags for any critical warning or error messages\"); the action-must-also-live-elsewhere clause is ours alone and is what keeps Undo from being missable by design.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta toast.purpose + antiPatterns[0..4]","Atlassian flag","M3 snackbar","Fluent 2 toast","Spectrum toast","Polaris toast","Ant message","Carbon dialog-pattern"],
+   "disagreements": ["TWO NUMBERS, BOTH CONTESTED. Duration: ours ~6s · Ant 4.5s · Polaris 5s · Spectrum minimum 5s · Fluent 2 7s · M3 4-10s. Queue depth: ours ~3 · Fluent 2 4 · M3 1 · Spectrum 1 (\"do not show if other toast is present on screen\"). Our 6 and our 3 both sit inside the spread but match nobody exactly."],
+   "daves_call": "the duration and the queue depth. Both are already baked into our meta with no ruling behind them, and both are checkable."
+  },
+  {
+   "component": "notifications",
+   "when_gate": "NONE PROPOSED — this record is the Legacy umbrella over alert + banner + toast + inline validation, not a fifth choice",
+   "when_prose": "the four placements this record names (Contextual, Global, Inline, Snackbar) are Alert, Banner, inline field validation and Toast respectively; every predicate above already covers one of them. Proposing a `when` here would create a fifth door into the same four rooms.",
+   "confidence": "canon",
+   "sources": ["OUR meta notifications.purpose","OUR meta alert.purpose (which names the Legacy 'contextual' placement as its own predecessor)"],
+   "disagreements": ["NN/g draws a different cut entirely — indicators vs validations vs notifications, by TRIGGER not placement: \"Validations are tied to a user's action or input\" and \"Notifications are focused on system-related events\". That cut does not map onto our four placements."],
+   "daves_call": "whether notifications keeps a catalogue identity at all, or becomes a pointer to the three Mono components. It is the only slice-A record whose right answer may be deletion."
+  },
+  {
+   "component": "confirmation",
+   "when_gate": "a whole transaction has COMPLETED AND the screen is the end of the flow AND a reference number is shown when one exists AND what happens next is stated AND exactly one primary action follows",
+   "when_prose": "beats toast (proposed \"transient confirmation of an event\") and alert because the flow is over, not continuing — GOV.UK draws the line explicitly, reserving the notification banner for outcomes where the user \"has not finished the current journey\"; yields to toast for any confirmation mid-journey; the reference number and what-happens-next are contents, not decoration (GOV.UK: \"Your confirmation page must include: a reference number, if there is one\").",
+   "confidence": "single-external",
+   "sources": ["OUR meta confirmation.purpose + antiPatterns[0..4]","GOV.UK confirmation-pages","GOV.UK notification-banner","Ant result"],
+   "disagreements": ["GOV.UK requires FIVE things we do not: reference number, what happens next and when, contact details, a feedback link, and a way to save a record. Our meta requires a glyph, a heading, a message and next actions. And GOV.UK adds a case we have no answer for — users bookmark this page as a receipt."],
+   "daves_call": "whether the GOV.UK contents list becomes our required list, and whether a confirmation page must be returnable (the bookmark case). Both are real banking requirements, not government quirks."
+  },
+  {
+   "component": "popconfirm",
+   "when_gate": "ONE action needs a check but not an interruption AND the object being changed is VISIBLE behind the bubble AND there are exactly two exits, cancel and confirm AND the confirm button repeats the verb AND there is no close ×",
+   "when_prose": "beats modals (proposed \"the decision must interrupt\") on the anchor test our own meta already states — \"Never use a Popconfirm where the reader cannot see what will change … the pattern should be a Modal\"; beats popover because \"A Popover ANSWERS; a Popconfirm ASKS\" (our purpose, verbatim); the verb-not-OK rule is ours and NN/g reaches it independently (\"use buttons labeled Delete file and Keep file\"); yields to a toast with Undo for routine actions (NN/g: \"Do not use confirmation dialogs for routine actions\"; Apple HIG: \"Avoid displaying alerts for common, undoable actions, even when they're destructive\").",
+   "confidence": "single-external",
+   "sources": ["OUR meta popconfirm.purpose + antiPatterns[0,1,2,3]","Ant popconfirm","NN/g confirmation-dialog","Apple HIG alerts"],
+   "disagreements": ["only Ant ships this component, and it frames the choice as weight (\"more lightweight than the static popped full-screen confirm modal\") rather than as anchor visibility. NN/g and Apple both argue the whole pattern should usually be replaced by undo — a position neither we nor Ant hold."],
+   "daves_call": "the meta's own REVIEW line still stands: popconfirm is PROPOSED #204 and the role, placement, focus model and permitted action class are all yours. This predicate does not change that; it names the anchor-visibility test so the popconfirm/modal edge can be ruled once."
+  },
+  {
+   "component": "empty-state",
+   "when_gate": "a region has ZERO items AND the truth is 'empty', not 'loading' AND the posture is one of first-run / no-results / quiet AND first-run offers one primary action, no-results offers a link, quiet offers nothing AND no live region announces it",
+   "when_prose": "beats skeleton-loader (proposed \"a known layout is being fetched\") on a claim, not a preference — loading and empty are different statements and our mustNotNeighbour forbids both at once; the three postures are ours alone and are what stop every empty region becoming a sales pitch; yields to nothing, because an empty region has no sibling.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta empty-state.purpose + mustNotNeighbour + antiPatterns[0..5]","Polaris empty-state","Atlassian empty-state","Ant empty","Carbon empty-states-pattern"],
+   "disagreements": ["THE ACTION COUNT. Atlassian: \"Include an action or link to help people understand what to do next\" — always. Ours: a link for no-results, nothing at all for quiet. Nobody outside has our three-posture split; Carbon's pattern is the nearest and cuts by cause (no data / configuration required / error) rather than by posture."],
+   "daves_call": "whether the quiet posture (say so and stop, no action) survives. Atlassian would always give the reader something to press."
+  },
+  {
+   "component": "loading-indicator",
+   "when_gate": "the wait is INDETERMINATE AND there is no known layout to mirror AND the wait is expected to exceed ~1 second AND exactly one indicator is on screen AND it carries an accessible status label",
+   "when_prose": "beats skeleton-loader (proposed \"a known layout is being fetched\") only where the incoming shape is unknown — our own skeleton meta draws that line; beats progress-bar (proposed \"the value is a task underway and full means DONE\") only while the duration is unknowable, and our progress-bar mustNotNeighbour forbids showing both for one task; the one-per-screen rule is ours and Atlassian's word for word in substance (\"There should only be a single spinner on a page at any time\"); the ~1s floor is Atlassian's and NN/g's.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta loading-indicator.mustNotNeighbour + antiPatterns[0,1,2]","OUR meta skeleton-loader.purpose","Atlassian spinner","NN/g progress-indicators","NN/g response-times","Carbon loading","Fluent 2 spinner","Apple HIG progress-indicators"],
+   "disagreements": ["FULL-PAGE LOADS SPLIT THE SYSTEMS CLEANLY. Spectrum: \"Use a progress circle for full page loading\". Polaris: \"Not be used to give feedback for an entire page load\". Carbon: \"For full-screen loads, skeleton states are preferred over indicators\". Two say spinner, two say skeleton, for the identical situation."],
+   "daves_call": "what a FULL-PAGE load shows in our system — spinner or skeleton. The systems are split 2-2 and our metas do not answer it."
+  },
+  {
+   "component": "skeleton-loader",
+   "when_gate": "the incoming layout is KNOWN AND the expected wait is roughly 0.3-10 seconds AND the bones match the real layout AND the shimmer is removed under prefers-reduced-motion AND one region-level announcement only",
+   "when_prose": "beats loading-indicator (proposed \"indeterminate, no known layout\") whenever the shape of what is coming is already known, because a matching skeleton stops the layout jump; beats nothing under 300ms (our antiPatterns[5] — a flash of placeholder is worse than nothing) and yields to progress-bar past 10 seconds (NN/g: \"progress bars are strongly recommended for any page that takes longer that 10 seconds\"); never coexists with a spinner for the same region (our antiPatterns[0], our empty-state mustNotNeighbour).",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta skeleton-loader.purpose + antiPatterns[0..5]","NN/g skeleton-screens","Carbon loading-pattern","Polaris skeleton-page","Ant skeleton"],
+   "disagreements": ["THE FLOOR IS OURS ALONE. 300ms appears in no external system; NN/g's band starts at 2 seconds. And Ant undercuts the whole distinction: \"Could be replaced by Spin in any situation\" — one system says skeleton and spinner are interchangeable."],
+   "daves_call": "the lower bound. Ours is 300ms, NN/g's is 2s — a 6x difference, and both are checkable."
+  },
+  {
+   "component": "progress-bar",
+   "when_gate": "the value is a TASK UNDERWAY AND a full bar means DONE AND the duration or completion fraction is knowable AND no loading indicator is shown for the same task AND the fill is ink, not RAG",
+   "when_prose": "CANON-ADJACENT — the geometry and spec live once in meter.meta.json and this record exists so 'Progress bar' stays findable (s210-D5); beats loading-indicator (proposed \"indeterminate\") exactly when the fraction is knowable, and our mustNotNeighbour makes showing both contradictory; beats meter, its twin reading, only because meter's full bar means AT THE LIMIT rather than DONE.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta progress-bar.purpose + mustNotNeighbour","Carbon progress-bar","Atlassian progress-bar","Fluent 2 progressbar","Spectrum progress-bar","NN/g progress-indicators","Polaris progress-bar","Apple HIG progress-indicators"],
+   "disagreements": ["THE THRESHOLD IS A FOUR-WAY SPLIT. Fluent 2: longer than 1 second. Carbon: under 5 seconds use a spinner instead. NN/g: 10 seconds or more. Atlassian: spinner is the default and progress bar is the exception (\"For most loading use cases, choose a spinner component\"). Ours names no number at all."],
+   "daves_call": "the spinner→progress-bar threshold in seconds, or the ruling that we carry no number and use 'is the fraction knowable' alone. The second option is the only one the four systems could all live with."
+  },
+  {
+   "component": "countdown-timer",
+   "when_gate": "a timed event will fire without the user AND the remaining time is available as TEXT, not only as a ring AND the user can extend or dismiss the limit",
+   "when_prose": "not a choice between siblings but a disclosure: it rides inside Banner, Modals, a session-timeout prompt or Secure-entry's resend; the extend clause is our antiPatterns[1] and it is really WCAG 2.2.1 wearing a component's clothes; never appears in a cta-lockup, where our own meta calls a countdown manufactured urgency.",
+   "confidence": "none",
+   "sources": ["OUR meta countdown-timer.antiPatterns[0,1]","OUR meta cta-lockup.antiPatterns[2]","OUR meta secure-entry.purpose (resend countdown)"],
+   "disagreements": ["EXTERNAL SILENCE. No system in the set ships a countdown component. GOV.UK has a session-timeout pattern but it was not fetched in this lane — named in refused."],
+   "daves_call": "nothing on the choice. One flag: our own two metas take opposite positions on countdowns (secure-entry uses one; cta-lockup calls one manufactured scarcity). Both are right in context; the meta should say so."
+  },
+  {
+   "component": "modals",
+   "when_gate": "a DECISION must be made before the journey continues AND the page behind is inert AND focus is trapped and returned AND there are at most 2 actions AND no second modal surface is open",
+   "when_prose": "the interrupting surface; beats drawer (proposed \"adjacent detail, page stays glanceable\") only when the decision truly blocks — our drawer meta says it from the other side: \"Use Modals for decisions that must interrupt; a Drawer for adjacent detail\"; beats popconfirm when the object being changed is off-screen (our popconfirm antiPatterns[2]); yields to a full page for complex forms (Carbon, USWDS, Polaris and Atlassian all say so), and to toast or alert for anything that does not need answering (Carbon: \"consider using a toast or inline notification instead of a modal\").",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta modals.purpose + antiPatterns[0,1]","USWDS modal","Carbon modal + dialog-pattern","Atlassian modal-dialog","Polaris modal","M3 dialogs","Fluent 2 dialog","NN/g modal-nonmodal-dialog","Spectrum alert-dialog","Apple HIG alerts"],
+   "disagreements": ["THE ACTION CEILING. M3 and Polaris say a maximum of two. Fluent 2 says up to three. Apple allows three buttons in an alert. Ours names no number. Separately, USWDS calls the modal \"a last resort\" while Carbon and Fluent treat it as a normal tool."],
+   "daves_call": "the action ceiling (2 or 3), and whether a modal may ever contain a multi-step flow — Atlassian forbids it outright (\"Avoid multiple steps that require navigation within the modal dialog\") and our Stepper has no other home on a small screen."
+  },
+  {
+   "component": "modal-lightbox",
+   "when_gate": "the overlay SHOWS a thing rather than asking a question AND every item carries a caption AND previous/next disable at the ends rather than wrapping AND no other modal surface is open",
+   "when_prose": "beats modals (proposed \"a decision must be made\") on the show-vs-ask test our own meta states: \"A lightbox for a yes/no decision (that is the Modals dialog)\"; beats drawer because a statement page or cheque image wants the whole stage, not an edge; yields to modals the instant a question is asked over the media.",
+   "confidence": "none",
+   "sources": ["OUR meta modal-lightbox.purpose + antiPatterns[2,4]"],
+   "disagreements": ["EXTERNAL SILENCE. No system in the consulted set ships a document/image viewer overlay. Expected silence for a banking-document component, not a gap."],
+   "daves_call": "confirm show-vs-ask is the fence, and whether the receipt's proposed family fold (lightbox back into Modals) happens. The predicate holds either way."
+  },
+  {
+   "component": "drawer",
+   "when_gate": "a focused SUB-TASK runs beside content that must stay glanceable AND the surface docks to a page edge AND only one modal surface is open AND actions are primary-first and left-aligned AND unsaved input confirms before scrim-close",
+   "when_prose": "beats modals (proposed \"a decision must be made before continuing\") whenever the page context is worth keeping — row-to-detail inspection, a filter panel, a quick-create form; Fluent 2 reaches the same line (\"Use drawers for supplemental info\") and adds a ceiling we do not carry (two to three steps); yields to modals for any blocking decision (our antiPatterns[0]), and to a full page for a prolonged flow (Apple HIG: \"For complex or prolonged user flows, consider alternatives to sheets\").",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta drawer.purpose + mustNotNeighbour + antiPatterns[0,1,2]","Fluent 2 drawer","M3 side-sheets","Apple HIG sheets","Ant drawer","Atlassian drawer"],
+   "disagreements": ["ONE SYSTEM IS REMOVING THE COMPONENT. Atlassian, verbatim: \"We are planning on deprecating Drawer. Please use Modal instead.\" M3 makes modality depend on breakpoint (\"Modal side sheets are preferred in compact breakpoints\") — our drawer has one modality everywhere. And our own Modals meta calls the bottom sheet a 'Partial modal / Drawer', so two records claim the same surface."],
+   "daves_call": "whether Drawer and Modals' 'Partial modal' are the same component. Two of our metas currently describe one thing."
+  },
+  {
+   "component": "popover",
+   "when_gate": "the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open",
+   "when_prose": "CANON-ADJACENT — our purpose already carries the three-way rule: \"If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal\"; Atlassian states both halves independently (\"For interactive overlays, use the modal dialog component\" / \"For non-essential, non-interactive messages, use the tooltip component\"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: \"Don't make popups that scroll\", Carbon: past four columns wide use a modal).",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta popover.purpose + mustNotNeighbour + antiPatterns[0,1,2,4]","Atlassian popup","Carbon popover","Fluent 2 popover","Polaris popover","Apple HIG popovers","Ant popover"],
+   "disagreements": ["none on the click-vs-hover or interactive-vs-plain cuts — six systems agree. Carbon alone gives a dimensional cut (four columns) that we could adopt or ignore."],
+   "daves_call": "only whether Carbon's four-column overflow test becomes ours. Everything else is already in our prose and only needs copying onto the meta as a `when`."
+  },
+  {
+   "component": "tooltip",
+   "when_gate": "the content is ONE plain sentence of supplementary help AND nothing inside is focusable AND it appears on hover AND on keyboard focus AND it is dismissible and hoverable (1.4.13) AND no essential information lives only here",
+   "when_prose": "beats popover (proposed \"structured, focusable, click-opened\") only where a sentence will do; is REQUIRED company for an icon-button in two systems (Atlassian, Polaris), which is stronger than our own antiPattern wording; yields to visible help text for anything the reader must have (six systems say this, ours among them), and to popover the moment a link or button is wanted inside.",
+   "confidence": "consensus-external",
+   "sources": ["OUR meta tooltip.antiPatterns[0,1,2]","Carbon tooltip","USWDS tooltip","Atlassian tooltip","Polaris tooltip","Fluent 2 tooltip","NN/g tooltip-guidelines","M3 tooltips"],
+   "disagreements": ["M3 BREAKS THE CONSENSUS: \"Rich tooltips can have up to two text buttons.\" Carbon, Polaris, Fluent, Atlassian and we all forbid interactive content in a tooltip. One system has merged tooltip and popover; ten have not."],
+   "daves_call": "nothing. This one is free — seven systems and our own meta agree. Ratify as written, and decide separately whether the icon-button tooltip is required (see icon-button)."
+  },
+  {
+   "component": "command-palette",
+   "when_gate": "the application has more destinations and actions than any menu can hold AND it is opened by an agreed keyboard chord AND the query field keeps focus (aria-activedescendant) AND a no-match state says so in a live region AND a static affordance exists",
+   "when_prose": "beats navigations and sidebar-nav for power users only, because it is a search over the whole app rather than a structure; is a combobox over a listbox, never role=menu (our antiPatterns[4] — that is Dropdown) and never role=tablist; yields to search-field when the target is content rather than commands, and to navigations for everyone who is not hunting.",
+   "confidence": "none",
+   "sources": ["OUR meta command-palette.purpose + antiPatterns[0,3,4,5]"],
+   "disagreements": ["EXTERNAL SILENCE. None of the eleven consulted systems ships a command palette. It is a product-app idiom, not a design-system component, in every system we checked."],
+   "daves_call": "whether a command palette belongs in a retail-banking library at all, or only in the internal/case-working surfaces. Nothing external can settle it."
+  },
+  {
+   "component": "cascader",
+   "when_gate": "the answer is ONE PATH through a hierarchy AND each level is a column beside the last AND branches open on click, never hover AND stale columns are removed when the path changes AND the whole path is announced",
+   "when_prose": "beats dropdown (#270 proposed \"single, 6-15 options\") when the option set has levels rather than length — a holding location, a category and sub-category, an org unit; beats tree when showing the whole tree at once would be more than the question needs (our own purpose); yields to dropdown whenever the hierarchy can be flattened to a single list without losing the reader.",
+   "confidence": "single-external",
+   "sources": ["OUR meta cascader.purpose + antiPatterns[0,1,4]","Ant cascader"],
+   "disagreements": ["only Ant ships this component, and its criterion is about data shape (\"a set of associated data set\") not about the alternative. Nobody names a depth or a breadth at which a cascader beats a plain dropdown."],
+   "daves_call": "confirm 'the answer is a location in a tree' is the fence, and say whether depth 2 qualifies or whether it takes 3+ levels. Today nothing says."
+  }
+ ]
+}

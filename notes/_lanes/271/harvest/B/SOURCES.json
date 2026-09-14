@@ -1,0 +1,237 @@
+{
+ "$description": "#271 harvest lane B — record-list + chart-panel + headline-metric + status-surface. Every source consulted. ours = file:line in this repo. external = URL + VERBATIM quote (<15 words, per knowledge/_RUNBOOK-external-claims.md). NOTHING HERE IS OUR RULE until Dave rules it.",
+ "$runbook": "knowledge/_RUNBOOK-external-claims.md — external claims carry source + quote + marked EXTERNAL, never presented as ours.",
+ "$shape": "copied from notes/_lanes/270/when-research/SOURCES.json",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$slice": "B",
+ "$readonly": "This lane touched NOTHING under knowledge/. Read-only on canon.",
+
+ "ours": [
+  {
+   "src": "knowledge/roles.json — roles.record-list.providers",
+   "said": "8 providers, EVERY ONE has a when: table 'default, read-mostly' · data-grid 'sort / filter / select / edit-in-place is required' · list-items '≤ 3 fields per item, tappable' · transaction-row 'the records are a ledger with a running balance' · document-row 'the records are issued documents to open / download' · standing-order-mandate-row 'the records are future recurring instructions' · timeline 'time is the structure, records have happened' · tree 'records nest'",
+   "discriminates": "the whole record-list role",
+   "note": "ADOPTED s252-D1. CANON — cited, not redone. #270 already proposed the meta copy for table / data-grid / list-items."
+  },
+  {
+   "src": "knowledge/roles.json — roles.chart-panel.providers",
+   "said": "12 providers each with a when, gated by the five intent words on the answers axis (chart-intents.json, s251-D11): comparison · change-over-time · distribution · relationship · composition",
+   "discriminates": "the whole chart-panel role",
+   "note": "CANON. roles.json itself flags this as 'the call most worth striking if you disagree — see §14 call 1'. chart-sparkline and Chart-bullet are NOT in this provider list; their whens live on their metas and in headline-metric."
+  },
+  {
+   "src": "knowledge/roles.json — roles.headline-metric.providers",
+   "said": "stat-card 'default — label · value · delta · period, no series' · kpi-tile 'a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)' · Chart-bullet 'a target or performance band is the point, not the delta' · runway-bar 'the number is \"money vs what is already scheduled\"'",
+   "discriminates": "the whole headline-metric role",
+   "note": "CANON"
+  },
+  {
+   "src": "knowledge/roles.json — roles.status-surface.providers",
+   "said": "status-indicator 'one state, one dot + label, 2–4 cols' · summary 'n × count as a key/value list, 6–12 cols' · meter 'the threshold is a cap being spent against (limits-meter reading)' · badge 'inline, attached to another element, count only'",
+   "discriminates": "the whole status-surface role",
+   "note": "CANON"
+  },
+  {
+   "src": "knowledge/components/*.meta.json — `when` field",
+   "said": "26 of the 45 components in this slice already carry a machine-shaped `when` on the meta (all 14 charts, stat-card, kpi-tile, runway-bar, summary, status-indicator, legend, and the record-list trio via #270)",
+   "discriminates": "most of the slice",
+   "note": "MEASURED. The gap in slice B is NOT the charts — it is the container/identity family: cards, account-card, accordion, carousel, pagination, filter-toolbar-bar, view-options, tags, avatar, avatar-group, amount-display, stats-band-lockup, payment-card-visual, qr-code, limits-meter."
+  },
+  {
+   "src": "knowledge/components/chart-donut.meta.json — when",
+   "said": "beats chart-pie (48, 'composition, no centre figure, ≤ 5 parts') whenever the total is worth printing, and beats it on nothing else",
+   "discriminates": "donut-vs-pie"
+  },
+  {
+   "src": "knowledge/components/chart-pie.meta.json — antiPatterns[0]",
+   "said": "More than 6 slices (dv-pie-009 — combine into 'Other')",
+   "discriminates": "pie slice ceiling — OURS IS 6, and the meta `when` says ≤ 5. AN INTERNAL INCONSISTENCY, found by this lane."
+  },
+  {
+   "src": "knowledge/components/chart-bar.meta.json — antiPatterns[2]",
+   "said": "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
+   "discriminates": "bar baseline — corroborated verbatim by FT Visual Vocabulary"
+  },
+  {
+   "src": "knowledge/components/Chart-histogram.meta.json — antiPatterns[0]",
+   "said": "A gap between bins … a gap misreads as a categorical bar chart",
+   "discriminates": "histogram-vs-bar — corroborated by FT Visual Vocabulary"
+  },
+  {
+   "src": "knowledge/components/meter.meta.json — purpose",
+   "said": "Progress-bar and Limits-meter roll up into it: progress becomes one SEMANTIC VARIANT of a meter. ✅ ACCEPTED #210 — s210-D1, Dave verbatim: 'keep as one meter'",
+   "discriminates": "meter-vs-progress-bar — RULED OURS, and the strongest external disagreement in this slice"
+  },
+  {
+   "src": "knowledge/components/accordion.meta.json — purpose + antiPatterns[0]",
+   "said": "For a single disclosure on its own, prefer an Expand link rather than a lone accordion. 'Using a single accordion on its own — use an Expand link instead (per HSBC guidance)'",
+   "discriminates": "accordion-vs-single-disclosure — OUR ONLY HSBC-sourced when in this slice, and GOV.UK says the same thing with a named component"
+  },
+  {
+   "src": "knowledge/components/view-options.meta.json + filter-toolbar-bar.meta.json antiPatterns[1]",
+   "said": "Consuming View-options instead of Segmented-control for the view switch — View-options was superseded 2026-07-24",
+   "discriminates": "view-options is SUPERSEDED — it should carry a when that says 'do not use', not a selection criterion"
+  },
+  {
+   "src": "knowledge/components/limits-meter.meta.json + progress-bar.meta.json",
+   "said": "thin category aliases of meter.meta.json (s210-D5) — 'WRITING SPEC INTO THE TWO ALIAS METAS' is an antiPattern",
+   "discriminates": "nothing — an alias inherits meter's when; a separate when here would be a second source of truth"
+  },
+  {
+   "src": "knowledge/components/carousel.meta.json — purpose",
+   "said": "PROPOSED at #210 wave-4 lane C; not registered, not ruled. PROPOSED default is autoplay OFF entirely",
+   "discriminates": "nothing — the component itself is unratified, and every external system consulted advises against it"
+  },
+  {
+   "src": "knowledge/components/payment-card-visual.meta.json — antiPatterns[1] + account-card.meta.json purpose",
+   "said": "Showing a BALANCE on the card face. That is Account-card's job; a payment-card visual with a balance is an Account-card wearing a card shape",
+   "discriminates": "payment-card-visual-vs-account-card — OURS ALONE, no external analogue"
+  },
+  {
+   "src": "notes/_lanes/270/when-research/PROPOSED-WHEN.json",
+   "said": "table / data-grid / list-items proposals already written at confidence `canon`",
+   "discriminates": "referenced and extended here, not redone (BRIEF rule)"
+  }
+ ],
+
+ "external": [
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/accordion/","quote":"Do not use an accordion for content that all users need to see.","disc":"accordion-vs-plain-page","component":"accordion"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/accordion/","quote":"Accordions hide content from the user.","disc":"accordion-vs-plain-page","component":"accordion"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/details/","quote":"Use the details component instead of tabs or an accordion","disc":"accordion-vs-single-disclosure — agrees with OUR meta's Expand-link antiPattern","component":"accordion"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/pagination/","quote":"Do not use this Pagination component for linear journeys","disc":"pagination-vs-stepper","component":"pagination"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/pagination/","quote":"Avoid using the ‘infinite scroll’ technique to automatically load content","disc":"pagination-vs-infinite-scroll","component":"pagination"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/pagination/","quote":"Use a list-type layout if users need to navigate through pages of similar items.","disc":"pagination variant choice","component":"pagination"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/tag/","quote":"Use the Tag component to show users the status of something.","disc":"tags-vs-status-indicator — GOV.UK's Tag IS our Status-indicator","component":"tags"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/tag/","quote":"Tags are only used to indicate a status.","disc":"tags-vs-status-indicator","component":"tags"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/tag/","quote":"Do not use tags to create links, buttons or other interactive elements","disc":"tags-vs-links — CONTRADICTS OUR OWN META, which ships an interactive Tag link","component":"tags"},
+  {"sys":"GOV.UK","url":"https://design-system.service.gov.uk/components/tag/","quote":"Sometimes a single status is enough.","disc":"status-indicator cardinality","component":"status-indicator"},
+
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/accordion/","quote":"If users need to see most or all of the information on a page.","disc":"accordion-vs-plain-page (listed under 'consider something else')","component":"accordion"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/accordion/","quote":"Accordions increase cognitive load and interaction cost","disc":"accordion-vs-plain-page","component":"accordion"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/card/","quote":"Don’t use a card as a substitute for a table row.","disc":"cards-vs-table — THE SHARPEST CARDS RULE FOUND","component":"cards"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/card/","quote":"Cards should be self-contained and modular.","disc":"cards-vs-list-items","component":"cards"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/card/","quote":"Don’t use the card component only for decoration.","disc":"cards-vs-layout-utilities","component":"cards"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/collection/","quote":"Consider limiting the number of items in each collection to six or fewer.","disc":"card-collection cardinality — A NUMBER (6)","component":"cards"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/collection/","quote":"Collections are meant to be compact.","disc":"collection-vs-card — a component we do not have","component":null},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/table/","quote":"When you need to display tabular information, such as statistical data.","disc":"table-vs-list","component":"table"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/table/","quote":"consider a bar graph, infographic, or other type of chart","disc":"table-vs-chart-panel — THE ONLY EXTERNAL RULE FOUND THAT CROSSES OUR TWO ROLES","component":"table"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/tag/","quote":"To indicate the number of new or unread items within a container.","disc":"badge-vs-tags — USWDS's tag does BOTH jobs; ours are two components","component":"badge"},
+  {"sys":"USWDS","url":"https://designsystem.digital.gov/components/tag/","quote":"Users frequently confuse tags as buttons.","disc":"tags-vs-button","component":"tags"},
+
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/accordion/usage/","quote":"To shorten pages and reduce scrolling when content is not crucial to read","disc":"accordion-vs-plain-page","component":"accordion"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/accordion/usage/","quote":"When space is at a premium and long content cannot be displayed","disc":"accordion-vs-plain-page","component":"accordion"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/pagination/usage/","quote":"When there is too much data to display on one page","disc":"pagination trigger — NO NUMBER","component":"pagination"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/pagination/usage/","quote":"Do not use it to display linear journeys, for example, in a form progression.","disc":"pagination-vs-stepper — agrees with GOV.UK verbatim in substance","component":"pagination"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tag/usage/","quote":"Use tags to label, categorize, or organize items using keywords that describe","disc":"tags-vs-status-indicator — Carbon's tag is a KEYWORD, GOV.UK's is a STATUS","component":"tags"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tag/usage/","quote":"Do not use tags as links that direct you to an entirely different page","disc":"tags-vs-links — agrees with GOV.UK, contradicts our Tag link","component":"tags"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/data-table/usage/","quote":"When a more complex display of the data or interactions are required.","disc":"table-vs-data-grid — agrees with roles.json","component":"data-grid"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tile/usage/","quote":"Use tiles to group related information in flexible containers.","disc":"cards purpose","component":"cards"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tile/usage/","quote":"Do not add a drop shadow to tiles","disc":"cards elevation","component":"cards"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/progress-bar/usage/","quote":"Use a determinate progress bar when the progress can be calculated","disc":"meter determinacy","component":"meter"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/progress-bar/usage/","quote":"Indeterminate progress bars are used when the loading progress is unknown","disc":"meter-vs-loading-indicator (loading-indicator is slice A)","component":"meter"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/list/usage/","quote":"Avoid using a list for complex data","disc":"list-items-vs-table — agrees with roles.json ≤ 3 fields","component":"list-items"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tree-view/usage/","quote":"When you only need one level of nested information.","disc":"tree-vs-list-items (listed under when NOT to use)","component":"tree"},
+  {"sys":"IBM Carbon","url":"https://carbondesignsystem.com/components/tree-view/usage/","quote":"As the primary navigation in a product’s UI.","disc":"tree-vs-sidebar-nav (when NOT to use) — sidebar-nav is slice C","component":"tree"},
+  {"sys":"IBM Carbon","url":"https://raw.githubusercontent.com/carbon-design-system/carbon-website/main/src/pages/data-visualization/chart-types/index.mdx","quote":"Start by identifying the purpose of the visualization and then choose the","disc":"chart-panel is gated by INTENT, not by shape — agrees with s251-D11","component":null,"note":"Carbon's intent buckets are Comparisons · Trends · Part-to-whole · Correlations · Connections · Geospatial (6). Ours are 5. The mismatch is Connections + Geospatial (we have neither) and Carbon has no 'distribution' bucket."},
+
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/lists/resource-list.mdx","quote":"A resource list isn’t a data table","disc":"list-items-vs-table","component":"list-items","note":"polaris.shopify.com 301s; quote taken from the Polaris repo source — declared, not laundered (same substitution #270 declared)"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/lists/resource-list.mdx","quote":"A data table is a form of data visualization.","disc":"table-vs-list-items — A DIFFERENT DISCRIMINATOR FROM OURS (analysis, not field count)","component":"table"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/lists/resource-list.mdx","quote":"If your use case is more about finding and taking action on objects","disc":"list-items-vs-table","component":"list-items"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/lists/resource-list.mdx","quote":"Paginate when the current list contains more than 50 items.","disc":"pagination threshold — THE ONLY EXPLICIT NUMBER FOUND ANYWHERE FOR PAGINATION","component":"pagination"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/tables/data-table.mdx","quote":"Show values across multiple categories and measures.","disc":"table purpose","component":"table"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/tables/data-table.mdx","quote":"Not to be used for an actionable list of items","disc":"table-vs-list-items","component":"table"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/tables/data-table.mdx","quote":"Numerical = Right aligned","disc":"table alignment — corroborates OUR antiPatterns[2] exactly","component":"table"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/card.mdx","quote":"Use for content that you want to deprioritize.","disc":"card subdued variant","component":"cards"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/images-and-icons/avatar.mdx","quote":"To show a thumbnail for an object rather than a person or business","disc":"avatar-vs-thumbnail — we have no thumbnail component","component":"avatar"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/feedback-indicators/badge.mdx","quote":"Use a single word to describe the tone of an object.","disc":"badge/tags copy — Polaris's Badge is OUR status-indicator","component":"status-indicator"},
+  {"sys":"Shopify Polaris","url":"https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/feedback-indicators/badge.mdx","quote":"Always describe the tone in the past tense.","disc":"status copy","component":"status-indicator"},
+
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/Meter.html","quote":"Their progress is determined by user actions, rather than system actions.","disc":"meter-vs-progress-bar — THE STRONGEST DISAGREEMENT WITH OUR s210-D1 ROLL-UP","component":"meter","note":"spectrum.adobe.com/page/meter/ renders client-side and yielded zero text; the react-spectrum docs carry the same guidance prose. Substitution declared."},
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/Meter.html","quote":"Meters are visual representations of a quantity or an achievement.","disc":"meter purpose","component":"meter"},
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/ProgressBar.html","quote":"Use a determinate ProgressBar when progress can be calculated against a specific goal.","disc":"progress-bar-vs-meter","component":"meter"},
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/StatusLight.html","quote":"Status lights are used to color code categories and labels","disc":"status-indicator purpose","component":"status-indicator"},
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/StatusLight.html","quote":"The ideal usage for these is when there are 8 or fewer categories","disc":"status/legend colour-coding ceiling — A NUMBER (8)","component":"legend"},
+  {"sys":"Adobe Spectrum (react-spectrum docs)","url":"https://react-spectrum.adobe.com/react-spectrum/Badge.html","quote":"Badges are used for showing a small amount of color-categorized metadata","disc":"badge-vs-status-indicator — Spectrum's Badge is our Tags/Status-indicator, NOT our count Badge","component":"badge"},
+
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/statistic/index.en-US.md","quote":"When want to highlight some data.","disc":"stat-card purpose — the ONLY external analogue of headline-metric found","component":"stat-card"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/statistic/index.en-US.md","quote":"When want to display statistic data with description.","disc":"stat-card purpose","component":"stat-card"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/badge/index.en-US.md","quote":"typically displaying unread messages count","disc":"badge = count attached to another element — agrees with roles.json verbatim in substance","component":"badge"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/tag/index.en-US.md","quote":"It can be used to tag by dimension or property.","disc":"tags-vs-status-indicator — Ant sides with Carbon (keyword), not GOV.UK (status)","component":"tags"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/tree/index.en-US.md","quote":"Almost anything can be represented in a tree structure.","disc":"tree — no restraint offered, the opposite of Carbon","component":"tree"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/card/index.en-US.md","quote":"A card can be used to display content related to a single subject.","disc":"cards purpose","component":"cards"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/carousel/index.en-US.md","quote":"When there is a group of content on the same level.","disc":"carousel — the ONLY system consulted that recommends one without a warning","component":"carousel"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/carousel/index.en-US.md","quote":"it can be used to save space in the form of a revolving door","disc":"carousel-vs-stacked-content","component":"carousel"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/timeline/index.en-US.md","quote":"When a series of information needs to be ordered by time","disc":"timeline — agrees with roles.json 'time is the structure'","component":"timeline"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/collapse/index.en-US.md","quote":"Can be used to group or hide complex regions to keep the page clean.","disc":"accordion purpose","component":"accordion"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/pagination/index.en-US.md","quote":"When it will take a long time to load/render all items.","disc":"pagination trigger — NO NUMBER","component":"pagination"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/table/index.en-US.md","quote":"To sort, search, paginate, filter data.","disc":"table-vs-data-grid — Ant does NOT split them; one Table does both jobs","component":"data-grid"},
+  {"sys":"Ant Design","url":"https://raw.githubusercontent.com/ant-design/ant-design/master/components/list/index.en-US.md","quote":"List component has been deprecated.","disc":"nothing — a finding: Ant is retiring its List in favour of Listy","component":"list-items"},
+
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/accordions-complex-content/","quote":"Accordions should be avoided when your audience needs most or all of the content","disc":"accordion-vs-plain-page — the fourth system to say the same thing","component":"accordion"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/accordions-complex-content/","quote":"make sure to give people the capability to open multiple sections at a time","disc":"accordion multi-open — CONTRADICTS Ant's single-panel 'Accordion' definition","component":"accordion"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/designing-effective-carousels/","quote":"some people will only see the first frame or none at all","disc":"carousel-vs-static","component":"carousel"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/designing-effective-carousels/","quote":"Consider Using a Hero Image Instead of a Carousel","disc":"carousel-vs-hero (hero is slice C)","component":"carousel"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/infinite-scrolling-tips/","quote":"Infinite scrolling can cause additional problems for users with","disc":"pagination-vs-infinite-scroll — agrees with GOV.UK","component":"pagination"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"Pie charts (and their even less helpful cousin, donut charts) are notoriously poor","disc":"pie/donut-vs-bar — THE HARDEST EXTERNAL LINE AGAINST TWO OF OUR GATED CHARTS","component":"chart-pie"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"made even less effective by the whitespace in the middle","disc":"donut-vs-pie — NN/g ranks donut BELOW pie; roles.json ranks donut ABOVE it","component":"chart-donut"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"visualizations like pie charts and tree maps are generally not recommended","disc":"pie-vs-bar","component":"chart-pie"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"Bar charts are a reliable means of representing quantitative data","disc":"bar as the default — agrees with roles.json 'comparison'","component":"chart-bar"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"Scatterplots are an effective visualization for showing relationships between the two variables","disc":"scatter = relationship — agrees with roles.json verbatim in substance","component":"Chart-scatter"},
+  {"sys":"NN/g","url":"https://www.nngroup.com/articles/dashboards-preattentive/","quote":"color should not be used to communicate information about quantitative","disc":"legend / series identity — agrees with OUR legend antiPatterns[3]","component":"legend"},
+
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"Pie charts work best if you only have a few values","disc":"pie ceiling","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"If you have more than five shares, consider a stacked column","disc":"pie ceiling — A NUMBER (5), and it matches roles.json's ≤ 5 exactly","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"Pie charts are not the best choice if you want readers to compare","disc":"pie-vs-bar","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"One pie chart can only show one total and its shares","disc":"pie-vs-stacked-bar","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"Pie charts might be unnecessary if you only want to show two values","disc":"pie LOWER bound (2) — nobody else names one","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/pie-charts","quote":"Consider grouping slices together in one bigger slice","disc":"'Other' bucket — corroborates OUR antiPatterns[0] on both pie and donut","component":"chart-pie"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/line-charts","quote":"Use line charts only if you want to show how values develop over time.","disc":"line = change-over-time — agrees with roles.json","component":"chart-line"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/line-charts","quote":"Line charts have the big advantage that they don’t need to start from zero.","disc":"line-vs-bar baseline — the reason bar is zero-based and line is not","component":"chart-line"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/line-charts","quote":"If you want to show how values differ in different categories","disc":"line-vs-bar — agrees with chart-bar's own when","component":"chart-line"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/area-charts","quote":"Area charts work best if the total is as important as its shares.","disc":"stacked-area-vs-line — agrees with our when almost verbatim","component":"chart-stacked-area"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/area-charts","quote":"Area charts work best if you have many dates.","disc":"stacked-area-vs-stacked-column","component":"chart-stacked-area"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/area-charts","quote":"If you have less than ten or so dates, consider a stacked column","disc":"stacked-area-vs-stacked-bar — A NUMBER (10) we do not carry","component":"chart-stacked-area"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/stacked-column-charts","quote":"It’s hard for readers to compare columns that don’t start at the same baseline.","disc":"stacked-bar limitation","component":"chart-bar"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/stacked-column-charts","quote":"Stacked column charts work well for only a few totals.","disc":"stacked-bar ceiling","component":"chart-bar"},
+  {"sys":"Datawrapper","url":"https://www.datawrapper.de/blog/stacked-column-charts","quote":"If you have more than approximately 10 categories","disc":"stacked column → stacked BAR (horizontal) — A NUMBER (10) for orientation","component":"chart-bar"},
+
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"difficult to accurately compare the size of the segments","disc":"pie-vs-bar","component":"chart-pie"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"the centre can be a good way of making space to include more information","disc":"donut-vs-pie — THE ONLY EXTERNAL CORROBORATION OF OUR CENTRE-TOTAL SPLIT","component":"chart-donut"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"The standard way to show a changing time series.","disc":"line = change-over-time","component":"chart-line"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"usually best with only one series of data at a time","disc":"columns-over-time series ceiling (1)","component":"chart-bar"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"seeing change in components can be very difficult","disc":"stacked-area limitation","component":"chart-stacked-area"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"can be difficult to read with more than a few components","disc":"stacked-column ceiling — NO NUMBER","component":"chart-bar"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"keep the gaps between columns small to highlight the 'shape' of the data","disc":"histogram-vs-bar — corroborates OUR antiPatterns[0]","component":"Chart-histogram"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Summarise multiple distributions by showing the median (centre) and range of the data","disc":"boxplot = distribution per category — agrees with roles.json","component":"Chart-boxplot"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"effectively, back to back histograms","disc":"butterfly = DISTRIBUTION at the FT; roles.json says comparison. A CATEGORY CLASH","component":"Chart-butterfly-h"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"The standard way to show the relationship between two variables","disc":"scatter = relationship","component":"Chart-scatter"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"showing the relationship between an amount (columns) and a rate (line)","disc":"combo = CORRELATION at the FT (filed twice, also under Change v Time); ours says change-over-time","component":"chart-combo"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"show opening/closing and hi/low points of each day","disc":"candlestick = OHLC — agrees with our when","component":"Chart-candlestick"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Must always start at 0 on the axis","disc":"bar baseline — corroborates dv-bar-009 verbatim in substance","component":"chart-bar"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Good when the data are not time series and labels have long category names","disc":"horizontal bar vs vertical column — A RULE WE DO NOT CARRY AT ALL","component":"chart-bar"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Can become tricky to read with more than 2 series","disc":"grouped-bar series ceiling (2) — the same number our butterfly requires","component":"chart-bar"},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Use for hierarchical part-to-whole relationships","disc":"treemap — a chart type we do not have","component":null},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Shows changes in flows from one condition to at least one other","disc":"sankey — a chart type we do not have","component":null},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Can be useful for showing part-to-whole relationships where some of the components are negative","disc":"waterfall — a chart type we do not have, and the ONLY part-to-whole answer for negatives","component":null},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Lollipop charts draw more attention to the data value than standard bar/column","disc":"lollipop — a chart type we do not have","component":null},
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Splits a single value into 2 contrasting components (eg Male/Female)","disc":"spine chart — closest external analogue of our runway-bar's committed-vs-balance split","component":"runway-bar"},
+
+  {"sys":"FT Visual Vocabulary","url":"https://ft-interactive.github.io/visual-vocabulary/chartTypes.csv","quote":"Bullet","disc":"NOTHING — the FT's Bullet row has an EMPTY description field. Measured silence on the one chart our headline-metric role depends on.","component":"Chart-bullet"}
+ ],
+
+ "refused": [
+  {"url":"https://m3.material.io/components/cards/guidelines (and /carousel/, /badges/, /progress-indicators/)","why":"HTTP 200 but the page is client-rendered — zero text nodes over 40 chars extracted. Material 3 is SILENT in this slice's record, by fetch failure not by omission. #270 quoted M3 successfully; the pages that worked there were /switch/ and /radio-button/, not these."},
+  {"url":"https://developer.apple.com/design/human-interface-guidelines/charts (and /gauges, /progress-indicators, /lists-and-tables)","why":"HTTP 200, client-rendered, zero text extracted. Apple HIG is SILENT in this record by fetch failure."},
+  {"url":"https://atlassian.design/components/{lozenge,badge,tag,avatar,avatar-group,pagination,progress-bar}/usage","why":"HTTP 200 but only the cookie/feedback chrome renders server-side. Atlassian is SILENT in this record by fetch failure — it is NOT silent on these components in reality."},
+  {"url":"https://spectrum.adobe.com/page/{meter,progress-bar,badge,status-light,tag,avatar,accordion}/","why":"HTTP 200, ZERO bytes of extractable text. SUBSTITUTED with react-spectrum.adobe.com component docs, which carry the same guidance prose. Declared, not laundered."},
+  {"url":"https://carbondesignsystem.com/data-visualization/chart-types/","why":"client-rendered; only 3 lines extracted. Fell back to the carbon-website repo mdx, which is a taxonomy of intent buckets with NO per-chart prose."},
+  {"url":"https://raw.githubusercontent.com/carbon-design-system/carbon-website/main/src/data/data-visualization.js","why":"404 — Carbon's per-chart descriptions are generated from a data file we could not locate. Carbon's own chart-CHOICE prose is therefore missing from this record."},
+  {"url":"https://fluent2.microsoft.design/components/web/react/badge/usage","why":"HTTP 200 serving a 'page may no longer be available' shell + 'Microsoft employee? Sign in to see internal-only content.' Fluent 2 is UNREACHABLE, not silent."},
+  {"url":"https://www.nngroup.com/articles/pie-charts/","why":"404. NN/g's pie-chart position was taken instead from /articles/dashboards-preattentive/, which states it directly."},
+  {"url":"https://www.datawrapper.de/blog/{bar-charts,barcharts,column-charts,grouped-column-charts,scatter-plots,scatterplots,scatterplot,histograms,range-plots,dot-plots,arrow-plots}","why":"all 404 — 11 slug guesses probed. Datawrapper HAS a bar-chart and scatterplot guide; we could not find their URLs within budget. Datawrapper is therefore SILENT here on bar and scatter."},
+  {"url":"https://blog.datawrapper.de/pie-charts-are-bad/","why":"HTTP 308 redirect the fetcher would not follow to a resolvable target."},
+  {"url":"https://designsystem.digital.gov/components/pagination/","why":"fetched OK but the page carries NO 'when to use / when to consider something else' section — USWDS is genuinely SILENT on the pagination criterion (not a fetch failure). Recorded as measured silence."},
+  {"url":"Figma (HSBC Common Toolkit)","why":"no access — carried forward from #270. HSBC's own component-choice prose for tables, charts and metric tiles is almost certainly there and is NOT in our ingested corpus. Every 'ours' entry above is repo prose, not HSBC guidance."}
+ ]
+}

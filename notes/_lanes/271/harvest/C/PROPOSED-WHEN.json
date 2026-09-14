@@ -1,0 +1,688 @@
+{
+ "$description": "#271 harvest lane C — PROPOSED `when` predicates for page-frame + page-title + wayfinding + arrangement. s253-D1 shape (gate half + prose half). NOTHING ENACTED. No meta, schema, roles.json, rules index, runbook or gate was touched by this lane.",
+ "$shape": "s253-D1: gate half = machine-checkable clause; prose half = beats/yields sentence naming the sibling and quoting its roles.json when.",
+ "$confidence_scale": {
+  "canon": "a predicate already adopted in our own repo — the work is a copy, not an invention",
+  "consensus-external": "3+ public systems state the same KIND of criterion",
+  "single-external": "one system states it, or the systems conflict on the cut",
+  "none": "no source found; the predicate is proposed from our own meta prose or is a declared guess"
+ },
+ "$already_ruled": "s270-D1 (single-select cut-off 5, provisional) is cited as canon and NOT re-litigated here — it touches no slice-C component. roles.json record-list whens are canon and belong to slice B.",
+ "$slice": "C",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "proposals": [
+  {
+   "component": "app-shell-top-nav",
+   "when_gate": "destinations <= 7 AND nav.levels <= 2 AND surface = authenticated-app",
+   "when_prose": "the default application frame; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds because a masthead costs no horizontal room, and beats app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") whenever the content column can spare the width; yields to app-shell-doormat when the destination set outgrows one band and the extra destinations belong in end matter.",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/components/app-shell-top-nav.meta.json — when",
+    "knowledge/roles.json — page-frame",
+    "USWDS header",
+    "NN/g vertical-nav",
+    "Carbon UI shell header"
+   ],
+   "disagreements": [
+    "THE NUMBER AND THE AXIS. Ours cuts at 7 destinations. Carbon cuts the same decision at 5 (\"more than five secondary navigation items\"). M3 does not use a count at all — it cuts by DEVICE SIZE (bar / rail / drawer = smaller / mid-sized / larger). NN/g uses neither, it uses \"broad or growing IAs\". USWDS uses \"a modest number of sections\" with no number. Four systems, three different axes.",
+    "USWDS splits our one top-nav into basic vs extended header on the SAME test our second band answers — no system agrees a second band is the right answer."
+   ],
+   "daves_call": "R1: keep 7, move to Carbon's 5, or rule that the axis is not a count at all. This is the single most contested rule in slice C."
+  },
+  {
+   "component": "app-shell-side-nav",
+   "when_gate": "destinations > 7 OR nav.levels = 2 AND viewport >= desktop AND content.width can spare 248px",
+   "when_prose": "beats app-shell-top-nav (roles.json when: \"default for dashboards\") once the destination set will not fit one band or the nav has a second level; yields to app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") on width alone, and to app-shell-multi-column (when: \"list-and-detail job\") when the job is picking a record rather than picking a destination.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — page-frame",
+    "Carbon UI shell left panel",
+    "USWDS side-navigation",
+    "NN/g vertical-nav",
+    "Apple HIG sidebars",
+    "M3 navigation drawer (meta)"
+   ],
+   "disagreements": [
+    "the cut itself — see R1.",
+    "DEPTH. Ours allows two nav levels. Carbon: \"The left panel does not support three tiers of navigation.\" Apple: \"In general, show no more than two levels of hierarchy in a sidebar.\" USWDS: \"To display a navigational hierarchy with one to three levels.\" Two systems say 2, one says 3.",
+    "DEFAULT STATE. Apple: \"Avoid hiding the sidebar by default to ensure that it remains discoverable.\" Our meta owns an expand/collapse/drawer RULE and does not say which state is default. Nobody else speaks."
+   ],
+   "daves_call": "R2: fix the depth ceiling at 2 (Carbon + Apple + our own when) or 3 (USWDS). And say whether \"expanded by default\" becomes a hard clause."
+  },
+  {
+   "component": "app-shell-nav-rail",
+   "when_gate": "destinations in 3..7 AND content.width cannot spare 248px AND rail.expandToggle = absent",
+   "when_prose": "beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") purely on room, never on destination count; the discriminator our meta insists on is the ABSENCE of an expand toggle — a rail with a toggle is a collapsed side-nav, not this component; yields to tab-bar (when: \"mobile bottom, 3–5 destinations\") below the desktop breakpoint.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/app-shell-nav-rail.meta.json — purpose",
+    "M3 navigation-rail (meta description)",
+    "knowledge/roles.json — page-frame"
+   ],
+   "disagreements": [
+    "M3 is the only system that ships a rail and it supplies a NUMBER we do not have: \"They can contain 3-7 destinations plus an optional FAB.\" Our when carries no count.",
+    "M3's rail is chosen by DEVICE SIZE (\"mid-sized devices\"), ours by CONTENT WIDTH. Related but not the same test — a mid-sized device with a sparse page does not need a rail on our reading."
+   ],
+   "daves_call": "R5: adopt M3's 3–7 destination bound for the rail, or rule that the rail carries no count and stays a width decision."
+  },
+  {
+   "component": "app-shell-multi-column",
+   "when_gate": "job = list-and-detail AND records.selectable = true AND viewport >= tablet (collapses to one pane below)",
+   "when_prose": "beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") because the middle column lists RECORDS, not destinations; beats app-shell-split (when: \"two peers on screen at once\") because the two panes are NOT peers — the detail is subordinate to the list and changes when the list selection changes.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/app-shell-multi-column.meta.json — purpose",
+    "Apple HIG sidebars",
+    "Apple HIG split-views"
+   ],
+   "disagreements": [
+    "Apple reaches our frame from a DIFFERENT direction: \"When a data hierarchy is deeper than two levels, consider using a split view\" — i.e. depth overflow from a sidebar, not a list-and-detail job. Apple also does not separate multi-column from split; both are 'split views' there.",
+    "Carbon, USWDS, GOV.UK, Ant: silent — none ships a list-detail frame."
+   ],
+   "daves_call": "nothing forced. Optionally add Apple's depth-overflow route as a SECOND entry condition."
+  },
+  {
+   "component": "app-shell-split",
+   "when_gate": "panes = 2 AND neither pane is subordinate AND the divide is user-set AND viewport = regular (not compact)",
+   "when_prose": "beats app-shell-multi-column (roles.json when: \"list-and-detail job\") on subordination — here neither pane owns the other; beats layout-utilities' l-split (proposed \"content = arbitrary-blocks AND surface = none\") because the boundary is published and reader-controlled rather than fixed; the splitter itself is Splitter (roles.json when: \"the reader sizes two panes\").",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/app-shell-split.meta.json — purpose",
+    "Apple HIG split-views",
+    "knowledge/roles.json — page-frame"
+   ],
+   "disagreements": [
+    "Apple adds a clause we do not carry: \"Prefer using a split view in a regular — not a compact — environment.\" Our when has no viewport condition at all.",
+    "Apple's default ratio guidance (\"keeps the panes looking balanced\", a third to the primary) has no counterpart here; our meta publishes the split as a PERCENTAGE and lets the reader own it."
+   ],
+   "daves_call": "R14: add the not-compact viewport clause to the gate, or leave the frame viewport-agnostic."
+  },
+  {
+   "component": "app-shell-focused",
+   "when_gate": "primaryNavigation = absent AND breadcrumbs = absent AND search = absent AND exits = 1 AND job.count = 1",
+   "when_prose": "the only frame defined by removal; beats every other shell (roles.json: all six carry navigation) whenever abandoning the task is the failure mode — authentication, a wizard, a passcode; yields to app-shell-top-nav the moment the user must be able to go somewhere else.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/components/app-shell-focused.meta.json — purpose",
+    "GOV.UK navigate-a-service",
+    "USWDS landing-page",
+    "GOV.UK step-by-step-navigation"
+   ],
+   "disagreements": [
+    "none on the KIND. GOV.UK: \"If your service does have a clear end-to-end journey, avoid using navigation links.\" USWDS: \"consider getting rid of the header.\" Both state the same removal test from opposite ends of the estate.",
+    "neither system makes it a FRAME — they make it page-level advice. We make it a shell."
+   ],
+   "daves_call": "nothing. This one is free — ratify as written."
+  },
+  {
+   "component": "app-shell-doormat",
+   "when_gate": "surface = marketing-or-public-servicing AND masthead.destinations <= 4 AND footer.links > 5 AND authenticated = false",
+   "when_prose": "beats app-shell-top-nav (roles.json when: \"default for dashboards\") when the destination set outgrew the masthead and the overflow belongs at the bottom; yields absolutely to app-shell-focused (when: \"one job, no navigation\") on any authenticated task screen — our meta calls a mega-footer there someone else's territory.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/app-shell-doormat.meta.json — purpose + antiPatterns[0,3]",
+    "USWDS footer",
+    "GOV.UK footer"
+   ],
+   "disagreements": [
+    "THE FOOTER CUT. USWDS supplies a number we lack: \"Use the big footer when your footer has more than five links.\" Ours carries none.",
+    "CONTRADICTION INSIDE USWDS ITSELF: it also says \"Use the big footer when you want to replicate your site's navigation scheme in the footer\" while elsewhere saying \"The footer doesn't need to mirror the header.\" Our antiPattern[0] takes the second position: never repeat the masthead's destinations in the mat.",
+    "GOV.UK, Carbon, Polaris, Ant, Apple: silent on any count."
+   ],
+   "daves_call": "R7: adopt \">5 footer links\" as the doormat trigger, and confirm our no-duplication antiPattern survives USWDS's replicate-the-nav line."
+  },
+  {
+   "component": "page-header-lockup",
+   "when_gate": "level = page AND (actions.count >= 1 OR tabs = present) AND h1 = the page's own name",
+   "when_prose": "the default page-title band; beats headers (roles.json when: \"page or screen level, app-only, no lock-up needed\") the moment actions or a Tabs row must ride alongside the title; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because this one owns the page-level h1 and there is exactly one.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — page-title",
+    "knowledge/components/page-header-lockup.meta.json — purpose",
+    "Polaris page",
+    "USWDS documentation-page",
+    "M3 top-app-bar (meta)"
+   ],
+   "disagreements": [
+    "THE TABS ROW. Our lockup carries an optional Tabs strip and template-detail composes it that way. GOV.UK: \"do not use the tabs component as a form of page navigation.\" Carbon: \"Do not use as navigation.\" Polaris: \"Not be used for primary navigation.\" Three systems against the arrangement we already ship. See R11.",
+    "Polaris makes the title UNCONDITIONAL (\"Always provide a title for the page header\"); our roles.json makes the LOCKUP conditional on actions or tabs, with a bare Headers band as the alternative."
+   ],
+   "daves_call": "R11: rule whether a Tabs strip inside the page header is local peer-view switching (legal by our own tabs when) or sub-page navigation (illegal by three external systems)."
+  },
+  {
+   "component": "headers",
+   "when_gate": "level in (page, screen, section) AND platform = app AND actions = none AND tabs = none",
+   "when_prose": "the plain title band; beats page-header-lockup (roles.json when: \"page level, with actions or tabs\") only when nothing rides beside the title, and beats section-heading-lockup because it is app chrome rather than a repeatable in-page heading; yields to hero (proposed \"surface = marketing\") on any unauthenticated marketing page.",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/components/headers.meta.json — when",
+    "knowledge/roles.json — page-title",
+    "M3 top-app-bar (meta)",
+    "GOV.UK service-navigation"
+   ],
+   "disagreements": [
+    "M3's top app bar merges what we split three ways (Headers, Page-header-lockup, Navigations): \"They contain a title and actions related to the current screen\" — i.e. M3 keeps ACTIONS on the title bar where our when explicitly removes them."
+   ],
+   "daves_call": "nothing. Already a machine-shaped when on the meta; copy it forward."
+  },
+  {
+   "component": "section-heading-lockup",
+   "when_gate": "level = section AND scope = one board / table / panel AND h1 = absent (h2 or lower)",
+   "when_prose": "beats page-header-lockup (roles.json when: \"page level, with actions or tabs\") on LEVEL alone — it is repeatable and the page-level one is not; beats a bare eyebrow (when: \"a kicker alone is enough\") whenever the section needs a real heading and not just a kicker.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/roles.json — page-title",
+    "knowledge/components/section-heading-lockup.meta.json — purpose"
+   ],
+   "disagreements": [
+    "no external system ships a named section-heading component. USWDS's closest advice is about headline precision, not level. This predicate is ours alone."
+   ],
+   "daves_call": "confirm the level test is the whole rule, or add \"the section owns at least one action\" as our own second clause."
+  },
+  {
+   "component": "eyebrow",
+   "when_gate": "level = kicker AND it stands ALONE (not inside page-header-lockup or section-heading-lockup) AND words <= 3",
+   "when_prose": "the rare case; roles.json already calls it \"a kicker alone is enough (rare; normally a part of the above)\" — so the gate's real work is to make the standalone use the exception and composition the default.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/roles.json — page-title"
+   ],
+   "disagreements": [
+    "no external system ships an eyebrow as a component. Zero sources. Our own roles.json when is the only evidence."
+   ],
+   "daves_call": "confirm \"rare\" is a real gate condition (i.e. a standalone eyebrow is a reviewable exception) or drop the word."
+  },
+  {
+   "component": "card-header-lockup",
+   "when_gate": "container = cards AND the surface needs a title zone AND (inline ghost actions <= 2 OR overflow trigger = 1)",
+   "when_prose": "beats section-heading-lockup (roles.json when: \"section level, above one board / table / panel\") because this heading lives INSIDE a card surface rather than above one; the two-or-overflow rule is the only cardinality anywhere in the page-title role.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/card-header-lockup.meta.json — purpose"
+   ],
+   "disagreements": [
+    "not a role provider in roles.json — it has no adopted when. No external system ships a card header as a separate component (M3, Polaris and Carbon all fold it into Card).",
+    "the \"inline ghost actions OR one overflow trigger\" cut is read off our own meta prose; nothing external corroborates the number 2."
+   ],
+   "daves_call": "either add card-header-lockup to the page-title role with this when, or rule it a part of Cards and give it no when of its own."
+  },
+  {
+   "component": "navigations",
+   "when_gate": "shape = destination-set x links AND scope = global AND the set is the SAME on every page",
+   "when_prose": "the global default; beats breadcrumbs (roles.json when: \"ancestry, depth >= 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column\") when the global set is a persistent column rather than a band.",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/components/navigations.meta.json — when",
+    "USWDS header",
+    "GOV.UK service-navigation",
+    "GOV.UK navigate-a-service"
+   ],
+   "disagreements": [
+    "FLYOUT vs MEGAMENU. USWDS gives a number for the flyout our meta does not: \"six or fewer subsections that you'd like to include in a dropdown menu\", and \"more than six links in any of your dropdown menus\" means a megamenu. Our masthead ships a main-nav flyout with no size rule.",
+    "GOV.UK adds a precondition nobody else states: navigation links belong only in services \"used repeatedly by some users\" with no clear task order."
+   ],
+   "daves_call": "R12: adopt USWDS's 6-link flyout→megamenu cut, or rule that our flyout carries no size limit."
+  },
+  {
+   "component": "sidebar-nav",
+   "when_gate": "scope = global AND viewport >= desktop AND column = persistent AND levels <= 2 AND current = exactly one",
+   "when_prose": "the column inside app-shell-side-nav; beats navigations (roles.json when: \"global — masthead / main-nav family\") when the product is one the user stays inside rather than a site they pass through, and collapses to a rail without losing accessible names — which is what separates it from app-shell-nav-rail (proposed \"expandToggle = absent\").",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — wayfinding",
+    "Carbon UI shell left panel",
+    "USWDS side-navigation",
+    "Apple HIG sidebars",
+    "M3 navigation drawer (meta)",
+    "NN/g vertical-nav"
+   ],
+   "disagreements": [
+    "DEPTH — see R2. Carbon 2 tiers, Apple 2 levels, USWDS 1–3 levels, ours 2.",
+    "Carbon routes the overflow tier to in-page Tabs (\"content to display beneath a sub-menu, use tabs within the page\") while forbidding tabs as navigation on its own tabs page. Apple routes the same overflow to a split view. Two systems, two different escape hatches, both incompatible with the other's rule."
+   ],
+   "daves_call": "R2 (the depth number) and: when the third tier arrives, do we go to Tabs (Carbon) or to app-shell-multi-column (Apple)?"
+  },
+  {
+   "component": "tabs",
+   "when_gate": "scope = local AND views are PEERS in one context AND selection = single AND destination = same page AND content is the same KIND across tabs",
+   "when_prose": "beats segmented-control (#270 proposed: \"the choice RE-PRESENTS content already on screen\") when the panels hold different content rather than a different presentation of one thing; beats accordion (roles.json when: \"content collapses behind a heading\") when only one section is needed at a time and the reader must switch quickly; NEVER a substitute for navigations (when: \"global\") or for sub-page routing.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — wayfinding",
+    "GOV.UK tabs",
+    "GOV.UK accordion",
+    "Carbon tabs",
+    "Carbon content-switcher",
+    "Polaris tabs",
+    "Ant tabs",
+    "M3 tabs (meta)"
+   ],
+   "disagreements": [
+    "TABS-vs-SEGMENTED IS A GENUINE THREE-WAY SPLIT. Polaris puts FILTERING on tabs (\"Represent the same kind of content, such as a list-view with different filters\"). Carbon puts the identical case on the content switcher, our Segmented-control (\"When toggling between different formats of the same content or filtering the same content\"). Ant sends the secondary level to a radio-button group instead (\"Radio.Button : for secondary tabs\"). Our filter-toolbar-bar is a fourth answer. See R10.",
+    "TABS AS NAVIGATION: GOV.UK, Carbon and Polaris all forbid it; Carbon then breaks its own rule for the third nav tier. Our page-header-lockup ships a Tabs row. See R11.",
+    "GOV.UK adds a CONTENT precondition nobody else states: \"the first section is more relevant than the others for most users.\""
+   ],
+   "daves_call": "R10 (filters: tabs or segmented?) and R11 (tabs in the page header: legal or not?). These two decide the shape of half this role."
+  },
+  {
+   "component": "breadcrumbs",
+   "when_gate": "shape = ancestor-path x links AND depth >= 2 AND relationship = hierarchical (not linear) AND the last crumb is not a link",
+   "when_prose": "beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global\") for global movement and to progress-tracker for any step-by-step journey; never replaces either — three external systems say so in their own words.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/components/breadcrumbs.meta.json — when",
+    "GOV.UK breadcrumbs",
+    "USWDS breadcrumb",
+    "Carbon breadcrumb",
+    "Ant breadcrumb",
+    "NN/g breadcrumbs",
+    "Apple HIG path-controls"
+   ],
+   "disagreements": [
+    "THE DEPTH NUMBER. Ours: depth >= 2. Carbon: \"a hierarchy of more than two levels\" (>= 3). Ant: \"When the system has more than two layers in a hierarchy\" (>= 3). GOV.UK and USWDS and NN/g give NO number, only \"not a flat structure\" / \"omit on the homepage\". Two systems say 3 where we say 2. See R3.",
+    "BREADCRUMBS WITH A SIDEBAR. USWDS: \"When side navigation is used in combination with main navigation, it may be redundant.\" GOV.UK: \"consider whether your users need the additional support of breadcrumbs.\" NN/g takes the opposite line: \"Breadcrumbs augment but do not replace those main forms of navigation.\" Our roles.json is SILENT — app-shell-side-nav and Breadcrumbs may co-exist today with no rule. See R4.",
+    "GOV.UK also bans breadcrumbs alongside its Back link component. We ship no Back link — a finding, not a rule."
+   ],
+   "daves_call": "R3 (depth 2 or 3) and R4 (are breadcrumbs legal inside app-shell-side-nav?)."
+  },
+  {
+   "component": "anchor-nav",
+   "when_gate": "scope = in-page AND document.sections >= 3 AND document.length >= 3 viewport-heights AND headings are real (h2/h3) AND scroll = finite",
+   "when_prose": "beats tabs (roles.json when: \"local — peer views in one context\") because nothing is hidden — the content is all on the page and the nav only marks position; beats breadcrumbs (when: \"ancestry, depth >= 2\") because it answers WHERE IN THIS PAGE, not where in the site; illegal where the page infinite-scrolls or has no heading structure.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/anchor-nav.meta.json — purpose",
+    "knowledge/roles.json — wayfinding",
+    "USWDS in-page-navigation",
+    "Ant anchor",
+    "GOV.UK accordion"
+   ],
+   "disagreements": [
+    "THE THRESHOLD. USWDS is the ONLY system that quantifies our word \"long\": \"pages that include three or more distinct content sections\" and \"content that exceeds three or more viewport heights\". Ours says \"in-page, long document\" and carries no number. See R9.",
+    "PLACEMENT. USWDS allows ONE placement (\"Display the in-page navigation to the side of the main content\"). Our meta ships TWO — a sticky horizontal bar and a vertical rail. Nobody else speaks."
+   ],
+   "daves_call": "R9: adopt USWDS's 3-sections-or-3-viewports threshold, or keep \"long\" unquantified. Also: do both placements stay legal?"
+  },
+  {
+   "component": "back-to-top",
+   "when_gate": "role = page-chrome AND scroll.past >= 4 viewport-heights AND instances-per-page = 1 AND position = bottom-end AND label carries the words",
+   "when_prose": "page chrome only, never a navigation destination; beats a footer link because it follows the reader; yields entirely to a sticky masthead (navigations, roles.json when: \"global\") when the reader's real need is to reach another section rather than the top.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/roles.json — wayfinding",
+    "knowledge/components/back-to-top.meta.json — purpose",
+    "NN/g back-to-top",
+    "Ant float-button"
+   ],
+   "disagreements": [
+    "NN/g is the only source with a threshold: \"Use a Back to Top button for pages that are longer than 4 screens.\" Ours says only \"page chrome only\" — no trigger at all. See R8.",
+    "NN/g also fixes cardinality (\"one sticky Back to Top link per page\"), placement (lower right) and prefers a sticky menu where the goal is section-to-section. Our meta ships an Icon-button idiom in SECONDARY tokens and states none of these.",
+    "GOV.UK, USWDS, Carbon, M3, Apple, Polaris: silent."
+   ],
+   "daves_call": "R8: adopt the 4-screen trigger and the one-per-page rule, or rule that a scroll threshold is an implementation detail and stays off the gate."
+  },
+  {
+   "component": "tab-bar",
+   "when_gate": "platform = app AND viewport = mobile AND position = bottom AND destinations in 3..5 AND every destination is a peer AND current uses the -active glyph",
+   "when_prose": "beats sidebar-nav (roles.json when: \"global, desktop, persistent column\") below the desktop breakpoint on room alone; is NOT Tabs (when: \"local — peer views in one context\") — these are app destinations, not peer views of one context, and our meta says so in capitals; carries navigation only, never actions.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — wayfinding",
+    "knowledge/components/tab-bar.meta.json — purpose",
+    "Apple HIG tab-bars",
+    "Apple HIG sidebars",
+    "M3 navigation-bar (meta)"
+   ],
+   "disagreements": [
+    "THE UPPER BOUND. Ours is 5. Apple states the consequence without a number: \"Avoid overflow tabs.\" M3's fetched text gives the device class only (\"smaller devices\"); its 3–5 rule COULD NOT BE VERIFIED — the guidance body is JavaScript-gated, so it is not recorded.",
+    "Apple's \"Use a tab bar to support navigation, not to provide actions\" has no counterpart in our meta or roles.json."
+   ],
+   "daves_call": "adopt \"no overflow\" as the reason for the 5 (so the number is derived, not arbitrary), and add the no-actions clause."
+  },
+  {
+   "component": "account-selector",
+   "when_gate": "role = input AND options = accounts (name + masked number + balance) AND the payment flow needs a from or a to",
+   "when_prose": "beats dropdown (#270 proposed: \"6–15 options and the column cannot spare the height\") because the option rows are RICH and a raw select for the same choice is on our mustNotNeighbour list; the compact chip form is the CHOSEN state inline, not a second control.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/account-selector.meta.json — purpose + relationships.mustNotNeighbour"
+   ],
+   "disagreements": [
+    "ZERO external sources. No public design system ships an account picker — it is a domain component. Its sibling rule (rich rows vs a raw select) is ours alone.",
+    "listed in slice C by the brief but it is an INPUT-role component; slice A owns dropdown and combobox, which are its real siblings."
+   ],
+   "daves_call": "confirm this belongs to slice A's input rule set rather than wayfinding, and whether the chip is a separate provider or a state."
+  },
+  {
+   "component": "layout-utilities",
+   "when_gate": "content = arbitrary-blocks AND surface = none AND the arrangement paints nothing, sizes no type and announces nothing",
+   "when_prose": "the default of the arrangement role; beats cards (roles.json when: \"a bordered surface per item\") whenever no border is wanted, beats feature-grid-lockup (when: \"marketing, 2/3/4-up icon + title + body\") whenever the cells are not icon+title+body, and yields to splitter (when: \"the reader sizes two panes\") the moment the divide becomes the reader's to set.",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/components/layout-utilities.meta.json — when",
+    "knowledge/roles.json — arrangement",
+    "Polaris layout"
+   ],
+   "disagreements": [
+    "Polaris supplies a COLUMN-RATIO rule we do not carry: \"Use equal-width layouts with two or more columns when each layout section has\" the same importance, and \"the primary two-thirds section is used for main information.\" Our l-split and l-twelve-column carry no importance test."
+   ],
+   "daves_call": "optional: adopt the equal-vs-two-thirds importance test as guidance on l-split, or leave the primitives content-agnostic (which is their whole argument)."
+  },
+  {
+   "component": "divider",
+   "when_gate": "separation is needed AND no surface, no heading and no whitespace will carry it AND weight matches the level of the break",
+   "when_prose": "beats layout-utilities' spacing (proposed \"content = arbitrary-blocks AND surface = none\") only when whitespace alone will not read as a break; beats cards (roles.json when: \"a bordered surface per item\") because a rule separates without enclosing; roles.json already reduces it to three words: \"a rule alone\".",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/roles.json — arrangement",
+    "M3 divider (meta)",
+    "Polaris divider",
+    "Polaris layout",
+    "Ant divider",
+    "Apple HIG split-views"
+   ],
+   "disagreements": [
+    "no disagreement on the KIND — five systems all say group/separate. They differ only on SCOPE: Ant additionally legitimises an INLINE divider (\"Divide inline text and links such as the operation column of table\") which our component, a horizontal rule with weights, does not cover.",
+    "Apple states a default weight (\"Prefer the thin divider style\") where our meta offers three weights and no default."
+   ],
+   "daves_call": "nothing forced. Optionally: is there a DEFAULT weight, and is an inline/vertical divider in scope?"
+  },
+  {
+   "component": "splitter",
+   "when_gate": "panes = 2 AND both must stay on screen AND the boundary is the reader's to set AND neither pane may reach zero AND viewport = regular",
+   "when_prose": "beats layout-utilities' l-split (proposed \"content = arbitrary-blocks AND surface = none\") on exactly one test — can the reader move the boundary; beats divider (roles.json when: \"a rule alone\") because this rule is a control; is the mechanism inside app-shell-split (when: \"two peers on screen at once\"), not a rival to it.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/roles.json — arrangement",
+    "knowledge/components/splitter.meta.json — purpose",
+    "Apple HIG split-views"
+   ],
+   "disagreements": [
+    "Apple is the only system that speaks, and it speaks about the FRAME not the control: \"Prefer using a split view in a regular — not a compact — environment\" and \"Prefer the thin divider style.\"",
+    "GOV.UK, USWDS, Carbon, M3, Polaris, Ant: silent — none ships a resizable splitter."
+   ],
+   "daves_call": "same call as R14: does the not-compact viewport clause go on the frame, on the splitter, or on both?"
+  },
+  {
+   "component": "feature-grid-lockup",
+   "when_gate": "surface = marketing AND cells >= 2 AND every cell = icon + title + body AND cells carry NO per-cell action",
+   "when_prose": "beats cards (roles.json when: \"a bordered surface per item\") because a feature cell states a benefit and does not carry its own call to action — our meta removes the action row deliberately; beats layout-utilities (when: \"default\") because the cell CONTENT is fixed, which is the whole component.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/roles.json — arrangement",
+    "knowledge/components/feature-grid-lockup.meta.json — purpose"
+   ],
+   "disagreements": [
+    "no external system ships a feature grid as a component — it is a marketing pattern everywhere else. Zero external sources.",
+    "the 2/3/4-up bound is ours; nobody corroborates or contests it."
+   ],
+   "daves_call": "confirm the no-per-cell-action rule is a GATE clause and not just prose, since it is the only thing separating this from Cards."
+  },
+  {
+   "component": "hero",
+   "when_gate": "surface = marketing AND authenticated = false AND position = top-of-page AND message = headline + intro + CTA AND page.forms = 0",
+   "when_prose": "beats page-header-lockup (roles.json when: \"page level, with actions or tabs\") because a hero ARGUES and a page header NAMES; beats headers (when: \"page or screen level, app-only\") on the authenticated/unauthenticated line; illegal on any app screen — that is what app-shell-focused and the page-title role are for.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/hero.meta.json — purpose",
+    "USWDS landing-page"
+   ],
+   "disagreements": [
+    "USWDS supplies the restraint clause we lack: \"Don't try to include forms or side navigation\" and \"a landing page works best when content is kept simple.\" Our meta describes anatomy and breakpoints, never a page-level prohibition.",
+    "GOV.UK ships no hero at all — a finding about the servicing-vs-marketing split, not a disagreement.",
+    "no system anywhere states the marketing/authenticated cut as a predicate. It is the most obvious rule in the role and nobody writes it down."
+   ],
+   "daves_call": "R15: is \"unauthenticated marketing surface only\" a hard gate clause for Hero, and does USWDS's no-forms/no-side-nav restraint come with it?"
+  },
+  {
+   "component": "hero-variants",
+   "when_gate": "hero = present AND variant in (baseline, media, stat-led, cta-led) AND every atom traces to Hero.reference.html or a gated atom",
+   "when_prose": "not a rival to hero — an arrangement OF it; the open question our own meta refuses to answer is whether these are four sub-variants of one Hero organism or four components, and no when can be written until that is ruled.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/hero-variants.meta.json — purpose"
+   ],
+   "disagreements": [
+    "zero external sources; no system ships hero variants as separate artefacts.",
+    "our meta explicitly declines to adjudicate the sub-variant question, so a `when` here would be premature."
+   ],
+   "daves_call": "rule the sub-variant question FIRST (one Hero with four variants, or four components). A when is unwritable until then."
+  },
+  {
+   "component": "footer",
+   "when_gate": "surface = authenticated app AND landmark = contentinfo AND it carries product identity, environment, data freshness and status",
+   "when_prose": "beats footer-doormat-lockup (proposed \"links > 5 AND surface = marketing\") because our Footer is the OPERATOR footer — what am I looking at, is it real, how old is it — not a list of ways to leave; appears once per page at the bottom of the content column.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/footer.meta.json — purpose",
+    "GOV.UK footer",
+    "USWDS footer",
+    "Polaris footer-help"
+   ],
+   "disagreements": [
+    "NAME COLLISION, NOT DISAGREEMENT. GOV.UK's and USWDS's footers are SITE footers (links, licence, copyright); ours is an operator status footer. \"Use the footer at the bottom of every page of your service\" (GOV.UK) and \"Be positioned at the bottom of the interface\" (Polaris) corroborate PLACEMENT only.",
+    "no external system ships an environment badge or a data-freshness line in a footer. Our whole purpose is unsourced."
+   ],
+   "daves_call": "confirm the two footers are separate providers with separate whens (operator footer vs doormat), so the name collision cannot be composed by accident."
+  },
+  {
+   "component": "footer-doormat-lockup",
+   "when_gate": "surface = marketing-or-public AND footer.links > 5 AND the mat repeats NONE of the masthead's destinations",
+   "when_prose": "the doormat form of Footer, and the end matter of app-shell-doormat (roles.json when: \"marketing / servicing site with a mega-footer\"); beats the plain footer (proposed \"surface = authenticated app\") on link count and surface; forbidden on an authenticated task screen.",
+   "confidence": "single-external",
+   "sources": [
+    "knowledge/components/footer-doormat-lockup.meta.json — purpose",
+    "knowledge/components/app-shell-doormat.meta.json — antiPatterns[0]",
+    "USWDS footer"
+   ],
+   "disagreements": [
+    "THE NUMBER: USWDS's \"more than five links\" is the only quantified trigger anywhere. See R7.",
+    "USWDS contradicts itself on duplication (replicate the nav / needn't mirror the header). Our antiPattern picks one side."
+   ],
+   "daves_call": "R7. Same call as app-shell-doormat — one number serves both."
+  },
+  {
+   "component": "image-block",
+   "when_gate": "media = still image AND semantics = figure/figcaption AND (caption OR attribution) AND ratio is on the 4px grid",
+   "when_prose": "beats a bare <img> inside layout-utilities (proposed \"content = arbitrary-blocks AND surface = none\") whenever the image needs a caption or an attribution line; beats cards (roles.json when: \"a bordered surface per item\") because it paints no surface of its own.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/image-block.meta.json — purpose"
+   ],
+   "disagreements": [
+    "zero external sources found in this lane's fetch set. Not a role provider in roles.json — no adopted when.",
+    "PROPOSED at #210 wave-4 lane C; not registered, not ruled. A when here is speculative."
+   ],
+   "daves_call": "does image-block become an arrangement provider at all, or stay an un-roled proposed artefact?"
+  },
+  {
+   "component": "video-player",
+   "when_gate": "media = video AND controls = in-page AND variant in (inline, hero) AND autoplay = false",
+   "when_prose": "beats image-block (proposed \"media = still image\") on media type alone; the hero variant yields to hero (proposed \"surface = marketing AND authenticated = false\") for the surrounding message — the player carries the media, never the headline.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/video-player.meta.json — purpose"
+   ],
+   "disagreements": [
+    "zero external sources in this lane's fetch set. Not a role provider in roles.json.",
+    "the autoplay = false clause is proposed from accessibility practice, NOT from any source fetched here — a declared guess."
+   ],
+   "daves_call": "confirm video-player is in the arrangement role at all, and whether autoplay = false is a house rule."
+  },
+  {
+   "component": "template-dashboard",
+   "when_gate": "question = 'how are things, and what needs me?' AND scope = SEVERAL records AND layout = kpi board + chart panel + recent-records grid",
+   "when_prose": "beats template-detail (proposed \"scope = ONE record\") on scope, and template-report (proposed \"claim about a PERIOD\") because a dashboard is about NOW and needs no provenance; composes app-shell-top-nav (roles.json when: \"default for dashboards\").",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-dashboard.meta.json — purpose"
+   ],
+   "disagreements": [
+    "NO EXTERNAL SYSTEM SHIPS PAGE TEMPLATES AT THIS GRANULARITY. USWDS ships five templates (404, landing, documentation, authentication, form) and none maps onto a dashboard. GOV.UK ships patterns, not templates. The whole template family is unsourced by construction — that is a finding, not a failure."
+   ],
+   "daves_call": "the template family's axis is THE QUESTION THE PAGE ANSWERS. Ratify that axis once and every template when follows from it."
+  },
+  {
+   "component": "template-dashboard-bento",
+   "when_gate": "question = 'how are things, and what needs me?' AND layout.grammar = bento (tiles are themselves bentos, s217-D2/D3)",
+   "when_prose": "answers the SAME question as template-dashboard and differs only in layout grammar — so the when cannot be a job test, it has to be a grammar test.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-dashboard-bento.meta.json — purpose",
+    "s217-D2/D3"
+   ],
+   "disagreements": [
+    "our own meta says the two dashboards differ in ONE thing: layout. A when that discriminates by JOB is therefore impossible here.",
+    "no external corroboration exists."
+   ],
+   "daves_call": "⛔ DAVE'S: two dashboard templates with the same question. Either the bento is a VARIANT of template-dashboard, or the when is explicitly 'the client asked for bento'."
+  },
+  {
+   "component": "template-detail",
+   "when_gate": "question = 'what is THIS, and what happened to it?' AND scope = ONE record AND the page carries identity + status + history",
+   "when_prose": "beats template-dashboard (proposed \"scope = SEVERAL records\") on record count; composes page-header-lockup with a Tabs strip — the arrangement three external systems call illegal (see R11).",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-detail.meta.json — purpose"
+   ],
+   "disagreements": [
+    "unsourced by construction (see template-dashboard).",
+    "its Tabs strip is the concrete case R11 decides."
+   ],
+   "daves_call": "R11 lands here first — if a header Tabs row is illegal, template-detail changes."
+  },
+  {
+   "component": "template-list-index",
+   "when_gate": "question = 'which one?' AND body = a browsable record set AND exactly ONE filter/toolbar bar AND a pager",
+   "when_prose": "beats template-detail (proposed \"scope = ONE record\") because the reader has not chosen yet; the BODY choice (data-grid vs document-row list) defers entirely to slice B's table-vs-data-grid-vs-list-items rule and roles.json record-list whens.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-list-index.meta.json — purpose",
+    "knowledge/roles.json — record-list (canon)"
+   ],
+   "disagreements": [
+    "unsourced externally. Its one real rule — WHICH body — is already canon in roles.json and belongs to slice B."
+   ],
+   "daves_call": "nothing new. Confirm the template inherits slice B's body rule rather than owning one."
+  },
+  {
+   "component": "template-report",
+   "when_gate": "claim.scope = a PERIOD AND made at a stated MOMENT AND from a stated SOURCE AND every chart has an auditable table",
+   "when_prose": "beats template-dashboard (proposed \"question = how are things NOW\") on provenance: a report must be checkable and a dashboard need not be; the provenance header is the whole contribution.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-report.meta.json — purpose"
+   ],
+   "disagreements": [
+    "unsourced externally.",
+    "the provenance triple (period, moment, source) is a strong, machine-checkable gate and nothing external contradicts it."
+   ],
+   "daves_call": "ratify the provenance triple as the gate. It is the cleanest template predicate in the set."
+  },
+  {
+   "component": "template-create-edit",
+   "when_gate": "job in (create, edit) AND one record AND form column + guidance aside AND an action bar that stays reachable",
+   "when_prose": "beats template-wizard (proposed \"steps >= 2 AND order is enforced\") when the whole record fits one page with no enforced order; beats template-settings (proposed \"job = change how the account behaves\") because this creates or edits a RECORD, not a preference.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-create-edit.meta.json — purpose"
+   ],
+   "disagreements": [
+    "USWDS's form-templates page carries NO when-to-use block (recorded under refused) so even the nearest external artefact is silent."
+   ],
+   "daves_call": "confirm the create/edit-vs-wizard cut is 'is an order enforced' and nothing else."
+  },
+  {
+   "component": "template-wizard",
+   "when_gate": "steps >= 2 AND order is enforced AND next is gated AND a review step precedes the end AND the end is a receipt",
+   "when_prose": "beats template-create-edit (proposed \"one page, no enforced order\") on order; composes app-shell-focused (roles.json when: \"one job, no navigation (auth, wizard)\") and borrows the step mechanism whole from Stepper.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/components/template-wizard.meta.json — purpose",
+    "GOV.UK check-answers",
+    "GOV.UK step-by-step-navigation",
+    "GOV.UK navigate-a-service"
+   ],
+   "disagreements": [
+    "none on the KIND. GOV.UK independently states all three of our clauses: a specific start and end point, a required order, and \"Show a single check answers page immediately before the confirmation screen.\"",
+    "GOV.UK offers a SECOND placement for the review step (\"include a check answers pages at the end of each section\") for very large transactions. Our meta names one review step."
+   ],
+   "daves_call": "adopt the review-step clause as canon (GOV.UK agrees with us) and say whether per-section reviews are legal."
+  },
+  {
+   "component": "template-confirmation",
+   "when_gate": "position = end of an instruction AND order = message, then FACTS, then actions, then what-happens-next AND a reference is shown if one exists",
+   "when_prose": "beats the Confirmation component (roles.json feedback role) because a confirmation PAGE is also the RECEIPT — that reordering is the template's whole contribution; ends a flow that template-wizard began.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/components/template-confirmation.meta.json — purpose",
+    "GOV.UK confirmation-pages"
+   ],
+   "disagreements": [
+    "none. GOV.UK states the trigger (\"at the end of a transaction\") and two of our three facts (\"a reference number, if there is one\", \"details of what happens next and when\").",
+    "GOV.UK also requires contact details for the service; our meta does not."
+   ],
+   "daves_call": "adopt the trigger verbatim in spirit, and rule whether contact details join the required facts."
+  },
+  {
+   "component": "template-error",
+   "when_gate": "cause in (404, 500) AND RAG colour = unbound AND no support semantics invented AND one page serves ALL unexpected failures",
+   "when_prose": "beats template-empty (proposed \"the query succeeded and returned nothing\") because here the page could not be produced at all; beats an inline Alert (slice A) because the failure is the PAGE, not a field.",
+   "confidence": "consensus-external",
+   "sources": [
+    "knowledge/components/template-error.meta.json — purpose",
+    "GOV.UK page-not-found-pages",
+    "GOV.UK problem-with-the-service-pages",
+    "USWDS 404-page"
+   ],
+   "disagreements": [
+    "none on the KIND. GOV.UK: \"Use the same page for all unexpected problems\" — which corroborates our one-template-two-states shape. USWDS: \"Don't use this template for form validation errors, submission errors.\"",
+    "GOV.UK bans the words: \"technical jargon like 404 or bad request\", and bans breadcrumbs on a not-found page. Our meta bans RAG colour and invented support semantics but says nothing about the LANGUAGE or the breadcrumb."
+   ],
+   "daves_call": "adopt GOV.UK's no-jargon and no-breadcrumbs clauses, or rule them content guidance and keep them off the gate."
+  },
+  {
+   "component": "template-empty",
+   "when_gate": "the query SUCCEEDED and returned nothing AND the page furniture that forms the recovery route stays visible AND a count line states the zero",
+   "when_prose": "beats template-error (proposed \"the page could not be produced\") because nothing failed; beats the Empty-state component (slice A) because only a PAGE knows the height to hold and which furniture must survive.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-empty.meta.json — purpose"
+   ],
+   "disagreements": [
+    "unsourced. No external system separates the empty PAGE from the empty REGION — our sharpest template distinction has no corroboration at all."
+   ],
+   "daves_call": "confirm the succeeded-with-zero-results vs failed cut is the gate clause that separates empty from error."
+  },
+  {
+   "component": "template-settings",
+   "when_gate": "job = change how the account behaves for the user AND sections are grouped on card surfaces AND a save state is visible AND an action bar stays reachable",
+   "when_prose": "beats template-create-edit (proposed \"job in (create, edit)\") because settings change PREFERENCES not records; composes anchor-nav (roles.json when: \"in-page, long document\") in its rail — which makes it the in-house test case for R9's threshold.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-settings.meta.json — purpose"
+   ],
+   "disagreements": [
+    "unsourced externally.",
+    "its rail is in-page navigation, so whatever R9 rules for anchor-nav binds here."
+   ],
+   "daves_call": "R9 binds this template. Otherwise nothing new."
+  },
+  {
+   "component": "template-auth",
+   "when_gate": "authenticated = false AND job in (log on, register, one-time passcode) AND navigation = absent AND one narrow form column beside a quiet brand column",
+   "when_prose": "the unauthenticated entry; composes app-shell-focused (roles.json when: \"one job, no navigation (auth, wizard)\") and contributes only page-scale layout and brand placement.",
+   "confidence": "none",
+   "sources": [
+    "knowledge/components/template-auth.meta.json — purpose",
+    "USWDS authentication-pages (NO when block — see refused)"
+   ],
+   "disagreements": [
+    "USWDS ships an authentication-pages template but its page carries NO when-to-use guidance; recorded under refused. So: zero usable external rules.",
+    "our own gate is really app-shell-focused's; the template adds layout only."
+   ],
+   "daves_call": "confirm template-auth's when is just app-shell-focused's when plus 'job = authentication', or give it a real one."
+  }
+ ]
+}

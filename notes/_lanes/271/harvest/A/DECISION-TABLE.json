@@ -1,0 +1,648 @@
+{
+ "$description": "#271 harvest lane A — ONLY the non-unanimous rules. One row per contested rule; each consulted system's position is a VERBATIM quote or the word `silent`. `options` are Dave's; `recommendation` is THE LANE'S, labelled as such, and binds nothing.",
+ "$unanimity_rule": "A rule is unanimous when every system that SPEAKS says the same KIND of thing. Silence is recorded, never counted as disagreement. Same KIND + different NUMBER = non-unanimous (the #270 finding).",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$slice": "A — input + action + feedback + overlay",
+ "rows": [
+  {
+   "id": "R-A-01",
+   "rule": "How many primary buttons per what — and what is the 'what'?",
+   "components": ["button","action-bar","cta-lockup","alert","banner"],
+   "positions": {
+    "IBM Carbon": "Primary buttons should only appear once per screen",
+    "Atlassian": "Only include one primary button or call to action (CTA) in a page",
+    "Fluent 2": "Only use one primary button in a layout for the most important action.",
+    "Ant Design": "there can be at most one primary button in a section.",
+    "Shopify Polaris": "Don't use more than one primary button in a section or screen",
+    "Adobe Spectrum": "Don't use more than 3 accent buttons in the same view.",
+    "GOV.UK": "silent on count",
+    "USWDS": "Avoid using too many buttons on a page.",
+    "NN/g": "Primary buttons have the most visual emphasis to grab user attention",
+    "OURS": "button.meta antiPatterns[0]: 'Using more than one primary button in a single context' — 'context' is undefined"
+   },
+   "why_contested": "The COUNT is near-unanimous (1) with one outlier (3). The SCOPE word is not: screen · page · layout · section · view. No gate can check 'context'.",
+   "options": [
+    "One primary per SCREEN (Carbon's word) — strictest, catches a primary in a card inside a page that already has one.",
+    "One primary per SECTION (Ant/Polaris) — allows a page-level primary plus one per card or panel.",
+    "One primary per LAYOUT REGION as defined by our app-shell (page header · main · action bar · each modal surface) — our own vocabulary rather than an imported one.",
+    "Leave 'context' undefined and keep the rule advisory."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. It is the only wording that names things our library already has, so a gate can walk the DOM and count. Carbon's 'screen' is the closest external match and explicitly excludes the app header, modal and side panel — which is option 3 in different words."
+  },
+  {
+   "id": "R-A-02",
+   "rule": "Can a LINK perform an action (download a PDF, open a new window), or must that be a button?",
+   "components": ["links","button","icon-button"],
+   "positions": {
+    "IBM Carbon": "Do not use links for actions that will change data",
+    "Atlassian": "Links navigate to a new page or anchor location, changing the URL.",
+    "Fluent 2": "Don't use links for triggering actions other than navigation.",
+    "Shopify Polaris": "Links are used primarily for navigation",
+    "Adobe Spectrum": "Buttons allow users to perform an action or to navigate to another page.",
+    "GOV.UK": "silent on the boundary (its Button page covers 'Start now' links styled as buttons)",
+    "USWDS": "silent on the boundary",
+    "NN/g": "not obtained — the two article slugs tried both 404 (see SOURCES refused)",
+    "OURS": "links.meta purpose: 'navigate between pages/content items or instigate actions (e.g. download pdf, open in a new window)'"
+   },
+   "why_contested": "Four systems fence links to navigation only. Spectrum crosses the line the other way (buttons may navigate). OUR OWN META crosses it in the direction four systems forbid, and 'download pdf' is a real, frequent HSBC case — every document row in the library depends on the answer.",
+   "options": [
+    "Links navigate only. A download becomes a button, and document-row / links / footer all change.",
+    "Links navigate AND fetch a resource (download, open-in-new-window) but never mutate state — a narrower crossing than our meta currently allows, and the one a URL actually justifies.",
+    "Keep our meta as written and record that we knowingly diverge from Carbon, Atlassian, Fluent and Polaris."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. A download IS a navigation to a URL; it changes nothing on the server. That keeps our existing arrow/icon links legal, keeps the four systems' actual concern (mutation) satisfied, and gives a gate a checkable clause: a link may not be bound to a handler that mutates."
+  },
+  {
+   "id": "R-A-03",
+   "rule": "How long does a toast stay before auto-dismissing?",
+   "components": ["toast"],
+   "positions": {
+    "Ant Design": "If not specified, default value is 4.5 seconds.",
+    "Shopify Polaris": "Use to shorten or lengthen the default duration of 5000 milliseconds.",
+    "Adobe Spectrum": "Be sure to set a minimum of 5 seconds",
+    "Fluent 2": "If there is no action to take, toast will time out after seven seconds.",
+    "Material 3": "Snackbars without actions can auto-dismiss after 4-10 seconds, depending on platform.",
+    "Atlassian": "silent on duration (states only that critical messages must not auto-dismiss)",
+    "IBM Carbon": "silent on duration",
+    "GOV.UK": "no toast component",
+    "OURS": "toast.meta purpose: 'auto-dismisses after ~6s (paused on hover/focus)'"
+   },
+   "why_contested": "Same KIND (a timeout), five different numbers: 4.5 · 5 · 5-min · 7 · 4-10. Ours (6) sits inside every band but matches nobody.",
+   "options": [
+    "Keep ~6s and record it as ruled rather than assumed.",
+    "Adopt M3's 4-10s BAND and let the consumer pick inside it by message length.",
+    "Adopt Spectrum's shape — a 5s FLOOR with no ceiling, since pause-on-hover already handles slow readers."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. Our 6s is already built, is inside every external band, and the pause-on-hover we already ship is what actually protects slow readers. This is a cheap ratification, not a change."
+  },
+  {
+   "id": "R-A-04",
+   "rule": "How many toasts may be on screen at once?",
+   "components": ["toast"],
+   "positions": {
+    "Material 3": "Only one snackbar may be displayed at a time.",
+    "Adobe Spectrum": "dismiss, do not show if other toast is present on screen.",
+    "Fluent 2": "Don't show more than four toasts in a toaster",
+    "Atlassian": "silent on count",
+    "Shopify Polaris": "silent on count",
+    "IBM Carbon": "silent on count",
+    "OURS": "toast.meta antiPatterns[4]: 'Stacking unlimited toasts (queue beyond ~3)'"
+   },
+   "why_contested": "Two systems say exactly one; one says four; ours says about three. The KIND agrees (there is a cap) and the NUMBER does not.",
+   "options": [
+    "One at a time (M3 / Spectrum) — the strictest, and the easiest to gate.",
+    "Keep ~3 queued.",
+    "Cap at 3 but show only ONE at a time, queueing the rest — which satisfies both camps."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. It is what 'queue beyond ~3' probably already meant, and it makes the gate trivial: assert exactly one toast node in the live region."
+  },
+  {
+   "id": "R-A-05",
+   "rule": "Is a page-level Banner dismissible?",
+   "components": ["banner"],
+   "positions": {
+    "Atlassian": "Banners should appear one at a time, are not dismissible",
+    "Shopify Polaris": "Be dismissible unless they contain critical information or an important step",
+    "Adobe Spectrum": "An alert banner should only overlay content if it is dismissible.",
+    "GOV.UK": "whether it's sometimes helpful to allow users to dismiss notifications, and how to do this",
+    "IBM Carbon": "silent on banner dismissal specifically",
+    "OURS": "banner.meta antiPatterns[0]: 'Actions AND dismiss on the same banner (family shape rule: either, never both)'"
+   },
+   "why_contested": "Three positions from three systems: never · conditionally · only if it overlays. GOV.UK openly records it as an open research question. Ours answers a different question (either/or) and never answers this one.",
+   "options": [
+    "Banner is never dismissible — it persists until the condition clears (Atlassian). Our either/or rule then collapses to 'actions only'.",
+    "Banner is dismissible only when it carries NO action (our existing either/or, made explicit as the answer).",
+    "Dismissible unless critical (Polaris) — needs a definition of critical that we do not have."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. It is already our shape rule; it just has not been stated as the answer to this question. Option 3 imports a word ('critical') with no home in our vocabulary."
+  },
+  {
+   "id": "R-A-06",
+   "rule": "At what wait does a spinner become a progress bar?",
+   "components": ["loading-indicator","progress-bar","skeleton-loader"],
+   "positions": {
+    "Fluent 2": "Progress bars should only be used for tasks that take longer than a second.",
+    "IBM Carbon": "If the process takes less than 5 seconds to load, use loading instead",
+    "NN/g": "Percent-done animation: Use for actions that take 10 seconds or more.",
+    "Atlassian": "For most loading use cases, choose a spinner component.",
+    "Material 3": "Choose a loading or progress indicator that corresponds to the expected wait time",
+    "Apple HIG": "When possible, use a determinate progress indicator.",
+    "Shopify Polaris": "For tasks with a short load time, use the Spinner component",
+    "OURS": "loading-indicator.meta antiPatterns[2] (REVIEW, inferred): 'using an indeterminate spinner where a determinate progress bar (known duration) would be clearer' — no number"
+   },
+   "why_contested": "1s · 5s · 10s · 'most cases use a spinner' · 'whenever possible use determinate'. A 3-second upload is a progress bar at Microsoft, a spinner at IBM, and a spinner at Atlassian. This is the deepest numeric split in the feedback family.",
+   "options": [
+    "Carry NO number. The discriminator is 'is the completion fraction knowable' — if yes, progress bar; if no, spinner. All seven systems can live with this and it is the only clause a gate can actually check.",
+    "Adopt Carbon's 5s cut (nearest to our banking upload reality).",
+    "Adopt NN/g's research-backed 10s cut and use skeleton or spinner below it."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. Every number here is a proxy for 'do you know the fraction'. We already state the real test in two metas; naming a second, numeric test would give us two rules that can disagree."
+  },
+  {
+   "id": "R-A-07",
+   "rule": "What does a FULL-PAGE load show — spinner or skeleton?",
+   "components": ["loading-indicator","skeleton-loader"],
+   "positions": {
+    "Adobe Spectrum": "Use a progress circle for full page loading or in very small areas.",
+    "Shopify Polaris": "Not be used to give feedback for an entire page load.",
+    "IBM Carbon": "For full-screen loads, skeleton states are preferred over indicators",
+    "Ant Design": "Could be replaced by Spin in any situation",
+    "NN/g": "Spinners are typically best used on a single module, like a video",
+    "Atlassian": "There should only be a single spinner on a page at any time.",
+    "OURS": "skeleton-loader.meta: 'use [Loading-indicator] when there is no known layout to mirror' — which does not settle the full-page case, because a page layout IS known"
+   },
+   "why_contested": "Split 2-2 on the identical situation, with Ant saying it does not matter. Our own predicate technically answers 'skeleton' (a page layout is known) but no meta says so and our app-shell templates do not do it.",
+   "options": [
+    "Skeleton for any full-page or full-region load where the layout is known (Carbon / Polaris / NN/g); spinner reserved for single modules.",
+    "Spinner for full-page, skeleton for in-page regions (Spectrum).",
+    "Either, by template — declared per app-shell rather than globally."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. It follows from the predicate we already have rather than adding a new one, and Polaris's flat prohibition on page-load spinners is the strongest single statement in the row."
+  },
+  {
+   "id": "R-A-08",
+   "rule": "Below what wait is a skeleton worse than nothing?",
+   "components": ["skeleton-loader"],
+   "positions": {
+    "NN/g": "they are best used when the page takes 2-10 seconds to load",
+    "Ant Design": "When a resource needs long time to load.",
+    "IBM Carbon": "should only appear for only a few seconds, disappearing once components and",
+    "Shopify Polaris": "Be used for pages where all content loads at the same time.",
+    "Atlassian": "silent",
+    "OURS": "skeleton-loader.meta antiPatterns[5]: 'Skeleton for sub-300ms loads (flash of placeholder is worse than nothing)'"
+   },
+   "why_contested": "Our floor is 300ms. NN/g's band starts at 2 seconds — nearly seven times higher. Between 300ms and 2s our library shows a skeleton and NN/g shows nothing.",
+   "options": [
+    "Keep 300ms (a flash-prevention threshold, which is what it really is).",
+    "Raise to NN/g's 2s (a perceived-performance threshold).",
+    "Keep 300ms as the DELAY before the skeleton appears, and adopt 10s as the point where it must hand over to a progress bar — two different jobs, two different numbers."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. Our 300ms and NN/g's 2s are answering different questions; option 3 keeps both without contradiction and adds the upper handover NN/g gives us for free."
+  },
+  {
+   "id": "R-A-09",
+   "rule": "How many actions may a modal carry?",
+   "components": ["modals","popconfirm","confirmation"],
+   "positions": {
+    "Material 3": "Dialogs should contain a maximum of two actions.",
+    "Shopify Polaris": "Not have more than two buttons (primary and secondary) at the bottom.",
+    "Fluent 2": "Optional footer, which can contain up to three actions.",
+    "Apple HIG": "alerts display a title, optional informative text, and up to three buttons",
+    "IBM Carbon": "In most scenarios, a primary button is used when one button is needed.",
+    "Atlassian": "silent on count",
+    "USWDS": "Avoid using components other than buttons inside the modal.",
+    "OURS": "modals.meta names no count; action-bar.meta guesses ~3 as a REVIEW note"
+   },
+   "why_contested": "Two systems cap at 2, two at 3. Our own action-bar guesses 3 for a different surface. We currently have no number for the modal at all.",
+   "options": [
+    "Two (M3 / Polaris) — forces a third action into the page behind.",
+    "Three (Fluent / Apple) — matches our own action-bar REVIEW guess, so one number serves both surfaces.",
+    "Two for a decision modal, one for an acknowledgement — M3's shape, which also fixes our Confirmation screen's action count."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. It is the only option that gives the acknowledgement case (our Confirmation) a rule of its own, and it agrees with M3, Polaris and Carbon at once."
+  },
+  {
+   "id": "R-A-10",
+   "rule": "Is a modal a last resort or a normal tool?",
+   "components": ["modals","drawer","popconfirm"],
+   "positions": {
+    "USWDS": "Modals should be a last resort.",
+    "Material 3": "Dialogs are purposefully interruptive, so they should be used sparingly.",
+    "Atlassian": "They can be invasive and should be used sparingly.",
+    "Shopify Polaris": "They can be disruptive and should be used thoughtfully and sparingly.",
+    "IBM Carbon": "Modal dialogs are commonly used for short and non-frequent tasks",
+    "Fluent 2": "Dialogs are often interruptions, so use them for important actions",
+    "NN/g": "Modal dialogs should be used for short, direct dialogs with the user.",
+    "OURS": "modals.meta antiPatterns[1]: 'Using a dialog … where a non-blocking drawer or inline message would suffice'"
+   },
+   "why_contested": "Every system that speaks says 'sparingly' — but USWDS alone says LAST RESORT, which is a different rule: it means a modal is only legal when nothing else works, not merely when it is the best fit. Our meta is in the 'sparingly' camp.",
+   "options": [
+    "Last resort — every modal in the library must name what was tried first.",
+    "Sparingly, with the existing antiPattern as the test (would a drawer or inline message do).",
+    "Sparingly, PLUS a hard fence: no modal may contain a form of more than N fields or a multi-step flow (Atlassian, USWDS and Carbon all say this in different words)."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. 'Sparingly' alone is unenforceable; the fence is what the three prohibitive quotes actually describe, and it is checkable."
+  },
+  {
+   "id": "R-A-11",
+   "rule": "For a date the user already knows (date of birth, card expiry): calendar picker or three plain text boxes?",
+   "components": ["date-picker","calendar","input-fields"],
+   "positions": {
+    "GOV.UK": "a date they'll already know, or can look up without using a calendar",
+    "GOV.UK (dates pattern)": "Only use a calendar control if users need to: pick a date",
+    "Shopify Polaris": "always give users the option to enter the date using a text field component",
+    "USWDS": "Always allow a user to type in the date manually",
+    "Atlassian": "For most situations, use the date picker or date time picker components",
+    "Material 3": "Text field drop-downs on medium and expanded breakpoints like tablet and desktop",
+    "IBM Carbon": "silent on the choice (size guidance only)",
+    "OURS": "date-picker.meta: a boxed field with free typing PLUS a panel from the tail button; calendar.meta antiPatterns[0] draws the read-vs-pick line"
+   },
+   "why_contested": "GOV.UK restricts the calendar control to near/relational dates and uses three text boxes for everything else. Four other systems treat the calendar panel as the default with typing as a fallback. A date of birth gets two different components depending on which system you follow.",
+   "options": [
+    "Date-picker everywhere, typing always available (our current build; matches Atlassian, M3, Carbon, Ant).",
+    "Split by date class: memorable/known dates (DOB, card expiry) get plain fields; chosen dates (payment date, appointment) get Date-picker. This is GOV.UK's rule and it is checkable from the field's semantics.",
+    "Date-picker everywhere, but the panel does not open for known-date fields."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. It is the only one backed by named research, it costs us nothing we have built (the typed field already exists and already validates on blur), and 'is this date one the user knows' is a question the form author can always answer."
+  },
+  {
+   "id": "R-A-12",
+   "rule": "Is a clickable multi-step progress indicator legal at all?",
+   "components": ["stepper","progress-tracker"],
+   "positions": {
+    "GOV.UK": "Do not use progress indicators that do all of the following:",
+    "USWDS": "has fewer than three sections, don't use a step indicator.",
+    "Atlassian": "Use a progress tracker for more detailed journeys spanning multiple screens.",
+    "IBM Carbon": "When a process or form has fewer than three steps.",
+    "Ant Design": "we can decompose it into several steps to make things easier.",
+    "OURS": "stepper.meta: 'back-navigation on completed dots' plus 'Clickable FUTURE steps' as antiPatterns[0]"
+   },
+   "why_contested": "GOV.UK forbids the exact COMBINATION our Stepper implements — all steps shown, previous steps navigable, current step marked — and cites a service that removed a 12-step tracker with no effect on completion. Four other systems ship that combination happily.",
+   "options": [
+    "Stepper stands as built; record the divergence from GOV.UK in the meta.",
+    "Stepper drops back-navigation on completed dots, leaving a Back button as the only route — which lands us outside GOV.UK's prohibition.",
+    "Stepper stands, but only above N steps (GOV.UK's objection is loudest for long forms; USWDS, Carbon and Atlassian all put the floor at 3)."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3 with the floor at 3. The floor is unanimous among the three systems that name one, and it neutralises most of GOV.UK's objection without removing a feature we have already built and tested."
+  },
+  {
+   "id": "R-A-13",
+   "rule": "What is the maximum number of steps in a flow?",
+   "components": ["stepper","progress-tracker"],
+   "positions": {
+    "Atlassian (progress-tracker)": "If a task needs more than six steps, consider simplifying the process",
+    "Atlassian (progress-indicator)": "Use a maximum of seven steps in your journey so that people aren't overwhelmed.",
+    "Fluent 2": "Drawers allow for multi-step tasks, but should be kept to two to three steps.",
+    "USWDS": "silent on a maximum",
+    "IBM Carbon": "silent on a maximum",
+    "GOV.UK": "cites a 12-step tracker removed with no effect on completion rates or times",
+    "OURS": "silent"
+   },
+   "why_contested": "The same system gives two different ceilings on two pages. Fluent gives a third, much lower one, but only for a drawer. Most systems give none.",
+   "options": [
+    "No ceiling — the number of steps is the journey's business, not the component's.",
+    "Six (Atlassian's progress-tracker page — the stricter of its two).",
+    "No ceiling on the flow, but a ceiling of 3 on a flow inside a DRAWER or MODAL (Fluent's actual point)."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. The evidence for a general ceiling is one system contradicting itself; the evidence for a ceiling inside a constrained surface is specific and matches what our own Modals/Drawer metas already worry about."
+  },
+  {
+   "id": "R-A-14",
+   "rule": "Is a slider legal in a form at all?",
+   "components": ["slider","range-slider"],
+   "positions": {
+    "GOV.UK": "Avoid using range slider questions, where the user needs to click and drag",
+    "Fluent 2": "Use a slider for imprecise values.",
+    "Atlassian": "Don't use a range if choosing a specific value is important.",
+    "IBM Carbon": "Do not use for extremely large ranges, for example, 1-1000.",
+    "Material 3": "Changes made with sliders must take effect immediately",
+    "Adobe Spectrum": "used when the upper and lower bounds to the range are invariable.",
+    "NN/g": "Sliders or knobs are continuous controls.",
+    "Apple HIG": "Consider supplementing a slider with a corresponding text field and stepper.",
+    "USWDS": "no slider component",
+    "OURS": "slider.meta antiPatterns[2] (REVIEW, inferred): 'using a slider where precise numeric entry is required (pair with an input)'"
+   },
+   "why_contested": "GOV.UK rejects the interaction outright on accessibility grounds (WCAG 2.5.1 pointer gestures) and ships no slider. Six systems ship one with conditions. M3 adds a condition none of the others do: the change must take effect immediately — which would make a slider inside a submitted form illegal.",
+   "options": [
+    "Slider is legal in filters and settings only, never inside a submitted form (M3's immediacy test, and it sidesteps most of GOV.UK's objection since filters re-apply live).",
+    "Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).",
+    "Slider is removed from the input role and kept only as a display/filter control.",
+    "Slider stands as built; record the GOV.UK divergence."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1 plus the pairing from option 2 wherever a value is committed. The immediacy test is the same test that separates Switch from Checkbox in s270 — one predicate, two families, which is worth more than a slider-specific rule."
+  },
+  {
+   "id": "R-A-15",
+   "rule": "What range is too small or too large for a slider?",
+   "components": ["slider","range-slider"],
+   "positions": {
+    "IBM Carbon": "Do not use for extremely large ranges, for example, 1-1000.",
+    "IBM Carbon (2)": "Do not use ranges that are too small, for example, 1-3.",
+    "Atlassian": "Don't use for ranges that are very small (for example, 1-3).",
+    "Atlassian (2)": "Don't use for ranges that are extremely large.",
+    "Material 3": "silent on bounds",
+    "Adobe Spectrum": "silent on numeric bounds",
+    "OURS": "silent"
+   },
+   "why_contested": "Two systems agree exactly on the lower bound (1-3) and both hedge the upper one — Carbon offers 1-1000 as an EXAMPLE, not a rule; Atlassian gives no number at all.",
+   "options": [
+    "Adopt the lower bound only: under ~5 discrete steps use selection-controls instead. Leave the upper bound to judgement.",
+    "Adopt both, with 1-1000 as the stated upper example.",
+    "Carry no bounds and rely on the imprecision test alone (R-A-14)."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. The lower bound is the only genuinely agreed number in this row, and it hands the excluded cases straight to a component we already have."
+  },
+  {
+   "id": "R-A-16",
+   "rule": "One file per input, or a staged list of files against one dropzone?",
+   "components": ["file-upload"],
+   "positions": {
+    "USWDS": "Prefer one file per input.",
+    "IBM Carbon": "Do not use upload in a modal when multiple files are uploaded",
+    "Ant Design": "When you need to upload files by dragging and dropping.",
+    "GOV.UK": "You should only ask users to upload something if it's critical to the delivery",
+    "Shopify Polaris": "Provide feedback once the file(s) have been dropped and uploading begins.",
+    "OURS": "file-upload.meta: 'a dashed dropzone … staging files into rows with per-file determinate progress'"
+   },
+   "why_contested": "USWDS states a preference our component structurally cannot honour — we stage a list. Carbon fences multi-file upload out of modals. Nobody else takes a position.",
+   "options": [
+    "Multi-file staging stays the default; record the USWDS divergence.",
+    "One file per input is the default, with a declared multi-file variant for evidence journeys (dispute evidence, mortgage documents) where a list is genuinely the job.",
+    "Multi-file staging stays, plus Carbon's fence: file-upload never appears inside a Modal."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. USWDS's preference is about error clarity, which our per-file error rows already solve; Carbon's fence names a real failure (a growing list inside a fixed-height dialog) that our Modals meta does not currently forbid."
+  },
+  {
+   "id": "R-A-17",
+   "rule": "Do we carry a file-size cap, and what is it?",
+   "components": ["file-upload"],
+   "positions": {
+    "Shopify Polaris": "File size must be less than 20MB",
+    "GOV.UK": "silent on a number",
+    "USWDS": "silent on a number",
+    "IBM Carbon": "silent on a number",
+    "Ant Design": "silent on a number",
+    "OURS": "silent — antiPatterns[2] requires a visible error for an oversize file but names no size"
+   },
+   "why_contested": "Exactly one system in eleven gives a number. Our meta requires the oversize ERROR without defining oversize, which means the rule cannot be tested.",
+   "options": [
+    "Carry no number; the cap is the consuming service's and must be stated in the field's help text.",
+    "Adopt a library default (Polaris's 20MB) that a service may lower.",
+    "Carry no number but GATE the presence of a stated limit in the help text — the rule becomes 'a limit must be visible', not 'the limit is N'."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. A number picked from one system would be arbitrary; 'the limit must be visible before the user picks a file' is the part that actually prevents the failure our antiPattern describes."
+  },
+  {
+   "id": "R-A-18",
+   "rule": "Is a segmented per-digit OTP field right, or should the code be one field?",
+   "components": ["secure-entry","input-fields"],
+   "positions": {
+    "USWDS": "Avoid breaking numbers with distinct sections into separate input fields.",
+    "Apple HIG": "Use secure text fields to hide private data.",
+    "GOV.UK": "no segmented-code component (its password-input is a single field with a reveal)",
+    "IBM Carbon": "no segmented-code component",
+    "Material 3": "no segmented-code component",
+    "Adobe Spectrum": "no segmented-code component",
+    "OURS": "secure-entry.meta: 'per-digit cells with auto-advance, backspace step-back, whole-code paste, verify-on-fill'"
+   },
+   "why_contested": "One system states a principle that directly contradicts the component's form; ten ship nothing comparable. It is one-against-silence, not one-against-many — but the one is a government accessibility authority and the objection is specific.",
+   "options": [
+    "Secure-entry stands; record the USWDS divergence and lean on our own per-digit announcement and paste support as the mitigations.",
+    "Secure-entry becomes one field with a format hint, keeping paste and verify-on-fill and losing the cells.",
+    "Secure-entry stands for OTP (where paste is the happy path and the code is machine-generated) and is forbidden for anything the user recalls from memory."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. USWDS's objection is about splitting a number the USER KNOWS across boxes; an SMS code is pasted, not recalled. The distinction is real, checkable, and it keeps the component we have built."
+  },
+  {
+   "id": "R-A-19",
+   "rule": "May a tooltip contain interactive content?",
+   "components": ["tooltip","popover"],
+   "positions": {
+    "Material 3": "Rich tooltips can have up to two text buttons.",
+    "IBM Carbon": "Do not use interactive elements within a tooltip.",
+    "Shopify Polaris": "Not contain any links or buttons.",
+    "Fluent 2": "Tooltips should be used to provide helpful but non-essential, plaintext information.",
+    "Atlassian": "Don't put critical task information in a tooltip",
+    "NN/g": "Don't use tooltips for information that is vital to task completion.",
+    "USWDS": "Don't use a tooltip if you need a lot of text.",
+    "OURS": "tooltip.meta antiPatterns[1]: 'Putting essential information or interactive elements only inside a tooltip'"
+   },
+   "why_contested": "Ten sources say no; M3 says yes and calls it a rich tooltip. M3 has effectively merged tooltip and popover — a merge we have explicitly rejected by shipping both.",
+   "options": [
+    "No interactive content in a tooltip, full stop. M3's rich tooltip maps onto our Popover.",
+    "Follow M3 and allow up to two text buttons, collapsing Popover into Tooltip."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1, and it is nearly free — our own popover.meta already states the three-way rule that makes M3's rich tooltip a Popover in our vocabulary. This row exists only so the M3 divergence is recorded rather than discovered later."
+  },
+  {
+   "id": "R-A-20",
+   "rule": "Is a tooltip REQUIRED on an icon-only button?",
+   "components": ["icon-button","tooltip","fab"],
+   "positions": {
+    "Atlassian": "Use tooltips with icon buttons to display the button label.",
+    "Shopify Polaris": "Be provided for icon-only buttons or a button with an associated keyboard shortcut.",
+    "USWDS": "Tooltips are useful as a last resort for space-constrained UI.",
+    "Material 3": "They're best used for labelling UI elements with no text",
+    "IBM Carbon": "silent on the requirement",
+    "OURS": "icon-button.meta antiPatterns[3]: 'Using an ambiguous glyph as the only action affordance without a tooltip/label' — 'tooltip/label', i.e. either"
+   },
+   "why_contested": "Two systems make it a requirement, two describe it as the tooltip's main purpose, ours makes it one of two acceptable options and only for AMBIGUOUS glyphs. The accessible name is separately mandatory in all of them — this row is about the VISIBLE label only.",
+   "options": [
+    "Tooltip required on every icon-only button. Gateable, and it would fail real screens today.",
+    "Tooltip required only where the glyph is not in the agreed universal set (close, search, add, edit, download) — which is exactly the set roles.json already invokes with 'the glyph is universal'.",
+    "Keep our either/or wording."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. It uses a fence roles.json already has, it is checkable against a named glyph list, and it avoids putting a tooltip on a close × that nobody has ever misread."
+  },
+  {
+   "id": "R-A-21",
+   "rule": "One question per page, or grouped multi-field forms?",
+   "components": ["form-layout","stepper","template-create-edit"],
+   "positions": {
+    "GOV.UK": "Asking just one question per question page helps users understand what you're asking",
+    "NN/g": "Users now see a 3-part form with 4-6 fields.",
+    "NN/g (2)": "Group together related fields.",
+    "IBM Carbon": "If a form has more than one column, then the columns should be proportional and",
+    "Fluent 2": "By default, field labels are top-aligned above the form component.",
+    "Atlassian": "silent on density",
+    "OURS": "form-layout.meta: 'proximity-grouped field pairs' — i.e. multi-field by design"
+   },
+   "why_contested": "GOV.UK's one-thing-per-page is a whole service-design posture, not a component rule; NN/g and Carbon assume grouped multi-field forms. Our Form-layout is built for the latter and our Stepper exists to split long ones.",
+   "options": [
+    "Multi-field grouped forms stay the default; one-thing-per-page is available via Stepper for high-stakes journeys (payments, onboarding).",
+    "One question per page becomes the default for any journey that moves money.",
+    "No rule — leave density to the journey."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. It describes what we have already built, and it gives the GOV.UK posture a named home (Stepper) rather than leaving it as an unattributed contradiction in the docs."
+  },
+  {
+   "id": "R-A-22",
+   "rule": "What must a confirmation screen contain?",
+   "components": ["confirmation"],
+   "positions": {
+    "GOV.UK": "Your confirmation page must include: a reference number, if there is one",
+    "GOV.UK (2)": "Some users will bookmark the confirmation page as a form of receipt.",
+    "Ant Design": "Use when important operations need to inform the user to process the results",
+    "IBM Carbon": "silent on required contents",
+    "Atlassian": "silent",
+    "Adobe Spectrum": "silent",
+    "OURS": "confirmation.meta: 'a success-solid glyph, a heading, a short message and the next actions'"
+   },
+   "why_contested": "GOV.UK gives a six-item MUST list (reference number, what happens next and when, contact details, onward links, feedback link, a way to save a record) and raises a case nobody else does — the bookmarked receipt. Ours names four items, none of them a reference number. For a payment confirmation the reference number is the whole point.",
+   "options": [
+    "Adopt GOV.UK's must-list wholesale.",
+    "Adopt the banking-relevant subset: reference number (when one exists), what happens next and when, and a way to save or print. Drop the feedback link, which is a GOV.UK service-assessment requirement, not a banking one.",
+    "Keep our four items and record the divergence."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. A payment confirmation without a reference is unusable in a dispute, and 'a way to save a record' is what the bookmark behaviour is really asking for. The feedback link genuinely does not transfer."
+  },
+  {
+   "id": "R-A-23",
+   "rule": "Must an empty state always offer an action?",
+   "components": ["empty-state"],
+   "positions": {
+    "Atlassian": "Include an action or link to help people understand what to do next.",
+    "Shopify Polaris": "Empty states are used when a list, table, or chart has no items",
+    "Ant Design": "When there is no data provided, display for friendly tips.",
+    "IBM Carbon": "For simpler situations, or for secondary features where bite-sized pieces of information are preferable.",
+    "GOV.UK": "no empty-state component",
+    "NN/g": "not obtained — the article slug tried 404'd (see SOURCES refused)",
+    "OURS": "empty-state.meta: three postures — first-run (primary button), no-results (link), quiet (say so and stop)"
+   },
+   "why_contested": "Atlassian says always give the reader something to press. Our 'quiet' posture deliberately gives nothing. Nobody outside has our three-posture split, so there is no external support for the quiet case either.",
+   "options": [
+    "Keep all three postures; quiet stays actionless.",
+    "Drop the quiet posture; every empty region offers at least a link.",
+    "Keep quiet but fence it: legal only where the emptiness is GOOD NEWS (inbox caught up, no overdue payments) and not where the user could create the missing thing."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. It preserves the distinction that makes our empty-state better than the imports while answering Atlassian's real worry — a dead end where an action was possible."
+  },
+  {
+   "id": "R-A-24",
+   "rule": "Are Drawer and Modals' 'Partial modal' the same component — and does Drawer survive?",
+   "components": ["drawer","modals","modal-lightbox"],
+   "positions": {
+    "Atlassian": "We are planning on deprecating Drawer. Please use Modal instead.",
+    "Fluent 2": "Use drawers for supplemental info",
+    "Material 3": "Modal side sheets are preferred in compact breakpoints, like mobile",
+    "Apple HIG": "Display only one sheet at a time from the main interface.",
+    "Ant Design": "When subtasks are too heavy for a Popover",
+    "IBM Carbon": "silent on drawer (no such component)",
+    "OURS": "drawer.meta: a page-edge side sheet; modals.meta ALSO describes 'Partial modal / Drawer (app-only, anchored to the bottom of the screen)'"
+   },
+   "why_contested": "This is a defect before it is a disagreement: two of our own metas describe the same surface under two names. Externally, one system is removing the component entirely while three defend it, and M3 makes its modality depend on breakpoint where ours does not.",
+   "options": [
+    "One Drawer component with an edge parameter (left/right/bottom); Modals' partial-modal text is removed and points at it.",
+    "Two components: Drawer (side, desktop) and Partial modal (bottom, mobile) — with a stated reason why they are not one thing.",
+    "Fold Drawer into Modals as a placement variant (Atlassian's direction)."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. The mechanics our two metas describe are identical — scrim, trap, inert, Esc, focus return — and the only difference is which edge it docks to. That is a parameter, not a component."
+  },
+  {
+   "id": "R-A-25",
+   "rule": "How many actions in an action bar, and which side are they on?",
+   "components": ["action-bar","modals","drawer"],
+   "positions": {
+    "IBM Carbon": "Any more than three actions should be grouped",
+    "Ant Design": "more than three operations, you can group some of them into a Dropdown",
+    "GOV.UK": "aligned to the left so users do not miss it",
+    "Atlassian": "silent on bar capacity",
+    "Fluent 2": "Optional footer, which can contain up to three actions.",
+    "OURS": "action-bar.meta antiPatterns[0] (REVIEW, inferred): 'more than ~3 actions in the bar'; drawer.meta antiPatterns[2]: 'Right-aligned actions (family order is primary-first, left-aligned)'"
+   },
+   "why_contested": "The CEILING is effectively unanimous at 3 (Carbon, Ant, Fluent, and our own guess) — so the count is not the contest. The ALIGNMENT is: GOV.UK and our own Drawer say left, primary first; our Action-bar meta warns about DOM order in a way that assumes a right-aligned pair.",
+   "options": [
+    "Left-aligned, primary first, everywhere — matching our Drawer rule and GOV.UK.",
+    "Right-aligned in modals and drawers (platform convention), left-aligned in page-level action bars.",
+    "Leave alignment to the surface and gate only the DOM order."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1, and promote the ~3 ceiling from a REVIEW guess to a ruled number — three systems independently landed on the same figure, which is as close to free as this table gets."
+  },
+  {
+   "id": "R-A-26",
+   "rule": "Is the FAB mobile-only?",
+   "components": ["fab","back-to-top","action-bar"],
+   "positions": {
+    "Material 3": "Don't display multiple FABs on a single screen",
+    "Material 3 (2)": "Use a FAB for the most important action on a screen",
+    "Ant Design": "Buttons that can be seen wherever you browse.",
+    "Apple HIG": "no FAB component",
+    "IBM Carbon": "no FAB component",
+    "Atlassian": "no FAB component",
+    "GOV.UK": "no FAB component",
+    "OURS": "fab.meta: 'fixed to a mobile viewport'; mustNotNeighbour Back-to-top, collision UNRESOLVED"
+   },
+   "why_contested": "The COUNT rule (one per screen) is unanimous among the two systems that ship it and is already ours. The PLATFORM is not: ours says mobile, Ant's float button is global and desktop. Four systems ship nothing at all. And our own meta records an unresolved collision with Back-to-top plus two raw constants (56px, 24px) awaiting your mint-or-accept.",
+   "options": [
+    "Mobile-only, as built. Back-to-top wins the bottom-right corner on desktop; FAB never appears there.",
+    "Any viewport, with a rule that FAB and Back-to-top may never both be present.",
+    "FAB is removed and its job goes to the action bar or page header — which is what six of eleven systems effectively do."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1, and resolve the collision by ruling that Back-to-top yields to a FAB when both would appear. The meta already flags this as yours; the predicate cannot be finished without it."
+  },
+  {
+   "id": "R-A-27",
+   "rule": "Does the predictive-search dropdown belong to Search-field or to Combobox?",
+   "components": ["search-field","combobox","command-palette"],
+   "positions": {
+    "USWDS": "Use a combo box when there are more than 15 choices",
+    "Material 3": "Use a search icon button when search is a secondary action",
+    "IBM Carbon": "Do not use when there is small or limited amounts of data.",
+    "Adobe Spectrum": "silent on the overlap (search-field and combo-box are separate pages with no cross-reference)",
+    "Atlassian": "silent on the overlap",
+    "OURS": "search-field.meta claims 'an optional predictive-search (autocomplete) dropdown'; combobox.meta claims 'A text input that filters a list of options as the user types, and commits one of them'"
+   },
+   "why_contested": "NOT AN EXTERNAL DISAGREEMENT — an internal one. Two of our metas describe a text field over a filtered list, with the same ARIA contract, under two names. No external system resolves it because none ships both with overlapping scope.",
+   "options": [
+    "Split by COMMIT: combobox commits a value into a form; search-field hands a query to a result set and commits nothing. The predictive dropdown moves to combobox.",
+    "Split by TARGET: search-field searches CONTENT, combobox selects a VALUE — same outcome, different words.",
+    "Merge: one component with a commit-or-query mode."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. 'Does a value land in the form' is machine-checkable; 'is it content or a value' is not. This also keeps Command-palette clean, since it commits a command rather than a value."
+  },
+  {
+   "id": "R-A-28",
+   "rule": "At what size does a popover become a drawer or a modal?",
+   "components": ["popover","drawer","modals","popconfirm"],
+   "positions": {
+    "IBM Carbon": "If your popover exceeds four columns in width, use a modal instead.",
+    "Atlassian": "Don't make popups that scroll.",
+    "Fluent 2": "Content in popovers should never be essential for someone to complete a task.",
+    "Shopify Polaris": "Be used for secondary or less important information and actions since they're hidden",
+    "Apple HIG": "Show one popover at a time.",
+    "Material 3": "silent on a size cut",
+    "OURS": "popover.meta antiPatterns[2]: 'Popover content that scrolls (too much content — use a Drawer or Modal)'"
+   },
+   "why_contested": "The KIND is agreed — a popover has an upper size limit — but only Carbon gives a measurable one. Ours and Atlassian's use scrolling as a proxy, which is a consequence rather than a threshold.",
+   "options": [
+    "Keep the scroll test (ours + Atlassian). Simple, but it can only be checked at runtime.",
+    "Adopt Carbon's four-column cut, translated into our grid.",
+    "Both: the scroll test as the rule, the column cut as the design-time guide."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 3. The scroll test catches the real failure; the column figure is what a designer can actually use before the content exists."
+  },
+  {
+   "id": "R-A-29",
+   "rule": "Must an error Alert carry an action?",
+   "components": ["alert","banner","toast"],
+   "positions": {
+    "Fluent 2": "Error and Warning messages must have either a link to content or a button",
+    "Atlassian": "The message is restricted to five lines in length.",
+    "NN/g": "Display the error message close to the error's source.",
+    "IBM Carbon": "silent on a required action",
+    "Adobe Spectrum": "silent on a required action",
+    "GOV.UK": "silent on a required action (its error summary links to the fields, which is an action of a kind)",
+    "OURS": "alert.meta: 'title + description + optional inline link + optional dismiss' — the link is OPTIONAL"
+   },
+   "why_contested": "One system makes the action mandatory for errors and warnings; ours makes it optional; the rest are silent. It matters because an error with no route out is the most common real failure in the family.",
+   "options": [
+    "Adopt Fluent's rule: an error or warning Alert must carry either a link or a button.",
+    "Keep optional, but require that the DESCRIPTION states what to do next (NN/g's actual concern, met with copy rather than a control).",
+    "Keep as written."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 2. It satisfies the underlying concern without forcing a control onto errors whose fix is simply 'try again later', and it is checkable by the copy gate rather than the component gate."
+  },
+  {
+   "id": "R-A-30",
+   "rule": "Does `notifications` keep a catalogue identity, or become a pointer?",
+   "components": ["notifications","alert","banner","toast"],
+   "positions": {
+    "IBM Carbon": "For more context on when to use each notification variant, including modals,",
+    "NN/g": "Notifications are focused on system-related events.",
+    "NN/g (2)": "Validations are tied to a user's action or input.",
+    "Ant Design": "A notification with complex content.",
+    "Atlassian": "For messages that appear after an event takes place, use a flag.",
+    "GOV.UK": "no umbrella component — notification banner, error summary and error message are separate",
+    "OURS": "notifications.meta describes four placements — Contextual, Global, Inline, Snackbar — which ARE Alert, Banner, inline validation and Toast"
+   },
+   "why_contested": "Not a disagreement about a rule but about an IDENTITY. Our library has four Mono feedback components plus a Legacy record that describes all four again. Externally, Carbon keeps an umbrella and NN/g cuts by trigger instead of placement — neither maps onto our four placements.",
+   "options": [
+    "Notifications keeps its catalogue identity as the Legacy record and gains a `when` of 'never — see Alert / Banner / Toast / inline validation'.",
+    "Notifications is retired from the catalogue; its slug redirects to the three Mono components.",
+    "Notifications is re-cut along NN/g's trigger axis (indicator / validation / notification), which would re-shape all four Mono components."
+   ],
+   "recommendation": "LANE'S RECOMMENDATION: option 1. It costs nothing, keeps the Legacy name findable for anyone arriving from the old toolkit, and stops a fifth door opening into the same four rooms. Option 2 loses the search term; option 3 re-opens components that #268 already shipped."
+  }
+ ]
+}

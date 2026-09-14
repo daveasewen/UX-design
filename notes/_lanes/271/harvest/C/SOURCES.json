@@ -1,0 +1,1010 @@
+{
+ "$description": "#271 harvest lane C — page-frame + page-title + wayfinding + arrangement. Every source consulted. Ours = file/path in this repo. External = URL + VERBATIM quote (<15 words), marked EXTERNAL, per knowledge/_RUNBOOK-external-claims.md. NOTHING HERE IS OUR RULE until Dave rules it.",
+ "$runbook": "knowledge/_RUNBOOK-external-claims.md",
+ "$slice": "C",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$read_only": "This lane touched NOTHING under knowledge/. No meta, schema, roles.json, rules index or gate was written.",
+ "ours": [
+  {
+   "src": "knowledge/roles.json — roles.page-frame.providers",
+   "said": "7 shells, every one with a when: top-nav 'default for dashboards'; side-nav '> 7 destinations or two nav levels'; nav-rail 'dense app, content cannot spare 248px'; multi-column 'list-and-detail job'; split 'two peers on screen at once'; focused 'one job, no navigation (auth, wizard)'; doormat 'marketing / servicing site with a mega-footer'",
+   "discriminates": "which-page-frame",
+   "note": "ADOPTED s252-D1. CANON. Axis is destination COUNT + job, not device size."
+  },
+  {
+   "src": "knowledge/roles.json — roles.page-title.providers",
+   "said": "page-header-lockup 'page level, with actions or tabs'; headers 'page or screen level, app-only, no lock-up needed'; section-heading-lockup 'section level, above one board / table / panel'; eyebrow 'a kicker alone is enough (rare)'",
+   "discriminates": "which-page-title-band",
+   "note": "CANON s252-D1. The axis is LEVEL."
+  },
+  {
+   "src": "knowledge/roles.json — roles.wayfinding.providers",
+   "said": "navigations 'global'; sidebar-nav 'global, desktop, persistent column'; tabs 'local — peer views in one context'; breadcrumbs 'ancestry, depth >= 2'; anchor-nav 'in-page, long document'; tab-bar 'mobile bottom, 3–5 destinations'; pagination 'within one list'; back-to-top 'page chrome only'",
+   "discriminates": "which-wayfinding-provider",
+   "note": "CANON s252-D1. Only tab-bar carries a NUMBER; breadcrumbs carries a DEPTH."
+  },
+  {
+   "src": "knowledge/roles.json — roles.arrangement.providers",
+   "said": "layout-utilities 'default'; cards 'a bordered surface per item'; stats-band-lockup '3–6 headline-metrics in a labelled row'; feature-grid-lockup 'marketing, 2/3/4-up icon + title + body'; splitter 'the reader sizes two panes'; accordion 'content collapses behind a heading'; carousel 'one of a set at a time'; divider 'a rule alone'",
+   "discriminates": "which-arrangement-container",
+   "note": "CANON s252-D1. divider / splitter / layout-utilities / feature-grid-lockup are slice C; accordion / carousel / cards are slice B's components."
+  },
+  {
+   "src": "knowledge/components/app-shell-top-nav.meta.json — when",
+   "said": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — beats app-shell-side-nav ('> 7 destinations or two nav levels') below those bounds",
+   "discriminates": "top-nav-vs-side-nav",
+   "note": "ONE of only five metas in this slice that already carries a machine-shaped when."
+  },
+  {
+   "src": "knowledge/components/headers.meta.json — when",
+   "said": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup whenever actions or tabs ride the band",
+   "discriminates": "headers-vs-page-header-lockup"
+  },
+  {
+   "src": "knowledge/components/navigations.meta.json — when",
+   "said": "shape = destination-set x links AND scope = global — beats breadcrumbs and tabs because those are ancestry and local peers, not the global set",
+   "discriminates": "navigations-vs-breadcrumbs-vs-tabs"
+  },
+  {
+   "src": "knowledge/components/breadcrumbs.meta.json — when",
+   "said": "shape = ancestor-path x links AND depth >= 2",
+   "discriminates": "breadcrumbs-depth-cut",
+   "note": "OUR NUMBER IS 2. Two external systems say 3. See DECISION-TABLE R3."
+  },
+  {
+   "src": "knowledge/components/layout-utilities.meta.json — when",
+   "said": "content = arbitrary-blocks AND surface = none — beats cards whenever the arrangement must paint nothing",
+   "discriminates": "layout-utilities-vs-cards"
+  },
+  {
+   "src": "knowledge/components/app-shell-nav-rail.meta.json — purpose",
+   "said": "A permanent 64px icon rail. It is not App-shell-side-nav's collapsed state — there is no expand toggle, and that absence is the component",
+   "discriminates": "nav-rail-vs-collapsed-side-nav",
+   "note": "our discriminator is the ABSENCE of a toggle; no external system draws that line."
+  },
+  {
+   "src": "knowledge/components/app-shell-focused.meta.json — purpose",
+   "said": "the only shell in the library defined by what it REMOVES — no primary navigation, no breadcrumb, no utility group, no search",
+   "discriminates": "focused-vs-every-other-shell"
+  },
+  {
+   "src": "knowledge/components/app-shell-doormat.meta.json — antiPatterns[0]",
+   "said": "Never repeat the masthead's destinations in the mat. A doormat that duplicates the masthead is a doormat that has stopped being read",
+   "discriminates": "doormat-content-vs-masthead-content",
+   "note": "USWDS says the same thing in its own words — see external[46]."
+  },
+  {
+   "src": "knowledge/components/app-shell-doormat.meta.json — antiPatterns[3]",
+   "said": "Never put a mega-footer on an authenticated task screen. That is App-shell-focused's territory",
+   "discriminates": "doormat-vs-focused"
+  },
+  {
+   "src": "knowledge/components/tab-bar.meta.json — purpose",
+   "said": "App-level BOTTOM navigation: 3–5 equal-width destinations. NOT the in-page Tabs component",
+   "discriminates": "tab-bar-vs-tabs",
+   "note": "3–5 is OUR number and it is already in roles.json."
+  },
+  {
+   "src": "knowledge/components/anchor-nav.meta.json — purpose",
+   "said": "Use it on long single-page content (product terms, rates and fees)",
+   "discriminates": "anchor-nav-vs-tabs",
+   "note": "'long' carries no threshold. USWDS supplies one — see DECISION-TABLE R9."
+  },
+  {
+   "src": "knowledge/components/splitter.meta.json — purpose",
+   "said": "Use it where two things must stay on screen together and the right balance between them is the reader's business, not the layout's",
+   "discriminates": "splitter-vs-layout-utilities-split"
+  },
+  {
+   "src": "knowledge/components/template-detail.meta.json — purpose",
+   "said": "Its question is 'what is THIS, and what happened to it?' — one record, in depth, which is what separates it from the dashboard",
+   "discriminates": "template-detail-vs-template-dashboard",
+   "note": "the template family discriminates by QUESTION ASKED. That axis has no external equivalent — no public system ships page templates at this granularity."
+  },
+  {
+   "src": "knowledge/components/template-report.meta.json — purpose",
+   "said": "A dashboard answers 'how are things right now'; a report is A CLAIM ABOUT A PERIOD, made at a MOMENT, from a stated SOURCE",
+   "discriminates": "template-report-vs-template-dashboard"
+  },
+  {
+   "src": "knowledge/components/template-dashboard-bento.meta.json — purpose",
+   "said": "It answers the same question as Template dashboard and differs in ONE thing: its layout",
+   "discriminates": "bento-vs-plain-dashboard",
+   "note": "⛔ the two dashboards are NOT discriminated by job. Only by grammar. Dave's call."
+  },
+  {
+   "src": "knowledge/components/template-list-index.meta.json — purpose",
+   "said": "IT DRAWS BOTH BODIES — a Data-grid table AND a Document-row list — because the library holds both answers and they are NOT interchangeable",
+   "discriminates": "list-index-body-choice",
+   "note": "defers to slice B's table-vs-list-items rule."
+  },
+  {
+   "src": "knowledge/components/hero.meta.json — purpose",
+   "said": "A large, responsive marketing banner at the top of a page, carrying a primary message (headline + intro + CTA)",
+   "discriminates": "hero-vs-page-header-lockup",
+   "note": "MARKETING vs APPLICATION is the real cut and no meta states it as a predicate."
+  },
+  {
+   "src": "knowledge/components/footer.meta.json — purpose",
+   "said": "The APP FOOTER: the contentinfo landmark at the bottom of an authenticated application's content column",
+   "discriminates": "footer-vs-footer-doormat-lockup",
+   "note": "our Footer is the OPERATOR footer (build, environment, freshness). USWDS/GOV.UK footers are the SITE footer. Different objects with the same name."
+  },
+  {
+   "src": "knowledge/components/page-header-lockup.meta.json — purpose",
+   "said": "an eyebrow/breadcrumb, the page title, an optional Tabs row and a right-aligned action pair",
+   "discriminates": "page-header-lockup-vs-headers",
+   "note": "it CARRIES a Tabs row — three external systems say tabs are never navigation. See DECISION-TABLE R11."
+  },
+  {
+   "src": "knowledge/components/section-heading-lockup.meta.json — purpose",
+   "said": "the repeatable in-page heading that sits above one section of content — as distinct from Page-header-lockup's page-level h1",
+   "discriminates": "section-vs-page-level"
+  },
+  {
+   "src": "knowledge/components/feature-grid-lockup.meta.json — purpose",
+   "said": "N cells of icon + title + body, arranged 2/3/4-up (its per-cell action-button row deliberately omitted)",
+   "discriminates": "feature-grid-vs-cards"
+  },
+  {
+   "src": "knowledge/components/account-selector.meta.json — purpose",
+   "said": "The from/to account picker of every payment flow plus its compact inline token",
+   "discriminates": "account-selector-vs-dropdown",
+   "note": "DOMAIN component. No public system ships it; nothing external to harvest."
+  },
+  {
+   "src": "notes/_lanes/270/when-research/PROPOSED-WHEN.json",
+   "said": "#270 proposed whens for the selection and record-list families, and s270-D1 (single-select cut-off 5, provisional)",
+   "discriminates": "selection + record-list",
+   "note": "REFERENCED, NOT REDONE, per BRIEF rule."
+  }
+ ],
+ "external": [
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/UI-shell-left-panel/usage/",
+   "quote": "Use the left panel if there are more than five secondary navigation items",
+   "disc": "side-nav-vs-top-nav",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/UI-shell-left-panel/usage/",
+   "quote": "The left panel does not support three tiers of navigation.",
+   "disc": "side-nav-depth-limit",
+   "component": "sidebar-nav"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/UI-shell-header/usage/",
+   "quote": "The header is persistent throughout the product experience.",
+   "disc": "top-nav-persistence",
+   "component": "app-shell-top-nav"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/UI-shell-header/usage/",
+   "quote": "The header can be used on its own for simple products",
+   "disc": "top-nav-alone-vs-with-side-panel",
+   "component": "app-shell-top-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/side-navigation/",
+   "quote": "To display a navigational hierarchy with one to three levels.",
+   "disc": "side-nav-depth-limit",
+   "component": "sidebar-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/side-navigation/",
+   "quote": "fewer than five pages, consider organizing the page without a navigational hierarchy",
+   "disc": "side-nav-vs-no-nav",
+   "component": "sidebar-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/side-navigation/",
+   "quote": "already has a horizontal and vertical navigation bar, consider ways to simplify",
+   "disc": "side-nav-vs-top-nav-both",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/navigation-rail/guidelines",
+   "quote": "They can contain 3-7 destinations plus an optional FAB.",
+   "disc": "nav-rail-destination-count",
+   "component": "app-shell-nav-rail",
+   "note": "page body is JS-gated; quote is the page's own meta description, served in the HTML."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/navigation-rail/guidelines",
+   "quote": "Navigation rails let people switch between UI views on mid-sized devices.",
+   "disc": "frame-choice-by-device-size",
+   "component": "app-shell-nav-rail",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/navigation-bar/guidelines",
+   "quote": "Navigation bars let people switch between UI views on smaller devices.",
+   "disc": "frame-choice-by-device-size",
+   "component": "tab-bar",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/navigation-drawer/guidelines",
+   "quote": "Navigation drawers let people switch between UI views on larger devices.",
+   "disc": "frame-choice-by-device-size",
+   "component": "sidebar-nav",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/top-app-bar/guidelines",
+   "quote": "They contain a title and actions related to the current screen.",
+   "disc": "app-bar-vs-page-title",
+   "component": "headers",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/tabs/guidelines",
+   "quote": "Use tabs to group content into helpful categories.",
+   "disc": "tabs-purpose",
+   "component": "tabs",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/divider/guidelines",
+   "quote": "A divider is a thin line that groups content in lists and containers.",
+   "disc": "divider-purpose",
+   "component": "divider",
+   "note": "meta description; body JS-gated."
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/sidebars",
+   "quote": "In general, show no more than two levels of hierarchy in a sidebar.",
+   "disc": "side-nav-depth-limit",
+   "component": "sidebar-nav",
+   "note": "fetched via the HIG JSON endpoint /tutorials/data/design/...json; the rendered page is JS-gated."
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/sidebars",
+   "quote": "When a data hierarchy is deeper than two levels, consider using a split view",
+   "disc": "side-nav-vs-multi-column",
+   "component": "app-shell-multi-column"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/sidebars",
+   "quote": "Avoid hiding the sidebar by default to ensure that it remains discoverable.",
+   "disc": "side-nav-default-state",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/sidebars",
+   "quote": "a more compact control such as a tab bar may provide a better",
+   "disc": "side-nav-vs-tab-bar",
+   "component": "tab-bar"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/split-views",
+   "quote": "Prefer using a split view in a regular — not a compact — environment.",
+   "disc": "split-vs-single-pane-by-viewport",
+   "component": "app-shell-split"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/split-views",
+   "quote": "Choose a split view layout that keeps the panes looking balanced.",
+   "disc": "split-pane-ratio",
+   "component": "app-shell-split"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/split-views",
+   "quote": "Prefer the thin divider style.",
+   "disc": "divider-weight",
+   "component": "splitter"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/tab-bars",
+   "quote": "Use a tab bar to support navigation, not to provide actions.",
+   "disc": "tab-bar-vs-action-bar",
+   "component": "tab-bar"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/tab-bars",
+   "quote": "Avoid overflow tabs.",
+   "disc": "tab-bar-destination-count",
+   "component": "tab-bar"
+  },
+  {
+   "sys": "Apple HIG",
+   "url": "https://developer.apple.com/design/human-interface-guidelines/path-controls",
+   "quote": "Use a path control in the window body, not the window frame.",
+   "disc": "breadcrumbs-placement",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/breadcrumbs/",
+   "quote": "Do not use the breadcrumbs component on websites with a flat structure",
+   "disc": "breadcrumbs-depth-cut",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/breadcrumbs/",
+   "quote": "consider whether your users need the additional support of breadcrumbs",
+   "disc": "breadcrumbs-with-sidebar",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/breadcrumbs/",
+   "quote": "or to show progress through a linear journey or transaction",
+   "disc": "breadcrumbs-vs-progress-tracker",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/breadcrumbs/",
+   "quote": "Always place breadcrumbs at the top of a page, before the main element.",
+   "disc": "breadcrumbs-placement",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/breadcrumb/",
+   "quote": "When side navigation is used in combination with main navigation, it may be redundant",
+   "disc": "breadcrumbs-with-sidebar",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/breadcrumb/",
+   "quote": "Use breadcrumbs for hierarchical relationships, not linear relationships",
+   "disc": "breadcrumbs-vs-progress-tracker",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/breadcrumb/",
+   "quote": "Omit breadcrumbs on the homepage of a site.",
+   "disc": "breadcrumbs-depth-cut",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/breadcrumb/usage/",
+   "quote": "a hierarchy of more than two levels",
+   "disc": "breadcrumbs-depth-cut",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/breadcrumb/usage/",
+   "quote": "should never entirely replace the primary navigation",
+   "disc": "breadcrumbs-vs-navigations",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/breadcrumb",
+   "quote": "When the system has more than two layers in a hierarchy.",
+   "disc": "breadcrumbs-depth-cut",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/breadcrumbs/",
+   "quote": "Breadcrumbs augment but do not replace those main forms of navigation.",
+   "disc": "breadcrumbs-vs-navigations",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/breadcrumbs/",
+   "quote": "Include the Current Page as the Last Item in the Breadcrumb Trail.",
+   "disc": "breadcrumbs-anatomy",
+   "component": "breadcrumbs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/back-link/",
+   "quote": "Never use the back link component together with the Breadcrumbs component",
+   "disc": "breadcrumbs-vs-back-link",
+   "component": null,
+   "note": "FINDING: GOV.UK ships a Back link component. WE DO NOT. Not a proposal — NEVER INVENT ATOMS."
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/tabs/",
+   "quote": "do not use the tabs component as a form of page navigation",
+   "disc": "tabs-vs-navigations",
+   "component": "tabs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/tabs/",
+   "quote": "the first section is more relevant than the others for most users",
+   "disc": "tabs-vs-accordion",
+   "component": "tabs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/tabs/",
+   "quote": "compare information in different tabs",
+   "disc": "tabs-vs-accordion",
+   "component": "tabs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/accordion/",
+   "quote": "tabs can show content without pushing other sections down the page",
+   "disc": "tabs-vs-accordion",
+   "component": "tabs"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/accordion/",
+   "quote": "accordions can fit more sections as they're arranged vertically",
+   "disc": "tabs-vs-accordion",
+   "component": "tabs",
+   "note": "slice B owns accordion; recorded here for the TABS side of the cut."
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/accordion/",
+   "quote": "a list of links at the start of the page (known as 'anchor links')",
+   "disc": "anchor-nav-vs-accordion",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/tabs/usage/",
+   "quote": "Do not use as navigation.",
+   "disc": "tabs-vs-navigations",
+   "component": "tabs"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/tabs/usage/",
+   "quote": "use tabs to group related information into different categories",
+   "disc": "tabs-purpose",
+   "component": "tabs"
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+   "quote": "When toggling between different formats of the same content or filtering the same content",
+   "disc": "tabs-vs-segmented-control",
+   "component": "tabs",
+   "note": "Carbon puts FILTERING on the content switcher (our Segmented-control). Polaris puts filtering on TABS. Direct conflict — DECISION-TABLE R10."
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+   "quote": "When navigating between distinct content areas like subpages, use",
+   "disc": "tabs-vs-segmented-control",
+   "component": "tabs",
+   "note": "sentence continues into a link to Tabs; quote truncated at the link boundary."
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/navigation/tabs.mdx",
+   "quote": "Not be used for primary navigation.",
+   "disc": "tabs-vs-navigations",
+   "component": "tabs",
+   "note": "the rendered polaris.shopify.com page now 301s to shopify.dev; source markdown fetched from the system's own repo."
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/navigation/tabs.mdx",
+   "quote": "Represent the same kind of content, such as a list-view with different filters",
+   "disc": "tabs-vs-segmented-control",
+   "component": "tabs"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/navigation/tabs.mdx",
+   "quote": "Only be active one at a time.",
+   "disc": "tabs-cardinality",
+   "component": "tabs"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/tabs",
+   "quote": "Card Tabs: for managing too many closeable views.",
+   "disc": "tabs-variant",
+   "component": "tabs"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/tabs",
+   "quote": "Radio.Button : for secondary tabs.",
+   "disc": "tabs-vs-segmented-control",
+   "component": "tabs",
+   "note": "Ant sends the SECONDARY level to a radio-button group — a third position on R10."
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/in-page-navigation/",
+   "quote": "pages that include three or more distinct content sections",
+   "disc": "anchor-nav-threshold",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/in-page-navigation/",
+   "quote": "content that exceeds three or more viewport heights",
+   "disc": "anchor-nav-threshold",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/in-page-navigation/",
+   "quote": "For pages that require little or no scrolling, in-page navigation is not necessary.",
+   "disc": "anchor-nav-threshold",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/in-page-navigation/",
+   "quote": "Pages that lack heading-based hierarchical structures cannot use the in-page navigation component.",
+   "disc": "anchor-nav-precondition",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/in-page-navigation/",
+   "quote": "Display the in-page navigation to the side of the main content.",
+   "disc": "anchor-nav-placement",
+   "component": "anchor-nav",
+   "note": "our meta allows TWO placements (sticky horizontal bar and vertical rail); USWDS allows one."
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/anchor",
+   "quote": "For displaying anchor hyperlinks on page and jumping between them.",
+   "disc": "anchor-nav-purpose",
+   "component": "anchor-nav"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/back-to-top/",
+   "quote": "Use a Back to Top button for pages that are longer than 4 screens",
+   "disc": "back-to-top-threshold",
+   "component": "back-to-top"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/back-to-top/",
+   "quote": "Have one sticky Back to Top link per page",
+   "disc": "back-to-top-cardinality",
+   "component": "back-to-top"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/back-to-top/",
+   "quote": "Back to Top button in the lower right side of the page",
+   "disc": "back-to-top-placement",
+   "component": "back-to-top"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/back-to-top/",
+   "quote": "Sticky menus are sometimes a more elegant solution than Back to Top",
+   "disc": "back-to-top-vs-sticky-nav",
+   "component": "back-to-top"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/float-button",
+   "quote": "For global functionality on the site.",
+   "disc": "back-to-top-scope",
+   "component": "back-to-top"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/vertical-nav/",
+   "quote": "Vertical navigation is a good fit for broad or growing IAs",
+   "disc": "side-nav-vs-top-nav",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/vertical-nav/",
+   "quote": "but takes up more space than horizontal navigation",
+   "disc": "side-nav-vs-top-nav",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/vertical-nav/",
+   "quote": "vertical navigation is frequently encountered in desktop applications",
+   "disc": "side-nav-vs-top-nav",
+   "component": "app-shell-side-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/header/",
+   "quote": "The basic header is great if you have a modest number of sections",
+   "disc": "top-nav-band-count",
+   "component": "app-shell-top-nav"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/header/",
+   "quote": "Use the extended header if you have too many sections in your horizontal navigation",
+   "disc": "top-nav-band-count",
+   "component": "app-shell-top-nav",
+   "note": "maps onto our top-nav's OPTIONAL SECOND BAND."
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/header/",
+   "quote": "six or fewer subsections that you'd like to include in a dropdown menu",
+   "disc": "flyout-vs-megamenu",
+   "component": "navigations"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/header/",
+   "quote": "more than six links in any of your dropdown menus",
+   "disc": "flyout-vs-megamenu",
+   "component": "navigations"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/header/",
+   "quote": "List all important website sections as links in the horizontal",
+   "disc": "navigations-completeness",
+   "component": "navigations"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/service-navigation/",
+   "quote": "Use the Service navigation to help users understand that they're using your service.",
+   "disc": "service-band-vs-global-masthead",
+   "component": "navigations"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/navigate-a-service/",
+   "quote": "Navigation links usually appear in services that: are used repeatedly by some users",
+   "disc": "nav-vs-no-nav",
+   "component": "navigations"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/navigate-a-service/",
+   "quote": "If your service does have a clear end-to-end journey, avoid using navigation links.",
+   "disc": "focused-vs-navigated-shell",
+   "component": "app-shell-focused"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/landing-page/",
+   "quote": "consider getting rid of the header",
+   "disc": "focused-vs-navigated-shell",
+   "component": "app-shell-focused"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/landing-page/",
+   "quote": "Don't try to include forms or side navigation.",
+   "disc": "hero-page-restraint",
+   "component": "hero"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/landing-page/",
+   "quote": "a landing page works best when content is kept simple",
+   "disc": "hero-page-restraint",
+   "component": "hero"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/landing-page/",
+   "quote": "If you are introducing a new program to the public through a marketing",
+   "disc": "hero-vs-page-header-lockup",
+   "component": "hero"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/footer/",
+   "quote": "Use the big footer when your footer has more than five links.",
+   "disc": "footer-vs-doormat",
+   "component": "footer-doormat-lockup"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/footer/",
+   "quote": "Use the slim footer when you only want to offer a few footer links",
+   "disc": "footer-vs-doormat",
+   "component": "footer"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/footer/",
+   "quote": "The footer doesn't need to mirror the header.",
+   "disc": "doormat-content-vs-masthead-content",
+   "component": "footer-doormat-lockup",
+   "note": "independently states our own antiPattern[0]."
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/footer/",
+   "quote": "Use the big footer when you want to replicate your site's navigation scheme",
+   "disc": "footer-vs-doormat",
+   "component": "footer-doormat-lockup",
+   "note": "⚠ this CONTRADICTS the line above and our own antiPattern. USWDS is internally inconsistent here."
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/footer/",
+   "quote": "Use the footer at the bottom of every page of your service.",
+   "disc": "footer-ubiquity",
+   "component": "footer"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/navigation/footer-help.mdx",
+   "quote": "Be positioned at the bottom of the interface",
+   "disc": "footer-placement",
+   "component": "footer"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/page.mdx",
+   "quote": "Always provide a title for the page header.",
+   "disc": "page-title-obligation",
+   "component": "page-header-lockup"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/page.mdx",
+   "quote": "Use to build the outer wrapper of a page, including the page title",
+   "disc": "page-header-lockup-scope",
+   "component": "page-header-lockup"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/layout.mdx",
+   "quote": "Separate different cards using a full-width divider",
+   "disc": "divider-vs-whitespace",
+   "component": "divider"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/layout.mdx",
+   "quote": "Use equal-width layouts with two or more columns when each layout section has",
+   "disc": "equal-vs-primary-secondary-columns",
+   "component": "layout-utilities"
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/layout.mdx",
+   "quote": "the primary two-thirds section is used for main information",
+   "disc": "equal-vs-primary-secondary-columns",
+   "component": "layout-utilities",
+   "note": "source writes the fraction as the glyph two-thirds; transcribed in words."
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "url": "https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/divider.mdx",
+   "quote": "Use to separate or group content.",
+   "disc": "divider-purpose",
+   "component": "divider"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/divider",
+   "quote": "Divide sections of an article.",
+   "disc": "divider-purpose",
+   "component": "divider"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/divider",
+   "quote": "Divide inline text and links such as the operation column of table.",
+   "disc": "divider-inline-use",
+   "component": "divider"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/confirmation-pages/",
+   "quote": "You should use a confirmation page at the end of a transaction.",
+   "disc": "confirmation-page-trigger",
+   "component": "template-confirmation"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/confirmation-pages/",
+   "quote": "a reference number, if there is one",
+   "disc": "confirmation-page-contents",
+   "component": "template-confirmation",
+   "note": "supports our meta's ORDER argument: message, then the FACTS, then actions."
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/confirmation-pages/",
+   "quote": "details of what happens next and when",
+   "disc": "confirmation-page-contents",
+   "component": "template-confirmation"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/page-not-found-pages/",
+   "quote": "technical jargon like 404 or bad request",
+   "disc": "error-page-language",
+   "component": "template-error"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/problem-with-the-service-pages/",
+   "quote": "Use this page when there is an unexpected problem with the service.",
+   "disc": "404-vs-500",
+   "component": "template-error"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/problem-with-the-service-pages/",
+   "quote": "Use the same page for all unexpected problems.",
+   "disc": "error-page-count",
+   "component": "template-error"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/404-page/",
+   "quote": "Don't use this template for form validation errors, submission errors",
+   "disc": "error-page-vs-inline-error",
+   "component": "template-error"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/404-page/",
+   "quote": "Use alerts or form input errors when displaying errors that occur from interactions",
+   "disc": "error-page-vs-inline-error",
+   "component": "template-error"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/check-answers/",
+   "quote": "Show a single check answers page immediately before the confirmation screen",
+   "disc": "wizard-review-step",
+   "component": "template-wizard"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/check-answers/",
+   "quote": "include a check answers pages at the end of each section",
+   "disc": "wizard-review-step",
+   "component": "template-wizard"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+   "quote": "that have a specific start and end point",
+   "disc": "wizard-vs-navigated-shell",
+   "component": "template-wizard"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+   "quote": "where it's helpful for the user to complete tasks in a specific order",
+   "disc": "wizard-vs-navigated-shell",
+   "component": "template-wizard"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/documentation-page/",
+   "quote": "presenting detailed information on a specific topic or theme that has already been",
+   "disc": "long-content-page",
+   "component": "anchor-nav",
+   "note": "USWDS's documentation-page template is the page anchor-nav belongs on; we ship no equivalent template."
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/templates/documentation-page/",
+   "quote": "Use a precise headline. A precise headline quickly communicates your page's purpose.",
+   "disc": "page-title-obligation",
+   "component": "page-header-lockup"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/banner/",
+   "quote": "Show the banner on every page.",
+   "disc": "identity-band-ubiquity",
+   "component": null,
+   "note": "FINDING: USWDS ships a government identity Banner. WE DO NOT (our Banner is a messaging component, slice A). Not a proposal."
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "url": "https://carbondesignsystem.com/components/UI-shell-left-panel/usage/",
+   "quote": "content to display beneath a sub-menu, use tabs within the page.",
+   "disc": "side-nav-depth-limit",
+   "component": "tabs",
+   "note": "Carbon sends the THIRD tier to in-page Tabs — i.e. it uses tabs AS sub-navigation, contradicting its own 'Do not use as navigation'. See DECISION-TABLE R11."
+  }
+ ],
+ "refused": [
+  {
+   "sys": "Spectrum (Adobe)",
+   "urls": [
+    "https://spectrum.adobe.com/page/tabs/",
+    "https://spectrum.adobe.com/page/breadcrumbs/",
+    "https://spectrum.adobe.com/page/side-navigation/",
+    "https://spectrum.adobe.com/page/divider/"
+   ],
+   "why": "200 OK but the document body is client-rendered; no guidance text in the served HTML. NOT GUESSED. Spectrum is SILENT in every rule below."
+  },
+  {
+   "sys": "Atlassian",
+   "urls": [
+    "https://atlassian.design/components/breadcrumbs/usage",
+    "https://atlassian.design/components/tabs/usage",
+    "https://atlassian.design/components/pagination/usage",
+    "https://atlassian.design/components/side-navigation/usage"
+   ],
+   "why": "200 OK, client-rendered shell only; no guidance text in the served HTML. NOT GUESSED. Atlassian is SILENT in every rule below."
+  },
+  {
+   "sys": "Fluent 2 (Microsoft)",
+   "urls": [
+    "https://fluent2.microsoft.design/components/web/react/nav/usage",
+    "https://fluent2.microsoft.design/components/web/react/tablist/usage",
+    "https://fluent2.microsoft.design/components/web/react/breadcrumb/usage"
+   ],
+   "why": "client-rendered; no guidance text served. NOT GUESSED. Fluent is SILENT in every rule below."
+  },
+  {
+   "sys": "Material 3",
+   "urls": [
+    "https://m3.material.io/components/navigation-rail/guidelines",
+    "https://m3.material.io/components/navigation-bar/guidelines",
+    "https://m3.material.io/components/navigation-drawer/guidelines",
+    "https://m3.material.io/components/tabs/guidelines",
+    "https://m3.material.io/components/top-app-bar/guidelines",
+    "https://m3.material.io/components/divider/guidelines"
+   ],
+   "why": "PARTIAL. Body returns 'This website requires JavaScript.' Only the served meta description is readable, and every M3 quote above is flagged as such. M3's fuller guidance (e.g. the navigation-bar 3–5 destination rule) COULD NOT BE VERIFIED and is not recorded."
+  },
+  {
+   "sys": "Polaris (Shopify)",
+   "urls": [
+    "https://polaris.shopify.com/components/navigation/tabs",
+    "https://polaris.shopify.com/components/layout-and-structure/page"
+   ],
+   "why": "301 to shopify.dev/docs/api/polaris; the component pages no longer serve guidance. Recovered from the system's OWN source markdown in Shopify/polaris on GitHub — those raw URLs are cited on each quote."
+  },
+  {
+   "sys": "USWDS",
+   "urls": [
+    "https://designsystem.digital.gov/templates/authentication-pages/",
+    "https://designsystem.digital.gov/templates/form-templates/"
+   ],
+   "why": "fetched 200 but the pages carry no 'when to use / when to consider something else' block. template-auth and template-create-edit therefore have NO external rule."
+  },
+  {
+   "sys": "Carbon (IBM)",
+   "urls": [
+    "https://carbondesignsystem.com/patterns/global-header/"
+   ],
+   "why": "fetched 200, no when-to-use block extracted."
+  }
+ ]
+}

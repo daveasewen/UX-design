@@ -1,0 +1,131 @@
+{
+ "$description": "#271 harvest lane B — ONLY the non-unanimous rules. One row per rule. Columns = each consulted system's position, VERBATIM or `silent`. `silent` = the system speaks on the component but not on this rule. `unreachable` = the fetch failed (see SOURCES.refused) — that is NOT silence. Options are for Dave; the recommendation is THE LANE'S, not his and not canon.",
+ "$rule": "Unanimous rules are NOT here. Where the KIND agrees and the NUMBER differs, that is non-unanimous (the #270 radio→dropdown finding) and it is here.",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$slice": "B",
+ "$unreachable_this_slice": ["Material 3","Apple HIG","Atlassian","Fluent 2","spectrum.adobe.com (substituted with react-spectrum docs)"],
+
+ "rows": [
+
+  {"id":"B-01","rule":"At what list length does a record-list get pagination?","component":"pagination",
+   "positions":{"Polaris":"Paginate when the current list contains more than 50 items.","IBM Carbon":"When there is too much data to display on one page","GOV.UK":"silent on any number","Ant Design":"When it will take a long time to load/render all items.","USWDS":"silent — the page carries no when-to-use section at all","NN/g":"silent on a number; argues against infinite scroll instead","ours":"no rule exists"},
+   "options":["Adopt Polaris's 50 as our number.","Carry no number: gate on \"more than one screen of rows\" (device-relative, testable in a fixture).","Carry no number and no gate — pagination stays a composer's judgement, prose only."],
+   "recommendation":"THE LANE RECOMMENDS option 2. 50 is one system's number with no research cited, and a 40-row table on a phone already needs pagination. This is the exact shape of s270-D1 — if Dave rules a number here he should rule it the same way (provisional, with a tripwire)."},
+
+  {"id":"B-02","rule":"May a Tag be interactive (a link or button)?","component":"tags",
+   "positions":{"GOV.UK":"Do not use tags to create links, buttons or other interactive elements","IBM Carbon":"Do not use tags as links that direct you to an entirely different page","USWDS":"Users frequently confuse tags as buttons.","Ant Design":"silent — ships closable and checkable tags without comment","Polaris":"silent","ours":"our meta SHIPS a Tag link variant and only forbids making static tags LOOK interactive"},
+   "options":["Retire the Tag link variant; tags become static labels only.","Keep it but fence it: a Tag link may only filter IN PLACE, never navigate (this is exactly what Carbon's wording leaves open).","Keep it as is and record the three-system disagreement on the meta."],
+   "recommendation":"THE LANE RECOMMENDS option 2. Carbon's objection is specifically to NAVIGATION, not to interaction; a removable filter chip is a tag that acts and every system ships one. Option 2 satisfies all three objections without losing a variant we already built."},
+
+  {"id":"B-03","rule":"Is a Tag a KEYWORD or a STATUS?","component":"tags / status-indicator",
+   "positions":{"IBM Carbon":"Use tags to label, categorize, or organize items using keywords that describe","Ant Design":"It can be used to tag by dimension or property.","GOV.UK":"Use the Tag component to show users the status of something.","Polaris":"Use a single word to describe the tone of an object.","Adobe Spectrum":"Badges are used for showing a small amount of color-categorized metadata","USWDS":"one `tag` component does keyword, count AND new-content jobs","ours":"tags = keyword (\"content composition\"), status-indicator = state. Two components."},
+   "options":["Confirm our split (keyword vs state) and note that GOV.UK/Polaris quotes about \"tags\" must be read onto our Status-indicator, never onto our Tags.","Merge: one chip component with a semantic variant, as USWDS does.","Confirm the split AND rename one of them so no external prose can be mis-filed."],
+   "recommendation":"THE LANE RECOMMENDS option 1. Our split is the sharper of the two designs and Carbon + Ant back the keyword reading. But this must be WRITTEN DOWN, because four systems use the words differently and any future harvest will mis-file quotes without it."},
+
+  {"id":"B-04","rule":"How many slices may a pie or donut carry?","component":"chart-pie / chart-donut",
+   "positions":{"Datawrapper":"If you have more than five shares, consider a stacked column","roles.json (ours)":"chart-pie when: \"composition, no centre figure, ≤ 5 parts\"","our metas":"antiPatterns[0] on BOTH pie and donut: \"More than 6 slices (dv-pie-009 — combine into 'Other')\"","FT Visual Vocabulary":"silent on a number; \"difficult to accurately compare the size of the segments\"","NN/g":"silent on a number; against the family entirely","IBM Carbon":"unreachable (chart-types is client-rendered)"},
+   "options":["5 everywhere: change dv-pie-009 to 5 and keep roles.json.","6 everywhere: change roles.json's pie `when` to ≤ 6.","Keep both on purpose: 5 is the SELECTION cut (above it, choose something else), 6 is the RENDER ceiling (above it, the component refuses). Write that distinction down."],
+   "recommendation":"THE LANE RECOMMENDS option 3, then a one-line note on both metas. Datawrapper's 5 is a choice threshold and dv-pie-009's 6 is a drawing limit — they are not actually the same rule, but nothing in the repo says so, so today it reads as a defect."},
+
+  {"id":"B-05","rule":"Is a donut better or worse than a pie?","component":"chart-donut",
+   "positions":{"roles.json (ours)":"donut is the composition DEFAULT (weight 80); pie is 48","FT Visual Vocabulary":"the centre can be a good way of making space to include more information","NN/g":"made even less effective by the whitespace in the middle","Datawrapper":"silent on donut specifically","IBM Carbon":"unreachable","GOV.UK / USWDS / Polaris / Ant":"silent — no donut guidance found"},
+   "options":["Keep the ordering: our centre-total discriminator is a REASON, and FT gives the same reason.","Flip it: pie becomes the default and donut is the exception when a centre total earns its place.","Keep the ordering and add NN/g's caution to both metas as a documented dissent."],
+   "recommendation":"THE LANE RECOMMENDS option 1. NN/g's objection is to using either for comparison, which our `when` already excludes (composition only, parts sum to a whole). The FT independently reaches our exact discriminator, which is the strongest single corroboration in this slice."},
+
+  {"id":"B-06","rule":"What separates a progress reading from an allowance reading inside the one Meter?","component":"meter / limits-meter",
+   "positions":{"Adobe Spectrum":"Their progress is determined by user actions, rather than system actions.","IBM Carbon":"Use a determinate progress bar when the progress can be calculated","ours (s210-D1)":"\"keep as one meter\" — progress is a SEMANTIC VARIANT; no discriminator is written between the variants","GOV.UK / USWDS":"silent — neither ships a meter","Material 3 / Apple HIG":"unreachable"},
+   "options":["Adopt Spectrum's test verbatim as the variant discriminator: user-driven ⇒ meter/allowance, system-driven ⇒ progress.","Keep the allowance test we already have (full = BLOCKED, not done) and write it onto the variant explicitly.","Both: full=blocked is the allowance test, user-vs-system is the progress/allowance test, and they must agree."],
+   "recommendation":"THE LANE RECOMMENDS option 2. s210-D1 is ruled and this is not a re-open. But the variants currently have NO written discriminator, so a composer cannot pick one — and \"full means blocked\" is our own, domain-true, and testable. Spectrum's test is worth quoting as EXTERNAL support, not adopting as the rule."},
+
+  {"id":"B-07","rule":"May more than one accordion section be open at once?","component":"accordion",
+   "positions":{"NN/g":"make sure to give people the capability to open multiple sections at a time","Ant Design":"an Accordion is by definition the Collapse variant that allows only one panel expanded","GOV.UK":"silent on the rule; ships a Show-all-sections control, which implies multi","IBM Carbon":"silent on the rule","USWDS":"silent on the rule; ships both bordered and multiselectable variants","ours":"silent — our meta says nothing about it"},
+   "options":["Multi-open is the default (NN/g, and GOV.UK's show-all control implies it).","Single-open is the default; multi is a variant.","Both are variants and the composer picks; the meta names the trade-off."],
+   "recommendation":"THE LANE RECOMMENDS option 1. GOV.UK's Show-all-sections button only makes sense in a multi-open accordion, and we already inherit GOV.UK-shaped accordion behaviour. Ant is naming a different component with the same word."},
+
+  {"id":"B-08","rule":"Does Carousel stay in the library?","component":"carousel",
+   "positions":{"NN/g":"some people will only see the first frame or none at all","NN/g (title)":"Consider Using a Hero Image Instead of a Carousel","Ant Design":"When there is a group of content on the same level.","GOV.UK / USWDS / IBM Carbon / Polaris":"NO CAROUSEL COMPONENT EXISTS — four systems' worth of structural silence","ours":"PROPOSED #210 wave-4 lane C; not registered, not ruled; autoplay OFF proposed"},
+   "options":["Drop it. Four reference systems ship none and NN/g says don't.","Keep it, unratified, with a `when` written as a warning and a hard autoplay-off default.","Keep and ratify it as a normal component with a positive `when`."],
+   "recommendation":"THE LANE RECOMMENDS option 2. It is already unratified, so nothing is lost by leaving it there with an honest negative `when` — and a fintech marketing surface will ask for one whatever we write. Option 3 is the one the evidence does not support."},
+
+  {"id":"B-09","rule":"Is there a maximum number of cards in a card collection?","component":"cards",
+   "positions":{"USWDS":"Consider limiting the number of items in each collection to six or fewer.","IBM Carbon":"silent on a number","Polaris":"silent on a number","Ant Design":"silent on a number","ours":"silent"},
+   "options":["Adopt 6 as a soft ceiling above which cards yield to list-items or table.","No number; yield to table on the COMPARISON test instead (\"if a field is read down a column, it is a table\").","Both: 6 as a warning, the comparison test as the gate."],
+   "recommendation":"THE LANE RECOMMENDS option 2. USWDS's 6 applies to their `collection` component, not their `card` — importing it onto our Cards would be a quote lifted out of its component. The comparison test is the one that actually discriminates."},
+
+  {"id":"B-10","rule":"What separates a table from a list of records — field count, or purpose?","component":"table / list-items",
+   "positions":{"roles.json (ours)":"list-items: \"≤ 3 fields per item, tappable\" · table: \"default, read-mostly\"","Polaris":"A resource list isn’t a data table","Polaris":"If your use case is more about finding and taking action on objects","Polaris":"A data table is a form of data visualization.","IBM Carbon":"Avoid using a list for complex data","GOV.UK":"Do not use it for tabular data or a simple list of information or tasks (summary-list, via #270)","USWDS":"When you need to display tabular information, such as statistical data."},
+   "options":["Keep the field count (already adopted s252-D1); Polaris's purpose test becomes prose on the meta.","Replace the field count with the purpose test: analysis ⇒ table, action ⇒ list.","Both, ANDed: a list is ≤ 3 fields AND action-oriented; anything else is a table."],
+   "recommendation":"THE LANE RECOMMENDS option 3. The two tests agree on almost every real case and disagree only on the 5-field row of orders that are all links — which is exactly the fintech case we will hit. ANDing them sends that row to the table, which is the right answer."},
+
+  {"id":"B-11","rule":"When is a bar chart horizontal rather than vertical?","component":"chart-bar",
+   "positions":{"FT Visual Vocabulary":"Good when the data are not time series and labels have long category names","Datawrapper":"If you have more than approximately 10 categories","IBM Carbon":"unreachable","NN/g":"silent","ours":"NO RULE — orientation is a variant with no criterion, and our AP1 only forbids negatives on the horizontal form"},
+   "options":["Adopt the FT test: long category labels or non-time-series ⇒ horizontal.","Adopt the Datawrapper count: > ~10 categories ⇒ horizontal.","Both, ORed — either condition makes it horizontal.","No rule; orientation stays a composer's choice."],
+   "recommendation":"THE LANE RECOMMENDS option 3. Both tests are about the same failure — labels that will not fit under a column — and they catch different halves of it. This is the largest completely-absent rule found in the chart family."},
+
+  {"id":"B-12","rule":"How many series may a grouped bar chart carry?","component":"chart-bar",
+   "positions":{"FT Visual Vocabulary":"Can become tricky to read with more than 2 series","ours (chart-line)":"series 1–5 on one continuous time axis","ours (chart-bar)":"no series ceiling stated","ours (Chart-butterfly)":"exactly 2 series, mirrored","Datawrapper":"silent for grouped bars","IBM Carbon":"unreachable"},
+   "options":["Adopt 2 as a soft ceiling for grouped bars, above which use stacked or small multiples.","Adopt chart-line's 1–5 for consistency across the family.","No ceiling."],
+   "recommendation":"THE LANE RECOMMENDS option 2, with the FT's 2 recorded as a caution. A hard 2 would make a four-quarter grouped comparison illegal, which is a normal fintech chart; but the family should not have a 5-series line and an unbounded bar."},
+
+  {"id":"B-13","rule":"When does composition-over-time stop being a stacked area and become stacked columns?","component":"chart-stacked-area / chart-bar",
+   "positions":{"Datawrapper":"If you have less than ten or so dates, consider a stacked column","Datawrapper":"Area charts work best if you have many dates.","FT Visual Vocabulary":"seeing change in components can be very difficult","ours":"no date count on either side","IBM Carbon":"unreachable"},
+   "options":["Adopt ~10 dates as the cut: fewer ⇒ stacked bar, more ⇒ stacked area.","No number; use \"the reader must read individual values\" ⇒ stacked bar.","No rule."],
+   "recommendation":"THE LANE RECOMMENDS option 1. It is a single-source number, so it should be ruled the way s270-D1 was — provisional, with a tripwire — but it fills a genuine hole: today a 4-quarter split can legally be drawn as a stacked area, which is the worst option for it."},
+
+  {"id":"B-14","rule":"Which intent word gates chart-combo?","component":"chart-combo",
+   "positions":{"FT Visual Vocabulary":"showing the relationship between an amount (columns) and a rate (line)","FT (filing)":"listed under CORRELATION first, and again under Change v Time","roles.json (ours)":"\"two measures in different units over one axis\", answers = change-over-time only","IBM Carbon":"the intent buckets exist (Comparisons · Trends · Part-to-whole · Correlations · Connections · Geospatial) but per-chart prose was unreachable","Datawrapper":"has a dual-axis guide but it carries no selection criterion"},
+   "options":["Keep change-over-time only.","Add relationship: answers becomes [change-over-time, relationship], as chart-stacked-area already carries two.","Keep one word and record the FT's second filing as a known gap."],
+   "recommendation":"THE LANE RECOMMENDS option 2. chart-stacked-area already proves the two-word pattern is legal on our answers axis, and today a composer whose claim is \"revenue against margin rate\" is gated to Chart-scatter, which cannot draw it."},
+
+  {"id":"B-15","rule":"Which intent word gates the butterfly pair?","component":"Chart-butterfly-h / Chart-butterfly-v",
+   "positions":{"FT Visual Vocabulary":"effectively, back to back histograms","FT (filing)":"population pyramid is filed under DISTRIBUTION","roles.json (ours)":"\"exactly two series mirrored, categories ≥ 6\", answers = comparison","everyone else":"silent — no other system ships a butterfly"},
+   "options":["Keep comparison only.","Add distribution: answers becomes [comparison, distribution].","Keep comparison and note that a population-pyramid claim must reach it through comparison."],
+   "recommendation":"THE LANE RECOMMENDS option 3. Our butterfly's canonical uses are inflow-vs-outflow and actual-vs-target, which are comparisons; the pyramid case is real but rare in fintech, and widening the gate costs more than it buys. Recorded so the decision is visible, not silent."},
+
+  {"id":"B-16","rule":"Must a Stat card carry a delta?","component":"stat-card",
+   "positions":{"ours (meta when)":"shape = one-measure × value-and-delta AND series = none AND delta != none","roles.json (ours)":"\"default — label · value · delta · period, no series\"","Ant Design":"When want to highlight some data.","Ant Design":"When want to display statistic data with description.","IBM Carbon":"Use tiles to group related information in flexible containers.","everyone else":"silent — no metric-tile component found"},
+   "options":["Yes, delta required. A bare number is not a Stat card and needs a named home.","No: delta becomes optional and the gate drops to \"one measure, no series\".","Yes, required — and account-card becomes the named home for a bare balance."],
+   "recommendation":"THE LANE RECOMMENDS option 3. It keeps the role's fences intact (no series ⇒ not a KPI tile; no delta ⇒ not a Stat card) and it gives the bare-number case a real destination instead of leaving it homeless. Ant's Statistic shows the alternative design and it is looser than ours by a long way."},
+
+  {"id":"B-17","rule":"What IS Summary — a count board or a review receipt?","component":"summary","kind":"internal (found by this lane, not a system disagreement)",
+   "positions":{"roles.json (ours)":"\"n × count as a key/value list, 6–12 cols\" — a status-surface count board","our meta (ours)":"\"A key/value list for confirming details before or after an action (a payment review, a receipt)\"","GOV.UK":"Do not use it for tabular data or a simple list of information or tasks (summary-list)","Ant Design":"Commonly displayed on the details page. (Descriptions)"},
+   "options":["One component, two variants (counts and receipt), one `when` covering both.","Two components: the count board stays in status-surface, the receipt moves out of the role.","Keep one and rewrite roles.json's `when` to match the meta (receipt), losing the count board."],
+   "recommendation":"THE LANE RECOMMENDS option 1. The shape is identical (name left, value right, optional total) and only the reading differs; splitting would duplicate a spec. But the mismatch must be closed — right now the role and the meta describe different components."},
+
+  {"id":"B-18","rule":"What are the copy rules for a status chip, and may ABSENCE of a chip mean a state?","component":"status-indicator",
+   "positions":{"Polaris":"Use a single word to describe the tone of an object.","Polaris":"Always describe the tone in the past tense.","GOV.UK":"Sometimes a single status is enough.","Adobe Spectrum":"When status lights have a semantic meaning, they should use semantic variant colors.","IBM Carbon":"silent on copy","ours":"NO COPY RULE for the label at all"},
+   "options":["Adopt both Polaris rules (single word, past tense) as copy guidance.","Adopt them AND GOV.UK's absence-as-state pattern (no chip = the default state).","Adopt the copy rules only; forbid absence-as-state as a colour-alone-style failure."],
+   "recommendation":"THE LANE RECOMMENDS option 3. Past-tense single words fit our RAG set exactly (approved · cancelled · declined · pending — three of four are already past tense). Absence-as-state is a real GOV.UK pattern but it hides the state from a screen reader, which is the same failure our AP0 already forbids."},
+
+  {"id":"B-19","rule":"How many colour-coded categories may a legend carry?","component":"legend",
+   "positions":{"Adobe Spectrum":"The ideal usage for these is when there are 8 or fewer categories","NN/g":"color should not be used to communicate information about quantitative","ours":"no ceiling on legend; the isoluminant categorical set's size is a token question","IBM Carbon":"unreachable","Datawrapper":"silent"},
+   "options":["Adopt 8 as the legend's ceiling.","Rule that the ceiling belongs to the PALETTE (the isoluminant set), not the legend, and point the legend at it.","No ceiling."],
+   "recommendation":"THE LANE RECOMMENDS option 2. A legend with 12 entries is not wrong if 12 series are distinguishable; the real constraint is how many isoluminant categorical colours we have. Putting the number on the legend would hide it from the place that determines it."},
+
+  {"id":"B-20","rule":"Should a table ever yield to a chart?","component":"table",
+   "positions":{"USWDS":"consider a bar graph, infographic, or other type of chart","Polaris":"A data table is a form of data visualization.","IBM Carbon":"silent on the crossing","GOV.UK":"silent on the crossing","ours":"NO RULE crosses record-list into chart-panel, in either direction"},
+   "options":["Add a record-list → chart-panel antiPattern on table: complex relationships belong in a chart.","Leave it. Role boundaries are FFF-function boundaries and a cross-role `when` would blur the axis.","Add it as prose on the meta, not as a gate clause."],
+   "recommendation":"THE LANE RECOMMENDS option 3. It is a real and useful designer rule, but making it a gate clause would need \"complex relationship\" to be machine-checkable, and it is not. Prose keeps it visible without breaking s251-D3's three-axis independence."},
+
+  {"id":"B-21","rule":"How tightly is Tree fenced?","component":"tree",
+   "positions":{"IBM Carbon":"When you only need one level of nested information.","IBM Carbon":"As the primary navigation in a product’s UI.","Ant Design":"Almost anything can be represented in a tree structure.","roles.json (ours)":"\"records nest\" — no depth floor, no navigation exclusion","GOV.UK / USWDS":"silent — neither ships a tree"},
+   "options":["Import both Carbon exclusions as antiPatterns (single level ⇒ list-items; never primary nav ⇒ sidebar-nav).","Import the single-level exclusion only.","Keep roles.json as is; the exclusions are prose."],
+   "recommendation":"THE LANE RECOMMENDS option 1. Both exclusions point at components we already have (list-items, sidebar-nav), which is exactly the shape our other antiPatterns take, and \"records nest\" alone would let a two-item flat list become a tree."},
+
+  {"id":"B-22","rule":"Is there a LOWER bound on pie slices?","component":"chart-pie",
+   "positions":{"Datawrapper":"Pie charts might be unnecessary if you only want to show two values","FT Visual Vocabulary":"silent on a floor","NN/g":"silent on a floor","ours":"no floor — a 2-slice pie is currently legal"},
+   "options":["Adopt >= 3 parts as the floor; a two-part split is a sentence or an amount-display, not a chart.","No floor.","Floor of 3 for pie, and route the 2-part case to meter (one value against its complement)."],
+   "recommendation":"THE LANE RECOMMENDS option 3. The two-part composition case is real in fintech (used vs remaining allowance) and we already have the right component for it — that IS a limits-meter reading. Routing it there rather than banning it gives the composer somewhere to go."},
+
+  {"id":"B-23","rule":"What does a SUPERSEDED component's `when` say?","component":"view-options","kind":"internal (housekeeping, found by this lane)",
+   "positions":{"ours (filter-toolbar-bar AP1)":"Consuming View-options instead of Segmented-control for the view switch — View-options was superseded 2026-07-24","ours (view-options meta)":"reads as a live recommendation: \"A view control that lets users select different presentation formats\"","external":"not applicable"},
+   "options":["Give it a `when` that says \"never — use Segmented-control\".","Remove it from the library.","Leave it and rely on filter-toolbar-bar's antiPattern to catch misuse."],
+   "recommendation":"THE LANE RECOMMENDS option 1. Option 3 is the status quo and it failed once already — the supersession is recorded on a DIFFERENT component's antiPattern, where nobody choosing a view switch would look."},
+
+  {"id":"B-24","rule":"Are alias metas exempt from a when-completeness gate?","component":"limits-meter","note":"progress-bar.meta.json is the same kind of thin alias and is equally affected by this decision, but progress-bar is slice A's component; it is recorded here as a note so `component` stays a single existing stem.","kind":"internal (mechanism, bites before the whens land)",
+   "positions":{"ours (s210-D5)":"progress-bar.meta.json and limits-meter.meta.json are thin category aliases of meter.meta.json; writing spec into them is an antiPattern","ours (this harvest)":"any gate requiring a `when` on every meta would FORCE that breach","external":"not applicable"},
+   "options":["Exempt aliases explicitly: the gate reads the parent's `when`.","Allow a `when` on an alias only if it is a verbatim pointer to the parent.","Do not build a when-completeness gate at all."],
+   "recommendation":"THE LANE RECOMMENDS option 1. It is the only option that keeps s210-D5 intact. Flagged here because it must be decided BEFORE any `when` lands as a gated field, not after."}
+ ]
+}

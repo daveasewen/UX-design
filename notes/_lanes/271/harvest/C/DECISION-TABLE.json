@@ -1,0 +1,468 @@
+{
+ "$description": "#271 harvest lane C — DECISION TABLE. ONLY the non-unanimous rules. One row per rule; each system's position is a VERBATIM quote or the word silent. Silence is recorded, not counted as disagreement. Options are for Dave; the recommendation is THIS LANE'S and is not a ruling.",
+ "$runbook": "knowledge/_RUNBOOK-external-claims.md — every quote is EXTERNAL and carries its source in SOURCES.json.",
+ "$slice": "C",
+ "$date": "2026-09-14",
+ "$session": 271,
+ "$silence_note": "Spectrum, Atlassian and Fluent 2 are SILENT in every row because their pages are client-rendered and served no guidance text — see SOURCES.json.refused. Their silence is a FETCH FAILURE, not a considered position.",
+ "$systems": [
+  "GOV.UK",
+  "USWDS",
+  "Material 3",
+  "Carbon (IBM)",
+  "Polaris (Shopify)",
+  "Spectrum (Adobe)",
+  "Atlassian",
+  "Ant Design",
+  "Fluent 2",
+  "Apple HIG",
+  "NN/g"
+ ],
+ "rows": [
+  {
+   "id": "R1",
+   "rule": "At what point does the primary navigation leave the masthead and become a column?",
+   "components": [
+    "app-shell-top-nav",
+    "app-shell-side-nav",
+    "sidebar-nav"
+   ],
+   "ours": "roles.json: side-nav when \"> 7 destinations or two nav levels\"; top-nav when \"default for dashboards\". Axis = DESTINATION COUNT.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "The basic header is great if you have a modest number of sections",
+    "Material 3": "Navigation rails let people switch between UI views on mid-sized devices.",
+    "Carbon (IBM)": "Use the left panel if there are more than five secondary navigation items",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "a more compact control such as a tab bar may provide a better",
+    "NN/g": "Vertical navigation is a good fit for broad or growing IAs"
+   },
+   "why_non_unanimous": "Four systems, THREE different axes: a count (Carbon, 5), a vague count (USWDS), device size (M3, Apple), IA shape (NN/g). Our 7 is corroborated by nobody and contradicted in number by Carbon.",
+   "options": [
+    "Keep 7 and record that it is a house number no external system shares.",
+    "Move to Carbon's 5, the only other explicit count in the set.",
+    "Drop the number: cut on \"the destination set does not fit one band at the narrowest supported desktop width\", which is measurable and matches USWDS's and NN/g's reasoning.",
+    "Add M3's device-size axis as a SECOND gate so the frame is chosen by count on desktop and by breakpoint below it."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 3 — a fit test. It is machine-checkable, it survives a font change, and it explains why every system picked a different number: they were all approximating the same fit."
+  },
+  {
+   "id": "R2",
+   "rule": "How many levels of hierarchy may a persistent side navigation show?",
+   "components": [
+    "sidebar-nav",
+    "app-shell-side-nav",
+    "app-shell-multi-column",
+    "tabs"
+   ],
+   "ours": "roles.json: side-nav when \"> 7 destinations or two nav levels\" — implies a ceiling of 2.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "To display a navigational hierarchy with one to three levels.",
+    "Material 3": "silent",
+    "Carbon (IBM)": "The left panel does not support three tiers of navigation.",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "In general, show no more than two levels of hierarchy in a sidebar.",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Same KIND (a depth ceiling), different NUMBER: Carbon 2, Apple 2, USWDS 3. And the two systems that cap at 2 send the overflow to DIFFERENT places — Carbon to in-page Tabs, Apple to a split view.",
+   "options": [
+    "Cap at 2 and route the third tier to app-shell-multi-column (Apple's escape hatch).",
+    "Cap at 2 and route the third tier to in-page Tabs (Carbon's escape hatch) — but this collides with R11.",
+    "Allow 3 with USWDS and carry no escape hatch."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1 — cap 2, overflow to multi-column. It matches our own roles.json number and does not require ruling tabs legal as navigation."
+  },
+  {
+   "id": "R3",
+   "rule": "At what depth do breadcrumbs earn their place?",
+   "components": [
+    "breadcrumbs"
+   ],
+   "ours": "breadcrumbs.meta.json when: \"shape = ancestor-path x links AND depth >= 2\".",
+   "positions": {
+    "GOV.UK": "Do not use the breadcrumbs component on websites with a flat structure",
+    "USWDS": "Omit breadcrumbs on the homepage of a site.",
+    "Material 3": "silent",
+    "Carbon (IBM)": "a hierarchy of more than two levels",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "When the system has more than two layers in a hierarchy.",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "Breadcrumbs augment but do not replace those main forms of navigation."
+   },
+   "why_non_unanimous": "The KIND is unanimous (depth). The NUMBER is not: we say 2, Carbon and Ant both say more than 2 (i.e. 3). GOV.UK, USWDS and NN/g decline to give one. Same shape as the #270 radio→dropdown finding.",
+   "options": [
+    "Keep depth >= 2 — our number, already on the meta.",
+    "Move to depth >= 3, matching the only two systems that quantify it.",
+    "Carry no number: \"the site is not flat AND this is not the home page\", following GOV.UK and USWDS."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 2 — depth >= 3. At depth 2 the trail reads Home / Current, which is one link and no orientation; the two systems that bothered to count both landed on 3."
+  },
+  {
+   "id": "R4",
+   "rule": "May breadcrumbs and a persistent side navigation appear on the same page?",
+   "components": [
+    "breadcrumbs",
+    "sidebar-nav",
+    "app-shell-side-nav",
+    "app-shell-top-nav"
+   ],
+   "ours": "SILENT. roles.json gives both a when and no not-with. Nothing forbids the pair today.",
+   "positions": {
+    "GOV.UK": "consider whether your users need the additional support of breadcrumbs",
+    "USWDS": "When side navigation is used in combination with main navigation, it may be redundant",
+    "Material 3": "silent",
+    "Carbon (IBM)": "should never entirely replace the primary navigation",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "Breadcrumbs augment but do not replace those main forms of navigation."
+   },
+   "why_non_unanimous": "USWDS and GOV.UK lean AGAINST the pair; NN/g and Carbon treat breadcrumbs as a supplement that co-exists with primary navigation. Genuine split on the same question.",
+   "options": [
+    "Rule the pair legal (NN/g / Carbon position) and say nothing more.",
+    "Rule the pair a REVIEWABLE exception: legal only where the side-nav shows one level and the content is deeper than it.",
+    "Rule the pair illegal — breadcrumbs only in app-shell-top-nav and app-shell-doormat."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 2. It is the only reading under which both camps are right, and it is checkable: side-nav levels < content depth."
+  },
+  {
+   "id": "R10",
+   "rule": "Where does FILTERING one content set live — Tabs, Segmented-control, or the filter bar?",
+   "components": [
+    "tabs",
+    "segmented-control",
+    "filter-toolbar-bar"
+   ],
+   "ours": "roles.json: tabs when \"local — peer views in one context\"; segmented-control (#270 proposal) when \"the choice RE-PRESENTS content already on screen\". By our own reading a filtered list-view is a re-presentation, so it is SEGMENTED — but our templates ship it as Tabs.",
+   "positions": {
+    "GOV.UK": "the first section is more relevant than the others for most users",
+    "USWDS": "silent",
+    "Material 3": "Use tabs to group content into helpful categories.",
+    "Carbon (IBM)": "When toggling between different formats of the same content or filtering the same content",
+    "Polaris (Shopify)": "Represent the same kind of content, such as a list-view with different filters",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "Radio.Button : for secondary tabs.",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "A three-way conflict on the identical use case. Polaris puts filtered list-views on TABS. Carbon puts filtering on the CONTENT SWITCHER (our Segmented-control) by name. Ant sends the secondary level to a radio-button group. We have a fourth answer available (filter-toolbar-bar) and no rule.",
+   "options": [
+    "Filters go to Segmented-control (Carbon): tabs only where the panels hold DIFFERENT content, never the same content re-filtered.",
+    "Filters go to Tabs (Polaris): tabs are the list-view switcher and Segmented-control is reserved for presentation (view, scale, period).",
+    "Filters go to filter-toolbar-bar whenever there are more than N filters, with Segmented-control for a single filter of <= 5 values.",
+    "Cut on PERSISTENCE: a filter that belongs to the record set is toolbar; one that belongs to the reader's current view is segmented; tabs never filter."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1, with option 4 as the prose. Carbon's line is the only one that names our exact component pair, and it keeps Tabs' meaning single: different content, not the same content re-cut."
+  },
+  {
+   "id": "R11",
+   "rule": "Is a Tabs strip inside the page header legal, given three systems say tabs are never navigation?",
+   "components": [
+    "tabs",
+    "page-header-lockup",
+    "template-detail",
+    "sidebar-nav"
+   ],
+   "ours": "page-header-lockup.meta.json ships an OPTIONAL Tabs row; template-detail composes it. roles.json: tabs when \"local — peer views in one context\".",
+   "positions": {
+    "GOV.UK": "do not use the tabs component as a form of page navigation",
+    "USWDS": "silent",
+    "Material 3": "silent",
+    "Carbon (IBM)": "Do not use as navigation.",
+    "Polaris (Shopify)": "Not be used for primary navigation.",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "Card Tabs: for managing too many closeable views.",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Three systems forbid tabs as navigation and we already ship them in the page header. Worse, Carbon contradicts ITSELF: its side-nav page says \"content to display beneath a sub-menu, use tabs within the page.\" The prohibition may be about PRIMARY navigation only — Polaris says 'primary', GOV.UK says 'page navigation', Carbon says neither.",
+   "options": [
+    "Rule our header Tabs LEGAL: they switch peer views of one record and are not navigation, which satisfies Polaris's 'primary' wording.",
+    "Rule them legal only where each tab does NOT change the URL — a machine-checkable clause.",
+    "Rule them illegal and move sub-page routing to a second nav band in app-shell-top-nav."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 2. It keeps template-detail as built, and turns a vague prohibition into a gate clause a builder can fail."
+  },
+  {
+   "id": "R5",
+   "rule": "Does the navigation rail carry a destination count?",
+   "components": [
+    "app-shell-nav-rail"
+   ],
+   "ours": "roles.json: nav-rail when \"dense app, content cannot spare 248px\". No count.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "silent",
+    "Material 3": "They can contain 3-7 destinations plus an optional FAB.",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Only M3 ships a rail and only M3 gives a number. One source is not consensus, and M3's own axis (device size) differs from ours (content width) — so the number arrives attached to a different rule.",
+   "options": [
+    "Adopt 3–7 with M3.",
+    "Carry no count; the rail's rule stays a width rule.",
+    "Adopt an upper bound only (<= 7), matching our top-nav's 7."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 3. It gives the rail a ceiling consistent with R1's family and does not import M3's device-size axis by the back door."
+  },
+  {
+   "id": "R7",
+   "rule": "What triggers a mega-footer (doormat) instead of the plain footer?",
+   "components": [
+    "footer-doormat-lockup",
+    "footer",
+    "app-shell-doormat"
+   ],
+   "ours": "roles.json: doormat frame when \"marketing / servicing site with a mega-footer\" — circular, no trigger. footer.meta is the OPERATOR footer, a different object.",
+   "positions": {
+    "GOV.UK": "Use the footer at the bottom of every page of your service.",
+    "USWDS": "Use the big footer when your footer has more than five links.",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "Be positioned at the bottom of the interface",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "USWDS is the only system with a number, and it contradicts itself on WHAT goes in the mat: \"Use the big footer when you want to replicate your site's navigation scheme\" against \"The footer doesn't need to mirror the header.\" Our antiPattern already forbids the duplication.",
+   "options": [
+    "Adopt \">5 links\" as the doormat trigger and keep our no-duplication antiPattern.",
+    "Adopt \">5 links\" AND allow the mat to repeat the masthead (USWDS's other line) — this would REVERSE our antiPattern[0].",
+    "Carry no count; the doormat is chosen by SURFACE (marketing/public) alone."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. The number is free and our antiPattern is the better half of USWDS's own contradiction."
+  },
+  {
+   "id": "R8",
+   "rule": "What makes a Back-to-top control appear?",
+   "components": [
+    "back-to-top"
+   ],
+   "ours": "roles.json: back-to-top when \"page chrome only\". No trigger, no threshold, no cardinality.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "silent",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "For global functionality on the site.",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "Use a Back to Top button for pages that are longer than 4 screens"
+   },
+   "why_non_unanimous": "One quantified source (NN/g, 4 screens) and one unquantified (Ant). Everyone else silent. Our when says nothing about when it appears, which makes it unbuildable.",
+   "options": [
+    "Adopt NN/g wholesale: appears past 4 viewport-heights, one per page, bottom-end, labelled.",
+    "Adopt the threshold only and leave placement to the component.",
+    "Rule the threshold an implementation detail and keep the when as a role statement."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. It is the only source in the whole slice that gives a complete, testable rule, and our own meta already agrees on the icon-button/secondary-tier treatment."
+  },
+  {
+   "id": "R9",
+   "rule": "How long is a \"long document\" before anchor-nav applies?",
+   "components": [
+    "anchor-nav",
+    "template-settings"
+   ],
+   "ours": "anchor-nav roles.json when: \"in-page, long document\". No threshold.",
+   "positions": {
+    "GOV.UK": "a list of links at the start of the page (known as 'anchor links')",
+    "USWDS": "pages that include three or more distinct content sections",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "For displaying anchor hyperlinks on page and jumping between them.",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "USWDS is the only system that quantifies it (3 sections OR 3 viewport heights). GOV.UK endorses anchor links as an accordion alternative but sets no size. Ant states purpose only. One number against two silences.",
+   "options": [
+    "Adopt USWDS's OR-test verbatim: sections >= 3 OR length >= 3 viewport-heights.",
+    "Adopt the section count only (>= 3) — viewport heights depend on the reader's window.",
+    "Keep \"long\" unquantified and let review judge it."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. Both halves are measurable at build time and the OR-test catches the two different ways a page gets long."
+  },
+  {
+   "id": "R12",
+   "rule": "When does a masthead flyout become a mega-menu?",
+   "components": [
+    "navigations",
+    "app-shell-top-nav"
+   ],
+   "ours": "SILENT. navigations.meta ships a main-nav flyout with no size rule.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "more than six links in any of your dropdown menus",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Single source. Nobody else quantifies it; nobody contradicts it either — so it is single-external rather than consensus.",
+   "options": [
+    "Adopt 6 as the flyout ceiling.",
+    "Carry no ceiling.",
+    "Tie it to R1's fit test instead of a count."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. It is cheap, it is the only number available, and it stops the flyout quietly becoming an unruled mega-menu."
+  },
+  {
+   "id": "R13",
+   "rule": "Is the Hero restricted to unauthenticated marketing surfaces?",
+   "components": [
+    "hero",
+    "hero-variants",
+    "page-header-lockup",
+    "headers"
+   ],
+   "ours": "SILENT as a predicate. hero.meta says \"marketing banner\" in prose; roles.json does not list hero in page-title at all.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "Don't try to include forms or side navigation.",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "The most obvious rule in the page-title role and nobody writes it down. USWDS's landing-page restraint is the closest external statement and it is about page CONTENTS, not about who may use a hero.",
+   "options": [
+    "Rule Hero legal only where authenticated = false, and add USWDS's no-forms / no-side-nav restraint.",
+    "Rule Hero legal on authenticated overview pages too (some banks do this), with the restraint dropped.",
+    "Rule Hero out of the page-title role entirely and give it its own marketing role."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. It is the line every one of our shells already assumes, and writing it down is what stops a hero landing on a dashboard."
+  },
+  {
+   "id": "R14",
+   "rule": "Does app-shell-split (and Splitter) carry a viewport condition?",
+   "components": [
+    "app-shell-split",
+    "splitter",
+    "layout-utilities"
+   ],
+   "ours": "roles.json: split frame when \"two peers on screen at once\"; splitter when \"the reader sizes two panes\". Neither mentions viewport.",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "silent",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "Prefer using a split view in a regular — not a compact — environment.",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Single source, but it names a failure our whens cannot currently prevent: a two-pane frame on a phone. Nobody contradicts Apple; everyone else is silent because nobody else ships a splitter.",
+   "options": [
+    "Add \"viewport = regular\" to the FRAME's when only.",
+    "Add it to both the frame and the Splitter control.",
+    "Leave both viewport-agnostic and handle it in the responsive rules instead."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. The frame owns the decision; the Splitter is a control and should stay usable wherever a frame legitimately places it."
+  },
+  {
+   "id": "R15",
+   "rule": "Two dashboard templates answer the same question — what discriminates them?",
+   "components": [
+    "template-dashboard",
+    "template-dashboard-bento"
+   ],
+   "ours": "template-dashboard-bento.meta.json, verbatim: it answers the SAME question as Template dashboard and \"differs in ONE thing: its layout\".",
+   "positions": {
+    "GOV.UK": "silent",
+    "USWDS": "silent",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "NO EXTERNAL SYSTEM SPEAKS — no public system ships page templates at this granularity (USWDS's five templates map onto none of ours). Non-unanimous against OURSELVES: a role whose axis is 'the question the page answers' cannot discriminate two providers that ask the same question.",
+   "options": [
+    "Make bento a VARIANT of template-dashboard, not a second template.",
+    "Keep both and give bento an explicit non-job when: \"the brief asks for the bento grammar\".",
+    "Keep both and re-cut the questions so they differ (e.g. bento = 'how are things across SEVERAL domains at once')."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 1. Two providers with one question is the defect the role axis exists to prevent; s217-D2/D3 describe a grammar, not a job."
+  },
+  {
+   "id": "R16",
+   "rule": "What language and furniture may an error page carry?",
+   "components": [
+    "template-error"
+   ],
+   "ours": "template-error.meta: binds no RAG colour, invents no support semantics. Silent on language and on breadcrumbs.",
+   "positions": {
+    "GOV.UK": "technical jargon like 404 or bad request",
+    "USWDS": "Don't use this template for form validation errors, submission errors",
+    "Material 3": "silent",
+    "Carbon (IBM)": "silent",
+    "Polaris (Shopify)": "silent",
+    "Spectrum (Adobe)": "silent",
+    "Atlassian": "silent",
+    "Ant Design": "silent",
+    "Fluent 2": "silent",
+    "Apple HIG": "silent",
+    "NN/g": "silent"
+   },
+   "why_non_unanimous": "Both systems agree on SCOPE (page-level failures only) — that half is unanimous. They diverge on furniture: GOV.UK additionally bans breadcrumbs and humour and red text on a not-found page; USWDS bans none of that and our meta bans only RAG colour.",
+   "options": [
+    "Adopt GOV.UK's bans (no 404 jargon, no breadcrumbs, no humour) as gate clauses.",
+    "Adopt them as content guidance only, off the gate.",
+    "Adopt the no-breadcrumbs clause only — it is structural and checkable; leave tone to review."
+   ],
+   "recommendation_THIS_LANES_NOT_RULED": "LANE RECOMMENDS option 3. A gate can check for a breadcrumb; it cannot check for humour."
+  }
+ ]
+}
