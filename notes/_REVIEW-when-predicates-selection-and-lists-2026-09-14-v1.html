@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When predicates — selection controls and record lists — review v1</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:56px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.05em}
+nav a{color:var(--grey-6);text-decoration:none}nav a:hover{color:var(--black)}nav .ctx{color:var(--black)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.rule{border:0;border-top:1px solid var(--grey-2);margin:0}
+section{padding:var(--s7) 0}
+header.profile{padding:var(--s7) 0 var(--s6)}
+header.profile .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{font-size:57px;line-height:1.05;font-weight:400;margin:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:14px;color:var(--grey-7);line-height:1.6}
+.verdict{font-size:19px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4) var(--s5);margin-top:var(--s6)}
+.stat b{display:block;font-size:43px;font-weight:200;line-height:1.05}
+.stat span{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+.dim .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim .idx{font-size:96px;font-weight:100;line-height:1;color:var(--grey-3);display:block;margin-bottom:var(--s2)}
+ol,ul{padding-left:1.25rem;margin:0 0 var(--s3)}li{margin-bottom:var(--s2)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 var(--s3);line-height:1.5}
+th,td{text-align:left;padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+th{font-weight:500;color:var(--grey-7);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+td.n{font-variant-numeric:tabular-nums}
+table.edg th:nth-child(1){width:16%}table.edg th:nth-child(2){width:22%}table.edg th:nth-child(3){width:10%}table.edg th:nth-child(4){width:38%}table.edg th:nth-child(5){width:14%}
+.tbl{overflow-x:auto}
+.cmp{background:var(--grey-1)}
+.cmp .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.cmp .big{font-size:34px;line-height:1.2}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin-bottom:var(--s2)}
+.dist .ours .h{color:var(--accent)}
+.quote{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s4);font-size:19px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+details{border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+summary{cursor:pointer;font-weight:500;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
+.tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--grey-3);padding:0 6px;color:var(--grey-7);margin-left:6px;vertical-align:middle}
+.tag.red{border-color:var(--accent);color:var(--accent)}
+footer{padding:var(--s5) 0;font-size:14px;color:var(--grey-6)}
+@media (max-width:760px){header.profile .grid,.dim .grid,.cmp .grid,.dist{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}h1{font-size:43px}.dim .idx{font-size:64px}}
+
+table.dec th:nth-child(1){width:17%}table.dec th:nth-child(2){width:41%}table.dec th:nth-child(3){width:17%}table.dec th:nth-child(4){width:25%}
+.tag.solid{border-color:var(--black);background:var(--black);color:var(--white)}
+table.dec td code{display:block;background:var(--grey-1);padding:var(--s1);line-height:1.5}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="#">← Apollo</a><span class="ctx">Review · when predicates, two families</span><span>#270 · 2026-09-14 · v1 · NOTHING ENACTED</span></div></nav>
+
+<header class="profile"><div class="wrap">
+  <p class="label">Review for ruling</p>
+  <div class="grid">
+    <div><h1>What actually separates a table from a list, and a radio from a dropdown</h1></div>
+    <div class="meta">You asked two things today: whether we can be sure we have the criteria for these choices, and whether other libraries have the rules, since Figma is shut to you. Both answered below, measured, not remembered. <strong>Nine metas were read, nine public design systems and three NN/g articles were fetched, and not one file in <code>knowledge/</code> was edited.</strong><br><br>Your two sentences are quoted from today's chat. They are not yet in the Memento record — <code>_quote_gate.py</code> returns NOT FOUND for both — so they are cited as today's chat, never as verified quotes.</div>
+  </div>
+</div></header>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">The answer</p>
+  <p class="verdict"><strong>No, we cannot be sure — but the two families fail in opposite ways, and that is the useful part.</strong></p>
+  <p class="verdict">For <strong>record lists the criteria already exist and you already adopted them</strong>. <code>roles.json</code> role <code>record-list</code> carries a <code>when</code> on all eight providers: table is <em>“default, read-mostly”</em>, data-grid is <em>“sort / filter / select / edit-in-place is required”</em>, list-items is <em>“≤ 3 fields per item, tappable”</em>. They went in with the roles list at s252-D1. They are simply <strong>not on the metas and no gate reads them</strong>, so in practice nothing enforces them and nobody reading a meta ever sees them.</p>
+  <p class="verdict">For <strong>selection controls there is nothing at all</strong>. The <code>input</code> role has 27 providers and <strong>27 <code>when: null</code></strong> — every null in the file sits in that one role. <code>roles.json</code> admits it in its own definition: <em>“this role is large and will want sub-roles when forms get authored — not now.”</em> The 470-rule guidelines index mentions a selection control 35 times and <strong>not once as a choice criterion</strong> — every hit is label placement, grouped-control semantics or button copy.</p>
+  <p class="verdict"><strong>And yes, the other libraries have the rules.</strong> 49 external lines were captured with their URLs. The pattern in them is the finding: <strong>the KIND of criterion is close to unanimous, and every NUMBER is arbitrary.</strong></p>
+  <div class="stats">
+    <div class="stat"><b>16</b><span>Our own sources</span></div>
+    <div class="stat"><b>49</b><span>External lines, quoted</span></div>
+    <div class="stat"><b>27</b><span>Input providers, all null</span></div>
+    <div class="stat"><b>0</b><span>Selection rules in 470</span></div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section class="cmp"><div class="wrap">
+  <p class="label">The one decision with weight</p>
+  <div class="grid">
+    <div><p class="big">Is a dropdown our default single-select field, or our last resort?</p></div>
+    <div>
+      <p>Every number on this page hangs off that one word. GOV.UK <span class="tag">external</span> says the select <em>“should only be used as a last resort in public-facing services”</em> and cites research that <em>“some users find selects very difficult to use”</em>. NN/g <span class="tag">external</span> says <em>“If possible, use radio buttons rather than drop-down menus.”</em> Our canon, meanwhile, treats Dropdown as the ordinary form field — it is what <code>forms.md</code> points at and what the sort control is built from.</p>
+      <p><strong>Rule that word and eight predicates fall out of it.</strong> Rule it the GOV.UK way and radio becomes the default, dropdown needs an argument each time, and our Dropdown meta needs a line it does not have. Rule it our way and the radio ceiling is just a number.</p>
+      <p class="meta">Three smaller calls ride along, recommendations taken so you need only overrule: (a) <strong>one cut number, ruled once</strong>, rather than three — radio→dropdown and dropdown→combobox are the same decision twice; (b) <strong>record-list predicates get copied, not reinvented</strong> — they are already yours; (c) <strong>multi-select gets NO predicate</strong> until you rule one, because no external system has an opinion and a guess wearing a number is worse than a blank.</p>
+    </div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Family 1 — selection controls</p>
+  <p class="meta" style="margin-bottom:1.5rem">Proposed in the s253-D1 shape: a gate half that a checker could read, then a prose half naming the sibling it beats and the sibling it yields to. Confidence is measured, not felt: <strong>Canon</strong> = already adopted in our repo · <strong>Consensus</strong> = three or more public systems state the same kind of criterion · <strong>One source</strong> = a single system, or the systems conflict on the cut · <strong>No source</strong> = proposed from our own meta prose, or a declared guess.</p>
+  <div class="tbl"><table class="dec">
+    <tr><th>Component</th><th>Proposed <code>when</code></th><th>Sources</th><th>The one thing you must rule</th></tr>
+    <tr>
+<td><strong>selection-controls / RADIO</strong><span class="tag ">Consensus</span></td>
+<td><code>selection = single AND options.count &lt;= 5 AND every option is visible without opening anything AND effect = on-submit</code><p class="meta" style="margin-top:.5rem">the default single-answer control of the input role; beats dropdown (roles.json when: null — proposed &quot;6–15 options and the column cannot spare the height&quot;) below six options because every option stays in view and costs no click; yields to segmented-control (proposed &quot;the choice re-presents content already on screen&quot;) when the answer changes a view rather than a form value, and to combobox (proposed &quot;options &gt;= 16, closed list&quot;) when the list outgrows the page.</p></td>
+<td class="meta">GOV.UK radios · USWDS radio-buttons · M3 radio-button · Carbon radio-button · NN/g checkboxes-vs-radio · Ant radio</td>
+<td>pick one number for the radio→dropdown cut, or rule that we carry no number and use &quot;fits without scrolling&quot; instead.</td></tr>
+<tr>
+<td><strong>selection-controls / CHECKBOX</strong><span class="tag ">Consensus</span></td>
+<td><code>selection = multiple OR (selection = binary AND effect = on-submit) AND the group needs a legend</code><p class="meta" style="margin-top:.5rem">the default multi-answer control; beats radio (proposed &quot;selection = single&quot;) whenever zero, one or several answers are all valid, and beats switch (proposed &quot;effect = immediate&quot;) whenever a Save or Continue must be pressed before anything happens; a lone checkbox is the right control for one on/off answer inside a form (terms, marketing consent).</p></td>
+<td class="meta">GOV.UK checkboxes · USWDS checkbox · Carbon checkbox · M3 checkbox · Atlassian checkbox · Spectrum switch · NN/g checkboxes-vs-radio</td>
+<td>nothing. This one is free. Ratify as written.</td></tr>
+<tr>
+<td><strong>selection-controls / SWITCH (toggle)</strong><span class="tag ">Consensus</span></td>
+<td><code>selection = binary AND options.count = 2 AND effect = IMMEDIATE (no Save, no Submit, no confirm step) AND validation = none</code><p class="meta" style="margin-top:.5rem">beats checkbox (proposed &quot;effect = on-submit&quot;) on exactly one test — does the world change the instant the thumb moves; yields to checkbox whenever the setting is part of a form that is submitted, whenever more than one option can be on, or whenever the field can be in error, because a switch has no error state; yields to segmented-control when the two options are opposed alternatives rather than on and off.</p></td>
+<td class="meta">M3 switch · Carbon toggle · Atlassian toggle · NN/g toggle-switch-guidelines · Spectrum switch</td>
+<td>adopt immediacy as the discriminator, and say whether Spectrum&#x27;s no-error-state consequence becomes a HARD rule here (it would make switch illegal in any validated form).</td></tr>
+<tr>
+<td><strong>segmented-control</strong><span class="tag ">Consensus</span></td>
+<td><code>selection = single AND options.count in 2..5 AND the choice RE-PRESENTS content already on screen (view, scale, range, period) AND labels are one or two words AND destination = same</code><p class="meta" style="margin-top:.5rem">beats radio (proposed &quot;selection = single, &lt;= 5 options, effect on submit&quot;) when the answer is not a form value but a presentation switch applied at once; beats tabs because tabs move between destinations and this stays in place (our own meta, verbatim); yields to switch when the two options are on and off rather than two presentations, and to dropdown when the label set will not fit one track.</p></td>
+<td class="meta">OUR meta segmented-control.purpose + antiPatterns[2,3] · Carbon content-switcher · M3 switch (opposing options → button group)</td>
+<td>the count ceiling (5 proposed), and whether &quot;applied at once&quot; is required — if it is, a segmented control inside a submitted form becomes illegal.</td></tr>
+<tr>
+<td><strong>dropdown</strong><span class="tag ">One source</span></td>
+<td><code>selection = single AND options.count in 6..15 AND the options are familiar enough to recognise on sight AND vertical space is constrained</code><p class="meta" style="margin-top:.5rem">the compact single-answer field; beats radio (proposed &quot;&lt;= 5 options&quot;) only once the visible list would cost more height than the page can spare; yields to combobox (proposed &quot;options &gt;= 16&quot;) when the list outgrows scrolling, to multi-select when the answer is a set, and to account-selector (proposed &quot;the option IS an account&quot;) in any payment journey.</p></td>
+<td class="meta">USWDS select (the only explicit 7–15 range found) · Carbon dropdown (lower bound 2) · M3 menus · Polaris select (4) · GOV.UK select</td>
+<td>whether a dropdown is our DEFAULT single-select field or our LAST RESORT. Every number below follows from that one word.</td></tr>
+<tr>
+<td><strong>combobox</strong><span class="tag ">Consensus</span></td>
+<td><code>selection = single AND options.count &gt;= 16 AND options come from a CLOSED list (free text is never committed) AND the user can name what they want before they see it</code><p class="meta" style="margin-top:.5rem">beats dropdown (proposed &quot;6–15 options&quot;) when typing beats scrolling — countries, payees, currencies, branches (our own meta, verbatim); yields to dropdown when the set is short and browsable (our own antiPattern), and to tags-input when a value NOT in the list may be committed, which is a different contract, not a wider one.</p></td>
+<td class="meta">OUR meta combobox.purpose + antiPatterns[0,4] · USWDS select (&gt;15 → combo box) · Carbon dropdown (&quot;may be very long&quot;) · Spectrum combo-box (&gt;6)</td>
+<td>the dropdown→combobox cut (16 proposed, from USWDS). Same decision as the radio cut — rule them together or not at all.</td></tr>
+<tr>
+<td><strong>multi-select</strong><span class="tag red">No source</span></td>
+<td><code>selection = multiple AND options.count &gt;= 10 AND the chosen values must stay VISIBLE after the list closes AND the list stays open between choices</code><p class="meta" style="margin-top:.5rem">beats a checkbox group (proposed &quot;selection = multiple&quot;) only when the option set is too long to show as checkboxes and the running answer must be readable as a row of chips; yields to a checkbox group whenever all the options fit on the page, because checkboxes need no disclosure; yields to the count-summary variant rather than truncating the chip row (our own antiPattern).</p></td>
+<td class="meta">OUR meta multi-select.purpose + antiPatterns[0,4] · USWDS select (&quot;Users often don’t understand how to choose multiple items&quot;)</td>
+<td>everything. This predicate has no external support at all. Either rule the boundary yourself or leave multi-select with no `when` and say so out loud.</td></tr>
+<tr>
+<td><strong>account-selector</strong><span class="tag red">No source</span></td>
+<td><code>selection = single AND the option IS an account (name · masked number · balance) AND the journey = payment / transfer / standing order</code><p class="meta" style="margin-top:.5rem">beats dropdown and combobox in every payment journey because the option carries three fields and a balance the reader must compare before choosing — our meta forbids a raw &lt;select&gt; for the same choice; yields to the masked account chip once the choice is made and the row becomes a receipt.</p></td>
+<td class="meta">OUR meta account-selector.purpose + relationships.mustNotNeighbour</td>
+<td>confirm the journey list is the right fence (payment / transfer / standing order), or widen it.</td></tr>
+  </table></div>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Family 2 — record lists</p>
+  <p class="meta" style="margin-bottom:1.5rem">All three are marked <strong>Canon</strong> because the predicate is already in <code>roles.json</code> and adopted. What is proposed here is the gate half — the machine-checkable clause the adopted prose implies but does not state — plus the move onto the meta.</p>
+  <div class="tbl"><table class="dec">
+    <tr><th>Component</th><th>Proposed <code>when</code></th><th>Sources</th><th>The one thing you must rule</th></tr>
+    <tr>
+<td><strong>table</strong><span class="tag solid">Canon</span></td>
+<td><code>records &gt;= 2 AND fields-per-record &gt;= 3 AND the reading is COMPARISON ACROSS records on the same fields AND interaction = none</code><p class="meta" style="margin-top:.5rem">the default of the record-list role (roles.json when: &quot;default, read-mostly&quot;); beats list-items (roles.json when: &quot;&lt;= 3 fields per item, tappable&quot;) whenever the reader must compare the same field down a column; yields to data-grid (roles.json when: &quot;sort / filter / select / edit-in-place is required&quot;) the moment any interaction is needed, and is never used for layout (our own antiPattern).</p></td>
+<td class="meta">knowledge/roles.json roles.record-list.providers[table] — ADOPTED s252-D1 · OUR meta table.purpose + antiPatterns[0] · GOV.UK table · Carbon data-table</td>
+<td>only whether to COPY the adopted roles.json predicate onto the meta. The criterion itself is already yours.</td></tr>
+<tr>
+<td><strong>data-grid</strong><span class="tag solid">Canon</span></td>
+<td><code>records &gt;= 2 AND fields-per-record &gt;= 3 AND (sort OR filter OR row-selection OR edit-in-place) is required</code><p class="meta" style="margin-top:.5rem">beats table (roles.json when: &quot;default, read-mostly&quot;) exactly when an interaction is required — the 2026-06-22 rubric decision A our meta already quotes: they are distinct components; yields to table whenever the screen only reads, because a grid carries an ARIA grid contract and a tab-stop model that a read-only page should not pay for.</p></td>
+<td class="meta">knowledge/roles.json roles.record-list.providers[data-grid] — ADOPTED s252-D1 · OUR meta data-grid.purpose + antiPatterns[0] · Carbon structured-list (&quot;If multiple row selection is needed, use a data table instead&quot;)</td>
+<td>only the copy onto the meta. Same as table.</td></tr>
+<tr>
+<td><strong>list-items</strong><span class="tag solid">Canon</span></td>
+<td><code>records &gt;= 2 AND fields-per-record &lt;= 3 AND each row is TAPPABLE (the row is a destination or an action) AND no field is compared down a column</code><p class="meta" style="margin-top:.5rem">beats table (roles.json when: &quot;default, read-mostly&quot;) when the row is a thing to open rather than a row to compare — roles.json when: &quot;&lt;= 3 fields per item, tappable&quot;; yields to table when a fourth field appears or a column must be read down, and to data-grid when rows must be selected in bulk (Carbon reaches the same line).</p></td>
+<td class="meta">knowledge/roles.json roles.record-list.providers[list-items] — ADOPTED s252-D1 · OUR meta list-items.purpose · Carbon structured-list · GOV.UK summary-list (&quot;Do not use it for tabular data&quot;)</td>
+<td>whether &quot;tappable&quot; is REQUIRED (it excludes a static bulleted list, which this same meta also covers — a real ambiguity in the component&#x27;s scope).</td></tr>
+  </table></div>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Where the libraries disagree</p>
+  <div class="dist">
+    <div><div class="h">They agree on the mechanism</div>
+      <p><strong>Switch vs checkbox</strong> — five of five systems give the same single test: does the effect happen at once. M3 <span class="tag">external</span>: <em>“The effects of a switch should start immediately, without needing to save.”</em> Atlassian <span class="tag">external</span>: <em>“Toggles should never require people to press a button to apply the settings.”</em> Carbon, NN/g and Spectrum say it in their own words. This is the cleanest predicate found anywhere.</p>
+      <p><strong>Radio vs checkbox</strong> — unanimous, and it is cardinality: one answer or several. GOV.UK <span class="tag">external</span>: <em>“Do not use the radios component if users might need to select more than one option.”</em></p>
+      <p><strong>Segmented vs tabs</strong> — Carbon reaches our own meta's line independently: <em>“When navigating between distinct content areas like subpages, use tabs instead”</em>. Our meta already says it. Two systems, no contact.</p>
+    </div>
+    <div class="ours"><div class="h">They disagree on every number</div>
+      <p><strong>The radio → dropdown cut, across five systems:</strong> Polaris 4 · M3 5 · Ant 5 · Spectrum 6 · USWDS 7. GOV.UK, NN/g and Atlassian give no number at all and prefer radios regardless.</p>
+      <p><strong>The dropdown → combobox cut:</strong> Spectrum 6, USWDS 15. A nine-option list is a combo box at Adobe and a plain select at USWDS. Carbon declines to count: <em>“the list of options may be very long”</em>.</p>
+      <p><strong>And one system disagrees with the component itself.</strong> GOV.UK and NN/g both push users away from the select entirely. That is not a threshold argument, it is a different position, and it is the one worth your word.</p>
+      <p class="meta">Read the disagreement the right way round: it is not that the systems are sloppy. It is that <strong>option count is a proxy</strong> for the thing that actually matters — whether the options fit without scrolling, and whether the reader can recognise the right one on sight. Every system picked a number to stand in for that, and picked a different one.</p>
+    </div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Where everyone is silent</p>
+  <ul>
+    <li><strong>Multi-select as a distinct component.</strong> Not one of the nine systems separates a chip multi-select from a checkbox group. They all say “use checkboxes”. Our proposed threshold of ten options has <strong>no source</strong> and is marked as a guess in <code>PROPOSED-WHEN.json</code>, not dressed as a finding.</li>
+    <li><strong>Account-selector.</strong> No external analogue — it is a domain component. Silence here is expected, not a gap. The only source is our own meta.</li>
+    <li><strong>A segmented-control maximum.</strong> Carbon and M3 name no ceiling. The 5 proposed comes from the track width, not from a source.</li>
+    <li><strong>The HSBC position, on all of it.</strong> The ten ingested source sets under <code>knowledge/guidelines/_sources/</code> are brand, colour, typography, tone of voice, neurodiversity, visual assets and the two foundations pages. <strong>No component-choice prose is in the corpus.</strong> <code>forms.md:40</code> points at the component specs, and the component specs do not carry the criterion. If HSBC has ruled any of this, it is in Figma, which you cannot open today — so this page is what we have, and the gap is declared rather than papered over.</li>
+  </ul>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">What this lane did not do</p>
+  <p>No meta, schema, rules index, runbook or gate was edited. No commit, no stash. Everything written sits in <code>notes/_lanes/270/when-research/</code> and in this page. The external lines are quoted under <code>knowledge/_RUNBOOK-external-claims.md</code>: each carries its URL and its own words, each is marked EXTERNAL, and <strong>none of them is our rule</strong> until you say so.</p>
+  <details><summary>Provenance</summary>
+    <p class="meta" style="margin-top:1rem">Sources file: <code>notes/_lanes/270/when-research/SOURCES.json</code> — 16 of ours with file and key, 49 external with URL and quote, 3 refusals declared (Spectrum table-view 404, Polaris 301 to shopify.dev with text taken from the repo source instead, Figma no access).<br>
+    Predicates file: <code>notes/_lanes/270/when-research/PROPOSED-WHEN.json</code> — 11 proposals, each with gate half, prose half, confidence, sources and disagreements.<br>
+    Quote gate: both of your sentences run through <code>_quote_gate.py</code> and return NOT FOUND — they are today's chat, not the record.</p>
+  </details>
+</div></section>
+
+<footer><div class="wrap">Apollo · session #270 · research lane · 2026-09-14 · v1 · nothing enacted</div></footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+{
+ "$description": "#270 when-research — PROPOSED `when` predicates, s253-D1 shape (gate half + prose half). NOTHING ENACTED. No meta, schema, rules index, runbook or gate was touched by this lane.",
+ "$shape": "s253-D1: gate half = machine-checkable clause; prose half = beats/yields sentence naming the sibling and quoting its roles.json when.",
+ "$confidence_scale": {
+  "canon": "a predicate already adopted in our own repo — the work is a copy, not an invention",
+  "consensus-external": "3+ public systems state the same KIND of criterion",
+  "single-external": "one system states it, or the systems conflict on the cut",
+  "none": "no source found; the predicate is proposed from our own meta prose or is a declared guess"
+ },
+ "$date": "2026-09-14",
+ "$session": 270,
+ "proposals": [
+  {
+   "component": "selection-controls / RADIO",
+   "when_gate": "selection = single AND options.count <= 5 AND every option is visible without opening anything AND effect = on-submit",
+   "when_prose": "the default single-answer control of the input role; beats dropdown (roles.json when: null — proposed \"6–15 options and the column cannot spare the height\") below six options because every option stays in view and costs no click; yields to segmented-control (proposed \"the choice re-presents content already on screen\") when the answer changes a view rather than a form value, and to combobox (proposed \"options >= 16, closed list\") when the list outgrows the page.",
+   "confidence": "consensus-external",
+   "sources": [
+    "GOV.UK radios",
+    "USWDS radio-buttons",
+    "M3 radio-button",
+    "Carbon radio-button",
+    "NN/g checkboxes-vs-radio",
+    "Ant radio"
+   ],
+   "disagreements": [
+    "THE NUMBER. radio→dropdown cut point: Polaris 4 · M3 5 · Ant 5 · Spectrum 6 · USWDS 7 · GOV.UK + NN/g + Atlassian give NO number and prefer radios always. The KIND of criterion is unanimous; the cut is arbitrary."
+   ],
+   "daves_call": "pick one number for the radio→dropdown cut, or rule that we carry no number and use \"fits without scrolling\" instead."
+  },
+  {
+   "component": "selection-controls / CHECKBOX",
+   "when_gate": "selection = multiple OR (selection = binary AND effect = on-submit) AND the group needs a legend",
+   "when_prose": "the default multi-answer control; beats radio (proposed \"selection = single\") whenever zero, one or several answers are all valid, and beats switch (proposed \"effect = immediate\") whenever a Save or Continue must be pressed before anything happens; a lone checkbox is the right control for one on/off answer inside a form (terms, marketing consent).",
+   "confidence": "consensus-external",
+   "sources": [
+    "GOV.UK checkboxes",
+    "USWDS checkbox",
+    "Carbon checkbox",
+    "M3 checkbox",
+    "Atlassian checkbox",
+    "Spectrum switch",
+    "NN/g checkboxes-vs-radio"
+   ],
+   "disagreements": [
+    "none found — seven systems agree on cardinality AND on deferred effect"
+   ],
+   "daves_call": "nothing. This one is free. Ratify as written."
+  },
+  {
+   "component": "selection-controls / SWITCH (toggle)",
+   "when_gate": "selection = binary AND options.count = 2 AND effect = IMMEDIATE (no Save, no Submit, no confirm step) AND validation = none",
+   "when_prose": "beats checkbox (proposed \"effect = on-submit\") on exactly one test — does the world change the instant the thumb moves; yields to checkbox whenever the setting is part of a form that is submitted, whenever more than one option can be on, or whenever the field can be in error, because a switch has no error state; yields to segmented-control when the two options are opposed alternatives rather than on and off.",
+   "confidence": "consensus-external",
+   "sources": [
+    "M3 switch",
+    "Carbon toggle",
+    "Atlassian toggle",
+    "NN/g toggle-switch-guidelines",
+    "Spectrum switch"
+   ],
+   "disagreements": [
+    "none on the immediacy test — 5 of 5 systems state it. Spectrum ADDS a consequence nobody else names: a switch cannot show an error."
+   ],
+   "daves_call": "adopt immediacy as the discriminator, and say whether Spectrum's no-error-state consequence becomes a HARD rule here (it would make switch illegal in any validated form)."
+  },
+  {
+   "component": "segmented-control",
+   "when_gate": "selection = single AND options.count in 2..5 AND the choice RE-PRESENTS content already on screen (view, scale, range, period) AND labels are one or two words AND destination = same",
+   "when_prose": "beats radio (proposed \"selection = single, <= 5 options, effect on submit\") when the answer is not a form value but a presentation switch applied at once; beats tabs because tabs move between destinations and this stays in place (our own meta, verbatim); yields to switch when the two options are on and off rather than two presentations, and to dropdown when the label set will not fit one track.",
+   "confidence": "consensus-external",
+   "sources": [
+    "OUR meta segmented-control.purpose + antiPatterns[2,3]",
+    "Carbon content-switcher",
+    "M3 switch (opposing options → button group)"
+   ],
+   "disagreements": [
+    "the COUNT ceiling: Carbon and M3 give none; ours is proposed from the track-width constraint, not from a source. Nobody outside names a maximum."
+   ],
+   "daves_call": "the count ceiling (5 proposed), and whether \"applied at once\" is required — if it is, a segmented control inside a submitted form becomes illegal."
+  },
+  {
+   "component": "dropdown",
+   "when_gate": "selection = single AND options.count in 6..15 AND the options are familiar enough to recognise on sight AND vertical space is constrained",
+   "when_prose": "the compact single-answer field; beats radio (proposed \"<= 5 options\") only once the visible list would cost more height than the page can spare; yields to combobox (proposed \"options >= 16\") when the list outgrows scrolling, to multi-select when the answer is a set, and to account-selector (proposed \"the option IS an account\") in any payment journey.",
+   "confidence": "single-external",
+   "sources": [
+    "USWDS select (the only explicit 7–15 range found)",
+    "Carbon dropdown (lower bound 2)",
+    "M3 menus",
+    "Polaris select (4)",
+    "GOV.UK select"
+   ],
+   "disagreements": [
+    "THE DEEPEST DISAGREEMENT ON THE PAGE. USWDS 7–15. Polaris 4+. Carbon not-below-3. GOV.UK: \"last resort\", cites research that users find selects difficult. NN/g: prefer radios. Two systems actively discourage the component our canon treats as the default form field."
+   ],
+   "daves_call": "whether a dropdown is our DEFAULT single-select field or our LAST RESORT. Every number below follows from that one word."
+  },
+  {
+   "component": "combobox",
+   "when_gate": "selection = single AND options.count >= 16 AND options come from a CLOSED list (free text is never committed) AND the user can name what they want before they see it",
+   "when_prose": "beats dropdown (proposed \"6–15 options\") when typing beats scrolling — countries, payees, currencies, branches (our own meta, verbatim); yields to dropdown when the set is short and browsable (our own antiPattern), and to tags-input when a value NOT in the list may be committed, which is a different contract, not a wider one.",
+   "confidence": "consensus-external",
+   "sources": [
+    "OUR meta combobox.purpose + antiPatterns[0,4]",
+    "USWDS select (>15 → combo box)",
+    "Carbon dropdown (\"may be very long\")",
+    "Spectrum combo-box (>6)"
+   ],
+   "disagreements": [
+    "the NUMBER again: USWDS 15, Spectrum 6, Carbon none. A 9-option list is a combobox at Adobe and a plain select at USWDS."
+   ],
+   "daves_call": "the dropdown→combobox cut (16 proposed, from USWDS). Same decision as the radio cut — rule them together or not at all."
+  },
+  {
+   "component": "multi-select",
+   "when_gate": "selection = multiple AND options.count >= 10 AND the chosen values must stay VISIBLE after the list closes AND the list stays open between choices",
+   "when_prose": "beats a checkbox group (proposed \"selection = multiple\") only when the option set is too long to show as checkboxes and the running answer must be readable as a row of chips; yields to a checkbox group whenever all the options fit on the page, because checkboxes need no disclosure; yields to the count-summary variant rather than truncating the chip row (our own antiPattern).",
+   "confidence": "none",
+   "sources": [
+    "OUR meta multi-select.purpose + antiPatterns[0,4]",
+    "USWDS select (\"Users often don’t understand how to choose multiple items\")"
+   ],
+   "disagreements": [
+    "EXTERNAL SILENCE. Not one of the nine systems distinguishes a chip multi-select from a checkbox group. They all say \"use checkboxes\". Our threshold of 10 has NO source — it is a guess dressed as a number and is marked as such."
+   ],
+   "daves_call": "everything. This predicate has no external support at all. Either rule the boundary yourself or leave multi-select with no `when` and say so out loud."
+  },
+  {
+   "component": "account-selector",
+   "when_gate": "selection = single AND the option IS an account (name · masked number · balance) AND the journey = payment / transfer / standing order",
+   "when_prose": "beats dropdown and combobox in every payment journey because the option carries three fields and a balance the reader must compare before choosing — our meta forbids a raw <select> for the same choice; yields to the masked account chip once the choice is made and the row becomes a receipt.",
+   "confidence": "none",
+   "sources": [
+    "OUR meta account-selector.purpose + relationships.mustNotNeighbour"
+   ],
+   "disagreements": [
+    "no external analogue exists — this is a domain component. Silence here is expected, not a gap."
+   ],
+   "daves_call": "confirm the journey list is the right fence (payment / transfer / standing order), or widen it."
+  },
+  {
+   "component": "table",
+   "when_gate": "records >= 2 AND fields-per-record >= 3 AND the reading is COMPARISON ACROSS records on the same fields AND interaction = none",
+   "when_prose": "the default of the record-list role (roles.json when: \"default, read-mostly\"); beats list-items (roles.json when: \"<= 3 fields per item, tappable\") whenever the reader must compare the same field down a column; yields to data-grid (roles.json when: \"sort / filter / select / edit-in-place is required\") the moment any interaction is needed, and is never used for layout (our own antiPattern).",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/roles.json roles.record-list.providers[table] — ADOPTED s252-D1",
+    "OUR meta table.purpose + antiPatterns[0]",
+    "GOV.UK table",
+    "Carbon data-table"
+   ],
+   "disagreements": [
+    "none — our adopted canon and GOV.UK say the same thing in different words"
+   ],
+   "daves_call": "only whether to COPY the adopted roles.json predicate onto the meta. The criterion itself is already yours."
+  },
+  {
+   "component": "data-grid",
+   "when_gate": "records >= 2 AND fields-per-record >= 3 AND (sort OR filter OR row-selection OR edit-in-place) is required",
+   "when_prose": "beats table (roles.json when: \"default, read-mostly\") exactly when an interaction is required — the 2026-06-22 rubric decision A our meta already quotes: they are distinct components; yields to table whenever the screen only reads, because a grid carries an ARIA grid contract and a tab-stop model that a read-only page should not pay for.",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/roles.json roles.record-list.providers[data-grid] — ADOPTED s252-D1",
+    "OUR meta data-grid.purpose + antiPatterns[0]",
+    "Carbon structured-list (\"If multiple row selection is needed, use a data table instead\")"
+   ],
+   "disagreements": [
+    "none — Carbon reaches the identical split from the other side"
+   ],
+   "daves_call": "only the copy onto the meta. Same as table."
+  },
+  {
+   "component": "list-items",
+   "when_gate": "records >= 2 AND fields-per-record <= 3 AND each row is TAPPABLE (the row is a destination or an action) AND no field is compared down a column",
+   "when_prose": "beats table (roles.json when: \"default, read-mostly\") when the row is a thing to open rather than a row to compare — roles.json when: \"<= 3 fields per item, tappable\"; yields to table when a fourth field appears or a column must be read down, and to data-grid when rows must be selected in bulk (Carbon reaches the same line).",
+   "confidence": "canon",
+   "sources": [
+    "knowledge/roles.json roles.record-list.providers[list-items] — ADOPTED s252-D1",
+    "OUR meta list-items.purpose",
+    "Carbon structured-list",
+    "GOV.UK summary-list (\"Do not use it for tabular data\")"
+   ],
+   "disagreements": [
+    "the number 3 is OURS ALONE. Carbon says \"simple data\", GOV.UK says \"not tabular data\"; nobody outside counts fields. Our 3 is already adopted, so it is a ruled number, not a sourced one — worth knowing the difference."
+   ],
+   "daves_call": "whether \"tappable\" is REQUIRED (it excludes a static bulleted list, which this same meta also covers — a real ambiguity in the component's scope)."
+  }
+ ]
+}

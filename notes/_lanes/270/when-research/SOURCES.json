@@ -1,0 +1,403 @@
+{
+ "$description": "#270 when-research lane — every source consulted for selection-control and record-list choice criteria. Ours = file:line in this repo. External = URL + verbatim quote (<15 words, RUNBOOK-external-claims). NOTHING HERE IS OUR RULE until Dave rules it.",
+ "$runbook": "knowledge/_RUNBOOK-external-claims.md — external claims carry source + quote + marked EXTERNAL, never presented as ours.",
+ "$date": "2026-09-14",
+ "$session": 270,
+ "ours": [
+  {
+   "src": "knowledge/roles.json — roles.record-list.providers",
+   "said": "table when 'default, read-mostly'; data-grid when 'sort / filter / select / edit-in-place is required'; list-items when '≤ 3 fields per item, tappable'; +5 more providers all with a when",
+   "discriminates": "table-vs-data-grid-vs-list-items",
+   "note": "CRITERIA ALREADY EXIST AND ARE ADOPTED (s252-D1). Not on any meta; no gate reads them."
+  },
+  {
+   "src": "knowledge/roles.json — roles.input.providers",
+   "said": "27 providers, every one when: null",
+   "discriminates": "NOTHING — the whole selection family is undiscriminated",
+   "note": "roles.json says so itself: 'this role is large and will want sub-roles when forms get authored — not now.'"
+  },
+  {
+   "src": "knowledge/components/combobox.meta.json — purpose",
+   "said": "Use it instead of Dropdown when the option set is long enough that typing beats scrolling",
+   "discriminates": "combobox-vs-dropdown",
+   "note": "our meta prose, never a gate"
+  },
+  {
+   "src": "knowledge/components/combobox.meta.json — antiPatterns[4]",
+   "said": "Using this where the option set is short and browsable — that is the gated Dropdown",
+   "discriminates": "combobox-vs-dropdown"
+  },
+  {
+   "src": "knowledge/components/combobox.meta.json — antiPatterns[0]",
+   "said": "Accepting free text. If the user may type a value not in the list … that is Tags-input",
+   "discriminates": "combobox-vs-tags-input"
+  },
+  {
+   "src": "knowledge/components/segmented-control.meta.json — purpose",
+   "said": "Use for switching a presentation, scale, or range in place (not for navigation between destinations — that is Tabs)",
+   "discriminates": "segmented-control-vs-tabs"
+  },
+  {
+   "src": "knowledge/components/segmented-control.meta.json — antiPatterns[2]",
+   "said": "Allowing multiple segments selected (it is single-select — use checkboxes/chips for multi)",
+   "discriminates": "segmented-control-vs-checkbox"
+  },
+  {
+   "src": "knowledge/components/multi-select.meta.json — purpose",
+   "said": "Use it for … anywhere the answer is a set rather than a value",
+   "discriminates": "multi-select-vs-dropdown"
+  },
+  {
+   "src": "knowledge/components/multi-select.meta.json — antiPatterns[2]",
+   "said": "Confusing this chip with the Selection-controls chip. That one is a toggle the user presses directly",
+   "discriminates": "multi-select-chip-vs-selection-chip"
+  },
+  {
+   "src": "knowledge/components/data-grid.meta.json — purpose + antiPatterns[0]",
+   "said": "Table stays the PASSIVE semantic table; the grid owns interaction. 'Bolting sort/selection onto the passive Table (decision A: they are distinct components)'",
+   "discriminates": "table-vs-data-grid",
+   "note": "traces to a 2026-06-22 rubric decision A quoted inside the meta"
+  },
+  {
+   "src": "knowledge/components/table.meta.json — purpose + antiPatterns[0]",
+   "said": "Data tables let users scan, analyse and compare data. 'Using a table for layout rather than tabular data'",
+   "discriminates": "table-vs-layout"
+  },
+  {
+   "src": "knowledge/components/list-items.meta.json — purpose",
+   "said": "Lists display a series of related points together in a structured, easily readable way",
+   "discriminates": "weak — no cardinality or field-count cut"
+  },
+  {
+   "src": "knowledge/components/account-selector.meta.json — relationships.mustNotNeighbour",
+   "said": "A raw <select> for the same choice (rich rows exist for a reason)",
+   "discriminates": "account-selector-vs-dropdown"
+  },
+  {
+   "src": "knowledge/guidelines/_rules-index.json",
+   "said": "470 rules; 35 mention a selection control, ALL of them accessibility/copy (label placement ID-23, grouped-control semantics CD-3/4, sort-label copy-047). ZERO selection criteria.",
+   "discriminates": "none — measured silence"
+  },
+  {
+   "src": "knowledge/guidelines/forms.md:40",
+   "said": "individual form components (e.g. Dropdown, text inputs, checkboxes, radios) have their own component specs",
+   "discriminates": "none — the umbrella page defers, and the component specs do not carry the criterion"
+  },
+  {
+   "src": "knowledge/guidelines/_sources/ (10 ingested source sets)",
+   "said": "brand, colour, typography, tone-of-voice, neurodiversity, visual assets, app/web foundations only",
+   "discriminates": "none — HSBC component-choice prose is NOT in the ingested corpus (it is in Figma, unreachable today)"
+  }
+ ],
+ "external": [
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/radios/",
+   "quote": "Use the radios component when users can only select one option from a list.",
+   "disc": "radio-vs-checkbox"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/radios/",
+   "quote": "Do not use the radios component if users might need to select more than one option.",
+   "disc": "radio-vs-checkbox"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/checkboxes/",
+   "quote": "toggle a single option on or off",
+   "disc": "checkbox-vs-switch — GOV.UK has NO switch; the single checkbox does that job"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/select/",
+   "quote": "The select component should only be used as a last resort in public-facing services",
+   "disc": "dropdown-vs-radio"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/select/",
+   "quote": "research shows that some users find selects very difficult to use",
+   "disc": "dropdown-vs-radio"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/table/",
+   "quote": "Use the table component to let users compare information in rows and columns.",
+   "disc": "table-vs-list"
+  },
+  {
+   "sys": "GOV.UK",
+   "url": "https://design-system.service.gov.uk/components/summary-list/",
+   "quote": "Do not use it for tabular data or a simple list of information or tasks",
+   "disc": "summary-list-vs-table"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/radio-buttons/",
+   "quote": "To display a single selection.",
+   "disc": "radio-vs-checkbox"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/radio-buttons/",
+   "quote": "Consider a select component if you don’t have enough space to list out all available options.",
+   "disc": "radio-vs-dropdown"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/select/",
+   "quote": "only when a user needs to choose from about seven to 15 possible options",
+   "disc": "dropdown bounds — THE ONLY EXPLICIT RANGE FOUND"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/select/",
+   "quote": "Fewer than seven options. Use radio buttons instead.",
+   "disc": "dropdown-vs-radio (cut at 7)"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/select/",
+   "quote": "More than 15 options. If the list of options is very long, consider using a combo box",
+   "disc": "dropdown-vs-combobox (cut at 15)"
+  },
+  {
+   "sys": "USWDS",
+   "url": "https://designsystem.digital.gov/components/select/",
+   "quote": "Users often don’t understand how to choose multiple items from select elements.",
+   "disc": "dropdown-vs-checkbox for multi"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/switch/guidelines",
+   "quote": "The effects of a switch should start immediately, without needing to save.",
+   "disc": "switch-vs-checkbox — THE STRONGEST PREDICATE FOUND"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/switch/guidelines",
+   "quote": "Avoid using a switch to select multiple options that require people to save.",
+   "disc": "switch-vs-checkbox"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/switch/guidelines",
+   "quote": "Avoid using switches to toggle between opposing options",
+   "disc": "switch-vs-segmented-control"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/radio-button/guidelines",
+   "quote": "Use radio buttons when there are five or fewer options.",
+   "disc": "radio-vs-dropdown (cut at 5)"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/radio-button/guidelines",
+   "quote": "Consider using a drop-down menu instead of radio buttons when space is constrained",
+   "disc": "radio-vs-dropdown"
+  },
+  {
+   "sys": "Material 3",
+   "url": "https://m3.material.io/components/menus/guidelines",
+   "quote": "A menu takes up less space than a set of radio buttons or chips.",
+   "disc": "dropdown-vs-radio (space, not count)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/toggle/usage/",
+   "quote": "Ideal for settings or preferences that can be immediately applied.",
+   "disc": "switch-vs-checkbox"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/toggle/usage/",
+   "quote": "Don’t use toggles for more than two options; instead, use a dropdown, radio button, or checkbox.",
+   "disc": "switch bounds (exactly 2)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/checkbox/usage/",
+   "quote": "checkboxes represent one input in a larger flow which usually requires a final confirmation step",
+   "disc": "checkbox-vs-switch (deferred effect)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+   "quote": "It is best practice not to use a dropdown if there are two options to choose from.",
+   "disc": "dropdown lower bound (cut at 2)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+   "quote": "Use a combo box when the user needs to select one option, but the list of options may be very long",
+   "disc": "dropdown-vs-combobox (no number)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+   "quote": "When navigating between distinct content areas like subpages, use tabs instead",
+   "disc": "segmented-vs-tabs — agrees with OUR meta verbatim in substance"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+   "quote": "should not be used as a binary input control",
+   "disc": "segmented-vs-switch"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+   "quote": "toggle between different formats, like a grid view and a table view",
+   "disc": "segmented = presentation switch, not a form answer"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/structured-list/usage/",
+   "quote": "If multiple row selection is needed, use a data table instead.",
+   "disc": "list-vs-data-grid — agrees with roles.json data-grid when"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/structured-list/usage/",
+   "quote": "Nesting items is not recommended, as structured lists are used to present simple data.",
+   "disc": "list-vs-table (simplicity, no number)"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/structured-list/usage/",
+   "quote": "consider using a data table, which supports nesting items and presents a larger set of content",
+   "disc": "list-vs-table"
+  },
+  {
+   "sys": "IBM Carbon",
+   "url": "https://carbondesignsystem.com/components/radio-button/usage/",
+   "quote": "Toggle switches are preferred when the user options are limited to two choices",
+   "disc": "radio-vs-switch"
+  },
+  {
+   "sys": "Atlassian",
+   "url": "https://atlassian.design/components/toggle/usage",
+   "quote": "Toggles should never require people to press a button to apply the settings.",
+   "disc": "switch-vs-checkbox"
+  },
+  {
+   "sys": "Atlassian",
+   "url": "https://atlassian.design/components/checkbox/usage",
+   "quote": "You need an explicit confirmation from the user to apply settings.",
+   "disc": "checkbox-vs-switch"
+  },
+  {
+   "sys": "Atlassian",
+   "url": "https://atlassian.design/components/select/usage",
+   "quote": "Don’t overwhelm people with too many options.",
+   "disc": "dropdown bound — NO NUMBER GIVEN"
+  },
+  {
+   "sys": "Shopify Polaris",
+   "url": "https://polaris.shopify.com/components/selection-and-input/select",
+   "quote": "Consider select when you have 4 or more options, to avoid cluttering the interface.",
+   "disc": "dropdown-vs-radio (cut at 4)",
+   "note": "live URL 301s to shopify.dev; text taken from the Polaris repo source"
+  },
+  {
+   "sys": "Shopify Polaris",
+   "url": "https://polaris.shopify.com/components/selection-and-input/choice-list",
+   "quote": "Avoid mutually exclusive options when allowing multiple selection",
+   "disc": "checkbox-group authoring"
+  },
+  {
+   "sys": "Adobe Spectrum",
+   "url": "https://spectrum.adobe.com/page/switch/",
+   "quote": "Switches are best used for communicating activation (e.g., on/off states)",
+   "disc": "switch-vs-checkbox (activation vs selection)"
+  },
+  {
+   "sys": "Adobe Spectrum",
+   "url": "https://spectrum.adobe.com/page/switch/",
+   "quote": "checkboxes are best used for communicating selection (e.g., multiple table rows)",
+   "disc": "checkbox-vs-switch"
+  },
+  {
+   "sys": "Adobe Spectrum",
+   "url": "https://spectrum.adobe.com/page/switch/",
+   "quote": "Switches, unlike checkboxes, can’t have an error state.",
+   "disc": "switch-vs-checkbox — a VALIDATION consequence, not a preference"
+  },
+  {
+   "sys": "Adobe Spectrum",
+   "url": "https://spectrum.adobe.com/page/combo-box/",
+   "quote": "If you have fewer than 6 items, use radio buttons.",
+   "disc": "combobox-vs-radio (cut at 6)"
+  },
+  {
+   "sys": "Adobe Spectrum",
+   "url": "https://spectrum.adobe.com/page/combo-box/",
+   "quote": "make large lists easier to search",
+   "disc": "combobox-vs-dropdown"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/radio",
+   "quote": "The difference from Select is that Radio is visible to the user",
+   "disc": "radio-vs-dropdown (visibility, the real mechanism)"
+  },
+  {
+   "sys": "Ant Design",
+   "url": "https://ant.design/components/select",
+   "quote": "is recommended when there are fewer total options (less than 5)",
+   "disc": "radio-vs-select (cut at 5) — AMBIGUOUS SUBJECT on the page, read with care"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/toggle-switch-guidelines/",
+   "quote": "Toggle switches should take immediate effect",
+   "disc": "switch-vs-checkbox"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/toggle-switch-guidelines/",
+   "quote": "Toggles may replace two radio buttons or a single checkbox",
+   "disc": "switch-vs-radio-pair"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/checkboxes-vs-radio-buttons/",
+   "quote": "the changed settings should not take effect until the user clicks the command button",
+   "disc": "checkbox/radio-vs-switch"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/checkboxes-vs-radio-buttons/",
+   "quote": "If possible, use radio buttons rather than drop-down menus.",
+   "disc": "radio-vs-dropdown — NO NUMBER"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/drop-down-menus/",
+   "quote": "Avoid dropdown boxes when typing may be faster.",
+   "disc": "dropdown-vs-text-input / combobox"
+  },
+  {
+   "sys": "NN/g",
+   "url": "https://www.nngroup.com/articles/drop-down-menus/",
+   "quote": "Resist the temptation to include many items whenever possible.",
+   "disc": "dropdown upper bound — NO NUMBER"
+  }
+ ],
+ "refused": [
+  {
+   "url": "https://spectrum.adobe.com/page/table-view/",
+   "why": "404 — content moved to /page/table/, which carries no table-vs-list criterion"
+  },
+  {
+   "url": "https://polaris.shopify.com/*",
+   "why": "301 to shopify.dev; quotes taken from the Polaris repo source instead — declared, not laundered"
+  },
+  {
+   "url": "Figma (HSBC Common Toolkit)",
+   "why": "no access today (Dave's own words, today's chat) — the HSBC component-choice prose is almost certainly there and is NOT in our ingested corpus"
+  }
+ ]
+}
