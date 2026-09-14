@@ -122,7 +122,7 @@ the ritual (stale `notes/_RULINGS.html` at 4d, stale retrieval index at 2g).
 he worked the sheet? If yes, import `harvest-decisions-2026-09-14.json` → a lane cuts one ruling
 per decided row (his notes = `says`), by role, review page BEFORE inscribing; the 15 unanimous
 become `when` predicates onto the metas in the `s253-D1` shape **via a generator, never by hand**.
-⛔ 9 commits local-and-pushed to `0c658c3` plus the handoff `1ccfd3b` and the wrap's own —
+⛔ 9 commits are on the remote (`git rev-parse @{u}` = `1ccfd3b`); only the wrap's own is local —
 **pushing is Dave's word.**
 ```
 
