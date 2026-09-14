@@ -89,6 +89,26 @@ BUDGET_WORKING = 200_000     # SOURCED — the line jobs are priced against
 # moves. NO BEHAVIOUR CHANGE HERE — the value is untouched by ruling; only the label was a lie.
 BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop taking on more
 
+# --------------------------------------------------------------------------- THE STOP LINE
+# ★★★ ONE NUMBER, AND IT LIVES HERE BECAUSE UNTIL #271 IT LIVED NOWHERE A SCRIPT COULD SEE.
+# `s260-D2` (Dave, #260) repriced the advisory start-wrap-by line for the DELEGATED-WRAP ritual:
+# the wrap runs in a SUB, so the window does not have to reserve the wrap's own cost — 180,000
+# real, with 20,000 left against a max measured hand-over of 10,434. `s271-D1` (Dave, #271)
+# collapses the pair to ONE figure and RETIRES 150,929, in his words:
+#   *"180 was decided because we use a sub for the wrap the 150 number was chosen before we
+#    started this strategy"*
+# ⇒ 150,929 was derived (200,000 − 49,071 inline wrap) BEFORE the delegated-wrap strategy
+# existed; it describes a ritual we no longer run, and a retired figure that stays reachable is
+# a second answer to a question that has one [[retrieval-default-hides-the-ruling]].
+# ⛔ WHAT THIS IS NOT: it is NOT a wall. 200,000 (`BUDGET_WORKING`) and 256,000 (`BUDGET_HARD`)
+# are SOURCED and are NOT moved, widened or re-based by this constant — dream-12 P1 proposed
+# nothing about them and `s271-D1` says so in terms. This line is the ADVISORY that says start
+# wrapping; crossing it is a breach to be DECLARED, not an error to be swallowed.
+# ⚠ `_checkin.py` PREFERS this constant and keeps its `_CHAIN.md` regex only as a DECLARED
+# fallback that WARNS when the scraped figure disagrees — a number scraped out of last session's
+# prose is a Polaroid of a ruling, never the ruling [[instrument-without-a-consumer]].
+STOP_LINE_TK = 180_000       # `s260-D2` + `s271-D1` — the ONE advisory stop line, Dave's to move
+
 # --------------------------------------------------------------------------- THE BOOT
 # The floor every session pays before it does anything. TWO HALVES, and they are known to
 # DIFFERENT standards — which is the whole point of publishing the split (D10 (c)).

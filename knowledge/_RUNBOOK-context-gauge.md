@@ -378,6 +378,18 @@ session, closing #216's carry ⑤ ("announced but uninscribed").**
   passes, a SILENT one fails.
 - Derivation and pitfalls: `notes/_briefs/2026-08-21-214-context-territory-strategy-v1.md` (row `W-99x`).
 
+⛔★★★ **SUPERSEDED BY ADDITION — `s260-D2` (2026-09-08) THEN `s271-D1` (2026-09-14): THE ADVISORY IS ONE
+NUMBER, 180,000, AND BOTH FIGURES IN THE SECTION ABOVE ARE RETIRED.** Nothing above is erased (ADR-0017:
+the ARMED-at-#217 record is what the supersession is measured against). `s260-D2` replaced this section's
+**~190,000** with **180,000** on delegated-wrap days and kept **150,929** for an inline wrap; `s271-D1`
+then retired the inline figure too — Dave, verbatim: *"180 was decided because we use a sub for the wrap
+the 150 number was chosen before we started this strategy"*. ⇒ **In force from #271: ONE advisory stop
+line of 180,000 real, whatever the session type**, and it now lives where a script can read it —
+`knowledge/_gauge_tokens.py` § `STOP_LINE_TK` — with `knowledge/_checkin.py` preferring that constant and
+keeping `CHAIN_STOP_RE` only as a declared fallback that WARNS when the chain's scraped figure disagrees.
+⛔ The outer lines are STILL untouched: **200,000 working · 256,000 hard**, exactly as `s214-D1`/`s214-D2`
+left them. The DECLARED-gap rule in the bullet above survives unchanged and now applies to the constant.
+
 ### ★ MEASURED, NOT RULED — A LANE IS PRICED AT ITS RETURN, NOT ITS LAUNCH (#237 · #238 datapoints; homed here by ADDITION at the #238 wrap's 2f EXIT CHECK)
 
 *provenance: 238 · 2026-09-02 · status: observed.* Two consecutive post-mortems (`notes/_GAUGE-LOG.md`

@@ -318,6 +318,17 @@ _DIGEST_PLACEHOLDER = "integrity <PENDING>"
 LS_DELTA_RE = re.compile(r"^##\s*⏱\s*LATEST DELTA\s*[—-]\s*(.+?)\s*$")
 CHAIN_SESSION_RE = re.compile(r"YOU ARE\s+#(\d+)\b")
 CHAIN_STOP_RE = re.compile(r"stop line\s*\**\s*([\d][\d,]*)")
+# ★★★ `s271-D1` (#271) — THE STOP FIGURE NOW COMES FROM `gauge.STOP_LINE_TK`, AND THIS REGEX IS
+# DEMOTED TO A **DECLARED FALLBACK**. Until #271 the STOP field was scraped out of `_CHAIN.md`
+# — a GENERATED file — and the only string it matched was a sentence inside #267's breach
+# narrative, so every seam in every session was graded against a figure quoted in last
+# session's prose. The old comment at the STOP field was right that a literal typed into this
+# script would be "a stop line nobody ruled"; the answer is not a scrape, it is a constant that
+# CITES the ruling, which is what `gauge.STOP_LINE_TK` now is (`s260-D2` + `s271-D1`).
+# ⛔ THE REGEX IS NOT DELETED, and the disagreement is NOT resolved silently in either
+# direction: when the chain's scraped figure differs from the constant BOTH are printed and the
+# gap is NAMED, because a generated consumer that lags is a fact about the roll and hiding it
+# would re-create the class this fix exists to end [[silent-lookup-failure-class]].
 # ⚠ `*` and backticks ONLY. `_` is NOT stripped: it is markdown emphasis in prose and a
 # character inside every identifier we quote (`total_input_tokens`, `_lanes.json`), and the
 # first draft of this line silently rendered `totalinputtokens` — a provenance string that no
@@ -407,17 +418,32 @@ def derive_block_fields(src: dict) -> dict:
             doing = _flatten(f"{session} · " + " ‖ ".join(bits), 190)
             nxt = _flatten(" ‖ ".join(nxts), 190)
 
-    # ---- STOP — the stop-line figure as STATED by the chain. ⛔ Never a literal typed here:
-    # a constant invented by this script would be a stop line nobody ruled.
+    # ---- STOP — the RULED stop line (`s260-D2` + `s271-D1`), read from `gauge.STOP_LINE_TK`.
+    # ⛔ Still never a literal typed here: the constant lives in `_gauge_tokens.py` and cites the
+    # ruling that set it. `CHAIN_STOP_RE` survives as the DECLARED fallback for a repo whose
+    # gauge module cannot be read, and as a DISAGREEMENT DETECTOR otherwise — see the regex.
     ms = CHAIN_STOP_RE.search(chain)
-    if ms:
-        stop = (f"FILL {ms.group(1)} real — the stop line as stated in _CHAIN.md "
-                f"(probe: CHAIN_STOP_RE); job room = stop line − current FILL, on the BUDGET line")
-        stop_n = int(ms.group(1).replace(",", ""))
+    chain_n = int(ms.group(1).replace(",", "")) if ms else None
+    stop_n = getattr(gauge, "STOP_LINE_TK", None)
+    if stop_n is not None:
+        stop = (f"FILL {stop_n:,} real — the RULED stop line (`s260-D2` + `s271-D1`, "
+                f"gauge.STOP_LINE_TK); job room = stop line − current FILL, on the BUDGET line")
+        if chain_n is None:
+            stop += (" · ⚠ _CHAIN.md states NO `stop line <N>` figure (probe: CHAIN_STOP_RE) — "
+                     "nothing to cross-check against")
+        elif chain_n != stop_n:
+            stop += (f" · ⚠ DISAGREEMENT, NAMED NOT RESOLVED: _CHAIN.md states {chain_n:,} "
+                     f"(probe: CHAIN_STOP_RE) against the ruled {stop_n:,}. The constant is what "
+                     f"this reading uses; the chain is GENERATED and may simply lag its roll. "
+                     f"Neither figure is silently preferred.")
+    elif chain_n is not None:
+        stop = (f"FILL {chain_n:,} real — ⚠ DECLARED FALLBACK: `gauge.STOP_LINE_TK` is "
+                f"UNREADABLE, so this figure is scraped from _CHAIN.md (probe: CHAIN_STOP_RE) "
+                f"and is prose, not a ruling; job room = stop line − current FILL")
+        stop_n = chain_n
     else:
-        stop = ("UNKNOWN — no `stop line <N>` figure found in _CHAIN.md (probe: CHAIN_STOP_RE). "
-                "NOT defaulted to a constant.")
-        stop_n = None
+        stop = ("UNKNOWN — `gauge.STOP_LINE_TK` is unreadable AND no `stop line <N>` figure was "
+                "found in _CHAIN.md (probe: CHAIN_STOP_RE). NOT defaulted to a constant.")
     return {"DONE": done, "DOING": doing, "NEXT": nxt, "STOP": stop,
             "_session": session, "_stop_n": stop_n}
 

@@ -4238,6 +4238,175 @@ def boot_stratum_double_count_check(repo):
     return fails, notes
 
 
+# ★★ `s271-D2` (Dave, #271, dream-12 P2(a)) — THE FILL RE-CHECKER, ADVISORY AT BIRTH.
+#
+# THE ASYMMETRY IT ENDS, MEASURED: a 717-token BOOT overshoot is a named, blocking,
+# mutation-tested arm with its own discharge grammar (`boot_constant_drift_check` ARM 1 +
+# `s244-D1`); a 104,364-token FILL overshoot was a SENTENCE. Before this arm the string `FILL`
+# appeared in this file exactly twice, both inert — a comment about QUOTA-vs-FILL vocabulary and
+# a label inside `TESTIMONY_LABELS`. No arm parsed a measured FILL and none compared one to
+# `gauge.BUDGET_WORKING`, while the pre-flight band (`check_preflight`) graded only the session's
+# own ESTIMATE — so a session could price itself green and close six figures over, with every
+# gate still green. Dave, #271, to the proposal: *"yep like it"*.
+#
+# WHAT IT DOES, AND ONLY THAT. It reads the `post-mortem #N:` block's DECLARED FILL — the figure
+# the ritual already writes — and WARNS, BY NAME, when it exceeds `gauge.BUDGET_WORKING`.
+# ⛔ IT IS ADVISORY AND IT MUST STAY ADVISORY UNTIL DAVE SAYS OTHERWISE: `s271-D2` rules the arm
+# and explicitly does NOT rule whether it ever BLOCKS (dream-12 P2(b) is his, unruled). The tier
+# is the `FILL_CEILING_BLOCKING` line below, and flag + selftest pin move only as a pair.
+#
+# ★ THE `s244-D1` POSTURE, RE-USED RATHER THAN RE-INVENTED: a breach DECLARED in the block
+# PASSES; a SILENT one fails the arm. The bar is honesty, not obedience — the wrap that writes
+# *"104,364 OVER the 200,000 working ceiling"* has done the one thing the arm exists to force,
+# and a wrap that states a six-figure FILL and says nothing about the wall has not.
+# ⛔ WHAT IT NEVER TOUCHES: `BUDGET_WORKING` (200,000) and `BUDGET_HARD` (256,000) are SOURCED and
+# are not moved, widened or re-based here; nor is `gauge.STOP_LINE_TK`. This arm reads them.
+# ⚠ WHAT IT CANNOT SEE: whether the declared figure is TRUE. A sub cannot re-measure a
+# conductor's window after the fact, so this grades the RECORD, exactly as the boot arms do —
+# and it says so rather than implying a measurement it did not take.
+FILL_CEILING_BLOCKING = False   # `s271-D2`: ADVISORY. Promotion is DAVE'S WORD (dream-12 P2(b)).
+# ⛔ EFFECTIVE FROM THIS SESSION, AND THE REASON IS MEASURED RATHER THAN TIMID — the
+# `BOOT_CEILING_FROM_SESSION` / `BOOT_DOUBLE_COUNT_FROM_SESSION` pattern, same shape, same
+# reason. Graded over the whole live `notes/_GAUGE-LOG.md`, 25 post-mortem blocks state a FILL
+# over 200,000 and 21 of them predate `s260-D2`'s vocabulary, so a retroactive rule would fire
+# 21 times at birth and be routed around by the second wrap [[gate-cannot-pass-in-one-environment]].
+# #260 is where the delegated stop line was ruled and where the blocks begin saying what they
+# crossed: the four bound blocks in the live log (#264 · #266 · #268 · #269) ALL declare their
+# breach and the arm is GREEN on today's record without a line of it being edited. History is
+# reported as a NOTE with its count and its sessions, never silently dropped.
+FILL_CEILING_FROM_SESSION = 260
+
+FILL_POSTMORTEM_RE = re.compile(r"post-mortem\s+#(\d+)", re.I)
+# A FILL figure is a `<N> real` within 120 characters AFTER the word FILL — the four live shapes
+# are `FILL: 374,074 real`, `FILL 141,987 real at the wrap-brief cut`, `FILL 335,209 real, peak`
+# and `Conductor's FILL at the brief cut: 216,975 real`. ⛔ THE UNIT WORD IS REQUIRED: a bare
+# number after FILL is prose, and [[measure-dont-convert-units]] is the whole reason this file
+# never lets a unit go unstated.
+FILL_ANCHOR_RE = re.compile(r"\bFILL\b", re.I)
+FILL_FIG_RE = re.compile(r"([1-9][\d,]{4,}\d)\s*real\b", re.I)
+FILL_WINDOW = 120
+# ⛔ THE NEIGHBOURS THAT ARE NOT FILL, AND THEY ARE ALL LIVE IN THIS LOG: `boot 70,241 real`,
+# `subs 306,253 tokens`, THROUGHPUT figures and per-lane QUOTA readings all sit in the same
+# blocks and are REAL tokens too. A figure whose own clause names one of them is NOT a FILL
+# reading [[budget-vs-quota-vocabulary]] — the guard is the 40 characters before the number,
+# which is where the shape always carries its noun.
+FILL_NOT_FILL_RE = re.compile(r"\b(boot|subs|throughput|quota|cl100k)\b", re.I)
+# The DECLARATION: the block must SAY, in the same sentence, that the figure is past the working
+# ceiling. Either order — `104,364 OVER the 200,000 working ceiling`, or `the 200,000 working
+# wall … is a BREACH`. ⛔ `under`/`below` are deliberately absent from the verb list.
+_OVER = r"(?:breach|over|past|above|beyond|exceed\w*|bust)"
+_WALL = r"(?:200,000|200000|working\s+(?:ceiling|wall|line))"
+FILL_BREACH_DECL_RE = re.compile(
+    r"%s\b[^.]{0,160}?%s|%s[^.]{0,160}?\b%s" % (_OVER, _WALL, _WALL, _OVER), re.I)
+
+
+def _parse_declared_fill(text):
+    """Every `post-mortem #N` block's DECLARED FILL figures. Returns [(session, [figs], line)].
+
+    ONE walk, the `_parse_boot_rows` conventions re-used verbatim: the stratum heading supplies
+    the ordinal unless a `#N` labels the line in its opening `BOOT_LABEL_ORD_MAXCOL` columns,
+    because a `#N` buried in prose is a CITATION, not this reading's session (#241's finding).
+    Never raises; a block with no parseable figure returns an empty list, which the caller
+    reports as an ABSENCE rather than treating as a zero [[unmatched-grep-is-not-an-absence]].
+    """
+    out, stratum = [], None
+    for ln in text.splitlines():
+        h = BOOT_STRATUM_RE.match(ln.strip())
+        if h:
+            stratum = int(h.group(1))
+            continue
+        pm = FILL_POSTMORTEM_RE.search(ln)
+        if not pm:
+            continue
+        sess = int(pm.group(1)) if pm.start() < BOOT_LABEL_ORD_MAXCOL else (
+            stratum if stratum is not None else -1)
+        figs = []
+        for am in FILL_ANCHOR_RE.finditer(ln):
+            seg = ln[am.end():am.end() + FILL_WINDOW]
+            fm = FILL_FIG_RE.search(seg)
+            if not fm:
+                continue
+            if FILL_NOT_FILL_RE.search(seg[max(0, fm.start() - 40):fm.start()]):
+                continue
+            figs.append(int(fm.group(1).replace(",", "")))
+        # ⛔ THE WHOLE LINE IS KEPT, NOT A 110-CHARACTER PREVIEW. The declaration this arm looks
+        # for is written at the END of these blocks ("… 104,364 OVER the 200,000 working
+        # ceiling"), and grading a truncated copy read every live declaration as SILENCE — the
+        # [[unmatched-grep-is-not-an-absence]] class, reached by a display convenience.
+        out.append((sess, sorted(set(figs)), ln.strip()))
+    return out
+
+
+def fill_working_ceiling_check(repo):
+    """`s271-D2` — (issues, notes). The post-mortem's DECLARED FILL against `BUDGET_WORKING`.
+
+    ADVISORY by ruling: the caller routes `issues` to `warns` while `FILL_CEILING_BLOCKING` is
+    False. A breach DECLARED in the block passes (`s244-D1` posture); a silent one is named.
+    """
+    issues, notes = [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log):
+        return issues, notes        # boot_constant_drift_check already fails loud on absence
+    with open(log, encoding="utf-8") as f:
+        blocks = _parse_declared_fill(f.read())
+    if not blocks:
+        notes.append("FILL ceiling (`s271-D2`): no `post-mortem #N` block found in "
+                     "notes/_GAUGE-LOG.md — nothing to grade. DECLARED, not passed.")
+        return issues, notes
+    ceiling = gauge.BUDGET_WORKING
+    graded = [(s, figs, ln) for s, figs, ln in blocks if figs]
+    silent_absence = [s for s, figs, _ln in blocks if not figs]
+    all_over = [(s, max(figs), ln) for s, figs, ln in graded if max(figs) > ceiling]
+    over = [(s, f, ln) for s, f, ln in all_over if s >= FILL_CEILING_FROM_SESSION]
+    legacy = [(s, f) for s, f, _ln in all_over if s < FILL_CEILING_FROM_SESSION]
+    declared, undeclared = [], []
+    for sess, fig, ln in over:
+        (declared if FILL_BREACH_DECL_RE.search(ln) else undeclared).append((sess, fig, ln))
+    for sess, fig, _ln in undeclared:
+        issues.append(
+            "FILL CEILING BREACH #%d %s ⛔ UNDECLARED (`s271-D2`): the `post-mortem #%d` block "
+            "states a FILL of %s real, which is %s OVER `gauge.BUDGET_WORKING` (%s), and the "
+            "block does not SAY SO — no clause in it puts the figure past the working ceiling. "
+            "⛔ A breach that is written down passes this arm; a breach that is merely recorded "
+            "as a number does not (`s244-D1` posture). The remedy is ONE clause in the block "
+            "naming the overshoot and its size — NOT a smaller number, and never a move of the "
+            "200,000 literal, which is SOURCED and is not a price a wrap may pay to go green "
+            "[[gate-must-quote-what-it-forbids]]. ⚠ ADVISORY: this arm does not block "
+            "(dream-12 P2(b) is UNRULED and Dave's)."
+            % (sess, f"{fig:,}", sess, f"{fig:,}", f"{fig - ceiling:,}", f"{ceiling:,}"))
+    for sess, fig, _ln in declared:
+        notes.append(
+            "FILL ceiling BREACH #%d %s ✅ DECLARED (`s271-D2`, `s244-D1` posture): %s over the "
+            "%s working ceiling, and the block says so in its own words. The breach is real and "
+            "NOT hidden — that is the whole bar; the ceiling literal was NOT moved."
+            % (sess, f"{fig:,}", f"{fig - ceiling:,}", f"{ceiling:,}"))
+    notes.append(
+        "FILL ceiling (`s271-D2`): %d `post-mortem` block(s) read, %d carrying a declared FILL "
+        "· ceiling %s (`gauge.BUDGET_WORKING`, SOURCED) · %d over it (%d DECLARED, %d silent) · "
+        "stop line %s (`gauge.STOP_LINE_TK`, `s260-D2`+`s271-D1`) is the ADVISORY and is NOT "
+        "graded here. ⚠ The figure is the block's OWN declaration: this arm grades the RECORD, "
+        "never a measurement it did not take."
+        % (len(blocks), len(graded), f"{ceiling:,}", len(over), len(declared), len(undeclared),
+           f"{gauge.STOP_LINE_TK:,}"))
+    if legacy:
+        notes.append(
+            "FILL ceiling: %d PRE-RULE block(s) state a FILL over the %s ceiling and are NOT "
+            "graded — `s271-D2` binds blocks from #%d, where `s260-D2`'s vocabulary begins. "
+            "Named, never silently skipped: %s."
+            % (len(legacy), f"{ceiling:,}", FILL_CEILING_FROM_SESSION,
+               " · ".join(f"#{s} {f:,}" for s, f in sorted(legacy))))
+    if silent_absence:
+        notes.append(
+            "FILL ceiling: %d `post-mortem` block(s) state NO parseable FILL figure (#%s) and "
+            "are NOT graded — an absent reading is an ABSENCE, never a zero "
+            "[[unmatched-grep-is-not-an-absence]]. `s271-D2` grades what the block declares."
+            % (len(silent_absence), ", #".join(str(s) for s in silent_absence)))
+    notes.append("FILL ceiling tier: %s (read from FILL_CEILING_BLOCKING — `s271-D2` rules the "
+                 "arm ADVISORY and leaves BLOCKING to Dave; flag + selftest pin move as a pair)."
+                 % ("BLOCKING" if FILL_CEILING_BLOCKING else "ADVISORY"))
+    return issues, notes
+
+
 def boot_constant_drift_check(repo):
     """★ #110-D3 — THE PUBLISHED BOOT CONSTANT MUST STILL MATCH WHAT IS MEASURED.
 
@@ -5574,6 +5743,11 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = boot_stratum_double_count_check(repo)  # ★ `s241-D2` (S5) — one stratum, one
         fails += f_                                     # first-turn figure. BLOCKING at birth:
         notes += n_                                     # #240 declared the defect live.
+        i_, n_ = fill_working_ceiling_check(repo)  # ★ `s271-D2` — the DECLARED FILL against
+        (fails if FILL_CEILING_BLOCKING else warns).extend(i_)   # BUDGET_WORKING. ADVISORY at
+        notes += n_                                # birth BY RULING: whether it ever blocks is
+                                                   # dream-12 P2(b) and is Dave's, not this
+                                                   # gate's [[do-not-rule-list-cannot-fence-a-generator]].
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
@@ -8860,6 +9034,90 @@ def selftest_boot_delta_parse():
     return failures
 
 
+def selftest_fill_ceiling():
+    """★ #271 — `s271-D2`: the DECLARED-FILL arm, driven in BOTH directions on real fixtures.
+
+    The clause under test is *"a breach DECLARED in the block passes, a silent one fails"*, so
+    the SAME breach figure is driven twice — once with its declaration and once with the
+    declaring clause deleted and nothing else changed — and the verdict must FLIP
+    [[mutation-tests-the-clause-not-the-feature]]. The control (a block UNDER the ceiling) is
+    part of the same run, because an arm that failed everything would pass a one-directional
+    test. Three further arms pin the parts that are easy to get quietly wrong: the tier (a
+    ruling, not a preference), the pre-rule bound, and the QUOTA-vocabulary guard — `subs` and
+    `boot` figures are REAL tokens in the same blocks and must never be read as FILL.
+    """
+    failures = []
+    over_fig, under_fig = gauge.BUDGET_WORKING + 12_345, gauge.BUDGET_WORKING - 12_345
+    sess = FILL_CEILING_FROM_SESSION + 11
+    decl_clause = (" ⛔ **THIS IS A BREACH AND IT IS RECORDED AS ONE: %s OVER the %s working "
+                   "ceiling**" % (f"{over_fig - gauge.BUDGET_WORKING:,}",
+                                  f"{gauge.BUDGET_WORKING:,}"))
+
+    def block(fig, sessn=sess, tail=""):
+        return ("#### 2026-09-14 #%d\n> **POST-MORTEM #%d — measured, not narrated.** "
+                "**FILL: %s real DECLARED by the conductor at the brief cut**%s\n"
+                % (sessn, sessn, f"{fig:,}", tail))
+
+    def drive(text):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "notes"))
+            with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+                f.write(text)
+            return fill_working_ceiling_check(td)
+
+    # ---- (a) CONTROL: under the ceiling, no declaration needed, arm silent.
+    i_, n_ = drive(block(under_fig))
+    if i_:
+        failures.append(f"fill ceiling (a, control): a FILL of {under_fig:,} is UNDER "
+                        f"{gauge.BUDGET_WORKING:,} and must raise nothing — got {[x[:110] for x in i_]}")
+    if not any("107" not in x and "block(s) read" in x for x in n_):
+        failures.append("fill ceiling (a): the arm must always report what it read — no summary note")
+
+    # ---- (b) THE BREACH, DECLARED ⇒ PASSES, and the pass is NAMED as a breach, not hidden.
+    i_, n_ = drive(block(over_fig, tail=decl_clause))
+    if i_:
+        failures.append(f"fill ceiling (b): a DECLARED breach must PASS (`s244-D1` posture) — "
+                        f"got {[x[:110] for x in i_]}")
+    if not any("✅ DECLARED" in x and f"#{sess}" in x for x in n_):
+        failures.append("fill ceiling (b): a declared breach must still be NAMED in the notes — "
+                        "a pass that says nothing hides the breach the arm exists to surface")
+
+    # ---- (c) THE MUTATION THAT MATTERS: same figure, declaration DELETED ⇒ verdict FLIPS.
+    i_, n_ = drive(block(over_fig))
+    if not any("FILL CEILING BREACH" in x and "UNDECLARED" in x for x in i_):
+        failures.append(f"fill ceiling (c): a SILENT breach must fail the arm BY NAME — "
+                        f"got issues={[x[:110] for x in i_]}")
+    elif f"#{sess}" not in i_[0] or f"{over_fig:,}" not in i_[0]:
+        failures.append("fill ceiling (c): the named failure must quote the session and the "
+                        "figure it forbids [[gate-must-quote-what-it-forbids]]")
+
+    # ---- (d) THE TIER IS A RULING, NOT A PREFERENCE. `s271-D2` rules the arm ADVISORY and
+    # leaves BLOCKING to Dave; this pin and `FILL_CEILING_BLOCKING` move only as a pair.
+    if FILL_CEILING_BLOCKING:
+        failures.append("fill ceiling (d): FILL_CEILING_BLOCKING is True — `s271-D2` rules this "
+                        "arm ADVISORY and leaves promotion to Dave (dream-12 P2(b), UNRULED)")
+    if not any("tier: ADVISORY" in x for x in n_):
+        failures.append("fill ceiling (d): the arm must PRINT its tier every run")
+
+    # ---- (e) THE BOUND BITES: the same silent breach one session before it is history, not a fail.
+    i_, n_ = drive(block(over_fig, sessn=FILL_CEILING_FROM_SESSION - 1))
+    if i_:
+        failures.append(f"fill ceiling (e): a block before #{FILL_CEILING_FROM_SESSION} is "
+                        f"PRE-RULE and must not fail — got {[x[:110] for x in i_]}")
+    if not any("PRE-RULE" in x for x in n_):
+        failures.append("fill ceiling (e): an ungraded pre-rule breach must be NAMED as history")
+
+    # ---- (f) QUOTA IS NOT FILL, AND THE LOG IS FULL OF IT. A `subs`/`boot` figure sitting after
+    # the word FILL is REAL tokens and is NOT a window reading [[budget-vs-quota-vocabulary]].
+    quota = ("#### 2026-09-14 #%d\n> **POST-MORTEM #%d:** FILL and QUOTA are never summed — "
+             "subs %s real (n=3) · boot 69,900 real\n" % (sess, sess, f"{over_fig:,}"))
+    i_, n_ = drive(quota)
+    if i_:
+        failures.append(f"fill ceiling (f): a `subs`/`boot` figure was read as FILL — "
+                        f"got {[x[:110] for x in i_]}")
+    return failures
+
+
 def selftest_boot_ceiling_discharge():
     """★ #245 — `s244-D1`: ARM 1's DECLARED-DISCHARGE FORM, driven in BOTH directions.
 
@@ -9728,6 +9986,7 @@ def _selftest_body():
                 + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
                 + selftest_boot_ceiling_discharge() # ★ #245 `s244-D1` — ARM 1's discharge form
+                + selftest_fill_ceiling()        # ★ #271 `s271-D2` — declared FILL vs WORKING
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
                 + selftest_regen_serial()        # ★ #221 — the ordered serial, whole per wave
                 + selftest_shared_helper_dedup() # ★ #221 — W-92's residual: ONE implementation
