@@ -543,6 +543,17 @@ MEASURERS = {
         "WORD FOR REAL (#80's root cause, confirmed at source #81). It was a CODE change and it "
         "moves the GM size stamps, ds-025's floor and the amber line — which is why it was "
         "priced and put to Dave rather than smuggled into #81's window."),
+    "_compose_slice.py": ("estimate-only",
+        "BORN #270 (lane 2, the compose-time door). It encodes with tiktoken cl100k ONLY to "
+        "report the SIZE of a context slice against the metas it replaces (the ~6x / ~25x "
+        "figures on notes/_PROPOSAL-compose-time-door-2026-09-14-v1.html) - a RATIO between two "
+        "texts it measures the SAME way, never a budget figure and never a FILL claim. It cannot "
+        "name a REAL tier: it does not call _gauge_tokens.count() and has no API path, so "
+        "estimate-only is the honest label rather than a tier it would have to borrow. "
+        "REGISTERED AT THE #270 WRAP AS A DECLARATION, NOT A RULING - ds-021 (C) asks a counting "
+        "site to declare what it can name, and leaving it unregistered is the 27-sessions-of-"
+        "silence failure this registry exists to stop. Whether the door is WIRED at all is "
+        "Dave's, and is untouched by this entry."),
     "_context_gauge.py": ("estimate-only",
         "REFUSES without tiktoken unless --estimate labels the output (#74). Honest about "
         "estimate-vs-nothing; still blind to cl100k-vs-real."),
