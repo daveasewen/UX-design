@@ -4407,6 +4407,250 @@ def fill_working_ceiling_check(repo):
     return issues, notes
 
 
+# ════════ ★ #271 `s271-D4` — THE WRAP'S "OPEN, DAVE'S" LIST IS RE-CHECKED, NOT TRUSTED ═════
+# THE DEFECT, MEASURED (dream-12 P4): the wrap writes the session's ★★★ memory hook BEFORE Dave
+# answers the session's last questions, so the hook's "Open, Dave's" list can be false within
+# minutes — and at #267 it was. `v1010-released-edges-ratified-kg-sphere-267.md` (mtime
+# 2026-09-10 21:21) states three open items; item 1 (*"lane N changed `_validate_compose.py:87`
+# … a gate change without a ruling"*) was CLOSED by `s267-D4` inscribed 5m38s later, and item 3
+# shipped as the v1.0.11 fast follower. `_MEMORY-GRADES.json` still grades the file FRESH,
+# because `s188-D1` grades whether the hook's PATHS RESOLVE — every path in a hook whose claims
+# have all been overtaken still resolves [[no-gate-parses-the-artefact]].
+#
+# ⛔ WHAT `s271-D4` RULED, and what this arm is: the write ORDER is UNCHANGED (P4(b) was offered
+# and NOT taken — the current order is what makes the hook survive a wrap that runs out of
+# window). Instead: (1) an item written before his answer is written as a QUESTION PUT
+# ("put to Dave at the wrap call"), never as a state of the world — the RULE, homed in
+# `_RUNBOOK-capture-ritual.md` step 3; (2) the ritual's final step re-reads the list against
+# `knowledge/_rulings.json` and strikes what the session's own rulings closed. THIS ARM IS THE
+# RE-CHECK'S MACHINE HALF, and it is ADVISORY by the ruling's own word.
+#
+# ⚠ THE STORE IS OUTSIDE THE REPO and this arm does not pretend otherwise: it resolves the
+# Cowork auto-memory directory through `_memory_cap_check.resolve_path()` — ONE resolver, the
+# same one `memory_cap_check` already imports, never a second copy — and takes an explicit
+# `path=` for a hook file when there is no mount. An unreachable store is a DECLARED SKIP, never
+# a pass [[unmatched-grep-is-not-an-absence]], and this arm NEVER writes to the store
+# (it cannot: the files are read-only from here, and no gate may edit Dave's memory).
+HOOK_OPEN_RECHECK_BLOCKING = False   # `s271-D4`: "advisory". Promotion is DAVE'S WORD.
+# The index and its archive are not hooks; overflow files are hook CONTAINERS, not a session's
+# own hook, and are excluded from the "newest" pick by name rather than silently out-ranked.
+HOOK_STORE_SKIP = ("MEMORY.md", "MEMORY-ARCHIVE.md")
+HOOK_STORE_SKIP_PREFIX = ("hook-overflow-",)
+# THE PICK KEY IS THE SESSION ORDINAL IN THE FILENAME, mtime only the tie-break. ⛔ NOT mtime
+# alone: an OLD hook edited today is newer on disk and is not this session's hook — the live
+# store holds exactly that case (`demo-audience-…-257.md`, touched today).
+# ⛔ AND THE ORDINAL IS NOT A SUFFIX. Both live shapes exist — `…-kg-sphere-267.md` (tail) and
+# `wrap-270-the-door-and-the-cutoff.md` (head) — so every 2-3 digit run in the name is a
+# candidate and the LARGEST wins. TWO OR THREE DIGITS IS A MEASURED BOUND, not tidiness: the
+# store holds `buildout-strategy-2026.md`, and a 4-digit run read as an ordinal made that YEAR
+# out-rank every real hook (as did `v1010-…`'s version). A session ordinal is < 1000.
+HOOK_SESSION_ORD_RE = re.compile(r"(?<!\d)(\d{2,3})(?!\d)")
+
+
+def _hook_ordinal(name):
+    """The session ordinal a hook filename carries, or None. Largest 2-3 digit run wins."""
+    hits = HOOK_SESSION_ORD_RE.findall(os.path.basename(name)[:-3]
+                                       if name.endswith(".md") else os.path.basename(name))
+    return max(int(h) for h in hits) if hits else None
+HOOK_PROV_RE = re.compile(r"^\s*provenance:\s*(\d+)?\s*·?\s*(\d{4}-\d{2}-\d{2})", re.M)
+HOOK_MODIFIED_RE = re.compile(r"^\s*modified:\s*(\d{4}-\d{2}-\d{2})", re.M)
+# The label, in the three live shapes: `**Open, Dave's:**` (#267), `**OPEN AND DAVE'S — DO NOT
+# RULE IT:**` (#270), and a bare `Dave's:` lead-in. A colon ON THE LINE is required, which is
+# what keeps the bare form off prose like "the push is Dave's word".
+HOOK_OPEN_LABEL_RE = re.compile(
+    r"(?:Open,?\s*Dave's|OPEN AND DAVE'S|Dave's)\b[^:\n]{0,80}?:", re.I)
+HOOK_QUESTION_PUT_RE = re.compile(r"put to Dave at the wrap call", re.I)
+# A key phrase is a BACKTICKED identifier — a path, a file:line, a symbol, a ruling id. Prose
+# words are deliberately NOT matched: "gate" appears in half the ledger and would warn on
+# everything [[gate-must-quote-what-it-forbids]].
+HOOK_PHRASE_RE = re.compile(r"`([^`\n]{4,120})`")
+HOOK_PHRASE_OK_RE = re.compile(r"[._/]|\bs\d+-D\d+\b")
+HOOK_RULING_ID_RE = re.compile(r"\bs(\d+)-D\d+\b")
+HOOK_ITEM_SPLIT_RE = re.compile(r";|\s·\s")
+HOOK_ITEM_MIN_CHARS = 12
+
+
+def _hook_store_dir(explicit=None):
+    """(dir, how) for the Cowork auto-memory store, or (None, why). ONE resolver, imported."""
+    if explicit:
+        return (os.path.dirname(os.path.abspath(explicit)) or ".",
+                f"explicit path {os.path.basename(explicit)}")
+    sys.path.insert(0, HERE)
+    try:
+        import _memory_cap_check as mcc
+    except Exception as e:                                      # noqa: BLE001
+        return None, f"`knowledge/_memory_cap_check.py` unimportable ({e}) — no resolver"
+    p, how = mcc.resolve_path()
+    if p is None:
+        return None, how
+    return os.path.dirname(p), how
+
+
+def _newest_hook(store_dir):
+    """(path, ordinal) — the highest session ordinal in the store, mtime as the tie-break."""
+    best = None
+    for name in sorted(os.listdir(store_dir)):
+        if not name.endswith(".md") or name in HOOK_STORE_SKIP:
+            continue
+        if name.startswith(HOOK_STORE_SKIP_PREFIX):
+            continue
+        ordinal = _hook_ordinal(name)
+        if ordinal is None:
+            continue
+        full = os.path.join(store_dir, name)
+        try:
+            key = (ordinal, os.path.getmtime(full))
+        except OSError:
+            continue
+        if best is None or key > best[0]:
+            best = (key, full)
+    return (best[1], best[0][0]) if best else (None, None)
+
+
+def _hook_date(text, path):
+    """The hook's OWN date: its frontmatter provenance, then `modified:`, then the file mtime."""
+    m = HOOK_PROV_RE.search(text)
+    if m:
+        return m.group(2), "frontmatter `provenance:`"
+    m = HOOK_MODIFIED_RE.search(text)
+    if m:
+        return m.group(1), "frontmatter `modified:`"
+    return (datetime.date.fromtimestamp(os.path.getmtime(path)).isoformat(),
+            "file mtime (no frontmatter date — DECLARED, weaker)")
+
+
+def _hook_open_items(text):
+    """[(item, line)] — every "Open, Dave's" / "Dave's:" item the hook states, one per clause."""
+    out = []
+    for ln in text.splitlines():
+        m = HOOK_OPEN_LABEL_RE.search(ln)
+        if not m:
+            continue
+        tail = ln[m.end():]
+        for seg in HOOK_ITEM_SPLIT_RE.split(tail):
+            seg = seg.strip(" *_`—-").strip()
+            if len(seg) >= HOOK_ITEM_MIN_CHARS:
+                out.append((seg, ln.strip()))
+    return out
+
+
+def _same_day_rulings(repo, day):
+    """([rows], None) for rulings dated `day`, or (None, why). LOUD on an unreadable store."""
+    path = os.path.join(repo, "knowledge", "_rulings.json")
+    if not os.path.exists(path):
+        return None, "knowledge/_rulings.json does not exist"
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        rows = data["rulings"] if isinstance(data, dict) else data
+    except Exception as e:                                      # noqa: BLE001
+        return None, f"{type(e).__name__}: {e}"
+    return [r for r in rows if str(r.get("date", "")) == day], None
+
+
+def hook_open_items_recheck(repo, path=None):
+    """`s271-D4` — (issues, notes). The newest memory hook's "Open, Dave's" list, re-read.
+
+    An item written as a QUESTION PUT ("put to Dave at the wrap call") is the ruling's own
+    legal form and PASSES whatever the ledger says. Any other item WARNS, named, when a ruling
+    dated the same day as the hook closes its subject — matched on a ruling id quoted in the
+    item, or on a backticked key phrase of the item appearing in that ruling's `ruled`/`says`.
+    ADVISORY: the caller routes `issues` to `warns` while `HOOK_OPEN_RECHECK_BLOCKING` is False.
+    """
+    issues, notes = [], []
+    store, how = _hook_store_dir(path)
+    if store is None or not os.path.isdir(store):
+        notes.append(
+            "hook re-check (`s271-D4`): DECLARED SKIP — %s. The memory store lives OUTSIDE this "
+            "repo (a Cowork surface); on a tree without it there is genuinely nothing to "
+            "re-read. This is UNKNOWN, never a pass. Pass an explicit hook path to drive it."
+            % (how,))
+        return issues, notes
+    hook, ordinal = (path, None) if path else _newest_hook(store)
+    if path:
+        ordinal = _hook_ordinal(path)
+    if hook is None or not os.path.exists(hook):
+        notes.append("hook re-check (`s271-D4`): DECLARED SKIP — no `<slug>-<session>.md` hook "
+                     "in %s (%s). ABSENCE, not a pass." % (store, how))
+        return issues, notes
+    try:
+        with open(hook, encoding="utf-8") as f:
+            text = f.read()
+    except Exception as e:                                      # noqa: BLE001
+        return ["hook re-check: %s unreadable (%s) — declared, never graded green"
+                % (os.path.basename(hook), e)], notes
+    day, day_how = _hook_date(text, hook)
+    items = _hook_open_items(text)
+    rows, why = _same_day_rulings(repo, day)
+    if rows is None:
+        # ⛔ TWO DIFFERENT ABSENCES, and conflating them is how a gate goes quietly blind. NO
+        # LEDGER AT ALL = this is not a state tree (the `s263-D10` arm's own wording) and the
+        # re-check DID NOT RUN — a declared skip, not a defect. A ledger that EXISTS and will
+        # not parse is UNMEASURED and is named as an issue [[a-crash-is-not-a-fail]].
+        if not os.path.exists(os.path.join(repo, "knowledge", "_rulings.json")):
+            notes.append("hook re-check (`s271-D4`): DID NOT RUN — %s, so this is not a state "
+                         "tree and there is no ledger to re-read %s against. NOT a pass."
+                         % (why, os.path.basename(hook)))
+            return issues, notes
+        return ["hook re-check (`s271-D4`): the ruling ledger could not be read (%s) — an "
+                "unreadable ledger reads as UNMEASURED, never as 'no ruling closed this'"
+                % (why,)], notes
+    puts = [it for it, _ln in items if HOOK_QUESTION_PUT_RE.search(it)]
+    hits = 0
+    for item, _ln in items:
+        if HOOK_QUESTION_PUT_RE.search(item):
+            continue
+        quoted = set(m.group(0) for m in HOOK_RULING_ID_RE.finditer(item))
+        phrases = [p for p in HOOK_PHRASE_RE.findall(item) if HOOK_PHRASE_OK_RE.search(p)]
+        for r in rows:
+            rid = str(r.get("id", ""))
+            body = "%s\n%s" % (r.get("ruled", ""), r.get("says", ""))
+            why_hit = None
+            if rid and rid in quoted:
+                why_hit = "the item QUOTES `%s`, and that ruling is dated the same day" % rid
+            else:
+                for p in phrases:
+                    if p in body:
+                        why_hit = ("the item's key phrase `%s` appears verbatim in `%s`'s own "
+                                   "text" % (p, rid))
+                        break
+            if not why_hit:
+                continue
+            hits += 1
+            same_session = False
+            rm = HOOK_RULING_ID_RE.match(rid)
+            if rm and ordinal is not None:
+                same_session = int(rm.group(1)) == ordinal
+            issues.append(
+                "HOOK OPEN-ITEM MAY BE CLOSED (`s271-D4`) — %s, item: \"%s\" ⇒ `%s` (%s, %s) "
+                "closes its subject: %s. ⛔ The item is written as A STATE OF THE WORLD, not as "
+                "a QUESTION PUT: `s271-D4` requires an item written before Dave's answer to say "
+                "\"put to Dave at the wrap call\", and requires the ritual's FINAL step to "
+                "strike — BY ADDITION, naming the ruling id — what the session's own rulings "
+                "closed. This arm does NOT edit the store and cannot: it names the line. "
+                "⚠ ADVISORY (`s271-D4`); a same-day ruling on the same subject is a STRONG "
+                "SIGNAL, not a proof — read both before striking."
+                % (os.path.basename(hook), item[:150], rid, r.get("date", "?"),
+                   "the hook's OWN session" if same_session else "same day, another session",
+                   why_hit))
+            break
+    notes.append(
+        "hook re-check (`s271-D4`): %s (session #%s, dated %s via %s; %s) · %d \"Open, Dave's\" "
+        "item(s) read · %d written as a QUESTION PUT and PASSING by the ruling's own form · %d "
+        "same-day ruling(s) in the ledger · %d item(s) named. ⚠ The store is READ-ONLY from "
+        "here: this arm reports, it never edits a memory file."
+        % (os.path.basename(hook), ordinal if ordinal is not None else "?", day, day_how, how,
+           len(items), len(puts), len(rows), hits))
+    if items and not rows:
+        notes.append("hook re-check: the ledger holds NO ruling dated %s, so nothing can have "
+                     "been closed by the session's own rulings — %d item(s) stand unchallenged. "
+                     "An empty comparison set is DECLARED, never read as a clean bill."
+                     % (day, len(items)))
+    notes.append("hook re-check tier: %s (HOOK_OPEN_RECHECK_BLOCKING — `s271-D4` rules the "
+                 "re-check ADVISORY; flag + selftest pin move as a pair)."
+                 % ("BLOCKING" if HOOK_OPEN_RECHECK_BLOCKING else "ADVISORY"))
+    return issues, notes
+
 def boot_constant_drift_check(repo):
     """★ #110-D3 — THE PUBLISHED BOOT CONSTANT MUST STILL MATCH WHAT IS MEASURED.
 
@@ -5748,6 +5992,11 @@ def wrap_checks(repo, today, lane=False):
         notes += n_                                # birth BY RULING: whether it ever blocks is
                                                    # dream-12 P2(b) and is Dave's, not this
                                                    # gate's [[do-not-rule-list-cannot-fence-a-generator]].
+        i_, n_ = hook_open_items_recheck(repo)   # ★ `s271-D4` — the newest memory hook's
+        (fails if HOOK_OPEN_RECHECK_BLOCKING else warns).extend(i_)  # "Open, Dave's" list,
+        notes += n_                              # re-read against the day's own rulings.
+                                                 # ADVISORY BY RULING; the store is outside the
+                                                 # repo, so an absent one is a DECLARED SKIP.
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
@@ -9118,6 +9367,152 @@ def selftest_fill_ceiling():
     return failures
 
 
+def selftest_hook_open_recheck():
+    """★ #271 — `s271-D4`: the "Open, Dave's" re-check, driven on the #267 case that ruled it.
+
+    THE FIXTURE IS THE DEFECT ITSELF. `v1010-…-267.md`'s open-item line is reproduced verbatim
+    beside a ledger holding `s267-D4` at its real date, because the clause under test is not
+    "does a regex fire" but *"an item written as a state of the world, which the session's own
+    ruling closed, is named"* [[mutation-tests-the-clause-not-the-feature]].
+
+    THE MUTATION, in both directions and one variable at a time: the SAME item written as a
+    QUESTION PUT ("put to Dave at the wrap call") must PASS — that is `s271-D4`'s own legal
+    form — and the same state-of-the-world item with the RULING REMOVED must fall silent, which
+    is what proves the arm is reading the ledger and not the hook's wording alone.
+    """
+    failures = []
+    day = "2026-09-10"
+    item1 = ("lane N changed `_validate_compose.py:87` to read `var(--x, fallback)` as resolved "
+             "— a gate change without a ruling, flagged")
+    line_267 = ("**Open, Dave's:** %s; SC dig with default families = 0 neighbours "
+                "(auto-switch?); v1.0.10 canon regen not in the zip → v1.0.11 fast follower; "
+                "type-composites gate rc 1 pre-existing" % item1)
+    s267_d4 = {
+        "id": "s267-D4", "date": day, "by": "Dave", "status": "ruled",
+        "ruled": ("`_validate_compose.py` reads `var(--x, <fallback>)` as RESOLVED. Lane N's "
+                  "change at `_validate_compose.py:87` (commit 57ddff1) STANDS."),
+        "says": "Dave at #267: \"1 push 2 accepst\"."}
+    other = {"id": "s267-D9", "date": day, "by": "Dave", "status": "ruled",
+             "ruled": "Nothing in this ruling names the compose validator.", "says": "n/a"}
+
+    def drive(open_line, rulings, name="v1010-released-edges-ratified-kg-sphere-267.md"):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "knowledge"))
+            os.makedirs(os.path.join(td, "store"))
+            with open(os.path.join(td, "knowledge", "_rulings.json"), "w",
+                      encoding="utf-8") as f:
+                json.dump({"rulings": rulings}, f)
+            hook = os.path.join(td, "store", name)
+            with open(hook, "w", encoding="utf-8") as f:
+                f.write("---\nname: fixture\nmetadata: \n  modified: %sT20:21:42.906Z\n---\n\n"
+                        "**#267, Thu %s.** A hook written at the wrap, before his answer.\n\n"
+                        "%s\n" % (day, day, open_line))
+            return hook_open_items_recheck(td, path=hook)
+
+    # ---- (a) THE #267 CASE, REPRODUCED: 3 substantive items, exactly ONE closed by the day's
+    # own ruling, and the arm must name THAT one — by ruling id, in its own text.
+    i_, n_ = drive(line_267, [s267_d4, other])
+    if len(i_) != 1:
+        failures.append("hook re-check (a): the #267 fixture has exactly ONE item closed by a "
+                        "same-day ruling; the arm raised %d — %s"
+                        % (len(i_), [x[:110] for x in i_]))
+    elif "s267-D4" not in i_[0] or "_validate_compose.py:87" not in i_[0]:
+        failures.append("hook re-check (a): the named warn must quote the RULING ID and the key "
+                        "phrase it matched on [[gate-must-quote-what-it-forbids]] — got %s"
+                        % i_[0][:180])
+    if not any("item(s) read" in x for x in n_):
+        failures.append("hook re-check (a): the arm must always report what it read")
+
+    # ---- (b) THE MUTATION THAT MATTERS, LEG 1: the SAME item in `s271-D4`'s legal form —
+    # written as a QUESTION PUT — must PASS, ledger unchanged.
+    put = item1 + " (put to Dave at the wrap call)"
+    i_, n_ = drive("**Open, Dave's:** %s" % put, [s267_d4, other])
+    if i_:
+        failures.append("hook re-check (b): an item written as a QUESTION PUT is `s271-D4`'s "
+                        "OWN legal form and must pass — got %s" % [x[:110] for x in i_])
+    if not any("QUESTION PUT and PASSING" in x for x in n_):
+        failures.append("hook re-check (b): a passing question-put must still be COUNTED in the "
+                        "notes — a silent pass cannot be distinguished from a blind arm")
+
+    # ---- (c) LEG 2, THE VARIABLE MOVED BACK: state-of-the-world wording again, but the ruling
+    # REMOVED from the ledger ⇒ the arm must fall silent. This is what proves it reads the
+    # LEDGER and not the hook's phrasing.
+    i_, n_ = drive(line_267, [other])
+    if i_:
+        failures.append("hook re-check (c): with `s267-D4` removed nothing closes the item and "
+                        "the arm must stay silent — got %s" % [x[:110] for x in i_])
+
+    # ---- (c2) AND THE DATE IS THE HINGE: the same ruling dated a DIFFERENT day is not "the
+    # session's own ruling" and must not warn.
+    stale = dict(s267_d4, date="2026-08-01")
+    i_, n_ = drive(line_267, [stale, other])
+    if i_:
+        failures.append("hook re-check (c2): a ruling dated %s is not same-day and must not "
+                        "close a %s hook's item — got %s" % (stale["date"], day,
+                                                             [x[:110] for x in i_]))
+
+    # ---- (d) THE QUOTED-ID PATH, which is the other half of the match rule.
+    i_, n_ = drive("**Open, Dave's:** the `s267-D4` question is still out", [s267_d4])
+    if not any("QUOTES `s267-D4`" in x for x in i_):
+        failures.append("hook re-check (d): an item QUOTING a same-day ruling id must be named "
+                        "by that path — got %s" % [x[:110] for x in i_])
+
+    # ---- (e) THE TIER IS THE RULING'S, NOT A PREFERENCE. `s271-D4` says advisory.
+    if HOOK_OPEN_RECHECK_BLOCKING:
+        failures.append("hook re-check (e): HOOK_OPEN_RECHECK_BLOCKING is True — `s271-D4` "
+                        "rules this re-check ADVISORY; promotion is Dave's word")
+    if not any("tier: ADVISORY" in x for x in n_):
+        failures.append("hook re-check (e): the arm must PRINT its tier every run")
+
+    # ---- (f) AN UNREACHABLE STORE IS A DECLARED SKIP, NEVER A PASS.
+    with tempfile.TemporaryDirectory() as td:
+        i_, n_ = hook_open_items_recheck(td, path=os.path.join(td, "nope-999.md"))
+        if i_ or not any("DECLARED SKIP" in x for x in n_):
+            failures.append("hook re-check (f): a missing hook must be a DECLARED SKIP in the "
+                            "notes, not silence and not a pass — got issues=%s notes=%s"
+                            % ([x[:80] for x in i_], [x[:80] for x in n_]))
+
+    # ---- (f2) AND THE TWO ABSENCES ARE NOT THE SAME: NO ledger = not a state tree (a declared
+    # skip); a ledger that EXISTS and will not parse = UNMEASURED, and that one is an issue.
+    with tempfile.TemporaryDirectory() as td:
+        hook = os.path.join(td, "wrap-fixture-267.md")
+        with open(hook, "w", encoding="utf-8") as f:
+            f.write("modified: %s\n\n%s\n" % (day, line_267))
+        i_, n_ = hook_open_items_recheck(td, path=hook)
+        if i_ or not any("DID NOT RUN" in x for x in n_):
+            failures.append("hook re-check (f2): a tree with NO `_rulings.json` is not a state "
+                            "tree — declared skip, not a warn; got issues=%s"
+                            % [x[:90] for x in i_])
+        os.makedirs(os.path.join(td, "knowledge"))
+        with open(os.path.join(td, "knowledge", "_rulings.json"), "w", encoding="utf-8") as f:
+            f.write("{ this is not json")
+        i_, n_ = hook_open_items_recheck(td, path=hook)
+        if not any("UNMEASURED" in x for x in i_):
+            failures.append("hook re-check (f2): a ledger that exists and will not parse must "
+                            "be named UNMEASURED, never read as 'nothing closed this'")
+
+    # ---- (g) THE "NEWEST" PICK IS THE SESSION ORDINAL, NOT mtime: an OLD hook touched today is
+    # newer on disk and is NOT this session's hook (the live store holds exactly that case).
+    with tempfile.TemporaryDirectory() as td:
+        for nm in ("wrap-old-257.md", "wrap-270-the-door-and-the-cutoff.md"):
+            with open(os.path.join(td, nm), "w", encoding="utf-8") as f:
+                f.write("x\n")
+        os.utime(os.path.join(td, "wrap-old-257.md"), (2 ** 31 - 1, 2 ** 31 - 1))
+        with open(os.path.join(td, "MEMORY.md"), "w", encoding="utf-8") as f:
+            f.write("index, not a hook\n")
+        # ⛔ AND THE YEAR TRAP, WHICH BIT ON THE LIVE STORE: `…-2026.md` is a DATE, not a
+        # session ordinal, and read as one it out-ranks every real hook forever.
+        with open(os.path.join(td, "buildout-strategy-2026.md"), "w", encoding="utf-8") as f:
+            f.write("a strategy note, not a session hook\n")
+        picked, ordinal = _newest_hook(td)
+        if os.path.basename(picked or "") != "wrap-270-the-door-and-the-cutoff.md" or (
+                ordinal != 270):
+            failures.append("hook re-check (g): the newest hook must be picked by SESSION "
+                            "ORDINAL — wherever in the name it sits — with mtime only as the "
+                            "tie-break, and a 4-digit YEAR is not an ordinal; picked %s"
+                            % os.path.basename(picked or "NONE"))
+    return failures
+
 def selftest_boot_ceiling_discharge():
     """★ #245 — `s244-D1`: ARM 1's DECLARED-DISCHARGE FORM, driven in BOTH directions.
 
@@ -9987,6 +10382,7 @@ def _selftest_body():
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
                 + selftest_boot_ceiling_discharge() # ★ #245 `s244-D1` — ARM 1's discharge form
                 + selftest_fill_ceiling()        # ★ #271 `s271-D2` — declared FILL vs WORKING
+                + selftest_hook_open_recheck()   # ★ #271 `s271-D4` — the hook's open list
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
                 + selftest_regen_serial()        # ★ #221 — the ordered serial, whole per wave
                 + selftest_shared_helper_dedup() # ★ #221 — W-92's residual: ONE implementation

@@ -616,6 +616,35 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    so `_validate_assertions.py` re-tests it every build and names every document that repeats it when it
    flips. Prose asserting a fact with no way to re-test it is exactly how "the sandbox has no Univers"
    survived sixteen months.
+
+   - ⛔ **AN "OPEN, DAVE'S" ITEM WRITTEN BEFORE HIS ANSWER IS A QUESTION PUT, NOT A STATE OF THE
+     WORLD — AND THE LIST IS RE-READ AT THE END, NEVER TRUSTED** *(`s271-D4`, #271, enacting
+     dream-12 P4(a) — Dave, choosing between A (re-check) / B (write after) / later: "A.
+     re-check")*: the hook is written at this step, which is **before** Dave answers the
+     session's last questions, so every open item in it is a claim about a world that is still
+     moving. At #267 it moved in **five minutes thirty-eight seconds**: the hook's first open
+     item (*"lane N changed `_validate_compose.py:87` … a gate change without a ruling,
+     flagged"*) was closed by `s267-D4`, inscribed at 21:26:49 against the file's 21:21 mtime,
+     and a third item shipped as the v1.0.11 fast follower — **2 of 3 false**, while
+     `notes/_dream/_MEMORY-GRADES.json` graded the file **FRESH**, because `s188-D1` grades
+     whether the hook's **paths resolve**, not whether its **claims are true**
+     [[no-gate-parses-the-artefact]]. ⇒ **Two obligations, and the write ORDER is unchanged**
+     (writing the hook after the last ruling was offered at P4(b) and **NOT taken** — the
+     current order is what makes the hook survive a wrap that runs out of window):
+     1. **WRITE IT AS THE QUESTION IT IS.** Any item put into the hook before his answer is
+        landed carries the words **"put to Dave at the wrap call"** — never a bare assertion
+        that a thing is open. An unanswered question recorded as a question cannot go stale; the
+        same question recorded as a state of the world is false the moment he speaks.
+     2. **RE-READ THE LIST AS THE RITUAL'S FINAL STEP** — after 5/5b, once every ruling of the
+        session is inscribed — against `knowledge/_rulings.json`, and **strike what the
+        session's own rulings closed: BY ADDITION, naming the ruling id** — the form is
+        `… — CLOSED by s267-D4`, appended to the item, never a silent deletion of the
+        line. The machine half is
+        `_capture_gate.py::hook_open_items_recheck` (`s271-D4`, **ADVISORY** — it names the
+        item and the ruling; it can never edit the store, which is read-only from every seat).
+     ⚠ **The gate arm is a signal, not the judgement.** A same-day ruling on the same subject is
+     a strong match, not a proof — read both before striking, and a strike that is wrong is
+     worse than an item that is merely stale.
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.
@@ -695,6 +724,11 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    re-run the wrap gate, then commit. The banner is the session record (GM-D4) — inscribing the
    tattoos while the record stays silent is how #21's hunt-list ruling went missing from its own
    session while #20's identical shape propagated; discipline, not design, is what made it a class.
+   ⛔ **AND THIS IS WHERE THE `s271-D4` RE-READ HAPPENS — the ritual's FINAL beat, by addition.**
+   A post-wrap ruling is exactly the thing that falsifies the memory hook's "Open, Dave's" list,
+   so after the addendum and before the session is called done, re-read that list against
+   `knowledge/_rulings.json` and strike what this session's own rulings closed, **naming the
+   ruling id** — the rule, its evidence and its advisory gate arm are at step 3.
    ⚠ Do NOT promote a spec/ledger to Polaroid duty in compensation (A-D3: the spec stays the single
    source); the beat only makes the record SAY the source changed.
 

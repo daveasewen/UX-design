@@ -11,3 +11,9 @@
 - 2 ⇒ `s271-D2` — P2(a) accepted: named WARN arm on declared wrap FILL vs working ceiling. P2(b) (whether it ever blocks) NOT ruled — stays advisory.
 - 3 ⇒ `s271-D3` — no demo date is decided. Small demo = w/c 2026-09-21 or w/c 2026-09-28 (his: "next week or the week after"). Rice = ≥ 1 week and ≤ 3 weeks after the small demo, LABELLED "a guess" (his word). Neither is a fixed date; nothing may print one.
 - 4 ⇒ NOT RULED — P4 to be explained again in plain words, then asked.
+
+## Dream pass 12 P4, re-explained in plain words (A = re-check + "asked" wording · B = write hook after last answer · later); his reply verbatim:
+
+> A. re-check
+
+⇒ `s271-D4` — P4(a): "Open, Dave's" items written before his answer are written as QUESTIONS PUT, and the wrap's final step re-reads that list against `_rulings.json` and strikes what the session's own rulings closed. Write order unchanged (B not taken).
