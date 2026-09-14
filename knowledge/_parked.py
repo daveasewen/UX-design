@@ -19,6 +19,8 @@ THE HOOKS (advisory, print-only, never change a verdict or an exit code):
   `_release/_gate_release_audit.py --check`  prints DUE items after its own verdict
   `gen_kg_edges.py`                          prints DUE items before it generates
   `_RUNBOOK-dream-pass.md` step              `python3 knowledge/_parked.py --due dream-pass`
+  `_validate_package_delta.py`               prints DUE items for memento-cut (the Memento pack moving)
+  `tokens/_build_blast_radius.py`            prints DUE items for token-report (the token report regenerating)
 Each hook imports `notice(event)` inside a try/except: a broken register can never break
 the tool that hosts the hook. This door never writes.
 

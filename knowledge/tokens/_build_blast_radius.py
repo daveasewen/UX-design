@@ -273,6 +273,10 @@ def selftest():
 
 
 def main(argv=None):
+    try:  # #269 PARKED-WITH-A-TRIPWIRE hook: advisory print, never a gate
+        import _parked; _parked.notice("token-report")
+    except BaseException:
+        pass
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return selftest()

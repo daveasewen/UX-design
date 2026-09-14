@@ -539,6 +539,10 @@ def run(repo=None, git_root=None):
 
 
 def main():
+    try:  # #269 PARKED-WITH-A-TRIPWIRE hook: advisory print, never touches the verdict
+        import _parked; _parked.notice("memento-cut")
+    except BaseException:
+        pass
     fails = run()
     print(f"memento-package delta-audit: {len(fails)} failure(s)")
     for f in fails:
