@@ -17,3 +17,11 @@
 > A. re-check
 
 ⇒ `s271-D4` — P4(a): "Open, Dave's" items written before his answer are written as QUESTIONS PUT, and the wrap's final step re-reads that list against `_rulings.json` and strikes what the session's own rulings closed. Write order unchanged (B not taken).
+
+## Wrap call — his reply verbatim (to "FILL 192,437 — over the 180K stop line … 10 evidence-pointer reds, a one-line fix each, yours to say"):
+
+> okay fix and then wrap, no panic until we get to 256
+
+- "fix" ⇒ the 10 `_governs.py` evidence-pointer reds rewritten into the legal `chat #<n> — …` form (no ruling text changed, evidence strings only). `_governs.py --selftest` all bites green.
+- "wrap" ⇒ #271 wrap, delegated (s260-D2).
+- "no panic until we get to 256" ⇒ RULING-SHAPED, NOT INSCRIBED: read back at the wrap — does it mean the 180,000 stop line is a working figure and 256,000 (hard, s56) is the only line that stops a session? One word at #272's opener.
