@@ -21,6 +21,7 @@
 4. **Art-director pass by me:** both proposal pages rendered 1280, no overflow, Univers Next stack, quote gate run — today's quotes NOT in the index (stale index, ritual 2g), pages say "today's chat".
 
 ## #271 — FIRST MOVES (when he says go)
+0. ⛔ **HIS ASK, POST-WRAP (verbatim in DAVE-RULINGS):** *"can we harvest all of these for the library seeing as we don't have access to anything meaningful from the company, I can then select the rules to confirm that are not unanimous"* — a research lane over EVERY component family, external-claims runbook, unanimous → proposed default, non-unanimous → his decision table. Reuse `notes/_lanes/270/when-research/` method + SOURCES.json. Runs FIRST in #271; it is GO on this word.
 1. Get the one word on D (edge types) → land lane 1 → `_build_kg_explorer.py` regen + 3 colour vars → `_kg_history.py`.
 2. Door v2 per C (options per role, score + when + chosen) — cheap data-shape change in `_compose_slice.py`.
 3. Add "Common Toolkit form-component specs" to `_INGESTION-QUEUE.md` as a NAMED source (needs Figma). Draft the 8 selection `when`s from B for his review.

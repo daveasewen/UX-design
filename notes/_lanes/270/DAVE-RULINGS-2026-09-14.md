@@ -17,3 +17,7 @@ Context (conductor's framing, not his words): asked "is a dropdown our default s
 > "three compositions that are all defensible under the same rules"
 > "maybe the logic is cast the net wider for the slice, the slice carries the scoring so if variations asked for there is scope to substitute"
 Conductor's reading: the slice carries every provider per role with score + when + chosen flag; rules/tokens fixed; Explore = wide net, all layers bind. Not yet ruled as a build — a design direction for the door's v2.
+
+## Harvest ALL when-to-use rules from external libraries — ASKED after the wrap (verbatim)
+> "can we harvest all of these for the library seeing as we don't have access to anything meaningful from the company, I can then select the rules to confirm that are not unanimous"
+Conductor's reading: extend the #270 research lane (2 families, 9 systems) to EVERY component family in `knowledge/components/` — same method (`_RUNBOOK-external-claims.md`, URL + short quote, confidence canon / consensus / single / none), one review page per family or one page grouped by family; UNANIMOUS predicates proposed as defaults, NON-UNANIMOUS ones surfaced as his decision table. Not run in #270 — FILL at the wall. = #271 LANE 1.
