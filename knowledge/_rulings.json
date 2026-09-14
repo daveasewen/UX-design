@@ -7456,508 +7456,528 @@
    ],
    "status": "enacted #263"
   },
- {
-  "id": "s264-D1",
-  "ruled": "Sidebar-nav's Spending row wears the library's data-chart / data-chart-active pair (option A). The line glyph the row already had at rest is kept; the current-state twin changes from insight-active (a bulb, a different concept) to data-chart-active. Nothing in the sidebar is hand-baked: all twelve symbols were library assets; the defect was the pairing, not the provenance.",
-  "date": "2026-09-09",
-  "by": "Dave",
-  "says": "Dave at #264, on notes/_REVIEW-264-sidebar-glyph.html (options A data-chart, B insight, C dashboard): \"Spending A\".",
-  "governs": [
-   "knowledge/snippets/Sidebar-nav.reference.html"
-  ],
-  "evidence": [
-   "chat #264 2026-09-09 — the review page's finding table: ic-chart == data-chart.svg, ic-chart-a == insight-active.svg, byte-matched by path data against icons.manifest.json"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s264-D2",
-  "ruled": "Sidebar-nav's Transfers row wears the library's transfer / transfer-active pair (option D). At rest it had balance-transfer (arrows over a coin, no -active twin in the library) and went current on transfer-active (arrows in a disc), so the shape changed on selection; the pair now holds the shape. Scope is Sidebar-nav; the four App-shell / Command-palette snippets that carry balance-transfer at rest with no twin are a carry, not ruled here.",
-  "date": "2026-09-09",
-  "by": "Dave",
-  "says": "Dave at #264, on notes/_REVIEW-264-sidebar-glyph.html (options D transfer pair, E as built): \"Transfer D\".",
-  "governs": [
-   "knowledge/snippets/Sidebar-nav.reference.html"
-  ],
-  "evidence": [
-   "chat #264 2026-09-09 — the review page's finding table: ic-transfer == balance-transfer.svg, ic-transfer-a == transfer-active.svg; balance-transfer has no -active file in the manifest"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s264-D3",
-  "ruled": "The active-glyph experiment (line glyph → filled twin by Skia path ops: silhouette minus interior ink, variant A1) is KEPT, and EIGHT derived twins enter the icon library as -active files with a $derived annotation in icons.manifest.json: cheque, finances, document-report, newspaper, device-mobile, online-banking, presentation, add-circle. FIVE are REJECTED and carried as further work, each with Dave's reason: balance-transfer, tax, workspace, digital-statements, global-money. The common failure is one class — icons made of TWO bodies with an overlap exclusion, where the derivation fills only the front body; the rear body's contour is not closed on its own, so the silhouette step drops it. Generated twins are not Figma exports and the manifest says so.",
-  "date": "2026-09-09",
-  "by": "Dave",
-  "says": "Dave at #264, having graded notes/_REVIEW-264-active-glyphs.html: \"Good try btw, maybe shelve the rejected ones for further work. keep teh others, good experiment we can return to it later.\" then \"Add the ones I said yes to to the library / the rejected ones we can work on later\", and the grades verbatim: \"balance-transfer → neither — the whole card should be filled not just the top, but the overlap exclusion are need to be kept · cheque → A1 · finances → A1 · tax → neither — the document icon half should be filled, if you look at teh document icon as a guide · workspace → neither — we have to fill teh otehr part of teh icon too · document-report → A1 · newspaper → A1 · device-mobile → A1 · online-banking → A1 · digital-statements → neither — need both parts filled · presentation → A1 · add-circle → A1 · global-money → neither — thsi is quite ahard one to get right\"",
-  "governs": [
-   "knowledge/assets/icons/icons.manifest.json",
-   "knowledge/assets/icons/products-and-services/cheque-active.svg",
-   "knowledge/assets/icons/products-and-services/finances-active.svg",
-   "knowledge/assets/icons/media/document-report-active.svg",
-   "knowledge/assets/icons/media/newspaper-active.svg",
-   "knowledge/assets/icons/media/device-mobile-active.svg",
-   "knowledge/assets/icons/media/online-banking-active.svg",
-   "knowledge/assets/icons/media/presentation-active.svg",
-   "knowledge/assets/icons/global-controls/add-circle-active.svg",
-   "notes/_lanes/264-active-gen.py"
-  ],
-  "evidence": [
-  "commit 5e97c90 — second pass (two-body class): balance-transfer, tax, workspace, digital-statements fill; global-money is one connected ink piece, no second body to find. Dave, #264 evening: \"no time for this now, but we can return to it another time because we are getting somewhere\" — the four stay UNGRADED on notes/_REVIEW-264-active-glyphs-2.html, nothing further entered the library"
- ],
-  "status": "ruled"
- },
- {
-  "id": "s265-D1",
-  "ruled": "The /goal bite-test (knowledge/_bite_goal.py) is a STANDALONE instrument, not a test_gates.py CASE: it is run by a lane, with a live driver, at every change to apollo-spider/cold-start/COPILOT-BOOT.md option 3, and its two transcripts and grades are filed as subreport assets. It does not join CASES while the sandbox has no scriptable driver (claude -p returns api_error) - a case that cannot run in one environment is refused as a gate.",
-  "date": "2026-09-09",
-  "by": "Dave",
-  "says": "Dave at #265: \"1. okay make it stand alone\"",
-  "governs": [
-   "knowledge/_bite_goal.py",
-   "apollo-spider/cold-start/COPILOT-BOOT.md"
-  ],
-  "evidence": [
-   "chat #265 2026-09-09 - Dave's words, quoted in says",
-   "commit 9a24af9 - the instrument and the two drives, INTACT GREEN / MUTATED RED"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s265-D2",
-  "ruled": "s262-D5's third clause - progress is reported AGAINST THE GOAL rather than against a list of tasks - is graded RUBRIC-ONLY: a reader grades the T4 transcript by eye. The regex arm (G3) in _bite_goal.py is ADVISORY and never counted, because at #265 both the intact and the mutated arm named the goal at T4 and only a reader could tell the met/not-met report from the done-list.",
-  "date": "2026-09-09",
-  "by": "Dave",
-  "says": "Dave at #265: \"2. okay yes\" - accepting G3 as rubric-only, a reader grades T4",
-  "governs": [
-   "knowledge/_bite_goal.py"
-  ],
-  "evidence": [
-   "chat #265 2026-09-09 - Dave's words, quoted in says",
-   "commit 9a24af9 - notes/_subreports/2026-09-09-265-G-goal-bite-test.md finding 3, the two T4s in assets"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s267-D1",
-  "ruled": "v1.0.10 is HELD at the 625be64 cut. The cut is to be RE-TAKEN with the chart-engine test pages shipped so that _validate_dataviz.py can pass IN THE PACK and returns to the ship list; a gate that dies in-pack on pages the pack does not carry is not to be dropped from the cut, it is to be given its pages. The packaging fix itself (fee2572: the lazy __import__ the AST scan could not see, gen_provenance_receipt.py ships) STANDS. Ratification of the re-cut is a separate word.",
-  "date": "2026-09-10",
-  "by": "Dave",
-  "says": "Dave at #267, on the go/no-go page's one question with the recommendation 'ratify as cut': \"Hold — re-cut with the chart pages shipped. lets get this sorted\"",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "apollo-spider/build-designer-pack.sh",
-   "knowledge/_validate_dataviz.py"
-  ],
-  "evidence": [
-   "chat #267 2026-09-10 - his word, the second of two options offered",
-   "commit fbd9c14 - v1.0.10 CUT at 625be64 (PROPOSED, 1706 files): the cut he held, in which _validate_dataviz.py fell out as REPO-BOUND",
-   "commit ea25058 - reviews/GO-NOGO-v1.0.10-2026-09-10-v1.html, the page that carried the question"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s267-D2",
-  "ruled": "v1.0.10 IS RATIFIED. Dave's ratifying word for the Apollo - Spider v1.0.10 re-cut at a9218cc (manifest sha256 4cd9229adb2df432, twice-baked dry-run sha256 d76ffd50..., 1714 files, +16/-0 against v1.0.9). RATIFY_IDS gains the row v1.0.10 -> s267-D2 at this cut (s223-D3 shape: the key is per cut). Scope is PACKAGING ONLY: fee2572 (the lazy __import__ the AST scan could not see; gen_provenance_receipt.py ships) and a9218cc (the chart-engine pages ship by measurement off the gate's own receipt; _validate_dataviz.py back in the ship set per s267-D1). No component, canon or skill change is carried beyond the 8 -active.svg glyphs already in the tree. The release is DELEGATED on his word; the push is NOT included in this word.",
-  "date": "2026-09-10",
-  "by": "Dave",
-  "says": "Dave at #267, to the go/no-go v2 page's one question 'Ratify v1.0.10 at a9218cc?': \"okay inscribe\"",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "apollo-spider/build-designer-pack.sh",
-   "apollo-spider/dist/Apollo-Spider-v1.0.10.zip"
-  ],
-  "evidence": [
-   "chat #267 2026-09-10 - the ratifying word, given after two PROPOSED cuts (625be64 HELD by s267-D1, a9218cc)",
-   "commit 4a7adb8 - v1.0.10 RE-CUT at a9218cc (PROPOSED, 1714 files)",
-   "commit f1c8ac0 - reviews/GO-NOGO-v1.0.10-2026-09-10-v2.html, the page that carried the question"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s267-D3",
-  "ruled": "THE 78 PROPOSED RULING EDGES ARE RATIFIED AS JUDGED BY LANE E, both tiers: 26 keep their proposed type, 20 are RETYPED, 1 is REVERSED (s172-D3 bounds s181-D1 runs the other way), 31 fall back to plain `mentions` - the machine-readable record is notes/_lanes/267/E/edge-recs.json at 5711df1 and its `type`/`dir` columns ARE the ratified edge set. Q1: an edge that supersedes or retires ONE CLAUSE of its target, not the whole ruling, is its own type `supersedesClause` (nine edges: recs #5, #19, #34, #42, #52, #55, #64, #69, #70). Q2: when ruling A records that B supersedes C, the edge is B -> C, with A carried as evidence on the edge, never A -> C. ENACTMENT: ratified ruling edges are AUTHORED in one store and read by the explorer; the regex proposal at _build_kg_explorer.py:181-193 must not re-propose a pair that is already authored. The three generator defects lane E found (stem regex :81, id-list window :188, no direction test :191) and the two missing edges from the store's superseded_by field are to be fixed in the same enactment.",
-  "date": "2026-09-10",
-  "by": "Dave",
-  "says": "Dave at #267, to the edge-judgement page's tiers and Q1/Q2 with the conductor's recommendations (supersedesClause; edge from the actor, recorder as evidence): \"I'll just go with your recommendation I need this of our desk\"",
-  "governs": [
-   "knowledge/_build_kg_explorer.py",
-   "knowledge/_rulings.json",
-   "notes/_KG-EXPLORER.html"
-  ],
-  "evidence": [
-   "chat #267 2026-09-10 - his word on the recommendation, Fable lane E's judgement adopted whole",
-   "commit 5711df1 - reviews/EDGE-JUDGEMENT-267-2026-09-10-v1.html + notes/_lanes/267/E/edge-recs.json, the judgement and its machine record"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s267-D4",
-  "ruled": "_validate_compose.py reads `var(--x, <fallback>)` as RESOLVED - a custom property with a fallback value is not an unresolved binding, by browser semantics; this generalises what s258-D3 granted by name to `--*-max`. Lane N's change at _validate_compose.py:87 (commit 57ddff1) STANDS.",
-  "date": "2026-09-10",
-  "by": "Dave",
-  "says": "Dave at #267, to the two-item list (1 push, 2 accept the unruled gate change with the recommendation 'accept'): \"1 push 2 accepst\"",
-  "governs": [
-   "knowledge/_validate_compose.py"
-  ],
-  "evidence": [
-   "chat #267 2026-09-10 - his word, item 2",
-   "commit 57ddff1 - #267 N: the hunk at _validate_compose.py:87 and the Kpi-tile dead min-height removal"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s268-D1",
-  "ruled": "v1.0.11 IS RATIFIED. Dave's ratifying word for the Apollo - Spider v1.0.11 cut at 0c78eee (1714 files, dry-bake sha256 97fc82d8..., 21,201,555 bytes). RATIFY_IDS gains the row v1.0.11 -> s268-D1 at this cut (s223-D3 shape: the key is per cut). Scope is the REGENERATED canon.css - the nav and dropdown rules restored at efd1500, which are cold-run-6's risks 1 and 2 - plus the chart-engine receipts re-driven against it at 14b832d (13 of 27 were stale, s263-D13) and the version sweep at 0c78eee. The release is DELEGATED on his word; the push is NOT included in this word.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave at #268, asked to check the v1.0.11 cut and release it: \"check and ratify\"",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "knowledge/_release/_gate_frozen_release.py",
-   "apollo-spider/dist/"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word",
-   "commit 0c78eee - the v1.0.11 cut commit",
-   "commit efd1500 - canon.css regen, nav + dropdown rules restored",
-   "commit 14b832d - chart-engine receipts re-driven"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s268-D2",
-  "ruled": "v1.0.12 IS CUT AND RATIFIED. Asked to choose between shipping v1.0.11 as it stands and cutting a v1.0.12, Dave's word is \"12\". RATIFY_IDS gains the row v1.0.12 -> s268-D2 at this cut (s223-D3 shape: the key is per cut). Scope is exactly two things, both of them v1.0.11's own residue: (1) the VERSION SWEEP COMPLETED - v1.0.11 moved one of the four staged version literals, and because the stage stamps the Gumdrop literal itself the bake was green while --check went red afterwards on gumdrop/_state.json and the two gumdrop runbook headers, taking release gates 4 and 5 with it; synced at source in 4d60ad6 and carried here into a version that can pass its own --check; (2) the NAV LABEL DESCENDER CROP fixed at cause - cold run 7 read \"Pavments\"/\"Liauiditv\"/\"Settinas\" off the released v1.0.11 zip because the ds-005 override :where(.cn-sidebar-nav) .nv-label (0,1,0) was cascade-dead under canon's base leading-trim default, which used :is(...) at (0,1,2); the element list is :where(...) now, the same repair #261 made to the three nav snippets, driven both ways in chromium across four themes. v1.0.11 STAYS IN dist UNTOUCHED - a recorded zip is never re-baked at its own version. The release is DELEGATED on his word; the push is NOT included in this word.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-11: \"12\" - in answer to \"cut 12 or ship 11\"",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "knowledge/_release/_gate_frozen_release.py",
-   "knowledge/canon/canon.css",
-   "apollo-spider/dist/"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word \"12\"",
-   "commit 94bcc8a - the descender crop fixed at cause + chart receipts re-driven",
-   "commit 782537d - the v1.0.12 version sweep, all six stamps",
-   "commit b2fcdb9 - the v1.0.12 PROPOSED cut at 782537d",
-   "notes/_subreports/2026-09-11-268-cold-run-7.md - finding 2, the measured crop"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s268-D3",
-  "ruled": "v1.0.13 IS CUT AND RATIFIED. Dave's word is \"okay do 13\". RATIFY_IDS gains the row v1.0.13 -> s268-D3 at this cut (s223-D3 shape: the key is per cut). Scope is exactly two things. (1) THE DESCENDER CROP, CLOSED AT THE LEVEL IT ACTUALLY LIVES AT. v1.0.12 fixed the base leading-trim default in canon.css and cold run 8 still read \"Pavments\"/\"Liauiditv\"/\"Settinas\" off the RELEASED v1.0.12 zip, in all four themes, 5.50px of clip, because every component absorbed into canon carries its own private copy of that default and 108 of them were still :is(...) at (0,1,2) - one of them, cn-template-dashboard-bento, matches the nav label two scopes away and outranks the (0,1,0) ds-005 override, so a REAL page clipped where the fixture did not. Fixed at the snippet in 7ddab70: 108 reference snippets, canon regenerated (137 components, 111 copies :where(), 0 :is()), chart-engine receipts re-driven. (2) THE PRE-BAKE DRIVE IS NOW AN INSTRUMENT. knowledge/_validate_demo_page.py unzips the pack that is about to ship, stages the run-of-show's own plot-point-09 page against the PACK's canon, serves it over http and drives it in chromium - descender clip per theme, nav styled, both dropdowns - BLOCKING with playwright, COULD-NOT-ASK (77) without, and measured REPO-BOUND in the probe because the page it drives is a repo artefact the pack does not ship. It is the consumer nine release gates lacked: they parsed the manifest, the file list and the version literals, and not one opened the pack and looked at the demo. THE PACK'S README NOW CARRIES A DESIGNER-FACING CHANGELOG, v1.0.7 to v1.0.13, one line per release, on his word that the last release the designers were given was v1.0.6. v1.0.12 STAYS IN dist UNTOUCHED - a recorded zip is never re-baked at its own version. The release is DELEGATED on his word; the push is NOT included in this word.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-11: \"okay do 13\" - the ratifying word for the v1.0.13 cut. Context from the same chat: \"the last release I gave to the designers was 6, this is getting sort of silly\" - which is why this cut's changelog is written as a designer-facing summary of v1.0.7 to v1.0.13 rather than internal churn.",
-  "governs": [
-   "knowledge/_release/_gen_pack_manifest.py",
-   "knowledge/_release/_gate_frozen_release.py",
-   "knowledge/_validate_demo_page.py",
-   "apollo-spider/build-designer-pack.sh",
-   "apollo-spider/dist/"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word \"okay do 13\"",
-   "commit 7ddab70 - the same descender class one level out: 108 snippet copies of the leading-trim default made :where()",
-   "commit 08e315d - the v1.0.13 version sweep, all six stamps, the changelog and the new gate",
-   "commit be16e5f - the v1.0.13 PROPOSED cut at 08e315d",
-   "notes/_subreports/2026-09-11-268-cold-run-8.md - F1, the 5.50px crop measured on the released v1.0.12 zip",
-   "pre-bake drive of the dry zip 5d4df132b1f57f17 - 7/7 assertions, 4/4 themes, 0.00px clip"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s268-D4",
-  "ruled": "AN UNRECEIVED RELEASE MAY BE RE-CUT AT THE SAME VERSION. 'Received' means handed to anyone outside the repo - the designers, a demo audience. A re-cut of an UNRECEIVED version records 're-cut' in the dist record and in the changelog, with BOTH shas (the superseded one and the new one), so the move is declared rather than silent. A RECEIVED release still bumps: the s257 laundering rule is unchanged for anything that has left the repo, and _gate_frozen_release.py still refuses RE-RECORDED WITHOUT A VERSION BUMP for those. Designer-facing packs: v1.0.6 was the last received; v1.0.13 is the next designer pack; bumps 7-12 stay as internal history. The register of what has been received is knowledge/_received.json - a version absent from it is unreceived, and the laundering arm's same-version clause is lifted for exactly those.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-11: \"lets apply this logic from now on\" - applying, verbatim, the proposal put to him: \"A release no one outside the repo has received may be re-cut at the same version; the dist record and changelog say 're-cut' with both shas. Bumps 7-12 stay as history; 12 becomes the one that goes to the designers.\"",
-  "governs": [
-   "knowledge/_release/_gate_frozen_release.py",
-   "knowledge/_release/_gen_pack_manifest.py",
-   "knowledge/_received.json",
-   "apollo-spider/dist/"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word \"lets apply this logic from now on\", quoted in full in `says`",
-   "s257-D2 / s257-D3 - the laundering bump this ruling narrows to the RECEIVED case",
-   "s114-D4 - versioned releases are frozen; unchanged for received releases"
-  ],
-  "status": "ruled",
-  "conductor_note": "THE 12 -> 13 SUBSTITUTION IS THE CONDUCTOR'S, NOT DAVE'S. His proposal named v1.0.12 as \"the one that goes to the designers\" because v1.0.13 did not exist when he said it. Between the proposal and this inscription v1.0.13 was cut and released (s268-D3, cold-run-9 14/14), so the designer pack is v1.0.13 and the internal-history range is 7-12, not 7-11. The LOGIC is his verbatim; only the version number moved, and it moved because the facts did. NOTE ALSO: this ruling was asked for as s268-D3, which was already taken by the v1.0.13 ratification; it is inscribed at the next free id.",
-  "watch": "A RE-CUT IS NOT A SILENT RE-BAKE. The permission is to reuse the NUMBER, never to move a zip quietly: dist record and changelog must both say 're-cut' and carry both shas. And the received/unreceived question is answered by knowledge/_received.json, never by memory - if a version is in that register the old rule stands and you BUMP."
- },
- {
-  "id": "s268-D5",
-  "ruled": "THE FOUR UNSEATED EDGE-TYPE KEYS ARE MINTED. Dave's word on lane E's RSQ 3 (lane C's RSQ 3, same content) is \"mint all four\": `composedOf`, `delegatesTo`, `drivesConsumer` and `$contract` get a SEAT in knowledge/components/meta.schema.json under `edges.properties`, with the semantics the corpus already carries and no more. composedOf / delegatesTo / drivesConsumer are arrays of the standard {ref, $note} edge; delegatesTo and drivesConsumer additionally carry an optional `when` string (the trigger, and the condition under which a consumer is driven), so `when` is added to the shared edge definition as an optional property named to those two types. `$contract` is a $-PREFIXED ANNOTATION, not an edge list: a free-form object holding the s263-D4 / s258-D1 marker contract the drivesConsumer edges are drawn from - it carries no refs and is therefore resolved against no registry. _validate_kg.py check (d) is taught the one distinction it lacked: a schema-declared $-prefixed key inside `edges` is an annotation and is not required to be an array of edges. Nothing beyond what filter-toolbar-bar.meta.json already states is minted - the seats describe the authored content, they do not extend it.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-11: \"mint all four\" - in answer to lane E's RSQ 3, the four filter-toolbar-bar edge-type keys with no seat in the meta schema.",
-  "governs": [
-   "knowledge/components/meta.schema.json",
-   "knowledge/components/filter-toolbar-bar.meta.json",
-   "knowledge/_validate_kg.py"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word \"mint all four\"",
-   "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 1(a), the four keys classified",
-   "s258-D1 / s263-D4 - the filter contract the $contract block records"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s268-D6",
-  "ruled": "AUTHORED EDGES SURVIVE A REGENERATION, BY BOTH MECHANISMS AT ONCE. Dave's word on lane E's RSQ 2 is \"both now\" - option (a) NOW and option (c) NOW, not (c) later. Read back and confirmed 2026-09-11: \"yes both now plaease\" (verbatim). (a) DECLARED_EDGE_TYPES in knowledge/gen_kg_edges.py is widened from its single entry (\"groupsWith\") to EVERY schema-legal edge type the generator does not derive from prose: composedOf, delegatesTo, drivesConsumer, $contract, groupsWith. Authored is now the DEFAULT for any type the generator has no prose source for. (c) The generator NEVER WIPES `edges` again. It reads the meta's existing edges, refreshes only the types it actually derives, and leaves every other type untouched; within a derived type it matches each generated edge against the existing ones (exact $note, then ref, then hasPart part-name, then either-way $note prefix) and KEEPS the authored entry - refreshing only its `ref` - so a hand-extended $note is not truncated by a regeneration. Unmatched generated edges are appended; nothing is deleted. The splice is IN PLACE, so a meta whose edges did not change is byte-identical after a run. Because carried edges may reference registry nodes the derivation no longer mints, the two node registries carry those entries forward verbatim from their own previous content rather than dropping a live-referenced node. s245-D7's carry mechanism is unchanged in kind: this widens it, and makes the loss structurally impossible rather than list-dependent.",
-  "date": "2026-09-11",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-11: \"both now (a) now - widen DECLARED_EDGE_TYPES to every schema-legal type the generator doesn't derive; (c) later - generator never wipes edges, only refreshes derived types.\" - in answer to lane E's RSQ 2.",
-  "governs": [
-   "knowledge/gen_kg_edges.py",
-   "knowledge/components/",
-   "knowledge/components/_nodes-pattern.json",
-   "knowledge/components/_nodes-context.json"
-  ],
-  "evidence": [
-   "chat #268 2026-09-11 - his word, quoted in full in `says`",
-   "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 5, the 441-line diff measuring what a regeneration would delete",
-   "s245-D7 - the one-entry carry list this ruling widens"
-  ],
-  "status": "ruled",
-  "conductor_note": "HIS SENTENCE CARRIED BOTH A \"now\" AND A \"later\", AND THE FIRST TWO WORDS DECIDE IT. The quoted \"(c) later\" is the text of the QUESTION he was answering - lane E recommended \"(a) now, (c) as the real fix\" - and his own words in front of it are \"both now\". Enacted as both, at #268."
- },
- {
+  {
+   "id": "s264-D1",
+   "ruled": "Sidebar-nav's Spending row wears the library's data-chart / data-chart-active pair (option A). The line glyph the row already had at rest is kept; the current-state twin changes from insight-active (a bulb, a different concept) to data-chart-active. Nothing in the sidebar is hand-baked: all twelve symbols were library assets; the defect was the pairing, not the provenance.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #264, on notes/_REVIEW-264-sidebar-glyph.html (options A data-chart, B insight, C dashboard): \"Spending A\".",
+   "governs": [
+    "knowledge/snippets/Sidebar-nav.reference.html"
+   ],
+   "evidence": [
+    "chat #264 2026-09-09 — the review page's finding table: ic-chart == data-chart.svg, ic-chart-a == insight-active.svg, byte-matched by path data against icons.manifest.json"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s264-D2",
+   "ruled": "Sidebar-nav's Transfers row wears the library's transfer / transfer-active pair (option D). At rest it had balance-transfer (arrows over a coin, no -active twin in the library) and went current on transfer-active (arrows in a disc), so the shape changed on selection; the pair now holds the shape. Scope is Sidebar-nav; the four App-shell / Command-palette snippets that carry balance-transfer at rest with no twin are a carry, not ruled here.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #264, on notes/_REVIEW-264-sidebar-glyph.html (options D transfer pair, E as built): \"Transfer D\".",
+   "governs": [
+    "knowledge/snippets/Sidebar-nav.reference.html"
+   ],
+   "evidence": [
+    "chat #264 2026-09-09 — the review page's finding table: ic-transfer == balance-transfer.svg, ic-transfer-a == transfer-active.svg; balance-transfer has no -active file in the manifest"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s264-D3",
+   "ruled": "The active-glyph experiment (line glyph → filled twin by Skia path ops: silhouette minus interior ink, variant A1) is KEPT, and EIGHT derived twins enter the icon library as -active files with a $derived annotation in icons.manifest.json: cheque, finances, document-report, newspaper, device-mobile, online-banking, presentation, add-circle. FIVE are REJECTED and carried as further work, each with Dave's reason: balance-transfer, tax, workspace, digital-statements, global-money. The common failure is one class — icons made of TWO bodies with an overlap exclusion, where the derivation fills only the front body; the rear body's contour is not closed on its own, so the silhouette step drops it. Generated twins are not Figma exports and the manifest says so.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #264, having graded notes/_REVIEW-264-active-glyphs.html: \"Good try btw, maybe shelve the rejected ones for further work. keep teh others, good experiment we can return to it later.\" then \"Add the ones I said yes to to the library / the rejected ones we can work on later\", and the grades verbatim: \"balance-transfer → neither — the whole card should be filled not just the top, but the overlap exclusion are need to be kept · cheque → A1 · finances → A1 · tax → neither — the document icon half should be filled, if you look at teh document icon as a guide · workspace → neither — we have to fill teh otehr part of teh icon too · document-report → A1 · newspaper → A1 · device-mobile → A1 · online-banking → A1 · digital-statements → neither — need both parts filled · presentation → A1 · add-circle → A1 · global-money → neither — thsi is quite ahard one to get right\"",
+   "governs": [
+    "knowledge/assets/icons/icons.manifest.json",
+    "knowledge/assets/icons/products-and-services/cheque-active.svg",
+    "knowledge/assets/icons/products-and-services/finances-active.svg",
+    "knowledge/assets/icons/media/document-report-active.svg",
+    "knowledge/assets/icons/media/newspaper-active.svg",
+    "knowledge/assets/icons/media/device-mobile-active.svg",
+    "knowledge/assets/icons/media/online-banking-active.svg",
+    "knowledge/assets/icons/media/presentation-active.svg",
+    "knowledge/assets/icons/global-controls/add-circle-active.svg",
+    "notes/_lanes/264-active-gen.py"
+   ],
+   "evidence": [
+    "commit 5e97c90 — second pass (two-body class): balance-transfer, tax, workspace, digital-statements fill; global-money is one connected ink piece, no second body to find. Dave, #264 evening: \"no time for this now, but we can return to it another time because we are getting somewhere\" — the four stay UNGRADED on notes/_REVIEW-264-active-glyphs-2.html, nothing further entered the library"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s265-D1",
+   "ruled": "The /goal bite-test (knowledge/_bite_goal.py) is a STANDALONE instrument, not a test_gates.py CASE: it is run by a lane, with a live driver, at every change to apollo-spider/cold-start/COPILOT-BOOT.md option 3, and its two transcripts and grades are filed as subreport assets. It does not join CASES while the sandbox has no scriptable driver (claude -p returns api_error) - a case that cannot run in one environment is refused as a gate.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #265: \"1. okay make it stand alone\"",
+   "governs": [
+    "knowledge/_bite_goal.py",
+    "apollo-spider/cold-start/COPILOT-BOOT.md"
+   ],
+   "evidence": [
+    "chat #265 2026-09-09 - Dave's words, quoted in says",
+    "commit 9a24af9 - the instrument and the two drives, INTACT GREEN / MUTATED RED"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s265-D2",
+   "ruled": "s262-D5's third clause - progress is reported AGAINST THE GOAL rather than against a list of tasks - is graded RUBRIC-ONLY: a reader grades the T4 transcript by eye. The regex arm (G3) in _bite_goal.py is ADVISORY and never counted, because at #265 both the intact and the mutated arm named the goal at T4 and only a reader could tell the met/not-met report from the done-list.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "says": "Dave at #265: \"2. okay yes\" - accepting G3 as rubric-only, a reader grades T4",
+   "governs": [
+    "knowledge/_bite_goal.py"
+   ],
+   "evidence": [
+    "chat #265 2026-09-09 - Dave's words, quoted in says",
+    "commit 9a24af9 - notes/_subreports/2026-09-09-265-G-goal-bite-test.md finding 3, the two T4s in assets"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s267-D1",
+   "ruled": "v1.0.10 is HELD at the 625be64 cut. The cut is to be RE-TAKEN with the chart-engine test pages shipped so that _validate_dataviz.py can pass IN THE PACK and returns to the ship list; a gate that dies in-pack on pages the pack does not carry is not to be dropped from the cut, it is to be given its pages. The packaging fix itself (fee2572: the lazy __import__ the AST scan could not see, gen_provenance_receipt.py ships) STANDS. Ratification of the re-cut is a separate word.",
+   "date": "2026-09-10",
+   "by": "Dave",
+   "says": "Dave at #267, on the go/no-go page's one question with the recommendation 'ratify as cut': \"Hold — re-cut with the chart pages shipped. lets get this sorted\"",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "apollo-spider/build-designer-pack.sh",
+    "knowledge/_validate_dataviz.py"
+   ],
+   "evidence": [
+    "chat #267 2026-09-10 - his word, the second of two options offered",
+    "commit fbd9c14 - v1.0.10 CUT at 625be64 (PROPOSED, 1706 files): the cut he held, in which _validate_dataviz.py fell out as REPO-BOUND",
+    "commit ea25058 - reviews/GO-NOGO-v1.0.10-2026-09-10-v1.html, the page that carried the question"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s267-D2",
+   "ruled": "v1.0.10 IS RATIFIED. Dave's ratifying word for the Apollo - Spider v1.0.10 re-cut at a9218cc (manifest sha256 4cd9229adb2df432, twice-baked dry-run sha256 d76ffd50..., 1714 files, +16/-0 against v1.0.9). RATIFY_IDS gains the row v1.0.10 -> s267-D2 at this cut (s223-D3 shape: the key is per cut). Scope is PACKAGING ONLY: fee2572 (the lazy __import__ the AST scan could not see; gen_provenance_receipt.py ships) and a9218cc (the chart-engine pages ship by measurement off the gate's own receipt; _validate_dataviz.py back in the ship set per s267-D1). No component, canon or skill change is carried beyond the 8 -active.svg glyphs already in the tree. The release is DELEGATED on his word; the push is NOT included in this word.",
+   "date": "2026-09-10",
+   "by": "Dave",
+   "says": "Dave at #267, to the go/no-go v2 page's one question 'Ratify v1.0.10 at a9218cc?': \"okay inscribe\"",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "apollo-spider/build-designer-pack.sh",
+    "apollo-spider/dist/Apollo-Spider-v1.0.10.zip"
+   ],
+   "evidence": [
+    "chat #267 2026-09-10 - the ratifying word, given after two PROPOSED cuts (625be64 HELD by s267-D1, a9218cc)",
+    "commit 4a7adb8 - v1.0.10 RE-CUT at a9218cc (PROPOSED, 1714 files)",
+    "commit f1c8ac0 - reviews/GO-NOGO-v1.0.10-2026-09-10-v2.html, the page that carried the question"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s267-D3",
+   "ruled": "THE 78 PROPOSED RULING EDGES ARE RATIFIED AS JUDGED BY LANE E, both tiers: 26 keep their proposed type, 20 are RETYPED, 1 is REVERSED (s172-D3 bounds s181-D1 runs the other way), 31 fall back to plain `mentions` - the machine-readable record is notes/_lanes/267/E/edge-recs.json at 5711df1 and its `type`/`dir` columns ARE the ratified edge set. Q1: an edge that supersedes or retires ONE CLAUSE of its target, not the whole ruling, is its own type `supersedesClause` (nine edges: recs #5, #19, #34, #42, #52, #55, #64, #69, #70). Q2: when ruling A records that B supersedes C, the edge is B -> C, with A carried as evidence on the edge, never A -> C. ENACTMENT: ratified ruling edges are AUTHORED in one store and read by the explorer; the regex proposal at _build_kg_explorer.py:181-193 must not re-propose a pair that is already authored. The three generator defects lane E found (stem regex :81, id-list window :188, no direction test :191) and the two missing edges from the store's superseded_by field are to be fixed in the same enactment.",
+   "date": "2026-09-10",
+   "by": "Dave",
+   "says": "Dave at #267, to the edge-judgement page's tiers and Q1/Q2 with the conductor's recommendations (supersedesClause; edge from the actor, recorder as evidence): \"I'll just go with your recommendation I need this of our desk\"",
+   "governs": [
+    "knowledge/_build_kg_explorer.py",
+    "knowledge/_rulings.json",
+    "notes/_KG-EXPLORER.html"
+   ],
+   "evidence": [
+    "chat #267 2026-09-10 - his word on the recommendation, Fable lane E's judgement adopted whole",
+    "commit 5711df1 - reviews/EDGE-JUDGEMENT-267-2026-09-10-v1.html + notes/_lanes/267/E/edge-recs.json, the judgement and its machine record"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s267-D4",
+   "ruled": "_validate_compose.py reads `var(--x, <fallback>)` as RESOLVED - a custom property with a fallback value is not an unresolved binding, by browser semantics; this generalises what s258-D3 granted by name to `--*-max`. Lane N's change at _validate_compose.py:87 (commit 57ddff1) STANDS.",
+   "date": "2026-09-10",
+   "by": "Dave",
+   "says": "Dave at #267, to the two-item list (1 push, 2 accept the unruled gate change with the recommendation 'accept'): \"1 push 2 accepst\"",
+   "governs": [
+    "knowledge/_validate_compose.py"
+   ],
+   "evidence": [
+    "chat #267 2026-09-10 - his word, item 2",
+    "commit 57ddff1 - #267 N: the hunk at _validate_compose.py:87 and the Kpi-tile dead min-height removal"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s268-D1",
+   "ruled": "v1.0.11 IS RATIFIED. Dave's ratifying word for the Apollo - Spider v1.0.11 cut at 0c78eee (1714 files, dry-bake sha256 97fc82d8..., 21,201,555 bytes). RATIFY_IDS gains the row v1.0.11 -> s268-D1 at this cut (s223-D3 shape: the key is per cut). Scope is the REGENERATED canon.css - the nav and dropdown rules restored at efd1500, which are cold-run-6's risks 1 and 2 - plus the chart-engine receipts re-driven against it at 14b832d (13 of 27 were stale, s263-D13) and the version sweep at 0c78eee. The release is DELEGATED on his word; the push is NOT included in this word.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave at #268, asked to check the v1.0.11 cut and release it: \"check and ratify\"",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "knowledge/_release/_gate_frozen_release.py",
+    "apollo-spider/dist/"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word",
+    "commit 0c78eee - the v1.0.11 cut commit",
+    "commit efd1500 - canon.css regen, nav + dropdown rules restored",
+    "commit 14b832d - chart-engine receipts re-driven"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s268-D2",
+   "ruled": "v1.0.12 IS CUT AND RATIFIED. Asked to choose between shipping v1.0.11 as it stands and cutting a v1.0.12, Dave's word is \"12\". RATIFY_IDS gains the row v1.0.12 -> s268-D2 at this cut (s223-D3 shape: the key is per cut). Scope is exactly two things, both of them v1.0.11's own residue: (1) the VERSION SWEEP COMPLETED - v1.0.11 moved one of the four staged version literals, and because the stage stamps the Gumdrop literal itself the bake was green while --check went red afterwards on gumdrop/_state.json and the two gumdrop runbook headers, taking release gates 4 and 5 with it; synced at source in 4d60ad6 and carried here into a version that can pass its own --check; (2) the NAV LABEL DESCENDER CROP fixed at cause - cold run 7 read \"Pavments\"/\"Liauiditv\"/\"Settinas\" off the released v1.0.11 zip because the ds-005 override :where(.cn-sidebar-nav) .nv-label (0,1,0) was cascade-dead under canon's base leading-trim default, which used :is(...) at (0,1,2); the element list is :where(...) now, the same repair #261 made to the three nav snippets, driven both ways in chromium across four themes. v1.0.11 STAYS IN dist UNTOUCHED - a recorded zip is never re-baked at its own version. The release is DELEGATED on his word; the push is NOT included in this word.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-11: \"12\" - in answer to \"cut 12 or ship 11\"",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "knowledge/_release/_gate_frozen_release.py",
+    "knowledge/canon/canon.css",
+    "apollo-spider/dist/"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word \"12\"",
+    "commit 94bcc8a - the descender crop fixed at cause + chart receipts re-driven",
+    "commit 782537d - the v1.0.12 version sweep, all six stamps",
+    "commit b2fcdb9 - the v1.0.12 PROPOSED cut at 782537d",
+    "notes/_subreports/2026-09-11-268-cold-run-7.md - finding 2, the measured crop"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s268-D3",
+   "ruled": "v1.0.13 IS CUT AND RATIFIED. Dave's word is \"okay do 13\". RATIFY_IDS gains the row v1.0.13 -> s268-D3 at this cut (s223-D3 shape: the key is per cut). Scope is exactly two things. (1) THE DESCENDER CROP, CLOSED AT THE LEVEL IT ACTUALLY LIVES AT. v1.0.12 fixed the base leading-trim default in canon.css and cold run 8 still read \"Pavments\"/\"Liauiditv\"/\"Settinas\" off the RELEASED v1.0.12 zip, in all four themes, 5.50px of clip, because every component absorbed into canon carries its own private copy of that default and 108 of them were still :is(...) at (0,1,2) - one of them, cn-template-dashboard-bento, matches the nav label two scopes away and outranks the (0,1,0) ds-005 override, so a REAL page clipped where the fixture did not. Fixed at the snippet in 7ddab70: 108 reference snippets, canon regenerated (137 components, 111 copies :where(), 0 :is()), chart-engine receipts re-driven. (2) THE PRE-BAKE DRIVE IS NOW AN INSTRUMENT. knowledge/_validate_demo_page.py unzips the pack that is about to ship, stages the run-of-show's own plot-point-09 page against the PACK's canon, serves it over http and drives it in chromium - descender clip per theme, nav styled, both dropdowns - BLOCKING with playwright, COULD-NOT-ASK (77) without, and measured REPO-BOUND in the probe because the page it drives is a repo artefact the pack does not ship. It is the consumer nine release gates lacked: they parsed the manifest, the file list and the version literals, and not one opened the pack and looked at the demo. THE PACK'S README NOW CARRIES A DESIGNER-FACING CHANGELOG, v1.0.7 to v1.0.13, one line per release, on his word that the last release the designers were given was v1.0.6. v1.0.12 STAYS IN dist UNTOUCHED - a recorded zip is never re-baked at its own version. The release is DELEGATED on his word; the push is NOT included in this word.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-11: \"okay do 13\" - the ratifying word for the v1.0.13 cut. Context from the same chat: \"the last release I gave to the designers was 6, this is getting sort of silly\" - which is why this cut's changelog is written as a designer-facing summary of v1.0.7 to v1.0.13 rather than internal churn.",
+   "governs": [
+    "knowledge/_release/_gen_pack_manifest.py",
+    "knowledge/_release/_gate_frozen_release.py",
+    "knowledge/_validate_demo_page.py",
+    "apollo-spider/build-designer-pack.sh",
+    "apollo-spider/dist/"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word \"okay do 13\"",
+    "commit 7ddab70 - the same descender class one level out: 108 snippet copies of the leading-trim default made :where()",
+    "commit 08e315d - the v1.0.13 version sweep, all six stamps, the changelog and the new gate",
+    "commit be16e5f - the v1.0.13 PROPOSED cut at 08e315d",
+    "notes/_subreports/2026-09-11-268-cold-run-8.md - F1, the 5.50px crop measured on the released v1.0.12 zip",
+    "pre-bake drive of the dry zip 5d4df132b1f57f17 - 7/7 assertions, 4/4 themes, 0.00px clip"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s268-D4",
+   "ruled": "AN UNRECEIVED RELEASE MAY BE RE-CUT AT THE SAME VERSION. 'Received' means handed to anyone outside the repo - the designers, a demo audience. A re-cut of an UNRECEIVED version records 're-cut' in the dist record and in the changelog, with BOTH shas (the superseded one and the new one), so the move is declared rather than silent. A RECEIVED release still bumps: the s257 laundering rule is unchanged for anything that has left the repo, and _gate_frozen_release.py still refuses RE-RECORDED WITHOUT A VERSION BUMP for those. Designer-facing packs: v1.0.6 was the last received; v1.0.13 is the next designer pack; bumps 7-12 stay as internal history. The register of what has been received is knowledge/_received.json - a version absent from it is unreceived, and the laundering arm's same-version clause is lifted for exactly those.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-11: \"lets apply this logic from now on\" - applying, verbatim, the proposal put to him: \"A release no one outside the repo has received may be re-cut at the same version; the dist record and changelog say 're-cut' with both shas. Bumps 7-12 stay as history; 12 becomes the one that goes to the designers.\"",
+   "governs": [
+    "knowledge/_release/_gate_frozen_release.py",
+    "knowledge/_release/_gen_pack_manifest.py",
+    "knowledge/_received.json",
+    "apollo-spider/dist/"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word \"lets apply this logic from now on\", quoted in full in `says`",
+    "s257-D2 / s257-D3 - the laundering bump this ruling narrows to the RECEIVED case",
+    "s114-D4 - versioned releases are frozen; unchanged for received releases"
+   ],
+   "status": "ruled",
+   "conductor_note": "THE 12 -> 13 SUBSTITUTION IS THE CONDUCTOR'S, NOT DAVE'S. His proposal named v1.0.12 as \"the one that goes to the designers\" because v1.0.13 did not exist when he said it. Between the proposal and this inscription v1.0.13 was cut and released (s268-D3, cold-run-9 14/14), so the designer pack is v1.0.13 and the internal-history range is 7-12, not 7-11. The LOGIC is his verbatim; only the version number moved, and it moved because the facts did. NOTE ALSO: this ruling was asked for as s268-D3, which was already taken by the v1.0.13 ratification; it is inscribed at the next free id.",
+   "watch": "A RE-CUT IS NOT A SILENT RE-BAKE. The permission is to reuse the NUMBER, never to move a zip quietly: dist record and changelog must both say 're-cut' and carry both shas. And the received/unreceived question is answered by knowledge/_received.json, never by memory - if a version is in that register the old rule stands and you BUMP."
+  },
+  {
+   "id": "s268-D5",
+   "ruled": "THE FOUR UNSEATED EDGE-TYPE KEYS ARE MINTED. Dave's word on lane E's RSQ 3 (lane C's RSQ 3, same content) is \"mint all four\": `composedOf`, `delegatesTo`, `drivesConsumer` and `$contract` get a SEAT in knowledge/components/meta.schema.json under `edges.properties`, with the semantics the corpus already carries and no more. composedOf / delegatesTo / drivesConsumer are arrays of the standard {ref, $note} edge; delegatesTo and drivesConsumer additionally carry an optional `when` string (the trigger, and the condition under which a consumer is driven), so `when` is added to the shared edge definition as an optional property named to those two types. `$contract` is a $-PREFIXED ANNOTATION, not an edge list: a free-form object holding the s263-D4 / s258-D1 marker contract the drivesConsumer edges are drawn from - it carries no refs and is therefore resolved against no registry. _validate_kg.py check (d) is taught the one distinction it lacked: a schema-declared $-prefixed key inside `edges` is an annotation and is not required to be an array of edges. Nothing beyond what filter-toolbar-bar.meta.json already states is minted - the seats describe the authored content, they do not extend it.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-11: \"mint all four\" - in answer to lane E's RSQ 3, the four filter-toolbar-bar edge-type keys with no seat in the meta schema.",
+   "governs": [
+    "knowledge/components/meta.schema.json",
+    "knowledge/components/filter-toolbar-bar.meta.json",
+    "knowledge/_validate_kg.py"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word \"mint all four\"",
+    "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 1(a), the four keys classified",
+    "s258-D1 / s263-D4 - the filter contract the $contract block records"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s268-D6",
+   "ruled": "AUTHORED EDGES SURVIVE A REGENERATION, BY BOTH MECHANISMS AT ONCE. Dave's word on lane E's RSQ 2 is \"both now\" - option (a) NOW and option (c) NOW, not (c) later. Read back and confirmed 2026-09-11: \"yes both now plaease\" (verbatim). (a) DECLARED_EDGE_TYPES in knowledge/gen_kg_edges.py is widened from its single entry (\"groupsWith\") to EVERY schema-legal edge type the generator does not derive from prose: composedOf, delegatesTo, drivesConsumer, $contract, groupsWith. Authored is now the DEFAULT for any type the generator has no prose source for. (c) The generator NEVER WIPES `edges` again. It reads the meta's existing edges, refreshes only the types it actually derives, and leaves every other type untouched; within a derived type it matches each generated edge against the existing ones (exact $note, then ref, then hasPart part-name, then either-way $note prefix) and KEEPS the authored entry - refreshing only its `ref` - so a hand-extended $note is not truncated by a regeneration. Unmatched generated edges are appended; nothing is deleted. The splice is IN PLACE, so a meta whose edges did not change is byte-identical after a run. Because carried edges may reference registry nodes the derivation no longer mints, the two node registries carry those entries forward verbatim from their own previous content rather than dropping a live-referenced node. s245-D7's carry mechanism is unchanged in kind: this widens it, and makes the loss structurally impossible rather than list-dependent.",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-11: \"both now (a) now - widen DECLARED_EDGE_TYPES to every schema-legal type the generator doesn't derive; (c) later - generator never wipes edges, only refreshes derived types.\" - in answer to lane E's RSQ 2.",
+   "governs": [
+    "knowledge/gen_kg_edges.py",
+    "knowledge/components/",
+    "knowledge/components/_nodes-pattern.json",
+    "knowledge/components/_nodes-context.json"
+   ],
+   "evidence": [
+    "chat #268 2026-09-11 - his word, quoted in full in `says`",
+    "notes/_subreports/2026-09-09-265-E-kg-red.md - finding 5, the 441-line diff measuring what a regeneration would delete",
+    "s245-D7 - the one-entry carry list this ruling widens"
+   ],
+   "status": "ruled",
+   "conductor_note": "HIS SENTENCE CARRIED BOTH A \"now\" AND A \"later\", AND THE FIRST TWO WORDS DECIDE IT. The quoted \"(c) later\" is the text of the QUESTION he was answering - lane E recommended \"(a) now, (c) as the real fix\" - and his own words in front of it are \"both now\". Enacted as both, at #268."
+  },
+  {
    "id": "s268-D7",
    "ruled": "THE SIX-MONTH COMPARATOR IS DROPPED FROM THE DEMO (run-of-show plot point 04). Dave, chat 2026-09-11, verbatim: \"okay drop it\" - accepting lane F option C (notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html § C). The sentence states the build alone: 102 days = 14.57 weeks, first commit 2026-05-31 to v1.0.10, 73 commit days, ten gated releases; the room supplies its own comparator. Never \"hours\" - no session length was ever recorded. The gearbox metaphor (plot point 03, filled #268) carries the claim the comparator was standing in for.",
    "date": "2026-09-11",
    "by": "Dave",
    "says": "Dave, chat, 2026-09-11, verbatim: \"okay drop it\" - in answer to the recommendation \"drop the six months\" after the gearbox metaphor was filled.",
    "governs": [
-     "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-     "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
    ],
    "evidence": [
-     "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-     "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
    ],
    "status": "superseded",
    "conductor_note": "Retires the ■ N slot and the \"six months → N weeks\" sentence. Lane F (#267) option C accepted; options A/B not taken. SUPERSEDED same day by s268-D8: D7 was ruled on a vocabulary collision - the conductor and lane F read \"six months → N weeks\" as the Apollo build time (102 days); Dave meant client-project delivery time.",
    "supersededBy": "s268-D8"
- },
- {
+  },
+  {
    "id": "s268-D8",
    "ruled": "PLOT POINT 04 STATES TWO THINGS, LABELLED DIFFERENTLY. MEASURED: 137 components and ten gated releases inside a 102-day calendar window (73 commit days) - ELAPSED TIME, NOT EFFORT: Dave 2026-09-11 \"it wasn't 102 days, that was the period over which they were built, but we did a hell of a lot more than build components over that period including lots of work on memento\". Never present 102 days as build cost (notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html). PREDICTED, SAID AS AN ESTIMATE: a six-month project may become six weeks or less if AI is used in research and user testing as well as build. The comparator is DELIVERY TIME OF A CLIENT PROJECT, not Apollo's build time - s268-D7 conflated the two and is superseded. N = 6 weeks is Dave's professional estimate; no project delivery has been measured; it is spoken as an estimate, never as a result. Never \"hours\".",
    "date": "2026-09-11",
    "by": "Dave",
    "says": "Dave, chat, 2026-09-11, verbatim: \"hang on the 6 months to weeks comparator was the estimated change in delivery time for a project\" then \"lets say something like a 6 month project may become 6 weeks or even less if we use AI in resaech and user testing\".",
    "governs": [
-     "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-     "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
    ],
    "evidence": [
-     "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-     "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html"
    ],
    "status": "ruled",
    "conductor_note": "Supersedes s268-D7 (same day). Vocabulary collision, #202 shape: Dave rejected, the asserts stayed green, the words meant different things. The 102-day figure survives as evidence for a different sentence."
- },
- {
-  "id": "s269-D1",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: GO on the KG-gap proposal's recommended order 1-5 - (1) roles + DESK fields, (2) the 470 tagged rules, (3) the 145 principles plus 22 polarity edges, (4) icons then logos, (5) the edge types setIn / behaviourFrom / capturedFrom / acceptsCapability. Nothing in the proposal is enacted by this ruling: each step still PROPOSES its schema diff and Dave ratifies it, because a new edge type is a vocabulary change (#75).",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "knowledge/_build_kg_explorer.py",
-   "knowledge/gen_kg_edges.py"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D2",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: THE UX-PRINCIPLE NODE PREFIX IS `ux:`. The prefixes `principle:` and `guideline:` are ALREADY TAKEN by the WCAG family in the graph - measured in notes/_lanes/269/kg-gaps/A-inventory.json, not assumed - so the 145 in-house principles enter under `ux:` and never collide with WCAG.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "knowledge/_build_kg_explorer.py"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D3",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: TOKENS ENTER THE GRAPH AT TIER GRAIN - semantic versus primitive - and NEVER as 932 leaf nodes. The leaf-per-token shape was priced and rejected as a graph that cannot be read.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "knowledge/_build_kg_explorer.py"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D4",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: A PHOTOGRAPHY NODE IS THE MANIFEST ROW, with the original and its derivatives carried as ATTRIBUTES of that row rather than as separate nodes. Declared beside it: the photography KG-NOTE is STALE - it says 12 derivatives and the folder holds 251.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D5",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: COMPONENT METAS CITE PRINCIPLES, AND THE FIRST SET IS THE SIX A-GRADE LAWS - not all 145 at once. The citation edge starts where the evidence is strongest and widens later on his word.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "knowledge/components/meta.schema.json"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D6",
-  "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: TWO NEW ENTITY KINDS ARE IN SCOPE NOW - content standard and lifecycle status. PERSONA AND JTBD ARE NOT DROPPED: he asked for placeholders or research-backed provisional personas in his own sentence (\"I don't want to loose the idea\"), and the idea is PARKED WITH A TRIPWIRE as P-269-9 in knowledge/_parked.json, firing when knowledge/guidelines moves - which is when the CX principles he is chasing arrive.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
-  "governs": [
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "knowledge/_parked.json",
-   "knowledge/components/meta.schema.json"
-  ],
-  "evidence": [
-   "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
-   "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
-   "commit 33b709d"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D7",
-  "ruled": "A SPELLING CORRECTION INSIDE A QUOTE OF DAVE'S IS STILL HIS WORDS; A CHANGED WORD OR DIGIT IS NOT. knowledge/_quote_gate.py implements exactly that line: \"resaech\" -> \"research\" passes as his, \"six\" -> \"6\" does not, and punctuation and markdown marks are transcription rather than a miss. The gate is ADVISORY and read-only.",
-  "date": "2026-09-13",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-13, verbatim: \"obviously this should be corrected, I have very dyslexic fingers as well as my very bad spelling brain\".",
-  "governs": [
-   "knowledge/_quote_gate.py",
-   "knowledge/_ngram.py"
-  ],
-  "evidence": [
-   "knowledge/_quote_gate.py",
-   "commit 6fd65b4",
-   "commit 4f116c2"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D8",
-  "ruled": "THE DEMO AUDIENCE PHRASE IS \"an operator not a platform owner\" - HIS ORIGINAL WORDING, restored to the run-of-show and the demo-prep page where a paraphrase had put \"designer\". Found by the quote gate on its first day, which is the receipt for the gate as much as for the phrase.",
-  "date": "2026-09-13",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-13, verbatim: \"'an operator not a platform owner' is the original phrase I think\".",
-  "governs": [
-   "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-   "notes/_DEMO-PREP-david-rice-hsbc.html"
-  ],
-  "evidence": [
-   "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
-   "notes/_DEMO-PREP-david-rice-hsbc.html",
-   "commit 6fd65b4"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D9",
-  "ruled": "THE N-GRAM DOORS WERE BUILT UNDER THIS WORD, AND THE CONDITION IN IT IS PART OF THE RULING: safe, with the usual dependencies and externalities tested. knowledge/_ngram.py (11 bites), knowledge/_quote_gate.py (14 bites) and knowledge/_near_dupes.py are all READ-ONLY and ADVISORY, and the memento pack was left byte-identical - _search_core.py and _memento_search.py are pinned by _validate_package_delta.py, so any ranking change is a RELEASE, not an edit (parked as P-269-1 / P-269-2).",
-  "date": "2026-09-13",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-13, verbatim (his spelling, uncorrected): \"as long as it's safe and you test the usual dependancies and externalities lets go for it\" and \"we are well behind pace so you can be really thorough and use fable level judgment liberally\".",
-  "governs": [
-   "knowledge/_ngram.py",
-   "knowledge/_quote_gate.py",
-   "knowledge/_near_dupes.py",
-   "knowledge/_validate_package_delta.py"
-  ],
-  "evidence": [
-   "knowledge/_ngram.py",
-   "knowledge/_near_dupes.py",
-   "commit d8ebc51",
-   "commit f02fe4c"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s269-D10",
-  "ruled": "A PARKED ITEM IS RECORDED WITH A TRIPWIRE, NOT WITH A PROMISE. knowledge/_parked.json is the register (P-269-1 ... P-269-9) and knowledge/_parked.py is the door (--check / --due <event> / --list / --selftest, 10 bites); six events can fire a row - release-cut, kg-edge-gen, dream-pass, memento-cut, token-report, guidelines-ingest - through five hooks that PRINT ONLY, are wrapped in try/except and never return a verdict. Driven, not asserted: a v1.0.14 manifest fires three. Park items HERE, never in _CARRIES.md, whose contract is carrying and not scheduling.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-13, verbatim: \"store them for future sake, can they be triggered, or can we have a hook so they don't get missed at the appropriate time\"; and 2026-09-14: \"okay we need this recorded with tripwires\".",
-  "governs": [
-   "knowledge/_parked.json",
-   "knowledge/_parked.py",
-   "knowledge/gen_kg_edges.py",
-   "knowledge/_RUNBOOK-dream-pass.md"
-  ],
-  "evidence": [
-   "knowledge/_parked.json",
-   "knowledge/_parked.py",
-   "commit 445af02",
-   "commit 814344e"
-  ],
-  "status": "ruled"
- },
- {
-  "id": "s270-D1",
-  "ruled": "THE SINGLE-SELECT CUT-OFF IS FIVE, AND IT IS PROVISIONAL BECAUSE ITS SOURCE IS DAVE'S RECOLLECTION. Conductor's reading, labelled as the conductor's reading and not as Dave's words: radio group = single-select AND options <= 4; dropdown = single-select AND options >= 5, and the dropdown is the DEFAULT at that size, not a last resort. The combobox threshold, the multi-select boundary and the segmented-control rule are SEPARATE and are NOT ruled here. PROVISIONAL: the number 5 appears in NO ingested source - knowledge/guidelines, knowledge/roles.json, the dropdown and selection-controls metas, the Memento index and _rulings.json were all checked at #270 and none carries it; the source is Dave's memory of the HSBC Common Toolkit, whose form-component specs have never been ingested (knowledge/guidelines/forms.md:40 names Figma node 45226:149920, and _INGESTION-QUEUE.md still lists it as Queued). Tripwire P-270-1 in knowledge/_parked.json fires on the guidelines-ingest event: if the Figma pages say otherwise the Figma number wins and this ruling is corrected BY ADDITION, never re-dated.",
-  "date": "2026-09-14",
-  "by": "Dave",
-  "says": "Dave, chat, 2026-09-14, verbatim: \"If I remember correctly we use dropdowns for 5 and above\"; and, when asked to confirm that the number should be recorded on his recollection alone: \"okay lets do it from my memory 5 is the cutoff\".",
-  "governs": [
-   "knowledge/components/dropdown.meta.json",
-   "knowledge/components/selection-controls.meta.json",
-   "knowledge/_parked.json"
-  ],
-  "evidence": [
-   "notes/_lanes/270/DAVE-RULINGS-2026-09-14.md",
-   "notes/_REVIEW-when-predicates-selection-and-lists-2026-09-14-v1.html",
-   "commit 4d1c849",
-   "commit 781f7be"
-  ],
-  "status": "ruled"
- }
+  },
+  {
+   "id": "s269-D1",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: GO on the KG-gap proposal's recommended order 1-5 - (1) roles + DESK fields, (2) the 470 tagged rules, (3) the 145 principles plus 22 polarity edges, (4) icons then logos, (5) the edge types setIn / behaviourFrom / capturedFrom / acceptsCapability. Nothing in the proposal is enacted by this ruling: each step still PROPOSES its schema diff and Dave ratifies it, because a new edge type is a vocabulary change (#75).",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "knowledge/_build_kg_explorer.py",
+    "knowledge/gen_kg_edges.py"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D2",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: THE UX-PRINCIPLE NODE PREFIX IS `ux:`. The prefixes `principle:` and `guideline:` are ALREADY TAKEN by the WCAG family in the graph - measured in notes/_lanes/269/kg-gaps/A-inventory.json, not assumed - so the 145 in-house principles enter under `ux:` and never collide with WCAG.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D3",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: TOKENS ENTER THE GRAPH AT TIER GRAIN - semantic versus primitive - and NEVER as 932 leaf nodes. The leaf-per-token shape was priced and rejected as a graph that cannot be read.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D4",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: A PHOTOGRAPHY NODE IS THE MANIFEST ROW, with the original and its derivatives carried as ATTRIBUTES of that row rather than as separate nodes. Declared beside it: the photography KG-NOTE is STALE - it says 12 derivatives and the folder holds 251.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D5",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: COMPONENT METAS CITE PRINCIPLES, AND THE FIRST SET IS THE SIX A-GRADE LAWS - not all 145 at once. The citation edge starts where the evidence is strongest and widens later on his word.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "knowledge/components/meta.schema.json"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D6",
+   "ruled": "CONDUCTOR'S READING of the sentence in `says`, labelled as a reading and NOT as Dave's words: TWO NEW ENTITY KINDS ARE IN SCOPE NOW - content standard and lifecycle status. PERSONA AND JTBD ARE NOT DROPPED: he asked for placeholders or research-backed provisional personas in his own sentence (\"I don't want to loose the idea\"), and the idea is PARKED WITH A TRIPWIRE as P-269-9 in knowledge/_parked.json, firing when knowledge/guidelines moves - which is when the CX principles he is chasing arrive.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim (his spelling, uncorrected): \"I think your recommendations for the 6 look good, personas and JTBD is interesting but we don't have any we can rely on, could we create placeholders, or create our own on the back of some research? I don't want to loose the idea. We will be adding more, for example I'm trying to get hold of our CX principles.\" Full text: notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md (commit 33b709d).",
+   "governs": [
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "knowledge/_parked.json",
+    "knowledge/components/meta.schema.json"
+   ],
+   "evidence": [
+    "notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md",
+    "_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html",
+    "commit 33b709d"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D7",
+   "ruled": "A SPELLING CORRECTION INSIDE A QUOTE OF DAVE'S IS STILL HIS WORDS; A CHANGED WORD OR DIGIT IS NOT. knowledge/_quote_gate.py implements exactly that line: \"resaech\" -> \"research\" passes as his, \"six\" -> \"6\" does not, and punctuation and markdown marks are transcription rather than a miss. The gate is ADVISORY and read-only.",
+   "date": "2026-09-13",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-13, verbatim: \"obviously this should be corrected, I have very dyslexic fingers as well as my very bad spelling brain\".",
+   "governs": [
+    "knowledge/_quote_gate.py",
+    "knowledge/_ngram.py"
+   ],
+   "evidence": [
+    "knowledge/_quote_gate.py",
+    "commit 6fd65b4",
+    "commit 4f116c2"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D8",
+   "ruled": "THE DEMO AUDIENCE PHRASE IS \"an operator not a platform owner\" - HIS ORIGINAL WORDING, restored to the run-of-show and the demo-prep page where a paraphrase had put \"designer\". Found by the quote gate on its first day, which is the receipt for the gate as much as for the phrase.",
+   "date": "2026-09-13",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-13, verbatim: \"'an operator not a platform owner' is the original phrase I think\".",
+   "governs": [
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-PREP-david-rice-hsbc.html"
+   ],
+   "evidence": [
+    "notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html",
+    "notes/_DEMO-PREP-david-rice-hsbc.html",
+    "commit 6fd65b4"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D9",
+   "ruled": "THE N-GRAM DOORS WERE BUILT UNDER THIS WORD, AND THE CONDITION IN IT IS PART OF THE RULING: safe, with the usual dependencies and externalities tested. knowledge/_ngram.py (11 bites), knowledge/_quote_gate.py (14 bites) and knowledge/_near_dupes.py are all READ-ONLY and ADVISORY, and the memento pack was left byte-identical - _search_core.py and _memento_search.py are pinned by _validate_package_delta.py, so any ranking change is a RELEASE, not an edit (parked as P-269-1 / P-269-2).",
+   "date": "2026-09-13",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-13, verbatim (his spelling, uncorrected): \"as long as it's safe and you test the usual dependancies and externalities lets go for it\" and \"we are well behind pace so you can be really thorough and use fable level judgment liberally\".",
+   "governs": [
+    "knowledge/_ngram.py",
+    "knowledge/_quote_gate.py",
+    "knowledge/_near_dupes.py",
+    "knowledge/_validate_package_delta.py"
+   ],
+   "evidence": [
+    "knowledge/_ngram.py",
+    "knowledge/_near_dupes.py",
+    "commit d8ebc51",
+    "commit f02fe4c"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s269-D10",
+   "ruled": "A PARKED ITEM IS RECORDED WITH A TRIPWIRE, NOT WITH A PROMISE. knowledge/_parked.json is the register (P-269-1 ... P-269-9) and knowledge/_parked.py is the door (--check / --due <event> / --list / --selftest, 10 bites); six events can fire a row - release-cut, kg-edge-gen, dream-pass, memento-cut, token-report, guidelines-ingest - through five hooks that PRINT ONLY, are wrapped in try/except and never return a verdict. Driven, not asserted: a v1.0.14 manifest fires three. Park items HERE, never in _CARRIES.md, whose contract is carrying and not scheduling.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-13, verbatim: \"store them for future sake, can they be triggered, or can we have a hook so they don't get missed at the appropriate time\"; and 2026-09-14: \"okay we need this recorded with tripwires\".",
+   "governs": [
+    "knowledge/_parked.json",
+    "knowledge/_parked.py",
+    "knowledge/gen_kg_edges.py",
+    "knowledge/_RUNBOOK-dream-pass.md"
+   ],
+   "evidence": [
+    "knowledge/_parked.json",
+    "knowledge/_parked.py",
+    "commit 445af02",
+    "commit 814344e"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s270-D1",
+   "ruled": "THE SINGLE-SELECT CUT-OFF IS FIVE, AND IT IS PROVISIONAL BECAUSE ITS SOURCE IS DAVE'S RECOLLECTION. Conductor's reading, labelled as the conductor's reading and not as Dave's words: radio group = single-select AND options <= 4; dropdown = single-select AND options >= 5, and the dropdown is the DEFAULT at that size, not a last resort. The combobox threshold, the multi-select boundary and the segmented-control rule are SEPARATE and are NOT ruled here. PROVISIONAL: the number 5 appears in NO ingested source - knowledge/guidelines, knowledge/roles.json, the dropdown and selection-controls metas, the Memento index and _rulings.json were all checked at #270 and none carries it; the source is Dave's memory of the HSBC Common Toolkit, whose form-component specs have never been ingested (knowledge/guidelines/forms.md:40 names Figma node 45226:149920, and _INGESTION-QUEUE.md still lists it as Queued). Tripwire P-270-1 in knowledge/_parked.json fires on the guidelines-ingest event: if the Figma pages say otherwise the Figma number wins and this ruling is corrected BY ADDITION, never re-dated.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim: \"If I remember correctly we use dropdowns for 5 and above\"; and, when asked to confirm that the number should be recorded on his recollection alone: \"okay lets do it from my memory 5 is the cutoff\".",
+   "governs": [
+    "knowledge/components/dropdown.meta.json",
+    "knowledge/components/selection-controls.meta.json",
+    "knowledge/_parked.json"
+   ],
+   "evidence": [
+    "notes/_lanes/270/DAVE-RULINGS-2026-09-14.md",
+    "notes/_REVIEW-when-predicates-selection-and-lists-2026-09-14-v1.html",
+    "commit 4d1c849",
+    "commit 781f7be"
+   ],
+   "status": "ruled"
+  },
+  {
+   "id": "s270-D2",
+   "ruled": "THE FOUR ROLE / DESK-ADDRESS EDGE TYPES ARE RATIFIED INTO THE CLOSED KG VOCABULARY: providesRole (component -> role:<slug>, from meta `provides`, resolved against knowledge/roles.json), answersIntent (component -> intent:<word>, from meta `answers`, resolved against knowledge/chart-intents.json), hasDataShape (component -> shape:<value>, from meta `shape`, resolved against knowledge/shapes.json), yieldsTo (component -> component, parsed from the prose half of meta `when`, resolved against the meta stems). Lane 1 of #270 (knowledge/gen_kg_roles_desk.py) lands on this id via --land --ratified s270-D2. Unresolved targets stay {\"ref\": null, \"$note\": ...} and counted — never invented (fence 3, #261). The roles.json membership drift (108 memberships vs 24 metas with `provides`; 4 roles with no provider in a meta) is REPORTED by this landing, NOT fixed by it; fixing it is separate.",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "says": "Dave, chat, 2026-09-14, verbatim, answering the #271 opener's item 1 (\"ratify\" the four edge types): \"1. ratify\".",
+   "governs": [
+    "knowledge/gen_kg_roles_desk.py",
+    "knowledge/components/*.meta.json",
+    "knowledge/_validate_kg.py",
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "evidence": [
+    "_HANDOFF-121-the-door-and-the-cutoff.md § D",
+    "notes/_PROPOSAL-kg-roles-desk-2026-09-14-v1.html",
+    "notes/_lanes/270/DAVE-RULINGS-2026-09-14.md",
+    "commit 5b99b0f"
+   ],
+   "status": "ruled"
+  }
  ]
 }

@@ -82,8 +82,21 @@ SCHEMA = COMPONENTS / "meta.schema.json"
 GEN_SCRIPT = HERE / "gen_kg_edges.py"
 RESOLUTIONS = ROOT / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
 
-REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling):.+$")
-NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling")
+REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape):.+$")
+NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape")
+ROLES = HERE / "roles.json"
+INTENTS = HERE / "chart-intents.json"
+SHAPES = HERE / "shapes.json"
+
+
+def store_ids(path, key, prefix):
+    """role:/intent:/shape: resolve against the STORE, not a registry file — the
+    store is already the ONE home (ADR-0017 write-once) and a _nodes-role.json
+    would be a second one (s270-D2)."""
+    if not path.exists():
+        return set()
+    vocab = json.loads(path.read_text(encoding="utf-8"))[key]
+    return {f"{prefix}:{k}" for k in vocab}
 
 
 # --------------------------------------------------------------- corpus load
@@ -210,6 +223,9 @@ def validate_corpus(components_dir=None, proforma_dir=None, snippets_dir=None,
         "context": registry_ids(nodes_context_path),
         "snippet": snippet_ids(snippets_dir),
         "ruling": ruling_ids(rulings_path),
+        "role": store_ids(ROLES, "roles", "role"),
+        "intent": store_ids(INTENTS, "chart-intent", "intent"),
+        "shape": store_ids(SHAPES, "shapes", "shape"),
     }
 
     fails = []

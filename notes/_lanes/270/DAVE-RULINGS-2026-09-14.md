@@ -21,3 +21,17 @@ Conductor's reading: the slice carries every provider per role with score + when
 ## Harvest ALL when-to-use rules from external libraries — ASKED after the wrap (verbatim)
 > "can we harvest all of these for the library seeing as we don't have access to anything meaningful from the company, I can then select the rules to confirm that are not unanimous"
 Conductor's reading: extend the #270 research lane (2 families, 9 systems) to EVERY component family in `knowledge/components/` — same method (`_RUNBOOK-external-claims.md`, URL + short quote, confidence canon / consensus / single / none), one review page per family or one page grouped by family; UNANIMOUS predicates proposed as defaults, NON-UNANIMOUS ones surfaced as his decision table. Not run in #270 — FILL at the wall. = #271 LANE 1.
+
+## #271 opener — 2026-09-14 — VERBATIM
+Opener put three items to Dave (1 ratify the four edge types · 2 push · 3 dream pass 12, unruled 34h) and the harvest lane as "say go". His reply, whole and verbatim:
+
+> Go
+>
+> 1. ratify
+> 2. push
+> 3. okay
+
+- 1 ⇒ `s270-D2` (four edge types ratified; lane 1 lands via `--land --ratified s270-D2`).
+- 2 ⇒ push is GO.
+- "Go" ⇒ harvest lane is GO.
+- 3 "okay" ⇒ READ BACK before treating as a ruling on dream pass 12 — the word alone does not say accept/decline.

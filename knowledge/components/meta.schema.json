@@ -227,7 +227,7 @@
       }
     },
     "edge": {
-      "description": "one typed edge in the KG parse layer (schema v2, s131-D2/s133-D1). ref is a node-id ('component:<stem>' | 'pattern:<slug>' | 'context:<slug>' | 'snippet:<filename>' | 'ruling:<sNNN-DN>') or null when unresolved without inventing a target; $note optionally carries the original prose this edge was migrated from.",
+      "description": "one typed edge in the KG parse layer (schema v2, s131-D2/s133-D1). ref is a node-id ('component:<stem>' | 'pattern:<slug>' | 'context:<slug>' | 'snippet:<filename>' | 'ruling:<sNNN-DN>' | 'role:<slug>' | 'intent:<word>' | 'shape:<value>') or null when unresolved without inventing a target; $note optionally carries the original prose this edge was migrated from.",
       "type": "object",
       "required": [
         "ref"
@@ -239,7 +239,7 @@
             "string",
             "null"
           ],
-          "pattern": "^(component|pattern|context|snippet|ruling):.+$"
+          "pattern": "^(component|pattern|context|snippet|ruling|role|intent|shape):.+$"
         },
         "$note": {
           "type": "string"
@@ -855,6 +855,34 @@
             "$ref": "#/definitions/edge"
           },
           "description": "RULED s268-D5. The RUNTIME WIRING edge of the s263-D4 marker contract (s258-D1: cross-component wiring is the author's to write): the referenced component is a CONSUMER this one drives at runtime by dispatching events and writing attributes — never by import, and the consumer imports nothing. Optional `when` carries the pairing condition as the corpus states it, 'shape=<table|list|tile|chart> AND the consumer declares data-apollo-filter-consumer'. AUTHORED, hence DECLARED under s268-D6. The contract these edges are drawn from is the sibling `$contract` annotation."
+        },
+        "providesRole": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "s270-D2 (enacting s269-D1 item 1). The ROLE this component fills — the slot a composer asks for (`wants: <role>`) and this component answers (`provides: <role>`). ONE HOME, generation chain not copy chain: the edge is DERIVED from this meta's own top-level `provides` by knowledge/gen_kg_roles_desk.py, resolved against knowledge/roles.json (the address set is the fence — a thirteenth role is Dave's ruling, s252-D1, never a lane's drift). The `providers` lists inside roles.json remain a MEMBERSHIP CROSS-CHECK and are NOT a source: they carry 108 entries where the metas carry 24 (notes/_lanes/270/roles-desk/ROLES-DRIFT.md). Never authored by hand; never copied back into roles.json."
+        },
+        "answersIntent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "s270-D2 (enacting s269-D1 item 1). The QUESTION this component answers for the reader — the function face of FFF. DERIVED from this meta's own top-level `answers` (s251-D11: the chart `intent` word extended to every component), resolved against knowledge/chart-intents.json. A component whose purpose genuinely spans two words carries two edges, in the meta's own order. A sixth chart word, or a new non-chart word, is Dave's ruling on a review page, never a lane's."
+        },
+        "hasDataShape": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "s270-D2 (enacting s269-D1 item 1). The DATA SHAPE this component takes — the second face of FFF, `<x-dimension> × <mark>`. DERIVED from this meta's own top-level `shape`, resolved against knowledge/shapes.json (CLOSED by s254-D2 item 1). Two components sharing a shape value are declaring themselves candidates to swap, which is exactly what the resolver's `instead-of` grade compares: the edge makes that claim readable in the graph instead of only in the resolver."
+        },
+        "yieldsTo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/edge"
+          },
+          "description": "s270-D2 (enacting s269-D1 item 1). The sibling this component STANDS DOWN FOR, and the test. DERIVED from the PROSE half of this meta's own `when` — the beats/yields sentence after the first em-dash (s253-D1; when-fields.json $grammar: the prose half is never parsed by the gate, and this is the one consumer that reads it). Only `yields to X` produces an edge: `beats Y` is Y's fact, not this component's, and an edge lives on the meta that declares it — the inverse is read by traversing the graph, never by writing a second edge into a second meta. An anaphoric target (\"yields to it\", \"yields to both\") is ref:null + $note, declared and never guessed."
         },
         "$contract": {
           "type": "object",
