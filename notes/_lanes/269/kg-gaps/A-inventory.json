@@ -1,0 +1,255 @@
+{
+  "generated": "2026-09-14",
+  "lane": "269-A",
+  "scope_note": "READ-ONLY inventory. Every count below came from a command recorded in the family's how_measured field, run against the working tree on 2026-09-14. Nothing here is a ruling or a proposal Dave has seen.",
+  "graph_today": {
+    "measured_by": "python3 - <<'EOF' ... import _build_kg_explorer as b; n,e=b.extract(); n2,e2,rep=b.extract_extra(n,e) ... EOF (the conductor's command, re-run by this lane)",
+    "base_nodes": 890,
+    "base_node_types": { "pattern": 380, "context": 222, "component": 137, "snippet": 137, "ruling": 14 },
+    "base_edges": 1267,
+    "base_edge_types": { "commonPattern": 421, "usedInContext": 367, "renderedBy": 137, "containedBy": 88, "mustNotNeighbour": 70, "consumes": 70, "governedBy": 28, "triggeredBy": 25, "hasPart": 22, "family": 12, "groupsWith": 8, "partial": 6, "composedOf": 5, "drivesConsumer": 5, "reuses": 2, "delegatesTo": 1 },
+    "extra_nodes": 1941,
+    "extra_node_types": { "governance/evidence": 733, "governance/artefact": 553, "governance/ruling": 439, "governance/session": 92, "guidelines/axe": 64, "guidelines/sc": 38, "guidelines/guideline": 12, "guidelines/principle": 4, "guidelines/artefact": 4, "guidelines/standard": 1, "guidelines/policy": 1 },
+    "extra_edges": 3605,
+    "source_files_that_feed_the_graph": [
+      "knowledge/components/_nodes-pattern.json (pattern nodes)",
+      "knowledge/components/_nodes-context.json (context nodes)",
+      "knowledge/components/*.meta.json (component nodes + EVERY base edge; snippet/ruling nodes only where a meta refs them)",
+      "knowledge/_rulings.json (ruling nodes, governs/evidencedBy/ruledIn/mentions, artefact + evidence + session nodes)",
+      "knowledge/_ruling_edges.json (48 authored ruling->ruling edges)",
+      "knowledge/compliance/rules/*.json (sc/guideline/principle/axe/standard/policy nodes, appliesTo/under/checkedBy/enClause/boundBy)",
+      "knowledge/compliance/graph-index.json (verification -> verifiedBy edges only)"
+    ],
+    "two_corrections_to_the_brief": [
+      "The 12 `guideline` nodes and 4 `principle` nodes are NOT from knowledge/guidelines/*.md and NOT from knowledge/brain/principles.json. They are WCAG groupings ('1.4') and the four WCAG principles (perceivable/operable/understandable/robust), derived at _build_kg_explorer.py:279-283 from the SC ids in compliance/rules/*.json. knowledge/guidelines/*.md contributes ZERO nodes; knowledge/brain/ contributes ZERO nodes.",
+      "The 70 `consumes` edges are component->component, not component->token. Measured: collections.Counter(t.split(':')[0] for t in consumes targets) == {'component': 70}. There are NO token nodes of any kind in the graph (node types present: pattern, context, component, snippet, ruling only)."
+    ],
+    "namespace_collision_warning": "The id prefixes `principle:` and `guideline:` are already occupied by WCAG. Any decision to graph knowledge/brain/principles.json or knowledge/guidelines/*.md needs a different prefix (e.g. `uxprinciple:` / `rule:`) or the two families will silently merge."
+  },
+  "families": [
+    {
+      "family": "create.hsbc guidelines — tagged rules (_rules-index.json)",
+      "source_paths": ["knowledge/guidelines/_rules-index.json", "knowledge/guidelines/*.md", "knowledge/guidelines/gen_rules_index.py"],
+      "records_in_source": 470,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json;d=json.load(open('knowledge/guidelines/_rules-index.json'));print(d['count'],d['byDestiny'])\" -> 470 {'ADVISORY':321,'BLOCKING':59,'REVIEW':34,'TASTE':56}; graph side: no loader in _build_kg_explorer.py references 'guidelines/' — grep -n \"guidelines\" knowledge/_build_kg_explorer.py returns only the FAMILY LABEL string 'guidelines' used for the WCAG family.",
+      "shape": "structured",
+      "candidate_node_kind": "rule (stable id already minted: 'aca-001', 'icon-002' …; fields id/file/destiny/destinyFull/rule)",
+      "candidate_edge_kinds": ["rule→component (appliesTo)", "rule→sc (cites, the rule text already carries 'SC 1.3.1 A')", "rule→gate (enforcedBy, from destiny)", "rule→guidelineDoc (definedIn)", "rule→ruling (promotedBy)"],
+      "examples": [
+        { "file": "knowledge/guidelines/_rules-index.json", "line": 12, "text": "\"id\": \"aca-001\", \"file\": \"accessibility-content-authoring.md\", \"destiny\": \"ADVISORY\", \"rule\": \"CA-1 — structure content with lists and headings (SC 1.3.1 A): relationships conveyed by presentation must be programmatically determinable.\"" },
+        { "file": "knowledge/guidelines/icons.md", "line": 20, "text": "[BLOCKING-derivable — the icon-source gate already enforces library-only provenance] {#icon-002}" }
+      ],
+      "existing_pricing_or_ruling": "none found for graphing them. Adjacent: s114-D4 ('anything that is a versioned release shouldn't change' — guideline edits inside a released pack were REVERTED) and s212-D3 (ratifies the tone charter's temperature map). gen_rules_index.py's docstring records a 2026-07-02 Dave contract on the id scheme and the NON-INDEXED tags ([RECORDED]/[PROCESS]/[IN FORCE], 'BLESSED by Dave 2026-07-03').",
+      "size": "M",
+      "notes": "This is the single largest ready-made node payload in the repo and nothing consumes it. grep -rl '_rules-index' across the live tree finds NO live consumer — only _to_delete/ copies of shipped packs, notes/_briefs, and _FUTURE-STATE.md. Every rule already has a stable, never-renumbered id, a file, and an enforcement destiny; 34 of 59 .md files are covered by it."
+    },
+    {
+      "family": "create.hsbc guidelines — the untagged 25 documents",
+      "source_paths": ["knowledge/guidelines/*.md", "knowledge/guidelines/_INGESTION-QUEUE.md", "knowledge/guidelines/_sources"],
+      "records_in_source": 381,
+      "records_in_graph": 0,
+      "how_measured": "ls knowledge/guidelines/*.md | wc -l -> 59; grep -hcE '^#{2,3} ' *.md | paste -sd+ | bc -> 381 (## / ### headings across all 59); cat *.md | wc -w -> 58,909 words. Coverage: python3 collections.Counter(r['file'] for r in _rules-index rules) -> 34 files covered, 25 NOT covered.",
+      "shape": "semi",
+      "candidate_node_kind": "guidelineDoc (one per .md, with its headings as candidate rule children)",
+      "candidate_edge_kinds": ["guidelineDoc→rule (contains)", "guidelineDoc→component (appliesTo)", "guidelineDoc→token (governs)", "guidelineDoc→source (capturedFrom create.hsbc URL — every file carries a `> Source:` line)"],
+      "examples": [
+        { "file": "knowledge/guidelines/brand-principles.md", "line": 14, "text": "HSBC's brand design is **angular, tactically red, clearly understood, internationally relatable, logical, and creatively considered.** These aid consistency and make the brand distinctive yet recognisable." },
+        { "file": "knowledge/guidelines/brand-principles.md", "line": 3, "text": "> Source: create.hsbc brandhub (authenticated) — `about-us/Our-creative-direction.html`, `about-us/Our-Brand-Strategy.html`, `about-us.html`. Captured 2026-06-18 for RAG. Summarised, not verbatim." },
+        { "file": "knowledge/guidelines/tone-of-voice.md", "line": 32, "text": "- **The HSBC voice = four principles: Human, Insightful, Confident, Intelligent wit.**" }
+      ],
+      "existing_pricing_or_ruling": "knowledge/guidelines/_INGESTION-QUEUE.md is the standing queue for exactly this migration (gen_rules_index.py docstring: 'Legacy guideline files with no destiny tags produce no entries and no failures — they migrate to the engine-era format when re-ingested (see _INGESTION-QUEUE.md)'). No ruling found.",
+      "size": "L",
+      "notes": "The 25 uncovered files include the ones Dave named by implication: brand-principles.md, logos.md, imagery.md, forms.md, focus-indicators.md, dark-mode.md, elevation.md, calls-to-action.md, platform-web.md, platform-app.md, digital-governance.md, sustainability.md, contextual-help.md, cookie-notifications.md, horizontal-scroll.md, hexagon-masks.md, time-based-indicators.md, view-controls-sort.md, naming? (naming IS covered, 5 rules), accessibility.md, accessibility-management-roles.md, accessibility-standards-hub? (1 rule), design-system-processes.md, digital-accessibility-standards.md. brand-principles.md is structured enough to yield 6 named principles TODAY (a numbered list at :16-21) with no ingestion work."
+    },
+    {
+      "family": "brain — UX principles register",
+      "source_paths": ["knowledge/brain/principles.json"],
+      "records_in_source": 145,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json,collections;P=json.load(open('knowledge/brain/principles.json'))['principles'];print(len(P),collections.Counter(p.get('grade') for p in P))\" -> 145 Counter({'C':75,'B':28,'L':27,'D':9,'A':6}). Graph side: the 4 `principle` nodes are PRINCIPLE = {'1':'perceivable','2':'operable','3':'understandable','4':'robust'} at _build_kg_explorer.py:~140 — no code path reads knowledge/brain/.",
+      "shape": "structured",
+      "candidate_node_kind": "uxprinciple (fields already present: id, statement, family, originator, year, grade, grade_alt, grade_reason, evidence, scope_conditions, known_misreadings, refutation_probe)",
+      "candidate_edge_kinds": ["uxprinciple→family (inFamily)", "uxprinciple→evidence (evidencedBy — evidence is already a fetched URL, and `evidence:` nodes already exist in the governance family)", "uxprinciple→component (appliesTo — NOT present in the data, would have to be authored)", "uxprinciple→ruling (gradedBy, e.g. s237-D1)"],
+      "examples": [
+        { "file": "knowledge/brain/principles.json", "line": 8, "text": "\"id\": \"pr-fitts\", \"statement\": \"Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.\", \"family\": \"fam-classic-hci\", \"originator\": \"Paul Fitts\", \"year\": 1954, \"grade\": \"A\"" },
+        { "file": "knowledge/brain/principles.json", "line": 4, "text": "#236-R1 principle register. Statements are the lane's OWN WORDS (<=25 words), never the source's. Every evidence URL was fetched on 2026-09-02 or is explicitly marked NOT FETCHED / UNPROVEN. Grades: A quantitative law, B replicated effect, C expert heuristic, D contested/folk, L legal requirement." }
+      ],
+      "existing_pricing_or_ruling": "s237-D1 — Dave verbatim: 'Evidence grade is a field on every principle node. The letters A/B/C/D/L stay working labels until you name them. lets name these now'. The phrase 'principle NODE' is already Dave's word for these rows. Also s246-D1 (dashboard principles destiny tags), s222-D2, s212-D10.",
+      "size": "S",
+      "notes": "s237-D1 already speaks of a 'principle node' with a grade field — this family is the closest to already-ruled of anything in the inventory. The only blocker measured: no applies-to field exists, so principle→component edges would be authored, not derived. The `principle:` id prefix is taken by WCAG."
+    },
+    {
+      "family": "brain — polarities and polarity edges",
+      "source_paths": ["knowledge/brain/polarities.json", "knowledge/brain/_generated/polarity-edges.json", "knowledge/brain/polarity-status.json", "knowledge/brain/schema/polarity.schema.json", "knowledge/brain/stubs.json"],
+      "records_in_source": 30,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json;p=json.load(open('knowledge/brain/polarities.json'));print(len(p['polarities']))\" -> 30; polarity-edges.json counts -> {'edges': 22, 'polarities_with_edges': 18, 'polarities_without_edges': 12, 'parties_not_edgeable': 17}",
+      "shape": "structured",
+      "candidate_node_kind": "polarity (id, parties[ref/role/note], mediating_variable, links[type/ref/quote], sources) — OR no node at all: the 22 generated edges are ALREADY in graph-edge shape ({polarity, from, to, from_kind, to_kind, mediating_variable})",
+      "candidate_edge_kinds": ["uxprinciple→uxprinciple (tensionWith, carrying polarity id + mediating_variable)", "polarity→ruling (explainedBy — the `links` array already holds {type:'explainedBy', ref:'s151-D1', quote:...})"],
+      "examples": [
+        { "file": "knowledge/brain/_generated/polarity-edges.json", "line": 1, "text": "{\"polarity\": \"pl-01\", \"from\": \"pr-jakobs-law\", \"to\": \"pr-von-restorff\", \"from_kind\": \"principle\", \"to_kind\": \"principle\", \"mediating_variable\": \"LAYER: convention governs MECHANISM …\"}" },
+        { "file": "knowledge/brain/polarities.json", "line": 1, "text": "\"links\": [{\"type\": \"explainedBy\", \"ref\": \"s151-D1\", \"quote\": \"The law IS a Von Restorff budget with a legal contrast floor attached.\"}]" }
+      ],
+      "existing_pricing_or_ruling": "none found for graphing. knowledge/_validate_polarities.py exists as a gate. s151-D1 is cited BY the data (the two-red law).",
+      "size": "S",
+      "notes": "polarity-edges.json is literally a pre-built edge list with a declared derivation rule and a content_sha256 — the cheapest edge win in the repo, but it is worthless until the 145 principles are nodes. Depends on the principles family."
+    },
+    {
+      "family": "compliance — WCAG rules (PARTIALLY IN GRAPH)",
+      "source_paths": ["knowledge/compliance/rules/*.json", "knowledge/compliance/graph-index.json"],
+      "records_in_source": 38,
+      "records_in_graph": 38,
+      "how_measured": "ls knowledge/compliance/rules/*.json | wc -l -> 38 (plus EXAMPLE-contrast-rule.json, excluded by the loader's r.get('sc') test); graph-index totals -> {'rules': 38, 'components': 134, 'sc': 38}; rep from extract_extra -> applies_to_matched 826, applies_to_unmatched 0, verifiedBy 6.",
+      "shape": "structured",
+      "candidate_node_kind": "n/a — already sc / axe / guideline / principle / standard / policy",
+      "candidate_edge_kinds": ["already appliesTo / under / checkedBy / enClause / boundBy / verifiedBy"],
+      "examples": [
+        { "file": "knowledge/compliance/graph-index.json", "line": 1, "text": "\"totals\": {\"rules\": 38, \"components\": 134, \"sc\": 38}" }
+      ],
+      "existing_pricing_or_ruling": "n/a — built.",
+      "size": "S",
+      "notes": "NOT a gap for the rules themselves — this family is fully loaded and its applies_to resolves 100% (0 unmatched). What is NOT in the graph from this directory: graph-index.json's `verification` block is read only for the 6 verifiedBy edges; the axe snapshot metadata (source, source_version, snapshotted) becomes node attributes, not nodes. Nothing here is worth Dave's time."
+    },
+    {
+      "family": "assets — fonts",
+      "source_paths": ["knowledge/assets/fonts/", "knowledge/assets/WebfontUserGuide-2024.pdf", "knowledge/tokens/typography.json"],
+      "records_in_source": 111,
+      "records_in_graph": 0,
+      "how_measured": "find knowledge/assets/fonts -type f | wc -l -> 111; by extension: 44 ttf, 25 woff, 25 woff2, 10 otf, 5 pdf, 2 .DS_Store; distinct basenames -> 6 script families (Univers Latin, Univers Arabic, MtHelvetica Armenian, MYingHei Simplified Chinese, MYingHei Traditional Chinese, Tazugane Japanese) at 5 weights Th/Lt/Rg/Md/Bd plus Univers Next Pro desktop cuts. pdftotext not attempted (read-only lane, disk constrained).",
+      "shape": "prose",
+      "candidate_node_kind": "fontFamily (6) or fontFace (~35 webfont cuts) — NO MANIFEST EXISTS, one would have to be generated",
+      "candidate_edge_kinds": ["fontFace→fontFamily (weightOf)", "fontFamily→script (covers: Latin/Arabic/Armenian/SC/TC/Japanese)", "fontFamily→token (boundTo knowledge/tokens/typography.json)", "fontFamily→ruling (licensedBy s219-D5)"],
+      "examples": [
+        { "file": "knowledge/assets/fonts/", "line": 0, "text": "HSBC_MtUnivers_Latin-Rg / -Lt / -Md / -Th / -Bd / -ThCn / -ULt / -LtIt / -ThIt / -ULtIt (10 Latin cuts); HSBC_MtUnivers_Arabic-{Th,Lt,Rg,Md,Bd}; HSBC_MtMYingHei_{SChinese,TChinese}-{Th,Lt,Rg,Md,Bd}; HSBC_MtTazugane_Japanese-*; HSBC_MtHelvetica_Armen-*" }
+      ],
+      "existing_pricing_or_ruling": "s219-D5 (Q2) — a FONTS ruling exists and is cited by s220-D3 verbatim: 'the s219-D5(Q2) fonts ruling covered fonts only'. s220-D3 then extends distribution to the 30 photo derivatives on Dave's 'images are in licence, all good.' Read s219-D5 in full before proposing anything that ships fonts.",
+      "size": "M",
+      "notes": "The largest fully-unindexed asset family. 88 of 138 component metas mention 'font' in prose (grep -lio font knowledge/components/*.meta.json | wc -l) but no edge can be made because there is no font entity. A manifest generator is the prerequisite — icons and photography both have one, fonts do not. The multi-script coverage (Arabic/Armenian/CJK/Japanese) is a super-designer capability that is currently invisible."
+    },
+    {
+      "family": "assets — icons",
+      "source_paths": ["knowledge/assets/icons/icons.manifest.json", "knowledge/assets/icons/_README.md", "knowledge/assets/icons/dynamic-weight/icon-weight-decisions.json", "knowledge/tokens/icon-scale.json"],
+      "records_in_source": 666,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json;m=json.load(open('knowledge/assets/icons/icons.manifest.json'));print(m['$total'],m['$counts'])\" -> 666 {'Miscellaneous':24,'Social':7,'Touch':10,'Informative':131,'Volume and audio':16,'Media':104,'Arrows and chevrons':24,'Products and services':208,'Global controls':122,'Status Icons':20}; find knowledge/assets/icons -type f | wc -l -> 677 (666 manifested svgs + manifest, READMEs, exporter, loose menu-search.svg, weight decisions).",
+      "shape": "structured",
+      "candidate_node_kind": "icon (name, slug, file, active, fillMode, fills) + iconGroup (10)",
+      "candidate_edge_kinds": ["icon→iconGroup (inGroup)", "icon→component (usedBy — 86 metas mention icons in prose)", "icon→token (themedBy, fillMode=='currentColor' inherits icon/* colour tokens)", "icon→icon (activeVariantOf, the `active` flag already pairs them)", "icon→ruling (supersededBy s212-D9)"],
+      "examples": [
+        { "file": "knowledge/assets/icons/icons.manifest.json", "line": 1, "text": "{\"name\": \"Asset Management Subsidiary\", \"slug\": \"asset-management-subsidiary\", \"file\": \"miscellaneous/asset-management-subsidiary.svg\", \"active\": false, \"fillMode\": \"currentColor\", \"fills\": [\"#333333\"]}" },
+        { "file": "knowledge/assets/icons/_README.md", "line": 20, "text": "**Theming (`currentColor`):** icons with a *single neutral fill* (greys/black from `colour.json`) are rewritten to `fill=\"currentColor\"` so they inherit `icon/*` colour tokens." }
+      ],
+      "existing_pricing_or_ruling": "17 rulings mention icons; the load-bearing ones for the ASSET family are s212-D9 (a named library asset swap, 'Library asset: knowledge/assets/i…'), s134-D4, s182-D2 (icon contrast), s199-D2, s234-D6. No ruling on graphing them.",
+      "size": "M",
+      "notes": "Best-shaped unmapped asset family: a generated manifest with a stable slug per icon, a group taxonomy, and a fill/theming mode that is ALREADY a token relationship. icon-weight-decisions.json is a second, smaller set (4 weights x 5 sizes = 20 locked stroke decisions) that is a token-ish family of its own. 86 of 138 metas mention icons in prose — the usedBy edges would have to be authored or derived from the snippet HTML, not read from a field."
+    },
+    {
+      "family": "assets — logos",
+      "source_paths": ["knowledge/assets/logos/"],
+      "records_in_source": 12,
+      "records_in_graph": 0,
+      "how_measured": "find knowledge/assets/logos -type f | wc -l -> 13 (12 svg + _export-logos.py). The 12 are the cross product masterbrand | masterbrand-identifier | hexagon x light|dark x colour|mono.",
+      "shape": "structured",
+      "candidate_node_kind": "logo (slug encodes lockup x theme x colourMode) — no manifest, but the filenames are a perfectly regular 3x2x2 grid",
+      "candidate_edge_kinds": ["logo→theme (defaultFor — s230-D2 names the pair)", "logo→component (usedBy: headers, footers, app-shell)", "logo→guidelineDoc (governedBy knowledge/guidelines/logos.md)"],
+      "examples": [
+        { "file": "knowledge/assets/logos/", "line": 0, "text": "masterbrand-light-colour.svg · masterbrand-dark-colour.svg · masterbrand-light-mono.svg · masterbrand-dark-mono.svg · masterbrand-identifier-{light,dark}-{colour,mono}.svg · hexagon-{light,dark}-{colour,mono}.svg" }
+      ],
+      "existing_pricing_or_ruling": "s230-D2 — Dave verbatim, two lines minutes apart: 'use this as teh default logo \"masterbrand-light-colour\"' and 'use this for dark mode masterbrand-dark-colour'. The ruling's own context line: 'a cold builder copies the literal HSBC text wordmark silently while twelve masterbrand SVGs ship unbound.'",
+      "size": "S",
+      "notes": "Smallest family and the one with the most explicit existing ruling. s230-D2 already states the exact default edge (logo -[defaultFor]-> theme) in Dave's own words, and names the failure the graph would prevent: a cold builder inventing a text wordmark because the twelve SVGs are unbound. 9 of 138 metas mention logo in prose."
+    },
+    {
+      "family": "assets — photography",
+      "source_paths": ["knowledge/_PHOTOGRAPHY-MANIFEST.json", "knowledge/_PHOTOGRAPHY-MANIFEST.md", "knowledge/_PHOTOGRAPHY-KG-NOTE.md", "knowledge/assets/photography/ (NON-REPO)", "knowledge/assets/photography-web/", "knowledge/_build_photo_manifest.py"],
+      "records_in_source": 251,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json;d=json.load(open('knowledge/_PHOTOGRAPHY-MANIFEST.json'));print(len(d['rows']))\" -> 251 rows, fields: bytes, derivative, derivative_bytes, derivative_px, exif_artist, exif_copyright, exif_description, exif_description_basis, filename, height, licence_source, licence_source_basis, licence_web_statement, licensor_url, mojibake_repaired, orientation, width, xmp_source. find knowledge/assets/photography -type f | wc -l -> 251; photography-web -> 251 (the KG note records 12 at #217, then 30 at s220-D3 — the web folder has since grown to 251).",
+      "shape": "structured",
+      "candidate_node_kind": "photo (the MANIFEST ROW, per the note's own preferred-but-unchosen answer) — or licensor as a second node kind",
+      "candidate_edge_kinds": ["photo→component (usedBy — Dave named Image-block and Carousel)", "photo→licensor (licensedBy)", "photo→tag (UNRULED, #211 owed item 3)", "photo→derivative (hasDerivative)"],
+      "examples": [
+        { "file": "knowledge/_PHOTOGRAPHY-MANIFEST.json", "line": 1, "text": "{\"filename\": \"1168737.jpg\", \"width\": 1948, \"height\": 2927, \"orientation\": \"portrait\", \"exif_description\": \"Young woman smiling and hiding her face behind red book that she is reading\", \"licence_source\": \"Milles Studio / Stocksy United\"}" },
+        { "file": "knowledge/_PHOTOGRAPHY-KG-NOTE.md", "line": 24, "text": "The manifest's JSON row IS the node payload a KG would point at … Every field already states its own provenance, and absence is `null`, never a default — so a KG built on it inherits an honest UNKNOWN rather than a fabricated value." }
+      ],
+      "existing_pricing_or_ruling": "PRICED-NOT-BUILT at knowledge/_PHOTOGRAPHY-KG-NOTE.md, written at #217 under s217-D1. Rulings: s217-D1 (originals stay NON-REPO, manifest is the committed surface), s217-D2, s217-D3, s218-D3, s218-D6, s219-D2, s219-D4, s220-D3 (Dave: 'images are in licence, all good.'). #211 owes the mapping in Dave's words: 'they will need to be mapped and added to the KG'.",
+      "size": "M",
+      "notes": "The note's FIVE OPEN QUESTIONS, verbatim headings: (1) 'Node identity.' Is the node the ORIGINAL (non-repo) or the DERIVATIVE (committed) — 'A third answer — the MANIFEST ROW as the node, with the original and derivative as attributes — is the one the manifest's shape already favours, but it is not chosen here.' (2) 'Edge vocabulary to consumers.' Dave named Image-block and Carousel; whether the edge points at the COMPONENT or at a versioned SPECIMEN PAGE 'is a real choice'. (3) 'Tagging.' 'UNRULED (#211 owed item 3). 245 of 251 files carry an EXIF description, which is the free seed … Any KG that adds a `tag` edge type has silently made it.' (4) 'Licence as a first-class thing or a string.' promote each licensor to a node 'useful the moment anyone asks \"what can we actually publish?\", and unnecessary before then.' (5) 'Where the graph lives.' 'Nobody has checked whether they can carry 251 asset nodes — that check is part of the price below, not a claim made here.' Price: 'Answering the five questions with Dave: one sitting.' / 'Building the mapping once answered: small.' INVALIDATED BY: a ruling on the hosted cloud image store (answers Q1 from outside)."
+    },
+    {
+      "family": "tokens",
+      "source_paths": ["knowledge/tokens/*.json", "knowledge/tokens/themes/", "knowledge/tokens/palettes/", "knowledge/tokens/_manifests", "knowledge/tokens/_blast-radius.json"],
+      "records_in_source": 932,
+      "records_in_graph": 0,
+      "how_measured": "recursive leaf count over knowledge/tokens/*.json (a leaf = a dict with $value/value and no dict children), keys beginning $ skipped -> 932 total; largest: semantic-colour.json 393, colour.json 239, layout.json 42, typography.json 25, typography-pre-s141.json 25, opacity.json 24, spacing.json 21, typography-composites.json 20, motion.json 12, elevation.json 8, icon-scale.json 8. themes/ holds 4 files (3 .overrides.json + _themes.json). Graph side: node types present are pattern/context/component/snippet/ruling ONLY — zero token nodes; the 70 `consumes` edges all target component: ids.",
+      "shape": "structured",
+      "candidate_node_kind": "token (DTCG leaf) or tokenFile (21) — two very different sizes",
+      "candidate_edge_kinds": ["component→token (consumes — the real one, currently impossible)", "token→token (aliasOf, semantic-colour already references colour)", "token→theme (overriddenIn, 3 theme override files)", "token→ruling (governedBy — 97 rulings mention tokens)", "token→component (blastRadius, _blast-radius.json already computes it)"],
+      "examples": [
+        { "file": "knowledge/tokens/semantic-colour.json", "line": 0, "text": "393 token leaves — the largest single set of named things in the repo after the rulings; zero of them addressable in the graph." }
+      ],
+      "existing_pricing_or_ruling": "97 rulings match 'token' in `says` (ds-021, ds-025, ds-032, ds-034, ds-035, ds-036, s122-D1, s123-D1, s123-D3, s129-D1, s130-D4, s130-D5, …). s141 split the pre/post token sets (the *-pre-s141.json files). knowledge/_TOKEN-FORK-LEDGER.json and _validate_token_forks.py / _validate_token_tiers.py already govern them. No ruling on graphing them.",
+      "size": "L",
+      "notes": "BIGGEST SURPRISE OF THE LANE and a correction to the brief's premise: tokens are not 'consumed by consumes edges' — `consumes` is component->component. The design system's atomic vocabulary is 100% absent from its own knowledge graph. 932 leaf nodes would nearly double the graph, so the honest first cut is tokenFile (21 nodes) or tier (semantic vs primitive), not every leaf. _blast-radius.json already holds a computed token->consumer mapping that would be the edge payload."
+    },
+    {
+      "family": "roles (component role taxonomy)",
+      "source_paths": ["knowledge/roles.json", "knowledge/_validate_roles_resolve.py"],
+      "records_in_source": 12,
+      "records_in_graph": 0,
+      "how_measured": "python3 -c \"import json;d=json.load(open('knowledge/roles.json'));print(len(d['roles']),list(d['roles']))\" -> 12: headline-metric, status-surface, chart-panel, record-list, page-frame, page-title, wayfinding, action, arrangement, feedback, input, overlay. Each carries index, axis, definition, providers[{slug, when}].",
+      "shape": "structured",
+      "candidate_node_kind": "role",
+      "candidate_edge_kinds": ["component→role (provides — the `providers` array already names component slugs AND the condition)", "role→role (axis grouping)", "role→ruling (adoptedBy s252-D1)"],
+      "examples": [
+        { "file": "knowledge/roles.json", "line": 1, "text": "\"headline-metric\": {\"index\": 1, \"axis\": \"FFF: function \\\"how big is it, and did it move?\\\"\", \"definition\": \"One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.\", \"providers\": [{\"slug\": \"stat-card\", \"when\": \"default — label · value · delta · period, no series\"}, {\"slug\": \"kpi-tile\", \"when\": \"a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)\"}]}" }
+      ],
+      "existing_pricing_or_ruling": "s252-D1 — Dave verbatim: 'Okay these look great, go for it, qq, might we extend this in the future or do you think this is as much as we need?' — nothing struck, nothing renamed. The file's own $extension / $not-a-provider keys record the deferred extensions (input sub-roles / media+identity / needs-attention, LATER BY RULING per the #252 hook).",
+      "size": "S",
+      "notes": "Cheapest complete win in the whole inventory. The `providers` array is a ready-made, already-validated (_validate_roles_resolve.py) component->role edge list WITH a `when` condition on every edge — the 'which component do I reach for?' question a super-designer asks most, and it is not in the graph."
+    },
+    {
+      "family": "advisory signals (prose-rule findings)",
+      "source_paths": ["knowledge/_ADVISORY-SIGNALS.md", "knowledge/_validate_advisory.py"],
+      "records_in_source": 131,
+      "records_in_graph": 0,
+      "how_measured": "head of knowledge/_ADVISORY-SIGNALS.md line 5: '**143 file(s) scanned · 131 signal(s).**'; the file is 255 lines, grouped '## <snippet>.reference.html — N signal(s)' with '- **<signal-id>** — <finding> (<rule-id>)' bullets.",
+      "shape": "semi",
+      "candidate_node_kind": "none of its own — these are OCCURRENCES; the right node is the rule they cite (nam-002 etc., already in _rules-index.json)",
+      "candidate_edge_kinds": ["snippet→rule (violates/flaggedBy) — snippet nodes ALREADY EXIST in the graph (137 of them), so this family only needs the rule nodes to land"],
+      "examples": [
+        { "file": "knowledge/_ADVISORY-SIGNALS.md", "line": 9, "text": "- **caps-name** — ALL-CAPS word \"BEFORE\" — names take Title Case, caps are for acronyms (nam-002)" },
+        { "file": "knowledge/_ADVISORY-SIGNALS.md", "line": 3, "text": "Signals annotate — they never block. Promotion to blocking requires bite-tests + a Dave ruling (ADR-0005 §5)." }
+      ],
+      "existing_pricing_or_ruling": "ADR-0005 §5 (cited in the file header) governs advisory->blocking promotion. No ruling on graphing.",
+      "size": "S",
+      "notes": "Free rider on the _rules-index.json family: the signals already cite rule ids (nam-002) and already name snippet files that are already graph nodes. Land the 470 rules and these 131 edges cost almost nothing. Markdown is the only source — a JSON emitter would be needed."
+    },
+    {
+      "family": "other named sets (≥5 records, stable shape, zero graph presence)",
+      "source_paths": ["knowledge/shapes.json", "knowledge/chart-intents.json", "knowledge/when-fields.json", "knowledge/_consult-lexicon.json", "knowledge/_assertions.json", "knowledge/component-types.json", "knowledge/assets/icons/dynamic-weight/icon-weight-decisions.json", "knowledge/canon/_type-bindings.json", "knowledge/tokens/themes/_themes.json"],
+      "records_in_source": 158,
+      "records_in_graph": 0,
+      "how_measured": "per-file json len of the single non-$ top key: shapes.json shapes=23; chart-intents.json chart-intent=14; when-fields.json fields=26; _consult-lexicon.json synonyms=69; _assertions.json assertions=8; component-types.json component-type=3 (BELOW the >=5 bar, listed for completeness); icon-weight-decisions.json 4 weights x 5 sizes = 20 locked stroke decisions. Sum of the >=5 sets: 23+14+26+69+8+20 = 160 (158 excluding the 2 non-qualifying).",
+      "shape": "structured",
+      "candidate_node_kind": "varies — shape, chartIntent, whenField, synonym (probably an ALIAS on existing nodes, not a node)",
+      "candidate_edge_kinds": ["chartIntent→component (satisfiedBy)", "shape→component (hasShape)", "synonym→node (aliasOf — this one makes the graph SEARCHABLE in a designer's words)"],
+      "examples": [
+        { "file": "knowledge/_consult-lexicon.json", "line": 1, "text": "69 synonym entries — the mapping from a designer's words to the library's names; not addressable in the graph, so a search for the designer's word finds nothing." }
+      ],
+      "existing_pricing_or_ruling": "none found.",
+      "size": "S",
+      "notes": "_consult-lexicon.json is the interesting one for a super-designer: 69 synonyms are exactly the 'I said X, the library calls it Y' bridge, and the graph cannot use them today. chart-intents.json (14) pairs with the #259 chart engine."
+    }
+  ],
+  "unknowns": [
+    "knowledge/assets/WebfontUserGuide-2024.pdf was NOT read — pdftotext availability unverified and the lane is read-only with a disk constraint. It may already name the licensed families and weights, which would change the fonts family from 'no manifest exists' to 'a prose manifest exists'. Check before pricing fonts.",
+    "s219-D5 (Q2) is cited by s220-D3 as 'the fonts ruling' but its `says` field is truncated at 340 chars in this lane's read. The exact scope of what it permits for fonts is UNVERIFIED here — read it in full before any font proposal.",
+    "knowledge/assets/photography-web/ now holds 251 files; _PHOTOGRAPHY-KG-NOTE.md says 12 (#217) and s220-D3 says 30. Either the derivative set was regenerated wholesale or the note is stale. Not resolved by this lane — it changes KG-NOTE Q1 (original vs derivative as node) materially, because 'derivative-as-node means the graph cannot see 95% of the library' may no longer be true.",
+    "No persona / JTBD / user-research entity set exists anywhere in knowledge/ or notes/. The only hit for the exact word is knowledge/guidelines/accessibility-framework.md:29 '[RECORDED — persona anchor for …]', which is a single accessibility persona list inside a [RECORDED] (deliberately non-indexed) tag. If Dave expects personas in the graph, they must be CREATED first, not mapped.",
+    "Whether 932 token leaves can be laid out by _build_kg_explorer.py's Fruchterman-Reingold pass at acceptable build time is untested — the same open question KG-NOTE Q5 raises for 251 photos.",
+    "Component->asset edges (icon usedBy, font usedBy, photo usedBy) exist in PROSE only: 86/138 metas mention 'icon', 88/138 mention 'font', 18 'image', 9 'logo', 5 'illustration', 2 'photograph' (grep -lio <kw> knowledge/components/*.meta.json | wc -l). No meta has a structured asset field, so every asset->component edge would be authored or NLP-derived. That is the real cost of the asset families, not the node payloads."
+  ]
+}

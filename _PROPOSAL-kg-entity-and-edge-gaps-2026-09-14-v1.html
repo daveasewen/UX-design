@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What the knowledge graph is missing — proposal v1</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:56px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.05em}
+nav a{color:var(--grey-6);text-decoration:none}nav a:hover{color:var(--black)}nav .ctx{color:var(--black)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.rule{border:0;border-top:1px solid var(--grey-2);margin:0}
+section{padding:var(--s7) 0}
+header.profile{padding:var(--s7) 0 var(--s6)}
+header.profile .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{font-size:57px;line-height:1.05;font-weight:400;margin:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:14px;color:var(--grey-7);line-height:1.6}
+.verdict{font-size:19px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4) var(--s5);margin-top:var(--s6)}
+.stat b{display:block;font-size:43px;font-weight:200;line-height:1.05}
+.stat span{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+.dim .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim .idx{font-size:96px;font-weight:100;line-height:1;color:var(--grey-3);display:block;margin-bottom:var(--s2)}
+.dim .name{font-size:19px;font-weight:500}
+ol,ul{padding-left:1.25rem;margin:0 0 var(--s3)}li{margin-bottom:var(--s2)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 var(--s3);line-height:1.5}
+th,td{text-align:left;padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+th{font-weight:500;color:var(--grey-7);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+td.n{font-variant-numeric:tabular-nums}
+table.fam th:nth-child(1){width:15%}table.fam th:nth-child(2){width:15%}table.fam th:nth-child(3){width:22%}table.fam th:nth-child(4){width:18%}table.fam th:nth-child(5){width:24%}table.fam th:nth-child(6){width:6%}
+table.edg th:nth-child(1){width:20%}table.edg th:nth-child(2){width:24%}table.edg th:nth-child(3){width:14%}table.edg th:nth-child(4){width:36%}table.edg th:nth-child(5){width:6%}
+.tbl{overflow-x:auto}
+.cmp{background:var(--grey-1)}
+.cmp .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.cmp .big{font-size:34px;line-height:1.2}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin-bottom:var(--s2)}
+.dist .ours .h{color:var(--accent)}
+.quote{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s4);font-size:19px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+details{border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+summary{cursor:pointer;font-weight:500;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
+.tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--grey-3);padding:0 6px;color:var(--grey-7);margin-left:6px;vertical-align:middle}
+.tag.red{border-color:var(--accent);color:var(--accent)}
+footer{padding:var(--s5) 0;font-size:14px;color:var(--grey-6)}
+@media (max-width:760px){header.profile .grid,.dim .grid,.cmp .grid,.dist{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}h1{font-size:43px}.dim .idx{font-size:64px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="#">← Apollo</a><span class="ctx">Proposal · knowledge graph</span><span>#269 · 2026-09-14 · v1 · NOTHING ENACTED</span></div></nav>
+
+<header class="profile"><div class="wrap">
+  <p class="label">Proposal for ruling</p>
+  <div class="grid">
+    <div><h1>What the knowledge graph is missing</h1></div>
+    <div class="meta">Three research lanes scoured everything collected under <code>knowledge/</code> and compared it with what the graph actually holds; a fourth lane tried to break their numbers. Every count below was re-measured by the verifier; where a lane was wrong, the corrected figure is shown. Your words that set the brief: <em>"the assets aren't represented either, no font, no icons, no photography, what else might we be missing that is important for the super-designer we are making?"</em></div>
+  </div>
+</div></header>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Verdict</p>
+  <p class="verdict"><strong>The graph holds the components and their governance, and almost nothing the components are made of.</strong> Tokens, icons, fonts, logos, photography, the 470 tagged create.hsbc rules, the 145 graded UX principles and the 12 roles are all collected, mostly structured, and all at zero in the graph. The four "principle" and twelve "guideline" nodes that exist are WCAG groupings — not ours.</p>
+  <p class="verdict"><strong>Recommendation:</strong> land the families whose node payload already exists and already has a ruling, in this order — roles, tagged rules, principles, icons, logos — before any new entity kind is invented. Tokens go in as files or tiers first, never 932 leaves. Photography and fonts each wait on one decision of yours.</p>
+  <div class="stats">
+    <div class="stat"><b>932 → 0</b><span>token leaves in source → in graph</span></div>
+    <div class="stat"><b>666 → 0</b><span>icons, manifest exists</span></div>
+    <div class="stat"><b>470 → 0</b><span>tagged guideline rules, stable ids</span></div>
+    <div class="stat"><b>145 → 0</b><span>graded UX principles</span></div>
+    <div class="stat"><b>251 → 0</b><span>photographs, manifest exists</span></div>
+    <div class="stat"><b>111 → 0</b><span>font files, no manifest</span></div>
+    <div class="stat"><b>12 → 0</b><span>roles, ruled s252-D1</span></div>
+    <div class="stat"><b>0 / 137</b><span>components that cite a principle</span></div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">01</span><span class="name">What the graph holds today</span></div>
+  <div>
+    <p><strong>Base graph:</strong> 890 nodes — 380 patterns, 222 contexts, 137 components, 137 snippets, 14 rulings — joined by 1,267 edges of 16 types. The big four are commonPattern (421), usedInContext (367), renderedBy (137) and containedBy (88).</p>
+    <p><strong>Two extra families</strong> ride on top: governance (733 evidence, 553 artefacts, 439 rulings, 92 sessions; 3,605 edges) and guidelines — which is WCAG only: 64 axe rules, 38 success criteria, 12 WCAG guideline groups, 4 WCAG principles.</p>
+    <p><strong>Two premises corrected by measurement.</strong> The <code>consumes</code> edge is component→component, not component→token: there are no token nodes of any kind. And <code>knowledge/guidelines/*.md</code> and <code>brain/principles.json</code> contribute zero nodes — the guideline and principle names in the graph are WCAG's, which also means the prefixes <code>guideline:</code> and <code>principle:</code> are already taken.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">02 · Entity families collected but not in the graph</p>
+  <div class="tbl"><table class="fam">
+    <tr><th>Family</th><th>In source</th><th>Node payload ready?</th><th>Prior ruling / pricing</th><th>What blocks it</th><th>Size</th></tr>
+    <tr><td><strong>Roles</strong> — <code>roles.json</code></td><td class="n">12 roles · 108 provider entries</td><td>Yes — providers array is a component→role edge list; 81 of 108 carry a <code>when</code> (the whole <code>input</code> role has none)</td><td>s252-D1 — "Okay these look great, go for it"</td><td>Nothing. Two homes for membership (roles.json vs meta <code>provides</code>) — generate from the metas, the ruled canon</td><td>S</td></tr>
+    <tr><td><strong>Tagged guideline rules</strong> — <code>guidelines/_rules-index.json</code></td><td class="n">470 (59 BLOCKING · 321 ADVISORY · 34 REVIEW · 56 TASTE)</td><td>Yes — stable ids (<code>aca-001</code>, <code>icon-002</code>), file, destiny, rule text</td><td>None for graphing. Already consumed by two builders (consult index, instrument fit) — not orphaned</td><td>Nothing. 38 components already cite 31 of the ids in prose; 131 advisory-signal findings already name rule ids and snippet nodes</td><td>M</td></tr>
+    <tr><td><strong>Untagged guideline docs</strong> — 25 files</td><td class="n">381 headings (brand-principles, logos, imagery, forms, dark-mode, elevation, CTAs…)</td><td>Semi — headings are rules; <code>_INGESTION-QUEUE.md</code> is the standing queue</td><td>gen_rules_index: "legacy files with no destiny tags produce no entries"</td><td>Tagging work. <code>brand-principles.md:16–21</code> yields six named principles today</td><td>L</td></tr>
+    <tr><td><strong>UX principles</strong> — <code>brain/principles.json</code></td><td class="n">145 (A 6 · B 28 · C 75 · D 9 · L 27)</td><td>Yes — id, statement, family, grade, evidence URL, scope, misreadings, refutation probe</td><td>s237-D1 — "Evidence grade is a field on every principle node"</td><td>Prefix collision with WCAG <code>principle:</code>; no applies-to field, so principle→component edges must be authored. 0 of 137 metas cite one</td><td>S</td></tr>
+    <tr><td><strong>Polarities</strong> — <code>brain/polarities.json</code></td><td class="n">30 · 22 pre-built edges</td><td>Yes — <code>polarity-edges.json</code> is already in edge shape with a mediating variable</td><td>Cites s151-D1 (two-red law)</td><td>Depends on principles landing first</td><td>S</td></tr>
+    <tr><td><strong>Icons</strong> — <code>assets/icons/</code></td><td class="n">666 svg · 10 groups · 20 weight decisions</td><td>Yes — <code>icons.manifest.json</code>: slug, group, active flag, fillMode</td><td>s212-D9, s182-D2, s234-D6 (asset and contrast rulings; none on graphing)</td><td>Nothing. 19 metas name an icon path; 86 mention icons in prose. <code>fillMode: currentColor</code> is already a token relation; the active flag is already the outlined↔filled pair</td><td>M</td></tr>
+    <tr><td><strong>Logos</strong> — <code>assets/logos/</code></td><td class="n">12 svg (lockup × theme × colour mode)</td><td>Regular filename grid; no manifest</td><td>s230-D2 — your own default pair, and the failure it prevents (a cold builder inventing a text wordmark)</td><td>Nothing — the smallest family with the most explicit ruling</td><td>S</td></tr>
+    <tr><td><strong>Photography</strong> — <code>_PHOTOGRAPHY-MANIFEST.json</code></td><td class="n">251 rows · 251 web derivatives</td><td>Yes — the manifest row (licence, source, size, orientation, description), absence as null</td><td>PRICED NOT BUILT — <code>_PHOTOGRAPHY-KG-NOTE.md</code> (#217, s217-D1) with five open questions</td><td><strong>Yours:</strong> node identity (original / derivative / manifest row), tagging vocabulary (#211 item 3). The note says 12 derivatives; the folder has 251 — the note is stale</td><td>M</td></tr>
+    <tr><td><strong>Fonts</strong> — <code>assets/fonts/</code></td><td class="n">111 files · 6 script families (Latin, Arabic, Armenian, SC, TC, Japanese)</td><td><strong>No manifest at all</strong> — the only asset family without one</td><td>s219-D5 (Q2) fonts ruling — scope unread in full by the lane</td><td>A manifest generator first. 88 of 137 metas mention "font" but nothing can be pointed at</td><td>M</td></tr>
+    <tr><td><strong>Tokens</strong> — <code>tokens/*.json</code></td><td class="n">932 leaves · 21 files · 3 theme overrides</td><td>Yes at leaf level; <code>_blast-radius.json</code> already computes token→consumer</td><td>84 rulings mention tokens; none on graphing them</td><td>Scale — 932 leaves nearly double the graph and the layout pass is untested at that size. <strong>Yours:</strong> leaf, file or tier</td><td>L</td></tr>
+    <tr><td><strong>DESK address fields</strong> — <code>shapes.json</code>, <code>chart-intents.json</code>, <code>when-fields.json</code></td><td class="n">26 <code>provides</code> · 26 <code>answers</code> · 26 <code>shape</code> · 69 <code>when</code> pairs</td><td>Yes — closed stores with a live refusing resolver</td><td>s254-D2, s251-D11</td><td>Nothing. The cheapest real win alongside roles: three closed vocabularies already validated against metas, carried as nothing</td><td>S</td></tr>
+    <tr><td><strong>Synonyms</strong> — <code>_consult-lexicon.json</code></td><td class="n">69</td><td>Alias on existing nodes, not a node</td><td>—</td><td>Nothing — this is what makes the graph searchable in a designer's words</td><td>S</td></tr>
+    <tr><td><strong>Personas / JTBD / user research</strong></td><td class="n">0</td><td>Does not exist anywhere in the repo (one accessibility persona line)</td><td>—</td><td>Must be created, not mapped — see 04</td><td>—</td></tr>
+  </table></div>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">03 · Candidate edge types, from the components' own metas</p>
+  <p>Thirty components read in full across every family, then every collected document that says something about each one. Twelve edge types survived the bar of three real evidence lines across two or more components. The vocabulary is closed by ruling #75 — these are proposals; none exists.</p>
+  <div class="tbl"><table class="edg">
+    <tr><th>Edge</th><th>Answers the designer's question</th><th>Evidence</th><th>Overlap with what exists</th><th>Cost</th></tr>
+    <tr><td><code>setIn</code> component→type composite</td><td>If this type composite changes, which components re-typeset?</td><td class="n">154 refs · 57 components</td><td>None — the blast-radius gate computes it, the graph doesn't carry it. Class→composite hop is convention, not a file</td><td>M</td></tr>
+    <tr><td><code>citesGuidelineRule</code> component→rule</td><td>Which house rules does this obey, and are any BLOCKING?</td><td class="n">116 citations · 38 components</td><td>Differs from <code>governedBy</code> (your rulings). A floor, not a census — 99 components obey rules they never name</td><td>S</td></tr>
+    <tr><td><code>acceptsCapability</code> component→capability</td><td>What can I legally put in this slot, and who supplies it?</td><td class="n">99 · 35 components</td><td>Slot contracts ruled s140-D2, carried nowhere. Only the accepts half exists — no <code>providesCapability</code></td><td>M</td></tr>
+    <tr><td><code>behaviourFrom</code> component→script / partial</td><td>If this script changes, which components lose behaviour — and what works with JS off?</td><td class="n">87 · 33 components</td><td><code>renderedBy</code> points at the snippet, not the behaviour chain</td><td>S</td></tr>
+    <tr><td><code>capturedFrom</code> component→figma node / code path</td><td>Where did this geometry come from, and what shares the source?</td><td class="n">77 · 77 components</td><td>None — provenance is read by receipts, never an edge. Figma ids are inconsistent and unvalidated</td><td>S</td></tr>
+    <tr><td><code>yieldsTo</code> / <code>beats</code> component→component</td><td>This nearly fits — which sibling instead, on what test?</td><td class="n">69 pairs · 26 components</td><td><code>mustNotNeighbour</code> is adjacency; nothing says "not this one, that one". Parsed from <code>when</code> prose; the ranking has three homes</td><td>M</td></tr>
+    <tr><td><code>bindsToken</code> component→token</td><td>Which components break if this token is renamed?</td><td class="n">48 · 38 components</td><td>None. #145 finding: no validator resolves a <code>binds</code> address today. Needs token nodes (02)</td><td>M</td></tr>
+    <tr><td><code>providesRole</code> · <code>answersIntent</code> · <code>hasDataShape</code></td><td>What slot does this fill · what question does it answer · what data shape does it take?</td><td class="n">24 · 26 · 26 components</td><td>None — the DESK address fields, resolver-checked, carried as nothing</td><td>S</td></tr>
+    <tr><td><code>redirectsTo</code> component→component <span class="tag">noisy</span></td><td>I was told not to do this — what should I use?</td><td class="n">153 pairs · 98 components</td><td>Name co-occurrence in antiPatterns, not a detected verb (image-block names Skeleton-loader nine times as a source, not a substitute). Candidate list only</td><td>L</td></tr>
+    <tr><td><code>conformsTo</code> component→SC <span class="tag">near-duplicate</span></td><td>Which success criteria apply?</td><td class="n">834 · 135 components</td><td>826 of 834 pairs already exist as <code>appliesTo</code> from the rule side. Residue is a ten-pair reconciliation, not an edge type — your call</td><td>S</td></tr>
+    <tr><td><code>usesIcon</code> component→icon <span class="tag">under-counted</span></td><td>Which icons does this component use?</td><td class="n">19 metas name an icon path (lane said 4; verifier measured 19)</td><td>Needs icon nodes (02). The lane dismissed it on a count 4.75× too low — it clears the bar</td><td>S</td></tr>
+  </table></div>
+  <p><strong>Not measured, needs a store first:</strong> hasState / hasVariant (345 variants across 124 components, no variant node kind) and adaptsAt / breakpoint (breakpoints live as inline pixel prose, no breakpoint store).</p>
+</div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">04</span><span class="name">What mature systems carry that we don't</span></div>
+  <div>
+    <p>Thirty-one external sources, thirteen fetched in full (DTCG, Figma modes and Code Connect, Supernova, zeroheight, Knapsack, Storybook, GOV.UK, Carbon, Atlassian, USWDS, Polaris); the rest are snippet-level and marked so. Eight entity kinds a super-designer needs that we do not have, ranked:</p>
+    <ol>
+      <li><strong>Content standard as a typed node</strong> — tone dimensions, reading level, error-copy rule, with an edge to a component. Polaris, Carbon, Atlassian and GOV.UK all carry content as a first-class track; ours is prose, so no gate can test a sentence.</li>
+      <li><strong>End-user persona / job-to-be-done</strong>, distinct from our slot roles. GOV.UK organises its whole pattern library by user task. Nothing of the kind exists here; it would be created, not mapped — and the caution is real: persona sets are the classic ontology that rots, so bind each to an evidence node.</li>
+      <li><strong>Mode axis</strong> (theme / density / contrast / locale / size) with defaults and inheritance — Figma's variable modes. We fan out four themes plus light/dark as parallel token sets.</li>
+      <li><strong>Lifecycle status and owner per node</strong> — zeroheight, Carbon, GOV.UK. One field; it tells the agent what it may reach for.</li>
+      <li><strong>Evidence chain for the user side</strong> — finding → evidence → recommendation, and per-component accessibility test results as nodes (USWDS publishes them). Our chain covers our decisions, not the user.</li>
+      <li><strong>Prop- and variant-level code binding</strong> — Figma Code Connect's granularity. We bind at component level.</li>
+      <li><strong>Locale / script / direction</strong> with font fallback — Spectrum, Fluent. Our six font script families are exactly this capability, invisible.</li>
+      <li><strong>WCAG technique / failure layer</strong> under the success criterion — the negative knowledge the agent needs most. Ours is flat against the SC.</li>
+    </ol>
+    <p><strong>Two cautions from the sources themselves.</strong> DTCG says tools should not infer meaning from token groups — a folder path must not become a semantic edge. And six of these domains (research, WCAG, axe, content, tone, rights) share one shape: a claim with a typed link to what justifies it. Build one evidence shape, not six.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section class="cmp"><div class="wrap"><div class="grid">
+  <div><p class="label">Recommended order</p><p class="big">Ready-made and already ruled first; new entity kinds last.</p></div>
+  <div>
+    <ol>
+      <li><strong>Roles + the DESK address fields</strong> — providesRole, answersIntent, hasDataShape, yieldsTo. Closed stores, live resolvers, your ruling on record. A day's lane.</li>
+      <li><strong>The 470 tagged rules</strong> as <code>rule:</code> nodes, with citesGuidelineRule from the 38 metas that cite them and the 131 advisory-signal edges riding free.</li>
+      <li><strong>The 145 principles + 22 polarity edges</strong> — under a new prefix, because <code>principle:</code> is WCAG's.</li>
+      <li><strong>Icons then logos</strong> — manifests exist; usesIcon (19), the active pair edge, fillMode→token, and s230-D2's logo→theme default.</li>
+      <li><strong>setIn, behaviourFrom, capturedFrom, acceptsCapability</strong> — component-side edges to targets that exist today.</li>
+      <li><strong>Tokens as files or tiers</strong>, then bindsToken; leaves only if the layout pass survives a measured trial.</li>
+      <li><strong>Photography and fonts</strong> — each after its decision below.</li>
+      <li><strong>New entity kinds</strong> from 04 — content standard first, then lifecycle status, then persona bound to evidence.</li>
+    </ol>
+    <div class="dist">
+      <div><div class="h">Today</div>A component graph with governance on top. The agent can find a component and its ruling; it cannot find the token, icon, font, rule, principle or role the component is made of or judged by.</div>
+      <div class="ours"><div class="h">Proposed</div>The same graph with its atoms and its house rules as nodes, joined by edges that answer a designer's questions: what is this set in, which rule binds it, which icon does it use, which sibling beats it, and what breaks if I change this.</div>
+    </div>
+    <p class="quote">"Evidence grade is a field on every principle node." — s237-D1. The word <em>node</em> was yours a fortnight ago; the node does not exist yet.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Yours — six decisions, one word each</p>
+  <ol>
+    <li><strong>Go on 1–5 of the recommended order?</strong> All are ready-made payloads to existing or ruled targets; nothing new is invented. I'd say yes.</li>
+    <li><strong>Prefix for our UX principles</strong> — <code>ux:</code> is my pick, since <code>principle:</code> is WCAG's.</li>
+    <li><strong>Tokens: file, tier, or leaf?</strong> Tier (semantic vs primitive) is my pick — it answers the blast-radius question without 932 nodes.</li>
+    <li><strong>Photography node identity</strong> — the manifest row, with original and derivative as attributes, which is the shape the note itself favours.</li>
+    <li><strong>Should component metas cite principles?</strong> Zero do today; this is authored work, not derived. I'd start with the six A-grade laws only.</li>
+    <li><strong>Which of the new entity kinds enter scope now</strong> — content standard and lifecycle status are cheap and unrisky; persona is the one that rots.</li>
+  </ol>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <details><summary>Technical</summary>
+    <p style="margin-top:var(--s3)"><strong>Lane files:</strong> <code>notes/_lanes/269/kg-gaps/A-inventory.json</code> (13 families, 6 unknowns) · <code>B-component-edges.json</code> (12 candidate types, 14 per-component findings, 9 unknowns) · <code>C-external.json</code> (31 sources, 13 fetched, 16 entity types, 27 edge types, 15 ranked gaps, 8 cautions) · <code>V-verify.json</code>. All four lanes were read-only; no meta, generator or graph was touched; <code>gen_kg_edges.py</code> was not run.</p>
+    <p><strong>Verifier verdict:</strong> 65 numeric claims re-run — 53 exact, 12 wrong, all corrected above (roles <code>when</code> 81/108 not 108/108; "nothing consumes _rules-index" false — <code>_build_consult_index.py:53</code>, <code>_build_instrument_fit.py:60</code>; rulings mentioning tokens 84 not 97, icons 14 not 17; usesIcon 19 not 4; capability 99/35; provenance 77/77; antiPattern pairs 153/98; token-block keys 1,141). 133 evidence lines: 107 verbatim at the cited line, 22 content-true with a wrong line or unmarked elision, 4 lane prose in a file:line costume, 0 fabricated. Structural claims (a)(b)(d)(f) hold; (e) fails; (c) half-false. 16 lane sentences were rulings-in-disguise and are not carried here as findings.</p>
+    <p><strong>Graph census command:</strong> <code>python3 -c "import sys;sys.path.insert(0,'knowledge');sys.argv=['x'];import _build_kg_explorer as b;n,e=b.extract();n2,e2,r=b.extract_extra(n,e)"</code> → 890 / 1,267 / 1,941 / 3,605.</p>
+    <p><strong>Prior rulings cited:</strong> s252-D1 (roles) · s237-D1 (principle node, grade field) · s230-D2 (logo defaults) · s217-D1..D3, s218-D3, s218-D6 (photography) · s219-D5 Q2 (fonts) · s212-D9, s182-D2, s234-D6 (icons) · s140-D2 (slots) · s142-D1 / #145 (binds) · s254-D2, s251-D11 (shapes, intents) · s151-D1 (polarities cite it) · #75 (closed edge vocabulary) · s133-D1 (real targets, never prose).</p>
+    <p><strong>Not measured / open:</strong> <code>WebfontUserGuide-2024.pdf</code> unread; s219-D5 scope unread in full; photography-web now 251 files vs the note's 12; 7 rule-shaped ids in metas (<code>ds-020</code>, <code>ds-005</code>…) resolve to no rule namespace found; layout-pass cost at +932 or +251 nodes untested.</p>
+  </details>
+</div></section>
+
+<footer><div class="wrap">Apollo · proposal v1 · 2026-09-14 · lanes A/B/C/V (Opus) under a Fable conductor · nothing enacted</div></footer>
+</body>
+</html>

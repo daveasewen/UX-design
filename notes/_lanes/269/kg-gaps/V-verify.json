@@ -1,0 +1,752 @@
+{
+ "generated": "2026-09-14",
+ "lane": "269-V",
+ "method": "Every how_measured command in A and B was re-run (or an equivalent written) against the working tree on 2026-09-14; the graph was re-extracted by importing knowledge/_build_kg_explorer.py and calling extract()/extract_extra(). Every {file,line,text} evidence item was opened at its line +/-2 and, on a miss, searched whole-file after whitespace/escape normalisation and after splitting elided quotes on '...'. READ-ONLY; no generator run, no git, no other file written.",
+ "numeric_claims": [
+  {
+   "file": "A",
+   "claim": "base_nodes",
+   "claimed": 890,
+   "measured": 890,
+   "match": true,
+   "command": "import _build_kg_explorer as b; n,e=b.extract(); len(n)"
+  },
+  {
+   "file": "A",
+   "claim": "base_node_types pattern380/context222/component137/snippet137/ruling14",
+   "claimed": "as stated",
+   "measured": "identical",
+   "match": true,
+   "command": "Counter(x['type'] for x in n)"
+  },
+  {
+   "file": "A",
+   "claim": "base_edges",
+   "claimed": 1267,
+   "measured": 1267,
+   "match": true,
+   "command": "len(e)"
+  },
+  {
+   "file": "A",
+   "claim": "base_edge_types (16 types, commonPattern 421 … delegatesTo 1)",
+   "claimed": "as stated",
+   "measured": "identical, all 16",
+   "match": true,
+   "command": "Counter(x['type'] for x in e)"
+  },
+  {
+   "file": "A",
+   "claim": "extra_nodes",
+   "claimed": 1941,
+   "measured": 1941,
+   "match": true,
+   "command": "n2,e2,rep=b.extract_extra(n,e); len(n2)"
+  },
+  {
+   "file": "A",
+   "claim": "extra_node_types incl governance/artefact 553 + guidelines/artefact 4",
+   "claimed": "as stated",
+   "measured": "identical (fam-split confirmed: artefact 557 = 553 governance + 4 guidelines)",
+   "match": true,
+   "command": "Counter(x['fam']+'/'+x['type'] for x in n2)"
+  },
+  {
+   "file": "A",
+   "claim": "extra_edges",
+   "claimed": 3605,
+   "measured": 3605,
+   "match": true,
+   "command": "len(e2)"
+  },
+  {
+   "file": "A",
+   "claim": "consumes edges all target component:",
+   "claimed": 70,
+   "measured": 70,
+   "match": true,
+   "command": "Counter(x['t'].split(':')[0] for x in e if x['type']=='consumes') -> {'component':70}; sources also 100% component"
+  },
+  {
+   "file": "A",
+   "claim": "rep.applies_to_matched / unmatched",
+   "claimed": "826 / 0",
+   "measured": "826 / 0 (unmatched_applies_to == [])",
+   "match": true,
+   "command": "rep['applies_to_matched'], rep['unmatched_applies_to']"
+  },
+  {
+   "file": "A",
+   "claim": "verifiedBy edges",
+   "claimed": 6,
+   "measured": 6,
+   "match": true,
+   "command": "len([x for x in e2 if x['type']=='verifiedBy'])"
+  },
+  {
+   "file": "A",
+   "claim": "_rules-index.json count + byDestiny",
+   "claimed": "470 {ADVISORY:321,BLOCKING:59,REVIEW:34,TASTE:56}",
+   "measured": "470 {ADVISORY:321,BLOCKING:59,REVIEW:34,TASTE:56}; len(rules)==470",
+   "match": true,
+   "command": "json d['count'], d['byDestiny'], len(d['rules'])"
+  },
+  {
+   "file": "A",
+   "claim": "knowledge/guidelines/*.md file count",
+   "claimed": 59,
+   "measured": 59,
+   "match": true,
+   "command": "ls knowledge/guidelines/*.md | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "## / ### headings across the 59 md",
+   "claimed": 381,
+   "measured": 381,
+   "match": true,
+   "command": "grep -hcE '^#{2,3} ' | sum"
+  },
+  {
+   "file": "A",
+   "claim": "words across the 59 md",
+   "claimed": 58909,
+   "measured": 58909,
+   "match": true,
+   "command": "cat *.md | wc -w"
+  },
+  {
+   "file": "A",
+   "claim": "md files covered by the rules index / not covered",
+   "claimed": "34 / 25",
+   "measured": "34 / 25; all 22 files A names as uncovered are genuinely uncovered, and naming.md is covered with exactly 5 rules as A states",
+   "match": true,
+   "command": "Counter(r['file'] for r in rules)"
+  },
+  {
+   "file": "A",
+   "claim": "brain/principles.json principles + grades",
+   "claimed": "145 {C:75,B:28,L:27,D:9,A:6}",
+   "measured": "145 {C:75,B:28,L:27,D:9,A:6}",
+   "match": true,
+   "command": "len(P), Counter(p['grade'])"
+  },
+  {
+   "file": "A",
+   "claim": "polarities",
+   "claimed": 30,
+   "measured": 30,
+   "match": true,
+   "command": "len(d['polarities'])"
+  },
+  {
+   "file": "A",
+   "claim": "polarity-edges counts",
+   "claimed": "{edges:22, with:18, without:12, parties_not_edgeable:17}",
+   "measured": "identical; len(edges)==22",
+   "match": true,
+   "command": "d['counts']"
+  },
+  {
+   "file": "A",
+   "claim": "compliance/rules/*.json files",
+   "claimed": "38 (plus EXAMPLE-contrast-rule.json, excluded by the loader)",
+   "measured": "38 files total in rules/; EXAMPLE-contrast-rule.json is NOT in rules/ — it sits at knowledge/compliance/EXAMPLE-contrast-rule.json and is never globbed by sc_rules()",
+   "match": false,
+   "command": "ls knowledge/compliance/rules/ | wc -l -> 38; find . -name 'EXAMPLE*contrast*'"
+  },
+  {
+   "file": "A",
+   "claim": "graph-index totals",
+   "claimed": "{rules:38, components:134, sc:38}",
+   "measured": "{rules:38, components:134, sc:38}",
+   "match": true,
+   "command": "json"
+  },
+  {
+   "file": "A",
+   "claim": "font files",
+   "claimed": "111 (44 ttf, 25 woff, 25 woff2, 10 otf, 5 pdf, 2 .DS_Store)",
+   "measured": "111 (44 ttf, 25 woff2, 25 woff, 10 otf, 5 pdf, 2 .DS_Store)",
+   "match": true,
+   "command": "find knowledge/assets/fonts -type f | wc -l; ext histogram"
+  },
+  {
+   "file": "A",
+   "claim": "icons manifest $total + $counts",
+   "claimed": "666 with the 10-group histogram",
+   "measured": "666, histogram identical",
+   "match": true,
+   "command": "json m['$total'], m['$counts']"
+  },
+  {
+   "file": "A",
+   "claim": "files under assets/icons",
+   "claimed": 677,
+   "measured": 677,
+   "match": true,
+   "command": "find knowledge/assets/icons -type f | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "files under assets/logos",
+   "claimed": "13 (12 svg + _export-logos.py)",
+   "measured": 13,
+   "match": true,
+   "command": "find knowledge/assets/logos -type f | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "photography manifest rows",
+   "claimed": 251,
+   "measured": 251,
+   "match": true,
+   "command": "len(d['rows'])"
+  },
+  {
+   "file": "A",
+   "claim": "photography / photography-web file counts",
+   "claimed": "251 / 251",
+   "measured": "251 / 251",
+   "match": true,
+   "command": "find … -type f | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "245 of 251 rows carry an EXIF description",
+   "claimed": 245,
+   "measured": 245,
+   "match": true,
+   "command": "sum(1 for r in rows if r['exif_description'])"
+  },
+  {
+   "file": "A",
+   "claim": "token leaves across knowledge/tokens/*.json",
+   "claimed": 932,
+   "measured": 932,
+   "match": true,
+   "command": "recursive leaf count, $-keys skipped"
+  },
+  {
+   "file": "A",
+   "claim": "per-file token leaf ranking ('largest: … spacing.json 21, typography-composites.json 20 …')",
+   "claimed": "the 11-file list given",
+   "measured": "total is right but the ranking silently omits four files that are LARGER than several listed: _spacing-hsbc-general.json 23, layout-pre-s141.json 23, _typography-hsbc-general.json 22, spacing-pre-s141.json 17",
+   "match": false,
+   "command": "per-file leaf counts sorted desc"
+  },
+  {
+   "file": "A",
+   "claim": "themes/ holds 4 files",
+   "claimed": 4,
+   "measured": 4,
+   "match": true,
+   "command": "ls knowledge/tokens/themes/ | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "token FILES (the 'tokenFile (21)' first-cut)",
+   "claimed": 21,
+   "measured": 21,
+   "match": true,
+   "command": "ls knowledge/tokens/*.json | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "roles.json roles",
+   "claimed": "12, the 12 slugs listed",
+   "measured": "12, identical slugs in order",
+   "match": true,
+   "command": "len(d['roles']), list(d['roles'])"
+  },
+  {
+   "file": "A",
+   "claim": "'the providers array … WITH a `when` condition on EVERY edge'",
+   "claimed": "108/108",
+   "measured": "81 of 108 provider entries carry a non-null `when`; 27 carry when:null (the whole `input` role among them)",
+   "match": false,
+   "command": "sum(1 for k,v in roles.items() for p in v['providers'] if p.get('when'))"
+  },
+  {
+   "file": "A",
+   "claim": "_ADVISORY-SIGNALS.md '143 file(s) scanned · 131 signal(s)' at line 5; 255 lines",
+   "claimed": "131 / 143 / 255",
+   "measured": "identical, header at line 5, wc -l 255",
+   "match": true,
+   "command": "sed -n 5p; wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "other named sets: shapes 23, chart-intent 14, when-fields 26, lexicon 69, assertions 8, component-type 3, icon-weight 4x5=20",
+   "claimed": "as stated",
+   "measured": "identical, all seven",
+   "match": true,
+   "command": "per-file json len of the single non-$ key"
+  },
+  {
+   "file": "A",
+   "claim": "'Sum of the >=5 sets: 23+14+26+69+8+20 = 160 (158 excluding the 2 non-qualifying)' vs records_in_source 158",
+   "claimed": "158 / 160",
+   "measured": "the arithmetic is incoherent: 23+14+26+69+8+20 = 160 and that sum ALREADY excludes component-type(3); 160-3 = 157, never 158. records_in_source should read 160.",
+   "match": false,
+   "command": "arithmetic on the lane's own figures"
+  },
+  {
+   "file": "A",
+   "claim": "metas mentioning a word in prose: font 88, icon 86, image 18, logo 9, illustration 5, photograph 2 (of 138)",
+   "claimed": "as stated",
+   "measured": "88 / 86 / 18 / 9 / 5 / 2 of 138 — all six exact",
+   "match": true,
+   "command": "grep -lio <kw> knowledge/components/*.meta.json | wc -l"
+  },
+  {
+   "file": "A",
+   "claim": "'97 rulings match token in `says`'",
+   "claimed": 97,
+   "measured": "84 rulings contain 'token' in says (142 contain it anywhere in the record). Neither reading is 97.",
+   "match": false,
+   "command": "sum(1 for r in rulings if 'token' in (r['says'] or '').lower())"
+  },
+  {
+   "file": "A",
+   "claim": "'17 rulings mention icons'",
+   "claimed": 17,
+   "measured": "14 in says, 22 anywhere in the record. Neither reading is 17.",
+   "match": false,
+   "command": "same, key 'icon'"
+  },
+  {
+   "file": "A",
+   "claim": "brand-principles.md yields 6 named principles TODAY from a numbered list at :16-21",
+   "claimed": 6,
+   "measured": "6 numbered bold principles at lines 16-21 exactly (Angular, Tactically red, Clearly understood, Internationally relatable, Logical, Creatively considered)",
+   "match": true,
+   "command": "sed -n '14,22p'"
+  },
+  {
+   "file": "B",
+   "claim": "components_read list length",
+   "claimed": 32,
+   "measured": "32, and all 32 slugs exist as metas",
+   "match": true,
+   "command": "len(list); membership test"
+  },
+  {
+   "file": "B",
+   "claim": "corpus = 137 non-EXAMPLE metas",
+   "claimed": 137,
+   "measured": "137 (138 files incl. one EXAMPLE-)",
+   "match": true,
+   "command": "glob minus EXAMPLE-"
+  },
+  {
+   "file": "B",
+   "claim": "guideline-rule citations / distinct ids / components",
+   "claimed": "116 / 31 / 38",
+   "measured": "116 / 31 / 38 — 116 is reproducible only as DISTINCT (component, rule-id) PAIRS; raw occurrences are 185",
+   "match": true,
+   "command": "regex ([a-z]{2,4}(-[a-z]+)?-\\d{3}) per meta, set()-ed per file, intersected with the 470 index ids"
+  },
+  {
+   "file": "B",
+   "claim": "dangling id-shaped strings: ds-020 x8, ds-005 x8, ds-032 x7, ds-026, ds-031, ds-027, ds-030 — '8 id-shaped strings'",
+   "claimed": "8 strings",
+   "measured": "the per-id numbers reproduce exactly on the distinct-component reading (ds-020 8, ds-005 8, ds-032 7, ds-026 3, ds-031 2, ds-027 1, ds-030 1) but that is SEVEN ids, not eight; the regex also catches three non-rule strings (grey-200, dark-mode-500, seed-103) which the lane did not report",
+   "match": false,
+   "command": "Counter over per-meta distinct unmatched ids"
+  },
+  {
+   "file": "B",
+   "claim": "relatedSC pairs vs applies_to pairs",
+   "claimed": "834 vs 826, 9 uncovered, 1 orphan",
+   "measured": "834 meta-side pairs (135 components), 826 rule-side pairs, 0 unmatched applies_to names, 9 meta pairs not covered, 1 rule pair with no meta counterpart",
+   "match": true,
+   "command": "set-compare over (slug, sc-code) using the meta `name` -> slug map the extractor uses"
+  },
+  {
+   "file": "B",
+   "claim": "component stems matched against `when` -> components / pairs",
+   "claimed": "26 / 69",
+   "measured": "26 / 69",
+   "match": true,
+   "command": "substring of each of the 137 stems (lowercased) in each meta's top-level `when`"
+  },
+  {
+   "file": "B",
+   "claim": "component NAMES matched against antiPatterns -> components / pairs",
+   "claimed": "97 / 151",
+   "measured": "98 / 153 (word-boundary, case-insensitive, self excluded)",
+   "match": false,
+   "command": "regex \\b<name>\\b over the joined antiPatterns list"
+  },
+  {
+   "file": "B",
+   "claim": ".t-(cm|ed|hp)-* refs / components / distinct classes",
+   "claimed": "154 / 57 / 23",
+   "measured": "154 / 57 / 23 — 154 reproduces as DISTINCT (component, class) pairs; raw occurrences are 193",
+   "match": true,
+   "command": "regex \\.t-(cm|ed|hp)-[a-z0-9-]+ per meta, set()-ed"
+  },
+  {
+   "file": "B",
+   "claim": "props[].binds",
+   "claimed": "48 / 38",
+   "measured": "48 binds keys across 38 components (113 individual bind targets)",
+   "match": true,
+   "command": "json walk for key 'binds'"
+  },
+  {
+   "file": "B",
+   "claim": "slots[].accepts.capability",
+   "claimed": "95 / 34",
+   "measured": "99 capability strings across 35 components (96 if de-duplicated per component). No reading of the tree yields 95/34.",
+   "match": false,
+   "command": "walk for any dict with accepts.capability; slots is a DICT not a list, so a literal slots[] index returns 0"
+  },
+  {
+   "file": "B",
+   "claim": "behaviour.script + behaviour.partial",
+   "claimed": "87 / 33",
+   "measured": "87 / 33 (top-level behaviour, script counted only when non-null, partial counted per list item)",
+   "match": true,
+   "command": "as described"
+  },
+  {
+   "file": "B",
+   "claim": "provenance",
+   "claimed": "77 / 63",
+   "measured": "77 entries but 77 COMPONENTS, not 63 — figma_node is truthy on 33 metas and code_path on 44, and the two sets are disjoint (80 and 69 respectively hold empty strings)",
+   "match": false,
+   "command": "len([s for s if prov.figma_node]) , len([… code_path]), union"
+  },
+  {
+   "file": "B",
+   "claim": "motion.tokens",
+   "claimed": "30 / 13",
+   "measured": "30 / 13",
+   "match": true,
+   "command": "walk motion -> len(tokens)"
+  },
+  {
+   "file": "B",
+   "claim": "antiPatterns",
+   "claimed": "735 / 135",
+   "measured": "735 / 135",
+   "match": true,
+   "command": "top-level antiPatterns list lengths"
+  },
+  {
+   "file": "B",
+   "claim": "variants",
+   "claimed": "345 / 124",
+   "measured": "345 / 124 (top-level variants only; nested readings give 346/125)",
+   "match": true,
+   "command": "len(m['variants'])"
+  },
+  {
+   "file": "B",
+   "claim": "providesRole evidence / components",
+   "claimed": "24 / 24",
+   "measured": "24 / 24",
+   "match": true,
+   "command": "metas with a top-level `provides`"
+  },
+  {
+   "file": "B",
+   "claim": "answersIntent evidence / components",
+   "claimed": "26 / 26",
+   "measured": "26 / 26 (and `intent` on 15 charts, matching B's '15 chart metas carry both')",
+   "match": true,
+   "command": "metas with top-level `answers` / `intent`"
+  },
+  {
+   "file": "B",
+   "claim": "hasDataShape evidence / components",
+   "claimed": "26 / 26",
+   "measured": "26 / 26 (top-level `shape`; nested readings give 38)",
+   "match": true,
+   "command": "metas with a top-level string `shape`"
+  },
+  {
+   "file": "B",
+   "claim": "conformsTo evidence / components",
+   "claimed": "834 / 135",
+   "measured": "834 / 135",
+   "match": true,
+   "command": "as above"
+  },
+  {
+   "file": "B",
+   "claim": "`with` 8 entries / 3 components; `not-with` 9 / 8",
+   "claimed": "8/3 and 9/8",
+   "measured": "8/3 and 9/8",
+   "match": true,
+   "command": "len(m['with']), len(m['not-with'])"
+  },
+  {
+   "file": "B",
+   "claim": "'the 1014 `tokens` block keys are PROSE descriptions'",
+   "claimed": 1014,
+   "measured": "1141 top-level `tokens` entries across 135 components (1267 counting nested). Neither is 1014.",
+   "match": false,
+   "command": "sum(len(m['tokens']))"
+  },
+  {
+   "file": "B",
+   "claim": "responsive.rule on 16 of the 32 read components",
+   "claimed": "16 / 32",
+   "measured": "16 of the 32 read components carry responsive.rule (55 across the whole 137)",
+   "match": true,
+   "command": "m['responsive']['rule'] truthiness"
+  },
+  {
+   "file": "B",
+   "claim": "roles.json '108 provider entries, and not one of them is an edge'",
+   "claimed": 108,
+   "measured": "108",
+   "match": true,
+   "command": "sum(len(v['providers']))"
+  },
+  {
+   "file": "B",
+   "claim": "usesIcon — 'only 4/137 metas name an icon SVG path'",
+   "claimed": 4,
+   "measured": "19 metas name an icon-library group path (informative/, status-icons/, media/, global-controls/ …): back-to-top, cards, data-grid, document-row, empty-state, fab, feature-grid-lockup, footer, image-block, input-fields, kpi-tile, notifications, payment-card-visual, progress-tracker, rating, standing-order-mandate-row, stepper, template-error, transfer-list. The 'below threshold' verdict rests on a count that is 4.75x too low.",
+   "match": false,
+   "command": "grep for <group>/<slug>.svg over the 137 metas"
+  },
+  {
+   "file": "B",
+   "claim": "'NOT ONE of the 137 metas cites a principle id'",
+   "claimed": 0,
+   "measured": "0 — none of the 145 principle ids appears in any meta",
+   "match": true,
+   "command": "substring of each pr-* id over every meta's raw text"
+  }
+ ],
+ "evidence_lines": {
+  "checked": 133,
+  "verbatim_hits": 107,
+  "content_true_but_locator_or_elision_off": 22,
+  "fabricated_quotations": 0,
+  "misses": [
+   {
+    "file": "knowledge/_PHOTOGRAPHY-KG-NOTE.md",
+    "line": 24,
+    "claimed_text": "The manifest's JSON row IS the node payload a KG would point at … honest UNKNOWN rather than a fabricated value.",
+    "found": "both halves are verbatim in the file but at lines 19 and 22, outside the +/-2 window; line 24 is the heading 'What a mapping would need — the five open questions…'. Also the original reads 'point at: `filename`,' — the lane's '…' silently replaces a colon and a field list."
+   },
+   {
+    "file": "knowledge/assets/fonts/",
+    "line": 0,
+    "claimed_text": "HSBC_MtUnivers_Latin-Rg / -Lt / … (10 Latin cuts); HSBC_MtUnivers_Arabic-{…}",
+    "found": "NOT A QUOTATION — a directory path with line 0. This is the lane's own summary of a `find` listing dressed as an evidence item. The content is true (the cuts exist) but nothing in the repo says this."
+   },
+   {
+    "file": "knowledge/assets/logos/",
+    "line": 0,
+    "claimed_text": "masterbrand-light-colour.svg · masterbrand-dark-colour.svg · …",
+    "found": "NOT A QUOTATION — directory + line 0, same defect. Content true (12 svg files in that 3x2x2 grid)."
+   },
+   {
+    "file": "knowledge/tokens/semantic-colour.json",
+    "line": 0,
+    "claimed_text": "393 token leaves — the largest single set of named things in the repo after the rulings; zero of them addressable in the graph.",
+    "found": "NOT A QUOTATION — line 0, and the sentence is the lane's own argument, not file text. The number 393 is correct."
+   },
+   {
+    "file": "knowledge/_consult-lexicon.json",
+    "line": 1,
+    "claimed_text": "69 synonym entries — the mapping from a designer's words to the library's names; not addressable in the graph…",
+    "found": "NOT A QUOTATION — line 1 of that file is '{'. The lane's own prose in an evidence slot. The number 69 is correct."
+   },
+   {
+    "file": "knowledge/guidelines/_rules-index.json",
+    "line": 12,
+    "claimed_text": "\"id\": \"aca-001\", \"file\": \"accessibility-content-authoring.md\", \"destiny\": \"ADVISORY\", \"rule\": \"CA-1 — …\"",
+    "found": "line 12 is '\"id\": \"aca-001\",' alone — the file is pretty-printed, so the one-line form quoted never appears. Every field VALUE was re-read from the parsed record and is correct."
+   },
+   {
+    "file": "knowledge/brain/principles.json",
+    "line": 8,
+    "claimed_text": "\"id\": \"pr-fitts\", \"statement\": \"Time to hit a target grows with distance…\", \"grade\": \"A\"",
+    "found": "line 8 is '\"C\": \"expert heuristic, wide consensus, thin direct experiment\",'. The pr-fitts record is real and every quoted field value is correct; the line number points at the grade legend instead."
+   },
+   {
+    "file": "knowledge/brain/_generated/polarity-edges.json",
+    "line": 1,
+    "claimed_text": "{\"polarity\": \"pl-01\", \"from\": \"pr-jakobs-law\", \"to\": \"pr-von-restorff\", …}",
+    "found": "line 1 is '{'. The pl-01 edge exists with exactly those from/to/kind values."
+   },
+   {
+    "file": "knowledge/brain/polarities.json",
+    "line": 1,
+    "claimed_text": "\"links\": [{\"type\": \"explainedBy\", \"ref\": \"s151-D1\", \"quote\": \"The law IS a Von Restorff budget with a legal contrast floor attached.\"}]",
+    "found": "line 1 is '{'. The link exists verbatim on polarity pl-01."
+   },
+   {
+    "file": "knowledge/compliance/graph-index.json",
+    "line": 1,
+    "claimed_text": "\"totals\": {\"rules\": 38, \"components\": 134, \"sc\": 38}",
+    "found": "line 1 is '{'. The totals block carries exactly those three values."
+   },
+   {
+    "file": "knowledge/assets/icons/icons.manifest.json",
+    "line": 1,
+    "claimed_text": "{\"name\": \"Asset Management Subsidiary\", \"slug\": \"asset-management-subsidiary\", …}",
+    "found": "line 1 is '{'. The record is byte-for-byte correct inside groups.Miscellaneous[0]."
+   },
+   {
+    "file": "knowledge/_PHOTOGRAPHY-MANIFEST.json",
+    "line": 1,
+    "claimed_text": "{\"filename\": \"1168737.jpg\", \"width\": 1948, \"height\": 2927, …}",
+    "found": "line 1 is '{'. The row exists with every quoted value correct."
+   },
+   {
+    "file": "knowledge/roles.json",
+    "line": 1,
+    "claimed_text": "\"headline-metric\": {\"index\": 1, \"axis\": \"FFF: …\", \"providers\": [{\"slug\": \"stat-card\", \"when\": \"default — label · value · delta · period, no series\"} …]}",
+    "found": "line 1 is '{'. The record is correct verbatim."
+   },
+   {
+    "file": "knowledge/components/input-fields.meta.json",
+    "line": 74,
+    "claimed_text": "{ \"token\": \"interactive (depricate)/…/active/default\", \"rebind\": \"form/border/active\" }",
+    "found": "line 74 carries both quoted keys verbatim, but the lane silently dropped the \"value\" and \"usedBy\" fields that sit between them — the object as quoted does not exist."
+   },
+   {
+    "file": "knowledge/components/stat-card.meta.json",
+    "line": 17,
+    "claimed_text": "{ \"name\": \"label\", \"$note\": \".t-cm-caption at 0.6 ink; …\" }",
+    "found": "line 17 is correct except the lane dropped '\"type\": \"string\",' from the middle."
+   },
+   {
+    "file": "knowledge/components/kpi-tile.meta.json",
+    "line": 21,
+    "claimed_text": "\"with\": [ ... ]  (the DESK `with` complement list — 8 entries across 3 components, nothing in the graph)",
+    "found": "line 21 is '\"with\": [' — the rest is the lane's annotation inside the quotation field. Same defect at kpi-tile:159 ('\"capability\": [ ... ] (slot contract)') and chart-bar:97."
+   },
+   {
+    "file": "(elisions, content verified true at the cited line)",
+    "line": 0,
+    "claimed_text": "chart-bar:16 (x2), button:15, stat-card:15, date-picker:46, amount-input:7, tabs:24, kpi-tile:46",
+    "found": "every fragment either side of the '...' is verbatim at the cited line; these are abbreviations, not errors."
+   }
+  ]
+ },
+ "structural": [
+  {
+   "claim": "(a) the 12 guideline and 4 principle nodes are WCAG groupings, not knowledge/guidelines/*.md or brain/principles.json",
+   "verdict": "HOLDS",
+   "proof": "_build_kg_explorer.py:109 PRINCIPLE = {'1':'perceivable','2':'operable','3':'understandable','4':'robust'}; inside extract_extra section B the ids are minted at 274-282: g = '.'.join(sc.split('.')[:2]); p = PRINCIPLE.get(sc.split('.')[0]); add('guideline:'+g), add('principle:'+p), both from sc_rules() which globs knowledge/compliance/rules/*.json only. grep 'brain' over the whole builder returns ZERO hits; grep 'guidelines' returns only the family-label string and the docstring. Re-extraction yields exactly 12 guideline and 4 principle nodes. (Two citation slips in A: PRINCIPLE is at line 109, not '~140', and the derivation is at 274-282, not '279-283'.)"
+  },
+  {
+   "claim": "(b) no token nodes of any kind; consumes is component->component",
+   "verdict": "HOLDS",
+   "proof": "Over the re-extracted 890 base + 1941 extra nodes, len([n for n in all if n['id'].startswith('token:')]) == 0, and the node-type census is pattern/context/component/snippet/ruling (base) + the 10 governance/guidelines types (extra) with no token kind. All 70 consumes edges have a component: source AND a component: target."
+  },
+  {
+   "claim": "(c) _rules-index.json has 470 rules and nothing in the live tree consumes it",
+   "verdict": "PARTIAL — the 470 holds, the 'no consumer' does NOT",
+   "proof": "470 confirmed (count, byDestiny and len(rules) agree). But grep -rl '_rules-index', excluding _to_delete/, notes/ and knowledge/_tmp/, finds live CODE consumers: knowledge/_build_consult_index.py:53 loads os.path.join(HERE,'guidelines','_rules-index.json') and documents it at :13 as '-> rule records'; knowledge/_build_instrument_fit.py:60 sets RULES_INDEX to the same path and reports on it at :185 and :297; knowledge/gen_runbook_index.py:94 names it as 'the 465-rule spine'. Plus live non-code references in docs/repo-map.html, dashboard/index.html, knowledge/_state.json, knowledge/_DS-IMPROVEMENTS.md, knowledge/_memento-index.json, knowledge/_release/_pack_manifest.json and apollo-spider/skills/{generate-from-canon,usability-review}/SKILL.md. A's 'nothing consumes it' is the load-bearing sentence under 'the single largest ready-made node payload in the repo and nothing consumes it' and it is false: two build scripts read it today."
+  },
+  {
+   "claim": "(d) 826 of 834 component<->SC pairs already exist as appliesTo",
+   "verdict": "HOLDS",
+   "proof": "Recomputed independently of the extractor: 834 distinct (slug, sc-code) pairs from meta accessibility.relatedSC across 135 components; 826 distinct pairs from compliance/rules/*.json applies_to mapped through the meta `name`->slug index with 0 unmatched names. meta_pairs - rule_pairs = 9; rule_pairs - meta_pairs = 1. Matches B's 9-uncovered / 1-orphan / 10-pair-reconciliation exactly."
+  },
+  {
+   "claim": "(e) roles.json providers arrays carry a `when` on every edge",
+   "verdict": "FAILS",
+   "proof": "108 provider entries across the 12 roles; 81 carry a non-null `when`, 27 carry when: null — the entire `input` role (input-fields, textarea, amount-input, search-field, dropdown, …) among them. A's note 'a ready-made, already-validated component->role edge list WITH a `when` condition on every edge' overstates coverage by 25%."
+  },
+  {
+   "claim": "(f) brain/principles.json principles are cited by 0 of 137 metas",
+   "verdict": "HOLDS",
+   "proof": "Each of the 145 principle ids (pr-fitts, pr-jakobs-law, …) was substring-searched against the raw text of all 137 non-EXAMPLE metas: zero hits, zero components. B's 'ZERO EVIDENCE … would have to be authored from scratch, which is invention, not migration' is measured correctly."
+  }
+ ],
+ "not_a_measurement": [
+  {
+   "file": "A",
+   "where": "graph_today.namespace_collision_warning",
+   "text": "'Any decision to graph … needs a different prefix (e.g. `uxprinciple:` / `rule:`) or the two families will silently merge.' — the collision is measured (both prefixes are occupied by WCAG); the prescribed remedy is a proposal."
+  },
+  {
+   "file": "A",
+   "where": "compliance family, notes",
+   "text": "'Nothing here is worth Dave's time.' — a verdict on priority, which is Dave's to make."
+  },
+  {
+   "file": "A",
+   "where": "tokens family, notes",
+   "text": "'the honest first cut is tokenFile (21 nodes) or tier (semantic vs primitive), not every leaf' — a design recommendation."
+  },
+  {
+   "file": "A",
+   "where": "fonts family, existing_pricing_or_ruling",
+   "text": "'Read s219-D5 in full before proposing anything that ships fonts.' — an instruction to a future lane."
+  },
+  {
+   "file": "A",
+   "where": "unknowns[0]",
+   "text": "'Check before pricing fonts.' — same."
+  },
+  {
+   "file": "A",
+   "where": "roles family, notes / tokens family, notes / icons family, notes",
+   "text": "'Cheapest complete win in the whole inventory', 'BIGGEST SURPRISE OF THE LANE', 'Best-shaped unmapped asset family' — rankings, not counts."
+  },
+  {
+   "file": "A",
+   "where": "fonts family, notes",
+   "text": "'A manifest generator is the prerequisite' and 'The multi-script coverage … is a super-designer capability that is currently invisible' — a plan and an evaluation."
+  },
+  {
+   "file": "A",
+   "where": "every family, `size`: S/M/L",
+   "text": "Effort gradings. Defensible as the brief's own schema, but they are estimates carried alongside measurements with no how_measured."
+  },
+  {
+   "file": "A",
+   "where": "every family, candidate_node_kind / candidate_edge_kinds",
+   "text": "Proposed vocabulary. In scope per the brief, but none of it is measured — flagged so it is not mistaken for an inventory of what exists."
+  },
+  {
+   "file": "B",
+   "where": "conformsTo entry, risk",
+   "text": "'REJECT AS NEAR-DUPLICATE.' — a ruling-shaped verdict on a proposal. The 826/834 measurement behind it is sound; the rejection is Dave's call."
+  },
+  {
+   "file": "B",
+   "where": "bindsToken, risk",
+   "text": "'the edge must be built from `binds` alone or it invents targets' — a build instruction."
+  },
+  {
+   "file": "B",
+   "where": "redirectsTo, risk",
+   "text": "'Needs a verb test … before any of it is an edge; as measured it is a candidate list, not a finding.' — correct self-assessment, but the prescribed test is a proposal."
+  },
+  {
+   "file": "B",
+   "where": "yieldsTo, risk / providesRole, risk",
+   "text": "'Parse must not invent a direction…', 'the edge must be generated from the metas or the two will drift' — build instructions."
+  },
+  {
+   "file": "B",
+   "where": "unknowns, `with`/`not-with`",
+   "text": "'Too thin to propose on their own; they should ride with providesRole.' — a sequencing recommendation."
+  },
+  {
+   "file": "B",
+   "where": "unknowns, principles",
+   "text": "'Worth Dave's eye as a QUESTION (should metas cite principles?)' — an agenda item. The 0/137 measurement under it holds."
+  },
+  {
+   "file": "B",
+   "where": "every candidate_edge_type, `cost`: S/M/L",
+   "text": "Effort gradings, no how_measured."
+  }
+ ],
+ "verdict": "A and B are mostly sound and one is load-bearingly wrong. Of 65 numeric claims re-run, 53 reproduce exactly and 12 fail: A's '97 rulings mention token' (84), '17 rulings mention icons' (14), the compliance EXAMPLE-file parenthetical (the file is not in rules/), the token-file ranking (four larger files omitted), the 158-vs-160 arithmetic, and the claim that every roles.json provider carries a `when` (81 of 108); B's slots capability 95/34 (measured 99/35), provenance components 63 (measured 77), tokens-block keys 1014 (measured 1141), antiPattern name pairs 151/97 (measured 153/98), '8 dangling id-shaped strings' (7 rule-shaped + 3 unreported non-rule strings), and usesIcon '4/137 metas name an icon SVG path' (measured 19) — that last one is a below-threshold dismissal resting on a count 4.75x too low. The whole graph_today block of A reproduces to the node, edge and type — 890/1267/1941/3605 and every histogram — and B's headline component measurements (137 corpus, 116/31/38 citations, 834 vs 826 SC pairs with 9+1 residue, 69/26 when-pairs, 154/57/23 type classes, 87/33 behaviour, 735/135 antiPatterns, 345/124 variants, 48/38 binds, 30/13 motion, 26/26 answers/shape, 24/24 provides) are exact. Of 133 evidence items, 107 are verbatim at the cited line, 22 are content-true with a wrong line number or an unmarked elision, 4 are the lane's own prose wearing a file:line 0/1 costume, and ZERO are fabricated quotations. Structurally: (a) (b) (d) (f) HOLD on re-derivation from the extractor source and a fresh recompute; (e) FAILS; (c) is half-false — 470 is right, but knowledge/_build_consult_index.py:53 and knowledge/_build_instrument_fit.py:60 both load _rules-index.json today, so 'nothing consumes it' must not reach Dave. Trust A's graph census and its file-level inventories; re-check A's ruling-mention counts, its roles `when` claim and its 'no consumer' claim, and B's usesIcon dismissal, before any of it is priced."
+}

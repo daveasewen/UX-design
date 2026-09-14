@@ -1,0 +1,960 @@
+{
+ "generated": "2026-09-14",
+ "lane": "269-B",
+ "method": {
+  "components_read_in_full_or_field_wise": 32,
+  "corpus_measured": "all 137 non-EXAMPLE component metas for every count below",
+  "commands": [
+   "python3 scan over knowledge/components/*.meta.json — field presence per component",
+   "regex ([a-z]{2,4}(-[a-z]+)?-\\d{3}) matched against knowledge/guidelines/_rules-index.json ids (470) -> 116 citations / 31 distinct ids / 38 components",
+   "set-compare meta accessibility.relatedSC pairs (834) vs compliance/rules/*.json applies_to pairs (826) -> 9 uncovered / 1 orphan",
+   "substring match of 137 component stems against each meta's `when` -> 26 components / 69 pairs",
+   "substring match of 137 component NAMES against each meta's antiPatterns -> 97 components / 151 pairs",
+   "regex \\.t-(cm|ed|hp)-[a-z0-9-]+ over metas -> 57 components / 23 distinct classes / 154 refs",
+   "json walk for props[].binds (48/38), slots[].accepts.capability (95/34), behaviour.script+partial (87/33), provenance (77/63), motion.tokens (30/13), antiPatterns (735/135), variants (345/124)"
+  ],
+  "sources_grepped": [
+   "knowledge/guidelines/*.md + _rules-index.json",
+   "knowledge/compliance/rules/*.json",
+   "knowledge/brain/principles.json",
+   "knowledge/assets/icons/_README.md",
+   "knowledge/_PHOTOGRAPHY-MANIFEST.json",
+   "knowledge/tokens/*.json",
+   "knowledge/roles.json",
+   "knowledge/chart-intents.json",
+   "knowledge/shapes.json",
+   "knowledge/when-fields.json",
+   "knowledge/_graph-mention-map.json"
+  ]
+ },
+ "components_read": [
+  "chart-bar",
+  "chart-line",
+  "chart-donut",
+  "chart-sparkline",
+  "Chart-scatter",
+  "chart-stacked-area",
+  "input-fields",
+  "amount-input",
+  "date-picker",
+  "selection-controls",
+  "combobox",
+  "file-upload",
+  "breadcrumbs",
+  "tabs",
+  "sidebar-nav",
+  "pagination",
+  "button",
+  "icon-button",
+  "split-button",
+  "fab",
+  "cards",
+  "account-card",
+  "stat-card",
+  "accordion",
+  "toast",
+  "alert",
+  "status-indicator",
+  "table",
+  "kpi-tile",
+  "tags",
+  "image-block",
+  "carousel"
+ ],
+ "candidate_edge_types": [
+  {
+   "type": "citesGuidelineRule",
+   "from_kind": "component",
+   "to_kind": "guidelineRule (knowledge/guidelines/_rules-index.json id, e.g. guidelineRule:dv-005)",
+   "direction_note": "component -> rule. Inverse would be rule -> components it binds.",
+   "what_it_answers": "Which house guideline rules does this component have to obey, and are any of them BLOCKING?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 21,
+     "text": "{ \"name\": \"data\", \"type\": \"table\", \"$note\": \"A real <table class=\\\"dv-table\\\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ "
+    },
+    {
+     "component": "input-fields",
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 30,
+     "text": "\"focus\": \"Keyboard focus only (:focus-visible). A thickened (3px) bottom-stroke in form/border/active — the field's OWN active colour (#000 light / #fff dark), NOT the blue focus/ring and NOT a floati"
+    },
+    {
+     "component": "amount-input",
+     "file": "knowledge/components/amount-input.meta.json",
+     "line": 8,
+     "text": "{ \"name\": \"currency\", \"type\": \"string\", \"default\": \"GBP\", \"$note\": \"Code before the value, no space (copy-025); symbol (£) closed up. Prefix is aria-hidden — the accessible name carries the currency.\""
+    },
+    {
+     "component": "date-picker",
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 7,
+     "text": "{ \"name\": \"value\", \"type\": \"string\", \"default\": \"\", \"$note\": \"DD/MM/YYYY (en-GB). Typing is free text — validated on blur, never masked mid-entry (acd-019: no auto-anything).\" },"
+    },
+    {
+     "component": "alert",
+     "file": "knowledge/components/alert.meta.json",
+     "line": 9,
+     "text": "{ \"name\": \"link\", \"type\": \"string\", \"$note\": \"Optional inline action link — descriptive text, never 'click here' (aca-004).\" },"
+    },
+    {
+     "component": "file-upload",
+     "file": "knowledge/components/file-upload.meta.json",
+     "line": 40,
+     "text": "\"staging\": \"Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize fi"
+    }
+   ],
+   "evidence_count": 116,
+   "components_with_evidence": 38,
+   "target_exists_today": true,
+   "nearest_existing_type": "governedBy (targets ruling:<id> — Dave's own rulings, 28 edges). This is the INHERITED guideline corpus: 470 stable ids with a destiny (59 BLOCKING / 321 ADVISORY / 34 REVIEW / 56 TASTE) that no component edge points at.",
+   "cost": "S",
+   "risk": "Only 38/137 components cite an id in their prose, so an edge set built from citations is a floor not a census; the other 99 obey rules they never name. Extraction is a plain id regex against _rules-index.json, so no invention — an unmatched id-shaped string (ds-020, ds-005, ds-032 — 8/8/7 occurrences) is a real dangling reference and should be reported, not resolved."
+  },
+  {
+   "type": "yieldsTo",
+   "from_kind": "component",
+   "to_kind": "component (inverse: beats / preferredOver)",
+   "direction_note": "component -> component, asymmetric. `when` prose already states both directions ('beats X', 'yields to Y'), so one type plus its inverse covers it.",
+   "what_it_answers": "This component nearly fits — which sibling should I use instead, and on what test?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 16,
+     "text": "\"when\": \"answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: \\\"change-over-time\\\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie "
+    },
+    {
+     "component": "chart-sparkline",
+     "file": "knowledge/components/chart-sparkline.meta.json",
+     "line": 15,
+     "text": "\"when\": \"answers=change-over-time AND series=1 AND axes=absent AND span.cols ≤ 4 (inline, or a trend cell in a table) — yields to chart-line (88, \\\"change-over-time\\\") whenever the panel can carry axe"
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 15,
+     "text": "\"when\": \"emphasis in (primary, secondary, tertiary, quaternary) AND label = text — the default of the role; yields to icon-button (roles.json when: \\\"space is tight and the glyph is universal\\\") when "
+    },
+    {
+     "component": "breadcrumbs",
+     "file": "knowledge/components/breadcrumbs.meta.json",
+     "line": 15,
+     "text": "\"when\": \"shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: \\\"in-page, long document\\\") when the trail is ancestry rather than in-page position; yields to navigations (w"
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 15,
+     "text": "\"when\": \"shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \\\"a series exists to show (s247-D3 / DP-08: no series ⇒ n"
+    },
+    {
+     "component": "status-indicator",
+     "file": "knowledge/components/status-indicator.meta.json",
+     "line": 17,
+     "text": "\"when\": \"shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary (roles.json when: \\\"n × count as a key/value list, 6–12 cols\\\") whenever exactly one state is rea"
+    }
+   ],
+   "evidence_count": 69,
+   "components_with_evidence": 26,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. mustNotNeighbour (70) says 'not next to each other'; this says 'not this one, that one'. family (12) groups, it does not rank.",
+   "cost": "M",
+   "risk": "The verb has to be parsed out of `when` prose (em-dash tail, 'beats'/'yields to'), and the ordering fact ALSO lives as roles.json `when` + meta `priority` — three homes for one ranking. Parse must not invent a direction where the prose only co-mentions."
+  },
+  {
+   "type": "providesRole",
+   "from_kind": "component",
+   "to_kind": "role (knowledge/roles.json — 12 closed slugs, e.g. role:headline-metric)",
+   "direction_note": "component -> role. Co-providers of one role are each other's substitutes (that derived edge is what _validate_roles_resolve.py already grades as 'instead-of').",
+   "what_it_answers": "What slot does this component fill, and what else could fill it?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 6,
+     "text": "\"provides\": \"chart-panel\","
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 5,
+     "text": "\"provides\": \"action\","
+    },
+    {
+     "component": "breadcrumbs",
+     "file": "knowledge/components/breadcrumbs.meta.json",
+     "line": 5,
+     "text": "\"provides\": \"wayfinding\","
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 5,
+     "text": "\"provides\": \"headline-metric\","
+    },
+    {
+     "component": "status-indicator",
+     "file": "knowledge/components/status-indicator.meta.json",
+     "line": 7,
+     "text": "\"provides\": \"status-surface\","
+    },
+    {
+     "component": "kpi-tile",
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 7,
+     "text": "\"provides\": \"headline-metric\","
+    }
+   ],
+   "evidence_count": 24,
+   "components_with_evidence": 24,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. roles.json is a closed store with a resolver (_validate_roles_resolve.py check 1) and 108 provider entries, and not one of them is an edge.",
+   "cost": "S",
+   "risk": "Two homes for the membership (roles.json `providers` and the metas' `provides`); the ruling says the metas are canon, so the edge must be generated from the metas or the two will drift. 24/137 components carry `provides` — coverage is partial by authoring, not by design."
+  },
+  {
+   "type": "answersIntent",
+   "from_kind": "component",
+   "to_kind": "intent (knowledge/chart-intents.json — closed five-word vocabulary, extended to non-charts by s251-D11)",
+   "direction_note": "component -> intent word. Charts additionally carry `intent`, which s253 check 7 requires to EQUAL `answers`.",
+   "what_it_answers": "What question does this component answer for the reader?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 7,
+     "text": "\"answers\": \"comparison\","
+    },
+    {
+     "component": "chart-line",
+     "file": "knowledge/components/chart-line.meta.json",
+     "line": 7,
+     "text": "\"answers\": \"change-over-time\","
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 6,
+     "text": "\"answers\": \"what-can-i-do\","
+    },
+    {
+     "component": "breadcrumbs",
+     "file": "knowledge/components/breadcrumbs.meta.json",
+     "line": 6,
+     "text": "\"answers\": \"where-am-i\","
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 6,
+     "text": "\"answers\": \"one-number\","
+    }
+   ],
+   "evidence_count": 26,
+   "components_with_evidence": 26,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. The word is an address into a store with a refusing resolver; the graph carries it as nothing.",
+   "cost": "S",
+   "risk": "`answers` can be a LIST (chart-stacked-area carries two words), so the edge is many-to-many, not a property. Duplicates `intent` on the 15 chart metas that carry both — generate from one field, not two."
+  },
+  {
+   "type": "hasDataShape",
+   "from_kind": "component",
+   "to_kind": "shape (knowledge/shapes.json — closed by s254-D2 item 1)",
+   "direction_note": "component -> shape value. Two components with the SAME value are declaring themselves swap candidates, so the shape node is a join, not a label.",
+   "what_it_answers": "What shape of data does this take, and what else takes the same shape?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 8,
+     "text": "\"shape\": \"categories × series\","
+    },
+    {
+     "component": "chart-donut",
+     "file": "knowledge/components/chart-donut.meta.json",
+     "line": 8,
+     "text": "\"shape\": \"parts-of-whole\","
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 7,
+     "text": "\"shape\": \"one-measure × value-and-delta\","
+    },
+    {
+     "component": "kpi-tile",
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 12,
+     "text": "\"shape\": \"one-measure × value-delta-and-series\","
+    },
+    {
+     "component": "status-indicator",
+     "file": "knowledge/components/status-indicator.meta.json",
+     "line": 9,
+     "text": "\"shape\": \"one-state × dot-and-label\","
+    }
+   ],
+   "evidence_count": 26,
+   "components_with_evidence": 26,
+   "target_exists_today": true,
+   "nearest_existing_type": "none.",
+   "cost": "S",
+   "risk": "Shape strings are compound ('one-measure × value-and-delta'); as node ids they need normalising, and an un-normalised id would split the very join that makes the edge worth having."
+  },
+  {
+   "type": "setIn",
+   "from_kind": "component",
+   "to_kind": "typeComposite (knowledge/tokens/typography-composites.json — 20 leaves; metas name the markup class .t-cm-* / .t-ed-*)",
+   "direction_note": "component -> composite. Inverse (composite -> its consumers) is the blast-radius question.",
+   "what_it_answers": "If this type composite changes, which components re-typeset?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 33,
+     "text": "\"font-family\": \"type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 (labels · axis · legend · values, tabular) · .t-cm-chart-key = 12/700 (on-chart + in-segment s"
+    },
+    {
+     "component": "toast",
+     "file": "knowledge/components/toast.meta.json",
+     "line": 18,
+     "text": "\"font-family\": \"type composites via markup class — message .t-ed-body; action .t-cm-button + .t-cm-slot\","
+    },
+    {
+     "component": "amount-input",
+     "file": "knowledge/components/amount-input.meta.json",
+     "line": 7,
+     "text": "{ \"name\": \"size\", \"type\": \"enum\", \"values\": [\"standard\", \"display\"], \"default\": \"standard\", \"$note\": \"standard = .t-cm-figure-5 (16); display = .t-cm-figure-4 (32) — the payment-journey hero entry.\", "
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 17,
+     "text": "{ \"name\": \"label\", \"type\": \"string\", \"$note\": \".t-cm-caption at 0.6 ink; names the metric, sentence case.\" },"
+    },
+    {
+     "component": "alert",
+     "file": "knowledge/components/alert.meta.json",
+     "line": 7,
+     "text": "{ \"name\": \"title\", \"type\": \"string\", \"$note\": \"Optional bold lead-in (.t-ed-body .em, weight 500). Sentence case.\" },"
+    },
+    {
+     "component": "carousel",
+     "file": "knowledge/components/carousel.meta.json",
+     "line": 15,
+     "text": "\"font-family\": \"n/a — captions use the .t-cm-heading / .t-cm-caption composites\","
+    },
+    {
+     "component": "kpi-tile",
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 46,
+     "text": "\"$note\": \"hero = .t-cm-figure-2 (40px) at span 6, one big number; display = .t-cm-figure-4 (32px) at span 3; compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5).\""
+    }
+   ],
+   "evidence_count": 154,
+   "components_with_evidence": 57,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. _validate_type_blast_radius.py computes the radius; the graph does not carry it.",
+   "cost": "M",
+   "risk": "The meta names the CLASS (.t-cm-figure-5) and the store keys the COMPOSITE (component/figure-5) — the edge needs the class→leaf hop declared, and that mapping is convention, not a file. Most references sit inside prose `$note` strings, so extraction is regex over prose, which is the s133-D1 'never prose' hazard."
+  },
+  {
+   "type": "bindsToken",
+   "from_kind": "component",
+   "to_kind": "token (a semantic-colour / icon-scale / component-type address, e.g. token:rag.success)",
+   "direction_note": "component -> token address, carried per PROP VALUE (status=success -> rag.success), so the edge needs the prop value on it.",
+   "what_it_answers": "Which components break if this token is renamed or retiered?",
+   "evidence": [
+    {
+     "component": "input-fields",
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 9,
+     "text": "{ \"name\": \"dateCellState\", \"type\": \"enum\", \"values\": [\"unselected\", \"hover\", \"pressed\", \"selected\", \"disabled\", \"unavailable\"], \"default\": \"unselected\", \"binds\": [\"form.background\", \"form.border.activ"
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 48,
+     "text": "\"$note\": \"default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.\", \"binds\": {\"default\": \"icon\", \"large\": \"icon.large\", \"target-min\": \"target.min\"}, \"$st"
+    },
+    {
+     "component": "toast",
+     "file": "knowledge/components/toast.meta.json",
+     "line": 6,
+     "text": "{ \"name\": \"status\", \"type\": \"enum\", \"values\": [\"success\", \"information\", \"warning\", \"plain\"], \"default\": \"plain\", \"$note\": \"No error (snackbar precedent). Plain = statusless message ('Copied to clipbo"
+    },
+    {
+     "component": "alert",
+     "file": "knowledge/components/alert.meta.json",
+     "line": 6,
+     "text": "{ \"name\": \"status\", \"type\": \"enum\", \"values\": [\"error\", \"warning\", \"success\", \"information\"], \"default\": \"information\", \"$note\": \"Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders r"
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 19,
+     "text": "{ \"name\": \"size\", \"type\": \"enum\", \"values\": [\"display\", \"compact\"], \"default\": \"display\", \"$note\": \"display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards.\", \"binds\""
+    },
+    {
+     "component": "selection-controls",
+     "file": "knowledge/components/selection-controls.meta.json",
+     "line": 7,
+     "text": "{ \"name\": \"control\", \"type\": \"enum\", \"values\": [\"checkbox\", \"radio\", \"chip\", \"switch\"], \"default\": \"checkbox\", \"binds\": [\"form.background.default\", \"form.border.default\"], \"$status\": \"s142-D1 (Dave, 2"
+    },
+    {
+     "component": "tags",
+     "file": "knowledge/components/tags.meta.json",
+     "line": 24,
+     "text": "\"default\": \"small\", \"binds\": {\"small\": \"icon.small\", \"extra-small\": \"icon.xsmall\"}, \"$status\": \"s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact"
+    }
+   ],
+   "evidence_count": 48,
+   "components_with_evidence": 38,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. The #145 finding recorded verbatim in toast.meta.json:6 is that NO validator resolves a meta `binds` address against the colour spine — the address is authored, ruled (s142-D1) and unchecked.",
+   "cost": "M",
+   "risk": "The binds value is sometimes an object keyed by prop value and sometimes a flat array — two shapes. Also the 1014 `tokens` block keys are PROSE descriptions of token use, not addresses; only the 48 `binds` entries are machine-real, so the edge must be built from `binds` alone or it invents targets."
+  },
+  {
+   "type": "behaviourFrom",
+   "from_kind": "component",
+   "to_kind": "artefact (a script/partial address, e.g. artefact:knowledge/canon/dv-render.js, partial:dv-render-bar)",
+   "direction_note": "component -> script or registered partial. Inverse: which components a partial serves.",
+   "what_it_answers": "If this script or partial changes, which components lose behaviour — and what still works with JS off?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 89,
+     "text": "\"script\": \"knowledge/canon/dv-render.js\","
+    },
+    {
+     "component": "chart-line",
+     "file": "knowledge/components/chart-line.meta.json",
+     "line": 223,
+     "text": "\"script\": \"knowledge/canon/dv-render.js\","
+    },
+    {
+     "component": "date-picker",
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 32,
+     "text": "\"script\": \"knowledge/snippets/Date-picker.reference.html#script\","
+    },
+    {
+     "component": "file-upload",
+     "file": "knowledge/components/file-upload.meta.json",
+     "line": 31,
+     "text": "\"script\": \"knowledge/snippets/File-upload.reference.html#script\","
+    },
+    {
+     "component": "sidebar-nav",
+     "file": "knowledge/components/sidebar-nav.meta.json",
+     "line": 99,
+     "text": "\"script\": \"knowledge/snippets/Sidebar-nav.reference.html#script\","
+    },
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 90,
+     "text": "\"partial\": [\"dv-behaviour\", \"dv-render\", \"dv-render-bar\"],"
+    }
+   ],
+   "evidence_count": 87,
+   "components_with_evidence": 33,
+   "target_exists_today": true,
+   "nearest_existing_type": "partial (6 edges, ref:null + prose $note from the `$partials` free-text field — a different, older field). renderedBy (137) points at the SNIPPET, not at the behaviour chain.",
+   "cost": "S",
+   "risk": "`behaviour.script` can be null (account-card) — a declared absence, not a gap, and an edge set must not silently drop it. `partial` names are registry keys, not files, so they resolve against component-types.json $partials, not the filesystem."
+  },
+  {
+   "type": "acceptsCapability",
+   "from_kind": "component",
+   "to_kind": "capability (slot contract vocabulary, e.g. capability:chart-dataset)",
+   "direction_note": "component -> capability it ACCEPTS in a named slot; the inverse (component -> capability it PROVIDES) is not authored anywhere, which is what would close the composition loop.",
+   "what_it_answers": "What can I legally put in this slot, and which components can supply it?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 97,
+     "text": "\"capability\": ["
+    },
+    {
+     "component": "chart-line",
+     "file": "knowledge/components/chart-line.meta.json",
+     "line": 157,
+     "text": "\"capability\": ["
+    },
+    {
+     "component": "cards",
+     "file": "knowledge/components/cards.meta.json",
+     "line": 231,
+     "text": "\"capability\": ["
+    },
+    {
+     "component": "kpi-tile",
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 159,
+     "text": "\"capability\": ["
+    },
+    {
+     "component": "chart-donut",
+     "file": "knowledge/components/chart-donut.meta.json",
+     "line": 101,
+     "text": "\"capability\": ["
+    },
+    {
+     "component": "Chart-scatter",
+     "file": "knowledge/components/Chart-scatter.meta.json",
+     "line": 92,
+     "text": "\"capability\": ["
+    }
+   ],
+   "evidence_count": 95,
+   "components_with_evidence": 34,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. slots were ruled s140-D2 and are read by _validate_composition.py; the graph carries none of them.",
+   "cost": "M",
+   "risk": "Only the ACCEPTS half exists in the metas. Without a matching `providesCapability`, the edge answers half the question and would look like a composition graph while being a wishlist. The slot name matters (a component can accept the same capability in two slots), so the edge needs a slot qualifier."
+  },
+  {
+   "type": "capturedFrom",
+   "from_kind": "component",
+   "to_kind": "source (figma:<node-id> or artefact:<code_path>)",
+   "direction_note": "component -> its capture source. Inverse: which components came off one Figma node.",
+   "what_it_answers": "Where did this component's geometry actually come from, and what else shares that source?",
+   "evidence": [
+    {
+     "component": "input-fields",
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 95,
+     "text": "\"figma_node\": \"65570:211753 (boxed states matrix; standard 2298:166741 + large 299:73597) · prior synthesised node Cgbtrmfp15ruNFkIAClpkI:45011:112934\","
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 218,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:64:90\","
+    },
+    {
+     "component": "tabs",
+     "file": "knowledge/components/tabs.meta.json",
+     "line": 97,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:629:23608\","
+    },
+    {
+     "component": "breadcrumbs",
+     "file": "knowledge/components/breadcrumbs.meta.json",
+     "line": 57,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:41590:108466\","
+    },
+    {
+     "component": "pagination",
+     "file": "knowledge/components/pagination.meta.json",
+     "line": 71,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:264:9250\","
+    },
+    {
+     "component": "selection-controls",
+     "file": "knowledge/components/selection-controls.meta.json",
+     "line": 89,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:45105:252063\","
+    }
+   ],
+   "evidence_count": 77,
+   "components_with_evidence": 63,
+   "target_exists_today": true,
+   "nearest_existing_type": "none. provenance is read by the confidence/receipt machinery but is not an edge.",
+   "cost": "S",
+   "risk": "figma_node strings are inconsistent (input-fields carries three ids plus prose in one field); code_path points at files that may have moved. A node id is a real target but nothing in the repo validates it resolves, so target_exists_today is true only in form."
+  },
+  {
+   "type": "redirectsTo",
+   "from_kind": "component",
+   "to_kind": "component (from antiPatterns prose: 'use X instead')",
+   "direction_note": "component -> the component the anti-pattern sends you to.",
+   "what_it_answers": "I was told not to do this here — what am I supposed to use?",
+   "evidence": [
+    {
+     "component": "tabs",
+     "file": "knowledge/components/tabs.meta.json",
+     "line": 41,
+     "text": "\"Using tabs for sequential steps (use a progress tracker / wizard)\","
+    },
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 55,
+     "text": "\"mustNotNeighbour\": [\"A Stat-card making the identical claim in the same view\", \"A second chart re-using these series colours for DIFFERENT data (dv-014)\"],"
+    },
+    {
+     "component": "stat-card",
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 15,
+     "text": "\"when\": \"shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \\\"a series exists to show (s247-D3 / DP-08: no series ⇒ n"
+    },
+    {
+     "component": "image-block",
+     "file": "knowledge/components/image-block.meta.json",
+     "line": 48,
+     "text": "\"A second, differently-styled placeholder mechanism instead of reusing Skeleton-loader's bone atom\","
+    },
+    {
+     "component": "image-block",
+     "file": "knowledge/components/image-block.meta.json",
+     "line": 50,
+     "text": "\"A drawn broken-image glyph instead of the byte-matched informative/broken-image.svg\","
+    },
+    {
+     "component": "toast",
+     "file": "knowledge/components/toast.meta.json",
+     "line": 51,
+     "text": "\"An error toast (errors persist — use Alert with role=\\\"alert\\\")\","
+    },
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 16,
+     "text": "\"when\": \"... the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \\\"composition over time\\\") if the axis is time.\""
+    }
+   ],
+   "evidence_count": 151,
+   "components_with_evidence": 97,
+   "target_exists_today": true,
+   "nearest_existing_type": "mustNotNeighbour (70) — adjacency, not substitution. Overlaps yieldsTo, but sourced from antiPatterns rather than `when`, and fires for 97 components rather than 26.",
+   "cost": "L",
+   "risk": "NOISY. The 151 pairs are name co-occurrence inside antiPatterns prose, not detected redirect verbs — image-block names Skeleton-loader nine times as a SOURCE it borrows from, not a substitute. Needs a verb test ('use X instead', 'route to X') before any of it is an edge; as measured it is a candidate list, not a finding."
+  },
+  {
+   "type": "conformsTo",
+   "from_kind": "component",
+   "to_kind": "sc (knowledge/compliance/rules/wcag-*.json)",
+   "direction_note": "component -> WCAG SC, from accessibility.relatedSC.",
+   "what_it_answers": "Which success criteria does this component have to meet?",
+   "evidence": [
+    {
+     "component": "chart-bar",
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 65,
+     "text": "\"relatedSC\": [\"1.4.1 Use of Color\", \"1.4.11 Non-text Contrast\", \"1.3.1 Info and Relationships\", \"1.4.13 Content on Hover\", \"2.1.1 Keyboard\", \"4.1.2 Name, Role, Value\"]"
+    },
+    {
+     "component": "toast",
+     "file": "knowledge/components/toast.meta.json",
+     "line": 48,
+     "text": "\"relatedSC\": [\"1.4.1 Use of Color\", \"1.4.11 Non-text Contrast\", \"2.2.1 Timing Adjustable\", \"2.5.8 Target Size (Minimum)\", \"4.1.3 Status Messages\"]"
+    },
+    {
+     "component": "input-fields",
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 44,
+     "text": "\"relatedSC\": [\"1.3.1\", \"1.3.5 Identify Input Purpose\", \"1.4.1 Use of Color\", \"3.3.1 Error Identification\", \"3.3.2 Labels or Instructions\", \"4.1.2\", \"2.1.1 Keyboard\", \"2.4.7 Focus Visible\"]"
+    },
+    {
+     "component": "button",
+     "file": "knowledge/components/button.meta.json",
+     "line": 165,
+     "text": "\"relatedSC\": ["
+    }
+   ],
+   "evidence_count": 834,
+   "components_with_evidence": 135,
+   "target_exists_today": true,
+   "nearest_existing_type": "appliesTo — ALREADY EXISTS, sc -> component, authored on the RULE side (applies_to, 826 entries across 38 rule files).",
+   "cost": "S",
+   "risk": "REJECT AS NEAR-DUPLICATE. Measured overlap: 826 rule-side pairs vs 834 meta-side pairs; only 9 meta pairs are uncovered and 1 rule pair has no meta counterpart. The fact is already in the graph, in the other direction. The useful residue is a 10-pair RECONCILIATION, not a new edge type."
+  }
+ ],
+ "per_component_findings": [
+  {
+   "component": "chart-bar",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 16,
+     "text": "\"when\": \"answers = comparison AND axis.x = categorical — beats chart-line ... and beats chart-pie ... yields to chart-stacked-area\""
+    },
+    {
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 6,
+     "text": "\"provides\": \"chart-panel\","
+    },
+    {
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 21,
+     "text": "A real <table class=\\\"dv-table\\\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)."
+    },
+    {
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 89,
+     "text": "\"script\": \"knowledge/canon/dv-render.js\","
+    },
+    {
+     "file": "knowledge/components/chart-bar.meta.json",
+     "line": 97,
+     "text": "\"capability\": [ \"data-series\" ]"
+    }
+   ]
+  },
+  {
+   "component": "input-fields",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 30,
+     "text": "focus/ring stays the default for ring-pattern components; text inputs use this two-tone-border pattern — see guidelines/focus-indicators.md."
+    },
+    {
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 88,
+     "text": "\"$icons\": \"Real HSBC library SVGs via a <symbol> sprite (calendar=media/calendar.svg, help=informative/help.svg, error=status-icons/error.svg, success=status-icons/success.svg) — NOT invented.\""
+    },
+    {
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 74,
+     "text": "{ \"token\": \"interactive (depricate)/on-light/border/active/default\", \"rebind\": \"form/border/active\" }"
+    },
+    {
+     "file": "knowledge/components/input-fields.meta.json",
+     "line": 95,
+     "text": "\"figma_node\": \"65570:211753 (boxed states matrix; standard 2298:166741 + large 299:73597)\""
+    }
+   ]
+  },
+  {
+   "component": "toast",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/toast.meta.json",
+     "line": 6,
+     "text": "*** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine."
+    },
+    {
+     "file": "knowledge/components/toast.meta.json",
+     "line": 29,
+     "text": "\"tokens\": [\"component-type/button-family/press-travel\", \"component-type/button-family/press-darken\"]"
+    },
+    {
+     "file": "knowledge/components/toast.meta.json",
+     "line": 51,
+     "text": "\"An error toast (errors persist — use Alert with role=\\\"alert\\\")\","
+    }
+   ]
+  },
+  {
+   "component": "button",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/button.meta.json",
+     "line": 15,
+     "text": "\"when\": \"... yields to icon-button ... to split-button ... and to links (when: \\\"the action is navigation inside running text\\\")\""
+    },
+    {
+     "file": "knowledge/components/button.meta.json",
+     "line": 5,
+     "text": "\"provides\": \"action\","
+    },
+    {
+     "file": "knowledge/components/button.meta.json",
+     "line": 6,
+     "text": "\"answers\": \"what-can-i-do\","
+    }
+   ]
+  },
+  {
+   "component": "stat-card",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 15,
+     "text": "\"when\": \"... the default of the role; beats kpi-tile (role...\""
+    },
+    {
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 7,
+     "text": "\"shape\": \"one-measure × value-and-delta\","
+    },
+    {
+     "file": "knowledge/components/stat-card.meta.json",
+     "line": 17,
+     "text": "{ \"name\": \"label\", \"$note\": \".t-cm-caption at 0.6 ink; names the metric, sentence case.\" }"
+    }
+   ]
+  },
+  {
+   "component": "date-picker",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 7,
+     "text": "DD/MM/YYYY (en-GB). Typing is free text — validated on blur, never masked mid-entry (acd-019)."
+    },
+    {
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 8,
+     "text": "Format hint above the field — 'Format: DD/MM/YYYY.' (copy-040: placeholder carries the format)"
+    },
+    {
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 46,
+     "text": "\"validation\": \"On blur (not while the panel is open) ... (ctkn-020)\""
+    },
+    {
+     "file": "knowledge/components/date-picker.meta.json",
+     "line": 32,
+     "text": "\"script\": \"knowledge/snippets/Date-picker.reference.html#script\","
+    }
+   ]
+  },
+  {
+   "component": "image-block",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/image-block.meta.json",
+     "line": 48,
+     "text": "\"A second, differently-styled placeholder mechanism instead of reusing Skeleton-loader's bone atom\","
+    },
+    {
+     "file": "knowledge/components/image-block.meta.json",
+     "line": 50,
+     "text": "\"A drawn broken-image glyph instead of the byte-matched informative/broken-image.svg\","
+    },
+    {
+     "file": "knowledge/components/image-block.meta.json",
+     "line": 24,
+     "text": "\"shimmer\": \"Loading state's shimmer is Skeleton-loader's own keyframe, byte-identical\""
+    }
+   ]
+  },
+  {
+   "component": "carousel",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/carousel.meta.json",
+     "line": 15,
+     "text": "\"font-family\": \"n/a — captions use the .t-cm-heading / .t-cm-caption composites\","
+    },
+    {
+     "file": "knowledge/components/carousel.meta.json",
+     "line": 44,
+     "text": "\"Autoplay with no pause control (WCAG 2.2.2) — not built here, and PROPOSED default is autoplay OFF entirely\","
+    }
+   ]
+  },
+  {
+   "component": "amount-input",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/amount-input.meta.json",
+     "line": 8,
+     "text": "Code before the value, no space (copy-025); symbol (£) closed up."
+    },
+    {
+     "file": "knowledge/components/amount-input.meta.json",
+     "line": 7,
+     "text": "standard = .t-cm-figure-5 (16); display = .t-cm-..."
+    }
+   ]
+  },
+  {
+   "component": "alert",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/alert.meta.json",
+     "line": 9,
+     "text": "Optional inline action link — descriptive text, never 'click here' (aca-004)."
+    },
+    {
+     "file": "knowledge/components/alert.meta.json",
+     "line": 45,
+     "text": "Dismiss control carries aria-label=\\\"Dismiss alert\\\"; status glyphs are aria-hidden ... (icon-013)"
+    }
+   ]
+  },
+  {
+   "component": "file-upload",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/file-upload.meta.json",
+     "line": 40,
+     "text": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar"
+    },
+    {
+     "file": "knowledge/components/file-upload.meta.json",
+     "line": 31,
+     "text": "\"script\": \"knowledge/snippets/File-upload.reference.html#script\","
+    }
+   ]
+  },
+  {
+   "component": "tabs",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/tabs.meta.json",
+     "line": 41,
+     "text": "\"Using tabs for sequential steps (use a progress tracker / wizard)\","
+    },
+    {
+     "file": "knowledge/components/tabs.meta.json",
+     "line": 24,
+     "text": "focus/ring ... @ focus/ring-width 2px, focus/ring-offset 2px — see guidelines/focus-indicators.md."
+    },
+    {
+     "file": "knowledge/components/tabs.meta.json",
+     "line": 97,
+     "text": "\"figma_node\": \"Cgbtrmfp15ruNFkIAClpkI:629:23608\","
+    }
+   ]
+  },
+  {
+   "component": "status-indicator",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/status-indicator.meta.json",
+     "line": 17,
+     "text": "\"when\": \"shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary\""
+    },
+    {
+     "file": "knowledge/components/status-indicator.meta.json",
+     "line": 7,
+     "text": "\"provides\": \"status-surface\","
+    }
+   ]
+  },
+  {
+   "component": "kpi-tile",
+   "uncarried_facts": [
+    {
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 21,
+     "text": "\"with\": [ ... ]  (the DESK `with` complement list — 8 entries across 3 components, nothing in the graph)"
+    },
+    {
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 46,
+     "text": "hero = .t-cm-figure-2 (40px) at span 6 ... compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5)."
+    },
+    {
+     "file": "knowledge/components/kpi-tile.meta.json",
+     "line": 159,
+     "text": "\"capability\": [ ... ] (slot contract)"
+    }
+   ]
+  }
+ ],
+ "unknowns": [
+  "BELOW THRESHOLD, recorded not proposed: usesIcon — only 4/137 metas name an icon SVG path (input-fields:88, image-block:50, alert:45 by rule id). knowledge/assets/icons/_README.md says the FULL export is still pending a Figma token, so the icon node set does not exist yet. Revisit after the export.",
+  "BELOW THRESHOLD: illustratedBy / photography — only carousel and image-block mention photography at all, and image-block's own antiPattern FORBIDS real photography ('SVG rect placeholders only, per the wave-4 DO-NOT-RULE'). _PHOTOGRAPHY-MANIFEST.json holds 251 rows keyed by filename with no component column.",
+  "ZERO EVIDENCE: upholds/risks a principle. knowledge/brain/principles.json holds 145 graded principles with stable ids (pr-fitts, ...) and NOT ONE of the 137 metas cites one. A component->principle edge would have to be authored from scratch, which is invention, not migration. Worth Dave's eye as a QUESTION (should metas cite principles?) rather than as an edge proposal.",
+  "NOT MEASURED: hasState / hasVariant. 345 variants across 124 components and a full state vocabulary per meta, but there is no variant or state NODE KIND anywhere and no store closing the vocabulary — this is Lane A's node-family question before it is an edge question.",
+  "NOT MEASURED: adaptsAt / breakpoint. 16/32 read components carry responsive.rule, but breakpoints appear as inline pixel prose ('stacks below 520px', 'Fixed 360px') with no breakpoint store to point at.",
+  "OPEN: `with` (8 entries / 3 components) and `not-with` (9 / 8) are DESK fields with a live resolver (_validate_roles_resolve.py checks 3-4) whose slugs resolve to a meta stem OR a role slug. They are component<->component edges in everything but name. Too thin to propose on their own; they should ride with providesRole.",
+  "OPEN: 8 id-shaped strings in metas (ds-020 x8, ds-005 x8, ds-032 x7, ds-026, ds-031, ds-027, ds-030) do NOT resolve against _rules-index.json. Either a second rule namespace exists that this lane did not find, or these are dangling references. Not resolved here — flagged.",
+  "REJECTED WITH A NUMBER: conformsTo (component->SC). Already carried as appliesTo in the other direction, 826 of 834 pairs. See the candidate entry; the residue is a 10-pair reconciliation.",
+  "SCOPE: this lane proposed types only. The vocabulary is CLOSED by ruling #75 — nothing here is authored, no meta.json was touched, gen_kg_edges.py was not run."
+ ]
+}

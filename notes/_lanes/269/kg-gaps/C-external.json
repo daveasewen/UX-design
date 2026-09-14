@@ -1,0 +1,219 @@
+{
+  "generated": "2026-09-14",
+  "lane": "269-C",
+  "_README": "External survey for the #269 KG gap analysis. `fetched:true` means the page body was actually retrieved in this lane (by the lane conductor or a lane researcher); `fetched:false` means the claim rests on a search-result snippet only and is NOT a verified reading of the source. Claims are separated into what a system DEMONSTRABLY carries as a content/data type vs what an author RECOMMENDS. `our_status` names which of our existing node families (component / pattern / context / token / ruling / guideline / principle / sc / axe / role / session / artefact / evidence) the thing lands in, if any.",
+
+  "ours_for_reference": {
+    "node_families": ["component (knowledge/components/*.meta.json)", "pattern (components/_nodes-pattern.json)", "context (components/_nodes-context.json)", "token (knowledge/tokens/)", "ruling (_rulings.json)", "guideline (knowledge/guidelines/*.md)", "principle (brain/principles.json)", "sc + axe rule (knowledge/compliance/rules, rule.schema.json)", "role — SLOT role, i.e. provides/wants (roles.json, 12 roles)", "session / artefact / evidence (_assertions.json, _enactment-register.json, notes/)"],
+    "edge_types": ["containedBy", "usedInContext", "commonPattern", "mustNotNeighbour", "groupsWith", "triggeredBy", "consumes", "reuses", "hasPart", "partial", "family", "renderedBy", "governedBy", "composedOf", "delegatesTo", "drivesConsumer", "$contract"],
+    "note": "roles.json is explicitly a SLOT-role vocabulary ('the thing a slot asks for'), NOT an end-user persona vocabulary. That distinction drives gap G-07."
+  },
+
+  "sources": [
+    {"title": "W3C DTCG — Design Tokens Format Module (Editor's Draft)", "url": "https://tr.designtokens.org/format/", "fetched": true, "what_it_models": "A token = name + $value + $type, organised into arbitrary $groups, with aliases/references, $description, $deprecated, $extensions (vendor namespaced), 8 base types (color, dimension, fontFamily, fontWeight, duration, cubicBezier, number, +additional) and composite types (strokeStyle, border, transition, shadow, gradient, typography)."},
+    {"title": "Figma — Modes for variables", "url": "https://help.figma.com/hc/en-us/articles/15343816063383-Modes-for-variables", "fetched": true, "what_it_models": "A variable collection carries N MODES (one value per variable per mode); modes are the declared mechanism for theme, accessible/high-contrast themes, LOCALISED UI COPY (string variables) and device size. Objects/pages resolve mode by inheritance ('Auto') up the layer tree, with an explicit default mode and documented MODE-CONFLICT failure when versions fan out across files. Imports DTCG JSON; cross-collection aliasing via com.figma.aliasData."},
+    {"title": "Figma — Code Connect (React reference)", "url": "https://developers.figma.com/docs/code-connect/react/", "fetched": true, "what_it_models": "An explicit typed binding between a Figma component/variant and a code component, including per-prop mapping (string/boolean/enum/instance/children/nestedProps/className/slot) and variant restrictions that select a different code component per variant combination."},
+    {"title": "Supernova — SDK data model (Token)", "url": "https://developers.supernova.io/latest/sdk-reference/data-model/tokens/token-vDls9dWx", "fetched": true, "what_it_models": "Design system as versioned objects: Workspace / Brand / DesignSystemVersion / Theme, with Token (id, brandId, themeId, designSystemVersionId, tokenType, origin, parentGroupId, propertyValues), token groups, Components, Custom/Element Properties, Assets and Pipelines."},
+    {"title": "zeroheight — documentation product", "url": "https://zeroheight.com/documentation/", "fetched": true, "what_it_models": "A doc layer over Figma/Storybook: styleguide, versioned pages, components carrying an explicit STATUS (released / in progress / needs attention) split across design, code and docs, tokens synced from Figma variables, integrations and roles. 'Adoption insights' / ROI is vendor positioning, not a documented schema."},
+    {"title": "Knapsack — docs", "url": "https://docs.knapsack.cloud/", "fetched": true, "what_it_models": "'Design system as data': code sources + design (Figma) sources, Patterns composed of components with status, Design tokens with Collections/Groups/MODES, pages built from typed content blocks, demos/prototypes that instantiate real components, and an MCP server + llms.txt that exposes all of it to AI tools."},
+    {"title": "Storybook — Accessibility testing", "url": "https://storybook.js.org/docs/writing-tests/accessibility-testing", "fetched": true, "what_it_models": "Component → meta → story (args/parameters/decorators/play), with the a11y addon running axe-core RULES against each story and attaching Violations / Passes / Incomplete plus a per-story test status. Rules are enable/disable/selector-scoped per story."},
+    {"title": "GOV.UK Design System — Patterns", "url": "https://design-system.service.gov.uk/patterns/", "fetched": true, "what_it_models": "A three-tier split (Styles / Components / Patterns) where a Pattern is a 'best practice design solution for specific user-focused tasks and page types', explicitly grouped by INTENT ('Ask users for…', 'Help users to…', 'Pages'), and where patterns 'often use one or more components and explain how to adapt them to the context'. Includes bank-details and payment-card-details patterns."},
+    {"title": "GOV.UK Design System — home / community backlog", "url": "https://design-system.service.gov.uk/community/", "fetched": true, "what_it_models": "A public backlog where a candidate component/pattern must carry documented RESEARCH (who it was tested with, in what context) before promotion, plus lifecycle statuses (e.g. Experimental/Trial → Stable) and versioned release notes. (Backlog research requirement read via its GitHub doc by the lane researcher; treat the exact promotion wording as reported, not quoted.)"},
+    {"title": "IBM Carbon Design System", "url": "https://carbondesignsystem.com/", "fetched": true, "what_it_models": "Splits ELEMENTS (color, type, spacing, icons, PICTOGRAMS, motion, grid) from GUIDELINES (content, accessibility, motion usage) from COMPONENTS and PATTERNS ('harvested from products'), each with a named maintainer, plus a separate data-visualisation/Carbon Charts token family."},
+    {"title": "Atlassian Design System", "url": "https://atlassian.design/", "fetched": true, "what_it_models": "Foundations (Color, Typography, Iconography, Grid, Accessibility) separate from Components, with flat namespaced tokens (color.text.accent.red, elevation.surface.hovered) and distinct content/voice-and-tone and illustration tracks reachable from nav (those specific pages NOT fetched)."},
+    {"title": "U.S. Web Design System — components overview", "url": "https://designsystem.digital.gov/components/overview/", "fetched": true, "what_it_models": "Separates Components / Patterns / Templates / Design tokens / Utilities, and — the distinctive bit — publishes a per-component ACCESSIBILITY TESTS subpage enumerating criterion-level tests (e.g. Modal ~14 tests, Search ~22), i.e. test evidence attached to the component node."},
+    {"title": "Material 3 — design tokens / type / motion / shape", "url": "https://m3.material.io/foundations/design-tokens/how-to-read-tokens", "fetched": false, "what_it_models": "Three-tier tokens (reference → system → component), colour ROLES with on-X pairs, a 15-cell type scale (5 roles × 3 sizes), motion as easing+duration token pairs, a shape scale, state layers, and window size classes for adaptive layout. NOT FETCHED: the m3.material.io page returned empty (JS-rendered); claims rest on search snippets and the Material Symbols axes page below."},
+    {"title": "Material Symbols — variable icon axes", "url": "https://fonts.google.com/knowledge/glossary/material_symbols", "fetched": false, "what_it_models": "Icons as a variable font with four typed axes — weight (100–700), fill (0/1), grade (−50–200), optical size (20–48) — so a glyph is a point in an axis space, not a file. Snippet only."},
+    {"title": "Salesforce Lightning Design System", "url": "https://www.lightningdesignsystem.com/", "fetched": false, "what_it_models": "Two-tier: framework-independent BLUEPRINT (semantic HTML/CSS + a11y attributes + guidelines) vs framework-specific Component that implements it, joined by design tokens / styling hooks. NO end-user persona entity was found. Snippet only (site is a JS shell)."},
+    {"title": "Microsoft Fluent 2", "url": "https://fluent2.microsoft.design/", "fetched": false, "what_it_models": "Icons as a first-class family with filled/outline pairs and literal-metaphor naming, illustration as a separate track, motion patterns anchored to the spatial origin of the invoking action, and advisory notes on cultural connotation of icons for localisation. Snippet only."},
+    {"title": "Adobe Spectrum", "url": "https://spectrum.adobe.com/", "fetched": false, "what_it_models": "PLATFORM SCALE (desktop vs mobile) as a first-class sizing axis a component branches on, rem-based typography that scales with user preference, international design guidance (RTL mirroring, locale-aware date/currency/number formatting), and per-component content standards. Snippet only."},
+    {"title": "Shopify Polaris — content", "url": "https://polaris.shopify.com/content", "fetched": true, "what_it_models": "NOTE: this URL now 302-redirects to https://shopify.dev/docs/api/polaris, a component/API reference for Polaris web components across app surfaces (App Home, Admin, Checkout, Customer accounts, POS) — i.e. SURFACE is a first-class axis. The former standalone content-guidelines section was not served at this URL when fetched; content-rule claims below are snippet-level only."},
+    {"title": "Shopify Polaris — product content guidelines", "url": "https://polaris.shopify.com/content/product-content", "fetched": false, "what_it_models": "Content rules by category (grammar, naming, inclusive language) with example + rationale, and an explicit reading-level target. Snippet only."},
+    {"title": "Nielsen Norman Group — tone-of-voice dimensions", "url": "https://www.nngroup.com/articles/tone-of-voice-dimensions/", "fetched": false, "what_it_models": "AUTHOR RECOMMENDATION, not a shipped system: tone as four measurable dimensions (funny↔serious, formal↔casual, respectful↔irreverent, enthusiastic↔matter-of-fact), each a scale position. Snippet only."},
+    {"title": "Home Office Design System — readability", "url": "https://design.homeoffice.gov.uk/accessibility/written-content/readability", "fetched": false, "what_it_models": "A target reading age (9) as a governing standard on content, with literacy-statistics rationale. Snippet only."},
+    {"title": "digital.gov — Federal Plain Language Guidelines", "url": "https://digital.gov/guides/plain-language/", "fetched": false, "what_it_models": "Plain-language techniques grouped by audience analysis / organisation / word choice / testing, with a statutory basis (Plain Writing Act 2010). Snippet only."},
+    {"title": "IPTC Photo Metadata Standard", "url": "https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata", "fetched": false, "what_it_models": "The image-asset record: Headline/Description/Keywords, Creator/CopyrightNotice/DateCreated, a rights block (usageTerms, licensor, webStatementOfRights), PersonShown/ProductShown depiction, ImageRegion (focal/crop), and 2025.1 AI-generation fields (AIPromptInformation, AISystemUsed). Snippet only."},
+    {"title": "Frontify — metadata and tags guide", "url": "https://www.frontify.com/en/guide/how-to-set-up-metadata-and-tags", "fetched": false, "what_it_models": "VENDOR GUIDANCE: brand-asset records with usage rights, expiration date, market restriction, product line and controlled-vocabulary tags (incl. mood), surfaced through audience-scoped portals. Snippet only."},
+    {"title": "IBM Carbon — pictograms contribution guidance", "url": "https://carbondesignsystem.com/guidelines/pictograms/contribute/", "fetched": false, "what_it_models": "Pictogram grammar: 32×32 grid, padding in grid units, stroke spec, keyline optical alignment, productive vs expressive families. Snippet only."},
+    {"title": "W3C — Understanding WCAG 2.2", "url": "https://www.w3.org/WAI/WCAG22/Understanding/intro", "fetched": false, "what_it_models": "The normative four-layer structure: Principle (4) → Guideline (13) → Success Criterion (numbered, level A/AA/AAA) → Techniques, where techniques are typed as SUFFICIENT, ADVISORY or FAILURE. Snippet only."},
+    {"title": "W3C — ACT Rules Format", "url": "https://www.w3.org/TR/act-rules-format/", "fetched": false, "what_it_models": "A rule schema: applicability + expectation + accessibility requirement (primary conformance / secondary), so a rule is formally tied to the SC it tests. Snippet only."},
+    {"title": "axe-core — rule development doc", "url": "https://github.com/dequelabs/axe-core/blob/develop/doc/rule-development.md", "fetched": false, "what_it_models": "Rule metadata fields: id, description, help, impact (minor/moderate/serious/critical), tags (wcag###, best-practice, act, section508), and pass/fail/incomplete messages. Snippet only."},
+    {"title": "User Interviews — atomic UX research nuggets", "url": "https://www.userinterviews.com/ux-research-field-guide-chapter/atomic-research-nuggets", "fetched": false, "what_it_models": "AUTHOR/COMMUNITY MODEL (Daniel Pidcock), not a shipped system: Experiment → Fact (no assumption) → Insight (synthesis of facts) → Recommendation (evidenced by insights), as reusable, addressable research atoms. Snippet only."},
+    {"title": "Into Design Systems — Agentic Design Systems guide", "url": "https://www.intodesignsystems.com/agentic-design-systems", "fetched": false, "what_it_models": "AUTHOR POSITION (2026): an 'agentic design system' is infrastructure that lets AI agents read and reason over components, tokens and guidelines autonomously; cites WhatsApp, GitHub, Indeed, New York State as examples. Snippet only — treat as framing, not evidence."},
+    {"title": "Harness — why Harness AI uses a knowledge graph", "url": "https://www.harness.io/blog/why-harness-ai-uses-knowledge-graph", "fetched": false, "what_it_models": "VENDOR CLAIM: a schema-driven knowledge graph makes agent queries deterministic and cuts token cost 15–25× vs raw MCP API crawling. Relevant as an argument for a typed graph over prose retrieval; the multiplier is unverified. Snippet only."}
+  ],
+
+  "entity_types_seen": [
+    {
+      "entity": "Mode / theme axis (as a first-class dimension, not a token variant)",
+      "seen_in": ["Figma — Modes for variables", "Knapsack — docs", "Supernova — SDK data model (Token)"],
+      "fields_typical": ["collection", "mode name", "is_default", "inheritance (auto/explicit)", "one value per variable per mode"],
+      "why_a_super_designer_needs_it": "It is the single mechanism that lets one layout answer light/dark, high-contrast, density, device size and locale without forking the design.",
+      "our_status": "partial — we carry four themes plus light/dark as token sets, but there is no `mode` node with a default, an inheritance rule, or an edge saying which component branches on which axis"
+    },
+    {
+      "entity": "Locale / script / writing-direction",
+      "seen_in": ["Figma — Modes for variables", "Adobe Spectrum", "Microsoft Fluent 2"],
+      "fields_typical": ["locale code", "script", "direction (ltr/rtl)", "font fallback stack", "date/currency/number format", "expansion factor for copy"],
+      "why_a_super_designer_needs_it": "Banking UI ships in multiple locales; string length, mirroring and numeral/currency format change layout decisions, not just copy.",
+      "our_status": "absent — no locale node; guidelines/typography-standards-2026.md is prose about type, not a locale model"
+    },
+    {
+      "entity": "Content standard / voice-and-tone profile / reading level",
+      "seen_in": ["Shopify Polaris — product content guidelines", "Nielsen Norman Group — tone-of-voice dimensions", "Home Office Design System — readability", "digital.gov — Federal Plain Language Guidelines", "Atlassian Design System", "IBM Carbon Design System"],
+      "fields_typical": ["rule category (grammar/naming/inclusive)", "example + counter-example", "rationale", "reading-age or grade target", "tone dimension positions"],
+      "why_a_super_designer_needs_it": "The agent writes the words as well as the layout; without a typed content standard it cannot be gated on tone or reading level the way it is gated on contrast.",
+      "our_status": "partial — guidelines/tone-of-voice.md, copywriting.md, calls-to-action.md exist as PROSE guideline nodes; no typed rule with a probeable field, and no component→content-standard edge"
+    },
+    {
+      "entity": "Terminology / glossary term (controlled vocabulary)",
+      "seen_in": ["Shopify Polaris — product content guidelines", "IBM Carbon Design System"],
+      "fields_typical": ["preferred term", "deprecated synonyms", "definition", "locale variants", "do-not-use"],
+      "why_a_super_designer_needs_it": "Banking terms are regulated and non-negotiable ('available balance' ≠ 'current balance'); an agent generating copy needs a term node it can be held to.",
+      "our_status": "absent — _consult-lexicon.json is a consult index, not a product-terminology register"
+    },
+    {
+      "entity": "Brand / imagery asset with rights",
+      "seen_in": ["IPTC Photo Metadata Standard", "Frontify — metadata and tags guide", "Supernova — SDK data model (Token)"],
+      "fields_typical": ["licence source", "usage terms + web statement", "licensor", "expiry", "market restriction", "subject/people depicted", "mood tag", "focal point / crop region", "alt text", "AI-generation provenance"],
+      "why_a_super_designer_needs_it": "Choosing an image is a rights decision as much as an aesthetic one; expiry and market restriction are the fields that stop an agent shipping an unlicensed hero.",
+      "our_status": "partial — _PHOTOGRAPHY-MANIFEST.json already carries licence_source, licence_web_statement, licensor_url, exif_description; it is a manifest, not a node family with edges to context/pattern, and has no expiry, market, mood or focal point"
+    },
+    {
+      "entity": "Icon / pictogram as an axis point (glyph grammar)",
+      "seen_in": ["Material Symbols — variable icon axes", "IBM Carbon — pictograms contribution guidance", "Microsoft Fluent 2"],
+      "fields_typical": ["semantic name vs glyph", "size grid", "keyline", "stroke weight", "fill (outlined/filled pair)", "optical size", "grade", "family (productive/expressive)", "cultural-connotation flag"],
+      "why_a_super_designer_needs_it": "It lets the agent pick the right WEIGHT of the right icon for the right surface instead of pasting a file, and pairs outlined/filled for selected states.",
+      "our_status": "partial — assets/icons plus guidelines/icons.md and pictograms.md; the glyph axes and the outlined/filled pair are not typed (note: our -active glyph twins from #264 are exactly this relation, unmodelled)"
+    },
+    {
+      "entity": "End-user persona / job-to-be-done / journey",
+      "seen_in": ["GOV.UK Design System — Patterns", "User Interviews — atomic UX research nuggets"],
+      "fields_typical": ["persona", "job statement", "journey stage", "channel", "assistive-tech profile", "financial-literacy/vulnerability flag"],
+      "why_a_super_designer_needs_it": "GOV.UK organises patterns by what the USER is trying to do ('Ask users for…', 'Help users to…'); without a user-intent node the agent can only match on UI shape.",
+      "our_status": "absent as a USER concept — roles.json is explicitly a slot-role vocabulary (provides/wants); our `context` family is the nearest thing and is surface-shaped, not person-shaped"
+    },
+    {
+      "entity": "Research finding → evidence → recommendation chain",
+      "seen_in": ["GOV.UK Design System — home / community backlog", "User Interviews — atomic UX research nuggets", "U.S. Web Design System — components overview"],
+      "fields_typical": ["fact (no interpretation)", "insight (synthesis)", "recommendation", "study/experiment id", "participants tested with", "date", "confidence"],
+      "why_a_super_designer_needs_it": "It is the difference between 'this pattern is in the system' and 'this pattern was tested with N users and here is what happened' — the thing a CAIO will ask.",
+      "our_status": "partial — _assertions.json, _rulings.json and notes/ carry decision provenance (rulings are our strongest asset here), but there is no user-research evidence node and no component→evidence edge"
+    },
+    {
+      "entity": "Lifecycle status / maturity",
+      "seen_in": ["GOV.UK Design System — home / community backlog", "zeroheight — documentation product", "Knapsack — docs", "Supernova — SDK data model (Token)", "U.S. Web Design System — components overview"],
+      "fields_typical": ["status (experimental/trial/stable/deprecated)", "status split across design/code/docs", "owner", "last reviewed", "release version"],
+      "why_a_super_designer_needs_it": "The agent must know whether it is allowed to reach for a thing; 'exists' and 'ready' are different edges.",
+      "our_status": "partial — component metas carry provenance and build fields and the release pack is versioned, but there is no single declared status per node that a gate reads"
+    },
+    {
+      "entity": "Code binding (design ↔ code, prop-level)",
+      "seen_in": ["Figma — Code Connect (React reference)", "Knapsack — docs", "Storybook — Accessibility testing"],
+      "fields_typical": ["figma node url", "code import path", "framework", "prop mapping table", "variant restriction", "slot"],
+      "why_a_super_designer_needs_it": "Without prop-level mapping the agent can name a component but not emit correct code for the variant it chose.",
+      "our_status": "partial — meta schema has `codeBindings` and a `renderedBy` edge, and _CODE-CONNECT-PLACEMENT.md exists; the mapping is component-level, not prop/variant-level"
+    },
+    {
+      "entity": "Surface / platform scale / window size class",
+      "seen_in": ["Shopify Polaris — content", "Adobe Spectrum", "Material 3 — design tokens / type / motion / shape"],
+      "fields_typical": ["surface name (admin/checkout/POS…)", "platform scale (desktop/mobile)", "window size class (compact/medium/expanded)", "available component set per surface"],
+      "why_a_super_designer_needs_it": "The same design system exposes DIFFERENT legal component sets per surface; the agent needs to know what it may use where.",
+      "our_status": "partial — `context` and the `responsive` meta field cover some of this; there is no surface node constraining which components are legal"
+    },
+    {
+      "entity": "Motion pattern (as distinct from a motion token)",
+      "seen_in": ["IBM Carbon Design System", "Microsoft Fluent 2", "Material 3 — design tokens / type / motion / shape"],
+      "fields_typical": ["easing + duration token pair", "family (productive/expressive)", "spatial origin (anchored to invoking element)", "reduced-motion fallback"],
+      "why_a_super_designer_needs_it": "Motion carries meaning about where a thing came from; an agent that only has durations will animate correctly and communicate nothing.",
+      "our_status": "partial — meta `motion` field plus guidelines/motion-standards.md; no motion-pattern node, no reduced-motion edge"
+    },
+    {
+      "entity": "WCAG technique / failure (the layer under a success criterion)",
+      "seen_in": ["W3C — Understanding WCAG 2.2", "W3C — ACT Rules Format", "axe-core — rule development doc", "U.S. Web Design System — components overview"],
+      "fields_typical": ["technique id", "type (sufficient/advisory/FAILURE)", "sc tested", "rule applicability + expectation", "impact", "tags"],
+      "why_a_super_designer_needs_it": "A failure technique is the negative knowledge — the thing the agent must not do — and it is the only form in which most a11y knowledge is actually actionable.",
+      "our_status": "partial — compliance/rule.schema.json has id, sc, level, applies_to, check, verified_by, external_automatable_refs, severity; the sufficient/advisory/FAILURE typing and the technique node itself are missing"
+    },
+    {
+      "entity": "Deprecation / supersession",
+      "seen_in": ["W3C DTCG — Design Tokens Format Module (Editor's Draft)", "Salesforce Lightning Design System"],
+      "fields_typical": ["$deprecated (true or reason string)", "replacement alias in the reason", "superseded-by"],
+      "why_a_super_designer_needs_it": "DTCG explicitly anticipates a tool resolving the replacement reference and linking to the new token; that is exactly what an agent needs to migrate a screen.",
+      "our_status": "absent as a typed edge — we have `aliasOf` for renames but no deprecation with a machine-readable replacement"
+    },
+    {
+      "entity": "Template / page type",
+      "seen_in": ["U.S. Web Design System — components overview", "GOV.UK Design System — Patterns"],
+      "fields_typical": ["page type", "required regions", "components assembled", "when to use"],
+      "why_a_super_designer_needs_it": "GOV.UK and USWDS both carry whole-page types (confirmation, interruption, service-unavailable, 404) that are not components and not patterns.",
+      "our_status": "partial — template-* files appear as SOURCES inside context nodes, so templates are implicit rather than being a node family"
+    },
+    {
+      "entity": "Ownership / maintainer / adoption",
+      "seen_in": ["IBM Carbon Design System", "zeroheight — documentation product", "Supernova — SDK data model (Token)"],
+      "fields_typical": ["maintainer team", "contact", "consuming product", "usage count"],
+      "why_a_super_designer_needs_it": "Answers 'who decides' and 'what breaks if I change this'; blast radius without an owner is only half the answer.",
+      "our_status": "absent — _blast-radius.json gives the impact side; no owner node. Vendor 'adoption/health' framing is marketing, not schema (see cautions)"
+    }
+  ],
+
+  "edge_types_seen": [
+    {"edge": "hasMode / valueInMode", "from": "token collection", "to": "mode", "seen_in": ["Figma — Modes for variables", "Knapsack — docs"], "our_nearest": "none (theme is a file split, not an edge)"},
+    {"edge": "resolvesModeByInheritance", "from": "node/layer", "to": "parent container's mode", "seen_in": ["Figma — Modes for variables"], "our_nearest": "none"},
+    {"edge": "aliasOf / references", "from": "token", "to": "token", "seen_in": ["W3C DTCG — Design Tokens Format Module (Editor's Draft)", "Supernova — SDK data model (Token)"], "our_nearest": "aliasOf (top-level meta field), consumes"},
+    {"edge": "deprecatedInFavourOf", "from": "token/component", "to": "token/component", "seen_in": ["W3C DTCG — Design Tokens Format Module (Editor's Draft)"], "our_nearest": "none"},
+    {"edge": "belongsToGroup", "from": "token", "to": "group", "seen_in": ["W3C DTCG — Design Tokens Format Module (Editor's Draft)", "Supernova — SDK data model (Token)"], "our_nearest": "family (prose, ref:null)"},
+    {"edge": "implementedBy / connectsTo", "from": "design component", "to": "code component", "seen_in": ["Figma — Code Connect (React reference)", "Salesforce Lightning Design System"], "our_nearest": "renderedBy"},
+    {"edge": "propMapsTo", "from": "design prop/variant", "to": "code prop/value", "seen_in": ["Figma — Code Connect (React reference)"], "our_nearest": "none"},
+    {"edge": "variantRestrictsTo", "from": "variant combination", "to": "code component", "seen_in": ["Figma — Code Connect (React reference)"], "our_nearest": "none (variants are a meta field, not an edge)"},
+    {"edge": "hasStatus", "from": "component/pattern/token", "to": "lifecycle status", "seen_in": ["zeroheight — documentation product", "GOV.UK Design System — home / community backlog", "Knapsack — docs"], "our_nearest": "none (provenance is descriptive, not a status)"},
+    {"edge": "maintainedBy", "from": "component/pattern", "to": "team/person", "seen_in": ["IBM Carbon Design System"], "our_nearest": "none"},
+    {"edge": "usesComponent / composedOf", "from": "pattern", "to": "component", "seen_in": ["GOV.UK Design System — Patterns", "IBM Carbon Design System", "U.S. Web Design System — components overview", "Knapsack — docs"], "our_nearest": "composedOf, hasPart, commonPattern — PRESENT and strong"},
+    {"edge": "adaptsToContext", "from": "pattern", "to": "context", "seen_in": ["GOV.UK Design System — Patterns"], "our_nearest": "usedInContext — PRESENT"},
+    {"edge": "servesUserTask", "from": "pattern", "to": "user job/task", "seen_in": ["GOV.UK Design System — Patterns"], "our_nearest": "answers (meta field) — partial, not an edge to a task node"},
+    {"edge": "evidencedBy", "from": "component/pattern", "to": "research finding / accessibility test result", "seen_in": ["U.S. Web Design System — components overview", "GOV.UK Design System — home / community backlog", "User Interviews — atomic UX research nuggets"], "our_nearest": "governedBy (to a ruling) — the ruling chain is ours; the user-evidence chain is not"},
+    {"edge": "factSupportsInsight / insightDrivesRecommendation", "from": "fact", "to": "insight → recommendation", "seen_in": ["User Interviews — atomic UX research nuggets"], "our_nearest": "none"},
+    {"edge": "principleHasGuideline / guidelineHasSC / scMetBySufficientTechnique / scViolatedByFailure", "from": "WCAG principle", "to": "guideline → SC → technique", "seen_in": ["W3C — Understanding WCAG 2.2"], "our_nearest": "compliance rule.sc field — flat, not a chain; failure typing absent"},
+    {"edge": "ruleTestsSC", "from": "axe/ACT rule", "to": "success criterion", "seen_in": ["W3C — ACT Rules Format", "axe-core — rule development doc"], "our_nearest": "verified_by / external_automatable_refs — PRESENT"},
+    {"edge": "ruleRunsAgainstStory → produces violation", "from": "a11y rule", "to": "component story/state", "seen_in": ["Storybook — Accessibility testing"], "our_nearest": "our probe/receipt scripts do this, but the result is a file not a node"},
+    {"edge": "constrainedByContentStandard", "from": "component/surface", "to": "content rule / reading level", "seen_in": ["Shopify Polaris — product content guidelines", "Adobe Spectrum", "IBM Carbon Design System"], "our_nearest": "governedBy (to a prose guideline) — coarse"},
+    {"edge": "hasRights / licensedUnder", "from": "image asset", "to": "rights block", "seen_in": ["IPTC Photo Metadata Standard", "Frontify — metadata and tags guide"], "our_nearest": "none as an edge (fields exist in _PHOTOGRAPHY-MANIFEST.json)"},
+    {"edge": "depicts", "from": "image asset", "to": "person/product/subject/mood", "seen_in": ["IPTC Photo Metadata Standard"], "our_nearest": "none"},
+    {"edge": "availableOnSurface", "from": "component", "to": "surface / platform scale", "seen_in": ["Shopify Polaris — content", "Adobe Spectrum"], "our_nearest": "usedInContext — partial"},
+    {"edge": "hasVariantForScale", "from": "component", "to": "platform scale / window size class", "seen_in": ["Adobe Spectrum", "Material 3 — design tokens / type / motion / shape"], "our_nearest": "responsive (meta field)"},
+    {"edge": "roleMapsToToken", "from": "colour/type role", "to": "reference token", "seen_in": ["Material 3 — design tokens / type / motion / shape"], "our_nearest": "our token layering exists in tokens/_manifests; no role node"},
+    {"edge": "pairedWith (outlined ↔ filled glyph)", "from": "icon", "to": "icon", "seen_in": ["Microsoft Fluent 2", "Material Symbols — variable icon axes"], "our_nearest": "none — our -active glyph twins (#264) are this edge, unmodelled"},
+    {"edge": "fallsBackTo (script/locale font stack)", "from": "type style", "to": "font stack for script", "seen_in": ["Adobe Spectrum"], "our_nearest": "none"},
+    {"edge": "exposedToAgent (MCP / llms.txt)", "from": "design system", "to": "agent interface", "seen_in": ["Knapsack — docs", "Harness — why Harness AI uses a knowledge graph"], "our_nearest": "none — our graph is read by us, not served"}
+  ],
+
+  "gap_ranking": [
+    {"gap": "G-01 Content standard as a typed node (tone dimensions, reading level, error-message rule) with a component/surface edge", "weight": "H", "why": "A super-designer writes the words. Polaris, Carbon, Atlassian and GOV.UK all carry content as a first-class track; ours exists only as prose guidelines, so no gate can test a sentence the way _validate_* tests a pixel. Banking copy is also the highest-risk output we produce."},
+    {"gap": "G-02 End-user persona / job-to-be-done node, distinct from our slot-role vocabulary", "weight": "H", "why": "GOV.UK organises its entire pattern library by user task ('Ask users for…', 'Help users to…'). We index by UI shape and by context. Without a user-intent node the agent cannot answer 'what should this screen be' — only 'what could go on it'."},
+    {"gap": "G-03 Mode axis (theme / density / contrast / locale / size) as a node with defaults and inheritance", "weight": "H", "why": "Figma's variable modes and Knapsack's token modes make this the load-bearing abstraction. We have four themes plus light/dark handled as parallel token sets, which is the fan-out that Figma's own docs describe as producing mode conflicts."},
+    {"gap": "G-04 Lifecycle status + owner per node", "weight": "H", "why": "zeroheight, Knapsack, GOV.UK and Carbon all carry it; it is what tells the agent whether it may reach for a thing and who to ask. Cheap to add (one field + one edge) and it makes every other gate more honest."},
+    {"gap": "G-05 Evidence chain: user-research finding → evidence → recommendation, and per-component accessibility test RESULTS as nodes", "weight": "H", "why": "USWDS publishes criterion-level test evidence per component; GOV.UK gates promotion on documented research. Our ruling chain is excellent for OUR decisions and silent about the user. For a CAIO demo this is the difference between a library and a defensible system."},
+    {"gap": "G-06 Prop/variant-level code binding", "weight": "M", "why": "Figma Code Connect shows the granularity actually needed to emit correct code per variant. We bind at component level, so the agent's variant choice does not survive into the snippet."},
+    {"gap": "G-07 Locale / script / direction node with font fallback and format rules", "weight": "M", "why": "Spectrum and Fluent both carry it; Figma models localised copy as a MODE. Multi-locale banking is a near-term requirement and RTL mirroring changes layout decisions, not just strings."},
+    {"gap": "G-08 WCAG technique/FAILURE layer under the success criterion", "weight": "M", "why": "WCAG's own structure is principle → guideline → SC → sufficient/advisory/FAILURE. Our rules are flat against the SC. The failure techniques are the negative knowledge an agent most needs and we do not carry the type."},
+    {"gap": "G-09 Brand/imagery asset as a node with rights, expiry, market, mood, focal point and depiction", "weight": "M", "why": "IPTC and every DAM carry it; we already have the licence fields in _PHOTOGRAPHY-MANIFEST.json, so this is a promotion of existing data into the graph rather than new research. Expiry and market restriction are the fields that prevent a legal incident."},
+    {"gap": "G-10 Icon/pictogram axis model and the outlined↔filled pair edge", "weight": "M", "why": "Material Symbols treats a glyph as a point in a weight/fill/grade/optical-size space. Our #264 -active glyph twins ARE that pair relation, built by hand and unmodelled — the gap is already costing us."},
+    {"gap": "G-11 Deprecation with a machine-readable replacement", "weight": "M", "why": "DTCG's $deprecated explicitly anticipates a tool resolving the replacement and linking to the new token. We rename via aliasOf and lose the reason and the migration path."},
+    {"gap": "G-12 Motion pattern node (easing+duration pair, spatial origin, reduced-motion fallback)", "weight": "L", "why": "Carbon's productive/expressive split and Fluent's 'anchored to the point of invocation' are meaning, not values. Lower weight only because our current demo surface is largely static."},
+    {"gap": "G-13 Template / page-type as a node family", "weight": "L", "why": "USWDS and GOV.UK both carry whole-page types. Ours exist as sources inside context nodes, which works today; promoting them is tidying, not capability."},
+    {"gap": "G-14 Surface node constraining the legal component set", "weight": "L", "why": "Polaris exposes different component sets per surface (Admin / Checkout / POS). We have one surface, so this is a shape to leave room for rather than build."},
+    {"gap": "G-15 Serving the graph to agents (MCP / llms.txt)", "weight": "L", "why": "Knapsack ships an MCP server over exactly this data. It is a distribution question, not a model question — but it is the thing that turns the graph from our tool into the product's."}
+  ],
+
+  "cautions": [
+    "DTCG explicitly warns that groups are arbitrary and 'tools SHOULD NOT use them to infer the type or purpose of design tokens' (fetched). Do not let a folder path become a semantic edge — several of our existing prose-derived edges are close to this failure already.",
+    "Figma's own mode documentation devotes a long section to MODE CONFLICTS and a four-file publish-in-order recovery procedure. Every mode axis multiplies the surface that must be republished in step. Add modes as an axis only where a real decision branches on it; do not mint a mode per theme-per-density-per-locale.",
+    "Vendor 'design system health', 'adoption insights' and 'ROI' framing (zeroheight, Supernova, Knapsack, Harness) is POSITIONING, not schema. The lane researchers could not find documented field definitions behind any of it. Do not copy a metric node whose definition is a marketing page.",
+    "Salesforce's blueprint-vs-component split duplicates the same knowledge twice (spec + implementation) and SLDS2 is reportedly re-prioritising CSS custom properties over the SLDS1 token layer — i.e. the two-tier model needed a migration. A second parallel representation of a component is a maintenance bill, and we already pay one (meta + snippet).",
+    "The atomic-research nugget model (Fact → Insight → Recommendation) is an AUTHOR/COMMUNITY model, not a shipped system, and its known failure mode in practice is nuggets accumulating faster than anyone re-reads them. If we adopt it, adopt the CHAIN (three typed nodes) and not the aspiration of decomposing every study.",
+    "Six separate domains here (research, WCAG, axe, content, tone, rights) each model the same underlying shape: a claim with a typed support link back to something that justifies it. Resist building six bespoke schemas. One evidence/justification edge with a typed kind is likely to survive maintenance where six will not — but this is a lane RECOMMENDATION, not something any source states.",
+    "Persona taxonomies are the classic design-system ontology that collapses: nobody updates them and they drift from the research. If G-02 is adopted, bind persona/job nodes to an evidence node (G-05) so an unsupported persona is visibly unsupported, rather than letting them stand as free assertions.",
+    "Several claims in this file are snippet-level only — Material 3, SLDS, Fluent, Spectrum, Polaris content, IPTC, NNG, atomic research, axe rule doc, WCAG Understanding. The m3.material.io page returned EMPTY on fetch (JS-rendered), and https://polaris.shopify.com/content now 302-redirects to shopify.dev's API reference. Do not quote any of these as verified until re-fetched, ideally with a headless browser (knowledge/_render/seat_env.sh)."
+  ]
+}
