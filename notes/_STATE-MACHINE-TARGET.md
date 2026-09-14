@@ -125,8 +125,10 @@ Graphiti later, Neo4j never (for a solo-run project).
 - ⬜ **Front-matter edge/entity convention** — the prerequisite for everything below. Give
   decisions/goals/insights/sub-quests/tools a `type` + `status` + `edges` header (ADRs first, then
   memory + artifacts). *Next slice.*
-- ⬜ **Generator** — walk the typed nodes to *generate* the LIVE/DEAD/OPEN/goal-tree blocks of
-  `_LIVE-STATE.md`, so the ledger stops being hand-maintained (removes the drift-at-source).
+- 🟨 **Generator — PARTIAL** *(status corrected #269, 2026-09-14: it read ⬜ while the code existed)* —
+  `_build_live_state.py:136 render_lifecycle_block` + `:203 splice_block` already generate the
+  decision-lifecycle block of `_LIVE-STATE.md`; the LIVE/DEAD/OPEN/goal-tree blocks are still
+  hand-maintained — the riskier full-generation migration is deferred, named at `:9`.
 - ⬜ **Compile views** (§7 items 2–6) — the narrative-document capability. The point of the machine.
 - ⬜ **Extract as a portable plugin** — only *after* it's proven self-generating here
   (`pm-knowledge-graph-direction`: packaging an unproven pattern is the trap).
