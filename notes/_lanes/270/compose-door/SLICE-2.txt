@@ -1,0 +1,64 @@
+TASK  build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.
+ROLES page-frame, wayfinding, input, headline-metric, chart-panel, record-list, page-title
+
+COMPONENTS (9, 12 alternates)
+  component:app-shell-top-nav        page-frame       roles.json: provider #1 of page-frame; meta.provides = page-frame; met
+  component:navigations              wayfinding       roles.json: provider #1 of wayfinding; meta.provides = wayfinding; met
+  component:stat-card                headline-metric  roles.json: provider #1 of headline-metric; meta.provides = headline-m
+  component:kpi-tile                 headline-metric  roles.json: provider #2 of headline-metric; meta.provides = headline-m  [ALT]
+  component:Chart-bullet             headline-metric  roles.json: provider #3 of headline-metric; meta.provides = headline-m  [ALT]
+  component:breadcrumbs              wayfinding       roles.json: provider #4 of wayfinding; meta.provides = wayfinding; met  [ALT]
+  component:headers                  page-title       roles.json: provider #2 of page-title; meta.provides = page-title
+  component:page-header-lockup       page-title       roles.json: provider #1 of page-title; meta text matches: navigation  [ALT]
+  component:table                    record-list      roles.json: provider #1 of record-list; meta text matches: dashboard
+  component:app-shell-side-nav       page-frame       roles.json: provider #2 of page-frame; meta text matches: navigation  [ALT]
+  component:data-grid                record-list      roles.json: provider #2 of record-list; meta text matches: interactive  [ALT]
+  component:sidebar-nav              wayfinding       roles.json: provider #2 of wayfinding; meta text matches: navigation  [ALT]
+  component:amount-input             input            roles.json: provider #3 of input; meta text matches: banking
+  component:app-shell-nav-rail       page-frame       roles.json: provider #3 of page-frame; meta text matches: navigation  [ALT]
+  component:list-items               record-list      roles.json: provider #3 of record-list; meta text matches: interactive  [ALT]
+  component:section-heading-lockup   page-title       roles.json: provider #3 of page-title; meta text matches: dashboard  [ALT]
+  component:input-fields             input            roles.json: provider #1 of input  [ALT]
+  component:textarea                 input            roles.json: provider #2 of input  [ALT]
+  component:footer                   -                required by component:app-shell-top-nav (edges.consumes)
+  component:skeleton-loader          -                required by component:app-shell-top-nav (edges.consumes)
+  component:drawer                   -                required by component:app-shell-top-nav (edges.consumes)
+
+RULES 23 (22 BLOCKING, first)
+  aca-004     BLOCKING  CA-4 — link text uniquely describes the target (SC 2.4.4 A): unique link/nav t
+  webf-011    BLOCKING  Level taxonomy: 0 = base content (body, imagery, cards, buttons — NEVER elevat
+  aca-003     BLOCKING  CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first 
+  aid-009     BLOCKING  ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44
+  avd-006     BLOCKING  VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes P
+  nam-001     BLOCKING  Never possessive with product names — "HSBC should not appear in the possessiv
+  type25-003  BLOCKING  Never red typography for headlines or body copy — red only for text links (CTA
+  type25-007  BLOCKING  No italics — not licensed, and harder to read, especially for people with dysl
+  type25-008  BLOCKING  Emphasis = Univers Bold only, keywords/phrases not sections. No underline for 
+  type25-020  BLOCKING  Three cost-0 gate candidates surfaced: no-italics scan (type25-007), no-text-s
+  type26-002  BLOCKING  Only use brand-approved fonts, weights and colours.
+  type26-003  BLOCKING  All text legible and ≥4.5:1 contrast.
+
+ANTI-NEIGHBOURS 6
+  component:drawer  x  component:drawer   A second drawer or open modal (one modal surface at a time)
+  component:drawer  x  (ref:null)   A second drawer or open modal (one modal surface at a time)
+  component:skeleton-loader  x  (ref:null)   Loading-indicator for the same region (one loading signal pe
+  component:skeleton-loader  x  component:loading-indicator   Loading-indicator for the same region (one loading signal pe
+  component:stat-card  x  (ref:null)   A chart making the identical claim in the same view (pick on
+  component:stat-card  x  (ref:null)   A chart making the identical claim in the same view (pick on
+
+TOKENS (tier grain) background[semantic:1], blur[semantic:1], border[semantic:3], button[semantic:1], divider[semantic:3], elevation[semantic:2], focus[semantic:1], form[semantic:2], icon[semantic:1], overlay[semantic:1], primary[semantic:1], rag[semantic:6], surface[semantic:5], table[semantic:3], tertiary[semantic:3], text[semantic:4], border-radius[foundation:3], layout[foundation:1], padding[foundation:2], target[foundation:2], typography[foundation:1], color[primitive:3]
+TYPE typography-composites/component/label, typography-composites/component/input, typography-composites/component/caption
+ICONS 0   RULINGS ds-032
+
+UNRESOLVED 23
+  role:chart-panel             the task asks for a chart but names no analytical intent (comparison / change-ov
+  icon error.svg               referenced by snippet:Amount-input.reference.html but not in assets/icons/icons.
+  icon success.svg             referenced by snippet:Amount-input.reference.html but not in assets/icons/icons.
+  role:chart-panel             the task asks for this role (COMPOSITE_LEXICON["dashboard"] -> chart-panel (INFE
+  co-providers of role:page-frame 4 further provider(s) exist and are NOT in the slice (app-shell-multi-column, ap
+  co-providers of role:wayfinding 5 further provider(s) exist and are NOT in the slice (tabs, anchor-nav, tab-bar,
+  co-providers of role:input   24 further provider(s) exist and are NOT in the slice (search-field, dropdown, c
+  co-providers of role:headline-metric 1 further provider(s) exist and are NOT in the slice (runway-bar). Their `when` 
+
+MEASURE  slice 12792 tok  vs  79129 tok of the 21 metas it replaces  = 6.19x  (whole library 394962 tok = 30.88x)
+UNIT cl100k (tiktoken) — a LABELLED ESTIMATOR, never a unit a cap is stated in (ds-021)

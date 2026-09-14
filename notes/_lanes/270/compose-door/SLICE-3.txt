@@ -1,0 +1,71 @@
+TASK  a liquidity overview comparing balances by currency over time with a chart panel and a stat card row
+ROLES headline-metric, chart-panel, arrangement, page-frame, page-title
+INTENT comparison, change-over-time
+
+COMPONENTS (17, 8 alternates)
+  component:stat-card                headline-metric  named in the task; roles.json: provider #1 of headline-metric; meta.pr
+  component:chart-line               chart-panel      roles.json: provider #2 of chart-panel; meta.provides = chart-panel; m
+  component:chart-bar                chart-panel      roles.json: provider #1 of chart-panel; meta.provides = chart-panel; m
+  component:chart-stacked-area       chart-panel      roles.json: provider #6 of chart-panel; meta.provides = chart-panel; m
+  component:Chart-bullet             headline-metric  roles.json: provider #3 of headline-metric; meta.provides = headline-m  [ALT]
+  component:chart-combo              chart-panel      roles.json: provider #8 of chart-panel; meta.provides = chart-panel; m
+  component:Chart-candlestick        chart-panel      roles.json: provider #12 of chart-panel; meta.provides = chart-panel; 
+  component:Chart-butterfly-v        chart-panel      roles.json: provider #10 of chart-panel; meta.provides = chart-panel; 
+  component:Chart-butterfly-h        chart-panel      roles.json: provider #9 of chart-panel; meta.provides = chart-panel; m
+  component:kpi-tile                 headline-metric  roles.json: provider #2 of headline-metric; meta.provides = headline-m  [ALT]
+  component:layout-utilities         arrangement      roles.json: provider #1 of arrangement; meta.provides = arrangement; m
+  component:headers                  page-title       roles.json: provider #2 of page-title; meta.provides = page-title; met
+  component:app-shell-top-nav        page-frame       roles.json: provider #1 of page-frame; meta.provides = page-frame; met
+  component:stats-band-lockup        arrangement      roles.json: provider #3 of arrangement; meta text matches: overview, o  [ALT]
+  component:cards                    arrangement      roles.json: provider #2 of arrangement; meta text matches: stat, card  [ALT]
+  component:section-heading-lockup   page-title       roles.json: provider #3 of page-title; meta text matches: panel, card  [ALT]
+  component:chart-sparkline          -                meta.intent matches chart-intent change-over-time; meta text matches: 
+  component:app-shell-nav-rail       page-frame       roles.json: provider #3 of page-frame; meta text matches: stat  [ALT]
+  component:page-header-lockup       page-title       roles.json: provider #1 of page-title  [ALT]
+  component:app-shell-multi-column   page-frame       roles.json: provider #4 of page-frame; meta text matches: stat  [ALT]
+  component:navigations              wayfinding       required by component:app-shell-top-nav (edges.consumes)
+  component:breadcrumbs              wayfinding       required by component:app-shell-top-nav (edges.consumes)
+  component:footer                   -                required by component:app-shell-top-nav (edges.consumes)
+  component:skeleton-loader          -                required by component:app-shell-top-nav (edges.consumes)
+  component:drawer                   -                required by component:app-shell-top-nav (edges.consumes)
+
+RULES 34 (29 BLOCKING, first)
+  aca-004     BLOCKING  CA-4 — link text uniquely describes the target (SC 2.4.4 A): unique link/nav t
+  dv-004      BLOCKING  Colour separation: don't rely on colour to separate values — minimum 2px separ
+  dv-009      BLOCKING  2-dimensional, flat colour fills only. No 3D styles, no gradient fills.
+  dv-016      BLOCKING  Chart building blocks (titles, axis labels, axis/grid lines): black-or-grey on
+  dv-017      BLOCKING  Only palette colours in charts (print/digital palette, or the programme toolki
+  webf-011    BLOCKING  Level taxonomy: 0 = base content (body, imagery, cards, buttons — NEVER elevat
+  aca-003     BLOCKING  CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first 
+  aid-009     BLOCKING  ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44
+  avd-006     BLOCKING  VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes P
+  dv-bar-007  BLOCKING  Positive + negative values: vertical bars only. Don't put negative values on a
+  dv-bar-009  BLOCKING  All bar charts must include a zero baseline for the Y-axis.
+  dv-line-011 BLOCKING  Straight lines between data points. Never gratuitous curves for aesthetics — t
+
+ANTI-NEIGHBOURS 32
+  component:Chart-butterfly-h  x  component:stat-card   A Stat-card making the identical claim in the same view
+  component:Chart-butterfly-v  x  component:stat-card   A Stat-card making the identical claim in the same view
+  component:chart-bar  x  component:stat-card   A Stat-card making the identical claim in the same view
+  component:drawer  x  component:drawer   A second drawer or open modal (one modal surface at a time)
+  component:Chart-butterfly-h  x  (ref:null)   A Stat-card making the identical claim in the same view
+  component:Chart-butterfly-h  x  (ref:null)   
+  component:Chart-butterfly-v  x  (ref:null)   A Stat-card making the identical claim in the same view
+  component:Chart-butterfly-v  x  (ref:null)   
+
+TOKENS (tier grain) background[semantic:1], blur[semantic:1], border[semantic:4], button[semantic:1], data[semantic:12], divider[semantic:3], elevation[semantic:2], focus[semantic:1], form[semantic:1], icon[semantic:1], overlay[semantic:1], primary[semantic:1], rag[semantic:9], surface[semantic:5], tertiary[semantic:3], text[semantic:5], border-radius[foundation:3], layout[foundation:4], padding[foundation:2], target[foundation:2], typography[foundation:1], color[primitive:3]
+TYPE typography-composites/component/label, typography-composites/component/link
+ICONS 0   RULINGS ds-026, ds-027, ds-032, s116-D2
+
+UNRESOLVED 15
+  co-providers of role:headline-metric 1 further provider(s) exist and are NOT in the slice (runway-bar). Their `when` 
+  co-providers of role:chart-panel 5 further provider(s) exist and are NOT in the slice (chart-donut, Chart-histogr
+  co-providers of role:arrangement 5 further provider(s) exist and are NOT in the slice (feature-grid-lockup, split
+  co-providers of role:page-frame 4 further provider(s) exist and are NOT in the slice (app-shell-side-nav, app-sh
+  co-providers of role:page-title 1 further provider(s) exist and are NOT in the slice (eyebrow). Their `when` pre
+  component:stats-band-lockup  held as an alternate co-provider of layout-utilities but carries no `when` predi
+  component:cards              held as an alternate co-provider of layout-utilities but carries no `when` predi
+  component:section-heading-lockup held as an alternate co-provider of headers but carries no `when` predicate, so 
+
+MEASURE  slice 17452 tok  vs  90366 tok of the 25 metas it replaces  = 5.18x  (whole library 394962 tok = 22.63x)
+UNIT cl100k (tiktoken) — a LABELLED ESTIMATOR, never a unit a cap is stated in (ds-021)

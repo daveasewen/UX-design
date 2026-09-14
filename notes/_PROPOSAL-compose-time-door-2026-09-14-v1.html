@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The compose-time door — proposal v1</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:56px;display:flex;align-items:center;z-index:2}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:14px;letter-spacing:.05em}
+nav a{color:var(--grey-6);text-decoration:none}nav a:hover{color:var(--black)}nav .ctx{color:var(--black)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.rule{border:0;border-top:1px solid var(--grey-2);margin:0}
+section{padding:var(--s7) 0}
+header.profile{padding:var(--s7) 0 var(--s6)}
+header.profile .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:end}
+h1{font-size:57px;line-height:1.05;font-weight:400;margin:0}
+h2{font-size:34px;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:19px;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:14px;color:var(--grey-7);line-height:1.6}
+.verdict{font-size:19px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4) var(--s5);margin-top:var(--s6)}
+.stat b{display:block;font-size:43px;font-weight:200;line-height:1.05}
+.stat span{font-size:12px;color:var(--grey-6);letter-spacing:.06em;text-transform:uppercase}
+.dim .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim .idx{font-size:96px;font-weight:100;line-height:1;color:var(--grey-3);display:block;margin-bottom:var(--s2)}
+.dim .name{font-size:19px;font-weight:500}
+ol,ul{padding-left:1.25rem;margin:0 0 var(--s3)}li{margin-bottom:var(--s2)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 var(--s3);line-height:1.5}
+th,td{text-align:left;padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+th{font-weight:500;color:var(--grey-7);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+td.n{font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto}
+.cmp{background:var(--grey-1)}
+.cmp .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.cmp .big{font-size:34px;line-height:1.2}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin-bottom:var(--s2)}
+.dist .ours .h{color:var(--accent)}
+.quote{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s4);font-size:19px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+pre{background:var(--grey-1);padding:var(--s3);overflow-x:auto;font-size:12.5px;line-height:1.55;margin:0 0 var(--s3)}
+details{border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+summary{cursor:pointer;font-weight:500;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
+.tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--grey-3);padding:0 6px;color:var(--grey-7);margin-left:6px;vertical-align:middle}
+.tag.red{border-color:var(--accent);color:var(--accent)}
+.ask{border-left:2px solid var(--accent);background:var(--grey-1);padding:var(--s3) var(--s4);margin:var(--s4) 0}
+footer{padding:var(--s5) 0;font-size:14px;color:var(--grey-6)}
+@media (max-width:760px){header.profile .grid,.dim .grid,.cmp .grid,.dist{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}h1{font-size:43px}.dim .idx{font-size:64px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="#">← Apollo</a><span class="ctx">Proposal · the compose-time door</span><span>#270 · 2026-09-14 · v1 · NOTHING ENACTED</span></div></nav>
+
+<header class="profile"><div class="wrap">
+  <p class="label">Proposal for ruling</p>
+  <div class="grid">
+    <div><h1>The compose-time door</h1></div>
+    <div class="meta">A third door on the retrieval spine, built and driven today. A task sentence goes in; a closed context slice comes out — the components that provide the roles, the BLOCKING rules first, the anti-neighbours, the type, the icons, the tokens at tier grain, and the ruling behind each item. Tool: <code>knowledge/_compose_slice.py</code>, 12 self-test bites, all green. Read-only: no meta, registry, schema, skill, runbook or gate was touched.</div>
+  </div>
+</div></header>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">Recommendation</p>
+  <p class="verdict"><strong>Switch the generate skill's step 1 to "ask the graph" — ADVISORY first, exactly the way the consult door entered.</strong> The skill emits a slice, pastes the slice id into the page's receipt, and composes from the slice. Nothing refuses. When lane 1's role nodes land and composed pages actually carry the receipt key, ONE check — "every component on the page is in the page's own slice" — gets promoted to blocking. That is the anti-invention rule the skill states in prose today and nothing enforces.</p>
+  <p class="verdict"><strong>The headline number: a slice is about six times smaller than the metas it replaces, and about twenty-five times smaller than the library step 1 has to choose from.</strong> Measured on three real tasks, cl100k.</p>
+  <div class="stats">
+    <div class="stat"><b>6.2×</b><span>smaller than the metas it replaces</span></div>
+    <div class="stat"><b>25×</b><span>smaller than the 138-meta library</span></div>
+    <div class="stat"><b>16.6K</b><span>cl100k, the worked slice</span></div>
+    <div class="stat"><b>103K</b><span>cl100k, the 30 metas it stands in for</span></div>
+    <div class="stat"><b>24 / 138</b><span>metas that declare a role today</span></div>
+    <div class="stat"><b>59</b><span>BLOCKING rules, now sortable to the top</span></div>
+    <div class="stat"><b>51 / 70</b><span>anti-neighbour edges with <code>ref:null</code></span></div>
+    <div class="stat"><b>12 / 12</b><span>self-test bites green</span></div>
+  </div>
+</div></section>
+<hr class="rule">
+
+<section class="cmp"><div class="wrap"><div class="grid">
+  <div><p class="label">The one decision</p></div>
+  <div>
+    <p class="big">Does the generate skill's step 1 become "ask the graph" — and at which tier?</p>
+    <div class="ask">
+      <p><strong>(a) ADVISORY now, blocking later</strong> <span class="tag red">recommended</span> — step 1 runs <code>_compose_slice.py</code>, the slice id goes in the page receipt, the gates report slice conformance and refuse nothing. Promotion to blocking follows the consult door's own path: earn it first.</p>
+      <p><strong>(b) BLOCKING now</strong> — a composed page with a component that is not in its slice is red today. Honest cost: <code>provides</code> is authored on 24 of 138 metas, so "out of slice" is partly a text-match judgement, and nearly every existing page carries no receipt at all. A gate that reds the whole population on day one is <em>[[gate-cannot-pass-in-one-environment]]</em>.</p>
+      <p><strong>(c) Not yet</strong> — the tool stays a lane artefact and nothing consumes it. That is <em>[[instrument-without-a-consumer]]</em>, deliberately chosen.</p>
+    </div>
+    <p class="meta">Everything else in this page is build judgement and does not need you.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">01</span><span class="name">Why a third door</span></div>
+  <div>
+    <p>The spine has two doors and they answer different questions. <code>_consult.py</code> answers <strong>"what governs X?"</strong> over rules, rulings, assertions and gates. <code>_memento_search.py</code> answers <strong>"what did we decide about X?"</strong> over the session archive. Neither answers <strong>"what do I compose with?"</strong>.</p>
+    <p>So the generate skill's step 1 — <em>"Query canon for the components each screen needs (narrow context — just those nodes + their tokens)"</em> — has no query surface behind it. In practice step 1 is <em>read the metas</em>: 138 files, 395,000 cl100k tokens if read whole, and the choice of which to open made <em>before</em> anything has been retrieved. The knowledge is superbly stored and the narrowing is left to judgement — the same shape that made the consult door necessary.</p>
+    <p>The third door closes that. Same posture as its siblings: refs first and detail behind them, a hand-authored lexicon that grows on miss, advisory at birth.</p>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">02 · Driven on three real tasks</p>
+  <p>Task 2 is the frozen demo prompt, verbatim from the run-of-show. Ratio = the cl100k of the metas the slice stands in for, over the cl100k of the slice.</p>
+  <div class="tbl"><table>
+    <tr><th>Task</th><th>Roles resolved</th><th>Components</th><th>Rules (blocking)</th><th>Slice</th><th>Metas replaced</th><th>Ratio</th></tr>
+    <tr><td>a payments dashboard screen with a stat card row, a filter bar and a data table</td><td>headline-metric · record-list · page-frame · arrangement · input · wayfinding · page-title · chart-panel</td><td class="n">30</td><td class="n">33 (32)</td><td class="n">16,565</td><td class="n">103,171</td><td class="n"><strong>6.23×</strong></td></tr>
+    <tr><td>build me a financial dashboard for corporate international banking. Please make the all the interactive elements work such as filtering and navigation.</td><td>page-frame · wayfinding · input · headline-metric · chart-panel · record-list · page-title</td><td class="n">21</td><td class="n">23 (22)</td><td class="n">12,792</td><td class="n">79,129</td><td class="n"><strong>6.19×</strong></td></tr>
+    <tr><td>a liquidity overview comparing balances by currency over time with a chart panel and a stat card row</td><td>headline-metric · chart-panel · arrangement · page-frame · page-title <br><span class="meta">intents: comparison · change-over-time</span></td><td class="n">25</td><td class="n">34 (29)</td><td class="n">17,452</td><td class="n">90,366</td><td class="n"><strong>5.18×</strong></td></tr>
+  </table></div>
+  <p class="meta">Against the whole 138-meta library (394,962 cl100k) the same three slices are 23.8× · 30.9× · 22.6× smaller. Unit: cl100k via tiktoken — a labelled estimator, never a unit a cap is stated in (<code>ds-021</code>). Artefacts: <code>notes/_lanes/270/compose-door/SLICE-1..3.json</code> · <code>.html</code> · <code>.txt</code>.</p>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">03 · What a slice looks like</p>
+  <p>One component row and one rule row from SLICE-1. Every item carries <code>why</code> — the edge, field or file that put it there — and <code>blocking</code>. Nothing arrives without a reason you can follow back.</p>
+<pre>"components": [
+ { "id": "component:stat-card", "roles": ["headline-metric"], "provides": "headline-metric",
+   "answers": "one-number", "shape": "one-measure × value-and-delta",
+   "when": "shape = one-measure × value-and-delta AND series = none AND delta != none — the
+            default of the role; beats kpi-tile ... exactly when no series exists ...",
+   "why": "named in the task; roles.json: provider #1 of headline-metric; meta.provides = headline-metric",
+   "blocking": false, "meta": "knowledge/components/stat-card.meta.json" }, ... ],
+
+"rules": [
+ { "id": "aca-003", "destiny": "BLOCKING", "blocking": true, "confidence": "routed",
+   "file": "accessibility-content-authoring.md",
+   "rule": "CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing
+            a speech-output user hears.",
+   "why": "always-on for a composed screen" }, ... ],
+
+"antiNeighbours": [
+ { "from": "component:stat-card", "to": null, "ref": null, "in_slice": false,
+   "$note": "A chart making the identical claim in the same view (pick one headline form)",
+   "why": "edges.mustNotNeighbour on stat-card.meta.json", "blocking": true } ],
+
+"tokens": [ { "group": "table", "tier": "semantic", "count": 3,
+              "members": ["table/border", "table/column/background", "table/header/background"],
+              "why": "tokens on table.meta.json" } ]</pre>
+  <p class="meta">Tokens come back at <strong>tier grain</strong> — the group, its tier and an honest count, never the 932 leaves. The ordering contract is mutation-tested: bite 4 inverts the rule store's own order and BLOCKING still sorts first.</p>
+</div></section>
+<hr class="rule">
+
+<section class="dim"><div class="wrap"><div class="grid">
+  <div><span class="idx">04</span><span class="name">What it cannot resolve today — and what lane 1 unlocks</span></div>
+  <div>
+    <p>A closed slice has to say what it could not close. Every one of these arrives as <code>ref:null</code> plus a note; none is filled in with a guess.</p>
+    <ul>
+      <li><strong>Roles are only half in the graph.</strong> <code>provides</code> is authored on 24 of 138 metas, so role → component resolution leans on <code>roles.json</code>'s provider lists, which that file's own description calls a membership cross-check, not a source. <strong>Lane 1 of #270 is exactly this</strong> — when role nodes land, one function in the tool re-points and the soft half goes hard.</li>
+      <li><strong>Which co-provider wins is not mechanical.</strong> <code>when</code> predicates are authored on 26 metas. The slice carries every candidate's <code>when</code> and names the runners-up it held back; the choice is still a judgement, and it says so.</li>
+      <li><strong>The filter bar belongs to no role.</strong> <code>filter-toolbar-bar</code> — the exact component the demo prompt needs — is in no <code>roles.json</code> provider list and declares no <code>provides</code>. It reaches the slice by name, not by role. A real gap, found by driving.</li>
+      <li><strong>Rules have no component tag.</strong> <code>_rules-index.json</code> carries 470 rules with stable ids and destinies and no link to a component. Attachment is therefore exact where a meta cites a rule id (38 metas do) and ROUTED by vocabulary otherwise — routed rules are labelled <code>confidence:"routed"</code> and never passed off as authored.</li>
+      <li><strong>Most anti-neighbours are prose.</strong> 51 of 70 <code>mustNotNeighbour</code> edges carry <code>ref:null</code>: the prohibition is real, the other end is not a node, so no gate can check it. Surfaced, never dropped.</li>
+      <li><strong>A chart with no intent word is refused, not guessed.</strong> "build me a financial dashboard" names no analytical intent, so the door returns <em>no chart</em> and says why — the five-word vocabulary in <code>chart-intents.json</code> is the gate on that role.</li>
+      <li><strong>Two icon paths in the input-fields snippet</strong> (<code>error.svg</code>, <code>success.svg</code>) are not in <code>icons.manifest.json</code>. Reported as unresolved; not invented.</li>
+    </ul>
+  </div>
+</div></div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">05 · The gates, if you take (a)</p>
+  <p>The seam already exists: <code>_validate_screen.py</code> step 0 parses the page's provenance receipt and re-hashes its regions. A composed page would carry one extra receipt key — the slice's task, path and hash — and a page without it reports <code>UNPROVEN:NO-SLICE</code> and blocks nothing, exactly as <code>NO-RECEIPT</code> does today. Four checks, cheapest first:</p>
+  <div class="tbl"><table>
+    <tr><th>Check</th><th>Where</th><th>Posture</th></tr>
+    <tr><td><strong>S1 out-of-slice component</strong> — every <code>.cn-*</code> scope class on the page is in the slice</td><td><code>_validate_compose.py::check_screen</code> (it already extracts the class list for check 6)</td><td>the promotion candidate</td></tr>
+    <tr><td><strong>S2 anti-neighbour violated</strong></td><td><code>_validate_composition.py</code> — already the adjacency home</td><td>advisory; only 19 pairs are mechanically checkable</td></tr>
+    <tr><td><strong>S3 blocking-rule coverage</strong> — which blocking rules applied to THIS page, and did a check run</td><td><code>_validate_screen.py</code> step list, one report line per rule</td><td>advisory; it reports coverage, never judges</td></tr>
+    <tr><td><strong>S4 token tier escape</strong> — a page reaching for a token group no component in its slice uses</td><td><code>_validate_compose.py::check_screen</code></td><td>advisory</td></tr>
+  </table></div>
+  <p class="meta">Full shape, with the cost per file: <code>notes/_lanes/270/compose-door/GATE-SHAPE.md</code>. No gate was edited.</p>
+</div></section>
+<hr class="rule">
+
+<section><div class="wrap">
+  <p class="label">06 · Provenance of the go-ahead</p>
+  <p class="meta">Your word that started this lane, as captured this session: <em>"cool, lets do both in teh oredr you prefer"</em> — <code>notes/_lanes/270/DAVE-RULINGS-2026-09-14.md:4</code>. <strong>The quote gate does NOT find it</strong> (<code>_quote_gate.py</code>: 0 verbatim, nearest <code>carries:residual-270</code>, 3 of 8 bigrams) — because the Memento index has not ingested today's lane file; the index being stale is a red carried from the #269 seam, not a doubt about the sentence. Flagged rather than smoothed over.</p>
+</div></section>
+<hr class="rule">
+
+<footer><div class="wrap">#270 lane 2 · 2026-09-14 · <code>knowledge/_compose_slice.py</code> v0.1 · advisory, unwired · artefacts under <code>notes/_lanes/270/compose-door/</code> · nothing in canon was edited</div></footer>
+</body>
+</html>
