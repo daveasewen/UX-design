@@ -109,6 +109,13 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # prose is a Polaroid of a ruling, never the ruling [[instrument-without-a-consumer]].
 STOP_LINE_TK = 180_000       # `s260-D2` + `s271-D1` — the ONE advisory stop line, Dave's to move
 
+# ★★★ `s272-D93` (Dave, #272), in his words: *"we work until around 180, thats the safest but I
+# wont loose any sleep over hitting 220 for example"*. Enacted at #273 on his one word ("advisory
+# arm"): a NAMED ADVISORY band above the stop line. STOP_LINE_TK is UNCHANGED. Between the stop
+# line and this figure the check-in says TOLERATED, not breach; above it, PAST TOLERANCE. It is
+# NOT a wall — BUDGET_WORKING / BUDGET_HARD are untouched; the blocking tier remains his.
+TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to move
+
 # --------------------------------------------------------------------------- THE BOOT
 # The floor every session pays before it does anything. TWO HALVES, and they are known to
 # DIFFERENT standards — which is the whole point of publishing the split (D10 (c)).

@@ -459,8 +459,17 @@ def derive_budget(path: str, fill: dict, stop_n: int | None) -> str:
                 f"over {fill['turns']} turns")
         if stop_n is not None:
             room = stop_n - fill["now"]
-            head += (f" · room to stop line {room:,}" if room >= 0
-                     else f" · ⛔ PAST the stop line by {abs(room):,}")
+            # `s272-D93` advisory arm (#273): 180 working · ~220 tolerated · past 220 = breach.
+            tol_n = getattr(gauge, "TOLERATED_TK", None)
+            if room >= 0:
+                head += f" · room to stop line {room:,}"
+            elif tol_n is not None and fill["now"] <= tol_n:
+                head += (f" · ⚠ PAST the stop line by {abs(room):,} — TOLERATED "
+                         f"(`s272-D93`, ≤ {tol_n:,}; {tol_n - fill['now']:,} to tolerance)")
+            else:
+                head += f" · ⛔ PAST the stop line by {abs(room):,}"
+                if tol_n is not None:
+                    head += f" — PAST TOLERANCE (`s272-D93`, {tol_n:,}) by {fill['now'] - tol_n:,}"
     try:
         n, method = measure_real(_conversation_blob(path))
         head += f" · throughput {n:,} {method} (gauge.count, ONE call — NOT comparable to FILL)"
