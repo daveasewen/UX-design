@@ -133,7 +133,7 @@ next lane (`s276-D5`, the three chart components) is where a reader earns its pl
   `at_commit` `3b9d89b` — the last wrap, chosen because the guard itself landed in `8053591`
   (lane TO), so the trigger actually fires: `--due dream-pass` now prints P-276-1 with
   *"changed in 1 commit(s) since 3b9d89b"*. `notes/_REHEARSAL-LOG.jsonl` is named in the item body
-  as the evidence file to read. **Healed by addition in commit `<COMMIT3>`:** commit 2 shipped it
+  as the evidence file to read. **Healed by addition in commit `7cc7cd9`:** commit 2 shipped it
   with `at_commit` `6beedef`, under which the guard had no later commit and the item would have
   been permanently silent — an instrument that cannot fire. Caught by RUNNING `--due dream-pass`,
   not by reading the row.
