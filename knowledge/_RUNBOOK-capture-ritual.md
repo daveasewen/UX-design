@@ -447,6 +447,17 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
        hand-over reserve must be a measurement before it may replace the 49,071 wrap term.
      - ⚠️ No gate parses this line yet — the consumer is the `s214-D4` staging check and the re-base
        sitting, both human-read. A `_capture_gate.py` guard is a priced candidate, not built.
+     - ⛔ **`delta` IS ONLY MEANINGFUL WHEN BOTH TERMS READ THE SAME WINDOW — OTHERWISE IT IS
+       `unobservable`, NOT A SUBTRACTION.** *(Homed here by ADDITION at the #272 wrap's 2f EXIT
+       CHECK, from the lesson carried in #271's stratum before that stratum rolled; provenance:
+       272 · 2026-09-15 · status: observed.)* `brief-cut` is the CONDUCTOR'S declared FILL and
+       `sub-cut` is the wrap sub's own `_checkin.py` reading. The subtraction means something only
+       when `_checkin.py` at the wrap seat is reading **the conductor's transcript** — the same
+       window his declaration describes. #270 declared `delta` **unobservable** because its wrap
+       sub read a separately-windowed transcript; #271 and #272 COMPUTED it (11,466 and 3,079)
+       and each said which transcript and how many turns. ⇒ **Name the window, or write
+       `unobservable (<reason>)`; never subtract two numbers that describe different things**
+       [[measure-dont-convert-units]].
      - ⛔ **A STRAY'S PROVENANCE IS A SEAT LIMIT UNTIL IT IS SEARCHED** *(dream-11 P3(b), #256 — #247's
        wrap sub published "`_tools/` … provenance unknown" 11 times across 7 surfaces while #246's own
        chat names the directory, its build command and its purpose)*: a stray may be declared
