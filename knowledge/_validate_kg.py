@@ -11,12 +11,14 @@ field minted by knowledge/gen_kg_edges.py.
 Checks, all BY ADDITION — this script only reads the corpus, it never edits it:
   (a) every meta's `edges` field parses in the consumer's grammar: every
       non-null ref matches the node-id grammar
-      component:|pattern:|context:|snippet:|ruling: and RESOLVES —
+      component:|pattern:|context:|snippet:|ruling:|rule:|ux: and RESOLVES —
         component: against the component meta stems (+ _proforma)
         pattern:/context: against the two node registries
         snippet: against knowledge/snippets/*.reference.html
         ruling: against knowledge/_rulings.json ids (both `rulings` and
                 any `_README` entries carrying an id)
+        rule:   against knowledge/guidelines/_rules-index.json (s276-D3)
+        ux:     against knowledge/_ux_principle_nodes.json (s276-D3)
   (b) ref:null is legal ONLY paired with a non-empty $note (declared prose
       awaiting a Dave's-eye migration) — counted and reported, never failed.
   (c) a NEW meta — any meta.json under knowledge/components/ (or the
@@ -82,11 +84,19 @@ SCHEMA = COMPONENTS / "meta.schema.json"
 GEN_SCRIPT = HERE / "gen_kg_edges.py"
 RESOLUTIONS = ROOT / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
 
-REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape):.+$")
-NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape")
+REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape|rule|ux):.+$")
+NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape",
+              "rule", "ux")
 ROLES = HERE / "roles.json"
 INTENTS = HERE / "chart-intents.json"
 SHAPES = HERE / "shapes.json"
+# s276-D3/s276-D4 (#276): `edges.obeys` is the first edge type whose targets are NOT
+# component-corpus nodes — `rule:<id>` is a guideline rule (landed #274 under s274-D8) and
+# `ux:<id>` is a UX principle (landed #275 under s275-D4). Both resolve against the file that
+# IS their home, never a second registry (ADR-0017 write-once), exactly as role:/intent:/shape:
+# resolve against their stores.
+RULES_INDEX = HERE / "guidelines" / "_rules-index.json"
+UX_NODES = HERE / "_ux_principle_nodes.json"
 
 
 def store_ids(path, key, prefix):
@@ -99,14 +109,49 @@ def store_ids(path, key, prefix):
     return {f"{prefix}:{k}" for k in vocab}
 
 
+def rule_ids(path=None):
+    """rule:<id> resolves against knowledge/guidelines/_rules-index.json — the 470
+    guideline rules gen_kg_rules.py reads (s274-D8). s276-D3."""
+    path = path or RULES_INDEX
+    if not path.exists():
+        return set()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {f"rule:{r['id']}" for r in data.get("rules", []) if r.get("id")}
+
+
+def ux_ids(path=None):
+    """ux:<id> resolves against knowledge/_ux_principle_nodes.json — the landed principle
+    nodes (s275-D2). s276-D3."""
+    path = path or UX_NODES
+    if not path.exists():
+        return set()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {n["id"] for n in data.get("nodes", []) if str(n.get("id", "")).startswith("ux:")}
+
+
 # --------------------------------------------------------------- corpus load
 
 def load_schema_edge_types(schema_path=None):
+    """(known edge-type keys, props, required) — props/required are DICTS KEYED BY EDGE TYPE
+    so an edge type carrying its own item definition is checked against THAT definition, not
+    against the shared `edge` one. s276-D3 minted the first such type: `obeys` items are
+    `definitions/obeysEdge` — {ref, $why, $note?} with $why REQUIRED — and checking them
+    against `definitions/edge` would have called every $why an unknown key. A type with no
+    resolvable items.$ref falls back to `edge`, so nothing else changes shape."""
     schema_path = schema_path or SCHEMA
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     edges_props = schema["properties"]["edges"]["properties"]
-    edge_def = schema["definitions"]["edge"]
-    return set(edges_props.keys()), set(edge_def["properties"].keys()), set(edge_def.get("required", []))
+    defs = schema["definitions"]
+    base = defs["edge"]
+    props, required = {}, {}
+    for etype, spec in edges_props.items():
+        d = base
+        ref = (spec.get("items") or {}).get("$ref", "")
+        if ref.startswith("#/definitions/"):
+            d = defs.get(ref.split("/")[-1], base)
+        props[etype] = set(d.get("properties", {}).keys())
+        required[etype] = set(d.get("required", []))
+    return set(edges_props.keys()), props, required
 
 
 def collect_component_files(components_dir=None, proforma_dir=None):
@@ -177,10 +222,12 @@ def check_edge_schema(edges, known_edge_types, edge_props, edge_required):
             if not isinstance(e, dict):
                 reasons.append(f"{etype}[{i}] is not an object")
                 continue
-            extra = set(e.keys()) - edge_props
+            allowed = edge_props[etype] if isinstance(edge_props, dict) else edge_props
+            need = edge_required[etype] if isinstance(edge_required, dict) else edge_required
+            extra = set(e.keys()) - allowed
             if extra:
                 reasons.append(f"{etype}[{i}] has keys not in the edge definition: {sorted(extra)}")
-            missing = edge_required - set(e.keys())
+            missing = need - set(e.keys())
             if missing:
                 reasons.append(f"{etype}[{i}] missing required key(s): {sorted(missing)}")
             if "ref" in e and not (e["ref"] is None or isinstance(e["ref"], str)):
@@ -226,6 +273,8 @@ def validate_corpus(components_dir=None, proforma_dir=None, snippets_dir=None,
         "role": store_ids(ROLES, "roles", "role"),
         "intent": store_ids(INTENTS, "chart-intent", "intent"),
         "shape": store_ids(SHAPES, "shapes", "shape"),
+        "rule": rule_ids(),
+        "ux": ux_ids(),
     }
 
     fails = []

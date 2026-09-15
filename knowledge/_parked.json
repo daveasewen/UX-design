@@ -34,7 +34,8 @@
    "what": "INGEST THE 19 MISSING WCAG SUCCESS CRITERIA so the `cites` nulls resolve on regen (RK-4 (c), the second half of s274-D10). The 470 rule: nodes landed with 51 cites edges; 32 resolve to an sc: node and 19 are declared ref:null + note. 17 distinct criteria are absent from knowledge/compliance/rules/: 1.2.3 · 1.2.4 · 1.3.3 · 1.4.2 · 1.4.5 · 1.4.8 · 2.4.13 · 2.5.1 · 2.5.2 · 2.5.3 · 3.1.1 · 3.1.2 · 3.1.4 · 3.2.2 · 3.2.4 · 3.3.7 · 3.3.8. Ingest them in that corpus's shape (sc / title / level / severity / check / sources / external_automatable_refs), then re-run `python3 knowledge/gen_kg_rules.py --land --ratified s274-D8` and `python3 knowledge/_build_kg_explorer.py`; the nulls become edges with no change to the generator.",
    "why": "Dave 2026-09-15, on RK-4: 'Can we have A and then C, surly the compliance fix isn't egregious??   ' — declared first (a), the corpus fix follows (c).",
    "owner": "the compliance-ingest lane; Dave (which criteria first)",
-   "status": "parked",
+   "status": "enacted",
+   "closed_by": "s276-D1 + s276-D2 (#276, 2026-09-15) — the 17 criteria landed in knowledge/compliance/rules/ (sc: 38 -> 55), gen_kg_rules.py --land --ratified s274-D8 re-run, the 19 `cites` nulls resolved 19 -> 0, explorer regenerated v1.12 -> v1.13. Lane TO proposed, lane TV verified, lane TL landed.",
    "trigger": {
     "kind": "file-changed",
     "path": "knowledge/compliance/rules"
@@ -51,7 +52,8 @@
    "what": "RULE -> COMPONENT, AUTHORED THE OTHER WAY (RK-6 (d), the second half of s274-D12). The 27 regex candidates did NOT land and must not: the sample carries visible false positives (va25-013 matched 'Avatar' and 'Badge'). The durable route is a component's own meta citing the rules it obeys, in the s269-D5 shape, authored not inferred, starting small — a handful of components where the binding is obvious, reviewed by eye, then widened. The graph then draws component -> rule from the meta, and gen_kg_rules.py's --with-appliesto stays off.",
    "why": "Dave 2026-09-15, on RK-6: 'So A for now I guess and then D, is that correct?'",
    "owner": "Dave (which components first); one Opus lane",
-   "status": "parked",
+   "status": "enacted",
+   "closed_by": "s276-D3 + s276-D4 (#276, 2026-09-15) — edges.obeys {ref, $why} with $why REQUIRED plus edges.$obeys-contract landed in meta.schema.json, and 81 authored citations (67 rule: + 14 ux:) landed on six metas: tags, tags-input, notifications, links, button, icon-button. Every rule: id from a FILENAME JOIN, never a regex. The next tranche — chart-line, chart-pie, chart-bar — is s276-D5. gen_kg_rules.py --with-appliesto stays OFF.",
    "trigger": {
     "kind": "file-changed",
     "path": "knowledge/gen_kg_rules.py"
@@ -316,6 +318,24 @@
       "trigger": {
        "kind": "file-changed",
        "path": "knowledge/guidelines"
+      }
+     },
+     {
+      "id": "P-276-1",
+      "parked": {
+       "date": "2026-09-15",
+       "session": 276,
+       "at_version": "v1.0.13",
+       "at_commit": "6beedef"
+      },
+      "what": "DID THE LANE-OWNERSHIP GUARD EVER FIRE? knowledge/_validate_lane_ownership.py landed ADVISORY under s276-D6 WITH A REMOVAL DATE: it comes OFF at the next dream pass if its tripwire never fired. The evidence to look at is the guard file itself plus notes/_REHEARSAL-LOG.jsonl — any run that printed an offending staged path under another session's lane. If nothing fired, DELETE the guard (Dave, on the read-back that produced s276-D6: 'Okay but I don't think this is durable, feels like we're patching just to get it done'); if it fired, the finding is the argument for the blocking tier, which is his to rule, not a lane's. One seat at a time stays the NORM by his #57 word; the seat lock and the worktree-per-session were both DROPPED on his words ('this has gone from a patch to a hack, not sure I like this unless its not permanent') and are not to be re-proposed without him.",
+      "why": "Dave 2026-09-15, D-6 note on the #276 review page: 'Okay but I don't think this is durable, feels like we're patching just to get it done', then 'go' on the read-back that made the guard advisory with a removal date.",
+      "owner": "the dream-pass lane (does it come off?); Dave (the blocking tier, and whether two sessions may share one repo at all)",
+      "status": "parked",
+      "trigger": {
+       "kind": "file-changed",
+       "path": "knowledge/_validate_lane_ownership.py",
+       "event": "dream-pass"
       }
      }
   ]

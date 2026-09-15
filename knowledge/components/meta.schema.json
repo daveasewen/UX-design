@@ -250,6 +250,29 @@
         }
       }
     },
+    "obeysEdge": {
+      "description": "s276-D3 (Dave, #276 — enacting P-274-3 + s275-D5, lane TO). One AUTHORED citation from a component to something it obeys: a `rule:<id>` from knowledge/guidelines/_rules-index.json, or a `ux:<id>` grade-A law from knowledge/brain/principles.json. Deliberately NOT `definitions/edge`: this is the only edge type whose targets are rules and principles, and widening the shared ref pattern would let containedBy point at a rule. `$why` is REQUIRED — s274-D12 refused rule->component drawn by a regex over prose, and s269-D5 says the citation is authored; an entry with no sentence is inference wearing a ref. ref is never null here: if the binding cannot be stated in one line, the entry does not belong.",
+      "type": "object",
+      "required": [
+        "ref",
+        "$why"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^(rule|ux):.+$"
+        },
+        "$why": {
+          "type": "string",
+          "minLength": 40,
+          "description": "One line, written by reading the rule (or law) and this meta together. Reviewed by eye. Never generated."
+        },
+        "$note": {
+          "type": "string"
+        }
+      }
+    },
     "behaviourAddress": {
       "description": "s234-D5 (Dave, #234) + s245-D1 (grammar (a), #245): `behaviour` promoted from optional prose notes to a TYPED OBJECT carrying the script/partial ADDRESS. The meta is the ONE HOME (s234-D4/D5: generation chain, never copy chain): gen_component_partials.py DERIVES a #behaviour-manifest block into the snippet beside #token-manifest, and _validate_receipt.py reads THIS object to check that a composed page loads what the meta declares. `script` GRAMMAR — three forms, nothing else resolves: null = the component carries NO script (a POSITIVE declaration, never 'unknown'); `knowledge/<path>.js` = a hand-authored source file, the component-types.json $behaviour form (e.g. knowledge/canon/dv-behaviour.js); `knowledge/snippets/<Slug>.reference.html#script` = the snippet's own inline executable <script> element(s) outside any AUTO-BEHAVIOUR markers. `partial` = the AUTO-BEHAVIOUR name(s) registered under component-types.json $behaviour that the snippet carries — one name, a list of names (s245-D2: 9 of the 14 dataviz members carry 2-3), else null. `events` = DOM event names as passed to addEventListener — s245-D4: KEPT, OPTIONAL, generated from the snippet, never authored (rC Q3 answered). `fallback` = what the component does with CSS on and JS off (rA resilience criterion, GOV.UK/USWDS); null = NOT DECLARED (an honest UNPROVEN), never 'none' — a passive component says so in words ('identical — the component carries no script'). `$note` keeps the pre-s234-D5 prose VERBATIM (by-addition migration, ADR-0017 archive-never-delete). `$unproven` names the fields whose value is null because neither the prose nor a probe settles them. Existence of the addressed file/script is NOT a schema question — the generator and the gate resolve it (gate the presence, not the shape).",
       "type": "object",
@@ -883,6 +906,17 @@
             "$ref": "#/definitions/edge"
           },
           "description": "s270-D2 (enacting s269-D1 item 1). The sibling this component STANDS DOWN FOR, and the test. DERIVED from the PROSE half of this meta's own `when` — the beats/yields sentence after the first em-dash (s253-D1; when-fields.json $grammar: the prose half is never parsed by the gate, and this is the one consumer that reads it). Only `yields to X` produces an edge: `beats Y` is Y's fact, not this component's, and an edge lives on the meta that declares it — the inverse is read by traversing the graph, never by writing a second edge into a second meta. An anaphoric target (\"yields to it\", \"yields to both\") is ref:null + $note, declared and never guessed."
+        },
+        "obeys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/obeysEdge"
+          },
+          "description": "s276-D3 + s276-D4 (Dave, #276 — enacting P-274-3 'rule -> component, authored the other way' + s275-D5 'component metas citing the six A-grade laws is authored work'). The rules this component obeys and the laws it rests on, in ONE list, prefix-discriminated: `rule:` ids are joined by FILENAME from knowledge/guidelines/_rules-index.json (the common-toolkit-<x>.md spec that IS this component), `ux:` ids are the six grade-A laws s269-D5 names. AUTHORED, never inferred: s274-D12 refused the 27 regex candidates because va25-013 matched 'Avatar' and 'Badge'. The graph then draws component -> rule and component -> ux from the meta, and gen_kg_rules.py's --with-appliesto stays OFF. A cross-file binding is legal but must say so in its $why (links obeys ctkb-004, which is stated from the buttons side)."
+        },
+        "$obeys-contract": {
+          "type": "string",
+          "description": "s276-D3 (Dave, #276). The provenance sentence for this meta's `obeys` list, so a reader of the meta alone can tell an AUTHORED edge from a generated one. One string, no structure."
         },
         "$contract": {
           "type": "object",
