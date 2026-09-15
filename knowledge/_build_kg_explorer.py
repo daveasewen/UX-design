@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.10"  # 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.11"  # 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -106,6 +106,21 @@ def ruling_edges(K=K):
         pr = p.get('pair') if isinstance(p, dict) else p
         if isinstance(pr, list) and len(pr) == 2: plain.add(tuple(pr))
     return E, (sup, plain)
+
+
+# ---------------------------------------------------------------- #274 s274-D7..D12: the rule family
+RULE_NODES = '_rule_nodes.json'
+RULE_FAM = 'guidelinerules'   # NOT 'rules': that family key is taken by the base wiring chip
+
+
+def rule_nodes(K=K):
+    """The 470 tagged guideline rules landed by gen_kg_rules.py --land --ratified s274-D8
+    (s274-D7 node kind, s274-D8 the four edge types, s274-D11 this reader). Returns (nodes, edges)."""
+    fp = os.path.join(K, RULE_NODES)
+    if not os.path.exists(fp): return [], []
+    try: d = json.load(open(fp))
+    except Exception: return [], []
+    return d.get('nodes', []), d.get('edges', [])
 PRINCIPLE = {'1': 'perceivable', '2': 'operable', '3': 'understandable', '4': 'robust'}
 POLICY_ID = 'policy:hsbc-digital-accessibility-framework'
 STANDARD_ID = 'standard:en-301-549'
@@ -304,9 +319,25 @@ def extract_extra(base_nodes, base_edges, K=K):
                      note=f"{v.get('mechanism', '')[:180]}".strip() or v.get('artifact', ''))
                 rep['verifiedBy'] += 1
 
+    # ---- C. rules (#274, s274-D7..D12) — AUTHORED by knowledge/gen_kg_rules.py, read verbatim.
+    RN, RE = rule_nodes(K)
+    for n in RN:
+        if n['id'] in base or n['id'] in nodes: continue   # never restate a node another family owns
+        add(n['id'], n.get('label') or n['id'], RULE_FAM,
+            **{k: v for k, v in n.items() if k not in ('id', 'label', 'fam', 'type')})
+        rep['rule_nodes'] += 1
+    known_r = base | set(nodes)
+    for e in RE:
+        if e['s'] not in known_r: rep['rule_edges_skipped'] += 1; continue
+        if e.get('t') is None:   # s274-D10: a declared null is carried, never dropped
+            link(e['s'], None, e['type'], RULE_FAM, note=e.get('note', '')); rep['rule_edges_null'] += 1
+        elif e['t'] in known_r:
+            link(e['s'], e['t'], e['type'], RULE_FAM, note=e.get('note', '')); rep['rule_edges'] += 1
+        else: rep['rule_edges_skipped'] += 1
+
     # keep only edges whose two ends exist somewhere (base or new)
     known = base | set(nodes)
-    edges = [e for e in edges if e['s'] in known and e['t'] in known]
+    edges = [e for e in edges if e['s'] in known and (e['t'] is None or e['t'] in known)]  # s274-D10: `e['t'] is None or` keeps declared nulls
     rep['nodes'] = len(nodes); rep['edges'] = len(edges)
     rep['unmatched_applies_to'] = sorted(rep['unmatched_applies_to'])
     rep['proposed'] = dict(rep['proposed'])
@@ -357,7 +388,7 @@ def place_extra(xnodes, xedges, base_extent):
     so no base position moves. Governance left, guidelines right."""
     if not xnodes: return
     idx = {n['id']: i for i, n in enumerate(xnodes)}
-    for fam, cx in (('governance', -1.0), ('guidelines', 1.0)):
+    for fam, cx in (('governance', -1.0), ('guidelines', 1.0), (RULE_FAM, 2.2)):  # s274-D11
         grp = [n for n in xnodes if n['fam'] == fam]
         if not grp: continue
         loc = {n['id']: i for i, n in enumerate(grp)}
@@ -507,6 +538,9 @@ def main():
     print(f"  authored ruling→ruling edges (s267-D3): {rep.get('authored_ruling_edges', 0)}"
           f" {rep.get('authored_by_type', {})}"
           + (f" · SKIPPED (unknown ruling id) {rep['authored_ruling_edges_skipped']}" if rep.get('authored_ruling_edges_skipped') else ''))
+    print(f"  rules family (s274-D7..D12, ratified s274-D8): {rep.get('rule_nodes', 0)} new nodes"
+          f" / {rep.get('rule_edges', 0)} edges + {rep.get('rule_edges_null', 0)} declared nulls"
+          + (f" · SKIPPED {rep['rule_edges_skipped']}" if rep.get('rule_edges_skipped') else ''))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':
