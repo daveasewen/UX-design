@@ -333,8 +333,19 @@ def cut(export, rows, decisions, proposals, date=DEFAULT_DATE, session=SESSION):
         chosen = _chosen_option_text(rec, drow)
 
         rule_text = (drow or {}).get("rule") or row["label"]
+        # #272 by addition: on the v2 sheet "ratify" on a CONTESTED row = accept the lane's
+        # recommendation (the sheet's own wording: "lane's, not ruled" + a ratify control), so the
+        # ruled text carries that recommendation and a NOTE-ABSENT `says` names the accepted text
+        # as accepted-by-click — a described act, never a claimed quote.
+        rec_text = ((drow or {}).get("recommendation") or "").strip()
+        if rec_text.upper().startswith("LANE'S RECOMMENDATION:"):
+            rec_text = rec_text.split(":", 1)[1].strip()
         if chosen:
             ruled = (f"{rule_text} — Dave chose {label}: {chosen}")
+        elif rec["decision"] == "ratify" and rec_text:
+            ruled = (f"{rule_text} — Dave RATIFIED the lane's recommendation: {rec_text}")
+            if note_absent:
+                says = f"{label} — {NOTE_ABSENT}; accepted by click: {rec_text}"
         else:
             ruled = (f"{rule_text} — Dave's decision on harvest row {rid}: {label}.")
         if row["family"] == "N":

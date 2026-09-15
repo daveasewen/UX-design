@@ -1,0 +1,3479 @@
+{
+  "$description": "per-proposed-id provenance the ruling record has no slot for.",
+  "sidecar": {
+    "s272-D1": {
+      "source_row": "R-A-01",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "How many primary buttons per what — and what is the 'what'?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:59:12.703Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "button",
+        "action-bar",
+        "cta-lockup",
+        "alert",
+        "banner"
+      ],
+      "quotes": {
+        "IBM Carbon": "Primary buttons should only appear once per screen",
+        "Atlassian": "Only include one primary button or call to action (CTA) in a page",
+        "Fluent 2": "Only use one primary button in a layout for the most important action.",
+        "Ant Design": "there can be at most one primary button in a section.",
+        "Shopify Polaris": "Don't use more than one primary button in a section or screen",
+        "Adobe Spectrum": "Don't use more than 3 accent buttons in the same view.",
+        "GOV.UK": "silent on count",
+        "USWDS": "Avoid using too many buttons on a page.",
+        "NN/g": "Primary buttons have the most visual emphasis to grab user attention",
+        "OURS": "button.meta antiPatterns[0]: 'Using more than one primary button in a single context' — 'context' is undefined"
+      },
+      "why_contested": "The COUNT is near-unanimous (1) with one outlier (3). The SCOPE word is not: screen · page · layout · section · view. No gate can check 'context'.",
+      "options": [
+        "One primary per SCREEN (Carbon's word) — strictest, catches a primary in a card inside a page that already has one.",
+        "One primary per SECTION (Ant/Polaris) — allows a page-level primary plus one per card or panel.",
+        "One primary per LAYOUT REGION as defined by our app-shell (page header · main · action bar · each modal surface) — our own vocabulary rather than an imported one.",
+        "Leave 'context' undefined and keep the rule advisory."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. It is the only wording that names things our library already has, so a gate can walk the DOM and count. Carbon's 'screen' is the closest external match and explicitly excludes the app header, modal and side panel — which is option 3 in different words.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "19 of 54",
+          "longest_common_run": "have to be"
+        }
+      }
+    },
+    "s272-D2": {
+      "source_row": "R-A-02",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "Can a LINK perform an action (download a PDF, open a new window), or must that be a button?",
+      "decision": "option",
+      "option_index": 1,
+      "chosen_option": "Links navigate only. A download becomes a button, and document-row / links / footer all change.",
+      "decided_at": "2026-09-14T20:08:08.676Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "links",
+        "button",
+        "icon-button"
+      ],
+      "quotes": {
+        "IBM Carbon": "Do not use links for actions that will change data",
+        "Atlassian": "Links navigate to a new page or anchor location, changing the URL.",
+        "Fluent 2": "Don't use links for triggering actions other than navigation.",
+        "Shopify Polaris": "Links are used primarily for navigation",
+        "Adobe Spectrum": "Buttons allow users to perform an action or to navigate to another page.",
+        "GOV.UK": "silent on the boundary (its Button page covers 'Start now' links styled as buttons)",
+        "USWDS": "silent on the boundary",
+        "NN/g": "not obtained — the two article slugs tried both 404 (see SOURCES refused)",
+        "OURS": "links.meta purpose: 'navigate between pages/content items or instigate actions (e.g. download pdf, open in a new window)'"
+      },
+      "why_contested": "Four systems fence links to navigation only. Spectrum crosses the line the other way (buttons may navigate). OUR OWN META crosses it in the direction four systems forbid, and 'download pdf' is a real, frequent HSBC case — every document row in the library depends on the answer.",
+      "options": [
+        "Links navigate only. A download becomes a button, and document-row / links / footer all change.",
+        "Links navigate AND fetch a resource (download, open-in-new-window) but never mutate state — a narrower crossing than our meta currently allows, and the one a URL actually justifies.",
+        "Keep our meta as written and record that we knowingly diverge from Carbon, Atlassian, Fluent and Polaris."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. A download IS a navigation to a URL; it changes nothing on the server. That keeps our existing arrow/icon links legal, keeps the four systems' actual concern (mutation) satisfied, and gives a gate a checkable clause: a link may not be bound to a handler that mutates.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "13 of 50",
+          "longest_common_run": "i'm not sure what"
+        }
+      }
+    },
+    "s272-D3": {
+      "source_row": "R-A-20",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a tooltip REQUIRED on an icon-only button?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:08:44.406Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "icon-button",
+        "tooltip",
+        "fab"
+      ],
+      "quotes": {
+        "Atlassian": "Use tooltips with icon buttons to display the button label.",
+        "Shopify Polaris": "Be provided for icon-only buttons or a button with an associated keyboard shortcut.",
+        "USWDS": "Tooltips are useful as a last resort for space-constrained UI.",
+        "Material 3": "They're best used for labelling UI elements with no text",
+        "IBM Carbon": "silent on the requirement",
+        "OURS": "icon-button.meta antiPatterns[3]: 'Using an ambiguous glyph as the only action affordance without a tooltip/label' — 'tooltip/label', i.e. either"
+      },
+      "why_contested": "Two systems make it a requirement, two describe it as the tooltip's main purpose, ours makes it one of two acceptable options and only for AMBIGUOUS glyphs. The accessible name is separately mandatory in all of them — this row is about the VISIBLE label only.",
+      "options": [
+        "Tooltip required on every icon-only button. Gateable, and it would fail real screens today.",
+        "Tooltip required only where the glyph is not in the agreed universal set (close, search, add, edit, download) — which is exactly the set roles.json already invokes with 'the glyph is universal'.",
+        "Keep our either/or wording."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. It uses a fence roles.json already has, it is checkable against a named glyph list, and it avoids putting a tooltip on a close × that nobody has ever misread.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D4": {
+      "source_row": "R-A-25",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "How many actions in an action bar, and which side are they on?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:57:48.280Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "action-bar",
+        "modals",
+        "drawer"
+      ],
+      "quotes": {
+        "IBM Carbon": "Any more than three actions should be grouped",
+        "Ant Design": "more than three operations, you can group some of them into a Dropdown",
+        "GOV.UK": "aligned to the left so users do not miss it",
+        "Atlassian": "silent on bar capacity",
+        "Fluent 2": "Optional footer, which can contain up to three actions.",
+        "OURS": "action-bar.meta antiPatterns[0] (REVIEW, inferred): 'more than ~3 actions in the bar'; drawer.meta antiPatterns[2]: 'Right-aligned actions (family order is primary-first, left-aligned)'"
+      },
+      "why_contested": "The CEILING is effectively unanimous at 3 (Carbon, Ant, Fluent, and our own guess) — so the count is not the contest. The ALIGNMENT is: GOV.UK and our own Drawer say left, primary first; our Action-bar meta warns about DOM order in a way that assumes a right-aligned pair.",
+      "options": [
+        "Left-aligned, primary first, everywhere — matching our Drawer rule and GOV.UK.",
+        "Right-aligned in modals and drawers (platform convention), left-aligned in page-level action bars.",
+        "Leave alignment to the surface and gate only the DOM order."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1, and promote the ~3 ceiling from a REVIEW guess to a ruled number — three systems independently landed on the same figure, which is as close to free as this table gets.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D5": {
+      "source_row": "R-A-26",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "Is the FAB mobile-only?",
+      "decision": "option",
+      "option_index": 2,
+      "chosen_option": "Any viewport, with a rule that FAB and Back-to-top may never both be present.",
+      "decided_at": "2026-09-14T20:12:22.312Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "fab",
+        "back-to-top",
+        "action-bar"
+      ],
+      "quotes": {
+        "Material 3": "Don't display multiple FABs on a single screen",
+        "Material 3 (2)": "Use a FAB for the most important action on a screen",
+        "Ant Design": "Buttons that can be seen wherever you browse.",
+        "Apple HIG": "no FAB component",
+        "IBM Carbon": "no FAB component",
+        "Atlassian": "no FAB component",
+        "GOV.UK": "no FAB component",
+        "OURS": "fab.meta: 'fixed to a mobile viewport'; mustNotNeighbour Back-to-top, collision UNRESOLVED"
+      },
+      "why_contested": "The COUNT rule (one per screen) is unanimous among the two systems that ship it and is already ours. The PLATFORM is not: ours says mobile, Ant's float button is global and desktop. Four systems ship nothing at all. And our own meta records an unresolved collision with Back-to-top plus two raw constants (56px, 24px) awaiting your mint-or-accept.",
+      "options": [
+        "Mobile-only, as built. Back-to-top wins the bottom-right corner on desktop; FAB never appears there.",
+        "Any viewport, with a rule that FAB and Back-to-top may never both be present.",
+        "FAB is removed and its job goes to the action bar or page header — which is what six of eleven systems effectively do."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1, and resolve the collision by ruling that Back-to-top yields to a FAB when both would appear. The meta already flags this as yours; the predicate cannot be finished without it.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "5 of 15",
+          "longest_common_run": "we need the"
+        }
+      }
+    },
+    "s272-D6": {
+      "source_row": "N-quick-actions",
+      "role": "action",
+      "slice": "A",
+      "family": "N",
+      "label": "quick-actions",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:16:29.764Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "quick-actions"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta quick-actions.purpose + antiPatterns[0,1]",
+          "M3 buttons (low-priority actions in overflow)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the surface is a home or account screen AND each item is a shortcut to an existing destination or task AND every item has a visible label AND reordering has a keyboard path",
+      "when_prose": "beats a row of buttons because the items are user-configurable shortcuts rather than the screen's own actions; beats navigations because these are tasks, not a structure; yields to action-bar whenever the actions belong to the screen's commit point rather than to the user's shortcuts.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D7": {
+      "source_row": "N-cta-lockup",
+      "role": "action",
+      "slice": "A",
+      "family": "N",
+      "label": "cta-lockup",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:18:46.988Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "cta-lockup"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta cta-lockup.purpose + antiPatterns[1,2,3]",
+          "Atlassian empty-state (\"Include too many call to action buttons on one page\")"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "a band closes a page or section with a heading, a supporting line and EXACTLY ONE action pair (secondary + primary) AND no third button AND no invented urgency copy AND width comes from the container",
+      "when_prose": "beats a loose button pair because the band is an arrangement with a heading that earns the action; yields to action-bar whenever the actions commit a form rather than invite a next step; the single-pair ceiling is ours (antiPatterns[3]) and is consistent with the one-primary rule five systems state for button.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D8": {
+      "source_row": "B-07",
+      "role": "arrangement",
+      "slice": "B",
+      "family": "R",
+      "label": "May more than one accordion section be open at once?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:45:19.614Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "NN/g": "make sure to give people the capability to open multiple sections at a time",
+        "Ant Design": "an Accordion is by definition the Collapse variant that allows only one panel expanded",
+        "GOV.UK": "silent on the rule; ships a Show-all-sections control, which implies multi",
+        "IBM Carbon": "silent on the rule",
+        "USWDS": "silent on the rule; ships both bordered and multiselectable variants",
+        "ours": "silent — our meta says nothing about it"
+      },
+      "why_contested": null,
+      "options": [
+        "Multi-open is the default (NN/g, and GOV.UK's show-all control implies it).",
+        "Single-open is the default; multi is a variant.",
+        "Both are variants and the composer picks; the meta names the trade-off."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. GOV.UK's Show-all-sections button only makes sense in a multi-open accordion, and we already inherit GOV.UK-shaped accordion behaviour. Ant is naming a different component with the same word.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D9": {
+      "source_row": "B-08",
+      "role": "arrangement",
+      "slice": "B",
+      "family": "R",
+      "label": "Does Carousel stay in the library?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:45:48.656Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "NN/g": "some people will only see the first frame or none at all",
+        "NN/g (title)": "Consider Using a Hero Image Instead of a Carousel",
+        "Ant Design": "When there is a group of content on the same level.",
+        "GOV.UK / USWDS / IBM Carbon / Polaris": "NO CAROUSEL COMPONENT EXISTS — four systems' worth of structural silence",
+        "ours": "PROPOSED #210 wave-4 lane C; not registered, not ruled; autoplay OFF proposed"
+      },
+      "why_contested": null,
+      "options": [
+        "Drop it. Four reference systems ship none and NN/g says don't.",
+        "Keep it, unratified, with a `when` written as a warning and a hard autoplay-off default.",
+        "Keep and ratify it as a normal component with a positive `when`."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. It is already unratified, so nothing is lost by leaving it there with an honest negative `when` — and a fintech marketing surface will ask for one whatever we write. Option 3 is the one the evidence does not support.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D10": {
+      "source_row": "B-09",
+      "role": "arrangement",
+      "slice": "B",
+      "family": "R",
+      "label": "Is there a maximum number of cards in a card collection?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:47:53.425Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "USWDS": "Consider limiting the number of items in each collection to six or fewer.",
+        "IBM Carbon": "silent on a number",
+        "Polaris": "silent on a number",
+        "Ant Design": "silent on a number",
+        "ours": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt 6 as a soft ceiling above which cards yield to list-items or table.",
+        "No number; yield to table on the COMPARISON test instead (\"if a field is read down a column, it is a table\").",
+        "Both: 6 as a warning, the comparison test as the gate."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. USWDS's 6 applies to their `collection` component, not their `card` — importing it onto our Cards would be a quote lifted out of its component. The comparison test is the one that actually discriminates.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "10 of 26",
+          "longest_common_run": "maybe we have"
+        }
+      }
+    },
+    "s272-D11": {
+      "source_row": "R16",
+      "role": "arrangement",
+      "slice": "C",
+      "family": "R",
+      "label": "What language and furniture may an error page carry?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:51:19.150Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "template-error"
+      ],
+      "quotes": {
+        "GOV.UK": "technical jargon like 404 or bad request",
+        "USWDS": "Don't use this template for form validation errors, submission errors",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt GOV.UK's bans (no 404 jargon, no breadcrumbs, no humour) as gate clauses.",
+        "Adopt them as content guidance only, off the gate.",
+        "Adopt the no-breadcrumbs clause only — it is structural and checkable; leave tone to review."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "ls:DELTAS",
+          "file": "_LIVE-STATE.md",
+          "line": 69,
+          "shared_bigrams": "3 of 9",
+          "longest_common_run": "we will"
+        }
+      }
+    },
+    "s272-D12": {
+      "source_row": "N-stats-band-lockup",
+      "role": "arrangement",
+      "slice": "B",
+      "family": "N",
+      "label": "stats-band-lockup",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:25:43.496Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "stats-band-lockup"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta stats-band-lockup.purpose + antiPatterns[0,1,2]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "tiles >= 2 of {stat-card, kpi-tile} AND a section heading is present AND the row auto-fills AND no new molecule is drawn",
+      "when_prose": "the labelled row of metric tiles; beats hand-rolling the dashboard KPI section (which Template-dashboard already does) because it fixes the heading + auto-fill grid once; composes Layout-utilities, Stat-card, Kpi-tile and Cards' arrow-link ONLY — a new molecule here is an explicit do-not-rule (our AP1).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D13": {
+      "source_row": "N-feature-grid-lockup",
+      "role": "arrangement",
+      "slice": "C",
+      "family": "N",
+      "label": "feature-grid-lockup",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:29:21.434Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "feature-grid-lockup"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/roles.json — arrangement",
+          "knowledge/components/feature-grid-lockup.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "surface = marketing AND cells >= 2 AND every cell = icon + title + body AND cells carry NO per-cell action",
+      "when_prose": "beats cards (roles.json when: \"a bordered surface per item\") because a feature cell states a benefit and does not carry its own call to action — our meta removes the action row deliberately; beats layout-utilities (when: \"default\") because the cell CONTENT is fixed, which is the whole component.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D14": {
+      "source_row": "B-12",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "How many series may a grouped bar chart carry?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:04:55.380Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "FT Visual Vocabulary": "Can become tricky to read with more than 2 series",
+        "ours (chart-line)": "series 1–5 on one continuous time axis",
+        "ours (chart-bar)": "no series ceiling stated",
+        "ours (Chart-butterfly)": "exactly 2 series, mirrored",
+        "Datawrapper": "silent for grouped bars",
+        "IBM Carbon": "unreachable"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt 2 as a soft ceiling for grouped bars, above which use stacked or small multiples.",
+        "Adopt chart-line's 1–5 for consistency across the family.",
+        "No ceiling."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2, with the FT's 2 recorded as a caution. A hard 2 would make a four-quarter grouped comparison illegal, which is a normal fintech chart; but the family should not have a 5-series line and an unbounded bar.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D15": {
+      "source_row": "B-04",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "How many slices may a pie or donut carry?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:05:52.746Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Datawrapper": "If you have more than five shares, consider a stacked column",
+        "roles.json (ours)": "chart-pie when: \"composition, no centre figure, ≤ 5 parts\"",
+        "our metas": "antiPatterns[0] on BOTH pie and donut: \"More than 6 slices (dv-pie-009 — combine into 'Other')\"",
+        "FT Visual Vocabulary": "silent on a number; \"difficult to accurately compare the size of the segments\"",
+        "NN/g": "silent on a number; against the family entirely",
+        "IBM Carbon": "unreachable (chart-types is client-rendered)"
+      },
+      "why_contested": null,
+      "options": [
+        "5 everywhere: change dv-pie-009 to 5 and keep roles.json.",
+        "6 everywhere: change roles.json's pie `when` to ≤ 6.",
+        "Keep both on purpose: 5 is the SELECTION cut (above it, choose something else), 6 is the RENDER ceiling (above it, the component refuses). Write that distinction down."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 3, then a one-line note on both metas. Datawrapper's 5 is a choice threshold and dv-pie-009's 6 is a drawing limit — they are not actually the same rule, but nothing in the repo says so, so today it reads as a defect.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D16": {
+      "source_row": "B-05",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "Is a donut better or worse than a pie?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:06:37.146Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "roles.json (ours)": "donut is the composition DEFAULT (weight 80); pie is 48",
+        "FT Visual Vocabulary": "the centre can be a good way of making space to include more information",
+        "NN/g": "made even less effective by the whitespace in the middle",
+        "Datawrapper": "silent on donut specifically",
+        "IBM Carbon": "unreachable",
+        "GOV.UK / USWDS / Polaris / Ant": "silent — no donut guidance found"
+      },
+      "why_contested": null,
+      "options": [
+        "Keep the ordering: our centre-total discriminator is a REASON, and FT gives the same reason.",
+        "Flip it: pie becomes the default and donut is the exception when a centre total earns its place.",
+        "Keep the ordering and add NN/g's caution to both metas as a documented dissent."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. NN/g's objection is to using either for comparison, which our `when` already excludes (composition only, parts sum to a whole). The FT independently reaches our exact discriminator, which is the strongest single corroboration in this slice.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D17": {
+      "source_row": "B-11",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "When is a bar chart horizontal rather than vertical?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:07:15.484Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "FT Visual Vocabulary": "Good when the data are not time series and labels have long category names",
+        "Datawrapper": "If you have more than approximately 10 categories",
+        "IBM Carbon": "unreachable",
+        "NN/g": "silent",
+        "ours": "NO RULE — orientation is a variant with no criterion, and our AP1 only forbids negatives on the horizontal form"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt the FT test: long category labels or non-time-series ⇒ horizontal.",
+        "Adopt the Datawrapper count: > ~10 categories ⇒ horizontal.",
+        "Both, ORed — either condition makes it horizontal.",
+        "No rule; orientation stays a composer's choice."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 3. Both tests are about the same failure — labels that will not fit under a column — and they catch different halves of it. This is the largest completely-absent rule found in the chart family.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D18": {
+      "source_row": "B-13",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "When does composition-over-time stop being a stacked area and become stacked columns?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:07:51.693Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Datawrapper": "Area charts work best if you have many dates.",
+        "FT Visual Vocabulary": "seeing change in components can be very difficult",
+        "ours": "no date count on either side",
+        "IBM Carbon": "unreachable"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt ~10 dates as the cut: fewer ⇒ stacked bar, more ⇒ stacked area.",
+        "No number; use \"the reader must read individual values\" ⇒ stacked bar.",
+        "No rule."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. It is a single-source number, so it should be ruled the way s270-D1 was — provisional, with a tripwire — but it fills a genuine hole: today a 4-quarter split can legally be drawn as a stacked area, which is the worst option for it.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D19": {
+      "source_row": "B-14",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "Which intent word gates chart-combo?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:08:16.143Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "FT Visual Vocabulary": "showing the relationship between an amount (columns) and a rate (line)",
+        "FT (filing)": "listed under CORRELATION first, and again under Change v Time",
+        "roles.json (ours)": "\"two measures in different units over one axis\", answers = change-over-time only",
+        "IBM Carbon": "the intent buckets exist (Comparisons · Trends · Part-to-whole · Correlations · Connections · Geospatial) but per-chart prose was unreachable",
+        "Datawrapper": "has a dual-axis guide but it carries no selection criterion"
+      },
+      "why_contested": null,
+      "options": [
+        "Keep change-over-time only.",
+        "Add relationship: answers becomes [change-over-time, relationship], as chart-stacked-area already carries two.",
+        "Keep one word and record the FT's second filing as a known gap."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. chart-stacked-area already proves the two-word pattern is legal on our answers axis, and today a composer whose claim is \"revenue against margin rate\" is gated to Chart-scatter, which cannot draw it.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D20": {
+      "source_row": "B-15",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "Which intent word gates the butterfly pair?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:08:43.052Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "FT Visual Vocabulary": "effectively, back to back histograms",
+        "FT (filing)": "population pyramid is filed under DISTRIBUTION",
+        "roles.json (ours)": "\"exactly two series mirrored, categories ≥ 6\", answers = comparison",
+        "everyone else": "silent — no other system ships a butterfly"
+      },
+      "why_contested": null,
+      "options": [
+        "Keep comparison only.",
+        "Add distribution: answers becomes [comparison, distribution].",
+        "Keep comparison and note that a population-pyramid claim must reach it through comparison."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 3. Our butterfly's canonical uses are inflow-vs-outflow and actual-vs-target, which are comparisons; the pyramid case is real but rare in fintech, and widening the gate costs more than it buys. Recorded so the decision is visible, not silent.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D21": {
+      "source_row": "B-19",
+      "role": "chart-panel",
+      "slice": "B",
+      "family": "R",
+      "label": "How many colour-coded categories may a legend carry?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:09:31.481Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Adobe Spectrum": "The ideal usage for these is when there are 8 or fewer categories",
+        "NN/g": "color should not be used to communicate information about quantitative",
+        "ours": "no ceiling on legend; the isoluminant categorical set's size is a token question",
+        "IBM Carbon": "unreachable",
+        "Datawrapper": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt 8 as the legend's ceiling.",
+        "Rule that the ceiling belongs to the PALETTE (the isoluminant set), not the legend, and point the legend at it.",
+        "No ceiling."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. A legend with 12 entries is not wrong if 12 series are distinguishable; the real constraint is how many isoluminant categorical colours we have. Putting the number on the legend would hide it from the place that determines it.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D22": {
+      "source_row": "B-02",
+      "role": "cross-role",
+      "slice": "B",
+      "family": "R",
+      "label": "May a Tag be interactive (a link or button)?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:51:53.229Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "GOV.UK": "Do not use tags to create links, buttons or other interactive elements",
+        "IBM Carbon": "Do not use tags as links that direct you to an entirely different page",
+        "USWDS": "Users frequently confuse tags as buttons.",
+        "Ant Design": "silent — ships closable and checkable tags without comment",
+        "Polaris": "silent",
+        "ours": "our meta SHIPS a Tag link variant and only forbids making static tags LOOK interactive"
+      },
+      "why_contested": null,
+      "options": [
+        "Retire the Tag link variant; tags become static labels only.",
+        "Keep it but fence it: a Tag link may only filter IN PLACE, never navigate (this is exactly what Carbon's wording leaves open).",
+        "Keep it as is and record the three-system disagreement on the meta."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. Carbon's objection is specifically to NAVIGATION, not to interaction; a removable filter chip is a tag that acts and every system ships one. Option 2 satisfies all three objections without losing a variant we already built.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D23": {
+      "source_row": "R-A-06",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "At what wait does a spinner become a progress bar?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:15:02.048Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "loading-indicator",
+        "progress-bar",
+        "skeleton-loader"
+      ],
+      "quotes": {
+        "Fluent 2": "Progress bars should only be used for tasks that take longer than a second.",
+        "IBM Carbon": "If the process takes less than 5 seconds to load, use loading instead",
+        "NN/g": "Percent-done animation: Use for actions that take 10 seconds or more.",
+        "Atlassian": "For most loading use cases, choose a spinner component.",
+        "Material 3": "Choose a loading or progress indicator that corresponds to the expected wait time",
+        "Apple HIG": "When possible, use a determinate progress indicator.",
+        "Shopify Polaris": "For tasks with a short load time, use the Spinner component",
+        "OURS": "loading-indicator.meta antiPatterns[2] (REVIEW, inferred): 'using an indeterminate spinner where a determinate progress bar (known duration) would be clearer' — no number"
+      },
+      "why_contested": "1s · 5s · 10s · 'most cases use a spinner' · 'whenever possible use determinate'. A 3-second upload is a progress bar at Microsoft, a spinner at IBM, and a spinner at Atlassian. This is the deepest numeric split in the feedback family.",
+      "options": [
+        "Carry NO number. The discriminator is 'is the completion fraction knowable' — if yes, progress bar; if no, spinner. All seven systems can live with this and it is the only clause a gate can actually check.",
+        "Adopt Carbon's 5s cut (nearest to our banking upload reality).",
+        "Adopt NN/g's research-backed 10s cut and use skeleton or spinner below it."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. Every number here is a proxy for 'do you know the fraction'. We already state the real test in two metas; naming a second, numeric test would give us two rules that can disagree.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D24": {
+      "source_row": "R-A-03",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "How long does a toast stay before auto-dismissing?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:15:27.554Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "toast"
+      ],
+      "quotes": {
+        "Ant Design": "If not specified, default value is 4.5 seconds.",
+        "Shopify Polaris": "Use to shorten or lengthen the default duration of 5000 milliseconds.",
+        "Adobe Spectrum": "Be sure to set a minimum of 5 seconds",
+        "Fluent 2": "If there is no action to take, toast will time out after seven seconds.",
+        "Material 3": "Snackbars without actions can auto-dismiss after 4-10 seconds, depending on platform.",
+        "Atlassian": "silent on duration (states only that critical messages must not auto-dismiss)",
+        "IBM Carbon": "silent on duration",
+        "GOV.UK": "no toast component",
+        "OURS": "toast.meta purpose: 'auto-dismisses after ~6s (paused on hover/focus)'"
+      },
+      "why_contested": "Same KIND (a timeout), five different numbers: 4.5 · 5 · 5-min · 7 · 4-10. Ours (6) sits inside every band but matches nobody.",
+      "options": [
+        "Keep ~6s and record it as ruled rather than assumed.",
+        "Adopt M3's 4-10s BAND and let the consumer pick inside it by message length.",
+        "Adopt Spectrum's shape — a 5s FLOOR with no ceiling, since pause-on-hover already handles slow readers."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. Our 6s is already built, is inside every external band, and the pause-on-hover we already ship is what actually protects slow readers. This is a cheap ratification, not a change.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D25": {
+      "source_row": "R-A-04",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "How many toasts may be on screen at once?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:16:13.144Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "toast"
+      ],
+      "quotes": {
+        "Material 3": "Only one snackbar may be displayed at a time.",
+        "Adobe Spectrum": "dismiss, do not show if other toast is present on screen.",
+        "Fluent 2": "Don't show more than four toasts in a toaster",
+        "Atlassian": "silent on count",
+        "Shopify Polaris": "silent on count",
+        "IBM Carbon": "silent on count",
+        "OURS": "toast.meta antiPatterns[4]: 'Stacking unlimited toasts (queue beyond ~3)'"
+      },
+      "why_contested": "Two systems say exactly one; one says four; ours says about three. The KIND agrees (there is a cap) and the NUMBER does not.",
+      "options": [
+        "One at a time (M3 / Spectrum) — the strictest, and the easiest to gate.",
+        "Keep ~3 queued.",
+        "Cap at 3 but show only ONE at a time, queueing the rest — which satisfies both camps."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. It is what 'queue beyond ~3' probably already meant, and it makes the gate trivial: assert exactly one toast node in the live region.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D26": {
+      "source_row": "R-A-05",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a page-level Banner dismissible?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:16:49.836Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "banner"
+      ],
+      "quotes": {
+        "Atlassian": "Banners should appear one at a time, are not dismissible",
+        "Shopify Polaris": "Be dismissible unless they contain critical information or an important step",
+        "Adobe Spectrum": "An alert banner should only overlay content if it is dismissible.",
+        "GOV.UK": "whether it's sometimes helpful to allow users to dismiss notifications, and how to do this",
+        "IBM Carbon": "silent on banner dismissal specifically",
+        "OURS": "banner.meta antiPatterns[0]: 'Actions AND dismiss on the same banner (family shape rule: either, never both)'"
+      },
+      "why_contested": "Three positions from three systems: never · conditionally · only if it overlays. GOV.UK openly records it as an open research question. Ours answers a different question (either/or) and never answers this one.",
+      "options": [
+        "Banner is never dismissible — it persists until the condition clears (Atlassian). Our either/or rule then collapses to 'actions only'.",
+        "Banner is dismissible only when it carries NO action (our existing either/or, made explicit as the answer).",
+        "Dismissible unless critical (Polaris) — needs a definition of critical that we do not have."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. It is already our shape rule; it just has not been stated as the answer to this question. Option 3 imports a word ('critical') with no home in our vocabulary.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D27": {
+      "source_row": "R-A-07",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "What does a FULL-PAGE load show — spinner or skeleton?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:17:21.387Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "loading-indicator",
+        "skeleton-loader"
+      ],
+      "quotes": {
+        "Adobe Spectrum": "Use a progress circle for full page loading or in very small areas.",
+        "Shopify Polaris": "Not be used to give feedback for an entire page load.",
+        "IBM Carbon": "For full-screen loads, skeleton states are preferred over indicators",
+        "Ant Design": "Could be replaced by Spin in any situation",
+        "NN/g": "Spinners are typically best used on a single module, like a video",
+        "Atlassian": "There should only be a single spinner on a page at any time.",
+        "OURS": "skeleton-loader.meta: 'use [Loading-indicator] when there is no known layout to mirror' — which does not settle the full-page case, because a page layout IS known"
+      },
+      "why_contested": "Split 2-2 on the identical situation, with Ant saying it does not matter. Our own predicate technically answers 'skeleton' (a page layout is known) but no meta says so and our app-shell templates do not do it.",
+      "options": [
+        "Skeleton for any full-page or full-region load where the layout is known (Carbon / Polaris / NN/g); spinner reserved for single modules.",
+        "Spinner for full-page, skeleton for in-page regions (Spectrum).",
+        "Either, by template — declared per app-shell rather than globally."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. It follows from the predicate we already have rather than adding a new one, and Polaris's flat prohibition on page-load spinners is the strongest single statement in the row.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D28": {
+      "source_row": "R-A-08",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "Below what wait is a skeleton worse than nothing?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:18:01.269Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "skeleton-loader"
+      ],
+      "quotes": {
+        "NN/g": "they are best used when the page takes 2-10 seconds to load",
+        "Ant Design": "When a resource needs long time to load.",
+        "IBM Carbon": "should only appear for only a few seconds, disappearing once components and",
+        "Shopify Polaris": "Be used for pages where all content loads at the same time.",
+        "Atlassian": "silent",
+        "OURS": "skeleton-loader.meta antiPatterns[5]: 'Skeleton for sub-300ms loads (flash of placeholder is worse than nothing)'"
+      },
+      "why_contested": "Our floor is 300ms. NN/g's band starts at 2 seconds — nearly seven times higher. Between 300ms and 2s our library shows a skeleton and NN/g shows nothing.",
+      "options": [
+        "Keep 300ms (a flash-prevention threshold, which is what it really is).",
+        "Raise to NN/g's 2s (a perceived-performance threshold).",
+        "Keep 300ms as the DELAY before the skeleton appears, and adopt 10s as the point where it must hand over to a progress bar — two different jobs, two different numbers."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. Our 300ms and NN/g's 2s are answering different questions; option 3 keeps both without contradiction and adds the upper handover NN/g gives us for free.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D29": {
+      "source_row": "R-A-22",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "What must a confirmation screen contain?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:18:52.377Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "confirmation"
+      ],
+      "quotes": {
+        "GOV.UK": "Your confirmation page must include: a reference number, if there is one",
+        "GOV.UK (2)": "Some users will bookmark the confirmation page as a form of receipt.",
+        "Ant Design": "Use when important operations need to inform the user to process the results",
+        "IBM Carbon": "silent on required contents",
+        "Atlassian": "silent",
+        "Adobe Spectrum": "silent",
+        "OURS": "confirmation.meta: 'a success-solid glyph, a heading, a short message and the next actions'"
+      },
+      "why_contested": "GOV.UK gives a six-item MUST list (reference number, what happens next and when, contact details, onward links, feedback link, a way to save a record) and raises a case nobody else does — the bookmarked receipt. Ours names four items, none of them a reference number. For a payment confirmation the reference number is the whole point.",
+      "options": [
+        "Adopt GOV.UK's must-list wholesale.",
+        "Adopt the banking-relevant subset: reference number (when one exists), what happens next and when, and a way to save or print. Drop the feedback link, which is a GOV.UK service-assessment requirement, not a banking one.",
+        "Keep our four items and record the divergence."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. A payment confirmation without a reference is unusable in a dispute, and 'a way to save a record' is what the bookmark behaviour is really asking for. The feedback link genuinely does not transfer.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D30": {
+      "source_row": "R-A-23",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "Must an empty state always offer an action?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:20:40.258Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "empty-state"
+      ],
+      "quotes": {
+        "Atlassian": "Include an action or link to help people understand what to do next.",
+        "Shopify Polaris": "Empty states are used when a list, table, or chart has no items",
+        "Ant Design": "When there is no data provided, display for friendly tips.",
+        "IBM Carbon": "For simpler situations, or for secondary features where bite-sized pieces of information are preferable.",
+        "GOV.UK": "no empty-state component",
+        "NN/g": "not obtained — the article slug tried 404'd (see SOURCES refused)",
+        "OURS": "empty-state.meta: three postures — first-run (primary button), no-results (link), quiet (say so and stop)"
+      },
+      "why_contested": "Atlassian says always give the reader something to press. Our 'quiet' posture deliberately gives nothing. Nobody outside has our three-posture split, so there is no external support for the quiet case either.",
+      "options": [
+        "Keep all three postures; quiet stays actionless.",
+        "Drop the quiet posture; every empty region offers at least a link.",
+        "Keep quiet but fence it: legal only where the emptiness is GOOD NEWS (inbox caught up, no overdue payments) and not where the user could create the missing thing."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. It preserves the distinction that makes our empty-state better than the imports while answering Atlassian's real worry — a dead end where an action was possible.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D31": {
+      "source_row": "R-A-29",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "Must an error Alert carry an action?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:26:44.075Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "alert",
+        "banner",
+        "toast"
+      ],
+      "quotes": {
+        "Fluent 2": "Error and Warning messages must have either a link to content or a button",
+        "Atlassian": "The message is restricted to five lines in length.",
+        "NN/g": "Display the error message close to the error's source.",
+        "IBM Carbon": "silent on a required action",
+        "Adobe Spectrum": "silent on a required action",
+        "GOV.UK": "silent on a required action (its error summary links to the fields, which is an action of a kind)",
+        "OURS": "alert.meta: 'title + description + optional inline link + optional dismiss' — the link is OPTIONAL"
+      },
+      "why_contested": "One system makes the action mandatory for errors and warnings; ours makes it optional; the rest are silent. It matters because an error with no route out is the most common real failure in the family.",
+      "options": [
+        "Adopt Fluent's rule: an error or warning Alert must carry either a link or a button.",
+        "Keep optional, but require that the DESCRIPTION states what to do next (NN/g's actual concern, met with copy rather than a control).",
+        "Keep as written."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. It satisfies the underlying concern without forcing a control onto errors whose fix is simply 'try again later', and it is checkable by the copy gate rather than the component gate.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "13 of 45",
+          "longest_common_run": "if there is"
+        }
+      }
+    },
+    "s272-D32": {
+      "source_row": "R-A-30",
+      "role": "feedback",
+      "slice": "A",
+      "family": "R",
+      "label": "Does `notifications` keep a catalogue identity, or become a pointer?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:35:09.290Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "notifications",
+        "alert",
+        "banner",
+        "toast"
+      ],
+      "quotes": {
+        "IBM Carbon": "For more context on when to use each notification variant, including modals,",
+        "NN/g": "Notifications are focused on system-related events.",
+        "NN/g (2)": "Validations are tied to a user's action or input.",
+        "Ant Design": "A notification with complex content.",
+        "Atlassian": "For messages that appear after an event takes place, use a flag.",
+        "GOV.UK": "no umbrella component — notification banner, error summary and error message are separate",
+        "OURS": "notifications.meta describes four placements — Contextual, Global, Inline, Snackbar — which ARE Alert, Banner, inline validation and Toast"
+      },
+      "why_contested": "Not a disagreement about a rule but about an IDENTITY. Our library has four Mono feedback components plus a Legacy record that describes all four again. Externally, Carbon keeps an umbrella and NN/g cuts by trigger instead of placement — neither maps onto our four placements.",
+      "options": [
+        "Notifications keeps its catalogue identity as the Legacy record and gains a `when` of 'never — see Alert / Banner / Toast / inline validation'.",
+        "Notifications is retired from the catalogue; its slug redirects to the three Mono components.",
+        "Notifications is re-cut along NN/g's trigger axis (indicator / validation / notification), which would re-shape all four Mono components."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. It costs nothing, keeps the Legacy name findable for anyone arriving from the old toolkit, and stops a fifth door opening into the same four rooms. Option 2 loses the search term; option 3 re-opens components that #268 already shipped.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "13 of 35",
+          "longest_common_run": "i'm not sure"
+        }
+      }
+    },
+    "s272-D33": {
+      "source_row": "B-24",
+      "role": "feedback",
+      "slice": "B",
+      "family": "R",
+      "label": "Are alias metas exempt from a when-completeness gate?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:35:54.100Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "ours (s210-D5)": "progress-bar.meta.json and limits-meter.meta.json are thin category aliases of meter.meta.json; writing spec into them is an antiPattern",
+        "ours (this harvest)": "any gate requiring a `when` on every meta would FORCE that breach",
+        "external": "not applicable"
+      },
+      "why_contested": null,
+      "options": [
+        "Exempt aliases explicitly: the gate reads the parent's `when`.",
+        "Allow a `when` on an alias only if it is a verbatim pointer to the parent.",
+        "Do not build a when-completeness gate at all."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. It is the only option that keeps s210-D5 intact. Flagged here because it must be decided BEFORE any `when` lands as a gated field, not after.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D34": {
+      "source_row": "N-countdown-timer",
+      "role": "feedback",
+      "slice": "A",
+      "family": "N",
+      "label": "countdown-timer",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:19:41.555Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "countdown-timer"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta countdown-timer.antiPatterns[0,1]",
+          "OUR meta cta-lockup.antiPatterns[2]",
+          "OUR meta secure-entry.purpose (resend countdown)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "a timed event will fire without the user AND the remaining time is available as TEXT, not only as a ring AND the user can extend or dismiss the limit",
+      "when_prose": "not a choice between siblings but a disclosure: it rides inside Banner, Modals, a session-timeout prompt or Secure-entry's resend; the extend clause is our antiPatterns[1] and it is really WCAG 2.2.1 wearing a component's clothes; never appears in a cta-lockup, where our own meta calls a countdown manufactured urgency.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D35": {
+      "source_row": "B-16",
+      "role": "headline-metric",
+      "slice": "B",
+      "family": "R",
+      "label": "Must a Stat card carry a delta?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:16:36.079Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "ours (meta when)": "shape = one-measure × value-and-delta AND series = none AND delta != none",
+        "roles.json (ours)": "\"default — label · value · delta · period, no series\"",
+        "Ant Design": "When want to display statistic data with description.",
+        "IBM Carbon": "Use tiles to group related information in flexible containers.",
+        "everyone else": "silent — no metric-tile component found"
+      },
+      "why_contested": null,
+      "options": [
+        "Yes, delta required. A bare number is not a Stat card and needs a named home.",
+        "No: delta becomes optional and the gate drops to \"one measure, no series\".",
+        "Yes, required — and account-card becomes the named home for a bare balance."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 3. It keeps the role's fences intact (no series ⇒ not a KPI tile; no delta ⇒ not a Stat card) and it gives the bare-number case a real destination instead of leaving it homeless. Ant's Statistic shows the alternative design and it is looser than ours by a long way.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D36": {
+      "source_row": "R-A-14",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a slider legal in a form at all?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:26:29.950Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "slider",
+        "range-slider"
+      ],
+      "quotes": {
+        "GOV.UK": "Avoid using range slider questions, where the user needs to click and drag",
+        "Fluent 2": "Use a slider for imprecise values.",
+        "Atlassian": "Don't use a range if choosing a specific value is important.",
+        "IBM Carbon": "Do not use for extremely large ranges, for example, 1-1000.",
+        "Material 3": "Changes made with sliders must take effect immediately",
+        "Adobe Spectrum": "used when the upper and lower bounds to the range are invariable.",
+        "NN/g": "Sliders or knobs are continuous controls.",
+        "Apple HIG": "Consider supplementing a slider with a corresponding text field and stepper.",
+        "USWDS": "no slider component",
+        "OURS": "slider.meta antiPatterns[2] (REVIEW, inferred): 'using a slider where precise numeric entry is required (pair with an input)'"
+      },
+      "why_contested": "GOV.UK rejects the interaction outright on accessibility grounds (WCAG 2.5.1 pointer gestures) and ships no slider. Six systems ship one with conditions. M3 adds a condition none of the others do: the change must take effect immediately — which would make a slider inside a submitted form illegal.",
+      "options": [
+        "Slider is legal in filters and settings only, never inside a submitted form (M3's immediacy test, and it sidesteps most of GOV.UK's objection since filters re-apply live).",
+        "Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).",
+        "Slider is removed from the input role and kept only as a display/filter control.",
+        "Slider stands as built; record the GOV.UK divergence."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1 plus the pairing from option 2 wherever a value is committed. The immediacy test is the same test that separates Switch from Checkbox in s270 — one predicate, two families, which is worth more than a slider-specific rule.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D37": {
+      "source_row": "R-A-11",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "For a date the user already knows (date of birth, card expiry): calendar picker or three plain text boxes?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:28:33.195Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "date-picker",
+        "calendar",
+        "input-fields"
+      ],
+      "quotes": {
+        "GOV.UK": "a date they'll already know, or can look up without using a calendar",
+        "GOV.UK (dates pattern)": "Only use a calendar control if users need to: pick a date",
+        "Shopify Polaris": "always give users the option to enter the date using a text field component",
+        "USWDS": "Always allow a user to type in the date manually",
+        "Atlassian": "For most situations, use the date picker or date time picker components",
+        "Material 3": "Text field drop-downs on medium and expanded breakpoints like tablet and desktop",
+        "IBM Carbon": "silent on the choice (size guidance only)",
+        "OURS": "date-picker.meta: a boxed field with free typing PLUS a panel from the tail button; calendar.meta antiPatterns[0] draws the read-vs-pick line"
+      },
+      "why_contested": "GOV.UK restricts the calendar control to near/relational dates and uses three text boxes for everything else. Four other systems treat the calendar panel as the default with typing as a fallback. A date of birth gets two different components depending on which system you follow.",
+      "options": [
+        "Date-picker everywhere, typing always available (our current build; matches Atlassian, M3, Carbon, Ant).",
+        "Split by date class: memorable/known dates (DOB, card expiry) get plain fields; chosen dates (payment date, appointment) get Date-picker. This is GOV.UK's rule and it is checkable from the field's semantics.",
+        "Date-picker everywhere, but the panel does not open for known-date fields."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. It is the only one backed by named research, it costs us nothing we have built (the typed field already exists and already validates on blur), and 'is this date one the user knows' is a question the form author can always answer.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D38": {
+      "source_row": "R-A-12",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a clickable multi-step progress indicator legal at all?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:30:51.427Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "stepper",
+        "progress-tracker"
+      ],
+      "quotes": {
+        "GOV.UK": "Do not use progress indicators that do all of the following:",
+        "USWDS": "has fewer than three sections, don't use a step indicator.",
+        "Atlassian": "Use a progress tracker for more detailed journeys spanning multiple screens.",
+        "IBM Carbon": "When a process or form has fewer than three steps.",
+        "Ant Design": "we can decompose it into several steps to make things easier.",
+        "OURS": "stepper.meta: 'back-navigation on completed dots' plus 'Clickable FUTURE steps' as antiPatterns[0]"
+      },
+      "why_contested": "GOV.UK forbids the exact COMBINATION our Stepper implements — all steps shown, previous steps navigable, current step marked — and cites a service that removed a 12-step tracker with no effect on completion. Four other systems ship that combination happily.",
+      "options": [
+        "Stepper stands as built; record the divergence from GOV.UK in the meta.",
+        "Stepper drops back-navigation on completed dots, leaving a Back button as the only route — which lands us outside GOV.UK's prohibition.",
+        "Stepper stands, but only above N steps (GOV.UK's objection is loudest for long forms; USWDS, Carbon and Atlassian all put the floor at 3)."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3 with the floor at 3. The floor is unanimous among the three systems that name one, and it neutralises most of GOV.UK's objection without removing a feature we have already built and tested.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "4 of 12",
+          "longest_common_run": "is not"
+        }
+      }
+    },
+    "s272-D39": {
+      "source_row": "R-A-13",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "What is the maximum number of steps in a flow?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:33:25.498Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "stepper",
+        "progress-tracker"
+      ],
+      "quotes": {
+        "Atlassian (progress-tracker)": "If a task needs more than six steps, consider simplifying the process",
+        "Atlassian (progress-indicator)": "Use a maximum of seven steps in your journey so that people aren't overwhelmed.",
+        "Fluent 2": "Drawers allow for multi-step tasks, but should be kept to two to three steps.",
+        "USWDS": "silent on a maximum",
+        "IBM Carbon": "silent on a maximum",
+        "GOV.UK": "cites a 12-step tracker removed with no effect on completion rates or times",
+        "OURS": "silent"
+      },
+      "why_contested": "The same system gives two different ceilings on two pages. Fluent gives a third, much lower one, but only for a drawer. Most systems give none.",
+      "options": [
+        "No ceiling — the number of steps is the journey's business, not the component's.",
+        "Six (Atlassian's progress-tracker page — the stricter of its two).",
+        "No ceiling on the flow, but a ceiling of 3 on a flow inside a DRAWER or MODAL (Fluent's actual point)."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. The evidence for a general ceiling is one system contradicting itself; the evidence for a ceiling inside a constrained surface is specific and matches what our own Modals/Drawer metas already worry about.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "6 of 25",
+          "longest_common_run": "if we"
+        }
+      }
+    },
+    "s272-D40": {
+      "source_row": "R-A-15",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "What range is too small or too large for a slider?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:37:05.833Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "slider",
+        "range-slider"
+      ],
+      "quotes": {
+        "IBM Carbon": "Do not use for extremely large ranges, for example, 1-1000.",
+        "IBM Carbon (2)": "Do not use ranges that are too small, for example, 1-3.",
+        "Atlassian": "Don't use for ranges that are very small (for example, 1-3).",
+        "Atlassian (2)": "Don't use for ranges that are extremely large.",
+        "Material 3": "silent on bounds",
+        "Adobe Spectrum": "silent on numeric bounds",
+        "OURS": "silent"
+      },
+      "why_contested": "Two systems agree exactly on the lower bound (1-3) and both hedge the upper one — Carbon offers 1-1000 as an EXAMPLE, not a rule; Atlassian gives no number at all.",
+      "options": [
+        "Adopt the lower bound only: under ~5 discrete steps use selection-controls instead. Leave the upper bound to judgement.",
+        "Adopt both, with 1-1000 as the stated upper example.",
+        "Carry no bounds and rely on the imprecision test alone (R-A-14)."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. The lower bound is the only genuinely agreed number in this row, and it hands the excluded cases straight to a component we already have.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D41": {
+      "source_row": "R-A-16",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "One file per input, or a staged list of files against one dropzone?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:35:02.187Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "file-upload"
+      ],
+      "quotes": {
+        "USWDS": "Prefer one file per input.",
+        "IBM Carbon": "Do not use upload in a modal when multiple files are uploaded",
+        "Ant Design": "When you need to upload files by dragging and dropping.",
+        "GOV.UK": "You should only ask users to upload something if it's critical to the delivery",
+        "Shopify Polaris": "Provide feedback once the file(s) have been dropped and uploading begins.",
+        "OURS": "file-upload.meta: 'a dashed dropzone … staging files into rows with per-file determinate progress'"
+      },
+      "why_contested": "USWDS states a preference our component structurally cannot honour — we stage a list. Carbon fences multi-file upload out of modals. Nobody else takes a position.",
+      "options": [
+        "Multi-file staging stays the default; record the USWDS divergence.",
+        "One file per input is the default, with a declared multi-file variant for evidence journeys (dispute evidence, mortgage documents) where a list is genuinely the job.",
+        "Multi-file staging stays, plus Carbon's fence: file-upload never appears inside a Modal."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. USWDS's preference is about error clarity, which our per-file error rows already solve; Carbon's fence names a real failure (a growing list inside a fixed-height dialog) that our Modals meta does not currently forbid.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D42": {
+      "source_row": "R-A-17",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Do we carry a file-size cap, and what is it?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:36:10.604Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "file-upload"
+      ],
+      "quotes": {
+        "Shopify Polaris": "File size must be less than 20MB",
+        "GOV.UK": "silent on a number",
+        "USWDS": "silent on a number",
+        "IBM Carbon": "silent on a number",
+        "Ant Design": "silent on a number",
+        "OURS": "silent — antiPatterns[2] requires a visible error for an oversize file but names no size"
+      },
+      "why_contested": "Exactly one system in eleven gives a number. Our meta requires the oversize ERROR without defining oversize, which means the rule cannot be tested.",
+      "options": [
+        "Carry no number; the cap is the consuming service's and must be stated in the field's help text.",
+        "Adopt a library default (Polaris's 20MB) that a service may lower.",
+        "Carry no number but GATE the presence of a stated limit in the help text — the rule becomes 'a limit must be visible', not 'the limit is N'."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. A number picked from one system would be arbitrary; 'the limit must be visible before the user picks a file' is the part that actually prevents the failure our antiPattern describes.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D43": {
+      "source_row": "R-A-18",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a segmented per-digit OTP field right, or should the code be one field?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:38:27.973Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "secure-entry",
+        "input-fields"
+      ],
+      "quotes": {
+        "USWDS": "Avoid breaking numbers with distinct sections into separate input fields.",
+        "Apple HIG": "Use secure text fields to hide private data.",
+        "GOV.UK": "no segmented-code component (its password-input is a single field with a reveal)",
+        "IBM Carbon": "no segmented-code component",
+        "Material 3": "no segmented-code component",
+        "Adobe Spectrum": "no segmented-code component",
+        "OURS": "secure-entry.meta: 'per-digit cells with auto-advance, backspace step-back, whole-code paste, verify-on-fill'"
+      },
+      "why_contested": "One system states a principle that directly contradicts the component's form; ten ship nothing comparable. It is one-against-silence, not one-against-many — but the one is a government accessibility authority and the objection is specific.",
+      "options": [
+        "Secure-entry stands; record the USWDS divergence and lean on our own per-digit announcement and paste support as the mitigations.",
+        "Secure-entry becomes one field with a format hint, keeping paste and verify-on-fill and losing the cells.",
+        "Secure-entry stands for OTP (where paste is the happy path and the code is machine-generated) and is forbidden for anything the user recalls from memory."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. USWDS's objection is about splitting a number the USER KNOWS across boxes; an SMS code is pasted, not recalled. The distinction is real, checkable, and it keeps the component we have built.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D44": {
+      "source_row": "R-A-21",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "One question per page, or grouped multi-field forms?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:43:16.034Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "form-layout",
+        "stepper",
+        "template-create-edit"
+      ],
+      "quotes": {
+        "GOV.UK": "Asking just one question per question page helps users understand what you're asking",
+        "NN/g": "Users now see a 3-part form with 4-6 fields.",
+        "NN/g (2)": "Group together related fields.",
+        "IBM Carbon": "If a form has more than one column, then the columns should be proportional and",
+        "Fluent 2": "By default, field labels are top-aligned above the form component.",
+        "Atlassian": "silent on density",
+        "OURS": "form-layout.meta: 'proximity-grouped field pairs' — i.e. multi-field by design"
+      },
+      "why_contested": "GOV.UK's one-thing-per-page is a whole service-design posture, not a component rule; NN/g and Carbon assume grouped multi-field forms. Our Form-layout is built for the latter and our Stepper exists to split long ones.",
+      "options": [
+        "Multi-field grouped forms stay the default; one-thing-per-page is available via Stepper for high-stakes journeys (payments, onboarding).",
+        "One question per page becomes the default for any journey that moves money.",
+        "No rule — leave density to the journey."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. It describes what we have already built, and it gives the GOV.UK posture a named home (Stepper) rather than leaving it as an unattributed contradiction in the docs.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D45": {
+      "source_row": "R-A-27",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Does the predictive-search dropdown belong to Search-field or to Combobox?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:46:02.879Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "search-field",
+        "combobox",
+        "command-palette"
+      ],
+      "quotes": {
+        "USWDS": "Use a combo box when there are more than 15 choices",
+        "Material 3": "Use a search icon button when search is a secondary action",
+        "IBM Carbon": "Do not use when there is small or limited amounts of data.",
+        "Adobe Spectrum": "silent on the overlap (search-field and combo-box are separate pages with no cross-reference)",
+        "Atlassian": "silent on the overlap",
+        "OURS": "search-field.meta claims 'an optional predictive-search (autocomplete) dropdown'; combobox.meta claims 'A text input that filters a list of options as the user types, and commits one of them'"
+      },
+      "why_contested": "NOT AN EXTERNAL DISAGREEMENT — an internal one. Two of our metas describe a text field over a filtered list, with the same ARIA contract, under two names. No external system resolves it because none ships both with overlapping scope.",
+      "options": [
+        "Split by COMMIT: combobox commits a value into a form; search-field hands a query to a result set and commits nothing. The predictive dropdown moves to combobox.",
+        "Split by TARGET: search-field searches CONTENT, combobox selects a VALUE — same outcome, different words.",
+        "Merge: one component with a commit-or-query mode."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. 'Does a value land in the form' is machine-checkable; 'is it content or a value' is not. This also keeps Command-palette clean, since it commits a command rather than a value.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D46": {
+      "source_row": "B-23",
+      "role": "input",
+      "slice": "B",
+      "family": "R",
+      "label": "What does a SUPERSEDED component's `when` say?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T19:46:45.463Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "ours (filter-toolbar-bar AP1)": "Consuming View-options instead of Segmented-control for the view switch — View-options was superseded 2026-07-24",
+        "ours (view-options meta)": "reads as a live recommendation: \"A view control that lets users select different presentation formats\"",
+        "external": "not applicable"
+      },
+      "why_contested": null,
+      "options": [
+        "Give it a `when` that says \"never — use Segmented-control\".",
+        "Remove it from the library.",
+        "Leave it and rely on filter-toolbar-bar's antiPattern to catch misuse."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. Option 3 is the status quo and it failed once already — the supersession is recorded on a DIFFERENT component's antiPattern, where nobody choosing a view switch would look.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D47": {
+      "source_row": "N-date-range-picker",
+      "role": "input",
+      "slice": "A",
+      "family": "N",
+      "label": "date-range-picker",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:12:15.369Z",
+      "note_absent": false,
+      "guess_source": true,
+      "components": [
+        "date-range-picker"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta date-range-picker.purpose + antiPatterns[0,1]",
+          "Carbon date-picker (range variant)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the answer is TWO dates that bound one period AND both endpoints share ONE calendar panel AND an out-of-order pair errors rather than silently swapping",
+      "when_prose": "beats two Date-pickers side by side (our own antiPatterns[0]: \"Two independent single-date pickers with no shared panel or cross-field check\") because order errors otherwise surface too late; beats date-picker whenever the question is a statement period, a transaction search window or a custom reporting window; yields to date-picker whenever only one date is asked for.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "14 of 40",
+          "longest_common_run": "but i think"
+        }
+      }
+    },
+    "s272-D48": {
+      "source_row": "N-tags-input",
+      "role": "input",
+      "slice": "A",
+      "family": "N",
+      "label": "tags-input",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:15:40.386Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "tags-input"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta tags-input.purpose + antiPatterns[0..4]",
+          "Carbon tag (overflow at five lines)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the committed values are the USER'S OWN words AND no option list can be offered AND each value becomes a removable Tags chip AND a half-typed value is committed on blur, never discarded",
+      "when_prose": "beats combobox (#270: \"options >= 16, closed list\") and multi-select (#270: \"the answer is a set\") on the single test our meta already states — is there a list at all; where a list exists the answer belongs to one of those two, and where it does not, only this component is honest (it explicitly does not claim role=combobox without a list, our antiPatterns[3]); the chip itself is the gated Tags atom, so any chip change lands in Tags first.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D49": {
+      "source_row": "N-secure-entry",
+      "role": "input",
+      "slice": "A",
+      "family": "N",
+      "label": "secure-entry",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T07:43:28.089Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "secure-entry"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta secure-entry.purpose + antiPatterns[0..4]",
+          "Apple HIG text-fields",
+          "GOV.UK password-input"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the value is a one-time code or PIN of known length AND each digit has its own cell AND whole-code paste is accepted AND the result of verify-on-fill reaches a live region",
+      "when_prose": "beats input-fields (proposed \"free text, one line\") for OTP and PIN only, because the per-digit cells buy per-digit announcement and the resend countdown belongs to the same contract; never blocks paste, which is the OTP happy path (our antiPatterns[1]); yields to input-fields for a password, which is a secure field but not a segmented one (Apple HIG: \"Use secure text fields to hide private data\").",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D50": {
+      "source_row": "N-account-selector",
+      "role": "input",
+      "slice": "C",
+      "family": "N",
+      "label": "account-selector",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:28:36.141Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "account-selector"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/account-selector.meta.json — purpose + relationships.mustNotNeighbour"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "role = input AND options = accounts (name + masked number + balance) AND the payment flow needs a from or a to",
+      "when_prose": "beats dropdown (#270 proposed: \"6–15 options and the column cannot spare the height\") because the option rows are RICH and a raw select for the same choice is on our mustNotNeighbour list; the compact chip form is the CHOSEN state inline, not a second control.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D51": {
+      "source_row": "R-A-19",
+      "role": "overlay",
+      "slice": "A",
+      "family": "R",
+      "label": "May a tooltip contain interactive content?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:53:48.619Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "tooltip",
+        "popover"
+      ],
+      "quotes": {
+        "Material 3": "Rich tooltips can have up to two text buttons.",
+        "IBM Carbon": "Do not use interactive elements within a tooltip.",
+        "Shopify Polaris": "Not contain any links or buttons.",
+        "Fluent 2": "Tooltips should be used to provide helpful but non-essential, plaintext information.",
+        "Atlassian": "Don't put critical task information in a tooltip",
+        "NN/g": "Don't use tooltips for information that is vital to task completion.",
+        "USWDS": "Don't use a tooltip if you need a lot of text.",
+        "OURS": "tooltip.meta antiPatterns[1]: 'Putting essential information or interactive elements only inside a tooltip'"
+      },
+      "why_contested": "Ten sources say no; M3 says yes and calls it a rich tooltip. M3 has effectively merged tooltip and popover — a merge we have explicitly rejected by shipping both.",
+      "options": [
+        "No interactive content in a tooltip, full stop. M3's rich tooltip maps onto our Popover.",
+        "Follow M3 and allow up to two text buttons, collapsing Popover into Tooltip."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1, and it is nearly free — our own popover.meta already states the three-way rule that makes M3's rich tooltip a Popover in our vocabulary. This row exists only so the M3 divergence is recorded rather than discovered later.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D52": {
+      "source_row": "R-A-24",
+      "role": "overlay",
+      "slice": "A",
+      "family": "R",
+      "label": "Are Drawer and Modals' 'Partial modal' the same component — and does Drawer survive?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:54:39.254Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "drawer",
+        "modals",
+        "modal-lightbox"
+      ],
+      "quotes": {
+        "Atlassian": "We are planning on deprecating Drawer. Please use Modal instead.",
+        "Fluent 2": "Use drawers for supplemental info",
+        "Material 3": "Modal side sheets are preferred in compact breakpoints, like mobile",
+        "Apple HIG": "Display only one sheet at a time from the main interface.",
+        "Ant Design": "When subtasks are too heavy for a Popover",
+        "IBM Carbon": "silent on drawer (no such component)",
+        "OURS": "drawer.meta: a page-edge side sheet; modals.meta ALSO describes 'Partial modal / Drawer (app-only, anchored to the bottom of the screen)'"
+      },
+      "why_contested": "This is a defect before it is a disagreement: two of our own metas describe the same surface under two names. Externally, one system is removing the component entirely while three defend it, and M3 makes its modality depend on breakpoint where ours does not.",
+      "options": [
+        "One Drawer component with an edge parameter (left/right/bottom); Modals' partial-modal text is removed and points at it.",
+        "Two components: Drawer (side, desktop) and Partial modal (bottom, mobile) — with a stated reason why they are not one thing.",
+        "Fold Drawer into Modals as a placement variant (Atlassian's direction)."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1. The mechanics our two metas describe are identical — scrim, trap, inert, Esc, focus return — and the only difference is which edge it docks to. That is a parameter, not a component.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D53": {
+      "source_row": "R-A-28",
+      "role": "overlay",
+      "slice": "A",
+      "family": "R",
+      "label": "At what size does a popover become a drawer or a modal?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T20:54:53.680Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "popover",
+        "drawer",
+        "modals",
+        "popconfirm"
+      ],
+      "quotes": {
+        "IBM Carbon": "If your popover exceeds four columns in width, use a modal instead.",
+        "Atlassian": "Don't make popups that scroll.",
+        "Fluent 2": "Content in popovers should never be essential for someone to complete a task.",
+        "Shopify Polaris": "Be used for secondary or less important information and actions since they're hidden",
+        "Apple HIG": "Show one popover at a time.",
+        "Material 3": "silent on a size cut",
+        "OURS": "popover.meta antiPatterns[2]: 'Popover content that scrolls (too much content — use a Drawer or Modal)'"
+      },
+      "why_contested": "The KIND is agreed — a popover has an upper size limit — but only Carbon gives a measurable one. Ours and Atlassian's use scrolling as a proxy, which is a consequence rather than a threshold.",
+      "options": [
+        "Keep the scroll test (ours + Atlassian). Simple, but it can only be checked at runtime.",
+        "Adopt Carbon's four-column cut, translated into our grid.",
+        "Both: the scroll test as the rule, the column cut as the design-time guide."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. The scroll test catches the real failure; the column figure is what a designer can actually use before the content exists.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D54": {
+      "source_row": "N-modal-lightbox",
+      "role": "overlay",
+      "slice": "A",
+      "family": "N",
+      "label": "modal-lightbox",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:20:34.571Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "modal-lightbox"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta modal-lightbox.purpose + antiPatterns[2,4]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the overlay SHOWS a thing rather than asking a question AND every item carries a caption AND previous/next disable at the ends rather than wrapping AND no other modal surface is open",
+      "when_prose": "beats modals (proposed \"a decision must be made\") on the show-vs-ask test our own meta states: \"A lightbox for a yes/no decision (that is the Modals dialog)\"; beats drawer because a statement page or cheque image wants the whole stage, not an edge; yields to modals the instant a question is asked over the media.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D55": {
+      "source_row": "N-command-palette",
+      "role": "overlay",
+      "slice": "A",
+      "family": "N",
+      "label": "command-palette",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:21:11.872Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "command-palette"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta command-palette.purpose + antiPatterns[0,3,4,5]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the application has more destinations and actions than any menu can hold AND it is opened by an agreed keyboard chord AND the query field keeps focus (aria-activedescendant) AND a no-match state says so in a live region AND a static affordance exists",
+      "when_prose": "beats navigations and sidebar-nav for power users only, because it is a search over the whole app rather than a structure; is a combobox over a listbox, never role=menu (our antiPatterns[4] — that is Dropdown) and never role=tablist; yields to search-field when the target is content rather than commands, and to navigations for everyone who is not hunting.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D56": {
+      "source_row": "R14",
+      "role": "page-frame",
+      "slice": "C",
+      "family": "R",
+      "label": "Does app-shell-split (and Splitter) carry a viewport condition?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:28:17.521Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "app-shell-split",
+        "splitter",
+        "layout-utilities"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "silent",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "Prefer using a split view in a regular — not a compact — environment.",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Add \"viewport = regular\" to the FRAME's when only.",
+        "Add it to both the frame and the Splitter control.",
+        "Leave both viewport-agnostic and handle it in the responsive rules instead."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D57": {
+      "source_row": "R5",
+      "role": "page-frame",
+      "slice": "C",
+      "family": "R",
+      "label": "Does the navigation rail carry a destination count?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:30:25.591Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "app-shell-nav-rail"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "silent",
+        "Material 3": "They can contain 3-7 destinations plus an optional FAB.",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt 3–7 with M3.",
+        "Carry no count; the rail's rule stays a width rule.",
+        "Adopt an upper bound only (<= 7), matching our top-nav's 7."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "gm-archive:batch-2026-08-21-212",
+          "file": "_GM-ARCHIVE.md",
+          "line": 1307,
+          "shared_bigrams": "8 of 17",
+          "longest_common_run": "but we need to follow up"
+        }
+      }
+    },
+    "s272-D58": {
+      "source_row": "R7",
+      "role": "page-frame",
+      "slice": "C",
+      "family": "R",
+      "label": "What triggers a mega-footer (doormat) instead of the plain footer?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:30:56.190Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "footer-doormat-lockup",
+        "footer",
+        "app-shell-doormat"
+      ],
+      "quotes": {
+        "GOV.UK": "Use the footer at the bottom of every page of your service.",
+        "USWDS": "Use the big footer when your footer has more than five links.",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "Be positioned at the bottom of the interface",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt \">5 links\" as the doormat trigger and keep our no-duplication antiPattern.",
+        "Adopt \">5 links\" AND allow the mat to repeat the masthead (USWDS's other line) — this would REVERSE our antiPattern[0].",
+        "Carry no count; the doormat is chosen by SURFACE (marketing/public) alone."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D59": {
+      "source_row": "R13",
+      "role": "page-title",
+      "slice": "C",
+      "family": "R",
+      "label": "Is the Hero restricted to unauthenticated marketing surfaces?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:32:21.761Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "hero",
+        "hero-variants",
+        "page-header-lockup",
+        "headers"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "Don't try to include forms or side navigation.",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Rule Hero legal only where authenticated = false, and add USWDS's no-forms / no-side-nav restraint.",
+        "Rule Hero legal on authenticated overview pages too (some banks do this), with the restraint dropped.",
+        "Rule Hero out of the page-title role entirely and give it its own marketing role."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D60": {
+      "source_row": "N-section-heading-lockup",
+      "role": "page-title",
+      "slice": "C",
+      "family": "N",
+      "label": "section-heading-lockup",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:27:37.051Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "section-heading-lockup"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/roles.json — page-title",
+          "knowledge/components/section-heading-lockup.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "level = section AND scope = one board / table / panel AND h1 = absent (h2 or lower)",
+      "when_prose": "beats page-header-lockup (roles.json when: \"page level, with actions or tabs\") on LEVEL alone — it is repeatable and the page-level one is not; beats a bare eyebrow (when: \"a kicker alone is enough\") whenever the section needs a real heading and not just a kicker.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D61": {
+      "source_row": "N-eyebrow",
+      "role": "page-title",
+      "slice": "C",
+      "family": "N",
+      "label": "eyebrow",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:27:49.600Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "eyebrow"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/roles.json — page-title"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "level = kicker AND it stands ALONE (not inside page-header-lockup or section-heading-lockup) AND words <= 3",
+      "when_prose": "the rare case; roles.json already calls it \"a kicker alone is enough (rare; normally a part of the above)\" — so the gate's real work is to make the standalone use the exception and composition the default.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D62": {
+      "source_row": "B-21",
+      "role": "record-list",
+      "slice": "B",
+      "family": "R",
+      "label": "How tightly is Tree fenced?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:04:04.581Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "IBM Carbon": "As the primary navigation in a product’s UI.",
+        "Ant Design": "Almost anything can be represented in a tree structure.",
+        "roles.json (ours)": "\"records nest\" — no depth floor, no navigation exclusion",
+        "GOV.UK / USWDS": "silent — neither ships a tree"
+      },
+      "why_contested": null,
+      "options": [
+        "Import both Carbon exclusions as antiPatterns (single level ⇒ list-items; never primary nav ⇒ sidebar-nav).",
+        "Import the single-level exclusion only.",
+        "Keep roles.json as is; the exclusions are prose."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. Both exclusions point at components we already have (list-items, sidebar-nav), which is exactly the shape our other antiPatterns take, and \"records nest\" alone would let a two-item flat list become a tree.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D63": {
+      "source_row": "B-03",
+      "role": "status-surface",
+      "slice": "B",
+      "family": "R",
+      "label": "Is a Tag a KEYWORD or a STATUS?",
+      "decision": "option",
+      "option_index": 1,
+      "chosen_option": "Confirm our split (keyword vs state) and note that GOV.UK/Polaris quotes about \"tags\" must be read onto our Status-indicator, never onto our Tags.",
+      "decided_at": "2026-09-14T21:19:39.596Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "IBM Carbon": "Use tags to label, categorize, or organize items using keywords that describe",
+        "Ant Design": "It can be used to tag by dimension or property.",
+        "GOV.UK": "Use the Tag component to show users the status of something.",
+        "Polaris": "Use a single word to describe the tone of an object.",
+        "Adobe Spectrum": "Badges are used for showing a small amount of color-categorized metadata",
+        "USWDS": "one `tag` component does keyword, count AND new-content jobs",
+        "ours": "tags = keyword (\"content composition\"), status-indicator = state. Two components."
+      },
+      "why_contested": null,
+      "options": [
+        "Confirm our split (keyword vs state) and note that GOV.UK/Polaris quotes about \"tags\" must be read onto our Status-indicator, never onto our Tags.",
+        "Merge: one chip component with a semantic variant, as USWDS does.",
+        "Confirm the split AND rename one of them so no external prose can be mis-filed."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. Our split is the sharper of the two designs and Carbon + Ant back the keyword reading. But this must be WRITTEN DOWN, because four systems use the words differently and any future harvest will mis-file quotes without it.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D64": {
+      "source_row": "B-06",
+      "role": "status-surface",
+      "slice": "B",
+      "family": "R",
+      "label": "What separates a progress reading from an allowance reading inside the one Meter?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:20:40.184Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Adobe Spectrum": "Their progress is determined by user actions, rather than system actions.",
+        "IBM Carbon": "Use a determinate progress bar when the progress can be calculated",
+        "ours (s210-D1)": "\"keep as one meter\" — progress is a SEMANTIC VARIANT; no discriminator is written between the variants",
+        "GOV.UK / USWDS": "silent — neither ships a meter",
+        "Material 3 / Apple HIG": "unreachable"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt Spectrum's test verbatim as the variant discriminator: user-driven ⇒ meter/allowance, system-driven ⇒ progress.",
+        "Keep the allowance test we already have (full = BLOCKED, not done) and write it onto the variant explicitly.",
+        "Both: full=blocked is the allowance test, user-vs-system is the progress/allowance test, and they must agree."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. s210-D1 is ruled and this is not a re-open. But the variants currently have NO written discriminator, so a composer cannot pick one — and \"full means blocked\" is our own, domain-true, and testable. Spectrum's test is worth quoting as EXTERNAL support, not adopting as the rule.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D65": {
+      "source_row": "B-17",
+      "role": "status-surface",
+      "slice": "B",
+      "family": "R",
+      "label": "What IS Summary — a count board or a review receipt?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:21:02.459Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "roles.json (ours)": "\"n × count as a key/value list, 6–12 cols\" — a status-surface count board",
+        "our meta (ours)": "\"A key/value list for confirming details before or after an action (a payment review, a receipt)\"",
+        "GOV.UK": "Do not use it for tabular data or a simple list of information or tasks (summary-list)",
+        "Ant Design": "Commonly displayed on the details page. (Descriptions)"
+      },
+      "why_contested": null,
+      "options": [
+        "One component, two variants (counts and receipt), one `when` covering both.",
+        "Two components: the count board stays in status-surface, the receipt moves out of the role.",
+        "Keep one and rewrite roles.json's `when` to match the meta (receipt), losing the count board."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 1. The shape is identical (name left, value right, optional total) and only the reading differs; splitting would duplicate a spec. But the mismatch must be closed — right now the role and the meta describe different components.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D66": {
+      "source_row": "B-18",
+      "role": "status-surface",
+      "slice": "B",
+      "family": "R",
+      "label": "What are the copy rules for a status chip, and may ABSENCE of a chip mean a state?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:22:35.779Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Polaris": "Always describe the tone in the past tense.",
+        "GOV.UK": "Sometimes a single status is enough.",
+        "Adobe Spectrum": "When status lights have a semantic meaning, they should use semantic variant colors.",
+        "IBM Carbon": "silent on copy",
+        "ours": "NO COPY RULE for the label at all"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt both Polaris rules (single word, past tense) as copy guidance.",
+        "Adopt them AND GOV.UK's absence-as-state pattern (no chip = the default state).",
+        "Adopt the copy rules only; forbid absence-as-state as a colour-alone-style failure."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 3. Past-tense single words fit our RAG set exactly (approved · cancelled · declined · pending — three of four are already past tense). Absence-as-state is a real GOV.UK pattern but it hides the state from a screen reader, which is the same failure our AP0 already forbids.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D67": {
+      "source_row": "R10",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "Where does FILTERING one content set live — Tabs, Segmented-control, or the filter bar?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:34:50.970Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "tabs",
+        "segmented-control",
+        "filter-toolbar-bar"
+      ],
+      "quotes": {
+        "GOV.UK": "the first section is more relevant than the others for most users",
+        "USWDS": "silent",
+        "Material 3": "Use tabs to group content into helpful categories.",
+        "Carbon (IBM)": "When toggling between different formats of the same content or filtering the same content",
+        "Polaris (Shopify)": "Represent the same kind of content, such as a list-view with different filters",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "Radio.Button : for secondary tabs.",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Filters go to Segmented-control (Carbon): tabs only where the panels hold DIFFERENT content, never the same content re-filtered.",
+        "Filters go to Tabs (Polaris): tabs are the list-view switcher and Segmented-control is reserved for presentation (view, scale, period).",
+        "Filters go to filter-toolbar-bar whenever there are more than N filters, with Segmented-control for a single filter of <= 5 values.",
+        "Cut on PERSISTENCE: a filter that belongs to the record set is toolbar; one that belongs to the reader's current view is segmented; tabs never filter."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D68": {
+      "source_row": "R3",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "At what depth do breadcrumbs earn their place?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:35:41.623Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "breadcrumbs"
+      ],
+      "quotes": {
+        "GOV.UK": "Do not use the breadcrumbs component on websites with a flat structure",
+        "USWDS": "Omit breadcrumbs on the homepage of a site.",
+        "Material 3": "silent",
+        "Carbon (IBM)": "a hierarchy of more than two levels",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "When the system has more than two layers in a hierarchy.",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "Breadcrumbs augment but do not replace those main forms of navigation."
+      },
+      "why_contested": null,
+      "options": [
+        "Keep depth >= 2 — our number, already on the meta.",
+        "Move to depth >= 3, matching the only two systems that quantify it.",
+        "Carry no number: \"the site is not flat AND this is not the home page\", following GOV.UK and USWDS."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D69": {
+      "source_row": "B-01",
+      "role": "wayfinding",
+      "slice": "B",
+      "family": "R",
+      "label": "At what list length does a record-list get pagination?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:36:58.842Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Polaris": "Paginate when the current list contains more than 50 items.",
+        "IBM Carbon": "When there is too much data to display on one page",
+        "GOV.UK": "silent on any number",
+        "Ant Design": "When it will take a long time to load/render all items.",
+        "USWDS": "silent — the page carries no when-to-use section at all",
+        "NN/g": "silent on a number; argues against infinite scroll instead",
+        "ours": "no rule exists"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt Polaris's 50 as our number.",
+        "Carry no number: gate on \"more than one screen of rows\" (device-relative, testable in a fixture).",
+        "Carry no number and no gate — pagination stays a composer's judgement, prose only."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. 50 is one system's number with no research cited, and a 40-row table on a phone already needs pagination. This is the exact shape of s270-D1 — if Dave rules a number here he should rule it the same way (provisional, with a tripwire).",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D70": {
+      "source_row": "R12",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "When does a masthead flyout become a mega-menu?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:42:37.974Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "navigations",
+        "app-shell-top-nav"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "more than six links in any of your dropdown menus",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt 6 as the flyout ceiling.",
+        "Carry no ceiling.",
+        "Tie it to R1's fit test instead of a count."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D71": {
+      "source_row": "R2",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "How many levels of hierarchy may a persistent side navigation show?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:43:08.351Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "sidebar-nav",
+        "app-shell-side-nav",
+        "app-shell-multi-column",
+        "tabs"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "To display a navigational hierarchy with one to three levels.",
+        "Material 3": "silent",
+        "Carbon (IBM)": "The left panel does not support three tiers of navigation.",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "In general, show no more than two levels of hierarchy in a sidebar.",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Cap at 2 and route the third tier to app-shell-multi-column (Apple's escape hatch).",
+        "Cap at 2 and route the third tier to in-page Tabs (Carbon's escape hatch) — but this collides with R11.",
+        "Allow 3 with USWDS and carry no escape hatch."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D72": {
+      "source_row": "R4",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "May breadcrumbs and a persistent side navigation appear on the same page?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:43:45.096Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "breadcrumbs",
+        "sidebar-nav",
+        "app-shell-side-nav",
+        "app-shell-top-nav"
+      ],
+      "quotes": {
+        "GOV.UK": "consider whether your users need the additional support of breadcrumbs",
+        "USWDS": "When side navigation is used in combination with main navigation, it may be redundant",
+        "Material 3": "silent",
+        "Carbon (IBM)": "should never entirely replace the primary navigation",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "silent",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "Breadcrumbs augment but do not replace those main forms of navigation."
+      },
+      "why_contested": null,
+      "options": [
+        "Rule the pair legal (NN/g / Carbon position) and say nothing more.",
+        "Rule the pair a REVIEWABLE exception: legal only where the side-nav shows one level and the content is deeper than it.",
+        "Rule the pair illegal — breadcrumbs only in app-shell-top-nav and app-shell-doormat."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D73": {
+      "source_row": "R8",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "What makes a Back-to-top control appear?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:44:11.424Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "back-to-top"
+      ],
+      "quotes": {
+        "GOV.UK": "silent",
+        "USWDS": "silent",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "For global functionality on the site.",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "Use a Back to Top button for pages that are longer than 4 screens"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt NN/g wholesale: appears past 4 viewport-heights, one per page, bottom-end, labelled.",
+        "Adopt the threshold only and leave placement to the component.",
+        "Rule the threshold an implementation detail and keep the when as a role statement."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D74": {
+      "source_row": "R9",
+      "role": "wayfinding",
+      "slice": "C",
+      "family": "R",
+      "label": "",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-14T21:44:39.115Z",
+      "note_absent": true,
+      "guess_source": false,
+      "components": [
+        "anchor-nav",
+        "template-settings"
+      ],
+      "quotes": {
+        "GOV.UK": "a list of links at the start of the page (known as 'anchor links')",
+        "USWDS": "pages that include three or more distinct content sections",
+        "Material 3": "silent",
+        "Carbon (IBM)": "silent",
+        "Polaris (Shopify)": "silent",
+        "Spectrum (Adobe)": "silent",
+        "Atlassian": "silent",
+        "Ant Design": "For displaying anchor hyperlinks on page and jumping between them.",
+        "Fluent 2": "silent",
+        "Apple HIG": "silent",
+        "NN/g": "silent"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt USWDS's OR-test verbatim: sections >= 3 OR length >= 3 viewport-heights.",
+        "Adopt the section count only (>= 3) — viewport heights depend on the reader's window.",
+        "Keep \"long\" unquantified and let review judge it."
+      ],
+      "lane_recommendation": null,
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D75": {
+      "source_row": "N-account-card",
+      "role": "—",
+      "slice": "B",
+      "family": "N",
+      "label": "account-card",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:23:16.119Z",
+      "note_absent": false,
+      "guess_source": true,
+      "components": [
+        "account-card"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta account-card.purpose",
+          "OUR meta payment-card-visual.antiPatterns[1]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "records = 1 AND the record IS an account (label · masked number · balance) AND the reading is passive AND an optional type tag + RAG chip may be present",
+      "when_prose": "the single-account readout; beats stat-card (roles.json when: \"default — label · value · delta · period, no series\") because the number is a BALANCE belonging to a named account rather than a metric with a delta; beats payment-card-visual (our AP1: \"a payment-card visual with a balance is an Account-card wearing a card shape\") whenever money is on the face; yields to account-selector (#270 proposal) once the card becomes a choice.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "17 of 46",
+          "longest_common_run": "but i want"
+        }
+      }
+    },
+    "s272-D76": {
+      "source_row": "N-filter-toolbar-bar",
+      "role": "—",
+      "slice": "B",
+      "family": "N",
+      "label": "filter-toolbar-bar",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:24:49.556Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "filter-toolbar-bar"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta filter-toolbar-bar.purpose + antiPatterns[0,1,2,3]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "a record-list or chart-panel is present AND >= 2 of {search, filter, date-range, view-switch, result-count, applied-filter chips, export} are needed AND every control is an existing gated atom",
+      "when_prose": "the bar that DRIVES a list; beats scattering the same controls above a table because it fixes the composition order and the applied-filter chip row; composes only — it re-draws no atom (our AP0, the #202 defect), consumes Segmented-control not View-options for the view switch (our AP1), and hands \"Custom range…\" to date-range-picker rather than copying its calendar (our AP2).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D77": {
+      "source_row": "N-avatar-group",
+      "role": "—",
+      "slice": "B",
+      "family": "N",
+      "label": "avatar-group",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:26:01.554Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "avatar-group"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta avatar-group.purpose + antiPatterns[0,1,2]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "people >= 2 AND the unit of meaning is the GROUP AND an overflow counter appears past the display cap AND no 32px disc is interactive",
+      "when_prose": "our meta's own claim: the unit of meaning is the GROUP (\"five people are on this approval\"), not the individuals; beats a row of Avatars because the count is the reading and the stack must not be announced disc-by-disc (our AP1); the '+3' is never the only place the count exists (our AP2).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D78": {
+      "source_row": "N-payment-card-visual",
+      "role": "—",
+      "slice": "B",
+      "family": "N",
+      "label": "payment-card-visual",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:26:51.313Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "payment-card-visual"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta payment-card-visual.purpose + antiPatterns[0,1,2]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the subject is a PHYSICAL payment instrument AND the reading is 'which card is this and can I use it' AND NO balance is shown AND the PAN is masked by default",
+      "when_prose": "beats account-card exactly when there is no balance — our own AP1 draws the line: \"a payment-card visual with a balance is an Account-card wearing a card shape\"; carries no network mark, issuer logotype or EMV chip artwork (our AP0, licensed outside this system).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D79": {
+      "source_row": "N-qr-code",
+      "role": "—",
+      "slice": "B",
+      "family": "N",
+      "label": "qr-code",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:26:22.059Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "qr-code"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta qr-code.purpose + antiPatterns[0,1,2]"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "a string must cross to a second device AND the same content is repeated as text AND the matrix is a REAL encoding AND the quiet zone is inside the artwork AND the box scales with payload length",
+      "when_prose": "carries no sibling to beat — its `when` is a set of conditions on legitimacy, not a choice: a plausible-texture matrix is worse than no QR code (our AP0), a cropped quiet zone breaks the symbol (our AP1), and a fixed outer box shrinks modules below scannability as payloads grow (our AP2).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D80": {
+      "source_row": "N-card-header-lockup",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "card-header-lockup",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:28:24.816Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "card-header-lockup"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/card-header-lockup.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "container = cards AND the surface needs a title zone AND (inline ghost actions <= 2 OR overflow trigger = 1)",
+      "when_prose": "beats section-heading-lockup (roles.json when: \"section level, above one board / table / panel\") because this heading lives INSIDE a card surface rather than above one; the two-or-overflow rule is the only cardinality anywhere in the page-title role.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D81": {
+      "source_row": "N-hero-variants",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "hero-variants",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:29:47.393Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "hero-variants"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/hero-variants.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "hero = present AND variant in (baseline, media, stat-led, cta-led) AND every atom traces to Hero.reference.html or a gated atom",
+      "when_prose": "not a rival to hero — an arrangement OF it; the open question our own meta refuses to answer is whether these are four sub-variants of one Hero organism or four components, and no when can be written until that is ruled.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D82": {
+      "source_row": "N-image-block",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "image-block",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:30:22.076Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "image-block"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/image-block.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "media = still image AND semantics = figure/figcaption AND (caption OR attribution) AND ratio is on the 4px grid",
+      "when_prose": "beats a bare <img> inside layout-utilities (proposed \"content = arbitrary-blocks AND surface = none\") whenever the image needs a caption or an attribution line; beats cards (roles.json when: \"a bordered surface per item\") because it paints no surface of its own.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D83": {
+      "source_row": "N-video-player",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "video-player",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:30:05.267Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "video-player"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/video-player.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "media = video AND controls = in-page AND variant in (inline, hero) AND autoplay = false",
+      "when_prose": "beats image-block (proposed \"media = still image\") on media type alone; the hero variant yields to hero (proposed \"surface = marketing AND authenticated = false\") for the surrounding message — the player carries the media, never the headline.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D84": {
+      "source_row": "N-template-dashboard",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-dashboard",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:31:37.702Z",
+      "note_absent": false,
+      "guess_source": true,
+      "components": [
+        "template-dashboard"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-dashboard.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "question = 'how are things, and what needs me?' AND scope = SEVERAL records AND layout = kpi board + chart panel + recent-records grid",
+      "when_prose": "beats template-detail (proposed \"scope = ONE record\") on scope, and template-report (proposed \"claim about a PERIOD\") because a dashboard is about NOW and needs no provenance; composes app-shell-top-nav (roles.json when: \"default for dashboards\").",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "9 of 17",
+          "longest_common_run": "we need to"
+        }
+      }
+    },
+    "s272-D85": {
+      "source_row": "N-template-dashboard-bento",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-dashboard-bento",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:32:19.651Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-dashboard-bento"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-dashboard-bento.meta.json — purpose",
+          "s217-D2/D3"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "question = 'how are things, and what needs me?' AND layout.grammar = bento (tiles are themselves bentos, s217-D2/D3)",
+      "when_prose": "answers the SAME question as template-dashboard and differs only in layout grammar — so the when cannot be a job test, it has to be a grammar test.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D86": {
+      "source_row": "N-template-detail",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-detail",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:33:09.300Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-detail"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-detail.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "question = 'what is THIS, and what happened to it?' AND scope = ONE record AND the page carries identity + status + history",
+      "when_prose": "beats template-dashboard (proposed \"scope = SEVERAL records\") on record count; composes page-header-lockup with a Tabs strip — the arrangement three external systems call illegal (see R11).",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D87": {
+      "source_row": "N-template-list-index",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-list-index",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:33:30.250Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-list-index"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-list-index.meta.json — purpose",
+          "knowledge/roles.json — record-list (canon)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "question = 'which one?' AND body = a browsable record set AND exactly ONE filter/toolbar bar AND a pager",
+      "when_prose": "beats template-detail (proposed \"scope = ONE record\") because the reader has not chosen yet; the BODY choice (data-grid vs document-row list) defers entirely to slice B's table-vs-data-grid-vs-list-items rule and roles.json record-list whens.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D88": {
+      "source_row": "N-template-report",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-report",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:33:47.983Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-report"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-report.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "claim.scope = a PERIOD AND made at a stated MOMENT AND from a stated SOURCE AND every chart has an auditable table",
+      "when_prose": "beats template-dashboard (proposed \"question = how are things NOW\") on provenance: a report must be checkable and a dashboard need not be; the provenance header is the whole contribution.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D89": {
+      "source_row": "N-template-create-edit",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-create-edit",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:34:02.463Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-create-edit"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-create-edit.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "job in (create, edit) AND one record AND form column + guidance aside AND an action bar that stays reachable",
+      "when_prose": "beats template-wizard (proposed \"steps >= 2 AND order is enforced\") when the whole record fits one page with no enforced order; beats template-settings (proposed \"job = change how the account behaves\") because this creates or edits a RECORD, not a preference.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D90": {
+      "source_row": "N-template-empty",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-empty",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:34:12.315Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-empty"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-empty.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the query SUCCEEDED and returned nothing AND the page furniture that forms the recovery route stays visible AND a count line states the zero",
+      "when_prose": "beats template-error (proposed \"the page could not be produced\") because nothing failed; beats the Empty-state component (slice A) because only a PAGE knows the height to hold and which furniture must survive.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D91": {
+      "source_row": "N-template-settings",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-settings",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:34:33.311Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-settings"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-settings.meta.json — purpose"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "job = change how the account behaves for the user AND sections are grouped on card surfaces AND a save state is visible AND an action bar stays reachable",
+      "when_prose": "beats template-create-edit (proposed \"job in (create, edit)\") because settings change PREFERENCES not records; composes anchor-nav (roles.json when: \"in-page, long document\") in its rail — which makes it the in-house test case for R9's threshold.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D92": {
+      "source_row": "N-template-auth",
+      "role": "—",
+      "slice": "C",
+      "family": "N",
+      "label": "template-auth",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:34:48.629Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "template-auth"
+      ],
+      "quotes": {
+        "sources": [
+          "knowledge/components/template-auth.meta.json — purpose",
+          "USWDS authentication-pages (NO when block — see refused)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "authenticated = false AND job in (log on, register, one-time passcode) AND navigation = absent AND one narrow form column beside a quiet brand column",
+      "when_prose": "the unauthenticated entry; composes app-shell-focused (roles.json when: \"one job, no navigation (auth, wizard)\") and contributes only page-scale layout and brand placement.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    }
+  },
+  "unknown_export_ids": []
+}

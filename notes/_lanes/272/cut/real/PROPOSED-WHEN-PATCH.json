@@ -1,0 +1,159 @@
+{
+  "$description": "PROPOSED `when` additions for the UNANIMOUS rows Dave ratified. s253-D1 shape (GATE — PROSE, one string). NEVER APPLIED by this script.",
+  "$shape": "meta path -> {when, _source_row, _component, _confidence, _existing_when, ...}",
+  "$date": "2026-09-15",
+  "$session": 272,
+  "patch": {
+    "knowledge/components/input-fields.meta.json": {
+      "when": "entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed \"the answer may span multiple lines\") whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there \"is likely to result in an error\").",
+      "_source_row": "U-input-fields",
+      "_component": "input-fields",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/textarea.meta.json": {
+      "when": "entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists — beats input-fields (proposed \"the answer fits one line\") the moment a sentence is expected rather than a value — notes to approvers, a reason for payment, a secure message body; yields to input-fields for anything shorter (GOV.UK, verbatim: \"enter shorter answers no longer than a single line, such as a phone number\"); the counter is added only when a limit genuinely exists (GOV.UK: \"Only use the character count component when there is a good reason for limiting\").",
+      "_source_row": "U-textarea",
+      "_component": "textarea",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/icon-button.meta.json": {
+      "when": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label — CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous — our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.",
+      "_source_row": "U-icon-button",
+      "_component": "icon-button",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/alert.meta.json": {
+      "when": "the message is IN FLOW (inside the page or form it refers to) AND it persists until resolved or dismissed AND it carries a status glyph and a title, never colour alone AND an error alert never auto-dismisses — CANON-ADJACENT — our own purpose already states the three-way rule: \"Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors\"; beats toast (proposed \"transient, no answer required\") whenever the reader must act; beats banner (proposed \"the condition governs the whole page or session\") whenever the message belongs to one form or section — Atlassian draws the identical line: \"For messages with information affecting the whole site, use a banner\"; yields to inline field validation for a single control.",
+      "_source_row": "U-alert",
+      "_component": "alert",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/popover.meta.json": {
+      "when": "the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open — CANON-ADJACENT — our purpose already carries the three-way rule: \"If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal\"; Atlassian states both halves independently (\"For interactive overlays, use the modal dialog component\" / \"For non-essential, non-interactive messages, use the tooltip component\"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: \"Don't make popups that scroll\", Carbon: past four columns wide use a modal).",
+      "_source_row": "U-popover",
+      "_component": "popover",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/timeline.meta.json": {
+      "when": "records >= 2 AND time IS the structure AND every record has ALREADY HAPPENED AND entries are not buttons AND order is newest-first with date headings — roles.json when: \"time is the structure, records have happened\"; beats list-items when the date rail is the reading rather than a sort order; yields to list-items inside a date group the moment entries must open (our AP1), and never borrows Progress-tracker's aria-current because there is no current step (our AP0).",
+      "_source_row": "U-timeline",
+      "_component": "timeline",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/view-options.meta.json": {
+      "when": "NEVER — superseded 2026-07-24; the view switch is Segmented-control — carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says \"Consuming View-options instead of Segmented-control for the view switch — View-options was superseded\"; the honest `when` here is a redirect, not a predicate.",
+      "_source_row": "U-view-options",
+      "_component": "view-options",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/Chart-boxplot.meta.json": {
+      "when": "answers = distribution AND categories >= 2 AND each category carries a five-number summary AND span.cols <= 8 — roles.json when: \"distribution per category\"; beats Chart-histogram (roles.json: \"distribution, one variable\") whenever the spread must be read PER CATEGORY; yields to it when variables = 1 and the bin shape is the claim.",
+      "_source_row": "U-Chart-boxplot",
+      "_component": "Chart-boxplot",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": "answers=distribution AND categories ≥ 2 AND each category carries a five-number summary (median · IQR · whiskers · outliers) — beats Chart-histogram (76, \"distribution, one variable\") whenever the spread must be read PER CATEGORY; yields to it when variables=1 and the bin shape is the claim. span.cols max 8 because the FIT hooks are not wired (this meta's own responsive rule).",
+      "_replaces_existing": true,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/Chart-candlestick.meta.json": {
+      "when": "answers = change-over-time AND shape = periods × OHLC (open · high · low · close per session) — roles.json when: \"OHLC per period\"; beats chart-line (roles.json: \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.",
+      "_source_row": "U-Chart-candlestick",
+      "_component": "Chart-candlestick",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": "answers=change-over-time AND shape=periods × OHLC (open · high · low · close per session) — beats chart-line (88, \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.",
+      "_replaces_existing": true,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/Chart-histogram.meta.json": {
+      "when": "answers = distribution AND variables = 1 AND bins = contiguous (no inter-bar gap) AND baseline = 0 — roles.json when: \"distribution, one variable\"; beats Chart-boxplot (roles.json: \"distribution per category\") when the frequency shape of ONE variable is the claim; yields to Chart-boxplot when categories >= 2; the no-gap rule is not cosmetic — the FT gives the same reason: \"keep the gaps between columns small to highlight the 'shape' of the data\".",
+      "_source_row": "U-Chart-histogram",
+      "_component": "Chart-histogram",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": "answers=distribution AND variables=1 AND bins=contiguous (no inter-bar gap) — beats Chart-boxplot (60, \"distribution per category\") when the frequency shape of ONE variable is the claim rather than the spread per category; yields to Chart-boxplot when categories ≥ 2.",
+      "_replaces_existing": true,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/limits-meter.meta.json": {
+      "when": "INHERITS meter's gate, variant = allowance: the value is a cap being spent against AND full = BLOCKED, not done — a thin category alias of meter.meta.json (s210-D5); carries no independent when because writing spec into the alias is an explicit antiPattern on the parent — the reading is \"how much of my limit is left\", which is what roles.json already names.",
+      "_source_row": "U-limits-meter",
+      "_component": "limits-meter",
+      "_confidence": "canon",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/app-shell-focused.meta.json": {
+      "when": "primaryNavigation = absent AND breadcrumbs = absent AND search = absent AND exits = 1 AND job.count = 1 — the only frame defined by removal; beats every other shell (roles.json: all six carry navigation) whenever abandoning the task is the failure mode — authentication, a wizard, a passcode; yields to app-shell-top-nav the moment the user must be able to go somewhere else.",
+      "_source_row": "U-app-shell-focused",
+      "_component": "app-shell-focused",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/template-wizard.meta.json": {
+      "when": "steps >= 2 AND order is enforced AND next is gated AND a review step precedes the end AND the end is a receipt — beats template-create-edit (proposed \"one page, no enforced order\") on order; composes app-shell-focused (roles.json when: \"one job, no navigation (auth, wizard)\") and borrows the step mechanism whole from Stepper.",
+      "_source_row": "U-template-wizard",
+      "_component": "template-wizard",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/template-confirmation.meta.json": {
+      "when": "position = end of an instruction AND order = message, then FACTS, then actions, then what-happens-next AND a reference is shown if one exists — beats the Confirmation component (roles.json feedback role) because a confirmation PAGE is also the RECEIPT — that reordering is the template's whole contribution; ends a flow that template-wizard began.",
+      "_source_row": "U-template-confirmation",
+      "_component": "template-confirmation",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    },
+    "knowledge/components/template-error.meta.json": {
+      "when": "cause in (404, 500) AND RAG colour = unbound AND no support semantics invented AND one page serves ALL unexpected failures — beats template-empty (proposed \"the query succeeded and returned nothing\") because here the page could not be produced at all; beats an inline Alert (slice A) because the failure is the PAGE, not a field.",
+      "_source_row": "U-template-error",
+      "_component": "template-error",
+      "_confidence": "consensus-external",
+      "_daves_note": "",
+      "_existing_when": null,
+      "_replaces_existing": false,
+      "_NOT_APPLIED": true
+    }
+  },
+  "skipped": []
+}
