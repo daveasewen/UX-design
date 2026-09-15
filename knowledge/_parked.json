@@ -337,6 +337,40 @@
        "path": "knowledge/_validate_lane_ownership.py",
        "event": "dream-pass"
       }
+     },
+     {
+      "id": "P-277-1",
+      "parked": {
+       "date": "2026-09-15",
+       "session": 277,
+       "at_version": "v1.0.13",
+       "at_commit": "f6320b5"
+      },
+      "what": "THE dv-019 ROW IN _rules-index.json CARRIES dv-017'S SENTENCE. knowledge/guidelines/_rules-index.json's `dv-019` row opens with dv-017's text ('Only palette colours in charts … the unified supporting palette.') and its `rule` field literally ends in the OTHER rule's tag, `{#dv-017}`, before the scoped-override prose. The true dv-019 is in knowledge/guidelines/data-visualisation.md as clause (c) of that override block — 'NEW APOLLO-ADDED RULE — avoid vibrating boundaries … fail-candidate when pair value-ratio <1.25 AND hue-sep ≥135° AND both HSL sats ≥0.5' — tagged `{#dv-019}`. Cause (lane CO's diagnosis, consistent with what is on disk): the indexer takes the whole bullet from the leading `-` to the closing `{#…}`, so a multi-clause bullet collapses into its first rule's text. IT HAS ALREADY PROPAGATED: `rule:dv-019` in knowledge/_rule_nodes.json carries the same wrong text, and knowledge/_consult-index.json's dv-019 entry does too — the wrong sentence is in the graph and on the consult surface today, not only in the index. THE FIX BELONGS AGAINST THE GENERATOR, knowledge/guidelines/gen_rules_index.py (note the path: it is under guidelines/, NOT knowledge/gen_rules_index.py, which does not exist), not against the index — patching the index leaves the generator free to re-emit it at the next ingest, and leaves _rule_nodes.json and _consult-index.json stale either way. WHETHER TO REGENERATE THE INDEX OR SPLICE THE ONE ROW IS DAVE'S: a regeneration of _rules-index.json is a 470-row diff under a message about one rule, the #179 class.",
+      "why": "Lane CO found it (#277 REPORT.md §8 finding (i)) and reported without fixing, correctly — not its file. Lane CV confirmed it verbatim and widened it (VERIFY.md G-10): the propagation to _rule_nodes.json and _consult-index.json is the part CO did not measure. Lane CH re-confirmed all three files before parking. CV's item 13: 'File the _rules-index.json dv-019 defect against gen_rules_index.py with the note that it has already propagated.'",
+      "owner": "a lane, once briefed (the generator fix + the two derived surfaces); Dave (regenerate the whole index, or splice the one row)",
+      "status": "parked",
+      "trigger": {
+       "kind": "file-changed",
+       "path": "knowledge/guidelines/_rules-index.json"
+      }
+     },
+     {
+      "id": "P-277-2",
+      "parked": {
+       "date": "2026-09-15",
+       "session": 277,
+       "at_version": "v1.0.13",
+       "at_commit": "d84eb72"
+      },
+      "what": "THE CHART METAS ARE SPLIT ON CASE — 7 UP, 7 DOWN, FROM ONE WAVE. Capitalised: Chart-boxplot · Chart-bullet · Chart-butterfly-h · Chart-butterfly-v · Chart-candlestick · Chart-histogram · Chart-scatter. Lowercase: chart-bar · chart-combo · chart-donut · chart-line · chart-pie · chart-sparkline · chart-stacked-area. `git show --numstat df44e51` shows BOTH cases created in that one commit (2026-08-05, wave-2), so it is a habit, not a signal — nothing distinguishes the two groups but the day's typing. IT IS LOAD-BEARING: the filename stem IS the node id (`component:Chart-boxplot` in the graph), so a rename moves node ids, not just files. BLAST RADIUS, MEASURED (lane CH, 2026-09-15, `git grep -l` per stem): 114–159 tracked files per component, 279 in the union repo-wide; knowledge/ only, 27–42 per component, 78 in the union. Lane CJ's '29–50 non-generated files per component' is the knowledge/-only figure stated without that qualifier; lane CO's unmeasured 'fifty-file diff' is low by the same factor. A case-only rename on this case-insensitive filesystem needs the TWO-STEP `git mv` (X -> X.tmp -> x) or git records nothing, plus a reference sweep, plus regeneration. NOT THIS WAVE'S WORK — three lanes (CO, CJ, CV) independently refused to do it inside the charts lane, and they are right: it would ship a 279-file diff under a commit message about `obeys` edges, the #179 class.",
+      "why": "Lane CJ #277: 'Right fix, wrong commit … Park it, tripwire it, do it as its own lane.' Lane CV G-21 graded the split GREEN and the one-wave origin GREEN, and §6 measured the radius at 3–5× CJ's stated figure, concluding: 'Do not do it here.' Whether to rename AT ALL is Dave's — the split is ugly but costs nothing until someone hand-writes a node id from memory.",
+      "owner": "Dave (whether to rename at all, and when); a lane of its own once he rules",
+      "status": "parked",
+      "trigger": {
+       "kind": "event",
+       "name": "kg-edge-gen"
+      }
      }
   ]
 }

@@ -15,7 +15,15 @@ Four things, all measured, none written into knowledge/:
      proposed metas, then knowledge/_validate_kg.py run against it.
   4. OWNERSHIP — git status shows changes only under this lane.
 
-    python3 notes/_lanes/277/charts/_dry_run.py
+    python3 notes/_lanes/277/charts/_dry_run.py              # READ-ONLY: prints, writes nothing
+    python3 notes/_lanes/277/charts/_dry_run.py --out DIR    # write the receipt into DIR
+    python3 notes/_lanes/277/charts/_dry_run.py --write      # write it back into this lane (the #277 receipt)
+
+READ-ONLY BY DEFAULT (lane CH, #277, CV's R-7: "a receipt that mutates when you
+check it is not a receipt"). As shipped in 8c80aa2 this script wrote
+dry-run.json / dry-run.txt into the very lane it audits, so a second seat
+re-driving CO's receipt dirtied CO's committed files. The audit is unchanged —
+same four sections, same figures, same exit code; only the writing is now opt-in.
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -42,7 +50,20 @@ LANE = Path(__file__).resolve().parent
 REPO = LANE.parents[3]
 K = REPO / "knowledge"
 PROPOSED = LANE / "proposed-metas"
-OUT = LANE / "dry-run.json"
+
+# Where the receipt goes, if anywhere. Default: NOWHERE — this door is read-only
+# unless asked (lane CH #277, R-7). `--write` restores the original destination.
+_argv = sys.argv[1:]
+if "--out" in _argv:
+    _i = _argv.index("--out")
+    if _i + 1 >= len(_argv):
+        raise SystemExit("_dry_run: --out needs a directory")
+    OUT_DIR = Path(_argv[_i + 1]).resolve()
+elif "--write" in _argv:
+    OUT_DIR = LANE
+else:
+    OUT_DIR = None
+OUT = (OUT_DIR / "dry-run.json") if OUT_DIR else None
 
 
 def _load(name):
@@ -172,7 +193,12 @@ report["paths_outside_newer_than_lane"] = sum(
 report["verdict"] = ("OK" if (fails == 0 and all(ctl.values()) and not missing
                               and r.returncode == 0) else "FAIL")
 say("\nVERDICT: %s" % report["verdict"])
-OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-(LANE / "dry-run.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
-print("\nwrote %s and %s" % (OUT.name, "dry-run.txt"))
+if OUT_DIR is None:
+    print("\nread-only (no --out DIR, no --write): nothing written. "
+          "The audit above is the output.")
+else:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (OUT_DIR / "dry-run.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print("\nwrote %s and %s in %s" % (OUT.name, "dry-run.txt", OUT_DIR))
 sys.exit(0 if report["verdict"] == "OK" else 1)
