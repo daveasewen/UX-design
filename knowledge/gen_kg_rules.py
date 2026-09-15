@@ -351,6 +351,10 @@ def land(corpus=None, rulings_path=None, ratified=None, with_appliesto=False, de
                          "An unrecorded ratification is not a ratification.")
     payload, report = build(corpus, with_appliesto, destiny_edges)
     payload["ratified"] = ratified
+    # #275 fence: a LANDED file must not carry the dry-run's "PROPOSED … NOT RATIFIED" text.
+    payload["$description"] = (f"RATIFIED rule: nodes and their edges under {ratified} "
+                               "(s274-D7..D12, #274 lane RL; s269-D1 item 2). Regenerate with "
+                               f"`gen_kg_rules.py --land --ratified {ratified}`; never hand-edit.")
     out = _k(corpus) / LANDED
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     report["landed"] = {"ratified": ratified, "file": str(out),
