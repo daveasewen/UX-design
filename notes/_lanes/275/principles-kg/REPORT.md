@@ -26,7 +26,7 @@ Node kinds `ux:<id>` (145) and `polarity:<id>` (30) are both NEW. `ux:` is the p
 is MEASURED free, not assumed.
 
 **TWO vocabularies again, and this time the second one is Dave's own data model.** (1) The explorer
-families (`_build_kg_explorer.py`) carry 60 distinct type strings and not one of my seven —
+families (`_build_kg_explorer.py`) carry 60 distinct type strings [RV re-measured 62, or 44 real edge types — the 'not one of my seven' finding holds either way] and not one of my seven —
 `evidencedBy` is the single overlap, and it is the one I recommend leaving off. (2) `polarities.json`
 already carries a typed link vocabulary that s238-D6 ruled — `explainedBy` / `touches` / `resolvedBy` /
 `challengedBy` — so those four words are not the lane's invention; they are already the register's, and
@@ -59,7 +59,7 @@ Independent measurements, each run standalone before the generator existed:
 - **145 principles · A 6 / B 28 / C 75 / D 9 / L 27 · 32 families · all twelve fields present on all 145** —
   `python3 -c "import json,collections;P=json.load(open('knowledge/brain/principles.json'))['principles'];
   print(len(P),collections.Counter(p['grade'] for p in P),len({p['family'] for p in P}))"`.
-  (The #269 inventory says 31 families; the measured answer is **32**.)
+  (The conductor's BRIEF.md line 5 says 31 families — the #269 inventory carries no such figure (lane RV, VERIFY.md); the measured answer is **32**.)
 - **Live node prefixes, 18 of them, counted off the explorer page itself** — `evidence 873 · artefact 610 ·
   ruling 578 · rule 470 · pattern 382 · context 232 · component 137 · snippet 137 · session 92 · axe 64 ·
   sc 38 · shape 23 · intent 14 · role 12 · guideline 12 · principle 4 · standard 1 · policy 1`.
