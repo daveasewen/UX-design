@@ -1,0 +1,542 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>List vs card — #273 lane LC proposal</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+h1{font-size:3.5625rem;line-height:1.04;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:20ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+h4{font-size:.9375rem;line-height:1.3;font-weight:500;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2);max-width:78ch}
+ul.prose{max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px;
+ overflow-wrap:anywhere;word-break:break-word}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+b.hit{color:var(--accent);font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3)}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1)}
+.stat span{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+
+blockquote.dave{margin:0 0 var(--s3);padding:var(--s2) 0 var(--s2) var(--s3);
+ border-left:2px solid var(--accent);max-width:78ch;font-size:1.0625rem;line-height:1.6}
+blockquote.dave cite{display:block;font-style:normal;font-size:.75rem;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--g6);margin-top:var(--s1)}
+
+.shapes{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);margin-top:var(--s4)}
+@media (max-width:900px){.shapes{grid-template-columns:1fr}}
+.shape{border-top:1px solid var(--g3);padding-top:var(--s2)}
+.shape svg{width:100%;height:auto;max-width:100%;display:block;margin-bottom:var(--s2)}
+.shape p{font-size:.875rem;color:var(--muted);margin:0 0 var(--s1)}
+.verdict{font-size:.8125rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:760px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;white-space:nowrap}
+td.sys{font-weight:500;white-space:nowrap}
+td.q{max-width:34ch}
+td.pred{max-width:26ch}
+tr.silent td{background:var(--soft);color:var(--muted)}
+.src{display:block;font-size:.75rem;color:var(--g6);word-break:break-all;margin-top:.15rem}
+
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.75rem;letter-spacing:.14em;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .35rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);font-size:.875rem;color:var(--muted)}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+</style>
+
+<section id="headline"><div class="wrap">
+<p class="label">#273 &middot; lane LC &middot; P-272-1 research</p>
+<h1>Nobody counts fields.</h1>
+<p>Thirteen design systems were consulted for the line between a list row and a card. <b class="hit">Not one of them draws it on field count, and not one draws it on the number of columns inside a row.</b> The two systems that ship a genuinely columnar list — IBM Carbon&rsquo;s structured list and GOV.UK&rsquo;s summary list — both call it a <em>list</em>, with column headers and key/value rows, and neither treats the columns as the thing that would make it a card.</p>
+<p>Three predicates <em>do</em> appear, repeatedly, and they are about the record&rsquo;s <b>boundary</b>, its <b>own actions</b>, and whether items in the set are <b>the same shape as each other</b>. The one number found anywhere (USWDS&rsquo;s six) caps the size of a <em>collection</em>, not the contents of a record.</p>
+<div class="stats">
+<div class="stat"><b>13</b><span>systems consulted</span></div>
+<div class="stat"><b>0</b><span>draw it on field count</span></div>
+<div class="stat"><b>1</b><span>ships Dave&rsquo;s list-card</span></div>
+<div class="stat"><b>8</b><span>our record-list providers, all silent</span></div>
+</div>
+<p class="why">The lane&rsquo;s recommendation is in <b>LC-1</b> below: the line is <code>surface</code> + record-level <code>actions</code>, not arithmetic. Everything on this page is a proposal. <b>Nothing here is ruled</b> — P-272-1&rsquo;s owner is Dave, unchanged by <code>s273-D3</code>.</p>
+</div></section>
+
+<section id="question"><div class="wrap">
+<p class="label">The question, in your words</p>
+<h2>Four notes asked for this.</h2>
+<blockquote class="dave">&ldquo;This is more complicated than this suggests, we have list items that have 4 or five datapoints, but tehy are stacked in a couple of columns, I think we might have a few variants of list-items that complicate this a bit. I think we might have simple-list a column-list (2 row three column)  and a list-card as a way to define tihis further. lets discuss.&rdquo;<cite>B-10 &middot; declined &middot; harvest-decisions-2026-09-14.json</cite></blockquote>
+<blockquote class="dave">&ldquo;this is two simple we have list items that stack fields vertically, they may have four or five data items plus a status. now there is an argument around definitions here, maybe when we have columns within a list it&rsquo;s actually a card, we need to think about this. This is not a decision but maybe we allow three columns and two rows in a list and anything beyond that is a stacked card, I&rsquo;m not sure right now, beras some research into these definitions.&rdquo;<cite>B-20 &middot; declined &middot; harvest-decisions-2026-09-14.json</cite></blockquote>
+<blockquote class="dave">&ldquo;this might clash with our redefinition of a card, maybe we have a list-card type that can be stacked in any amount, lets explore, see above&rdquo;<cite>B-09 &middot; ratified with a note &middot; harvest-decisions-2026-09-14.json</cite></blockquote>
+<blockquote class="dave">&ldquo;I need to see this, I think that there is another rule here where account cards can stack like a list, doesnt affect thsi decision but I want to return to teh whole qustion of whan does a list item become a card or a hybrid list-card&rdquo;<cite>N-account-card &middot; ratified with a note &middot; harvest-decisions-2026-09-14.json</cite></blockquote>
+<p class="why">Spelling is yours and is kept. These four are the only sentences of yours quoted on this page.</p>
+</div></section>
+
+<section id="predicates"><div class="wrap">
+<p class="label">Finding 1</p>
+<h2>Where each system draws the line, and with what.</h2>
+<p>Every external line below is quoted under <code>knowledge/_RUNBOOK-external-claims.md</code>: fewer than fifteen words, its own words, a receipt, and marked EXTERNAL. <b>None of it is our rule until you say so.</b> Rows shaded grey are systems that are silent on this crossing, or unreachable — recorded as silence, never filled in by inference.</p>
+<div class="tw"><table>
+<thead><tr><th>System</th><th>Their words &mdash; EXTERNAL</th><th>The predicate it implies</th><th>Field count?</th></tr></thead>
+<tbody>
+<tr>
+<td class="sys">NN/g</td>
+<td class="q">&ldquo;Cards work best for collections of heterogeneous items&rdquo; &middot; &ldquo;Card layouts are less scannable than lists.&rdquo; &middot; &ldquo;Cards use a border around the grouped content&rdquo;<span class="src">nngroup.com/articles/cards-component/ (fetched 2026-09-15)</span></td>
+<td class="pred"><b>Heterogeneity + boundary.</b> Items of the SAME shape belong in a list; items of DIFFERENT shapes get cards. The border is the second half.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">GOV.UK</td>
+<td class="q">&ldquo;Summary cards are a variant within this component&rdquo; &middot; &ldquo;multiple summary lists that all describe the same type of thing, such as people&rdquo; &middot; &ldquo;actions that will apply to all the items in a list&rdquo;<span class="src">design-system.service.gov.uk/components/summary-list/ (fetched 2026-09-15)</span></td>
+<td class="pred"><b>Record-level actions + a title.</b> A card is a whole summary list wrapped, so it can own a heading and its own actions. Row count is unbounded either way.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">USWDS</td>
+<td class="q">&ldquo;Don&rsquo;t use a card as a substitute for a table row.&rdquo; &middot; &ldquo;Cards should be self-contained and modular.&rdquo; &middot; &ldquo;Consider limiting the number of items in each collection to six or fewer.&rdquo;<span class="src">designsystem.digital.gov/components/card/ &middot; /components/collection/ (harvest B/SOURCES.json)</span></td>
+<td class="pred"><b>Self-containment.</b> The sharpest anti-card rule found. The six is a cap on the COLLECTION, not on a record&rsquo;s contents.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">IBM Carbon</td>
+<td class="q">&ldquo;Column header: Displays title text in each column header&rdquo; &middot; &ldquo;content within a structured list can be stacked to create hierarchy&rdquo; &middot; &ldquo;Nesting items is not recommended, as structured lists are used to present simple data.&rdquo; &middot; (tile) &ldquo;Use tiles to group related information in flexible containers.&rdquo;<span class="src">carbon-website structured-list/usage.mdx (fetched 2026-09-15) &middot; carbondesignsystem.com/components/tile/usage/ (harvest B)</span></td>
+<td class="pred"><b>Nesting / complexity.</b> Columns inside a list row are NORMAL in Carbon and stacking is explicitly allowed. What pushes you out is nesting, and out is to a <em>data table</em>, not to a card.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">Shopify Polaris</td>
+<td class="q">&ldquo;Resource items represent specific objects within a collection, such as products or orders.&rdquo; &middot; &ldquo;The media element can hold an avatar, thumbnail, or other small-format graphic.&rdquo; &middot; &ldquo;A resource list isn&rsquo;t a data table&rdquo;<span class="src">polaris resource-item.mdx (fetched 2026-09-15) &middot; resource-list.mdx (harvest B)</span></td>
+<td class="pred"><b>Action vs analysis.</b> Polaris&rsquo;s list row carries media AND shortcut actions and stays a list row. Their card is a layout container, a different axis entirely.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">Ant Design</td>
+<td class="q">&ldquo;A card can be used to display content related to a single subject.&rdquo; &middot; &ldquo;List component has been deprecated.&rdquo;<span class="src">ant-design card/index.en-US.md &middot; list/index.en-US.md (harvest B)</span></td>
+<td class="pred"><b>One subject per container.</b> Ant is retiring its List, so it has no live position on the crossing.</td>
+<td>No</td>
+</tr>
+<tr>
+<td class="sys">Material 3</td>
+<td class="q">&ldquo;Cards display content and actions about a single subject.&rdquo; &mdash; from the page&rsquo;s server-rendered meta description; the BODY is client-rendered and did not extract.<span class="src">m3.material.io/components/cards/guidelines (fetched 2026-09-15, body unreachable)</span></td>
+<td class="pred"><b>Single subject + actions.</b> Agrees with Ant and GOV.UK on actions; declared partial, not a full reading.</td>
+<td>No</td>
+</tr>
+<tr class="silent">
+<td class="sys">Apple HIG</td>
+<td class="q">SILENT in this record BY FETCH FAILURE &mdash; /lists-and-tables is client-rendered, zero text extracted (#271 harvest B refused list). Not silent in reality.</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+<tr class="silent">
+<td class="sys">Atlassian</td>
+<td class="q">SILENT in this record BY FETCH FAILURE &mdash; only cookie/feedback chrome renders server-side (#271 harvest B refused list).</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+<tr class="silent">
+<td class="sys">Fluent 2</td>
+<td class="q">UNREACHABLE &mdash; serves a &lsquo;page may no longer be available&rsquo; shell plus an internal-only sign-in (#271 harvest B refused list). Unreachable, not silent.</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+<tr class="silent">
+<td class="sys">Adobe Spectrum</td>
+<td class="q">SILENT on the list/card crossing. Spectrum was reached in #270/#271 only via react-spectrum component docs, which carry no position on this line.</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+<tr class="silent">
+<td class="sys">Datawrapper</td>
+<td class="q">SILENT &mdash; a chart house; it ships no list or card component.</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+<tr class="silent">
+<td class="sys">FT Visual Vocabulary</td>
+<td class="q">SILENT &mdash; a chart taxonomy; it ships no list or card component.</td>
+<td class="pred">&mdash;</td><td>&mdash;</td>
+</tr>
+</tbody></table></div>
+<h3 style="margin-top:var(--s5)">The three predicates, extracted</h3>
+<div class="two">
+<div>
+<h4>1 &middot; The boundary (NN/g, USWDS, Ant, Carbon tile, M3)</h4>
+<p>A card owns a bordered, self-contained surface. A list row does not — it is separated from its neighbours by a rule or by nothing at all. This is the most-agreed predicate of the three, and it is the one our own canon already has a legal field name for: <code>surface</code>.</p>
+<h4 style="margin-top:var(--s3)">2 &middot; Record-level actions and a title (GOV.UK, M3, Ant)</h4>
+<p>GOV.UK&rsquo;s summary card exists for exactly one reason: a repeated record needs its OWN heading and its OWN actions. That is your list-card, shipping, in a system we already cite as canon-adjacent.</p>
+</div>
+<div>
+<h4>3 &middot; Same-shape vs different-shape (NN/g)</h4>
+<p>NN/g&rsquo;s strongest line is about the SET, not the record: cards are for heterogeneous collections; homogeneous records belong in a list because a list is scannable and a card layout is not. A ledger of transactions is homogeneous by definition — so on NN/g&rsquo;s test, fintech records stay lists however many fields they carry.</p>
+<h4 style="margin-top:var(--s3)">Not a predicate anywhere: arithmetic</h4>
+<p>The only numbers found in thirteen systems are USWDS&rsquo;s <span class="n">6</span> items per collection, Polaris&rsquo;s <span class="n">50</span> items before pagination, and Carbon&rsquo;s <span class="n">3</span> paragraphs per row. All three measure the SET or the TEXT. None measures fields per record, and none measures columns.</p>
+</div>
+</div>
+</div></section>
+
+<section id="shapes"><div class="wrap">
+<p class="label">Finding 2</p>
+<h2>Your three shapes, tested against them.</h2>
+<p>Grey boxes are content blocks; the outlined box is a bordered surface.</p>
+<div class="shapes">
+<div class="shape">
+<svg viewBox="0 0 300 150" role="img" aria-label="Wireframe: simple list — three rows separated by hairlines, each with one label and one value">
+<rect x="0" y="0" width="300" height="150" fill="none"/>
+<g fill="var(--g2)"><rect x="4" y="10" width="120" height="12"/><rect x="220" y="10" width="76" height="12"/></g>
+<line x1="4" y1="40" x2="296" y2="40" stroke="var(--g3)" stroke-width="1"/>
+<g fill="var(--g2)"><rect x="4" y="55" width="140" height="12"/><rect x="220" y="55" width="76" height="12"/></g>
+<line x1="4" y1="85" x2="296" y2="85" stroke="var(--g3)" stroke-width="1"/>
+<g fill="var(--g2)"><rect x="4" y="100" width="110" height="12"/><rect x="220" y="100" width="76" height="12"/></g>
+<line x1="4" y1="130" x2="296" y2="130" stroke="var(--g3)" stroke-width="1"/>
+</svg>
+<h4>simple-list</h4>
+<p>Your words: the baseline. One or two fields, tappable.</p>
+<p><b>Equivalents:</b> Carbon <em>List</em> &middot; Polaris <em>Resource list</em> &middot; GOV.UK <code>&lt;ul&gt;</code> &middot; our <code>list-items</code> today.</p>
+<p><b>Gated by:</b> nothing controversial. Carbon: &ldquo;Avoid using a list for complex data&rdquo;.</p>
+<p class="verdict">Supported &mdash; 5 systems</p>
+</div>
+<div class="shape">
+<svg viewBox="0 0 300 150" role="img" aria-label="Wireframe: column list — rows of two lines by three columns, hairline separated, with column headers">
+<g fill="var(--g3)"><rect x="4" y="6" width="50" height="7"/><rect x="108" y="6" width="50" height="7"/><rect x="212" y="6" width="50" height="7"/></g>
+<line x1="4" y1="22" x2="296" y2="22" stroke="var(--g3)" stroke-width="1"/>
+<g fill="var(--g2)">
+<rect x="4" y="32" width="80" height="10"/><rect x="108" y="32" width="80" height="10"/><rect x="212" y="32" width="80" height="10"/>
+<rect x="4" y="48" width="60" height="10"/><rect x="108" y="48" width="60" height="10"/><rect x="212" y="48" width="60" height="10"/>
+</g>
+<line x1="4" y1="72" x2="296" y2="72" stroke="var(--g3)" stroke-width="1"/>
+<g fill="var(--g2)">
+<rect x="4" y="82" width="80" height="10"/><rect x="108" y="82" width="80" height="10"/><rect x="212" y="82" width="80" height="10"/>
+<rect x="4" y="98" width="60" height="10"/><rect x="108" y="98" width="60" height="10"/><rect x="212" y="98" width="60" height="10"/>
+</g>
+<line x1="4" y1="122" x2="296" y2="122" stroke="var(--g3)" stroke-width="1"/>
+</svg>
+<h4>column-list &mdash; your &ldquo;2 row three column&rdquo;</h4>
+<p><b>Equivalents:</b> IBM Carbon <em>Structured list</em> (column headers, stacking allowed) &middot; GOV.UK <em>Summary list</em> (key/value rows).</p>
+<p><b>Gated by:</b> nesting and complexity, not by the column count. Carbon&rsquo;s only per-row number is three paragraphs of text.</p>
+<p class="verdict">Real &mdash; and it is a LIST in both systems that ship it</p>
+</div>
+<div class="shape">
+<svg viewBox="0 0 300 150" role="img" aria-label="Wireframe: list card — two bordered surfaces stacked, each with a title bar, an action link and stacked key value rows">
+<rect x="4" y="4" width="292" height="66" fill="none" stroke="var(--g3)" stroke-width="1"/>
+<rect x="4" y="4" width="292" height="18" fill="var(--g1)"/>
+<rect x="12" y="9" width="70" height="8" fill="var(--g3)"/><rect x="246" y="9" width="42" height="8" fill="var(--g3)"/>
+<g fill="var(--g2)"><rect x="12" y="30" width="54" height="8"/><rect x="120" y="30" width="90" height="8"/>
+<rect x="12" y="44" width="54" height="8"/><rect x="120" y="44" width="70" height="8"/>
+<rect x="12" y="58" width="54" height="8"/><rect x="120" y="58" width="100" height="8"/></g>
+<rect x="4" y="80" width="292" height="66" fill="none" stroke="var(--g3)" stroke-width="1"/>
+<rect x="4" y="80" width="292" height="18" fill="var(--g1)"/>
+<rect x="12" y="85" width="70" height="8" fill="var(--g3)"/><rect x="246" y="85" width="42" height="8" fill="var(--g3)"/>
+<g fill="var(--g2)"><rect x="12" y="106" width="54" height="8"/><rect x="120" y="106" width="86" height="8"/>
+<rect x="12" y="120" width="54" height="8"/><rect x="120" y="120" width="64" height="8"/>
+<rect x="12" y="134" width="54" height="8"/><rect x="120" y="134" width="96" height="8"/></g>
+</svg>
+<h4>list-card &mdash; &ldquo;stacked in any amount&rdquo;</h4>
+<p><b>Equivalent:</b> GOV.UK <em>Summary card</em>, exactly. Stacked without limit, each with its own title and its own actions.</p>
+<p><b>Gated by:</b> &ldquo;multiple summary lists that all describe the same type of thing, such as people&rdquo; and &ldquo;actions that will apply to all the items in a list&rdquo;.</p>
+<p class="verdict">Precedent found &mdash; 1 system, and it is a VARIANT of the list</p>
+</div>
+</div>
+
+<h3 style="margin-top:var(--s5)">The threshold sketch &mdash; where the evidence contradicts it</h3>
+<p>You wrote, explicitly not as a decision: <em>&ldquo;maybe we allow three columns and two rows in a list and anything beyond that is a stacked card&rdquo;</em>. Three things in the record cut against it, and one thing in it survives.</p>
+<ul class="prose">
+<li><b>Carbon puts column headers on a list.</b> A structured list is columnar by construction and Carbon still calls it a list; its exit is to a data table on nesting, never to a card. A 3&times;2 cap would make Carbon&rsquo;s own default a card.</li>
+<li><b>GOV.UK&rsquo;s summary list has no row cap.</b> A twelve-row check-your-answers list is a list. If rows &gt; 2 made a card, GOV.UK&rsquo;s most-used component would be a card everywhere.</li>
+<li><b>Polaris puts media and per-item actions in a list row.</b> So neither an image nor an action promotes a row to a card.</li>
+<li><b>What survives:</b> your instinct that a record with five datapoints plus a status is <em>not</em> the same animal as a two-field tappable row. Every system agrees with that. They just split it on the record&rsquo;s BOUNDARY and its OWN ACTIONS rather than on a count — and on that split, your &ldquo;stacked card&rdquo; and GOV.UK&rsquo;s summary card are the same thing.</li>
+</ul>
+<p class="why">Stated plainly: <b>the arithmetic threshold has no external support in this record.</b> The three shapes do. Recommending against the numbers is not recommending against the shapes.</p>
+</div></section>
+
+<section id="ours"><div class="wrap">
+<p class="label">Finding 3</p>
+<h2>What our library already has &mdash; and the hole in it.</h2>
+<p><code>record-list</code> has <span class="n">8</span> providers, ruled at <code>s252-D1</code>. Every one carries an illustrative <code>when</code> in <code>roles.json</code>; every one is <b>silent on its meta</b> (<code>s273-D1</code> writes the address, <code>s273-D2</code> holds the gates behind this lane).</p>
+<div class="tw"><table>
+<thead><tr><th>Provider</th><th><code>roles.json</code> when</th><th>Meta gate today</th></tr></thead>
+<tbody>
+<tr><td class="sys"><code>table</code></td><td>default, read-mostly</td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>data-grid</code></td><td>sort / filter / select / edit-in-place is required</td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>list-items</code></td><td><b class="hit">&le; 3 fields per item, tappable</b></td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>transaction-row</code></td><td>the records are a ledger with a running balance</td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>document-row</code></td><td>the records are issued documents to open / download</td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>standing-order-mandate-row</code></td><td>the records are future recurring instructions</td><td class="pred">silent</td></tr>
+<tr><td class="sys"><code>timeline</code></td><td>time is the structure, records have happened</td><td class="pred">a <code>when</code> exists, using the illegal field <code>records</code></td></tr>
+<tr><td class="sys"><code>tree</code></td><td>records nest</td><td class="pred">silent</td></tr>
+</tbody></table></div>
+
+<div class="two" style="margin-top:var(--s4)">
+<div>
+<h4><code>cards</code> &mdash; a provider, but not of this role</h4>
+<p>One correction to the brief that set this lane: <code>cards</code> is <b>not</b> <code>$not-a-provider</code>. It provides <b><code>arrangement</code></b>, <code>when</code> = &ldquo;a bordered surface per item&rdquo;. That is the FFF <em>form</em> axis — a container that holds other providers and carries no content of its own. It is not in <code>record-list</code> and, on the FFF reading, it should not be: a card is a surface, not a record.</p>
+<p>Its meta ships five variants — Action, Link, Static, Media, Media borderless — and <b>none of them is a repeated record</b>. There is no card variant today that means <em>one of many of the same thing</em>.</p>
+</div>
+<div>
+<h4><code>account-card</code> &mdash; genuinely <code>$not-a-provider</code></h4>
+<p>It is listed in <code>roles.json</code>&rsquo;s <code>$not-a-provider</code> line, alongside <code>payment-card-visual</code> and <code>card-header-lockup</code>. Its purpose reads as ONE account: label, balance, optional type tag and RAG chip — a single-record summary, so it answers no &ldquo;show me the items&rdquo; brief and provides nothing.</p>
+<p>That is precisely the tension you named: an account card is authored as one record, but in the payments journey <em>&ldquo;account cards can stack like a list&rdquo;</em>. Nothing in the canon lets it. <b>LC-3</b> is that question.</p>
+</div>
+</div>
+
+<h3 style="margin-top:var(--s5)">Where a five-field-plus-status stacked row goes today</h3>
+<p><b>Nowhere.</b> Walked against all eight gates: <code>list-items</code> refuses it (&le; 3 fields); <code>table</code> and <code>data-grid</code> take it only by flattening the stack into columns, which is the reading you rejected; <code>transaction-row</code>, <code>document-row</code> and <code>standing-order-mandate-row</code> each require a specific record KIND; <code>timeline</code> needs time to be the structure; <code>tree</code> needs nesting. <code>cards</code> would host it as a surface but provides <code>arrangement</code>, so a brief asking for <em>&ldquo;show me the items&rdquo;</em> would never reach it.</p>
+<p>The library&rsquo;s own <code>list-items</code> meta already contradicts the <span class="n">3</span>-field gate in prose: its <b>transaction</b> variant is &ldquo;Transaction row with tag or status detail&rdquo; and its <b>review-detail</b> variant is &ldquo;Review row with extra detail line&rdquo;. The shapes are shipping; only the gate is missing.</p>
+<p class="why">Our own ingested guidelines (<code>knowledge/guidelines/</code>) are <b>SILENT</b> on the list/card line. The word &ldquo;card&rdquo; appears there three times, all in <code>web-foundations.md</code>, and all about elevation and padding — never about when a record becomes one.</p>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Decisions</p>
+<h2>Four decisions. The recommendation is first in each.</h2>
+<p>Nothing here is ruled. Every option stays open; the marked option is the lane&rsquo;s recommendation and carries no weight beyond that.</p>
+
+<div class="dec" data-id="LC-1">
+<div class="dechead"><span class="decid">LC-1</span><h3>THE LINE &mdash; what makes a row a card</h3></div>
+<p>The predicate that would gate <code>record-list</code>&rsquo;s providers, written in the closed <code>when</code> grammar (<code>knowledge/when-fields.json</code>).</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="LC-1" id="LC-1-a" value="a"><label for="LC-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>Boundary and actions, not arithmetic.</b> <code>surface = bordered AND actions &gt;= 1</code> makes a record a CARD; anything else is a list row, at any field count. Matches GOV.UK, USWDS, NN/g, M3 and Ant; contradicts nobody in the record.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-1" id="LC-1-b" value="b"><label for="LC-1-b"><span class="okey">(b)</span><b>Your threshold, as written.</b> <code>rows &lt;= 2 AND columns &lt;= 3</code> stays a list; beyond it is a stacked card. Simple and testable, and the lane found <b>no external support for it</b> — Carbon&rsquo;s and GOV.UK&rsquo;s own lists would fail it.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-1" id="LC-1-c" value="c"><label for="LC-1-c"><span class="okey">(c)</span><b>Both, ANDed</b> — the shape of the B-10 recommendation you declined. A list row is <code>fields &lt;= 3 OR (rows &lt;= 2 AND columns &lt;= 3)</code>, <b>AND</b> <code>surface = none</code>. The boundary test can always overrule the count.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-1" id="LC-1-d" value="d"><label for="LC-1-d"><span class="okey">(d)</span><b>Heterogeneity, NN/g&rsquo;s test.</b> Records of the same shape are a list; a set whose records differ in shape is a card collection. Sharpest reading of the evidence, hardest to make machine-checkable.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-1" id="LC-1-none" value=""><label for="LC-1-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Field names this needs, and whether the grammar has them.</b> <code>surface</code> is <b>already legal</b> (26 names, <code>when-fields.json</code>). <code>rows</code> is <b>already legal</b> but is defined as &ldquo;how many rows the reading carries&rdquo; — the rows of a LIST, not the rows inside one record; option (b) and (c) would either re-read it or need a second name. <b>NOT legal, and needed:</b> <code>fields</code> (datapoints per record) &middot; <code>columns</code> (columns within one record) &middot; <code>actions</code> (independent actions the record owns). Adding any of them is the <code>$extension</code> move that <b>RD-3 is still open on</b> — option (a) needs only <code>actions</code>, which is the cheapest of the three.</p>
+<textarea class="note" data-id="LC-1" aria-label="Notes for LC-1" placeholder="Notes for LC-1 — your words"></textarea>
+</div>
+
+<div class="dec" data-id="LC-2">
+<div class="dechead"><span class="decid">LC-2</span><h3>THE SHAPES &mdash; three metas, three variants, or two metas</h3></div>
+<p>simple-list &middot; column-list &middot; list-card. Whatever LC-1 decides the line is, this decides where the shapes LIVE.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="LC-2" id="LC-2-a" value="a"><label for="LC-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>One meta, three variants</b> on <code>list-items</code> — joining the seven it already ships. This is exactly GOV.UK&rsquo;s construction: &ldquo;Summary cards are a variant within this component&rdquo;. One provider, one <code>priority</code>, one gate with a variant clause; the graph gains no node.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-2" id="LC-2-b" value="b"><label for="LC-2-b"><span class="okey">(b)</span><b>Three metas</b>, three <code>record-list</code> providers with three gates and three priorities. Most explicit; also three new nodes, three new <code>providesRole</code> edges, and three chances for the gates to overlap.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-2" id="LC-2-c" value="c"><label for="LC-2-c"><span class="okey">(c)</span><b>Two metas.</b> <code>list-items</code> keeps simple + column as variants; <code>list-card</code> becomes its own provider, because the bordered surface is a real form change and LC-1(a) says the surface IS the line.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-2" id="LC-2-none" value=""><label for="LC-2-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): the three shapes share a state set, a hit target and an accessibility contract; <code>list-items</code>&rsquo;s purpose already covers &ldquo;the tappable list-row family&rdquo;. If LC-1 lands on (a), option (c) becomes the honest second choice — the surface would then be the one thing the two metas genuinely disagree about.</p>
+<textarea class="note" data-id="LC-2" aria-label="Notes for LC-2" placeholder="Notes for LC-2 — your words"></textarea>
+</div>
+
+<div class="dec" data-id="LC-3">
+<div class="dechead"><span class="decid">LC-3</span><h3>ACCOUNT-CARD &mdash; does it join <code>record-list</code></h3></div>
+<p>Your note: <em>&ldquo;account cards can stack like a list&rdquo;</em>. Today <code>account-card</code> is <code>$not-a-provider</code> and cannot be reached by a &ldquo;show me the items&rdquo; brief.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="LC-3" id="LC-3-a" value="a"><label for="LC-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>Stays <code>$not-a-provider</code>; the stacking is the list-card variant</b> from LC-2, hosting account records. One account card = one record summary; many stacked = a list-card list. Nothing about the component changes, and the composer reaches the stack through <code>record-list</code> as it should.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-3" id="LC-3-b" value="b"><label for="LC-3-b"><span class="okey">(b)</span><b>It joins <code>record-list</code></b> as a ninth provider, gated on the record KIND — the same construction as <code>transaction-row</code> and <code>document-row</code>, which are already kind-gated providers. Most direct reading of your note.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-3" id="LC-3-c" value="c"><label for="LC-3-c"><span class="okey">(c)</span><b>Stays out, gains a <code>with</code> edge</b> to the list-card variant — the <code>legend</code> / <code>chart-sparkline</code> construction: a complement carried on the meta, not a provider.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-3" id="LC-3-none" value=""><label for="LC-3-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): adding a ninth kind-gated provider for every record type that happens to have a card-shaped presentation puts the library on a path to a provider per fintech noun. The variant carries the stacking without that. But (b) is not wrong — <code>transaction-row</code> is the precedent, and it is yours to weigh.</p>
+<textarea class="note" data-id="LC-3" aria-label="Notes for LC-3" placeholder="Notes for LC-3 — your words"></textarea>
+</div>
+
+<div class="dec" data-id="LC-4">
+<div class="dechead"><span class="decid">LC-4</span><h3>THE CARDINALITY NUMBERS &mdash; do we import any</h3></div>
+<p>The only numbers thirteen systems offer: USWDS&rsquo;s six per collection, Polaris&rsquo;s fifty before pagination, Carbon&rsquo;s three paragraphs per row. B-09 was ratified with your note and is still open on the number.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="LC-4" id="LC-4-a" value="a"><label for="LC-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>None as a gate; the comparison test instead</b> — if a field must be read DOWN a column across records, it is a table. Numbers go on the metas as prose. This is the #271 lane&rsquo;s own recommendation on B-09, unchanged by anything found here.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-4" id="LC-4-b" value="b"><label for="LC-4-b"><span class="okey">(b)</span><b>Adopt six</b> as a soft ceiling above which cards yield to a list. It is USWDS&rsquo;s <em>collection</em> number, not their <em>card</em> number — importing it moves a quote out of its component.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-4" id="LC-4-c" value="c"><label for="LC-4-c"><span class="okey">(c)</span><b>Both</b> — six as an advisory warning in the gate report, the comparison test as the blocking rule.</label></div></li>
+<li><div class="opt"><input type="radio" name="LC-4" id="LC-4-none" value=""><label for="LC-4-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): a &ldquo;complex relationship&rdquo; (the #271 lane&rsquo;s phrase on row B-20) and USWDS&rsquo;s six-or-fewer are both unmachine-checkable at our gate, and s251-D3&rsquo;s three-axis independence is the thing a soft number would blur first.</p>
+<textarea class="note" data-id="LC-4" aria-label="Notes for LC-4" placeholder="Notes for LC-4 — your words"></textarea>
+</div>
+
+<div class="bar"><button type="button" id="btnExport">Export JSON</button><button type="button" id="btnCopy">Copy to clipboard</button><button type="button" class="ghost" id="btnClear">Clear</button><span class="said" id="said">not saved yet</span></div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="receipts"><div class="wrap">
+<p class="label">Receipts</p>
+<h2>Where every line came from.</h2>
+<div class="split"><div>
+<dl class="recs">
+<dt>Your four notes</dt><dd>notes/_lanes/272/harvest-decisions-2026-09-14.json — rows B-09, B-10, B-20, N-account-card. Quoted verbatim, spelling kept.</dd>
+<dt>Register</dt><dd>knowledge/_parked.json — P-272-1</dd>
+<dt>Ruling that pulled it forward</dt><dd>knowledge/_rulings.json — s273-D3</dd>
+<dt>Harvested systems</dt><dd>notes/_lanes/271/harvest/{A,B,C}/SOURCES.json · notes/_lanes/270/when-research/SOURCES.json — 13 systems, union</dd>
+<dt>Decision rows</dt><dd>notes/_lanes/271/harvest/B/DECISION-TABLE.json — B-09, B-10, B-20</dd>
+<dt>Our canon</dt><dd>knowledge/roles.json · knowledge/when-fields.json · knowledge/components/{list-items,cards,account-card,table,data-grid}.meta.json</dd>
+<dt>Citation method</dt><dd>knowledge/_RUNBOOK-external-claims.md</dd>
+<dt>Lane folder</dt><dd>notes/_lanes/273/list-vs-card/</dd>
+</dl>
+</div><div>
+<h4>Fetched live for this lane (2026-09-15)</h4>
+<ul class="prose">
+<li><code>nngroup.com/articles/cards-component/</code> — the only full definition of a card found in any source. Fetched OK.</li>
+<li><code>design-system.service.gov.uk/components/summary-list/</code> — the summary-card section. Fetched OK.</li>
+<li><code>raw.githubusercontent.com/carbon-design-system/carbon-website/main/src/pages/components/structured-list/usage.mdx</code> — Fetched OK.</li>
+<li><code>raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/lists/resource-item.mdx</code> — Fetched OK.</li>
+<li><code>m3.material.io/components/cards/guidelines</code> — <b>PARTIAL.</b> Body client-rendered; the one M3 line quoted here is from the page&rsquo;s server-rendered meta description and is labelled as such, not laundered as prose.</li>
+</ul>
+<h4 style="margin-top:var(--s3)">Silent and unreachable &mdash; declared, not inferred</h4>
+<p>Apple HIG, Atlassian and Fluent 2 are recorded as unreachable by the #271 harvest&rsquo;s own refused list and were not re-probed in this lane&rsquo;s budget. Adobe Spectrum, Datawrapper and the FT Visual Vocabulary are silent on this crossing. <b>No position was invented for any of them.</b></p>
+<p><b>Nothing was enacted.</b> No meta, no <code>roles.json</code>, no <code>when-fields.json</code>, no <code>_parked.json</code>, no gate, no commit. The only files this lane wrote are its own lane folder and this page.</p>
+</div></div>
+</div></section>
+
+<footer><div class="wrap">Nothing on this page is a ruling. P-272-1&rsquo;s owner is Dave; the lane researches and proposes.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-list-vs-card-273-v1";
+ var IDS=["LC-1","LC-2","LC-3","LC-4"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="—";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided · saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"_PROPOSAL-list-vs-card-2026-09-15-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ /* #272 by addition: a note typed <400ms before a reload/close was lost. Flush on blur and unload. */
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="list-vs-card-decisions-2026-09-15.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>
