@@ -108,6 +108,20 @@ corpus doors, two-stage retrieval throughout.
   deliberately OPEN-form — moved content carries arbitrary headings, measured #25).
   Same lexicon file as the DS door — one curation point.
 
+  ⛔ **AND THE INDEX THE QUOTE GATE SEARCHES COVERS NEITHER `notes/_lanes/` NOR THE `says`
+  FIELD OF `knowledge/_rulings.json` — SO A 0 FROM `knowledge/_quote_gate.py` IS A STATEMENT
+  ABOUT THE INDEX, NEVER ABOUT THE QUOTE.** *(Homed here BY ADDITION at the #276 wrap's 2f
+  EXIT CHECK, from the lesson the #275 stratum carried into an append-only dated home before
+  it rolled; measured four wraps running — #273 **0/13**, #274 **0/9**, #275 **2/4**, #276
+  **see this session's stratum** — which is what makes it a class and not an anecdote.
+  provenance: 276 · 2026-09-15 · status: observed.)* Dave's words arrive in a lane file
+  (`notes/_lanes/<N>/DAVE-RULINGS-<date>.md`) and are inscribed into a ruling's `says`, and
+  `_build_memento_index.py` reads neither surface. ⇒ **When the gate returns 0, verify the
+  sentence as an EXACT SUBSTRING of the lane file and SAY WHICH FILE you checked** — never
+  present the 0 as a refusal of the quote, and never drop the check silently.
+  ⚠ **Widening the index to cover those two surfaces is UNBUILT AND UNRULED**, priced at one
+  lane; it is Dave's call, and until he takes it the verification above is held by hand.
+
 **Two-stage protocol (the ruled shape):** stage 1 returns REFS (ids + one-line heads +
 file:line) — cheap to read; stage 2 `--fetch <id>` prints the record VERBATIM. Spend
 tokens on the records you need, not on the corpus.
