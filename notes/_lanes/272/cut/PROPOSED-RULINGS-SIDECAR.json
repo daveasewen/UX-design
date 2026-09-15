@@ -1,0 +1,143 @@
+{
+  "$description": "per-proposed-id provenance the ruling record has no slot for.",
+  "sidecar": {
+    "s272-D1": {
+      "source_row": "R-A-14",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "Is a slider legal in a form at all?",
+      "decision": "option",
+      "option_index": 2,
+      "chosen_option": "Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).",
+      "decided_at": "2026-09-15T09:00:00.000Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "slider",
+        "range-slider"
+      ],
+      "quotes": {
+        "GOV.UK": "Avoid using range slider questions, where the user needs to click and drag",
+        "Fluent 2": "Use a slider for imprecise values.",
+        "Atlassian": "Don't use a range if choosing a specific value is important.",
+        "IBM Carbon": "Do not use for extremely large ranges, for example, 1-1000.",
+        "Material 3": "Changes made with sliders must take effect immediately",
+        "Adobe Spectrum": "used when the upper and lower bounds to the range are invariable.",
+        "NN/g": "Sliders or knobs are continuous controls.",
+        "Apple HIG": "Consider supplementing a slider with a corresponding text field and stepper.",
+        "USWDS": "no slider component",
+        "OURS": "slider.meta antiPatterns[2] (REVIEW, inferred): 'using a slider where precise numeric entry is required (pair with an input)'"
+      },
+      "why_contested": "GOV.UK rejects the interaction outright on accessibility grounds (WCAG 2.5.1 pointer gestures) and ships no slider. Six systems ship one with conditions. M3 adds a condition none of the others do: the change must take effect immediately — which would make a slider inside a submitted form illegal.",
+      "options": [
+        "Slider is legal in filters and settings only, never inside a submitted form (M3's immediacy test, and it sidesteps most of GOV.UK's objection since filters re-apply live).",
+        "Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).",
+        "Slider is removed from the input role and kept only as a display/filter control.",
+        "Slider stands as built; record the GOV.UK divergence."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 1 plus the pairing from option 2 wherever a value is committed. The immediacy test is the same test that separates Switch from Checkbox in s270 — one predicate, two families, which is worth more than a slider-specific rule.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "found",
+        "found": true,
+        "records": [
+          {
+            "id": "ls:HDR",
+            "file": "_LIVE-STATE.md",
+            "line": 1
+          },
+          {
+            "id": "ls:DELTAS",
+            "file": "_LIVE-STATE.md",
+            "line": 69
+          }
+        ]
+      }
+    },
+    "s272-D2": {
+      "source_row": "R-A-11",
+      "role": "input",
+      "slice": "A",
+      "family": "R",
+      "label": "For a date the user already knows (date of birth, card expiry): calendar picker or three plain text boxes?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T09:00:00.000Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "date-picker",
+        "calendar",
+        "input-fields"
+      ],
+      "quotes": {
+        "GOV.UK": "a date they'll already know, or can look up without using a calendar",
+        "GOV.UK (dates pattern)": "Only use a calendar control if users need to: pick a date",
+        "Shopify Polaris": "always give users the option to enter the date using a text field component",
+        "USWDS": "Always allow a user to type in the date manually",
+        "Atlassian": "For most situations, use the date picker or date time picker components",
+        "Material 3": "Text field drop-downs on medium and expanded breakpoints like tablet and desktop",
+        "IBM Carbon": "silent on the choice (size guidance only)",
+        "OURS": "date-picker.meta: a boxed field with free typing PLUS a panel from the tail button; calendar.meta antiPatterns[0] draws the read-vs-pick line"
+      },
+      "why_contested": "GOV.UK restricts the calendar control to near/relational dates and uses three text boxes for everything else. Four other systems treat the calendar panel as the default with typing as a fallback. A date of birth gets two different components depending on which system you follow.",
+      "options": [
+        "Date-picker everywhere, typing always available (our current build; matches Atlassian, M3, Carbon, Ant).",
+        "Split by date class: memorable/known dates (DOB, card expiry) get plain fields; chosen dates (payment date, appointment) get Date-picker. This is GOV.UK's rule and it is checkable from the field's semantics.",
+        "Date-picker everywhere, but the panel does not open for known-date fields."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 2. It is the only one backed by named research, it costs us nothing we have built (the typed field already exists and already validates on blur), and 'is this date one the user knows' is a question the form author can always answer.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "10 of 12",
+          "longest_common_run": "it is the only"
+        }
+      }
+    },
+    "s272-D3": {
+      "source_row": "N-date-range-picker",
+      "role": "input",
+      "slice": "A",
+      "family": "N",
+      "label": "date-range-picker",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T09:00:00.000Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "date-range-picker"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta date-range-picker.purpose + antiPatterns[0,1]",
+          "Carbon date-picker (range variant)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the answer is TWO dates that bound one period AND both endpoints share ONE calendar panel AND an out-of-order pair errors rather than silently swapping",
+      "when_prose": "beats two Date-pickers side by side (our own antiPatterns[0]: \"Two independent single-date pickers with no shared panel or cross-field check\") because order errors otherwise surface too late; beats date-picker whenever the question is a statement period, a transaction search window or a custom reporting window; yields to date-picker whenever only one date is asked for.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    }
+  },
+  "unknown_export_ids": []
+}

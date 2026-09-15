@@ -1,0 +1,141 @@
+{
+  "$description": "per-proposed-id provenance the ruling record has no slot for.",
+  "sidecar": {
+    "s272-D1": {
+      "source_row": "R-A-01",
+      "role": "action",
+      "slice": "A",
+      "family": "R",
+      "label": "How many primary buttons per what — and what is the 'what'?",
+      "decision": "option",
+      "option_index": 3,
+      "chosen_option": "One primary per LAYOUT REGION as defined by our app-shell (page header · main · action bar · each modal surface) — our own vocabulary rather than an imported one.",
+      "decided_at": "2026-09-15T08:17:04.743Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [
+        "button",
+        "action-bar",
+        "cta-lockup",
+        "alert",
+        "banner"
+      ],
+      "quotes": {
+        "IBM Carbon": "Primary buttons should only appear once per screen",
+        "Atlassian": "Only include one primary button or call to action (CTA) in a page",
+        "Fluent 2": "Only use one primary button in a layout for the most important action.",
+        "Ant Design": "there can be at most one primary button in a section.",
+        "Shopify Polaris": "Don't use more than one primary button in a section or screen",
+        "Adobe Spectrum": "Don't use more than 3 accent buttons in the same view.",
+        "GOV.UK": "silent on count",
+        "USWDS": "Avoid using too many buttons on a page.",
+        "NN/g": "Primary buttons have the most visual emphasis to grab user attention",
+        "OURS": "button.meta antiPatterns[0]: 'Using more than one primary button in a single context' — 'context' is undefined"
+      },
+      "why_contested": "The COUNT is near-unanimous (1) with one outlier (3). The SCOPE word is not: screen · page · layout · section · view. No gate can check 'context'.",
+      "options": [
+        "One primary per SCREEN (Carbon's word) — strictest, catches a primary in a card inside a page that already has one.",
+        "One primary per SECTION (Ant/Polaris) — allows a page-level primary plus one per card or panel.",
+        "One primary per LAYOUT REGION as defined by our app-shell (page header · main · action bar · each modal surface) — our own vocabulary rather than an imported one.",
+        "Leave 'context' undefined and keep the rule advisory."
+      ],
+      "lane_recommendation": "LANE'S RECOMMENDATION: option 3. It is the only wording that names things our library already has, so a gate can walk the DOM and count. Carbon's 'screen' is the closest external match and explicitly excludes the app header, modal and side panel — which is option 3 in different words.",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "NOT-FOUND",
+        "found": false,
+        "nearest": {
+          "id": "carries:residual-272",
+          "file": "_CARRIES.md",
+          "line": 46,
+          "shared_bigrams": "6 of 13",
+          "longest_common_run": "that is the"
+        }
+      }
+    },
+    "s272-D2": {
+      "source_row": "N-tags-input",
+      "role": "input",
+      "slice": "A",
+      "family": "N",
+      "label": "tags-input",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:17:05.096Z",
+      "note_absent": true,
+      "guess_source": true,
+      "components": [
+        "tags-input"
+      ],
+      "quotes": {
+        "sources": [
+          "OUR meta tags-input.purpose + antiPatterns[0..4]",
+          "Carbon tag (overflow at five lines)"
+        ]
+      },
+      "why_contested": null,
+      "options": [],
+      "lane_recommendation": null,
+      "when_gate": "the committed values are the USER'S OWN words AND no option list can be offered AND each value becomes a removable Tags chip AND a half-typed value is committed on blur, never discarded",
+      "when_prose": "beats combobox (#270: \"options >= 16, closed list\") and multi-select (#270: \"the answer is a set\") on the single test our meta already states — is there a list at all; where a list exists the answer belongs to one of those two, and where it does not, only this component is honest (it explicitly does not claim role=combobox without a list, our antiPatterns[3]); the chip itself is the gated Tags atom, so any chip change lands in Tags first.",
+      "confidence": "none",
+      "quote_gate": {
+        "verdict": "note-absent",
+        "found": false
+      }
+    },
+    "s272-D3": {
+      "source_row": "B-01",
+      "role": "wayfinding",
+      "slice": "B",
+      "family": "R",
+      "label": "At what list length does a record-list get pagination?",
+      "decision": "ratify",
+      "option_index": null,
+      "chosen_option": null,
+      "decided_at": "2026-09-15T08:17:04.955Z",
+      "note_absent": false,
+      "guess_source": false,
+      "components": [],
+      "quotes": {
+        "Polaris": "Paginate when the current list contains more than 50 items.",
+        "IBM Carbon": "When there is too much data to display on one page",
+        "GOV.UK": "silent on any number",
+        "Ant Design": "When it will take a long time to load/render all items.",
+        "USWDS": "silent — the page carries no when-to-use section at all",
+        "NN/g": "silent on a number; argues against infinite scroll instead",
+        "ours": "no rule exists"
+      },
+      "why_contested": null,
+      "options": [
+        "Adopt Polaris's 50 as our number.",
+        "Carry no number: gate on \"more than one screen of rows\" (device-relative, testable in a fixture).",
+        "Carry no number and no gate — pagination stays a composer's judgement, prose only."
+      ],
+      "lane_recommendation": "THE LANE RECOMMENDS option 2. 50 is one system's number with no research cited, and a 40-row table on a phone already needs pagination. This is the exact shape of s270-D1 — if Dave rules a number here he should rule it the same way (provisional, with a tripwire).",
+      "when_gate": null,
+      "when_prose": null,
+      "confidence": null,
+      "quote_gate": {
+        "verdict": "found",
+        "found": true,
+        "records": [
+          {
+            "id": "ls:HDR",
+            "file": "_LIVE-STATE.md",
+            "line": 1
+          },
+          {
+            "id": "ls:DELTAS",
+            "file": "_LIVE-STATE.md",
+            "line": 69
+          }
+        ]
+      }
+    }
+  },
+  "unknown_export_ids": []
+}

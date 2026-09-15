@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#272 the cut — proposed rulings from Dave's harvest decisions</title>
+<style>
+/* ===== knowledge/canon/type.css — baked in verbatim ===== */
+
+/* Apollo type composites — HAND-AUTHORED. Editorial + Component.
+   (The header said "generated 2026-07-17" for a day. Nothing has ever generated this file; the
+   line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
+   Metrics: cap 0.723em, descender 0.232em (Univers Next, USE_TYPO_METRICS off).
+   BRAND RULE: no light/ultra on body sizes (font-5/6/7 min regular 400; no dark step-up there). */
+:root{--uf:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;--cap:0.723;--desc:0.232;}
+/* ===== EDITORIAL — full line-height ===== */
+.t-ed-display-1{font-family:var(--uf);font-size:52px;line-height:60px;font-weight:250;}
+.t-ed-display-1 .em,.t-ed-display-1.em{font-weight:350;}
+.t-ed-display-2{font-family:var(--uf);font-size:40px;line-height:48px;font-weight:300;}
+.t-ed-display-2 .em,.t-ed-display-2.em{font-weight:400;}
+.t-ed-heading-1{font-family:var(--uf);font-size:32px;line-height:40px;font-weight:300;}
+.t-ed-heading-1 .em,.t-ed-heading-1.em{font-weight:400;}
+.t-ed-heading-2{font-family:var(--uf);font-size:28px;line-height:36px;font-weight:300;}
+.t-ed-heading-2 .em,.t-ed-heading-2.em{font-weight:400;}
+.t-ed-heading-3{font-family:var(--uf);font-size:24px;line-height:32px;font-weight:300;}
+.t-ed-heading-3 .em,.t-ed-heading-3.em{font-weight:400;}
+.t-ed-heading-4{font-family:var(--uf);font-size:20px;line-height:28px;font-weight:300;}
+.t-ed-heading-4 .em,.t-ed-heading-4.em{font-weight:400;}
+.t-ed-body{font-family:var(--uf);font-size:16px;line-height:24px;font-weight:400;}
+.t-ed-body .em,.t-ed-body.em{font-weight:500;}
+.t-ed-body-small{font-family:var(--uf);font-size:14px;line-height:20px;font-weight:400;}
+.t-ed-body-small .em,.t-ed-body-small.em{font-weight:500;}
+.t-ed-caption{font-family:var(--uf);font-size:12px;line-height:16px;font-weight:400;}
+.t-ed-caption .em,.t-ed-caption.em{font-weight:500;}
+
+/* ===== COMPONENT — TYPE and BOX are SEPARATE (T-D12 proposal, 2026-07-18) =====
+   BINDING MECHANISM (Dave ruling T-D9): components bind by being APPENDED TO THE SELECTOR LIST
+   of the composite they use. Plain CSS — no generator, no build step, no markup change.
+   LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
+   order decides. type.css MUST load BEFORE component CSS. Gated by _validate_type_composites.py.
+
+   WHY THE SPLIT (T-D11 evidence): the old `.t-cm` conflated two separable things, and binding it
+   to elements that were not already single-line controls handed them a LAYOUT change wearing a
+   type change's clothing - 13 of 21 files moved, 2 changed page height.
+
+     TYPE  = font-family / font-size / font-weight.        Safe to bind ANYWHERE.
+     BOX   = display / align-items / line-height / min-height / cap-trim.
+             Safe ONLY where the element is already shaped as a single-line control.
+
+   TWO LISTS, TWO QUESTIONS. Joining `.t-cm-<size>` answers "what does it look like"; joining
+   `.t-cm-slot` answers "is it a single-line control". An element may join the first without the
+   second - that is the whole point, and it is what makes the `/1` batch a genuine no-op.
+
+   The slot HEIGHT travels with the type via `--slot`, declared on each type composite. A custom
+   property is INERT unless something reads it, so a type-only binding carries no box consequence.
+
+   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers).
+   `display:inline-flex` + `align-items:center` is what optically centres the cap box in a taller
+   slot; an inline-block variant TOP-ALIGNS and is wrong. No padding is authored anywhere. */
+
+/* ---- TYPE - family, size, weight, and the slot height the box WOULD use ---- */
+.t-cm-figure-1{font-family:var(--uf);font-size:52px;font-weight:300;line-height:1;--slot:64px;}
+.t-cm-figure-2{font-family:var(--uf);font-size:40px;font-weight:300;line-height:1;--slot:48px;}
+/* figure-3 — 24px numeric display rung (ds-005 close-out, RULED Dave 2026-07-19: "add 24 to the ramp").
+   weight 500 PRESERVES the countdown numeral's shipped value (zero-visual-change enactment); figure-1/2 are
+   300 because large display reads light, a small numeric display needs the weight-up (weight is per-role in
+   the component composites, not monotonic — cf. heading 400 / section-label 500). First consumer: the
+   Countdown numeral, bound via the `.t-cm-figure-3` CLASS (bare `.num` can't be appended globally — it would
+   collide with `.cn-table td.num`). Multi-size 20/24/32 lands when the timer gains size variants. */
+.t-cm-figure-3{font-family:var(--uf);font-size:24px;font-weight:500;line-height:1;--slot:28px;}
+/* figure-4 — 32px display/amount rung (PREPARED 2026-07-19, awaiting Dave's vouch — promotes the
+   money-format token the Account-card $balance-type-finding flagged; 32 is on-ramp, apply_type_snap
+   maps 30->32). weight 400 matches .t-cm-heading (a 32px numeric display reads at book weight, not the
+   300 large-display uses). Carries font-variant-numeric:tabular-nums because this is the NUMERIC display
+   token — columns of money must align; figure-1/2/3 do not carry it yet (follow-up: add tabular-nums to
+   the whole figure family — they are all numeric displays). Ordinal name (4th figure added); by SIZE it
+   sits between figure-2/40 and figure-3/24. First consumer: Amount-display, bound via the CLASS. */
+.t-cm-figure-4{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;font-variant-numeric:tabular-nums;}
+/* figure-5 / figure-6 — 16px + 14px money/amount rungs (PREPARED 2026-07-19, awaiting Dave's vouch —
+   "number styles sized for money"). Same as label/caption in size+weight but they carry tabular-nums, so
+   inline + dense money amounts render as true numeric figures (columns align). Ordinal names continue the
+   figure family (5th/6th added); by SIZE they are the small end of the ramp. Consumer: Amount-display default+small. */
+.t-cm-figure-5{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+.t-cm-figure-6{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;font-variant-numeric:tabular-nums;}
+/* chart-label / chart-value / chart-key — the DV-D08 chart text ladder (RULED Dave 2026-07-23, ledger
+   _proforma/_DATAVIZ-DECISIONS.md; settles the Q8 label-weight seam the bar audit surfaced). At the 12px
+   chart floor MEDIUM is the floor ("at 12 — medium is the floor"): labels · axis ticks · legend text ·
+   on-chart values = 12/500. chart-value carries tabular-nums (numeric columns/ticks align). Emphasis
+   channel = 700 (chart-key): legend letter-keys + on-chart keys — the kit's reviewed 400/600/700 ladder
+   maps onto the brand set {100,300,400,500,700}; 600 stays admitted NOWHERE. Supersedes both the kit's
+   400-label/600-value pair and the 07-22 uniform-500 snap. Bound via markup CLASS (T-D14 pattern — no
+   appended selectors, so no _type-bindings entry; the blast-radius gate tracks appended selectors only).
+   First consumers: Chart-* canon snippets (chart-revisit lane). Mini chart ramp 12–20 = PARKED. */
+.t-cm-chart-label{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-chart-value{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+.t-cm-chart-key{font-family:var(--uf);font-size:12px;font-weight:700;line-height:1;--slot:16px;font-variant-numeric:tabular-nums;}
+/* mini control ramp (T-D15, Dave 2026-07-24): label/control size variants 12/14/16.
+   Weight 500 at 12+14 (control), 400 at 16 (larger reads fine at regular — Dave's ruling).
+   Bound to the segmented-control atom sizes; any label/control class may adopt a step. */
+.t-cm-ctl-12,
+.seg.sm button{font-family:var(--uf);font-size:12px;font-weight:500;line-height:1;--slot:16px;}
+.t-cm-ctl-14,
+.seg.md button{font-family:var(--uf);font-size:14px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-ctl-16,
+.seg.lg button,
+.seg.l button{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-heading{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;}
+.t-cm-section-label{font-family:var(--uf);font-size:20px;font-weight:500;line-height:1;--slot:24px;}
+.t-cm-label,
+.loader,
+.pg a, .pg .ctrl,
+.search input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-button,
+.btn,
+.action-bar .btn,
+.confirm .btn,
+.hero .cta,
+.nav button,
+.note.global .actions button,
+.qbtn,
+nav.main a{font-family:var(--uf);font-size:16px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-link{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-caption,
+.avatar,
+.badge,
+.eyebrow,
+.label,
+.seg button,
+.sim{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-tooltip{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-legal,
+.chip,
+.stateLabel,
+.status,
+.tabbar .tabbar__item,
+.time{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;--slot:16px;}
+
+/* ---- BOX - the slot. OPT-IN. Only for elements already shaped as single-line controls ---- */
+.t-cm-slot,
+.btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{display:inline-flex;align-items:center;min-height:var(--slot);}
+@supports (text-box-trim: trim-both){
+ .t-cm-slot,
+ .btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{text-box:trim-both cap alphabetic;}
+}
+@supports not (text-box-trim: trim-both){
+ .t-cm-slot::before,
+ .btn::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
+ .t-cm-slot::after,
+ .btn::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
+}
+
+/* ===== SPECIMEN CHROME — NOT a canon composite =====
+   .spec-h = the section-label headings inside reference/specimen docs ("Inline — dot + label").
+   Document structure (each is a real <h2>), styled as a small full-strength label. Deliberately
+   standalone, NOT joined to a type composite — specimen scaffolding is not product type. Full
+   strength by ruling (Dave 2026-07-18): no muting, no opacity fade (opacity is untokenised and
+   dodges the contrast gate). Replaces the former bare global `h2` binding (T-D13). */
+.spec-h{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;color:var(--text,#111);}
+
+/* ===== dark mode — step-up (-V2) on display+heading only; body stays regular ===== */
+[data-theme="dark"]{background:#1A1A1A;color:#fff;}  /* ds-033 / #108-D1 (Dave): dark bg = declared #1A1A1A token, enacted #196 */
+[data-theme="dark"] .t-ed-display-1{font-weight:300;}
+[data-theme="dark"] .t-ed-display-1 .em{font-weight:400;}
+[data-theme="dark"] .t-ed-display-2{font-weight:350;}
+[data-theme="dark"] .t-ed-display-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-1{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-1 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-2{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-2 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-3{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-3 .em{font-weight:500;}
+[data-theme="dark"] .t-ed-heading-4{font-weight:350;}
+[data-theme="dark"] .t-ed-heading-4 .em{font-weight:500;}
+
+
+/* ===== page ===== */
+
+
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;
+      --grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+      --s1:4px;--s2:8px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:64px}
+@media (prefers-color-scheme: dark){
+  :root{--accent:#F6604C;--black:#fff;--white:#1A1A1A;--grey-1:#242424;--grey-2:#333;
+        --grey-3:#454545;--grey-5:#8C8C8C;--grey-6:#A8A8A8;--grey-7:#C6C6C6;--grey-8:#E4E4E4}}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
+body{background:var(--white);color:var(--black);font-family:var(--uf);font-size:16px;
+     line-height:24px;font-weight:400;-webkit-font-smoothing:antialiased}
+main{max-width:1160px;margin:0 auto;padding:var(--s5) var(--s4) var(--s7)}
+header.top{border-bottom:2px solid var(--black);padding-bottom:var(--s4);margin-bottom:var(--s5)}
+.kicker{font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;
+        color:var(--accent);font-weight:500;margin:0 0 var(--s2)}
+h1{font-size:40px;line-height:48px;font-weight:300;margin:0 0 var(--s3);letter-spacing:-.01em}
+h2{font-size:24px;line-height:32px;font-weight:400;margin:var(--s6) 0 var(--s3);
+   padding-bottom:var(--s2);border-bottom:1px solid var(--grey-3)}
+h3{font-size:18px;line-height:26px;font-weight:500;margin:var(--s5) 0 var(--s3);
+   text-transform:uppercase;letter-spacing:.06em}
+p{margin:0 0 var(--s3);max-width:74ch}
+.warn{border-left:2px solid var(--accent);background:var(--grey-1);padding:var(--s3);
+      margin:0 0 var(--s4);font-weight:500}
+.counts{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;
+        background:var(--grey-3);border:1px solid var(--grey-3);margin:0 0 var(--s4)}
+.counts div{background:var(--white);padding:var(--s3)}
+.counts b{display:block;font-size:32px;line-height:38px;font-weight:300}
+.counts span{display:block;font-size:11px;line-height:15px;letter-spacing:.06em;
+             text-transform:uppercase;color:var(--grey-6);margin-top:var(--s1)}
+.card{border-top:1px solid var(--grey-3);padding:var(--s4) 0}
+.card:first-of-type{border-top:2px solid var(--black)}
+.cid{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;
+     color:var(--accent)}
+.crule{font-size:19px;line-height:27px;font-weight:400;margin:var(--s2) 0 var(--s3)}
+.tags{margin:0 0 var(--s3)}
+.tag{display:inline-block;font-size:11px;line-height:16px;letter-spacing:.05em;
+     text-transform:uppercase;border:1px solid var(--grey-3);color:var(--grey-7);
+     padding:1px 6px;margin:0 var(--s1) var(--s1) 0}
+.tag.red{border-color:var(--accent);color:var(--accent);font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+.pane{min-width:0}
+.plab{font-size:11px;line-height:15px;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--grey-6);border-bottom:1px solid var(--grey-3);padding-bottom:var(--s1);
+      margin:0 0 var(--s2)}
+.q{margin:0 0 var(--s2);font-size:14px;line-height:20px;overflow-wrap:anywhere}
+.q b{font-weight:500;color:var(--grey-7)}
+.says{background:var(--grey-1);border-left:2px solid var(--black);padding:var(--s3);
+      font-size:16px;line-height:24px;overflow-wrap:anywhere}
+.says.absent{border-left-color:var(--accent);color:var(--accent)}
+.sub{font-size:12px;line-height:17px;color:var(--grey-6);margin-top:var(--s2)}
+/* inline, NOT inline-block: inline-block leaves a visible gap before a following full stop
+   and breaks the baseline inside a sentence (seen at 1280 on the first render). */
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--grey-1);
+     padding:1px 4px;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+.tblwrap{overflow-x:auto;max-width:100%;margin:0 0 var(--s4)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:20px}
+th,td{text-align:left;vertical-align:top;padding:var(--s2) var(--s3) var(--s2) 0;
+      border-bottom:1px solid var(--grey-3)}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-6);
+   border-bottom:1px solid var(--black);font-weight:500}
+footer{margin-top:var(--s7);border-top:2px solid var(--black);padding-top:var(--s4);
+       font-size:13px;line-height:19px;color:var(--grey-7)}
+@media (max-width:780px){
+  main{padding:var(--s4) var(--s3) var(--s6)}
+  h1{font-size:28px;line-height:36px}
+  .two{grid-template-columns:1fr;gap:var(--s3)}
+  .counts{grid-template-columns:repeat(2,1fr)}
+  .counts b{font-size:26px;line-height:32px}
+}
+
+</style></head><body><main>
+<header class="top">
+<p class="kicker">#272 · 2026-09-15 · the cut</p>
+<h1>Proposed rulings from your harvest decisions</h1>
+<div class="warn">NOTHING IS INSCRIBED. Every record below is <code>status: &quot;proposed&quot;</code>. No <code>knowledge/_rulings.json</code> entry, no <code>components/*.meta.json</code> field and no gate was touched by the generator that made this page. The <code>when</code> predicates for the unanimous rows are a proposed-patch FILE, not an edit.</div>
+<div class="counts">
+<div><b>3</b><span>proposed rulings</span></div>
+<div><b>4</b><span>rows you decided</span></div>
+<div><b>1</b><span>unanimous ratified</span></div>
+<div><b>1</b><span>when predicates proposed</span></div>
+<div><b>1</b><span>no note (NOTE-ABSENT)</span></div>
+<div><b>1</b><span>guess-source rows</span></div>
+<div><b>111</b><span>undecided</span></div>
+<div><b>115</b><span>rows on the sheet</span></div>
+</div>
+<p class="sub">Export: <code>synthetic-export-A.json</code> · source sheet: <code>notes/_REVIEW-when-harvest-whole-library-2026-09-14-v2.html</code> · quote gate (ADVISORY): 1 of 2 of your notes found verbatim in the record; 1 not found.</p>
+</header>
+<h2>Proposed rulings, by role</h2>
+<h3>input · 3</h3>
+<div class="card">
+<span class="cid">s272-D1</span> <code>R-A-14</code>
+<p class="crule">Is a slider legal in a form at all? — Dave chose option 2: Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).</p>
+<p class="tags">
+<span class="tag">option 2</span>
+<span class="tag">slice A</span>
+<span class="tag">slider</span>
+<span class="tag">range-slider</span>
+<span class="tag">quote gate: found</span>
+</p>
+<div class="two">
+<div class="pane"><p class="plab">what the systems said — verbatim</p>
+<p class="q"><b>GOV.UK</b> — Avoid using range slider questions, where the user needs to click and drag</p>
+<p class="q"><b>Fluent 2</b> — Use a slider for imprecise values.</p>
+<p class="q"><b>Atlassian</b> — Don&#x27;t use a range if choosing a specific value is important.</p>
+<p class="q"><b>IBM Carbon</b> — Do not use for extremely large ranges, for example, 1-1000.</p>
+<p class="q"><b>Material 3</b> — Changes made with sliders must take effect immediately</p>
+<p class="q"><b>Adobe Spectrum</b> — used when the upper and lower bounds to the range are invariable.</p>
+<p class="q"><b>NN/g</b> — Sliders or knobs are continuous controls.</p>
+<p class="q"><b>Apple HIG</b> — Consider supplementing a slider with a corresponding text field and stepper.</p>
+<p class="q"><b>USWDS</b> — no slider component</p>
+<p class="q"><b>OURS</b> — slider.meta antiPatterns[2] (REVIEW, inferred): &#x27;using a slider where precise numeric entry is required (pair with an input)&#x27;</p>
+<p class="sub">GOV.UK rejects the interaction outright on accessibility grounds (WCAG 2.5.1 pointer gestures) and ships no slider. Six systems ship one with conditions. M3 adds a condition none of the others do: the change must take effect immediately — which would make a slider inside a submitted form illegal.</p>
+</div>
+<div class="pane"><p class="plab">your note — verbatim, the <code>says</code></p>
+<div class="says">180 was decided because we use a sub for the wrap</div>
+<p class="sub"><b>Option 2:</b> Slider is legal anywhere, always paired with a linked numeric field (NN/g and Apple HIG both require the pairing).</p>
+<p class="sub">governs: <code>knowledge/components/slider.meta.json · knowledge/components/range-slider.meta.json</code></p>
+<p class="sub">evidence: chat #272 — Dave&#x27;s decision sheet export, row R-A-14, decision &quot;option 2&quot;</p>
+</div></div></div>
+<div class="card">
+<span class="cid">s272-D2</span> <code>R-A-11</code>
+<p class="crule">For a date the user already knows (date of birth, card expiry): calendar picker or three plain text boxes? — Dave&#x27;s decision on harvest row R-A-11: ratify.</p>
+<p class="tags">
+<span class="tag">ratify</span>
+<span class="tag">slice A</span>
+<span class="tag">date-picker</span>
+<span class="tag">calendar</span>
+<span class="tag">input-fields</span>
+<span class="tag red">quote gate: not found</span>
+</p>
+<div class="two">
+<div class="pane"><p class="plab">what the systems said — verbatim</p>
+<p class="q"><b>GOV.UK</b> — a date they&#x27;ll already know, or can look up without using a calendar</p>
+<p class="q"><b>GOV.UK (dates pattern)</b> — Only use a calendar control if users need to: pick a date</p>
+<p class="q"><b>Shopify Polaris</b> — always give users the option to enter the date using a text field component</p>
+<p class="q"><b>USWDS</b> — Always allow a user to type in the date manually</p>
+<p class="q"><b>Atlassian</b> — For most situations, use the date picker or date time picker components</p>
+<p class="q"><b>Material 3</b> — Text field drop-downs on medium and expanded breakpoints like tablet and desktop</p>
+<p class="q"><b>IBM Carbon</b> — silent on the choice (size guidance only)</p>
+<p class="q"><b>OURS</b> — date-picker.meta: a boxed field with free typing PLUS a panel from the tail button; calendar.meta antiPatterns[0] draws the read-vs-pick line</p>
+<p class="sub">GOV.UK restricts the calendar control to near/relational dates and uses three text boxes for everything else. Four other systems treat the calendar panel as the default with typing as a fallback. A date of birth gets two different components depending on which system you follow.</p>
+</div>
+<div class="pane"><p class="plab">your note — verbatim, the <code>says</code></p>
+<div class="says">yes do that one, it is the only one a gate can check</div>
+<p class="sub">quote gate nearest: <code>carries:residual-272</code> · shared bigrams 10 of 12</p>
+<p class="sub">governs: <code>knowledge/components/date-picker.meta.json · knowledge/components/calendar.meta.json · knowledge/components/input-fields.meta.json</code></p>
+<p class="sub">evidence: chat #272 — Dave&#x27;s decision sheet export, row R-A-11, decision &quot;ratify&quot;</p>
+</div></div></div>
+<div class="card">
+<span class="cid">s272-D3</span> <code>N-date-range-picker</code>
+<p class="crule">date-range-picker — the proposed `when` gate is: the answer is TWO dates that bound one period AND both endpoints share ONE calendar panel AND an out-of-order pair errors rather than silently swapping. Dave&#x27;s decision on harvest row N-date-range-picker: ratify. SOURCE: none found by the #271 harvest — this row is a DECLARED GUESS (31 no-source rows), so the predicate is ours, not an imported one.</p>
+<p class="tags">
+<span class="tag">ratify</span>
+<span class="tag">slice A</span>
+<span class="tag">date-range-picker</span>
+<span class="tag red">guess-source</span>
+<span class="tag red">NOTE-ABSENT</span>
+</p>
+<div class="two">
+<div class="pane"><p class="plab">what the systems said — verbatim</p>
+<p class="q">OUR meta date-range-picker.purpose + antiPatterns[0,1] · Carbon date-picker (range variant)</p>
+</div>
+<div class="pane"><p class="plab">your note — verbatim, the <code>says</code></p>
+<div class="says absent">ratify — NOTE-ABSENT</div>
+<p class="sub">You decided this row but left no note, so the <code>says</code> is a MARKER, not your words. It cannot be inscribed as a quote until you give one.</p>
+<p class="sub">governs: <code>knowledge/components/date-range-picker.meta.json</code></p>
+<p class="sub">evidence: chat #272 — Dave&#x27;s decision sheet export, row N-date-range-picker, decision &quot;ratify&quot;</p>
+</div></div></div>
+<h2>Proposed <code>when</code> predicates — the unanimous rows you ratified</h2>
+<p>s253-D1 shape: one string, <b>GATE — PROSE</b>, split on the first em-dash. Written to <code>PROPOSED-WHEN-PATCH.json</code> only. <b>No meta was touched.</b></p>
+<div class="tblwrap"><table><thead><tr><th>meta</th><th>row</th><th>proposed <code>when</code></th><th>replaces?</th></tr></thead><tbody>
+<tr><td><code>knowledge/components/input-fields.meta.json</code></td><td><code>U-input-fields</code><br><span class="sub">consensus-external</span></td><td>entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed &quot;the answer may span multiple lines&quot;) whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there &quot;is likely to result in an error&quot;).</td><td>no</td></tr>
+</tbody></table></div>
+<h2>Not ruled — still yours</h2>
+<p>111 rows carry no decision that cuts a ruling: 110 open, 1 later, 0 declined. Nothing below was ruled, guessed or assumed.</p>
+<div class="tblwrap"><table><thead><tr><th>row</th><th>role</th><th>status</th><th>rule</th></tr></thead><tbody>
+<tr><td><code>N-cta-lockup</code></td><td>action</td><td>open</td><td>cta-lockup</td></tr>
+<tr><td><code>N-quick-actions</code></td><td>action</td><td>open</td><td>quick-actions</td></tr>
+<tr><td><code>R-A-01</code></td><td>action</td><td>open</td><td>How many primary buttons per what — and what is the &#x27;what&#x27;?</td></tr>
+<tr><td><code>R-A-02</code></td><td>action</td><td>open</td><td>Can a LINK perform an action (download a PDF, open a new window), or must that be a button?</td></tr>
+<tr><td><code>R-A-20</code></td><td>action</td><td>open</td><td>Is a tooltip REQUIRED on an icon-only button?</td></tr>
+<tr><td><code>R-A-25</code></td><td>action</td><td>open</td><td>How many actions in an action bar, and which side are they on?</td></tr>
+<tr><td><code>R-A-26</code></td><td>action</td><td>open</td><td>Is the FAB mobile-only?</td></tr>
+<tr><td><code>U-icon-button</code></td><td>action</td><td>open</td><td>icon-button</td></tr>
+<tr><td><code>B-07</code></td><td>arrangement</td><td>open</td><td>May more than one accordion section be open at once?</td></tr>
+<tr><td><code>B-08</code></td><td>arrangement</td><td>open</td><td>Does Carousel stay in the library?</td></tr>
+<tr><td><code>B-09</code></td><td>arrangement</td><td>open</td><td>Is there a maximum number of cards in a card collection?</td></tr>
+<tr><td><code>N-feature-grid-lockup</code></td><td>arrangement</td><td>open</td><td>feature-grid-lockup</td></tr>
+<tr><td><code>N-stats-band-lockup</code></td><td>arrangement</td><td>open</td><td>stats-band-lockup</td></tr>
+<tr><td><code>R15</code></td><td>arrangement</td><td>open</td><td>Two dashboard templates answer the same question — what discriminates them?</td></tr>
+<tr><td><code>R16</code></td><td>arrangement</td><td>open</td><td>What language and furniture may an error page carry?</td></tr>
+<tr><td><code>B-04</code></td><td>chart-panel</td><td>open</td><td>How many slices may a pie or donut carry?</td></tr>
+<tr><td><code>B-05</code></td><td>chart-panel</td><td>open</td><td>Is a donut better or worse than a pie?</td></tr>
+<tr><td><code>B-11</code></td><td>chart-panel</td><td>open</td><td>When is a bar chart horizontal rather than vertical?</td></tr>
+<tr><td><code>B-12</code></td><td>chart-panel</td><td>open</td><td>How many series may a grouped bar chart carry?</td></tr>
+<tr><td><code>B-13</code></td><td>chart-panel</td><td>open</td><td>When does composition-over-time stop being a stacked area and become stacked columns?</td></tr>
+<tr><td><code>B-14</code></td><td>chart-panel</td><td>open</td><td>Which intent word gates chart-combo?</td></tr>
+<tr><td><code>B-15</code></td><td>chart-panel</td><td>open</td><td>Which intent word gates the butterfly pair?</td></tr>
+<tr><td><code>B-19</code></td><td>chart-panel</td><td>open</td><td>How many colour-coded categories may a legend carry?</td></tr>
+<tr><td><code>B-22</code></td><td>chart-panel</td><td>open</td><td>Is there a LOWER bound on pie slices?</td></tr>
+<tr><td><code>U-Chart-boxplot</code></td><td>chart-panel</td><td>open</td><td>Chart-boxplot</td></tr>
+<tr><td><code>U-Chart-candlestick</code></td><td>chart-panel</td><td>open</td><td>Chart-candlestick</td></tr>
+<tr><td><code>U-Chart-histogram</code></td><td>chart-panel</td><td>open</td><td>Chart-histogram</td></tr>
+<tr><td><code>B-02</code></td><td>cross-role</td><td>open</td><td>May a Tag be interactive (a link or button)?</td></tr>
+<tr><td><code>B-24</code></td><td>feedback</td><td>open</td><td>Are alias metas exempt from a when-completeness gate?</td></tr>
+<tr><td><code>N-countdown-timer</code></td><td>feedback</td><td>open</td><td>countdown-timer</td></tr>
+<tr><td><code>R-A-03</code></td><td>feedback</td><td>open</td><td>How long does a toast stay before auto-dismissing?</td></tr>
+<tr><td><code>R-A-04</code></td><td>feedback</td><td>open</td><td>How many toasts may be on screen at once?</td></tr>
+<tr><td><code>R-A-05</code></td><td>feedback</td><td>open</td><td>Is a page-level Banner dismissible?</td></tr>
+<tr><td><code>R-A-06</code></td><td>feedback</td><td>open</td><td>At what wait does a spinner become a progress bar?</td></tr>
+<tr><td><code>R-A-07</code></td><td>feedback</td><td>open</td><td>What does a FULL-PAGE load show — spinner or skeleton?</td></tr>
+<tr><td><code>R-A-08</code></td><td>feedback</td><td>open</td><td>Below what wait is a skeleton worse than nothing?</td></tr>
+<tr><td><code>R-A-22</code></td><td>feedback</td><td>open</td><td>What must a confirmation screen contain?</td></tr>
+<tr><td><code>R-A-23</code></td><td>feedback</td><td>open</td><td>Must an empty state always offer an action?</td></tr>
+<tr><td><code>R-A-29</code></td><td>feedback</td><td>open</td><td>Must an error Alert carry an action?</td></tr>
+<tr><td><code>R-A-30</code></td><td>feedback</td><td>open</td><td>Does `notifications` keep a catalogue identity, or become a pointer?</td></tr>
+<tr><td><code>U-alert</code></td><td>feedback</td><td>open</td><td>alert</td></tr>
+<tr><td><code>B-16</code></td><td>headline-metric</td><td>open</td><td>Must a Stat card carry a delta?</td></tr>
+<tr><td><code>B-23</code></td><td>input</td><td>open</td><td>What does a SUPERSEDED component&#x27;s `when` say?</td></tr>
+<tr><td><code>N-account-selector</code></td><td>input</td><td>open</td><td>account-selector</td></tr>
+<tr><td><code>N-secure-entry</code></td><td>input</td><td>open</td><td>secure-entry</td></tr>
+<tr><td><code>N-tags-input</code></td><td>input</td><td>open</td><td>tags-input</td></tr>
+<tr><td><code>R-A-12</code></td><td>input</td><td>later</td><td>Is a clickable multi-step progress indicator legal at all?</td></tr>
+<tr><td><code>R-A-13</code></td><td>input</td><td>open</td><td>What is the maximum number of steps in a flow?</td></tr>
+<tr><td><code>R-A-15</code></td><td>input</td><td>open</td><td>What range is too small or too large for a slider?</td></tr>
+<tr><td><code>R-A-16</code></td><td>input</td><td>open</td><td>One file per input, or a staged list of files against one dropzone?</td></tr>
+<tr><td><code>R-A-17</code></td><td>input</td><td>open</td><td>Do we carry a file-size cap, and what is it?</td></tr>
+<tr><td><code>R-A-18</code></td><td>input</td><td>open</td><td>Is a segmented per-digit OTP field right, or should the code be one field?</td></tr>
+<tr><td><code>R-A-21</code></td><td>input</td><td>open</td><td>One question per page, or grouped multi-field forms?</td></tr>
+<tr><td><code>R-A-27</code></td><td>input</td><td>open</td><td>Does the predictive-search dropdown belong to Search-field or to Combobox?</td></tr>
+<tr><td><code>U-textarea</code></td><td>input</td><td>open</td><td>textarea</td></tr>
+<tr><td><code>U-view-options</code></td><td>input</td><td>open</td><td>view-options</td></tr>
+<tr><td><code>N-command-palette</code></td><td>overlay</td><td>open</td><td>command-palette</td></tr>
+<tr><td><code>N-modal-lightbox</code></td><td>overlay</td><td>open</td><td>modal-lightbox</td></tr>
+<tr><td><code>R-A-09</code></td><td>overlay</td><td>open</td><td>How many actions may a modal carry?</td></tr>
+<tr><td><code>R-A-10</code></td><td>overlay</td><td>open</td><td>Is a modal a last resort or a normal tool?</td></tr>
+<tr><td><code>R-A-19</code></td><td>overlay</td><td>open</td><td>May a tooltip contain interactive content?</td></tr>
+<tr><td><code>R-A-24</code></td><td>overlay</td><td>open</td><td>Are Drawer and Modals&#x27; &#x27;Partial modal&#x27; the same component — and does Drawer survive?</td></tr>
+<tr><td><code>R-A-28</code></td><td>overlay</td><td>open</td><td>At what size does a popover become a drawer or a modal?</td></tr>
+<tr><td><code>U-popover</code></td><td>overlay</td><td>open</td><td>popover</td></tr>
+<tr><td><code>R1</code></td><td>page-frame</td><td>open</td><td>At what point does the primary navigation leave the masthead and become a column?</td></tr>
+<tr><td><code>R14</code></td><td>page-frame</td><td>open</td><td>Does app-shell-split (and Splitter) carry a viewport condition?</td></tr>
+<tr><td><code>R5</code></td><td>page-frame</td><td>open</td><td>Does the navigation rail carry a destination count?</td></tr>
+<tr><td><code>R7</code></td><td>page-frame</td><td>open</td><td>What triggers a mega-footer (doormat) instead of the plain footer?</td></tr>
+<tr><td><code>U-app-shell-focused</code></td><td>page-frame</td><td>open</td><td>app-shell-focused</td></tr>
+<tr><td><code>N-eyebrow</code></td><td>page-title</td><td>open</td><td>eyebrow</td></tr>
+<tr><td><code>N-section-heading-lockup</code></td><td>page-title</td><td>open</td><td>section-heading-lockup</td></tr>
+<tr><td><code>R13</code></td><td>page-title</td><td>open</td><td>Is the Hero restricted to unauthenticated marketing surfaces?</td></tr>
+<tr><td><code>B-10</code></td><td>record-list</td><td>open</td><td>What separates a table from a list of records — field count, or purpose?</td></tr>
+<tr><td><code>B-20</code></td><td>record-list</td><td>open</td><td>Should a table ever yield to a chart?</td></tr>
+<tr><td><code>B-21</code></td><td>record-list</td><td>open</td><td>How tightly is Tree fenced?</td></tr>
+<tr><td><code>U-timeline</code></td><td>record-list</td><td>open</td><td>timeline</td></tr>
+<tr><td><code>B-03</code></td><td>status-surface</td><td>open</td><td>Is a Tag a KEYWORD or a STATUS?</td></tr>
+<tr><td><code>B-06</code></td><td>status-surface</td><td>open</td><td>What separates a progress reading from an allowance reading inside the one Meter?</td></tr>
+<tr><td><code>B-17</code></td><td>status-surface</td><td>open</td><td>What IS Summary — a count board or a review receipt?</td></tr>
+<tr><td><code>B-18</code></td><td>status-surface</td><td>open</td><td>What are the copy rules for a status chip, and may ABSENCE of a chip mean a state?</td></tr>
+<tr><td><code>B-01</code></td><td>wayfinding</td><td>open</td><td>At what list length does a record-list get pagination?</td></tr>
+<tr><td><code>R10</code></td><td>wayfinding</td><td>open</td><td>Where does FILTERING one content set live — Tabs, Segmented-control, or the filter bar?</td></tr>
+<tr><td><code>R11</code></td><td>wayfinding</td><td>open</td><td>Is a Tabs strip inside the page header legal, given three systems say tabs are never navigation?</td></tr>
+<tr><td><code>R12</code></td><td>wayfinding</td><td>open</td><td>When does a masthead flyout become a mega-menu?</td></tr>
+<tr><td><code>R2</code></td><td>wayfinding</td><td>open</td><td>How many levels of hierarchy may a persistent side navigation show?</td></tr>
+<tr><td><code>R3</code></td><td>wayfinding</td><td>open</td><td>At what depth do breadcrumbs earn their place?</td></tr>
+<tr><td><code>R4</code></td><td>wayfinding</td><td>open</td><td>May breadcrumbs and a persistent side navigation appear on the same page?</td></tr>
+<tr><td><code>R8</code></td><td>wayfinding</td><td>open</td><td>What makes a Back-to-top control appear?</td></tr>
+<tr><td><code>R9</code></td><td>wayfinding</td><td>open</td><td></td></tr>
+<tr><td><code>N-account-card</code></td><td>—</td><td>open</td><td>account-card</td></tr>
+<tr><td><code>N-avatar-group</code></td><td>—</td><td>open</td><td>avatar-group</td></tr>
+<tr><td><code>N-card-header-lockup</code></td><td>—</td><td>open</td><td>card-header-lockup</td></tr>
+<tr><td><code>N-filter-toolbar-bar</code></td><td>—</td><td>open</td><td>filter-toolbar-bar</td></tr>
+<tr><td><code>N-hero-variants</code></td><td>—</td><td>open</td><td>hero-variants</td></tr>
+<tr><td><code>N-image-block</code></td><td>—</td><td>open</td><td>image-block</td></tr>
+<tr><td><code>N-payment-card-visual</code></td><td>—</td><td>open</td><td>payment-card-visual</td></tr>
+<tr><td><code>N-qr-code</code></td><td>—</td><td>open</td><td>qr-code</td></tr>
+<tr><td><code>N-template-auth</code></td><td>—</td><td>open</td><td>template-auth</td></tr>
+<tr><td><code>N-template-create-edit</code></td><td>—</td><td>open</td><td>template-create-edit</td></tr>
+<tr><td><code>N-template-dashboard</code></td><td>—</td><td>open</td><td>template-dashboard</td></tr>
+<tr><td><code>N-template-dashboard-bento</code></td><td>—</td><td>open</td><td>template-dashboard-bento</td></tr>
+<tr><td><code>N-template-detail</code></td><td>—</td><td>open</td><td>template-detail</td></tr>
+<tr><td><code>N-template-empty</code></td><td>—</td><td>open</td><td>template-empty</td></tr>
+<tr><td><code>N-template-list-index</code></td><td>—</td><td>open</td><td>template-list-index</td></tr>
+<tr><td><code>N-template-report</code></td><td>—</td><td>open</td><td>template-report</td></tr>
+<tr><td><code>N-template-settings</code></td><td>—</td><td>open</td><td>template-settings</td></tr>
+<tr><td><code>N-video-player</code></td><td>—</td><td>open</td><td>video-player</td></tr>
+<tr><td><code>U-limits-meter</code></td><td>—</td><td>open</td><td>limits-meter</td></tr>
+<tr><td><code>U-template-confirmation</code></td><td>—</td><td>open</td><td>template-confirmation</td></tr>
+<tr><td><code>U-template-error</code></td><td>—</td><td>open</td><td>template-error</td></tr>
+<tr><td><code>U-template-wizard</code></td><td>—</td><td>open</td><td>template-wizard</td></tr>
+</tbody></table></div>
+<footer><p><b>How this page was made.</b> <code>knowledge/_cut_harvest_rulings.py synthetic-export-A.json</code>. It joins your export to the #271 harvest rows and emits proposals. It never writes <code>knowledge/_rulings.json</code>; its <code>--inscribe</code> arm refuses unless <code>--ratified</code> is passed, and the lane that built it never passed it. Quotes are the #271 harvest's verbatim spans, capped under 15 words by <code>knowledge/_RUNBOOK-external-claims.md</code>.</p></footer>
+</main></body></html>

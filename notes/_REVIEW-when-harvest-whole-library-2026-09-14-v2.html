@@ -1487,6 +1487,11 @@ document.addEventListener("input",function(e){
   }
   if(e.target.id==="q"){ F.q=e.target.value.trim().toLowerCase(); applyFilters(); }
 });
+/* #272 by addition: a note typed <400ms before a reload/close was lost (found by the cut lane's driver). Flush on blur and on unload. */
+document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("dnote")){ clearTimeout(window.__st); save(); buildSummary(); }
+});
+window.addEventListener("beforeunload",function(){ clearTimeout(window.__st); save(); });
 document.addEventListener("change",function(e){
   if(e.target.id==="roleSel"){ F.role=e.target.value; applyFilters(); }
   if(e.target.id==="fileImp" && e.target.files && e.target.files[0]) doImport(e.target.files[0]);
