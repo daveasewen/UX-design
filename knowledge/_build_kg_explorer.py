@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.11"  # 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.12"  # 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -117,6 +117,22 @@ def rule_nodes(K=K):
     """The 470 tagged guideline rules landed by gen_kg_rules.py --land --ratified s274-D8
     (s274-D7 node kind, s274-D8 the four edge types, s274-D11 this reader). Returns (nodes, edges)."""
     fp = os.path.join(K, RULE_NODES)
+    if not os.path.exists(fp): return [], []
+    try: d = json.load(open(fp))
+    except Exception: return [], []
+    return d.get('nodes', []), d.get('edges', [])
+
+
+# ------------------------------------------------- #275 s275-D1..D6: the UX-principle family
+UX_NODES = '_ux_principle_nodes.json'
+UX_FAM = 'uxprinciples'   # the landed file's own `family` key; free in FAMILY/FAMLABEL
+
+
+def ux_principle_nodes(K=K):
+    """The 145 ux:<id> principle nodes and 30 polarity:<id> nodes landed by
+    gen_kg_principles.py --land --ratified s275-D2 (s275-D1 the twelve fields, s275-D2 the six
+    edge types, s275-D3 the polarity node, s275-D6 this reader). Returns (nodes, edges)."""
+    fp = os.path.join(K, UX_NODES)
     if not os.path.exists(fp): return [], []
     try: d = json.load(open(fp))
     except Exception: return [], []
@@ -335,6 +351,24 @@ def extract_extra(base_nodes, base_edges, K=K):
             link(e['s'], e['t'], e['type'], RULE_FAM, note=e.get('note', '')); rep['rule_edges'] += 1
         else: rep['rule_edges_skipped'] += 1
 
+    # ---- D. UX principles + polarities (#275, s275-D1..D6) — AUTHORED by
+    # knowledge/gen_kg_principles.py, read verbatim. Runs after A so the `hasParty` edges that
+    # point at a ruling: node find it.
+    UN, UE = ux_principle_nodes(K)
+    for n in UN:
+        if n['id'] in base or n['id'] in nodes: continue   # never restate a node another family owns
+        add(n['id'], n.get('label') or n['id'], UX_FAM,
+            **{k: v for k, v in n.items() if k not in ('id', 'label', 'fam', 'type')})
+        rep['ux_nodes'] += 1
+    known_u = base | set(nodes)
+    for e in UE:
+        if e['s'] not in known_u: rep['ux_edges_skipped'] += 1; continue
+        if e.get('t') is None:   # s275-D2: an unresolvable target is ref:null with a note
+            link(e['s'], None, e['type'], UX_FAM, note=e.get('note', '')); rep['ux_edges_null'] += 1
+        elif e['t'] in known_u:
+            link(e['s'], e['t'], e['type'], UX_FAM, note=e.get('note', '')); rep['ux_edges'] += 1
+        else: rep['ux_edges_skipped'] += 1
+
     # keep only edges whose two ends exist somewhere (base or new)
     known = base | set(nodes)
     edges = [e for e in edges if e['s'] in known and (e['t'] is None or e['t'] in known)]  # s274-D10: `e['t'] is None or` keeps declared nulls
@@ -388,7 +422,7 @@ def place_extra(xnodes, xedges, base_extent):
     so no base position moves. Governance left, guidelines right."""
     if not xnodes: return
     idx = {n['id']: i for i, n in enumerate(xnodes)}
-    for fam, cx in (('governance', -1.0), ('guidelines', 1.0), (RULE_FAM, 2.2)):  # s274-D11
+    for fam, cx in (('governance', -1.0), ('guidelines', 1.0), (RULE_FAM, 2.2), (UX_FAM, -2.2)):  # s274-D11 · s275-D6
         grp = [n for n in xnodes if n['fam'] == fam]
         if not grp: continue
         loc = {n['id']: i for i, n in enumerate(grp)}
@@ -541,6 +575,9 @@ def main():
     print(f"  rules family (s274-D7..D12, ratified s274-D8): {rep.get('rule_nodes', 0)} new nodes"
           f" / {rep.get('rule_edges', 0)} edges + {rep.get('rule_edges_null', 0)} declared nulls"
           + (f" · SKIPPED {rep['rule_edges_skipped']}" if rep.get('rule_edges_skipped') else ''))
+    print(f"  UX-principle family (s275-D1..D6, ratified s275-D2): {rep.get('ux_nodes', 0)} new nodes"
+          f" / {rep.get('ux_edges', 0)} edges + {rep.get('ux_edges_null', 0)} declared nulls"
+          + (f" · SKIPPED {rep['ux_edges_skipped']}" if rep.get('ux_edges_skipped') else ''))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':
