@@ -1,8 +1,10 @@
 {
   "name": "List items",
   "category": "molecule",
-  "purpose": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image.",
+  "purpose": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image. TWO LEVELS (s274-D2): the CONTAINERS are the variants simple-list, structured-list and card-list; the record ROWS (account, badge, item, review, review-detail, transaction) are parts any container holds, and card-list-row = simple-list-row — no separate row shape. `bullets` is typeset, not a record row.",
   "provides": "record-list",
+  "priority": 60,
+  "when": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) — surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\").",
   "$family": "Covers the 'List items' canvas (page title 'Lists'); each row type is a separate Figma component.",
   "props": [
     {
@@ -66,31 +68,56 @@
   "variants": [
     {
       "name": "account",
-      "use": "Account row (e.g. balance), font-3 amount + font-5/6 labels. MIGRATED to tertiary/background/* row states."
+      "use": "Account row (e.g. balance), font-3 amount + font-5/6 labels. MIGRATED to tertiary/background/* row states.",
+      "$level": "row"
     },
     {
       "name": "badge",
-      "use": "Row with a leading badge/visual. Least-migrated row — still on deprecated surface/border tokens."
+      "use": "Row with a leading badge/visual. Least-migrated row — still on deprecated surface/border tokens.",
+      "$level": "row"
     },
     {
       "name": "item",
-      "use": "Base list item (icon/avatar/image). Most-deprecated row, incl on-dark surface/border blockers."
+      "use": "Base list item (icon/avatar/image). Most-deprecated row, incl on-dark surface/border blockers.",
+      "$level": "row"
     },
     {
       "name": "review",
-      "use": "Compact review row. Mostly migrated (tertiary/background/*); one deprecated pressed surface."
+      "use": "Compact review row. Mostly migrated (tertiary/background/*); one deprecated pressed surface.",
+      "$level": "row"
     },
     {
       "name": "review-detail",
-      "use": "Review row with extra detail line. CLEAN."
+      "use": "Review row with extra detail line. CLEAN.",
+      "$level": "row"
     },
     {
       "name": "transaction",
-      "use": "Transaction row with tag or status detail; uses rag/success(+tint) for status. Deprecated surface set."
+      "use": "Transaction row with tag or status detail; uses rag/success(+tint) for status. Deprecated surface set.",
+      "$level": "row"
+    },
+    {
+      "name": "simple-list",
+      "$level": "container",
+      "use": "CONTAINER (s274-D2): a stack of same-kind records on ONE unbordered surface, one record per row, divided by a rule. List-level heading optional (s274-D5).",
+      "$ruling": "s274-D2"
+    },
+    {
+      "name": "structured-list",
+      "$level": "container",
+      "use": "CONTAINER (s274-D2, Dave's name — replaces the proposal's 'column-list'): rows whose fields align across records, still on one unbordered surface. Heading optional — in banking a structured row is self-describing (s274-D5). If a field must be read DOWN a column across records it is a table, not this (s274-D4).",
+      "$ruling": "s274-D2"
+    },
+    {
+      "name": "card-list",
+      "$level": "container",
+      "use": "CONTAINER (s274-D2): the SAME rows, but the container draws a bordered surface around EACH record — that surface alone is what makes a record a card (s274-D1). card-list-row = simple-list-row; a per-card title is a ROW field, not the list heading (s274-D5).",
+      "$ruling": "s274-D2"
     },
     {
       "name": "bullets",
-      "use": "Typeset unordered / ordered / custom lists. CLEAN. Bullets/numbers use the SAME font as the text; rag/success for custom tick."
+      "use": "Typeset unordered / ordered / custom lists. CLEAN. Bullets/numbers use the SAME font as the text; rag/success for custom tick.",
+      "$level": "typeset"
     }
   ],
   "tokens": {
