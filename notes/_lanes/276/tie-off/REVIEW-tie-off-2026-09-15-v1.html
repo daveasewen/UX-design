@@ -1,0 +1,434 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tie off the loose ends — 17 WCAG criteria + the authored pass — #276</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+/* The label pattern. NO text-transform (nam-002): tracking and weight carry it,
+   and the line-height is generous so no descender can be cropped. */
+.label{font-size:.8125rem;font-weight:500;letter-spacing:.14em;line-height:1.6;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+/* Display line-heights are set from a MEASUREMENT, not from taste: at 57/43/34px the
+   Univers Next font box (cap .723em + descender .232em + internal leading) needs
+   1.166 / 1.213 / 1.212em before the last line's descender clears the content box.
+   The Swiss 1.0-1.08 display range crops here, so the house descender clause wins
+   and _drive_page.py re-measures it every build. */
+h1{font-size:3.5625rem;line-height:1.18;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.25;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px}
+a{color:var(--accent)}
+/* lane TO addition to the #275 house CSS: this page prints a full W3C Understanding
+   URL in code voice, and an unbroken 90-character token pushes the document past
+   390px. Break inside code only; prose wrapping is untouched. */
+code{overflow-wrap:anywhere;word-break:break-word}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3)}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1.25;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1)}
+.stat span{display:block;font-size:.8125rem;letter-spacing:.06em;line-height:1.5;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.8125rem;letter-spacing:.14em;line-height:1.6;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;letter-spacing:.06em;font-size:.8125rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.75rem;letter-spacing:.1em;line-height:1.5;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .4rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:760px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.08em;line-height:1.6;color:var(--g6);font-weight:500;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.newmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:56ch}
+blockquote{margin:var(--s3) 0;padding-left:var(--s3);border-left:2px solid var(--accent);
+ font-size:1.0625rem;max-width:70ch}
+blockquote cite{display:block;font-size:.8125rem;font-style:normal;color:var(--g6);margin-top:var(--s1)}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+</style>
+<script type="application/json" id="measured">{"n_rules": 17, "fetch_ok": 17, "fetch_fail": 0, "sev_serious": 12, "sev_minor": 5, "sev_critical": 0, "lvl_a": 9, "lvl_aa": 5, "lvl_aaa": 3, "chk_manual": 12, "chk_semi": 5, "chk_auto": 0, "corpus_today": 38, "corpus_after": 55, "cites_total": 51, "cites_resolved": 32, "nulls_today": 19, "nulls_resolve": 19, "nulls_remain": 0, "aaa_nulls": 4, "non_aaa_nulls": 15, "only_2413_remain": 3, "wcag22_new": 3, "axe_refs": 6, "axe_scs": 4, "n_metas": 6, "metas_total": 137, "obeys_rules": 67, "obeys_laws": 14, "obeys_total": 81, "rules_index": 470, "tags_rules": 9, "tags_input_rules": 5, "notifications_rules": 17, "links_rules": 16, "button_rules": 14, "icon_button_rules": 6, "ctk_tags": 23, "ctk_notifications": 17, "ctk_links": 15, "ctk_buttons": 14, "chart_line": 11, "chart_pie": 11, "chart_bar": 10, "dv_family": 19, "nm_table": 9, "nm_modals": 4, "nm_accordion": 3, "nm_dropdown": 3, "nm_avatar": 2, "guideline_files": 34, "component_named_files": 7, "laws_total": 6, "tags_n": 11, "tags_input_n": 7, "notifications_n": 19, "links_n": 19, "button_n": 17, "icon_button_n": 8, "chart_extra_total": 32}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#276 &middot; lane TO &middot; decision page</p>
+<h1>Seventeen criteria the corpus never held, and the first six metas that say which rules they obey.</h1>
+<p>Two loose ends, tied off together because they are the same knot. The 470 guideline
+rules that landed at #274 cite <span class="n">51</span> success criteria;
+<span class="n">32</span> of those citations reach a node and
+<span class="n">19</span> point at nothing, because the compliance corpus holds
+<span class="n">38</span> criteria and 17 of the ones our own rules cite were
+never in it. Separately, <span class="n">0</span> of 137 component metas says which rule it
+obeys or which law it rests on &mdash; the thing s274-D12 and s275-D5 both parked.</p>
+<p>This lane proposes both, and has landed neither.</p>
+<div class="stats">
+<div class="stat"><b>17</b><span>criteria proposed</span></div>
+<div class="stat"><b>19</b><span>of 19 nulls would close</span></div>
+<div class="stat"><b>81</b><span>authored citations</span></div>
+<div class="stat"><b>6</b><span>metas written against</span></div>
+</div>
+<div class="zeros">
+<div><b>0</b> files landed in <code>knowledge/</code> (bar the guard you asked for)</div>
+<div><b>0</b> titles or levels from memory &mdash; 17/17 fetched from W3C</div>
+<div><b>0</b> citations drawn by regex over prose</div>
+<div><b>0</b> rules graded critical</div>
+</div>
+<p class="why">Levels as W3C states them: A <span class="n">9</span> &middot; AA
+<span class="n">5</span> &middot; AAA <span class="n">3</span>. Checks as we
+propose them: manual <span class="n">12</span> &middot; semi-automated
+<span class="n">5</span> &middot; automated <span class="n">0</span>. An
+off-the-shelf axe-core rule exists for <span class="n">4</span> of the
+17&nbsp;&mdash; <span class="n">6</span> refs &mdash; and the corpus's own
+importer will attach them; not one was hand-typed.</p>
+</div></section>
+
+<section id="rules"><div class="wrap">
+<p class="label">Part A &middot; the 17 criteria</p>
+<h2>Title and level are W3C's. Severity is ours.</h2>
+<p>Each row's <code>title</code> and <code>level</code> were read off
+<code>https://www.w3.org/WAI/WCAG22/Understanding/&lt;slug&gt;.html</code> at build time on 2026-09-15; the
+receipts are in <code>REPORT.md</code> §2. The last column is the one line of reasoning behind our grade,
+and it is what D-1 decides.</p>
+<div class="tw"><table>
+<tr><th>SC</th><th>title (W3C)</th><th>level (W3C)</th><th>severity (ours)</th><th>check</th><th>why that severity</th></tr>
+<tr><td class="slug">1.2.3</td><td>Audio Description or Media Alternative (Prerecorded)</td><td>A</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">matches the corpus's sibling time-based-media rules (1.2.2, 1.2.5 both serious); a blind user loses the whole visual track, but media is a narrow surface for us.</td></tr>
+<tr><td class="slug">1.2.4</td><td>Captions (Live)</td><td>AA</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">same grade as 1.2.2/1.2.5; live captions missing shuts deaf users out of a live event entirely, and there is no retro-fix.</td></tr>
+<tr><td class="slug">1.3.3</td><td>Sensory Characteristics</td><td>A</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">the corpus grades its 1.3.x structural siblings (1.3.1, 1.3.2) serious, and an instruction that only says 'the red button' is unusable, not merely awkward.</td></tr>
+<tr><td class="slug">1.4.2</td><td>Audio Control</td><td>A</td><td class="slug">serious</td><td class="slug">semi-automated</td><td class="defn">autoplay audio drowns a screen reader across the whole page (Conformance Requirement 5). A case exists for critical; the corpus reserves critical for 2.1.1 / 2.1.2 / 4.1.2, so serious holds the line.</td></tr>
+<tr><td class="slug">1.4.5</td><td>Images of Text</td><td>AA</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">every other Distinguishable text rule in the corpus (1.4.3, 1.4.4, 1.4.10, 1.4.12, 1.4.13) is serious, and a picture of text defeats every one of them at once.</td></tr>
+<tr><td class="slug">1.4.8</td><td>Visual Presentation</td><td><span class="newmark">AAA</span></td><td class="slug">minor</td><td class="slug">manual</td><td class="defn">every AAA rule in the corpus today is minor (2.3.3, 2.4.8, 2.5.5). Cited as best practice above the AA bar, not graded as a defect.</td></tr>
+<tr><td class="slug">2.4.13</td><td>Focus Appearance</td><td><span class="newmark">AAA</span></td><td class="slug">minor</td><td class="slug">semi-automated</td><td class="defn">AAA, so minor by the corpus's own pattern. One caveat: 2.4.11 (AA, Focus Not Obscured) is already serious; if the AAA bar is ever raised this is the first rule to re-grade.</td></tr>
+<tr><td class="slug">2.5.1</td><td>Pointer Gestures</td><td>A</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">2.5.7 Dragging Movements, its nearest kin in the corpus, is serious; a head-pointer or single-finger user simply cannot perform a pinch.</td></tr>
+<tr><td class="slug">2.5.2</td><td>Pointer Cancellation</td><td>A</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">same Input Modalities family as 2.5.7/2.5.8 (both serious); accidental activation in a banking journey moves money.</td></tr>
+<tr><td class="slug">2.5.3</td><td>Label in Name</td><td>A</td><td class="slug">serious</td><td class="slug">semi-automated</td><td class="defn">2.4.4 Link Purpose is serious and 4.1.2 Name/Role/Value is critical; 2.5.3 is the narrower voice-control slice of the same failure, so serious, not critical.</td></tr>
+<tr><td class="slug">3.1.1</td><td>Language of Page</td><td>A</td><td class="slug">serious</td><td class="slug">semi-automated</td><td class="defn">one attribute, but its absence mispronounces every word on the page for every screen-reader user; graded with the 1.3.x structural rules, not with the AAA set.</td></tr>
+<tr><td class="slug">3.1.2</td><td>Language of Parts</td><td>AA</td><td class="slug">minor</td><td class="slug">semi-automated</td><td class="defn">scoped to isolated phrases rather than the page; the corpus gives minor to comparably narrow AA rules (1.3.5 Identify Input Purpose, 2.4.5 Multiple Ways).</td></tr>
+<tr><td class="slug">3.1.4</td><td>Abbreviations</td><td><span class="newmark">AAA</span></td><td class="slug">minor</td><td class="slug">manual</td><td class="defn">AAA, minor by the corpus's own pattern.</td></tr>
+<tr><td class="slug">3.2.2</td><td>On Input</td><td>A</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">3.2.1 On Focus, the same Predictable guideline and the same failure mode, is serious in the corpus today.</td></tr>
+<tr><td class="slug">3.2.4</td><td>Consistent Identification</td><td>AA</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">3.2.3 Consistent Navigation, its direct sibling, is serious; inconsistent naming across a set of pages destroys learned behaviour.</td></tr>
+<tr><td class="slug">3.3.7</td><td>Redundant Entry</td><td>A</td><td class="slug">minor</td><td class="slug">manual</td><td class="defn">friction, not a barrier: the user CAN complete the process, it just costs recall. The 3.3.x rules that do block (3.3.1, 3.3.2, 3.3.3) are serious; this one does not block.</td></tr>
+<tr><td class="slug">3.3.8</td><td>Accessible Authentication (Minimum)</td><td>AA</td><td class="slug">serious</td><td class="slug">manual</td><td class="defn">a login that cannot be completed locks the user out of the product entirely; the strongest case in this batch for critical, held at serious because the corpus's critical tier is keyboard/name-role-value only.</td></tr>
+</table></div>
+<p class="why"><b>3 of them are WCAG 2.2 additions</b> &mdash; 2.4.13, 3.3.7 and 3.3.8 &mdash;
+and each carries the same &ldquo;pending EN 301 549 alignment to WCAG 2.2&rdquo; clause that 2.5.7 already
+carries in the corpus, because EN 301 549 has not caught up. <b>3 are AAA</b>, which is D-2.
+<code>applies_to</code> is empty on all 17: it is <i>derived</i> by
+<code>_build_compliance_kg.py</code> from the metas, and 0 of 137 metas names any of these
+criteria today.</p>
+</div></section>
+
+<section id="metas"><div class="wrap">
+<p class="label">Part B &middot; the authored pass</p>
+<h2>67 rule citations and 14 law citations, every one with a sentence.</h2>
+<p>The rule ids come from a <b>filename join</b>: the <code>common-toolkit-&lt;x&gt;.md</code> file that IS
+the component, read out of <code>_rules-index.json</code>. Not one comes from a regex over rule prose. The
+laws are the 6 grade-A principles s269-D5 names, read out of
+<code>principles.json</code> by <code>grade == &quot;A&quot;</code> rather than retyped.</p>
+<div class="tw"><table>
+<tr><th>component</th><th>spec file (filename join)</th><th class="num">rules</th><th class="num">laws</th><th>which laws</th></tr>
+<tr><td class="slug">tags</td><td class="slug">common-toolkit-tags-chips.md</td><td class="num">9</td><td class="num">2</td><td class="defn">pr-fitts, pr-hick</td></tr>
+<tr><td class="slug">tags-input</td><td class="slug">common-toolkit-tags-chips.md</td><td class="num">5</td><td class="num">2</td><td class="defn">pr-fitts, pr-speed-accuracy</td></tr>
+<tr><td class="slug">notifications</td><td class="slug">common-toolkit-notifications.md</td><td class="num">17</td><td class="num">2</td><td class="defn">pr-hick, pr-graphical-perception</td></tr>
+<tr><td class="slug">links</td><td class="slug">common-toolkit-links.md</td><td class="num">16</td><td class="num">3</td><td class="defn">pr-fitts, pr-hick, pr-speed-accuracy</td></tr>
+<tr><td class="slug">button</td><td class="slug">common-toolkit-buttons.md</td><td class="num">14</td><td class="num">3</td><td class="defn">pr-fitts, pr-hick, pr-speed-accuracy</td></tr>
+<tr><td class="slug">icon-button</td><td class="slug">common-toolkit-buttons.md</td><td class="num">6</td><td class="num">2</td><td class="defn">pr-fitts, pr-speed-accuracy</td></tr>
+</table></div>
+<p class="why">Coverage against the spec files: notifications takes all 17 of its
+file, button all 14 of its, links all 15 plus one declared cross-file rule,
+and tags + tags-input take 14 of the 23 in the shared
+tags-and-chips file. The 9 left over are the
+selection / toggle / response <i>pill</i> rules, and there is no pill component in
+<code>knowledge/components/</code> for them to bind to &mdash; that is a finding, not a gap in this lane.</p>
+</div></section>
+
+<section id="extras"><div class="wrap">
+<p class="label">Part B &middot; the extras you asked me to flag</p>
+<h2>Three more are equally obvious. Everything after that is a judgement call.</h2>
+<p>Ranked. The top three share the exact signal the four authored ones have &mdash; a guideline file named
+after the component. Below the line is the name-match tier, shown so the difference is visible rather than
+asserted.</p>
+<div class="tw"><table>
+<tr><th class="num">#</th><th>component</th><th>signal</th><th class="num">rules</th><th>why it is, or is not, obvious</th></tr>
+<tr><td>1</td><td class="slug">chart-line</td><td class="slug">data-visualisation-line-charts.md</td><td class="num">11</td><td class="defn">The guideline file IS the component. Same signal as the four authored here, no judgement in it.</td></tr>
+<tr><td>2</td><td class="slug">chart-pie</td><td class="slug">data-visualisation-pie-charts.md</td><td class="num">11</td><td class="defn">Same. It would also need a word on whether chart-donut shares the file, the way icon-button shares the buttons spec.</td></tr>
+<tr><td>3</td><td class="slug">chart-bar</td><td class="slug">data-visualisation-bar-charts.md</td><td class="num">10</td><td class="defn">Same. And data-visualisation.md sits above all three with 19 family-level rules that bind every chart component.</td></tr>
+<tr><td>4</td><td class="slug">table</td><td class="slug">&mdash; name match only</td><td class="num">9</td><td class="defn">Not obvious. The name 'Table' appears in 9 rules spread across six files; every one needs a human to say whether it is the component or the English word.</td></tr>
+<tr><td>5</td><td class="slug">modals</td><td class="slug">&mdash; name match only</td><td class="num">4</td><td class="defn">Not obvious, and one of the 4 is ctkn-011, which is a <code>notifications</code> rule that merely mentions modals.</td></tr>
+<tr><td>6</td><td class="slug">avatar</td><td class="slug">&mdash; name match only</td><td class="num">2</td><td class="defn">Not obvious, and this is the exact pair s274-D12 refused: va25-013 matched 'Avatar' and 'Badge'. Listed to show what the weak tier costs.</td></tr>
+</table></div>
+<p class="why">Of 34 guideline files, only 7 are named after a
+component, and 6 components already claim four of them here. The charts are the rest of that
+route, worth 32 rules plus 19 family-level ones. That is D-5.</p>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Your words</p>
+<h2>Six decisions.</h2>
+<p>Recommendation first on each. One letter is an answer; a letter with a sentence attached is a sequel, and
+I will read it back before anything is built on it.</p>
+<div class="dec" data-id="D-1">
+<div class="dechead"><span class="decid">D-1</span><h3>The 17 proposed severities</h3></div>
+<p>Every <code>title</code> and <code>level</code> on the 17 proposed rules came off the W3C "Understanding WCAG 2.2" page for that criterion — 17 of 17 fetched cleanly, nothing from memory. <code>severity</code> is ours: 12 serious, 5 minor, 0 critical, each with one line of reasoning printed below the options. The pattern they follow is the corpus's own: every AAA rule in it today is minor, and critical is reserved for 2.1.1, 2.1.2 and 4.1.2.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-a" value="a"><label for="D-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Accept all 17 severities as a batch. The reasoning is on the page and in <code>REPORT.md</code> §3; a wrong grade is corrected later by addition, and none of them gates anything today.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-b" value="b"><label for="D-1-b"><span class="okey">(b)</span>Review each one. 17 single-word answers, and the land lane waits for all of them.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-c" value="c"><label for="D-1-c"><span class="okey">(c)</span>Accept the batch but re-open the four I flagged as arguable — 1.4.2 (a case for critical), 1.4.5, 3.1.1 and 3.3.7 (a case for serious).</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-none" value=""><label for="D-1-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Severity is advisory today: nothing in <code>_build_all.py</code> reads it as a gate. It sorts an audit report. Getting it roughly right costs one word; getting it exactly right costs 17.</p>
+<textarea class="note" data-id="D-1" aria-label="Notes for D-1" placeholder="Notes for D-1 — your words"></textarea>
+</div><div class="dec" data-id="D-2">
+<div class="dechead"><span class="decid">D-2</span><h3>Three AAA criteria in an AA-minimum corpus</h3></div>
+<p>The brief named 2.4.13 Focus Appearance as the AAA case. Measured, there are <b>three</b>: 1.4.8 Visual Presentation, 2.4.13 Focus Appearance and 3.1.4 Abbreviations are all Level AAA on the W3C page. The corpus already holds two AAA rules (2.3.3 Animation from Interactions, 2.4.8 Location) as declared best practice above the AA bar, so the precedent exists. They account for 4 of the 19 <code>cites</code> nulls.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-a" value="a"><label for="D-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Include all three, marked AAA and graded minor, exactly as 2.3.3 and 2.4.8 sit today. All 19 nulls close.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-b" value="b"><label for="D-2-b"><span class="okey">(b)</span>Exclude all three. 15 nulls close and 4 stay null — and a rule that cites a criterion we refuse to hold keeps a permanent hole in the graph.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-c" value="c"><label for="D-2-c"><span class="okey">(c)</span>Include 2.4.13 only (it is the focus-indicator rule and 2.4.11 is already in at AA), exclude 1.4.8 and 3.1.4. 3 nulls stay.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-none" value=""><label for="D-2-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">The conformance basis is WCAG 2.2 AA and that does not change here. The question is only whether the corpus may <i>hold</i> a criterion above its own bar — it already does, twice — and whether a guideline rule of ours is allowed to cite one.</p>
+<textarea class="note" data-id="D-2" aria-label="Notes for D-2" placeholder="Notes for D-2 — your words"></textarea>
+</div><div class="dec" data-id="D-3">
+<div class="dechead"><span class="decid">D-3</span><h3>The field, and where it lives</h3></div>
+<p>One new field, proposed as a new <i>edge type</i> inside the existing <code>edges</code> object: <code>edges.obeys</code>, entries of <code>{ref, $why}</code> where ref is a <code>rule:</code> id or a <code>ux:</code> grade-A law. <code>$why</code> is required — s274-D12 refused rule&rarr;component drawn by regex, so an edge with no sentence attached is inference wearing a ref. The diff is at <code>meta.schema.diff</code> and it adds a <i>scoped</i> <code>obeysEdge</code> definition rather than widening the shared <code>edge</code> ref pattern.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-a" value="a"><label for="D-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span><code>edges.obeys</code>, one list, prefix-discriminated, <code>$why</code> required, plus one <code>edges.$obeys-contract</code> provenance string. 81 entries across 6 metas.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-b" value="b"><label for="D-3-b"><span class="okey">(b)</span>A new top-level <code>obeys</code> object, outside <code>edges</code>. Reads more plainly in the meta, but it is a second home for a fact <code>edges</code> already knows how to hold, and the explorer would need a new reader.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-c" value="c"><label for="D-3-c"><span class="okey">(c)</span>TWO edge types — <code>obeysRule</code> and <code>restsOn</code> — so rules and laws never share a list. Truer to s269-D5 and P-274-3 being two parked items; twice the schema surface.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-none" value=""><label for="D-3-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><code>edges</code> is the KG parse layer, and <code>rule:</code> (landed #274) and <code>ux:</code> (landed #275) are both live node kinds. Option (a) needs no new top-level property: <code>properties</code> keeps its 34 keys.</p>
+<textarea class="note" data-id="D-3" aria-label="Notes for D-3" placeholder="Notes for D-3 — your words"></textarea>
+</div><div class="dec" data-id="D-4">
+<div class="dechead"><span class="decid">D-4</span><h3>The authored metas</h3></div>
+<p>Six components authored, not four: the chips half of the tags spec genuinely covers <code>tags-input</code> (5 rules) and the buttons spec <i>names</i> icon-only as one of its three structural variations, so <code>icon-button</code> (6 rules) is covered too. <code>split-button</code> is NOT — the buttons spec says nothing about a caret trigger. Total: 67 rule citations and 14 law citations, 81 entries, every one with a sentence.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-a" value="a"><label for="D-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All six land as proposed. tags 11 &middot; tags-input 7 &middot; notifications 19 &middot; links 19 &middot; button 17 &middot; icon-button 8.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-b" value="b"><label for="D-4-b"><span class="okey">(b)</span>The four the brief named land now; <code>tags-input</code> and <code>icon-button</code> go to the next lane with the flagged extras.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-c" value="c"><label for="D-4-c"><span class="okey">(c)</span>Per-component review — read the 81 sentences yourself before any of it lands.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-none" value=""><label for="D-4-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Every rule id came from a <b>filename join</b> on <code>_rules-index.json</code>, never a regex over prose. There is exactly <b>one</b> cross-file citation in the set and it says so in its own <code>$why</code>: <code>links</code> obeys <code>ctkb-004</code>, the buttons-vs-links boundary, which is stated from the buttons side.</p>
+<textarea class="note" data-id="D-4" aria-label="Notes for D-4" placeholder="Notes for D-4 — your words"></textarea>
+</div><div class="dec" data-id="D-5">
+<div class="dechead"><span class="decid">D-5</span><h3>The flagged extras</h3></div>
+<p>You asked me to flag any others where the binding is equally obvious. By the strongest signal — a guideline file that IS the component — there are exactly three more, and they are the chart family: <code>chart-line</code> (11 rules), <code>chart-pie</code> (11) and <code>chart-bar</code> (10), plus <code>data-visualisation.md</code> (19) sitting above all three as the family file. Every other candidate comes from a <i>name match</i> in rule prose, which is the exact signal s274-D12 refused.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-a" value="a"><label for="D-5-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Author the three chart components in the next lane, same shape: filename join, one sentence each, reviewed by eye. Then stop and look again.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-b" value="b"><label for="D-5-b"><span class="okey">(b)</span>Park them with a tripwire on <code>knowledge/guidelines/data-visualisation*.md</code> and widen only when you ask.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-c" value="c"><label for="D-5-c"><span class="okey">(c)</span>Widen further now, into the name-match tier (table 9, modals 4, accordion 3, dropdown 3) — knowing that tier produced 'Avatar' from va25-013.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-none" value=""><label for="D-5-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">The four common-toolkit files plus the three data-visualisation files are the <i>whole</i> of the filename-join route: 34 guideline files exist and only 7 are named after a component. After the charts, this route is exhausted and every further binding is a judgement call.</p>
+<textarea class="note" data-id="D-5" aria-label="Notes for D-5" placeholder="Notes for D-5 — your words"></textarea>
+</div><div class="dec" data-id="D-6">
+<div class="dechead"><span class="decid">D-6</span><h3>The lane-ownership guard</h3></div>
+<p>Your "1. fix" is built: <code>knowledge/_validate_lane_ownership.py</code> reads <code>YOU ARE #N</code> out of <code>_CHAIN.md</code>, lists staged paths, and warns on any under <code>notes/_lanes/&lt;M&gt;/</code> where M &ne; N. It exits 0 and blocks nothing. I read your word back as "make it impossible" and then did NOT do that, because making it impossible means ruling one-seat vs own-lane-only, and that rule is yours.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-a" value="a"><label for="D-6-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Keep it advisory. It makes the #275 collision visible at the moment of staging, which is when it is cheap, and it cannot ever wrongly block a legitimate cross-lane commit.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-b" value="b"><label for="D-6-b"><span class="okey">(b)</span>Make it blocking — exit 1 and refuse the commit. Then a wrap lane that legitimately needs to touch a previous lane's folder has to be given an escape hatch, which is a second decision.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-c" value="c"><label for="D-6-c"><span class="okey">(c)</span>Advisory now, blocking once a session has run with it and nothing false-positived.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-none" value=""><label for="D-6-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">The <i>rule</i> itself is not inscribed and this lane did not inscribe it. Whether two sessions may share one repo at all, and whether the second one is confined to its own lane, are still your words to say.</p>
+<textarea class="note" data-id="D-6" aria-label="Notes for D-6" placeholder="Notes for D-6 — your words"></textarea>
+</div>
+<div class="bar">
+<button id="btnExport">Export JSON</button>
+<button id="btnCopy">Copy to clipboard</button>
+<button class="ghost" id="btnClear">Clear all</button>
+<span class="said" id="said"></span>
+</div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="receipts"><div class="wrap">
+<div class="split"><div>
+<p class="label">Receipts</p>
+<dl class="recs">
+<dt>Proposed rules</dt><dd><code>notes/_lanes/276/tie-off/proposed-rules/</code> &mdash; 17
+files, 0 schema failures against <code>knowledge/compliance/rule.schema.json</code></dd>
+<dt>Dry run</dt><dd><code>python3 notes/_lanes/276/tie-off/_build_rules.py --dry-run</code> &mdash;
+19 &rarr; 0</dd>
+<dt>Proposed metas</dt><dd><code>notes/_lanes/276/tie-off/proposed-metas/</code> &mdash; 6
+files, each a byte-for-byte copy of the live meta plus one inserted span</dd>
+<dt>Schema diff</dt><dd><code>notes/_lanes/276/tie-off/meta.schema.diff</code> &mdash; not applied</dd>
+<dt>Selftests</dt><dd>15 bites on the rule builder, 17 on the meta author, 18 mutants driven and
+every one caught (<code>_mutate.py</code>)</dd>
+<dt>The guard</dt><dd><code>python3 knowledge/_validate_lane_ownership.py --selftest</code></dd>
+</dl>
+</div><div>
+<p>Every integer on this page is read at build time &mdash; from <code>dry-run.json</code>, from the two
+builders' own tables, or counted over <code>knowledge/</code>. No number was typed into the HTML, and none
+was typed into the decisions file either.</p>
+<p>Nothing landed. <code>knowledge/compliance/rules/</code> still holds 38 rules,
+<code>knowledge/components/</code> still holds 137 metas with <span class="n">0</span>
+<code>obeys</code> blocks between them, and <code>_rule_nodes.json</code> still carries
+19 nulls. The one file this lane wrote into <code>knowledge/</code> is the ownership guard
+you asked for, and it is inert.</p>
+</div></div>
+</div></section>
+<footer><div class="wrap">Nothing on this page is a ruling. Dave rules; the lane enacts by addition.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-276-tie-off-v1";
+ var IDS=["D-1", "D-2", "D-3", "D-4", "D-5", "D-6"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"REVIEW-tie-off-2026-09-15-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="tie-off-decisions-2026-09-15.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>

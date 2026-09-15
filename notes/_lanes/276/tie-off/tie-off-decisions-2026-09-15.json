@@ -1,0 +1,75 @@
+{
+  "$description": "BUILDER INPUT for REVIEW-tie-off-2026-09-15-v1.html (#276 lane TO). The page's COPY lives here; every NUMBER is substituted at build time from dry-run.json and from live measurements of knowledge/. No integer is typed in this file. The page EXPORTS Dave's answers under this same filename — if an export is ever copied over this file, _build_page.py refuses by name rather than baking a page with no copy on it.",
+  "page": "REVIEW-tie-off-2026-09-15-v1.html",
+  "storage_key": "apollo-276-tie-off-v1",
+  "title": "Tie off the loose ends — 17 WCAG criteria + the authored pass — #276",
+  "headline": "Seventeen criteria the corpus never held, and the first six metas that say which rules they obey.",
+  "decisions": [
+    {
+      "id": "D-1",
+      "title": "The 17 proposed severities",
+      "lede": "Every <code>title</code> and <code>level</code> on the {n_rules} proposed rules came off the W3C \"Understanding WCAG 2.2\" page for that criterion — {fetch_ok} of {n_rules} fetched cleanly, nothing from memory. <code>severity</code> is ours: {sev_serious} serious, {sev_minor} minor, {sev_critical} critical, each with one line of reasoning printed below the options. The pattern they follow is the corpus's own: every AAA rule in it today is minor, and critical is reserved for 2.1.1, 2.1.2 and 4.1.2.",
+      "options": [
+        ["a", true, "Accept all {n_rules} severities as a batch. The reasoning is on the page and in <code>REPORT.md</code> §3; a wrong grade is corrected later by addition, and none of them gates anything today."],
+        ["b", false, "Review each one. {n_rules} single-word answers, and the land lane waits for all of them."],
+        ["c", false, "Accept the batch but re-open the four I flagged as arguable — 1.4.2 (a case for critical), 1.4.5, 3.1.1 and 3.3.7 (a case for serious)."]
+      ],
+      "why": "Severity is advisory today: nothing in <code>_build_all.py</code> reads it as a gate. It sorts an audit report. Getting it roughly right costs one word; getting it exactly right costs {n_rules}."
+    },
+    {
+      "id": "D-2",
+      "title": "Three AAA criteria in an AA-minimum corpus",
+      "lede": "The brief named 2.4.13 Focus Appearance as the AAA case. Measured, there are <b>three</b>: 1.4.8 Visual Presentation, 2.4.13 Focus Appearance and 3.1.4 Abbreviations are all Level AAA on the W3C page. The corpus already holds two AAA rules (2.3.3 Animation from Interactions, 2.4.8 Location) as declared best practice above the AA bar, so the precedent exists. They account for {aaa_nulls} of the {nulls_today} <code>cites</code> nulls.",
+      "options": [
+        ["a", true, "Include all three, marked AAA and graded minor, exactly as 2.3.3 and 2.4.8 sit today. All {nulls_today} nulls close."],
+        ["b", false, "Exclude all three. {non_aaa_nulls} nulls close and {aaa_nulls} stay null — and a rule that cites a criterion we refuse to hold keeps a permanent hole in the graph."],
+        ["c", false, "Include 2.4.13 only (it is the focus-indicator rule and 2.4.11 is already in at AA), exclude 1.4.8 and 3.1.4. {only_2413_remain} nulls stay."]
+      ],
+      "why": "The conformance basis is WCAG 2.2 AA and that does not change here. The question is only whether the corpus may <i>hold</i> a criterion above its own bar — it already does, twice — and whether a guideline rule of ours is allowed to cite one."
+    },
+    {
+      "id": "D-3",
+      "title": "The field, and where it lives",
+      "lede": "One new field, proposed as a new <i>edge type</i> inside the existing <code>edges</code> object: <code>edges.obeys</code>, entries of <code>{{ref, $why}}</code> where ref is a <code>rule:</code> id or a <code>ux:</code> grade-A law. <code>$why</code> is required — s274-D12 refused rule&rarr;component drawn by regex, so an edge with no sentence attached is inference wearing a ref. The diff is at <code>meta.schema.diff</code> and it adds a <i>scoped</i> <code>obeysEdge</code> definition rather than widening the shared <code>edge</code> ref pattern.",
+      "options": [
+        ["a", true, "<code>edges.obeys</code>, one list, prefix-discriminated, <code>$why</code> required, plus one <code>edges.$obeys-contract</code> provenance string. {obeys_total} entries across {n_metas} metas."],
+        ["b", false, "A new top-level <code>obeys</code> object, outside <code>edges</code>. Reads more plainly in the meta, but it is a second home for a fact <code>edges</code> already knows how to hold, and the explorer would need a new reader."],
+        ["c", false, "TWO edge types — <code>obeysRule</code> and <code>restsOn</code> — so rules and laws never share a list. Truer to s269-D5 and P-274-3 being two parked items; twice the schema surface."]
+      ],
+      "why": "<code>edges</code> is the KG parse layer, and <code>rule:</code> (landed #274) and <code>ux:</code> (landed #275) are both live node kinds. Option (a) needs no new top-level property: <code>properties</code> keeps its 34 keys."
+    },
+    {
+      "id": "D-4",
+      "title": "The authored metas",
+      "lede": "Six components authored, not four: the chips half of the tags spec genuinely covers <code>tags-input</code> ({tags_input_rules} rules) and the buttons spec <i>names</i> icon-only as one of its three structural variations, so <code>icon-button</code> ({icon_button_rules} rules) is covered too. <code>split-button</code> is NOT — the buttons spec says nothing about a caret trigger. Total: {obeys_rules} rule citations and {obeys_laws} law citations, {obeys_total} entries, every one with a sentence.",
+      "options": [
+        ["a", true, "All six land as proposed. tags {tags_n} &middot; tags-input {tags_input_n} &middot; notifications {notifications_n} &middot; links {links_n} &middot; button {button_n} &middot; icon-button {icon_button_n}."],
+        ["b", false, "The four the brief named land now; <code>tags-input</code> and <code>icon-button</code> go to the next lane with the flagged extras."],
+        ["c", false, "Per-component review — read the {obeys_total} sentences yourself before any of it lands."]
+      ],
+      "why": "Every rule id came from a <b>filename join</b> on <code>_rules-index.json</code>, never a regex over prose. There is exactly <b>one</b> cross-file citation in the set and it says so in its own <code>$why</code>: <code>links</code> obeys <code>ctkb-004</code>, the buttons-vs-links boundary, which is stated from the buttons side."
+    },
+    {
+      "id": "D-5",
+      "title": "The flagged extras",
+      "lede": "You asked me to flag any others where the binding is equally obvious. By the strongest signal — a guideline file that IS the component — there are exactly three more, and they are the chart family: <code>chart-line</code> ({chart_line} rules), <code>chart-pie</code> ({chart_pie}) and <code>chart-bar</code> ({chart_bar}), plus <code>data-visualisation.md</code> ({dv_family}) sitting above all three as the family file. Every other candidate comes from a <i>name match</i> in rule prose, which is the exact signal s274-D12 refused.",
+      "options": [
+        ["a", true, "Author the three chart components in the next lane, same shape: filename join, one sentence each, reviewed by eye. Then stop and look again."],
+        ["b", false, "Park them with a tripwire on <code>knowledge/guidelines/data-visualisation*.md</code> and widen only when you ask."],
+        ["c", false, "Widen further now, into the name-match tier (table {nm_table}, modals {nm_modals}, accordion {nm_accordion}, dropdown {nm_dropdown}) — knowing that tier produced 'Avatar' from va25-013."]
+      ],
+      "why": "The four common-toolkit files plus the three data-visualisation files are the <i>whole</i> of the filename-join route: {guideline_files} guideline files exist and only {component_named_files} are named after a component. After the charts, this route is exhausted and every further binding is a judgement call."
+    },
+    {
+      "id": "D-6",
+      "title": "The lane-ownership guard",
+      "lede": "Your \"1. fix\" is built: <code>knowledge/_validate_lane_ownership.py</code> reads <code>YOU ARE #N</code> out of <code>_CHAIN.md</code>, lists staged paths, and warns on any under <code>notes/_lanes/&lt;M&gt;/</code> where M &ne; N. It exits 0 and blocks nothing. I read your word back as \"make it impossible\" and then did NOT do that, because making it impossible means ruling one-seat vs own-lane-only, and that rule is yours.",
+      "options": [
+        ["a", true, "Keep it advisory. It makes the #275 collision visible at the moment of staging, which is when it is cheap, and it cannot ever wrongly block a legitimate cross-lane commit."],
+        ["b", false, "Make it blocking — exit 1 and refuse the commit. Then a wrap lane that legitimately needs to touch a previous lane's folder has to be given an escape hatch, which is a second decision."],
+        ["c", false, "Advisory now, blocking once a session has run with it and nothing false-positived."]
+      ],
+      "why": "The <i>rule</i> itself is not inscribed and this lane did not inscribe it. Whether two sessions may share one repo at all, and whether the second one is confined to its own lane, are still your words to say."
+    }
+  ]
+}
