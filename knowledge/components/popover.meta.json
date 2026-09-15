@@ -3,6 +3,7 @@
   "when": "the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open — CANON-ADJACENT — our purpose already carries the three-way rule: \"If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal\"; Atlassian states both halves independently (\"For interactive overlays, use the modal dialog component\" / \"For non-essential, non-interactive messages, use the tooltip component\"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: \"Don't make popups that scroll\", Carbon: past four columns wide use a modal).",
   "category": "molecule",
   "purpose": "Rich anchored content that opens on CLICK — Tooltip's interactive sibling. Where a Tooltip annotates a label with plain text on hover/focus, a Popover holds structured, focusable content (title, body, link, dismiss) as a non-modal dialog anchored to its trigger. If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal.",
+  "provides": "overlay",
   "props": [
     { "name": "title", "type": "string", "$note": "Labels the dialog (aria-labelledby); .t-ed-body .em." },
     { "name": "content", "type": "string", "$note": ".t-ed-body-small body; may include one descriptive link (aca-004)." },
@@ -132,6 +133,16 @@
       {
         "ref": "component:button",
         "$note": "labelled trigger button click"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:overlay"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:drawer"
       }
     ]
   }

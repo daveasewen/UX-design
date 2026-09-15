@@ -2,6 +2,7 @@
   "name": "Standing-order / mandate row",
   "category": "molecule",
   "purpose": "A RECURRING PAYMENT INSTRUCTION THAT HAS NOT HAPPENED YET: who is paid, how much, on what rhythm, when next, and what state the instruction is in. Two actions per row — open the mandate, or manage it. PROPOSED #209 (itinerary row 95, slug standing-order-mandate-row, P3) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "provides": "record-list",
   "props": [
     { "name": "payee", "type": "string", "$note": "The row's subject. It must never be the element that gives way when chips crowd the line — see antiPatterns and knownFindings." },
     { "name": "mandateType", "type": "enum", "values": ["standing-order", "direct-debit"], "default": "standing-order", "$note": "⛔ NOT COSMETIC. A standing order is the customer's own instruction (fixed amount, fixed rhythm, the customer controls it); a Direct Debit is a mandate granted to a PAYEE who pulls a VARIABLE amount under the Direct Debit Guarantee. Legally and operationally different objects. Rendered as a Tags atom (square outline chip) IN TEXT — never by hue, never by an icon alone. Whether they should be ONE component or TWO is DAVE'S (P3); drawing them in one list does not settle it." },
@@ -142,6 +143,11 @@
       {
         "ref": null,
         "$note": "A List-items transaction row for the SAME payment shown as if it had already happened"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
       }
     ]
   }

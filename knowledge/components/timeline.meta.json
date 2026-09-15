@@ -4,6 +4,7 @@
   "category": "organism",
   "$status": "PROPOSED #203, Dave's eye owed",
   "purpose": "The passive, ordered record of things that have already happened, where the time axis IS the structure: a vertical rail threading date-grouped entries, newest first. Two forms from one grammar — transaction history (status node + amount, the fintech case the itinerary names) and activity feed (actor avatar + what they did).",
+  "provides": "record-list",
   "$differsFromNeighbours": {
     "$why": "Three gated components already sit close to this one, and a reader will otherwise reach for the wrong one. Stated here because the brief requires a new component to say how it differs from its gated siblings.",
     "vs List-items (Transaction row, GATED)": "List-items is an INTERACTIVE, UNORDERED list — every row is a <button> with hover/pressed/disabled/processing states — and it answers 'which transaction do I want to open?'. Timeline is PASSIVE and ORDERED (<ol>), carries no press states, and answers 'what happened, in what order?'. The tell: remove the ordering from a Timeline and it becomes meaningless; remove it from List-items and nothing is lost. Where a feed genuinely needs each entry to open a detail view, the correct answer is List-items inside a date group — NOT a Timeline that grows buttons. The RAG chip and avatar atoms here are List-items' own, copied verbatim.",
@@ -182,6 +183,16 @@
       },
       {
         "ref": "pattern:approval-activity"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:list-items"
       }
     ]
   }

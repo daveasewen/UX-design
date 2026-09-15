@@ -3,6 +3,7 @@
   "interactive": true,
   "category": "organism",
   "purpose": "Moves items between two labelled lists — 'Available' and 'Selected' — via checkboxes and move controls. Itinerary row 27 (P3, 'Move-between lists'), explicitly mapped to NOT be row 40's List-items ('⚠ NOT row 40's List-items (fuzzy matches on \"list\")'). Use where a user must build a subset FROM a larger set (assign accounts to a payee group, pick recipients for a standing instruction) and seeing both the chosen and unchosen sets at once matters more than a compact multi-select dropdown.",
+  "provides": "input",
   "$status": "PROPOSED #209, Dave's eye owed — new component, built through the gated-component route at #209 wave 3 lane B. Nothing about it is ruled.",
   "$composesFrom": "Two gated idioms, copied rather than re-drawn, per THE JOB's own instruction (List-items + Selection-controls idioms): (1) List-items supplies the row shell — the 44px+ row, the divider-between-items rhythm, the hover surface, the truncating single-line label with text-box-edge:text text so descenders aren't clipped. (2) Selection-controls supplies every checkbox verbatim, INCLUDING the panel-header 'select all' reusing the INDETERMINATE state exactly as Selection-controls' own 'Select all (indeterminate)' specimen does (same input.indeterminate JS toggle, same tick/mixed-dash SVG paths, same tokens). The ONE piece with no single-source precedent is the move-controls column and the cross-panel DOM move + role=\"status\" announcement — authored for this component specifically (see behaviour).",
   "props": [
@@ -107,6 +108,11 @@
       {
         "ref": null,
         "$note": "List-items used bare as a fake transfer list by pairing two independent List-items instances with no shared move mechanism — that reproduces this component's look without its behaviour"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:input"
       }
     ]
   }

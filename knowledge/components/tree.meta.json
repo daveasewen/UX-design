@@ -3,6 +3,7 @@
   "interactive": true,
   "category": "organism",
   "purpose": "A recursive disclosure list: nested nodes that open and close, one selectable at a time, depth carried by an indentation ladder and by aria-level. The shape for anything genuinely hierarchical — a corporate account structure, a category picker, a document tree — where a flat list would lose the containment relation. Built #210 wave 4 (heavy seven). PROPOSED, NOT RULED; every domain semantic is Dave's (the Kpi-tile precedent, s182-D2).",
+  "provides": "record-list",
   "props": [
     { "name": "nodes", "type": "array", "default": "[]", "$note": "Recursive: each node is a label, an optional child list and an optional count. A node with a child list is a BRANCH and carries aria-expanded; a node without one is a LEAF." },
     { "name": "selected", "type": "string", "default": "none", "$note": "Single selection. Multi-select with checkboxes is NOT drawn — it would compose Selection-controls and it changes the aria contract (aria-multiselectable). Receipt Q11." },
@@ -135,6 +136,11 @@
       {
         "ref": "component:empty-state",
         "$note": "Empty-state (the whole-tree empty idiom)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
       }
     ]
   }

@@ -2,6 +2,7 @@
   "name": "Transaction / ledger row",
   "category": "molecule",
   "purpose": "A STATEMENT LINE IN A LEDGER: an ordered sequence of settled and pending entries with a RUNNING BALANCE, column headers, day grouping and a closing total. Its question is 'what was the balance after this?', which is a relationship between rows and therefore a table. PROPOSED #209 (itinerary row 91, slug transaction-row, P2) — NOT GATED, NOT RULED. Fintech semantics are Dave's (the Kpi-tile precedent, s182-D2).",
+  "provides": "record-list",
   "$adjudication": "⛔ READ THIS BEFORE ANYTHING ELSE, BECAUSE A PRIOR LANE STOPPED ON THIS ROW. #204 Lane N ruled itinerary row 91 a DUPLICATE and built nothing (notes/_receipts/2026-08-19-204-wave-laneN-fintech-rows.md: 'Row 91 … IS A DUPLICATE. It is not a gap … I built no transaction row.'). Its evidence is real and was RE-PROBED at #209, not trusted: list-items.meta.json build.$status = 'PROMOTED 2026-06-22 (Dave) — TRANSACTION row brought to the Tabs-bar standard'; build.scope = 'Transaction row only (the ★ payments-journey row)'; build.prototypeGrade = '9.0/9 (2026-06-22)'; List-items.reference.html <title> = 'List items — Transaction row (reference implementation, gated)'. THE TAPPABLE TRANSACTION ROW IS GATED AND PROMOTED AND IS NOT RE-DRAWN ANYWHERE IN THIS COMPONENT. The #209 brief re-listed row 91 as a build because the itinerary re-probe reads by SLUG, which is the exact mechanism defect Lane N named. This lane did not resolve that by building what Lane N stopped: it built the one form the adjudication does not cover — the LEDGER, with a running balance. ⬛ IF DAVE RULES THAT THE PRODUCT'S STATEMENT IS A LIST AND NOT A LEDGER, THIS COMPONENT SHOULD NOT EXIST and row 91 collapses into List-items exactly as Lane N said. That is a live outcome; deleting this pair of files costs nothing, because nothing registers them.",
   "props": [
     { "name": "entries", "type": "array", "$note": "Ordered, newest first. Each entry: payee, reference line, one money value, and the balance AFTER it. Order is meaning here — a running balance cannot be reordered client-side without becoming false." },
@@ -135,6 +136,11 @@
       {
         "ref": null,
         "$note": "A List-items transaction list showing the SAME entries (two components claiming to be the same statement)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
       }
     ]
   }

@@ -2,6 +2,7 @@
   "name": "Carousel",
   "category": "molecule",
   "purpose": "A slide container that shows one item of a set at a time (or a peeking neighbour, in the peek/snap variant), navigated by dot buttons, prev/next arrows, or keyboard — with aria-roledescription=\"carousel\" semantics per the APG carousel pattern. PROPOSED at #210 wave-4 lane C; not registered, not ruled.",
+  "provides": "arrangement",
   "props": [
     { "name": "variant", "type": "enum", "values": ["standard", "peek"], "default": "standard", "$note": "standard = one slide fills the viewport, transform/hidden-driven, JS owns every position change. peek = native CSS scroll-snap-type:x mandatory, neighbour slides visible at both edges; JS only mirrors dot state via IntersectionObserver so direct swipe/scroll and the buttons never disagree." },
     { "name": "slideCount", "type": "number", "$note": "Drives the dot row and the aria-label \"N of M\" on each slide; authoring-time, not user-facing." },
@@ -101,6 +102,11 @@
       {
         "ref": null,
         "$note": "a set of 2+ equally-weighted items with no natural list reading order"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:arrangement"
       }
     ]
   }

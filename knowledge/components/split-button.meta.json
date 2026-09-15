@@ -2,6 +2,7 @@
   "name": "Split button",
   "category": "molecule",
   "purpose": "A two-target action control: a MAIN action button that fires immediately, glued to a CARET trigger that opens a menu of alternative/related actions. PROPOSED #209 (itinerary row 6, slug split-button) — NOT GATED, NOT RULED. A Button + Dropdown composition, per the wave-3 brief: the main/caret pair reuses Button.reference's tokens verbatim, and the flyout reuses Dropdown.reference's `.menu` shell verbatim, with role=\"menu\"/\"menuitem\" replacing role=\"listbox\"/\"option\" because a split-button menu triggers ACTIONS, not a value selection.",
+  "provides": "action",
   "props": [
     { "name": "label", "type": "string", "$note": "Visible text on the MAIN action button, e.g. 'Send payment'." },
     { "name": "tier", "type": "enum", "values": ["primary", "tertiary"], "default": "primary", "$note": "Mirrors two of Button's four emphasis tiers. Secondary/quaternary were not authored into this specimen — unproposed, not excluded; see antiPatterns/decisionsForDave." },
@@ -116,6 +117,11 @@
       {
         "ref": null,
         "$note": "A second split button with an overlapping/ambiguous main action in the same toolbar"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:action"
       }
     ]
   }

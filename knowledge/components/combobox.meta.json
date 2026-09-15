@@ -2,6 +2,7 @@
   "name": "Combobox",
   "category": "molecule",
   "purpose": "A text input that filters a list of options as the user types, and commits one of them. Use it instead of Dropdown when the option set is long enough that typing beats scrolling — countries, payees, currencies, branches. The value always comes from the list: free text is not accepted.",
+  "provides": "input",
   "$provenance-note": "NEW at #203 (wave 3b, lane J) against itinerary row 21 (P2, 'Type-ahead select'). Verified absent first-hand before building: ls knowledge/snippets/ | grep -i combo → nothing; ls knowledge/components/ → no combobox/autocomplete/typeahead meta; grep -rn 'aria-autocomplete' knowledge/snippets/ → 0 hits. The gated Dropdown carries role=\"combobox\" on a BUTTON trigger, which is the select pattern, not this one.",
   "interactive": true,
   "props": [
@@ -94,6 +95,11 @@
       },
       {
         "ref": "pattern:currency-picker"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:input"
       }
     ]
   }

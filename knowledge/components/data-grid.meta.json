@@ -3,6 +3,7 @@
   "interactive": true,
   "category": "organism",
   "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid.",
+  "provides": "record-list",
   "$composes": "Selection-controls (s258-D4, TIGHTENED at #261 G3 on Dave's word — \"the grid header is fine except the checkbox is rendered oddly, can't we just use the check component?\". The header select-all and every row checkbox ARE the .cn-selection-controls scope; the grid no longer RESTATES the anatomy on its own vars. Selection-controls is not registered as a $partial in component-types.json, so the composition route of the #261 lane brief applies: its checkbox rule block is carried into the snippet BYTE-IDENTICALLY (only a `.cbx ` scope prefix added) and bound through an alias layer that maps its var names onto the grid's already-resolved tokens of the same semantic value — --ctrl-border=form/border/default, --ctrl-border-active, --glyph=text/on-inverse, --checked=secondary/background/default, --chip-hover=form/background/hover, --ctrl-border-disabled. Its OWN two glyphs are consumed: the animated stroke-draw tick for checked and its own dash for indeterminate, both declared data-bespoke and already verified in _ICON-SOURCE-AUDIT.md. Two grid-authored lines remain and both are marked in the snippet: the 44px label that carries the hit area (32px in compact, above the 24px floor), and a stroke-dasharray on .mixed without which the component's stroke-dashoffset is inert. The class names are KEPT so a diff proves the borrow; the grid supplies only the ids, aria-label and the indeterminate state.) Search-field (the filter field's boxed chrome, FIELD-CHROME-COPY). Tags (the applied-filter chips, namespaced .fchip). Pagination (44px pager targets, aria-current border). Skeleton-loader (the loading state, by reference). Account-selector (aria-selected = tint + inset start bar). Button (sort headers, .full because they are cell-bound).",
   "props": [
     {
@@ -363,6 +364,11 @@
       {
         "ref": null,
         "$note": "group-header: #261. Optional spanning row of th scope=colgroup above the column row; caption type at 60% alpha on table/column/background. Both rows are sticky and travel as one block. Sticky plus border-collapse drops cell borders while scrolling, so the header's rules are painted as inset shadows."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
       }
     ]
   },

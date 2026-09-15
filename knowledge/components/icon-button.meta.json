@@ -3,6 +3,7 @@
   "when": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label — CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous — our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.",
   "category": "atom",
   "purpose": "An icon-only control that triggers a single action where space is tight or the action is universally recognised (add, download, edit, search, close). Shares Button's four-level emphasis hierarchy (primary / secondary / tertiary / quaternary) and its tokens, but carries no visible label — so it must supply an accessible name and guarantee a 44x44 target. Use a labelled Button when the action is not unambiguous from a glyph alone.",
+  "provides": "action",
   "props": [
     { "name": "type", "type": "enum", "values": ["primary", "secondary", "tertiary", "quaternary"], "default": "quaternary", "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add).", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled"], "default": "default", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
@@ -130,6 +131,11 @@
       {
         "ref": "component:icon-button",
         "$note": "Icon button (primary) x2 (a second primary icon action)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:action"
       }
     ]
   }

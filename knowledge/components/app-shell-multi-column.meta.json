@@ -5,6 +5,7 @@
   "$layerKeyIsDollarPrefixed": "⚠ THE BRIEF PROPOSED A PLAIN `layer` KEY AND IT WOULD FAIL P-1. meta.schema.json sets additionalProperties:false with patternProperties {'^\\$': {}} and has no `layer` property. The `$` prefix is the legal form. Widening the schema (a real `layer` property, and probably a `shell` value in the `category` enum) is a schema change and schema changes are Dave's.",
   "$categoryChoice": "`template` is the closest LEGAL value in the enum. There is no `shell` value and inventing one fails the gate. DECLARED as a compromise, not as correct.",
   "purpose": "The list-and-detail frame: a navigation rail, a master list of records, and a detail pane showing the one record the list is currently pointing at — collapsing to a single pane on a phone, where choosing a row replaces the list with the detail and a back control returns. Itinerary row 99's own notes cell is 'List + detail frame.'",
+  "provides": "page-frame",
   "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — NEW FILES ONLY.",
   "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file, named in $copiedFrom with a diff-proof in the receipt.",
   "$finding-no-selected-list-row": "★★★ THE LIBRARY HAS NO SELECTED LIST ROW, AND THAT IS THIS FILE'S LARGEST FINDING. Probe, run: `grep -c 'aria-current\\|aria-selected' knowledge/snippets/List-items.reference.html` → **0**. List-items is the library's list-row component — gated, promoted, prototypeGrade 9.0/9 — and it models default, hover, pressed, disabled and processing. It models NO selected and NO current state at all. Its rows are `<button>`s that take you somewhere; nothing in it can say 'and you are looking at THIS one'. A list/detail frame cannot exist without that state: showing which record the detail pane is displaying is the entire mechanic of the pattern. ⬛ WHAT WAS DONE INSTEAD, stated so it can be refused: the row is Sidebar-nav's `.sn-link`, which is the ONE gated atom in the corpus that carries 'you are here' on three independent channels — aria-current for AT, a 3px leading bar that is a SHAPE present or absent, and a surface change, with colour only third because Dave is astigmatic and red is a problem hue. A master list's current row IS 'you are here'. ⬛ THE LIVE ALTERNATIVES: give List-items a selected state and use it here, or make the list a real role=\"listbox\" with aria-selected. Both are legitimate and both are Dave's. If he picks either, this shell changes one atom and nothing else.",
@@ -189,6 +190,11 @@
       {
         "ref": "component:footer",
         "$note": "Footer"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:page-frame"
       }
     ]
   }
