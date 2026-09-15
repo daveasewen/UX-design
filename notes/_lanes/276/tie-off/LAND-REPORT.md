@@ -28,7 +28,7 @@ and D-6) and said **"go"** on the second read-back. Two commits: the rulings, th
 
 ---
 
-## STEP 2 — the enactment · commit `<COMMIT2>`
+## STEP 2 — the enactment · commit `577c82d`
 
 ### (a) the 17 criteria — `knowledge/compliance/rules/` 38 → 55
 
@@ -130,13 +130,17 @@ next lane (`s276-D5`, the three chart components) is where a reader earns its pl
 - **P-276-1** added, in the register's existing row shape: *"did `_validate_lane_ownership.py` ever
   fire — if not by the next dream pass, remove it (s276-D6)"*, trigger
   `{"kind": "file-changed", "path": "knowledge/_validate_lane_ownership.py", "event": "dream-pass"}`,
-  `at_commit` `6beedef` so the guard's own landing commit makes it due at the next dream pass;
-  `notes/_REHEARSAL-LOG.jsonl` is named in the item body as the evidence file to read.
+  `at_commit` `3b9d89b` — the last wrap, chosen because the guard itself landed in `8053591`
+  (lane TO), so the trigger actually fires: `--due dream-pass` now prints P-276-1 with
+  *"changed in 1 commit(s) since 3b9d89b"*. `notes/_REHEARSAL-LOG.jsonl` is named in the item body
+  as the evidence file to read. **Healed by addition in commit `<COMMIT3>`:** commit 2 shipped it
+  with `at_commit` `6beedef`, under which the guard had no later commit and the item would have
+  been permanently silent — an instrument that cannot fire. Caught by RUNNING `--due dream-pass`,
+  not by reading the row.
 - **P-274-2** and **P-274-3**: rows **kept**, `status` `parked` → `enacted`, each given a new
   `closed_by` string naming the rulings and the measured result. Nothing deleted.
 - `python3 knowledge/_parked.py --selftest` → **`parked selftest: OK`** (4/4).
-- `--due dream-pass` before commit 2 does not yet list P-276-1 (the guard file has no commit after
-  `6beedef` until commit 2 exists); it is due from commit 2 onward.
+- `--due dream-pass` → **`PARKED DUE — 5 of 17 parked item(s) due at dream-pass`**, P-276-1 among them.
 
 ### (g) gates
 
