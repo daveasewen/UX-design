@@ -1,0 +1,548 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roles drift — #273 decision page</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+h1{font-size:3.5625rem;line-height:1.04;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.2;font-weight:500;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3)}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1)}
+.stat span{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.75rem;letter-spacing:.14em;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;
+ color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .35rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);
+ border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:640px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;
+ white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#perrole table{min-width:1120px}
+tr.zero td{background:var(--soft)}
+.zmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:52ch}
+.sub td{font-size:.8125rem;color:var(--muted);background:var(--soft)}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.rolecell{font-weight:500;white-space:nowrap}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+</style>
+<script type="application/json" id="drift">{"measured_at": "4294b60 2026-09-15", "corpus_metas": 137, "roles": 12, "memberships_json": 108, "memberships_meta_agree": 24, "memberships_meta_silent": 84, "silent_with_json_when": 57, "contradictions": [], "dangling_slugs": [], "meta_provides_not_in_json": [], "meta_provides_unknown_role": [], "not_a_provider_with_provides": [], "roles_zero_in_metas": ["record-list", "feedback", "input", "overlay"], "json_when_present": 81, "metas_with_when": 38, "metas_with_provides": 24, "legal_when_fields": ["answers", "axes", "axis.x", "bins", "categories", "content", "delta", "depth", "destinations", "emphasis", "label", "level", "lockup", "nav.levels", "parts", "platform", "rows", "scope", "series", "shape", "span.cols", "surface", "total", "units", "variables", "verdict"], "metas_with_illegal_when_fields": {"Chart-histogram": ["baseline"], "app-shell-focused": ["primaryNavigation", "breadcrumbs", "search", "exits", "job.count"], "input-fields": ["entry"], "limits-meter": ["full"], "template-confirmation": ["position", "order"], "template-error": ["cause"], "template-wizard": ["steps"], "textarea": ["entry"], "timeline": ["records"]}, "illegal_when_clauses": [{"meta": "Chart-histogram", "field": "baseline", "clause": "baseline = 0", "is_provider": true}, {"meta": "app-shell-focused", "field": "primaryNavigation", "clause": "primaryNavigation = absent", "is_provider": true}, {"meta": "app-shell-focused", "field": "breadcrumbs", "clause": "breadcrumbs = absent", "is_provider": true}, {"meta": "app-shell-focused", "field": "search", "clause": "search = absent", "is_provider": true}, {"meta": "app-shell-focused", "field": "exits", "clause": "exits = 1", "is_provider": true}, {"meta": "app-shell-focused", "field": "job.count", "clause": "job.count = 1", "is_provider": true}, {"meta": "input-fields", "field": "entry", "clause": "entry = free text", "is_provider": true}, {"meta": "limits-meter", "field": "full", "clause": "full = BLOCKED, not done", "is_provider": false}, {"meta": "template-confirmation", "field": "position", "clause": "position = end of an instruction", "is_provider": false}, {"meta": "template-confirmation", "field": "order", "clause": "order = message, then FACTS, then actions, then what-happens-next", "is_provider": false}, {"meta": "template-error", "field": "cause", "clause": "cause in (404, 500)", "is_provider": false}, {"meta": "template-wizard", "field": "steps", "clause": "steps >= 2", "is_provider": false}, {"meta": "textarea", "field": "entry", "clause": "entry = free text", "is_provider": true}, {"meta": "timeline", "field": "records", "clause": "records >= 2", "is_provider": true}], "per_role": [{"role": "headline-metric", "index": 1, "definition": "One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.", "axis": "FFF: function \"how big is it, and did it move?\"", "json": 4, "meta_agrees": 4, "meta_silent": 0, "json_when_present": 4, "zero_in_metas": false, "providers": [{"slug": "stat-card", "state": "agrees", "json_when": "default \u2014 label \u00b7 value \u00b7 delta \u00b7 period, no series", "meta_when": "shape = one-measure \u00d7 value-and-delta AND series = none AND delta != none \u2014 the default of the role; beats kpi-tile (roles.json when: \"a series exists to show (s247-D3 / DP-08: no series \u21d2 not a KPI tile)\") exactly when no series exists, and beats Chart-bullet (when: \"a target or performance band is the point, not the delta\") when the delta, not a band, is the claim.", "meta_priority": 60, "meta_shape": "one-measure \u00d7 value-and-delta", "meta_answers": "one-number", "illegal_fields": []}, {"slug": "kpi-tile", "state": "agrees", "json_when": "a series exists to show (s247-D3 / DP-08: no series \u21d2 not a KPI tile)", "meta_when": "shape = one-measure \u00d7 value-delta-and-series AND series != none \u2014 beats stat-card (roles.json when: \"default \u2014 label \u00b7 value \u00b7 delta \u00b7 period, no series\") whenever a series exists to show; yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") when target != none, and to runway-bar (when: \"the number is 'money vs what is already scheduled'\") when the measure is money-vs-scheduled.", "meta_priority": 50, "meta_shape": "one-measure \u00d7 value-delta-and-series", "meta_answers": ["one-number", "change-over-time"], "illegal_fields": []}, {"slug": "Chart-bullet", "state": "agrees", "json_when": "a target or performance band is the point, not the delta", "meta_when": "answers=comparison AND the reading is one measure against a target plus qualitative performance bands AND span.cols 4\u20136 \u2014 beats stat-card (60, \"default \u2014 label \u00b7 value \u00b7 delta \u00b7 period, no series\") and kpi-tile (50, \"a series exists to show\") when the BENCHMARK, not the delta and not a series, is the point; yields to both when no target exists.", "meta_priority": 40, "meta_shape": "rows \u00d7 measure-target-bands", "meta_answers": "comparison", "illegal_fields": []}, {"slug": "runway-bar", "state": "agrees", "json_when": "the number is \"money vs what is already scheduled\"", "meta_when": "answers = one-number AND shape = one-measure \u00d7 committed-vs-balance-split AND verdict != none \u2014 beats stat-card (60, \"default \u2014 label \u00b7 value \u00b7 delta \u00b7 period, no series\") and kpi-tile (50, \"a series exists to show\") when the reading is \"money vs what is already scheduled\" and the takeaway is a VERDICT WITH A DATE rather than a delta or a trend; yields to stat-card when there is nothing committed to net off, to kpi-tile when a series is the claim, and to Chart-bullet (40, \"a target or performance band is the point, not the delta\") when a target band, not a coverage date, is the benchmark.", "meta_priority": 30, "meta_shape": "one-measure \u00d7 committed-vs-balance-split", "meta_answers": "one-number", "illegal_fields": []}]}, {"role": "status-surface", "index": 2, "definition": "A count or state against a threshold. The DESK example role, kept as named.", "axis": "FFF: function \"how many, against what, and is that fine?\"", "json": 4, "meta_agrees": 2, "meta_silent": 2, "json_when_present": 4, "zero_in_metas": false, "providers": [{"slug": "status-indicator", "state": "agrees", "json_when": "one state, one dot + label, 2\u20134 cols", "meta_when": "shape = one-state \u00d7 dot-and-label AND span.cols \u003c= 4 \u2014 the default of the role; beats summary (roles.json when: \"n \u00d7 count as a key/value list, 6\u201312 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.", "meta_priority": 60, "meta_shape": "one-state \u00d7 dot-and-label", "meta_answers": "status-of-one", "illegal_fields": []}, {"slug": "summary", "state": "agrees", "json_when": "n \u00d7 count as a key/value list, 6\u201312 cols", "meta_when": "shape = rows \u00d7 name-value-pairs AND rows >= 2 AND span.cols >= 6 \u2014 beats status-indicator (roles.json when: \"one state, one dot + label, 2\u20134 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.", "meta_priority": 40, "meta_shape": "rows \u00d7 name-value-pairs", "meta_answers": "details-before-commit", "illegal_fields": []}, {"slug": "meter", "state": "silent", "json_when": "the threshold is a cap being spent against (limits-meter reading)", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "badge", "state": "silent", "json_when": "inline, attached to another element, count only", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "chart-panel", "index": 3, "definition": "A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison \u00b7 change-over-time \u00b7 distribution \u00b7 relationship \u00b7 composition) already live on the answers axis (chart-intents.json, s251-D11), so they gate; the role only names the slot. Five roles named after the intents would duplicate that axis and break \"three independent axes\" (s251-D3). This is the call most worth striking if you disagree \u2014 see \u00a714 call 1.", "axis": "FFF: function is the chart-intent word, gated by answers, not by the role", "json": 12, "meta_agrees": 12, "meta_silent": 0, "json_when_present": 12, "zero_in_metas": false, "providers": [{"slug": "chart-bar", "state": "agrees", "json_when": "comparison; stacked variant when composition across categories", "meta_when": "answers = comparison AND axis.x = categorical \u2014 beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, \u2264 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.", "meta_priority": 92, "meta_shape": "categories \u00d7 series", "meta_answers": "comparison", "illegal_fields": []}, {"slug": "chart-line", "state": "agrees", "json_when": "change-over-time", "meta_when": "answers=change-over-time AND series 1\u20135 on ONE continuous time axis AND axes=present AND span.cols \u2265 6 \u2014 the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols \u003c 6.", "meta_priority": 88, "meta_shape": "time-series \u00d7 1\u20135-series", "meta_answers": "change-over-time", "illegal_fields": []}, {"slug": "chart-donut", "state": "agrees", "json_when": "composition, a centre total is meaningful", "meta_when": "answers=composition AND parts sum to a whole AND total=printed as a centre figure \u2014 beats chart-pie (48, \"composition, no centre figure, \u2264 5 parts\") whenever the total is worth printing, and beats it on nothing else; yields to chart-stacked-area (64, \"composition over time\") when the split MOVES.", "meta_priority": 80, "meta_shape": "parts-of-whole", "meta_answers": "composition", "illegal_fields": []}, {"slug": "Chart-histogram", "state": "agrees", "json_when": "distribution, one variable", "meta_when": "answers = distribution AND variables = 1 AND bins = contiguous (no inter-bar gap) AND baseline = 0 \u2014 roles.json when: \"distribution, one variable\"; beats Chart-boxplot (roles.json: \"distribution per category\") when the frequency shape of ONE variable is the claim; yields to Chart-boxplot when categories >= 2; the no-gap rule is not cosmetic \u2014 the FT gives the same reason: \"keep the gaps between columns small to highlight the 'shape' of the data\".", "meta_priority": 76, "meta_shape": "bins \u00d7 frequency", "meta_answers": "distribution", "illegal_fields": ["baseline"]}, {"slug": "Chart-scatter", "state": "agrees", "json_when": "relationship", "meta_when": "answers=relationship AND both axes carry quantitative measures \u2014 the ONLY provider of relationship in the role, so it beats every sibling on the answers gate alone and needs no further test; yields to chart-combo (56) when the two measures share one x axis in different units instead of being plotted against each other. span.cols max 8 because a runtime fit is not baked (this meta's own responsive rule).", "meta_priority": 72, "meta_shape": "points \u00d7 two-measures", "meta_answers": "relationship", "illegal_fields": []}, {"slug": "chart-stacked-area", "state": "agrees", "json_when": "composition over time", "meta_when": "answers spans change-over-time AND composition AND cumulative bands share ONE total across the time axis \u2014 beats chart-donut (80, \"composition, a centre total is meaningful\") and chart-pie (48) when the split MOVES rather than being a snapshot; yields to chart-line (88, \"change-over-time\") when the total is not meaningful.", "meta_priority": 64, "meta_shape": "time-series \u00d7 parts-of-whole", "meta_answers": ["change-over-time", "composition"], "illegal_fields": []}, {"slug": "Chart-boxplot", "state": "agrees", "json_when": "distribution per category", "meta_when": "answers = distribution AND categories >= 2 AND each category carries a five-number summary AND span.cols \u003c= 8 \u2014 roles.json when: \"distribution per category\"; beats Chart-histogram (roles.json: \"distribution, one variable\") whenever the spread must be read PER CATEGORY; yields to it when variables = 1 and the bin shape is the claim.", "meta_priority": 60, "meta_shape": "categories \u00d7 five-number-summary", "meta_answers": "distribution", "illegal_fields": []}, {"slug": "chart-combo", "state": "agrees", "json_when": "two measures in different units over one axis", "meta_when": "answers=change-over-time AND series=2 AND units=different AND both read against ONE shared x (dv-line-006) \u2014 beats chart-line (88, \"change-over-time\") on the different-units test and on nothing else; yields to chart-line (multi-series) or chart-bar (grouped) for a same-unit pair, which this meta's own antiPattern forbids drawing as a combo.", "meta_priority": 56, "meta_shape": "shared-x \u00d7 two-measures-different-units", "meta_answers": "change-over-time", "illegal_fields": []}, {"slug": "Chart-butterfly-h", "state": "agrees", "json_when": "exactly two series mirrored, categories \u2265 6", "meta_when": "answers=comparison AND series=2 mirrored outward from a shared centre gutter AND categories \u2265 6 \u2014 beats chart-bar (grouped) when the two series must read as OPPOSED directions rather than adjacent columns; yields to Chart-butterfly-v (36, \"as above, wide panel\") when the category axis is ordered left-to-right and span.cols \u2265 8.", "meta_priority": 40, "meta_shape": "categories \u00d7 two-series-mirrored", "meta_answers": "comparison", "illegal_fields": []}, {"slug": "Chart-butterfly-v", "state": "agrees", "json_when": "as above, wide panel", "meta_when": "answers=comparison AND series=2 mirrored above/below ONE horizontal baseline AND the category axis is ordered left-to-right (time, rank) AND span.cols \u2265 8 \u2014 yields to Chart-butterfly-h (40, \"exactly two series mirrored, categories \u2265 6\") whenever the categories are unordered or the panel is narrower than 8 cols; both yield to chart-bar for an ordinary grouped comparison.", "meta_priority": 36, "meta_shape": "categories \u00d7 two-series-mirrored", "meta_answers": "comparison", "illegal_fields": []}, {"slug": "chart-pie", "state": "agrees", "json_when": "composition, no centre figure, \u2264 5 parts", "meta_when": "answers=composition AND parts \u2264 5 AND total=not printed \u2014 yields to chart-donut (80, \"composition, a centre total is meaningful\") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time.", "meta_priority": 48, "meta_shape": "parts-of-whole", "meta_answers": "composition", "illegal_fields": []}, {"slug": "Chart-candlestick", "state": "agrees", "json_when": "OHLC per period", "meta_when": "answers = change-over-time AND shape = periods \u00d7 OHLC (open \u00b7 high \u00b7 low \u00b7 close per session) \u2014 roles.json when: \"OHLC per period\"; beats chart-line (roles.json: \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.", "meta_priority": 44, "meta_shape": "periods \u00d7 ohlc", "meta_answers": "change-over-time", "illegal_fields": []}]}, {"role": "record-list", "index": 4, "definition": "Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.", "axis": "FFF: function \"show me the items\"", "json": 8, "meta_agrees": 0, "meta_silent": 8, "json_when_present": 8, "zero_in_metas": true, "providers": [{"slug": "table", "state": "silent", "json_when": "default, read-mostly", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "data-grid", "state": "silent", "json_when": "sort / filter / select / edit-in-place is required", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "list-items", "state": "silent", "json_when": "\u2264 3 fields per item, tappable", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "transaction-row", "state": "silent", "json_when": "the records are a ledger with a running balance", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "document-row", "state": "silent", "json_when": "the records are issued documents to open / download", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "standing-order-mandate-row", "state": "silent", "json_when": "the records are future recurring instructions", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "timeline", "state": "silent", "json_when": "time is the structure, records have happened", "meta_when": "records >= 2 AND time IS the structure AND every record has ALREADY HAPPENED AND entries are not buttons AND order is newest-first with date headings \u2014 roles.json when: \"time is the structure, records have happened\"; beats list-items when the date rail is the reading rather than a sort order; yields to list-items inside a date group the moment entries must open (our AP1), and never borrows Progress-tracker's aria-current because there is no current step (our AP0).", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": ["records"]}, {"slug": "tree", "state": "silent", "json_when": "records nest", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "page-frame", "index": 5, "definition": "The shell around everything. Seven providers, one per frame; only one can win, so not-with is implicit among co-providers (Debian: one-at-a-time facility).", "axis": "FFF: form dominates \u2014 the frame is chosen by navigation depth and job", "json": 7, "meta_agrees": 1, "meta_silent": 6, "json_when_present": 7, "zero_in_metas": false, "providers": [{"slug": "app-shell-top-nav", "state": "agrees", "json_when": "default for dashboards (the bento template composes it)", "meta_when": "destinations \u003c= 7 AND nav.levels \u003c= 2 \u2014 the default for dashboards \u2014 the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json \u00a705: one-at-a-time facility), so no not-with is authored.", "meta_priority": 60, "meta_shape": "no-data \u00d7 page-regions", "meta_answers": "what-holds-the-page", "illegal_fields": []}, {"slug": "app-shell-side-nav", "state": "silent", "json_when": "> 7 destinations or two nav levels", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "app-shell-nav-rail", "state": "silent", "json_when": "dense app, content cannot spare 248px", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "app-shell-multi-column", "state": "silent", "json_when": "list-and-detail job", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "app-shell-split", "state": "silent", "json_when": "two peers on screen at once", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "app-shell-focused", "state": "silent", "json_when": "one job, no navigation (auth, wizard)", "meta_when": "primaryNavigation = absent AND breadcrumbs = absent AND search = absent AND exits = 1 AND job.count = 1 \u2014 the only frame defined by removal; beats every other shell (roles.json: all six carry navigation) whenever abandoning the task is the failure mode \u2014 authentication, a wizard, a passcode; yields to app-shell-top-nav the moment the user must be able to go somewhere else.", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": ["primaryNavigation", "breadcrumbs", "search", "exits", "job.count"]}, {"slug": "app-shell-doormat", "state": "silent", "json_when": "marketing / servicing site with a mega-footer", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "page-title", "index": 6, "definition": "The band that names the page or a section of it. Providers differ by level, so when is the level.", "axis": "FFF: function \"what am I looking at?\"", "json": 4, "meta_agrees": 1, "meta_silent": 3, "json_when_present": 4, "zero_in_metas": false, "providers": [{"slug": "page-header-lockup", "state": "silent", "json_when": "page level, with actions or tabs", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "headers", "state": "agrees", "json_when": "page or screen level, app-only, no lock-up needed", "meta_when": "level in (page, screen, section) AND platform = app AND lockup = none \u2014 yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.", "meta_priority": 50, "meta_shape": "no-data \u00d7 title-and-optional-action", "meta_answers": "what-is-this", "illegal_fields": []}, {"slug": "section-heading-lockup", "state": "silent", "json_when": "section level, above one board / table / panel", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "eyebrow", "state": "silent", "json_when": "a kicker alone is enough (rare; normally a part of the above)", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "wayfinding", "index": 7, "definition": "Navigation that is not the frame. Global, local, in-page and mobile are the when values.", "axis": "FFF: function \"where am I, where can I go?\"", "json": 8, "meta_agrees": 2, "meta_silent": 6, "json_when_present": 8, "zero_in_metas": false, "providers": [{"slug": "navigations", "state": "agrees", "json_when": "global \u2014 masthead / main-nav family", "meta_when": "shape = destination-set \u00d7 links AND scope = global \u2014 the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth \u2265 2\") and tabs (when: \"local \u2014 peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3\u20135 destinations\") on mobile.", "meta_priority": 60, "meta_shape": "destination-set \u00d7 links", "meta_answers": "where-can-i-go", "illegal_fields": []}, {"slug": "sidebar-nav", "state": "silent", "json_when": "global, desktop, persistent column (pairs with app-shell-side-nav)", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "tabs", "state": "silent", "json_when": "local \u2014 peer views in one context", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "breadcrumbs", "state": "agrees", "json_when": "ancestry, depth \u2265 2", "meta_when": "shape = ancestor-path \u00d7 links AND depth >= 2 \u2014 beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global \u2014 masthead / main-nav family\") for global movement and to tabs (when: \"local \u2014 peer views in one context\") for peer views \u2014 it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.", "meta_priority": 40, "meta_shape": "ancestor-path \u00d7 links", "meta_answers": "where-am-i", "illegal_fields": []}, {"slug": "anchor-nav", "state": "silent", "json_when": "in-page, long document", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "tab-bar", "state": "silent", "json_when": "mobile bottom, 3\u20135 destinations", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "pagination", "state": "silent", "json_when": "within one list", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "back-to-top", "state": "silent", "json_when": "page chrome only", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "action", "index": 8, "definition": "A trigger. Emphasis (primary / secondary / ghost) is a placement property, not a role \u2014 Material's emphasis axis, per the DESK page.", "axis": "FFF: function \"do the thing\"", "json": 8, "meta_agrees": 1, "meta_silent": 7, "json_when_present": 8, "zero_in_metas": false, "providers": [{"slug": "button", "state": "agrees", "json_when": "default", "meta_when": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text \u2014 the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.", "meta_priority": 60, "meta_shape": "no-data \u00d7 control", "meta_answers": "what-can-i-do", "illegal_fields": []}, {"slug": "icon-button", "state": "silent", "json_when": "space is tight and the glyph is universal", "meta_when": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label \u2014 CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous \u2014 our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "split-button", "state": "silent", "json_when": "one main action plus a menu of related ones", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "links", "state": "silent", "json_when": "the action is navigation inside running text", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "quick-actions", "state": "silent", "json_when": "a row / grid of 4\u20138 shortcuts on an overview", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "action-bar", "state": "silent", "json_when": "a flow's primary + secondary pinned to the footer", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "fab", "state": "silent", "json_when": "mobile, one dominant action", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "cta-lockup", "state": "silent", "json_when": "marketing band, heading + support line + pair", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "arrangement", "index": 9, "definition": "Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not component-provided roles.", "axis": "FFF: form \u2014 these carry no content of their own", "json": 8, "meta_agrees": 1, "meta_silent": 7, "json_when_present": 8, "zero_in_metas": false, "providers": [{"slug": "layout-utilities", "state": "agrees", "json_when": "default \u2014 container / stack / row / grid / twelve-column / split / measure", "meta_when": "content = arbitrary-blocks AND surface = none \u2014 the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3\u20136 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider (when: \"a rule alone\") when a rule alone is the whole need.", "meta_priority": 60, "meta_shape": "no-data \u00d7 arbitrary-blocks", "meta_answers": "where-does-it-go", "illegal_fields": []}, {"slug": "cards", "state": "silent", "json_when": "a bordered surface per item", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "stats-band-lockup", "state": "silent", "json_when": "3\u20136 headline-metrics in a labelled row", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "feature-grid-lockup", "state": "silent", "json_when": "marketing, 2/3/4-up icon + title + body", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "splitter", "state": "silent", "json_when": "the reader sizes two panes", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "accordion", "state": "silent", "json_when": "content collapses behind a heading", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "carousel", "state": "silent", "json_when": "one of a set at a time", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "divider", "state": "silent", "json_when": "a rule alone", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "feedback", "index": 10, "definition": "Status from the system to the person: persistence and placement are the when. Includes the nothing-yet states.", "axis": "FFF: function \"the system is telling you something\"", "json": 11, "meta_agrees": 0, "meta_silent": 11, "json_when_present": 11, "zero_in_metas": true, "providers": [{"slug": "alert", "state": "silent", "json_when": "in-flow, stays until resolved", "meta_when": "the message is IN FLOW (inside the page or form it refers to) AND it persists until resolved or dismissed AND it carries a status glyph and a title, never colour alone AND an error alert never auto-dismisses \u2014 CANON-ADJACENT \u2014 our own purpose already states the three-way rule: \"Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors\"; beats toast (proposed \"transient, no answer required\") whenever the reader must act; beats banner (proposed \"the condition governs the whole page or session\") whenever the message belongs to one form or section \u2014 Atlassian draws the identical line: \"For messages with information affecting the whole site, use a banner\"; yields to inline field validation for a single control.", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "notifications", "state": "silent", "json_when": "the RAG family in its four placements", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "banner", "state": "silent", "json_when": "page-level, above content, persistent", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "toast", "state": "silent", "json_when": "transient, confirms and leaves", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "empty-state", "state": "silent", "json_when": "a region has nothing to show", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "skeleton-loader", "state": "silent", "json_when": "content is on its way, shape known", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "loading-indicator", "state": "silent", "json_when": "working, shape unknown", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "progress-bar", "state": "silent", "json_when": "a task underway, full = done (meter's progress reading)", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "progress-tracker", "state": "silent", "json_when": "where in a multi-step process", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "countdown-timer", "state": "silent", "json_when": "something fires at a time", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "confirmation", "state": "silent", "json_when": "end of flow, success screen", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "input", "index": 11, "definition": "The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored \u2014 not now.", "axis": "Not in the first pass (s251-D12) \u2014 listed so the library is whole", "json": 27, "meta_agrees": 0, "meta_silent": 27, "json_when_present": 0, "zero_in_metas": true, "providers": [{"slug": "input-fields", "state": "silent", "json_when": null, "meta_when": "entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret \u2014 the default text-entry field; beats textarea (proposed \"the answer may span multiple lines\") whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there \"is likely to result in an error\").", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": ["entry"]}, {"slug": "textarea", "state": "silent", "json_when": null, "meta_when": "entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists \u2014 beats input-fields (proposed \"the answer fits one line\") the moment a sentence is expected rather than a value \u2014 notes to approvers, a reason for payment, a secure message body; yields to input-fields for anything shorter (GOV.UK, verbatim: \"enter shorter answers no longer than a single line, such as a phone number\"); the counter is added only when a limit genuinely exists (GOV.UK: \"Only use the character count component when there is a good reason for limiting\").", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": ["entry"]}, {"slug": "amount-input", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "search-field", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "dropdown", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "combobox", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "multi-select", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "cascader", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "selection-controls", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "segmented-control", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "date-picker", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "date-range-picker", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "time-picker", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "calendar", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "slider", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "range-slider", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "rating", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "tags-input", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "secure-entry", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "file-upload", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "transfer-list", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "reorder", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "view-options", "state": "silent", "json_when": null, "meta_when": "NEVER \u2014 superseded 2026-07-24; the view switch is Segmented-control \u2014 carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says \"Consuming View-options instead of Segmented-control for the view switch \u2014 View-options was superseded\"; the honest `when` here is a redirect, not a predicate.", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "form-layout", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "stepper", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "account-selector", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "amount-display", "state": "silent", "json_when": null, "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}, {"role": "overlay", "index": 12, "definition": "Something on top of the page that the person must dismiss or answer.", "axis": "Not in the first pass \u2014 listed so the library is whole", "json": 7, "meta_agrees": 0, "meta_silent": 7, "json_when_present": 7, "zero_in_metas": true, "providers": [{"slug": "modals", "state": "silent", "json_when": "a message or side-task that needs an answer", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "drawer", "state": "silent", "json_when": "sub-task, page context stays visible", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "popover", "state": "silent", "json_when": "rich anchored content on click", "meta_when": "the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open \u2014 CANON-ADJACENT \u2014 our purpose already carries the three-way rule: \"If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal\"; Atlassian states both halves independently (\"For interactive overlays, use the modal dialog component\" / \"For non-essential, non-interactive messages, use the tooltip component\"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: \"Don't make popups that scroll\", Carbon: past four columns wide use a modal).", "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "popconfirm", "state": "silent", "json_when": "one question, in place", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "tooltip", "state": "silent", "json_when": "a label's help, on hover", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "modal-lightbox", "state": "silent", "json_when": "show a thing, not ask a thing", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}, {"slug": "command-palette", "state": "silent", "json_when": "keyboard-first launcher", "meta_when": null, "meta_priority": null, "meta_shape": null, "meta_answers": null, "illegal_fields": []}]}]}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#273 &middot; lane RD &middot; decision page</p>
+<h1>The canon is thin, not wrong.</h1>
+<p>The ruled membership in <code>roles.json</code> (s252-D1) names <span class="n">108</span> memberships across <span class="n">12</span> roles. The metas' <code>provides</code> — the first authoring pass, s251-D12 — carries <span class="n">24</span> of them. Only a meta's <code>provides</code> generates a <code>providesRole</code> edge (s270-D2), so the graph carries <span class="n">24</span> edges where the ruling names <span class="n">108</span>.</p>
+<p>The drift is ONE-DIRECTIONAL. Nothing in the metas contradicts the ruling; the metas are simply silent. Closing it is an enactment by addition, not a re-judgement.</p>
+<div class="stats">
+<div class="stat"><b>108</b><span>memberships ruled</span></div>
+<div class="stat"><b>24</b><span>carried by metas</span></div>
+<div class="stat"><b>84</b><span>metas silent</span></div>
+<div class="stat"><b>4</b><span>roles at zero</span></div>
+</div>
+<div class="zeros">
+<div><b>0</b> contradictions</div>
+<div><b>0</b> dangling slugs</div>
+<div><b>0</b> metas inventing a role</div>
+<div><b>0</b> not-a-provider carrying provides</div>
+</div>
+<p class="why">Corpus: <span class="n">137</span> metas, of which <span class="n">24</span> carry <code>provides</code> and <span class="n">38</span> carry a <code>when</code>. <code>roles.json</code> supplies an illustrative <code>when</code> for <span class="n">81</span> of its <span class="n">108</span> memberships; <span class="n">57</span> of the silent metas have one waiting.</p>
+</div></section>
+<section id="decisions"><div class="wrap">
+<p class="label">Decisions</p>
+<h2>Four decisions. The recommendation is first in each.</h2>
+<p>Nothing here is ruled. Every option stays open; the marked option is the lane's recommendation and carries no weight beyond that.</p>
+<div class="dec" data-id="RD-1">
+<div class="dechead"><span class="decid">RD-1</span><h3>THE ADDRESS</h3></div>
+<p>Write <code>provides: &lt;role&gt;</code> onto the <span class="n">84</span> silent metas, copied from <code>roles.json</code>, by TEXTUAL SPAN (never <code>json.dump</code> a meta — the #179 reformat class). The graph goes <span class="n">24</span> &rarr; <span class="n">108</span> <code>providesRole</code> edges.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RD-1" id="RD-1-a" value="a"><label for="RD-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All <span class="n">84</span> now, <code>input</code>'s <span class="n">27</span> included. An address is legal without a gate: <code>_validate_roles_resolve.py</code> check six forbids priority-without-provides, not the reverse.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-1" id="RD-1-b" value="b"><label for="RD-1-b"><span class="okey">(b)</span>Only the <span class="n">57</span> that carry a <code>roles.json</code> <code>when</code>; <code>input</code> waits.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-1" id="RD-1-c" value="c"><label for="RD-1-c"><span class="okey">(c)</span>Leave it at <span class="n">24</span> — <code>roles.json</code> stays a roadmap.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-1" id="RD-1-none" value=""><label for="RD-1-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): the membership is already ruled (s252-D1, &ldquo;with the membership&rdquo;), so this ENACTS, it does not rule. A resolver that can name substitutes without ordering them beats one that cannot see <span class="n">78</span>% of them.</p>
+<textarea class="note" data-id="RD-1" aria-label="Notes for RD-1" placeholder="Notes for RD-1 — your words"></textarea>
+</div>
+<div class="dec" data-id="RD-2">
+<div class="dechead"><span class="decid">RD-2</span><h3>THE GATES</h3></div>
+<p><code>when</code> + <code>priority</code> + <code>shape</code> + <code>answers</code> — the DESK address, AUTHORED not copied: <code>roles.json</code>'s <code>when</code> strings are prose like &ldquo;default, read-mostly&rdquo; and do not parse under the closed field grammar. This decision sets the SCOPE of authoring pass two.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RD-2" id="RD-2-a" value="a"><label for="RD-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span>The <span class="n">49</span> silent providers of the <span class="n">8</span> roles that are neither <code>record-list</code> nor <code>input</code>. One lane per role, verifier in the same wave, <code>when</code> in the closed grammar, <code>priority</code> unique per role.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-2" id="RD-2-b" value="b"><label for="RD-2-b"><span class="okey">(b)</span>The two zero roles not held elsewhere — <code>feedback</code> <span class="n">11</span> + <code>overlay</code> <span class="n">7</span> = <span class="n">18</span> metas. The rest later.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-2" id="RD-2-c" value="c"><label for="RD-2-c"><span class="okey">(c)</span>Wait.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-2" id="RD-2-none" value=""><label for="RD-2-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why"><code>record-list</code> (<span class="n">8</span>) is HELD behind P-272-1: list-vs-card — <code>list-items</code> and its neighbours cannot be gated until the definition exists (see RD-4). <code>input</code> (<span class="n">27</span>, every <code>roles.json</code> <code>when</code> null) is HELD behind the input sub-roles that <code>roles.json</code>'s <code>$extension</code> expects (s251-D7, &ldquo;not now&rdquo;).</p>
+<textarea class="note" data-id="RD-2" aria-label="Notes for RD-2" placeholder="Notes for RD-2 — your words"></textarea>
+</div>
+<div class="dec" data-id="RD-3">
+<div class="dechead"><span class="decid">RD-3</span><h3>THE ILLEGAL FIELD NAMES</h3></div>
+<p><code>_validate_roles_resolve.py</code> gained reds at <code>b46ea90</code> (#272's inscribed <code>when</code>s): <span class="n">9</span> metas use <span class="n">14</span> left-hand field-name entries (<span class="n">13</span> distinct) that are not in <code>when-fields.json</code>, whose legal set is <span class="n">26</span> names. The older reds are <code>data-grid</code> <code>with</code> entries without a <code>slug</code> (#261, unrelated). This was NOT declared at the #272 seam.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RD-3" id="RD-3-a" value="a"><label for="RD-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Extend <code>when-fields.json</code> with the names by ruling. s254-D2 closed the list so that a LANE cannot add a name; Dave adding one is exactly what the <code>$extension</code> clause anticipates, and the gates came from thirteen systems' unanimous vocabulary.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-3" id="RD-3-b" value="b"><label for="RD-3-b"><span class="okey">(b)</span>Rewrite the <span class="n">9</span> gates in the existing <span class="n">26</span> names.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-3" id="RD-3-c" value="c"><label for="RD-3-c"><span class="okey">(c)</span>Mixed — mark per name in the table below, then one note here.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-3" id="RD-3-none" value=""><label for="RD-3-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<p class="why">The table in section five shows every name with its meta and its clause, so (c) is a click, not a re-read.</p>
+<textarea class="note" data-id="RD-3" aria-label="Notes for RD-3" placeholder="Notes for RD-3 — your words"></textarea>
+</div>
+<div class="dec" data-id="RD-4">
+<div class="dechead"><span class="decid">RD-4</span><h3>LIST-vs-CARD NOW?</h3></div>
+<p>P-272-1 blocks the <code>record-list</code> gates in RD-2 and nothing else on this page.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RD-4" id="RD-4-a" value="a"><label for="RD-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Spin the P-272-1 research lane today, in parallel with RD-1. Definitions from the harvested systems: simple-list &middot; column-list &middot; list-card (rows B-09, B-10, B-20, N-account-card).</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-4" id="RD-4-b" value="b"><label for="RD-4-b"><span class="okey">(b)</span>Wait for the tripwire to fire.</label></div></li>
+<li><div class="opt"><input type="radio" name="RD-4" id="RD-4-none" value=""><label for="RD-4-none"><span class="okey">(&mdash;)</span>No choice yet — clear this decision.</label></div></li>
+</ul>
+<textarea class="note" data-id="RD-4" aria-label="Notes for RD-4" placeholder="Notes for RD-4 — your words"></textarea>
+</div>
+<div class="bar"><button type="button" id="btnExport">Export JSON</button><button type="button" id="btnCopy">Copy to clipboard</button><button type="button" class="ghost" id="btnClear">Clear</button><span class="said" id="said">not saved yet</span></div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+<section id="perrole"><div class="wrap">
+<p class="label">Per role</p>
+<h2>Where the drift sits</h2>
+<p><b>json</b> = memberships ruled in <code>roles.json</code>. <b>agree</b> = metas that carry the address today. <b>silent</b> = metas RD-1 would write. <b>j-when</b> = memberships with an illustrative <code>when</code> in <code>roles.json</code>.</p>
+<div class="tw"><table><thead><tr><th class="num">#</th><th>Role</th><th class="num">json</th><th class="num">agree</th><th class="num">silent</th><th class="num">j-when</th><th>Zero</th><th>Definition</th></tr></thead><tbody>
+<tr class="">
+<td class="num">1</td>
+<td class="rolecell">headline-metric</td>
+<td class="num">4</td>
+<td class="num">4</td>
+<td class="num">0</td>
+<td class="num">4</td>
+<td>&mdash;</td>
+<td class="defn">One number the reader takes away, optionally with its movement. The tile a dashboard&#x27;s top row is made of.</td>
+</tr>
+<tr class="">
+<td class="num">2</td>
+<td class="rolecell">status-surface</td>
+<td class="num">4</td>
+<td class="num">2</td>
+<td class="num">2</td>
+<td class="num">4</td>
+<td>&mdash;</td>
+<td class="defn">A count or state against a threshold. The DESK example role, kept as named.</td>
+</tr>
+<tr class="">
+<td class="num">3</td>
+<td class="rolecell">chart-panel</td>
+<td class="num">12</td>
+<td class="num">12</td>
+<td class="num">0</td>
+<td class="num">12</td>
+<td>&mdash;</td>
+<td class="defn">A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison · change-over-time · distribution · relationship · composition) already live on the answers axis (chart-intents.json, s251-D11), so they gate; the role only names the slot. Five roles named after the intents would duplicate that axis and break &quot;three independent axes&quot; (s251-D3). This is the call most worth striking if you disagree — see §14 call 1.</td>
+</tr>
+<tr class="zero">
+<td class="num">4</td>
+<td class="rolecell">record-list</td>
+<td class="num">8</td>
+<td class="num">0</td>
+<td class="num">8</td>
+<td class="num">8</td>
+<td><span class="zmark">ZERO</span></td>
+<td class="defn">Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.</td>
+</tr>
+<tr class="sub"><td></td><td colspan="7">Providers: <span class='slug'>table</span> <span style='color:var(--g6)'>default, read-mostly</span> &middot; <span class='slug'>data-grid</span> <span style='color:var(--g6)'>sort / filter / select / edit-in-place is required</span> &middot; <span class='slug'>list-items</span> <span style='color:var(--g6)'>≤ 3 fields per item, tappable</span> &middot; <span class='slug'>transaction-row</span> <span style='color:var(--g6)'>the records are a ledger with a running balance</span> &middot; <span class='slug'>document-row</span> <span style='color:var(--g6)'>the records are issued documents to open / download</span> &middot; <span class='slug'>standing-order-mandate-row</span> <span style='color:var(--g6)'>the records are future recurring instructions</span> &middot; <span class='slug'>timeline</span> <span style='color:var(--g6)'>time is the structure, records have happened</span> &middot; <span class='slug'>tree</span> <span style='color:var(--g6)'>records nest</span></td></tr>
+<tr class="">
+<td class="num">5</td>
+<td class="rolecell">page-frame</td>
+<td class="num">7</td>
+<td class="num">1</td>
+<td class="num">6</td>
+<td class="num">7</td>
+<td>&mdash;</td>
+<td class="defn">The shell around everything. Seven providers, one per frame; only one can win, so not-with is implicit among co-providers (Debian: one-at-a-time facility).</td>
+</tr>
+<tr class="">
+<td class="num">6</td>
+<td class="rolecell">page-title</td>
+<td class="num">4</td>
+<td class="num">1</td>
+<td class="num">3</td>
+<td class="num">4</td>
+<td>&mdash;</td>
+<td class="defn">The band that names the page or a section of it. Providers differ by level, so when is the level.</td>
+</tr>
+<tr class="">
+<td class="num">7</td>
+<td class="rolecell">wayfinding</td>
+<td class="num">8</td>
+<td class="num">2</td>
+<td class="num">6</td>
+<td class="num">8</td>
+<td>&mdash;</td>
+<td class="defn">Navigation that is not the frame. Global, local, in-page and mobile are the when values.</td>
+</tr>
+<tr class="">
+<td class="num">8</td>
+<td class="rolecell">action</td>
+<td class="num">8</td>
+<td class="num">1</td>
+<td class="num">7</td>
+<td class="num">8</td>
+<td>&mdash;</td>
+<td class="defn">A trigger. Emphasis (primary / secondary / ghost) is a placement property, not a role — Material&#x27;s emphasis axis, per the DESK page.</td>
+</tr>
+<tr class="">
+<td class="num">9</td>
+<td class="rolecell">arrangement</td>
+<td class="num">8</td>
+<td class="num">1</td>
+<td class="num">7</td>
+<td class="num">8</td>
+<td>&mdash;</td>
+<td class="defn">Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not component-provided roles.</td>
+</tr>
+<tr class="zero">
+<td class="num">10</td>
+<td class="rolecell">feedback</td>
+<td class="num">11</td>
+<td class="num">0</td>
+<td class="num">11</td>
+<td class="num">11</td>
+<td><span class="zmark">ZERO</span></td>
+<td class="defn">Status from the system to the person: persistence and placement are the when. Includes the nothing-yet states.</td>
+</tr>
+<tr class="sub"><td></td><td colspan="7">Providers: <span class='slug'>alert</span> <span style='color:var(--g6)'>in-flow, stays until resolved</span> &middot; <span class='slug'>notifications</span> <span style='color:var(--g6)'>the RAG family in its four placements</span> &middot; <span class='slug'>banner</span> <span style='color:var(--g6)'>page-level, above content, persistent</span> &middot; <span class='slug'>toast</span> <span style='color:var(--g6)'>transient, confirms and leaves</span> &middot; <span class='slug'>empty-state</span> <span style='color:var(--g6)'>a region has nothing to show</span> &middot; <span class='slug'>skeleton-loader</span> <span style='color:var(--g6)'>content is on its way, shape known</span> &middot; <span class='slug'>loading-indicator</span> <span style='color:var(--g6)'>working, shape unknown</span> &middot; <span class='slug'>progress-bar</span> <span style='color:var(--g6)'>a task underway, full = done (meter&#x27;s progress reading)</span> &middot; <span class='slug'>progress-tracker</span> <span style='color:var(--g6)'>where in a multi-step process</span> &middot; <span class='slug'>countdown-timer</span> <span style='color:var(--g6)'>something fires at a time</span> &middot; <span class='slug'>confirmation</span> <span style='color:var(--g6)'>end of flow, success screen</span></td></tr>
+<tr class="zero">
+<td class="num">11</td>
+<td class="rolecell">input</td>
+<td class="num">27</td>
+<td class="num">0</td>
+<td class="num">27</td>
+<td class="num">0</td>
+<td><span class="zmark">ZERO</span></td>
+<td class="defn">The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored — not now.</td>
+</tr>
+<tr class="sub"><td></td><td colspan="7">Providers: <span class='slug'>input-fields</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>textarea</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>amount-input</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>search-field</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>dropdown</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>combobox</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>multi-select</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>cascader</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>selection-controls</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>segmented-control</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>date-picker</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>date-range-picker</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>time-picker</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>calendar</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>slider</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>range-slider</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>rating</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>tags-input</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>secure-entry</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>file-upload</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>transfer-list</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>reorder</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>view-options</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>form-layout</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>stepper</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>account-selector</span> <span style='color:var(--g6)'>—</span> &middot; <span class='slug'>amount-display</span> <span style='color:var(--g6)'>—</span></td></tr>
+<tr class="zero">
+<td class="num">12</td>
+<td class="rolecell">overlay</td>
+<td class="num">7</td>
+<td class="num">0</td>
+<td class="num">7</td>
+<td class="num">7</td>
+<td><span class="zmark">ZERO</span></td>
+<td class="defn">Something on top of the page that the person must dismiss or answer.</td>
+</tr>
+<tr class="sub"><td></td><td colspan="7">Providers: <span class='slug'>modals</span> <span style='color:var(--g6)'>a message or side-task that needs an answer</span> &middot; <span class='slug'>drawer</span> <span style='color:var(--g6)'>sub-task, page context stays visible</span> &middot; <span class='slug'>popover</span> <span style='color:var(--g6)'>rich anchored content on click</span> &middot; <span class='slug'>popconfirm</span> <span style='color:var(--g6)'>one question, in place</span> &middot; <span class='slug'>tooltip</span> <span style='color:var(--g6)'>a label&#x27;s help, on hover</span> &middot; <span class='slug'>modal-lightbox</span> <span style='color:var(--g6)'>show a thing, not ask a thing</span> &middot; <span class='slug'>command-palette</span> <span style='color:var(--g6)'>keyboard-first launcher</span></td></tr>
+</tbody></table></div>
+</div></section>
+<section id="silent"><div class="wrap">
+<p class="label">What RD-1 writes</p>
+<h2>The 84 silent metas</h2>
+<p>Grouped by role, in <code>roles.json</code> order. The <code>when</code> column is <code>roles.json</code>'s illustrative one-liner — RD-1 does not copy it onto the meta (RD-2 authors the gate instead).</p>
+<div class="tw"><table><thead><tr><th>Role</th><th>Slug</th><th>roles.json <code>when</code></th></tr></thead><tbody>
+<tr><td class="rolecell">status-surface</td><td class="slug">meter</td><td class="defn">the threshold is a cap being spent against (limits-meter reading)</td></tr>
+<tr><td class="rolecell">status-surface</td><td class="slug">badge</td><td class="defn">inline, attached to another element, count only</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">table</td><td class="defn">default, read-mostly</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">data-grid</td><td class="defn">sort / filter / select / edit-in-place is required</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">list-items</td><td class="defn">≤ 3 fields per item, tappable</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">transaction-row</td><td class="defn">the records are a ledger with a running balance</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">document-row</td><td class="defn">the records are issued documents to open / download</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">standing-order-mandate-row</td><td class="defn">the records are future recurring instructions</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">timeline</td><td class="defn">time is the structure, records have happened</td></tr>
+<tr><td class="rolecell">record-list</td><td class="slug">tree</td><td class="defn">records nest</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-side-nav</td><td class="defn">&gt; 7 destinations or two nav levels</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-nav-rail</td><td class="defn">dense app, content cannot spare 248px</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-multi-column</td><td class="defn">list-and-detail job</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-split</td><td class="defn">two peers on screen at once</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-focused</td><td class="defn">one job, no navigation (auth, wizard)</td></tr>
+<tr><td class="rolecell">page-frame</td><td class="slug">app-shell-doormat</td><td class="defn">marketing / servicing site with a mega-footer</td></tr>
+<tr><td class="rolecell">page-title</td><td class="slug">page-header-lockup</td><td class="defn">page level, with actions or tabs</td></tr>
+<tr><td class="rolecell">page-title</td><td class="slug">section-heading-lockup</td><td class="defn">section level, above one board / table / panel</td></tr>
+<tr><td class="rolecell">page-title</td><td class="slug">eyebrow</td><td class="defn">a kicker alone is enough (rare; normally a part of the above)</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">sidebar-nav</td><td class="defn">global, desktop, persistent column (pairs with app-shell-side-nav)</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">tabs</td><td class="defn">local — peer views in one context</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">anchor-nav</td><td class="defn">in-page, long document</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">tab-bar</td><td class="defn">mobile bottom, 3–5 destinations</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">pagination</td><td class="defn">within one list</td></tr>
+<tr><td class="rolecell">wayfinding</td><td class="slug">back-to-top</td><td class="defn">page chrome only</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">icon-button</td><td class="defn">space is tight and the glyph is universal</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">split-button</td><td class="defn">one main action plus a menu of related ones</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">links</td><td class="defn">the action is navigation inside running text</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">quick-actions</td><td class="defn">a row / grid of 4–8 shortcuts on an overview</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">action-bar</td><td class="defn">a flow&#x27;s primary + secondary pinned to the footer</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">fab</td><td class="defn">mobile, one dominant action</td></tr>
+<tr><td class="rolecell">action</td><td class="slug">cta-lockup</td><td class="defn">marketing band, heading + support line + pair</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">cards</td><td class="defn">a bordered surface per item</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">stats-band-lockup</td><td class="defn">3–6 headline-metrics in a labelled row</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">feature-grid-lockup</td><td class="defn">marketing, 2/3/4-up icon + title + body</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">splitter</td><td class="defn">the reader sizes two panes</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">accordion</td><td class="defn">content collapses behind a heading</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">carousel</td><td class="defn">one of a set at a time</td></tr>
+<tr><td class="rolecell">arrangement</td><td class="slug">divider</td><td class="defn">a rule alone</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">alert</td><td class="defn">in-flow, stays until resolved</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">notifications</td><td class="defn">the RAG family in its four placements</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">banner</td><td class="defn">page-level, above content, persistent</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">toast</td><td class="defn">transient, confirms and leaves</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">empty-state</td><td class="defn">a region has nothing to show</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">skeleton-loader</td><td class="defn">content is on its way, shape known</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">loading-indicator</td><td class="defn">working, shape unknown</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">progress-bar</td><td class="defn">a task underway, full = done (meter&#x27;s progress reading)</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">progress-tracker</td><td class="defn">where in a multi-step process</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">countdown-timer</td><td class="defn">something fires at a time</td></tr>
+<tr><td class="rolecell">feedback</td><td class="slug">confirmation</td><td class="defn">end of flow, success screen</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">input-fields</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">textarea</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">amount-input</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">search-field</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">dropdown</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">combobox</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">multi-select</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">cascader</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">selection-controls</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">segmented-control</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">date-picker</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">date-range-picker</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">time-picker</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">calendar</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">slider</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">range-slider</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">rating</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">tags-input</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">secure-entry</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">file-upload</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">transfer-list</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">reorder</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">view-options</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">form-layout</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">stepper</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">account-selector</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">input</td><td class="slug">amount-display</td><td class="defn">—</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">modals</td><td class="defn">a message or side-task that needs an answer</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">drawer</td><td class="defn">sub-task, page context stays visible</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">popover</td><td class="defn">rich anchored content on click</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">popconfirm</td><td class="defn">one question, in place</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">tooltip</td><td class="defn">a label&#x27;s help, on hover</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">modal-lightbox</td><td class="defn">show a thing, not ask a thing</td></tr>
+<tr><td class="rolecell">overlay</td><td class="slug">command-palette</td><td class="defn">keyboard-first launcher</td></tr>
+</tbody></table></div>
+</div></section>
+<section id="fields"><div class="wrap">
+<p class="label">RD-3 detail</p>
+<h2>The field names outside the closed list</h2>
+<p>The legal set in <code>when-fields.json</code>: <code>answers</code> &middot; <code>axes</code> &middot; <code>axis.x</code> &middot; <code>bins</code> &middot; <code>categories</code> &middot; <code>content</code> &middot; <code>delta</code> &middot; <code>depth</code> &middot; <code>destinations</code> &middot; <code>emphasis</code> &middot; <code>label</code> &middot; <code>level</code> &middot; <code>lockup</code> &middot; <code>nav.levels</code> &middot; <code>parts</code> &middot; <code>platform</code> &middot; <code>rows</code> &middot; <code>scope</code> &middot; <code>series</code> &middot; <code>shape</code> &middot; <code>span.cols</code> &middot; <code>surface</code> &middot; <code>total</code> &middot; <code>units</code> &middot; <code>variables</code> &middot; <code>verdict</code>.</p>
+<div class="tw"><table><thead><tr><th>Meta</th><th>Field</th><th>Clause</th></tr></thead><tbody>
+<tr><td class="slug">app-shell-focused</td><td class="slug">breadcrumbs</td><td class="defn">breadcrumbs = absent</td></tr>
+<tr><td class="slug">app-shell-focused</td><td class="slug">exits</td><td class="defn">exits = 1</td></tr>
+<tr><td class="slug">app-shell-focused</td><td class="slug">job.count</td><td class="defn">job.count = 1</td></tr>
+<tr><td class="slug">app-shell-focused</td><td class="slug">primaryNavigation</td><td class="defn">primaryNavigation = absent</td></tr>
+<tr><td class="slug">app-shell-focused</td><td class="slug">search</td><td class="defn">search = absent</td></tr>
+<tr><td class="slug">Chart-histogram</td><td class="slug">baseline</td><td class="defn">baseline = 0</td></tr>
+<tr><td class="slug">input-fields</td><td class="slug">entry</td><td class="defn">entry = free text</td></tr>
+<tr><td class="slug">limits-meter</td><td class="slug">full</td><td class="defn">full = BLOCKED, not done</td></tr>
+<tr><td class="slug">template-confirmation</td><td class="slug">order</td><td class="defn">order = message, then FACTS, then actions, then what-happens-next</td></tr>
+<tr><td class="slug">template-confirmation</td><td class="slug">position</td><td class="defn">position = end of an instruction</td></tr>
+<tr><td class="slug">template-error</td><td class="slug">cause</td><td class="defn">cause in (404, 500)</td></tr>
+<tr><td class="slug">template-wizard</td><td class="slug">steps</td><td class="defn">steps &gt;= 2</td></tr>
+<tr><td class="slug">textarea</td><td class="slug">entry</td><td class="defn">entry = free text</td></tr>
+<tr><td class="slug">timeline</td><td class="slug">records</td><td class="defn">records &gt;= 2</td></tr>
+</tbody></table></div>
+</div></section>
+<section id="receipts"><div class="wrap">
+<p class="label">Receipts</p>
+<h2>Where every figure came from</h2>
+<div class="split"><div>
+<dl class="recs">
+<dt>Commit</dt><dd>4294b60 2026-09-15</dd>
+<dt>Script</dt><dd>knowledge/_roles_drift.py</dd>
+<dt>Corpus</dt><dd>knowledge/components/*.meta.json &middot; knowledge/roles.json &middot; knowledge/when-fields.json</dd>
+<dt>Data</dt><dd>notes/_lanes/273/roles-drift/DRIFT.json</dd>
+<dt>Builder</dt><dd>notes/_lanes/273/roles-drift/_build_page.py</dd>
+<dt>Command</dt><dd><code>python3 knowledge/_roles_drift.py --json &gt; notes/_lanes/273/roles-drift/DRIFT.json</code></dd>
+</dl>
+</div><div>
+<p>Every figure on this page is read from <code>DRIFT.json</code> at build time, or derived from it by a formula recorded in <code>DERIVED.json</code> beside it. No number was typed by hand. <code>_numbers_check.py</code> re-extracts the integers from the rendered page and proves each one against those two files.</p>
+<p>The #270 measurement (<code>notes/_lanes/270/roles-desk/ROLES-DRIFT.md</code>) is STALE — these numbers supersede it.</p>
+</div></div>
+</div></section>
+<footer><div class="wrap">Nothing on this page is a ruling. Dave rules; the lane enacts by addition.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-roles-drift-273-v1";
+ var IDS=["RD-1", "RD-2", "RD-3", "RD-4"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"_REVIEW-roles-drift-2026-09-15-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ /* #272 by addition: a note typed <400ms before a reload/close was lost. Flush on blur and unload. */
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="roles-drift-decisions-2026-09-15.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>

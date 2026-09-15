@@ -1,0 +1,1429 @@
+{
+ "measured_at": "4294b60 2026-09-15",
+ "corpus_metas": 137,
+ "roles": 12,
+ "memberships_json": 108,
+ "memberships_meta_agree": 24,
+ "memberships_meta_silent": 84,
+ "silent_with_json_when": 57,
+ "contradictions": [],
+ "dangling_slugs": [],
+ "meta_provides_not_in_json": [],
+ "meta_provides_unknown_role": [],
+ "not_a_provider_with_provides": [],
+ "roles_zero_in_metas": [
+  "record-list",
+  "feedback",
+  "input",
+  "overlay"
+ ],
+ "json_when_present": 81,
+ "metas_with_when": 38,
+ "metas_with_provides": 24,
+ "legal_when_fields": [
+  "answers",
+  "axes",
+  "axis.x",
+  "bins",
+  "categories",
+  "content",
+  "delta",
+  "depth",
+  "destinations",
+  "emphasis",
+  "label",
+  "level",
+  "lockup",
+  "nav.levels",
+  "parts",
+  "platform",
+  "rows",
+  "scope",
+  "series",
+  "shape",
+  "span.cols",
+  "surface",
+  "total",
+  "units",
+  "variables",
+  "verdict"
+ ],
+ "metas_with_illegal_when_fields": {
+  "Chart-histogram": [
+   "baseline"
+  ],
+  "app-shell-focused": [
+   "primaryNavigation",
+   "breadcrumbs",
+   "search",
+   "exits",
+   "job.count"
+  ],
+  "input-fields": [
+   "entry"
+  ],
+  "limits-meter": [
+   "full"
+  ],
+  "template-confirmation": [
+   "position",
+   "order"
+  ],
+  "template-error": [
+   "cause"
+  ],
+  "template-wizard": [
+   "steps"
+  ],
+  "textarea": [
+   "entry"
+  ],
+  "timeline": [
+   "records"
+  ]
+ },
+ "illegal_when_clauses": [
+  {
+   "meta": "Chart-histogram",
+   "field": "baseline",
+   "clause": "baseline = 0",
+   "is_provider": true
+  },
+  {
+   "meta": "app-shell-focused",
+   "field": "primaryNavigation",
+   "clause": "primaryNavigation = absent",
+   "is_provider": true
+  },
+  {
+   "meta": "app-shell-focused",
+   "field": "breadcrumbs",
+   "clause": "breadcrumbs = absent",
+   "is_provider": true
+  },
+  {
+   "meta": "app-shell-focused",
+   "field": "search",
+   "clause": "search = absent",
+   "is_provider": true
+  },
+  {
+   "meta": "app-shell-focused",
+   "field": "exits",
+   "clause": "exits = 1",
+   "is_provider": true
+  },
+  {
+   "meta": "app-shell-focused",
+   "field": "job.count",
+   "clause": "job.count = 1",
+   "is_provider": true
+  },
+  {
+   "meta": "input-fields",
+   "field": "entry",
+   "clause": "entry = free text",
+   "is_provider": true
+  },
+  {
+   "meta": "limits-meter",
+   "field": "full",
+   "clause": "full = BLOCKED, not done",
+   "is_provider": false
+  },
+  {
+   "meta": "template-confirmation",
+   "field": "position",
+   "clause": "position = end of an instruction",
+   "is_provider": false
+  },
+  {
+   "meta": "template-confirmation",
+   "field": "order",
+   "clause": "order = message, then FACTS, then actions, then what-happens-next",
+   "is_provider": false
+  },
+  {
+   "meta": "template-error",
+   "field": "cause",
+   "clause": "cause in (404, 500)",
+   "is_provider": false
+  },
+  {
+   "meta": "template-wizard",
+   "field": "steps",
+   "clause": "steps >= 2",
+   "is_provider": false
+  },
+  {
+   "meta": "textarea",
+   "field": "entry",
+   "clause": "entry = free text",
+   "is_provider": true
+  },
+  {
+   "meta": "timeline",
+   "field": "records",
+   "clause": "records >= 2",
+   "is_provider": true
+  }
+ ],
+ "per_role": [
+  {
+   "role": "headline-metric",
+   "index": 1,
+   "definition": "One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.",
+   "axis": "FFF: function \"how big is it, and did it move?\"",
+   "json": 4,
+   "meta_agrees": 4,
+   "meta_silent": 0,
+   "json_when_present": 4,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "stat-card",
+     "state": "agrees",
+     "json_when": "default — label · value · delta · period, no series",
+     "meta_when": "shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \"a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)\") exactly when no series exists, and beats Chart-bullet (when: \"a target or performance band is the point, not the delta\") when the delta, not a band, is the claim.",
+     "meta_priority": 60,
+     "meta_shape": "one-measure × value-and-delta",
+     "meta_answers": "one-number",
+     "illegal_fields": []
+    },
+    {
+     "slug": "kpi-tile",
+     "state": "agrees",
+     "json_when": "a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)",
+     "meta_when": "shape = one-measure × value-delta-and-series AND series != none — beats stat-card (roles.json when: \"default — label · value · delta · period, no series\") whenever a series exists to show; yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") when target != none, and to runway-bar (when: \"the number is 'money vs what is already scheduled'\") when the measure is money-vs-scheduled.",
+     "meta_priority": 50,
+     "meta_shape": "one-measure × value-delta-and-series",
+     "meta_answers": [
+      "one-number",
+      "change-over-time"
+     ],
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-bullet",
+     "state": "agrees",
+     "json_when": "a target or performance band is the point, not the delta",
+     "meta_when": "answers=comparison AND the reading is one measure against a target plus qualitative performance bands AND span.cols 4–6 — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the BENCHMARK, not the delta and not a series, is the point; yields to both when no target exists.",
+     "meta_priority": 40,
+     "meta_shape": "rows × measure-target-bands",
+     "meta_answers": "comparison",
+     "illegal_fields": []
+    },
+    {
+     "slug": "runway-bar",
+     "state": "agrees",
+     "json_when": "the number is \"money vs what is already scheduled\"",
+     "meta_when": "answers = one-number AND shape = one-measure × committed-vs-balance-split AND verdict != none — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the reading is \"money vs what is already scheduled\" and the takeaway is a VERDICT WITH A DATE rather than a delta or a trend; yields to stat-card when there is nothing committed to net off, to kpi-tile when a series is the claim, and to Chart-bullet (40, \"a target or performance band is the point, not the delta\") when a target band, not a coverage date, is the benchmark.",
+     "meta_priority": 30,
+     "meta_shape": "one-measure × committed-vs-balance-split",
+     "meta_answers": "one-number",
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "status-surface",
+   "index": 2,
+   "definition": "A count or state against a threshold. The DESK example role, kept as named.",
+   "axis": "FFF: function \"how many, against what, and is that fine?\"",
+   "json": 4,
+   "meta_agrees": 2,
+   "meta_silent": 2,
+   "json_when_present": 4,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "status-indicator",
+     "state": "agrees",
+     "json_when": "one state, one dot + label, 2–4 cols",
+     "meta_when": "shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary (roles.json when: \"n × count as a key/value list, 6–12 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.",
+     "meta_priority": 60,
+     "meta_shape": "one-state × dot-and-label",
+     "meta_answers": "status-of-one",
+     "illegal_fields": []
+    },
+    {
+     "slug": "summary",
+     "state": "agrees",
+     "json_when": "n × count as a key/value list, 6–12 cols",
+     "meta_when": "shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6 — beats status-indicator (roles.json when: \"one state, one dot + label, 2–4 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.",
+     "meta_priority": 40,
+     "meta_shape": "rows × name-value-pairs",
+     "meta_answers": "details-before-commit",
+     "illegal_fields": []
+    },
+    {
+     "slug": "meter",
+     "state": "silent",
+     "json_when": "the threshold is a cap being spent against (limits-meter reading)",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "badge",
+     "state": "silent",
+     "json_when": "inline, attached to another element, count only",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "chart-panel",
+   "index": 3,
+   "definition": "A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison · change-over-time · distribution · relationship · composition) already live on the answers axis (chart-intents.json, s251-D11), so they gate; the role only names the slot. Five roles named after the intents would duplicate that axis and break \"three independent axes\" (s251-D3). This is the call most worth striking if you disagree — see §14 call 1.",
+   "axis": "FFF: function is the chart-intent word, gated by answers, not by the role",
+   "json": 12,
+   "meta_agrees": 12,
+   "meta_silent": 0,
+   "json_when_present": 12,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "chart-bar",
+     "state": "agrees",
+     "json_when": "comparison; stacked variant when composition across categories",
+     "meta_when": "answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, ≤ 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.",
+     "meta_priority": 92,
+     "meta_shape": "categories × series",
+     "meta_answers": "comparison",
+     "illegal_fields": []
+    },
+    {
+     "slug": "chart-line",
+     "state": "agrees",
+     "json_when": "change-over-time",
+     "meta_when": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 — the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6.",
+     "meta_priority": 88,
+     "meta_shape": "time-series × 1–5-series",
+     "meta_answers": "change-over-time",
+     "illegal_fields": []
+    },
+    {
+     "slug": "chart-donut",
+     "state": "agrees",
+     "json_when": "composition, a centre total is meaningful",
+     "meta_when": "answers=composition AND parts sum to a whole AND total=printed as a centre figure — beats chart-pie (48, \"composition, no centre figure, ≤ 5 parts\") whenever the total is worth printing, and beats it on nothing else; yields to chart-stacked-area (64, \"composition over time\") when the split MOVES.",
+     "meta_priority": 80,
+     "meta_shape": "parts-of-whole",
+     "meta_answers": "composition",
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-histogram",
+     "state": "agrees",
+     "json_when": "distribution, one variable",
+     "meta_when": "answers = distribution AND variables = 1 AND bins = contiguous (no inter-bar gap) AND baseline = 0 — roles.json when: \"distribution, one variable\"; beats Chart-boxplot (roles.json: \"distribution per category\") when the frequency shape of ONE variable is the claim; yields to Chart-boxplot when categories >= 2; the no-gap rule is not cosmetic — the FT gives the same reason: \"keep the gaps between columns small to highlight the 'shape' of the data\".",
+     "meta_priority": 76,
+     "meta_shape": "bins × frequency",
+     "meta_answers": "distribution",
+     "illegal_fields": [
+      "baseline"
+     ]
+    },
+    {
+     "slug": "Chart-scatter",
+     "state": "agrees",
+     "json_when": "relationship",
+     "meta_when": "answers=relationship AND both axes carry quantitative measures — the ONLY provider of relationship in the role, so it beats every sibling on the answers gate alone and needs no further test; yields to chart-combo (56) when the two measures share one x axis in different units instead of being plotted against each other. span.cols max 8 because a runtime fit is not baked (this meta's own responsive rule).",
+     "meta_priority": 72,
+     "meta_shape": "points × two-measures",
+     "meta_answers": "relationship",
+     "illegal_fields": []
+    },
+    {
+     "slug": "chart-stacked-area",
+     "state": "agrees",
+     "json_when": "composition over time",
+     "meta_when": "answers spans change-over-time AND composition AND cumulative bands share ONE total across the time axis — beats chart-donut (80, \"composition, a centre total is meaningful\") and chart-pie (48) when the split MOVES rather than being a snapshot; yields to chart-line (88, \"change-over-time\") when the total is not meaningful.",
+     "meta_priority": 64,
+     "meta_shape": "time-series × parts-of-whole",
+     "meta_answers": [
+      "change-over-time",
+      "composition"
+     ],
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-boxplot",
+     "state": "agrees",
+     "json_when": "distribution per category",
+     "meta_when": "answers = distribution AND categories >= 2 AND each category carries a five-number summary AND span.cols <= 8 — roles.json when: \"distribution per category\"; beats Chart-histogram (roles.json: \"distribution, one variable\") whenever the spread must be read PER CATEGORY; yields to it when variables = 1 and the bin shape is the claim.",
+     "meta_priority": 60,
+     "meta_shape": "categories × five-number-summary",
+     "meta_answers": "distribution",
+     "illegal_fields": []
+    },
+    {
+     "slug": "chart-combo",
+     "state": "agrees",
+     "json_when": "two measures in different units over one axis",
+     "meta_when": "answers=change-over-time AND series=2 AND units=different AND both read against ONE shared x (dv-line-006) — beats chart-line (88, \"change-over-time\") on the different-units test and on nothing else; yields to chart-line (multi-series) or chart-bar (grouped) for a same-unit pair, which this meta's own antiPattern forbids drawing as a combo.",
+     "meta_priority": 56,
+     "meta_shape": "shared-x × two-measures-different-units",
+     "meta_answers": "change-over-time",
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-butterfly-h",
+     "state": "agrees",
+     "json_when": "exactly two series mirrored, categories ≥ 6",
+     "meta_when": "answers=comparison AND series=2 mirrored outward from a shared centre gutter AND categories ≥ 6 — beats chart-bar (grouped) when the two series must read as OPPOSED directions rather than adjacent columns; yields to Chart-butterfly-v (36, \"as above, wide panel\") when the category axis is ordered left-to-right and span.cols ≥ 8.",
+     "meta_priority": 40,
+     "meta_shape": "categories × two-series-mirrored",
+     "meta_answers": "comparison",
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-butterfly-v",
+     "state": "agrees",
+     "json_when": "as above, wide panel",
+     "meta_when": "answers=comparison AND series=2 mirrored above/below ONE horizontal baseline AND the category axis is ordered left-to-right (time, rank) AND span.cols ≥ 8 — yields to Chart-butterfly-h (40, \"exactly two series mirrored, categories ≥ 6\") whenever the categories are unordered or the panel is narrower than 8 cols; both yield to chart-bar for an ordinary grouped comparison.",
+     "meta_priority": 36,
+     "meta_shape": "categories × two-series-mirrored",
+     "meta_answers": "comparison",
+     "illegal_fields": []
+    },
+    {
+     "slug": "chart-pie",
+     "state": "agrees",
+     "json_when": "composition, no centre figure, ≤ 5 parts",
+     "meta_when": "answers=composition AND parts ≤ 5 AND total=not printed — yields to chart-donut (80, \"composition, a centre total is meaningful\") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time.",
+     "meta_priority": 48,
+     "meta_shape": "parts-of-whole",
+     "meta_answers": "composition",
+     "illegal_fields": []
+    },
+    {
+     "slug": "Chart-candlestick",
+     "state": "agrees",
+     "json_when": "OHLC per period",
+     "meta_when": "answers = change-over-time AND shape = periods × OHLC (open · high · low · close per session) — roles.json when: \"OHLC per period\"; beats chart-line (roles.json: \"change-over-time\") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.",
+     "meta_priority": 44,
+     "meta_shape": "periods × ohlc",
+     "meta_answers": "change-over-time",
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "record-list",
+   "index": 4,
+   "definition": "Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.",
+   "axis": "FFF: function \"show me the items\"",
+   "json": 8,
+   "meta_agrees": 0,
+   "meta_silent": 8,
+   "json_when_present": 8,
+   "zero_in_metas": true,
+   "providers": [
+    {
+     "slug": "table",
+     "state": "silent",
+     "json_when": "default, read-mostly",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "data-grid",
+     "state": "silent",
+     "json_when": "sort / filter / select / edit-in-place is required",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "list-items",
+     "state": "silent",
+     "json_when": "≤ 3 fields per item, tappable",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "transaction-row",
+     "state": "silent",
+     "json_when": "the records are a ledger with a running balance",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "document-row",
+     "state": "silent",
+     "json_when": "the records are issued documents to open / download",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "standing-order-mandate-row",
+     "state": "silent",
+     "json_when": "the records are future recurring instructions",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "timeline",
+     "state": "silent",
+     "json_when": "time is the structure, records have happened",
+     "meta_when": "records >= 2 AND time IS the structure AND every record has ALREADY HAPPENED AND entries are not buttons AND order is newest-first with date headings — roles.json when: \"time is the structure, records have happened\"; beats list-items when the date rail is the reading rather than a sort order; yields to list-items inside a date group the moment entries must open (our AP1), and never borrows Progress-tracker's aria-current because there is no current step (our AP0).",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": [
+      "records"
+     ]
+    },
+    {
+     "slug": "tree",
+     "state": "silent",
+     "json_when": "records nest",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "page-frame",
+   "index": 5,
+   "definition": "The shell around everything. Seven providers, one per frame; only one can win, so not-with is implicit among co-providers (Debian: one-at-a-time facility).",
+   "axis": "FFF: form dominates — the frame is chosen by navigation depth and job",
+   "json": 7,
+   "meta_agrees": 1,
+   "meta_silent": 6,
+   "json_when_present": 7,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "app-shell-top-nav",
+     "state": "agrees",
+     "json_when": "default for dashboards (the bento template composes it)",
+     "meta_when": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+     "meta_priority": 60,
+     "meta_shape": "no-data × page-regions",
+     "meta_answers": "what-holds-the-page",
+     "illegal_fields": []
+    },
+    {
+     "slug": "app-shell-side-nav",
+     "state": "silent",
+     "json_when": "> 7 destinations or two nav levels",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "app-shell-nav-rail",
+     "state": "silent",
+     "json_when": "dense app, content cannot spare 248px",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "app-shell-multi-column",
+     "state": "silent",
+     "json_when": "list-and-detail job",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "app-shell-split",
+     "state": "silent",
+     "json_when": "two peers on screen at once",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "app-shell-focused",
+     "state": "silent",
+     "json_when": "one job, no navigation (auth, wizard)",
+     "meta_when": "primaryNavigation = absent AND breadcrumbs = absent AND search = absent AND exits = 1 AND job.count = 1 — the only frame defined by removal; beats every other shell (roles.json: all six carry navigation) whenever abandoning the task is the failure mode — authentication, a wizard, a passcode; yields to app-shell-top-nav the moment the user must be able to go somewhere else.",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": [
+      "primaryNavigation",
+      "breadcrumbs",
+      "search",
+      "exits",
+      "job.count"
+     ]
+    },
+    {
+     "slug": "app-shell-doormat",
+     "state": "silent",
+     "json_when": "marketing / servicing site with a mega-footer",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "page-title",
+   "index": 6,
+   "definition": "The band that names the page or a section of it. Providers differ by level, so when is the level.",
+   "axis": "FFF: function \"what am I looking at?\"",
+   "json": 4,
+   "meta_agrees": 1,
+   "meta_silent": 3,
+   "json_when_present": 4,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "page-header-lockup",
+     "state": "silent",
+     "json_when": "page level, with actions or tabs",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "headers",
+     "state": "agrees",
+     "json_when": "page or screen level, app-only, no lock-up needed",
+     "meta_when": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
+     "meta_priority": 50,
+     "meta_shape": "no-data × title-and-optional-action",
+     "meta_answers": "what-is-this",
+     "illegal_fields": []
+    },
+    {
+     "slug": "section-heading-lockup",
+     "state": "silent",
+     "json_when": "section level, above one board / table / panel",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "eyebrow",
+     "state": "silent",
+     "json_when": "a kicker alone is enough (rare; normally a part of the above)",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "wayfinding",
+   "index": 7,
+   "definition": "Navigation that is not the frame. Global, local, in-page and mobile are the when values.",
+   "axis": "FFF: function \"where am I, where can I go?\"",
+   "json": 8,
+   "meta_agrees": 2,
+   "meta_silent": 6,
+   "json_when_present": 8,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "navigations",
+     "state": "agrees",
+     "json_when": "global — masthead / main-nav family",
+     "meta_when": "shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
+     "meta_priority": 60,
+     "meta_shape": "destination-set × links",
+     "meta_answers": "where-can-i-go",
+     "illegal_fields": []
+    },
+    {
+     "slug": "sidebar-nav",
+     "state": "silent",
+     "json_when": "global, desktop, persistent column (pairs with app-shell-side-nav)",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "tabs",
+     "state": "silent",
+     "json_when": "local — peer views in one context",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "breadcrumbs",
+     "state": "agrees",
+     "json_when": "ancestry, depth ≥ 2",
+     "meta_when": "shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global — masthead / main-nav family\") for global movement and to tabs (when: \"local — peer views in one context\") for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.",
+     "meta_priority": 40,
+     "meta_shape": "ancestor-path × links",
+     "meta_answers": "where-am-i",
+     "illegal_fields": []
+    },
+    {
+     "slug": "anchor-nav",
+     "state": "silent",
+     "json_when": "in-page, long document",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "tab-bar",
+     "state": "silent",
+     "json_when": "mobile bottom, 3–5 destinations",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "pagination",
+     "state": "silent",
+     "json_when": "within one list",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "back-to-top",
+     "state": "silent",
+     "json_when": "page chrome only",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "action",
+   "index": 8,
+   "definition": "A trigger. Emphasis (primary / secondary / ghost) is a placement property, not a role — Material's emphasis axis, per the DESK page.",
+   "axis": "FFF: function \"do the thing\"",
+   "json": 8,
+   "meta_agrees": 1,
+   "meta_silent": 7,
+   "json_when_present": 8,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "button",
+     "state": "agrees",
+     "json_when": "default",
+     "meta_when": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text — the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.",
+     "meta_priority": 60,
+     "meta_shape": "no-data × control",
+     "meta_answers": "what-can-i-do",
+     "illegal_fields": []
+    },
+    {
+     "slug": "icon-button",
+     "state": "silent",
+     "json_when": "space is tight and the glyph is universal",
+     "meta_when": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label — CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous — our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "split-button",
+     "state": "silent",
+     "json_when": "one main action plus a menu of related ones",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "links",
+     "state": "silent",
+     "json_when": "the action is navigation inside running text",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "quick-actions",
+     "state": "silent",
+     "json_when": "a row / grid of 4–8 shortcuts on an overview",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "action-bar",
+     "state": "silent",
+     "json_when": "a flow's primary + secondary pinned to the footer",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "fab",
+     "state": "silent",
+     "json_when": "mobile, one dominant action",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "cta-lockup",
+     "state": "silent",
+     "json_when": "marketing band, heading + support line + pair",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "arrangement",
+   "index": 9,
+   "definition": "Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not component-provided roles.",
+   "axis": "FFF: form — these carry no content of their own",
+   "json": 8,
+   "meta_agrees": 1,
+   "meta_silent": 7,
+   "json_when_present": 8,
+   "zero_in_metas": false,
+   "providers": [
+    {
+     "slug": "layout-utilities",
+     "state": "agrees",
+     "json_when": "default — container / stack / row / grid / twelve-column / split / measure",
+     "meta_when": "content = arbitrary-blocks AND surface = none — the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3–6 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider (when: \"a rule alone\") when a rule alone is the whole need.",
+     "meta_priority": 60,
+     "meta_shape": "no-data × arbitrary-blocks",
+     "meta_answers": "where-does-it-go",
+     "illegal_fields": []
+    },
+    {
+     "slug": "cards",
+     "state": "silent",
+     "json_when": "a bordered surface per item",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "stats-band-lockup",
+     "state": "silent",
+     "json_when": "3–6 headline-metrics in a labelled row",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "feature-grid-lockup",
+     "state": "silent",
+     "json_when": "marketing, 2/3/4-up icon + title + body",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "splitter",
+     "state": "silent",
+     "json_when": "the reader sizes two panes",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "accordion",
+     "state": "silent",
+     "json_when": "content collapses behind a heading",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "carousel",
+     "state": "silent",
+     "json_when": "one of a set at a time",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "divider",
+     "state": "silent",
+     "json_when": "a rule alone",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "feedback",
+   "index": 10,
+   "definition": "Status from the system to the person: persistence and placement are the when. Includes the nothing-yet states.",
+   "axis": "FFF: function \"the system is telling you something\"",
+   "json": 11,
+   "meta_agrees": 0,
+   "meta_silent": 11,
+   "json_when_present": 11,
+   "zero_in_metas": true,
+   "providers": [
+    {
+     "slug": "alert",
+     "state": "silent",
+     "json_when": "in-flow, stays until resolved",
+     "meta_when": "the message is IN FLOW (inside the page or form it refers to) AND it persists until resolved or dismissed AND it carries a status glyph and a title, never colour alone AND an error alert never auto-dismisses — CANON-ADJACENT — our own purpose already states the three-way rule: \"Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors\"; beats toast (proposed \"transient, no answer required\") whenever the reader must act; beats banner (proposed \"the condition governs the whole page or session\") whenever the message belongs to one form or section — Atlassian draws the identical line: \"For messages with information affecting the whole site, use a banner\"; yields to inline field validation for a single control.",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "notifications",
+     "state": "silent",
+     "json_when": "the RAG family in its four placements",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "banner",
+     "state": "silent",
+     "json_when": "page-level, above content, persistent",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "toast",
+     "state": "silent",
+     "json_when": "transient, confirms and leaves",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "empty-state",
+     "state": "silent",
+     "json_when": "a region has nothing to show",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "skeleton-loader",
+     "state": "silent",
+     "json_when": "content is on its way, shape known",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "loading-indicator",
+     "state": "silent",
+     "json_when": "working, shape unknown",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "progress-bar",
+     "state": "silent",
+     "json_when": "a task underway, full = done (meter's progress reading)",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "progress-tracker",
+     "state": "silent",
+     "json_when": "where in a multi-step process",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "countdown-timer",
+     "state": "silent",
+     "json_when": "something fires at a time",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "confirmation",
+     "state": "silent",
+     "json_when": "end of flow, success screen",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "input",
+   "index": 11,
+   "definition": "The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored — not now.",
+   "axis": "Not in the first pass (s251-D12) — listed so the library is whole",
+   "json": 27,
+   "meta_agrees": 0,
+   "meta_silent": 27,
+   "json_when_present": 0,
+   "zero_in_metas": true,
+   "providers": [
+    {
+     "slug": "input-fields",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": "entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed \"the answer may span multiple lines\") whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there \"is likely to result in an error\").",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": [
+      "entry"
+     ]
+    },
+    {
+     "slug": "textarea",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": "entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists — beats input-fields (proposed \"the answer fits one line\") the moment a sentence is expected rather than a value — notes to approvers, a reason for payment, a secure message body; yields to input-fields for anything shorter (GOV.UK, verbatim: \"enter shorter answers no longer than a single line, such as a phone number\"); the counter is added only when a limit genuinely exists (GOV.UK: \"Only use the character count component when there is a good reason for limiting\").",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": [
+      "entry"
+     ]
+    },
+    {
+     "slug": "amount-input",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "search-field",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "dropdown",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "combobox",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "multi-select",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "cascader",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "selection-controls",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "segmented-control",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "date-picker",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "date-range-picker",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "time-picker",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "calendar",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "slider",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "range-slider",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "rating",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "tags-input",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "secure-entry",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "file-upload",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "transfer-list",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "reorder",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "view-options",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": "NEVER — superseded 2026-07-24; the view switch is Segmented-control — carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says \"Consuming View-options instead of Segmented-control for the view switch — View-options was superseded\"; the honest `when` here is a redirect, not a predicate.",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "form-layout",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "stepper",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "account-selector",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "amount-display",
+     "state": "silent",
+     "json_when": null,
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  },
+  {
+   "role": "overlay",
+   "index": 12,
+   "definition": "Something on top of the page that the person must dismiss or answer.",
+   "axis": "Not in the first pass — listed so the library is whole",
+   "json": 7,
+   "meta_agrees": 0,
+   "meta_silent": 7,
+   "json_when_present": 7,
+   "zero_in_metas": true,
+   "providers": [
+    {
+     "slug": "modals",
+     "state": "silent",
+     "json_when": "a message or side-task that needs an answer",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "drawer",
+     "state": "silent",
+     "json_when": "sub-task, page context stays visible",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "popover",
+     "state": "silent",
+     "json_when": "rich anchored content on click",
+     "meta_when": "the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open — CANON-ADJACENT — our purpose already carries the three-way rule: \"If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal\"; Atlassian states both halves independently (\"For interactive overlays, use the modal dialog component\" / \"For non-essential, non-interactive messages, use the tooltip component\"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: \"Don't make popups that scroll\", Carbon: past four columns wide use a modal).",
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "popconfirm",
+     "state": "silent",
+     "json_when": "one question, in place",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "tooltip",
+     "state": "silent",
+     "json_when": "a label's help, on hover",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "modal-lightbox",
+     "state": "silent",
+     "json_when": "show a thing, not ask a thing",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    },
+    {
+     "slug": "command-palette",
+     "state": "silent",
+     "json_when": "keyboard-first launcher",
+     "meta_when": null,
+     "meta_priority": null,
+     "meta_shape": null,
+     "meta_answers": null,
+     "illegal_fields": []
+    }
+   ]
+  }
+ ]
+}
