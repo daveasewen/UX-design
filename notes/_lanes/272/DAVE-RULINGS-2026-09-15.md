@@ -36,3 +36,4 @@ navs, we engineer the IA so that it the top level doesn't have a lot of items, w
 - **R5** (ratify): *"Ratified for now. But we need to follow up with a focus a greater nav overarching strategy session."*
 
 - On the cut page (92 proposed + 15 when + the 79 accepted-by-click put as the one item with weight): *"were good, inscribe, lets make sure we return yo any of the open questions and sidequsts"* → INSCRIBE all 92 + 15 (`s272-D…`); the 8 declines + noted follow-ups are REGISTERED as open items / sidequests with a return hook, not dropped.
+- *"Wrap"* → the capture ritual, delegated (handoff `_HANDOFF-123` written first by the conductor).
