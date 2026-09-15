@@ -1,0 +1,31 @@
+== 1. SCHEMA — the three proposed metas against meta.schema.json ==
+  chart-bar.meta.json    obeys=10  schema errors: 0
+  chart-line.meta.json   obeys= 9  schema errors: 0
+  chart-pie.meta.json    obeys=10  schema errors: 0
+  NEGATIVE CONTROL  $why removed             -> 1 schema errors (RED, good)
+  NEGATIVE CONTROL  $why under 40 chars      -> 1 schema errors (RED, good)
+  NEGATIVE CONTROL  ref not rule:/ux:        -> 1 schema errors (RED, good)
+  NEGATIVE CONTROL  stray key in an entry    -> 1 schema errors (RED, good)
+  schema: OK — 0 errors on the proposal, every negative control red
+
+== 2. RESOLUTION — every proposed ref is already a node ==
+  _rule_nodes.json nodes: 521  ·  rule: nodes: 470
+  proposed refs: 29  ·  unresolved: 0 
+
+== 3. DRY RUN — the simulated tree ==
+  obeys edges in knowledge/components/ TODAY: 81
+  obeys edges this lane proposes:             29
+  obeys edges after landing (simulated):      110
+  _validate_kg.py against the SIMULATED tree (exit 0):
+    ref:null + $note (declared, awaiting Dave's-eye migration): 90
+    resolutions consumed (s135-D4, KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json): 82 ruled verdicts asserted present (MERGE 5 / PROMOTE 52 / ATTACH 25)
+    _validate_kg.py: OK — every ref parses+resolves, every null carries a note, every meta has provenance, edges match schema, gen_kg_edges.py is idempotent-clean, and the s135-D4 resolutions input was consumed.
+
+== 4. OWNERSHIP — git status ==
+  changed paths: 7  ·  outside notes/_lanes/277/: 4
+    OUTSIDE notes/_REHEARSAL-LOG.jsonl                   mtime 21:35:23  predates this lane / another seat
+    OUTSIDE notes/_dream/_GRADE-DECISIONS.jsonl          mtime 21:35:24  predates this lane / another seat
+    OUTSIDE artefact                                     mtime 21:33:10  predates this lane / another seat
+    OUTSIDE rule?                                        mtime 21:33:10  predates this lane / another seat
+
+VERDICT: OK

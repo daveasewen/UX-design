@@ -1,0 +1,433 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The three charts — #277 lane CO</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+/* The label pattern (#261). NO text-transform (nam-002): tracking and weight
+   carry it, and the line-height is generous so no descender can be cropped. */
+.label{font-size:.8125rem;font-weight:500;letter-spacing:.14em;line-height:1.6;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+h1{font-size:3.5625rem;line-height:1.18;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.25;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px;
+ overflow-wrap:anywhere;word-break:break-word}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3)}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1.25;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1)}
+.stat span{display:block;font-size:.8125rem;letter-spacing:.06em;line-height:1.5;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.8125rem;letter-spacing:.14em;line-height:1.6;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;letter-spacing:.06em;font-size:.8125rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.75rem;letter-spacing:.1em;line-height:1.5;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .4rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+.ph{color:var(--accent);font-weight:500}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:760px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.08em;line-height:1.6;color:var(--g6);font-weight:500;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.newmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:56ch}
+blockquote{margin:var(--s3) 0;padding-left:var(--s3);border-left:2px solid var(--accent);
+ font-size:1.0625rem;max-width:70ch}
+blockquote cite{display:block;font-size:.8125rem;font-style:normal;color:var(--g6);margin-top:var(--s1)}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+</style>
+<script type="application/json" id="measured">{"obeys_total": 29, "drops_total": 3, "n_line_file": 11, "n_pie_file": 11, "n_bar_file": 10, "n_spec_total": 32, "dv_family": 19, "ctk_foundations": 4, "ctk_buttons": 14, "rules_index": 470, "line_n": 9, "pie_n": 10, "bar_n": 10, "icon_button_n": 6, "metas_total": 137, "charts_total": 14, "charts_unreached": 11, "charts_upper": 7, "charts_lower": 7, "family_edges": 12, "role_members": 12, "family_a_total": 57, "family_b_total": 49, "family_family_total": 19, "family_bar": 18, "family_line": 16, "family_pie": 15, "family_false": 8, "family_shared": 13, "obeys_live": 81, "obeys_after": 110, "refs_unresolved": 0, "schema_errors": 0, "rule_nodes": 470, "bites": 20, "mutants": 16}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#277 &middot; lane CO &middot; decision page</p>
+<h1>The last three components a filename can reach.</h1>
+<blockquote>THE THREE FLAGGED EXTRAS &mdash; chart-line, chart-pie, chart-bar &mdash; ARE AUTHORED IN THE
+NEXT LANE, in the same shape: filename join on the three <code>data-visualisation-*-charts.md</code> spec
+files, one sentence per citation, reviewed by eye. Then STOP and look again.
+<cite>s276-D5, 2026-09-15</cite></blockquote>
+<p>Of 470 guideline rules, 32 sit in the three files named after these three
+components. <span class="n">29</span> of them bind and now carry an authored sentence;
+<span class="n">3</span> do not bind and are declared drops. That is the whole of the
+filename-join route: after this lane, no guideline file is named after a component that has not been
+authored.</p>
+<p>This lane proposes. It has landed nothing.</p>
+<div class="stats">
+<div class="stat"><b>29</b><span>authored citations</span></div>
+<div class="stat"><b>3</b><span>declared drops</span></div>
+<div class="stat"><b>110</b><span>obeys edges after landing</span></div>
+<div class="stat"><b>3</b><span>metas written against</span></div>
+</div>
+<div class="zeros">
+<div><b>0</b> files landed in <code>knowledge/</code></div>
+<div><b>0</b> citations drawn by regex over prose</div>
+<div><b>0</b> schema errors, <b>0</b> unresolved refs of 29</div>
+<div><b>0</b> silent drops &mdash; every one has a reason below</div>
+</div>
+<p class="why">There is no schema diff in this lane: <code>edges.obeys</code> with its required
+<code>$why</code> already exists, landed by s276-D3. 20 bites on the author, 16
+mutants driven, every one caught. Measured counts per file &mdash; line <span class="n">11</span>
+&middot; pie <span class="n">11</span> &middot; bar <span class="n">10</span>
+&middot; family <span class="n">19</span>.</p>
+</div></section>
+
+<section id="parta"><div class="wrap">
+<p class="label">Part A &middot; the filename join</p>
+<h2>Every rule in the three files, and what happened to it.</h2>
+<p>The join is on the <b>filename</b> &mdash; <code>data-visualisation-bar-charts.md</code> to
+<code>chart-bar</code>, and so on &mdash; never a regex over rule prose. Reviewed by eye is part of the
+ruling, so a rule that sits in the file but governs a different component is dropped <i>and named</i>. A
+declared drop is a finding; a silent one is the s214-D6 failure.</p>
+<div class="tw"><table>
+<tr><th>component</th><th>rule</th><th>destiny</th><th>verdict</th><th>the authored sentence, or the reason it was dropped</th></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-001</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">The zero y-axis is OPTIONAL for a line and MANDATORY for a bar, and this meta is the line side of that deliberate asymmetry — it carries no data-domain-min antiPattern, where chart-bar carries one.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-002</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Shape per data set, not colour alone: the meta's <code>series</code> prop already names this rule and fixes the three marker geometries (circle r4.2 · square 8.4 · diamond ±4.9), so the rule IS the prop.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-003</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Axis titles, per-category X labels, incremental Y labels and gridlines are the parts DV-D07 mints tokens for (data/axis, data/grid) — the rule says which parts must exist, the meta says what colour they are.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-004</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">The reference point plus a tooltip repeating BOTH axis values is the dvTip popover in this meta's <code>motion.hover</code>, and the both-axes clause is why the popover cannot be a bare value.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-005</td><td><code>TASTE</code></td><td class="">obeys</td><td class="defn">Comparable intervals and a gridline density that can be dropped when it confuses is a judgement this meta hands to the author; it is TASTE, and it is the reason <code>responsive</code> pins the viewBox 1:1 rather than rescaling intervals.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-006</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Dual y-axes only for different units is the rule this meta OBEYS BY YIELDING: its <code>when</code> hands the different-units case to chart-combo, so on this component the rule reads as a prohibition, and that is the binding worth recording.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-007</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Filter/focus on multi-set charts is this meta's <code>legendFilter</code> prop — the rule is why that prop defaults to true rather than being an option.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-008</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">End-line markers plus a key when intervals are tight, and explicit labelling of projected states, govern the multi-series variant this meta declares; nothing else in the meta supplies that labelling contract.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-009</td><td><code>ADVISORY</code></td><td class="newmark">dropped</td><td class="defn">Sits under the file's '## Spark charts' heading and governs the SPARK's aspect ratio against surrounding content. chart-sparkline is a separate meta in knowledge/components/; this rule is its, not chart-line's.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-010</td><td><code>ADVISORY</code></td><td class="newmark">dropped</td><td class="defn">Also under '## Spark charts' — 'in tables, group all data related to the spark sequentially'. It is a table-composition rule about sparklines. chart-line is never placed inside a table row; chart-sparkline is.</td></tr>
+<tr><td class="slug">chart-line</td><td class="slug">dv-line-011</td><td><code>BLOCKING</code></td><td class="">obeys</td><td class="defn">Straight segments only, never gratuitous curves — the meta's first antiPattern cites this rule by id, so the edge makes an existing prose citation a graph edge.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-001</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Start at 12 o'clock, largest to smallest unless the categories have an inherent order — the angle contract for the segments this meta bakes as data-a1/-a2 at generation time.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-002</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Label plus exact proportional value per slice, with indicator lines when segments crowd, is precisely this meta's <code>labelling</code> = spider default: the leader line IS the indicator line the rule asks for.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-003</td><td><code>ADVISORY</code></td><td class="newmark">dropped</td><td class="defn">'Doughnut centre: total value + descriptor together' is donut-only. chart-pie's purpose says the DV-D13 centre-total wiring was REMOVED ('donut-only, per brief') and its antiPatterns ban porting it across. A pie with no centre has no centre contract to obey.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-004</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Direct labelling adjacent to segments is the meta's second declared variant ('direct labels'), so the rule names one of the two things this component can be.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-005</td><td><code>TASTE</code></td><td class="">obeys</td><td class="defn">Labels inside a slice only where they stay readable is the TASTE half of the labelling choice, and it is why this meta's antiPatterns ban white type on the fills and put labels outside the ring.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-006</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Slice-ordering direction has to be checked against assistive technology, and this meta makes every segment a focus stop with aria-label == data-tip == table — the order those stops are read in is what the rule is about.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-007</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Never enlarge or pull out a slice to emphasise it: the meta has no exploded variant and its motion block moves segments only by a radial sweep that ends flush, so the rule is the reason no such variant exists.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-008</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Proportion of a set total ONLY, never group-to-group comparison — this is the <code>when</code> gate of the meta stated from the guidance side, and it is what sends comparison to chart-bar.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-009</td><td><code>BLOCKING</code></td><td class="">obeys</td><td class="defn">Maximum 6 slices, pie and doughnut alike: the meta's <code>slices</code> prop cites this rule by id and carries the 'combine the smallest into Other' remedy, so the edge records a binding the meta already states in prose.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-010</td><td><code>BLOCKING</code></td><td class="">obeys</td><td class="defn">Values must add up to the declared total: this meta prints NO centre figure, so data-total is the only place the total lives and the arithmetic is unverifiable by eye — the rule binds harder here than on the donut, not less.</td></tr>
+<tr><td class="slug">chart-pie</td><td class="slug">dv-pie-011</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Always indicate rounding: the value ⇄ percent toggle in this meta's <code>valueMode</code> prop is exactly where rounded percentages appear, and the rule is the contract that toggle has to honour.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-001</td><td><code>TASTE</code></td><td class="">obeys</td><td class="defn">A title that reflects the main insight is this meta's optional <code>title</code> prop, and the rule is why the slot exists at all rather than a bare chart frame.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-002</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Axis titles on both axes unless the labels are obvious — the get-out clause is the reason this is a judgement the author makes per instance, and the meta's axis tokens have to carry either way.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-003</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Categorical X with per-category labels, incremental Y values, gridlines for scale: the structural parts DV-D07's data/axis and data/grid roles exist to colour.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-004</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">A key is required whenever labelling is alphanumeric, which is exactly this meta's on-chart letter keys (.dv-barkey) and its lettered legend swatches in the grouped and stacked variants.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-005</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Filtering and configuration tools sit ABOVE the chart — the placement contract for this meta's sort segmented control and its table-view dropdown.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-006</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Group separators, group category labels and a group key for alphanumeric group labels are the anatomy of this meta's 'grouped column' variant; no other rule supplies it.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-007</td><td><code>BLOCKING</code></td><td class="">obeys</td><td class="defn">Negative values on a horizontal bar are banned — the meta's antiPatterns cite this rule by id, and its <code>orientation</code> prop's 'bar' value carries the positives-only note.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-008</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Past versus projected must always be labelled. This meta declares no projected variant today, and the rule is what any future one would have to satisfy — a binding constraint, not a described feature.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-009</td><td><code>BLOCKING</code></td><td class="">obeys</td><td class="defn">The zero baseline is mandatory for every bar chart: the meta's antiPatterns cite this rule by id and name data-domain-min="0" as the mechanism.</td></tr>
+<tr><td class="slug">chart-bar</td><td class="slug">dv-bar-010</td><td><code>ADVISORY</code></td><td class="">obeys</td><td class="defn">Well spaced, evenly distributed, and not too many categories — the arrangement rule the meta's span.cols 4–12 and its DV-D02 compress-never-scale responsive rule between them have to satisfy.</td></tr>
+</table></div>
+<p class="why">All 3 drops come from structure inside the file, not from taste:
+dv-line-009 and dv-line-010 sit under the line file's own <code>## Spark charts</code> heading and govern
+<code>chart-sparkline</code>; dv-pie-003 is the doughnut-centre rule, and <code>chart-pie</code>'s own
+purpose records that the centre-total wiring was removed as donut-only.</p>
+</div></section>
+
+<section id="family"><div class="wrap">
+<p class="label">D-3 &middot; the evidence</p>
+<h2>The 19 family rules, read against all three.</h2>
+<p>Option (a) attaches all 19 to each &mdash; 57 edges, of which
+<span class="n">8</span> would be false with an authored-looking sentence on them.
+Option (b) is this table: <span class="n">49</span> edges,
+18&nbsp;/&nbsp;16&nbsp;/&nbsp;15 on bar&nbsp;/&nbsp;line&nbsp;/&nbsp;pie.
+<span class="n">13</span> of the 19 bind all three identically &mdash; the
+first measurement of what a family node would have to carry, which is what option (c) needs and does not
+have.</p>
+<div class="tw"><table>
+<tr><th>rule</th><th>text</th><th class="num">chart-line</th><th class="num">chart-pie</th><th class="num">chart-bar</th></tr>
+<tr><td class="slug">dv-001</td><td class="defn">Display the complete scale range; don't truncate or alter scales to over/understate tren…</td><td class="num"><b>binds</b></td><td class="num">&mdash;</td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-002</td><td class="defn">Display full charts with reasonable scales.</td><td class="num"><b>binds</b></td><td class="num">&mdash;</td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-003</td><td class="defn">Show the full data set; don't omit data to distort interpretation.</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-004</td><td class="defn">Colour separation: don't rely on colour to separate values — minimum 2px separation betw…</td><td class="num">&mdash;</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-005</td><td class="defn">Tabular alternative where possible + a link to the table view (digital).</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-006</td><td class="defn">Labelling: title must reflect the main insight; key; alphanumeric labels + key when cate…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-007</td><td class="defn">Content ordering (digital): all data visible at smallest viewport, else explicit navigat…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-008</td><td class="defn">Scrolling: horizontal scroll only as a last resort; the page can't also scroll verticall…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-009</td><td class="defn">2-dimensional, flat colour fills only. No 3D styles, no gradient fills.</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-010</td><td class="defn">Uncluttered overlays; nothing that obscures data.</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-011</td><td class="defn">Don't rely on colour alone to carry the narrative.</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-012</td><td class="defn">Use colour to focus attention; never as the chart's background.</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-013</td><td class="defn">Combination charts (e.g. positive/negative): colour differentiates the data sets.</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-014</td><td class="defn">Categorisation consistency: same data = same colour across every chart in a user journey…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-015</td><td class="defn">Comparison (change over time): line, spark, bullet, candlestick Choose by the data's nee…</td><td class="num"><b>binds</b></td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+<tr><td class="slug">dv-016</td><td class="defn">Chart building blocks (titles, axis labels, axis/grid lines): black-or-grey on light, wh…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-017</td><td class="defn">Only palette colours in charts (print/digital palette, or the programme toolkit). Now: t…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-018</td><td class="defn">Segmented data: different colour per data set variable (bar), different colours within a…</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+<tr><td class="slug">dv-019</td><td class="defn">Only palette colours in charts (print/digital palette, or the programme toolkit). Now: t…</td><td class="num">&mdash;</td><td class="num"><b>binds</b></td><td class="num"><b>binds</b></td></tr>
+</table></div>
+<p class="why">Two findings sit in this table. <b>dv-019's index row is wrong</b>: it carries dv-017's
+sentence, but <code>data-visualisation.md</code> line 70 shows dv-019 is the Apollo-added
+vibrating-boundaries rule. The matrix above reads the <b>source file</b>, not the index row &mdash; reported, not
+fixed, because <code>_rules-index.json</code> is not this lane's to write. And <b>the corpus attaches
+nothing above the component today</b>: <code>common-toolkit-foundations.md</code> holds
+4 rules that sit above the four components lane TO authored, and
+<span class="n">0</span> were attached to any meta. There is no precedent here, only one to set.</p>
+</div></section>
+
+<section id="q3"><div class="wrap">
+<p class="label">Flag only &middot; not authored</p>
+<h2>The 11 chart components a filename cannot reach.</h2>
+<p><code>knowledge/components/</code> holds 14 chart metas. Three have a spec file of
+their own; 11 do not, so the filename-join route stops here. Listed, not authored
+&mdash; and the <b>capitalisation split is real</b>: <span class="n">7</span> are
+<code>Chart-*</code> and <span class="n">7</span> are <code>chart-*</code>, and the stem
+is the node id, so <code>component:Chart-boxplot</code> and <code>component:chart-bar</code> are
+differently-shaped slugs in the same graph.</p>
+<div class="tw"><table>
+<tr><th>meta</th><th>name</th><th>case</th><th>provides</th><th>named by a spec file's own structure</th><th class="num">dv- ids it already cites</th></tr>
+<tr><td class="slug">Chart-boxplot</td><td>Box plot</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">4</td></tr>
+<tr><td class="slug">Chart-bullet</td><td>Bullet chart</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">headline-metric</td><td class="slug">&mdash;</td><td class="num">4</td></tr>
+<tr><td class="slug">Chart-butterfly-h</td><td>Butterfly chart (horizontal)</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">5</td></tr>
+<tr><td class="slug">Chart-butterfly-v</td><td>Butterfly chart (vertical)</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">4</td></tr>
+<tr><td class="slug">Chart-candlestick</td><td>Candlestick chart</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">5</td></tr>
+<tr><td class="slug">Chart-histogram</td><td>Histogram</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">7</td></tr>
+<tr><td class="slug">Chart-scatter</td><td>Scatter plot</td><td class="slug"><span class="newmark">Chart-</span></td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">6</td></tr>
+<tr><td class="slug">chart-combo</td><td>Combo chart</td><td class="slug">chart-</td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">8</td></tr>
+<tr><td class="slug">chart-donut</td><td>Donut chart</td><td class="slug">chart-</td><td class="slug">chart-panel</td><td class="slug">dv-pie-charts</td><td class="num">7</td></tr>
+<tr><td class="slug">chart-sparkline</td><td>Sparkline</td><td class="slug">chart-</td><td class="slug">—</td><td class="slug">dv-line-charts</td><td class="num">6</td></tr>
+<tr><td class="slug">chart-stacked-area</td><td>Stacked area chart</td><td class="slug">chart-</td><td class="slug">chart-panel</td><td class="slug">&mdash;</td><td class="num">6</td></tr>
+</table></div>
+<p class="why">The "named by" column applies the Q1 test mechanically to the three <b>spec</b> file texts: does the
+component's own word appear in a Types bullet, a heading, or a rule's normative clause?
+<code>data-visualisation.md</code> is not searched &mdash; dv-015 lists every chart type there is, so the
+family file would match all fourteen and the signal would be noise. It is a
+<b>measurement</b> for you to read, never an edge &mdash; a meta can cite a rule to record that it <b>escapes</b> it,
+which is why the last column is a count and not a proposal.</p>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Your words</p>
+<h2>Three decisions.</h2>
+<p>Recommendation first on each. One letter is an answer; a letter with a sentence attached is a sequel,
+and I will read it back before anything is built on it.</p>
+<div class="dec" data-id="D-1">
+<div class="dechead"><span class="decid">D-1</span><h3>The 29 authored citations, and the 3 rules I left out</h3></div>
+<p>Filename join on the three <code>data-visualisation-*-charts.md</code> files: 11 line rules, 11 pie rules, 10 bar rules — 32 in all. 29 bind and carry an authored sentence; 3 do not bind and are declared drops, not silent omissions. Every drop is a rule about a <b>different</b> component sitting in this file: dv-line-009 and dv-line-010 are under the line file's own '## Spark charts' heading, and dv-pie-003 is the doughnut-centre rule in a file whose namesake has no centre.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-a" value="a"><label for="D-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Land all 29 as proposed, drops included. The three metas go into <code>knowledge/components/</code> exactly as they sit in <code>proposed-metas/</code> — one spliced span each, nothing else touched.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-b" value="b"><label for="D-1-b"><span class="okey">(b)</span>Review per component first — read the 29 sentences and the 3 drop reasons one chart at a time, then land what survives.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-none" value=""><label for="D-1-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Lane CJ read the same four files independently and reached the same three drops by the same reasoning. Two seats converging on dv-pie-003 and the two spark rules is the strongest signal this lane produced.</p>
+<textarea class="note" data-id="D-1" aria-label="Notes for D-1" placeholder="Notes for D-1 — your words"></textarea>
+</div><div class="dec" data-id="D-2">
+<div class="dechead"><span class="decid">D-2</span><h3>Does chart-donut share the pie file?</h3></div>
+<p>The precedent is icon-button, which takes 6 of the buttons spec's 14 rules because that spec names icon-only as one of its three structural variations. The pie file names the doughnut harder than that: its '## Types' section lists Doughnut as one of two types, dv-pie-009's normative text reads 'both pie and doughnut', and dv-pie-003 is a rule that binds the donut <b>alone</b>. Measured the other way: <code>chart-donut.meta.json</code> already cites dv-pie-009 and dv-pie-010 by id in its own antiPatterns, and <code>chart-pie.meta.json</code> says it was <b>ported from</b> the donut with the inner radius dropped to 0. There is no <code>family</code> edge between them in the graph — 12 of 137 metas carry one, and neither chart does; what does exist is chart-pie's <code>not-with</code> and <code>yieldsTo</code> pointing at chart-donut.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-a" value="a"><label for="D-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Yes — chart-donut takes the pie file as its home spec. It would take all 11, including dv-pie-003, which chart-pie drops. Authored in a following lane, same shape as this one.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-b" value="b"><label for="D-2-b"><span class="okey">(b)</span>No — chart-donut waits. The filename does not say 'donut', and admitting it on prose is a step toward the tier s276-D5 refused.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-none" value=""><label for="D-2-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Yes — <code>chart-donut</code> takes <code>data-visualisation-pie-charts.md</code> as its home spec because the file itself names the doughnut as one of its two types, so author all 11 pie rules on the donut and only 10 on the pie: <code>dv-pie-003</code> (doughnut centre) binds the donut alone and stays off <code>chart-pie</code>.</p>
+<textarea class="note" data-id="D-2" aria-label="Notes for D-2" placeholder="Notes for D-2 — your words"></textarea>
+</div><div class="dec" data-id="D-3">
+<div class="dechead"><span class="decid">D-3</span><h3>Where do the 19 family rules in data-visualisation.md attach?</h3></div>
+<p>They sit above all three. The corpus's answer today is <b>nowhere</b>: <code>common-toolkit-foundations.md</code> holds 4 rules that sit above the four components lane TO authored, and <span class="n">0</span> of them were attached to any meta. So there is no precedent to follow, only one to set. Reading all 19 against all three by eye gives 49 that bind, not 57: 18 on bar, 16 on line, 15 on pie.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-a" value="a"><label for="D-3-a"><span class="okey">(a)</span>Attach all 19 to each of the three — 57 edges. Simple, and 8 of them would be false with an authored-looking sentence on top.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-b" value="b"><label for="D-3-b"><span class="okey">(b)</span><span class="rec">Recommended</span>Attach the authored subset per component — 49 edges. Each one read against that chart; dv-013 and dv-015 land on at most one, and the 13 that bind all three identically are the first measurement of what a family node would carry.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-c" value="c"><label for="D-3-c"><span class="okey">(c)</span>Attach them to a chart family node instead — 19 edges once. Nothing can carry it today: <code>obeys</code> lives on component metas, <code>role:chart-panel</code> has the wrong membership (12 members, and Chart-bullet is not one), and the family would need a new node kind, an inheritance edge type and a propagation rule — three vocabulary changes, each yours.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-none" value=""><label for="D-3-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Per-component authored subset — about 46 entries, not 57, with <code>dv-013</code> and <code>dv-015</code> on none of the three and five further rules left off the chart they do not reach — because 11 of the 57 blanket edges would be false and the 30 that repeat identically across the three are the measured shape of a family node that does not yet exist.</p>
+<textarea class="note" data-id="D-3" aria-label="Notes for D-3" placeholder="Notes for D-3 — your words"></textarea>
+</div>
+<div class="bar">
+<button id="btnExport">Export JSON</button>
+<button id="btnCopy">Copy to clipboard</button>
+<button class="ghost" id="btnClear">Clear all</button>
+<span class="said" id="said"></span>
+</div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="receipts"><div class="wrap">
+<div class="split"><div>
+<p class="label">Receipts</p>
+<dl class="recs">
+<dt>Proposed metas</dt><dd><code>notes/_lanes/277/charts/proposed-metas/</code> &mdash; 3 files, each a
+byte-for-byte copy of the live meta plus one inserted span</dd>
+<dt>Schema</dt><dd>0 errors against
+<code>knowledge/components/meta.schema.json</code>, and four negative controls all red</dd>
+<dt>Dry run</dt><dd><code>python3 notes/_lanes/277/charts/_dry_run.py</code> &mdash;
+81 &rarr; 110 obeys edges, <code>_validate_kg.py</code> OK against the
+simulated tree</dd>
+<dt>Selftest</dt><dd>20 bites on <code>_author_metas.py</code>, all green</dd>
+<dt>Mutants</dt><dd>16 driven by <code>_mutate.py</code>, every one caught &mdash; including
+the re-dump mutant that <b>survived</b> until bite 20 was written for it</dd>
+<dt>Recommendations</dt><dd>read from <code>notes/_lanes/277/judgement/RECOMMEND.md</code> (lane CJ)</dd>
+</dl>
+</div><div>
+<p>Every integer on this page is read at build time &mdash; from <code>dry-run.json</code>, from
+<code>_author_metas.py</code>'s own tables, or counted over <code>knowledge/</code>. No number was typed
+into the HTML, and none was typed into the decisions file either.</p>
+<p>Nothing landed. <code>knowledge/components/</code> still holds 137 metas carrying
+81 <code>obeys</code> edges between them, all of them lane TO's, and not one chart meta has
+an <code>obeys</code> block. <code>_validate_kg.py</code> is green on the live tree because this lane did
+not touch it.</p>
+</div></div>
+</div></section>
+<footer><div class="wrap">Nothing on this page is a ruling. Dave rules; the lane enacts by addition.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-277-charts-v1";
+ var IDS=["D-1", "D-2", "D-3"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"REVIEW-charts-2026-09-15-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="charts-decisions-2026-09-15.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>
