@@ -1,0 +1,408 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Principles into the graph — #275 decision page</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+/* The label pattern. NO text-transform (nam-002): tracking and weight carry it,
+   and the line-height is generous so no descender can be cropped. */
+.label{font-size:.8125rem;font-weight:500;letter-spacing:.14em;line-height:1.6;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+/* Display line-heights are set from a MEASUREMENT, not from taste: at 57/43/34px the
+   Univers Next font box (cap .723em + descender .232em + internal leading) needs
+   1.166 / 1.213 / 1.212em before the last line's descender clears the content box.
+   The Swiss 1.0-1.08 display range crops here, so the house descender clause wins
+   and _drive_page.py re-measures it every build. */
+h1{font-size:3.5625rem;line-height:1.18;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.25;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3)}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1.25;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1)}
+.stat span{display:block;font-size:.8125rem;letter-spacing:.06em;line-height:1.5;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.8125rem;letter-spacing:.14em;line-height:1.6;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;letter-spacing:.06em;font-size:.8125rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.75rem;letter-spacing:.1em;line-height:1.5;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .4rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:760px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.08em;line-height:1.6;color:var(--g6);font-weight:500;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.newmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:56ch}
+blockquote{margin:var(--s3) 0;padding-left:var(--s3);border-left:2px solid var(--accent);
+ font-size:1.0625rem;max-width:70ch}
+blockquote cite{display:block;font-size:.8125rem;font-style:normal;color:var(--g6);margin-top:var(--s1)}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+</style>
+<script type="application/json" id="measured">{"principles": 145, "polarities": 30, "nodes": 175, "ux_nodes": 145, "polarity_nodes": 30, "edges": 111, "unresolved": 27, "unresolved_nopn": 33, "families": 32, "polarity_edges": 18, "edgeless": 12, "not_edgeable": 17, "parties": 68, "links": 21, "rulings": 578, "stubs": 15, "wcag": 20, "wcag_named": 4, "wcag_rest": 16, "fam_wcag22": 11, "fam_coga": 6, "fam_aria": 1, "fam_en": 1, "fam_eaa": 1, "live_prefixes": 18, "live_principle": 4, "live_sc": 38, "live_guideline": 12, "live_rule": 470, "live_ruling": 578, "live_component": 137, "explorer_mb": 2.7, "payload_full_kb": 123, "payload_trim_kb": 33, "metas": 137, "inFamily_edges": 145, "family_hubs": 32, "evidence_edges": 145, "evidence_nodes": 53, "all_eight": 401, "opt_nodes": 260, "A": 6, "B": 28, "C": 75, "D": 9, "L": 27, "new_types": 7, "tensionWith": 22, "hasParty": 68, "explainedBy": 1, "touches": 9, "resolvedBy": 7, "challengedBy": 4, "ruling_targets": 14, "ux_in_tension": 33, "party_ux": 51, "party_ruling": 2, "party_null": 15}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#275 &middot; lane RP &middot; decision page</p>
+<h1>The register has 145 rows. The graph has none of them.</h1>
+<p><code>knowledge/brain/principles.json</code> holds <span class="n">145</span> UX principles
+in <span class="n">32</span> families, each graded and each carrying its scope conditions, its
+known misreadings and a refutation probe. <code>knowledge/brain/polarities.json</code> holds
+<span class="n">30</span> polarities between them, and
+<span class="n">22</span> pairwise edges are already derived and waiting. The knowledge graph
+carries <span class="n">0</span> of all of it. s269-D1 put this third in the order, after the roles and the
+<span class="n">470</span> guideline rules that landed yesterday.</p>
+<p>This lane measured what a principle can be joined to, and built the generator. Nothing has landed.</p>
+<div class="stats">
+<div class="stat"><b>145</b><span>principles in the register</span></div>
+<div class="stat"><b>175</b><span>nodes proposed</span></div>
+<div class="stat"><b>111</b><span>edges proposed</span></div>
+<div class="stat"><b>7</b><span>of 8 types are new</span></div>
+</div>
+<div class="zeros">
+<div><b>0</b> principle nodes in the graph today</div>
+<div><b>0</b> metas or register files touched</div>
+<div><b>0</b> invented targets (27 declared nulls)</div>
+<div><b>0</b> things landed &mdash; ratification first</div>
+</div>
+<p class="why">Grade split: A <span class="n">6</span> &middot; B <span class="n">28</span>
+&middot; C <span class="n">75</span> &middot; D <span class="n">9</span> &middot; L
+<span class="n">27</span>, the ladder you named at s237-D1. The
+<span class="n">30</span> polarities hold <span class="n">68</span> parties and
+<span class="n">21</span> typed citations to <span class="n">14</span> rulings.</p>
+</div></section>
+
+<section id="types"><div class="wrap">
+<p class="label">The vocabulary question</p>
+<h2>Seven of the eight edge types are new.</h2>
+<p>The graph vocabulary is closed (#75). A new node kind and a new edge type are your word, not the lane's
+&mdash; which is what this page is for. Two node kinds are proposed: <code>ux:&lt;id&gt;</code>
+(<span class="n">145</span>) and <code>polarity:&lt;id&gt;</code>
+(<span class="n">30</span>, decision RP-3).</p>
+<div class="tw"><table>
+<tr><th>edge type</th><th>status</th><th>shape</th><th class="num">count</th><th>where it comes from</th></tr>
+<tr><td class="slug">tensionWith</td><td><span class="newmark">New</span></td><td class="slug">ux &rarr; ux</td><td class="num">22</td><td class="defn">The derived pairwise view, read verbatim from <code>_generated/polarity-edges.json</code> and re-derived from <code>polarities.json</code> to prove it fresh. 33 principles, 18 polarities. Carries the polarity id and its mediating variable.</td></tr>
+<tr><td class="slug">hasParty</td><td><span class="newmark">New</span></td><td class="slug">polarity &rarr; ux | ruling | null</td><td class="num">68</td><td class="defn">Every party of every polarity: 51 resolve to a principle, 2 to a ruling, and 15 are declared stubs carried as <code>null</code> plus the phrase.</td></tr>
+<tr><td class="slug">touches</td><td><span class="newmark">New</span></td><td class="slug">polarity &rarr; ruling</td><td class="num">9</td><td class="defn">One of the four typed out-links s238-D6 ruled. Read from the <code>links</code> array; the ref must be a live ruling.</td></tr>
+<tr><td class="slug">resolvedBy</td><td><span class="newmark">New</span></td><td class="slug">polarity &rarr; ruling</td><td class="num">7</td><td class="defn">The link that settles a polarity. Feeds the derived status in <code>_generated/polarity-status.json</code>.</td></tr>
+<tr><td class="slug">challengedBy</td><td><span class="newmark">New</span></td><td class="slug">polarity &rarr; ruling</td><td class="num">4</td><td class="defn">A ruling that pulls against the polarity rather than settling it.</td></tr>
+<tr><td class="slug">explainedBy</td><td><span class="newmark">New</span></td><td class="slug">polarity &rarr; ruling</td><td class="num">1</td><td class="defn">The rarest of the four &mdash; one link, pl-01 to s151-D1, the two-red law.</td></tr>
+<tr><td class="slug">inFamily</td><td><span class="newmark">New</span></td><td class="slug">ux &rarr; family hub</td><td class="num">145</td><td class="defn">Off by default (<code>--family-edges</code>). 32 hubs; the largest, fam-laws-of-ux, holds 26. Family is an attribute unless you want the picture.</td></tr>
+<tr><td class="slug">evidencedBy</td><td>exists</td><td class="slug">ux &rarr; evidence</td><td class="num">145</td><td class="defn">The one type that already exists (873 <code>evidence:</code> nodes in the graph) &mdash; and 0 of the 53 bibliographic URLs join one. Off by default.</td></tr>
+</table></div>
+<p class="why">Precedent: s274-D7&hellip;D12 ratified a node kind and four edge types this way yesterday, and
+<code>gen_kg_rules.py</code> landed them on that id &mdash; <span class="n">470</span>
+<code>rule:</code> nodes are in the live explorer now. This generator is the same shape, and the same
+refusals: <code>--dry-run</code> is the default, <code>--land</code> refuses without a recorded ruling id.</p>
+</div></section>
+
+<section id="notdrawn"><div class="wrap">
+<p class="label">What was measured and deliberately not drawn</p>
+<h2>Three joins exist in prose only.</h2>
+<div class="split"><div>
+<dl class="recs">
+<dt>Principle &rarr; the standard it restates</dt>
+<dd><span class="n">20</span> rows, <span class="n">0</span> explicit refs (RP-4)</dd>
+<dt>Component &rarr; the law it rests on</dt>
+<dd><span class="n">0</span> of <span class="n">137</span> metas (RP-5)</dd>
+<dt>Principle &rarr; its evidence</dt>
+<dd><span class="n">53</span> URLs, <span class="n">0</span> joins (RP-2 d)</dd>
+</dl>
+</div><div>
+<p>Each of the three would need a regex over prose, or a name match, to exist. s274-D12 refused exactly that
+yesterday for <span class="n">27</span> rule&nbsp;&rarr;&nbsp;component candidates because the sample carried
+visible false positives. The same refusal applies here, so the counts are reported and the edges are not
+drawn. Two of the three are authored work &mdash; and the authoring is a lane, not a generator.</p>
+<p>The one deliberate near-miss worth your eye: <span class="n">4</span> register ids do
+contain the name of a live <code>principle:</code> node. That is still a name match, and the whole point of
+s274-D12 is that a good-looking name match is how the bad ones get in.</p>
+</div></div>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Decisions</p>
+<h2>Six decisions. The recommendation is first in each.</h2>
+<p>Nothing here is ruled. Every option stays open; the marked option is the lane's recommendation and carries
+no weight beyond that.</p>
+<div class="dec" data-id="RP-1">
+<div class="dechead"><span class="decid">RP-1</span><h3>The node, and what it carries</h3></div>
+<p>A register row becomes one node: <code>ux:&lt;id&gt;</code>, e.g. <code>ux:pr-fitts</code>. <span class="n">145</span> nodes. The prefix is not in question &mdash; s269-D2 ruled it, and this lane re-measured it free: the live graph carries <span class="n">18</span> prefixes and <code>ux:</code> is not one of them, while <code>principle:</code> and <code>guideline:</code> are WCAG's. What is open is the payload.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-1" id="RP-1-a" value="a"><label for="RP-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All twelve register fields, verbatim &mdash; statement, family, originator, year, grade, grade_alt, grade_reason, evidence, scope_conditions, known_misreadings, refutation_probe &mdash; plus <code>gradeName</code>, read from the s237-D1 map rather than retyped. About <span class="n">123</span>&nbsp;KB.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-1" id="RP-1-b" value="b"><label for="RP-1-b"><span class="okey">(b)</span>The head only: id, statement, family, grade, originator, year (about <span class="n">33</span>&nbsp;KB). The four long prose fields stay in <code>principles.json</code> and the graph points at the file.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-1" id="RP-1-c" value="c"><label for="RP-1-c"><span class="okey">(c)</span>Hold. The <span class="n">145</span> stay out of the graph and keep living in <code>knowledge/brain/principles.json</code> alone.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-1" id="RP-1-none" value=""><label for="RP-1-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): the register exists because a principle read without its scope conditions is a principle misread &mdash; Fitts taken as &lsquo;make buttons big&rsquo; is the register's own example. A node that carries the statement and drops the misreadings reproduces the problem. The cost is <span class="n">123</span>&nbsp;KB against an explorer page that is already <span class="n">2.7</span>&nbsp;MB.</p>
+<textarea class="note" data-id="RP-1" aria-label="Notes for RP-1" placeholder="Notes for RP-1 — your words"></textarea>
+</div><div class="dec" data-id="RP-2">
+<div class="dechead"><span class="decid">RP-2</span><h3>Which edge types land in wave 1</h3></div>
+<p>Six edge types are measured: <span class="n">111</span> edges across <span class="n">175</span> nodes. Nothing is invented &mdash; an unresolvable target is <code>null</code> plus the evidence, and there are <span class="n">27</span> of those.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-2" id="RP-2-a" value="a"><label for="RP-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All six: <code>tensionWith</code> <span class="n">22</span> &middot; <code>hasParty</code> <span class="n">68</span> &middot; <code>touches</code> <span class="n">9</span> &middot; <code>resolvedBy</code> <span class="n">7</span> &middot; <code>challengedBy</code> <span class="n">4</span> &middot; <code>explainedBy</code> <span class="n">1</span>.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-2" id="RP-2-b" value="b"><label for="RP-2-b"><span class="okey">(b)</span><code>tensionWith</code> only (<span class="n">22</span>) &mdash; the principles and the tensions between them, nothing else. This is RP-3&nbsp;(b) in edge form.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-2" id="RP-2-c" value="c"><label for="RP-2-c"><span class="okey">(c)</span>All six, but the four typed links collapsed into one <code>polarityLink</code> edge carrying a <code>linkType</code> attribute &mdash; three new words in the vocabulary instead of six.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-2" id="RP-2-d" value="d"><label for="RP-2-d"><span class="okey">(d)</span>All six plus <code>inFamily</code> (<span class="n">145</span> edges to <span class="n">32</span> hubs) and <code>evidencedBy</code> (<span class="n">145</span> edges to <span class="n">53</span> new <code>evidence:</code> nodes): <span class="n">401</span> edges.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-2" id="RP-2-none" value=""><label for="RP-2-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): every one of the <span class="n">111</span> is read from a field or from a generated file with a declared derivation rule. Nothing is parsed out of prose, which is what made <code>cites</code> the weak one at #274. (c) saves three words but spends s238-D6, which ruled the link typed precisely so that the type carries the claim. (d)'s <code>evidencedBy</code> is the one type that already exists &mdash; and <span class="n">0</span> of its <span class="n">53</span> URLs join a live <code>evidence:</code> node, so the word would come to mean a chat receipt in one family and a journal citation in another.</p>
+<textarea class="note" data-id="RP-2" aria-label="Notes for RP-2" placeholder="Notes for RP-2 — your words"></textarea>
+</div><div class="dec" data-id="RP-3">
+<div class="dechead"><span class="decid">RP-3</span><h3>The polarity: a node, or only an attribute on an edge</h3></div>
+<p><span class="n">30</span> polarities. <span class="n">18</span> of them already derive a pairwise edge into <code>_generated/polarity-edges.json</code>, and this lane re-derived all <span class="n">22</span> from <code>polarities.json</code> and got the same set &mdash; the view is fresh, proved, not assumed. The either/or the #269 inventory left open is whether the polarity itself is a node.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-3" id="RP-3-a" value="a"><label for="RP-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span><code>polarity:&lt;id&gt;</code> &mdash; <span class="n">30</span> nodes. The home for the <span class="n">12</span> polarities that derive no pair at all, the <span class="n">21</span> typed citations to rulings, and the <span class="n">17</span> parties that are a declared stub or a ruling rather than a register row.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-3" id="RP-3-b" value="b"><label for="RP-3-b"><span class="okey">(b)</span>No node. The <span class="n">22</span> <code>tensionWith</code> edges only, with the polarity id and its mediating variable carried as edge attributes. Measured cost: <span class="n">12</span> polarities and <span class="n">21</span> typed links leave no trace &mdash; <span class="n">33</span> declared losses against <span class="n">27</span>.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-3" id="RP-3-c" value="c"><label for="RP-3-c"><span class="okey">(c)</span>A node only for the <span class="n">18</span> that derive a pair; the <span class="n">12</span> edgeless ones stay out.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-3" id="RP-3-none" value=""><label for="RP-3-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): s238-D1 already ruled the shape &mdash; the polarity's home is a node with N typed parties that must resolve and typed out-links, and the pairwise edges are derived, never authored. This is that model, in the graph. It also passes the s274-D9 test rather than dodging it: a hub that carries nothing earns no edge, and this one carries a mediating-variable sentence, a derived status, <span class="n">21</span> typed citations and <span class="n">17</span> parties no pair edge can express.</p>
+<textarea class="note" data-id="RP-3" aria-label="Notes for RP-3" placeholder="Notes for RP-3 — your words"></textarea>
+</div><div class="dec" data-id="RP-4">
+<div class="dechead"><span class="decid">RP-4</span><h3>The 20 principles that restate a standard we already hold</h3></div>
+<p><span class="n">20</span> rows sit in standards families &mdash; fam-wcag22 <span class="n">11</span>, fam-coga <span class="n">6</span>, fam-aria-apg <span class="n">1</span>, fam-en301549 <span class="n">1</span>, fam-eaa <span class="n">1</span> &mdash; and the graph already holds those standards as <span class="n">4</span> <code>principle:</code>, <span class="n">38</span> <code>sc:</code>, <span class="n">12</span> <code>guideline:</code>, a <code>standard:</code> and a <code>policy:</code> node. Measured across all twelve fields: <span class="n">0</span> rows name any of them. <span class="n">4</span> ids do contain a WCAG principle's name &mdash; and that is a name match.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-4" id="RP-4-a" value="a"><label for="RP-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Land the <span class="n">20</span> as plain <code>ux:</code> nodes with no cross-link, and author the joins later in a named lane.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-4" id="RP-4-b" value="b"><label for="RP-4-b"><span class="okey">(b)</span>Author the <span class="n">4</span> certain joins now, by hand, in a small authored file &mdash; and leave the other <span class="n">16</span>.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-4" id="RP-4-c" value="c"><label for="RP-4-c"><span class="okey">(c)</span>Hold the <span class="n">20</span> out of the graph until the joins exist, so no row appears twice under two vocabularies.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-4" id="RP-4-none" value=""><label for="RP-4-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): a join drawn by matching the word &lsquo;perceivable&rsquo; is the thing s274-D12 refused yesterday for <span class="n">27</span> rule&nbsp;&rarr;&nbsp;component candidates, and the reason was good. (b) is defensible for the four, and is the honest follow-up in the shape RK-4 took &mdash; a first, then c.</p>
+<textarea class="note" data-id="RP-4" aria-label="Notes for RP-4" placeholder="Notes for RP-4 — your words"></textarea>
+</div><div class="dec" data-id="RP-5">
+<div class="dechead"><span class="decid">RP-5</span><h3>Component metas citing the six laws: which lane, and when</h3></div>
+<p>s269-D5 says a component's meta cites the principles it rests on, starting with the six A-grade laws. Measured: <span class="n">0</span> of <span class="n">137</span> metas names a <code>pr-</code> id, and <span class="n">0</span> names any of the six laws verbatim. So this is authored work end to end, not a generator's. P-274-3 already parks the identical shape for rules (s274-D12's second half).</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-5" id="RP-5-a" value="a"><label for="RP-5-a"><span class="okey">(a)</span><span class="rec">Recommended</span>One lane, after this proposal lands, doing both at once: a handful of components cite the rules they obey (P-274-3) and the laws they rest on (s269-D5). One <code>meta.schema.json</code> diff, one review.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-5" id="RP-5-b" value="b"><label for="RP-5-b"><span class="okey">(b)</span>A principles-only lane now; the rules half waits for its own session.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-5" id="RP-5-c" value="c"><label for="RP-5-c"><span class="okey">(c)</span>Park it with a tripwire and decide when the CX principles arrive.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-5" id="RP-5-none" value=""><label for="RP-5-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): the two are the same edit to the same file &mdash; a component meta gaining a citation array. Splitting them costs two schema diffs and two reviews for one change. Which components go first is yours; P-274-3 already records that.</p>
+<textarea class="note" data-id="RP-5" aria-label="Notes for RP-5" placeholder="Notes for RP-5 — your words"></textarea>
+</div><div class="dec" data-id="RP-6">
+<div class="dechead"><span class="decid">RP-6</span><h3>Where the nodes live, and who reads them</h3></div>
+<p><code>--land</code> writes one new file, <code>knowledge/_ux_principle_nodes.json</code>, in the shape of <code>_rule_nodes.json</code>. Measured at run time, not asserted: <code>_build_kg_explorer.py</code> names <code>_rule_nodes.json</code> and does <strong>not</strong> name <code>_ux_principle_nodes.json</code>.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RP-6" id="RP-6-a" value="a"><label for="RP-6-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Land the file and teach <code>_build_kg_explorer.py</code> to read it in the same commit, behind its own chip. The s274-D11 precedent: section C of the explorer is the template.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-6" id="RP-6-b" value="b"><label for="RP-6-b"><span class="okey">(b)</span>File first, reader next session. The file sits inert until then.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-6" id="RP-6-c" value="c"><label for="RP-6-c"><span class="okey">(c)</span>No file: build the nodes inside <code>_build_kg_explorer.py</code> at build time, the way the WCAG family is built today.</label></div></li>
+<li><div class="opt"><input type="radio" name="RP-6" id="RP-6-none" value=""><label for="RP-6-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why">Why (a): #274 asked this exact question and the answer held &mdash; the rules chip is live in explorer v1.11 and reads a landed file. A landed file no builder names is an instrument without a consumer, which is the failure your RK-5 note put your finger on.</p>
+<textarea class="note" data-id="RP-6" aria-label="Notes for RP-6" placeholder="Notes for RP-6 — your words"></textarea>
+</div>
+<div class="bar"><button type="button" id="btnExport">Export JSON</button><button type="button" id="btnCopy">Copy to clipboard</button><button type="button" class="ghost" id="btnClear">Clear</button><span class="said" id="said">not saved yet</span></div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="standing"><div class="wrap">
+<p class="label">Two sentences already on the record</p>
+<h2>You have ruled the shape of both halves of this.</h2>
+<blockquote>&ldquo;Evidence grade is a field on every principle node.&rdquo;
+<cite>Dave, #237 &mdash; s237-D1. So grade is not on this page: it is settled, and it is an attribute.</cite></blockquote>
+<blockquote>&ldquo;my instinct is that adopting the hyper-relationship version might pay off in the future when
+we really make this KG more powerful&rdquo;
+<cite>Dave, #238 &mdash; s238-D1, the ruling that made the polarity a node with typed parties and derived
+pairwise edges. RP-3 asks whether that model comes into the graph as-is.</cite></blockquote>
+<p class="why">Both sentences were checked against <code>knowledge/_rulings.json</code>, where each occurs
+exactly once, in the <code>says</code> field of the ruling named. <code>_quote_gate.py</code> returns 0 on
+both because its index does not cover the <code>says</code> field &mdash; a known gap, verified by hand
+rather than waved through.</p>
+</div></section>
+
+<section id="provenance"><div class="wrap">
+<p class="label">Provenance</p>
+<h2>Where every figure came from</h2>
+<div class="split"><div>
+<dl class="recs">
+<dt>Script</dt><dd>knowledge/gen_kg_principles.py</dd>
+<dt>Corpus</dt><dd>knowledge/brain/principles.json &middot; knowledge/brain/polarities.json &middot;
+knowledge/brain/_generated/polarity-edges.json &middot; knowledge/brain/_generated/polarity-status.json &middot;
+knowledge/brain/stubs.json &middot; knowledge/_rulings.json &middot; knowledge/_validate_polarities.py</dd>
+<dt>Data</dt><dd>notes/_lanes/275/principles-kg/dry-run.json</dd>
+<dt>Copy</dt><dd>notes/_lanes/275/principles-kg/principles-kg-decisions-2026-09-15.json</dd>
+<dt>Builder</dt><dd>notes/_lanes/275/principles-kg/_build_page.py</dd>
+<dt>Command</dt><dd><code>python3 knowledge/gen_kg_principles.py --dry-run
+notes/_lanes/275/principles-kg/dry-run.json</code></dd>
+<dt>Selftest</dt><dd><code>python3 knowledge/gen_kg_principles.py --selftest</code> &mdash; 15 bites, 18
+mutants driven, every one caught (<code>_mutate.py</code>)</dd>
+</dl>
+</div><div>
+<p>Every integer on this page is read at build time from <code>dry-run.json</code>, from a live run of the
+generator with the option flags set, or counted off <code>notes/_KG-EXPLORER.html</code> itself. No number was
+typed into the HTML, and none was typed into the decisions file either.</p>
+<p>The generator touched nothing: <code>python3 knowledge/_validate_kg.py</code> still says OK, and this lane
+wrote only new files. The <span class="n">22</span> pairwise edges were re-derived from
+<code>polarities.json</code> by the rule printed inside the generated file, and the two sets agree exactly
+&mdash; so the view is proved fresh rather than trusted.</p>
+</div></div>
+</div></section>
+<footer><div class="wrap">Nothing on this page is a ruling. Dave rules; the lane enacts by addition.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-principles-kg-275-v1";
+ var IDS=["RP-1", "RP-2", "RP-3", "RP-4", "RP-5", "RP-6"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"REVIEW-principles-into-graph-2026-09-15-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="principles-kg-decisions-2026-09-15.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>

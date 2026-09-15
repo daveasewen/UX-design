@@ -1,0 +1,76 @@
+{
+  "$description": "BUILDER INPUT for REVIEW-principles-into-graph-2026-09-15-v1.html (#275 lane RP). Every {placeholder} below is filled at build time from notes/_lanes/275/principles-kg/dry-run.json or from a live measurement in _build_page.py — no integer is typed into this file or into the HTML. ⚠ The review page EXPORTS Dave's answers under this same filename (the RK convention: {page, at, decisions:[{id, choice, note}]}). If that export is ever copied over this file, _build_page.py REFUSES with a named error instead of building a page with no copy on it.",
+  "page": "REVIEW-principles-into-graph-2026-09-15-v1.html",
+  "storage_key": "apollo-principles-kg-275-v1",
+  "title": "Principles into the graph — #275 decision page",
+  "headline": "The register has 145 rows. The graph has none of them.",
+  "decisions": [
+    {
+      "id": "RP-1",
+      "title": "The node, and what it carries",
+      "lede": "A register row becomes one node: <code>ux:&lt;id&gt;</code>, e.g. <code>ux:pr-fitts</code>. <span class=\"n\">{principles}</span> nodes. The prefix is not in question &mdash; s269-D2 ruled it, and this lane re-measured it free: the live graph carries <span class=\"n\">{live_prefixes}</span> prefixes and <code>ux:</code> is not one of them, while <code>principle:</code> and <code>guideline:</code> are WCAG's. What is open is the payload.",
+      "options": [
+        ["a", true, "All twelve register fields, verbatim &mdash; statement, family, originator, year, grade, grade_alt, grade_reason, evidence, scope_conditions, known_misreadings, refutation_probe &mdash; plus <code>gradeName</code>, read from the s237-D1 map rather than retyped. About <span class=\"n\">{payload_full_kb}</span>&nbsp;KB."],
+        ["b", false, "The head only: id, statement, family, grade, originator, year (about <span class=\"n\">{payload_trim_kb}</span>&nbsp;KB). The four long prose fields stay in <code>principles.json</code> and the graph points at the file."],
+        ["c", false, "Hold. The <span class=\"n\">{principles}</span> stay out of the graph and keep living in <code>knowledge/brain/principles.json</code> alone."]
+      ],
+      "why": "Why (a): the register exists because a principle read without its scope conditions is a principle misread &mdash; Fitts taken as &lsquo;make buttons big&rsquo; is the register's own example. A node that carries the statement and drops the misreadings reproduces the problem. The cost is <span class=\"n\">{payload_full_kb}</span>&nbsp;KB against an explorer page that is already <span class=\"n\">{explorer_mb}</span>&nbsp;MB."
+    },
+    {
+      "id": "RP-2",
+      "title": "Which edge types land in wave 1",
+      "lede": "Six edge types are measured: <span class=\"n\">{edges}</span> edges across <span class=\"n\">{nodes}</span> nodes. Nothing is invented &mdash; an unresolvable target is <code>null</code> plus the evidence, and there are <span class=\"n\">{unresolved}</span> of those.",
+      "options": [
+        ["a", true, "All six: <code>tensionWith</code> <span class=\"n\">{tensionWith}</span> &middot; <code>hasParty</code> <span class=\"n\">{hasParty}</span> &middot; <code>touches</code> <span class=\"n\">{touches}</span> &middot; <code>resolvedBy</code> <span class=\"n\">{resolvedBy}</span> &middot; <code>challengedBy</code> <span class=\"n\">{challengedBy}</span> &middot; <code>explainedBy</code> <span class=\"n\">{explainedBy}</span>."],
+        ["b", false, "<code>tensionWith</code> only (<span class=\"n\">{tensionWith}</span>) &mdash; the principles and the tensions between them, nothing else. This is RP-3&nbsp;(b) in edge form."],
+        ["c", false, "All six, but the four typed links collapsed into one <code>polarityLink</code> edge carrying a <code>linkType</code> attribute &mdash; three new words in the vocabulary instead of six."],
+        ["d", false, "All six plus <code>inFamily</code> (<span class=\"n\">{inFamily_edges}</span> edges to <span class=\"n\">{family_hubs}</span> hubs) and <code>evidencedBy</code> (<span class=\"n\">{evidence_edges}</span> edges to <span class=\"n\">{evidence_nodes}</span> new <code>evidence:</code> nodes): <span class=\"n\">{all_eight}</span> edges."]
+      ],
+      "why": "Why (a): every one of the <span class=\"n\">{edges}</span> is read from a field or from a generated file with a declared derivation rule. Nothing is parsed out of prose, which is what made <code>cites</code> the weak one at #274. (c) saves three words but spends s238-D6, which ruled the link typed precisely so that the type carries the claim. (d)'s <code>evidencedBy</code> is the one type that already exists &mdash; and <span class=\"n\">0</span> of its <span class=\"n\">{evidence_nodes}</span> URLs join a live <code>evidence:</code> node, so the word would come to mean a chat receipt in one family and a journal citation in another."
+    },
+    {
+      "id": "RP-3",
+      "title": "The polarity: a node, or only an attribute on an edge",
+      "lede": "<span class=\"n\">{polarities}</span> polarities. <span class=\"n\">{polarity_edges}</span> of them already derive a pairwise edge into <code>_generated/polarity-edges.json</code>, and this lane re-derived all <span class=\"n\">{tensionWith}</span> from <code>polarities.json</code> and got the same set &mdash; the view is fresh, proved, not assumed. The either/or the #269 inventory left open is whether the polarity itself is a node.",
+      "options": [
+        ["a", true, "<code>polarity:&lt;id&gt;</code> &mdash; <span class=\"n\">{polarities}</span> nodes. The home for the <span class=\"n\">{edgeless}</span> polarities that derive no pair at all, the <span class=\"n\">{links}</span> typed citations to rulings, and the <span class=\"n\">{not_edgeable}</span> parties that are a declared stub or a ruling rather than a register row."],
+        ["b", false, "No node. The <span class=\"n\">{tensionWith}</span> <code>tensionWith</code> edges only, with the polarity id and its mediating variable carried as edge attributes. Measured cost: <span class=\"n\">{edgeless}</span> polarities and <span class=\"n\">{links}</span> typed links leave no trace &mdash; <span class=\"n\">{unresolved_nopn}</span> declared losses against <span class=\"n\">{unresolved}</span>."],
+        ["c", false, "A node only for the <span class=\"n\">{polarity_edges}</span> that derive a pair; the <span class=\"n\">{edgeless}</span> edgeless ones stay out."]
+      ],
+      "why": "Why (a): s238-D1 already ruled the shape &mdash; the polarity's home is a node with N typed parties that must resolve and typed out-links, and the pairwise edges are derived, never authored. This is that model, in the graph. It also passes the s274-D9 test rather than dodging it: a hub that carries nothing earns no edge, and this one carries a mediating-variable sentence, a derived status, <span class=\"n\">{links}</span> typed citations and <span class=\"n\">{not_edgeable}</span> parties no pair edge can express."
+    },
+    {
+      "id": "RP-4",
+      "title": "The 20 principles that restate a standard we already hold",
+      "lede": "<span class=\"n\">{wcag}</span> rows sit in standards families &mdash; fam-wcag22 <span class=\"n\">{fam_wcag22}</span>, fam-coga <span class=\"n\">{fam_coga}</span>, fam-aria-apg <span class=\"n\">{fam_aria}</span>, fam-en301549 <span class=\"n\">{fam_en}</span>, fam-eaa <span class=\"n\">{fam_eaa}</span> &mdash; and the graph already holds those standards as <span class=\"n\">{live_principle}</span> <code>principle:</code>, <span class=\"n\">{live_sc}</span> <code>sc:</code>, <span class=\"n\">{live_guideline}</span> <code>guideline:</code>, a <code>standard:</code> and a <code>policy:</code> node. Measured across all twelve fields: <span class=\"n\">0</span> rows name any of them. <span class=\"n\">{wcag_named}</span> ids do contain a WCAG principle's name &mdash; and that is a name match.",
+      "options": [
+        ["a", true, "Land the <span class=\"n\">{wcag}</span> as plain <code>ux:</code> nodes with no cross-link, and author the joins later in a named lane."],
+        ["b", false, "Author the <span class=\"n\">{wcag_named}</span> certain joins now, by hand, in a small authored file &mdash; and leave the other <span class=\"n\">{wcag_rest}</span>."],
+        ["c", false, "Hold the <span class=\"n\">{wcag}</span> out of the graph until the joins exist, so no row appears twice under two vocabularies."]
+      ],
+      "why": "Why (a): a join drawn by matching the word &lsquo;perceivable&rsquo; is the thing s274-D12 refused yesterday for <span class=\"n\">27</span> rule&nbsp;&rarr;&nbsp;component candidates, and the reason was good. (b) is defensible for the four, and is the honest follow-up in the shape RK-4 took &mdash; a first, then c."
+    },
+    {
+      "id": "RP-5",
+      "title": "Component metas citing the six laws: which lane, and when",
+      "lede": "s269-D5 says a component's meta cites the principles it rests on, starting with the six A-grade laws. Measured: <span class=\"n\">0</span> of <span class=\"n\">{metas}</span> metas names a <code>pr-</code> id, and <span class=\"n\">0</span> names any of the six laws verbatim. So this is authored work end to end, not a generator's. P-274-3 already parks the identical shape for rules (s274-D12's second half).",
+      "options": [
+        ["a", true, "One lane, after this proposal lands, doing both at once: a handful of components cite the rules they obey (P-274-3) and the laws they rest on (s269-D5). One <code>meta.schema.json</code> diff, one review."],
+        ["b", false, "A principles-only lane now; the rules half waits for its own session."],
+        ["c", false, "Park it with a tripwire and decide when the CX principles arrive."]
+      ],
+      "why": "Why (a): the two are the same edit to the same file &mdash; a component meta gaining a citation array. Splitting them costs two schema diffs and two reviews for one change. Which components go first is yours; P-274-3 already records that."
+    },
+    {
+      "id": "RP-6",
+      "title": "Where the nodes live, and who reads them",
+      "lede": "<code>--land</code> writes one new file, <code>knowledge/_ux_principle_nodes.json</code>, in the shape of <code>_rule_nodes.json</code>. Measured at run time, not asserted: <code>_build_kg_explorer.py</code> names <code>_rule_nodes.json</code> and does <strong>not</strong> name <code>_ux_principle_nodes.json</code>.",
+      "options": [
+        ["a", true, "Land the file and teach <code>_build_kg_explorer.py</code> to read it in the same commit, behind its own chip. The s274-D11 precedent: section C of the explorer is the template."],
+        ["b", false, "File first, reader next session. The file sits inert until then."],
+        ["c", false, "No file: build the nodes inside <code>_build_kg_explorer.py</code> at build time, the way the WCAG family is built today."]
+      ],
+      "why": "Why (a): #274 asked this exact question and the answer held &mdash; the rules chip is live in explorer v1.11 and reads a landed file. A landed file no builder names is an instrument without a consumer, which is the failure your RK-5 note put your finger on."
+    }
+  ]
+}
