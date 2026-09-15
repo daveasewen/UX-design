@@ -1,0 +1,227 @@
+{
+  "name": "Pie chart",
+  "category": "organism",
+  "purpose": "Composition / proportion as a full ring, no centre figure — ported from Chart-donut.reference.html (wave-2 lane ③, 2026-08-05) with the inner radius dropped to 0 and the DV-D13 centre-total wiring removed (donut-only, per brief). Segment popover · table-view popover · legend-as-filter/isolate/highlight · value ⇄ % segmented toggle (baked variant groups) · optional title + H-stack head · high-contrast remap — all copied from the donut's Layer-2 verbatim.",
+  "intent": "composition",
+  "provides": "chart-panel",
+  "answers": "composition",
+  "shape": "parts-of-whole",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 6
+    }
+  },
+  "priority": 48,
+  "when": "answers=composition AND parts ≤ 5 AND total=not printed — yields to chart-donut (80, \"composition, a centre total is meaningful\") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time.",
+  "not-with": [
+    {
+      "slug": "chart-donut",
+      "when": "the same composition is already drawn as a ring with a centre total — pick one, pie or donut, not both"
+    }
+  ],
+  "props": [
+    { "name": "labelling", "type": "enum", "values": ["spider", "direct"], "default": "spider", "$note": "spider = letter on a short leader outside the ring + vertical legend [swatch][letter][name]; direct = name + value in place, no legend. D-Q2 (spider vs direct default) stays OPEN — cited, not re-decided; both variants shown, same posture as the donut." },
+    { "name": "slices", "type": "number", "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the total carried on data-total (dv-pie-010) even though no centre figure displays it." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." },
+    { "name": "valueMode", "type": "enum", "values": ["value", "percent"], "default": "value", "$note": "Segmented-control atom (.seg.sm) drives BAKED variant groups (data-dv-view) — direct labels AND the table column mirror the active mode. JS-off = value view." },
+    { "name": "title", "type": "string", "$note": "Optional visible title (.dv-title, t-cm-section-label) in the H-stack head; sr-only figcaption still names the chart when absent." }
+  ],
+  "variants": [
+    { "name": "spider + legend", "use": "Default composition view; letters bridge chart ↔ legend (§04.3)." },
+    { "name": "direct labels", "use": "Self-contained view (print/export-friendly); name + £value · % on each leader." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — DV-D08 ladder: letters/keys .t-cm-chart-key (12/700) · labels + legend + controls .t-cm-chart-label (12/500) · direct values .t-cm-chart-value (12/500 tabular) · table .t-cm-legal",
+    "series": "data/series/1–5 (same series as the donut; identical measured contrast)",
+    "separation": "stroke = background/default (page) at 2px on every segment (dv-004)",
+    "leaders": "border/subtle hairlines (decorative)",
+    "labels": "text/default (ink) — spider letters and direct labels never sit ON the fills",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "No new tokens minted. ds-020 check: pie/donut carry NO axis or gridline CSS at all, so there is nothing to inherit or receipt under that fence for this pair."
+  },
+  "motion": {
+    "entry": "RADIAL SWEEP RETURNS (ADR-0015: data-driven geometry is JS territory) — segments bake the sweep contract (data-cx/-cy/-ro/-a1/-a2, NO data-ri) + data-seq on annotations; the sweep hook itself is a dv-behaviour source edit = CONDUCTOR'S SERIAL. Baked state = full wedges + visible annotations, so JS-off / reduced-motion / pre-hook all render complete.",
+    "hover": "brightness(1.12/1.22) emphasis + dvTip popover (data-tip; replaces native <title>) + legend/segment highlight dims the OTHER groups.",
+    "reducedMotion": "Global collapse present (only hover transitions exist).",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Same DV-D02 exclusion as the donut — fixed geometry (compressing a circle distorts); .dv-stage scrolls if the container is narrower.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Spending breakdowns", "Portfolio composition views"],
+    "mustNotNeighbour": ["A second composition chart of the same data (pick one — pie or donut, not both)", "Charts re-using these series colours for different data (dv-014)"],
+    "commonPatterns": ["spend by category", "portfolio mix", "budget composition"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\", aria-label carries subject + total.",
+    "name": "Figcaption names the chart; every segment carries aria-label == data-tip == table (name, value, percentage — one source); the real table is the full data surface.",
+    "keyboard": "Segments = focus stops (tabindex 0 → dvTip on focus); legend rows = buttons (Enter toggles, Shift+Enter isolates); seg view switch + CSV + table dropdown all native buttons; table panel takes focus on open, Esc returns it.",
+    "focus": "2px ink outline on segments/buttons/panel (focus-visible); seg buttons inset −2.",
+    "nonText": "Segment fills ≥3:1 vs the page both modes; identity = letter/name + position + table, never colour alone (1.4.1); 2px page strokes keep adjacent segments separable.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "More than 6 slices (dv-pie-009 — combine into 'Other')",
+    "Segment values that don't sum to the declared total (dv-pie-010)",
+    "Gapless segments without the 2px page stroke (dv-004)",
+    "White letters on segment fills (type26-013 — white type is red-only; label in ink outside the ring)",
+    "A pie without its real data table (dv-005)",
+    "Proportionally scaling the ring down (DV-D02 exclusion — it distorts)",
+    "Signalling a control's off state by dimming alone (the legend off-state is the hollow-swatch + data/axis grey recipe)",
+    "Recomputing arc geometry at runtime outside the sweep hook (geometry is generation-time; behaviour only toggles baked variants)",
+    "Porting the donut's centre-total / DV-D13 selection-follow wiring across (donut-only, explicitly fenced by the brief)"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-05",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "UNPROVEN — geometry/contrast pairs declared to match the donut's already-PASSed series set (same tokens, same values); this file has not itself been run through the DataViz/contrast gates by the worker (fenced from tool access to the gate runner). Conductor: run the same gate pass as Chart-bar/-donut before promoting past PROVISIONAL. → RESOLVED #96: conductor gate battery ran GREEN at #95 post-registration (ledger § ★ #95, gate reports in the #95 wrap commit df44e51); render-verified #96 at 1180+760px, font + numeric width + fit assertions PROVEN (receipt notes/_receipts/2026-08-05-96-render-verify-wave2.md; stacked-area required the missing figure.dv-fit-on overrides, fixed #96 then re-verified 1084px→664px).",
+    "$note": "New member, WAVE-2 LANE ③ (2026-08-05). PROVISIONAL-AGENT — no dataviz sign-off. Registration in component-types.json + dv-behaviour injection (sweep hook variant dropping data-ri) = conductor's serial, per the standing worker fence."
+  },
+  "provenance": {
+    "source": "code",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-donut.reference.html"
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-donut"
+    ],
+    "fallback": "With CSS on and JS off the spider/legend canvas renders as an EMPTY <svg> and no pie is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the five categories, their pounds and their percentage shares open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. The DIRECT-LABEL canvas stays baked, so a complete pie, its leaders and its in-place labels all render with JS off. Lost with JS off: the value popover, the DV-D11 legend filter/isolate, the value ⇄ percent toggle and Copy CSV.",
+    "$note": "Typed #260 (s259-D1 fast follower, pie lane). `script` addresses the ENGINE CORE — dv-render.js is where this component's behaviour begins; the wedges are drawn through its type registry by dv-render-donut.js, which is named in `partial`. THERE IS NO dv-render-pie: dv-render-donut registers BOTH `donut` and `pie` off one ring(ctx, hole) routine (a pie is that ring with ri = 0), so Chart-pie COMPOSES the donut partial rather than duplicating the trigonometry — the same reading _validate_dataviz.py's ENGINE_TEST_PAGE already commits to (\"pie is the ri=0 arm of the same partial\", mapping this snippet's driven receipt to _tests/chart-engine/donut.html). `partial` lists ALL FOUR registered AUTO-BEHAVIOUR names the snippet carries, per the schema's own wording and the chart-donut precedent."
+  },
+  "slots": {
+    "slices": {
+      "accepts": {
+        "capability": [
+          "proportion-slices"
+        ]
+      },
+      "use": "The parts of the whole drawn as full-ring segments.",
+      "required": true,
+      "multiple": true,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    }
+  },
+  "edges": {
+    "$obeys-contract": "AUTHORED, not inferred (s276-D5, lane CO #277). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose (s274-D12 / s276-D5: the name-match tier produced 'Avatar' from va25-013 and is NOT widened). Each $why is one line, written by reading the rule and this meta together, reviewed by eye. Rules of the spec file that do NOT bind are DECLARED DROPS, listed in notes/_lanes/277/charts/REPORT.md §3, never silently omitted. The 19 family-level rules in data-visualisation.md are NOT attached here: that is Q2, open for Dave. PROPOSED — not ratified.",
+    "obeys": [
+      {
+        "ref": "rule:dv-pie-001",
+        "$why": "Start at 12 o'clock, largest to smallest unless the categories have an inherent order — the angle contract for the sweep this meta's motion.entry bakes (data-cx/-cy/-ro/-a1/-a2, no data-ri), which is where the start angle and the segment order are fixed, at generation time."
+      },
+      {
+        "ref": "rule:dv-pie-002",
+        "$why": "Label plus exact proportional value per slice, with indicator lines when segments crowd, is precisely this meta's `labelling` = spider default: the leader line IS the indicator line the rule asks for."
+      },
+      {
+        "ref": "rule:dv-pie-004",
+        "$why": "Direct labelling adjacent to segments is the meta's second declared variant ('direct labels'), so the rule names one of the two things this component can be."
+      },
+      {
+        "ref": "rule:dv-pie-005",
+        "$why": "Labels inside a slice only where they stay readable is the TASTE half of the labelling choice, and it is why this meta's antiPatterns ban white type on the fills and put labels outside the ring."
+      },
+      {
+        "ref": "rule:dv-pie-006",
+        "$why": "Slice-ordering direction has to be checked against assistive technology, and this meta makes every segment a focus stop with aria-label == data-tip == table — the order those stops are read in is what the rule is about."
+      },
+      {
+        "ref": "rule:dv-pie-007",
+        "$why": "Never enlarge or pull out a slice to emphasise it: the meta has no exploded variant and its motion block moves segments only by a radial sweep that ends flush, so the rule is the reason no such variant exists."
+      },
+      {
+        "ref": "rule:dv-pie-008",
+        "$why": "Proportion of a set total ONLY, never group-to-group comparison — this is the `when` gate of the meta stated from the guidance side, and it is what sends comparison to chart-bar."
+      },
+      {
+        "ref": "rule:dv-pie-009",
+        "$why": "Maximum 6 slices, pie and doughnut alike: the meta's `slices` prop cites this rule by id and carries the 'combine the smallest into Other' remedy, so the edge records a binding the meta already states in prose."
+      },
+      {
+        "ref": "rule:dv-pie-010",
+        "$why": "Values must add up to the declared total: this meta prints NO centre figure, so data-total is the only place the total lives and the arithmetic is unverifiable by eye — the rule binds harder here than on the donut, not less."
+      },
+      {
+        "ref": "rule:dv-pie-011",
+        "$why": "Always indicate rounding: the value ⇄ percent toggle in this meta's `valueMode` prop is exactly where rounded percentages appear, and the rule is the contract that toggle has to honour."
+      }
+    ],
+    "renderedBy": [
+      {
+        "ref": "snippet:Chart-pie.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboards",
+        "$note": "Dashboards"
+      },
+      {
+        "ref": "context:spending-breakdowns",
+        "$note": "Spending breakdowns"
+      },
+      {
+        "ref": "context:portfolio-composition-views",
+        "$note": "Portfolio composition views"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:spend-by-category"
+      },
+      {
+        "ref": "pattern:portfolio-mix"
+      },
+      {
+        "ref": "pattern:budget-composition"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A second composition chart of the same data (pick one — pie or donut, not both)"
+      },
+      {
+        "ref": null,
+        "$note": "Charts re-using these series colours for different data (dv-014)"
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:ds-031"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:chart-panel"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:composition"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:parts-of-whole"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:chart-donut"
+      },
+      {
+        "ref": "component:chart-stacked-area"
+      }
+    ]
+  }
+}
