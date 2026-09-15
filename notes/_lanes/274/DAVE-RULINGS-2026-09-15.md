@@ -10,3 +10,4 @@ Context: the four LC decisions on `notes/_PROPOSAL-list-vs-card-2026-09-15-v1.ht
   → the header split accepted; inscribe + enact.
 
 Inscribed as `s274-D1` (LC-1) · `s274-D2` (LC-2) · `s274-D3` (LC-3) · `s274-D4` (LC-4) · `s274-D5` (headers).
+- On "who is the default for record-list" (options: 1 list-items default, table takes the comparison test · 2 table stays default): *"1"* → `s274-D6`.
