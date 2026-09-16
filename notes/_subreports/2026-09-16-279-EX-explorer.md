@@ -97,3 +97,21 @@ Chromium: the memory recipe's `playwright install chromium` fails here on `UNABL
 ## 9. Shipped sha and `git diff --numstat` from it
 
 Pre-commit numstat against `a39d4cd` (HEAD when this report was written; lane SC's last commit): `52 2 knowledge/_build_kg_explorer.py` · `78 20 knowledge/_kg_explorer.template.html` · `80 22 notes/_KG-EXPLORER.html` + this report, its `_subreports` copy, the `shots/` directory and the `_state.json` row. The shipped sha is appended below by the follow-up report-only commit, the W-279rd / W-279sc way.
+
+
+Shipped: **`2c6b640`** — `#279 lane EX: explorer 1.15 — three views by force, the Constitution named, assets chip OFF — s277-D8 + D4` (this paragraph rides in the follow-up report-only commit). Staged by explicit path (the 9 named + `notes/_REHEARSAL-LOG.jsonl`, auto-staged by the commit script's own session witness; `_CHAIN.md` regenerated because the store row made the chain gate refuse). NOT staged, deliberately: `knowledge/_graph-mark-observations.jsonl` (an instrument append, not mine) and `notes/_dream/_GRADE-DECISIONS.jsonl` (per brief). `_state.check()` reports the same PRE-EXISTING failure lane SC saw, `W-278wr: missing required field(s) links` — not this row.
+
+`git diff --numstat a39d4cd 2c6b640` (binary .png rows omitted):
+
+```
+2	2	_CHAIN.md
+52	2	knowledge/_build_kg_explorer.py
+78	20	knowledge/_kg_explorer.template.html
+19	0	knowledge/_state.json
+80	22	notes/_KG-EXPLORER.html
+2	0	notes/_REHEARSAL-LOG.jsonl
+19	0	notes/_lanes/279/explorer/BRIEF.md
+99	0	notes/_lanes/279/explorer/REPORT.md
+83	0	notes/_lanes/279/explorer/shots/shots.json
+99	0	notes/_subreports/2026-09-16-279-EX-explorer.md
+```
