@@ -103,3 +103,50 @@ The other +8.2 MB is the design system's own growth since the July bake, not the
 ## 8. Shipped sha, the seed table, the gate lines and `--numstat`
 
 (appended after the commits land — a commit cannot name itself; the SC/EX pattern)
+
+> **APPENDED after the commits landed (the SC/EX pattern — a commit cannot name itself).**
+>
+> **Shipped shas:** the release **`df33a24`** (`#279 lane PK: the pack ships the reader + the Constitution — designer-skills-v2 release, ASK live in-pack (Dave: "a")`), the seed **`3710d6b`** (`frozen ledger re-seeded — designer-skills-v2 v2.1, 1102 files, ae920995c32e`). HEAD before this lane: `b4fd7a8` (VB). Not pushed — push is Dave's word.
+>
+> **R3 — the seed, read back from its printed table** (`--seed` at `df33a24`):
+> ```
+> seeded knowledge/_release/_frozen-releases.json at df33a2415163
+>   designer-skills-v1   version v1          6 file(s)  b83d048483b7
+>   designer-skills-v2   version v2.1     1102 file(s)  ae920995c32e
+>   apollo-spider        version v1.0.13    13 file(s)  60604b8d109e
+> ```
+> v2 → v2.1, 849 → 1102 files, `e1d8019b97cc` → `ae920995c32e`; v1 and Spider unmoved.
+>
+> **R4 and the gate lines at `3710d6b`:**
+> ```
+> $ python3 knowledge/_release/_gate_frozen_release.py --check      → PASS — 3 arm(s) asked, no frozen surface moved.   rc 0   (was rc 1 at 9b2e1b0: FROZEN RELEASE MOVED: designer-skills-v2 (version v2))
+> $ python3 knowledge/_release/_gate_release_audit.py --manifest-check → PASS — byte-identical to a fresh generation at 08e315dca376 (1714 files, sha256 499c144ccbf84f34)
+> $ python3 knowledge/_release/_gate_release_audit.py --pack        → PASS — apollo-spider/dist/Apollo-Spider-v1.0.13.zip matches the manifest at 08e315dca376
+> $ python3 knowledge/_release/_gen_pack_manifest.py --selftest     → selftest: 249 bites, 0 fail(s)      (237 before; 12 reader bites)
+> $ python3 knowledge/_release/_gate_frozen_release.py --selftest   → selftest: 17 bites, 0 fail(s)
+> $ python3 knowledge/_compose_slice.py --selftest                  → 79 bites, 0 failed                  (75 at eb2ff7c; the 4 PACK allow-set bites)
+> $ python3 knowledge/_validate_kg.py                                → OK   rc 0
+> $ python3 knowledge/_parked.py --due release-cut                   → PARKED DUE — 3 of 22 (P-274-1, P-273-1, P-277-5; P-269-1's pack-version-bump trigger is the Spider manifest and did not fire)
+> $ python3 knowledge/_state.py --check                              → one PRE-EXISTING ⛔ at HEAD before this lane: W-278wr missing `links` (not mine; W-279pk rows clean through _state.add())
+> ```
+>
+> **`git diff --numstat df33a24~1 df33a24`** (the 381 baked files under `designer-skills-v2/knowledge/` collapsed to one line: +179,118 / −2,968):
+> ```
+> 2	2	_CHAIN.md
+> 14	1	designer-skills-v2/README.md
+> 41	0	designer-skills-v2/build-designer-kb.sh
+> 381 files	designer-skills-v2/knowledge/  (+179118 / -2968; 253 created, 128 rewritten, 0 deleted)
+> 64	0	knowledge/_compose_slice.py
+> 17	4	knowledge/_release/_gate_frozen_release.py
+> 132	6	knowledge/_release/_gen_pack_manifest.py
+> 23	0	knowledge/_state.json
+> 1	0	notes/_REHEARSAL-LOG.jsonl
+> 86	0	notes/_lanes/279/pack/ASK-12-in-pack.json
+> 21	0	notes/_lanes/279/pack/BRIEF.md
+> 105	0	notes/_lanes/279/pack/REPORT.md
+> 3638	0	notes/_lanes/279/pack/seed-in-pack.json
+> 105	0	notes/_subreports/2026-09-16-279-PK-pack.md
+> ```
+> **`git diff --numstat 3710d6b~1 3710d6b`:** `8 8 knowledge/_release/_frozen-releases.json` · `1 0 notes/_REHEARSAL-LOG.jsonl`. `_CHAIN.md` and `_REHEARSAL-LOG.jsonl` are the commit script's own writes (the chain gate tripped STALE on the first attempt; `python3 knowledge/_gen_chain.py` regenerated it, 2/2 lines).
+>
+> **One more thing seen in the bake, declared (not done, size):** the pre-existing tokens loop copies every `tokens/*.json` not starting with `_`, so the v2.1 pack carries the `*-pre-s141.json` legacy token files (`elevation-`, `icon-scale-`, `layout-`, `spacing-`, `typography-`, `typography-composites-pre-s141.json`) that landed in `knowledge/tokens/` after the July bake. The reader does not open them; whether a designer should see them is a copy-list question the v2 receipt already priced ("edit this list to taste"). Size: one `case` pattern (`*-pre-s141.json`) in the tokens loop, then a re-bake — a v2.2, since v2.1 is now seeded.
