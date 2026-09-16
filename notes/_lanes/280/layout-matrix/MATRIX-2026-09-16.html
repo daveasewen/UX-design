@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The layout matrix — six cells</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;
+ --grey-6:#767676;--grey-7:#545454;--grey-8:#333;--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;
+ --s6:4rem;--s7:6rem;--max:1200px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);
+ font:400 16px/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+header.top{border-bottom:1px solid var(--grey-2);padding:var(--s3) 0;position:sticky;top:0;
+ background:var(--white);z-index:5}
+header.top .wrap{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3)}
+header.top b{font-weight:500;letter-spacing:.04em;text-transform:uppercase;font-size:12px}
+header.top span{font-size:12px;color:var(--grey-6);letter-spacing:.04em}
+h1{font-size:3.5625rem;line-height:1.05;font-weight:300;margin:var(--s6) 0 var(--s3)}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+ display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s2)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.lede{font-size:1.1875rem;line-height:1.6;max-width:64ch;color:var(--grey-8)}
+.cols{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s1) var(--s4);border-top:1px solid var(--black);
+ padding-top:var(--s2);margin:var(--s5) 0 0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--grey-6)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s5) var(--s4);margin:var(--s3) 0 var(--s7)}
+figure{margin:0}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--grey-2);background:#fff}
+figcaption{padding-top:var(--s2)}
+figcaption b{display:block;font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+figcaption em{font-style:normal;color:var(--accent)}
+figcaption span{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);
+ margin-bottom:var(--s1)}
+figcaption p{margin:var(--s1) 0 0;color:var(--grey-7);max-width:56ch;font-size:15px;line-height:1.6}
+figcaption code{font:12px/1.6 "SF Mono",Menlo,Consolas,monospace;color:var(--grey-6)}
+footer{border-top:1px solid var(--grey-2);padding:var(--s4) 0 var(--s7);font-size:12px;color:var(--grey-6)}
+@media (max-width:820px){.grid,.cols{grid-template-columns:1fr}h1{font-size:2.6875rem}}
+</style></head>
+<body>
+<header class="top"><div class="wrap"><b>Apollo · knowledge graph</b>
+<span>Contact sheet · #280 · 2026-09-16 · explorer v1.18</span></div></header>
+<main class="wrap">
+<p class="label" style="margin-top:var(--s6)">Six cells, one switch</p>
+<h1>All of them, in 2D and 3D,<br>with force still the default.</h1>
+<p class="lede">Three layouts down the page — force, strata, shells — and two dimensions across it.
+Every picture below is the real explorer at 1280×800, light, in a fresh context that was never
+clicked: the cell was chosen by its URL flag. The page still opens in force · 2D, pixel for pixel
+the view you already have.</p>
+<div class="cols"><div>2D</div><div>3D</div></div>
+<div class="grid">
+<figure>
+  <img src="shots/kg-118-force-2d-light.png" alt="Force · 2D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout force · 2D · the default</span>
+    <b>Force · 2D <em>· default</em></b>
+    <p>The graph as it has always stood: one red hub of components with the families fanning out around it, the shape found by the force itself and nothing placed by hand.</p>
+    <p><code>?layout=force&amp;dim=2d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+<figure>
+  <img src="shots/kg-118-force-3d-light.png" alt="Force · 3D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout force · 3D</span>
+    <b>Force · 3D</b>
+    <p>The same cloud lifted off the page and turned, so the depth between the clusters is visible and the hub reads as a solid centre rather than a blot.</p>
+    <p><code>?layout=force&amp;dim=3d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+<figure>
+  <img src="shots/kg-118-strata-2d-light.png" alt="Strata · 2D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout strata · 2D · sketch 1</span>
+    <b>Strata · 2D</b>
+    <p>Three horizontal bands with the Constitution as bedrock below them, so a node's layer is simply how high it sits, and every line crossing a boundary is a claim leaving one kind of knowledge for another.</p>
+    <p><code>?layout=strata&amp;dim=2d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+<figure>
+  <img src="shots/kg-118-strata-3d-light.png" alt="Strata · 3D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout strata · 3D · the sketch called FLOORS</span>
+    <b>Strata · 3D</b>
+    <p>The same three layers as translucent plates in an exploded stack, each floor carrying its own view's map laid flat on it, with the Constitution a fourth plate standing beside the building rather than under it.</p>
+    <p><code>?layout=strata&amp;dim=3d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+<figure>
+  <img src="shots/kg-118-shells-2d-light.png" alt="Shells · 2D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout shells · 2D · the sketch called ORBITS</span>
+    <b>Shells · 2D</b>
+    <p>The layers seen from above as concentric rings — System the core, Design governance the middle ring, Explanation the outer one, the Constitution an arc parked outside them — the one cell that survives at phone width and on paper.</p>
+    <p><code>?layout=shells&amp;dim=2d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+<figure>
+  <img src="shots/kg-118-shells-3d-light.png" alt="Shells · 3D — the explorer at 1280×800, light, never driven" loading="lazy">
+  <figcaption><span>Layout shells · 3D · sketch 2</span>
+    <b>Shells · 3D</b>
+    <p>System as a solid core sphere inside two dimmed shells, standing on the Constitution's plinth disc, so a ruling's citation reads as a line climbing off the floor into the core.</p>
+    <p><code>?layout=shells&amp;dim=3d</code> · 1050 nodes 1,642 relations 16 edge types 137 components 90 unresolved</p>
+  </figcaption>
+</figure>
+</div>
+</main>
+<footer><div class="wrap">Screenshots: <code>notes/_lanes/280/layout-matrix/shots/</code> — referenced, not copied.
+Ruled at <code>s280-D1</code>; the three views and THE CONSTITUTION are <code>s277-D8</code>.</div></footer>
+</body></html>
