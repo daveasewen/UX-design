@@ -1,0 +1,1247 @@
+{
+ "$description": "s277-D9 — a declared SCOPE per guideline file: how a rule reaches the components it governs when the file binds a FACET (copy, colour, type, icons …) rather than a component. HAND-AUTHORED (#279 lane SC), read by knowledge/_compose_slice.py (obeys class `routed-by-scope`, ASK Q2). Sibling of _rules-index.json because gen_rules_index.py rewrites that file whole and would drop any added key. `obeys` on a meta stays the specific, authored binding (s274-D12); this is inference by declared scope, with an exception row per rule the file's scope must NOT carry.",
+ "ruledBy": [
+  "s277-D9",
+  "s274-D11",
+  "s274-D12",
+  "s277-D5"
+ ],
+ "authored": "2026-09-16 #279 lane SC",
+ "$sourceRule": "every $source is a verbatim sentence or clause of the named file, matched as a substring after collapsing runs of whitespace to one space (the files hard-wrap at ~90 columns). Markdown ** marks are outside the quoted span.",
+ "$joinRule": "a rule in file F reaches component C when (a) F.kind == component and C is in F.components, or (b) F.kind == facet and C's meta binds one of F's facets: a token group named under facets[f].binds.tokenGroups appears in the meta's `tokens` block (same TOKEN_PATH_RX walk as tokens_for), or a meta field named under binds.metaFields is present and non-empty, or an edge of a type under binds.edges leaves C (usesIcon/usesLogo from the ratified node files, renderedBy from the meta). Authored `components` on a facet row add to (b). A rule listed in F.exceptions never routes. A row with kind null routes nothing.",
+ "facets": {
+  "copy": {
+   "binds": {
+    "tokenGroups": [
+     "text"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "a meta that binds a text/* colour token renders visible text — copy rules bind there",
+   "files": [
+    "accessibility-content-authoring.md",
+    "accessibility-information-architecture.md",
+    "accessibility-interaction-design.md",
+    "copywriting.md",
+    "naming.md",
+    "neurodiversity.md",
+    "tone-of-voice.md"
+   ],
+   "covers": 7
+  },
+  "type": {
+   "binds": {
+    "tokenGroups": [
+     "text",
+     "typography"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "text/* or typography/* in the tokens block — the component sets type",
+   "files": [
+    "accessibility-visual-design.md",
+    "app-foundations.md",
+    "common-toolkit-foundations.md",
+    "neurodiversity.md",
+    "typography-standards-2026.md",
+    "typography-usage.md",
+    "web-foundations.md"
+   ],
+   "covers": 7
+  },
+  "colour": {
+   "binds": {
+    "tokenGroups": [
+     "background",
+     "badge",
+     "border",
+     "button",
+     "data",
+     "data-vis",
+     "divider",
+     "focus",
+     "form",
+     "icon",
+     "image",
+     "overlay",
+     "primary",
+     "progress",
+     "rag",
+     "scrollbar",
+     "secondary",
+     "step",
+     "surface",
+     "table",
+     "tabs",
+     "tertiary",
+     "text",
+     "timer",
+     "tooltip",
+     "color"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "any semantic colour group (semantic-colour.json) or the primitive color/* ramp",
+   "files": [
+    "accessibility-visual-design.md",
+    "colour-standards-2026.md",
+    "colour-usage.md",
+    "neurodiversity.md"
+   ],
+   "covers": 4
+  },
+  "dark-mode": {
+   "binds": {
+    "tokenGroups": [
+     "background",
+     "badge",
+     "border",
+     "button",
+     "data",
+     "data-vis",
+     "divider",
+     "focus",
+     "form",
+     "icon",
+     "image",
+     "overlay",
+     "primary",
+     "progress",
+     "rag",
+     "scrollbar",
+     "secondary",
+     "step",
+     "surface",
+     "table",
+     "tabs",
+     "tertiary",
+     "text",
+     "timer",
+     "tooltip"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "the semantic colour groups carry the light/dark pair — a dark-mode rule binds where they are bound",
+   "files": [
+    "colour-usage.md",
+    "common-toolkit-foundations.md",
+    "web-foundations.md"
+   ],
+   "covers": 3
+  },
+  "icons": {
+   "binds": {
+    "tokenGroups": [
+     "icon"
+    ],
+    "metaFields": [],
+    "edges": [
+     "usesIcon"
+    ]
+   },
+   "$why": "icon/* colour tokens, or a usesIcon edge in _icon_nodes.json (s277-D5 byte-match)",
+   "files": [
+    "icons.md",
+    "visual-assets.md"
+   ],
+   "covers": 2
+  },
+  "pictograms": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "DECLARED: no token group, meta field or edge carries a pictogram today (pict-014 names the library gap) — reach 0 by scope",
+   "files": [
+    "pictograms.md"
+   ],
+   "covers": 1
+  },
+  "illustration": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "DECLARED: no token group, meta field or edge carries an illustration today — reach 0 by scope",
+   "files": [
+    "colour-usage.md",
+    "illustration-standards.md"
+   ],
+   "covers": 2
+  },
+  "imagery": {
+   "binds": {
+    "tokenGroups": [
+     "image"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "image/* semantic tokens — the component frames a photograph or image asset",
+   "files": [
+    "accessibility-visual-design.md",
+    "brand-refresh-assets.md",
+    "neurodiversity.md",
+    "visual-assets.md"
+   ],
+   "covers": 4
+  },
+  "logos": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": [
+     "usesLogo"
+    ]
+   },
+   "$why": "a usesLogo edge in _logo_nodes.json (s277-D5: src= at an assets/logos/ path)",
+   "files": [
+    "brand-refresh-assets.md",
+    "visual-assets.md"
+   ],
+   "covers": 2
+  },
+  "motion": {
+   "binds": {
+    "tokenGroups": [
+     "motion"
+    ],
+    "metaFields": [
+     "motion"
+    ],
+    "edges": []
+   },
+   "$why": "motion/* tokens or a meta `motion` block — the component moves",
+   "files": [
+    "accessibility-client-side-dev.md",
+    "accessibility-visual-design.md",
+    "motion-standards.md",
+    "neurodiversity.md"
+   ],
+   "covers": 4
+  },
+  "elevation": {
+   "binds": {
+    "tokenGroups": [
+     "elevation",
+     "blur",
+     "overlay"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "elevation/*, blur/* or overlay/* — the component is raised or scrims",
+   "files": [
+    "web-foundations.md"
+   ],
+   "covers": 1
+  },
+  "layout": {
+   "binds": {
+    "tokenGroups": [
+     "layout",
+     "breakpoint",
+     "gap",
+     "padding",
+     "size"
+    ],
+    "metaFields": [
+     "responsive"
+    ],
+    "edges": []
+   },
+   "$why": "grid/spacing groups or a meta `responsive` block — the component lays out against the grid",
+   "files": [
+    "accessibility-interaction-design.md",
+    "common-toolkit-foundations.md",
+    "neurodiversity.md",
+    "web-foundations.md"
+   ],
+   "covers": 4
+  },
+  "interaction": {
+   "binds": {
+    "tokenGroups": [
+     "focus",
+     "target"
+    ],
+    "metaFields": [
+     "interactive",
+     "stateModel"
+    ],
+    "edges": []
+   },
+   "$why": "focus/* or target/* tokens, or a meta `interactive`/`stateModel` block — the component takes input",
+   "files": [
+    "accessibility-client-side-dev.md",
+    "accessibility-interaction-design.md",
+    "accessibility-standards-hub.md",
+    "accessibility-visual-design.md",
+    "neurodiversity.md"
+   ],
+   "covers": 5
+  },
+  "markup": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": [
+     "renderedBy"
+    ]
+   },
+   "$why": "a renderedBy snippet — the component has markup; effectively every rendered component",
+   "files": [
+    "accessibility-client-side-dev.md"
+   ],
+   "covers": 1
+  },
+  "forms": {
+   "binds": {
+    "tokenGroups": [
+     "form"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "form/* semantic tokens — the component is a form control or field",
+   "files": [
+    "accessibility-client-side-dev.md",
+    "accessibility-interaction-design.md",
+    "web-foundations.md"
+   ],
+   "covers": 3
+  },
+  "data-vis": {
+   "binds": {
+    "tokenGroups": [
+     "data",
+     "data-vis",
+     "dataviz"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "data/*, data-vis/* or the dataviz component-type group — the component plots data",
+   "files": [
+    "colour-standards-2026.md",
+    "colour-usage.md"
+   ],
+   "covers": 2
+  },
+  "status": {
+   "binds": {
+    "tokenGroups": [
+     "rag"
+    ],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "rag/* semantic tokens — the component carries RAG status colour",
+   "files": [
+    "colour-standards-2026.md",
+    "colour-usage.md"
+   ],
+   "covers": 2
+  },
+  "media": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "DECLARED: no token group, meta field or edge carries audio/video today — reach only by an authored component (video-player)",
+   "files": [
+    "accessibility-client-side-dev.md",
+    "accessibility-content-authoring.md"
+   ],
+   "covers": 2
+  }
+ },
+ "count": 34,
+ "byKind": {
+  "facet": 23,
+  "None": 3,
+  "component": 8
+ },
+ "rows": [
+  {
+   "file": "accessibility-client-side-dev.md",
+   "kind": "facet",
+   "facets": [
+    "markup",
+    "interaction",
+    "forms",
+    "media",
+    "motion"
+   ],
+   "tokenGroups": [
+    "focus",
+    "target",
+    "form",
+    "motion"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "accessibility properties set on everything",
+   "rules": 15,
+   "$why": "a role page for the people who write the markup: semantics, keyboard/focus, forms, media/animation — CD-16 states the reach in one line"
+  },
+  {
+   "file": "accessibility-content-authoring.md",
+   "kind": "facet",
+   "facets": [
+    "copy",
+    "media"
+   ],
+   "tokenGroups": [
+    "text"
+   ],
+   "components": [
+    "video-player"
+   ],
+   "exceptions": [],
+   "$source": "the CA set is the copy-side gate stack",
+   "rules": 12,
+   "$why": "titles, links, copy, alt = the copy facet; CA-13..17 are named 'Video-player component contract' items — video-player authored from the file's own words"
+  },
+  {
+   "file": "accessibility-framework.md",
+   "kind": null,
+   "facets": [],
+   "tokenGroups": [],
+   "components": [],
+   "exceptions": [],
+   "$source": "applies to all external-facing HSBC digital products worldwide",
+   "rules": 1,
+   "$note": "DECLARED NULL: the file states a PRODUCT-level scope (every external-facing digital product), not a component or facet; its one indexed rule axf-002 (journey-completability) binds a journey, not a component"
+  },
+  {
+   "file": "accessibility-information-architecture.md",
+   "kind": "facet",
+   "facets": [
+    "copy"
+   ],
+   "tokenGroups": [
+    "text"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "binds heading/label microcopy",
+   "rules": 1,
+   "$why": "the file's one substantive rule (aia-002) says what it binds"
+  },
+  {
+   "file": "accessibility-interaction-design.md",
+   "kind": "facet",
+   "facets": [
+    "interaction",
+    "layout",
+    "forms",
+    "copy"
+   ],
+   "tokenGroups": [
+    "focus",
+    "target",
+    "layout",
+    "breakpoint",
+    "gap",
+    "padding",
+    "size",
+    "form",
+    "text"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "actionable elements large enough to tap",
+   "rules": 14,
+   "$why": "a role page: navigation/structure, touch targets, layout/scrolling/text, forms — ID-15 names the reach; aid-005/aid-018 add microcopy (copy)"
+  },
+  {
+   "file": "accessibility-qa-cx-testing.md",
+   "kind": null,
+   "facets": [],
+   "tokenGroups": [],
+   "components": [],
+   "exceptions": [],
+   "$source": "this is the METHOD page (BS 8878 lineage)",
+   "rules": 1,
+   "$note": "DECLARED NULL: a testing-method page; its one indexed rule aqa-003 (library-grade work tests against guideline+recommendation tiers) binds the canon as a whole, not a component or facet"
+  },
+  {
+   "file": "accessibility-standards-hub.md",
+   "kind": "facet",
+   "facets": [
+    "interaction"
+   ],
+   "tokenGroups": [
+    "focus",
+    "target"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "a visible focus indicator must have",
+   "rules": 1,
+   "$why": "the file is the WCAG 2.2 adoption map; its one indexed rule axs-004 is the focus-appearance numeric, which binds the interaction facet (focus/* tokens)"
+  },
+  {
+   "file": "accessibility-visual-design.md",
+   "kind": "facet",
+   "facets": [
+    "colour",
+    "type",
+    "imagery",
+    "interaction",
+    "motion"
+   ],
+   "tokenGroups": [
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "text",
+    "timer",
+    "tooltip",
+    "color",
+    "typography",
+    "target",
+    "motion"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "avd-008",
+     "why": "journey-level (SC 3.3.7 redundant entry) — binds a multi-step journey, not a component"
+    }
+   ],
+   "$source": "Accessibility for visual designers — VD standards (ingested)",
+   "rules": 7,
+   "$why": "sections Colour · Text + components · Motion + journeys; VD-7 alt binds imagery, VD-9 binds focus"
+  },
+  {
+   "file": "app-foundations.md",
+   "kind": "facet",
+   "facets": [
+    "type"
+   ],
+   "tokenGroups": [
+    "text",
+    "typography"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "appf-008",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    }
+   ],
+   "$source": "The genuinely app-specific content is the iOS Dynamic Type requirement (appf-002) and the single-scale simplification (appf-001).",
+   "rules": 3,
+   "$why": "the file's own scope note — type only (dark mode + elevation are mirrors of web-foundations, cited by webf id)"
+  },
+  {
+   "file": "brand-refresh-assets.md",
+   "kind": "facet",
+   "facets": [
+    "logos",
+    "imagery"
+   ],
+   "tokenGroups": [
+    "image"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "bra26-001",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "hex26-002",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "hex26-005",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    }
+   ],
+   "$source": "Marketing-weighted content — encoded for completeness and for the composition/journey strand; component relevance flagged where real.",
+   "rules": 7,
+   "$why": "logo rules bind logo-bearing components (usesLogo); photography rules bind image-bearing ones; hexagon rules are fenced to the composition strand and are REVIEW rows"
+  },
+  {
+   "file": "colour-standards-2026.md",
+   "kind": "facet",
+   "facets": [
+    "colour",
+    "data-vis",
+    "status"
+   ],
+   "tokenGroups": [
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "text",
+    "timer",
+    "tooltip",
+    "color",
+    "dataviz"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "col26-001",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (grey specs 'available soon')"
+    },
+    {
+     "rule": "col26-007",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (resolved gate delta)"
+    },
+    {
+     "rule": "col26-021",
+     "why": "a rule on the token STORE and Figma style descriptions ('carry the condition with the value, in every store'), not on a component"
+    }
+   ],
+   "$source": "Don't introduce colours outside the palettes.",
+   "rules": 21,
+   "$why": "brand palette rules bind every colour-bearing component; the supporting-palette rules are scoped by the file to data visualisation and RAG"
+  },
+  {
+   "file": "colour-usage.md",
+   "kind": "facet",
+   "facets": [
+    "colour",
+    "status",
+    "dark-mode",
+    "data-vis",
+    "illustration"
+   ],
+   "tokenGroups": [
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "text",
+    "timer",
+    "tooltip",
+    "color",
+    "dataviz"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "col25-008",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (B&W photography, interim-ruled)"
+    }
+   ],
+   "$source": "The token store IS the 2025 standard",
+   "rules": 13,
+   "$why": "the 2025 palette application rules; RAG, dark-mode greys, data-vis and illustration palettes each named as a scope in the file"
+  },
+  {
+   "file": "common-toolkit-buttons.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "button",
+    "icon-button"
+   ],
+   "exceptions": [
+    {
+     "rule": "ctkb-015",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (inline-use contradiction, deferred)"
+    }
+   ],
+   "$source": "Canon counterpart button.meta.json ALREADY models all four ranks + size + processing/ success states",
+   "rules": 14,
+   "$why": "the file names its canon counterpart; icon-button is the file's 'icon-only' structural variation (ctkb-011). split-button is NOT named — left out"
+  },
+  {
+   "file": "common-toolkit-foundations.md",
+   "kind": "facet",
+   "facets": [
+    "layout",
+    "type",
+    "dark-mode"
+   ],
+   "tokenGroups": [
+    "layout",
+    "breakpoint",
+    "gap",
+    "padding",
+    "size",
+    "text",
+    "typography",
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "timer",
+    "tooltip"
+   ],
+   "components": [
+    "headers",
+    "footer"
+   ],
+   "exceptions": [],
+   "$source": "This file therefore records ONLY: source receipts for existing rules, genuinely new numerics (masthead-flyout grid, email grid, app grid, type-tier clauses), two dark-mode clauses the 06-17 summary apparently dropped, and census/hygiene facts.",
+   "rules": 4,
+   "$why": "ctkf-002/003 are masthead + footer grid clauses (headers, footer authored from the file's words 'Masthead + footer'); ctkf-007 type; ctkf-009 dark mode"
+  },
+  {
+   "file": "common-toolkit-links.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "links"
+   ],
+   "exceptions": [],
+   "$source": "canon Links meta already states the nav-first rule",
+   "rules": 15,
+   "$why": "the file names its canon counterpart (Links meta)"
+  },
+  {
+   "file": "common-toolkit-notifications.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "notifications"
+   ],
+   "exceptions": [],
+   "$source": "canon meta (notifications.meta.json) was rebuilt from THIS node set 2026-06-24",
+   "rules": 17,
+   "$why": "the file names its canon counterpart; the four placements (global/inline/contextual/snackbar) are the meta's `type` prop — banner/toast/alert metas are NOT named and are left out"
+  },
+  {
+   "file": "common-toolkit-tags-chips.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "tags",
+    "selection-controls"
+   ],
+   "exceptions": [],
+   "$source": "Canon counterparts: tags.meta.json + selection-controls.meta.json",
+   "rules": 23,
+   "$why": "the file names both canon counterparts"
+  },
+  {
+   "file": "copywriting.md",
+   "kind": "facet",
+   "facets": [
+    "copy"
+   ],
+   "tokenGroups": [
+    "text"
+   ],
+   "components": [
+    "button",
+    "links",
+    "modals",
+    "progress-tracker"
+   ],
+   "exceptions": [],
+   "$source": "literal sections for Buttons, CTAs, Links, Error messages, Modals, Progress trackers, Hint/Help text, Alt text, Sort options",
+   "rules": 55,
+   "$why": "every text-bearing component (facet copy); the four components the file names unambiguously are authored; 'Error messages', 'Hint/Help text', 'Sort options' name surfaces, not one meta — not mapped"
+  },
+  {
+   "file": "data-visualisation-bar-charts.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "chart-bar",
+    "Chart-histogram",
+    "Chart-butterfly-h",
+    "Chart-butterfly-v"
+   ],
+   "exceptions": [],
+   "$source": "Rectangular bars, heights/lengths proportional to values; vertical or horizontal.",
+   "rules": 10,
+   "$why": "chart-bar is the bar chart; histogram and the two butterflies are rectangular-bar charts by the file's own definition (data-visualisation.md lists histogram under bar)"
+  },
+  {
+   "file": "data-visualisation-line-charts.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "chart-line",
+    "chart-sparkline"
+   ],
+   "exceptions": [],
+   "$source": "Spark (sparkline)",
+   "rules": 11,
+   "$why": "Standard = chart-line; Spark = chart-sparkline (both named types in the file); chart-stacked-area and chart-combo are NOT named — left out"
+  },
+  {
+   "file": "data-visualisation-pie-charts.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "chart-pie",
+    "chart-donut"
+   ],
+   "exceptions": [],
+   "$source": "Doughnut",
+   "rules": 11,
+   "$why": "Standard pie = chart-pie; Doughnut = chart-donut (both named types)"
+  },
+  {
+   "file": "data-visualisation.md",
+   "kind": "component",
+   "facets": [],
+   "tokenGroups": [],
+   "components": [
+    "Chart-boxplot",
+    "Chart-bullet",
+    "Chart-butterfly-h",
+    "Chart-butterfly-v",
+    "Chart-candlestick",
+    "Chart-histogram",
+    "Chart-scatter",
+    "chart-bar",
+    "chart-combo",
+    "chart-donut",
+    "chart-line",
+    "chart-pie",
+    "chart-sparkline",
+    "chart-stacked-area",
+    "legend"
+   ],
+   "exceptions": [],
+   "$source": "data chart (the diagram)",
+   "rules": 19,
+   "$why": "the parent standard for every data chart: the 14 chart-* metas plus legend (the file's 'key'); kind component = authored list only (a data/* token on kpi-tile does not make it a chart)"
+  },
+  {
+   "file": "generative-ai-brand.md",
+   "kind": null,
+   "facets": [],
+   "tokenGroups": [],
+   "components": [],
+   "exceptions": [],
+   "$source": "This is GOVERNANCE, not visual rules",
+   "rules": 6,
+   "$note": "DECLARED NULL: the file's own framing — a regime on the TOOL (lifecycle approval, Living Wall review), stated as 'Applies to any generative-AI use producing outputs related to brand foundations'; no component or facet join. gai-004/005 (imagery content) are read at composition time, not through a meta"
+  },
+  {
+   "file": "icons.md",
+   "kind": "facet",
+   "facets": [
+    "icons"
+   ],
+   "tokenGroups": [
+    "icon"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "icon-015",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (4.5:1 vs 3:1 gate delta)"
+    },
+    {
+     "rule": "icon-016",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (size floor tension)"
+    },
+    {
+     "rule": "icon-017",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (max-size tension)"
+    }
+   ],
+   "$source": "utility-driven, interactive, small, digital-only",
+   "rules": 17,
+   "$why": "the hub's definition of the icon asset class; binds every icon-bearing component (icon/* tokens or usesIcon)"
+  },
+  {
+   "file": "illustration-standards.md",
+   "kind": "facet",
+   "facets": [
+    "illustration"
+   ],
+   "tokenGroups": [],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "ill-007",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (superseded 2026)"
+    }
+   ],
+   "$source": "Never use illustration as the principal creative medium",
+   "rules": 10,
+   "$why": "binds illustrations; no meta binds an illustration today, so reach is 0 — declared, not padded"
+  },
+  {
+   "file": "motion-standards.md",
+   "kind": "facet",
+   "facets": [
+    "motion"
+   ],
+   "tokenGroups": [
+    "motion"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "mot-007",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (spring physics vs 'not bouncy')"
+    }
+   ],
+   "$source": "it constrains UI micro-interaction motion unless a digital toolkit says otherwise",
+   "rules": 7,
+   "$why": "the file's own scope note — brand motion reaching UI motion"
+  },
+  {
+   "file": "naming.md",
+   "kind": "facet",
+   "facets": [
+    "copy"
+   ],
+   "tokenGroups": [
+    "text"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "the TEXT RULES bind any UI copy that carries product/service names",
+   "rules": 5,
+   "$why": "the file's own header sentence"
+  },
+  {
+   "file": "neurodiversity.md",
+   "kind": "facet",
+   "facets": [
+    "layout",
+    "colour",
+    "type",
+    "copy",
+    "imagery",
+    "motion",
+    "interaction"
+   ],
+   "tokenGroups": [
+    "layout",
+    "breakpoint",
+    "gap",
+    "padding",
+    "size",
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "text",
+    "timer",
+    "tooltip",
+    "color",
+    "typography",
+    "motion",
+    "target"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "neuro-041",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (small-type cluster)"
+    },
+    {
+     "rule": "neuro-042",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (calm-by-default vs expressive register)"
+    },
+    {
+     "rule": "neuro-044",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (hub not descended)"
+    }
+   ],
+   "$source": "This is the strongest new source of GENERATION-TIME checkable numbers since the icons standard: view-length caps, banner-height caps, bright-colour area caps, sentence/ paragraph limits, column-layout limits.",
+   "rules": 26,
+   "$why": "sections Page layout · Navigation · Colours · Fonts · Text · Language · Images · Video · Movement — one facet per section"
+  },
+  {
+   "file": "pictograms.md",
+   "kind": "facet",
+   "facets": [
+    "pictograms"
+   ],
+   "tokenGroups": [],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "pict-014",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (component-library gap)"
+    }
+   ],
+   "$source": "digital + physical (presentations, print, signage, wayfinding)",
+   "rules": 14,
+   "$why": "binds pictograms; no meta binds a pictogram today (pict-014), so reach is 0 — declared"
+  },
+  {
+   "file": "tone-of-voice.md",
+   "kind": "facet",
+   "facets": [
+    "copy"
+   ],
+   "tokenGroups": [
+    "text"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "all generated copy inherits",
+   "rules": 40,
+   "$why": "tov-001: the voice frame every generated copy string inherits"
+  },
+  {
+   "file": "typography-standards-2026.md",
+   "kind": "facet",
+   "facets": [
+    "type"
+   ],
+   "tokenGroups": [
+    "text",
+    "typography"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "type26-015",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (gradient collision)"
+    },
+    {
+     "rule": "type26-016",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (tracking/leading vs store)"
+    },
+    {
+     "rule": "type26-025",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (imagery room)"
+    },
+    {
+     "rule": "type26-026",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (over-photography watch-outs)"
+    },
+    {
+     "rule": "type26-029",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (magnetic headline construct)"
+    }
+   ],
+   "$source": "Only use brand-approved fonts, weights and colours.",
+   "rules": 24,
+   "$why": "the 2026 type standard; binds every type-bearing component"
+  },
+  {
+   "file": "typography-usage.md",
+   "kind": "facet",
+   "facets": [
+    "type"
+   ],
+   "tokenGroups": [
+    "text",
+    "typography"
+   ],
+   "components": [],
+   "exceptions": [],
+   "$source": "Brand-approved fonts, weights and colours only.",
+   "rules": 8,
+   "$why": "the 2025 type standard, parallel-valid; binds every type-bearing component"
+  },
+  {
+   "file": "visual-assets.md",
+   "kind": "facet",
+   "facets": [
+    "imagery",
+    "icons",
+    "logos"
+   ],
+   "tokenGroups": [
+    "image",
+    "icon"
+   ],
+   "components": [
+    "empty-state",
+    "confirmation"
+   ],
+   "exceptions": [],
+   "$source": "journey-tier imagery budgets, pattern-consistency rules for empty states and confirmations, icon semantic-fit, and placement/ratio taxonomies",
+   "rules": 20,
+   "$why": "the file's own scope note; empty-state and confirmation authored from its words"
+  },
+  {
+   "file": "web-foundations.md",
+   "kind": "facet",
+   "facets": [
+    "dark-mode",
+    "elevation",
+    "layout",
+    "type",
+    "forms"
+   ],
+   "tokenGroups": [
+    "background",
+    "badge",
+    "border",
+    "button",
+    "data",
+    "data-vis",
+    "divider",
+    "focus",
+    "form",
+    "icon",
+    "image",
+    "overlay",
+    "primary",
+    "progress",
+    "rag",
+    "scrollbar",
+    "secondary",
+    "step",
+    "surface",
+    "table",
+    "tabs",
+    "tertiary",
+    "text",
+    "timer",
+    "tooltip",
+    "elevation",
+    "blur",
+    "layout",
+    "breakpoint",
+    "gap",
+    "padding",
+    "size",
+    "typography"
+   ],
+   "components": [],
+   "exceptions": [
+    {
+     "rule": "webf-017",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey (responsive-forms migration stub)"
+    },
+    {
+     "rule": "webf-029",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "webf-030",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "webf-031",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "webf-032",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "webf-033",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    },
+    {
+     "rule": "webf-034",
+     "why": "REVIEW finding about the source, the register or the token store — a tension to reconcile, not an obligation a component can obey"
+    }
+   ],
+   "$source": "These are the WEB channel foundations — the platform-specific layer that sits beneath our components.",
+   "rules": 18,
+   "$why": "sections Dark mode · Elevation · Responsive forms · Responsive grid · Web type scale · Spacing — one facet per section"
+  }
+ ]
+}

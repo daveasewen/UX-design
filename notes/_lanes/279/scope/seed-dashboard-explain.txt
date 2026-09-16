@@ -1,0 +1,87 @@
+TASK  a payments dashboard screen with a stat card row, a filter bar and a data table
+ROLES headline-metric, record-list, page-frame, arrangement, input, wayfinding, chart-panel, page-title
+
+COMPONENTS (17, 14 alternates)
+  component:stat-card                headline-metric  named in the task; roles.json: provider #1 of headline-metric; meta.pr
+  component:table                    record-list      named in the task; roles.json: provider #1 of record-list; meta.provid
+  component:list-items               record-list      roles.json: provider #3 of record-list; meta.provides = record-list; m  [ALT]
+  component:layout-utilities         arrangement      roles.json: provider #1 of arrangement; meta.provides = arrangement; m
+  component:Chart-bullet             headline-metric  roles.json: provider #3 of headline-metric; meta.provides = headline-m  [ALT]
+  component:section-heading-lockup   page-title       roles.json: provider #3 of page-title; meta.provides = page-title; met
+  component:runway-bar               headline-metric  roles.json: provider #4 of headline-metric; meta.provides = headline-m  [ALT]
+  component:cards                    arrangement      roles.json: provider #2 of arrangement; meta.provides = arrangement; m  [ALT]
+  component:data-grid                record-list      roles.json: provider #2 of record-list; meta.provides = record-list; m  [ALT]
+  component:headers                  page-title       roles.json: provider #2 of page-title; meta.provides = page-title; met  [ALT]
+  component:stats-band-lockup        arrangement      roles.json: provider #3 of arrangement; meta.provides = arrangement; m  [ALT]
+  component:app-shell-top-nav        page-frame       roles.json: provider #1 of page-frame; meta.provides = page-frame; met
+  component:input-fields             input            roles.json: provider #1 of input; meta.provides = input; meta text mat
+  component:textarea                 input            roles.json: provider #2 of input; meta.provides = input; meta text mat  [ALT]
+  component:amount-display           input            roles.json: provider #27 of input; meta.provides = input; meta text ma  [ALT]
+  component:eyebrow                  page-title       roles.json: provider #4 of page-title; meta.provides = page-title; met  [ALT]
+  component:app-shell-nav-rail       page-frame       roles.json: provider #3 of page-frame; meta.provides = page-frame; met  [ALT]
+  component:tabs                     wayfinding       roles.json: provider #3 of wayfinding; meta.provides = wayfinding; met
+  component:navigations              wayfinding       roles.json: provider #1 of wayfinding; meta.provides = wayfinding  [ALT]
+  component:tab-bar                  wayfinding       roles.json: provider #6 of wayfinding; meta.provides = wayfinding; met  [ALT]
+  component:app-shell-multi-column   page-frame       roles.json: provider #4 of page-frame; meta.provides = page-frame; met  [ALT]
+  component:filter-toolbar-bar       -                slug words in the task: filter+bar; meta text matches: dashboard, stat
+  component:breadcrumbs              wayfinding       required by component:app-shell-top-nav (edges.consumes)
+  component:footer                   -                required by component:app-shell-top-nav (edges.consumes)
+  component:skeleton-loader          feedback         required by component:app-shell-top-nav (edges.consumes)
+  component:drawer                   overlay          required by component:app-shell-top-nav (edges.consumes)
+  component:dropdown                 input            required by component:tabs (edges.hasPart)
+  component:search-field             input            required by component:filter-toolbar-bar (edges.hasPart)
+  component:segmented-control        input            required by component:filter-toolbar-bar (edges.hasPart)
+  component:tags                     -                required by component:filter-toolbar-bar (edges.hasPart)
+  component:links                    action           required by component:filter-toolbar-bar (edges.hasPart)
+
+GOVERNS 38 ruling(s)
+  s276-D4      2026-09-15 THE SIX AUTHORED METAS LAND AS PROPOSED — tags · tags-input · notifica
+  s276-D3      2026-09-15 THE AUTHORED CITATION IS ONE NEW EDGE TYPE INSIDE THE EXISTING `edges`
+  s274-D6      2026-09-15 LIST-ITEMS IS THE DEFAULT PROVIDER OF `record-list` ("show me the item
+  s272-D76     2026-09-15 filter-toolbar-bar — the proposed `when` gate is: a record-list or cha
+  s272-D72     2026-09-15 May breadcrumbs and a persistent side navigation appear on the same pa
+  s272-D71     2026-09-15 How many levels of hierarchy may a persistent side navigation show? — 
+  s272-D70     2026-09-15 When does a masthead flyout become a mega-menu? — Dave's decision on h
+  s272-D68     2026-09-15 At what depth do breadcrumbs earn their place? — Dave's decision on ha
+  s272-D67     2026-09-15 Where does FILTERING one content set live — Tabs, Segmented-control, o
+  s272-D60     2026-09-15 section-heading-lockup — the proposed `when` gate is: level = section 
+
+OBEYS 77 (47 BLOCKING, first; 28 authored / 4 derived / 30 routed / 15 routed-by-scope)
+  rule:aca-004     BLOCKING  derived  CA-4 — link text uniquely describes the target (SC 2.4.4 A):
+  rule:webf-011    BLOCKING  derived  Level taxonomy: 0 = base content (body, imagery, cards, butt
+  rule:aca-003     BLOCKING  routed   CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A 
+  rule:aid-009     BLOCKING  routed   ID-26 [introduced 2024] — target size, the formal 2.2 rule: 
+  rule:avd-006     BLOCKING  routed   VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A
+  rule:dv-004      BLOCKING  routed   Colour separation: don't rely on colour to separate values —
+  rule:dv-009      BLOCKING  routed   2-dimensional, flat colour fills only. No 3D styles, no grad
+  rule:dv-016      BLOCKING  routed   Chart building blocks (titles, axis labels, axis/grid lines)
+  rule:dv-017      BLOCKING  routed   Only palette colours in charts (print/digital palette, or th
+  rule:icon-002    BLOCKING  routed   Don't use illustrations as icons (site echoes our icon-sourc
+  rule:icon-005    BLOCKING  routed   Functional icons need a minimum 44×44px target area.
+  rule:icon-006    BLOCKING  routed   Minimum 16px, maximum 48px; scale proportionately in 2px inc
+
+MUST-NOT 8 (6 ref:null)
+  component:drawer  x  component:drawer   A second drawer or open modal (one modal surface at a time)
+  component:drawer  x  (ref:null)   A second drawer or open modal (one modal surface at a time)
+  component:section-heading-lockup  x  (ref:null)   Page-header-lockup in the same slot (one is the page <h1>, t
+  component:section-heading-lockup  x  (ref:null)   Page-header-lockup in the same slot (one is the page <h1>, t
+  component:skeleton-loader  x  (ref:null)   Loading-indicator for the same region (one loading signal pe
+  component:skeleton-loader  x  component:loading-indicator   Loading-indicator for the same region (one loading signal pe
+  component:stat-card  x  (ref:null)   A chart making the identical claim in the same view (pick on
+  component:stat-card  x  (ref:null)   A chart making the identical claim in the same view (pick on
+
+TOKENS (group+tier) background[semantic:1], badge[semantic:1], border[semantic:4], button[semantic:1], divider[semantic:2], elevation[semantic:2], focus[semantic:3], form[semantic:8], icon[semantic:5], overlay[semantic:1], primary[semantic:2], rag[semantic:9], scrollbar[semantic:2], secondary[semantic:1], surface[semantic:5], table[semantic:3], tabs[semantic:1], tertiary[semantic:3], text[semantic:8], border-radius[foundation:4], layout[foundation:3], target[foundation:2], typography[foundation:1], color[primitive:1], typography-composites/component[composite:5]
+ASSETS 31   (icon:alert-badge, icon:arrow-down, icon:arrow-left, icon:arrow-right, icon:arrow-up, icon:calendar-badge, icon:chevron-right, icon:close)
+
+UNRESOLVED 22
+  role:chart-panel             the task asks for a chart but names no analytical intent (knowledge/chart-intent
+  role:chart-panel             the task asks for this role (COMPOSITE_LEXICON["dashboard"] -> chart-panel (INFE
+  co-providers of role:headline-metric 1 further provider(s) exist and are NOT in the slice (kpi-tile). Their `when` pr
+  co-providers of role:record-list 5 further provider(s) exist and are NOT in the slice (transaction-row, document-
+  co-providers of role:page-frame 4 further provider(s) exist and are NOT in the slice (app-shell-side-nav, app-sh
+  co-providers of role:arrangement 5 further provider(s) exist and are NOT in the slice (feature-grid-lockup, split
+  co-providers of role:input   21 further provider(s) exist and are NOT in the slice (amount-input, combobox, m
+  co-providers of role:wayfinding 4 further provider(s) exist and are NOT in the slice (sidebar-nav, anchor-nav, p
+
+SIZED  seed 31536 tok  vs  111468 tok of the 31 metas it replaces  = 3.53x  (whole library 414184 tok = 13.13x)
+UNIT cl100k (tiktoken) — a LABELLED ESTIMATOR, never a unit a cap is stated in (ds-021)

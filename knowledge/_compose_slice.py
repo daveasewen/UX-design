@@ -52,6 +52,14 @@ OUT — a dict with exactly these CONTRACT FIELDS (plus $-prefixed metadata, `ta
                                not in edges.obeys
                     routed   — a BLOCKING rule whose FILE is routed by the component's
                                vocabulary (RULE_FILE_ROUTES) or the always-on screen set
+                    routed-by-scope — (s277-D9, #279 lane SC) a BLOCKING rule whose FILE's
+                               DECLARED SCOPE (knowledge/guidelines/_scope.json, 34 rows)
+                               reaches the component: kind component (authored list) or
+                               kind facet (the meta binds a token group / field / edge the
+                               facet names). Inference by declared scope — never authored,
+                               never vocabulary; a null-scope file routes nothing and an
+                               exception row suppresses its rule. The non-BLOCKING reach
+                               is ASK Q2's `routedByScope`.
                   Each row: id · class · destiny · blocking · file · text (≤280) · why
       mustNot     mustNotNeighbour from both homes (edges + relationships prose) and meta
                   `not-with`, INCLUDING the ref:null entries with their $note — a prohibition
@@ -111,6 +119,7 @@ USAGE
   python3 knowledge/_compose_slice.py --ask "which components does rule:ctkb-003 bind?"
   python3 knowledge/_compose_slice.py --ask "<q>" --budget 600 --seed seed.json
   python3 knowledge/_compose_slice.py --measure         # the s277-D10 claim, re-measured
+  python3 knowledge/_compose_slice.py --measure-scope   # the s277-D9 reach figures (obeys / scope / either)
   python3 knowledge/_compose_slice.py --selftest        # named bites, exits 1 on miss
 
 RESOLUTION PATH of the seed (each hop names its source file):
@@ -130,7 +139,8 @@ LIMITS, DECLARED (do not read past them):
   - `provides` is authored on a minority of metas, so role -> component resolution leans on
     roles.json's provider lists AND the `providesRole` edges (108 today) — a MEMBERSHIP join.
   - `_rules-index.json` carries no component tag. The routed class is vocabulary, never passed
-    off as authored; the derived class is a typed hop, never passed off as authored.
+    off as authored; the derived class is a typed hop, never passed off as authored; the
+    routed-by-scope class is a declared per-file scope (_scope.json), never passed off as either.
   - rule→ux has no edge type (Q3), rule→rule has no conflict type (Q4), token: has no node kind
     (Q9), photo has no node kind (Q12). ASK declares each; nothing here invents one.
 """
@@ -147,7 +157,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 COMPONENTS = os.path.join(HERE, "components")
 VERSION = "1.0"   # 1.0 (#279, s277-D10/D13 under s278-D1) the contract + ASK; 0.1 (#270) the proposal
-RULED_BY = ("s277-D10", "s277-D13", "s278-D1")
+RULED_BY = ("s277-D10", "s277-D13", "s278-D1", "s277-D9")
 CONTRACT_FIELDS = ("components", "governs", "obeys", "mustNot", "tokens", "assets", "unresolved", "sized")
 ASK_BUDGET = 1000
 
@@ -291,6 +301,7 @@ def load_graph(root=HERE):
         "ux_nodes": _load(os.path.join(root, "_ux_principle_nodes.json")),
         "icon_nodes": _load(os.path.join(root, "_icon_nodes.json")),
         "logo_nodes": _load(os.path.join(root, "_logo_nodes.json")),
+        "scope": _load(os.path.join(root, "guidelines", "_scope.json")),   # s277-D9 (#279 lane SC)
         "$root": root,
     }
     g["rules_by_id"] = {r["id"]: r for r in g["rules"] if isinstance(r, dict) and r.get("id")}
@@ -768,6 +779,130 @@ def _ruling_row(rid, g):
             "via": [], "over": set(), "blocking": True}
 
 
+# ---------------------------------------------------------------- declared scope (s277-D9): file -> components
+# knowledge/guidelines/_scope.json — one hand-authored row per guideline file: kind component|facet|null,
+# facets, authored components, exceptions, and the $source sentence of the file it rests on. The join
+# is the file's own `$joinRule`; nothing here reads prose (s277-D5, s274-D12). A rule reached this way is
+# class "routed-by-scope" — inference by declared scope — never "authored" and never "routed" (vocabulary).
+def _meta_token_groups(m, g):
+    """The token GROUPS a meta's `tokens` block binds — the same TOKEN_PATH_RX walk tokens_for uses."""
+    groups = set()
+
+    def walk(v):
+        if isinstance(v, dict):
+            for k, x in v.items():
+                yield k
+                yield from walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                yield from walk(x)
+        else:
+            yield str(v)
+    for v in walk(m.get("tokens")):
+        for path in TOKEN_PATH_RX.findall(v.lower()):
+            grp = path.split("/")[0]
+            if grp in g["token_tiers"]:
+                groups.add(grp)
+    return groups
+
+
+def component_facets(g):
+    """component slug -> {facet: [binding evidence, ...]} under _scope.json's `facets[*].binds`."""
+    if "$component_facets" in g:
+        return g["$component_facets"]
+    facets = (g["scope"] or {}).get("facets") or {}
+    asset_edges = {}
+    for store in ("icon_nodes", "logo_nodes"):
+        for e in (g[store].get("edges") or []):
+            if e.get("t") and str(e.get("s", "")).startswith("component:"):
+                asset_edges.setdefault(e["s"][len("component:"):], set()).add(e["type"])
+    out = {}
+    for slug, m in g["metas"].items():
+        groups = _meta_token_groups(m, g)
+        edges = {et for et, es in (m.get("edges") or {}).items() if es and not et.startswith("$")} | asset_edges.get(slug, set())
+        mine = {}
+        for f, spec in facets.items():
+            b = spec.get("binds") or {}
+            ev = ["tokens %s/*" % grp for grp in b.get("tokenGroups") or [] if grp in groups]
+            ev += ["meta.%s" % fld for fld in b.get("metaFields") or [] if m.get(fld)]
+            ev += ["edge %s" % et for et in b.get("edges") or [] if et in edges]
+            if ev:
+                mine[f] = ev
+        out[slug] = mine
+    g["$component_facets"] = out
+    return out
+
+
+def scope_reach(g):
+    """file -> {kind, components: {slug: why}, exceptions: set(rule ids), facets, row}. Cached on g."""
+    if "$scope_reach" in g:
+        return g["$scope_reach"]
+    cf = component_facets(g)
+    out = {}
+    for row in (g["scope"] or {}).get("rows") or []:
+        reach, kind = {}, row.get("kind")
+        for c in row.get("components") or []:
+            if c in g["metas"]:
+                reach[c] = "authored on the %s row of _scope.json" % row["file"]
+        if kind == "facet":
+            for slug, mine in cf.items():
+                hits = [f for f in row.get("facets") or [] if f in mine]
+                if hits and slug not in reach:
+                    reach[slug] = "facet %s <- %s" % ("/".join(hits), "; ".join(mine[hits[0]][:2]))
+        out[row["file"]] = {"kind": kind, "components": reach,
+                            "exceptions": {e["rule"] for e in row.get("exceptions") or [] if e.get("rule")},
+                            "facets": list(row.get("facets") or []), "row": row}
+    g["$scope_reach"] = out
+    return out
+
+
+def rule_reach(g):
+    """rule id -> {"obeys": set(slugs), "scope": set(slugs)} — the two paths, kept apart (s277-D9)."""
+    obeys = {}
+    for slug, m in g["metas"].items():
+        for e in ((m.get("edges") or {}).get("obeys") or []):
+            ref = e.get("ref") if isinstance(e, dict) else None
+            if ref and ref.startswith("rule:"):
+                obeys.setdefault(ref[5:], set()).add(slug)
+    sr = scope_reach(g)
+    out = {}
+    for r in g["rules"]:
+        rid = r["id"]
+        f = sr.get(r.get("file"))
+        sc = set(f["components"]) if f and f["kind"] in ("component", "facet") and rid not in f["exceptions"] else set()
+        out[rid] = {"obeys": obeys.get(rid, set()), "scope": sc}
+    return out
+
+
+def measure_scope(root=HERE):
+    """The s277-D9 figures, re-run: how many rules reach >=1 component by obeys, by scope, by either."""
+    g = load_graph(root)
+    rr = rule_reach(g)
+    rules = g["rules"]
+    blocking = [r["id"] for r in rules if r.get("destiny") == "BLOCKING"]
+
+    def fig(ids):
+        ob = {i for i in ids if rr[i]["obeys"]}
+        sc = {i for i in ids if rr[i]["scope"]}
+        return {"total": len(ids), "reach_by_obeys": len(ob), "reach_by_scope": len(sc),
+                "reach_by_either": len(ob | sc), "reach_by_none": len(ids) - len(ob | sc),
+                "scope_only": len(sc - ob), "obeys_only": len(ob - sc), "both": len(ob & sc)}
+    sr = scope_reach(g)
+    cf = component_facets(g)
+    return {
+        "command": "python3 knowledge/_compose_slice.py --measure-scope",
+        "before_obeys_only": {"rules_no_component": len(rules) - fig([r["id"] for r in rules])["reach_by_obeys"],
+                              "blocking_no_component": len(blocking) - fig(blocking)["reach_by_obeys"]},
+        "rules": fig([r["id"] for r in rules]),
+        "blocking": fig(blocking),
+        "files": {f: {"kind": d["kind"], "components": len(d["components"]), "exceptions": len(d["exceptions"]),
+                      "rules": len([r for r in rules if r.get("file") == f])} for f, d in sr.items()},
+        "byKind": (g["scope"] or {}).get("byKind"),
+        "facets": {f: {"covers": v.get("covers"), "components_binding": sum(1 for m in cf.values() if f in m)}
+                   for f, v in ((g["scope"] or {}).get("facets") or {}).items()},
+    }
+
+
 # ---------------------------------------------------------------- stage 4: obeys (authored / derived / routed)
 RULE_ID_RX = re.compile(r"\b[a-z]{2,6}\d{0,2}-\d{3}\b")
 DESTINY_ORDER = {"BLOCKING": 0, "REVIEW": 1, "ADVISORY": 2, "TASTE": 3}
@@ -831,10 +966,31 @@ def obeys_for(chosen, g, task):
             if row["class"] is None:
                 row["class"] = "routed"
             row["why"].append(route_why[r["file"]])
+    # routed-by-scope (s277-D9): a BLOCKING rule whose FILE's declared scope reaches a chosen component —
+    # kind component (authored list) or kind facet (the meta binds a token group / field / edge the facet
+    # names). A null-scope file routes nothing; an exception row suppresses its rule. Distinct from
+    # "routed" (vocabulary) and never passed off as authored. The non-BLOCKING reach is ASK Q2's.
+    sr = scope_reach(g)
+    slugs = {c["id"][len("component:"):] for c in chosen if c["id"].startswith("component:")}
+    for fn, d in sr.items():
+        if d["kind"] not in ("component", "facet"):
+            continue
+        hit = [sl for sl in slugs if sl in d["components"]]
+        if not hit:
+            continue
+        for r in g["rules"]:
+            if r.get("file") != fn or r.get("destiny") != "BLOCKING" or r["id"] in d["exceptions"]:
+                continue
+            ref = "rule:" + r["id"]
+            row = out.setdefault(ref, _obeys_row(ref, g))
+            if row["class"] is None:
+                row["class"] = "routed-by-scope"
+            row["why"].append("routed-by-scope: %s scope kind=%s reaches %s (%s)" % (
+                fn, d["kind"], ", ".join(sorted(hit)[:3]), d["components"][sorted(hit)[0]][:90]))
     rows = list(out.values())
     for row in rows:
         row["why"] = "; ".join(sorted(set(row["why"])))[:600]
-    corder = {"authored": 0, "derived": 1, "routed": 2}
+    corder = {"authored": 0, "derived": 1, "routed": 2, "routed-by-scope": 3}
     rows.sort(key=lambda r: (DESTINY_ORDER.get(r["destiny"], 9), corder.get(r["class"], 9), r["id"]))
     return rows
 
@@ -1147,6 +1303,19 @@ def _reduce(s, g, budget):
             if s["sized"]["within_budget"]:
                 return s
     if s["obeys"]:
+        byscope = [r for r in s["obeys"] if r["class"] == "routed-by-scope"]
+        if byscope:
+            s["obeys"] = [r for r in s["obeys"] if r["class"] != "routed-by-scope"]
+            s["unresolved"] = (s["unresolved"] or []) + [
+                {"what": "obeys:routed-by-scope", "ref": None,
+                 "$note": "%d routed-by-scope BLOCKING rule(s) dropped to meet the budget (%d): %s — they still bind; "
+                          "ask for them with --ask" % (len(byscope), budget, ", ".join(r["id"] for r in byscope[:12])),
+                 "why": "sized.reductions"}]
+            steps.append("dropped %d routed-by-scope obeys row(s)" % len(byscope))
+            _finish_fields(s)
+            s["sized"] = sized(s, g, budget=budget, reductions=steps)
+            if s["sized"]["within_budget"]:
+                return s
         routed = [r for r in s["obeys"] if r["class"] == "routed"]
         if routed:
             s["obeys"] = [r for r in s["obeys"] if r["class"] != "routed"]
@@ -1373,6 +1542,18 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
         ans["components"] = sorted(rows, key=lambda r: r["s"])
         if not rows:
             declared.append("no meta carries edges.obeys -> %s" % node)
+        if node.startswith("rule:"):   # the declared-scope path (s277-D9), kept apart from obeys
+            rn = g["rules_by_id"].get(node[5:]) or {}
+            d = scope_reach(g).get(rn.get("file"))
+            if d and d["kind"] in ("component", "facet") and node[5:] not in d["exceptions"] and d["components"]:
+                ans["routedByScope"] = {"file": rn.get("file"), "kind": d["kind"], "facets": d["facets"],
+                                        "count": len(d["components"]), "components": sorted(d["components"])}
+            elif d and node[5:] in d["exceptions"]:
+                declared.append("%s is an exception row on %s's scope — routed-by-scope does not fire" % (node, rn.get("file")))
+            elif d and d["kind"] is None:
+                declared.append("%s has a DECLARED NULL scope (%s) — routed-by-scope does not fire" % (rn.get("file"), (d["row"].get("$note") or "")[:120]))
+            elif d:
+                declared.append("%s's scope reaches no component today (%s)" % (rn.get("file"), "/".join(d["facets"])))
     elif verb == "principle":
         ans["rule"] = {"id": node, "destiny": nd.get("destinyFull") or nd.get("destiny"),
                        "file": nd.get("file"), "text": (nd.get("text") or "")[:240]}
@@ -1550,9 +1731,10 @@ def explain(s):
         L.append("  %-12s %-10s %s" % (r["id"], r.get("date") or "-", (r.get("ruled") or r.get("says") or "")[:70]))
     ob = s["obeys"] or []
     L.append("")
-    L.append("OBEYS %d (%d BLOCKING, first; %d authored / %d derived / %d routed)" % (
+    L.append("OBEYS %d (%d BLOCKING, first; %d authored / %d derived / %d routed / %d routed-by-scope)" % (
         len(ob), len([r for r in ob if r["blocking"]]), len([r for r in ob if r["class"] == "authored"]),
-        len([r for r in ob if r["class"] == "derived"]), len([r for r in ob if r["class"] == "routed"])))
+        len([r for r in ob if r["class"] == "derived"]), len([r for r in ob if r["class"] == "routed"]),
+        len([r for r in ob if r["class"] == "routed-by-scope"])))
     for r in ob[:12]:
         L.append("  %-16s %-9s %-8s %s" % (r["id"], r["destiny"] or "-", r["class"], (r["text"] or "")[:60]))
     L.append("")
@@ -1714,8 +1896,8 @@ def selftest():
     first_non = next((i for i, d in enumerate(dest) if d != "BLOCKING"), len(dest))
     bite("MUTATION: blocking still sorts first after the store order is inverted",
          "BLOCKING" in dest and "BLOCKING" not in dest[first_non:], dest[:14])
-    bite("obeys carries all three classes on the worked task, each named",
-         {r["class"] for r in s["obeys"]} >= {"authored", "routed"} and all(r["class"] in ("authored", "derived", "routed") for r in s["obeys"]),
+    bite("obeys carries all three classes on the worked task, each named (+ routed-by-scope since s277-D9)",
+         {r["class"] for r in s["obeys"]} >= {"authored", "routed"} and all(r["class"] in ("authored", "derived", "routed", "routed-by-scope") for r in s["obeys"]),
          {r["class"] for r in s["obeys"]})
     bite("governs is LIVE: a ruling that names a chosen meta in governs[] is on the seed",
          any("_rulings.json governs[]" in r["via"] for r in s["governs"]), [r["via"][:60] for r in s["governs"]][:3])
@@ -1828,6 +2010,75 @@ def selftest():
              mine == theirs, {k: (mine[k], theirs[k]) for k in theirs if mine[k] != theirs[k]})
     except Exception as ex:  # numpy absent in a pack — declared, not failed
         print("  skip cross-check vs _build_kg_explorer (%s: %s)" % (type(ex).__name__, str(ex)[:80]))
+    # — declared scope (s277-D9, #279 lane SC): knowledge/guidelines/_scope.json + routed-by-scope
+    sc = g["scope"] or {}
+    rows = {r["file"]: r for r in sc.get("rows") or []}
+    rule_files = {r["file"] for r in g["rules"]}
+    bite("SCOPE: every guideline file carrying rules in _rules-index.json has a row — kind component|facet, or a DECLARED null with a $note",
+         rule_files == set(rows) and all((r["kind"] in ("component", "facet")) or (r["kind"] is None and r.get("$note")) for r in rows.values()),
+         {"missing": sorted(rule_files - set(rows)), "extra": sorted(set(rows) - rule_files)})
+
+    def _collapse(t):
+        return re.sub(r"\s+", " ", t)
+    src_ok = {f: r["$source"] in _collapse(_read(os.path.join(HERE, "guidelines", f))) for f, r in rows.items()}
+    bite("SCOPE: every $source is a real substring of its LIVE file (whitespace-collapsed) — %d/%d" % (sum(src_ok.values()), len(src_ok)),
+         all(src_ok.values()) and all(rows[f]["$source"] for f in rows), [f for f, ok in src_ok.items() if not ok])
+    bite("SCOPE: a mutated $source (one word changed) FAILS the same check — the bite can bite",
+         not (rows["naming.md"]["$source"].replace("UI copy", "UX copy") in _collapse(_read(os.path.join(HERE, "guidelines", "naming.md")))))
+    facets = sc.get("facets") or {}
+    fbad = [f for f, v in facets.items() for gname in (v.get("binds") or {}).get("tokenGroups") or [] if gname not in g["token_tiers"]]
+    rbad = [(f, x) for f, r in rows.items() for x in r["facets"] if x not in facets] + \
+           [(f, x) for f, r in rows.items() for x in r["tokenGroups"] if x not in g["token_tiers"]] + \
+           [(f, x) for f, r in rows.items() for x in r["components"] if x not in g["metas"]] + \
+           [(f, e["rule"]) for f, r in rows.items() for e in r["exceptions"] if e["rule"] not in {x["id"] for x in g["rules"] if x["file"] == f}]
+    bite("SCOPE: every token group / facet / component / exception named exists (groups in the tier map, facets in the closed set, components as metas, exceptions as rules OF THAT FILE)",
+         not fbad and not rbad, (fbad + rbad)[:6])
+    sr = scope_reach(g)
+    nulls = [f for f, r in rows.items() if r["kind"] is None]
+    everything = build_slice(components=sorted(g["metas"]), graph=g, max_components=200)
+    by_scope = [r for r in (everything["obeys"] or []) if r["class"] == "routed-by-scope"]
+    bite("SCOPE: routed-by-scope never fires on a file with a null scope (all %d metas forced in; %d null files: %s; %d routed-by-scope rows)"
+         % (len(g["metas"]), len(nulls), ", ".join(nulls), len(by_scope)),
+         nulls and by_scope and not any(r["file"] in nulls for r in by_scope) and all(sr[f]["components"] == {} for f in nulls),
+         sorted({r["file"] for r in by_scope if r["file"] in nulls}))
+    bite("SCOPE: routed-by-scope is never passed off as authored / routed — a row keeps its stronger class when both paths reach it",
+         not any("edges.obeys" in r["why"] or "RULE_FILE_ROUTES" in r["why"] or "always-on" in r["why"] for r in by_scope) and
+         all("routed-by-scope:" in r["why"] for r in by_scope))
+    # MUTATION: plant an exception on a scratch copy of the scope and the rule vanishes from routed-by-scope
+    victim = by_scope[0] if by_scope else None
+    g3 = dict(g)
+    g3.pop("$scope_reach", None)
+    g3["scope"] = copy.deepcopy(sc)
+    for r in g3["scope"]["rows"]:
+        if victim and r["file"] == victim["file"]:
+            r["exceptions"].append({"rule": victim["id"][5:], "why": "PLANTED — selftest only, scratch copy"})
+    e3 = build_slice(components=sorted(g["metas"]), graph=g3, max_components=200)
+    bite("MUTATION: a planted exception row (scratch copy, on %s) suppresses its rule from routed-by-scope; the live file is untouched" % (victim and victim["file"]),
+         victim is not None and not any(r["id"] == victim["id"] for r in (e3["obeys"] or [])) and
+         "PLANTED" not in _read(os.path.join(HERE, "guidelines", "_scope.json")),
+         victim and victim["id"])
+    # MUTATION: flip a facet row to null and its rules vanish too
+    g4 = dict(g)
+    g4.pop("$scope_reach", None)
+    g4["scope"] = copy.deepcopy(sc)
+    vf = victim and victim["file"]
+    for r in g4["scope"]["rows"]:
+        if r["file"] == vf:
+            r.update(kind=None, facets=[], components=[], **{"$note": "PLANTED null"})
+    e4 = build_slice(components=sorted(g["metas"]), graph=g4, max_components=200)
+    bite("MUTATION: a row flipped to null (scratch copy, %s) routes nothing — its rows leave routed-by-scope" % vf,
+         vf and any(r["file"] == vf for r in by_scope) and not any(r["file"] == vf and r["class"] == "routed-by-scope" for r in (e4["obeys"] or [])))
+    ms = measure_scope()
+    bite("SCOPE measure: the two paths sum (scope_only + obeys_only + both == reach_by_either) for all rules and for BLOCKING",
+         all(ms[k]["scope_only"] + ms[k]["obeys_only"] + ms[k]["both"] == ms[k]["reach_by_either"] for k in ("rules", "blocking")) and
+         ms["rules"]["reach_by_either"] >= ms["rules"]["reach_by_obeys"], {k: ms[k] for k in ("rules", "blocking")})
+    r2 = ask("which components does rule:copy-012 bind?", live=live)
+    bite("ASK Q2 carries the declared-scope path apart from obeys (rule:copy-012 -> copywriting.md facet copy, %d components, %d tokens)"
+         % ((r2["answer"].get("routedByScope") or {}).get("count", 0), r2["sized"]["tokens"]),
+         (r2["answer"].get("routedByScope") or {}).get("kind") == "facet" and r2["answer"]["components"] == [] and r2["sized"]["tokens"] <= ASK_BUDGET)
+    r3 = ask("which components does rule:axf-002 bind?", live=live)
+    bite("ASK Q2 on a null-scope file DECLARES the null instead of routing (rule:axf-002)",
+         "routedByScope" not in r3["answer"] and any("DECLARED NULL" in d for d in r3["declared"]))
     print("\n%d bites, %d failed" % (n, len(fails)))
     print("ASK token counts: " + json.dumps(counts))
     return 1 if fails else 0
@@ -1857,6 +2108,9 @@ def main(argv):
     args = list(argv[1:])
     if "--selftest" in args:
         return selftest()
+    if "--measure-scope" in args:
+        print(json.dumps(measure_scope(), ensure_ascii=False, indent=1))
+        return 0
     if "--measure" in args:
         print(json.dumps(measure_claim(task=_opt(args, "--task")), ensure_ascii=False, indent=1))
         return 0
