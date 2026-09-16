@@ -66,15 +66,37 @@ header{grid-column:1/3;display:grid;grid-template-columns:auto 1fr auto;align-it
 .stage{position:relative;overflow:hidden;border-right:1px solid var(--rule)}
 canvas{display:block;width:100%;height:100%;cursor:grab}
 canvas.grabbing{cursor:grabbing}
-.legend{position:absolute;left:24px;bottom:66px;max-width:calc(100% - 48px);display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
+.legend{position:absolute;right:20px;top:60px;width:440px;max-width:52%;max-height:calc(100% - 130px);overflow:auto;display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:auto;background:color-mix(in srgb,var(--bg) 88%,transparent)}
+.legend.closed{width:auto;max-width:none;overflow:visible;background:transparent}
+.legend .views{flex-direction:column}
+/* STRIP mode — a family chip is on, the graph is a landscape band of columns: the legend goes to the bottom
+   (the 1.15 place, rows) and fit() puts the band ABOVE it. The legend sits where the graph is not. */
+.legend.strip{right:auto;left:24px;top:auto;bottom:66px;width:auto;max-width:calc(100% - 48px);max-height:none;overflow:visible;background:transparent}
+.legend.strip .views{flex-direction:row}
+.legend.strip .view{flex-direction:row;align-items:center;gap:8px;padding:4px 7px 4px 8px}
+.legend.strip .view>h4{width:132px;flex:0 0 132px}.legend.strip .view>h4 small{display:block;margin:0}
+.legend.strip~.hint{display:none}
+.legend .ltog{white-space:nowrap}
+/* #279 v1.16 (EV §5.3): the legend is COLLAPSIBLE and the stage RESERVES it — at desktop it is a RIGHT
+   COLUMN (the base graph is portrait, 1.2k×2k world: a bottom legend took the one axis it needs; the stage
+   had 500px of spare width), and fit()/the dig place the graph in the better of the two rectangles the
+   legend leaves free — BESIDE it (the portrait base) or BELOW it (the wide family columns) — so no chip
+   ever sits on the base hub or on a dug neighbour. One click on the bar folds it; Fit re-measures. */
+.legend .lbar{display:flex;align-items:center;gap:10px;pointer-events:auto}
+.legend .ltog{border:1px solid var(--rule);background:var(--bg);color:var(--ink);font:inherit;padding:0 9px;min-height:24px;cursor:pointer;border-radius:0;letter-spacing:.06em;text-transform:uppercase}
+.legend .ltog:hover{border-color:var(--ink)}
+.legend .lsum{color:var(--ink-3);font-size:10px;letter-spacing:.03em;text-transform:none}
+.legend .lsum b{color:var(--ink);font-weight:600}
+.legend .lbody{display:flex;flex-direction:column;gap:6px}.legend .trows{display:flex;flex-direction:column;gap:6px}
+.legend.closed .lbody{display:none}
 .legend .row{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
 /* #279 s277-D8 — the family row is grouped into the three VIEWS + THE CONSTITUTION. A view is a
    labelled box of chips; DESIGN GOVERNANCE's three provenance sub-chips sit inside ONE obligation
    box (s275-D6: a sub-chip is still its own chip). The Constitution is its own box, outside. */
 .legend .views{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start;pointer-events:auto}
-.legend .view{display:flex;flex-direction:row;align-items:center;gap:8px;padding:4px 7px 4px 8px;border:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 82%,transparent)}
-.legend .view>h4{margin:0;width:132px;flex:0 0 132px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink);line-height:1.3}
-.legend .view>h4 small{display:block;font-size:9px;font-weight:400;color:var(--ink-3);letter-spacing:.02em;text-transform:none}
+.legend .view{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:5px 7px 6px 8px;border:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 82%,transparent)}
+.legend .view>h4{margin:0;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink);line-height:1.3}
+.legend .view>h4 small{display:inline;margin-left:8px;font-size:9px;font-weight:400;color:var(--ink-3);letter-spacing:.02em;text-transform:none}
 .legend .view .row{gap:5px}
 .legend .view.constitution{border-color:var(--ink);border-width:1px 1px 1px 3px}
 .legend .obligation{display:flex;flex-direction:column;gap:3px;padding:4px 5px 5px;border:1px dashed var(--rule)}
@@ -100,7 +122,7 @@ canvas.grabbing{cursor:grabbing}
 .scrub .counts{color:var(--ink-3);text-align:right;min-width:230px}.scrub .counts b{color:var(--ink);font-weight:600}
 .scrub input[type=range]{width:100%;height:30px;margin:0;accent-color:var(--accent);background:transparent;cursor:pointer}
 .scrub.past .date b{color:var(--accent)}
-.hint{position:absolute;right:20px;top:56px;max-width:270px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.6}
+.hint{position:absolute;left:24px;bottom:66px;max-width:300px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:left;line-height:1.6;pointer-events:none}
 aside{overflow:auto;background:var(--bg)}
 .empty{padding:28px 24px;color:var(--ink-2)}
 .empty h2{font-size:22px;letter-spacing:-.02em;margin:0 0 14px;color:var(--ink);font-weight:700;line-height:1.15}
@@ -148,8 +170,22 @@ aside{overflow:auto;background:var(--bg)}
 /* #279: `header{grid-column:1/3}` made an IMPLICIT second column under the one-column mobile grid, so
    the stage was 48px wide at 390 (inherited from v1.0; measured, not guessed). One declaration fixes it.
    The legend is a scrolling stack at phone width; the views go column-wise (heading above chips). */
-@media (max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:56px 55vh 1fr}header{grid-column:1}.stage{border-right:0;border-bottom:1px solid var(--rule)}.search input{width:150px}.stats{display:none}.brand span{display:none}.tools{gap:4px}
-  .legend{max-width:calc(100% - 48px);max-height:calc(100% - 140px);overflow:auto;gap:5px;pointer-events:auto}.legend .view{flex-direction:column;align-items:stretch;gap:3px;padding:4px 6px 5px}.legend .view>h4{width:auto;flex:0 0 auto}.chip{padding:3px 6px;min-height:22px}.hint{display:none}.crumbs{max-width:100%}}
+@media (max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:56px 60vh 1fr}header{grid-column:1}.stage{border-right:0;border-bottom:1px solid var(--rule)}.search input{width:150px}.stats{display:none}.brand span{display:none}.tools{gap:4px}
+  /* v1.16 (EV §5.1): at phone width the legend is a BOTTOM SHEET — closed by default to its one bar (the
+     graph gets the stage), open to at most 62% of the stage with the four view boxes FIRST and the type
+     rows below them, scrolling inside the sheet. The graph never vanishes: the top 38% stays clear. */
+  .legend,.legend.strip{left:12px;right:12px;top:auto;bottom:112px;width:auto;max-width:none;max-height:none;gap:0;overflow:visible;background:transparent}
+  /* OPEN: a true bottom sheet — fixed to the VIEWPORT bottom, so it rises over the aside (the panel text),
+     not over the graph; the stage keeps the graph fitted above the sheet's top edge (usable() measures it). */
+  .legend:not(.closed){position:fixed;left:12px;right:12px;bottom:12px;max-height:62vh;z-index:30;background:var(--bg);border:1px solid var(--rule);padding:6px 8px 8px;gap:5px;box-shadow:0 -8px 28px rgba(0,0,0,.16)}
+  .legend .lsum{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .legend:not(.closed){overflow:auto}.legend .lbody{gap:4px;min-height:0;overflow:hidden;flex:0 1 auto}.legend .lbody .views{flex:none;flex-direction:column;gap:3px}
+  .legend .trows{flex:1 1 auto;min-height:48px;overflow:auto;gap:3px;padding-top:2px;border-top:1px solid var(--rule)}
+  .legend .view,.legend.strip .view{flex-direction:column;align-items:stretch;gap:2px;padding:3px 5px 4px}.legend .view>h4,.legend.strip .view>h4{width:auto;flex:0 0 auto}.legend .view>h4 small,.legend.strip .view>h4 small{display:none}.legend .view .row{gap:3px}.legend .obligation{gap:2px;padding:3px 4px 4px}
+  .chip{padding:2px 5px;min-height:20px;font-size:9px;gap:4px}.hint{display:none}.crumbs{max-width:100%;left:12px}
+  /* the scrub row was one 482px-wide line at 390 (date 150 + counts 230 + Play) — three rows now, nothing clips */
+  .scrub{left:12px;right:12px;bottom:12px;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;gap:6px 10px;font-size:10px}
+  .scrub input[type=range]{grid-column:1/3;grid-row:2}.scrub .counts{grid-column:1/3;grid-row:3;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.scrub .date{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tools{right:12px}}
 </style>
 </head>
 <body>
@@ -260,29 +296,47 @@ const XTRA=KG.extra||{};
 // counts follow the FAMILY chips only (never the type chips), so with governance + guidelines
 // off the strip and the headline read the v1.1 numbers to the digit.
 let SHOWN=[],SHOWNE=[],count={};
+// v1.16 (EV §2): a DRAWN citation edge answers to the design-governance sub-chip in the COUNTS too, so the
+// header agrees with the canvas when that chip is toggled. A declared null is not a citation of any ruling
+// (it names none) and never answers to it — and no base null is of a DR type, so nothing moves at defaults.
+const DRON=e=>!e.t||!DR(e)||famOn.designrulings;
 function recount(){SHOWN=LIVE.filter(famOK);
-  SHOWNE=LIVEE.filter(e=>famOK(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
+  SHOWNE=LIVEE.filter(e=>famOK(e)&&DRON(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
   count={};SHOWN.forEach(n=>count[n.type]=(count[n.type]||0)+1);
   // #279: a declared null follows its family chip like every other count (v1.12..1.14 counted the
   // 15 UX nulls chip-blind — with every family chip off the headline now reads the base's own nulls).
   UNRES=[...unresolved.values()].reduce((a,b)=>a+b.filter(famOK).length,0);}
 let UNRES=0;
-function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]).length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
+// edge types on: a family's types, minus the two that are citations ENTIRELY (governedBy, ruledBy) when the sub-chip is off
+const ETYPES=()=>Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]&&(famOn.designrulings||!(t==='governedBy'||t==='ruledBy')));
+function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${ETYPES().length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
 const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
 const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`;
-// the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). Its count
-// is the live citation edges, base and family alike; it gates edges, never nodes.
-const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified)"><i></i>rulings a design cites<b>${LIVEE.filter(DR).length}</b></span>`;
-function renderLegend(){legend.innerHTML=`<div class="row">${TYPES.map(chipT).join('')}</div>
-<div class="row">${TYPES2.map(chipT).join('')}</div>
-<div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
+// the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). It gates
+// edges, never nodes. v1.16 (EV §2, §5.4): its count is the citation edges it GOVERNS RIGHT NOW — drawn
+// (t resolved), both ends shown by the family chips — 28 at the page's defaults (the base metas' governedBy),
+// +295 governs→component/snippet with the Constitution on, +8 ruledBy with assets AND the Constitution on.
+// The 10 asset governedBy nulls are never drawn and never counted here. Its own state does not zero it,
+// like every family chip. Label and default are Dave's open question (EV §9) — untouched.
+const DRGOV=()=>LIVEE.filter(e=>e.t&&DR(e)&&famOn[FAMILY[e.type]]&&famOK(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
+const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified). The count is the citation edges drawn under the family chips now."><i></i>rulings a design cites<b>${DRGOV()}</b></span>`;
+// v1.16: the legend folds to one bar (EV §5.1 / §5.3). Open at desktop; a closed bottom sheet at phone width.
+let legendOpen=!matchMedia('(max-width:900px)').matches;
+function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',NEWFAM.some(f=>famOn[f]));legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
+<div class="lbody"><div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
   ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
-  :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>`;}
+  :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>
+<div class="trows"><div class="row">${TYPES.map(chipT).join('')}</div><div class="row">${TYPES2.map(chipT).join('')}</div></div></div>`;}
 recount();renderStats();renderLegend();
-legend.addEventListener('click',ev=>{const c=ev.target.closest('.chip');if(!c)return;
-  if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off')}else{famOn[c.dataset.fam]^=1;c.classList.toggle('off');recount();renderStats();renderLegend();if(!focus)renderEmpty()}
-  if(focus)applyFocus();draw();});
+legend.addEventListener('click',ev=>{
+  if(ev.target.closest('.ltog')){legendOpen=!legendOpen;renderLegend();if(focus)applyFocus();else fit();return}
+  const c=ev.target.closest('.chip');if(!c)return;
+  if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off');if(focus)applyFocus();draw();return}
+  famOn[c.dataset.fam]^=1;c.classList.toggle('off');recount();renderStats();renderLegend();
+  // v1.16: a family chip changes the shown EXTENT (a column appears or goes), so the surface view re-fits —
+  // the assets column no longer lands off-stage until Fit is pressed. A dig re-centres instead.
+  if(focus)applyFocus();else{renderEmpty();fit()}});
 
 // ---------- canvas
 const cv=document.getElementById('cv'),MAIN=cv.getContext('2d');let ctx=MAIN;const OFF=[];stage=document.getElementById('stage');
@@ -298,10 +352,31 @@ function base(n){return three?[n.x3,n.y3,n.z3]:[n.ox,n.oy,0]}
 function resize(){DPR=devicePixelRatio||1;W=stage.clientWidth;H=stage.clientHeight;cv.width=W*DPR;cv.height=H*DPR;draw()}
 addEventListener('resize',resize);
 
-function fit(){const wide=NEWFAM.some(f=>famOn[f]);let div=three?2600:2300,cx=0,cy=0;
-  if(wide){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const n of LIVE){if(!NODEON(n))continue;const x=three?n.x3:n.x,y=three?n.y3:n.y;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y)}
-    if(x1>x0){div=Math.max(three?6600:6200,Math.max(x1-x0,y1-y0)*1.08);cx=-(x0+x1)/2;cy=-(y0+y1)/2}} // #279: five columns — measure the SHOWN extent and centre on it, do not assume four; the base fit is the same constant as before
-  const k=Math.min(W,H)/div;if(wide)cy-=0.12*H/k; // lift the wide graph a little clear of the legend
+// v1.16 (EV §5.2, §5.3): the USABLE stage — the rectangle the graph is fitted and dug into. Top: below the
+// tool row. Bottom: the legend's own top edge (whatever it is showing — open, folded, or the phone sheet),
+// else the scrub row. Measured each time, never assumed, so folding the legend and pressing Fit gives the
+// whole stage back and the assets column is fitted by the axis that actually binds (width), not min(W,H).
+// usable(ew,eh): the free rectangle that shows a world extent ew×eh LARGEST. The legend (right column at
+// desktop, bottom sheet or bar at phone) leaves up to three: beside it, above it, below it; the tool row
+// and the scrub row are always reserved. Measured from the live DOM each call, never assumed.
+function usable(ew,eh){const sr=stage.getBoundingClientRect();let bot=H-16;
+  const sc=scrub.getBoundingClientRect();if(!scrub.hidden&&sc.height>0)bot=Math.min(bot,sc.top-sr.top-10);
+  const pad=W<600?12:24,top=W<600?58:62,R=[];const lg=legend.getBoundingClientRect();
+  if(lg.height>0&&lg.width>0){const l=lg.left-sr.left,t=lg.top-sr.top,b=lg.bottom-sr.top;
+    R.push({x0:pad,y0:top,x1:l-14,y1:bot});R.push({x0:pad,y0:top,x1:W-pad,y1:t-10});R.push({x0:pad,y0:b+12,x1:W-pad,y1:bot})}
+  else R.push({x0:pad,y0:top,x1:W-pad,y1:bot});
+  let best=null,bk=-1;for(const r of R){const w=r.x1-r.x0,h=r.y1-r.y0;if(w<80||h<80)continue;const k=Math.min(w/(ew||1),h/(eh||1));if(k>bk){bk=k;best=r}}
+  if(!best)best={x0:pad,y0:top,x1:W-pad,y1:Math.max(top+80,bot)};
+  best.cx=(best.x0+best.x1)/2;best.cy=(best.y0+best.y1)/2;return best}
+function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
+  for(const n of LIVE){if(!NODEON(n))continue;const x=three?n.x3:n.x,y=three?n.y3:n.y,z=three?n.z3:0;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);z0=Math.min(z0,z);z1=Math.max(z1,z)}
+  if(!(x1>x0)){x0=-1000;x1=1000;y0=-1000;y1=1000;z0=z1=0}
+  // 3D: the cloud rotates, so its depth range can become height; fit the larger of the two, with the old
+  // 3D margin. 2D: a 6% margin each side of the shown extent.
+  const m=three?1.3:1.12,yr=three?Math.max(y1-y0,z1-z0):(y1-y0),ew=(x1-x0)*m+1,eh=yr*m+1;
+  const u=usable(ew,eh),uw=u.x1-u.x0,uh=u.y1-u.y0;const k=Math.min(uw/ew,uh/eh);
+  // proj() puts world (−view.x,−view.y) at the stage centre; shift so the extent's centre lands on the usable centre
+  const cx=-(x0+x1)/2+(u.cx-W/2)/k,cy=-(y0+y1)/2+(u.cy-H/2)/k;
   view={x:cx,y:cy,k};draw()}
 
 let GROW=[];
@@ -397,8 +472,11 @@ function applyFocus(){
   if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&EON(y.e)&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
     const uniq=[...new Set(second)];uniq.forEach((id,i)=>{const n=byId.get(id);const a=-Math.PI/2+Math.PI*2*(i/uniq.length);if(three){const r=R2*1.5,ph=((i%7)-3)*0.25;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*R2;n.ty=cy+Math.sin(a)*R2;n.tz=cz}n.ta=0.45;placed.add(id)})}
   for(const n of NODES){if(!placed.has(n.id)){[n.tx,n.ty,n.tz]=base(n);n.ta=0.05}}
-  // centre the view on the focus
-  if(three){ctr=[cx,cy,cz];view.x=0;view.y=0;view.k=Math.min(W,H)/(2*(R1*1.5+(depth2?225:0)+200))}else{view.x=-cx;view.y=-cy;view.k=Math.max(view.k,Math.min(W,H)/(2*(R1+(depth2?150:0)+140)))}
+  // centre the view on the focus — v1.16: on the USABLE stage's centre (above the legend), sized to it, so
+  // a dug neighbour or a sector label never paints through a view box (EV §5.3)
+  const u=usable(1,1),um=Math.min(u.x1-u.x0,u.y1-u.y0);
+  if(three){ctr=[cx,cy,cz];view.k=um/(2*(R1*1.5+(depth2?225:0)+200));view.x=(u.cx-W/2)/view.k;view.y=(u.cy-H/2)/view.k}
+  else{view.k=Math.max(view.k,um/(2*(R1+(depth2?150:0)+140)));view.x=-cx+(u.cx-W/2)/view.k;view.y=-cy+(u.cy-H/2)/view.k}
   animate(); renderPanel(f,nb);
 }
 function setFocus(n,push=true){pathNodes=pathEdges=null;focus=n;if(push){if(trail[trail.length-1]!==n)trail.push(n)}renderCrumbs();applyFocus()}
@@ -440,7 +518,7 @@ function renderPanel(n,nb){
   if(n.status)h+=`<p class="src">${esc(n.status)}</p>`;
   h+=`<div class="meta"><span><b>${adj.get(n.id).filter(x=>alive(x.e)).length}</b> relations</span>${SNAPS.length&&n.born!=null?`<span>born ${SNAPS[n.born].date}</span>`:''}${n.died!=null?`<span style="color:var(--accent)">gone ${SNAPS[n.died].date}</span>`:''}${n.category?`<span>${esc(n.category)}</span>`:''}${n.date?`<span>ruled ${esc(n.date)}${n.ruled?' · '+esc(n.ruled):''}</span>`:''}${n.sources?`<span><b>${n.sources.length}</b> sources</span>`:''}</div></div>`;
   if(pathNodes){h+=renderPath()}
-  const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e)||!famOK(x.e)||!famOK(byId.get(x.other)))continue;(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
+  const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e)||!famOK(x.e)||!EON(x.e)||!famOK(byId.get(x.other)))continue; /* v1.16: the panel lists what the canvas draws — the DR sub-chip gates here too */(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
     h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
@@ -458,7 +536,7 @@ function renderPath(){if(!pathNodes)return '';const ids=[...pathNodes];const ste
 
 // ---------- shortest path (BFS)
 let pathEdgeList=[];
-function shortestPath(a,b){const prev=new Map([[a.id,null]]);const q=[a.id];while(q.length){const id=q.shift();if(id===b.id)break;for(const x of adj.get(id)){if(alive(x.e)&&famOK(x.e)&&alive(byId.get(x.other))&&!prev.has(x.other)&&NODEON(byId.get(x.other))){prev.set(x.other,{from:id,e:x.e});q.push(x.other)}}}
+function shortestPath(a,b){const prev=new Map([[a.id,null]]);const q=[a.id];while(q.length){const id=q.shift();if(id===b.id)break;for(const x of adj.get(id)){if(alive(x.e)&&famOK(x.e)&&EON(x.e)&&alive(byId.get(x.other))&&!prev.has(x.other)&&NODEON(byId.get(x.other))){prev.set(x.other,{from:id,e:x.e});q.push(x.other)}}}
   if(!prev.has(b.id))return null;const ids=[],es=[];let cur=b.id;while(cur){ids.unshift(cur);const p=prev.get(cur);if(p){es.unshift(p.e);cur=p.from}else cur=null}return {ids,es}}
 function showPath(a,b){const p=shortestPath(a,b);if(!p){alert('No path between these two with the current filters.');return}
   pathNodes=new Set(p.ids);pathEdges=new Set(p.es.map(e=>e.k));pathEdgeList=p.es;
@@ -509,7 +587,7 @@ document.addEventListener('click',e=>{if(!e.target.closest('.search'))hits.class
 const sr=document.getElementById('srange'),sd=document.getElementById('sdate'),sc=document.getElementById('scounts'),scrub=document.getElementById('scrub');
 let playing=false,playT=null;
 function setT(i){T=Math.max(0,Math.min(SNAPS.length-1,i));sr.value=T;const s=SNAPS[T];
-  const nn=NODES.filter(n=>alive(n)&&famOK(n)).length,ne=EDGES.filter(e=>e.t&&alive(e)&&famOK(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
+  const nn=NODES.filter(n=>alive(n)&&famOK(n)).length,ne=EDGES.filter(e=>e.t&&alive(e)&&famOK(e)&&DRON(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
   sd.innerHTML=`<b>${s.date}</b> · ${s.commit}`;sc.innerHTML=`<b>${nn}</b> nodes · <b>${ne.toLocaleString()}</b> relations · ${s.unresolved} unresolved`;
   scrub.classList.toggle('past',T<SNAPS.length-1);
   if(focus){applyFocus()}else if(!anim)draw();}
