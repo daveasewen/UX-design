@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.17"  # 1.17 (#280 lane LY, s277-D8 rendered rather than ruled) THE STRATA LAYOUT — the three views laid out as three VISIBLE LAYERS, offered as a switch beside the force layout. Every node keeps the builder's `x` (so the columns and clusters below survive left-to-right) and gains a SECOND y, `y2`, packed inside its view's horizontal band by a light force at BUILD time (collide in y only, x frozen, plus a weak pull to the band centre); the bands run top to bottom EXPLANATION · DESIGN GOVERNANCE · SYSTEM, with THE CONSTITUTION as a fourth band below System — the bedrock, dimmed, drawn only when its chip is on. A node's band is its view under the fam→view map the page already carries (VIEWS): base nodes carry no `fam` and are SYSTEM. `x`, `y`, `x3`, `y3`, `z3` are NOT touched — the force layout is in the file byte for byte and the page opens in `force` unless the switch or `?layout=strata` says otherwise, so the shipped default is 1.16 to the pixel. The page gets a LAYOUT switch in the tool row, a `bands` block in the data (each band's name and its y0/y1), band tints + hairlines + left-edge labels painted under the graph, and cross-band edges drawn brighter than within-band ones — the crossings are the point of the picture. The switch SNAPS (no tween), so a never-driven screenshot is stable as soon as the page settles · 1.16 (#279 lane EX2, the EV fixes on 1.15 — template only, no reader, no layout change, no node/edge/fam key moved) (a) at phone width the legend is a BOTTOM SHEET closed by default to one bar — the graph gets the stage; open, the four view boxes come FIRST and the type rows scroll under them, capped at 62% of the stage so the graph never vanishes; the scrub row is three rows at 390 so its counts no longer clip (b) fit() measures the SHOWN extent on BOTH axes against the USABLE stage (the rectangle above the legend) — the assets column is fitted by width, the axis that binds, not by min(W,H), and a family chip toggle re-fits (c) the legend is COLLAPSIBLE at every width and the stage RESERVES its measured height: fit() and the dig centre in usable(), so no chip row sits on the base hub and no dug neighbour paints through a view box; folding the legend and pressing Fit gives the whole stage back (d) the "rulings a design cites" sub-chip counts the citation edges it GOVERNS under the family chips now (28 at defaults; 341 was a total that included 10 never-drawn nulls and 295 Constitution-only edges) and recount()/the scrub counts/the panel/the path honour the sub-chip, so the header agrees with the canvas when it is toggled; its label and its default are untouched (EV §9, Dave's question) · 1.15 (#279, s277-D8 + s277-D4) ONE GRAPH, THREE VIEWS BY FORCE — the chip bar is re-labelled into SYSTEM (what exists; the agent chooses: structure · usage · rendering · rules & wiring · assets) / DESIGN GOVERNANCE (what a design must or should do; the agent obeys: ONE obligation with THREE provenance sub-chips — WCAG sc: · HSBC rule: · rulings a design cites — each still its own chip, s275-D6) / EXPLANATION (why; the agent consults: UX principles + polarities), and THE CONSTITUTION — the ruling record, 593 rulings with their sessions, evidence and artefacts — named on the page as its own thing, NOT one of the three views. Storage untouched: no node id, edge type, file or fam KEY changes (RULE_FAM/UX_FAM/'governance'/'guidelines' stay; only labels move). A FIFTH additive family behind chip `assets`, OFF by default: the 688 icon:/iconGroup:/logo: nodes from knowledge/_icon_nodes.json + _logo_nodes.json (six edge types drawn — inGroup/activeVariantOf/usesIcon/usesLogo/defaultFor/ruledBy; every `t: null` carried as a declared null, never dropped, never drawn). The precedence ladder and the derived per-ruling scope are UNRATIFIED and are not drawn; the "rulings a design cites" sub-chip is AUTHORED citation only (governedBy from a meta, ruledBy from the asset files, a ruling's own `governs` naming a component) — no scope is derived. edges.obeys is still not drawn (the s276 declared gap, unchanged) · 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.18a"  # 1.18 (#280 lane LM, s280-D1) THE LAYOUT MATRIX — three layouts (FORCE · STRATA · SHELLS) × two dimensions (2D · 3D) on one switch, six cells, force-2D the default and pixel-identical to 1.17. STRATA-3D is the sketch called FLOORS (three translucent plates in an exploded stack, the Constitution a fourth plate beside), SHELLS-2D the sketch called ORBITS (concentric rings, the Constitution an arc outside), SHELLS-3D the Fibonacci spheres with the Constitution as a plinth disc. Three new BUILD-TIME coordinate sets — `xf,yf,zf` / `xo,yo` / `xs,ys,zs` — and `plates`/`rings`/`shells` blocks in the data; `x`, `y`, `x3`, `y3`, `z3`, `y2` are NOT touched. 1.18a ships the strata-3D cell and the two-axis switch; 1.18b adds shells-2D; 1.18 completes the six. · 1.17 (#280 lane LY, s277-D8 rendered rather than ruled) THE STRATA LAYOUT — the three views laid out as three VISIBLE LAYERS, offered as a switch beside the force layout. Every node keeps the builder's `x` (so the columns and clusters below survive left-to-right) and gains a SECOND y, `y2`, packed inside its view's horizontal band by a light force at BUILD time (collide in y only, x frozen, plus a weak pull to the band centre); the bands run top to bottom EXPLANATION · DESIGN GOVERNANCE · SYSTEM, with THE CONSTITUTION as a fourth band below System — the bedrock, dimmed, drawn only when its chip is on. A node's band is its view under the fam→view map the page already carries (VIEWS): base nodes carry no `fam` and are SYSTEM. `x`, `y`, `x3`, `y3`, `z3` are NOT touched — the force layout is in the file byte for byte and the page opens in `force` unless the switch or `?layout=strata` says otherwise, so the shipped default is 1.16 to the pixel. The page gets a LAYOUT switch in the tool row, a `bands` block in the data (each band's name and its y0/y1), band tints + hairlines + left-edge labels painted under the graph, and cross-band edges drawn brighter than within-band ones — the crossings are the point of the picture. The switch SNAPS (no tween), so a never-driven screenshot is stable as soon as the page settles · 1.16 (#279 lane EX2, the EV fixes on 1.15 — template only, no reader, no layout change, no node/edge/fam key moved) (a) at phone width the legend is a BOTTOM SHEET closed by default to one bar — the graph gets the stage; open, the four view boxes come FIRST and the type rows scroll under them, capped at 62% of the stage so the graph never vanishes; the scrub row is three rows at 390 so its counts no longer clip (b) fit() measures the SHOWN extent on BOTH axes against the USABLE stage (the rectangle above the legend) — the assets column is fitted by width, the axis that binds, not by min(W,H), and a family chip toggle re-fits (c) the legend is COLLAPSIBLE at every width and the stage RESERVES its measured height: fit() and the dig centre in usable(), so no chip row sits on the base hub and no dug neighbour paints through a view box; folding the legend and pressing Fit gives the whole stage back (d) the "rulings a design cites" sub-chip counts the citation edges it GOVERNS under the family chips now (28 at defaults; 341 was a total that included 10 never-drawn nulls and 295 Constitution-only edges) and recount()/the scrub counts/the panel/the path honour the sub-chip, so the header agrees with the canvas when it is toggled; its label and its default are untouched (EV §9, Dave's question) · 1.15 (#279, s277-D8 + s277-D4) ONE GRAPH, THREE VIEWS BY FORCE — the chip bar is re-labelled into SYSTEM (what exists; the agent chooses: structure · usage · rendering · rules & wiring · assets) / DESIGN GOVERNANCE (what a design must or should do; the agent obeys: ONE obligation with THREE provenance sub-chips — WCAG sc: · HSBC rule: · rulings a design cites — each still its own chip, s275-D6) / EXPLANATION (why; the agent consults: UX principles + polarities), and THE CONSTITUTION — the ruling record, 593 rulings with their sessions, evidence and artefacts — named on the page as its own thing, NOT one of the three views. Storage untouched: no node id, edge type, file or fam KEY changes (RULE_FAM/UX_FAM/'governance'/'guidelines' stay; only labels move). A FIFTH additive family behind chip `assets`, OFF by default: the 688 icon:/iconGroup:/logo: nodes from knowledge/_icon_nodes.json + _logo_nodes.json (six edge types drawn — inGroup/activeVariantOf/usesIcon/usesLogo/defaultFor/ruledBy; every `t: null` carried as a declared null, never dropped, never drawn). The precedence ladder and the derived per-ruling scope are UNRATIFIED and are not drawn; the "rulings a design cites" sub-chip is AUTHORED citation only (governedBy from a meta, ruledBy from the asset files, a ruling's own `governs` naming a component) — no scope is derived. edges.obeys is still not drawn (the s276 declared gap, unchanged) · 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -564,6 +564,129 @@ def strata(nodes, band_h=760.0, gap_frac=0.16):
     return bands
 
 
+# ---------------------------------------------------------------- #280 s280-D1: the LAYOUT MATRIX
+# THREE LAYOUTS × TWO DIMENSIONS = SIX CELLS. FORCE (as built) · STRATA (bands) · SHELLS (concentric),
+# each in 2D and 3D. This adds THREE MORE coordinate sets and touches nothing that exists:
+#   floors()  → `xf,yf,zf`  STRATA-3D — three translucent plates in an exploded stack, each carrying
+#                           its view's own force x,y laid flat on it; the Constitution a fourth plate
+#                           BESIDE the stack (LS sketch 3).
+#   orbits()  → `xo,yo`     SHELLS-2D — concentric rings, the angle taken from the node's own force
+#                           position so neighbours stay neighbours; the Constitution an arc outside
+#                           the rings (LS sketch 4).
+#   shells3d()→ `xs,ys,zs`  SHELLS-3D — Fibonacci placement on a sphere per view, radius by view, the
+#                           Constitution a flat plinth disc under them (LS sketch 2).
+# `x`, `y`, `x3`, `y3`, `z3` and `y2` are NOT touched, so force-2D is 1.17 to the pixel and strata-2D
+# is 1.17's strata to the pixel. Two honest deviations are lane LS's findings, kept on purpose:
+# (1) the 2D force layout parks whole families in far-off columns, so the flat placements use
+# PERCENTILE RANK rather than a min–max squash — left is still left, only the spacing is given up;
+# (2) the 3D force directions are clumped, so a straight projection onto a sphere gives a blot —
+# hence Fibonacci placement handed out in the order of each node's own longitude, which keeps the
+# ordering and gives up the spacing. Both are one line to reverse.
+PLATE_ORDER = ['explain', 'design', 'system']      # top → bottom in the exploded stack
+RING_ORDER = ['system', 'design', 'explain']       # core → outermost ring
+
+
+def prank(v):
+    """Percentile rank in [-0.5, 0.5], stable. LS's flattening: order survives, spacing does not."""
+    v = np.asarray(v, dtype=float)
+    if len(v) == 0: return v
+    o = np.argsort(v, kind='stable'); r = np.empty(len(v)); r[o] = np.arange(len(v), dtype=float)
+    return r / max(1.0, len(v) - 1.0) - 0.5
+
+
+def floors(nodes, plate=1500.0, gap=620.0, aside=1.30):
+    """STRATA-3D. Returns the plate list (each plate's centre, its half-width and its height)."""
+    plates = []
+    for i, v in enumerate(PLATE_ORDER + ['constitution']):
+        grp = [n for n in nodes if n['view'] == v]
+        if v == 'constitution':
+            cy = gap * 0.5; cx = plate * aside          # BESIDE the building, not under it
+        else:
+            cy = (i - (len(PLATE_ORDER) - 1) / 2.0) * gap; cx = 0.0
+        plates.append({'id': v, 'name': BAND_NAME[v], 'y': round(cy, 1), 'cx': round(cx, 1),
+                       'half': round(plate / 2.0, 1), 'n': len(grp)})
+        if not grp: continue
+        px = prank([n['x'] for n in grp]) * plate + cx
+        pz = prank([n['y'] for n in grp]) * plate
+        for n, a, b in zip(grp, px, pz):
+            n['xf'] = round(float(a), 1); n['yf'] = round(float(cy), 1); n['zf'] = round(float(b), 1)
+    return plates
+
+
+def _ring_place(grp, ang, r0, r1, a0, a1):
+    """Lay a group into an annulus sector, keeping the cyclic order of `ang` and equalising its
+    spacing. Sub-rings are chosen so the angular and the radial spacing come out about equal."""
+    n = len(grp)
+    span = a1 - a0
+    rmid = (r0 + r1) / 2.0
+    rows = max(1, int(round(np.sqrt(max(1.0, n * (r1 - r0) / max(1.0, span * rmid))))))
+    cols = int(np.ceil(n / rows))
+    order = np.argsort(np.asarray(ang), kind='stable')
+    out = []
+    for k, i in enumerate(order):
+        row, col = k % rows, k // rows
+        a = a0 + span * ((col + 0.5) / cols)
+        r = r0 + (r1 - r0) * ((row + 0.5) / rows)
+        out.append((i, r, a))
+    return out, rows
+
+
+def orbits(nodes):
+    """SHELLS-2D (the orbits). Returns the ring list — each ring's radii and, for the Constitution,
+    its angular sector. A node's angle comes from its own force position, so neighbours stay near."""
+    GEO = {'system': (140.0, 560.0, -np.pi, np.pi), 'design': (760.0, 1040.0, -np.pi, np.pi),
+           'explain': (1180.0, 1360.0, -np.pi, np.pi),
+           'constitution': (1560.0, 2180.0, np.pi * 0.12, np.pi * 1.28)}  # an ARC outside the rings
+    rings = []
+    for v in RING_ORDER + ['constitution']:
+        r0, r1, a0, a1 = GEO[v]
+        grp = [n for n in nodes if n['view'] == v]
+        rings.append({'id': v, 'name': BAND_NAME[v], 'r0': r0, 'r1': r1,
+                      'a0': round(float(a0), 4), 'a1': round(float(a1), 4), 'n': len(grp)})
+        if not grp: continue
+        ang = [float(np.arctan2(n['y'], n['x'])) for n in grp]
+        placed, rows = _ring_place(grp, ang, r0, r1, a0, a1)
+        rings[-1]['rows'] = rows
+        for i, r, a in placed:
+            grp[i]['xo'] = round(float(np.cos(a) * r), 1); grp[i]['yo'] = round(float(np.sin(a) * r), 1)
+    return rings
+
+
+def shells3d(nodes):
+    """SHELLS-3D. Fibonacci placement on each view's sphere, the index handed out in the order of the
+    node's own longitude in the 3D force layout; the Constitution a flat plinth disc beneath them."""
+    R = {'system': 620.0, 'design': 1000.0, 'explain': 1320.0}
+    PLINTH_Y, PLINTH_R = 1560.0, 1560.0
+    shells = []
+    ga = np.pi * (3.0 - np.sqrt(5.0))
+    for v in RING_ORDER:
+        grp = [n for n in nodes if n['view'] == v]
+        shells.append({'id': v, 'name': BAND_NAME[v], 'r': R[v], 'n': len(grp)})
+        if not grp: continue
+        lon = [float(np.arctan2(n.get('z3', 0.0), n.get('x3', 0.0))) for n in grp]
+        order = np.argsort(np.asarray(lon), kind='stable')
+        m = len(grp)
+        for k, i in enumerate(order):
+            y = 1.0 - 2.0 * (k + 0.5) / m          # cos(latitude), evenly spaced
+            rr = np.sqrt(max(0.0, 1.0 - y * y)); th = ga * k
+            n = grp[i]
+            n['xs'] = round(float(np.cos(th) * rr * R[v]), 1)
+            n['ys'] = round(float(y * R[v]), 1)
+            n['zs'] = round(float(np.sin(th) * rr * R[v]), 1)
+    grp = [n for n in nodes if n['view'] == 'constitution']
+    shells.append({'id': 'constitution', 'name': BAND_NAME['constitution'], 'plinthY': PLINTH_Y,
+                   'r': PLINTH_R, 'n': len(grp)})
+    if grp:
+        lon = [float(np.arctan2(n.get('z3', 0.0), n.get('x3', 0.0))) for n in grp]
+        order = np.argsort(np.asarray(lon), kind='stable'); m = len(grp)
+        for k, i in enumerate(order):       # a sunflower disc — the ground the shells stand on
+            r = PLINTH_R * np.sqrt((k + 0.5) / m); th = ga * k
+            n = grp[i]
+            n['xs'] = round(float(np.cos(th) * r), 1); n['ys'] = PLINTH_Y
+            n['zs'] = round(float(np.sin(th) * r), 1)
+    return shells
+
+
 def fr(n, Es, dim, k, IT, R0, seed):
     rng = np.random.default_rng(seed)
     pos = rng.normal(size=(n, dim)); pos /= np.linalg.norm(pos, axis=1, keepdims=True); pos *= rng.uniform(0.2, 1, (n, 1)) * R0
@@ -674,9 +797,12 @@ def main():
     # #280 — the second coordinate set. Runs LAST, over the finished node list, and writes only
     # `view` and `y2`; every position the force layout wrote is already final and is left alone.
     bands = strata(nodes)
+    # #280 s280-D1 — the LAYOUT MATRIX's second cell: STRATA-3D (the sketch called FLOORS). Runs after
+    # strata() because it reads each node's `view`, and writes only `xf,yf,zf`.
+    plates = floors(nodes)
     sha = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     data = {'generated': datetime.date.today().isoformat(), 'version': VERSION, 'commit': sha, 'nodes': nodes, 'edges': edges,
-            'islands': islands, 'orphans': orphans, 'snaps': snaps, 'bands': bands,
+            'islands': islands, 'orphans': orphans, 'snaps': snaps, 'bands': bands, 'plates': plates,
             'extra': {'nodes': len(xnodes), 'edges': len(xedges),
                       'rulings': sum(1 for n in nodes if n['type'] == 'ruling'),
                       'sc': sum(1 for n in nodes if n['type'] == 'sc'),
@@ -712,6 +838,8 @@ def main():
           + (f" · SKIPPED {rep['asset_edges_skipped']}" if rep.get('asset_edges_skipped') else ''))
     print("  strata bands (#280, s277-D8 rendered): " + " · ".join(
         f"{b['name']} {b['n']} @ {b['y0']}…{b['y1']}" for b in bands))
+    print("  strata-3D plates (#280, s280-D1): " + " · ".join(
+        f"{p['name']} {p['n']} @ y {p['y']} cx {p['cx']} ±{p['half']}" for p in plates))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':
