@@ -1,0 +1,27 @@
+# LANE LS — BRIEF — FOUR SKETCHES of the graph as three visible layers, on one page, for Dave's eye. Sketches, NOT a build.
+#280 · 2026-09-16 · written by the conductor (Fable 5.1) · **model: opus** · bash root `/sessions/intelligent-serene-curie/mnt/UX-design/`
+
+## Dave's words, verbatim, today
+*"I'm not sure about this option maybe just sketch out some ideas rather than building it, unless is simple to do. The 3D view is a real crowd pleaser, Maybe I don't understand what your describing, but in my mind the layers were like shells rather than rows or columns, but lets have a few ideas. Im open to ideas I just need to see them."* And the sentence he is holding onto: *"three visible layers, the system at one level, the obligations at another, the reasons at a third, the Constitution beside them — so the shape of the graph tells you which layer you're in"*.
+The three layers are `s277-D8`'s views: SYSTEM (what exists) · DESIGN GOVERNANCE (what a design must do) · EXPLANATION (why); THE CONSTITUTION is a fourth thing beside them, not a view. Read `s277-D8` whole in `knowledge/_rulings.json` (~line 10169).
+
+## Context (retrieval, not a reading list)
+- Lane LY built idea 1 today (strata bands, 2D): `notes/_lanes/280/layout/REPORT.md` and its option page `OPTION-strata-2026-09-16.html` with shots under `shots/`. Reuse its 1.17-strata 1280-light screenshot as sketch 1's picture. Do NOT touch the explorer template/builder/`notes/_KG-EXPLORER.html`.
+- The explorer already has a 3D view (force, `x3,y3,z3` per node) — see `knowledge/_kg_explorer.template.html` for how it projects and rotates, so sketches 2–4 use a projection the real page could adopt.
+- Node counts per view at page defaults and with the Constitution on: take them from `notes/_subreports/2026-09-16-279-EX2-explorer-fix.md` §4 or compute from the embedded KG in `notes/_KG-EXPLORER.html`; never type a count the build could compute.
+
+## The four sketches — each one a rendered picture with the REAL node data (sampled if needed for legibility, say the sample size), not a hand diagram
+1. **STRATA** — three horizontal bands, Constitution as bedrock below (LY's build; its screenshot).
+2. **SHELLS** — 3D concentric shells: SYSTEM as the core sphere, DESIGN GOVERNANCE the shell around it, EXPLANATION the outer shell; nodes on each shell's surface (Fibonacci-sphere placement, radius by view), edges as chords through the shells; THE CONSTITUTION as a flat plinth/ground disc the shells sit on, dimmed. Render two views: a three-quarter isometric with the outer shells at ~25% opacity so the core reads, and a cutaway (front half of each outer shell removed).
+3. **FLOORS** — 3D stacked translucent planes, like an exploded building: SYSTEM the ground floor, DESIGN GOVERNANCE above it, EXPLANATION the top floor, each floor a tinted plate with the nodes force-laid flat on it (reuse the builder's x,y per view); the cross-floor edges are vertical-ish lines between plates; THE CONSTITUTION a fourth plate beside the stack. Isometric, slight rotation.
+4. **ORBITS** — 2D concentric rings (the shells flattened, so it survives at phone width and in print): SYSTEM at the centre, DESIGN GOVERNANCE the middle ring, EXPLANATION the outer ring; angle preserved from the force layout's cluster positions so neighbours stay near; THE CONSTITUTION a segment/arc outside the rings.
+Render with the same palette the explorer uses (view tints), light theme only for the sketches (dark once for sketch 2 since 3D is the crowd-pleaser). Static SVG or canvas→PNG; a light `<canvas>` rotation on sketch 2 is welcome if it costs under an hour, otherwise static.
+
+## The page — `notes/_lanes/280/layout-sketches/SKETCHES-2026-09-16.html`, single file, swiss-design-system idiom (`/sessions/intelligent-serene-curie/mnt/.claude/skills/swiss-design-system/SKILL.md`)
+One row per sketch: the picture(s) large; name; two plain-prose sentences — what the shape tells you and what it costs (one clause on effort: "a switch in the page" / "a new projection" / "its own lane"). Then one radio set: (1) strata · (2) shells · (3) floors · (4) orbits · (5) something else — note field; plus a checkbox per sketch "keep as a second view". Export button, envelope `{exportedAt, page, answers:{layout:{choice, keep:[], note}}}`. NO ruling ids in body copy (once in a small footer). Screenshot the page never-driven at 1280 light for the report.
+
+## Gates
+Nothing outside `notes/_lanes/280/layout-sketches/` changes. Page errors `[]`. `/sessions` at 99%: download NOTHING, Chromium via `knowledge/_render/seat_env.sh` only, scratch under `/sessions/intelligent-serene-curie/mnt/outputs/ls/` and removed at the end; never `cp -r knowledge` anywhere.
+
+## Report — `notes/_lanes/280/layout-sketches/REPORT.md` + `notes/_subreports/2026-09-16-280-LS-layout-sketches.md` (+ `_state.json` row `W-280ls` via `_state.add()`, close condition = Dave's export received). Plain prose first.
+Commit via `SESSION_N=280 SHOWROOM_ACK=1 bash knowledge/_git_commit.sh --reconciled <fresh msgfile> <paths…> < /dev/null`, msgfile `/tmp/_msg-280-LS-$(date +%s).txt`, bare subject `#280 lane LS: four layout sketches for Dave — strata, shells, floors, orbits`. Regenerate `_CHAIN.md` if the store row trips the chain gate. Locks → `mv` to `.git/_orphan-locks/`. Never `git stash` / `gen_kg_edges.py` / `_build_all.py`. Do not push. Return: page path, commit sha, and for each sketch its two sentences.
