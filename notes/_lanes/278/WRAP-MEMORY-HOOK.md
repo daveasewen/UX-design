@@ -32,3 +32,6 @@ Related: [[wrap-277-the-constitution-and-the-thin-slice]] · [[wrap-276-the-loos
 
 ---
 ⬛ PLACEMENT OWED: this file has NOT been placed. The conductor copies the body above to `wrap-278-the-cloud-move-and-the-seed.md` in the claude.ai Project memory and adds the index line to `index.md` at the #279 opener, then appends a `✅ PLACED <date>` receipt here — the #277 shape.
+
+---
+⬛ **`s271-D4` RE-READ — THE RITUAL'S FINAL BEAT, RUN AT 5b AND RECORDED RATHER THAN ASSUMED.** This hook's open items were re-read against `knowledge/_rulings.json` after every ruling of the session was inscribed. #278 inscribed exactly one — **s278-D1** — and it is about the seed/ASK contract; it closes NONE of the three cloud-store obligations (compaction · the one-way re-import risk · the write scope) and none of the declared gaps. **NOTHING IS STRUCK.** ⚠ Every open item above is written as the question it is, not as a state of the world.
