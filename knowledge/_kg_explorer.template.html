@@ -21,6 +21,10 @@
      sibling for the polarity hub, the plum again for the edge family. Not a red: the
      TWO-RED LAW (s151-D1) is untouched — --accent is still the only red token. */
   --c-ux:#8A1A5C;--c-polarity:#B03A7A;--f-uxprinciples:#8A1A5C;
+  /* #279 s277-D4 — the assets family: a teal for the icon glyph, a deeper sibling for the group
+     hub, a slate for the logo lockup, the teal again for the edge family. Not a red: the
+     TWO-RED LAW (s151-D1) is untouched — --accent is still the only red token. */
+  --c-icon:#0B7285;--c-iconGroup:#075A6A;--c-logo:#4E6E8E;--f-assets:#0B7285;
   --mono:"SF Mono",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
@@ -30,6 +34,7 @@
     --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
     --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
     --c-ux:#E68ABF;--c-polarity:#F0B4D6;--f-uxprinciples:#E68ABF;
+    --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
   }
 }
 :root[data-theme="dark"]{
@@ -38,6 +43,7 @@
   --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
   --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
   --c-ux:#E68ABF;--c-polarity:#F0B4D6;--f-uxprinciples:#E68ABF;
+  --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -60,9 +66,20 @@ header{grid-column:1/3;display:grid;grid-template-columns:auto 1fr auto;align-it
 .stage{position:relative;overflow:hidden;border-right:1px solid var(--rule)}
 canvas{display:block;width:100%;height:100%;cursor:grab}
 canvas.grabbing{cursor:grabbing}
-.legend{position:absolute;left:24px;bottom:66px;max-width:calc(100% - 300px);display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
+.legend{position:absolute;left:24px;bottom:66px;max-width:calc(100% - 48px);display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
 .legend .row{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
-.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--rule);background:var(--bg);cursor:pointer;user-select:none;min-height:30px}
+/* #279 s277-D8 — the family row is grouped into the three VIEWS + THE CONSTITUTION. A view is a
+   labelled box of chips; DESIGN GOVERNANCE's three provenance sub-chips sit inside ONE obligation
+   box (s275-D6: a sub-chip is still its own chip). The Constitution is its own box, outside. */
+.legend .views{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start;pointer-events:auto}
+.legend .view{display:flex;flex-direction:row;align-items:center;gap:8px;padding:4px 7px 4px 8px;border:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 82%,transparent)}
+.legend .view>h4{margin:0;width:132px;flex:0 0 132px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink);line-height:1.3}
+.legend .view>h4 small{display:block;font-size:9px;font-weight:400;color:var(--ink-3);letter-spacing:.02em;text-transform:none}
+.legend .view .row{gap:5px}
+.legend .view.constitution{border-color:var(--ink);border-width:1px 1px 1px 3px}
+.legend .obligation{display:flex;flex-direction:column;gap:3px;padding:4px 5px 5px;border:1px dashed var(--rule)}
+.legend .obligation>span{font-size:9px;color:var(--ink-3);letter-spacing:.08em}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--rule);background:var(--bg);cursor:pointer;user-select:none;min-height:24px;font-size:10px} /* #279: compacted (was 6px 10px / 30px) so the three views + the Constitution fit where three rows sat */
 .chip.off{opacity:.35}
 .chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
 .chip.edge i{width:16px;height:2px;border-radius:0}
@@ -83,7 +100,7 @@ canvas.grabbing{cursor:grabbing}
 .scrub .counts{color:var(--ink-3);text-align:right;min-width:230px}.scrub .counts b{color:var(--ink);font-weight:600}
 .scrub input[type=range]{width:100%;height:30px;margin:0;accent-color:var(--accent);background:transparent;cursor:pointer}
 .scrub.past .date b{color:var(--accent)}
-.hint{position:absolute;right:20px;bottom:66px;max-width:270px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.6}
+.hint{position:absolute;right:20px;top:56px;max-width:270px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.6}
 aside{overflow:auto;background:var(--bg)}
 .empty{padding:28px 24px;color:var(--ink-2)}
 .empty h2{font-size:22px;letter-spacing:-.02em;margin:0 0 14px;color:var(--ink);font-weight:700;line-height:1.15}
@@ -128,7 +145,11 @@ aside{overflow:auto;background:var(--bg)}
 .path .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .path .steps span{padding:4px 7px;border:1px solid var(--rule);background:var(--bg)}
 .path .steps em{color:var(--ink-3);font-style:normal}
-@media (max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:56px 55vh 1fr}.stage{border-right:0;border-bottom:1px solid var(--rule)}.search input{width:180px}.stats{display:none}}
+/* #279: `header{grid-column:1/3}` made an IMPLICIT second column under the one-column mobile grid, so
+   the stage was 48px wide at 390 (inherited from v1.0; measured, not guessed). One declaration fixes it.
+   The legend is a scrolling stack at phone width; the views go column-wise (heading above chips). */
+@media (max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:56px 55vh 1fr}header{grid-column:1}.stage{border-right:0;border-bottom:1px solid var(--rule)}.search input{width:150px}.stats{display:none}.brand span{display:none}.tools{gap:4px}
+  .legend{max-width:calc(100% - 48px);max-height:calc(100% - 140px);overflow:auto;gap:5px;pointer-events:auto}.legend .view{flex-direction:column;align-items:stretch;gap:3px;padding:4px 6px 5px}.legend .view>h4{width:auto;flex:0 0 auto}.chip{padding:3px 6px;min-height:22px}.hint{display:none}.crumbs{max-width:100%}}
 </style>
 </head>
 <body>
@@ -158,7 +179,7 @@ aside{overflow:auto;background:var(--bg)}
 const KG=JSON.parse(document.getElementById('kg').textContent);
 const NODES=KG.nodes, EDGES=KG.edges;
 const byId=new Map(NODES.map(n=>[n.id,n]));
-const RAD={session:3.4,artefact:1.9,evidence:1.7,sc:4.6,guideline:5.2,principle:7.5,policy:7,standard:7,axe:2.1};
+const RAD={session:3.4,artefact:1.9,evidence:1.7,sc:4.6,guideline:5.2,principle:7.5,policy:7,standard:7,axe:2.1,icon:2.0,iconGroup:5.4,logo:3.6};
 const SNAPS=KG.snaps||[];let T=SNAPS.length?SNAPS.length-1:0;const alive=o=>o.born==null||(o.born<=T&&(o.died==null||o.died>T));
 NODES.forEach((n,i)=>{n.i=i;n.ox=n.x;n.oy=n.y;n.z=0;n.tz=0;n.tx=n.x;n.ty=n.y;n.a=1;n.ta=1;n.r=n.type==='component'?4.2+Math.min(n.deg,29)*0.16:n.type==='ruling'?4.5:RAD[n.type]||2.6});
 const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure',family:'structure',groupsWith:'structure',partial:'structure',reuses:'structure',delegatesTo:'structure',
@@ -176,9 +197,26 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   // #274 s274-D8 — the four ratified guideline-rule edge types, their own family and chip.
   definedIn:'guidelinerules',cites:'guidelinerules',enforcedBy:'guidelinerules',flaggedBy:'guidelinerules',
   // #275 s275-D2 — the six ratified UX-principle edge types, their own family and chip.
-  tensionWith:'uxprinciples',hasParty:'uxprinciples',touches:'uxprinciples',resolvedBy:'uxprinciples',challengedBy:'uxprinciples',explainedBy:'uxprinciples'};
-const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring',governance:'Governance',guidelines:'Guidelines',guidelinerules:'Guideline rules',uxprinciples:'UX principles'};
-const NEWFAM=['governance','guidelines','guidelinerules','uxprinciples'];
+  tensionWith:'uxprinciples',hasParty:'uxprinciples',touches:'uxprinciples',resolvedBy:'uxprinciples',challengedBy:'uxprinciples',explainedBy:'uxprinciples',
+  // #279 s277-D4 — the six ratified asset edge types, their own family and chip (OFF by default).
+  // defaultActive (s277-D6) and the logos' governedBy (s277-D7) are DECLARED-NULL ONLY: never drawn,
+  // so they need no family here — they are counted and listed as declared nulls.
+  inGroup:'assets',activeVariantOf:'assets',usesIcon:'assets',usesLogo:'assets',defaultFor:'assets',ruledBy:'assets'};
+// #279 s277-D8 — ONE GRAPH, THREE VIEWS BY FORCE. The fam KEYS are storage (untouched); the LABELS
+// and the grouping are the page's. governance = THE CONSTITUTION (the ruling record; NOT a view).
+const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring',assets:'Assets',
+  guidelines:'WCAG sc:',guidelinerules:'HSBC rule:',governance:'Rulings · sessions · evidence',uxprinciples:'UX principles & polarities'};
+const VIEWS=[
+  {id:'system',name:'System',say:'what exists — the agent chooses',fams:['structure','usage','render','rules','assets']},
+  {id:'design',name:'Design governance',say:'what a design must or should do — the agent obeys',obligation:['guidelines','guidelinerules','designrulings']},
+  {id:'explain',name:'Explanation',say:'why — the agent consults',fams:['uxprinciples']},
+  {id:'constitution',name:'The Constitution',say:'the ruling record — not a view',fams:['governance']}];
+// The third provenance sub-chip is NOT a family and NOT a derived scope (A2's per-ruling scope is
+// UNRATIFIED under s277-D8): it is the AUTHORED citation of a ruling by a design — `governedBy` in a
+// component meta, `ruledBy` in the asset files, or a ruling's own `governs` naming a component or
+// snippet. It gates those edges only; it adds no node and no count. ON by default, like the base.
+const DR=e=>e.type==='governedBy'||e.type==='ruledBy'||(e.type==='governs'&&/^(component|snippet):/.test(e.t||''));
+const NEWFAM=['governance','guidelines','guidelinerules','uxprinciples','assets'];
 const READ={containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
   governs:['governs','is governed by'],evidencedBy:['is evidenced by','is evidence for'],ruledIn:['was ruled in','ruled'],mentions:['mentions','is mentioned by'],
   definedIn:['is defined in','defines'],cites:['cites','is cited by'],enforcedBy:['is enforced by','enforces'],flaggedBy:['is flagged by','flags'],
@@ -189,20 +227,23 @@ const READ={containedBy:['is contained by','contains'],hasPart:['has part','is p
   corrects:['corrects','is corrected by'],enacts:['enacts','is enacted by'],extends:['extends','is extended by'],
   bounds:['bounds','is bounded by'],confirms:['confirms','is confirmed by'],overrides:['overrides','is overridden by'],
   appliesTo:['applies to','must satisfy'],under:['sits under','contains'],enClause:['has EN 301 549 clause','is the clause for'],
-  boundBy:['is bound by','binds'],checkedBy:['is checked by','can check'],verifiedBy:['is verified by','verifies']};
+  boundBy:['is bound by','binds'],checkedBy:['is checked by','can check'],verifiedBy:['is verified by','verifies'],
+  inGroup:['is in group','groups'],activeVariantOf:['is the active variant of','has active variant'],usesIcon:['uses icon','is used by'],
+  usesLogo:['uses logo','is used by'],defaultFor:['is the default for','defaults to'],ruledBy:['is ruled by','rules']};
 const TYPES=['component','snippet','pattern','context','ruling'];
-const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity'];
+const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','icon','iconGroup','logo'];
 const ALLTYPES=TYPES.concat(TYPES2);
 const adj=new Map(NODES.map(n=>[n.id,[]]));
 const unresolved=new Map();
 EDGES.forEach((e,k)=>{e.k=k;if(!e.t){(unresolved.get(e.s)||unresolved.set(e.s,[]).get(e.s)).push(e);return;}
   adj.get(e.s).push({e,other:e.t,out:true});adj.get(e.t).push({e,other:e.s,out:false});e.a=1;e.ta=1;});
 const typeOn={};ALLTYPES.forEach(t=>typeOn[t]=1);
-const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guidelinerules:0,uxprinciples:0}; // the two v1.2 layers load OFF: the page opens as v1.1 and Dave adds a layer by chip
+const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guidelinerules:0,uxprinciples:0,assets:0,designrulings:1}; // every additive family loads OFF (assets too, s277-D4): the page opens as v1.1 and Dave adds a layer by chip. designrulings is the view sub-chip, ON like the base it gates
 // v1.2: a node from a new family answers to BOTH its type chip and its family chip. Base nodes
 // carry no `fam`, so with both new family chips off the page is exactly the v1.1 graph.
 const famOK=o=>!o.fam||famOn[o.fam];
 const NODEON=n=>typeOn[n.type]&&famOK(n);
+const EON=e=>famOn[FAMILY[e.type]]&&(!DR(e)||famOn.designrulings); // #279: an edge answers to its family chip AND, if it is a design's citation of a ruling, to the design-governance sub-chip
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2'),ink3:css('--ink-3'),rule:css('--rule'),
   t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
@@ -221,14 +262,23 @@ const XTRA=KG.extra||{};
 let SHOWN=[],SHOWNE=[],count={};
 function recount(){SHOWN=LIVE.filter(famOK);
   SHOWNE=LIVEE.filter(e=>famOK(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
-  count={};SHOWN.forEach(n=>count[n.type]=(count[n.type]||0)+1);}
-const UNRES=[...unresolved.values()].reduce((a,b)=>a+b.length,0);
+  count={};SHOWN.forEach(n=>count[n.type]=(count[n.type]||0)+1);
+  // #279: a declared null follows its family chip like every other count (v1.12..1.14 counted the
+  // 15 UX nulls chip-blind — with every family chip off the headline now reads the base's own nulls).
+  UNRES=[...unresolved.values()].reduce((a,b)=>a+b.filter(famOK).length,0);}
+let UNRES=0;
 function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]).length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
 const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
+const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`;
+// the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). Its count
+// is the live citation edges, base and family alike; it gates edges, never nodes.
+const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified)"><i></i>rulings a design cites<b>${LIVEE.filter(DR).length}</b></span>`;
 function renderLegend(){legend.innerHTML=`<div class="row">${TYPES.map(chipT).join('')}</div>
 <div class="row">${TYPES2.map(chipT).join('')}</div>
-<div class="row">${Object.keys(FAMLABEL).map(f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`).join('')}</div>`;}
+<div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
+  ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
+  :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>`;}
 recount();renderStats();renderLegend();
 legend.addEventListener('click',ev=>{const c=ev.target.closest('.chip');if(!c)return;
   if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off')}else{famOn[c.dataset.fam]^=1;c.classList.toggle('off');recount();renderStats();renderLegend();if(!focus)renderEmpty()}
@@ -248,7 +298,11 @@ function base(n){return three?[n.x3,n.y3,n.z3]:[n.ox,n.oy,0]}
 function resize(){DPR=devicePixelRatio||1;W=stage.clientWidth;H=stage.clientHeight;cv.width=W*DPR;cv.height=H*DPR;draw()}
 addEventListener('resize',resize);
 
-function fit(){const wide=NEWFAM.some(f=>famOn[f]);view={x:0,y:0,k:Math.min(W,H)/(wide?(three?6600:6200):(three?2600:2300))};draw()}
+function fit(){const wide=NEWFAM.some(f=>famOn[f]);let div=three?2600:2300,cx=0,cy=0;
+  if(wide){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const n of LIVE){if(!NODEON(n))continue;const x=three?n.x3:n.x,y=three?n.y3:n.y;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y)}
+    if(x1>x0){div=Math.max(three?6600:6200,Math.max(x1-x0,y1-y0)*1.08);cx=-(x0+x1)/2;cy=-(y0+y1)/2}} // #279: five columns — measure the SHOWN extent and centre on it, do not assume four; the base fit is the same constant as before
+  const k=Math.min(W,H)/div;if(wide)cy-=0.12*H/k; // lift the wide graph a little clear of the legend
+  view={x:cx,y:cy,k};draw()}
 
 let GROW=[];
 let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=null, pathEdges=null, anim=null;
@@ -285,7 +339,7 @@ function draw(){
   // edges
   for(const e of EDGES){if(!e.t||!alive(e))continue;const s=byId.get(e.s),t=byId.get(e.t);
     const we=wt(posE(s,t),band);if(we<=0.02)continue;
-    const on=NODEON(s)&&NODEON(t)&&famOn[FAMILY[e.type]];
+    const on=NODEON(s)&&NODEON(t)&&EON(e);
     let a=on?Math.min(s.a,t.a)*(focus?0.9:0.32):0.04; if(pathEdges){a=pathEdges.has(e.k)?1:a*0.15}
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
     if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
@@ -328,7 +382,7 @@ function animate(){if(!anim)anim=requestAnimationFrame(tick)}
 let sectors=null;
 function applyFocus(){
   const f=focus; const [cx,cy,cz]=base(f); f.tx=cx;f.ty=cy;f.tz=cz;f.ta=1;
-  const nb=adj.get(f.id).filter(x=>alive(x.e)&&alive(byId.get(x.other))&&NODEON(byId.get(x.other))&&famOn[FAMILY[x.e.type]]&&famOK(x.e));
+  const nb=adj.get(f.id).filter(x=>alive(x.e)&&alive(byId.get(x.other))&&NODEON(byId.get(x.other))&&EON(x.e)&&famOK(x.e));
   const groups=new Map();for(const x of nb){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   const total=nb.length||1, R1=Math.max(120,Math.min(260,60+total*7)), gap=0.06;
@@ -340,7 +394,7 @@ function applyFocus(){
       if(three){const ph=((i%5)-2)*0.32;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r;sx+=n.tx-cx;sy+=n.ty-cy;sz+=n.tz-cz}else{n.tx=cx+Math.cos(a)*r;n.ty=cy+Math.sin(a)*r;n.tz=cz}n.ta=1;placed.add(n.id)});
     // v1.9: the sector label rides the SAME world-space sphere as its own nodes — the mean offset of the sector, pushed out 1.25x
     sectors.push({type:t,n:g.length,mid:start+span/2,R:R1+(g.length>14?34:0),dir:three?[sx/g.length*1.25,sy/g.length*1.25,sz/g.length*1.25]:null});ang+=span+gap;}
-  if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&famOn[FAMILY[y.e.type]]&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
+  if(depth2){const R2=R1+150;let k=0;const second=[];for(const x of nb){for(const y of adj.get(x.other)){if(alive(y.e)&&famOK(y.e)&&EON(y.e)&&!placed.has(y.other)&&alive(byId.get(y.other))&&NODEON(byId.get(y.other)))second.push(y.other)}}
     const uniq=[...new Set(second)];uniq.forEach((id,i)=>{const n=byId.get(id);const a=-Math.PI/2+Math.PI*2*(i/uniq.length);if(three){const r=R2*1.5,ph=((i%7)-3)*0.25;n.tx=cx+Math.cos(a)*Math.cos(ph)*r;n.ty=cy+Math.sin(ph)*r;n.tz=cz+Math.sin(a)*Math.cos(ph)*r}else{n.tx=cx+Math.cos(a)*R2;n.ty=cy+Math.sin(a)*R2;n.tz=cz}n.ta=0.45;placed.add(id)})}
   for(const n of NODES){if(!placed.has(n.id)){[n.tx,n.ty,n.tz]=base(n);n.ta=0.05}}
   // centre the view on the focus
@@ -363,9 +417,10 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
-<div class="k">Governance &amp; guidelines</div><p>Two additive families, each behind its own chip. Governance is every ruling in the store — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Guidelines is the WCAG success criteria, the guidelines and principles above them, EN 301 549, the HSBC policy and the axe-core rules that can check them. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it. <b>Solid</b> ruling&rarr;ruling edges are AUTHORED: the 48 in <code>knowledge/_ruling_edges.json</code>, ratified by <b>s267-D3</b>; <code>supersedesClause</code> (dotted) supersedes or retires ONE CLAUSE of its target, not the ruling. A pair carried by an authored edge, or ratified as a plain citation, is never re-proposed.</p>
+<div class="k">One graph, three views (s277-D8)</div><p>The layers were ingestion waves, not kinds of knowledge. The chips are grouped by FORCE. <b>System</b> — what exists; the agent <em>chooses</em> here: structure, usage, rendering, the components' own wiring, and the ${XTRA.assets||0} assets (icons, icon groups, logos — chip off by default, ${XTRA.assetNulls||0} declared nulls carried, never drawn). <b>Design governance</b> — what a design must or should do; the agent <em>obeys</em> here: ONE obligation with three provenance sub-chips, each still its own chip — the ${XTRA.sc||0} WCAG success criteria, the ${LIVE.filter(n=>n.type==='rule').length} HSBC rules, and the rulings a design cites (authored citation only: <code>governedBy</code> in a meta, <code>ruledBy</code> in the asset files, a ruling's own <code>governs</code> naming a component — no per-ruling scope is derived; that ladder is unratified). <b>Explanation</b> — why; the agent <em>consults</em> here: the graded UX principles and their polarities. Force is the edge's, not the node's: a principle cited by a meta's <code>edges.obeys</code> binds through that edge (not drawn — the s276 declared gap stands).</p>
+<div class="k">The Constitution — not a view</div><p>The ruling record: every one of the ${XTRA.rulings||0} rulings in <code>knowledge/_rulings.json</code> — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Process, gauge and ritual rulings live here with the design-scoped ones: the record is one thing, and a ruling enters Design governance only by a design's authored citation of it. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it. <b>Solid</b> ruling&rarr;ruling edges are AUTHORED: the 48 in <code>knowledge/_ruling_edges.json</code>, ratified by <b>s267-D3</b>; <code>supersedesClause</code> (dotted) supersedes or retires ONE CLAUSE of its target, not the ruling. A pair carried by an authored edge, or ratified as a plain citation, is never re-proposed.</p>
 <div class="k">Node types</div><p>${ALLTYPES.filter(t=>count[t]).map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
-<div class="k">Edge families</div><p>${Object.keys(FAMLABEL).filter(f=>famOn[f]).map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
+<div class="k">Edge families, by view</div><p>${VIEWS.map(v=>{const fs=(v.fams||v.obligation).filter(f=>f!=='designrulings'&&famOn[f]);return fs.length?`<span class="kind" style="--c:var(--ink)"><b>${v.name}</b></span> ${fs.map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}`:''}).filter(Boolean).join('<br>')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
 function renderPanel(n,nb){
   const isComp=n.type==='component';
   let h=`<div class="head"><span class="kind" style="--c:var(--c-${n.type})"><i></i>${n.type}</span><h2>${esc(n.label)}</h2><div class="id">${esc(n.id)}</div>`;
@@ -379,6 +434,9 @@ function renderPanel(n,nb){
      ['WCAG',esc((n.versions||[]).join(' · ')||'—')+(n.wcagUrl?` · <a href="${esc(n.wcagUrl)}">understanding</a>`:'')],
      ['policy',esc(n.policy||'—')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`;
     if(n.checkDesc)h+=`<p>${esc(n.checkDesc)}</p>`;}
+  if(n.type==='icon'){h+=`<dl class="sc">`+[['file',esc(n.file||'—')],['group',esc(n.group||'—')],['active',n.active?'<b>yes</b> — an -active twin':'no'],['fill',esc(n.fillMode||'—')+(n.fills?' · '+esc(n.fills.join(' ')):'')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
+  if(n.type==='logo'){h+=`<dl class="sc">`+[['file',esc(n.file||'—')],['lockup',esc(n.lockup||'—')],['theme',esc(n.theme||'—')],['colour',esc(n.colourMode||'—')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
+  if(n.type==='iconGroup'){h+=`<dl class="sc">`+[['manifest key',esc(n.groupKey||'—')],['icons',`<b>${n.count??'—'}</b>`]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
   if(n.status)h+=`<p class="src">${esc(n.status)}</p>`;
   h+=`<div class="meta"><span><b>${adj.get(n.id).filter(x=>alive(x.e)).length}</b> relations</span>${SNAPS.length&&n.born!=null?`<span>born ${SNAPS[n.born].date}</span>`:''}${n.died!=null?`<span style="color:var(--accent)">gone ${SNAPS[n.died].date}</span>`:''}${n.category?`<span>${esc(n.category)}</span>`:''}${n.date?`<span>ruled ${esc(n.date)}${n.ruled?' · '+esc(n.ruled):''}</span>`:''}${n.sources?`<span><b>${n.sources.length}</b> sources</span>`:''}</div></div>`;
   if(pathNodes){h+=renderPath()}

@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.14"  # 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.15"  # 1.15 (#279, s277-D8 + s277-D4) ONE GRAPH, THREE VIEWS BY FORCE — the chip bar is re-labelled into SYSTEM (what exists; the agent chooses: structure · usage · rendering · rules & wiring · assets) / DESIGN GOVERNANCE (what a design must or should do; the agent obeys: ONE obligation with THREE provenance sub-chips — WCAG sc: · HSBC rule: · rulings a design cites — each still its own chip, s275-D6) / EXPLANATION (why; the agent consults: UX principles + polarities), and THE CONSTITUTION — the ruling record, 593 rulings with their sessions, evidence and artefacts — named on the page as its own thing, NOT one of the three views. Storage untouched: no node id, edge type, file or fam KEY changes (RULE_FAM/UX_FAM/'governance'/'guidelines' stay; only labels move). A FIFTH additive family behind chip `assets`, OFF by default: the 688 icon:/iconGroup:/logo: nodes from knowledge/_icon_nodes.json + _logo_nodes.json (six edge types drawn — inGroup/activeVariantOf/usesIcon/usesLogo/defaultFor/ruledBy; every `t: null` carried as a declared null, never dropped, never drawn). The precedence ladder and the derived per-ruling scope are UNRATIFIED and are not drawn; the "rulings a design cites" sub-chip is AUTHORED citation only (governedBy from a meta, ruledBy from the asset files, a ruling's own `governs` naming a component) — no scope is derived. edges.obeys is still not drawn (the s276 declared gap, unchanged) · 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -137,6 +137,27 @@ def ux_principle_nodes(K=K):
     try: d = json.load(open(fp))
     except Exception: return [], []
     return d.get('nodes', []), d.get('edges', [])
+
+
+# ------------------------------------------------- #279 s277-D4 (+ D5..D7): the assets family
+ASSET_FILES = ('_icon_nodes.json', '_logo_nodes.json')
+ASSET_FAM = 'assets'   # the landed files' own `family` key; free in FAMILY/FAMLABEL (lane IL checked; re-checked #279)
+ASSET_DRAWN = ('inGroup', 'activeVariantOf', 'usesIcon', 'usesLogo', 'defaultFor', 'ruledBy')  # the six; defaultActive + governedBy are DECLARED-NULL ONLY
+
+
+def asset_nodes(K=K):
+    """The 688 icon:<slug> (666) / iconGroup:<slug> (10) / logo:<slug> (12) nodes landed by
+    gen_kg_icons.py --land --ratified s277-D4 (f641242; the declared nulls in-file at 84658db).
+    Same reader shape as rule_nodes(): a missing or unreadable file is [], []. Returns (nodes, edges)
+    with the two files concatenated — icons first, logos second."""
+    N, E = [], []
+    for fn in ASSET_FILES:
+        fp = os.path.join(K, fn)
+        if not os.path.exists(fp): continue
+        try: d = json.load(open(fp))
+        except Exception: continue
+        N += d.get('nodes', []); E += d.get('edges', [])
+    return N, E
 PRINCIPLE = {'1': 'perceivable', '2': 'operable', '3': 'understandable', '4': 'robust'}
 POLICY_ID = 'policy:hsbc-digital-accessibility-framework'
 STANDARD_ID = 'standard:en-301-549'
@@ -369,6 +390,28 @@ def extract_extra(base_nodes, base_edges, K=K):
             link(e['s'], e['t'], e['type'], UX_FAM, note=e.get('note', '')); rep['ux_edges'] += 1
         else: rep['ux_edges_skipped'] += 1
 
+    # ---- E. assets (#279, s277-D4..D7) — AUTHORED by gen_kg_icons.py, read verbatim. Runs after A
+    # so the 8 `ruledBy` edges that point at a ruling: node find it; usesIcon/usesLogo sources are
+    # base component: nodes. A `t: null` edge is a declared null (s277-D6 defaultActive, s277-D7
+    # governedBy, the two active orphans, the rail usesLogo): COUNTED, shown in the panel's
+    # "declared, unresolved" group, never drawn and never dropped.
+    AN, AE = asset_nodes(K)
+    for n in AN:
+        if n['id'] in base or n['id'] in nodes: continue   # never restate a node another family owns
+        add(n['id'], n.get('label') or n['id'], ASSET_FAM,
+            **{k: v for k, v in n.items() if k not in ('id', 'label', 'fam', 'type')})
+        rep['asset_nodes'] += 1
+    known_a = base | set(nodes)
+    for e in AE:
+        if e['s'] not in known_a: rep['asset_edges_skipped'] += 1; continue
+        note = (e.get('$note') or e.get('note') or e.get('via') or '')[:320]
+        if e.get('t') is None:
+            link(e['s'], None, e['type'], ASSET_FAM, note=note); rep['asset_edges_null'] += 1
+        elif e['t'] in known_a and e['type'] in ASSET_DRAWN:
+            link(e['s'], e['t'], e['type'], ASSET_FAM, note=note, theme=e.get('theme'), ruling=e.get('ruling'))
+            rep['asset_edges'] += 1
+        else: rep['asset_edges_skipped'] += 1
+
     # keep only edges whose two ends exist somewhere (base or new)
     known = base | set(nodes)
     edges = [e for e in edges if e['s'] in known and (e['t'] is None or e['t'] in known)]  # s274-D10: `e['t'] is None or` keeps declared nulls
@@ -422,7 +465,9 @@ def place_extra(xnodes, xedges, base_extent):
     so no base position moves. Governance left, guidelines right."""
     if not xnodes: return
     idx = {n['id']: i for i, n in enumerate(xnodes)}
-    for fam, cx in (('governance', -1.0), ('guidelines', 1.0), (RULE_FAM, 2.2), (UX_FAM, -2.2)):  # s274-D11 · s275-D6
+    # s274-D11 · s275-D6 · s277-D4: assets is the FIFTH column, outermost right — the page's fit()
+    # now measures the shown extent instead of assuming four columns, so the base fit is untouched.
+    for fam, cx in (('governance', -1.0), ('guidelines', 1.0), (RULE_FAM, 2.2), (UX_FAM, -2.2), (ASSET_FAM, 3.4)):
         grp = [n for n in xnodes if n['fam'] == fam]
         if not grp: continue
         loc = {n['id']: i for i, n in enumerate(grp)}
@@ -554,6 +599,8 @@ def main():
                       'rulings': sum(1 for n in nodes if n['type'] == 'ruling'),
                       'sc': sum(1 for n in nodes if n['type'] == 'sc'),
                       'derived': sum(1 for e in xedges if e.get('derived')),
+                      'assets': rep.get('asset_nodes', 0), 'assetEdges': rep.get('asset_edges', 0),
+                      'assetNulls': rep.get('asset_edges_null', 0),
                       'proposed': rep.get('proposed', {})}}
     tpl = open(os.path.join(K, '_kg_explorer.template.html')).read()
     html = tpl.replace('__KG__', json.dumps(data, separators=(',', ':')).replace('</script', '<\\/script')).replace('__DATE__', f"v{VERSION} · {data['generated']} · {sha}")
@@ -578,6 +625,9 @@ def main():
     print(f"  UX-principle family (s275-D1..D6, ratified s275-D2): {rep.get('ux_nodes', 0)} new nodes"
           f" / {rep.get('ux_edges', 0)} edges + {rep.get('ux_edges_null', 0)} declared nulls"
           + (f" · SKIPPED {rep['ux_edges_skipped']}" if rep.get('ux_edges_skipped') else ''))
+    print(f"  assets family (s277-D4..D7, ratified s277-D4; chip OFF by default): {rep.get('asset_nodes', 0)} new nodes"
+          f" / {rep.get('asset_edges', 0)} edges + {rep.get('asset_edges_null', 0)} declared nulls"
+          + (f" · SKIPPED {rep['asset_edges_skipped']}" if rep.get('asset_edges_skipped') else ''))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':
