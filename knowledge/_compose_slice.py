@@ -63,7 +63,16 @@ OUT — a dict with exactly these CONTRACT FIELDS (plus $-prefixed metadata, `ta
                                subset of the file's, narrower never wider; a facet outside
                                the file's set or an override on a null/component row is
                                refused. The non-BLOCKING reach is ASK Q2's `routedByScope`.
-                  Each row: id · class · destiny · blocking · file · text (≤280) · why
+                  Each row: id · class · destiny · blocking · file · text (≤280) · why · verb
+      verb        (s277-D11, #279 lane VB) on EVERY governs / obeys / mustNot row and on ASK's rows:
+                  the twelve-verb READING of the storage edge type, from knowledge/_kg_verbs.json
+                  (must · should · rests-on · decided · must-not-sit-with · …) so a designer reads
+                  "must", not "obeys/routed-by-scope". Storage untouched: no edge type is renamed,
+                  merged or retired; a split type (obeys, governs) is resolved per row by its
+                  target's kind and the rule's own destiny, and `verbVia` says how. A type the map
+                  does not read, or a branch it cannot resolve, is `unread` with a note — carried,
+                  never guessed. `--verbs` prints the map with live counts; `--verbs --coverage`
+                  re-measures s277-D10's consumer-less figure against this reader.
       mustNot     mustNotNeighbour from both homes (edges + relationships prose) and meta
                   `not-with`, INCLUDING the ref:null entries with their $note — a prohibition
                   is real even where the other end is not yet a node (51 of 70 today)
@@ -123,6 +132,7 @@ USAGE
   python3 knowledge/_compose_slice.py --ask "<q>" --budget 600 --seed seed.json
   python3 knowledge/_compose_slice.py --measure         # the s277-D10 claim, re-measured
   python3 knowledge/_compose_slice.py --measure-scope   # the s277-D9 reach figures (obeys / scope / either)
+  python3 knowledge/_compose_slice.py --verbs [--coverage]   # the twelve verbs (s277-D11) with live counts
   python3 knowledge/_compose_slice.py --selftest        # named bites, exits 1 on miss
 
 RESOLUTION PATH of the seed (each hop names its source file):
@@ -159,10 +169,13 @@ import json, os, re, sys, glob, html, datetime, copy
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 COMPONENTS = os.path.join(HERE, "components")
-VERSION = "1.0"   # 1.0 (#279, s277-D10/D13 under s278-D1) the contract + ASK; 0.1 (#270) the proposal
-RULED_BY = ("s277-D10", "s277-D13", "s278-D1", "s277-D9")
+VERSION = "1.1"   # 1.1 (#279 lane VB, s277-D11) the twelve verbs read from _kg_verbs.json onto every governs/obeys/mustNot row and ASK answer; --verbs; 1.0 (#279, s277-D10/D13 under s278-D1) the contract + ASK; 0.1 (#270) the proposal
+RULED_BY = ("s277-D10", "s277-D13", "s278-D1", "s277-D9", "s277-D11")
 CONTRACT_FIELDS = ("components", "governs", "obeys", "mustNot", "tokens", "assets", "unresolved", "sized")
 ASK_BUDGET = 1000
+VERBS_FILE = "_kg_verbs.json"   # s277-D11 (#279 lane VB): the reading map — twelve verbs over the storage edge types
+VERB_FORCES = ("must", "should", "may", "is")
+UNREAD = "unread"
 
 
 class SliceRefused(Exception):
@@ -305,6 +318,7 @@ def load_graph(root=HERE):
         "icon_nodes": _load(os.path.join(root, "_icon_nodes.json")),
         "logo_nodes": _load(os.path.join(root, "_logo_nodes.json")),
         "scope": _load(os.path.join(root, "guidelines", "_scope.json")),   # s277-D9 (#279 lane SC)
+        "verbs": _load(os.path.join(root, VERBS_FILE)),                    # s277-D11 (#279 lane VB)
         "$root": root,
     }
     g["rules_by_id"] = {r["id"]: r for r in g["rules"] if isinstance(r, dict) and r.get("id")}
@@ -336,9 +350,168 @@ def _token_tier_map(g, root):
     return tiers
 
 
+# ---------------------------------------------------------------- the twelve verbs (s277-D11, #279 lane VB)
+# knowledge/_kg_verbs.json is a READING MAP over the storage edge types — storage untouched. A verb is
+# what an edge type MEANS to the designer reading a row: "must" not "obeys/routed-by-scope". Every
+# storage type is under exactly one verb, or split by a declared discriminator ($splits: obeys by the
+# target's kind and the rule's own destiny; governs by the target's kind), or in `unread` with a note.
+# A type the map has never seen is UNREAD with a note — carried, never guessed, never a crash.
+def verb_index(g):
+    """type -> [verb…] from the map's `reads` lists (a split type lists more than one)."""
+    vm = g.get("verbs") or {}
+    idx = {}
+    for v, d in vm.items():
+        if v.startswith("$") or v == UNREAD or not isinstance(d, dict):
+            continue
+        for t in (d.get("reads") or []):
+            idx.setdefault(t, []).append(v)
+    return idx
+
+
+def verb_of(g, etype, t=None, ref=None):
+    """(verb, via) for one edge: the map's verb for `etype`, the split branch resolved by the
+    target `t` (an id such as rule:x / ux:y / component:z / artefact:…) and, for rule: targets,
+    the rule's own destiny from _rules-index.json. Never raises: an unknown type, an unknown
+    target kind or a rule id not in the index is `unread` with a note."""
+    vm = g.get("verbs") or {}
+    if not vm:
+        return UNREAD, "no %s beside the reader — every row is unread until the map is present" % VERBS_FILE
+    verbs = verb_index(g).get(etype)
+    if not verbs:
+        un = (vm.get(UNREAD) or {}).get(etype)
+        if isinstance(un, dict):
+            return UNREAD, "unread by the map: " + (un.get("$note") or "")[:160]
+        return UNREAD, "NOT IN %s — an edge type the map has never seen (minted after it?); declared unread until a verb reads it" % VERBS_FILE
+    if len(verbs) == 1:
+        return verbs[0], etype
+    tgt = t or ref or ""
+    kind = tgt.split(":", 1)[0] if tgt else ""
+    if etype == "obeys":
+        if kind == "ux":
+            return "rests-on", "obeys->ux:"
+        if kind == "rule":
+            r = (g.get("rules_by_id") or {}).get(tgt[5:])
+            if not r:
+                return UNREAD, "obeys -> %s: rule id not in _rules-index.json — destiny unknown, verb withheld" % tgt
+            d = r.get("destiny")
+            if d == "BLOCKING":
+                return "must", "obeys->rule: BLOCKING"
+            if d in ("REVIEW", "ADVISORY", "TASTE"):
+                return "should", "obeys->rule: %s" % d
+            return UNREAD, "obeys -> rule: with destiny %r outside BLOCKING/REVIEW/ADVISORY/TASTE — verb withheld" % d
+        return UNREAD, "obeys -> %s: target kind %r is neither rule: nor ux: — verb withheld" % (tgt or "(null)", kind)
+    if etype == "governs":
+        if kind == "component":
+            return "must", "governs[]->component:"
+        if kind == "artefact":
+            return "decided", "governs[]->artefact:"
+        return UNREAD, "governs -> %s: target kind %r is neither component: nor artefact: — verb withheld" % (tgt or "(null)", kind)
+    return UNREAD, "%s is split in the map but the reader has no rule for it — verb withheld, not guessed" % etype
+
+
+def verb_force(g, verb):
+    d = (g.get("verbs") or {}).get(verb)
+    return d.get("force") if isinstance(d, dict) else None
+
+
+def verbs_report(g=None, root=HERE, edges=None):
+    """The map with LIVE counts: each verb's types and their edge counts (split types counted per
+    branch by resolving every edge), `unread` with counts, and any type the map has never seen.
+    Counts come from the explorer's own extract when it is importable (the census denominator);
+    otherwise from this reader's live graph — the report says which."""
+    g = g or load_graph(root)
+    vm = g.get("verbs") or {}
+    counted_by = "given edges"
+    if edges is None:
+        try:
+            sys.path.insert(0, root)
+            import _build_kg_explorer as B
+            bn, be = B.extract(K=root)
+            xn, xe, _rep = B.extract_extra(bn, be, K=root)
+            edges = be + xe
+            counted_by = "_build_kg_explorer.extract() + extract_extra() (the census denominator)"
+        except Exception as ex:   # the explorer is a separate lane's file; its absence is declared, not fatal
+            edges = load_live(root)["edges"]
+            counted_by = "_compose_slice.load_live() — explorer not importable (%s)" % str(ex)[:80]
+    per_type, per_branch, nulls = {}, {}, {}
+    for e in edges:
+        et = e.get("type")
+        per_type[et] = per_type.get(et, 0) + 1
+        if not e.get("t"):
+            nulls[et] = nulls.get(et, 0) + 1
+        v, _via = verb_of(g, et, t=e.get("t"))
+        per_branch.setdefault(et, {}).setdefault(v, 0)
+        per_branch[et][v] += 1
+    out = {"$what": "the twelve verbs with LIVE counts (s277-D11)", "countedBy": counted_by,
+           "measured": {"edgeTypes": len(per_type), "edges": len(edges), "declaredNulls": sum(nulls.values())},
+           "verbs": {}, UNREAD: {}, "unseen": {}}
+    seen = set()
+    for v, d in vm.items():
+        if v.startswith("$") or v == UNREAD or not isinstance(d, dict):
+            continue
+        reads = {}
+        for t in (d.get("reads") or []):
+            seen.add(t)
+            reads[t] = per_branch.get(t, {}).get(v, 0)
+        out["verbs"][v] = {"force": d.get("force"), "edges": sum(reads.values()), "reads": reads,
+                           "direction": d.get("direction"), "$definition": d.get("$definition")}
+    for t, d in (vm.get(UNREAD) or {}).items():
+        seen.add(t)
+        out[UNREAD][t] = {"edges": per_type.get(t, 0), "nulls": nulls.get(t, 0), "$note": (d or {}).get("$note")}
+    for t in sorted(per_type):
+        if t not in seen:
+            out["unseen"][t] = {"edges": per_type[t], "nulls": nulls.get(t, 0),
+                                "$note": "NOT IN %s — carried as unread; a verb for it is a ruling, not a default" % VERBS_FILE}
+    withheld = {t: b[UNREAD] for t, b in per_branch.items() if t in seen and b.get(UNREAD) and t not in (vm.get(UNREAD) or {})}
+    out["withheld"] = {"$what": "edges of a READ type whose branch could not be resolved (verb withheld, row carries the note)", **withheld}
+    out["partition"] = {"types": len(per_type), "readByVerb": len(seen - set(vm.get(UNREAD) or {})),
+                        UNREAD: len(vm.get(UNREAD) or {}), "unseen": len(out["unseen"])}
+    return out
+
+
+# s277-D10's figure: 12 edge types with no consumer, 3,110 edges (A1 §4's 3,125 less the 15 hasParty nulls)
+D10_CONSUMERLESS = ("evidencedBy", "appliesTo", "definedIn", "ruledIn", "checkedBy", "hasParty",
+                    "enforcedBy", "boundBy", "enClause", "flaggedBy", "tensionWith", "verifiedBy")
+D10_FIGURE = 3110
+
+
+def reader_coverage(rep=None, root=HERE):
+    """How many of D10's consumer-less edges now have a READER — this file (the slice or ASK).
+    Two honest measures, A1 §4's own method (a quoted string literal in the consumer's CODE —
+    the module docstring excluded) applied to this reader: WALKED = the type is named in the
+    code, so a slice field or an ASK answer walks it; NAMED = the map gives it a verb. A verb
+    without a walk is a legible label on nothing, so the headline is WALKED."""
+    rep = rep or verbs_report(root=root)
+    src = open(os.path.abspath(__file__), encoding="utf-8").read()
+    code = src.split('"""', 2)[2] if src.count('"""') >= 2 else src
+    code = code.split("\ndef selftest(")[0]                          # the reader proper — bites are not walks
+    code = re.sub(r"D10_CONSUMERLESS = \([^)]*\)", "", code)          # this list is the question, not a walk
+    counts = {}
+    for v in rep["verbs"].values():
+        counts.update(v["reads"])
+    for t, d in rep[UNREAD].items():
+        counts[t] = d["edges"]
+    rows, walked, named = {}, 0, 0
+    for t in D10_CONSUMERLESS:
+        n = counts.get(t, 0)
+        w = ('"%s"' % t) in code
+        vs = [v for v, d in rep["verbs"].items() if t in d["reads"]]
+        rows[t] = {"edges": n, "walked": w, "verb": vs[0] if vs else UNREAD}
+        walked += n if w else 0
+        named += n if vs else 0
+    tot = sum(r["edges"] for r in rows.values())
+    return {"$what": "of s277-D10's 3,110 consumer-less edges (12 types), how many this reader now WALKS (A1 §4's literal method on this file's code) and how many the map NAMES with a verb",
+            "command": "python3 knowledge/_compose_slice.py --verbs --coverage",
+            "d10Figure": D10_FIGURE, "todayEdges": tot,
+            "walkedEdges": walked, "walkedShare": round(walked / tot, 3) if tot else None,
+            "namedEdges": named, "namedShare": round(named / tot, 3) if tot else None,
+            "types": rows}
+
+
 # ---------------------------------------------------------------- the LIVE graph (ASK's substrate)
 META_PATH_RX = re.compile(r"^knowledge/components/(.+)\.meta\.json$")
 SNIP_RX = re.compile(r"([^/\s]+\.reference\.html)$")
+SESSION_LEAD_RX = re.compile(r"^#(\d+)")   # the explorer's SESSION_RX: "#81-D1" -> session #81 (ruledIn)
 
 
 def load_live(root=HERE):
@@ -403,6 +576,12 @@ def load_live(root=HERE):
         for ev in (r.get("evidence") or []):
             if isinstance(ev, str) and ev.strip():
                 link(nid, add("evidence:" + ev.strip()[:200]), "evidencedBy", "governance", note=ev.strip()[:300])
+        # ruledIn (s277-D11, #279 lane VB): the session a ruling was ruled in — the explorer's own join
+        # (SESSION_RX over `ruled`, "#81-D1" -> session:81). Read by ASK Q5/Q6 as `decided`; a ruling
+        # whose `ruled` carries no leading #N has no session edge (not invented).
+        sm = SESSION_LEAD_RX.match(str(r.get("ruled") or ""))
+        if sm:
+            link(nid, add("session:" + sm.group(1), label="#" + sm.group(1)), "ruledIn", "governance", note=str(r["ruled"])[:60])
     for e in g["ruling_edges"]:
         s, t = e.get("s"), e.get("t")
         if s in g["rulings"] and t in g["rulings"]:
@@ -765,6 +944,12 @@ def governs_for(chosen, g):
                 row["over"].add(cid)
     rows = []
     for row in out.values():
+        # the verb (s277-D11): a ruling whose governs[] names the component is the `must` branch of
+        # governs -> component:; a ruling only the meta cites (edges.governedBy) is `decided`
+        if any(v.startswith("_rulings.json governs[]") for v in row["via"]):
+            row["verb"], row["verbVia"] = verb_of(g, "governs", t=sorted(row["over"])[0] if row["over"] else None)
+        else:
+            row["verb"], row["verbVia"] = verb_of(g, "governedBy", t=row["ref"])
         row["via"] = "; ".join(sorted(set(row["via"])))[:400]
         row["over"] = sorted(row["over"])
         rows.append(row)
@@ -1020,6 +1205,12 @@ def obeys_for(chosen, g, task):
     rows = list(out.values())
     for row in rows:
         row["why"] = "; ".join(sorted(set(row["why"])))[:600]
+        # the verb (s277-D11): the obeys branch the target selects — must (rule BLOCKING) / should
+        # (rule below BLOCKING) / rests-on (ux). A row reached with NO storage edge (derived / routed /
+        # routed-by-scope) takes the verb its destiny would select and SAYS SO: the verb names the
+        # force, the class names the provenance, neither is passed off as the other.
+        row["verb"], via = verb_of(g, "obeys", t=row["id"])
+        row["verbVia"] = via if row["class"] == "authored" else "%s by destiny — no storage edge (%s)" % (via, row["class"])
     corder = {"authored": 0, "derived": 1, "routed": 2, "routed-by-scope": 3}
     rows.sort(key=lambda r: (DESTINY_ORDER.get(r["destiny"], 9), corder.get(r["class"], 9), r["id"]))
     return rows
@@ -1076,6 +1267,10 @@ def must_not_for(chosen, g):
     for r in out:
         if r["ref"] is None and not r["$note"]:
             r["$note"] = "declared null with no note in the meta — surfaced, not dropped"
+        # the verb (s277-D11): mustNotNeighbour reads must-not-sit-with; the prose and not-with homes
+        # have no storage edge and take the same verb, saying so
+        r["verb"], via = verb_of(g, "mustNotNeighbour", t=r["ref"])
+        r["verbVia"] = via if r["why"].startswith("edges.") else "%s by %s — no storage edge" % (via, r["why"].split(" on ")[0])
     out.sort(key=lambda r: (not r["in_slice"], r["from"], str(r["to"])))
     return out
 
@@ -1544,7 +1739,26 @@ def _e(e, live, side="t"):
     if other is None:
         row["ref"] = None
         row["$note"] = e.get("note") or "declared null"
+    # the verb (s277-D11): what this edge MEANS, resolved on the edge's own target (never the node asked about)
+    row["verb"] = verb_of(live["g"], e["type"], t=e.get("t"))[0]
     return row
+
+
+def _reads_as(ans, g, walked):
+    """ASK's `readsAs`: edge type -> verb for the types the answer walked, split types shown per
+    branch as they occurred in the rows; a type the map does not read is named `unread`."""
+    out = {}
+    for t in walked:
+        vs = verb_index(g).get(t)
+        if not vs:
+            out[t] = UNREAD
+        elif len(vs) == 1:
+            out[t] = vs[0]
+        else:
+            seen = sorted({r["verb"] for rows in ans.values() if isinstance(rows, list)
+                           for r in rows if isinstance(r, dict) and r.get("type") == t and r.get("verb")})
+            out[t] = "/".join(seen) if seen else "/".join(vs) + " (by target)"
+    return out
 
 
 def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
@@ -1614,16 +1828,20 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
         declared.append("no rule->rule conflict edge type exists — conflict between guideline RULES is stated nowhere in the graph")
     elif verb == "ruled":
         rows = []
+        def _session(rid):   # the ruledIn edge (s277-D11): WHEN, as the session number the record carries
+            return next((x["t"] for x in live["out"].get(rid, []) if x["type"] == "ruledIn"), None)
         for e in in_e:
             if e["type"] == "governs":
                 rn = live["nodes"].get(e["s"], {})
-                rows.append({"ruling": e["s"], "date": rn.get("date"), "by": rn.get("by"),
-                             "ruled": (rn.get("ruled") or "")[:160] or None, "via": e.get("via")})
+                rows.append({"type": "governs", "ruling": e["s"], "date": rn.get("date"), "by": rn.get("by"), "session": _session(e["s"]),
+                             "ruled": (rn.get("ruled") or "")[:160] or None, "via": e.get("via"),
+                             "verb": verb_of(g, "governs", t=e["t"])[0]})
         for e in out_e:
             if e["type"] == "governedBy":
                 rn = live["nodes"].get(e["t"], {})
-                rows.append({"ruling": e["t"], "date": rn.get("date"), "by": rn.get("by"),
-                             "ruled": (rn.get("ruled") or "")[:160] or None, "via": "edges.governedBy"})
+                rows.append({"type": "governedBy", "ruling": e["t"], "date": rn.get("date"), "by": rn.get("by"), "session": _session(e["t"]),
+                             "ruled": (rn.get("ruled") or "")[:160] or None, "via": "edges.governedBy",
+                             "verb": verb_of(g, "governedBy", t=e["t"])[0]})
         seen, dedup = set(), []
         for r in sorted(rows, key=lambda r: (r.get("date") or "", r["ruling"]), reverse=True):
             if r["ruling"] in seen:
@@ -1637,7 +1855,8 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
         ans["ruling"] = {"id": node, "date": nd.get("date"), "by": nd.get("by"), "status": nd.get("status"),
                          "ruled": (nd.get("ruled") or "")[:200] or None}
         ans["evidence"] = [e["note"][:240] or e["t"] for e in out_e if e["type"] == "evidencedBy"]
-        ans["ruling_edges"] = [_e(e, live) for e in out_e if e["type"] not in ("evidencedBy", "governs")] + \
+        ans["session"] = next((e["t"] for e in out_e if e["type"] == "ruledIn"), None)   # ruledIn, read as `decided`
+        ans["ruling_edges"] = [_e(e, live) for e in out_e if e["type"] not in ("evidencedBy", "governs", "ruledIn")] + \
                               [_e(e, live, "s") for e in in_e if e["s"].startswith("ruling:")]
         if not ans["evidence"]:
             declared.append("%s carries no evidence[]" % node)
@@ -1724,9 +1943,13 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
         if not rows:
             declared.append("%s draws no library icon and no lockup by the geometry byte-match (s277-D5)" % node)
         declared.append("photo: no node kind — chosen by eye against knowledge/assets/, never here")
+    # readsAs (s277-D11): the twelve-verb reading of every edge type this question walks — `verb`
+    # above is the QUESTION's verb (Q1..Q12); `readsAs` is what each walked edge MEANS
+    walked = list(qrow[3]) + (["ruledIn"] if verb in ("ruled", "evidence") else [])
     result = {
         "q": q, "verb": verb, "question": question, "node": node,
         "in_seed": _in_seed(seed, node),
+        "readsAs": _reads_as(ans, g, walked),
         "answer": ans, "declared": declared,
         "live": live["read"],
     }
@@ -1766,7 +1989,7 @@ def explain(s):
     L.append("")
     L.append("GOVERNS %d ruling(s)" % len(s["governs"] or []))
     for r in (s["governs"] or [])[:10]:
-        L.append("  %-12s %-10s %s" % (r["id"], r.get("date") or "-", (r.get("ruled") or r.get("says") or "")[:70]))
+        L.append("  %-8s %-12s %-10s %s" % (r.get("verb") or "-", r["id"], r.get("date") or "-", (r.get("ruled") or r.get("says") or "")[:62]))
     ob = s["obeys"] or []
     L.append("")
     L.append("OBEYS %d (%d BLOCKING, first; %d authored / %d derived / %d routed / %d routed-by-scope)" % (
@@ -1774,12 +1997,12 @@ def explain(s):
         len([r for r in ob if r["class"] == "derived"]), len([r for r in ob if r["class"] == "routed"]),
         len([r for r in ob if r["class"] == "routed-by-scope"])))
     for r in ob[:12]:
-        L.append("  %-16s %-9s %-8s %s" % (r["id"], r["destiny"] or "-", r["class"], (r["text"] or "")[:60]))
+        L.append("  %-9s %-16s %-9s %-8s %s" % (r.get("verb") or "-", r["id"], r["destiny"] or "-", r["class"], (r["text"] or "")[:52]))
     L.append("")
     mn = s["mustNot"] or []
     L.append("MUST-NOT %d (%d ref:null)" % (len(mn), len([a for a in mn if a["ref"] is None])))
     for a in mn[:8]:
-        L.append("  %s  x  %s   %s" % (a["from"], a["to"] or "(ref:null)", (a["$note"] or "")[:60]))
+        L.append("  %s  %s  %s   %s" % (a["from"], a.get("verb") or "x", a["to"] or "(ref:null)", (a["$note"] or "")[:60]))
     L.append("")
     L.append("TOKENS (group+tier) " + ", ".join("%s[%s:%d]" % (t["group"], t["tier"], t["count"]) for t in (s["tokens"] or [])))
     L.append("ASSETS %d   (%s)" % (len(s["assets"] or []), ", ".join(sorted({a["id"] for a in (s["assets"] or [])})[:8])))
@@ -1846,13 +2069,13 @@ def to_html(s):
     table("components", ["component", "role", "when", "why"], s["components"] or [],
           lambda c: [("mono", c["id"] + (" ALT" if c.get("alternate") else "")), ("", "/".join(c.get("roles") or []) or "—"),
                      ("muted", (c.get("when") or "—")[:150]), ("muted", c.get("why", "")[:160])])
-    table("governs — rulings, newest first", ["id", "date", "ruled", "via"], s["governs"] or [],
-          lambda r: [("mono b", r["id"]), ("", r.get("date") or "—"), ("", (r.get("ruled") or r.get("says") or "")[:220]), ("muted", r["via"][:120])])
-    table("obeys — blocking first", ["id", "class", "destiny", "text", "why"], s["obeys"] or [],
-          lambda r: [("mono " + ("b" if r["blocking"] else ""), r["id"]), ("", r["class"]), ("", r["destiny"] or ""),
+    table("governs — rulings, newest first", ["verb", "id", "date", "ruled", "via"], s["governs"] or [],
+          lambda r: [("b", r.get("verb") or "—"), ("mono b", r["id"]), ("", r.get("date") or "—"), ("", (r.get("ruled") or r.get("says") or "")[:220]), ("muted", r["via"][:120])])
+    table("obeys — blocking first", ["verb", "id", "class", "destiny", "text", "why"], s["obeys"] or [],
+          lambda r: [("b", r.get("verb") or "—"), ("mono " + ("b" if r["blocking"] else ""), r["id"]), ("", r["class"]), ("", r["destiny"] or ""),
                      ("", (r["text"] or "")[:200]), ("muted", r["why"][:110])])
-    table("mustNot — incl. nulls", ["from", "must not neighbour", "note"], s["mustNot"] or [],
-          lambda a: [("mono", a["from"]), ("mono b", a["to"] or "ref:null"), ("muted", (a["$note"] or "")[:200])])
+    table("mustNot — incl. nulls", ["from", "verb", "must not neighbour", "note"], s["mustNot"] or [],
+          lambda a: [("mono", a["from"]), ("b", a.get("verb") or "—"), ("mono b", a["to"] or "ref:null"), ("muted", (a["$note"] or "")[:200])])
     table("tokens — group + tier", ["group", "tier", "members", "count"], s["tokens"] or [],
           lambda t: [("mono", t["group"] + "/*"), ("", t["tier"]), ("mono muted", ", ".join(t["members"])), ("", t["count"])])
     table("assets", ["asset", "file", "used by", "edge"], s["assets"] or [],
@@ -1999,7 +2222,8 @@ def selftest():
         for f in glob.glob(os.path.join(HERE, "components", "*.json")):
             shutil.copy(f, os.path.join(k2, "components"))
         for f in ("_rulings.json", "_ruling_edges.json", "roles.json", "chart-intents.json", "_consult-lexicon.json",
-                  "component-types.json", "_rule_nodes.json", "_ux_principle_nodes.json", "_icon_nodes.json", "_logo_nodes.json"):
+                  "component-types.json", "_rule_nodes.json", "_ux_principle_nodes.json", "_icon_nodes.json", "_logo_nodes.json",
+                  VERBS_FILE):
             if os.path.exists(os.path.join(HERE, f)):
                 shutil.copy(os.path.join(HERE, f), k2)
         for d in ("guidelines", "tokens", "compliance"):
@@ -2014,7 +2238,18 @@ def selftest():
         uj["edges"].append({"s": "ux:pr-fitts", "t": "ux:pr-hick", "type": "tensionWith", "fam": "uxprinciples",
                             "polarity": "pl-selftest", "mediatingVariable": "PLANTED — selftest only, scratch copy"})
         json.dump(uj, open(os.path.join(k2, "_ux_principle_nodes.json"), "w"))
+        # VERBS (s277-D11): plant an edge type the map has never seen, on a scratch meta — it must land
+        # in `unread`/`unseen` with a note, never crash, never be guessed a verb
+        bj = _load(os.path.join(k2, "components", "button.meta.json"))
+        bj.setdefault("edges", {})["plantedVerbZZ"] = [{"ref": "component:table", "$note": "PLANTED — selftest only, scratch copy"}]
+        json.dump(bj, open(os.path.join(k2, "components", "button.meta.json"), "w"))
         live2 = load_live(k2)
+        vrep2 = verbs_report(g=live2["g"], edges=live2["edges"])
+        bite("VERBS: a PLANTED edge type (plantedVerbZZ, scratch meta) lands in `unseen` with a note and verb_of says unread — no crash, no guess",
+             "plantedVerbZZ" in vrep2["unseen"] and "NOT IN" in vrep2["unseen"]["plantedVerbZZ"]["$note"] and
+             verb_of(live2["g"], "plantedVerbZZ", t="component:table")[0] == UNREAD and
+             any(e["type"] == "plantedVerbZZ" for e in live2["out"].get("component:button", [])), vrep2["unseen"])
+        bite("VERBS: the live meta was NOT touched by the plant", "plantedVerbZZ" not in _read(os.path.join(HERE, "components", "button.meta.json")))
         r4b = _try(ask, "which rules conflict for component:button?", live=live2)
         bite("ASK: Q4's 2-hop walk finds a tensionWith pair between two obeyed principles (planted in the scratch copy)",
              isinstance(r4b, dict) and any(p["polarity"] == "pl-selftest" for p in r4b["answer"]["tensions"]),
@@ -2182,6 +2417,59 @@ def selftest():
          hx and not any((hx.get("binds") or {}).get(k) for k in ("tokenGroups", "metaFields", "edges")) and "DECLARED" in (hx.get("$why") or "") and
          set(hx.get("files") or []) == hx_rows == {"brand-refresh-assets.md", "typography-usage.md", "visual-assets.md"} and
          not any("hexagons" in m for m in cfx.values()))
+    # — THE TWELVE VERBS (s277-D11, #279 lane VB): the reading map, its partition, its consumer
+    vm = g.get("verbs") or {}
+    verbs = [v for v in vm if not v.startswith("$") and v != UNREAD]
+    bite("VERBS: the map is present beside the reader and names exactly TWELVE verbs (%d)" % len(verbs), len(verbs) == 12, verbs)
+    bite("VERBS: every force is from the closed set %s" % (VERB_FORCES,),
+         all(vm[v].get("force") in VERB_FORCES for v in verbs), {v: vm[v].get("force") for v in verbs if vm[v].get("force") not in VERB_FORCES})
+    vrep = verbs_report(g)
+    live_types = set()
+    for v in vrep["verbs"].values():
+        live_types |= set(v["reads"])
+    bite("VERBS: partition — every one of the %d measured storage types is under exactly one verb, or split by a declared $splits branch, or in `unread`; no phantom, none twice (%d read / %d unread / %d unseen)"
+         % (vrep["partition"]["types"], vrep["partition"]["readByVerb"], vrep["partition"][UNREAD], vrep["partition"]["unseen"]),
+         vrep["partition"]["unseen"] == 0 and not (set(vm.get(UNREAD) or {}) & set(verb_index(g))) and
+         all(len(vs) == 1 or (t in (vm.get("$splits") or {}) and set(vm["$splits"][t]["branches"]) == set(vs)) for t, vs in verb_index(g).items()) and
+         vrep["partition"]["readByVerb"] + vrep["partition"][UNREAD] == vrep["partition"]["types"],
+         {"splits": {t: vs for t, vs in verb_index(g).items() if len(vs) > 1}, "unseen": vrep["unseen"]})
+    counted = {t for v in vrep["verbs"].values() for t, n in v["reads"].items() if n} | {t for t, d in vrep[UNREAD].items() if d["edges"]}
+    dead = (set(verb_index(g)) | set(vm.get(UNREAD) or {})) - counted
+    bite("VERBS: every `reads` entry and every `unread` entry is a LIVE type (count > 0 in the census) — no phantom type (%d)" % len(dead), not dead, sorted(dead))
+    srcs_ok, srcs_bad = 0, []
+    for v in verbs:
+        f = vm[v].get("$sourceFile")
+        txt = _read(os.path.join(ROOT, f)) if f else ""
+        if vm[v].get("$source") and vm[v]["$source"] in txt:
+            srcs_ok += 1
+        else:
+            srcs_bad.append(v)
+    for rid, frag in (vm.get("$ruled") or {}).items():
+        rt = _read(os.path.join(ROOT, "notes", "_lanes", "277", "inscribe", rid + ".json"))
+        if frag not in rt:
+            srcs_bad.append(rid)
+    bite("VERBS: every $source is a SUBSTRING of its audit / ruling file (%d verbs + %d ruling fragments)" % (srcs_ok, len(vm.get("$ruled") or {})), not srcs_bad, srcs_bad)
+    seedrows = (s["governs"] or []) + (s["obeys"] or []) + (s["mustNot"] or [])
+    bite("VERBS: the seed's governs / obeys / mustNot rows ALL carry a verb from the map + verbVia (%d rows)" % len(seedrows),
+         seedrows and all(r.get("verb") in verbs and r.get("verbVia") for r in seedrows),
+         [(r.get("id") or r.get("from"), r.get("verb")) for r in seedrows if r.get("verb") not in verbs][:5])
+    bite("VERBS: obeys rows split by the rule's own destiny — every BLOCKING row reads `must`, every ux: row reads `rests-on`, no rule row below BLOCKING reads `must`",
+         all((r["verb"] == "must") == (r["destiny"] == "BLOCKING") for r in (s["obeys"] or []) if r["id"].startswith("rule:")) and
+         all(r["verb"] == "rests-on" for r in (s["obeys"] or []) if r["id"].startswith("ux:")),
+         [(r["id"], r["destiny"], r["verb"]) for r in (s["obeys"] or []) if (r["verb"] == "must") != (r["destiny"] == "BLOCKING")][:5])
+    bite("VERBS: a governs row a ruling's governs[] names reads `must`; a row only the meta cites (governedBy) reads `decided`",
+         all(r["verb"] == ("must" if "_rulings.json governs[]" in r["via"] else "decided") for r in (s["governs"] or [])))
+    ra = ask(ASK_12[0], live=live)
+    bite("VERBS: ASK's answers carry the verb — `readsAs` on the result and `verb` on every edge row (Q1: %s)" % ra.get("readsAs"),
+         ra.get("readsAs", {}).get("governs") == "must" and all(r.get("verb") for r in ra["answer"]["rulings"]))
+    r5 = ask(ASK_12[4], live=live)
+    bite("VERBS: ruledIn is READ — ASK Q5/Q6 carry `session` from the ruledIn edge (decided); %d of %d rulings carry a leading #N"
+         % (sum(1 for e in live["edges"] if e["type"] == "ruledIn"), len(g["rulings"])),
+         r5.get("readsAs", {}).get("ruledIn") == "decided" and all("session" in r for r in r5["answer"]["rulings"]) and
+         sum(1 for e in live["edges"] if e["type"] == "ruledIn") > 0)
+    bite("VERBS: an unknown obeys target kind / a split with no rule is `unread` with a note, never a guess",
+         verb_of(g, "obeys", t="pattern:zz")[0] == UNREAD and verb_of(g, "governs", t=None)[0] == UNREAD and
+         verb_of(g, "obeys", t="rule:no-such-000")[0] == UNREAD and verb_of({}, "obeys", t="rule:x")[0] == UNREAD)
     print("\n%d bites, %d failed" % (n, len(fails)))
     print("ASK token counts: " + json.dumps(counts))
     return 1 if fails else 0
@@ -2213,6 +2501,12 @@ def main(argv):
         return selftest()
     if "--measure-scope" in args:
         print(json.dumps(measure_scope(), ensure_ascii=False, indent=1))
+        return 0
+    if "--verbs" in args:   # s277-D11: the reading map with LIVE counts (+ --coverage: the D10 consumer-less figure re-measured)
+        rep = verbs_report()
+        if "--coverage" in args:
+            rep["readerCoverage"] = reader_coverage(rep)
+        print(json.dumps(rep, ensure_ascii=False, indent=1))
         return 0
     if "--measure" in args:
         print(json.dumps(measure_claim(task=_opt(args, "--task")), ensure_ascii=False, indent=1))

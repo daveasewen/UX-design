@@ -1,0 +1,21 @@
+# LANE VB — BRIEF — the twelve verbs: a reading map over the 51 storage edge types, storage untouched
+#279 · 2026-09-16 · enacting `s277-D11` · written by the conductor (Fable 5.1) · **model: fable** — judgement lane: every verb is a claim about what an edge type MEANS and will be read against the edge's own definition
+
+## Ruling — read WHOLE: `s277-D11`; context `s277-D8` (edge-force reading: "force is the edge's not the node's"), `s277-D10` (the slice contract), `s267-D3`, `s270-D2`, `s274-D8`, `s275-D2` (the four rulings a storage merge would touch — you touch NONE of them)
+The vocabulary is read through TWELVE VERBS over the 51 storage edge types (must / rests-on / chooses / …), writing down D-1's edge-force reading. NO storage merge. Types with no consumer are not retired; they gain one under `s277-D10`.
+
+## Inputs
+- The 51 (or however many today — MEASURE) edge types: `knowledge/_build_kg_explorer.py`'s extract + the node files + `meta.schema.json`'s `edges` block + `_kg_grammar*`/`_validate_kg.py`'s kinds. Enumerate them with a script, with counts, and publish the list — that number is the denominator and it is measured, not typed.
+- The audit that proposed the twelve: `notes/_lanes/277/kg-audit/` (A1/A2/A3 — find D-4 and the verb list the audit floated). The ruling adopts option (a) of D-4; read what (a) said the twelve were. If the audit's list is not exactly twelve, or a verb has no edge, say so — do not pad to twelve.
+
+## What you build
+1. **`knowledge/_kg_verbs.json`** — the reading map: `{verb: {force: must|should|may|is, reads: [edgeType…], direction: "s→t reads as …", $definition: "<one sentence>", $source: "<the audit/ruling sentence it rests on>"}}`. Every one of the N storage types appears under exactly one verb (or under a declared `unread` list with a note if no verb honestly covers it — a null carried, never dropped). A bite proves the partition: every type once, no type twice, no phantom type.
+2. **The consumer, same commit (`s274-D11`)** — `_compose_slice.py`: the slice's `obeys` / `mustNot` / `governs` output gains a `verb` on each row from the map (so a designer reads "must" not "obeys/routed-by-scope"); ASK's answers carry the verb. `--verbs` prints the map with live counts. Do NOT rename, merge or delete any storage edge type. Do NOT touch `_build_kg_explorer.py` (a later explorer lane reads the map; note what it will need).
+3. **Bites**: partition proof; every `reads` entry is a live type; every `$source` is a substring of its audit/ruling file; forces are from the closed set; the seed's rows all carry a verb; a planted new edge type in a scratch copy lands in `unread` with a note rather than crashing.
+4. **Measure**: with the map applied, how many of the 3,110 consumer-less edges (D10's figure) now have a reader (the slice or ASK)? Publish the number with the command.
+
+## Cautions
+Lane PK is concurrently editing `_compose_slice.py`'s file-location code and `_gen_pack_manifest.py` / `designer-skills-v2/` — coordinate by TOUCHING ONLY the verb code paths and `_kg_verbs.json`; before you commit, `git diff` `_compose_slice.py` and make sure every hunk is yours; if PK's hunks are in the working tree, stage only yours (`git add -p` is not available through the commit script — instead wait: poll `git log -1 -- knowledge/_compose_slice.py` until PK's commit lands, rebase your edits on it, then commit). Never `git stash`. Locks → `mv` to `.git/_orphan-locks/`. `/sessions` at 99% — download nothing.
+
+## Report — `notes/_lanes/279/verbs/REPORT.md` + `notes/_subreports/2026-09-16-279-VB-verbs.md` (+ `_state.json` row `W-279vb`)
+The twelve (or fewer) with their types and counts · the `unread` list · the consumer diff · the reader-coverage number · gate lines · `--numstat` from the shipped sha. Commit via `SESSION_N=279 SHOWROOM_ACK=1 bash knowledge/_git_commit.sh --reconciled <fresh msgfile> <paths…>`, msgfile `/tmp/_msg-279-VB-$(date +%s).txt`, bare subject `#279 lane VB: the twelve verbs — _kg_verbs.json reading map over the storage edge types, read by the slice and ASK — s277-D11`. Regenerate `_CHAIN.md` if the chain gate trips. Bash root `/sessions/laughing-elegant-feynman/mnt/UX-design/`; `pip install tiktoken --break-system-packages` first.
