@@ -133,4 +133,7 @@ $ python3 knowledge/_compose_slice.py --ask "which components does rule:copy-012
 
 ## 8. Shipped sha and `git diff --numstat` from it
 
-(appended after the commit)
+
+Shipped: **** — . Staged by explicit path (the 10 named + , appended by the commit script's own session witness). NOT staged, deliberately: , ,  (lane EX),  (an instrument append, not mine),  (per brief).  reports one PRE-EXISTING failure,  — not this row; W-279sc passed its own check on add.
+
+
