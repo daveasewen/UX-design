@@ -1,0 +1,106 @@
+{
+ "$description": "The COPY for REVIEW-icons-2026-09-16-v2.html (#277 lane RIF). Lane RI's _page-copy.json is NOT touched; this is its v2 with the three fixes lane RIV's VERIFY.md ruled (R1 on RI-3, A1 on RI-1). Every {placeholder} is still filled at build time from dry-run.json and from live counts over knowledge/. No integer is typed into this file.",
+ "page": "REVIEW-icons-2026-09-16-v2",
+ "storage_key": "ri-icons-2026-09-16-v1",
+ "export_filename": "icons-decisions-2026-09-16-v2.json",
+ "title": "Icons and logos into the graph — #277 lane RI",
+ "headline": "{n_nodes} new nodes, {n_edges} new edges, and four questions.",
+ "decisions": [
+  {
+   "id": "RI-1",
+   "title": "Do the icons enter as icons AND groups, as the icons alone, or not yet?",
+   "lede": "The manifest holds {n_icons} glyphs under {n_groups} group keys, and there are {n_logos} logo lockups. All three kinds together are **{n_nodes} nodes**. The group hubs are not decoration: without them, **{n_isolated} icons carry no edge at all** — they have no active twin, no ruling, and no component renders them — and the family arrives as a fog of dots. With `inGroup`, every one of the {n_icons} has at least one edge and the family has ten legible hubs.",
+   "why": "Take (a). The ten hubs cost {n_groups} nodes and {n_ingroup} edges and they are the difference between a navigable family and {n_isolated} unreachable dots. The payload is measured, not estimated: {payload_kb} KB against the explorer's {explorer_kb} KB, **+{payload_pct}%** on bytes and **+{node_pct}%** on node count. That last number is a look, not an argument — judge it on the two explorer renders at the foot of this card, which are the graph today and the graph with this family's chip on. If it is too much, (d) costs nothing.",
+   "attrib": "Lane RI wrote this recommendation, re-deriving every figure from icons.manifest.json and the live tree. Lane IX (#277, ca294b4) costed the same three options first and reached the same place. The two renders below were made by lane RIF (#277) in a scratch copy of the explorer; <code>notes/_KG-EXPLORER.html</code> was not rebuilt.",
+   "options": [
+    [
+     "a",
+     true,
+     "All three kinds — {n_icons} <code>icon:</code> + {n_groups} <code>iconGroup:</code> + {n_logos} <code>logo:</code> = <b>{n_nodes} nodes</b>."
+    ],
+    [
+     "b",
+     false,
+     "Icons only — {n_icons} <code>icon:</code> nodes, no group hubs. {n_isolated} of them arrive with no edge at all."
+    ],
+    [
+     "c",
+     false,
+     "Groups only — the {n_groups} hubs, and nothing hanging off them."
+    ],
+    [
+     "d",
+     false,
+     "Not yet. Nothing enters; the proposal stays on the shelf."
+    ]
+   ]
+  },
+  {
+   "id": "RI-2",
+   "title": "Draw component → icon from the geometry byte-match?",
+   "lede": "There are two routes and they are not close. The **byte-match** compares every inline <code>&lt;path d&gt;</code> in every reference snippet against the {lib_keys} distinct normalised path keys in the library, using <code>_validate_icons.py</code>'s own <code>norm()</code> — the gate that already polices icon sources. It finds **{n_usesicon} pairs across {n_usescomp} components and {n_usesicons} icons**, and resolves every one to a manifest slug. The **prose** route — the slug as a word in the meta — fires on **{prose_hit} of {prose_metas} metas** and makes **{prose_pairs} pairs**, because <code>accessibility</code>, <code>no</code>, <code>time</code>, <code>user</code>, <code>card</code> and <code>block</code> are all icon slugs.",
+   "why": "Take (a). The number that settles it is not {n_usesicon} against {prose_pairs}; it is **{struct_only}**: that many components render a library glyph and never once say the word “icon” in their meta. The prose route would have missed every one of them while inventing {prose_pairs} pairs of English. Four limits travel with the edge and are written into the schema text: it measures the reference snippet and not the contract (so it is <code>usesIcon</code>, never <code>requiresIcon</code>); {n_usesicons} of {n_icons} icons are used, so it lights up a twelfth of the family; {unmatched} inline paths match nothing and get no edge; and sprite <code>&lt;use&gt;</code> refs mean the pair set is right but per-use frequency is not measured, so no weight goes on the edge.",
+   "attrib": "Lane RI wrote this recommendation and re-derived the byte-match independently from the gate's own norm()/DRE. Lane IX found the route and the {struct_only} figure first; s274-D12 and s276-D5 are the refusals the prose route runs into.",
+   "options": [
+    [
+     "a",
+     true,
+     "Draw it as <code>usesIcon</code> — {n_usesicon} edges, from the byte-match, with the four limits attached."
+    ],
+    [
+     "b",
+     false,
+     "Wait. The icons enter as nodes; no component→icon edge is drawn in this wave."
+    ]
+   ]
+  },
+  {
+   "id": "RI-3",
+   "title": "Fifteen bases have two or three “active” glyphs. Is the bare one the default?",
+   "lede": "<code>active</code> is a boolean on all {n_icons} records and it is <b>exactly</b> predicted by the slug — {n_active} records end <code>-active</code> or <code>-active-N</code>, with zero mismatches either way. {n_multi} bases carry more than one: <code>dentist</code> has three, fourteen others have two. <code>activeVariantOf</code> draws all {n_avo} twins whichever way this goes, so nothing is blocked. What is open is whether one of them is <i>the</i> active twin.",
+   "why": "**Take (c), and it will take you five minutes.** Lane RIV's correction was “nobody has looked”. Lane RIF built the sheet below and looked, and the bare <code>-active</code> is <b>not</b> the active twin on at least six of the {n_multi}: <code>dentist-active</code> is a price tag (the filled tooth is <code>-active-2</code>), <code>renew-active</code> is a stack of lines, <code>user-staff-active</code> is a droplet with a bolt, <code>employee-banking-solution-active</code> is a video camera, <code>reward-active</code> is a shopping bag, <code>withdraw-overpayment-active</code> is a padlock. <code>contact-chat-ai</code> and <code>financial-health-check</code> look wrong too. That is an eye on a sheet, not a measurement — which is exactly why it is yours: scroll down and you can confirm or overturn every one of those eight in the time it takes to read this. (a) is still the safe no-op: it ratifies what <code>_validate_icons.py</code> already enforces (<code>active_names()</code> returns <code>slug + \"-active\"</code>) and **none of these {n_sheet_actives} glyphs is used by any snippet today**, so nothing breaks either way — but on this evidence it would write down a default we can already see is wrong on half the set. (b) leaves it open and costs nothing.",
+   "attrib": "Lane RI wrote (a) and (b) and marked (a) Recommended. Lane RIV (#277, edd33fc) ruled that the evidence for (a) — “all fifteen have a bare <code>-active</code>” — is <code>_export-icons.py</code>'s slug-collision counter (:113-118), not a design signal, and restored (c). Lane RIF built the sheet, looked at it, and moved Recommended from (a) to (c) on what it shows; the six named bases are lane RIF's reading of the drawings on this page and nothing else. Lane IX flagged the ambiguity as blocker B4 and left it yours, which it still is.",
+   "options": [
+    [
+     "a",
+     false,
+     "The bare <code>-active</code> is the default, by rule — the status quo the gate already enforces. The {n_extra} <code>-active-2</code>/<code>-active-3</code> records enter as declared variants."
+    ],
+    [
+     "b",
+     false,
+     "Leave it open. Draw the {n_avo} twins, draw no <code>defaultActive</code>, and the {n_multi} stay a declared null."
+    ],
+    [
+     "c",
+     true,
+     "**I'll pick.** The {n_sheet_actives} active drawings are on the sheet at the foot of this card, each beside its base — I look, and I name the {n_multi} defaults myself. <code>defaultActive</code> waits for that list."
+    ]
+   ]
+  },
+  {
+   "id": "RI-4",
+   "title": "Ten of the twelve logos are bound by nothing. Do they enter anyway?",
+   "lede": "<code>s230-D2</code> names two — <code>masterbrand-light-colour</code> and <code>masterbrand-dark-colour</code> — and those are your words. The other {n_unbound} are bound by nothing measurable: <code>_rules-index.json</code> holds <b>{logo_rules}</b> rules whose file is <code>logos.md</code>, <b>{logo_rulings}</b> rulings name a logo <code>.svg</code> in <code>governs</code>, and <code>logos.md</code> itself says the standard lives on create.hsbc and there are no design tokens. Four <code>masterbrand-identifier</code> and four <code>hexagon</code> files are referenced by nothing in the corpus at all; the two <code>mono</code> files are used by <code>template-auth</code> and only by <code>template-auth</code>.",
+   "why": "Take (a). Twelve nodes cost about {logo_kb} KB and the unbound ten are the point, not the cost — eight lockups that nothing references is exactly the condition <code>s230-D2</code> was written to fix, and a graph that shows them greyed and rule-less puts that in front of you instead of leaving it in a folder. Every one of the {n_unbound} enters carrying a declared <code>governedBy</code> null that says what is missing and whose it is.",
+   "attrib": "Lane RI wrote this recommendation. The {logo_rules}-rules and {logo_rulings}-rulings figures are re-measured here; lane IX named the same gap as blocker B3 and put it off-repo, where it stays.",
+   "options": [
+    [
+     "a",
+     true,
+     "All {n_logos} enter — the {n_unbound} unbound ones visibly so, each with a declared null naming what binds it (nothing)."
+    ],
+    [
+     "b",
+     false,
+     "Only the four <code>masterbrand</code> files that actually ship in a snippet."
+    ],
+    [
+     "c",
+     false,
+     "Logos wait for a rule source that does not exist yet."
+    ]
+   ]
+  }
+ ]
+}
