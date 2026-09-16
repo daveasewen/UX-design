@@ -23,3 +23,6 @@ metadata:
 **How to apply:** #278 = (1) land icons via `gen_kg_icons.py --land --ratified s277-D4` after RIV's A3/A4 pre-land fixes; (2) the Constitution wave in order reader+ASK → explorer relabel → scope → verbs → tokens, Fable on judgement lanes. ⛔ **Fable check + Fable verify AGAINST THE LIVE FILE is now the shape** — three Opus seats passed 2/29 false-mechanism `$why`; every Opus author page passed its driver and failed on sight (5 of 5). ⛔ Screenshots in a NEVER-DRIVEN context (pages save DOM to localStorage on unload). ⛔ `--numstat` re-read from the SHIPPED sha (3 lanes quoted amended-away shas). ⛔ FILL ≈290K = FIRST HARD-WALL BREACH, on his "rip through" + "smash the subs" — declared; ≈3.4M sub-tokens across 19 lanes; 27+ local commits UNPUSHED, push is his.
 
 Related: [[wrap-276-the-loose-ends-tied-off]] · [[art-director-reviews-lane-output-268]] · [[decide-fast-dave-is-the-bottleneck-254]] · [[opus-lanes-premise-probe-250]] (SUPERSEDED in part: Fable bucket no longer binds — `model: fable` where judgement is crucial, his word).
+
+---
+✅ PLACED 2026-09-16 at the #278 opener by the conductor: `wrap-277-the-constitution-and-the-thin-slice.md` written to the claude.ai Project memory (Apollo SDS) and the ★★★ line added to its `index.md`. The memory directory is now the cloud Project store; only the conductor seat can write it.
