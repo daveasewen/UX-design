@@ -1,0 +1,305 @@
+{
+  "name": "Bar chart",
+  "category": "organism",
+  "purpose": "Categorical comparison as vertical columns or horizontal bars, single- or multi-series (grouped + stacked), with the full Layer-2 interaction layer restored to match the Chart-line exemplar (chart-revisit wave, 2026-07-24). Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 rounds, not signed off); kit geometry OBSERVED, Layer-2 + rulings receipted.",
+  "intent": "comparison",
+  "provides": "chart-panel",
+  "answers": "comparison",
+  "shape": "categories × series",
+  "span": {
+    "cols": {
+      "min": 4,
+      "max": 12
+    }
+  },
+  "priority": 92,
+  "when": "answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, ≤ 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.",
+  "props": [
+    { "name": "orientation", "type": "enum", "values": ["column", "bar", "grouped-column", "stacked-column"], "default": "column", "$note": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote).", "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "series", "type": "enum", "values": ["categorical", "status", "multi"], "default": "categorical", "$note": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter." },
+    { "name": "sort", "type": "enum", "values": ["orig", "asc", "desc"], "default": "orig", "$note": "Menu 3/4 sort: BAKED VARIANT GROUPS (data-dv-view — geometry is generation-time), switched by a seg control that CONSUMES the Segmented-control atom; the table mirrors the active order via baked <tbody data-dv-view> variants." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "column categorical (sortable)", "use": "Compare categories; single series, ONE colour (dv-014); original/ascending/descending sort views." },
+    { "name": "bar categorical", "use": "Long category names / many categories; DV-D09 default fill = data/series/3 (orientation-distinct from the column's series/1)." },
+    { "name": "column status", "use": "Counts by state (R-D9 ramp, direct-labelled — colour never alone, R-D6 A′)." },
+    { "name": "grouped column", "use": "Multi-series comparison side-by-side (D-Q3); legend-as-filter + isolate + highlight; shaped+lettered swatches mirror on-chart keys." },
+    { "name": "stacked column", "use": "Part-to-whole per category (D-Q3); in-segment letter keys; legend-as-filter." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 (labels · axis · legend · values, tabular) · .t-cm-chart-key = 12/700 (on-chart + in-segment series letters, ink) · table .t-cm-legal 12/400 · title .t-cm-section-label",
+    "series-categorical": "data/series/1–5 (mode-stable isoluminant, ≥3:1 both modes); high-contrast remap data/series-high-contrast/1–3 (data-contrast=\"high\")",
+    "series-status": "rag/error · rag/warning (graphic-grade #C58900, R-D3) · rag/success · rag/information — R-D9 resolved ramp greens/blues NOT yet token-promoted (receipted gap)",
+    "axis": "data/axis (DV-D07 two-channel role: color snapped to the neutral ramp + declared alpha slot 1.0) — SUPERSEDES the promotion-time text/default@0.6 house treatment",
+    "gridlines": "data/grid (DV-D07 two-channel: color + alpha slot 1.0) — SUPERSEDES text/default@per-mode-alpha; gridline contrast is decorative-exempt (1.4.11), dv-016 advisory by design, no grid contrastPair declared",
+    "baseline": "border/action-strong (ink-grade axis line, mode-inverting)",
+    "elevation": "table popover + value tip = surface ground + elevation/functional shadow + elevation/border (anchored-overlay recipe)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); Layer-2 machinery ported verbatim from the render-verified Chart-line exemplar."
+  },
+  "motion": {
+    "entry": "Bars grow from the baseline (scaleY/scaleX, transform-box:fill-box), 760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — kit-reviewed, CSS only (DEF-003); on-chart letter keys fade in (.dv-barkey).",
+    "hover": "brightness(1.12) light / (1.22) dark emphasis; legend/marker hover-or-focus dims the OTHER series (.dv-quiet, data layer only — Dave's a11y caution).",
+    "reducedMotion": "Entry inside prefers-reduced-motion:no-preference; global collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, NEVER scale — text must not scale. Layer-2 WIRED: dv-behaviour fitCharts relayouts HORIZONTAL positions only (data-fx/data-fw on rects, data-fx/data-fx2 on gridlines, data-fx/data-dx on labels), viewBox pinned 1:1; JS-off keeps the static answer (fixed geometry + scroll).",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Insights and spending views", "Reports"],
+    "mustNotNeighbour": ["A Stat-card making the identical claim in the same view", "A second chart re-using these series colours for DIFFERENT data (dv-014)"],
+    "commonPatterns": ["spend by category", "counts by status", "monthly comparison", "product mix by quarter"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\"/\"img\" with a full-sentence data aria-label.",
+    "name": "The figcaption names the chart; the svg aria-label reads the data; each bar carries aria-label + data-tip (popover value == table value, one source).",
+    "keyboard": "Bars are focus stops (tabindex 0 + aria-label → value popover on focus); legend rows are filter BUTTONS (aria-pressed; Shift+Enter isolates); table toggle = dropdown (aria-controls/expanded, Esc dismiss → refocus); sort seg buttons (aria-pressed). Quiet-utility controls, NOT B-D7 press physics (Q5).",
+    "focus": ":focus-visible = 2px ink outline (house pattern).",
+    "nonText": "Series fills ≥3:1 vs the page both modes (dv-016 BLOCKING); multi-series adds shape (circle/square/diamond) + letter + name (colour never the only channel); legend OFF = HOLLOW swatch + data/axis-grey text (AA-passing, no dim below floor); status meaning carried by the label under each bar (R-D6 A′).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Status data on the isoluminant categorical set (R-D9: status is a salience RAMP)",
+    "Negative values on a horizontal bar (dv-bar-007 — verticals only)",
+    "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
+    "Gradient/3D/shadow fills (dv-009 flat fills only)",
+    "Raw hex series fills (dv-017 — var() tokens only)",
+    "Signalling control state by dimming alone (Dave's a11y caution — controls keep the AA floor; dimming is data-layer only)",
+    "A chart without its real data table (dv-005)",
+    "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-24",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — DataViz gate 0 blocking / 50 advisory (decorative gridline reads); series 1–5 + HC 1–3 ≥3:1 both modes; status fills ≥3:1 (amber graphic-grade #C58900, R-D3); DV-D07 axis/grid roles resolve; snippet/a11y/coverage/radius/census/type-blast all green.",
+    "$note": "CHART-REVISIT WAVE lane 1 (2026-07-24). DV-D07 + DV-D08 + DV-D09 + D-Q3 ENACTED; Layer-2 restored via dv-behaviour (AUTO-BEHAVIOUR markers EMPTY here — membership + a per-capability contract split are conductor serials, handed via receipt). Render-verify OWED (sandbox home rotates between calls → Playwright binary non-persistent; machinery is the render-verified exemplar's). PROVISIONAL-AGENT pending Dave's dataviz sign-off."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": ["dv-behaviour", "dv-render", "dv-render-bar"],
+    "fallback": "With CSS on and JS off the three engine-driven canvases (column, horizontal bar, grouped column) render as EMPTY <svg> boxes and the chart is not drawn — dvRender is what fills them. The data is still fully available and still labelled: every figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those same rows from the spec when it runs, so the popover value and the table value are one number by construction. The status-ramp and stacked-column canvases stay baked, so those two render fully with JS off. Lost with JS off: the value popover, the responsive fit reflow, the legend filter/isolate, Copy CSV, and the sort control (which re-renders rather than toggling baked variants).",
+    "$note": "Typed s249-D4 / #259 (the chart-engine lane). `script` addresses the ENGINE CORE — dv-render.js is the file a consumer's behaviour begins at; dv-render-bar.js is reached through its type registry and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. dv-legend is deliberately NOT listed: it is injected and consumed (the grouped/stacked legends run on it) but the s245-D2 reading of `partial` is the behaviour ADDRESS the component's own script chain needs, and the pre-existing prose note on the tokenValidation block still carries the full membership story."
+  },
+  "slots": {
+    "series": {
+      "accepts": {
+        "capability": [
+          "data-series"
+        ]
+      },
+      "use": "One or more series drawn grouped or stacked across the categorical axis.",
+      "required": true,
+      "multiple": true,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    },
+    "data": {
+      "accepts": {
+        "capability": [
+          "chart-dataset",
+          "table-rows"
+        ]
+      },
+      "use": "Carries the category values per series the chart renders, and the same rows the a11y data table exposes.",
+      "required": true,
+      "multiple": false,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    }
+  },
+  "edges": {
+    "obeys": [
+      {
+        "ref": "rule:dv-bar-001",
+        "$why": "A title that reflects the main insight is the slot `tokens.font-family` types as .t-cm-section-label; the rule is why that slot is typed at all rather than left to the author."
+      },
+      {
+        "ref": "rule:dv-bar-002",
+        "$why": "Axis titles on both axes unless the labels are obvious - the meta's tokens.font-family composite routes labels, axis, legend and values through one type role, .t-cm-chart-label at 12/500, and tokens.axis mints data/axis (DV-D07) for them, so the get-out clause changes what is drawn and never which token pays for it."
+      },
+      {
+        "ref": "rule:dv-bar-003",
+        "$why": "Categorical X with per-category labels, incremental Y values, gridlines for scale: the structural parts DV-D07's data/axis and data/grid roles exist to colour."
+      },
+      {
+        "ref": "rule:dv-bar-004",
+        "$why": "A key is required whenever labelling is alphanumeric, which is exactly this meta's on-chart letter keys (.dv-barkey) and its lettered legend swatches in the grouped and stacked variants."
+      },
+      {
+        "ref": "rule:dv-bar-005",
+        "$why": "Filtering and configuration tools sit ABOVE the chart - the placement contract for this meta's sort segmented control and its table-view dropdown."
+      },
+      {
+        "ref": "rule:dv-bar-006",
+        "$why": "Group separators, group category labels and a group key for alphanumeric group labels are the anatomy of this meta's 'grouped column' variant; no other rule supplies it."
+      },
+      {
+        "ref": "rule:dv-bar-007",
+        "$why": "Negative values on a horizontal bar are banned - the meta's antiPatterns cite this rule by id, and its `orientation` prop's 'bar' value carries the positives-only note."
+      },
+      {
+        "ref": "rule:dv-bar-008",
+        "$why": "Past versus projected must always be labelled. This meta declares no projected variant today, and the rule is what any future one would have to satisfy - a binding constraint, not a described feature."
+      },
+      {
+        "ref": "rule:dv-bar-009",
+        "$why": "The zero baseline is mandatory for every bar chart: the meta's antiPatterns cite this rule by id and name data-domain-min=\"0\" as the mechanism."
+      },
+      {
+        "ref": "rule:dv-bar-010",
+        "$why": "Well spaced, evenly distributed, and not too many categories - the arrangement rule the meta's span.cols 4–12 and its DV-D02 compress-never-scale responsive rule between them have to satisfy."
+      },
+      {
+        "ref": "rule:dv-001",
+        "$why": "Don't truncate or alter the scale to overstate a trend - the family rule whose own enforcement note names bar charts, and whose per-type enactment is this meta's antiPattern \"A non-zero baseline (dv-bar-009: data-domain-min='0' always)\". The edge records the family reason that antiPattern exists."
+      },
+      {
+        "ref": "rule:dv-002",
+        "$why": "A full chart at a reasonable scale is what this meta's `responsive.rule` protects: DV-D02 compresses width and NEVER scales, and the fit relayouts horizontal positions only, so narrowing the container can never shrink the chart into an unreadable one."
+      },
+      {
+        "ref": "rule:dv-003",
+        "$why": "Show the full data set and never drop rows to shift the reading: this meta's `sort` prop re-orders and never omits - the table mirrors the active order via baked tbody data-dv-view variants, so a view is a permutation of the data, not a subset of it."
+      },
+      {
+        "ref": "rule:dv-004",
+        "$why": "Never let colour alone do the separating: on this meta the fills that actually abut are the stacked column variant's, and the channel it declares there is the in-segment letter key - the rule is why that key is ON the segment and not in the legend alone."
+      },
+      {
+        "ref": "rule:dv-005",
+        "$why": "The tabular alternative is this meta's `data` prop verbatim - the a11y spine AND the tabular alternative, cited by id - surfaced by the table-view popover, with the antiPattern banning a chart without it."
+      },
+      {
+        "ref": "rule:dv-006",
+        "$why": "Labels and tooltips must repeat the data point's values without drifting from them, and this meta makes that structural: each bar carries aria-label + data-tip with the popover value == the table value, one source."
+      },
+      {
+        "ref": "rule:dv-007",
+        "$why": "Chart elements must respond dynamically on resize while titles keep scaling with text: this meta's responsive rule splits exactly there - fitCharts relayouts HORIZONTAL positions only, viewBox pinned 1:1 - so the geometry moves and the type is never shrunk with it."
+      },
+      {
+        "ref": "rule:dv-008",
+        "$why": "Horizontal scroll only as a last resort: the fit reflow is this meta's first answer and scrolling is what is left when it cannot run - \"JS-off keeps the static answer (fixed geometry + scroll)\"."
+      },
+      {
+        "ref": "rule:dv-009",
+        "$why": "Flat two-dimensional fills only: the meta's antiPatterns cite this rule by id - \"Gradient/3D/shadow fills (dv-009 flat fills only)\" - so the edge makes an existing prose citation a graph edge."
+      },
+      {
+        "ref": "rule:dv-010",
+        "$why": "Nothing may obscure the data, and this meta floats two things over it - the table popover and the value tip - both built on one anchored-overlay recipe with Esc dismiss and a refocus, which is the rule's uncluttered-overlay contract turned into a recipe."
+      },
+      {
+        "ref": "rule:dv-011",
+        "$why": "Don't rely on colour alone to carry the narrative: this meta's `nonText` says it in the rule's own terms - multi-series adds shape (circle/square/diamond) + letter + name, colour never the only channel - and the status variant carries meaning in the label under each bar."
+      },
+      {
+        "ref": "rule:dv-012",
+        "$why": "Colour focuses attention and never becomes the chart's background: this meta's `tokens.surface` is background/default, the page's own ground, and the attention colour lives in `motion.hover` as a brightness lift instead."
+      },
+      {
+        "ref": "rule:dv-014",
+        "$why": "Same data, same colour across a user journey: the meta's `mustNotNeighbour` cites the rule by id - a second chart re-using these series colours for DIFFERENT data - which is the journey-scope half of the rule stated as a neighbour ban."
+      },
+      {
+        "ref": "rule:dv-016",
+        "$why": "The 3:1 floor for chart building blocks is cited by id twice here and split where the rule splits: series fills ≥3:1 vs the page both modes as BLOCKING, and gridline contrast decorative-exempt, dv-016 advisory by design."
+      },
+      {
+        "ref": "rule:dv-017",
+        "$why": "Only palette colours in a chart: the meta's antiPatterns cite this rule by id - \"Raw hex series fills (dv-017 — var() tokens only)\" - and every series value in `tokens` is a role name rather than a colour."
+      },
+      {
+        "ref": "rule:dv-018",
+        "$why": "A different colour per data-set variable is what this meta's `series` prop enumerates - categorical on data/series/1–5, multi on series/1–3 with shaped+lettered legend keys - and the single-series variant's ONE colour is the same rule read from the other side."
+      },
+      {
+        "ref": "rule:dv-019",
+        "$why": "Vibration needs near-equal value plus wide hue separation, and this meta declares its categorical fills mode-stable isoluminant - equal value by construction - so the rule binds here hardest of the three: the separation is geometric (bars do not abut) plus the declared high-contrast remap onto data/series-high-contrast/1–3."
+      }
+    ],
+    "renderedBy": [
+      {
+        "ref": "snippet:Chart-bar.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboards",
+        "$note": "Dashboards"
+      },
+      {
+        "ref": "context:insights-and-spending-views",
+        "$note": "Insights and spending views"
+      },
+      {
+        "ref": "context:reports",
+        "$note": "Reports"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:spend-by-category"
+      },
+      {
+        "ref": "pattern:counts-by-status"
+      },
+      {
+        "ref": "pattern:monthly-comparison"
+      },
+      {
+        "ref": "pattern:product-mix-by-quarter"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": "component:stat-card",
+        "$note": "A Stat-card making the identical claim in the same view"
+      },
+      {
+        "ref": null,
+        "$note": "A second chart re-using these series colours for DIFFERENT data (dv-014)"
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:s116-D2"
+      }
+    ],
+    "groupsWith": [
+      {
+        "ref": null,
+        "$note": "RULED s245-D7 (#245). Group 'Spending analysis' (knowledge/snippets/Template-dashboard-bento.reference.html: the tpl-group-evidence section) holds ONE module - a Stat-card carrying Chart-bar's column specimen. A ONE-MEMBER GROUP IS LEGAL as a DECLARED CARVE-OUT (s245-D7 Q3(a)): ref:null because there is no partner to point at, and that is the declaration, not a gap."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:chart-panel"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:comparison"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:categories × series"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:chart-stacked-area"
+      }
+    ]
+  }
+}

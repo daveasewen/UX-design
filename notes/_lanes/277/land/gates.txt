@@ -1,0 +1,11 @@
+PASS G1 schema chart-line.meta.json validates against meta.schema.json (24 obeys, $why required and present on every one)
+PASS G1 schema chart-pie.meta.json validates against meta.schema.json (25 obeys, $why required and present on every one)
+PASS G1 schema chart-bar.meta.json validates against meta.schema.json (27 obeys, $why required and present on every one)
+PASS G1 schema chart-donut.meta.json validates against meta.schema.json (11 obeys, $why required and present on every one)
+PASS G2 refs chart-line: every `rule:` id resolves in _rules-index.json
+PASS G2 refs chart-pie: every `rule:` id resolves in _rules-index.json
+PASS G2 refs chart-bar: every `rule:` id resolves in _rules-index.json
+PASS G2 refs chart-donut: every `rule:` id resolves in _rules-index.json
+PASS G3 counts: chart-line 9+15=24 · chart-pie 10+15=25 · chart-bar 10+17=27 · chart-donut 11+0=11 — TOTAL 87 (29 + 47 + 11)
+PASS G4 _validate_kg.py on the simulated tree (4 proposals swapped in): rc=0 — ref:null + $note (declared, awaiting Dave's-eye migration): 90 / resolutions consumed (s135-D4, KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json): 82 ruled verdicts asserted present (MERGE 5 / PROMOTE 52 / ATTACH 25) / _validate_kg.py: OK — every ref parses+resolves, every null carries a note, every meta has provenance, edges match schema, gen_kg_edges.py is idempotent-clean, and the s135-D4 resolutions input was consumed.
+PASS G4 restore: the four live metas byte-compare EQUAL to the bytes held before the swap
