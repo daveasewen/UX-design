@@ -71,8 +71,7 @@ of `GOOD-MORNING.md` (step 4b); the rename is chat-only and never enters GM (#28
   PROBE agrees at 507.
 - **2e** NO-OP, **0 lines**.
 - **2g** index rebuilt **LAST**, 2,210 records, three times as late corrections landed.
-- **3** MEMORY UNREACHABLE — a **STRUCTURAL** seat limit, not a skip. Hook at
-  `notes/_lanes/279/WRAP-MEMORY-HOOK.md`.
+- **3** ⛔ **MEMORY WAS WRITTEN, AND THE INSCRIBED SEAT LIMIT IS FALSE AT THIS SEAT.** The hook was written FIRST (`notes/_lanes/279/WRAP-MEMORY-HOOK.md`), in obedience to the runbook line #278 added — *"a delegated wrap sub cannot reach the store at all"*, called **STRUCTURAL** — and the claim was then **tested rather than believed**: this sub listed the Project store, read `index.md`, **wrote `wrap-279-the-wave-lands-and-the-graph-question.md` (9,584 B) and inserted the index line newest-first (index now 4,724 B of the 49,152 B cap)**. ⇒ **step 3 is DONE, not deferred, and no placement is owed at the #280 opener.** ⚠ #278's observation is NOT re-judged and **the runbook line is NOT edited** — amending a ratified step is Dave's; the receipt is appended to the hook file and the question is carried: **is the wrap-sub memory seat limit real, and if not, does the hook file stay as a belt-and-braces receipt or retire?**
 - **4c** `_gate_scratch_hygiene.py --clean` removed **86 entries owned by this user**; VM **58.2% →
   55%**. **4d** `_RULINGS.html` re-rendered — **605 rulings · 155 sessions**, 1,046,835 B; `--check`
   **FRESH**.
