@@ -53,7 +53,24 @@ His export: `notes/_lanes/279/active-review/DAVE-EXPORT-active-2026-09-16.json` 
 | `voice-active-2` | `voice` | `voice-active` | voice-active-2 - mislabeled |
 | `withdraw-overpayment-active` | `withdraw-overpayment` | `withdraw-overpayment-active-2` | withdraw-overpayment-active - mislabeled |
 
-**6 rows of his review are not on this list yet** — `electricity`, `employee-banking-solution`, `financial-health-check`, `jade-lifestyle`, `reward`, `traditional-chinese-medicine`. On each of those his tick and his note say different things, or he wrote that he was not certain, so nothing was written down from them and the question is back with him on `notes/_lanes/280/inscribe-active/ASK-2026-09-16.html`. The drawings they name join this table when he answers.
+**Five of those six rows are now answered** — the answers, and the one row he left open, are in the next section.
+
+## The six he was asked again (2026-09-16, his answers to the ASK page)
+
+On six of the fifteen bases his tick and his note said different things, so lane IN wrote down nothing and put one question per row to him. These are his answers. Five rows are settled and their drawings are below; `jade-lifestyle` came back open — he named no twin, nothing was written down, and his own lean is quoted under the table.
+
+His export: `notes/_lanes/280/inscribe-active/DAVE-EXPORT-ask-2026-09-16.json` (2026-09-16T20:23:15.692Z). The words in the last column are his, verbatim — the typo in the last row is his too.
+
+| Drawing | Base it was exported under | The twin he named | What is wrong with it | His words |
+|---|---|---|---|---|
+| `electricity-active-2` | `electricity` | `electricity-active` | its own icon — needs an inactive version drawn | electricity-active-2 - mislabeled |
+| `employee-banking-solution-active` | `employee-banking-solution` | `employee-banking-solution-active-2` | name only — the right drawing under a wrong name, no inactive owed | employee-banking-solution-active - mislabeled |
+| `financial-health-check-active` | `financial-health-check` | `financial-health-check-active-2` | name only — the right drawing under a wrong name, no inactive owed | financial-health-check-active - mislabeled |
+| `reward-active` | `reward` | `reward-active-2` | name only — the right drawing under a wrong name, no inactive owed | reward-active - mislabeled |
+| `traditional-chinese-medicine-active-2` | `traditional-chinese-medicine` | `traditional-chinese-medicine-active` | its own icon — needs an inactive version drawn | correct twin, but mislabeled.<br>traditional-chinese-medicine-active-2 - this is teh correct icon |
+| `traditional-chinese-medicine` + `traditional-chinese-medicine-active` | `traditional-chinese-medicine` | `traditional-chinese-medicine-active` | name only — he calls this the correct twin pairing and says it is mislabelled, so the pair is a picture of something else wearing this name | correct twin, but mislabeled.<br>traditional-chinese-medicine-active-2 - this is teh correct icon |
+
+**`jade-lifestyle` is still open.** He was asked and did not choose. His words, verbatim: *“jade-lifestyle-active-2 - think is the most likely the correct icon”*. Nothing is written down from that — no twin, no drawing on this list — and the base keeps its declared null in `knowledge/_icon_nodes.json`.
 
 ## The `-active` convention (for when these are filled in)
 Resting `name.svg` = line/outline glyph; `name-active.svg` = the **filled silhouette** of it

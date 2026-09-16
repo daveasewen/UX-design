@@ -34,7 +34,16 @@ copied out of that document as a number.
   slug that has no node — in the file's own `unresolved` ledger, routed by type so the
   union of the two files is the whole ledger. Two relations exist ONLY as nulls:
   `defaultActive` (s277-D6) and `governedBy` (s277-D7, the unbound lockups "enter
-  VISIBLY"). Neither is ever drawn; the ratified six remain the only drawn types.
+  VISIBLY"). `governedBy` is never drawn; the ratified six remain the only types
+  this generator draws from the corpus.
+
+  DAVE'S OWN ANSWERS ARE AN INPUT (#280 lane IN2). `defaultActive` is the one
+  exception to the line above, and it is not an inference: s277-D6 left it undrawn
+  because NOTHING IN THE CORPUS said which of a base's "… Active" drawings is the
+  twin, and on 2026-09-16 Dave said, base by base, in two exports of his own
+  (DAVE_EXPORTS). This script READS those exports, so `--land` reproduces his 14
+  answers instead of wiping them; a base he has not settled stays a declared null
+  and carries his words. Nothing about a base he never named is ever drawn.
 
 ⛔ NO PROSE JOIN IS DRAWN, and the number says why. Testing every manifest slug
 as a whole word against every component meta's text fires on 138 of 138 metas
@@ -173,6 +182,13 @@ EDGE_STATUS = {t: "NEW" for t in EDGE_TYPES}
 NULL_ONLY_TYPES = ("defaultActive", "governedBy")
 NULL_ONLY_STATUS = {t: "DECLARED-NULL ONLY — never drawn, never resolved"
                     for t in NULL_ONLY_TYPES}
+# ONE exception, and it is Dave's, not the generator's: where his own manual review names
+# the twin (DAVE_EXPORTS below), the `defaultActive` edge for that base is drawn and says
+# so in a `$ruled` sentence. Every base he has not settled keeps the string above.
+NULL_ONLY_STATUS_RULED = (
+    "DRAWN ONLY WHERE DAVE'S OWN MANUAL REVIEW NAMES THE TWIN (s277-D6, his exports %s): "
+    "%d of the %d multi-active bases carry a resolved edge with a $ruled sentence; the other "
+    "%d (%s) stay declared nulls carrying his own words in $his_note. Never inferred.")
 # Which of the two landed files a declared null belongs to, by its type. A null-target
 # edge has no target to route it by, so the TYPE routes it; the union of the two files'
 # `unresolved` lists is therefore the whole ledger, with nothing counted twice.
@@ -268,6 +284,139 @@ def rulings(corpus=None):
         return []
     return [r for r in json.loads(p.read_text(encoding="utf-8")).get("rulings", [])
             if isinstance(r, dict) and r.get("id")]
+
+
+# ------------------------------------------------------------------ Dave's own answers
+#
+# WHY THE EXPORTS AND NOT THE LANDED FILE'S `ruled` LEDGER (#280 lane IN2). Both carry the
+# same fourteen answers. The ledger, however, lives inside the very file `--land`
+# OVERWRITES: it survives a regenerate only while a previous output happens to be on disk
+# in the tree being regenerated. A run into a fresh --corpus, a rebuild from a clean
+# checkout, or a --dry-run into an empty dir would find no ledger and silently drop his
+# answers — which is exactly the failure this is fixing (#280 lane IN, finding F1). The
+# exports are INPUTS under notes/: this script never writes them, they are his own words at
+# source, and they are the same bytes the ASK page handed him back. So the exports are the
+# authority. The ledger is a CROSS-CHECK: `--land` refuses if a landed `ruled` row names a
+# twin his exports do not, because an answer changing under the record's feet is a question
+# for Dave, not a silent overwrite.
+#
+# Ordered oldest-first for readability; the merge sorts by each file's own `exportedAt`, so
+# the ASK page's answers supersede the sheet's on the six rows it re-asked — INCLUDING when
+# the later answer is `open`, which revokes the earlier twin rather than keeping it.
+DAVE_EXPORTS = ("notes/_lanes/279/active-review/DAVE-EXPORT-active-2026-09-16.json",
+                "notes/_lanes/280/inscribe-active/DAVE-EXPORT-ask-2026-09-16.json")
+# His answer to "which drawing is the twin", in the two sheets' own vocabulary.
+#   twin       — the #279 sheet: he picked a drawing from the list.
+#   tick/note/
+#   name-only  — the #280 ASK page: a direct answer to the ONE contradiction that row
+#                carried, so it settles that contradiction by construction.
+#   open       — he was asked and did not choose. Land nothing.
+RULING_DEFAULT_ACTIVE = "s277-D6"   # the ruling that left defaultActive undrawn until he spoke
+CHOICE_SHEET = "twin"
+CHOICE_ASK = ("tick", "note", "name-only")
+# The same three readings of his note lane IN's classifier uses (notes/_lanes/280/
+# inscribe-active/_inscribe.py). They apply ONLY to a `twin` answer off the #279 sheet:
+# a row whose note contradicts its ticks is NOT his sentence and is never drawn here —
+# it is the shape that sent six rows back to him in the first place.
+DAVE_WRONG_RX = re.compile(r"(mislabel\w*|wrong label|incorrectly labell?ed|labell?ed wrong)", re.I)
+DAVE_RIGHT_RX = re.compile(r"((?<!in)correctly labell?ed|is correct\b)", re.I)
+DAVE_UNSURE_RX = re.compile(r"(not certain|not sure|i think|unsure|maybe|probably)", re.I)
+
+
+def dave_exports(corpus=None):
+    """[(rel_path, payload)] for the exports that exist, oldest `exportedAt` first."""
+    root = _k(corpus).parent
+    out = []
+    for rel in DAVE_EXPORTS:
+        p = root / rel
+        if not p.exists():
+            continue
+        pay = json.loads(p.read_text(encoding="utf-8"))
+        out.append((rel, pay))
+    out.sort(key=lambda t: t[1].get("exportedAt") or t[1].get("at") or "")
+    return out
+
+
+def dave_answers(corpus=None):
+    """{base: answer + $export + $at}. Later export wins the base outright."""
+    merged = {}
+    for rel, pay in dave_exports(corpus):
+        at = pay.get("exportedAt") or pay.get("at")
+        for base, a in (pay.get("answers") or {}).items():
+            merged[base] = dict(a, **{"$export": rel, "$at": at})
+    return merged
+
+
+def dave_slugs_in(line, universe):
+    """Every slug the line names, longest first so `-active-2` wins over `-active`."""
+    found, seen = [], line
+    for s in sorted(universe, key=len, reverse=True):
+        if re.search(r"(?<![A-Za-z0-9-])" + re.escape(s) + r"(?![A-Za-z0-9-])", seen):
+            found.append(s)
+            seen = seen.replace(s, " " * len(s))
+    return set(found)
+
+
+def dave_reads(base, a, cands):
+    """-> (twin or None, why). His sentence, read the same way lane IN read it.
+
+    None means NOT DRAWN, and `why` says whose decision that is: his (he answered `open`,
+    or never answered) or the record's (his sheet answer contradicts itself and was asked
+    back). A twin he did not name, or one that is not a drawing of this base, is never
+    drawn whatever the note says.
+    """
+    twin, choice = a.get("twin"), a.get("choice")
+    note = a.get("note") or ""
+    if not twin or choice == "open":
+        return None, ("he was asked which drawing is the twin and answered %r: he named none, "
+                      "so none is drawn and none is inferred" % (choice or "nothing"))
+    if twin not in cands:
+        return None, ("his answer names %s, which is not one of this base's drawings (%s) — not "
+                      "drawn" % (twin, ", ".join(cands)))
+    if choice in CHOICE_ASK:
+        # The ASK page put ONE question per row, about that row's own contradiction, and
+        # this is his answer to it. Re-reading his note for the contradiction he has just
+        # settled would be the record arguing with him.
+        return twin, "he answered the question put to him on this row: %r" % choice
+    if choice != CHOICE_SHEET:
+        return None, "unknown answer %r — not drawn" % choice
+    universe = set(cands) | {base}
+    wrong, right, named = set(), set(), set()
+    for line in note.splitlines():
+        if not line.strip():
+            continue
+        hit = dave_slugs_in(line, universe)
+        named |= hit
+        if DAVE_WRONG_RX.search(line):
+            wrong |= hit
+        if DAVE_RIGHT_RX.search(line):
+            right |= hit
+    flags = set(a.get("flags") or [])
+    why = []
+    if DAVE_UNSURE_RX.search(note):
+        why.append("his note says he is not certain")
+    if note.strip() and not named:
+        why.append("his note names no drawing this script can read")
+    if wrong and flags and wrong != flags:
+        why.append("his note names %s and his ticks name %s"
+                   % (", ".join(sorted(wrong)), ", ".join(sorted(flags))))
+    if wrong and not flags:
+        why.append("his note names %s as wrongly labelled but he ticked nothing"
+                   % ", ".join(sorted(wrong)))
+    if flags and not wrong:
+        why.append("he ticked %s but his note does not say what is wrong with it"
+                   % ", ".join(sorted(flags)))
+    if twin in wrong:
+        why.append("his note calls the twin he named (%s) wrongly labelled" % twin)
+    if base in wrong:
+        why.append("his note calls the base itself wrongly labelled")
+    if right & flags:
+        why.append("his note calls %s correctly labelled and his tick calls it its own icon"
+                   % ", ".join(sorted(right & flags)))
+    if why:
+        return None, ("his sheet answer is not his sentence — %s — so it was asked back and "
+                      "nothing is drawn from it" % "; ".join(why))
+    return twin, "his sheet answer, with his note and his ticks all saying the same thing"
 
 
 def component_metas(corpus=None):
@@ -413,7 +562,7 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
     R = rulings(corpus)
     rids = {r["id"] for r in R}
 
-    nodes, edges, unresolved = {}, [], []
+    nodes, edges, unresolved, ruled = {}, [], [], []
 
     def add(nid, label, **kw):
         n = nodes.setdefault(nid, {"id": nid, "type": nid.split(":")[0],
@@ -484,12 +633,46 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                     "an ORPHAN ACTIVE, declared, never dropped and never invented",
                     note=f"{r['slug']} -> {base} (absent)")
     multi = {b: sorted(v) for b, v in by_base.items() if len(v) > 1}
+    # Dave's own review is the evidence s277-D6 said the corpus did not have. Read, never
+    # inferred: a base he settled gets his twin and a $ruled sentence; a base he was asked
+    # about and left open, or never saw, stays the B4 declared null — and where he wrote
+    # something on a row he left open, his words ride on the null so the record carries his
+    # lean without a default being invented from it.
+    answers = dave_answers(corpus)
+    B4 = ("this base carries two or three -active glyphs and NOTHING in the corpus "
+          "says which is THE active twin. activeVariantOf is drawn for all of them; "
+          "defaultActive is NOT drawn — blocker B4, and it is Dave's (RI-3)")
     for b, v in sorted(multi.items()):
-        declare(ICON + b, "defaultActive",
-                "this base carries two or three -active glyphs and NOTHING in the corpus "
-                "says which is THE active twin. activeVariantOf is drawn for all of them; "
-                "defaultActive is NOT drawn — blocker B4, and it is Dave's (RI-3)",
-                note=f"{b}: " + ", ".join(v))
+        note = f"{b}: " + ", ".join(v)
+        a = answers.get(b)
+        twin, why = dave_reads(b, a, v) if a else (None, None)
+        if twin:
+            link(ICON + b, ICON + twin, "defaultActive", **{
+                "$note": note,
+                "$ruled": (f"Dave named {twin} the active twin of {b} in his own manual review "
+                           f"of the multi-active bases — {why}. His export: {a['$export']} "
+                           f"({a['$at']}), read by gen_kg_icons.py, under {RULING_DEFAULT_ACTIVE}."
+                           " A regenerate keeps this."),
+                "$his_note": a.get("note") or "",
+                "$his_flags": ["icon:" + f for f in (a.get("flags") or [])]})
+            ruled.append({
+                "source": ICON + b, "type": "defaultActive", "t": ICON + twin,
+                "why": f"Dave looked at the {len(v)} drawings and named {twin} the active twin. "
+                       f"This was a declared null under {RULING_DEFAULT_ACTIVE}; it is one no "
+                       "longer.",
+                "note": note,
+                "his_note": a.get("note") or "",
+                "his_flags": ["icon:" + f for f in (a.get("flags") or [])],
+                "his_choice": a.get("choice"),
+                "source_of_truth": f"{a['$export']} ({a['$at']})"})
+            continue
+        if a:
+            edges.append({"s": ICON + b, "t": None, "type": "defaultActive", "fam": FAMILY,
+                          "$note": note, "$open": why, "$his_note": a.get("note") or ""})
+            unresolved.append({"source": ICON + b, "type": "defaultActive", "why": B4,
+                               "note": note, "his_note": a.get("note") or "", "his_answer": why})
+            continue
+        declare(ICON + b, "defaultActive", B4, note=note)
 
     # ---- usesIcon — the BYTE-MATCH ---------------------------------------
     scan_stats, comp_icon = {}, set()
@@ -661,11 +844,18 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
     inodes, iedges, iun = split({"icon", "iconGroup"}, "icon")
     lnodes, ledges, lun = split({"logo"}, "logo")
 
-    def payload(kind, ns, es, un):
+    def payload(kind, ns, es, un, ru=()):
         et = {t: EDGE_STATUS[t] for t in EDGE_TYPES}
         et.update({t: NULL_ONLY_STATUS[t] for t in NULL_ONLY_TYPES
                    if any(e["type"] == t for e in es)})
-        return {"$description":
+        if ru:  # the one type Dave's own review resolves, and only as far as he took it
+            still = sorted(u["source"] for u in un if u["type"] == "defaultActive")
+            et["defaultActive"] = NULL_ONLY_STATUS_RULED % (
+                " and ".join("%s (%s)" % (rel, pay.get("exportedAt") or pay.get("at"))
+                             for rel, pay in dave_exports(corpus)),
+                len(ru), len(ru) + len(still), len(still),
+                ", ".join(s.split(":", 1)[1] for s in still) or "none")
+        out = {"$description":
                 f"PROPOSED {kind} nodes and their edges (#277 lane RI, s269-D1 STEP 4). "
                 "NOT RATIFIED until a ruling id is recorded in knowledge/_rulings.json "
                 "and listed in gen_kg_icons.RATIFIES.",
@@ -678,8 +868,18 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                                "`t: null` + `$note`; the ones that cannot (no node exists to "
                                "source them from) live here only. Nothing is dropped.",
                 "unresolved": un}
+        if ru:
+            out["$ruled"] = ("EVERY declared null this file owned that DAVE HIMSELF has since "
+                             "answered, with his own words kept. A row here is no longer in "
+                             "`unresolved` and its edge in `edges` carries a resolved `t` and a "
+                             "`$ruled` sentence. Rows he has not answered — and the rows he was "
+                             "asked again and left open — stay in `unresolved`, where they carry "
+                             "his own words in `his_note` and no default. This ledger is READ "
+                             "BACK FROM HIS EXPORTS on every regenerate, never from this file.")
+            out["ruled"] = sorted(ru, key=lambda r: r["source"])
+        return out
 
-    ipay = payload("icon:/iconGroup:", inodes, iedges, iun)
+    ipay = payload("icon:/iconGroup:", inodes, iedges, iun, ruled)
     lpay = payload("logo:", lnodes, ledges, lun)
 
     blob = json.dumps({"nodes": sorted(nodes.values(), key=lambda n: n["id"]), "edges": edges},
@@ -703,6 +903,14 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
         "active_by_slug_rx": sum(1 for _g, r in recs if ACTIVE_RX.search(r["slug"])),
         "active_flag_vs_slug_mismatch": mismatch,
         "bases_with_multiple_actives": {b: v for b, v in sorted(multi.items())},
+        # Dave's review, as this run read it. Every number here is HIS, not the corpus's.
+        "dave_exports_read": [rel for rel, _p in dave_exports(corpus)],
+        "dave_bases_answered": len([b for b in answers if b in multi]),
+        "dave_defaultActive_drawn": len(ruled),
+        "dave_defaultActive_open": {b: dave_reads(b, answers[b], multi[b])[1]
+                                    for b in sorted(multi)
+                                    if b in answers and not dave_reads(b, answers[b], multi[b])[0]},
+        "dave_ruled": sorted((r["source"], r["t"]) for r in ruled),
         "fill_modes": fillmodes,
         "themedBy": "DECLINED — contentless at the icon level (IX §1c): "
                     f"{fillmodes.get('currentColor', 0)} identical currentColor records against "
@@ -798,11 +1006,38 @@ def land(corpus=None, ratified=None, **kw):
                          f"proposal. gen_kg_icons.RATIFIES is {RATIFIES!r}. A ruling about "
                          "something else is not a door.")
     ipay, lpay, report = build(corpus, **kw)
+    # THE CROSS-CHECK (#280 lane IN2). His exports are the authority, but if the file about
+    # to be overwritten carries a `ruled` row this build did not reproduce — a different
+    # twin, or a row gone altogether — something has moved under the record and it is a
+    # question for Dave, not an overwrite. Refuse, name the rows, write nothing.
+    landed = _k(corpus) / LANDED_ICONS
+    if landed.exists():
+        try:
+            prev = json.loads(landed.read_text(encoding="utf-8")).get("ruled") or []
+        except ValueError:
+            prev = []
+        now = {r["source"]: r["t"] for r in ipay.get("ruled") or []}
+        drift = sorted((r["source"], r.get("t"), now.get(r["source"]))
+                       for r in prev if r.get("type") == "defaultActive"
+                       and now.get(r["source"]) != r.get("t"))
+        if drift:
+            raise SystemExit(
+                "REFUSED — the landed file records answers of Dave's that his exports "
+                "(%s) do not reproduce, so a regenerate would change or drop them:\n%s\n"
+                "Nothing was written. This is a question for Dave, not an overwrite."
+                % (", ".join(DAVE_EXPORTS),
+                   "\n".join("  %s: landed %s, this build %s" % d for d in drift)))
     for pay, name in ((ipay, LANDED_ICONS), (lpay, LANDED_LOGOS)):
         pay["ratified"] = ratified
         pay["$description"] = (f"RATIFIED {name} under {ratified} (#277 lane RI; s269-D1 STEP 4). "
                                f"Regenerate with `gen_kg_icons.py --land --ratified {ratified}`; "
                                "never hand-edit.")
+        if pay.get("ruled"):
+            pay["$description"] += (
+                f" The {len(pay['ruled'])} resolved defaultActive edges and the `ruled` ledger "
+                "below are DAVE'S OWN ANSWERS, read back from his exports "
+                f"({', '.join(DAVE_EXPORTS)}) on every run — a regenerate keeps them, and "
+                "--land refuses if this file records an answer his exports do not.")
         (_k(corpus) / name).write_text(json.dumps(pay, indent=2, ensure_ascii=False) + "\n",
                                        encoding="utf-8")
     report["landed"] = {"ratified": ratified, "files": [LANDED_ICONS, LANDED_LOGOS]}
@@ -1119,13 +1354,17 @@ def selftest():
 
         # 13 — the edge-status table is honest: all six are NEW, the only types outside the
         #      six are the two DECLARED-NULL-ONLY ones, and NOTHING outside the six is ever
-        #      DRAWN. A declared null may mint a type; a resolved target may not.
-        bite(13, "all six edge types are declared NEW, only defaultActive/governedBy exist beyond them, and no seventh type is ever DRAWN", lambda:
+        #      DRAWN FROM THE CORPUS. A declared null may mint a type; a resolved target may
+        #      not. The one exception is Dave's own answer, which carries a `$ruled` sentence
+        #      naming his export — and this corpus has no export, so here there are none and
+        #      the strict form of the assertion holds (bite 20 is the other side of it).
+        bite(13, "all six edge types are declared NEW, only defaultActive/governedBy exist beyond them, and no seventh type is ever DRAWN — nor either null-only type, absent an export of Dave's", lambda:
              sorted(rep["edge_status"]) == sorted(EDGE_TYPES)
              and set(rep["edge_status"].values()) == {"NEW"}
              and set(rep["edge_targets_resolved"]) <= set(EDGE_TYPES)
              and set(rep["edge_counts"]) <= set(EDGE_TYPES) | set(NULL_ONLY_TYPES)
-             and not [e for e in E if e["type"] in NULL_ONLY_TYPES and e["t"] is not None])
+             and not [e for e in E if e["type"] in NULL_ONLY_TYPES and e["t"] is not None]
+             and not dave_exports(k) and not [e for e in E if e.get("$ruled")])
 
         # 14 — themedBy is DECLINED in words and in fact: 0 edges, and the fill split is
         #      reported so the decline can be checked rather than believed.
@@ -1198,6 +1437,147 @@ def selftest():
              and all(len([u for u in (li, ll)[i]["unresolved"]
                           if NULL_FILE.get(u["type"], "icon") != ("icon", "logo")[i]]) == 0
                      for i in (0, 1)))
+
+    # 20 — DAVE'S ANSWERS ARE AN INPUT (#280 lane IN2). On a mini corpus with mini exports:
+    #      his clean answer is drawn and lands in `ruled`; a later export supersedes an
+    #      earlier one and an `open` answer REVOKES the twin he gave before; a sheet answer
+    #      whose note fights its own ticks is never drawn; a twin that is not a drawing of
+    #      the base is never drawn; and --land REFUSES rather than overwrite an answer the
+    #      landed file records and the exports no longer say.
+    def _with_exports(td, *exports):
+        """A fresh mini corpus with `exports` written where dave_exports() looks for them."""
+        k = _mini(Path(td))
+        for rel, pay in exports:
+            p = Path(td) / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(json.dumps(pay, indent=1), encoding="utf-8")
+        return k
+
+    def _sheet(**ans):
+        return (DAVE_EXPORTS[0], {"page": "mini-sheet", "exportedAt": "2026-09-16T10:00:00Z",
+                                  "answers": ans})
+
+    def _ask(**ans):
+        return (DAVE_EXPORTS[1], {"page": "mini-ask", "exportedAt": "2026-09-16T20:00:00Z",
+                                  "answers": ans})
+
+    CLEAN = {"choice": "twin", "twin": "alpha-active", "flags": ["alpha-active-2"],
+             "note": "alpha-active-2 - mislabeled"}
+    FIGHTS = {"choice": "twin", "twin": "alpha-active", "flags": ["alpha-active-2"],
+              "note": "alpha-active - mislabeled"}          # note and ticks name opposite drawings
+    NOT_A_DRAWING = {"choice": "twin", "twin": "alpha-active-9", "flags": [], "note": ""}
+    OPEN = {"choice": "open", "twin": None, "flags": [],
+            "note": "alpha-active-2 - think is the most likely"}
+    # `open` with a twin still sitting in the envelope — a page half-cleared before export.
+    # His ANSWER is open, so the leftover twin is not an answer and must not be drawn.
+    OPEN_STALE = dict(OPEN, twin="alpha-active")
+
+    def _run(*exports):
+        with tempfile.TemporaryDirectory() as td:
+            ip, _lp, rp = build(_with_exports(td, *exports))
+            da = [e for e in ip["edges"] if e["type"] == "defaultActive"]
+            return ip, rp, da
+
+    ip_a, rp_a, da_a = _run(_sheet(alpha=CLEAN))
+    ip_b, rp_b, da_b = _run(_sheet(alpha=CLEAN), _ask(alpha=OPEN))
+    _ip_c, rp_c, da_c = _run(_sheet(alpha=FIGHTS))
+    _ip_d, rp_d, da_d = _run(_sheet(alpha=NOT_A_DRAWING))
+    _ip_e, rp_e, da_e = _run(_sheet(alpha=CLEAN), _ask(alpha=OPEN_STALE))
+
+    bite(20, "Dave's own export is READ: his clean answer draws defaultActive and lands in `ruled` with his words; a later `open` answer REVOKES it and keeps his words on the null; a sheet answer that fights its own ticks, and a twin that is not a drawing of the base, are never drawn", lambda:
+         # A — his answer is drawn, and the ledger carries HIS words, not ours
+         [(e["s"], e["t"]) for e in da_a] == [("icon:alpha", "icon:alpha-active")]
+         and da_a[0]["$his_note"] == CLEAN["note"] and "alpha-active" in da_a[0]["$ruled"]
+         and [r["source"] for r in ip_a["ruled"]] == ["icon:alpha"]
+         and ip_a["ruled"][0]["t"] == "icon:alpha-active"
+         and ip_a["ruled"][0]["his_note"] == CLEAN["note"]
+         and ip_a["ruled"][0]["his_flags"] == ["icon:alpha-active-2"]
+         and "DAVE-EXPORT-active" in ip_a["ruled"][0]["source_of_truth"]
+         and not [u for u in ip_a["unresolved"] if u["type"] == "defaultActive"]
+         and ip_a["edge_types"]["defaultActive"].startswith("DRAWN ONLY WHERE DAVE")
+         and rp_a["dave_defaultActive_drawn"] == 1 and rp_a["dave_defaultActive_open"] == {}
+         # B — the ASK export supersedes the sheet, and `open` takes the twin back
+         and [(e["s"], e["t"]) for e in da_b] == [("icon:alpha", None)]
+         and da_b[0]["$his_note"] == OPEN["note"] and "named none" in da_b[0]["$open"]
+         and not ip_b.get("ruled")
+         and [u["his_note"] for u in ip_b["unresolved"] if u["type"] == "defaultActive"] \
+             == [OPEN["note"]]
+         and ip_b["edge_types"]["defaultActive"].startswith("DECLARED-NULL ONLY")
+         and list(rp_b["dave_defaultActive_open"]) == ["alpha"]
+         # C — a sheet row whose note fights its ticks: not drawn, and the reason is said
+         and [(e["s"], e["t"]) for e in da_c] == [("icon:alpha", None)]
+         and "not his sentence" in rp_c["dave_defaultActive_open"]["alpha"]
+         and rp_c["dave_defaultActive_drawn"] == 0
+         # D — a twin that is not one of this base's drawings is never drawn
+         and [(e["s"], e["t"]) for e in da_d] == [("icon:alpha", None)]
+         and "not one of this base's drawings" in rp_d["dave_defaultActive_open"]["alpha"]
+         and rp_d["dave_defaultActive_drawn"] == 0
+         # E — his answer is `open`: a twin left in the envelope is not an answer
+         and [(e["s"], e["t"]) for e in da_e] == [("icon:alpha", None)]
+         and rp_e["dave_defaultActive_drawn"] == 0
+         # …and the record says it is HIS choice, not a shape the script could not read
+         and "answered 'open'" in rp_e["dave_defaultActive_open"]["alpha"])
+
+    with tempfile.TemporaryDirectory() as td:
+        # Setup that RAISES is a red bite, never a dead harness: a mutant that stops his
+        # answers reaching the ledger must turn this bite red, not kill the selftest.
+        _first = _again = _drifted = _after = None
+        _msg = "the setup raised"
+        try:
+            k20 = _with_exports(td, _sheet(alpha=CLEAN))
+            land(k20, "s277-D4")
+            _first = (k20 / LANDED_ICONS).read_text(encoding="utf-8")
+            land(k20, "s277-D4")                   # a second regenerate keeps his answer
+            _again = (k20 / LANDED_ICONS).read_text(encoding="utf-8")
+            _p = json.loads(_first)
+            _p["ruled"][0]["t"] = "icon:alpha-active-2"      # an answer moves under the record
+            (k20 / LANDED_ICONS).write_text(json.dumps(_p, indent=2) + "\n", encoding="utf-8")
+            _drifted = (k20 / LANDED_ICONS).read_text(encoding="utf-8")
+            try:
+                land(k20, "s277-D4")
+                _msg = "LANDED"
+            except SystemExit as e:
+                _msg = str(e)
+            _after = (k20 / LANDED_ICONS).read_text(encoding="utf-8")
+        except Exception as e:
+            _msg = f"the setup raised {type(e).__name__}: {e}"
+        bite(21, "a regenerate KEEPS his answers byte-for-byte, and --land REFUSES (writing nothing) when the landed file records an answer his exports do not", lambda:
+             _first and '"t": "icon:alpha-active"' in _first and _again == _first
+             and "REFUSED" in _msg and "question for Dave" in _msg
+             and _after == _drifted)
+
+    # 22 — THE LIVE TREE. The fourteen answers Dave has given are in knowledge/
+    #      _icon_nodes.json today; this bite REBUILDS from his exports and proves the
+    #      regenerate reproduces every one of them — same twin, same words, same ticks —
+    #      drops none, and leaves the one row he left open a declared null carrying his
+    #      note. Nothing is written: build() only reads.
+    _live_p = K / LANDED_ICONS
+    if _live_p.exists() and all((REPO / rel).exists() for rel in DAVE_EXPORTS):
+        _live = json.loads(_live_p.read_text(encoding="utf-8"))
+        _gi, _gl, _grep = build()
+        _L = {r["source"]: r for r in _live.get("ruled") or []}
+        _G = {r["source"]: r for r in _gi.get("ruled") or []}
+        _LE = {e["s"]: e["t"] for e in _live["edges"] if e["type"] == "defaultActive"}
+        _GE = {e["s"]: e["t"] for e in _gi["edges"] if e["type"] == "defaultActive"}
+        _open = [e for e in _gi["edges"] if e["type"] == "defaultActive" and e["t"] is None]
+        bite(22, f"the live tree: a regenerate keeps all {len(_L)} answers Dave has given (same twin, his own words, his own ticks), drops none, and leaves the {len(_open)} he has not settled a declared null carrying his note", lambda:
+             len(_L) == 14 and set(_G) == set(_L)
+             and all(_G[s]["t"] == _L[s]["t"] and _G[s]["his_note"] == _L[s]["his_note"]
+                     and _G[s]["his_flags"] == _L[s]["his_flags"] for s in _L)
+             and _GE == _LE and len([t for t in _GE.values() if t]) == 14
+             and len(_open) == 1 and _open[0]["s"] == "icon:jade-lifestyle"
+             and _open[0]["$his_note"]
+             and _grep["dave_defaultActive_drawn"] == 14
+             and list(_grep["dave_defaultActive_open"]) == ["jade-lifestyle"])
+    else:
+        # An isolated copy of this file (the mutation harness) has no tree around it: there
+        # is no landed file AND no export, so there is nothing of Dave's to keep and the bite
+        # says WHICH of the two it saw rather than passing quietly. One without the other is
+        # a red bite: an export with no landed file, or a landed file whose exports have gone.
+        _have = [rel for rel in DAVE_EXPORTS if (REPO / rel).exists()]
+        bite(22, f"this tree carries no landed {LANDED_ICONS} and none of Dave's exports, so there "
+                 "is nothing of his to keep here — the mechanism is bites 20 and 21", lambda:
+             not _live_p.exists() and not _have)
 
     print("SELFTEST PASS" if not fails else f"SELFTEST FAIL — bites {fails}")
     return 1 if fails else 0

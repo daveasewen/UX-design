@@ -42,12 +42,26 @@ MUTANTS = [
      '        if True:\n'
      '            link(ICON + r["slug"], ICON + base, "activeVariantOf")'),
 
-    ("M5", "a base with two or three -active glyphs is silently given a defaultActive edge",
-     '    for b, v in sorted(multi.items()):\n'
-     '        declare(ICON + b, "defaultActive",',
-     '    for b, v in sorted(multi.items()):\n'
-     '        link(ICON + sorted(v)[0], ICON + b, "defaultActive")\n'
-     '        declare(ICON + b, "defaultActive",'),
+    ("M5", "a base Dave has NOT answered is silently given a defaultActive edge anyway",
+     '        declare(ICON + b, "defaultActive", B4, note=note)',
+     '        link(ICON + b, ICON + v[0], "defaultActive", **{"$note": note})\n'
+     '        declare(ICON + b, "defaultActive", B4, note=note)'),
+
+    # --- Dave's own answers are an INPUT (#280 lane IN2) ---------------------
+    ("M29", "his exports are not read at all — the pre-IN2 generator, which wipes his answers",
+     '    merged = {}\n    for rel, pay in dave_exports(corpus):',
+     '    merged = {}\n    return merged\n    for rel, pay in dave_exports(corpus):'),
+
+    ("M30", "the exports are merged newest-first, so the sheet overrides the answers he gave after it",
+     'out.sort(key=lambda t: t[1].get("exportedAt") or t[1].get("at") or "")',
+     'out.sort(key=lambda t: t[1].get("exportedAt") or t[1].get("at") or "", reverse=True)'),
+
+    ("M31", "--land stops cross-checking the landed ledger and overwrites an answer that moved",
+     '        if drift:', '        if False and drift:'),
+
+    ("M32", "a sheet row whose note fights its own ticks is drawn anyway instead of being left to him",
+     '    if why:\n        return None, ("his sheet answer is not his sentence',
+     '    if False and why:\n        return None, ("his sheet answer is not his sentence'),
 
     ("M27", "the declared nulls never reach the landed files — `--land` writes the nodes and "
             "the drawn edges and leaves the 32 nulls in a report nobody commits (RIV FIX 1)",

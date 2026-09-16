@@ -19,8 +19,13 @@ The classification is DERIVED from the note text here, not typed in: the five ro
 already named are ASSERTED to come out ASK, they are not the input.
 
 Edits are textual spans — replacements and insertions on the exact blocks — never a regenerate.
-gen_kg_icons.py still declares defaultActive a null, so a regenerate would DROP Dave's answers;
-that is said out loud in the file's own $description by this script and in the lane report.
+
+WHEN THIS RAN, a regenerate would have DROPPED Dave's answers: gen_kg_icons.py declared
+defaultActive a null and knew nothing of his export. That was this lane's finding F1, and #280
+lane IN2 fixed it — the generator now reads his exports and reproduces these edges, its bites
+20–22 prove it, and the sentence this script wrote onto each edge saying otherwise was repaired
+by `_inscribe2.py --repair-stale`. The selftest below is scoped by his second export where it
+exists: the rows he settled on the ASK page are lane IN2's and are asserted landed, not untouched.
 """
 import json
 import re
@@ -353,11 +358,23 @@ def selftest(verdicts, ins, ask):
                  and R["icon:" + b]["his_note"] == v["note"]
                  and R["icon:" + b]["his_flags"] == ["icon:" + f for f in v["flags"]]))
 
-    bite("the %d asked rows are untouched: no default drawn, still declared nulls, nothing in the "
-         "ruled ledger" % len(ask),
+    # The asked rows were untouched by THIS lane. Lane IN2 then landed the ones he answered on the
+    # ASK page, so the assertion is scoped by his own second export when it exists: rows he settled
+    # must be ruled, rows he left open must still be byte-untouched nulls.
+    ASK_EXPORT = LANE / "DAVE-EXPORT-ask-2026-09-16.json"
+    later = {}
+    if ASK_EXPORT.exists():
+        later = json.loads(ASK_EXPORT.read_text(encoding="utf-8"))["answers"]
+    settled = {b for b in ask if (later.get(b) or {}).get("twin")}
+    still = [b for b in ask if b not in settled]
+    bite("the %d row%s he has not settled are untouched: no default drawn, still declared nulls, "
+         "nothing in the ruled ledger%s" % (len(still), "" if len(still) == 1 else "s", (" (and the %d he answered on the ASK page "
+         "are ruled, lane IN2)" % len(settled)) if settled else ""),
          lambda: all(E[("icon:" + b, "defaultActive")]["t"] is None
                      and "$ruled" not in E[("icon:" + b, "defaultActive")]
-                     and "icon:" + b in U and "icon:" + b not in R for b in ask))
+                     and "icon:" + b in U and "icon:" + b not in R for b in still)
+         and all(E[("icon:" + b, "defaultActive")]["t"] == "icon:" + later[b]["twin"]
+                 and "icon:" + b in R for b in settled))
     bite("the file still parses, the population is unchanged (676 nodes / 1294 edges / 15 defaults) "
          "and no edge type appeared",
          lambda: len(pay["nodes"]) == 676 and len(pay["edges"]) == 1294
@@ -366,7 +383,8 @@ def selftest(verdicts, ins, ask):
                                                    "defaultActive", "ruledBy"})
     bite("nothing is dropped: every null that left `unresolved` is in `ruled`, and the ledgers "
          "together still carry all 19 rows the file owned",
-         lambda: len(pay["unresolved"]) + len(pay["ruled"]) == 19 and set(R) == {"icon:" + b for b in ins})
+         lambda: len(pay["unresolved"]) + len(pay["ruled"]) == 19
+         and set(R) == {"icon:" + b for b in ins} | {"icon:" + b for b in settled})
     print("SELFTEST %s" % ("PASS" if not fails else "FAIL — " + "; ".join(fails)))
     return 1 if fails else 0
 
