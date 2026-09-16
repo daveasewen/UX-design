@@ -133,7 +133,19 @@ $ python3 knowledge/_compose_slice.py --ask "which components does rule:copy-012
 
 ## 8. Shipped sha and `git diff --numstat` from it
 
+Shipped: **`9e7a158`** — `#279 lane SC: scope per guideline file — 34 rows, routed-by-scope in the reader — s277-D9` (this §8 rides in the follow-up report-only commit). Staged by explicit path (the 10 named + `notes/_REHEARSAL-LOG.jsonl`, appended by the commit script's own session witness). NOT staged, deliberately: `knowledge/_build_kg_explorer.py`, `knowledge/_kg_explorer.template.html`, `notes/_KG-EXPLORER.html` (lane EX), `knowledge/_graph-mark-observations.jsonl` (an instrument append, not mine), `notes/_dream/_GRADE-DECISIONS.jsonl` (per brief). `_state.check()` reports one PRE-EXISTING failure, `W-278wr: missing required field(s) links` — not this row; W-279sc passed its own check on add.
 
-Shipped: **** — . Staged by explicit path (the 10 named + , appended by the commit script's own session witness). NOT staged, deliberately: , ,  (lane EX),  (an instrument append, not mine),  (per brief).  reports one PRE-EXISTING failure,  — not this row; W-279sc passed its own check on add.
-
-
+```
+$ git diff --numstat 9e7a158~1 9e7a158
+2	2	_CHAIN.md
+261	7	knowledge/_compose_slice.py
+19	0	knowledge/_state.json
+1247	0	knowledge/guidelines/_scope.json
+1	0	notes/_REHEARSAL-LOG.jsonl
+18	0	notes/_lanes/279/scope/BRIEF.md
+136	0	notes/_lanes/279/scope/REPORT.md
+150	0	notes/_lanes/279/scope/ask-q2-copy-012.json
+312	0	notes/_lanes/279/scope/measure-scope.json
+87	0	notes/_lanes/279/scope/seed-dashboard-explain.txt
+136	0	notes/_subreports/2026-09-16-279-SC-scope.md
+```
