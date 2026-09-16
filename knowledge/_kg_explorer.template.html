@@ -262,9 +262,10 @@ const VIEWS=[
 // force-2D is the default and is 1.17 to the pixel.
 const BANDS=KG.bands||[];      // strata-2D: the four horizontal bands
 const PLATES=KG.plates||[];    // strata-3D: the exploded stack of plates (the sketch called FLOORS)
+const RINGS=KG.rings||[];      // shells-2D: the concentric rings (the sketch called ORBITS)
 const BANDFAM={system:'structure',design:'guidelines',explain:'uxprinciples',constitution:'governance'};
 const QS=new URLSearchParams(location.search);
-const HASL={force:1,strata:BANDS.length?1:0,shells:0};
+const HASL={force:1,strata:BANDS.length?1:0,shells:RINGS.length?1:0};
 const LAYOUTS=['force','strata','shells'].filter(l=>HASL[l]);
 let LAYOUT=LAYOUTS.includes(QS.get('layout'))?QS.get('layout'):'force';
 const BY=n=>LAYOUT==='strata'?n.oy2:n.oy;          // a node's y at rest, in the 2D layout that is live
@@ -409,6 +410,9 @@ function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
     if(bs.length){y0=Math.min(...bs.map(b=>b.y0));y1=Math.max(...bs.map(b=>b.y1))}}
   if(LAYOUT==='strata'&&three&&PLATES.length)for(const p of PLATES){if(!bandShown(p))continue;
     grow(p.cx-p.half,p.y,-p.half);grow(p.cx+p.half,p.y,p.half)}
+  if(LAYOUT==='shells'&&!three&&RINGS.length)for(const g of RINGS){if(!bandShown(g))continue;
+    for(let i=0;i<=48;i++){const a2=g.a0+(g.a1-g.a0)*i/48;
+      for(const r of [g.r0,g.r1])grow(Math.cos(a2)*r,Math.sin(a2)*r,0)}}
   // 3D: the cloud rotates, so its depth range can become height; fit the larger of the two, with the old
   // 3D margin. 2D: a 6% margin each side of the shown extent.
   const m=three?1.3:1.12,yr=three?Math.max(y1-y0,z1-z0):(y1-y0),ew=(x1-x0)*m+1,eh=yr*m+1;
@@ -447,6 +451,23 @@ function drawPlates(){ctx.save();ctx.setLineDash([]);
     const near=c.reduce((a,b)=>b.y>a.y?b:a);ctx.fillText(p.name.toUpperCase(),near.x+6,near.y+4);}
   ctx.restore();ctx.globalAlpha=1;ctx.textBaseline='alphabetic'}
 
+// #280 — SHELLS-2D's furniture: the rings. Each view's annulus in its own tint at 4%, a hairline at
+// both radii and the name on the ring itself; the Constitution is an ARC outside them — the ground the
+// rings stand on seen from above — dimmed, and drawn only when its chip is on.
+function drawRings(){const o=proj(0,0,0),k=view.k;ctx.save();ctx.setLineDash([]);
+  ctx.font='11px "SF Mono",Menlo,Consolas,monospace';ctx.textBaseline='middle';
+  for(const g of RINGS){if(!bandShown(g))continue;
+    const dim=g.id==='constitution'?0.5:1,col=C.f[BANDFAM[g.id]]||C.ink3;
+    ctx.globalAlpha=0.04*dim;ctx.fillStyle=col;ctx.beginPath();
+    ctx.arc(o.x,o.y,g.r1*k,g.a0,g.a1);ctx.arc(o.x,o.y,g.r0*k,g.a1,g.a0,true);ctx.closePath();ctx.fill();
+    ctx.globalAlpha=0.55*dim;ctx.strokeStyle=col;ctx.lineWidth=1;
+    for(const r of [g.r0,g.r1]){ctx.beginPath();ctx.arc(o.x,o.y,r*k,g.a0,g.a1);ctx.stroke()}
+    ctx.globalAlpha=0.85*dim;ctx.fillStyle=col;
+    const la=(g.a1-g.a0>6)?-Math.PI/2:(g.a0+g.a1)/2,lr=(g.r0+g.r1)/2*k;
+    ctx.textAlign=Math.cos(la)<-0.3?'right':(Math.cos(la)>0.3?'left':'center');
+    ctx.fillText(g.name.toUpperCase(),o.x+Math.cos(la)*lr,o.y+Math.sin(la)*lr);}
+  ctx.restore();ctx.globalAlpha=1;ctx.textAlign='left';ctx.textBaseline='alphabetic'}
+
 let GROW=[];
 let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=null, pathEdges=null, anim=null;
 function draw(){
@@ -454,6 +475,7 @@ function draw(){
   ctx.lineWidth=focus?0.9:0.5;
   if(LAYOUT==='strata'&&!three&&BANDS.length)drawBands();
   if(LAYOUT==='strata'&&three&&PLATES.length)drawPlates();
+  if(LAYOUT==='shells'&&!three&&RINGS.length)drawRings();
   const focalD=(three&&focus)?P(focus).d:0;
   // smoothed depth distance per node — band membership no longer pops frame to frame (the flicker)
   const halo=new Set();if(focus){halo.add(focus.id);for(const x of adj.get(focus.id)){if(alive(x.e))halo.add(x.other)}}
