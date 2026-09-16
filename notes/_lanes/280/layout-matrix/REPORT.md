@@ -195,4 +195,11 @@ shells, and the citation bundle climbing off the floor into it.
 * `53a91bd` — `s280-D1` inscribed (the ruling, `_RULINGS.html`, the entry, the export and the pace note).
 * `b5df9c9` — explorer **1.18a**: strata-3D (floors) and the two-axis switch.
 * `eddf87a` — explorer **1.18b**: shells-2D (orbits).
-* *(the fourth sha lands below with the validator receipts)*
+* `c3805ec` — explorer **1.18**: shells-3D, the contact sheet, the report, the subreport and the store rows
+  (`W-280ls` closed with a receipt naming Dave's export file; `W-280lm` and `W-280lf` opened).
+
+`_validate_kg.py` rc 0 ("OK — every ref parses+resolves, every null carries a note, every meta has
+provenance, edges match schema, gen_kg_edges.py is idempotent-clean"); `_validate_lane_ownership.py`
+"LANE OWNERSHIP: OK — no staged path under another session's lane (this is #280)";
+`_render_rulings.py --check` FRESH; `_gen_chain.py` regenerated (the store row tripped the chain gate).
+Nothing pushed.
