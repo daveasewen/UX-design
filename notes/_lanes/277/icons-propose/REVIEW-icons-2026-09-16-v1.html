@@ -1,0 +1,424 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Icons and logos into the graph — #277 lane RI</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.label{font-size:.8125rem;font-weight:500;letter-spacing:.14em;line-height:1.6;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+h1{font-size:3.5625rem;line-height:1.18;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.25;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px;
+ overflow-wrap:anywhere;word-break:break-word}
+a{color:var(--accent)}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3);min-width:0}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1.25;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1);overflow-wrap:anywhere}
+.stat span{display:block;font-size:.8125rem;letter-spacing:.06em;line-height:1.5;color:var(--g6)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.stat b{font-size:1.875rem}}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.8125rem;letter-spacing:.14em;line-height:1.6;font-weight:500;color:var(--accent)}
+.onefig{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);
+ border-left:2px solid var(--accent);padding:var(--s1) 0 var(--s1) var(--s3);margin:var(--s3) 0}
+.onefig b{font-size:2.6875rem;font-weight:200;line-height:1.32;font-variant-numeric:tabular-nums}
+.onefig span{font-size:.875rem;color:var(--muted);max-width:44ch}
+@media (max-width:760px){.onefig b{font-size:1.875rem}}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;letter-spacing:.06em;font-size:.8125rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.75rem;letter-spacing:.1em;line-height:1.5;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .4rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+.attrib{font-size:.8125rem;line-height:1.6;color:var(--g6);margin:0 0 var(--s2);max-width:78ch}
+.flag{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.flag h3{margin-bottom:var(--s1)}
+.flagline{font-size:.875rem;color:var(--muted);max-width:78ch}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:680px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.08em;line-height:1.6;color:var(--g6);font-weight:500;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.newmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:52ch}
+blockquote{margin:var(--s3) 0;padding-left:var(--s3);border-left:2px solid var(--accent);
+ font-size:1.0625rem;max-width:70ch}
+blockquote cite{display:block;font-size:.8125rem;font-style:normal;color:var(--g6);margin-top:var(--s1)}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+</style>
+<script type="application/json" id="measured">{"n_icons": 666, "n_groups": 10, "n_logos": 12, "n_nodes": 688, "n_edges": 1299, "n_ingroup": 666, "n_avo": 232, "n_orphan": 2, "n_usesicon": 371, "n_useslogo": 18, "n_defaultfor": 2, "n_ruledby": 8, "n_usescomp": 105, "n_usesicons": 81, "n_unused": 585, "n_active": 234, "n_multi": 15, "n_extra": 16, "n_isolated": 170, "n_nulls": 32, "n_unbound": 10, "logo_rules": 0, "logo_rulings": 0, "logo_kb": 6.3, "lib_keys": 758, "snip_files": 137, "unmatched": 102, "sprites": 835, "payload_kb": "348", "explorer_kb": "2,825", "payload_pct": 12.32, "g_nodes": "3,897", "g_edges": "6,721", "node_pct": 17.7, "edge_pct": 19.3, "prose_hit": 137, "prose_metas": 137, "prose_pairs": "1,947", "struct_only": 32, "prose_only": 13, "say_icon": 86, "cc": 613, "baked": 53, "tokens_icon": 29, "manifest_date": "2026-06-17", "chip": "assets"}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#277 &middot; lane RI &middot; icons and logos, proposed</p>
+<h1>688 new nodes, 1299 new edges, and four questions.</h1>
+<p>Four decisions sit below, recommendation first on each, one figure on each card. Everything after
+them is the evidence they rest on and you should not need it. <b>If you take the recommendation on all
+four, the graph gains 688 nodes and 1299 edges</b> &mdash; that is
+<b>+17.7%</b> on the node count and <b>+19.3%</b> on the edge count of a graph
+that holds 3,897 and 6,721 today. Nothing here is landed and nothing under
+<code>knowledge/</code> has been written.</p>
+<div class="stats">
+<div class="stat"><b>688</b><span>nodes: 666 icons, 10 groups, 12 logos</span></div>
+<div class="stat"><b>1299</b><span>edges across six new types, all structural</span></div>
+<div class="stat"><b>0</b><span>edges drawn from a regex over prose</span></div>
+<div class="stat"><b>32</b><span>declared nulls &mdash; every gap named, none filled</span></div>
+</div>
+<div class="zeros">
+<div><b>0</b> files written under <code>knowledge/</code> &mdash; this page proposes</div>
+<div><b>0</b> node kinds invented to make an arrow land</div>
+<div><b>81</b> of 666 icons are used by anything &mdash; 585 are not</div>
+<div><b>137 of 137</b> metas the refused prose route fires on</div>
+</div>
+<blockquote>use this as teh default logo &ldquo;masterbrand-light-colour&rdquo; &hellip; use this for dark
+mode masterbrand-dark-colour
+<cite>Dave, #230, 2026-08-31 &mdash; quoted from the <code>says</code> field of <code>s230-D2</code> in
+knowledge/_rulings.json. It is the only ruling that binds a logo, and it binds two of 12.</cite></blockquote>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Your words &middot; the ask</p>
+<h2>Four decisions.</h2>
+<p>One letter is an answer; a letter with a sentence attached is a sequel, and it will be read back
+before anything is built on it. Every recommendation below says which lane wrote it, where it sits.</p>
+<div class="dec" data-id="RI-1">
+<div class="dechead"><span class="decid">RI-1</span><h3>Do the icons enter as icons AND groups, as the icons alone, or not yet?</h3></div>
+<div class="onefig"><b>688</b><span>nodes if all three kinds enter — and 170 icons that would carry no edge at all without the 10 group hubs</span></div>
+<p>The manifest holds 666 glyphs under 10 group keys, and there are 12 logo lockups. All three kinds together are <b>688 nodes</b>. The group hubs are not decoration: without them, <b>170 icons carry no edge at all</b> — they have no active twin, no ruling, and no component renders them — and the family arrives as a fog of dots. With <code>inGroup</code>, every one of the 666 has at least one edge and the family has ten legible hubs.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RI-1" id="RI-1-a" value="a"><label for="RI-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All three kinds — 666 <code>icon:</code> + 10 <code>iconGroup:</code> + 12 <code>logo:</code> = <b>688 nodes</b>.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-1" id="RI-1-b" value="b"><label for="RI-1-b"><span class="okey">(b)</span>Icons only — 666 <code>icon:</code> nodes, no group hubs. 170 of them arrive with no edge at all.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-1" id="RI-1-c" value="c"><label for="RI-1-c"><span class="okey">(c)</span>Groups only — the 10 hubs, and nothing hanging off them.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-1" id="RI-1-d" value="d"><label for="RI-1-d"><span class="okey">(d)</span>Not yet. Nothing enters; the proposal stays on the shelf.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-1" id="RI-1-none" value=""><label for="RI-1-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Take (a). The ten hubs cost 10 nodes and 666 edges and they are the difference between a navigable family and 170 unreachable dots. The payload is measured, not estimated: 348 KB against the explorer's 2,825 KB, <b>+12.32%</b> on bytes and <b>+17.7%</b> on node count. That last number is a look, not an argument — judge it on the screenshots below, and if it is too much, (d) costs nothing.</p>
+<p class="attrib">Lane RI wrote this recommendation, re-deriving every figure from icons.manifest.json and the live tree. Lane IX (#277, ca294b4) costed the same three options first and reached the same place.</p>
+<textarea class="note" data-id="RI-1" aria-label="Notes for RI-1" placeholder="Notes for RI-1 &mdash; your words"></textarea>
+</div><div class="dec" data-id="RI-2">
+<div class="dechead"><span class="decid">RI-2</span><h3>Draw component → icon from the geometry byte-match?</h3></div>
+<div class="onefig"><b>371</b><span>component&nbsp;&rarr;&nbsp;icon edges from the byte-match, against 1,947 pairs the prose route would have invented</span></div>
+<p>There are two routes and they are not close. The <b>byte-match</b> compares every inline <code>&lt;path d&gt;</code> in every reference snippet against the 758 distinct normalised path keys in the library, using <code>_validate_icons.py</code>'s own <code>norm()</code> — the gate that already polices icon sources. It finds <b>371 pairs across 105 components and 81 icons</b>, and resolves every one to a manifest slug. The <b>prose</b> route — the slug as a word in the meta — fires on <b>137 of 137 metas</b> and makes <b>1,947 pairs</b>, because <code>accessibility</code>, <code>no</code>, <code>time</code>, <code>user</code>, <code>card</code> and <code>block</code> are all icon slugs.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RI-2" id="RI-2-a" value="a"><label for="RI-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span>Draw it as <code>usesIcon</code> — 371 edges, from the byte-match, with the four limits attached.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-2" id="RI-2-b" value="b"><label for="RI-2-b"><span class="okey">(b)</span>Wait. The icons enter as nodes; no component→icon edge is drawn in this wave.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-2" id="RI-2-none" value=""><label for="RI-2-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Take (a). The number that settles it is not 371 against 1,947; it is <b>32</b>: that many components render a library glyph and never once say the word “icon” in their meta. The prose route would have missed every one of them while inventing 1,947 pairs of English. Four limits travel with the edge and are written into the schema text: it measures the reference snippet and not the contract (so it is <code>usesIcon</code>, never <code>requiresIcon</code>); 81 of 666 icons are used, so it lights up a twelfth of the family; 102 inline paths match nothing and get no edge; and sprite <code>&lt;use&gt;</code> refs mean the pair set is right but per-use frequency is not measured, so no weight goes on the edge.</p>
+<p class="attrib">Lane RI wrote this recommendation and re-derived the byte-match independently from the gate's own norm()/DRE. Lane IX found the route and the 32 figure first; s274-D12 and s276-D5 are the refusals the prose route runs into.</p>
+<textarea class="note" data-id="RI-2" aria-label="Notes for RI-2" placeholder="Notes for RI-2 &mdash; your words"></textarea>
+</div><div class="dec" data-id="RI-3">
+<div class="dechead"><span class="decid">RI-3</span><h3>Fifteen bases have two or three “active” glyphs. Is the bare one the default?</h3></div>
+<div class="onefig"><b>15</b><span>bases with more than one “active” glyph — and all 15 of them have a bare <code>-active</code></span></div>
+<p><code>active</code> is a boolean on all 666 records and it is <b>exactly</b> predicted by the slug — 234 records end <code>-active</code> or <code>-active-N</code>, with zero mismatches either way. 15 bases carry more than one: <code>dentist</code> has three, fourteen others have two. <code>activeVariantOf</code> draws all 232 twins whichever way this goes, so nothing is blocked. What is open is whether one of them is <i>the</i> active twin.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RI-3" id="RI-3-a" value="a"><label for="RI-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span>The bare <code>-active</code> is the default, by rule. The 16 <code>-active-2</code>/<code>-active-3</code> records enter as declared variants.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-3" id="RI-3-b" value="b"><label for="RI-3-b"><span class="okey">(b)</span>Leave it open. Draw the 232 twins, draw no <code>defaultActive</code>, and the 15 stay a declared null.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-3" id="RI-3-none" value=""><label for="RI-3-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Take (a), and know that it is a small ruling rather than a measurement. The evidence for it is one file: <code>_validate_icons.py</code>'s twin arm already computes the expected twin as <code>slug + "-active"</code> — the gate has been assuming the bare form is the default since it was promoted. And it works here: <b>all 15 of the multi-variant bases have a bare <code>-active</code></b>, so (a) resolves every one of them and leaves exactly 16 extras declared. If that assumption is wrong anywhere, (b) costs nothing — the 232 twins are drawn either way and only <code>defaultActive</code> waits.</p>
+<p class="attrib">Lane RI wrote this recommendation. The gate's assumption is read from knowledge/_validate_icons.py's active_names(); lane IX flagged the ambiguity as blocker B4 and left it yours, which it still is.</p>
+<textarea class="note" data-id="RI-3" aria-label="Notes for RI-3" placeholder="Notes for RI-3 &mdash; your words"></textarea>
+</div><div class="dec" data-id="RI-4">
+<div class="dechead"><span class="decid">RI-4</span><h3>Ten of the twelve logos are bound by nothing. Do they enter anyway?</h3></div>
+<div class="onefig"><b>10</b><span>of the 12 lockups bound by nothing: 0 rules in logos.md, 0 rulings naming a logo file</span></div>
+<p><code>s230-D2</code> names two — <code>masterbrand-light-colour</code> and <code>masterbrand-dark-colour</code> — and those are your words. The other 10 are bound by nothing measurable: <code>_rules-index.json</code> holds <b>0</b> rules whose file is <code>logos.md</code>, <b>0</b> rulings name a logo <code>.svg</code> in <code>governs</code>, and <code>logos.md</code> itself says the standard lives on create.hsbc and there are no design tokens. Four <code>masterbrand-identifier</code> and four <code>hexagon</code> files are referenced by nothing in the corpus at all; the two <code>mono</code> files are used by <code>template-auth</code> and only by <code>template-auth</code>.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="RI-4" id="RI-4-a" value="a"><label for="RI-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span>All 12 enter — the 10 unbound ones visibly so, each with a declared null naming what binds it (nothing).</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-4" id="RI-4-b" value="b"><label for="RI-4-b"><span class="okey">(b)</span>Only the four <code>masterbrand</code> files that actually ship in a snippet.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-4" id="RI-4-c" value="c"><label for="RI-4-c"><span class="okey">(c)</span>Logos wait for a rule source that does not exist yet.</label></div></li>
+<li><div class="opt"><input type="radio" name="RI-4" id="RI-4-none" value=""><label for="RI-4-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Take (a). Twelve nodes cost about 6.3 KB and the unbound ten are the point, not the cost — eight lockups that nothing references is exactly the condition <code>s230-D2</code> was written to fix, and a graph that shows them greyed and rule-less puts that in front of you instead of leaving it in a folder. Every one of the 10 enters carrying a declared <code>governedBy</code> null that says what is missing and whose it is.</p>
+<p class="attrib">Lane RI wrote this recommendation. The 0-rules and 0-rulings figures are re-measured here; lane IX named the same gap as blocker B3 and put it off-repo, where it stays.</p>
+<textarea class="note" data-id="RI-4" aria-label="Notes for RI-4" placeholder="Notes for RI-4 &mdash; your words"></textarea>
+</div>
+
+<div class="flag">
+<h3>Flagged, not a decision &mdash; the manifest is one asset stale, and it is ours to fix</h3>
+<p class="flagline"><code>icons.manifest.json</code> was generated <b>2026-06-17</b>.
+<code>menu-search.svg</code> was ruled into the library by <code>s212-D9</code> on 2026-08-21, is on
+disk, and is <b>not in the manifest</b>. Since <code>icon:</code> resolves against the manifest, the
+graph cannot hold the one icon you personally approved &mdash; the simulated validator run confirms it,
+refusing <code>icon:menu-search</code> by name. That is a <b>build step, not a question</b>: the record
+is added by textual span before any land, never by a re-dump, and <code>$total</code> goes
+666&nbsp;&rarr;&nbsp;667. Nothing else is stale: every one of the
+666 manifested paths resolves on disk.</p>
+</div>
+
+<div class="flag">
+<h3>Flagged, not a decision &mdash; <code>themedBy</code> is declined and handed to the tokens gap</h3>
+<p class="flagline">A-inventory proposed an icon&nbsp;&rarr;&nbsp;token edge. It is not drawn here and it
+is not on the list above, because it carries nothing: <b>613 of 666</b> records are
+<code>fillMode: currentColor</code> and every one of them would point at the same eight
+<code>icon/*</code> leaves, which are what the <i>consuming context</i> sets. The relation that does have
+content is component&nbsp;&rarr;&nbsp;token, and it already has a structural home:
+<code>tokens.icon</code> is a real key in <b>29</b> metas. That is the tokens family's
+work, not this one's, and it is handed over rather than half-drawn.</p>
+</div>
+
+<div class="flag">
+<h3>Flagged, not a decision &mdash; <code>defaultFor</code> has nowhere to land</h3>
+<p class="flagline"><code>s230-D2</code> names two lockups as the theme defaults, and there is no
+<code>theme:</code> node in the graph to point them at &mdash; the live explorer carries twenty node
+kinds and none of them is a theme. So the two <code>defaultFor</code> edges ship with
+<b>a null target</b>, the theme as an edge property and your sentence as the note, and they are counted
+among the 32 declared nulls. Inventing <code>theme:light</code> so the arrow could land is
+the one thing the never-invent fence exists to stop. If you want the arrow to land, that is a fourth
+node kind and a separate question.</p>
+</div>
+
+<div class="bar">
+<button id="btnExport">Export JSON</button>
+<button id="btnCopy">Copy to clipboard</button>
+<button class="ghost" id="btnClear">Clear all</button>
+<span class="said" id="said"></span>
+</div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="ev-edges"><div class="wrap">
+<p class="label">Evidence &middot; you should not need this</p>
+<h2>The six edge types, and what each one is read from.</h2>
+<p>&ldquo;Structural&rdquo; means read from a field, a filename, or a byte-match. Every count below is
+re-derived at build time by <code>gen_kg_icons.py</code>; none is quoted from a document.</p>
+<div class="tw"><table>
+<thead><tr><th>type</th><th>direction</th><th>the join</th><th class="num">edges</th>
+<th class="num">target resolves</th><th class="num">declared null</th></tr></thead>
+<tbody>
+<tr><td class="slug newmark">inGroup</td><td class="slug">icon &rarr; iconGroup</td><td class="defn">the manifest key the record sits under</td><td class="num">666</td><td class="num">666</td><td class="num">0</td></tr>
+<tr><td class="slug newmark">activeVariantOf</td><td class="slug">icon &rarr; icon</td><td class="defn">slug <code>-active(-N)</code> + the base in the manifest</td><td class="num">234</td><td class="num">232</td><td class="num">2</td></tr>
+<tr><td class="slug newmark">usesIcon</td><td class="slug">component &rarr; icon</td><td class="defn">byte-match of <code>&lt;path d&gt;</code>, via <code>renderedBy</code></td><td class="num">371</td><td class="num">371</td><td class="num">0</td></tr>
+<tr><td class="slug newmark">usesLogo</td><td class="slug">component &rarr; logo</td><td class="defn"><code>src=</code> at an <code>assets/logos/</code> path</td><td class="num">18</td><td class="num">18</td><td class="num">0</td></tr>
+<tr><td class="slug newmark">defaultFor</td><td class="slug">logo &rarr; <i>(null)</i></td><td class="defn">the filename stem inside <code>s230-D2</code></td><td class="num">2</td><td class="num">0</td><td class="num">2</td></tr>
+<tr><td class="slug newmark">ruledBy</td><td class="slug">icon &rarr; ruling</td><td class="defn">a ruling <code>governs</code> entry naming the <code>.svg</code></td><td class="num">8</td><td class="num">8</td><td class="num">0</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section id="ev-prose"><div class="wrap">
+<p class="label">Evidence &middot; the route that was refused</p>
+<h2>Why component&nbsp;&rarr;&nbsp;icon is not read from prose.</h2>
+<p>Testing every manifest slug as a whole word against every component meta fires on
+<b>137 of 137</b> metas and makes <b>1,947</b> pairs. The
+busiest matches are the English language, not icons:</p>
+<p><code>accessibility</code> &times;137 &middot; <code>no</code> &times;137 &middot; <code>card</code> &times;68 &middot; <code>export</code> &times;65 &middot; <code>error</code> &times;64 &middot; <code>hidden</code> &times;63 &middot; <code>user</code> &times;56 &middot; <code>collapse</code> &times;53 &middot; <code>link</code> &times;52 &middot; <code>time</code> &times;52</p>
+<p>The byte-match route finds 371 pairs across 105 components and invents
+nothing. The two sets differ in the direction that matters: <b>32 components render a
+library glyph and never mention the word &ldquo;icon&rdquo; in their meta</b>, and
+13 mention it while rendering no library glyph. The prose route would have missed the
+first group entirely. This is the route <code>s274-D12</code> and <code>s276-D5</code> refused, and
+there is no flag on the generator that draws it.</p>
+</div></section>
+
+<section id="ev-groups"><div class="wrap">
+<p class="label">Evidence &middot; the ten hubs</p>
+<h2>The groups, as the manifest keys them.</h2>
+<div class="tw"><table>
+<thead><tr><th>node id</th><th>manifest key</th><th class="num">icons</th></tr></thead>
+<tbody>
+<tr><td class="slug">iconGroup:products-and-services</td><td>Products and services</td><td class="num">208</td></tr>
+<tr><td class="slug">iconGroup:informative</td><td>Informative</td><td class="num">131</td></tr>
+<tr><td class="slug">iconGroup:global-controls</td><td>Global controls</td><td class="num">122</td></tr>
+<tr><td class="slug">iconGroup:media</td><td>Media</td><td class="num">104</td></tr>
+<tr><td class="slug">iconGroup:miscellaneous</td><td>Miscellaneous</td><td class="num">24</td></tr>
+<tr><td class="slug">iconGroup:arrows-and-chevrons</td><td>Arrows and chevrons</td><td class="num">24</td></tr>
+<tr><td class="slug">iconGroup:status-icons</td><td>Status Icons</td><td class="num">20</td></tr>
+<tr><td class="slug">iconGroup:volume-and-audio</td><td>Volume and audio</td><td class="num">16</td></tr>
+<tr><td class="slug">iconGroup:touch</td><td>Touch</td><td class="num">10</td></tr>
+<tr><td class="slug">iconGroup:social</td><td>Social</td><td class="num">7</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section id="ev-nulls"><div class="wrap">
+<p class="label">Evidence &middot; the gaps, named</p>
+<h2>32 declared nulls. None of them is filled by a guess.</h2>
+<div class="tw"><table>
+<thead><tr><th>type</th><th class="num">count</th><th>why it cannot be drawn</th><th>examples</th></tr></thead>
+<tbody>
+<tr><td class="slug newmark">defaultActive</td><td class="num">15</td><td class="defn">this base carries two or three -active glyphs and NOTHING in the corpus says which is THE active twin. activeVariantOf is drawn for all of them; defaultActive is NOT drawn — blocker B4, and it is Dave's (RI-3)</td><td class="defn slug">alert: alert-active, alert-active-2; contact-chat-ai: contact-chat-ai-active, contact-chat-ai-active-2; dentist: dentist-active, dentist-active-2, dentist-active-3 …</td></tr>
+<tr><td class="slug newmark">governedBy</td><td class="num">10</td><td class="defn">NOTHING binds this lockup: s230-D2 does not name it, _rules-index.json holds 0 rules whose file is logos.md, and 0 rulings name a logo .svg in governs. logos.md says the standard lives on create.hsbc — blocker B3, and it is not ours</td><td class="defn slug">hexagon-dark-colour: referenced by 0 component(s); hexagon-dark-mono: referenced by 0 component(s); hexagon-light-colour: referenced by 0 component(s) …</td></tr>
+<tr><td class="slug newmark">activeVariantOf</td><td class="num">2</td><td class="defn">the base slug the -active suffix implies is not in the manifest — an ORPHAN ACTIVE, declared, never dropped and never invented</td><td class="defn slug">circle-active -> circle (absent); menu-more-verticle-active -> menu-more-verticle (absent)</td></tr>
+<tr><td class="slug newmark">defaultFor</td><td class="num">2</td><td class="defn">s230-D2 names this stem as the default lockup, but `theme:` is NOT a node kind in the live graph and this lane proposes three kinds, not four. The theme is carried as an edge property; no theme: node is invented</td><td class="defn slug">s230-D2 (2026-08-31, by Dave) names "masterbrand-dark-colour" — theme=dark; s230-D2 (2026-08-31, by Dave) names "masterbrand-light-colour" — theme=light</td></tr>
+<tr><td class="slug newmark">icon:</td><td class="num">1</td><td class="defn">the .svg is on disk but NOT in icons.manifest.json ($generated 2026-06-17), so the manifest cannot resolve icon:menu-search — blocker B1, a build step, not a decision</td><td class="defn slug">menu-search.svg (menu-search.svg) — ruled in by s212-D9</td></tr>
+<tr><td class="slug newmark">usesLogo</td><td class="num">1</td><td class="defn">s230-D2 records this component as deliberately NOT rebound (56px rail head, no lockup fits — a ruling-shaped residue that stays Dave's). The gap is DECLARED, never quietly completed</td><td class="defn slug">app-shell-nav-rail: no assets/logos/ src= in its snippet, and that is the ruling</td></tr>
+<tr><td class="slug newmark">ruledBy</td><td class="num">1</td><td class="defn">s212-D9 governs this .svg but the manifest does not hold the slug, so there is no icon: node to source the edge from — blocker B1 again</td><td class="defn slug">s212-D9 governs knowledge/assets/icons/menu-search.svg</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section id="ev-cost"><div class="wrap">
+<p class="label">Evidence &middot; the cost, measured</p>
+<h2>What it does to the explorer.</h2>
+<p>The payload is serialised exactly as <code>_build_kg_explorer.py</code> serialises it &mdash;
+<code>json.dumps(&hellip;, separators=(',',':'))</code> over the same node and edge dicts. It comes to
+<b>348&nbsp;KB</b> against the shipped explorer's 2,825&nbsp;KB, which is
+<b>+12.32%</b> on bytes. The number that will be felt is the other one:
+<b>+17.7%</b> on node count, because <code>place_extra()</code> lays each family out on its
+own and parks it beside the base graph. The chip is proposed <b>OFF by default</b>, the fifth additive
+family named <code>assets</code>, following the precedent the <code>ux</code> chip set. Bytes are
+arithmetic; the layout is a look, and it is yours.</p>
+</div></section>
+
+<footer><div class="wrap">
+<p>Built by <code>notes/_lanes/277/icons-propose/_build_page.py</code> from
+<code>dry-run.json</code> and live counts over <code>knowledge/</code>. Nothing on this page is landed.
+The generator refuses <code>--land</code> against every ruling id that exists.</p>
+</div></footer>
+
+<script>
+(function(){
+ var KEY="ri-icons-2026-09-16-v1";
+ var IDS=["RI-1", "RI-2", "RI-3", "RI-4"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"REVIEW-icons-2026-09-16-v1",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="icons-decisions-2026-09-16-v1.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>

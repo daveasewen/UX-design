@@ -1,0 +1,211 @@
+PROPOSED — NOT APPLIED. Lane RI, #277, s269-D1 STEP 4.
+Targets: knowledge/_validate_kg.py  and  knowledge/components/meta.schema.json
+Decisions: RI-1 (the node kinds) and RI-2 (usesIcon) on
+           REVIEW-icons-2026-09-16-v1.html.
+
+This diff was applied ONLY to a scratch copy of knowledge/, to run the validator
+against a simulated tree. Nothing under knowledge/ was written by this lane. The
+scratch result is at the bottom of this file, reproduced from the run.
+
+WHAT IS BEING ADDED, AND WHERE IT LIVES
+---------------------------------------
+Three node kinds and six edge types. They are NOT all the same shape, and the
+diff is smaller than "six new meta fields" because of it:
+
+  · FOUR of the six — inGroup, activeVariantOf, defaultFor, ruledBy — are sourced
+    at an `icon:` or a `logo:` node and live ENTIRELY inside the generated node
+    file (knowledge/_icon_nodes.json / _logo_nodes.json), exactly as `tensionWith`
+    and `hasParty` live inside _ux_principle_nodes.json. No meta ever carries one,
+    so they need NOTHING in meta.schema.json. They need only the REF_RE /
+    NODE_KINDS addition so `_validate_kg.py` can parse the ids at all.
+
+  · TWO of the six — usesIcon and usesLogo — are sourced at a `component:` node.
+    Those are the two a meta could hold, so those are the two that get a scoped
+    definition and an `edges` field. They are GENERATED, not authored, which is
+    the one thing that makes them different from s276's `obeys`, and it is why
+    `$why` is NOT required on them and `$source` IS.
+
+  · Each of the three kinds resolves against THE FILE THAT IS ITS HOME
+    (ADR-0017 write-once), never a second registry — the same shape role:/intent:/
+    shape: use, and the same shape s276-D3 used for rule:/ux:.
+
+⚠ THE RESOLVER FOR `icon:` IS THE MANIFEST, AND THE MANIFEST IS ONE ASSET STALE.
+`icons.manifest.json` `$generated` is 2026-06-17; `menu-search.svg` was ruled into
+the library by `s212-D9` on 2026-08-21, is on disk, and is not manifested. With
+this diff applied AS WRITTEN, `icon:menu-search` does not resolve — the graph
+cannot hold the one icon Dave personally approved. That is blocker B1 and it is a
+BUILD STEP, not a decision: the manifest is reconciled by textual span (never a
+re-dump, the #179/#275 class) before any land, and `$total` goes 666 -> 667.
+This lane declares it; it does not fix it, because fixing it is a write under
+knowledge/ and this lane writes nothing there.
+
+
+--- a/knowledge/_validate_kg.py
++++ b/knowledge/_validate_kg.py
+@@ line 87 @@
+-REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape|rule|ux):.+$")
+-NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape",
+-              "rule", "ux")
++REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape|rule|ux"
++                    r"|icon|iconGroup|logo):.+$")
++NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape",
++              "rule", "ux", "icon", "iconGroup", "logo")
+
+@@ after the RULES_INDEX / UX_NODES block (line ~99) @@
++# s277-Dn (#277 lane RI, enacting s269-D1 STEP 4): the three asset kinds. Each resolves
++# against the file that IS its home (ADR-0017 write-once) — the icon manifest for the
++# glyphs and their ten groups, the logo DIRECTORY for the twelve lockups, because there
++# is no logo manifest and the filenames are the manifest.
++ICON_MANIFEST = HERE / "assets" / "icons" / "icons.manifest.json"
++LOGO_DIR = HERE / "assets" / "logos"
+
+@@ after ux_ids() (line ~130) @@
++def icon_ids(path=None):
++    """icon:<slug> and iconGroup:<slug> resolve against icons.manifest.json — 666 slugs
++    under 10 group keys. Returns (icons, groups). NOTE B1: `menu-search` is ruled library
++    by s212-D9 and is NOT in this manifest, so icon:menu-search will not resolve until the
++    manifest is reconciled. That is deliberate: a resolver that quietly admitted an
++    unmanifested slug would make the manifest stop being the home."""
++    path = path or ICON_MANIFEST
++    if not path.exists():
++        return set(), set()
++    data = json.loads(path.read_text(encoding="utf-8"))
++    groups = data.get("groups", {})
++    icons = {f"icon:{r['slug']}" for lst in groups.values() for r in lst if r.get("slug")}
++    gids = {"iconGroup:" + re.sub(r"[^a-z0-9]+", "-", g.lower()).strip("-") for g in groups}
++    return icons, gids
++
++
++def logo_ids(path=None):
++    """logo:<stem> resolves against the twelve files in knowledge/assets/logos/. There is
++    no logos manifest — knowledge/guidelines/logos.md states the 12 in prose and declines
++    to bind them ('the detailed logo standard lives on create.hsbc', 'No design tokens.'),
++    so the DIRECTORY is the store and a second registry would be the ADR-0017 violation."""
++    path = path or LOGO_DIR
++    if not path.exists():
++        return set()
++    return {"logo:" + p.stem for p in sorted(path.glob("*.svg"))}
+
+@@ inside validate(), the `resolvers` dict (line ~267) @@
+         "rule": rule_ids(),
+         "ux": ux_ids(),
++        "icon": icon_ids()[0],
++        "iconGroup": icon_ids()[1],
++        "logo": logo_ids(),
+     }
+
+
+--- a/knowledge/components/meta.schema.json
++++ b/knowledge/components/meta.schema.json
+@@ definitions @@  (insert immediately after the "obeysEdge" definition)
+       }
+     },
++    "assetEdge": {
++      "description": "s277-Dn (PROPOSED — s269-D1 STEP 4, lane RI #277). One GENERATED reference from a component to a library asset: an `icon:<slug>` from knowledge/assets/icons/icons.manifest.json, or a `logo:<stem>` from knowledge/assets/logos/. Deliberately NOT `definitions/edge`: widening the shared ref pattern would let `containedBy` point at an icon. Deliberately NOT `definitions/obeysEdge` either — `obeys` requires `$why` because s274-D12 said the durable route is AUTHORED, and these are the opposite: they are read from a byte-match or an attribute and a hand-written sentence on one would be decoration. `$source` is REQUIRED instead, naming the join that produced the entry, so a reader of the meta alone can tell a byte-match from a guess. ref is never null here: an asset that cannot be resolved does not get an entry, it gets a declared null in the generated node file.",
++      "type": "object",
++      "required": [
++        "ref",
++        "$source"
++      ],
++      "additionalProperties": false,
++      "properties": {
++        "ref": {
++          "type": "string",
++          "pattern": "^(icon|logo):.+$"
++        },
++        "$source": {
++          "type": "string",
++          "minLength": 20,
++          "description": "The join, named. One of exactly two strings today: 'byte-match of normalised <path d> against the icon library (_validate_icons.py norm()/DRE), via renderedBy' or 'src=\"…/assets/logos/<file>.svg\" in the renderedBy snippet'. NEVER a regex over prose: the slug-as-word route fires on 137 of 137 metas and is refused by s274-D12 and s276-D5."
++        },
++        "$note": {
++          "type": "string"
++        }
++      }
++    },
+     "behaviourAddress": {
+
+@@ properties.edges.properties @@  (two more siblings, alongside obeys)
++        "usesIcon": {
++          "type": "array",
++          "items": {
++            "$ref": "#/definitions/assetEdge"
++          },
++          "description": "s277-Dn (PROPOSED). The library glyphs this component's REFERENCE SNIPPET renders, found by byte-matching every inline <path d> against the 758 distinct normalised path keys in knowledge/assets/icons/, using _validate_icons.py's own norm() and DRE — never a second geometry index, never a regex. Measured live: 371 pairs across 105 components and 81 of the 666 icons. FOUR DECLARED LIMITS travel with the type and must not be dropped when it is read: (1) it measures the reference render, NOT the component's contract, which is why it is `usesIcon` and never `requiresIcon`; (2) 81 of 666 icons are used, so it illuminates 12% of the family — the library is a catalogue and the system consumes a twelfth of it; (3) 102 inline paths byte-match nothing and get NO entry (_validate_icons.py calls those bespoke or UNKNOWN); (4) 835 <svg> elements carry no <path> at all because they are sprite <use href=\"#…\"> refs into a <symbol> in the same file — the PAIR SET is right but per-use FREQUENCY is not measured, so no weight may be put on an entry."
++        },
++        "usesLogo": {
++          "type": "array",
++          "items": {
++            "$ref": "#/definitions/assetEdge"
++          },
++          "description": "s277-Dn (PROPOSED). The logo lockups this component's reference snippet loads, read from an explicit src=/href= at an assets/logos/ path. Measured live: 18 entries across 9 components and 4 of the 12 lockups. The structural set and the prose set differ IN THE USEFUL DIRECTION — the 9 metas that say 'logo' include payment-card-visual and qr-code, which reference no logo file, and MISS app-shell-split and template-dashboard-bento, which do. app-shell-nav-rail carries NO entry and that is s230-D2's own words ('deliberately NOT rebound — 56px rail head, no lockup fits'): the gap is a declared null with a $note in the generated node file and must never be quietly completed."
++        },
+         "$contract": {
+
+@@ properties.edges.properties @@  (one more sibling, the provenance string)
++        "$assets-contract": {
++          "type": "string",
++          "description": "s277-Dn (PROPOSED). The provenance sentence for this meta's usesIcon / usesLogo lists, so a reader of the meta alone can tell a GENERATED edge from an authored one — the mirror of $obeys-contract, which exists because obeys is authored. One string, no structure."
++        },
+
+
+NOT IN THIS DIFF, DELIBERATELY
+------------------------------
+  · no `themedBy` and no `token:` kind. 613 of 666 records are fillMode
+    `currentColor` against 8 `icon/*` leaves the CONSUMING context sets, so the
+    relation is identical for all 613 and the edge is contentless at the icon
+    level. The real relation is component -> token via `tokens.icon`, a real key
+    in 29 of the 137 metas, and it belongs to the tokens gap (932 records), not
+    here. Declined by the lane, handed over, not asked of Dave.
+  · no `theme:` kind, so `defaultFor` has no resolvable target and its two edges
+    carry `t: null` + the theme as an edge property + s230-D2's verbatim line.
+    Inventing `theme:light` to make the arrow land is what fence 3 (#261) exists
+    to stop. If Dave wants the arrow to land, that is a FOURTH kind and a
+    separate question.
+  · no `defaultActive` edge. 15 bases carry two or three `-active` glyphs and
+    nothing in the corpus says which is the twin (blocker B4). `activeVariantOf`
+    draws all 232 without resolving it; `defaultActive` cannot be drawn at all.
+    Decision RI-3.
+  · no `logo -> guidelineDoc (governedBy)` edge. `_rules-index.json` holds 0
+    rules whose `file` is `logos.md` and 0 rulings name a logo `.svg` in
+    `governs`. One target, zero rules, nothing to say (blocker B3).
+  · no change to `definitions.edge` and no change to `definitions.obeysEdge` —
+    the shared ref pattern stays as it is, and `obeys` still cannot point at an
+    icon.
+  · no new TOP-LEVEL property. `properties` keeps its 34 keys.
+
+
+THE RUN — `_simulate_validator.py`, 2026-09-16, scratch tree, live tree untouched
+---------------------------------------------------------------------------------
+  0. BASELINE  unpatched scratch copy                               rc = 0  OK
+                 metas checked: 138 (the slim copy; 139 once _proforma is in)
+  1. APPLY     _validate_kg.py  REF_RE/NODE_KINDS                   anchored span, 1 of 1
+               _validate_kg.py  ICON_MANIFEST/LOGO_DIR + icon_ids()/logo_ids()
+               _validate_kg.py  the three resolver entries
+               meta.schema.json definitions 6 -> 7 · edges.properties 23 -> 26
+  2. PLANT     the generator's OWN live output written into the scratch metas:
+               105 metas, 389 entries (371 usesIcon + 18 usesLogo), each with $source
+  3. PASS 1    metas checked: 139
+               ref:null + $note: 90
+               resolutions consumed: 82 ruled verdicts (MERGE 5 / PROMOTE 52 / ATTACH 25)
+               _validate_kg.py: OK — every ref parses+resolves, every null carries a
+                 note, every meta has provenance, edges match schema, gen_kg_edges.py
+                 is idempotent-clean, and the s135-D4 resolutions input was consumed.
+                                                                     rc = 0  OK
+  4. PASS 2 — the negatives, one at a time, each restored after:
+               N1  icon:menu-search      CAUGHT (rc=1)  the B1 slug — the graph really
+                                                        cannot hold it until B1 is done
+               N2  icon:not-a-real-icon  CAUGHT (rc=1)
+               N3  logo:hexagon          CAUGHT (rc=1)  a lockup WORD, not a stem
+               N4  usesIcon with no $source
+                                         CAUGHT (rc=1)  the schema arm bites
+               restored                  rc = 0
+
+  RESULT  baseline rc=0 · simulated rc=0 · negatives ALL CAUGHT.
+
+  ONE THING WORTH SAYING OUT LOUD. With 389 new entries across 105 metas, the
+  freshness arm still reports `gen_kg_edges.py is idempotent-clean`. That is
+  s268-D6(c) doing its job: a DECLARED edge type the generator has no prose source
+  for is CARRIED rather than derived, so usesIcon and usesLogo survive a
+  regeneration untouched. No change to gen_kg_edges.py is needed, and this lane
+  neither ran it nor proposes touching it.
