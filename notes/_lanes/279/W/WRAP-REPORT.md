@@ -126,7 +126,26 @@ in-pack** — reversing the deliberate exclusion in `knowledge/_gen_pack_manifes
 
 ## COMMIT AND PUSH
 
-*(Filled below from the run. The sha is a declared gap in the stratum — a commit cannot name itself.)*
+**Commit `044035b`** — `after #279 2026-09-16 — #279 wrap: the wave lands, and the graph is not three layers - the delegated capture ritual, every step run`. The script asserted the subject identical to the T3 headline it generated **in memory, not re-read from the msgfile** (#171) and asserted exactly ONE T3 prefix (#208).
+
+**Push, quoted verbatim from `bash knowledge/_git_commit.sh --push`:**
+
+```
+To https://github.com/daveasewen/UX-design.git
+   7c72cc1..044035b  master -> master
+✅ pushed and VERIFIED: remote master == local 044035bced5cff2b9c6ae3d982eeeee81785827b
+```
+
+⚠ The push emitted `warning: unable to unlink '…/.git/index.lock': Operation not permitted` and pushed anyway — the sandbox's standing delete-guard, not a failure; the lock is left in place and is **never `rm`'d**.
+
+**CI READ BACK from the GitHub checks API on `044035b`** (not from a banner): **`release` completed SUCCESS · `gates` completed FAILURE (3 annotations, each `Process completed with exit code 1`) · `render` still `in_progress` at the last poll**. ⛔ **THE `gates` RED IS INHERITED, AND THAT IS ESTABLISHED BY MEASUREMENT RATHER THAN ASSUMED:** the same API on **`7c72cc1`** — #278's own wrap commit, the parent of this session's work — reads `gates | completed | failure` as well, with `release` and `render` both green. ⇒ **CI `gates` was already red before #279 pushed, this wrap did not turn it red, and repairing it is not a wrap's to take.**
+
+⛔ **TWO REFUSALS BEFORE THE COMMIT LANDED, EACH REMEDIED PER ITS OWN INSTRUCTION, AND A FRESH msgfile WRITTEN FOR EVERY INVOCATION INCLUDING AFTER EACH REFUSAL** (`msg279-wrap.txt` → `-v2` → `-v3`, all under `notes/_lanes/279/W/`, session-owned and uniquely named — **never `/tmp`**):
+
+1. **REUSED-MSGFILE GATE (#208, widening #170)** — the first msgfile's line 1 carried its own `after #279 2026-09-16 — ` prefix, which the script generates itself; a second run would have stacked a second prefix (the doubled-subject class). Remedy: a FRESH msgfile with a **bare** subject. Nothing had been staged.
+2. **MENTION-MAP GATE (#208, the `[110]` re-stale class, 3rd recurrence)** — the map was stale, the script regenerated it and refused to stage a path it had not been given. Remedy: re-run with `knowledge/_graph-mention-map.json` appended, from another fresh msgfile. Nothing had been staged.
+
+⚠ **THE `#179` CLASS WAS AVOIDED, NOT REPEATED.** Both `knowledge/_state.json` writes — the `W-278wr` repair and the `W-279wr` row — went in **by textual span with the reconstruction asserted in the writing process before the write**, and `git diff --numstat` read **`26  0`**: insert-only, which is what a span looks like. The same discipline covers `knowledge/_rulings.json` (`18  0`) and both `_LIVE-STATE.md` header moves.
 
 ## NOT DONE, DECLARED
 

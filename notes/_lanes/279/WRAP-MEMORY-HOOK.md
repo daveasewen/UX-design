@@ -36,3 +36,6 @@ Related: [[wrap-278-the-cloud-move-and-the-seed]] · [[wrap-277-the-constitution
 
 ---
 ⬛ PLACEMENT OWED: this file has NOT been placed. The conductor copies the body above to `wrap-279-the-wave-lands-and-the-graph-question.md` in the claude.ai Project memory and adds the index line to `index.md` at the #280 opener, then appends a `✅ PLACED <date>` receipt here — the #277/#278 shape.
+
+---
+⬛ **`s271-D4` RE-READ — THE RITUAL'S FINAL BEAT, RUN AT 5b AND RECORDED RATHER THAN ASSUMED.** This hook's open items were re-read against `knowledge/_rulings.json` after every ruling of the session was inscribed. #279 inscribed exactly one — **`s279-D1`** — and it is about what the designer PACK ships. It closes **NONE** of the open items above: not the LAYOUT question (which `s279-D1` does not touch and which has never been put to him as an option), not his unread 15-base export, not the `designrulings` sub-chip, not the thirteenth verb or `verbVia`, not the `va25-013` split, and — declared explicitly because it is the near miss — **not the Spider `v1.0.14` cut**, which carries the SAME reversal into `apollo-spider` and is deliberately left armed and un-fired as Dave's word under `s219-D4(2)`. **NOTHING IS STRUCK.** ⚠ Every open item above is written as the question it is, not as a state of the world.
