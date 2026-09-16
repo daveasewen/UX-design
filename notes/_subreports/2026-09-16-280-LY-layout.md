@@ -160,3 +160,6 @@ assets in System, the black ruling cloud at the bottom, and every cross-layer li
   `/sessions/…/outputs/ly/` and is removed at the end. One mistake is recorded honestly: a
   `cp -r knowledge` into that scratch dir put 2.9 GB on the mount for about four minutes before it
   was deleted; the control build was then done without any copy.
+
+## 10. Shipped
+Commit `b212ca2`. `_validate_kg.py` rc 0 ("OK — every ref parses+resolves …"); `_validate_lane_ownership.py` "LANE OWNERSHIP: OK — no staged path under another session's lane (this is #280)"; `git diff HEAD -- knowledge/_validate_lane_ownership.py` 0 lines.
