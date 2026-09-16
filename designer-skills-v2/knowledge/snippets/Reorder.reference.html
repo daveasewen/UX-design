@@ -10,16 +10,13 @@
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --text:#1A1A1A; --icon:#1A1A1A; --drop:#2B7E4F; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --text:#FFFFFF; --icon:#FFFFFF; --drop:#4A9568; --divider:#808080; --focus:#4587A7; --page:#1A1A1A; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --text:#1A1A1A; --icon:#1A1A1A; --drop:#66CC8D; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --text:#FFFFFF; --icon:#FFFFFF; --drop:#66CC8D; --divider:#808080; --focus:#4587A7; --page:#1A1A1A; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   ul.reorder{list-style:none; margin:0; padding:0; max-width:420px; background:var(--surface); border:1px solid var(--divider);}
   ul.reorder li{display:flex; align-items:center; gap:12px; min-height:52px; padding:0 12px; background:var(--surface);}
   ul.reorder li + li{border-top:1px solid var(--divider);}
@@ -41,8 +38,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Reorder — canonical reference (drag the handle, or use Move up/down)</span></div>
-
+  
   <ul class="reorder" id="list">
     <li><button class="handle" aria-label="Drag to reorder Checking"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0.00390625 4.79998H18.0039V3.59998H0.00390625V4.79998Z"/>
 <path d="M18.0039 8.00017H0.00390625V6.80017H18.0039V8.00017Z"/>
@@ -58,20 +54,23 @@
 <path d="M0.00390625 14.4001H18.0039V13.2001H0.00390625V14.4001Z"/></svg></button><span class="name">ISA</span><span class="moves"><button aria-label="Move ISA up"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z"/></svg></button><button aria-label="Move ISA down"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z"/></svg></button></span></li>
   </ul>
 
+  <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
+       contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
+       where the non-colour carrier (symbol + label) is checkable against real DOM, per
+       s151-D1 clause 4. The absence is DECLARED, not silent. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "Reorder",
     "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--drop": "rag/success", "--divider": "divider/border/section", "--focus": "focus/ring", "--page": "background/default" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
-      { "fg": "rag/success", "bg": "background/default", "context": "ui" }
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" }
     ],
     "requiredAria": ["aria-label"]
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    
 
     const list=document.getElementById('list');
 

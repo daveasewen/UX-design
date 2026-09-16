@@ -2,6 +2,17 @@
   "name": "Navigations",
   "category": "organism",
   "purpose": "The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around the site/app and access search and account.",
+  "provides": "wayfinding",
+  "answers": "where-can-i-go",
+  "shape": "destination-set × links",
+  "span": {
+    "cols": {
+      "min": 12,
+      "max": 12
+    }
+  },
+  "priority": 60,
+  "when": "shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
   "$family": "Covers the 'Navigations' canvas: Masthead ×2 + 3 flyouts, Anchors, Navigation bar bottom (app), Navigation bar top (app).",
   "props": [
     {
@@ -13,7 +24,8 @@
         "nav-bar-bottom",
         "nav-bar-top"
       ],
-      "default": "masthead"
+      "default": "masthead",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
     },
     {
       "name": "auth",
@@ -49,7 +61,21 @@
         "xs"
       ],
       "default": "l",
-      "$note": "Masthead/Anchors fully responsive; app nav bars are mobile."
+      "$note": "Masthead/Anchors fully responsive; app nav bars are mobile.",
+      "binds": "scale",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+    },
+    {
+      "name": "count",
+      "type": "string",
+      "$note": "Optional count chip on a destination or on the notifications action. On the action it is aria-hidden because the button's accessible name already carries the number — a count read twice is a count read wrong.",
+      "$since": "#261"
+    },
+    {
+      "name": "account",
+      "type": "object",
+      "$note": "The signed-in trigger: avatar initials plus name, dropping to the avatar alone below 768px. Initials are a stand-in for a real product identity — PROPOSED.",
+      "$since": "#261"
     }
   ],
   "variants": [
@@ -68,11 +94,16 @@
     {
       "name": "nav-bar-top",
       "use": "App-only top bar (iOS Nav Bar Top); title + actions, active indicator."
+    },
+    {
+      "name": "compact",
+      "use": "Below 768px the primary row is REPLACED (not shrunk) by a hamburger that discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.",
+      "$since": "#261"
     }
   ],
   "tokens": {
     "masthead-surface": "background/default (#fff) [bound via deprecated surface tokens — see tokenValidation]",
-    "logo": "color/primary (#db0011), color/black, color/white",
+    "logo": "NOT A COLOUR BINDING ANY MORE (#230). The masthead mark is the OFFICIAL ASSET, <img>-referenced: knowledge/assets/logos/masterbrand-light-colour.svg on light chrome, masterbrand-dark-colour.svg on dark — Dave's ruling, verbatim, at #230. The artwork carries its own colour (hexagon #DB0011 / white), so nothing here recolours it and no token is bound to it. The former binding (color/primary, color/black, color/white) described a TEXT wordmark that no longer exists; the #230 rehearsal measured what that stand-in cost — a cold builder shipped HSBC set in type, silently, and never asked.",
     "text": "text/default @ font-5 light/medium; nav labels font-5; tab labels font-6/7",
     "icon": "icon/default (#333) [main-nav/masthead bind deprecated icon hover]",
     "secondary-button-border": "tertiary/border/default (#000000)",
@@ -112,7 +143,10 @@
       "2.1.2 No Keyboard Trap",
       "2.5.8 Target Size (Minimum)",
       "2.4.11 Focus Not Obscured (Minimum)"
-    ]
+    ],
+    "compactDrawer": "The 768px drawer is a disclosure: aria-expanded mirrors `hidden`, an explicit [hidden]{display:none} rule makes `hidden` obey (#218 W3 finding F1 — an author display rule beats the UA sheet), focus moves into the panel on open, Escape closes and returns focus. It holds the SAME destinations as the primary row and shares one selection scope with it, so aria-current can never disagree between the two. (#261)",
+    "disabledDestination": "A disabled destination is aria-disabled=true + tabindex=-1 — it keeps its place in the reading order rather than vanishing. (#261)",
+    "notificationCount": "The count chip on the notifications button is aria-hidden; the number lives in the button's own accessible name ('Notifications, 4 unread'). (#261)"
   },
   "antiPatterns": [
     "Marking the active nav/anchor with colour (red underline) only — pair with aria-current",
@@ -190,6 +224,105 @@
   "provenance": {
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:41404:53897",
-    "code_path": ""
-  }
+    "code_path": "",
+    "$261": "#261 nav design pass, Dave's ask ('tackle the nav design'). No reference given — designed by judgment as ONE FAMILY with Sidebar-nav, Navigations and Tab-bar. Snippet rebuilt; see $navFamily and the snippet's knownFindings."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Navigations.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page-top",
+        "$note": "Page (top)"
+      },
+      {
+        "ref": "context:app-screen-top-bottom",
+        "$note": "App screen (top & bottom)"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:global-masthead-with-mega-flyout-nav"
+      },
+      {
+        "ref": "pattern:search-overlay"
+      },
+      {
+        "ref": "pattern:account-user-menu"
+      },
+      {
+        "ref": "pattern:in-page-anchor-nav"
+      },
+      {
+        "ref": "pattern:app-bottom-tab-bar"
+      }
+    ],
+    "family": [
+      {
+        "ref": "component:navigations",
+        "$note": "Covers the 'Navigations' canvas: Masthead ×2 + 3 flyouts, Anchors, Navigation bar bottom (app), Navigation bar top (app)."
+      }
+    ],
+    "groupsWith": [
+      {
+        "ref": "component:sidebar-nav",
+        "$note": "DECLARED at #261 (nav design pass, Dave's ask 'tackle the nav design'). The NAV FAMILY: Navigations, Sidebar-nav and Tab-bar answer ONE question the user came with — where am I and where can I go — on one token set and one item anatomy. Interchangeability grade: SAME-ANSWER (s251-D4), not drop-in and not same-shape. AUTHORED ONE DIRECTION ONLY (s251-D6): the reciprocal edges on sidebar-nav and tab-bar are DERIVED, never hand-written. MODULE level (s245-D7 Q7(a))."
+      },
+      {
+        "ref": "component:tab-bar",
+        "$note": "DECLARED at #261. Same family, same grade (SAME-ANSWER, s251-D4). Tab-bar is the MOBILE member: it is what Sidebar-nav becomes below 768px when a rail is the wrong density control. One direction only (s251-D6)."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:wayfinding"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:where-can-i-go"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:destination-set × links"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:sidebar-nav"
+      },
+      {
+        "ref": "component:tab-bar"
+      }
+    ]
+  },
+  "responsive": {
+    "$note": "#261: the masthead collapses at 768px by REPLACEMENT — primary row out, hamburger plus stacked panel in. The action rail survives at every width; only the account trigger's name is dropped. PROPOSED, not ruled.",
+    "breakpoint": "768px",
+    "verifiedTo": "320px"
+  },
+  "$navFamily": {
+    "$ruling": "UNRULED. #261 nav design pass, Dave's ask verbatim: 'tackle the nav design'. No reference was supplied ('we'll prompt this'), so the family and everything in it is PROPOSED, designed by judgment.",
+    "name": "nav family",
+    "members": [
+      "component:sidebar-nav",
+      "component:navigations",
+      "component:tab-bar"
+    ],
+    "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
+    "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
+    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+    "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
+    "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
+    "openItems": [
+      "SUPERCHARGE DARK. primary/border/default (#DB0011) on tertiary/background/hover measures 4.58 light / 3.01 dark in mono, legacy and console, and 3.89 light / 2.73 dark in Supercharge — a FAIL. It is not declared as a contrastPair because declaring it would be a green that cannot fail in the theme where it is false. Supercharge dark either needs its own current-location value or the pattern needs a non-red mark in that theme. Dave's.",
+      "TAB-BAR VOCABULARY. The #261 lane brief described Tab-bar as in-page section tabs; the gated Tabs component already is that, and Tab-bar's own meta has always said app-level BOTTOM navigation. Built to the canon meaning. The section-tab reading, drawn on these same tokens, is a PROPOSAL against Tabs in notes/_lanes/261-N-nav-review.html. Dave's."
+    ],
+    "drivenReceipt": "notes/_lanes/261-N-drive-nav.py — 3 components x 4 themes x 2 modes = 24 driven probes, written to notes/_lanes/261-N-nav-probe.json and 24 PNGs. It measures, per theme: the indicator's computed box-shadow geometry against the family edge rule (0 mismatches in 24), the smallest visible .nv-item box (sidebar 247x44, masthead 218x44, tab bar 81x46 — all at or over the 44px control target), the count chip (24px on a row, 18px on a glyph — at or over the 24px dial-down floor), the disabled row's aria-disabled/tabindex pair, and the live contrast of primary/border/default on tertiary/background/hover. That last one reproduced the quoted four-theme figures exactly: 4.58 light / 3.01 dark in mono, legacy and console; 3.89 / 2.73 in SUPERCHARGE. The Supercharge failure is now a measurement, not a memory."
+  },
+  "$261N2": "#261 N2, Dave verbatim: \"the selected state should just have the underscore, no background\" — a masthead destination opts out of the shared item's current-row fill and keeps the 3px block-end rule alone (aria-current plus the rule's presence/absence still carry it without colour). And \"align the bottom of the search bar with the bottom of its container\" — the search disclosure's bottom padding is zero, so the field's baseline rule lands ON the container's bottom edge instead of floating 8px above it."
 }

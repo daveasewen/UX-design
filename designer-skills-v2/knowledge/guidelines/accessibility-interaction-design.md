@@ -46,7 +46,7 @@ Duplicates xref'd per the F4 rule — destiny carried once.*
 - **ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44,
   minimum exception 24×24** (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/
   inline/UA/essential outs; "HSBC already has formal design guidance… 44×44 is therefore
-  considered the default requirement." [RULED 2026-07-03 (Dave): ENACTED — <24 now BLOCKING in _validate_a11y.py
+  considered the default requirement." [BLOCKING — RULED 2026-07-03 (Dave): ENACTED — <24 now BLOCKING in _validate_a11y.py
   (EITHER-dimension semantics per the SC), 24–43 signals advisory against the 44
   default; promotion of the 44 tier waits on modelling the exception outs. Sole
   floor offender (Selection-controls chip dismiss, 18×18) fixed via the Tooltip
@@ -99,9 +99,10 @@ Duplicates xref'd per the F4 rule — destiny carried once.*
 - **ID-28 — authentication flexible, no cognitive-function-test-only step** (SC 3.3.8):
   offer in-app notification/biometric/OTP alternatives; **mechanisms like pasting from
   password managers must work**; applies to existing-user auth only; legal/regulatory
-  exemptions possible. [RECORDED — receipt for the axf-001 map's 3.3.8 route. The
+  exemptions possible. [ADVISORY — RULED 2026-08-06 (Dave, #114): records the existing check-O tier;
+  RECORDED, receipt for the axf-001 map's 3.3.8 route. The
   paste-must-work clause is a cost-0 gate candidate: no paste-blocking on inputs — next
-  desk batch] {#aid-020}
+  desk batch. Promotion to BLOCKING is explicitly NOT ruled] {#aid-020}
 
 ## Mobile-first (rules)
 

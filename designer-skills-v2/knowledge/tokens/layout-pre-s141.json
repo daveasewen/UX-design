@@ -1,0 +1,158 @@
+{
+  "$description": "Layout \u2014 grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
+  "breakpoint": {
+    "xs": {
+      "$value": "320px",
+      "$type": "dimension",
+      "$description": "Extra Small (fluid). 320-479."
+    },
+    "s": {
+      "$value": "480px",
+      "$type": "dimension",
+      "$description": "Small (fluid). 480-759."
+    },
+    "ms": {
+      "$value": "760px",
+      "$type": "dimension",
+      "$description": "Medium Small (fluid). 760-959."
+    },
+    "m": {
+      "$value": "960px",
+      "$type": "dimension",
+      "$description": "Medium (fluid). 960-1279."
+    },
+    "l": {
+      "$value": "1280px",
+      "$type": "dimension",
+      "$description": "Large. 1280-1599."
+    },
+    "xl": {
+      "$value": "1600px",
+      "$type": "dimension",
+      "$description": "Extra Large. 1600+. Marketing only."
+    }
+  },
+  "scale": {
+    "$description": "Responsive scale modes (Figma variable modes). AUTHORITATIVE viewport mapping (Dave): scale-1 = 320-959, scale-2 = 960-1599, scale-3 = 1600+. Plus scale-1-200 = 200% accessibility text-zoom variant of scale-1 (see typography.json).",
+    "scale-1": {
+      "$value": [
+        "xs",
+        "s",
+        "ms"
+      ],
+      "$type": "other",
+      "$description": "320-959px."
+    },
+    "scale-2": {
+      "$value": [
+        "m",
+        "l"
+      ],
+      "$type": "other",
+      "$description": "960-1599px."
+    },
+    "scale-3": {
+      "$value": [
+        "xl"
+      ],
+      "$type": "other",
+      "$description": "1600px+."
+    }
+  },
+  "layout": {
+    "web": {
+      "margin": {
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
+      },
+      "gutter": {
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
+      },
+      "columns": {
+        "$value": 12,
+        "$type": "number"
+      }
+    },
+    "app": {
+      "margin": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "gutter": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "columns": {
+        "$value": 12,
+        "$type": "number"
+      }
+    }
+  },
+  "border-radius": {
+    "$description": "Shape tier (ADR-0010 flex slots; Dave 2026-07-21 evening: one radius CANNOT be universal \u2014 radii differ by component role, cards vs buttons; maximum flexibility, the horizon is a THEME GENERATOR where every slot is a dial). 'default' = the theme's base radius; the ROLE tokens alias it, so a theme may set ONE value (default \u2014 everything follows) or dial roles independently (Console: surface differs from control). Components bind ROLE tokens, never 'default' directly and never literals (radius gate). Role taxonomy PROVISIONAL (agent, 2026-07-21): control/surface/indicator \u2014 extend by evidence during Phase 1, not speculation. 50%/999px circle+pill idioms stay literal (deliberately round in every theme).",
+    "default": {
+      "$value": 0,
+      "$type": "number"
+    },
+    "control": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Interactive elements: buttons, inputs, selects, chips/tags, selection boxes."
+    },
+    "surface": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Containers: cards, dialogs/modals, menus/dropdown panels, tooltips, tables, notifications."
+    },
+    "indicator": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Small status/utility marks: status chips, non-pill badges, progress tracks, kbd hints."
+    }
+  },
+  "border-width": {
+    "small": {
+      "$value": 1,
+      "$type": "number"
+    },
+    "medium": {
+      "$value": 2,
+      "$type": "number"
+    },
+    "large": {
+      "$value": 4,
+      "$type": "number"
+    }
+  },
+  "focus": {
+    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive \u2014 see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
+    "ring-width": {
+      "$value": 2,
+      "$type": "number",
+      "$description": "Outline thickness, px. Equals border-width/medium.",
+      "$confidence": "asserted"
+    },
+    "ring-offset": {
+      "$value": 2,
+      "$type": "number",
+      "$description": "Gap between the element edge and the ring, px \u2014 keeps the ring clear of the component fill.",
+      "$confidence": "asserted"
+    }
+  },
+  "target": {
+    "$description": "Interactive target-size tier \u2014 the Apollo hit-area standard (RULED by Dave 2026-07-24). A control presents a hit area of at least 'min' even when its VISIBLE box is smaller; the invisible ::before target anchors within the control (9-point matrix) so it stays aligned to neighbours. 44 = HSBC default / WCAG 2.5.5 AAA / Apple HIG / IBM Carbon. Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below. Reference impl: snippets/Segmented-control.reference.html (.seg button::before + .hit-*).",
+    "min": {
+      "$value": "44px",
+      "$type": "dimension",
+      "$description": "Default minimum interactive target size. Controls bind --hit: var(--target-min)."
+    }
+  }
+}

@@ -3,10 +3,11 @@
   "interactive": false,
   "category": "atom",
   "purpose": "An animated spinner that signals the system is working on a request, giving progress feedback for activities such as downloading, uploading or processing. Indeterminate (no percentage).",
+  "provides": "feedback",
   "props": [
     { "name": "platform", "type": "enum", "values": ["web", "ios", "android"], "default": "web" },
-    { "name": "size", "type": "enum", "values": ["large", "medium", "small", "extra-small"], "default": "medium", "$note": "Web offers all four; iOS & Android offer large/medium/extra-small (no small)." },
-    { "name": "mode", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" },
+    { "name": "size", "type": "enum", "values": ["large", "medium", "small", "extra-small"], "default": "medium", "$note": "Web offers all four; iOS & Android offer large/medium/extra-small (no small).", "binds": {"large": "icon.large", "medium": "icon.medium", "small": "icon.small", "extra-small": "icon.xsmall"}, "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact/standard-abbreviation match to all four icon-scale rungs (extra-small -> xsmall) -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "mode", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light", "$status": "s142-D1 (Dave, 2026-08-10) class C7 -- no-bind:theme-layer. Duplicates the theme layer (four-themes standing requirement) and would fork against it; the theme layer owns this, not a per-component prop. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Optional caption (e.g. 'Loading') in font-5/6 regular." }
   ],
   "tokens": {
@@ -47,5 +48,62 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:486:17029",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Loading-indicator.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:button",
+        "$note": "Button (loading)"
+      },
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      },
+      {
+        "ref": "context:page",
+        "$note": "Page"
+      },
+      {
+        "ref": "context:inline-content-area",
+        "$note": "Inline content area"
+      },
+      {
+        "ref": "context:pull-to-refresh",
+        "$note": "Pull-to-refresh"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:inline-content-loading"
+      },
+      {
+        "ref": "pattern:button-processing-state"
+      },
+      {
+        "ref": "pattern:full-page-section-load"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": "component:loading-indicator",
+        "$note": "another Loading indicator (only one on screen at a time)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:feedback"
+      }
+    ]
   }
 }

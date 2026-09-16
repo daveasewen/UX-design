@@ -7,25 +7,37 @@
 <!--
   CANONICAL REFERENCE for Badge (gated). A small passive indicator: a count or a dot, on
   brand red with white text. Badge is a documented EXEMPTION to the angular brand rule —
-  it is FULLY ROUND (border-radius:999px). Avatar is the only other exemption.
-  Surface uses the SEMANTIC primary/background/default (#DB0011 both modes); the meta binds
-  the color/primary primitive — rebind noted. Red stays red in dark (passes on the page).
+  it is FULLY ROUND (the 999px pill idiom, literal in EVERY theme — deliberately distinct
+  from the ADR-0010 radius flex slots, so no role token is bound here). Avatar is the only
+  other exemption.
+  Surface binds badge/background — a COMPONENT token minted 2026-07-21 (Dave's harness
+  ruling). In Mono it aliases bare rag/error, the status red (mono-intent: "mono … only uses
+  colour with intent, rag, status and dataviz only"), riding the MODE-INVARIANT #F6604C
+  (s122-D2/s149-D1 re-base — prior PER-MODE glyph-strength pair #B92F1E light / #CC4333 dark
+  retired). In LEGACY the component slot is overridden to the brand-PRIMARY red flat
+  #DB0011 both modes (Dave: "it should be the legacy primary red on both light and dark") —
+  deliberately NOT Legacy's error pair; the slot exists so badge and error can differ per
+  theme. Numeral: s160-D2 (Dave, #160) re-seats it to rag/text/on-light #1A1A1A both modes
+  in MONO — 5.55:1 on #F6604C, s149-D1 extended from the tab badge to Badge proper. RETIRED
+  here (kept for history, and still LIVE in legacy/console/supercharge via their --number
+  guards): "Numeral stays WHITE (breach-is-white, type26-013): 6.02:1 light, 4.75:1 dark in
+  Mono — black was checked and fails both (3.49/4.42)" — those white figures were computed
+  against the PRE-s122-D2 per-mode fill; on the current mode-invariant #F6604C white measures
+  3.14:1 in both modes, which is what the snippet gate failed at #160. History: was
+  primary/background/default #DB0011 (pre-R-D19 drift), then bare rag/error (same evening).
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --surface:#DB0011; --number:#FFFFFF; --host:#1A1A1A; --page:#FFFFFF; --disabled:#D7D8D6; }
-  [data-theme="dark"]{ --surface:#DB0011; --number:#FFFFFF; --host:#FFFFFF; --page:#1A1A1A; --disabled:#767676; }
+  [data-theme="light"]{ --surface:#F6604C; --number:#1A1A1A; --host:#1A1A1A; --page:#FFFFFF; --disabled:#D7D8D6; }
+  [data-theme="dark"]{ --surface:#F6604C; --number:#1A1A1A; --host:#FFFFFF; --page:#1A1A1A; --disabled:#767676; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--host);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--disabled); background:transparent; color:var(--host); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--host); outline-offset:2px;}
   h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.5rem 0 1rem;}
   .row{display:flex; gap:40px; align-items:center;}
 
@@ -46,8 +58,7 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Badge — canonical reference (round exemption)</span></div>
-
+  
   <h2 class="spec-h">On an element</h2>
   <div class="row">
     <span class="host"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z"/></svg><span class="badge" aria-label="3 unread notifications">3</span></span>
@@ -65,21 +76,28 @@
   {
     "component": "Badge",
     "vars": {
-      "--surface": "primary/background/default",
-      "--number": "text/reverse",
+      "--surface": "badge/background",
+      "--number": "rag/text/on-light",
       "--host": "text/default",
       "--page": "background/default"
     },
     "contrastPairs": [
-      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
-      { "fg": "primary/background/default", "bg": "background/default", "context": "ui" }
+      { "fg": "rag/text/on-light", "bg": "badge/background", "context": "text" },
+      { "fg": "badge/background", "bg": "background/default", "context": "ui" }
     ],
-    "requiredAria": ["aria-label"]
+    "requiredAria": ["aria-label"],
+    "$note": "s160-D2 (Dave, #160), clause 4: 'Badge numeral -> #1A1A1A dark ink, both modes, s149-D1 extended from tab badges to Badge proper - TEXT seat, stays gated at 4.5, passes 5.55.' The numeral was text/reverse #FFFFFF, which measured 3.14:1 on the MODE-INVARIANT #F6604C fill in BOTH modes — a declared TEXT pair failing 4.5 in both. Re-seated onto rag/text/on-light (#1A1A1A both modes, the same ruled ink role s149-D1 gave the mono error Banner and the tab badge numeral); nothing minted, the ink rides its most specific existing role. MONO ONLY, exactly as s149-D1: legacy/console/supercharge keep the WHITE numeral (type26-013) via a --number guard in their overrides files, because their badge/background overrides are untouched."
   }
   </script>
-  <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body;
-      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  <script type="application/json" id="behaviour-manifest">
+  {
+    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/badge.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+    "component": "component:badge",
+    "script": null,
+    "partial": null,
+    "events": [],
+    "fallback": "identical — the component carries no script"
+  }
   </script>
-</body>
+  </body>
 </html>

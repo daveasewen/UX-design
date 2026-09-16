@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented control — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for the Segmented control atom (gated). PROMOTED from View options
+     (Dave, 2026-07-24): the sliding-indicator segmented switcher is now a general ATOM, not a
+     view-format-only control. View options + Tab-bar's pill switcher + the chart's view switch
+     are all instances of THIS mechanism (observed duplication — ADR-0013 group-#3 candidate,
+     accretion proposed separately).
+
+     THE MECHANISM (single-select, exactly one active):
+       - one framing border wraps the whole track; NO inter-segment divider, so the active fill
+         slides edge-to-edge and aligns exactly to a segment box.
+       - the SELECTED fill is a SLIDING indicator (.ind) — animates left+width between segments
+         (set by JS from the pressed button's box), mirroring the Tabs indicator. Label colour
+         transitions on the SAME easing, so on-fill contrast stays correct mid-slide (no
+         white-on-white). Reduced-motion: slide + colour change become instant.
+       - selection exposed via aria-pressed, not colour alone (1.4.1); the selected fill inverts
+         (secondary/background/default + text/on-inverse), legible in both modes.
+
+     VARIANTS built here:
+       - shape:  square only (Mono). 2px inset track padding + a floating indicator (the pill's padding
+         applied to all — Dave 2026-07-24). The rounded PILL SHAPE is deferred to a mobile variant.
+       - content: label segments (text) · .icons (icon-only, accessible names required)
+       - size:   TWO TIERS, deliberately, and both are live (#219):
+           · MINTED SCALE GRAMMAR (s201-D1, dimension-first) — .xs / .s / .m / .l at total outer
+             heights 24 / 36 / 44 / 48, track insets 2 / 2 / 4 / 4, container radius from
+             border-radius/segmented-container/<scale> and the sliding thumb from
+             border-radius/segmented-thumb/<scale>. Every number is a MINTED token read at render
+             time; nothing is derived live (s200-D1 clause a). Square themes (mono, legacy,
+             supercharge) resolve both radii to 0 from the base tier and stay square (s201-D5);
+             console resolves its own tuned 6/8/10/12 containers and 0/2/4/6 thumbs (s202-D1/D2).
+           · LEGACY MINI RAMP (T-D15, RULED, and its consumers are live) — .sm = 12/500 ·
+             .md = 14/500 (default) · .lg = 16/400, bound in canon/type.css
+             (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Button heights 28/32/36, UNMOVED.
+             These three now ALIAS the minted radii ordinally (sm→xs · md→s · lg→m) so a console
+             page stops rendering square corners, and NOTHING ELSE about them changes — no pixel
+             moves, no type binding is touched. ⚠ The ordinal-vs-nearest-height mapping is a
+             TASTE call and is PROPOSED, not ruled: reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html
+             shows both readings side by side for Dave's eye.
+       - HIT AREA: every segment carries an invisible ::before target >= var(--hit)=target/min(44) so a small
+         VISIBLE segment still meets the 44 target (HSBC default; WCAG 2.5.5 AAA). The target ANCHORS
+         within the segment via .hit-* (9-point matrix) so the visible control stays aligned to its
+         neighbours while the padding grows into free space. Full standard: reviews/HIT-AREA-STANDARD-…. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; --hit:44px;
+    --seg-h-xs:28px; --seg-h-s:36px; --seg-h-m:44px; --seg-h-l:48px;
+    --seg-pad-xs:2px; --seg-pad-s:2px; --seg-pad-m:2px; --seg-pad-l:4px;
+    --seg-rad-xs:0; --seg-rad-s:0; --seg-rad-m:0; --seg-rad-l:0;
+    --seg-thumb-xs:0; --seg-thumb-s:0; --seg-thumb-m:0; --seg-thumb-l:0;
+    --seg-inset-xs:8px; --seg-inset-s:12px; --seg-inset-m:16px; --seg-inset-l:20px; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; --hit:44px;
+    --seg-h-xs:28px; --seg-h-s:36px; --seg-h-m:44px; --seg-h-l:48px;
+    --seg-pad-xs:2px; --seg-pad-s:2px; --seg-pad-m:2px; --seg-pad-l:4px;
+    --seg-rad-xs:0; --seg-rad-s:0; --seg-rad-m:0; --seg-rad-l:0;
+    --seg-thumb-xs:0; --seg-thumb-s:0; --seg-thumb-m:0; --seg-thumb-l:0;
+    --seg-inset-xs:8px; --seg-inset-s:12px; --seg-inset-m:16px; --seg-inset-l:20px; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .section-head-row{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .section-head-row h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
+
+  /* ===== the segmented control =====
+     PILL PADDING FOR ALL (Dave 2026-07-24): the inset track + floating indicator — once the pill's
+     alone — is now the BASE for every variant. The active fill floats inside a 2px gutter (Dave
+     2026-07-24: 2px, not 4) instead of touching the frame. */
+  /* THE CONCENTRIC PAIR IS TOKEN-DRIVEN (#219, enacting s199-D3 · s200-D1 · s201-D1 · s201-D5 ·
+     s202-D1 · s202-D2). Four SCALE-SELECTED locals carry one scale's minted numbers to the two
+     boxes that need them; the size classes below just repoint the locals. The defaults are scale
+     `s`, whose minted inset is 2px — byte-identical to the literal that stood here before, so an
+     unsized .seg does not move. ⛔ NEVER hardcode a radius here: the whole point of the mint-time
+     derivation (s200-D1) is that the disk carries concrete numbers and the CSS only READS them. */
+  .seg{--seg-pad:var(--seg-pad-s); --seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s); --seg-inset:var(--seg-inset-s);
+    position:relative; display:inline-flex; box-sizing:border-box; padding:var(--seg-pad);
+    border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+  .seg .ind{position:absolute; top:var(--seg-pad); bottom:var(--seg-pad); left:var(--seg-pad); width:0; background:var(--sel); z-index:0;
+    transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the minted inset, slides */
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
+    /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
+       (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
+    cursor:pointer; transition:color var(--ease);}
+  /* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}      /* hover only on inactive (active sits over the fill) */
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}                      /* fill comes from the sliding .ind behind */
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg svg{width:16px; height:16px; fill:currentColor;}
+
+  /* ===== THE CONCENTRIC CONTRACT — the source PARTIAL block (s229, ADR-0013) =====
+     ⛔ THIS IS THE ONLY PLACE THE SEGMENTED CONTROL'S RADII ARE AUTHORED, in this file and in
+     every member of the `segmented` group. Injected verbatim into each consumer between its
+     AUTO-PARTIAL markers by gen_component_partials.py, selector-mapped per member.
+
+     WHY IT EXISTS (RCA, three recurrences): the control's CSS was copy-pasted into twelve
+     snippets with no shared block, so every repair had to be re-applied N times by hand and any
+     box missed stayed missed. #227's A1 sweep repaired the track+thumb in eight files and missed
+     four entirely; #229's F1 found the BUTTON — a box that only paints in :hover/:focus — absent
+     from all twelve. Both were the same class: N hand-maintained copies of one geometry contract.
+
+     THE THREE BOXES ARE ONE CONCENTRIC FAMILY. The track is the outer box; the thumb and the
+     button are geometrically the SAME box (both fill the track's content box), so they read the
+     SAME minted local — concentric by construction, never a literal, never independently chosen.
+     Binding the button on its BASE rule (not on :hover) is deliberate: hover, focus-visible and
+     any future state all inherit the corner from the box itself.
+
+     The locals (--seg-rad / --seg-thumb) are SCALE-SELECTED by each member's own rules; this
+     block never names a scale, which is what lets one text serve the atom's four-scale grammar,
+     the charts' `s`/`xs` pair and the toolbars' single scale alike. ⛔ NEVER hardcode a radius
+     here: mint-time derivation (s200-D1) puts concrete numbers on disk; the CSS only READS them. */
+  /* ===== PARTIAL seg-concentric START (segmented) ===== */
+  .seg{border-radius:var(--seg-rad);}
+  .seg .ind{border-radius:var(--seg-thumb);}
+  .seg button{border-radius:var(--seg-thumb);}
+  /* ===== PARTIAL seg-concentric END ===== */
+
+  /* ===== SIZE, TIER 1 — THE MINTED SCALE GRAMMAR (s201-D1, dimension-first) =====
+     `--seg-h-*` is the TOTAL OUTER height (border box), so the track carries it and the buttons
+     fill it — no calc, no derivation, nothing to drift. box-sizing is set explicitly on .seg
+     above because the harness `*{box-sizing}` rule is DROPPED on the way into canon.css. */
+  .seg.xs{--seg-h:var(--seg-h-xs); --seg-pad:var(--seg-pad-xs); --seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs); --seg-inset:var(--seg-inset-xs); height:var(--seg-h);}
+  .seg.s {--seg-h:var(--seg-h-s);  --seg-pad:var(--seg-pad-s);  --seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);  --seg-inset:var(--seg-inset-s);  height:var(--seg-h);}
+  .seg.m {--seg-h:var(--seg-h-m);  --seg-pad:var(--seg-pad-m);  --seg-rad:var(--seg-rad-m);  --seg-thumb:var(--seg-thumb-m);  --seg-inset:var(--seg-inset-m);  height:var(--seg-h);}
+  .seg.l {--seg-h:var(--seg-h-l);  --seg-pad:var(--seg-pad-l);  --seg-rad:var(--seg-rad-l);  --seg-thumb:var(--seg-thumb-l);  --seg-inset:var(--seg-inset-l);  height:var(--seg-h);}
+  .seg.xs button, .seg.s button, .seg.m button, .seg.l button{height:100%; padding:0 var(--seg-inset);}
+  /* HIT ZONE, s201-D2 + s201-D3, stated as the ruled geometry: max(44, VISUAL HEIGHT of the control).
+     ⚠ Reconciled with the ::before machinery below, NOT duplicated — this rule only widens that same
+     pseudo-element's floor. The base ::before already yields max(44, button height); the button is
+     INSIDE the track, so for scale `l` (48) its own 100% is 38 and a bare min-height:44 would hand
+     back 44 where Dave ruled the box NATURAL above the floor ('natural for anything bigger than 44').
+     Reading the control's own minted height is what makes xs and s expand to 44, m sit AT 44, and l
+     keep 48. Enforcement is still ABSENT — no gate reads the 44 (s201-D2/D3 both say so). */
+  .seg.xs button::before, .seg.s button::before, .seg.m button::before, .seg.l button::before{
+    min-height:max(var(--hit), var(--seg-h));}
+
+  /* ===== SIZE, TIER 2 — THE LEGACY MINI RAMP (T-D15, RULED; live consumers) =====
+     geometry + the mini ramp step (bound in type.css): sm 12 · md 14 · lg 16. Heights and insets
+     are UNCHANGED — the chart view switch (.seg.sm) and every other consumer keep their pixels.
+     What is NEW is the radius alias: each legacy step borrows the minted radii of a scale so a
+     console page stops rendering square. ⚠ ORDINAL map (sm→xs · md→s · lg→m), PROPOSED not ruled —
+     the nearest-HEIGHT reading collapses md and lg onto the same scale (32→36 and 36→36), which is
+     why it was not taken silently. Both readings are drawn in
+     reviews/SEGMENTED-ADOPTION-2026-08-25-v1.html for Dave to point at. */
+  .seg.sm{--seg-rad:var(--seg-rad-xs); --seg-thumb:var(--seg-thumb-xs);}
+  .seg.md{--seg-rad:var(--seg-rad-s);  --seg-thumb:var(--seg-thumb-s);}
+  .seg.lg{--seg-rad:var(--seg-rad-m);  --seg-thumb:var(--seg-thumb-m);}
+  .seg.sm button{height:28px; padding:0 8px;}
+  .seg.md button{height:32px; padding:0 12px;}
+  .seg.lg button{height:36px; padding:0 16px;}
+
+  /* NOTE: the rounded PILL shape is NOT a seg variant (Dave 2026-07-24) — reserved for a MOBILE
+     tab-bar alternative (see Tab-bar + _FUTURE-STATE mobile-variants). The atom keeps the pill's
+     2px INSET PADDING (above) but stays square (Mono). */
+
+  /* icon-only segments — square 44 cells (icon-005), accessible names on each button */
+  .seg.icons button{padding:0; width:44px;}
+  .seg.icons.sm button{width:36px;}
+
+  /* ===== HIT AREA — invisible target >= var(--hit) so a SMALL visible segment still meets 44.
+     The ::before is the click/tap surface; it ANCHORS within the visible segment so the control
+     stays aligned to its neighbours while the padding grows into free space (Dave 2026-07-24).
+     9-point matrix (.hit-<v><h>): default centre. Never shrinks a target — additive only. ===== */
+  .seg button::before{content:""; position:absolute; z-index:0;
+    min-width:var(--hit); min-height:var(--hit); width:100%; height:100%;
+    top:50%; left:50%; transform:translate(-50%,-50%);}                        /* default: centre */
+  /* vertical anchor */
+  .hit-t::before,.hit-tl::before,.hit-tr::before{top:0; bottom:auto; transform:translateX(-50%);}
+  .hit-b::before,.hit-bl::before,.hit-br::before{top:auto; bottom:0; transform:translateX(-50%);}
+  /* horizontal anchor */
+  .hit-l::before,.hit-tl::before,.hit-bl::before{left:0; right:auto; transform:translateY(-50%);}
+  .hit-r::before,.hit-tr::before,.hit-br::before{left:auto; right:0; transform:translateY(-50%);}
+  /* corners pin both axes (no centring transform) */
+  .hit-tl::before,.hit-tr::before,.hit-bl::before,.hit-br::before{transform:none;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .seg .ind{ transition:none !important; }
+  }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}   /* demo-chrome — advisory-exempt */
+/* ===== APOLLO-DEMO css END ===== */
+</style>
+</head>
+<body data-theme="light">
+  
+  <div class="section-head-row"><h2>Label · square · md (default)</h2></div>
+  <div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div>
+
+  <div class="section-head-row"><h2>Label · square · lg (16 · prominent)</h2></div>
+  <div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div>
+
+  <div class="section-head-row"><h2>Label · square · sm (12 · dense — the chart's view switch consumes this)</h2></div>
+  <div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="demo-note">The sm segments are 28px visible, but each carries an
+    invisible <code>::before</code> target &ge; 44px — the whole control clears the HSBC 44 default without looking heavy.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <div class="section-head-row"><h2>Minted scale grammar (s201-D1) · xs 24 — hit zone expands to 44</h2></div>
+  <div class="seg xs" role="group" aria-label="Density">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Low</button>
+    <button type="button" aria-pressed="false">High</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · s 36 — hit zone expands to 44</h2></div>
+  <div class="seg s" role="group" aria-label="Period">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · m 44 — visual height and hit zone coincide</h2></div>
+  <div class="seg m" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div>
+
+  <div class="section-head-row"><h2>Minted scale grammar · l 48 — hit box natural above the floor (s201-D3)</h2></div>
+  <div class="seg l" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="demo-note">All four scales render square here — this file is the mono (base) theme, and
+    s201-D5 floors the square themes at zero. The concentric pair only appears under
+    <code>[data-apollo-theme="console"]</code>, which is a canon.css layer, not a snippet one.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <div class="section-head-row"><h2>Icon-only · square · md (44px cells, accessible names)</h2></div>
+  <div class="seg md icons" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true" aria-label="List view"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg></button>
+    <button type="button" aria-pressed="false" aria-label="Grid view"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z"/></svg></button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Segmented control",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default", "--hit": "target/min",
+      "--seg-h-xs": "size/segmented-control/xs", "--seg-h-s": "size/segmented-control/s", "--seg-h-m": "size/segmented-control/m", "--seg-h-l": "size/segmented-control/l",
+      "--seg-pad-xs": "padding/segmented-control/xs", "--seg-pad-s": "padding/segmented-control/s", "--seg-pad-m": "padding/segmented-control/m", "--seg-pad-l": "padding/segmented-control/l",
+      "--seg-rad-xs": "border-radius/segmented-container/xs", "--seg-rad-s": "border-radius/segmented-container/s", "--seg-rad-m": "border-radius/segmented-container/m", "--seg-rad-l": "border-radius/segmented-container/l",
+      "--seg-thumb-xs": "border-radius/segmented-thumb/xs", "--seg-thumb-s": "border-radius/segmented-thumb/s", "--seg-thumb-m": "border-radius/segmented-thumb/m", "--seg-thumb-l": "border-radius/segmented-thumb/l",
+      "--seg-inset-xs": "gap/fixed/content/small", "--seg-inset-s": "padding/fixed/small", "--seg-inset-m": "padding/fixed/medium", "--seg-inset-l": "padding/fixed/large" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-pressed"]
+  }
+  </script>
+  <script>
+    
+    /* SLIDING INDICATOR — one handler for every .seg on the page. Single-select: click sets
+       aria-pressed on the group, the indicator measures the pressed button's box and slides. */
+    function moveInd(seg){ const ind=seg.querySelector('.ind'); if(!ind) return;
+      const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+      /* rect-based so the 2px inset padding + 1px border don't offset the measurement
+         (the .ind containing block is .seg's PADDING box — subtract seg.clientLeft). */
+      const sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+    function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+    document.querySelectorAll('.seg').forEach(seg=>{
+      seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+        seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); moveInd(seg); }));
+    });
+    addEventListener('resize', placeAll);
+    placeAll();   /* initial position (widths depend on font/trim, so measure after layout) */
+  </script>
+</body>
+</html>

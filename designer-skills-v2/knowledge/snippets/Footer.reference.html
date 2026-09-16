@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Footer — reference implementation (PROPOSED #261, app footer)</title>
+<!--
+  ⚠⚠ PROPOSED #261, 2026-09-09 (lane Ft). NOT GATED, NOT PROMOTED, NOT RULED. Dave's eye owed.
+
+  ★ THIS IS A REDESIGN, NOT A NEW COMPONENT. knowledge/components/footer.meta.json, this snippet and
+  showroom/footer.html all existed from #204 (Lane M, the doormat / mega-footer build). #261 re-cuts
+  the component to Dave's scope, quoted verbatim from the lane instruction: "App footer for now".
+  So the MARKETING FORMS ARE OUT OF SCOPE and are RETIRED IN THE META, NOT DELETED SILENTLY:
+    · form=doormat / variant "doormat" — the four-column mega-footer. $retired: marketing/servicing
+      end matter, outside "App footer for now". Its markup, the auto-fit mat, the group-landmark
+      pattern and the 44px-at-every-width finding are all preserved in the meta under $retired so a
+      later marketing pass can restore them without re-deriving anything.
+    · variant "slim" — SUPERSEDED, not retired for cause: it was the legal bar only. The app footer
+      below is what "slim" was reaching for, plus the four things an application screen actually owes
+      its operator (build identity, environment, data freshness, system status). "minimal" is the new
+      name for the legal-only cut.
+    · props groups[] and backToTop — $retired with the doormat they served.
+
+  ★★ THE VOCABULARY COLLISION FROM #204 STANDS AND IS NOT RESOLVED HERE. In this repo "footer"
+  ALREADY means the LAYOUT footer of a container — Drawer's action row, Modals' dialog footer,
+  Data-grid's pagination strip — and the gated ACTION-BAR describes itself, verbatim, as "A footer
+  bar that pins a screen/flow's actions". This component is the OTHER footer: the contentinfo
+  landmark at the end of the app shell's content column. An Action-bar can be pinned ABOVE it on the
+  same screen; they are not variants. ⛔ RENAMING IS DAVE'S. Nothing here renames anything.
+
+  WHAT AN APP FOOTER IS FOR — the reason this is not a small doormat.
+  A marketing footer answers "where else can I go". An app footer answers a different, narrower
+  question that a bank operator asks at exactly one moment — when something looks wrong:
+      "WHAT AM I LOOKING AT, IS IT REAL, AND HOW OLD IS IT?"
+  Hence the four things on the left, in that order and no other: the PRODUCT and BUILD (what), the
+  ENVIRONMENT (is it real — the single most expensive mistake in a banking console is acting on UAT
+  data believing it is production), the DATA FRESHNESS (how old), and the SYSTEM STATUS (is the
+  freshness even trustworthy). The legal links and support sit on the right because they are the
+  regulator's row, not the operator's — required, rarely read, never the reason the eye came down.
+
+  ANATOMY (default) — ONE ROW:
+    left   product + version + build · environment badge · status dot + label
+    centre data freshness ("Data as of 09:41 · 3 minutes ago") · locale and time zone
+    right  privacy · terms · accessibility · support
+    far right  © HSBC Group 2026. All rights reserved.
+  It sits INSIDE the app-shell content column, not full-bleed, and it is NOT sticky by default.
+  The wrap is driven by the CONTAINER, not the viewport, so a footer in a narrow split pane stacks
+  on a 27-inch monitor. Link targets stay 24px and 24px apart at EVERY one of those widths.
+
+  ★★★ #261 Ft3 — THREE THINGS DAVE SAID, AND WHAT EACH ONE CHANGED ————————————————————
+  (a) "One 41px row — I should never see a figure like 41, we have a 4px grid."
+      41 was 40px of min-height plus a 1px border-top. BOTH are gone. The row is now built from
+      grid figures only — padding 16, the 24px target floor, padding 16 — and MEASURES 56 exactly
+      in Chromium. The minimal cut is 12 + 24 + 12 = 48. Every gap, pad, chip and pip in the
+      component is a multiple of 4: 4 · 8 · 12 · 16 · 24 · 32. The 1px pip WIDTH and the 1px chip
+      border are hairlines, not spacing, and are the only non-multiples left.
+  (b) "The footer should be reversed out in both light and dark. Do we have reversed-out tokens,
+      a modifier for light mode?"  TOKENS: YES — surface/action-primary (#1A1A1A light / #FAFAFA
+      dark) with text/on-inverse (#FFFFFF / #333333). That pair IS the design system's inverse
+      surface: it is the Mono primary-button plate, and text/on-inverse's own $note defines it as
+      the "Label for surfaces whose lightness INVERTS between modes". MODIFIER: NO — there is no
+      light-mode dark-band ROLE, and its absence is already a logged gap, knowledge/_COMPONENT-GAPS.md
+      row "Inverse / hero surface", 2026-06-30, verbatim "no light-mode dark-band role". So the
+      footer COMPOSES the modifier from the two ruled tokens (--ft-band / --ft-ink) rather than
+      inventing a charcoal — inventing one is the exact failure that gap row names.
+      ⚠ CONSEQUENCE DAVE SHOULD SEE BEFORE HE RULES: a true inverse plate in DARK mode is a LIGHT
+      band (#FAFAFA) under a #1A1A1A page. That is what "reversed out in both" means, and it is
+      drawn here honestly. If he wants the dark-mode band quieter, the softer ruled pair is
+      surface/action + text/reverse-secondary (#626262/#FFF light, #808080/#1A1A1A dark, 6.1:1 and
+      5.32:1) — same shape, one token swap. His call, not made here.
+  (c) "Be more generous with the spacing and add the copyright notice."
+      Inner padding 8→16 (and 16→24 horizontally), cluster gap 8/24→12/32, identity gap 8/12→8/16,
+      provenance gap 4/12→8/16, pip 12→16, environment chip 20→24 tall and 6→8 wide. The notice is
+      "© HSBC Group 2026. All rights reserved." — the repo's existing string, unaltered, in 17 other
+      snippets — at full ink strength (header note 1 forbids the alpha the #204 build used on it).
+
+  TWO-RED LAW ON AN INVERSE SURFACE (s151-D1): the footer has NO red text seat — no plus/minus
+  numerals, no error string; the only coloured marks are the RAG dot fills, which s122-D2 made
+  MODE-INVARIANT (#66CC8D / #E0A61F / #F6604C). Recorded because the law inverts here and the next
+  author will need it: the red is keyed to the GROUND, not the mode, so a red on THIS component
+  would be #F6604C on the light-mode plate (a dark ground) and #DA1A00 on the dark-mode plate (a
+  light ground) — the opposite of the usual mapping. Nothing in this file paints one.
+
+  DESIGN DECISIONS TAKEN HERE, EACH ONE VISIBLE ————————————————————————————————————
+  1 · NO OPACITY ON ANY CONTENT TEXT. The #204 file muted its copyright and group headings with
+      alpha-60. MEASURED: #1A1A1A at 0.60 over surface/subtle #F0F0F0 blends to ~#706F6F = 4.41:1 —
+      BELOW 4.5, on 12px legal type, in the light mode a bank reviews on a projector. Every string in
+      this footer is text/default at full strength. The band earns its quietness from TYPE SIZE and
+      rhythm (12px legal, 14px product) and from the divider pips between clusters, never from ink
+      strength. That is the whole answer to "contrast on the muted text": there is no muted text.
+  2 · 24px TARGETS, NOT 44px — AND THAT REVERSES #204. The #204 doormat made every link a 44px target
+      at every width and its own meta called the cost out ($finding-44px-cost: "measurably taller
+      than the compact typographic ideal"). A one-row app footer CANNOT spend 44px per link: the row
+      would be taller than the app's own toolbar. These links are 24px — the ruled DIAL-DOWN FLOOR
+      (WCAG 2.5.8 AA plus the spacing exception), named verbatim in tokens/layout.json's target
+      $description: "Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below." The
+      spacing exception is honoured literally: 24px of gap between adjacent link boxes, so no two
+      24px targets are ever closer than 24px. ⚠ NO LEAF TOKEN EXISTS FOR 24 — the store has only
+      target/min (44px) and the floor lives in prose. --target-floor is therefore declared here and
+      is deliberately ABSENT from the manifest. It should be minted; see $decisionsForDave 1.
+  3 · THE ENVIRONMENT BADGE SHOUTS ONLY WHEN IT SHOULD. Production is a quiet outlined chip
+      (border/strong, on the plate ink) because production is the normal case and a permanent alarm is
+      no alarm. Every NON-production environment takes the ruled amber fill rag/warning-background
+      with rag/text/on-light ink — #1A1A1A on #E0A61F, 9.16:1, mode-invariant, exactly the "amber is
+      ALWAYS black text" rule (R-D3). The paint is driven by the data-env attribute on the footer
+      itself, in CSS, so a shell that sets data-env="uat" cannot forget to restyle anything.
+  4 · THE STATUS DOT IS DECORATION; THE LABEL CARRIES THE MEANING. Same doctrine as the gated
+      Status-indicator: dot + text label, never colour alone (1.4.1). The dot is the ONE round shape
+      in a square system, which is the Status-indicator precedent (dots 50% literal), and its own
+      contrast is a DECLARED ABSENCE, not an oversight — Status-indicator's meta already records that
+      the amber dot is below 3:1 standalone, which is why the label exists. Wrapped in role="status"
+      so a degradation announced while the operator is elsewhere on the page is still heard.
+  5 · NOT STICKY BY DEFAULT. A footer that follows the operator down an infinite grid steals a row of
+      data on every screen. Sticky is a VARIANT, for the dashboard that genuinely never ends, and it
+      needs no rule to separate from the content it overlaps — the reversed-out plate does that. Default is document flow at the end of the content column.
+
+  ★ ATOMS COPIED FROM APPROVED ARTEFACTS, named so a reviewer can diff them:
+    · a.lnk — Links.reference.html, verbatim (underline never colour alone, 3px offset, 1px→2px on
+      hover AND pressed as ONE combined state, focus = inset 0 -3px 0 var(--text), no blue ring).
+    · the dot + label status atom — Status-indicator.reference.html (form A, inline dot + label).
+    · the 1px section-divider recipe — the rule Sidebar-nav and Drawer both use.
+    Neither parent file was touched.
+
+  TYPE: composites only, no raw font declarations in component scope — product .t-ed-body-small.em ·
+  everything else .t-cm-legal · demo chrome .t-cm-caption. Ratchet contribution: 0. The emphasis on
+  the product name rides canon/type.css's own `.em` modifier in the MARKUP (the T-D14 route), for the
+  same reason #204 recorded: copying Links' two raw font-weight:500 declarations verbatim is exactly
+  what TYPE-002 counts, and the parent's debt is the BUILD-PM's to retire, not this file's to inherit.
+
+  BEHAVIOUR (s258-D1 — the author MAY write JavaScript): two enhancements, both with a static
+  fallback already in the markup so a JS-off render is the settled state (s245-D5).
+    (a) freshness — the relative age is computed from data-updated against data-now (both fixed, so
+        a driven screenshot is deterministic); the markup already carries the string it computes.
+    (b) demo wiring — the shell control strip flips data-env / data-system on the footer and the
+        CSS repaints. No timers, no network, no resize listener at all.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:where(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: no raw font-family on body — every text element carries a canon composite class, which
+     is the mandatory route and the reason this file contributes 0 to the shrink-only ratchet. */
+  :root{
+    --ease:140ms ease;
+    /* ⚠ NOT A TOKEN, AND DELIBERATELY ABSENT FROM THE MANIFEST. 24 is the ruled dial-down hit-area
+       floor (WCAG 2.5.8 AA + spacing exception) named in tokens/layout.json target.$description,
+       but the store carries no leaf for it — only target/min (44px). Declared here rather than
+       invented: see the header note 2 and $decisionsForDave 1 (mint target/floor). */
+    --target-floor:24px;
+  }
+  [data-theme="light"]{
+    --page:#FFFFFF;           /* background/default */
+    --surface:#F0F0F0;        /* surface/subtle — the app-shell rows, NOT the footer band */
+    --divider:#E1E1E1;        /* divider/border/section — the app-shell rules */
+    --text:#1A1A1A;           /* text/default */
+    --icon:#1A1A1A;           /* icon/default */
+    --focus:#305A85;          /* focus/ring */
+    --border-strong:#808080;  /* border/strong — the production chip outline + the pips */
+    /* ---- THE REVERSED-OUT BAND (#261 Ft3) --------------------------------------------
+       Dave: "The footer should be reversed out in both light and dark. Do we have
+       reversed-out tokens, a modifier for light mode?"  ANSWER, recorded: the TOKENS exist
+       — surface/action-primary is the one semantic surface whose lightness INVERTS between
+       modes (#1A1A1A light / #FAFAFA dark, the Mono primary-button plate), and text/on-inverse
+       is its ruled label ("Label for surfaces whose lightness INVERTS between modes", token
+       $note, Dave 2026-06-19/20).  A light-mode inverse SURFACE ROLE does NOT exist: that is
+       the open `Inverse / hero surface` row in knowledge/_COMPONENT-GAPS.md, dated 2026-06-30,
+       verbatim "no light-mode dark-band role". So the modifier below is COMPOSED here from the
+       two existing ruled tokens — it is NOT promoted, and nothing is invented (the gap row's
+       named failure is exactly the invented charcoal, #0E1014). */
+    --ft-band:#1A1A1A;        /* surface/action-primary — dark plate under a light page */
+    --ft-ink:#FFFFFF;         /* text/on-inverse — 17.4:1 on the plate */
+    --env-alert:#E0A61F;      /* rag/warning-background — every NON-production environment */
+    --env-alert-ink:#1A1A1A;  /* rag/text/on-light — amber is ALWAYS black text (R-D3), 9.16:1 */
+    --ok:#66CC8D;             /* rag/success-glyph — the dot only; the label carries the meaning */
+    --degraded:#E0A61F;       /* rag/warning-glyph — ditto */
+    --border-radius-control:0;
+    --target-min:44px;        /* target/min — bound so the drift gate reads the ruled default */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --surface:#1F1F1F;
+    --divider:#808080;
+    --text:#FFFFFF;
+    --icon:#FFFFFF;
+    --focus:#4587A7;
+    --border-strong:#808080;
+    --ft-band:#FAFAFA;        /* surface/action-primary — the plate INVERTS: light band on a dark page */
+    --ft-ink:#333333;         /* text/on-inverse — 12.0:1 on the plate */
+    --env-alert:#E0A61F;      /* mode-invariant by ruling (s122-D2) — dark = light */
+    --env-alert-ink:#1A1A1A;
+    --ok:#66CC8D;
+    --degraded:#E0A61F;
+    --border-radius-control:0;
+    --target-min:44px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:0; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ---- the region ------------------------------------------------------------------
+     Inside the app-shell CONTENT COLUMN, not full-bleed: the band takes the column's own
+     width and the inner rail matches the shell's gutter. container-type so the wrap
+     decision is made by the COLUMN, not the viewport — a footer in a narrow split pane
+     stacks on a 27-inch monitor, which is the whole point of a container query. */
+  /* THE BAND IS REVERSED OUT (#261 Ft3, Dave). No border-top: the plate separates itself from
+     the page by its own value, and a 1px rule was ALSO what put a 41 on the tape — 40px of
+     min-height plus 1px of border MEASURED 41. Every figure below is on the 4px grid and the
+     ROW ITSELF now measures 56 (16 + 24 + 16), with the minimal cut at 48 (12 + 24 + 12). */
+  .ft{background:var(--ft-band); color:var(--ft-ink); container-type:inline-size;}
+  /* box-sizing is border-box, so min-height INCLUDES the padding: 16 + 24 + 16 = 56, stated as
+     the figure Dave will read off the tape rather than left to the content to reach. */
+  .ft-inner{display:flex; flex-wrap:wrap; align-items:center; gap:12px 32px;
+    padding:16px 24px; min-height:56px;}
+
+  /* EVERY CLUSTER IS 24 TALL — the target floor — so a WRAPPED row is on the grid too, not just
+     the one-row case: two rows measure 16+24+12+24+16 = 92, a four-row stack at 375 measures 164.
+     Without this a wrapped line collapsed to its 10.48px line box and put a 78.48 on the tape. */
+  .ft-id,.ft-meta,.ft-end{min-height:24px;}
+  /* and every LEAF too, at every width — not only in the 375 stack. Without it the 420px column
+     (legal row on its own line, provenance still wrapping) collapsed lines to 10.48px boxes and
+     MEASURED 171. Every seat is 24 now and 420 measures 224 — every width on the tape is a
+     multiple of 4: 56 · 92 · 128 · 224 · 228, and 48 for the minimal cut. */
+  /* gap:4px is LOAD-BEARING, not decoration: flexing these seats turns their inline children
+     into flex items and collapses the source whitespace, which rendered "Data as of09:41· 3
+     minutes ago". 4px is the gap/fixed step and reads as the space it replaces. */
+  .ft-id > *,.ft-meta > *,.ft-end > .ft-copy{min-height:24px;
+    display:flex; align-items:center; gap:4px;}
+  /* the links stay INLINE (the 2.5.8 inline exception the hit-area gate reads); only their line
+     box is snapped to the 24px seat, so a wrapped legal row is on the grid too. */
+  .ft-links li{min-height:24px; line-height:24px;}
+
+  /* ---- cluster 1: identity — product · version · environment · status ---- */
+  .ft-id{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; flex:0 0 auto;}
+  .ft-prod{color:var(--ft-ink);}
+  .ft-ver{color:var(--ft-ink); font-variant-numeric:tabular-nums;}
+
+  /* environment chip. Square (no radius outside Badge + Avatar). Production is QUIET;
+     every other environment takes the ruled amber fill with black ink. */
+  .ft-env{display:inline-flex; align-items:center; min-height:24px; padding:0 8px;
+    border:1px solid var(--border-strong); color:var(--ft-ink);
+    border-radius:var(--border-radius-control); white-space:nowrap;}
+  .ft[data-env="uat"] .ft-env,
+  .ft[data-env="dev"] .ft-env,
+  .ft[data-env="staging"] .ft-env{background:var(--env-alert); border-color:var(--env-alert);
+    color:var(--env-alert-ink);}
+
+  /* status — dot + label (Status-indicator form A). The dot is the one round shape here. */
+  .ft-status{display:inline-flex; align-items:center; gap:8px; color:var(--ft-ink);}
+  /* the 1px ring is REQUIRED on a reversed-out band: the RAG glyphs are MODE-INVARIANT by
+     s122-D2 (#66CC8D / #E0A61F in both modes), so on the DARK-MODE plate (#FAFAFA, a LIGHT
+     ground) the green dot alone measures ~1.9:1 and vanishes. border/strong holds its edge on
+     both plates (4.41:1 on #1A1A1A, 3.79:1 on #FAFAFA). The dot is still decoration — the
+     label carries the meaning — but a decoration you cannot see is not a decoration. */
+  .ft-dot{width:8px; height:8px; border-radius:50%; background:var(--ok); flex:0 0 auto;
+    box-shadow:0 0 0 1px var(--border-strong);}
+  .ft[data-system="degraded"] .ft-dot{background:var(--degraded);}
+
+  /* ---- cluster 2: provenance — freshness · locale and time zone ---- */
+  /* flex:0 1 auto, NOT 1 1 auto — MEASURED: a growing provenance cluster ate 995px of a 1600px row
+     and pushed the legal links onto a second line at every width. The cluster hugs its content and
+     the links are pushed right by their own auto margin instead. */
+  .ft-meta{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; flex:0 1 auto;
+    color:var(--ft-ink);}
+  .ft-meta time{font-variant-numeric:tabular-nums;}
+  /* the pip between clusters — a rule, not a middle dot glyph, so it never reads as content */
+  /* MEASURED AND CORRECTED TWICE: divider/border/subsection resolved to #F0F0F0 in light (= the
+     old surface/subtle band) so the pips were invisible; they moved to the SECTION rule. Now the
+     band is REVERSED OUT, and the section rule is invisible again in the other direction. They
+     take border/strong, the one neutral that holds its edge on BOTH plates. Height 16, on grid. */
+  .ft-pip{display:inline-block; width:1px; height:16px; background:var(--border-strong);
+    flex:0 0 auto;}
+
+  /* ---- cluster 3: the regulator's row — legal + support + the copyright notice ---- */
+  /* Dave: "Be more generous with the spacing and add the copyright notice." The notice is the
+     LAST thing in the row — the regulator's cluster ends with it — and it travels with the links
+     when the row wraps, which is why they share one .ft-end box rather than two auto margins. */
+  .ft-end{display:flex; flex-wrap:wrap; align-items:center; gap:12px 32px; flex:0 0 auto;
+    margin-inline-start:auto;}
+  .ft-copy{color:var(--ft-ink); flex:0 0 auto;}   /* full strength — header note 1, no alpha */
+  .ft-links{flex:0 0 auto;}
+  .ft-links ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap;
+    align-items:center; gap:0 24px;}   /* 24px gap = the 2.5.8 spacing exception, honoured */
+  /* 24px, the ruled dial-down floor — NOT 44px. See header note 2: a one-row app footer
+     cannot spend 44px per link without out-growing the app's own toolbar. */
+  /* vertical-align:top kills the baseline descender under the inline-flex box: without it the
+     list line box measures 25 and the whole band lands on 49 instead of 48 (found on the review
+     page, which has no leading-trim of its own — the snippet's type.css was hiding it). */
+  .ft-links a{display:inline-flex; align-items:center; min-height:var(--target-floor);
+    vertical-align:top;}
+
+  /* ---- the link atom, copied verbatim from Links.reference.html ---- */
+  a.lnk{color:var(--ft-ink); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; border-radius:var(--border-radius-control);
+    transition:text-decoration-thickness var(--ease);}
+  a.lnk:hover{text-decoration-thickness:2px;}
+  a.lnk:active{text-decoration-thickness:2px;}          /* pressed == hover (combined state) */
+  a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--ft-ink);}
+  a.lnk[aria-current="page"]{text-decoration-thickness:2px;}
+
+  /* ---- VARIANT: sticky — for a dashboard whose grid genuinely never ends ---- */
+  .ft.sticky{position:sticky; bottom:0; z-index:2;}
+
+  /* ---- VARIANT: minimal — version + legal only, nothing an operator did not ask for ---- */
+  .ft.minimal .ft-inner{padding:12px 24px; min-height:48px; justify-content:space-between;}
+
+  /* ---- responsive (CONTAINER, not viewport) ------------------------------------------
+     640px: the regulator's row drops to its own line, identity and provenance stay together.
+     375px: everything stacks; the pips are removed because a vertical rule between stacked
+     rows reads as a divider, not a separator. Targets do not change — 24px is already the
+     floor and the 24px gap survives the stack as a 4px row gap plus the 24px box height. */
+  @container (max-width: 640px){
+    .ft-inner{align-items:flex-start;}
+    .ft-end{flex:1 0 100%; margin-inline-start:0;}
+  }
+  @container (max-width: 375px){
+    .ft-inner{flex-direction:column; align-items:flex-start; gap:12px;}
+    .ft-meta{flex-direction:column; align-items:flex-start; gap:8px;}
+    .ft-end{flex-direction:column; align-items:flex-start; gap:12px;}
+    /* EVERY pip goes, not just the ones inside the provenance cluster: a 1px vertical rule
+       between STACKED rows reads as a divider, not a separator. */
+    .ft-inner .ft-pip{display:none;}
+    /* and every stacked leaf keeps the 24px seat, so the stack stays on the 4px grid
+       (16 + 4x24 + 3x12 + 16 = 164) instead of collapsing to 10.48px line boxes. */
+    .ft-id,.ft-meta,.ft-end{align-items:flex-start;}
+    /* ⚠ the horizontal gap STAYS 24px in the stack. An earlier cut tightened it to 16 and
+       MEASURED 16px between adjacent 24px targets — that breaks the 2.5.8 spacing exception the
+       whole 24px position rests on. A wrapped row gets vertical room instead. */
+    .ft-links ul{gap:4px 24px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+  /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 1.25rem .7rem;}   /* demo chrome — not the component */
+  .demo-note{opacity:var(--alpha-60); margin:.6rem 1.25rem 1.25rem; max-width:70ch;}
+  /* the app-shell frame: the footer is only honest inside a content column */
+  .shell{margin:0 1.25rem; border:1px solid var(--divider); background:var(--page);
+    display:flex; flex-direction:column;}
+  .shell-bar{display:flex; align-items:center; gap:12px; padding:8px 16px;
+    border-bottom:1px solid var(--divider); color:var(--text);}
+  .shell-body{padding:16px; color:var(--text); display:flex; flex-direction:column; gap:8px;}
+  .shell.scrolls{height:220px; overflow-y:auto;}   /* the SHELL is the scrollport, so the sticky
+     footer pins inside the frame and not to the viewport */
+  .shell.scrolls .shell-bar{position:sticky; top:0; background:var(--page); z-index:2;}
+  .shell.scrolls .shell-body{flex:0 0 auto;}
+  .shell-row{height:24px; background:var(--surface);}
+  .demo-ctl{display:flex; flex-wrap:wrap; gap:8px; margin:.6rem 1.25rem;}
+  .demo-ctl button{min-height:var(--target-min); padding:0 12px; cursor:pointer;
+    background:var(--page); color:var(--text); border:1px solid var(--border-strong);
+    border-radius:var(--border-radius-control);}
+  .demo-ctl button:focus-visible{outline:none; box-shadow:inset 0 0 0 2px var(--focus);}
+  /* ===== APOLLO-DEMO css END ===== */
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Default — one row, in the app-shell content column, not sticky</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
+  <div class="shell">
+    <div class="shell-bar"><span class="t-cm-legal">Payments operations</span></div>
+    <div class="shell-body">
+      <div class="shell-row"></div><div class="shell-row"></div><div class="shell-row"></div>
+    </div>
+    <footer class="ft" role="contentinfo" aria-label="Application footer"
+            data-env="prod" data-system="ok"
+            data-updated="2026-09-09T09:41:00+01:00" data-now="2026-09-09T09:44:00+01:00">
+      <div class="ft-inner">
+
+        <div class="ft-id">
+          <span class="ft-prod t-ed-body-small em">HSBC Business banking</span>
+          <span class="ft-ver t-cm-legal">v4.2.1 &middot; build 8317</span>
+          <span class="ft-env t-cm-legal">Production</span>
+          <span class="ft-status t-cm-legal" role="status">
+            <span class="ft-dot" aria-hidden="true"></span>
+            <span>All systems normal</span>
+          </span>
+        </div>
+
+        <span class="ft-pip" aria-hidden="true"></span>
+
+        <div class="ft-meta t-cm-legal">
+          <span>Data as of <time datetime="2026-09-09T09:41:00+01:00">09:41</time><span data-freshness-rel> &middot; 3 minutes ago</span></span>
+          <span class="ft-pip" aria-hidden="true"></span>
+          <span>en-GB &middot; Europe/London (GMT+1)</span>
+        </div>
+
+        <div class="ft-end">
+          <nav class="ft-links" aria-label="Legal and support">
+            <ul>
+              <li><a class="lnk t-cm-legal" href="#">Privacy</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Terms</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Accessibility</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Support</a></li>
+            </ul>
+          </nav>
+          <span class="ft-copy t-cm-legal">&copy; HSBC Group 2026. All rights reserved.</span>
+        </div>
+
+      </div>
+    </footer>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="demo-note t-cm-legal">Every string sits on the reversed-out plate at FULL ink strength (text/on-inverse). The band is quiet because the type is 12px and the clusters are separated by 1px pips, not because the ink has been weakened — a 0.6 alpha on this ground measures 4.41:1, below the 4.5 threshold, which is why the previous build's muted copyright line was replaced rather than tuned.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Non-production environment, and a degraded system</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
+  <div class="shell">
+    <div class="shell-bar"><span class="t-cm-legal">Payments operations</span></div>
+    <div class="shell-body"><div class="shell-row"></div><div class="shell-row"></div></div>
+    <footer class="ft" id="ft-demo" role="contentinfo" aria-label="Application footer"
+            data-env="uat" data-system="degraded"
+            data-updated="2026-09-09T08:44:00+01:00" data-now="2026-09-09T09:44:00+01:00">
+      <div class="ft-inner">
+
+        <div class="ft-id">
+          <span class="ft-prod t-ed-body-small em">HSBC Business banking</span>
+          <span class="ft-ver t-cm-legal">v4.3.0-rc2 &middot; build 8402</span>
+          <span class="ft-env t-cm-legal" id="ft-env-label">User acceptance</span>
+          <span class="ft-status t-cm-legal" role="status">
+            <span class="ft-dot" aria-hidden="true"></span>
+            <span id="ft-status-label">Settlement feed degraded</span>
+          </span>
+        </div>
+
+        <span class="ft-pip" aria-hidden="true"></span>
+
+        <div class="ft-meta t-cm-legal">
+          <span>Data as of <time datetime="2026-09-09T08:44:00+01:00">08:44</time><span data-freshness-rel> &middot; 1 hour ago</span></span>
+          <span class="ft-pip" aria-hidden="true"></span>
+          <span>en-GB &middot; Europe/London (GMT+1)</span>
+        </div>
+
+        <div class="ft-end">
+          <nav class="ft-links" aria-label="Legal and support">
+            <ul>
+              <li><a class="lnk t-cm-legal" href="#">Privacy</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Terms</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Accessibility</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Support</a></li>
+            </ul>
+          </nav>
+          <span class="ft-copy t-cm-legal">&copy; HSBC Group 2026. All rights reserved.</span>
+        </div>
+
+      </div>
+    </footer>
+  </div>
+  <!-- ===== APOLLO-DEMO ctl START (showroom harness — never copy) ===== -->
+  <div class="demo-ctl">
+    <button type="button" class="t-cm-legal" data-set-env="prod">Set environment to production</button>
+    <button type="button" class="t-cm-legal" data-set-env="uat">Set environment to user acceptance</button>
+    <button type="button" class="t-cm-legal" data-set-sys="ok">Set system healthy</button>
+    <button type="button" class="t-cm-legal" data-set-sys="degraded">Set system degraded</button>
+  </div>
+  <p class="demo-note t-cm-legal">The chip and the dot are painted by CSS from the data-env and data-system attributes on the footer itself, so a shell that switches environment cannot forget to restyle anything. Amber carries black ink at 9.16:1 and is mode-invariant by ruling; the dot is decoration and the label is what carries the meaning.</p>
+  <!-- ===== APOLLO-DEMO ctl END ===== -->
+
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Sticky — the variant, for a grid that never ends</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
+  <div class="shell scrolls">
+    <div class="shell-bar"><span class="t-cm-legal">Transactions</span></div>
+    <div class="shell-body">
+      <div class="shell-row"></div><div class="shell-row"></div><div class="shell-row"></div>
+      <div class="shell-row"></div><div class="shell-row"></div><div class="shell-row"></div>
+      <div class="shell-row"></div><div class="shell-row"></div><div class="shell-row"></div>
+    </div>
+    <footer class="ft sticky" role="contentinfo" aria-label="Application footer"
+            data-env="prod" data-system="ok">
+      <div class="ft-inner">
+        <div class="ft-id">
+          <span class="ft-prod t-ed-body-small em">HSBC Business banking</span>
+          <span class="ft-ver t-cm-legal">v4.2.1</span>
+          <span class="ft-env t-cm-legal">Production</span>
+        </div>
+        <span class="ft-pip" aria-hidden="true"></span>
+        <div class="ft-meta t-cm-legal">
+          <span>Data as of <time datetime="2026-09-09T09:41:00+01:00">09:41</time></span>
+        </div>
+        <div class="ft-end">
+          <nav class="ft-links" aria-label="Legal and support">
+            <ul>
+              <li><a class="lnk t-cm-legal" href="#">Privacy</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Terms</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Accessibility</a></li>
+            </ul>
+          </nav>
+          <span class="ft-copy t-cm-legal">&copy; HSBC Group 2026. All rights reserved.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="demo-note t-cm-legal">Scroll the frame: the reversed-out band holds the bottom edge and separates itself from the rows it overlaps by value, not by a rule. This is a variant and not the default, because a footer that follows the operator down an infinite grid costs a row of data on every screen.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO label START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Minimal — version and legal only</h2>
+  <!-- ===== APOLLO-DEMO label END ===== -->
+  <div class="shell">
+    <div class="shell-bar"><span class="t-cm-legal">Statements</span></div>
+    <div class="shell-body"><div class="shell-row"></div></div>
+    <footer class="ft minimal" role="contentinfo" aria-label="Application footer" data-env="prod">
+      <div class="ft-inner">
+        <div class="ft-id">
+          <span class="ft-ver t-cm-legal">HSBC Business banking v4.2.1</span>
+        </div>
+        <div class="ft-end">
+          <nav class="ft-links" aria-label="Legal">
+            <ul>
+              <li><a class="lnk t-cm-legal" href="#">Privacy</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Terms</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Accessibility</a></li>
+            </ul>
+          </nav>
+          <span class="ft-copy t-cm-legal">&copy; HSBC Group 2026. All rights reserved.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="demo-note t-cm-legal">The legal-only cut, for an embedded or kiosk surface where the operator has no build to report and no data to age. This is what the previous build called the slim form; the name changed with the scope.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <script>
+  /* PROGRESSIVE ENHANCEMENT ONLY. Both behaviours have a static fallback already rendered in the
+     markup, so the JS-off document is the settled state (s245-D5). No timers, no network, no
+     resize listener. */
+  (function(){
+    "use strict";
+    // (a) freshness — relative age from data-updated against data-now. Both are FIXED attributes,
+    //     not Date.now(), so a driven screenshot is byte-deterministic across runs.
+    function ago(ms){
+      var m = Math.round(ms / 60000);
+      if (m < 1)  return "just now";
+      if (m < 60) return m + (m === 1 ? " minute ago" : " minutes ago");
+      var h = Math.round(m / 60);
+      if (h < 24) return h + (h === 1 ? " hour ago" : " hours ago");
+      var d = Math.round(h / 24);
+      return d + (d === 1 ? " day ago" : " days ago");
+    }
+    var feet = document.querySelectorAll(".ft[data-updated][data-now]");
+    for (var i = 0; i < feet.length; i++){
+      var f = feet[i];
+      var rel = f.querySelector("[data-freshness-rel]");
+      if (!rel) continue;
+      var up = Date.parse(f.getAttribute("data-updated"));
+      var now = Date.parse(f.getAttribute("data-now"));
+      if (isNaN(up) || isNaN(now)) continue;      // keep the markup fallback
+      rel.textContent = " · " + ago(now - up);
+    }
+
+    // (b) DEMO CHROME ONLY — the control strip flips the footer's own attributes and the CSS
+    //     repaints. Never copy this block; it is the showroom harness, not the component.
+    var demo = document.getElementById("ft-demo");
+    var envLabel = document.getElementById("ft-env-label");
+    var sysLabel = document.getElementById("ft-status-label");
+    var ENV = { prod: "Production", uat: "User acceptance" };
+    var SYS = { ok: "All systems normal", degraded: "Settlement feed degraded" };
+    document.addEventListener("click", function(e){
+      var b = e.target.closest ? e.target.closest("button[data-set-env],button[data-set-sys]") : null;
+      if (!b || !demo) return;
+      var env = b.getAttribute("data-set-env");
+      var sys = b.getAttribute("data-set-sys");
+      if (env){ demo.setAttribute("data-env", env); if (envLabel) envLabel.textContent = ENV[env]; }
+      if (sys){ demo.setAttribute("data-system", sys); if (sysLabel) sysLabel.textContent = SYS[sys]; }
+    });
+  })();
+  </script>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Footer",
+    "$status": "PROPOSED #261 (redesign of the PROPOSED #204 build), Dave's eye owed — nothing here is a ruling.",
+    "vars": { "--page": "background/default", "--surface": "surface/subtle",
+              "--divider": "divider/border/section",
+              "--text": "text/default", "--icon": "icon/default", "--focus": "focus/ring",
+              "--border-strong": "border/strong",
+              "--ft-band": "surface/action-primary", "--ft-ink": "text/on-inverse",
+              "--env-alert": "rag/warning-background", "--env-alert-ink": "rag/text/on-light",
+              "--ok": "rag/success-glyph", "--degraded": "rag/warning-glyph",
+              "--border-radius-control": "border-radius/control",
+              "--target-min": "target/min" },
+    "contrastPairs": [
+      { "fg": "text/on-inverse", "bg": "surface/action-primary", "context": "text" },
+      { "fg": "border/strong", "bg": "surface/action-primary", "context": "ui" },
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "surface/subtle", "context": "icon" },
+      { "fg": "rag/text/on-light", "bg": "rag/warning-background", "context": "text" }
+    ],
+    "requiredAria": ["role=\"contentinfo\"", "aria-label", "role=\"status\"", "aria-hidden=\"true\""],
+    "$note": "PROPOSED #261 (lane Ft) — A REDESIGN. The APP footer only, which is Dave's scope in his own words: 'App footer for now'. The #204 doormat / mega-footer and its groups[] and backToTop props are RETIRED IN THE META with their reasons and their findings preserved, not deleted; 'slim' is superseded by 'minimal'. Variants now: default, sticky, minimal. Anatomy is one row — product and build, environment badge, system status, data freshness, locale and time zone, then the legal and support links — sitting INSIDE the app-shell content column, wrapping at a 640px CONTAINER width and stacking at 375px. #261 Ft3 (Dave's second look) changed THREE things and nothing else: (a) THE ROW IS ON THE 4PX GRID — 'One 41px row - I should never see a figure like 41, we have a 4px grid.' 41 was 40px min-height + a 1px border-top; the border is gone (a reversed-out plate separates itself by value) and the row MEASURES 56 (minimal 48, wrapped 92, stacked 228), every height at every width a multiple of 4, driven. (b) THE BAND IS REVERSED OUT IN BOTH MODES — surface/action-primary (#1A1A1A light / #FAFAFA dark, warmed to #13110E / #F0EFED under supercharge) with text/on-inverse (#FFFFFF 17.4:1 / #333333 12.0:1). TOKENS EXIST; A LIGHT-MODE INVERSE SURFACE ROLE DOES NOT — that is the open _COMPONENT-GAPS.md row 'Inverse / hero surface' (2026-06-30, 'no light-mode dark-band role'), so the modifier is COMPOSED here from two ruled tokens and flagged, not promoted. The pips and the status-dot ring move to border/strong, the one neutral that holds an edge on both plates. (c) THE COPYRIGHT NOTICE — '(c) HSBC Group 2026. All rights reserved.', the repo's existing string, at the far right, at full ink strength; and the spacing is more generous throughout (inner pad 8/16 -> 16/24, cluster gap 8/24 -> 12/32, chip 20 -> 24). FOUR DESIGN POSITIONS, each measurable: (1) NO OPACITY ON CONTENT TEXT — full ink strength everywhere (text/on-inverse on the plate since Ft3), because #1A1A1A at alpha-60 over surface/subtle measures 4.41:1, below 4.5, which is what the #204 build shipped on its copyright line; the band is quiet by type size, not by ink. (2) 24px TARGETS, reversing #204's 44px-at-every-width — the ruled dial-down floor (WCAG 2.5.8 AA plus the spacing exception, honoured literally with a 24px gap between adjacent boxes), because a one-row app footer cannot spend 44px per link. ⚠ NO LEAF TOKEN EXISTS FOR 24: --target-floor is declared in CSS and deliberately absent from these vars; minting target/floor is a decision for Dave. (3) THE ENVIRONMENT BADGE — production is a quiet outlined chip; every non-production environment takes rag/warning-background with rag/text/on-light ink, 9.16:1, mode-invariant, the ruled 'amber is always black text' pair, painted from the footer's own data-env attribute in CSS. (4) THE STATUS DOT IS DECORATION — dot plus label, never colour alone; the dot's own contrast is a DECLARED ABSENCE on the Status-indicator precedent (its meta already records the amber dot below 3:1 standalone), which is exactly why the label exists. STICKY IS A VARIANT, NEVER THE DEFAULT. The vocabulary collision declared at #204 STANDS and is not resolved: 'footer' still means a container's action or pagination row elsewhere in this repo, and the gated Action-bar describes itself verbatim as 'A footer bar that pins a screen/flow's actions'. Renaming is Dave's. Composes the gated Links atom verbatim and the Status-indicator form-A dot; neither parent was touched. Not registered in component-types.json (a shared file, outside the lane fence)."
+  }
+  </script>
+  </body>
+</html>

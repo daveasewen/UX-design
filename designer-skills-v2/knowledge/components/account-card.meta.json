@@ -3,9 +3,10 @@
   "interactive": false,
   "category": "molecule",
   "purpose": "A passive summary card for a single account: the account label (name · masked number), its balance in the display/amount type, and an optional meta row showing account type (Tags atom) and a RAG status (Status-indicator chip). Surfaced as a missing pattern by the payments-journey gap report.",
+  "$note": "s274-D3 (Dave, #274, 2026-09-15): Account card STAYS `$not-a-provider` of record-list. A STACK of account cards is not this component turned into a provider — it is the card-list CONTAINER variant of list-items hosting account ROWS (s274-D2), and the composer reaches the stack through the `record-list` role. The bordered surface the container draws around each record is what makes it a card (s274-D1); nothing about this component changes and no `provides` is added.",
   "props": [
-    { "name": "status", "type": "enum", "values": ["none", "ok", "warn", "err", "info"], "default": "none", "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot." },
-    { "name": "tag", "type": "boolean", "default": false, "$note": "Optional account-type tag (Tags atom)." }
+    { "name": "status", "type": "enum", "values": ["none", "ok", "warn", "err", "info"], "default": "none", "binds": ["rag.success", "rag.success-tint", "rag.warning", "rag.warning-tint"], "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot.", "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "tag", "type": "boolean", "default": false, "binds": "form.border.default", "$note": "Optional account-type tag (Tags atom)." }
   ],
   "variants": [
     { "name": "default", "use": "Label + balance + meta row (type tag + status chip)." },
@@ -30,7 +31,13 @@
     "commonPatterns": ["account balance summary on a dashboard", "tappable account row that opens account detail (REVIEW: interactive variant?)"]
   },
   "behaviour": {
-    "passive": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role."
+    "script": null,
+    "partial": null,
+    "events": [],
+    "fallback": "identical — the component carries no script",
+    "$note": {
+      "passive": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role."
+    }
   },
   "accessibility": {
     "role": "role=\"group\" with aria-labelledby pointing at the account label, so the card is announced as a single unit.",
@@ -53,5 +60,30 @@
     "figma_node": "",
     "code_path": "",
     "$note": "REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Account-card.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboard-accounts-screen",
+        "$note": "Dashboard / accounts screen"
+      },
+      {
+        "ref": "context:account-list",
+        "$note": "Account list"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:account-balance-summary-on-a-dashboard"
+      },
+      {
+        "ref": "pattern:tappable-account-row-that-opens-account-detail-review-interactive-variant"
+      }
+    ]
   }
 }

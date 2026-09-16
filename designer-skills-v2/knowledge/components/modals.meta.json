@@ -2,6 +2,7 @@
   "name": "Modals",
   "category": "organism",
   "purpose": "Modals focus the user's attention on an important message or side-task without removing them from their journey. Family: Dialog (interrupts the view and requires an action/decision to continue), Video modal (responsive video overlay), and Partial modal / Drawer (app-only, anchored to the bottom of the screen, houses supplementary content/actions the user can view and interact with alongside the underlying UI).",
+  "provides": "overlay",
   "$family": "Covers the 'Modals' canvas across three sections: Modal - dialog, Modal - video, Modal - partial (app only).",
   "props": [
     {
@@ -12,8 +13,7 @@
         "video",
         "partial"
       ],
-      "default": "dialog"
-    },
+      "default": "dialog", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "buttons",
       "type": "enum",
@@ -37,8 +37,7 @@
         "xs"
       ],
       "default": "l",
-      "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout."
-    },
+      "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout.", "binds": "scale", "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "module",
       "type": "enum",
@@ -140,5 +139,49 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45024:100302",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Modals.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-screen",
+        "$note": "App screen"
+      },
+      {
+        "ref": "context:page-overlay-layer",
+        "$note": "Page (overlay layer)"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:confirm-decision-dialog"
+      },
+      {
+        "ref": "pattern:video-lightbox"
+      },
+      {
+        "ref": "pattern:bottom-drawer-sheet-with-supplementary-actions"
+      }
+    ],
+    "family": [
+      {
+        "ref": "component:modals",
+        "$note": "Covers the 'Modals' canvas across three sections: Modal - dialog, Modal - video, Modal - partial (app only)."
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:ds-032"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:overlay"
+      }
+    ]
   }
 }

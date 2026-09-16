@@ -1,4 +1,4 @@
-# Design-system skills for Copilot (v2 — experimental)
+# Design-system skills for Copilot (v2.1 — experimental)
 
 A small set of **skills** that make your Copilot aware of our design system — its
 components, tokens, and brand + accessibility standards — so what it helps you
@@ -7,6 +7,19 @@ can be captured and shared.
 
 It's **early and experimental** — poke at it, and tell us what's useful and what's
 missing. It's here to support your work, not replace the craft.
+
+## What's new in v2.1
+- **The pack answers from the design system's own rulings.** `generate-from-canon`
+  step 1 now runs a *reader* (`knowledge/_compose_slice.py`) once to seed a screen,
+  and its `--ask` door answers the twelve designer questions — what governs a
+  component, what it must not sit next to, which tokens it consumes and what
+  breaks if you change one, its WCAG obligation, which icons it may use — in
+  under a thousand tokens each, read live from the files beside it. That includes
+  `knowledge/_rulings.json`: the decisions the design-system owner has made, with
+  dates and what each one governs. Needs `python3`; `pip install tiktoken` makes
+  the token counts measured rather than estimated.
+- The knowledge base is re-baked from the current design system (137 component
+  contracts, the per-file guideline scope, the icon and logo node files).
 
 ## What's new in v2
 - **The knowledge base ships ready-made.** v1 included a build script; it only

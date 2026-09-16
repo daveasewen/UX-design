@@ -481,7 +481,60 @@ def photography_specimen():
 
 PHOTOGRAPHY_DIR = "knowledge/assets/photography-web/"
 
-EXCLUDED = [
+# ---------------------------------------------------------------------------------------------
+# ★ s279-D1 (#279, 2026-09-16, Dave, verbatim: "i agree 'a' it is") — THE PACK SHIPS THE READER
+# AND THE CONSTITUTION. Asked in plain prose whether (a) the pack ships the reader + rulings so
+# ASK reads the Constitution live inside the pack, or (b) ASK stays repo-side and the pack gets
+# the seed only, he chose (a). That REVERSES the `knowledge/_rulings.json` row below ("Apollo's
+# ruling store — Dave's record"), by his word, for every cut FROM `READER_SHIPS_FROM` ON.
+#
+# ⛔ WHY IT IS VERSION-GATED AND NOT SIMPLY EDITED. The v1.0.13 manifest is RATIFIED (s268-D3),
+# its zip is baked and FROZEN (dist/), and two BLOCKING arms pin the generator to it:
+# `_gate_release_audit.py --manifest-check` regenerates the manifest at 08e315d and compares
+# byte for byte, and `--pack` compares the zip's `_MANIFEST.json` to the status-free derivation
+# of the repo-side file. Any change to what this module emits at v1.0.13 — a group, an
+# excluded row, even a reason string — turns both red without a v1.0.14 cut, and cutting Spider
+# is HIS word (s219-D4(2)) and P-269-1's `pack-version-bump` tripwire, which #279 lane PK was
+# not given. So the allow-block is DECLARED here, by addition, and ARMS ITSELF at the next
+# version: at v1.0.13 `groups()` and `EXCLUDED` are byte-for-byte what they were; at any later
+# VERSION the reader group claims the closure and the `_rulings.json` exclusion row is gone.
+# The old exclusion line STAYS in `_EXCLUDED_ALL` (read its comment) — the generator carries
+# both, one per side of the version line, and the selftest bites both sides.
+# The designer-skills-v2 pack (the one s277-D10 governs) is not cut by this generator at all:
+# it is baked by `designer-skills-v2/build-designer-kb.sh`, which ships the same closure from
+# v2.1 (#279 lane PK) — `_compose_slice.py --selftest` checks BOTH allow-sets against the
+# reader's recorded opens.
+READER_SHIPS_FROM = "v1.0.14"
+READER_RULING = "s279-D1"
+# The reader's read closure as it lands under knowledge/ — files NO OTHER GROUP claims today.
+# roles/chart-intents/component-types ride as gate data; guidelines/_rules-index.json and
+# _scope.json are engine-canon.guidelines'; tokens/_blast-radius.json is engine-canon.tokens';
+# _helpgate.py is the gates' helper closure. Those need no row here and are not repeated.
+READER_CLOSURE = (
+    "knowledge/_compose_slice.py",
+    "knowledge/_rulings.json",
+    "knowledge/_ruling_edges.json",
+    "knowledge/_rule_nodes.json",
+    "knowledge/_ux_principle_nodes.json",
+    "knowledge/_icon_nodes.json",
+    "knowledge/_logo_nodes.json",
+    "knowledge/_consult-lexicon.json",
+    "knowledge/_kg_verbs.json",          # s277-D11 (#279 lane VB): the twelve verbs' reading map
+)
+
+
+def _vtuple(v):
+    return tuple(int(x) for x in re.findall(r"\d+", v or ""))
+
+
+def reader_ships(version=None):
+    """True from READER_SHIPS_FROM on — the version line s279-D1's allow-block arms itself at."""
+    return _vtuple(VERSION if version is None else version) >= _vtuple(READER_SHIPS_FROM)
+
+
+RULINGS_EXCLUSION = ("knowledge/_rulings.json", "Apollo's ruling store — Dave's record.")
+
+_EXCLUDED_ALL = [
     ("reviews/", "Dave's review surfaces — this session's thinking, not the engine. s219-D4(1): "
                  "'without all the review files and extras'."),
     ("notes/", "Briefs, receipts and filed sub-reports — the workshop's paperwork."),
@@ -512,7 +565,11 @@ EXCLUDED = [
     ("_LIVE-STATE.md", "Dave's session state."),
     ("_CHAIN.md", "Dave's session state."),
     ("knowledge/_state.json", "Dave's task store — his items, not a designer's."),
-    ("knowledge/_rulings.json", "Apollo's ruling store — Dave's record."),
+    # ⛔ SUPERSEDED at s279-D1 (#279, Dave: "i agree 'a' it is") FROM READER_SHIPS_FROM ON: the
+    # Constitution ships so ASK reads it live inside the pack. The row stays here because the
+    # v1.0.13 manifest carries it verbatim and is pinned byte-for-byte; `EXCLUDED` below drops
+    # it the moment VERSION crosses the line, and the reader group claims the path instead.
+    RULINGS_EXCLUSION,
     ("knowledge/_SESSIONS.jsonl", "Session state."),
     ("knowledge/_memento-index.json",
      "Generated from Apollo's own record — Dave's memory, and it must not travel. ⚠ THE REASON "
@@ -539,9 +596,43 @@ EXCLUDED = [
                             "apollo-spider/skills/ (#219 R3)."),
 ]
 
+# The exclusions IN FORCE at this VERSION (s279-D1): identical to the list above at v1.0.13;
+# one row shorter from READER_SHIPS_FROM on. Read `_EXCLUDED_ALL` for the full record.
+def excluded_rows():
+    return [row for row in _EXCLUDED_ALL if not (row is RULINGS_EXCLUSION and reader_ships())]
+
+
+EXCLUDED = excluded_rows()   # the import-time view; build_manifest() asks excluded_rows() live
+
+
+def reader_group():
+    """The s279-D1 allow-block: the reader + the Constitution, ONE group, claimed by path
+    membership so it can swallow nothing else. Present in groups() only when reader_ships()."""
+    closure = set(READER_CLOSURE)
+    return dict(key="engine-canon.reader", group="engine-canon",
+                title="The reader + the Constitution",
+                plain="`_compose_slice.py` — the seed a designer composes once and the ASK door "
+                      "that answers the 12 designer questions in under 1K tokens — and the files "
+                      "it reads LIVE beside itself: `_rulings.json` (the Constitution: what was "
+                      "ruled, by whom, when, and what it governs), its edges, the ratified "
+                      "rule / principle / icon / logo node files and the lexica. Ships by Dave's "
+                      "word (%s: \"i agree 'a' it is\") — the ruling store used to be excluded as "
+                      "his record; from %s it is what the pack answers from." % (READER_RULING, READER_SHIPS_FROM),
+                match=lambda p: p in closure)
+
 
 def groups():
     """The ordered group table. First match owns the path."""
+    tbl = _groups()
+    if reader_ships():
+        # AFTER the engine-canon groups (so guidelines/ and tokens/ keep what they own) and
+        # BEFORE gates (which claims nothing in READER_CLOSURE today — but order is the rule).
+        i = next(k for k, g in enumerate(tbl) if g["key"] == "gates")
+        tbl.insert(i, reader_group())
+    return tbl
+
+
+def _groups():
     return [
         dict(key="engine-canon.tokens", group="engine-canon", title="Tokens",
              plain="Every design token you work from — colour, type, spacing, elevation, "
@@ -2170,7 +2261,7 @@ def build_manifest(sha, probe):
                   for gk, es in seen_group.items()},
     )
 
-    excluded = [dict(path=p, reason=r) for p, r in EXCLUDED]
+    excluded = [dict(path=p, reason=r) for p, r in excluded_rows()]   # s279-D1: per VERSION
     excluded.append(dict(
         path="knowledge/_validate_* (repo-bound subset)",
         reason="MEASURED, not assumed: %d validators crashed reaching for something the pack "
@@ -3111,17 +3202,52 @@ def selftest():
         hits = [g["key"] for g in tbl if g["match"](p)]
         bite("groups/claims:%s" % os.path.basename(p), len(hits) >= 1, True,
              "no group claims it")
-    # excluded paths must be claimed by NOBODY
+    # excluded paths must be claimed by NOBODY — `knowledge/_rulings.json` is in this list only
+    # while the reader does not ship (s279-D1 reverses it from READER_SHIPS_FROM; see below).
     for p in ["reviews/x.html", "notes/_briefs/x.md", "knowledge/tokens/_raw/x.json",
-              "API-KEY.txt", "GOOD-MORNING.md", "knowledge/_rulings.json",
+              "API-KEY.txt", "GOOD-MORNING.md",
               "knowledge/assets/photography-web/x.jpg", "designer-skills-v1/knowledge/x.json",
               "knowledge/_RUNBOOK-capture-ritual.md", "knowledge/_state.json",
               # #219 seam 7, the repoint proved in the OTHER direction: v2 is a FROZEN release
               # (s114-D4) and its SKILL.md must now be claimed by nobody. Without this bite the
               # skills match could silently widen back to v2 and only the ship list would know.
-              "designer-skills-v2/generate-from-canon/SKILL.md"]:
+              "designer-skills-v2/generate-from-canon/SKILL.md"] + (
+                  [] if reader_ships() else ["knowledge/_rulings.json"]):
         hits = [g["key"] for g in tbl if g["match"](p)]
         bite("groups/excludes:%s" % p, hits, [], "an EXCLUDED path was claimed by %s" % hits)
+    # ---- s279-D1: the reader allow-block, bitten on BOTH sides of the version line, and the
+    # EXCLUDED row with it. At v1.0.13 nothing moves (the ratified manifest is pinned byte for
+    # byte); from READER_SHIPS_FROM the closure is claimed by exactly one group and the
+    # `_rulings.json` exclusion is gone. Mutation: a closure path claimed by nobody, or by two
+    # groups, or an exclusion row that survives the line, is a failing bite here.
+    _v = globals()["VERSION"]
+    try:
+        globals()["VERSION"] = "v1.0.13"
+        _tbl13 = groups()
+        _ex13 = excluded_rows()
+        bite("reader/v1.0.13-unarmed", [g["key"] for g in _tbl13 if g["key"] == "engine-canon.reader"], [],
+             "the reader group must NOT exist at the ratified v1.0.13 (its manifest is pinned)")
+        bite("reader/v1.0.13-exclusion-stands", RULINGS_EXCLUSION in _ex13, True)
+        globals()["VERSION"] = READER_SHIPS_FROM
+        _tbla = groups()
+        _exa = excluded_rows()
+        bite("reader/armed-group-present", [g["key"] for g in _tbla if g["key"] == "engine-canon.reader"],
+             ["engine-canon.reader"])
+        bite("reader/armed-exclusion-gone", RULINGS_EXCLUSION in _exa, False,
+             "s279-D1: the Constitution ships, the exclusion row must not survive the line")
+        for p in READER_CLOSURE:
+            hits = [g["key"] for g in _tbla if g["match"](p)]
+            bite("reader/armed-claims:%s" % os.path.basename(p), hits, ["engine-canon.reader"],
+                 "each closure path is claimed by the reader group and by nobody else")
+        bite("reader/armed-claims-nothing-else",
+             [p for p in ("knowledge/_state.json", "knowledge/_memento-index.json", "knowledge/roles.json",
+                          "knowledge/components/button.meta.json")
+              if reader_group()["match"](p)], [], "membership match: the group can swallow nothing")
+        bite("reader/armed-before-gates",
+             [g["key"] for g in _tbla].index("engine-canon.reader") < [g["key"] for g in _tbla].index("gates"), True)
+        bite("reader/version-order", _vtuple("v1.0.13") < _vtuple(READER_SHIPS_FROM) <= _vtuple("v1.0.14"), True)
+    finally:
+        globals()["VERSION"] = _v
 
     # ---- the flatten (#219 stage 2, R3 Q2): pack layout is pack_path(repo path)
     bite("packpath/skills-flatten",

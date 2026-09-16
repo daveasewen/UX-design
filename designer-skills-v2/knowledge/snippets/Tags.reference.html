@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tags — reference implementation (gated)</title>
 <!--
-  CANONICAL REFERENCE for Tags (gated). SQUARE chips — Tags are NOT an angular-rule exemption
-  (only Badge + Avatar are), so border-radius:0. Outlined (form/border/default) on a transparent
+  CANONICAL REFERENCE for Tags (gated). SQUARE chips in Mono — Tags are NOT an angular-rule
+  exemption (only Badge + Avatar are). Corners bind the CONTROL radius role (border-radius/control
+  — Mono resolves 0; themes flex it, ADR-0010; control keeps tags in lock-step with the
+  Selection-controls chips they are shape-kin to). Outlined (form/border/default) on a transparent
   fill — avoids the deprecated non-interactive surface tokens the meta still binds (rebind noted).
   Variants: static, dismissible (× is a real focusable button), and link.
 
@@ -22,24 +24,20 @@
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:220ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --border:#808080; --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; }
-  [data-theme="dark"]{ --border:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; }
+  /* shape — semantic radius tier (ADR-0010 flex slots): the chip binds the CONTROL role. */
+  [data-theme="light"]{ --border:#808080; --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-control:0; }
+  [data-theme="dark"]{ --border:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text);}
   h2{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.5rem 0 .8rem;}
   .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
 
   /* em-based chip — every dimension tracks the label font-size (scales with type) */
-  .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:0; /* SQUARE */
+  .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control); /* CONTROL role — Mono square */
     background:transparent; color:var(--text); font:400 14px/1 var(--font); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--ease), opacity var(--ease), margin var(--ease), padding var(--ease), border-width var(--ease), background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
   /* label overflow:VISIBLE (was hidden) — keeps cap/alphabetic icon alignment AND stops descenders
@@ -65,7 +63,7 @@
   .tag.removing{max-width:0 !important; opacity:0; margin-right:0 !important; padding-left:0; padding-right:0; border-width:0; transform:scale(.95);}
 
   /* RESPONSIVE applied-filters bar */
-  .filterbar{ width:var(--demo-width, 560px); max-width:100%; container-type:inline-size; border:1px solid var(--border); padding:12px; }
+  .filterbar{ --filterbar-w:560px; width:var(--filterbar-w); max-width:100%; container-type:inline-size; border:1px solid var(--border); padding:12px; }
   .filterbar .row{ gap:0; }                                  /* chips carry margin so the dismiss collapse is smooth */
   .filterbar .tag{ margin:0 8px 8px 0; }
   @container (max-width: 360px){
@@ -83,12 +81,7 @@
 <body data-theme="light">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></symbol></svg>
 
-  <div class="demo-controls">
-    <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Filter-bar width <input id="w" type="range" min="300" max="600" value="560"> <span id="wv">560</span>px</label>
-    <span>Tags — canonical reference (square)</span>
-  </div>
-
+  
   <h2>Static</h2>
   <div class="row"><span class="tag"><span class="lbl">Savings</span></span><span class="tag"><span class="lbl">Direct debit</span></span><span class="tag"><span class="lbl">Joint account</span></span></div>
 
@@ -103,7 +96,7 @@
   </div>
 
   <h2>Dismissible — applied filters (responsive)</h2>
-  <div class="filterbar" id="filterbar">
+  <div class="filterbar" id="filterbar" tabindex="-1">
     <div class="row">
       <span class="tag"><span class="lbl">GBP</span><button class="x" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
       <span class="tag"><span class="lbl">Last 30 days</span><button class="x" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
@@ -114,7 +107,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Tags",
-    "vars": { "--focus": "focus/ring", "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default" },
+    "vars": { "--focus": "focus/ring", "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default", "--border-radius-control": "border-radius/control" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
@@ -124,14 +117,42 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv'), fb=document.getElementById('filterbar');
-    w.addEventListener('input', ()=>{ fb.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    
+    
+    
     // V1 collapse + fade dismiss: pin current width, collapse to 0, remove after the transition
+    /* ⛔ THE DISMISS REMOVED NOTHING — MEASURED #218 lane cB by driving it. 11 chips in, 11 chips out — and the chip stayed CONNECTED at
+       max-width:0, an invisible ghost still in the tab order and the accessibility tree.
+       Alert's wave-3 defect (β/R1), reproduced here verbatim, both halves:
+       (a) `{once:true}` COUNTS DELIVERIES, NOT MATCHES. This element transitions many
+           properties; `end:transform` arrived first, failed the propertyName guard, did
+           nothing — and the one-shot listener had ALREADY unsubscribed. `end:max-width` landed
+           later with nothing listening, so the `.remove()` it gated never ran. Both events were observed on the clicked chip, in that order.
+       (b) `max-width:0 !important` in the .removing rule routes the zero through an
+           author-IMPORTANT declaration. The collapse is now ALSO driven inline->inline so the
+           removal can never depend on that importance change starting a transition.
+       The handler below unsubscribes only when its OWN property arrives, and a fallback timer
+       guarantees the removal: a dismiss that depends on an event that may not fire is the
+       exact defect this repair exists to close. FOCUS (2.4.3): removing the element that
+       holds focus strands activeElement on BODY, so focus moves to the next remaining
+       dismiss in the same group, or to the group itself when the last one goes. */
     document.querySelectorAll('.tag .x').forEach(x=> x.addEventListener('click', ()=>{
-      const c=x.closest('.tag'); c.style.maxWidth=c.offsetWidth+'px';
-      requestAnimationFrame(()=> c.classList.add('removing'));
-      c.addEventListener('transitionend', ev=>{ if(ev.propertyName==='max-width') c.remove(); }, {once:true});
+      const c=x.closest('.tag');
+      if(c.dataset.going) return; c.dataset.going='1';
+      const group=x.closest('.filterbar') || c.parentElement;
+      const rest=[...group.querySelectorAll('.tag .x')].filter(b=> b!==x && !b.closest('.tag').dataset.going);
+      const nextFocus = rest[0] || group;
+      let done=false;
+      const finish=()=>{ if(done) return; done=true; c.remove();
+        if(document.body.contains(nextFocus)) nextFocus.focus(); };
+      c.style.maxWidth=c.offsetWidth+'px';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        c.classList.add('removing'); c.style.maxWidth='0px';
+      }));
+      const onEnd=ev=>{ if(ev.target!==c || ev.propertyName!=='max-width') return;   /* NOT {once:true} — see the ⛔ note */
+        c.removeEventListener('transitionend', onEnd); finish(); };
+      c.addEventListener('transitionend', onEnd);
+      setTimeout(finish, 600);                                   /* fallback — never orphan the control */
     }));
   </script>
 </body>

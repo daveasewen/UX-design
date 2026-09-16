@@ -2,7 +2,7 @@
 
 The reference data the Copilot skills read. **Pre-built** from the live design
 system — don't hand-edit, and don't try to regenerate it; ask the design-system
-team for a refreshed pack instead. Baked from commit 7071538 (build green 38/38), 2026-07-21.
+team for a refreshed pack instead. Baked from commit eb2ff7c (2026-09-16) plus the #279 lane PK release commit that carries this bake — every shipped path equals eb2ff7c except knowledge/_compose_slice.py, whose pack allow-set bite lands in that same commit.
 
 - `components/` — one `*.meta.json` per component (props, variants, token
   bindings, states, anti-patterns, accessibility) + the schema.
@@ -20,6 +20,17 @@ team for a refreshed pack instead. Baked from commit 7071538 (build green 38/38)
   invent icons).
 - `guidelines/` — design standards for reference (brand, colour, type,
   accessibility, tone, component standards, …).
+- `_compose_slice.py` — **the reader** (v2.1). `generate-from-canon` step 1 runs it
+  once for a seed, and its `--ask` door answers the 12 designer questions from the
+  files beside it — including `_rulings.json`, **the Constitution**: what was ruled,
+  by whom, when, and what it governs. It reads these files LIVE, from this folder;
+  nothing here reaches back to the design-system repo. Needs `python3` (and
+  `pip install tiktoken` for measured token counts; without it counts are
+  labelled estimates). `_rulings.json`, `_ruling_edges.json`, `_rule_nodes.json`,
+  `_ux_principle_nodes.json`, `_icon_nodes.json`, `_logo_nodes.json`,
+  `roles.json`, `chart-intents.json`, `component-types.json`,
+  `_consult-lexicon.json`, `guidelines/_rules-index.json`,
+  `guidelines/_scope.json` and `tokens/_blast-radius.json` are what it reads.
 
 **Two honest notes.** The guidelines are *reference* — a designer or a skill
 consults them (they matter most when **creating a new pattern**). And the

@@ -3,9 +3,10 @@
   "interactive": false,
   "category": "atom",
   "purpose": "A horizontal rule that separates content, with weights matching the hierarchy of the separation (within a subsection, between sections, or a stronger break). On-light and on-dark.",
+  "provides": "arrangement",
   "props": [
-    { "name": "variant", "type": "enum", "values": ["subsection", "subsection-inset", "section", "break"], "default": "subsection", "$note": "subsection/subsection-inset/section = 1px; break = 4px. subsection-inset is indented by padding/responsive/medium." },
-    { "name": "surface", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" }
+    { "name": "variant", "type": "enum", "values": ["subsection", "subsection-inset", "section", "break"], "default": "subsection", "$note": "subsection/subsection-inset/section = 1px; break = 4px. subsection-inset is indented by padding/responsive/medium.", "$status": "s142-D1 (Dave, 2026-08-10) class C5 -- no-bind:variants-axis. Routes to the VARIANTS axis (s136-D1). This ruling DISSOLVES the intent-map vocab gate on this row -- the vocabulary itself remains unruled/Dave's, but no longer blocks this verdict. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "surface", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light", "binds": "background.default", "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."}
   ],
   "variants": [
     { "name": "subsection", "use": "Lightest 1px rule separating items within a subsection (#ededed light)." },
@@ -62,5 +63,56 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2120:30972",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Divider.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      },
+      {
+        "ref": "component:accordion",
+        "$note": "Accordion"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:list",
+        "$note": "List"
+      },
+      {
+        "ref": "context:form",
+        "$note": "Form"
+      },
+      {
+        "ref": "context:menu",
+        "$note": "Menu"
+      },
+      {
+        "ref": "context:page-section",
+        "$note": "Page section"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:separating-list-rows"
+      },
+      {
+        "ref": "pattern:grouping-form-fields"
+      },
+      {
+        "ref": "pattern:section-breaks-in-long-content"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:arrangement"
+      }
+    ]
   }
 }

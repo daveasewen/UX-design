@@ -11,6 +11,21 @@
 #                               registry (underscore kept: it's data, not machinery)
 #   - assets/icons/*.py         the exporter script no longer ships
 #   ~ provenance stamp          README records what the KB was baked from (PROVENANCE env)
+#
+# v2.1 (#279, 2026-09-16, s279-D1 — Dave: "i agree 'a' it is"): THE PACK SHIPS THE READER AND
+# THE CONSTITUTION, so generate-from-canon step 1 (`python3 knowledge/_compose_slice.py`) and
+# the ASK door read the Constitution LIVE inside the pack (s277-D10, s278-D1). Added, BY
+# ADDITION — every cp line above this block is unchanged:
+#   + _compose_slice.py + _helpgate.py   the reader + the one module it imports (HERE = its own dir)
+#   + _rulings.json + _ruling_edges.json  the Constitution — reverses the "Dave's record" exclusion
+#                                        recorded in knowledge/_release/_gen_pack_manifest.py, by his word
+#   + _rule_nodes / _ux_principle_nodes / _icon_nodes / _logo_nodes .json   the ratified node files
+#   + roles.json / chart-intents.json / component-types.json / _consult-lexicon.json / _kg_verbs.json (s277-D11)   the lexica
+#   + guidelines/_rules-index.json + guidelines/_scope.json   the rule index + per-file scope (s277-D9)
+#   + tokens/_blast-radius.json          ASK Q9's blast radius (the tokens loop skips _* by design)
+#   The closure is DERIVED from the reader's own opens (`_compose_slice.py --selftest`, the
+#   "pack allow-set" bite), not typed from memory: that bite is what stops the exclusion
+#   returning in silence.
 set -euo pipefail
 SRC="${SRC:-knowledge}"
 DST="${DST:-designer-skills-v2/knowledge}"
@@ -59,6 +74,21 @@ for f in "$SRC"/guidelines/*.md; do
   [ $skip -eq 0 ] && cp "$f" "$DST/guidelines/"
 done
 
+# ---- v2.1 (s279-D1): THE READER + THE CONSTITUTION — the reader's whole read closure ---------
+# Every file below is one `_compose_slice.py` OPENS (load_graph / load_live / ask); the list is
+# checked against the reader's recorded opens by `python3 knowledge/_compose_slice.py --selftest`.
+# A missing file here is a bite failing there, never a silent fallback. `set -u` + no `|| true`:
+# a closure file that does not exist is a refusal, not a pack one file short.
+READER_CLOSURE="_compose_slice.py _helpgate.py _rulings.json _ruling_edges.json _rule_nodes.json \
+_ux_principle_nodes.json _icon_nodes.json _logo_nodes.json roles.json chart-intents.json \
+component-types.json _consult-lexicon.json _kg_verbs.json"
+for f in $READER_CLOSURE; do cp "$SRC/$f" "$DST/"; done
+cp "$SRC"/guidelines/_rules-index.json "$DST/guidelines/"
+cp "$SRC"/guidelines/_scope.json       "$DST/guidelines/"
+cp "$SRC"/tokens/_blast-radius.json    "$DST/tokens/"
+# Finder droppings never ship (cp -R above carries them when the tree has any).
+find "$DST" -name ".DS_Store" -delete 2>/dev/null || true
+
 # The KB's own readme (regenerated each build)
 cat > "$DST/README.md" <<MD
 # Design system — knowledge base
@@ -83,6 +113,17 @@ team for a refreshed pack instead. Baked from ${PROVENANCE}.
   invent icons).
 - \`guidelines/\` — design standards for reference (brand, colour, type,
   accessibility, tone, component standards, …).
+- \`_compose_slice.py\` — **the reader** (v2.1). \`generate-from-canon\` step 1 runs it
+  once for a seed, and its \`--ask\` door answers the 12 designer questions from the
+  files beside it — including \`_rulings.json\`, **the Constitution**: what was ruled,
+  by whom, when, and what it governs. It reads these files LIVE, from this folder;
+  nothing here reaches back to the design-system repo. Needs \`python3\` (and
+  \`pip install tiktoken\` for measured token counts; without it counts are
+  labelled estimates). \`_rulings.json\`, \`_ruling_edges.json\`, \`_rule_nodes.json\`,
+  \`_ux_principle_nodes.json\`, \`_icon_nodes.json\`, \`_logo_nodes.json\`,
+  \`roles.json\`, \`chart-intents.json\`, \`component-types.json\`,
+  \`_consult-lexicon.json\`, \`guidelines/_rules-index.json\`,
+  \`guidelines/_scope.json\` and \`tokens/_blast-radius.json\` are what it reads.
 
 **Two honest notes.** The guidelines are *reference* — a designer or a skill
 consults them (they matter most when **creating a new pattern**). And the

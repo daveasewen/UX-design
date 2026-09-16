@@ -1,0 +1,214 @@
+{
+  "name": "Template list index",
+  "category": "template",
+  "purpose": "A PAGE-SCALE ORGANISM for a browse-and-find screen: a page header lock-up, ONE filter/toolbar bar, and a body of records with a pager. ⛔ IT DRAWS BOTH BODIES — a Data-grid table AND a Document-row list — with the same filters, the same five records and the same pager, because the library holds both answers and they are NOT interchangeable: a table carries relations BETWEEN rows (sort order, selection across a page, a column you can read down), a list carries one record per row and a tap target. Drawing both is a REFUSAL to settle a question that is Dave's, not a claim that a product ships both.",
+  "$status": "PROPOSED #210 under the WAVE-5 Layer-2 fan-out brief (notes/_briefs/2026-08-20-210-wave5-layer2-p2-fanout-brief-v1.md, LANE B). ⛔ NOT GATED, NOT RULED, NOT REGISTERED — absent from CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, gen_showroom.py and _rulings.json. Dave's eye is owed on every semantic below.",
+  "$artefactClass": "The Layer-2 artefact class is itself a PROPOSED convention, stated once in the brief: Layer-2 rows have no ruled artefact form, so each ships in the SAME grammar as the component library — knowledge/snippets/<Name>.reference.html + knowledge/components/<slug>.meta.json with a `layer` field — because the one grammar keeps every existing gate watching these files for free, where a parallel pipeline would be born ungated. Dave may re-home the class.",
+  "$cardinalRule": "COMPOSE, NEVER RE-DRAW. Every visible atom traces to a source component file and every borrowed region is diff-proven in notes/_receipts/2026-08-20-210-wave5-laneB-templates.md. The Meter precedent (s210-D1) is the model: zero new CSS is the ideal, a COMPOSITION class is legal, a re-drawn atom is the #202 defect.",
+  "props": [
+    {
+      "name": "body",
+      "type": "enum",
+      "values": [
+        "table",
+        "list"
+      ],
+      "default": "table",
+      "$note": "⛔ THE STRUCTURAL QUESTION AND THE POINT OF THE PAGE. PROPOSED, NOT RULED. Whichever Dave picks, the other half of the reference file is deleted."
+    },
+    {
+      "name": "facets",
+      "type": "array",
+      "$note": "PROPOSED. Drawn as native <select>s wearing Data-grid's own `.dg-pp select` chrome. ⛔ NOT a re-drawn Dropdown: Dropdown, Multi-select, Combobox and Date-range-picker all exist and all carry their own popup behaviour, and hosting one here would fork it. WHICH facet control a filter bar should use is Dave's; the native select is an honest placeholder, not a recommendation."
+    },
+    {
+      "name": "appliedFilters",
+      "type": "array",
+      "$note": "PROPOSED. Dismissible chips (Data-grid's `.fchip`) plus a 'Clear all'. The chips are the only place the applied state is visible, which is why the empty result is drawn too."
+    },
+    {
+      "name": "selection",
+      "type": "boolean",
+      "default": true,
+      "$note": "PROPOSED. Drawn with two rows selected and a bulk-action bar, because a selection bar that is never drawn is a state nobody reviews. Selection is tint + inset start bar + checked box — never colour alone."
+    },
+    {
+      "name": "pager",
+      "type": "component",
+      "$note": "⛔ A FINDING, NOT A CHOICE. This template consumes the GATED `Pagination` component. `Data-grid` ALSO carries its own pager, re-stating the recipe internally as `.pbtn`. Whether a grid should consume Pagination rather than duplicate it is Dave's."
+    },
+    {
+      "name": "emptyResult",
+      "type": "component",
+      "$note": "PROPOSED wording, ruled shape. Data-grid's own `.dg-empty`: a reason, a suggestion and a real recovery action. Drawn because a list/index template that only shows its happy path hides the one state its own filter bar can create."
+    }
+  ],
+  "variants": [
+    {
+      "name": "table (Form A)",
+      "use": "Data-grid. Sortable columns, page-scoped selection, a bulk bar, a range read-out and a rows-per-page control."
+    },
+    {
+      "name": "list (Form B)",
+      "use": "Document-row + Pagination. One record per row, a stretched primary link, a status chip, an amount and a trailing download control."
+    },
+    {
+      "name": "empty",
+      "use": "Zero results with the filters still applied, and a control that clears them."
+    }
+  ],
+  "tokens": {
+    "surfaces": "background/default (page, table body) · tertiary/background/default (the list shell) · table/header/background (column heads) · form/background/hover (row selection tint and the bulk bar)",
+    "ink": "text/default · text/secondary (meta lines, at the source components' own alpha)",
+    "lines": "border/subtle · divider/border/section",
+    "controls": "button/primary/* · button/tertiary/* · button/quaternary/* · form/border/default · form/border/active · secondary/background/default (the checked box and the segment fill) · tertiary/background/pressed · tertiary/border/default (the current page) · focus/ring",
+    "status": "rag/warning + rag/error with their tints — chip only, never a figure",
+    "layout": "layout/app/margin · layout/app/gutter · target/min",
+    "radius": "border-radius/surface + /control + /indicator",
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value bound here already exists and is already bound by a gated component; the template's token manifest is the UNION of the manifests of the components it composes. ⛔ NO MONETARY COLOUR TOKEN IS BOUND ANYWHERE. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3) and binding them to money on a page template would be ruling on Dave's behalf — the #209 Lane A restraint, carried. The only RAG on any of these pages is a Status-indicator chip, which always carries its WORD (1.4.1)."
+  },
+  "relationships": {
+    "livesInside": [
+      "A navigation shell (itinerary rows 97/98/99) — PROPOSED, not adjudicated",
+      "Payments screens",
+      "Statements and archive screens",
+      "Any 'all <records>' index"
+    ],
+    "mustNotNeighbour": [
+      "Both bodies shipped together in a product — the reference draws both so ONE can be chosen",
+      "A second pager for the same collection"
+    ],
+    "commonPatterns": [
+      "all payments",
+      "statement archive",
+      "beneficiary list",
+      "transaction search results"
+    ],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "landmarks": "The template is the CONTENT REGION of a page and renders inside a single <main>. The app frame (top nav / side nav / multi-column) is itinerary rows 97/98/99 and is a separate artefact class; the relationship is PROPOSED, not adjudicated.",
+    "headingOrder": "One <h1> (the page title). Section titles are <h2>, panel titles <h3>. The .t-cm-section-label composite is a TYPE class and never substitutes for a heading element.",
+    "colourIsNeverAlone": "Every RAG chip carries its word; the dot is decorative and aria-hidden. Table selection is tint + an inset start bar + a checked box. Sparkline trend is declared as data-trend as well as coloured. (1.4.1)",
+    "reducedMotion": "Every borrowed region brings its own prefers-reduced-motion override, plus the page-level kill. (2.3.3)",
+    "reflow": "Proven by DRIVING at 1400 / 820 / 420 CSS px in light and dark: zero horizontal page overflow at every width. Wide, fixed-canvas regions (the chart, the table) scroll INSIDE their own region rather than the page. (1.4.10)",
+    "targetSize": "⚠ DECLARED, NOT CLAIMED. Buttons, tabs, pager cells and row download controls measure ≥ 44px. THREE INHERITED SHORTFALLS ARE MEASURED AND REPORTED, NOT SILENTLY FIXED: Breadcrumbs' .crumb links measure 39.4x10.1 (the leading-trim cap box is the link box); View-options' .seg buttons are 40px tall; Data-grid's .dgs-clear and .fchip .x are 24x24. All three are the SOURCE components' shipped geometry and are Dave's to rule. The a11y gate reports the first as 'UNMEASURED: no declared box'; this lane measured it in a browser.",
+    "relatedSC": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.1.1",
+      "2.3.3",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "$notLive": "⛔ THE CONTROLS ON THESE PAGES LOOK LIVE AND ARE NOT. Nothing sorts, filters, pages or switches tabs. Each page is drawn in ONE real resting state. That is deliberate (see antiPatterns) and it is the single most likely thing for a reviewer to misread."
+  },
+  "antiPatterns": [
+    "Do not re-draw an atom inside a template. If a region here diverges from its source component, that is a defect, not a variant — the #202 lesson (three hand-rolled specimen pages, three invented defects).",
+    "Do not give a molecule inside a template a fixed width. s210-D3: the container dictates the width. A TEMPLATE may declare page-level layout width because it IS the container; nothing inside it may.",
+    "Do not host a source component's JavaScript engine here. Sorting, filtering, paging, tab switching, chart fitting and legend filtering belong to Data-grid, Pagination, Tabs and Chart-bar. Copying an engine into a template forks it, and a fork drifts silently.",
+    "Do not copy a source component's raw `font:` declaration. Every one of them feeds the 1,097 TYPE-002 debt, which is shrink-only. Borrow the geometry and the colour; bind type with a .t-cm-* / .t-ed-* class in the markup.",
+    "⛔ Do not assume a `@container` rule you copied will fire. `container-type` makes an element a container for its DESCENDANTS, never for itself. Measured at #210: without a host, Layout-utilities' `.l-split` stayed two columns at 420px and its content column measured 26px, with every gate green.",
+    "⛔ Do not assume a copied `text-box-edge: text text` override wins. Measured at #210: the single-class form computes `cap alphabetic` and clips 3.88px of every descender, because the canon trim rule's `:is()` list contains attribute selectors and therefore weighs 0-1-2. Use the two-class form AND measure the computed edge (ds-005).",
+    "⛔ Do not namespace a borrowed rule without re-checking what used to beat it. Scoping `th,td` to `.dg th,.dg td` raised it from 0-0-1 to 0-1-1 and silently un-centred the borrowed `.dg-empty` panel.",
+    "Do not invent a domain semantic. Every status word, column, facet and section order on these pages is PROPOSED (s182-D2) and is Dave's."
+  ],
+  "tokenValidation": {
+    "$method": "Every gate below was RUN at #210 and its own last line is quoted. A green gate means THAT PROBE RAN; it does not mean the tree is clean [[green-tests-cannot-see-scope]].",
+    "gates": [
+      "python3 knowledge/_validate_grid.py <file> → 'GRID GATE PASS — all layout dimensions on the 4px grid'",
+      "python3 knowledge/_validate_type_composites.py <file> → 'TYPE GATE PASS — all component text bound to canon composites'; repo-wide run still reports '1097 violation(s)', the #203 baseline, UNCHANGED",
+      "python3 knowledge/_validate_snippets.py → 'snippet gate: 119 snippet(s), 0 failure(s)'",
+      "python3 knowledge/_validate_a11y.py → 'a11y gate: 119 snippet(s), 0 failure(s), 249 warning(s)'",
+      "python3 knowledge/_validate_descender_clip.py → 'DESCENDER-CLIP GATE PASS — every truncating label is descender-safe (135 file(s))'",
+      "python3 knowledge/_probe_registry/probe_meta_schema.py --check → see receipt",
+      "⛔ python3 knowledge/_validate_binds_resolve.py → 'no .cn-<slug> block in canon.css' — EXPECTED, declared above"
+    ],
+    "$declaredFailure": "⛔ `_validate_binds_resolve.py` check D FAILS for this file and this is DECLARED, not hidden: no `.cn-<slug>` block exists in canon/canon.css, so theme-cascade projection is OFF. Only the light and dark legs authored in the snippet have been seen — CONSOLE, LEGACY and SUPERCHARGE ARE UNPROVEN. Projecting the block is the conductor's, and is a precondition of any four-theme claim.",
+    "$driven": "Rendered and LOOKED AT in headless Chromium with the real HSBC cut (control probe: HSBC_MtUnivers_Latin 346.88 / 'Univers Next HSBC' 346.88 / 'Univers Next for HSBC' 346.88 vs DejaVu Sans 375.39 and a nonexistent face 301.07 — both aliases land on the target and neither lands on the fallback), light AND dark, at 1400 / 820 / 420 CSS px. Six screenshots per page, all read.",
+    "date": "2026-08-20",
+    "against": "knowledge/tokens/ via _validate_snippets.py (manifest var -> token path -> hex, both themes), plus _validate_binds_resolve.py for var resolution and canon-block projection",
+    "result": "PASS on the snippet gate (0 failures over 119 snippets) and on grid / type / a11y / descender. FAIL, DECLARED, on binds-resolve check D: no .cn-<slug> block exists in canon/canon.css, so Console, Legacy and Supercharge are UNPROVEN for this file. Four theme paths were NOT rendered."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$sourceNarrative": "Itinerary row 105 ('Template — list / index', layer '2 Template', priority P2, notes 'Table/list + filter bar.', derived NO-ARTEFACT-CLASS) in reviews/ITINERARY-STATUS-2026-08-19-v1.json",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Template-list-index.reference.html",
+    "$builtAt": "#210, 2026-08-20, WAVE-5 Lane B (Opus)"
+  },
+  "$foundByLooking": [
+    "⛔ THE ROW TITLES WERE CRUSHED BY THEIR OWN CHIPS. Document-row's `.dr-line` is a NON-WRAPPING flex row whose only shrinkable item is the title; this template adds a status chip and an amount, both `flex:none`. Measured at 420px: title elements 47–68px wide, i.e. 'Meridian Supplies Ltd' reduced to three letters and an ellipsis. ★ THIS IS THE #209 LANE A FINDING REPEATING (that receipt §3.3, 'the payee was being crushed by its own chips') and it repeats because the cause is structural: adding a `flex:none` sibling to a non-wrapping flex row always crushes the one shrinkable item. Repaired with the same repair, scoped by `:has()` so a plain Document-row row is untouched.",
+    "⛔ NAMESPACING A BORROWED RULE CHANGED ITS WEIGHT. Data-grid declares `th,td{text-align:left}` (0-0-1), which its own `.dg-empty` (0-1-0) beats. Scoping it here to `.dg th,.dg td` raised it to 0-1-1, and the empty state's message and recovery button rendered flush LEFT inside a centred panel. Repaired by matching the scope, not by `!important`. Measured after: td centre 700.0px, button centre 700.0px.",
+    "⛔ ds-005: the single-class `text-box-edge:text text` override on Document-row's truncating labels LOSES the cascade and clips 3.88px of every descender. See the detail template's meta for the full measurement and the named mechanism. Repaired here with the two-class form."
+  ],
+  "$layer": "2 Template",
+  "$layerNote": "⚠ THE BRIEF ASKS FOR A `layer` FIELD; THE SCHEMA FORBIDS IT, AND THE SCHEMA WINS. meta.schema.json allows only `$`-prefixed additional root keys, so the itinerary's layer value is carried as `$layer`. Declared rather than smuggled: if Dave wants a first-class `layer` field for the Layer-2 artefact class, that is a SCHEMA change and is his, not a worker lane's.",
+  "$composes": [
+    "component:data-grid",
+    "component:document-row",
+    "component:pagination",
+    "component:layout-utilities",
+    "component:breadcrumbs",
+    "component:headers",
+    "component:button",
+    "component:view-options",
+    "component:status-indicator",
+    "component:stat-card",
+    "component:search-field"
+  ],
+  "$composesNote": "⚠ `relationships` is a CLOSED shape in meta.schema.json (livesInside · mustNotNeighbour · commonPatterns · triggeredBy) and has no seat for 'the components this organism is assembled from'. ⬛ THAT IS A REAL GAP FOR LAYER 2 and it is named, not worked around silently: composition is the defining edge of a template, and the graph cannot currently express it. The list is carried as `$composes` so it is readable and greppable but does not pretend to be a graph edge. Adding a `composes` edge type is a schema change and is Dave's.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Template-list-index.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:a-navigation-shell-itinerary-rows-97-98-99-proposed-not-adjudicated",
+        "$note": "A navigation shell (itinerary rows 97/98/99) — PROPOSED, not adjudicated"
+      },
+      {
+        "ref": "context:payments-screens",
+        "$note": "Payments screens"
+      },
+      {
+        "ref": "context:statements-and-archive-screens",
+        "$note": "Statements and archive screens"
+      },
+      {
+        "ref": "context:any-all-records-index",
+        "$note": "Any 'all <records>' index"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:all-payments"
+      },
+      {
+        "ref": "pattern:statement-archive"
+      },
+      {
+        "ref": "pattern:beneficiary-list"
+      },
+      {
+        "ref": "pattern:transaction-search-results"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Both bodies shipped together in a product — the reference draws both so ONE can be chosen"
+      },
+      {
+        "ref": null,
+        "$note": "A second pager for the same collection"
+      }
+    ]
+  }
+}

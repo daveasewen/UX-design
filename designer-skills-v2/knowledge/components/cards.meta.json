@@ -2,6 +2,7 @@
   "name": "Cards",
   "category": "molecule",
   "purpose": "A family of container components that group related content (and optionally an action) into a bordered surface. Five types covering interactive and static use, with and without imagery.",
+  "provides": "arrangement",
   "$family": "This file covers the whole Card family; each type is a separate Figma component.",
   "props": [
     {
@@ -14,8 +15,7 @@
         "image-with-border",
         "image-without-border"
       ],
-      "default": "basic"
-    },
+      "default": "basic", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "state",
       "type": "enum",
@@ -25,8 +25,7 @@
         "pressed"
       ],
       "default": "default",
-      "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only."
-    },
+      "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only.", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "content",
       "type": "enum",
@@ -222,5 +221,77 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:53278",
     "code_path": ""
+  },
+  "slots": {
+    "content": {
+      "accepts": {
+        "tier": [
+          "atom",
+          "molecule"
+        ],
+        "capability": [
+          "card-body-content"
+        ]
+      },
+      "use": "The grouped content the card surface frames.",
+      "required": true,
+      "multiple": false,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)",
+      "$doubt": "audit typed this prop enum — it may be a VARIANT (card type) rather than a slot; Dave's call.",
+      "$note": "Dave s140-D2: cards flex on BOTH axes — variants will be built (axis B) AND content stays slot-injectable (axis C); dual-axis by intent"
+    }
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Cards.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:carousel",
+        "$note": "Carousel"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page",
+        "$note": "Page"
+      },
+      {
+        "ref": "context:grid",
+        "$note": "Grid"
+      },
+      {
+        "ref": "context:list",
+        "$note": "List"
+      },
+      {
+        "ref": "context:dashboard",
+        "$note": "Dashboard"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:card-grid"
+      },
+      {
+        "ref": "pattern:content-teaser-linking-to-detail"
+      },
+      {
+        "ref": "pattern:selectable-option-card"
+      }
+    ],
+    "family": [
+      {
+        "ref": null,
+        "$note": "This file covers the whole Card family; each type is a separate Figma component."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:arrangement"
+      }
+    ]
   }
 }

@@ -1,5 +1,5 @@
 {
-  "$description": "Layout — grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
+  "$description": "Layout \u2014 grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
   "breakpoint": {
     "xs": {
       "$value": "320px",
@@ -35,43 +35,61 @@
   "scale": {
     "$description": "Responsive scale modes (Figma variable modes). AUTHORITATIVE viewport mapping (Dave): scale-1 = 320-959, scale-2 = 960-1599, scale-3 = 1600+. Plus scale-1-200 = 200% accessibility text-zoom variant of scale-1 (see typography.json).",
     "scale-1": {
-      "$value": [
-        "xs",
-        "s",
-        "ms"
-      ],
-      "$type": "other",
-      "$description": "320-959px."
+      "$value": "320px",
+      "$type": "dimension",
+      "$description": "320-959px.",
+      "$extensions": {
+        "com.apollo.sds": {
+          "breakpoints": [
+            "xs",
+            "s",
+            "ms"
+          ],
+          "range": "320-959px"
+        }
+      }
     },
     "scale-2": {
-      "$value": [
-        "m",
-        "l"
-      ],
-      "$type": "other",
-      "$description": "960-1599px."
+      "$value": "960px",
+      "$type": "dimension",
+      "$description": "960-1599px.",
+      "$extensions": {
+        "com.apollo.sds": {
+          "breakpoints": [
+            "m",
+            "l"
+          ],
+          "range": "960-1599px"
+        }
+      }
     },
     "scale-3": {
-      "$value": [
-        "xl"
-      ],
-      "$type": "other",
-      "$description": "1600px+."
+      "$value": "1600px",
+      "$type": "dimension",
+      "$description": "1600px+.",
+      "$extensions": {
+        "com.apollo.sds": {
+          "breakpoints": [
+            "xl"
+          ],
+          "range": "1600px+"
+        }
+      }
     }
   },
   "layout": {
     "web": {
       "margin": {
-        "scale-1": 16,
-        "scale-2": 20,
-        "scale-3": 40,
-        "$type": "number"
+        "scale-1": "16px",
+        "scale-2": "20px",
+        "scale-3": "40px",
+        "$type": "dimension"
       },
       "gutter": {
-        "scale-1": 16,
-        "scale-2": 20,
-        "scale-3": 40,
-        "$type": "number"
+        "scale-1": "16px",
+        "scale-2": "20px",
+        "scale-3": "40px",
+        "$type": "dimension"
       },
       "columns": {
         "$value": 12,
@@ -80,52 +98,242 @@
     },
     "app": {
       "margin": {
-        "$value": 16,
-        "$type": "number"
+        "$value": "16px",
+        "$type": "dimension"
       },
       "gutter": {
-        "$value": 16,
-        "$type": "number"
+        "$value": "16px",
+        "$type": "dimension"
       },
       "columns": {
         "$value": 12,
         "$type": "number"
       }
+    },
+    "bento": {
+      "$description": "BENTO — the canon structural grammar (MINTED s217-D2, #217, Dave, 2026-08-23, from Dave's four per-theme tuner exports off knowledge/_fitness-test/bento-tuner-v1.html). One grammar serves all four bento types: presets, gallery (incl. aspect-mapped photography spans), container-query full-scale, and snap-designer output. GUTTER IS THE ONLY PER-THEME DIVERGENCE — supercharge + mono 0px (this base), legacy + console 24px (their override sets). Everything else is SHARED across the four themes and lives here once. The RADIUS is deliberately NOT here: s217-D2 puts the theme radius on the bento's OUTER CONTAINER, and that role already has a home — border-radius/container. Consumed by canon/gen_canon_bento.py, which compiles this group into the AUTO-BENTO block of canon/canon.css (concrete container-query literals; s200-D1 mint-time derivation — nothing resolved at runtime that a container query cannot read).",
+      "columns": {
+        "$value": 6,
+        "$type": "number",
+        "$note": "MINTED s217-D2. Track count at the widest band. Per-instance overridable via --bento-columns (that is how a nested bento carries its own parameter set)."
+      },
+      "gutter": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — BASE tier (mono is the base theme; supercharge inherits it). ⚠ THE ONLY PER-THEME BENTO DIVERGENCE: legacy and console override this to 24px in their own override sets. A theme override that never lands leaves THIS value silently in force, so the gutter is measured in every theme, never inferred from one (#217 probe)."
+      },
+      "outer-padding": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — shared across all four themes (all four tuner exports read 0). Padding INSIDE the bento container, between the container edge and the grid."
+      },
+      "row-unit": {
+        "$value": "320px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D2 — shared. grid-auto-rows. ⚠ FIXED rows, not intrinsic: with intrinsic rows the tallest content sizes every row and the span vocabulary renders invisible (MEASURED #217 on the Foundations photography bento)."
+      },
+      "packing": {
+        "$description": "grid-auto-flow: row dense.",
+        "$extensions": {
+          "com.apollo.sds": {
+            "cssKeyword": "row dense",
+            "property": "grid-auto-flow"
+          }
+        },
+        "$note": "MINTED s217-D2 — dense packing ON, shared. grid-auto-flow. Per-instance `--bento-packing: row` turns it off without a new class. ⚠ ENCODED s217-D4 (ds-051) ON THE s141-D1 PRECEDENT: `row dense` is a CSS KEYWORD and there is no W3C DTCG type for one — carrying `$type:\"string\"` made this a token the DTCG gate had to fail (DTCG-001), and there is no honest numeric stand-in. So the value is preserved VERBATIM under $extensions[\"com.apollo.sds\"] exactly as s141-D1 (B) preserved the scale breakpoint sets, and the $value is GONE: with no $value this node is a GROUP, not a token, so no DTCG check applies to it. THE EMITTED CSS IS UNCHANGED — gen_canon_tokens.py reads the cssKeyword carrier and still emits `--layout-bento-packing: row dense;` in the same place. Storage moved; output did not."
+      },
+      "caption-space": {
+        "$value": "86px",
+        "$type": "dimension",
+        "$note": "MINTED s217-D3 — the GALLERY role's caption block, ruled 'more generous' (Dave, #217: 'lets be more generous with the caption space'). ⚠ NOT A TASTE PICK — DERIVED, and every term is an existing number measured off the shipped page. TODAY the gallery caption measures 62px: padding-block 8 + 8, a description on `.t-ed-caption` (12/16) clamped to TWO lines = 32, a 2px gap, and a licence line on `.t-cm-legal` (12px, line-height 1) = 12. THE GENEROUS BLOCK buys ONE MORE DESCRIPTION LINE (32 → 48) and steps the padding one rung up the 4px spacing ladder (8 → 12): 12 + 48 + 2 + 12 + 12 = 86px, i.e. +24px / +38.7%. The LINE ALLOWANCE IS DERIVED BACK OUT OF THIS NUMBER at mint time (s200-D1) — (86 − 24 − 2 − 12) ÷ 16 = 3 — never carried as a second token, so the space and the clamp cannot disagree. Applies to role=gallery only; dashboard and brochureware captions are unchanged."
+      },
+      "$bands": {
+        "$description": "Responsive collapse, as CONTAINER queries against the bento's own inline size (the WALL decides, not the window — that is what makes nesting work). ⚠ BUILD-TIME LITERALS BY NECESSITY: a container-query condition cannot read a custom property, so these numbers are compiled into canon.css by gen_canon_bento.py rather than emitted as vars. Dave unified the 800/820 export discrepancy: 'Make them all 820' (s217-D2).",
+        "wide": 1100,
+        "mid": 820,
+        "narrow": 520
+      },
+      "$spanDerivation": {
+        "$description": "BUILD-TIME span derivation — read by generators (canon/gen_canon_bento.py exposes span_for/emphasise), never by CSS, so these are metadata keys and emit no custom property. ⚠ THE ASPECT THRESHOLDS APPLY TO THE PHOTOGRAPHY BENTO ONLY (s217-D2 in as many words): card spans are AUTHORED. Wiring thresholds onto cards would silently re-lay-out every card wall. The emphasis rhythm applies to both — it is POSITION, not preference.",
+        "aspectThreeColumn": 6.0,
+        "aspectTwoColumn": 2.6,
+        "aspectTwoRow": 1.15,
+        "emphasisEvery": 6,
+        "emphasisFrom": 1,
+        "emphasisShape": "2x2"
+      },
+      "$roles": {
+        "$description": "BENTO ROLES — MINTED s217-D3 (#217, Dave, 2026-08-23). A bento instance carries a role, and the ROLE decides where the radius sits, what the spacing is, and whether the squaring pass runs. Read by generators (canon/gen_canon_bento.py exposes role_policy()) AND compiled into canon.css as `[data-bento-role=…]` rules — metadata keys, no custom property of their own. ⚠ THE GRAMMAR IS IDENTICAL IN ALL FOUR THEMES; console is only the theme where the difference is VISIBLE, because its radius token is non-zero. Where a theme's radius is 0 the same rules resolve to 0 and nothing moves. ⚠ ROLE DOES NOT TOUCH THE SPAN DERIVATION: the aspect thresholds above (incl. the portrait two-row mapping) apply to every photography bento whatever its role — squaring and aspect mapping are DIFFERENT MECHANISMS and gallery relaxes only the first.",
+        "$default": "dashboard",
+        "dashboard": {
+          "$description": "Sectioned app, bento-of-bentos. The s217-D2 model: the theme radius sits on each inner bento's CONTAINER and the tiles inside are square, at 1px spacing. ⚠ THE 1px IS INSIDE THE INNER BENTOS. A dashboard bento whose tiles are THEMSELVES bentos is the outer wall and keeps the theme gutter — Dave's own example is tight inner walls inside a generously spaced outer, so a blanket 1px would collapse exactly the structure the role exists to describe.",
+          "radius": "container",
+          "spacing": "tight",
+          "tightSpacing": "1px",
+          "squaring": true
+        },
+        "brochureware": {
+          "$description": "Sectioned marketing page. The tiles THEMSELVES carry the radius and the spacing; the container is square and does not clip.",
+          "radius": "tile",
+          "spacing": "theme",
+          "squaring": true
+        },
+        "gallery": {
+          "$description": "Page-level photography. Radius and spacing as brochureware, but the SQUARING PASS RELAXES — orphans are acceptable, the requirement is only a layout appropriate to portrait and landscape images. Carries the generous caption space above.",
+          "radius": "tile",
+          "spacing": "theme",
+          "squaring": false,
+          "caption": "generous"
+        }
+      }
     }
   },
   "border-radius": {
+    "$description": "Shape tier (ADR-0010 flex slots; Dave 2026-07-21 evening: one radius CANNOT be universal \u2014 radii differ by component role, cards vs buttons; maximum flexibility, the horizon is a THEME GENERATOR where every slot is a dial). 'default' = the theme's base radius; the ROLE tokens alias it, so a theme may set ONE value (default \u2014 everything follows) or dial roles independently (Console: surface differs from control). Components bind ROLE tokens, never 'default' directly and never literals (radius gate). Role taxonomy PROVISIONAL (agent, 2026-07-21): control/surface/indicator \u2014 extend by evidence during Phase 1, not speculation. 50%/999px circle+pill idioms stay literal (deliberately round in every theme).",
     "default": {
-      "$value": 0,
-      "$type": "number"
+      "$value": "0px",
+      "$type": "dimension"
+    },
+    "control": {
+      "$alias": "border-radius/default",
+      "$value": "0px",
+      "$type": "dimension",
+      "$note": "Interactive elements: buttons, inputs, selects, chips/tags, selection boxes."
+    },
+    "surface": {
+      "$alias": "border-radius/default",
+      "$value": "0px",
+      "$type": "dimension",
+      "$note": "Containers: cards, dialogs/modals, menus/dropdown panels, tooltips, tables, notifications."
+    },
+    "indicator": {
+      "$alias": "border-radius/default",
+      "$value": "0px",
+      "$type": "dimension",
+      "$note": "Small status/utility marks: status chips, non-pill badges, progress tracks, kbd hints."
+    },
+    "container": {
+      "$alias": "border-radius/default",
+      "$value": "0px",
+      "$type": "dimension",
+      "$note": "Outer wrappers that HOLD other radiused things: segmented-control tracks, toolbars/segmented groups, panel shells. Distinct from 'surface' because a container's radius is the OUTER of a concentric pair — the inner thumb radius derives as container − padding (s200-D1 clause c). PROMOTED from PROPOSED SLOT to canon by s200-D2 / s200-D3 (#200, Dave, 2026-08-18); console overrides it to 20, and per s200-D3 nothing was written for mono/legacy/supercharge — they follow this base alias like every other role. ⚠ s202-D2 corrected reading (#202, Dave, 2026-08-18): the inner thumb radius no longer derives from the track PADDING — it derives from the TUNED DIAL 6, thumb = max(container − 6, 0). Padding remains a real spacing token; it simply no longer feeds the radius."
+    },
+    "segmented-container": {
+      "$description": "Per-scale OUTER radius of the segmented control's concentric pair. Base = 0 (square themes: mono, legacy, supercharge). Console overrides per scale (6/8/10/12) in tokens/themes/apollo-console.overrides.json — s201-D1.",
+      "$reconstructionNote": "⚠ PROVENANCE: this family's per-scale $note text was RECONSTRUCTED at #202 after an accidental `git checkout` in the same session discarded the uncommitted s202-D1 base mint. The VALUES (all 0px) and the ruling (s202-D1) are unchanged and independently corroborated by knowledge/_derive-radius-proposal.json; the prose is a faithful restatement, not a byte-for-byte restore.",
+      "xs": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `xs`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `xs` is unchanged."
+      },
+      "s": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `s`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `s` is unchanged."
+      },
+      "m": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `m`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `m` is unchanged."
+      },
+      "l": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18) — BASE tier (mono is the base theme; legacy and supercharge inherit it). inherit-console-dimensions: the three square themes take Console's tuned segmented DIMENSIONS verbatim (sizes + paddings), and s201-D5 square radii: container and thumb are 0. Outer radius at scale `l`: 0px, square. Concrete number on disk, no runtime derivation (s200-D1 clause a). Console's own value at `l` is unchanged."
+      }
+    },
+    "segmented-thumb": {
+      "$description": "Per-scale INNER radius of the segmented control's sliding THUMB — the inner half of the concentric pair, and the thing s199-D3 called 'the switch' (s202-D2 corrected reading, #202). Base = 0 for the square themes (mono, legacy, supercharge): max(0 − 6, 0) = 0. Console overrides per scale (0/2/4/6) in tokens/themes/apollo-console.overrides.json — s202-D2.",
+      "$reconstructionNote": "⚠ PROVENANCE: this family's per-scale $note text was RECONSTRUCTED at #202 after an accidental `git checkout` in the same session discarded the uncommitted s202-D1 base mint. The VALUES (all 0px) are unchanged and independently corroborated by knowledge/_derive-radius-proposal.json; the prose is a faithful restatement carrying the s202-D2 corrected derivation, not a byte-for-byte restore.",
+      "xs": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `xs`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "s": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `s`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "m": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `m`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      },
+      "l": {
+        "$value": "0px",
+        "$type": "dimension",
+        "$note": "MINTED s202-D1 (#202, Dave, 2026-08-18), derivation input corrected by s202-D2 (#202, Dave, same day) — BASE tier. Thumb = max(container − 6, 0), where 6 is the TUNED DIAL Dave set on the corner tuner; the square themes' container is 0, so the thumb is 0 at every scale and squares stay square (s201-D5). Scale `l`: 0px. Concrete number on disk, no runtime derivation (s200-D1 clause a)."
+      }
     }
   },
   "border-width": {
     "small": {
-      "$value": 1,
-      "$type": "number"
+      "$value": "1px",
+      "$type": "dimension"
     },
     "medium": {
-      "$value": 2,
-      "$type": "number"
+      "$value": "2px",
+      "$type": "dimension"
     },
     "large": {
-      "$value": 4,
-      "$type": "number"
+      "$value": "4px",
+      "$type": "dimension"
     }
   },
   "focus": {
-    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive — see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
+    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive \u2014 see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
     "ring-width": {
-      "$value": 2,
-      "$type": "number",
+      "$value": "2px",
+      "$type": "dimension",
       "$description": "Outline thickness, px. Equals border-width/medium.",
       "$confidence": "asserted"
     },
     "ring-offset": {
-      "$value": 2,
-      "$type": "number",
-      "$description": "Gap between the element edge and the ring, px — keeps the ring clear of the component fill.",
+      "$value": "2px",
+      "$type": "dimension",
+      "$description": "Gap between the element edge and the ring, px \u2014 keeps the ring clear of the component fill.",
       "$confidence": "asserted"
+    }
+  },
+  "target": {
+    "$description": "Interactive target-size tier \u2014 the Apollo hit-area standard (RULED by Dave 2026-07-24). A control presents a hit area of at least 'min' even when its VISIBLE box is smaller; the invisible ::before target anchors within the control (9-point matrix) so it stays aligned to neighbours. 44 = HSBC default / WCAG 2.5.5 AAA / Apple HIG / IBM Carbon. Dial-down floor is 24 (WCAG 2.5.8 AA + spacing exception); never below. Reference impl: snippets/Segmented-control.reference.html (.seg button::before + .hit-*).",
+    "min": {
+      "$value": "44px",
+      "$type": "dimension",
+      "$description": "Default minimum interactive target size. Controls bind --hit: var(--target-min)."
+    }
+  },
+  "size": {
+    "$description": "Component DIMENSION tier — total outer heights of sized controls, the dimension-first grammar Dave tuned at #200/#201 (xs/s/m/l). Distinct from `scale` (spine metadata) and from `padding` (tokens/spacing.json): a size is the OUTER box a control presents.",
+    "segmented-control": {
+      "$description": "Total outer height of the segmented control, per scale. BASE tier: mono is the base theme, legacy and supercharge inherit it; console overrides with the identical tuned values in tokens/themes/apollo-console.overrides.json. s202-D1 — 'the square themes inherit console's tuned segmented dimensions, and the mint is base-tier'.",
+      "$reconstructionNote": "⚠ PROVENANCE — RESTORED #219 (2026-08-25), lane 1. s202-D1 ruled these sizes minted at BASE alongside the radii (layout.json) and paddings (spacing.json), and the sibling families here carry a $reconstructionNote recording that an accidental `git checkout` at #202 discarded the uncommitted base mint. The radii and paddings were reconstructed at #202; THE SIZES WERE NOT, and the gap survived unseen because nothing consumed them (the canon .cn-segmented-control snippet still used its legacy 28/32/36 heights). `canon/gen_theme_cascade.py::_store_for` already routes `size/` to this file with a comment asserting this very mint. VALUES are Dave's own ruled tuner-v3 numbers (s201-D1: xs 24 · s 36 · m 44 · l 48) and are byte-identical to console's own overrides; the prose is a faithful restatement, not a byte-for-byte restore. NO NEW RULING — enactment of s202-D1.",
+      "xs": {
+        "$value": "28px",
+        "$type": "dimension",
+        "$note": "RE-MINTED 28px by Dave's ruling #227 (2026-08-30) — conductor inscribes as s227-D4. — “xs is going to be 28 height”, across the board (all four themes; console’s override carries the identical number). Was 24px (MINTED s201-D1 console / s202-D1 base tier, RESTORED #219). Total outer height at scale `xs`. Concrete number on disk, no runtime derivation (s200-D1 clause a). Pairs with padding/segmented-control/xs = 2px and border-radius/segmented-container/xs. Still below the 44 hit-zone floor, so the control presents an invisible 44px target (s201-D2)."
+      },
+      "s": {
+        "$value": "36px",
+        "$type": "dimension",
+        "$note": "MINTED s200-D4 (console) / s202-D1 (base tier), RESTORED #219. Total outer height at scale `s` — the tuner-v3 readout 36/2/8 Dave minted at #200. Below the 44 hit-zone floor, so the control presents an invisible 44px target (s201-D2)."
+      },
+      "m": {
+        "$value": "44px",
+        "$type": "dimension",
+        "$note": "MINTED s201-D1 (console) / s202-D1 (base tier), RESTORED #219. Total outer height at scale `m`. Sits exactly ON the 44 hit-zone floor — visual height and hit target coincide (s201-D3)."
+      },
+      "l": {
+        "$value": "48px",
+        "$type": "dimension",
+        "$note": "MINTED s201-D1 (console) / s202-D1 (base tier), RESTORED #219. Total outer height at scale `l`. ABOVE the 44 floor, so the hit box is NATURAL at 48 — s201-D3, Dave: 'natural for anything bigger than 44'."
+      },
+      "min-hit-area": {
+        "$value": "44px",
+        "$type": "dimension",
+        "$note": "MINTED s200-D4 (console) / s202-D1 carried to base, RESTORED #219. The segmented hit-zone FLOOR: the target is max(44, visual height) — s201-D2 (hit zone, not visual height) + s201-D3 (natural above the floor). ⚠ DUPLICATE OF `target/min` (44px), which is what the reference implementation actually binds via --hit; this token is the segmented-specific name the tuner-v3 export used. Reconciling the two names is a ruling-shaped question, NOT settled here. Enforcement remains ABSENT — no gate reads the 44 (declared #200 pitfall c, unchanged by s201-D2/D3)."
+      }
     }
   }
 }

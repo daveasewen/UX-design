@@ -3,6 +3,7 @@
   "category": "molecule",
   "$platform": "browser",
   "purpose": "Provides contextual help relating to an element or area of a page — a small floating panel with a directional tip (pointer) revealed on hover/focus of a trigger (often a help icon).",
+  "provides": "overlay",
   "props": [
     {
       "name": "tip",
@@ -12,7 +13,8 @@
         "bottom"
       ],
       "default": "top",
-      "$note": "Which edge the pointer sits on (tooltip above vs below the trigger)."
+      "$note": "Which edge the pointer sits on (tooltip above vs below the trigger).",
+      "$status": "s162-D1 (Dave, 2026-08-12) class C11 -- no-bind:structural-param. Runtime preference: the snippet is space-aware and flips above/below to fit (same mechanism as the edge-shift for alignment); Dave: 'this a behavior that will be constant across all themes, i don't think this needs tokenizing'. Closes the s142-D1 wave at 114/114. The #142 verdicts file row stays 'unruled' as that session's historical record."
     },
     {
       "name": "tipAlignment",
@@ -23,8 +25,7 @@
         "right"
       ],
       "default": "centre",
-      "$note": "Horizontal position of the pointer along that edge."
-    }
+      "$note": "Horizontal position of the pointer along that edge.", "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "tokens": {
     "surface": "background/default (#ffffff)",
@@ -84,5 +85,49 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:422:11754",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Tooltip.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:field-label-help-icon",
+        "$note": "Field label (help icon)"
+      },
+      {
+        "ref": "context:page-content",
+        "$note": "Page content"
+      },
+      {
+        "ref": "context:toolbar",
+        "$note": "Toolbar"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:help-icon-tooltip"
+      },
+      {
+        "ref": "pattern:contextual-hint-on-hover-focus"
+      }
+    ],
+    "triggeredBy": [
+      {
+        "ref": null,
+        "$note": "Help/info icon"
+      },
+      {
+        "ref": null,
+        "$note": "focusable element"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:overlay"
+      }
+    ]
   }
 }

@@ -2,6 +2,17 @@
   "name": "Headers",
   "category": "molecule",
   "purpose": "App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a large display header with optional image and a processing state).",
+  "provides": "page-title",
+  "answers": "what-is-this",
+  "shape": "no-data × title-and-optional-action",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 50,
+  "when": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
   "$family": "Covers the Headers family (app only); each type is a separate Figma component.",
   "$platform": "app only",
   "props": [
@@ -13,8 +24,7 @@
         "section-titles",
         "display"
       ],
-      "default": "content"
-    },
+      "default": "content", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "action",
       "type": "enum",
@@ -54,8 +64,7 @@
         "processing"
       ],
       "default": "default",
-      "$note": "Headers Display."
-    },
+      "$note": "Headers Display.", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "image",
       "type": "boolean",
@@ -64,8 +73,7 @@
         "true"
       ],
       "default": "false",
-      "$note": "Headers Display — with/without an image."
-    }
+      "$note": "Headers Display — with/without an image.", "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "variants": [
     {
@@ -165,5 +173,63 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:118794",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Headers.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:app-screen",
+        "$note": "App screen"
+      },
+      {
+        "ref": "context:modal-sheet",
+        "$note": "Modal/Sheet"
+      },
+      {
+        "ref": "context:section",
+        "$note": "Section"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:screen-title-with-back-close"
+      },
+      {
+        "ref": "pattern:section-heading-with-count"
+      },
+      {
+        "ref": "pattern:display-hero-header-with-image"
+      }
+    ],
+    "family": [
+      {
+        "ref": "component:headers",
+        "$note": "Covers the Headers family (app only); each type is a separate Figma component."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:page-title"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:what-is-this"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:no-data × title-and-optional-action"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:page-header-lockup"
+      }
+    ]
   }
 }

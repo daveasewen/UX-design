@@ -1,0 +1,3638 @@
+{
+ "$tool": "_compose_slice.py v1.1 — the reader: step 1 of generate-from-canon (s277-D10/s277-D13/s278-D1/s277-D9/s277-D11)",
+ "$contract": "SEED (s278-D1): composed once; the session works from it. Fields: components, governs, obeys, mustNot, tokens, assets, unresolved, sized. Every field is content or null + $nulls[field]. ASK (--ask) is the on-demand door and reads live.",
+ "task": "a payments dashboard screen with a stat card row, a filter bar and a data table",
+ "generated": "2026-09-16",
+ "query": {
+  "terms": [
+   "payment",
+   "dashboard",
+   "stat",
+   "card",
+   "row",
+   "filter",
+   "bar",
+   "data",
+   "table"
+  ],
+  "roles": [
+   {
+    "role": "headline-metric",
+    "why": "ROLE_LEXICON[\"headline-metric\"] <- \"stat\"",
+    "hits": [
+     "stat",
+     "stat card"
+    ],
+    "definition": "One number the reader takes away, optionally with its movement. The tile a dashboard's top row is made of.",
+    "providers": [
+     "stat-card",
+     "kpi-tile",
+     "Chart-bullet",
+     "runway-bar"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "record-list",
+    "why": "ROLE_LEXICON[\"record-list\"] <- \"table\"",
+    "hits": [
+     "table",
+     "data table"
+    ],
+    "definition": "Many records of one kind, one per row. Shape splits it: columns, cards, ledger lines, time-ordered.",
+    "providers": [
+     "table",
+     "data-grid",
+     "list-items",
+     "transaction-row",
+     "document-row",
+     "standing-order-mandate-row",
+     "timeline",
+     "tree"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "page-frame",
+    "why": "ROLE_LEXICON[\"page-frame\"] <- \"screen\"",
+    "hits": [
+     "screen",
+     "dashboard"
+    ],
+    "definition": "The shell around everything. Seven providers, one per frame; only one can win, so not-with is implicit among co-providers (Debian: one-at-a-time facility).",
+    "providers": [
+     "app-shell-top-nav",
+     "app-shell-side-nav",
+     "app-shell-nav-rail",
+     "app-shell-multi-column",
+     "app-shell-split",
+     "app-shell-focused",
+     "app-shell-doormat"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "arrangement",
+    "why": "ROLE_LEXICON[\"arrangement\"] <- \"card\"",
+    "hits": [
+     "card",
+     "row"
+    ],
+    "definition": "Containers and grids that hold other providers. The bento band itself is NOT here: its reflow / compress alternatives are owned by the band (s251-D14, rule 6b) and are not componen",
+    "providers": [
+     "layout-utilities",
+     "cards",
+     "stats-band-lockup",
+     "feature-grid-lockup",
+     "splitter",
+     "accordion",
+     "carousel",
+     "divider"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "input",
+    "why": "ROLE_LEXICON[\"input\"] <- \"filter\"",
+    "hits": [
+     "filter",
+     "filter bar"
+    ],
+    "definition": "The person gives a value. Provider chosen by value type; this role is large and will want sub-roles when forms get authored — not now.",
+    "providers": [
+     "input-fields",
+     "textarea",
+     "amount-input",
+     "search-field",
+     "dropdown",
+     "combobox",
+     "multi-select",
+     "cascader",
+     "selection-controls",
+     "segmented-control",
+     "date-picker",
+     "date-range-picker",
+     "time-picker",
+     "calendar",
+     "slider",
+     "range-slider",
+     "rating",
+     "tags-input",
+     "secure-entry",
+     "file-upload",
+     "transfer-list",
+     "reorder",
+     "view-options",
+     "form-layout",
+     "stepper",
+     "account-selector",
+     "amount-display"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "wayfinding",
+    "hits": [
+     "dashboard"
+    ],
+    "inferred": true,
+    "why": "COMPOSITE_LEXICON[\"dashboard\"] -> wayfinding (INFERRED — the task did not name this role)",
+    "definition": "Navigation that is not the frame. Global, local, in-page and mobile are the when values.",
+    "providers": [
+     "navigations",
+     "sidebar-nav",
+     "tabs",
+     "breadcrumbs",
+     "anchor-nav",
+     "tab-bar",
+     "pagination",
+     "back-to-top"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "chart-panel",
+    "hits": [
+     "dashboard"
+    ],
+    "inferred": true,
+    "why": "COMPOSITE_LEXICON[\"dashboard\"] -> chart-panel (INFERRED — the task did not name this role)",
+    "definition": "A charted reading in a panel. ONE role for all fourteen charts: the five intent words (comparison · change-over-time · distribution · relationship · composition) already live on th",
+    "providers": [
+     "chart-bar",
+     "chart-line",
+     "chart-donut",
+     "Chart-histogram",
+     "Chart-scatter",
+     "chart-stacked-area",
+     "Chart-boxplot",
+     "chart-combo",
+     "Chart-butterfly-h",
+     "Chart-butterfly-v",
+     "chart-pie",
+     "Chart-candlestick"
+    ],
+    "blocking": false
+   },
+   {
+    "role": "page-title",
+    "hits": [
+     "dashboard"
+    ],
+    "inferred": true,
+    "why": "COMPOSITE_LEXICON[\"dashboard\"] -> page-title (INFERRED — the task did not name this role)",
+    "definition": "The band that names the page or a section of it. Providers differ by level, so when is the level.",
+    "providers": [
+     "page-header-lockup",
+     "headers",
+     "section-heading-lockup",
+     "eyebrow"
+    ],
+    "blocking": false
+   }
+  ],
+  "intents": [],
+  "shape": null,
+  "components": [],
+  "budget": null
+ },
+ "components": [
+  {
+   "id": "component:stat-card",
+   "name": "Stat card",
+   "category": "molecule",
+   "provides": "headline-metric",
+   "roles": [
+    "headline-metric"
+   ],
+   "answers": "one-number",
+   "shape": "one-measure × value-and-delta",
+   "when": "shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \"a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)\") exactly when no series exists, and beats Chart-bullet (when: \"a target or performance band is the point, not the ",
+   "purpose": "The dashboard tile for one headline number: label · value · delta · period on a card surface. Promotes the big-number pattern the fitness-test journeys improvised (sme-payments .flow blocks) into canon, composing the Amount-display money-fo",
+   "meta": "knowledge/components/stat-card.meta.json",
+   "snippet": "snippet:Stat-card.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:summary"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 18.5,
+   "alternate": null,
+   "why": "named in the task; roles.json: provider #1 of headline-metric; meta.provides = headline-metric; meta text matches: payment, dashboard, stat, card",
+   "blocking": false
+  },
+  {
+   "id": "component:table",
+   "name": "Table",
+   "category": "organism",
+   "provides": "record-list",
+   "roles": [
+    "record-list"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "Data tables let users scan, analyse and compare data. Header / sub-header / data cells arranged with a first-row header, a first-column header, or both; cells can be left- or right-aligned (right for numeric).",
+   "meta": "knowledge/components/table.meta.json",
+   "snippet": "snippet:Table.reference.html",
+   "consumes": [],
+   "hasPart": [
+    "component:table",
+    "component:table"
+   ],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 18.0,
+   "alternate": null,
+   "why": "named in the task; roles.json: provider #1 of record-list; meta.provides = record-list; meta text matches: dashboard, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:list-items",
+   "name": "List items",
+   "category": "molecule",
+   "provides": "record-list",
+   "roles": [
+    "record-list"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) — surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions ar",
+   "purpose": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive row",
+   "meta": "knowledge/components/list-items.meta.json",
+   "snippet": "snippet:List-items.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:summary"
+   ],
+   "family": [
+    "component:list-items"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 10.6,
+   "alternate": "table",
+   "why": "roles.json: provider #3 of record-list; meta.provides = record-list; meta text matches: stat, card, filter, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:layout-utilities",
+   "name": "Grid / stack utilities",
+   "category": "atom",
+   "provides": "arrangement",
+   "roles": [
+    "arrangement"
+   ],
+   "answers": "where-does-it-go",
+   "shape": "no-data × arbitrary-blocks",
+   "when": "content = arbitrary-blocks AND surface = none — the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3–6 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider ",
+   "purpose": "Seven content-agnostic layout primitives — container, stack, row, grid, twelve-column, split and measure — that arrange arbitrary blocks in space and then get out of the way. They paint nothing, size no type, and announce nothing. The class",
+   "meta": "knowledge/components/layout-utilities.meta.json",
+   "snippet": "snippet:Layout-utilities.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 10.5,
+   "alternate": null,
+   "why": "roles.json: provider #1 of arrangement; meta.provides = arrangement; meta text matches: dashboard, stat, card, data",
+   "blocking": false
+  },
+  {
+   "id": "component:Chart-bullet",
+   "name": "Bullet chart",
+   "category": "organism",
+   "provides": "headline-metric",
+   "roles": [
+    "headline-metric"
+   ],
+   "answers": "comparison",
+   "shape": "rows × measure-target-bands",
+   "when": "answers=comparison AND the reading is one measure against a target plus qualitative performance bands AND span.cols 4–6 — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the BENCHMARK, not the delta and not a series, is the point; yields to b",
+   "purpose": "KPI performance at a glance — a measure bar against a comparative target marker and qualitative performance ranges. NET-NEW, chart-expansion programme WAVE 2 lane ② (statistical/gauge), 2026-08-05. Built to the Chart-scatter Layer-1 pattern",
+   "meta": "knowledge/components/Chart-bullet.meta.json",
+   "snippet": "snippet:Chart-bullet.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 10.1,
+   "alternate": "stat-card",
+   "why": "roles.json: provider #3 of headline-metric; meta.provides = headline-metric; meta text matches: dashboard, stat, card, table",
+   "blocking": false
+  },
+  {
+   "id": "component:section-heading-lockup",
+   "name": "Section-heading-lockup",
+   "category": "organism",
+   "provides": "page-title",
+   "roles": [
+    "page-title"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The repeatable in-page heading that sits above one section of content (a board, a table, a panel) — as distinct from Page-header-lockup's page-level <h1>. Composed ENTIRELY from Layout-utilities (l-row/l-stack), Eyebrow, Cards' arrow-link a",
+   "meta": "knowledge/components/section-heading-lockup.meta.json",
+   "snippet": "snippet:Section-heading-lockup.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 10.1,
+   "alternate": null,
+   "why": "roles.json: provider #3 of page-title; meta.provides = page-title; meta text matches: dashboard, card, filter, table",
+   "blocking": false
+  },
+  {
+   "id": "component:runway-bar",
+   "name": "Coverage / runway bar",
+   "category": "molecule",
+   "provides": "headline-metric",
+   "roles": [
+    "headline-metric"
+   ],
+   "answers": "one-number",
+   "shape": "one-measure × committed-vs-balance-split",
+   "when": "answers = one-number AND shape = one-measure × committed-vs-balance-split AND verdict != none — beats stat-card (60, \"default — label · value · delta · period, no series\") and kpi-tile (50, \"a series exists to show\") when the reading is \"money vs what is already scheduled\" and the takeaway is a VERDICT WITH A DATE rath",
+   "purpose": "A READOUT that answers one question: does the money cover what is already scheduled, and until when? It states a verdict with a date, shows the arithmetic that produces it (balance − committed = buffer), and draws the split on a bar. ⚠ THE ",
+   "meta": "knowledge/components/runway-bar.meta.json",
+   "snippet": "snippet:Runway-bar.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.9,
+   "alternate": "stat-card",
+   "why": "roles.json: provider #4 of headline-metric; meta.provides = headline-metric; meta text matches: payment, dashboard, stat, card",
+   "blocking": false
+  },
+  {
+   "id": "component:cards",
+   "name": "Cards",
+   "category": "molecule",
+   "provides": "arrangement",
+   "roles": [
+    "arrangement"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A family of container components that group related content (and optionally an action) into a bordered surface. Five types covering interactive and static use, with and without imagery.",
+   "meta": "knowledge/components/cards.meta.json",
+   "snippet": "snippet:Cards.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:carousel"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.8,
+   "alternate": "layout-utilities",
+   "why": "roles.json: provider #2 of arrangement; meta.provides = arrangement; meta text matches: dashboard, stat, card",
+   "blocking": false
+  },
+  {
+   "id": "component:data-grid",
+   "name": "Data grid",
+   "category": "organism",
+   "provides": "record-list",
+   "roles": [
+    "record-list"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sort",
+   "meta": "knowledge/components/data-grid.meta.json",
+   "snippet": "snippet:Data-grid.reference.html",
+   "consumes": [],
+   "hasPart": [
+    "component:button",
+    "component:selection-controls",
+    "component:search-field",
+    "component:button",
+    "component:pagination"
+   ],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [
+    "selection-controls (the checkbox — CONSUMED byte-identically, not restated; #261 G3)",
+    "filter-toolbar-bar",
+    "pagination",
+    "search-field",
+    "tags",
+    "skeleton-loader"
+   ],
+   "score": 9.8,
+   "alternate": "table",
+   "why": "roles.json: provider #2 of record-list; meta.provides = record-list; meta text matches: filter, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:headers",
+   "name": "Headers",
+   "category": "molecule",
+   "provides": "page-title",
+   "roles": [
+    "page-title"
+   ],
+   "answers": "what-is-this",
+   "shape": "no-data × title-and-optional-action",
+   "when": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type ",
+   "purpose": "App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a lar",
+   "meta": "knowledge/components/headers.meta.json",
+   "snippet": "snippet:Headers.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [
+    "component:headers"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 9.8,
+   "alternate": "section-heading-lockup",
+   "why": "roles.json: provider #2 of page-title; meta.provides = page-title; meta text matches: stat, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:stats-band-lockup",
+   "name": "Stats-band-lockup",
+   "category": "organism",
+   "provides": "arrangement",
+   "roles": [
+    "arrangement"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A labelled, responsive row of stat tiles — the section-heading + auto-fill board shape Template-dashboard.reference.html already hand-rolls for its own KPI section, drawn here as its own reusable lock-up. Composed ENTIRELY from Layout-utili",
+   "meta": "knowledge/components/stats-band-lockup.meta.json",
+   "snippet": "snippet:Stats-band-lockup.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.6,
+   "alternate": "layout-utilities",
+   "why": "roles.json: provider #3 of arrangement; meta.provides = arrangement; meta text matches: dashboard, stat, card",
+   "blocking": false
+  },
+  {
+   "id": "component:app-shell-top-nav",
+   "name": "App shell — top / stacked nav",
+   "category": "template",
+   "provides": "page-frame",
+   "roles": [
+    "page-frame"
+   ],
+   "answers": "what-holds-the-page",
+   "shape": "no-data × page-regions",
+   "when": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to",
+   "purpose": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a thir",
+   "meta": "knowledge/components/app-shell-top-nav.meta.json",
+   "snippet": "snippet:App-shell-top-nav.reference.html",
+   "consumes": [
+    "component:navigations",
+    "component:breadcrumbs",
+    "component:footer",
+    "component:skeleton-loader",
+    "component:drawer"
+   ],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.5,
+   "alternate": null,
+   "why": "roles.json: provider #1 of page-frame; meta.provides = page-frame; meta text matches: dashboard, data",
+   "blocking": false
+  },
+  {
+   "id": "component:input-fields",
+   "name": "Input fields",
+   "category": "molecule",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": "entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed \"the answer may span multiple lines\") whenever the answer is a name, a reference or a phone number; yields to amount-input w",
+   "purpose": "Text-entry form controls and their label. Family: single-line input (standard + large), multi-line input, date-picker input (with calendar day cells, nav arrows, and a modal/dropdown calendar), and the input label. Full state set: default, ",
+   "meta": "knowledge/components/input-fields.meta.json",
+   "snippet": "snippet:Input-fields.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [
+    "component:input-fields"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 9.5,
+   "alternate": null,
+   "why": "roles.json: provider #1 of input; meta.provides = input; meta text matches: stat, filter",
+   "blocking": false
+  },
+  {
+   "id": "component:textarea",
+   "name": "Textarea",
+   "category": "atom",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": "entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists — beats input-fields (proposed \"the answer fits one line\") the moment a sentence is expected rather than a value — notes to approvers, a reason for payment, a secur",
+   "purpose": "Multi-line text entry — the Input-fields boxed state channel stretched vertically. Vertical-only resize, live counter that warns by weight (never colour-alone) at 90% of the limit with polite announcements. Itinerary row 20 (P1); built Phas",
+   "meta": "knowledge/components/textarea.meta.json",
+   "snippet": "snippet:Textarea.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:form-layout"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.3,
+   "alternate": "input-fields",
+   "why": "roles.json: provider #2 of input; meta.provides = input; meta text matches: payment, stat",
+   "blocking": false
+  },
+  {
+   "id": "component:amount-display",
+   "name": "Amount display",
+   "category": "atom",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The money-format PRIMITIVE: renders a currency value consistently — currency symbol/code before the amount with no space (copy-025), tabular lining figures so columns of money align, an unambiguous U+2212 minus for negatives, and a redacted",
+   "meta": "knowledge/components/amount-display.meta.json",
+   "snippet": "snippet:Amount-display.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:account-card",
+    "component:table",
+    "component:summary",
+    "component:list-items"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 9.0,
+   "alternate": "input-fields",
+   "why": "roles.json: provider #27 of input; meta.provides = input; meta text matches: stat, card, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:eyebrow",
+   "name": "Eyebrow",
+   "category": "atom",
+   "provides": "page-title",
+   "roles": [
+    "page-title"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A small kicker label placed above a section heading to categorise it (e.g. 'Payments', 'Recent activity'). Sentence case (house type rule). Sets context without competing with the heading. Surfaced as a missing pattern by the journey gap re",
+   "meta": "knowledge/components/eyebrow.meta.json",
+   "snippet": "snippet:Eyebrow.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 8.9,
+   "alternate": "section-heading-lockup",
+   "why": "roles.json: provider #4 of page-title; meta.provides = page-title; meta text matches: payment, card",
+   "blocking": false
+  },
+  {
+   "id": "component:app-shell-nav-rail",
+   "name": "App shell — nav rail",
+   "category": "template",
+   "provides": "page-frame",
+   "roles": [
+    "page-frame"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The page frame for a dense application that cannot spare 248px to a sidebar. A permanent 64px icon rail carries the navigation, and a flyout carries the names the icons cannot. It is not App-shell-side-nav's collapsed state — there is no ex",
+   "meta": "knowledge/components/app-shell-nav-rail.meta.json",
+   "snippet": "snippet:App-shell-nav-rail.reference.html",
+   "consumes": [
+    "component:sidebar-nav",
+    "component:app-shell-top-nav",
+    "component:popover",
+    "component:headers",
+    "component:app-shell-side-nav",
+    "component:skeleton-loader",
+    "component:footer"
+   ],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 8.6,
+   "alternate": "app-shell-top-nav",
+   "why": "roles.json: provider #3 of page-frame; meta.provides = page-frame; meta text matches: stat",
+   "blocking": false
+  },
+  {
+   "id": "component:tabs",
+   "name": "Tabs",
+   "category": "molecule",
+   "provides": "wayfinding",
+   "roles": [
+    "wayfinding"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "Let users switch between peer views/panels within the same context. A horizontal tab bar with a selected indicator, a bottom track, and an overflow dropdown when tabs exceed the available width.",
+   "meta": "knowledge/components/tabs.meta.json",
+   "snippet": "snippet:Tabs.reference.html",
+   "consumes": [],
+   "hasPart": [
+    "component:tabs",
+    "component:dropdown",
+    "component:dropdown"
+   ],
+   "containedBy": [
+    "component:cards"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 8.6,
+   "alternate": null,
+   "why": "roles.json: provider #3 of wayfinding; meta.provides = wayfinding; meta text matches: card",
+   "blocking": false
+  },
+  {
+   "id": "component:navigations",
+   "name": "Navigations",
+   "category": "organism",
+   "provides": "wayfinding",
+   "roles": [
+    "wayfinding"
+   ],
+   "answers": "where-can-i-go",
+   "shape": "destination-set × links",
+   "when": "shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (",
+   "purpose": "The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around t",
+   "meta": "knowledge/components/navigations.meta.json",
+   "snippet": "snippet:Navigations.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [
+    "component:navigations"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 8.5,
+   "alternate": "tabs",
+   "why": "roles.json: provider #1 of wayfinding; meta.provides = wayfinding",
+   "blocking": false
+  },
+  {
+   "id": "component:tab-bar",
+   "name": "Tab-bar",
+   "category": "molecule",
+   "provides": "wayfinding",
+   "roles": [
+    "wayfinding"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "App-level BOTTOM navigation: 3–5 equal-width destinations, each an icon + label. The current destination uses the filled (-active) glyph + text/default label and aria-current='page'; the rest use the line glyph + text/secondary. NOT the in-",
+   "meta": "knowledge/components/tab-bar.meta.json",
+   "snippet": "snippet:Tab-bar.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 8.5,
+   "alternate": "tabs",
+   "why": "roles.json: provider #6 of wayfinding; meta.provides = wayfinding; meta text matches: payment, card",
+   "blocking": false
+  },
+  {
+   "id": "component:app-shell-multi-column",
+   "name": "App shell — multi-column",
+   "category": "template",
+   "provides": "page-frame",
+   "roles": [
+    "page-frame"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The list-and-detail frame: a navigation rail, a master list of records, and a detail pane showing the one record the list is currently pointing at — collapsing to a single pane on a phone, where choosing a row replaces the list with the det",
+   "meta": "knowledge/components/app-shell-multi-column.meta.json",
+   "snippet": "snippet:App-shell-multi-column.reference.html",
+   "consumes": [
+    "component:sidebar-nav",
+    "component:navigations",
+    "component:headers",
+    "component:skeleton-loader",
+    "component:footer"
+   ],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 8.4,
+   "alternate": "app-shell-top-nav",
+   "why": "roles.json: provider #4 of page-frame; meta.provides = page-frame; meta text matches: stat",
+   "blocking": false
+  },
+  {
+   "id": "component:filter-toolbar-bar",
+   "name": "Filter-toolbar-bar",
+   "category": "organism",
+   "provides": null,
+   "roles": [],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The control bar that sits above a table, list, grid or chart and DRIVES it: a search field, an add-filter menu, a date-range trigger, a view switch, a results count, a removable applied-filter chip row with a +N overflow, a clear-all, and r",
+   "meta": "knowledge/components/filter-toolbar-bar.meta.json",
+   "snippet": "snippet:Filter-toolbar-bar.reference.html",
+   "consumes": [],
+   "hasPart": [
+    "component:search-field",
+    "component:dropdown",
+    "component:segmented-control",
+    "component:tags",
+    "component:links"
+   ],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 6.5,
+   "alternate": null,
+   "why": "slug words in the task: filter+bar; meta text matches: dashboard, stat, filter, data, table",
+   "blocking": false
+  },
+  {
+   "id": "component:breadcrumbs",
+   "name": "Breadcrumbs",
+   "category": "molecule",
+   "provides": "wayfinding",
+   "roles": [
+    "wayfinding"
+   ],
+   "answers": "where-am-i",
+   "shape": "ancestor-path × links",
+   "when": "shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global — masthead / main-nav family\") for global movement and to tabs (when: \"local — peer views in one context\") for peer vi",
+   "purpose": "Secondary navigation showing the user's location within the site hierarchy and letting them step back to ancestor pages. A row of breadcrumb levels (links) separated by a divider, ending in the current page (a non-link).",
+   "meta": "knowledge/components/breadcrumbs.meta.json",
+   "snippet": "snippet:Breadcrumbs.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:app-shell-top-nav (edges.consumes)",
+   "blocking": false,
+   "required_by": "component:app-shell-top-nav"
+  },
+  {
+   "id": "component:footer",
+   "name": "Footer",
+   "category": "organism",
+   "provides": null,
+   "roles": [],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "The APP FOOTER: the contentinfo landmark at the bottom of an authenticated application's content column, carrying what an operator needs at the one moment they look down — WHAT AM I LOOKING AT, IS IT REAL, AND HOW OLD IS IT? Product and bui",
+   "meta": "knowledge/components/footer.meta.json",
+   "snippet": "snippet:Footer.reference.html",
+   "consumes": [
+    "component:links",
+    "component:status-indicator"
+   ],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:app-shell-top-nav (edges.consumes)",
+   "blocking": false,
+   "required_by": "component:app-shell-top-nav"
+  },
+  {
+   "id": "component:skeleton-loader",
+   "name": "Skeleton loader",
+   "category": "molecule",
+   "provides": "feedback",
+   "roles": [
+    "feedback"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A perceived-performance placeholder: grey bones that mirror the shape of incoming content so layout never jumps and waiting feels shorter. Distinct from Loading-indicator (use that when there is no known layout to mirror) and from the queue",
+   "meta": "knowledge/components/skeleton-loader.meta.json",
+   "snippet": "snippet:Skeleton-loader.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:cards",
+    "component:list-items",
+    "component:table",
+    "component:summary"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:app-shell-top-nav (edges.consumes)",
+   "blocking": false,
+   "required_by": "component:app-shell-top-nav"
+  },
+  {
+   "id": "component:drawer",
+   "name": "Drawer",
+   "category": "organism",
+   "provides": "overlay",
+   "roles": [
+    "overlay"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A page-edge side sheet for focused sub-tasks that keep page context visible: detail inspection, filters, secondary forms. Shares the modal dialog's mechanics (scrim, focus trap, inert background, Esc/close/return-focus — mined from Modals) ",
+   "meta": "knowledge/components/drawer.meta.json",
+   "snippet": "snippet:Drawer.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:app-shell-top-nav (edges.consumes)",
+   "blocking": false,
+   "required_by": "component:app-shell-top-nav"
+  },
+  {
+   "id": "component:dropdown",
+   "name": "Dropdown",
+   "category": "molecule",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "Lets a user choose one or more options from a list. Comes in a non-native (custom, fully styled) family and a native (browser select) family. The trigger opens a list; items can be single-select, filterable single-select, or multi-select.",
+   "meta": "knowledge/components/dropdown.meta.json",
+   "snippet": "snippet:Dropdown.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:tabs (edges.hasPart)",
+   "blocking": false,
+   "required_by": "component:tabs"
+  },
+  {
+   "id": "component:search-field",
+   "name": "Search field",
+   "category": "molecule",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A text input specialised for search, with a search icon, optional label/help text, and an optional predictive-search (autocomplete) dropdown that suggests matching results as the user types.",
+   "meta": "knowledge/components/search-field.meta.json",
+   "snippet": "snippet:Search-field.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:filter-toolbar-bar (edges.hasPart)",
+   "blocking": false,
+   "required_by": "component:filter-toolbar-bar"
+  },
+  {
+   "id": "component:segmented-control",
+   "name": "Segmented control",
+   "category": "atom",
+   "provides": "input",
+   "roles": [
+    "input"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "A single-select control: exactly one segment active at a time. One framing border wraps the track; the selected fill is a sliding indicator that animates between segments. Use for switching a presentation, scale, or range in place (not for ",
+   "meta": "knowledge/components/segmented-control.meta.json",
+   "snippet": "snippet:Segmented-control.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [],
+   "family": [
+    "component:view-options"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:filter-toolbar-bar (edges.hasPart)",
+   "blocking": false,
+   "required_by": "component:filter-toolbar-bar"
+  },
+  {
+   "id": "component:tags",
+   "name": "Tags",
+   "category": "atom",
+   "provides": null,
+   "roles": [],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "Surface keyword descriptors that tell the user about an item's content composition and its relationship to a broader content structure. Static Tag (label) or interactive Tag link, with or without a background fill.",
+   "meta": "knowledge/components/tags.meta.json",
+   "snippet": "snippet:Tags.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:cards"
+   ],
+   "family": [],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:filter-toolbar-bar (edges.hasPart)",
+   "blocking": false,
+   "required_by": "component:filter-toolbar-bar"
+  },
+  {
+   "id": "component:links",
+   "name": "Links",
+   "category": "molecule",
+   "provides": "action",
+   "roles": [
+    "action"
+   ],
+   "answers": null,
+   "shape": null,
+   "when": null,
+   "purpose": "Text links (browser) — let users navigate between pages/content items or instigate actions (e.g. 'download pdf', 'open in a new window'). Family of four: Arrow link (chevron after text), Back link (chevron before text), Icon link (leading i",
+   "meta": "knowledge/components/links.meta.json",
+   "snippet": "snippet:Links.reference.html",
+   "consumes": [],
+   "hasPart": [],
+   "containedBy": [
+    "component:footer",
+    "component:cards"
+   ],
+   "family": [
+    "component:links"
+   ],
+   "not-with": [],
+   "with": [],
+   "score": 0.0,
+   "alternate": null,
+   "why": "required by component:filter-toolbar-bar (edges.hasPart)",
+   "blocking": false,
+   "required_by": "component:filter-toolbar-bar"
+  }
+ ],
+ "governs": [
+  {
+   "id": "s276-D4",
+   "ref": "ruling:s276-D4",
+   "ruled": "THE SIX AUTHORED METAS LAND AS PROPOSED — tags · tags-input · notifications · links · button · icon-button — enacting P-274-3 and s275-D5. Six, not the brief's four: the chips half of the tags spec ge",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/links.meta.json; _rulings.json governs[] -> knowledge/components/tags.meta.json",
+   "over": [
+    "component:links",
+    "component:tags"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s276-D3",
+   "ref": "ruling:s276-D3",
+   "ruled": "THE AUTHORED CITATION IS ONE NEW EDGE TYPE INSIDE THE EXISTING `edges` OBJECT: `edges.obeys`, a single prefix-discriminated list of `{ref, $why}` where ref is a `rule:<id>` (landed #274, s274-D8) or a",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/links.meta.json; _rulings.json governs[] -> knowledge/components/tags.meta.json",
+   "over": [
+    "component:links",
+    "component:tags"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s274-D6",
+   "ref": "ruling:s274-D6",
+   "ruled": "LIST-ITEMS IS THE DEFAULT PROVIDER OF `record-list` (\"show me the items\"); TABLE takes the comparison test — it wins only when a field must be read DOWN a column across records. roles.json's `when` fo",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/table.meta.json",
+   "over": [
+    "component:table"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D76",
+   "ref": "ruling:s272-D76",
+   "ruled": "filter-toolbar-bar — the proposed `when` gate is: a record-list or chart-panel is present AND >= 2 of {search, filter, date-range, view-switch, result-count, applied-filter chips, export} are needed A",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/filter-toolbar-bar.meta.json",
+   "over": [
+    "component:filter-toolbar-bar"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D72",
+   "ref": "ruling:s272-D72",
+   "ruled": "May breadcrumbs and a persistent side navigation appear on the same page? — Dave's decision on harvest row R4: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/app-shell-top-nav.meta.json; _rulings.json governs[] -> knowledge/components/breadcrumbs.meta.json",
+   "over": [
+    "component:app-shell-top-nav",
+    "component:breadcrumbs"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D71",
+   "ref": "ruling:s272-D71",
+   "ruled": "How many levels of hierarchy may a persistent side navigation show? — Dave's decision on harvest row R2: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/tabs.meta.json",
+   "over": [
+    "component:tabs"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D70",
+   "ref": "ruling:s272-D70",
+   "ruled": "When does a masthead flyout become a mega-menu? — Dave's decision on harvest row R12: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/app-shell-top-nav.meta.json",
+   "over": [
+    "component:app-shell-top-nav"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D68",
+   "ref": "ruling:s272-D68",
+   "ruled": "At what depth do breadcrumbs earn their place? — Dave's decision on harvest row R3: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/breadcrumbs.meta.json",
+   "over": [
+    "component:breadcrumbs"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D67",
+   "ref": "ruling:s272-D67",
+   "ruled": "Where does FILTERING one content set live — Tabs, Segmented-control, or the filter bar? — Dave's decision on harvest row R10: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/filter-toolbar-bar.meta.json; _rulings.json governs[] -> knowledge/components/segmented-control.meta.json; _rulings.json governs[] -> knowledge/components/tabs.meta.json",
+   "over": [
+    "component:filter-toolbar-bar",
+    "component:segmented-control",
+    "component:tabs"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D60",
+   "ref": "ruling:s272-D60",
+   "ruled": "section-heading-lockup — the proposed `when` gate is: level = section AND scope = one board / table / panel AND h1 = absent (h2 or lower). Dave's decision on harvest row N-section-heading-lockup: rati",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/section-heading-lockup.meta.json",
+   "over": [
+    "component:section-heading-lockup"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D58",
+   "ref": "ruling:s272-D58",
+   "ruled": "What triggers a mega-footer (doormat) instead of the plain footer? — Dave's decision on harvest row R7: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/footer.meta.json",
+   "over": [
+    "component:footer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D56",
+   "ref": "ruling:s272-D56",
+   "ruled": "Does app-shell-split (and Splitter) carry a viewport condition? — Dave's decision on harvest row R14: ratify.",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/layout-utilities.meta.json",
+   "over": [
+    "component:layout-utilities"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D53",
+   "ref": "ruling:s272-D53",
+   "ruled": "At what size does a popover become a drawer or a modal? — Dave RATIFIED the lane's recommendation: option 3. The scroll test catches the real failure; the column figure is what a designer can actually",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/drawer.meta.json",
+   "over": [
+    "component:drawer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D52",
+   "ref": "ruling:s272-D52",
+   "ruled": "Are Drawer and Modals' 'Partial modal' the same component — and does Drawer survive? — Dave RATIFIED the lane's recommendation: option 1. The mechanics our two metas describe are identical — scrim, tr",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/drawer.meta.json",
+   "over": [
+    "component:drawer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D45",
+   "ref": "ruling:s272-D45",
+   "ruled": "Does the predictive-search dropdown belong to Search-field or to Combobox? — Dave RATIFIED the lane's recommendation: option 1. 'Does a value land in the form' is machine-checkable; 'is it content or ",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/search-field.meta.json",
+   "over": [
+    "component:search-field"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D43",
+   "ref": "ruling:s272-D43",
+   "ruled": "Is a segmented per-digit OTP field right, or should the code be one field? — Dave RATIFIED the lane's recommendation: option 3. USWDS's objection is about splitting a number the USER KNOWS across boxe",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/input-fields.meta.json",
+   "over": [
+    "component:input-fields"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D4",
+   "ref": "ruling:s272-D4",
+   "ruled": "How many actions in an action bar, and which side are they on? — Dave RATIFIED the lane's recommendation: option 1, and promote the ~3 ceiling from a REVIEW guess to a ruled number — three systems ind",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/drawer.meta.json",
+   "over": [
+    "component:drawer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D37",
+   "ref": "ruling:s272-D37",
+   "ruled": "For a date the user already knows (date of birth, card expiry): calendar picker or three plain text boxes? — Dave RATIFIED the lane's recommendation: option 2. It is the only one backed by named resea",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/input-fields.meta.json",
+   "over": [
+    "component:input-fields"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D28",
+   "ref": "ruling:s272-D28",
+   "ruled": "Below what wait is a skeleton worse than nothing? — Dave RATIFIED the lane's recommendation: option 3. Our 300ms and NN/g's 2s are answering different questions; option 3 keeps both without contradict",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/skeleton-loader.meta.json",
+   "over": [
+    "component:skeleton-loader"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D27",
+   "ref": "ruling:s272-D27",
+   "ruled": "What does a FULL-PAGE load show — spinner or skeleton? — Dave RATIFIED the lane's recommendation: option 1. It follows from the predicate we already have rather than adding a new one, and Polaris's fl",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/skeleton-loader.meta.json",
+   "over": [
+    "component:skeleton-loader"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D23",
+   "ref": "ruling:s272-D23",
+   "ruled": "At what wait does a spinner become a progress bar? — Dave RATIFIED the lane's recommendation: option 1. Every number here is a proxy for 'do you know the fraction'. We already state the real test in t",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/skeleton-loader.meta.json",
+   "over": [
+    "component:skeleton-loader"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s272-D2",
+   "ref": "ruling:s272-D2",
+   "ruled": "Can a LINK perform an action (download a PDF, open a new window), or must that be a button? — Dave chose option 1: Links navigate only. A download becomes a button, and document-row / links / footer a",
+   "date": "2026-09-15",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/links.meta.json",
+   "over": [
+    "component:links"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s270-D1",
+   "ref": "ruling:s270-D1",
+   "ruled": "THE SINGLE-SELECT CUT-OFF IS FIVE, AND IT IS PROVISIONAL BECAUSE ITS SOURCE IS DAVE'S RECOLLECTION. Conductor's reading, labelled as the conductor's reading and not as Dave's words: radio group = sing",
+   "date": "2026-09-14",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/dropdown.meta.json",
+   "over": [
+    "component:dropdown"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s268-D5",
+   "ref": "ruling:s268-D5",
+   "ruled": "THE FOUR UNSEATED EDGE-TYPE KEYS ARE MINTED. Dave's word on lane E's RSQ 3 (lane C's RSQ 3, same content) is \"mint all four\": `composedOf`, `delegatesTo`, `drivesConsumer` and `$contract` get a SEAT i",
+   "date": "2026-09-11",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/filter-toolbar-bar.meta.json",
+   "over": [
+    "component:filter-toolbar-bar"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s263-D7",
+   "ref": "ruling:s263-D7",
+   "ruled": "Doormat is PARKED, not retired: it returns as a DORMANT VARIANT of Footer so Footer stays one component (variant: doormat, dormant), at the cost of a prop no app footer uses. Enactment (restore from $",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "enacted #263 — dormant variant in footer.meta.json ($status, schema-forced sigil); props fence intact",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/footer.meta.json",
+   "over": [
+    "component:footer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s263-D5",
+   "ref": "ruling:s263-D5",
+   "ruled": "Filter/toolbar bar: two rows collapse to one at container width 1400px; 680px gives search its own row; 400px stacks. Container queries, not media queries.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Filter-toolbar-bar.reference.html",
+   "over": [
+    "component:filter-toolbar-bar"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s263-D4",
+   "ref": "ruling:s263-D4",
+   "ruled": "The data-apollo-filter-* marker contract is adopted: data-apollo-filter-bar on the driver, optional -target, -consumer on result renderers; events apollo:filter-change / -clear / -export; read-back le",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/filter-toolbar-bar.meta.json; _rulings.json governs[] -> knowledge/snippets/Filter-toolbar-bar.reference.html",
+   "over": [
+    "component:filter-toolbar-bar"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s263-D12",
+   "ref": "ruling:s263-D12",
+   "ruled": "Variant lifecycle is a FIRST-CLASS field: meta.schema.json variants[].status enum active|dormant|deprecated (absent = active). Footer's doormat variant carries status: dormant. Replaces the schema-for",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "enacted #263",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/footer.meta.json",
+   "over": [
+    "component:footer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s263-D1",
+   "ref": "ruling:s263-D1",
+   "ruled": "KPI tile delta glyph sits on the INK seat (rag/success-ink / rag/error-ink), not fill. Confirms the K3 verbatim 'dark versions of the colours on the arrows'; Stat card moves with it.",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Stat-card.reference.html",
+   "over": [
+    "component:stat-card"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s261-D8",
+   "ref": "ruling:s261-D8",
+   "ruled": "USER-VISIBLE PRODUCT COPY IS HSBC; APOLLO IS THE SYSTEM NAME ONLY - AND THE FOOTER IS REVIEWED FULL WIDTH. Any copy a user of the product can read says HSBC; 'Apollo' names the design system in OUR re",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Footer.reference.html",
+   "over": [
+    "component:footer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s261-D6",
+   "ref": "ruling:s261-D6",
+   "ruled": "THE FILTER TOOLBAR IS ACCEPTED, WITH THREE CHANGES. The bar itself is good. (1) Use the LARGER segmented control so it matches the size of the buttons beside it. (2) Add a variant of the dropdown that",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Dropdown.reference.html; _rulings.json governs[] -> knowledge/snippets/Filter-toolbar-bar.reference.html; _rulings.json governs[] -> knowledge/snippets/Segmented-control.reference.html",
+   "over": [
+    "component:dropdown",
+    "component:filter-toolbar-bar",
+    "component:segmented-control"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s261-D3",
+   "ref": "ruling:s261-D3",
+   "ruled": "THE FOOTER IS AN APP FOOTER, FOR NOW. The footer redesign is scoped to the in-application footer - the slim band under a working screen - and NOT to a marketing/doormat footer. \"For now\" is his own he",
+   "date": "2026-09-09",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Footer.reference.html",
+   "over": [
+    "component:footer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s246-D2",
+   "ref": "ruling:s246-D2",
+   "ruled": "THE FILTER DEFAULT STATE ON A DASHBOARD IS A TEMPLATE DEFAULT (collapsed on load), NOT A GRILL-ME QUESTION - generate-from-canon asks nothing about it; the alternative state is an edit-mode concern to",
+   "date": "2026-09-05",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/filter-toolbar-bar.meta.json",
+   "over": [
+    "component:filter-toolbar-bar"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s245-D7",
+   "ref": "ruling:s245-D7",
+   "ruled": "THE COMPOSITION EDGE IS RULED ON THE L3 RECOMMENDATIONS, ALL OF THEM (`_REVIEW-L3-composition-edge-2026-09-03-v1.html` § 06). Q2 (a): `groupsWith` is ADDED to `knowledge/components/meta.schema.json` u",
+   "date": "2026-09-03",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/components/stat-card.meta.json",
+   "over": [
+    "component:stat-card"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s230-D2",
+   "ref": "ruling:s230-D2",
+   "ruled": "THE MASTHEAD LOGO DEFAULTS ARE RULED, BOTH THEMES - masterbrand-light-colour on light chrome, masterbrand-dark-colour on dark chrome; the builder asks only when the brief names a different brand",
+   "date": "2026-08-31",
+   "by": "Dave",
+   "status": "ruled",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/App-shell-top-nav.reference.html",
+   "over": [
+    "component:app-shell-top-nav"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "s123-D4",
+   "ref": "ruling:s123-D4",
+   "ruled": "#123",
+   "date": "2026-08-07",
+   "by": "Dave",
+   "status": "RULED #123 - nothing to enact; the values were already live via the alias. The ruling converts a side effect into a decision, which is the only thing that was actually missing. Seen rendered in tint-opacity-tuner-v2 lane A (white label contrast 4.51 -> 5.94), Dave's verdict was \"SC badge is fine\". Closes the last of #122's six parked consequences.",
+   "$note": null,
+   "via": "edges.governedBy on tabs.meta.json",
+   "over": [
+    "component:tabs"
+   ],
+   "blocking": true,
+   "verb": "decided",
+   "verbVia": "governedBy"
+  },
+  {
+   "id": "s114-D3",
+   "ref": "ruling:s114-D3",
+   "ruled": "#114",
+   "date": "2026-08-06",
+   "by": "Dave",
+   "status": "RULED #114, ENACTED #114 (994cd25) - the 2 real controls only",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Input-fields.reference.html; edges.governedBy on input-fields.meta.json",
+   "over": [
+    "component:input-fields"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  },
+  {
+   "id": "ds-032",
+   "ref": "ruling:ds-032",
+   "ruled": "#106",
+   "date": "2026-08-05",
+   "by": "Dave",
+   "status": "RULED #106 - status field added #119 in a metadata sweep; enactment state NOT asserted here (UNPROVEN by this sweep) - read the evidence pointers",
+   "$note": null,
+   "via": "_rulings.json governs[] -> knowledge/snippets/Drawer.reference.html; edges.governedBy on drawer.meta.json",
+   "over": [
+    "component:drawer"
+   ],
+   "blocking": true,
+   "verb": "must",
+   "verbVia": "governs[]->component:"
+  }
+ ],
+ "obeys": [
+  {
+   "id": "rule:aca-004",
+   "class": "derived",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "accessibility-content-authoring.md",
+   "text": "CA-4 — link text uniquely describes the target (SC 2.4.4 A): unique link/nav text, in context; audio-labelled repeats (\"Info\", \"Add to favourites\") must be made unique.",
+   "$note": null,
+   "ref": "rule:aca-004",
+   "why": "always-on for a composed screen; routed-by-scope: accessibility-content-authoring.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet copy <- tokens text/*); rule id cited in the prose of footer.meta.json (not in edges.obeys)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (derived)"
+  },
+  {
+   "id": "rule:webf-011",
+   "class": "derived",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "web-foundations.md",
+   "text": "Level taxonomy: 0 = base content (body, imagery, cards, buttons — NEVER elevated) · 1 = sticky content (top navigation, drawer, tooltip) · 2 = modality (partial modals, dialogs) · 3 = notifications (snackbars). Elements contained within a level do not display further elevation.",
+   "$note": null,
+   "ref": "rule:webf-011",
+   "why": "always-on for a composed screen; routed-by-scope: web-foundations.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet dark-mode/elevation/layout/type/forms <- tokens background/*; tokens divider/*); rule id cited in the prose of drawer.meta.json (not in edges.obeys)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (derived)"
+  },
+  {
+   "id": "rule:aca-003",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "accessibility-content-authoring.md",
+   "text": "CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.",
+   "$note": null,
+   "ref": "rule:aca-003",
+   "why": "always-on for a composed screen; routed-by-scope: accessibility-content-authoring.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet copy <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:aid-009",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "accessibility-interaction-design.md",
+   "text": "ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44, minimum exception 24×24 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance… 44×44 is therefore considered the default requireme",
+   "$note": null,
+   "ref": "rule:aid-009",
+   "why": "routed by vocabulary \"interactive\" (RULE_FILE_ROUTES); routed-by-scope: accessibility-interaction-design.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet interaction/layout/forms/copy <- tokens focus/*; tokens target/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:avd-006",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "accessibility-visual-design.md",
+   "text": "VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images describe the ACTION (\"Play\", not the picture); decorative images are AT-ignorable; never \"Image of…\", \"Link to…\", \"Picture of…\", \"Add button\"; verbose alts harm speech-output u",
+   "$note": null,
+   "ref": "rule:avd-006",
+   "why": "always-on for a composed screen; routed-by-scope: accessibility-visual-design.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour/type/interaction <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:dv-004",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "data-visualisation.md",
+   "text": "Colour separation: don't rely on colour to separate values — minimum 2px separation between colour blocks.",
+   "$note": null,
+   "ref": "rule:dv-004",
+   "why": "routed by vocabulary \"chart\" (RULE_FILE_ROUTES)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:dv-009",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "data-visualisation.md",
+   "text": "2-dimensional, flat colour fills only. No 3D styles, no gradient fills.",
+   "$note": null,
+   "ref": "rule:dv-009",
+   "why": "routed by vocabulary \"chart\" (RULE_FILE_ROUTES)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:dv-016",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "data-visualisation.md",
+   "text": "Chart building blocks (titles, axis labels, axis/grid lines): black-or-grey on light, white-or-grey on dark, ≥3:1 (WCAG 2.1 AA).",
+   "$note": null,
+   "ref": "rule:dv-016",
+   "why": "routed by vocabulary \"chart\" (RULE_FILE_ROUTES)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:dv-017",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "data-visualisation.md",
+   "text": "Only palette colours in charts (print/digital palette, or the programme toolkit). Now: the unified supporting palette.",
+   "$note": null,
+   "ref": "rule:dv-017",
+   "why": "routed by vocabulary \"chart\" (RULE_FILE_ROUTES)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-002",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "Don't use illustrations as icons (site echoes our icon-source rule at brand level).",
+   "$note": null,
+   "ref": "rule:icon-002",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-005",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "Functional icons need a minimum 44×44px target area.",
+   "$note": null,
+   "ref": "rule:icon-005",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-006",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "Minimum 16px, maximum 48px; scale proportionately in 2px increments.",
+   "$note": null,
+   "ref": "rule:icon-006",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-011",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "Icons require 4.5:1 contrast in all instances — \"like text\", labelled or not.",
+   "$note": null,
+   "ref": "rule:icon-011",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-012",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "Code: icon with label → `alt=\"\"` (null); icon without label → `alt` = icon name.",
+   "$note": null,
+   "ref": "rule:icon-012",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:icon-013",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "icons.md",
+   "text": "RAG-coloured notification/status icons: maintain contrast against actual background; never colour alone for status — supporting information required.",
+   "$note": null,
+   "ref": "rule:icon-013",
+   "why": "routed by vocabulary \"icon\" (RULE_FILE_ROUTES); routed-by-scope: icons.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet icons <- tokens icon/*; edge usesIcon)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:nam-001",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "naming.md",
+   "text": "Never possessive with product names — \"HSBC should not appear in the possessive form\": never \"HSBC's Credit Card\" / \"HSBC's Easy Invest\"; write \"An HSBC Credit Card\" / \"HSBC Easy Invest\".",
+   "$note": null,
+   "ref": "rule:nam-001",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: naming.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet copy <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type25-003",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-usage.md",
+   "text": "Never red typography for headlines or body copy — red only for text links (CTAs) and \"specific digital toolkit use-cases\".",
+   "$note": null,
+   "ref": "rule:type25-003",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-usage.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type25-007",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-usage.md",
+   "text": "No italics — not licensed, and harder to read, especially for people with dyslexia.",
+   "$note": null,
+   "ref": "rule:type25-007",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-usage.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type25-008",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-usage.md",
+   "text": "Emphasis = Univers Bold only, keywords/phrases not sections. No underline for emphasis (underline = links only — neuro-007 dual-source) · no shapes/graphic devices · no drop shadows on text · no outlines or graphic styling on type.",
+   "$note": null,
+   "ref": "rule:type25-008",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-usage.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type25-020",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-usage.md",
+   "text": "Three cost-0 gate candidates surfaced: no-italics scan (type25-007), no-text-shadow scan (type25-008), red-text-role check (type25-003) — all passed canon with zero occurrences. RULED by Dave 2026-07-03: STRAIGHT TO BLOCKING (his override of the advisory-first convention — zero o",
+   "$note": null,
+   "ref": "rule:type25-020",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-usage.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-002",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Only use brand-approved fonts, weights and colours.",
+   "$note": null,
+   "ref": "rule:type26-002",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-003",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "All text legible and ≥4.5:1 contrast.",
+   "$note": null,
+   "ref": "rule:type26-003",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-004",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Never use red typography except within specific digital toolkit use-cases. Sharpens the col26 red-text rule: the exception scope is toolkit-defined (e.g. CTA links), not designer judgment.",
+   "$note": null,
+   "ref": "rule:type26-004",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-005",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "\"We don't use uppercase or italics lettering — use sentence case.\" ⚑ This makes the house sentence-case rule (and the G5 all-caps advisory check) source-backed at brand level — and extends it: *italics are also out*. Informs the open all-caps scope ruling on Dave's desk: the sour",
+   "$note": null,
+   "ref": "rule:type26-005",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-012",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Latin: 12pt minimum, print AND digital. Captions/small legal copy may go to 6pt minimum. Ultra Light/Thin forbidden at small sizes (line too thin to be legible). Chinese (MYing Hei): 14pt body minimum. Arabic: 12pt (as Latin).",
+   "$note": null,
+   "ref": "rule:type26-012",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-013",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Black/dark-grey on light · white/light-grey on dark · NO other colours for typography, ever. White-only on HSBC Red and supporting reds; no long-form copy on red or coloured backgrounds; no highlighted type blocks; over photography black or white only.",
+   "$note": null,
+   "ref": "rule:type26-013",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-014",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Headline-on-photography contrast: 3:1 large AA · 4.5:1 small AA · 7:1 AAA.",
+   "$note": null,
+   "ref": "rule:type26-014",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-019",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Title case AND sentence case are the brand-legal casings; uppercase banned outside acronyms (explicitly: harder to read, reduces word shapes, dyslexia/low-vision cost). Note: the house rule (sentence case ONLY, no title case) is *stricter* than brand — house wins locally, no conf",
+   "$note": null,
+   "ref": "rule:type26-019",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:type26-020",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "typography-standards-2026.md",
+   "text": "Left-aligned is primary; centred sparingly (short headings/labels/callouts, small word counts); right rare (\"Headline A of the magnetic type construct\"); body copy stays horizontal. Never justified (rivers); avoid hyphenation — rebalance lines instead.",
+   "$note": null,
+   "ref": "rule:type26-020",
+   "why": "routed by vocabulary \"label\" (RULE_FILE_ROUTES); routed-by-scope: typography-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:webf-013",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "web-foundations.md",
+   "text": "No purely aesthetic shadows (inner or outer) — elevation is functional.",
+   "$note": null,
+   "ref": "rule:webf-013",
+   "why": "always-on for a composed screen; routed-by-scope: web-foundations.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet dark-mode/elevation/layout/type/forms <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:webf-018",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "web-foundations.md",
+   "text": "Base unit 4px for horizontal and vertical measurement — \"normally express this unit in multiples of 8, however multiples of 4 can be used as a fallback\".",
+   "$note": null,
+   "ref": "rule:webf-018",
+   "why": "always-on for a composed screen; routed-by-scope: web-foundations.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet dark-mode/elevation/layout/type/forms <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:webf-027",
+   "class": "routed",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "web-foundations.md",
+   "text": "All spacing in multiples of 4, mapping to grid margins/gutters; padding/margins follow the system (e.g. 16px gutters → 16px card side-padding).",
+   "$note": null,
+   "ref": "rule:webf-027",
+   "why": "always-on for a composed screen; routed-by-scope: web-foundations.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet dark-mode/elevation/layout/type/forms <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed)"
+  },
+  {
+   "id": "rule:appf-002",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "app-foundations.md",
+   "text": "iOS: use Dynamic Type and test that the layout adapts to ALL accessibility font sizes, including the largest.",
+   "$note": null,
+   "ref": "rule:appf-002",
+   "why": "routed-by-scope: app-foundations.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet type <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-004",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Don't use red backgrounds for text — prolonged exposure causes visual fatigue and reduces legibility.",
+   "$note": null,
+   "ref": "rule:col26-004",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-008",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Scope: illustrations, data visualisations, status-driven interfaces (RAG, risk, gain/loss) only. \"Don't use the supporting palette outside of illustration, data visualisation or RAG applications.\"",
+   "$note": null,
+   "ref": "rule:col26-008",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-009",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Don't use the supporting palette as text.",
+   "$note": null,
+   "ref": "rule:col26-009",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-011",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Data visualisation: every colour used must meet ≥3:1 against its background.",
+   "$note": null,
+   "ref": "rule:col26-011",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-012",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Don't combine HSBC Red with the supporting palette in data visualisations.",
+   "$note": null,
+   "ref": "rule:col26-012",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-015",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Don't introduce colours outside the palettes.",
+   "$note": null,
+   "ref": "rule:col26-015",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-016",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Don't use red typography — red text is reserved for call to actions.",
+   "$note": null,
+   "ref": "rule:col26-016",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-017",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "Dark colours on light backgrounds; light colours on dark backgrounds — never light-on-light or dark-on-dark.",
+   "$note": null,
+   "ref": "rule:col26-017",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:col26-018",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "colour-standards-2026.md",
+   "text": "RAG: text 4.5:1 · graphic elements (icons, chart indicators) 3:1 · surface/background use varies by scenario — refer to the specific standard.",
+   "$note": null,
+   "ref": "rule:col26-018",
+   "why": "routed-by-scope: colour-standards-2026.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet colour <- tokens background/*; tokens divider/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:logo26-001",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "brand-refresh-assets.md",
+   "text": "An HSBC logo appears at least once on every piece of communication or customer journey.",
+   "$note": null,
+   "ref": "rule:logo26-001",
+   "why": "routed-by-scope: brand-refresh-assets.md scope kind=facet reaches app-shell-top-nav (rule facet logos <- edge usesLogo)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:mot-005",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "motion-standards.md",
+   "text": "Any motion over 5 seconds needs play and pause.",
+   "$note": null,
+   "ref": "rule:mot-005",
+   "why": "routed-by-scope: motion-standards.md scope kind=facet reaches drawer, skeleton-loader, stat-card (facet motion <- meta.motion)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:neuro-026",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "neurodiversity.md",
+   "text": "Icons/visuals support text, never replace it — content must remain comprehensible with all images and icons removed.",
+   "$note": null,
+   "ref": "rule:neuro-026",
+   "why": "routed-by-scope: neurodiversity.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, drawer (facet layout/colour/type/copy/interaction <- meta.responsive)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:tov-038",
+   "class": "routed-by-scope",
+   "destiny": "BLOCKING",
+   "blocking": true,
+   "file": "tone-of-voice.md",
+   "text": "Device-agnostic language: 'select', never 'click'; never describe UI visually. Writing must work on desktop, mobile, tablet. Canon swept 2026-07-02: 0 signals.",
+   "$note": null,
+   "ref": "rule:tov-038",
+   "why": "routed-by-scope: tone-of-voice.md scope kind=facet reaches app-shell-top-nav, breadcrumbs, dropdown (facet copy <- tokens text/*)",
+   "verb": "must",
+   "verbVia": "obeys->rule: BLOCKING by destiny — no storage edge (routed-by-scope)"
+  },
+  {
+   "id": "rule:ctkb-004",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-buttons.md",
+   "text": "Buttons vs links boundary: buttons communicate actions the user can take (submit a form, save settings); \"for less prominent actions, we use text links\".",
+   "$note": null,
+   "ref": "rule:ctkb-004",
+   "why": "edges.obeys on links.meta.json — CROSS-FILE, authored: the buttons spec draws the boundary from the other side — 'for less prominent actions, we use text links'. It binds Links as much as Butto",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-001",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Links are primarily navigation; they may carry lower-priority actions or many same-priority actions — buttons take higher-priority/fewer actions.",
+   "$note": null,
+   "ref": "rule:ctkl-001",
+   "why": "edges.obeys on links.meta.json — States what a Link IS against a Button — primarily navigation, lower-priority or many same-priority actions — which is this meta's `purpose` sentence.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-004",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Chevron links carry a red chevron as signposting.",
+   "$note": null,
+   "ref": "rule:ctkl-004",
+   "why": "edges.obeys on links.meta.json — Chevron links carry a RED chevron as signposting — fixes the glyph and colour of one of the meta's four family members.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-005",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Back links: chevron on the LEFT of the label, pointing left.",
+   "$note": null,
+   "ref": "rule:ctkl-005",
+   "why": "edges.obeys on links.meta.json — Back links put the chevron on the LEFT pointing left — the Back link member of the family of four.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-007",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Arrow sizing is NUMERIC and font-tier-keyed: font-1…4 → arrow = x-height, on the baseline, text gap = arrow/2 (e.g. font-1: x-height 22px → arrow 22px, gap 11px); font-5…7 → arrow = cap-height, gap = arrow/2 (e.g. font-5: cap 12px → arrow 12px, gap 6px).",
+   "$note": null,
+   "ref": "rule:ctkl-007",
+   "why": "edges.obeys on links.meta.json — Arrow sizing is numeric and font-tier-keyed (x-height or cap-height, gap = arrow/2) — the Arrow link's geometry, tied to the type scale this meta already binds.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-008",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Wrap behaviour differs by type: arrow links — chevron stays attached to the LAST word, never an orphan line; back/icon links — icon STAYS IN PLACE, aligned to the first line, text aligns left with sentence start.",
+   "$note": null,
+   "ref": "rule:ctkl-008",
+   "why": "edges.obeys on links.meta.json — Wrap behaviour differs by type: the arrow stays attached to the last word, the back/icon glyph stays aligned to the first line — per-member layout behaviour.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-009",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Only globally recognised icons (per the icons guidelines).",
+   "$note": null,
+   "ref": "rule:ctkl-009",
+   "why": "edges.obeys on links.meta.json — Only globally recognised icons, per the icons guidelines — constrains the Icon link member's slot.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-010",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Download links: download icon on the LEFT + file format and size in brackets after the label text.",
+   "$note": null,
+   "ref": "rule:ctkl-010",
+   "why": "edges.obeys on links.meta.json — Download links: icon on the LEFT plus file format and size in brackets — the meta's own purpose names 'download pdf' as a link job.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-011",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "External links open in a new tab and carry an indicator icon — the icon sits at the END of the text AS PART OF THE LINK (Default/Hover/Pressed shown in the inline guide).",
+   "$note": null,
+   "ref": "rule:ctkl-011",
+   "why": "edges.obeys on links.meta.json — External links open in a new tab with the indicator icon at the END, as PART of the link — fixes both behaviour and anatomy.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-014",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Underlined within body text; weight MATCHES the surrounding text weight in ALL states (light text → light link, regular → regular).",
+   "$note": null,
+   "ref": "rule:ctkl-014",
+   "why": "edges.obeys on links.meta.json — Underlined within body text, weight MATCHES the surrounding text in all states — binds this molecule's type tokens to its container's.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-015",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Hyperlink ≤5 words; linked text descriptive of the destination; prefer the link at the END of the sentence.",
+   "$note": null,
+   "ref": "rule:ctkl-015",
+   "why": "edges.obeys on links.meta.json — Hyperlink ≤5 words, descriptive of the destination, preferably at the end of the sentence — content contract for the inline member.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-017",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Internal links open in the current tab; external in a new tab.",
+   "$note": null,
+   "ref": "rule:ctkl-017",
+   "why": "edges.obeys on links.meta.json — Internal links open in the current tab, external in a new tab — the behaviour half of the external-link rule, stated for both cases.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-018",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Hover: text underlines on mouse-over of text OR icon — icon and text behave as ONE wrapped link; the target area wraps both.",
+   "$note": null,
+   "ref": "rule:ctkl-018",
+   "why": "edges.obeys on links.meta.json — Hover underlines on mouse-over of text OR icon and the target wraps both — icon and text are ONE link, which is a composition fact about this molecule.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-020",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "On dark: links and associated icons are white.",
+   "$note": null,
+   "ref": "rule:ctkl-020",
+   "why": "edges.obeys on links.meta.json — On dark, links and their icons are white — the per-theme token binding this meta's `tokens` block has to satisfy.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkl-022",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Link text: describe the action or destination; concise; sentence case; ≤8 words (~55 chars); NO 'Click here'/'Learn more'; NO full stop at the end.",
+   "$note": null,
+   "ref": "rule:ctkl-022",
+   "why": "edges.obeys on links.meta.json — Link text describes the action or destination, sentence case, ≤8 words, no 'Click here', no full stop — the content contract across the family.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-002",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Tags surface KEYWORD DESCRIPTORS: an item's content composition and its relationship to a broader content structure; keywords reusable by other UI patterns for search and filtering.",
+   "$note": null,
+   "ref": "rule:ctkt-002",
+   "why": "edges.obeys on tags.meta.json — Defines what a Tag IS for us — a keyword descriptor of content composition — which is this meta's `purpose` sentence, so the rule is the component's definition,",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-003",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Do link tags to groups or lists of content. Do present tags consistently: ordered alphabetically OR by content priority (most important first), and the chosen order kept consistent throughout the same content structure.",
+   "$note": null,
+   "ref": "rule:ctkt-003",
+   "why": "edges.obeys on tags.meta.json — Orders a tag group alphabetically or by content priority and holds that order across a content structure; the Tags atom is always rendered in groups, so the ord",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-004",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Don't use tag styles for metadata that isn't a keyword descriptor (date, read time), for arbitrary classifications, or to highlight product features.",
+   "$note": null,
+   "ref": "rule:ctkt-004",
+   "why": "edges.obeys on tags.meta.json — Bans tag styling for non-keyword metadata (date, read time) — a direct anti-pattern on this atom's variants.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-005",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Don't add icons to tags or associate actions other than a standard tag link — \"consider using selection pills if sorting or filtering based on keyword descriptors\".",
+   "$note": null,
+   "ref": "rule:ctkt-005",
+   "why": "edges.obeys on tags.meta.json — Bans icons on tags and any action other than a standard tag link, which fixes this atom's prop surface.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-006",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Affordance contract: non-interactive tags must READ as informational (not navigation); tag links must READ as clickable. Two blessed tag-link styles exist (example A/B) — \"be consistent in which style you apply throughout the entire section\".",
+   "$note": null,
+   "ref": "rule:ctkt-006",
+   "why": "edges.obeys on tags.meta.json — The affordance contract: static tags must read informational, tag links must read clickable — the meta's two variants ARE the two sides of this rule.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-007",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Placement: tags at the start and/or end of content; NOT normally interactive at the top of an article; below the content, tag links provide useful navigation. Be consistent so users learn the format.",
+   "$note": null,
+   "ref": "rule:ctkt-007",
+   "why": "edges.obeys on tags.meta.json — Placement at start and/or end of content, and not interactive at the top of an article — governs where this atom is allowed to appear.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-009",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Label centred horizontally and vertically in the container; tags expand horizontally with the label; a GROUP that overflows one row wraps onto two rows; an individual too-long label wraps onto a second line.",
+   "$note": null,
+   "ref": "rule:ctkt-009",
+   "why": "edges.obeys on tags.meta.json — Label centred, tag expands horizontally, group wraps to a second row, long label wraps to a second line — the geometry of this atom's container.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-010",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Tag copy: keywords describing the content theme · sentence case · never more than THREE words.",
+   "$note": null,
+   "ref": "rule:ctkt-010",
+   "why": "edges.obeys on tags.meta.json — Tag copy is a keyword, sentence case, never more than three words — a content constraint on this atom's only slot.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:ctkt-011",
+   "class": "authored",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "common-toolkit-tags-chips.md",
+   "text": "Target ≥44×44 CSS px for tags with containers, covering the whole tag item. For GROUPED tag links the guide gives the numeric recipe: the font-6 text row (20px line) extends 12px above + 12px below = 44px effective target, and ADJACENT ROWS MAY SHARE the 12px band — \"the space fo",
+   "$note": null,
+   "ref": "rule:ctkt-011",
+   "why": "edges.obeys on tags.meta.json — ≥44×44 CSS px covering the whole tag, and the shared 12px band recipe for grouped tag links — the target-size arithmetic for this exact atom.",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY"
+  },
+  {
+   "id": "rule:copy-025",
+   "class": "derived",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "copywriting.md",
+   "text": "Currency symbol/code BEFORE the amount, NO space (£500, GBP500 — \"a space could result in the amount being dropped into a different line\"); codes not symbols when multiple currencies share a symbol (eg $); minus sign before the entire unit (-£10.00, overdrafts likewise); currency",
+   "$note": null,
+   "ref": "rule:copy-025",
+   "why": "rule id cited in the prose of stat-card.meta.json (not in edges.obeys)",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY by destiny — no storage edge (derived)"
+  },
+  {
+   "id": "rule:nam-002",
+   "class": "derived",
+   "destiny": "ADVISORY",
+   "blocking": false,
+   "file": "naming.md",
+   "text": "Names are never fully capitalised — \"CONNECTED MONEY\" banned; capitalised first letters + lowercase (\"Connected Money\"). Action-suggesting multi-word names may close up (PayMe, InvestDirect).",
+   "$note": null,
+   "ref": "rule:nam-002",
+   "why": "_rule_nodes.json flaggedBy: snippet:App-shell-top-nav.reference.html -> rule:nam-002; _rule_nodes.json flaggedBy: snippet:Footer.reference.html -> rule:nam-002; _rule_nodes.json flaggedBy: snippet:Layout-utilities.reference.html -> rule:nam-002; _rule_nodes.json flaggedBy: snippet:Section-heading-lockup.reference.html -> rule:nam-002",
+   "verb": "should",
+   "verbVia": "obeys->rule: ADVISORY by destiny — no storage edge (derived)"
+  },
+  {
+   "id": "rule:ctkl-002",
+   "class": "authored",
+   "destiny": "TASTE",
+   "blocking": false,
+   "file": "common-toolkit-links.md",
+   "text": "Don't provide so many links it becomes unclear where to go (Do/Don't pair).",
+   "$note": null,
+   "ref": "rule:ctkl-002",
+   "why": "edges.obeys on links.meta.json — Don't provide so many links that it is unclear where to go — a density constraint on this molecule in context.",
+   "verb": "should",
+   "verbVia": "obeys->rule: TASTE"
+  },
+  {
+   "id": "ux:pr-fitts",
+   "class": "authored",
+   "destiny": "grade A",
+   "blocking": false,
+   "file": "_ux_principle_nodes.json",
+   "text": "Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.",
+   "$note": null,
+   "ref": "ux:pr-fitts",
+   "why": "edges.obeys on links.meta.json — ctkl-018 wraps the target area around icon AND text as one link — a deliberate enlargement of a small inline target.; edges.obeys on tags.meta.json — ctkt-011's 44×44 floor and its shared-12px-band recipe are Fitts's law turned into arithmetic: a small text row is made hittable by growing the target, not the ",
+   "verb": "rests-on",
+   "verbVia": "obeys->ux:"
+  },
+  {
+   "id": "ux:pr-hick",
+   "class": "authored",
+   "destiny": "grade A",
+   "blocking": false,
+   "file": "_ux_principle_nodes.json",
+   "text": "Choice reaction time rises with the logarithm of the number of equally likely alternatives.",
+   "$note": null,
+   "ref": "ux:pr-hick",
+   "why": "edges.obeys on links.meta.json — ctkl-002 ('don't provide so many links it becomes unclear where to go') is Hick stated as a Don't.; edges.obeys on tags.meta.json — ctkt-003 orders a group alphabetically or by priority and keeps that order; Hick is why a consistent order shortens the scan through N equally likely keywords.",
+   "verb": "rests-on",
+   "verbVia": "obeys->ux:"
+  },
+  {
+   "id": "ux:pr-speed-accuracy",
+   "class": "authored",
+   "destiny": "grade A",
+   "blocking": false,
+   "file": "_ux_principle_nodes.json",
+   "text": "Speed and accuracy trade against each other; a design that makes an action faster usually makes it likelier to be wrong.",
+   "$note": null,
+   "ref": "ux:pr-speed-accuracy",
+   "why": "edges.obeys on links.meta.json — ctkl-015/ctkl-022 cap link text and demand it describe the destination: a scannable link is fast, and a vague one is fast AND wrong.",
+   "verb": "rests-on",
+   "verbVia": "obeys->ux:"
+  }
+ ],
+ "mustNot": [
+  {
+   "from": "component:drawer",
+   "to": "component:drawer",
+   "ref": "component:drawer",
+   "$note": "A second drawer or open modal (one modal surface at a time)",
+   "in_slice": true,
+   "why": "edges.mustNotNeighbour on drawer.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour"
+  },
+  {
+   "from": "component:drawer",
+   "to": null,
+   "ref": null,
+   "$note": "A second drawer or open modal (one modal surface at a time)",
+   "in_slice": false,
+   "why": "relationships.mustNotNeighbour on drawer.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour by relationships.mustNotNeighbour — no storage edge"
+  },
+  {
+   "from": "component:section-heading-lockup",
+   "to": null,
+   "ref": null,
+   "$note": "Page-header-lockup in the same slot (one is the page <h1>, the other an in-page <h2>/<h3> — never both naming the same region)",
+   "in_slice": false,
+   "why": "edges.mustNotNeighbour on section-heading-lockup.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour"
+  },
+  {
+   "from": "component:section-heading-lockup",
+   "to": null,
+   "ref": null,
+   "$note": "Page-header-lockup in the same slot (one is the page <h1>, the other an in-page <h2>/<h3> — never both naming the same region)",
+   "in_slice": false,
+   "why": "relationships.mustNotNeighbour on section-heading-lockup.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour by relationships.mustNotNeighbour — no storage edge"
+  },
+  {
+   "from": "component:skeleton-loader",
+   "to": null,
+   "ref": null,
+   "$note": "Loading-indicator for the same region (one loading signal per region)",
+   "in_slice": false,
+   "why": "relationships.mustNotNeighbour on skeleton-loader.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour by relationships.mustNotNeighbour — no storage edge"
+  },
+  {
+   "from": "component:skeleton-loader",
+   "to": "component:loading-indicator",
+   "ref": "component:loading-indicator",
+   "$note": "Loading-indicator for the same region (one loading signal per region)",
+   "in_slice": false,
+   "why": "edges.mustNotNeighbour on skeleton-loader.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour"
+  },
+  {
+   "from": "component:stat-card",
+   "to": null,
+   "ref": null,
+   "$note": "A chart making the identical claim in the same view (pick one headline form)",
+   "in_slice": false,
+   "why": "edges.mustNotNeighbour on stat-card.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour"
+  },
+  {
+   "from": "component:stat-card",
+   "to": null,
+   "ref": null,
+   "$note": "A chart making the identical claim in the same view (pick one headline form)",
+   "in_slice": false,
+   "why": "relationships.mustNotNeighbour on stat-card.meta.json",
+   "blocking": true,
+   "verb": "must-not-sit-with",
+   "verbVia": "mustNotNeighbour by relationships.mustNotNeighbour — no storage edge"
+  }
+ ],
+ "tokens": [
+  {
+   "group": "background",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "background/default"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on dropdown.meta.json; tokens on footer.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "badge",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "badge/background"
+   ],
+   "why": "tokens on section-heading-lockup.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "border",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "border/high-contrast",
+    "border/high-contrast/default",
+    "border/strong",
+    "border/subtle"
+   ],
+   "why": "tokens on drawer.meta.json; tokens on footer.meta.json; tokens on layout-utilities.meta.json",
+   "blocking": false,
+   "count": 4
+  },
+  {
+   "group": "button",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "button/primary"
+   ],
+   "why": "tokens on drawer.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "divider",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "divider/border/section",
+    "divider/border/subsection"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on dropdown.meta.json; tokens on footer.meta.json",
+   "blocking": false,
+   "count": 2
+  },
+  {
+   "group": "elevation",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "elevation/border",
+    "elevation/functional"
+   ],
+   "why": "tokens on drawer.meta.json; tokens on dropdown.meta.json; tokens on input-fields.meta.json",
+   "blocking": false,
+   "count": 2
+  },
+  {
+   "group": "focus",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "focus/ring",
+    "focus/ring-offset",
+    "focus/ring-width"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on footer.meta.json; tokens on input-fields.meta.json",
+   "blocking": false,
+   "count": 3
+  },
+  {
+   "group": "form",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "form/background",
+    "form/background/default",
+    "form/background/hover",
+    "form/background/pressed"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on dropdown.meta.json; tokens on filter-toolbar-bar.meta.json",
+   "blocking": false,
+   "count": 8
+  },
+  {
+   "group": "icon",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "icon/default",
+    "icon/default-reverse",
+    "icon/disabled",
+    "icon/on-dark"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on dropdown.meta.json; tokens on footer.meta.json",
+   "blocking": false,
+   "count": 5
+  },
+  {
+   "group": "overlay",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "overlay/version1"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on drawer.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "primary",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "primary/background/default",
+    "primary/border/default"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on links.meta.json; tokens on section-heading-lockup.meta.json",
+   "blocking": false,
+   "count": 2
+  },
+  {
+   "group": "rag",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "rag/border",
+    "rag/error",
+    "rag/error-ink",
+    "rag/success"
+   ],
+   "why": "tokens on dropdown.meta.json; tokens on filter-toolbar-bar.meta.json; tokens on footer.meta.json",
+   "blocking": false,
+   "count": 9
+  },
+  {
+   "group": "scrollbar",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "scrollbar/background",
+    "scrollbar/foreground"
+   ],
+   "why": "tokens on dropdown.meta.json; tokens on search-field.meta.json",
+   "blocking": false,
+   "count": 2
+  },
+  {
+   "group": "secondary",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "secondary/background/default"
+   ],
+   "why": "tokens on filter-toolbar-bar.meta.json; tokens on segmented-control.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "surface",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "surface/action",
+    "surface/action-primary",
+    "surface/black",
+    "surface/neutral-2"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on footer.meta.json; tokens on layout-utilities.meta.json",
+   "blocking": false,
+   "count": 5
+  },
+  {
+   "group": "table",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "table/border",
+    "table/column/background",
+    "table/header/background"
+   ],
+   "why": "tokens on table.meta.json",
+   "blocking": false,
+   "count": 3
+  },
+  {
+   "group": "tabs",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "tabs/active"
+   ],
+   "why": "tokens on tabs.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "tertiary",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "tertiary/background",
+    "tertiary/background/default",
+    "tertiary/background/hover"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on drawer.meta.json; tokens on filter-toolbar-bar.meta.json",
+   "blocking": false,
+   "count": 3
+  },
+  {
+   "group": "text",
+   "tier": "semantic",
+   "source": "tokens/semantic-colour.json",
+   "members": [
+    "text/default",
+    "text/disabled",
+    "text/on-dark",
+    "text/on-inverse"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on breadcrumbs.meta.json; tokens on dropdown.meta.json",
+   "blocking": false,
+   "count": 8
+  },
+  {
+   "group": "border-radius",
+   "tier": "foundation",
+   "source": "tokens/layout.json",
+   "members": [
+    "border-radius/control",
+    "border-radius/default",
+    "border-radius/indicator",
+    "border-radius/surface"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on footer.meta.json; tokens on layout-utilities.meta.json",
+   "blocking": false,
+   "count": 4
+  },
+  {
+   "group": "layout",
+   "tier": "foundation",
+   "source": "tokens/layout.json",
+   "members": [
+    "layout/app/gutter",
+    "layout/app/margin",
+    "layout/web/columns"
+   ],
+   "why": "tokens on layout-utilities.meta.json",
+   "blocking": false,
+   "count": 3
+  },
+  {
+   "group": "target",
+   "tier": "foundation",
+   "source": "tokens/layout.json",
+   "members": [
+    "target/floor",
+    "target/min"
+   ],
+   "why": "tokens on app-shell-top-nav.meta.json; tokens on footer.meta.json; tokens on layout-utilities.meta.json",
+   "blocking": false,
+   "count": 2
+  },
+  {
+   "group": "typography",
+   "tier": "foundation",
+   "source": "tokens/typography.json",
+   "members": [
+    "typography/font-family/default"
+   ],
+   "why": "tokens on breadcrumbs.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "color",
+   "tier": "primitive",
+   "source": "tokens/colour.json",
+   "members": [
+    "color/primary"
+   ],
+   "why": "tokens on links.meta.json; tokens on tabs.meta.json",
+   "blocking": false,
+   "count": 1
+  },
+  {
+   "group": "typography-composites/component",
+   "tier": "composite",
+   "source": "tokens/typography-composites.json",
+   "members": [
+    "caption",
+    "heading",
+    "input",
+    "label"
+   ],
+   "why": "component purpose names it; component purpose names it; named in a selected meta; named in a selected meta",
+   "blocking": false,
+   "count": 5
+  }
+ ],
+ "assets": [
+  {
+   "id": "icon:alert-badge",
+   "kind": "icon",
+   "file": "informative/alert-badge.svg",
+   "group": "Informative",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:arrow-down",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/arrow-down.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:stat-card",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:arrow-left",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/arrow-left.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:links",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:arrow-right",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/arrow-right.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:links",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:arrow-right",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/arrow-right.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:section-heading-lockup",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:arrow-up",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/arrow-up.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:stat-card",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:calendar-badge",
+   "kind": "icon",
+   "file": "media/calendar-badge.svg",
+   "group": "Media",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:calendar-badge",
+   "kind": "icon",
+   "file": "media/calendar-badge.svg",
+   "group": "Media",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:input-fields",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:chevron-right",
+   "kind": "icon",
+   "file": "arrows-and-chevrons/chevron-right.svg",
+   "group": "Arrows and chevrons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:breadcrumbs",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:close",
+   "kind": "icon",
+   "file": "global-controls/close.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:close",
+   "kind": "icon",
+   "file": "global-controls/close.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:drawer",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:close",
+   "kind": "icon",
+   "file": "global-controls/close.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:close",
+   "kind": "icon",
+   "file": "global-controls/close.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:search-field",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:close",
+   "kind": "icon",
+   "file": "global-controls/close.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:tags",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:download",
+   "kind": "icon",
+   "file": "global-controls/download.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:links",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:error",
+   "kind": "icon",
+   "file": "status-icons/error.svg",
+   "group": "Status Icons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:error",
+   "kind": "icon",
+   "file": "status-icons/error.svg",
+   "group": "Status Icons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:input-fields",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:export",
+   "kind": "icon",
+   "file": "global-controls/export.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:filter",
+   "kind": "icon",
+   "file": "global-controls/filter.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:help",
+   "kind": "icon",
+   "file": "informative/help.svg",
+   "group": "Informative",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:input-fields",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:menu-badge",
+   "kind": "icon",
+   "file": "global-controls/menu-badge.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:menu-badge",
+   "kind": "icon",
+   "file": "global-controls/menu-badge.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:segmented-control",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:refresh",
+   "kind": "icon",
+   "file": "global-controls/refresh.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:search",
+   "kind": "icon",
+   "file": "global-controls/search.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:search",
+   "kind": "icon",
+   "file": "global-controls/search.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:filter-toolbar-bar",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:search",
+   "kind": "icon",
+   "file": "global-controls/search.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:search-field",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:success",
+   "kind": "icon",
+   "file": "status-icons/success.svg",
+   "group": "Status Icons",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:input-fields",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:user-badge",
+   "kind": "icon",
+   "file": "informative/user-badge.svg",
+   "group": "Informative",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "icon:view-grid",
+   "kind": "icon",
+   "file": "global-controls/view-grid.svg",
+   "group": "Global controls",
+   "active": false,
+   "lockup": null,
+   "theme": null,
+   "used_by": "component:segmented-control",
+   "edge": "usesIcon",
+   "via": "byte-match (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "logo:masterbrand-dark-colour",
+   "kind": "logo",
+   "file": "assets/logos/masterbrand-dark-colour.svg",
+   "group": null,
+   "active": null,
+   "lockup": "masterbrand",
+   "theme": "dark",
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesLogo",
+   "via": "src= path (s277-D5)",
+   "blocking": false
+  },
+  {
+   "id": "logo:masterbrand-light-colour",
+   "kind": "logo",
+   "file": "assets/logos/masterbrand-light-colour.svg",
+   "group": null,
+   "active": null,
+   "lockup": "masterbrand",
+   "theme": "light",
+   "used_by": "component:app-shell-top-nav",
+   "edge": "usesLogo",
+   "via": "src= path (s277-D5)",
+   "blocking": false
+  }
+ ],
+ "unresolved": [
+  {
+   "what": "role:chart-panel",
+   "ref": null,
+   "$note": "the task asks for a chart but names no analytical intent (knowledge/chart-intents.json). The chart cannot be chosen mechanically — ask, do not guess.",
+   "why": "chart-intents.json is the gate on this role"
+  },
+  {
+   "what": "role:chart-panel",
+   "ref": null,
+   "$note": "the task asks for this role (COMPOSITE_LEXICON[\"dashboard\"] -> chart-panel (INFERRED — the task did not name this role)) and no component in the slice provides it",
+   "why": "roles.json"
+  },
+  {
+   "what": "co-providers of role:headline-metric",
+   "ref": null,
+   "$note": "1 further provider(s) exist and are NOT in the slice (kpi-tile). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:record-list",
+   "ref": null,
+   "$note": "5 further provider(s) exist and are NOT in the slice (transaction-row, document-row, standing-order-mandate-row, timeline, tree). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:page-frame",
+   "ref": null,
+   "$note": "4 further provider(s) exist and are NOT in the slice (app-shell-side-nav, app-shell-split, app-shell-focused, app-shell-doormat). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:arrangement",
+   "ref": null,
+   "$note": "5 further provider(s) exist and are NOT in the slice (feature-grid-lockup, splitter, accordion, carousel, divider). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:input",
+   "ref": null,
+   "$note": "21 further provider(s) exist and are NOT in the slice (amount-input, combobox, multi-select, cascader, selection-controls, date-picker, date-range-picker, time-picker). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:wayfinding",
+   "ref": null,
+   "$note": "4 further provider(s) exist and are NOT in the slice (sidebar-nav, anchor-nav, pagination, back-to-top). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:chart-panel",
+   "ref": null,
+   "$note": "12 further provider(s) exist and are NOT in the slice (chart-bar, chart-line, chart-donut, Chart-histogram, Chart-scatter, chart-stacked-area, Chart-boxplot, chart-combo). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "co-providers of role:page-title",
+   "ref": null,
+   "$note": "1 further provider(s) exist and are NOT in the slice (page-header-lockup). Their `when` predicates decide, and they are not all authored today (s251-D5) — so the choice is a judgement, not a lookup.",
+   "why": "roles.json providers vs slice"
+  },
+  {
+   "what": "component:cards",
+   "ref": null,
+   "$note": "held as an alternate co-provider of layout-utilities but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:data-grid",
+   "ref": null,
+   "$note": "held as an alternate co-provider of table but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:stats-band-lockup",
+   "ref": null,
+   "$note": "held as an alternate co-provider of layout-utilities but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:amount-display",
+   "ref": null,
+   "$note": "held as an alternate co-provider of input-fields but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:eyebrow",
+   "ref": null,
+   "$note": "held as an alternate co-provider of section-heading-lockup but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:app-shell-nav-rail",
+   "ref": null,
+   "$note": "held as an alternate co-provider of app-shell-top-nav but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:tab-bar",
+   "ref": null,
+   "$note": "held as an alternate co-provider of tabs but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:app-shell-multi-column",
+   "ref": null,
+   "$note": "held as an alternate co-provider of app-shell-top-nav but carries no `when` predicate, so the choice between them is not mechanical (s251-D5)",
+   "why": "meta has no when field"
+  },
+  {
+   "what": "component:filter-toolbar-bar",
+   "ref": null,
+   "$note": "in the slice by text match; it declares no `provides` and is in no roles.json provider list, so its ROLE is unknown today",
+   "why": "meta has no provides field"
+  },
+  {
+   "what": "component:footer",
+   "ref": null,
+   "$note": "in the slice by text match; it declares no `provides` and is in no roles.json provider list, so its ROLE is unknown today",
+   "why": "meta has no provides field"
+  },
+  {
+   "what": "component:tags",
+   "ref": null,
+   "$note": "in the slice by text match; it declares no `provides` and is in no roles.json provider list, so its ROLE is unknown today",
+   "why": "meta has no provides field"
+  },
+  {
+   "what": "photo",
+   "ref": null,
+   "$note": "no photo/photography node kind exists in the graph — the assets field carries icons and logos only (s277-D4); photography is chosen by eye against knowledge/assets/, never invented here",
+   "why": "assets_for — declared limit"
+  }
+ ],
+ "$nulls": {},
+ "sized": {
+  "unit": "cl100k (tiktoken) — a LABELLED ESTIMATOR, never a unit a cap is stated in (ds-021)",
+  "slice_tokens": 34211,
+  "per_field": {
+   "components": 7639,
+   "governs": 5944,
+   "obeys": 12660,
+   "mustNot": 776,
+   "tokens": 1772,
+   "assets": 2597,
+   "unresolved": 1597
+  },
+  "budget": null,
+  "within_budget": true,
+  "reductions": [],
+  "metas_in_slice": 31,
+  "metas_in_slice_tokens": 111468,
+  "ratio_vs_selected_metas": 3.26,
+  "library_metas": 137,
+  "library_metas_tokens": 414184,
+  "ratio_vs_whole_library": 12.11
+ }
+}

@@ -1,0 +1,157 @@
+{
+  "name": "Stepper",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "The interactive multi-step flow driver (Progress-tracker is display-only): step content panels, validation-gated Next, back-navigation on completed dots, and the same dots↔track responsive collapse. Back/Next ride the Mono button ladder as the journey's real actions. Itinerary row 34 (P1); built Phase-2 wave 2 (worker A continuation).",
+  "provides": "input",
+  "props": [
+    { "name": "steps", "type": "array", "default": "4 named steps", "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title." },
+    { "name": "gate", "type": "function", "default": "per-step validators", "$note": "Next runs the current step's validator; failure = field error + focus, no advance (3.3.1)." },
+    { "name": "backNavigation", "type": "boolean", "default": true, "$note": "Completed dots are real buttons; current and future steps are never clickable." }
+  ],
+  "variants": [
+    { "name": "wide (dots)", "use": "Progress-tracker's dots stepper — 28px dots, 4px connector, done = fill + check, current = inset ring; done dots become buttons." },
+    { "name": "narrow (track)", "use": "≤520px container: the 1784-86051 head + continuous 4px track (same collapse as Progress-tracker)." }
+  ],
+  "$states": ["step done (button, check dot)", "step current (ring + aria-current)", "step future (numbered, inert)", "panel visible/hidden", "field error (gated Next)", "Back disabled (step 1)", "Next→Confirm (last step)"],
+  "$consumes": ["Progress-tracker (dots + track visuals — change them THERE; receipt-flagged duplication, fold-or-partial question queued)", "Input-fields (gated field language)", "Button ladder (Back = quaternary ghost, Next = primary)"],
+  "tokens": {
+    "steps": "step/complete + progress/incomplete + background/default as the mark (was progress/complete under R-D22: 'progress is STRUCTURE — ink pair, never status colour'; REBOUND #175 by s175-D1. R-D22's ink rule now belongs to progress/complete alone, which measures a continuous quantity.) #176 (WORKING, awaiting Dave's eye): step/complete INHERITS THE SUCCESS-ROUNDEL SYSTEM WHOLESALE — it aliases rag/success, so Mono reads #66CC8D and Console/Supercharge read #5DAC7B, all mode-invariant, each from its own palette rather than a copied hex. LEGACY IS THE ONE EXCEPTION: its ERROR red #A8000B in light, #FFFFFF in dark. The mark moved with the system too — the check glyph KNOCKS TO THE PAGE (background/default) instead of the white-fixed text/on-inverse. The #175 'UNDECIDED for Mono/Console/Supercharge' park is discharged. RETIRED values, quoted: Mono/Console ink pair #1A1A1A|#FFFFFF, Legacy #DB0011, Supercharge #B92F1E|#CC4333; mark was text/on-inverse #FFFFFF|#333333. | #176 REFINEMENTS RULED OFF THE RENDERED v1 REVIEW PAGE (which outranks the chat legs): LEGACY LIGHT IS THE PRIMARY RED #DB0011, not the error red — Dave: 'Use the primary red for Legacy.' Sequence by addition: #DB0011 (s175) -> #A8000B (chat, self-corrected) -> #DB0011 (ruled off the page). Dark #FFFFFF untouched. THE MARK IS DARK INK, NOT THE PAGE: --on-complete now binds the NEW token step/on-complete, #1A1A1A mode-invariant — Dave: 'Apollo mono, in the same way as the roundels, uses the dark ink colour for the glyphs.' That is the s122-D2 mark camp, and Mono/Console/Supercharge all already declare #1A1A1A for the success roundel mark (verified first-hand in their marks blocks). Legacy overrides: #FFFFFF light (its own roundel mark, s122-D5) and #1A1A1A dark as a DECLARED EXCEPTION, because Legacy's dark step fill is #FFFFFF and an exact match would be a white tick on a white disc — that leg is NOT RULED by Dave and is flagged for him. RETIRED: the knock-to-page mark, background/default, #FFFFFF light / #1A1A1A dark. THE TICK IS THE THICK ASSET status-icons/yes-thick.svg (was status-icons/yes.svg) — 'Please use the thick tick icon for all'. CONTRAST DOCTRINE, Dave verbatim: 'the intent/meaning is carried by the glyph a label ... the label and the symbol must carry the contrast not the decoration.' GATED: tick-on-fill (3:1) and label-on-page (4.5:1). DECLARED ABSENCE: fill-on-page, fill-on-track.",
+    "field": "form/background|border sets (Input-fields lock-step); error = rag/error (R-D20), message text stays text/default",
+    "buttons": "button/primary/* + button/quaternary/* ladder",
+    "radius": "border-radius/control (buttons, step focus) + border-radius/indicator (track)",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7) on .st-nav buttons — injection pending conductor registration"
+  },
+  "relationships": {
+    "livesInside": ["Payment / transfer journeys", "Onboarding", "Any multi-step form"],
+    "mustNotNeighbour": ["A second progress indicator for the same flow (one source of step truth)"],
+    "commonPatterns": ["payment-setup", "account-opening", "application-forms"]
+  },
+  "behaviour": {
+    "script": "knowledge/snippets/Stepper.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "input"
+    ],
+    "fallback": "Only the panel the markup authors as current is shown; Next and Back do nothing; no announcement. The dots-to-line collapse is a container query (CSS, 520px) and still fires.",
+    "$note": {
+      "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
+      "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
+      "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
+      "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
+    },
+    "$fallbackRender": "PROVEN by JS-off render #245 (2026-09-03): 6/6 named assertions held, JavaScript disabled at the context, page.goto(file://) — notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-stepper-{before,after}.png"
+  },
+  "accessibility": {
+    "structure": "Steps in an <ol> (sequence semantics); aria-current=step on the current li; done dots = real buttons with 'Go back to step n (completed)' labels; panels are labelled sections; collapsed form = role=progressbar with aria-valuetext.",
+    "focus": "Programmatic focus to the new panel heading (tabindex=-1) on every navigation — context change is announced and located (2.4.3); gated failure focuses the field.",
+    "colour": "Done/current are never colour-alone: check glyph, ring, weight, aria state all carry it (1.4.1). Progress = ink (R-D22).",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.3"],
+    "$note": "3.2.2 met (Next is the only advance trigger — typing never navigates) but out of relatedSC: not in the compliance lookup (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "Clickable FUTURE steps (skipping unvalidated steps breaks the gate; only completed steps navigate).",
+    "Disabling Next instead of validating on press (errors must be announced, not silently prevented — Form-layout precedent).",
+    "Status colours on step state (progress is STRUCTURE = ink pair, R-D22).",
+    "A second stepper/progress bar for the same flow.",
+    "Local press-physics CSS on .st-nav buttons (ADR-0013: injected partial only).",
+    "Press physics on dot buttons (structural navigation markers, the Tabs class)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: step visuals = progress/complete|incomplete + text/on-inverse (R-D22 set), field = live form/* + R-D20 rag/error, buttons = Mono ladder, radius = control + indicator roles, motion = component-type/button-family params (values byte-identical to Button's blocks).",
+    "$note": "Consumed state weight-shifts from Progress-tracker (.dot 500, current label 500, count 500) on composite-bound text — the Input-fields is-completed precedent; receipt-noted."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 34 (P1), Phase-2 wave 2 worker A continuation. Step visuals consumed from the gated Progress-tracker (ADR-0013 reworked dots + 1784-86051 collapse) — OBSERVED duplication receipt-flagged with a fold-or-partial question (the B-Q2 modal-family shape). Nav = Form-layout action-bar ladder; field = Input-fields language. No dedicated Figma node bound yet."
+  },
+  "$partials": ".st-nav button (Back/Next) = button-family candidates: empty markers + --phys-size:120; Progress-tracker's `.nav button` = the registered selector precedent. Done-dot buttons deliberately NOT members. Registration = conductor's, via receipt.",
+  "slots": {
+    "steps": {
+      "accepts": {
+        "tier": [
+          "molecule",
+          "organism"
+        ],
+        "capability": [
+          "step-panel"
+        ]
+      },
+      "use": "The per-step content panels the stepper drives.",
+      "required": true,
+      "multiple": true,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    }
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Stepper.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:payment-transfer-journeys",
+        "$note": "Payment / transfer journeys"
+      },
+      {
+        "ref": "context:onboarding",
+        "$note": "Onboarding"
+      },
+      {
+        "ref": "context:any-multi-step-form",
+        "$note": "Any multi-step form"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:payment-setup"
+      },
+      {
+        "ref": "pattern:account-opening"
+      },
+      {
+        "ref": "pattern:application-forms"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A second progress indicator for the same flow (one source of step truth)"
+      }
+    ],
+    "consumes": [
+      {
+        "ref": "component:progress-tracker",
+        "$note": "Progress-tracker (dots + track visuals — change them THERE; receipt-flagged duplication, fold-or-partial question queued)"
+      },
+      {
+        "ref": "component:input-fields",
+        "$note": "Input-fields (gated field language)"
+      },
+      {
+        "ref": "component:button",
+        "$note": "Button ladder (Back = quaternary ghost, Next = primary)"
+      }
+    ],
+    "partial": [
+      {
+        "ref": "component:progress-tracker",
+        "$note": ".st-nav button (Back/Next) = button-family candidates: empty markers + --phys-size:120; Progress-tracker's `.nav button` = the registered selector precedent. Done-dot buttons deliberately NOT members. Registration = conductor's, via receipt."
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:ds-032"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:input"
+      }
+    ]
+  }
+}

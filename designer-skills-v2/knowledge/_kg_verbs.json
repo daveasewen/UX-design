@@ -1,0 +1,383 @@
+{
+ "$what": "THE TWELVE VERBS — a READING MAP over the storage edge types, storage untouched (s277-D11, adopting audit D-4 option a). A verb is a claim about what an edge type MEANS to a designer reading the slice; the storage type is untouched, and no type is renamed, merged or retired here. Every storage type appears under exactly one verb (two types split by a declared discriminator) or in `unread` with a note — a null carried, never dropped. Read by knowledge/_compose_slice.py (the slice's governs/obeys/mustNot rows and ASK's answers carry `verb`; `--verbs` prints this map with live counts).",
+ "$ruled": {
+  "s277-D11": "a reading map of twelve verbs over the 51 storage edge types (must / rests-on / chooses / …, writing down D-1's edge-force reading), no storage merge",
+  "s277-D8": "force is the edge's not the node's, so the 14 obeys→ux edges of s276-D3 stand"
+ },
+ "$audit": {
+  "file": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "decision": "**D-4 — The vocabulary.** (a) a 12-verb reading vocabulary for the agent over the 51 storage types, storage untouched, no ruling touched",
+  "verbList": "(agent-facing, 12 verbs, storage untouched): *is-a* (family/partial/reuses) · *contains* (containedBy/hasPart/composedOf/consumes/drivesConsumer/delegatesTo) · *sits-with* (groupsWith) · *must-not-sit-with* (mustNotNeighbour) · *yields-to* · *renders-as* (renderedBy) · *lives-in* (usedInContext/commonPattern) · *provides / answers* (providesRole/answersIntent/hasDataShape) · *must* (appliesTo, obeys→BLOCKING, design-scoped governs) · *should* (obeys→ADVISORY/REVIEW/TASTE) · *rests-on* (obeys→ux, tensionWith, the future restsOn) · *decided* (governs/governedBy/evidencedBy/ruledIn + the 11 ruling→ruling verbs). Everything else (definedIn, enforcedBy, flaggedBy, checkedBy, verifiedBy, boundBy, enClause, under, cites, mentions) is machinery the reader uses and the agent never names."
+ },
+ "$forces": [
+  "must",
+  "should",
+  "may",
+  "is"
+ ],
+ "$measured": {
+  "edgeTypes": 58,
+  "edges": 8087,
+  "declaredNulls": 135,
+  "command": "python3 -c \"import sys;sys.path.insert(0,'knowledge');import _build_kg_explorer as B;bn,be=B.extract();xn,xe,rep=B.extract_extra(bn,be);import collections;print(collections.Counter(e['type'] for e in be+xe))\"",
+  "$note": "the audit's denominator was 51 (A1 §4, 2026-09-16 before the assets family landed); today's is 58 — the seven assets-family types of s277-D4 (activeVariantOf defaultActive defaultFor inGroup ruledBy usesIcon usesLogo) are the difference. Counts here are the explorer's own extract at map-writing time; `--verbs` re-measures live. A split type's `count` is its BRANCH count under that verb (obeys 18 must / 136 should / 14 rests-on; governs 295 must / 1,218 decided).",
+  "readByVerb": 36,
+  "unread": 22
+ },
+ "is-a": {
+  "force": "is",
+  "reads": [
+   "family",
+   "partial",
+   "reuses"
+  ],
+  "direction": "s→t reads as: s is a kind of / a partial of / a reuse of t — kinship between components",
+  "$definition": "The component IS one of these: in the same family as t (family), a cut-down partial of t (partial), or a component that reuses t's registered implementation (reuses) — a statement of kind, carrying no obligation.",
+  "$source": "*is-a* (family/partial/reuses)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "family": 12,
+   "partial": 6,
+   "reuses": 2
+  }
+ },
+ "contains": {
+  "force": "is",
+  "reads": [
+   "containedBy",
+   "hasPart",
+   "composedOf",
+   "consumes",
+   "drivesConsumer",
+   "delegatesTo"
+  ],
+  "reverse": [
+   "containedBy"
+  ],
+  "direction": "s→t reads as: s contains / is built from / drives / hands off to t; containedBy runs the other way — t contains s",
+  "$definition": "The component's BUILD and wiring: what it is composed from (composedOf, s268-D5), what it consumes and has as parts (consumes, hasPart), the consumer it drives at runtime (drivesConsumer, s268-D5), the component it hands a trigger off to (delegatesTo, s268-D5), and the container it lives inside (containedBy, read t contains s) — what is composed here is what must NOT be re-drawn here.",
+  "$source": "*contains* (containedBy/hasPart/composedOf/consumes/drivesConsumer/delegatesTo)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "containedBy": 88,
+   "hasPart": 22,
+   "composedOf": 5,
+   "consumes": 70,
+   "drivesConsumer": 5,
+   "delegatesTo": 1
+  }
+ },
+ "sits-with": {
+  "force": "should",
+  "reads": [
+   "groupsWith"
+  ],
+  "direction": "s→t reads as: s should sit in the same group as t (the group answers ONE question the user came with)",
+  "$definition": "The POSITIVE composition edge (s245-D7, s234-D4): the component shares a group with t; grouping lives ONCE in the graph and every rail, skill and gate derives from it — a should, because the group is the ruled composition, not a description.",
+  "$source": "*sits-with* (groupsWith)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "groupsWith": 8
+  }
+ },
+ "must-not-sit-with": {
+  "force": "must",
+  "reads": [
+   "mustNotNeighbour"
+  ],
+  "direction": "s→t reads as: s must not be placed next to t; a ref:null entry is still a prohibition, carried with its $note",
+  "$definition": "The prohibition edge: the component must not neighbour t. 51 of 70 are declared nulls — the other end is prose the author wrote and no node yet exists for it — and the prohibition is real in every one (s274-D10: carried, never dropped).",
+  "$source": "*must-not-sit-with* (mustNotNeighbour)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "mustNotNeighbour": 70
+  }
+ },
+ "yields-to": {
+  "force": "should",
+  "reads": [
+   "yieldsTo"
+  ],
+  "direction": "s→t reads as: s should stand down for t when the test in the edge's $note holds",
+  "$definition": "The sibling this component STANDS DOWN FOR and the test (s270-D2): derived from the prose half of the meta's own `when` — 'yields to X when …' — so a chooser should prefer t under that condition; the inverse ('beats') is read by traversal, never stored.",
+  "$source": "*yields-to*",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "yieldsTo": 45
+  }
+ },
+ "renders-as": {
+  "force": "is",
+  "reads": [
+   "renderedBy"
+  ],
+  "direction": "s→t reads as: s is rendered by the reference snippet t",
+  "$definition": "The component's one reference rendering: knowledge/snippets/<Stem>.reference.html — the HTML that IS the component on the page; a fact of identity, not an obligation.",
+  "$source": "*renders-as* (renderedBy)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "renderedBy": 137
+  }
+ },
+ "lives-in": {
+  "force": "is",
+  "reads": [
+   "usedInContext",
+   "commonPattern"
+  ],
+  "direction": "s→t reads as: s is used in context t / commonly appears in pattern t",
+  "$definition": "Where the component is found: the contexts it lives inside that are not themselves components (usedInContext, from relationships.livesInside) and the registered patterns it commonly appears in (commonPattern). Descriptive, generated from the meta's own prose — it says where the component IS used, and grants no permission beyond that (which is why the force is `is`, not `may`).",
+  "$source": "*lives-in* (usedInContext/commonPattern)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "usedInContext": 367,
+   "commonPattern": 421
+  }
+ },
+ "provides-answers": {
+  "force": "is",
+  "reads": [
+   "providesRole",
+   "answersIntent",
+   "hasDataShape"
+  ],
+  "direction": "s→t reads as: s provides role t / answers intent t / takes data shape t — the three faces of FFF",
+  "$definition": "The desk address of the component (s270-D2): the role slot it fills for a composer (providesRole, from `provides`), the reader's question it answers (answersIntent, from `answers`), and the data shape it takes (hasDataShape, from `shape`). Two components sharing a shape are candidates to swap.",
+  "$source": "*provides / answers* (providesRole/answersIntent/hasDataShape)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "providesRole": 108,
+   "answersIntent": 28,
+   "hasDataShape": 26
+  }
+ },
+ "must": {
+  "force": "must",
+  "reads": [
+   "appliesTo",
+   "obeys",
+   "governs"
+  ],
+  "direction": "s→t reads as: t must satisfy s — sc s applies to component t (appliesTo); component s must obey BLOCKING rule t (obeys, branch); ruling s binds component t (governs → component:, branch)",
+  "$definition": "The BLOCKING obligations on a component: a WCAG success criterion whose applies_to names the component (appliesTo), a guideline rule the meta authored `obeys` to whose destiny is BLOCKING (the obeys branch), and a ruling whose governs[] names the component's meta path or its renderedBy snippet (the governs → component: branch — 'design-scoped' read as the edge's own target kind, not as a derived per-ruling scope, which s277-D8 leaves unratified). The slice already sets blocking:true on every such row; this verb names it.",
+  "$source": "*must* (appliesTo, obeys→BLOCKING, design-scoped governs)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "appliesTo": 826,
+   "obeys": 18,
+   "governs": 295
+  }
+ },
+ "should": {
+  "force": "should",
+  "reads": [
+   "obeys"
+  ],
+  "direction": "s→t reads as: component s should obey rule t — the rule's own destiny is REVIEW, ADVISORY or TASTE (obeys, branch)",
+  "$definition": "The graded obligations: an authored `obeys` whose target rule declares a destiny below BLOCKING. The force is the edge's (obeys) at the weight the rule's own destiny field declares — a review gate, an advisory, or taste — never demoted by the view its node sits in (s277-D8).",
+  "$source": "*should* (obeys→ADVISORY/REVIEW/TASTE)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "obeys": 136
+  }
+ },
+ "rests-on": {
+  "force": "should",
+  "reads": [
+   "obeys",
+   "tensionWith"
+  ],
+  "direction": "s→t reads as: component s rests on principle t (obeys → ux:, branch); principle s is in tension with principle t (tensionWith, carrying the polarity)",
+  "$definition": "What a design RESTS ON — the explanation it can cite: the grade-A law a meta authored `obeys` to (the obeys → ux: branch; the edge's own definition reads 'the rules this component obeys and the laws it rests on, in ONE list', s276-D3), and the tension between two principles with its polarity and mediating variable (tensionWith, s275-D2). The 14 obeys→ux edges stand as obligations at `should` because force is the edge's, not the node's (s277-D8); the future `restsOn` the audit named is NOT a type today and is not listed.",
+  "$source": "*rests-on* (obeys→ux, tensionWith, the future restsOn)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "count": {
+   "obeys": 14,
+   "tensionWith": 22
+  }
+ },
+ "decided": {
+  "force": "is",
+  "reads": [
+   "governs",
+   "governedBy",
+   "ruledBy",
+   "evidencedBy",
+   "ruledIn",
+   "bounds",
+   "confirms",
+   "corrects",
+   "enacts",
+   "extends",
+   "narrows",
+   "refines",
+   "retires",
+   "supersedes",
+   "supersedesClause"
+  ],
+  "direction": "the ruling end is the decider: ruling s decided about artefact t (governs → artefact:, branch); s is decided by ruling t (governedBy, ruledBy — read t decided s); ruling s is evidenced by t / was ruled in session t (evidencedBy, ruledIn); ruling s bounds / confirms / corrects / enacts / extends / narrows / refines / retires / supersedes (a clause of) ruling t",
+  "$definition": "The Constitution's own record — what Dave DECIDED and its provenance: a ruling over an artefact that is not a component (the governs → artefact: branch), the ruling a component or asset cites as having ruled it in (governedBy; ruledBy is the assets' same citation, s277-D4), the evidence and the session behind a ruling (evidencedBy, ruledIn), and the ten authored ruling→ruling types of s267-D3. A fact about the record, read by ASK Q5/Q6; it obligates nothing by itself — the obligation, where the ruling names a component, is the `must` branch.",
+  "$source": "*decided* (governs/governedBy/evidencedBy/ruledIn + the 11 ruling→ruling verbs)",
+  "$sourceFile": "notes/_lanes/277/kg-audit/A2-AUDIT.md",
+  "$note": "The audit counted '11 ruling→ruling verbs'; knowledge/_ruling_edges.json holds TEN authored types (bounds confirms corrects enacts extends narrows refines retires supersedes supersedesClause) — the eleventh ruling→ruling type in A1's census is `mentions`, the unratified regex proposal, which the same audit sentence lists as machinery; it is unread here, not decided. `ruledBy` (icon:/logo: → ruling, 8 edges) is the assets family's governedBy, landed after the audit's list (s277-D4); reading it as `decided` is this lane's judgement from the edge's own definition ('ruled in by sNNN-DN'), flagged as such.",
+  "count": {
+   "governs": 1218,
+   "governedBy": 38,
+   "ruledBy": 8,
+   "evidencedBy": 1254,
+   "ruledIn": 199,
+   "bounds": 1,
+   "confirms": 5,
+   "corrects": 1,
+   "enacts": 6,
+   "extends": 16,
+   "narrows": 2,
+   "refines": 4,
+   "retires": 1,
+   "supersedes": 3,
+   "supersedesClause": 9
+  }
+ },
+ "$splits": {
+  "obeys": {
+   "by": "the target's kind, and for rule: targets the rule's own `destiny` (knowledge/guidelines/_rules-index.json)",
+   "branches": {
+    "must": "t is rule: and its destiny is BLOCKING",
+    "should": "t is rule: and its destiny is REVIEW, ADVISORY or TASTE",
+    "rests-on": "t is ux:"
+   },
+   "else": "unread, with a note naming the target — an obeys target of unknown kind or a rule id not in the index is carried, never guessed",
+   "$why": "the edge's own definition holds both readings in one list — 'the rules this component obeys and the laws it rests on' (meta.schema.json edges.obeys, s276-D3) — and the rule's destiny is the rule's authored force, which the obeys edge transmits; the branch never reads the VIEW a node sits in (s277-D8: force is the edge's, not the node's)"
+  },
+  "governs": {
+   "by": "the target's kind — what the ruling's governs[] entry resolved to",
+   "branches": {
+    "must": "t is component: (the entry names the meta path or its renderedBy snippet)",
+    "decided": "t is artefact: (the entry names a file that is not a component)"
+   },
+   "else": "unread, with a note",
+   "$why": "'design-scoped governs' in the audit's sentence is read as the edge's own target kind; the derived per-ruling scope is UNRATIFIED (s277-D8) and is not consulted"
+  }
+ },
+ "unread": {
+  "definedIn": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → the guideline .md that defines it — a file join the slice uses to name `file` on an obeys row",
+   "count": 470,
+   "nulls": 0
+  },
+  "enforcedBy": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → the gate script that enforces it — provenance of enforcement, not a reading for the designer",
+   "count": 63,
+   "nulls": 0
+  },
+  "flaggedBy": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): snippet → rule — an advisory-signal join the slice walks to reach the `derived` obeys class; the designer reads the resulting obeys row's verb, never this hop",
+   "count": 50,
+   "nulls": 0
+  },
+  "checkedBy": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → axe rule id — the automatable check behind a criterion",
+   "count": 68,
+   "nulls": 0
+  },
+  "verifiedBy": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → verification script — the same, for scripts",
+   "count": 6,
+   "nulls": 0
+  },
+  "boundBy": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → the HSBC accessibility policy — provenance of the criterion",
+   "count": 55,
+   "nulls": 0
+  },
+  "enClause": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → the EN 301 549 clause — provenance of the criterion",
+   "count": 55,
+   "nulls": 0
+  },
+  "under": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → guideline → principle — WCAG's own hierarchy, structure of the standard",
+   "count": 110,
+   "nulls": 0
+  },
+  "cites": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → sc: — a PARSED citation the rule's author wrote in prose (A2 §5); ASK Q11 walks it to reach the sc: and the designer reads the sc: through `must` (appliesTo), never this hop",
+   "count": 51,
+   "nulls": 0
+  },
+  "mentions": {
+   "$note": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): ruling → ruling by regex over `says` — an UNRATIFIED proposal drawn dashed (s267-D3); a proposal is not a decision, so it is not `decided`",
+   "count": 241,
+   "nulls": 0
+  },
+  "hasParty": {
+   "$note": "polarity → ux: | ruling — the two sides of a polarity (s275-D2). The audit's twelve name no polarity verb; `rests-on` reads the tension between the sides (tensionWith), and the sides themselves are the polarity's structure — reading them as rests-on would run the edge backwards. Not forced.",
+   "count": 68,
+   "nulls": 15
+  },
+  "touches": {
+   "$note": "polarity → ruling — one of s238-D6's four typed links (s275-D2). Not named by the audit's twelve; a ruling that TOUCHES a polarity has not decided it, so `decided` would overclaim. Not forced.",
+   "count": 9,
+   "nulls": 0
+  },
+  "resolvedBy": {
+   "$note": "polarity → ruling — s238-D6 typed link: the ruling resolves the trade-off. Close to `decided` in meaning, but the audit's sentence names neither it nor any polarity→ruling type; reading it in is a judgement Dave has not seen, so it waits with its three siblings rather than splitting the four.",
+   "count": 7,
+   "nulls": 0
+  },
+  "challengedBy": {
+   "$note": "polarity → ruling — s238-D6 typed link: the ruling challenges the trade-off. Not named by the twelve; not a decision about the polarity. Not forced.",
+   "count": 4,
+   "nulls": 0
+  },
+  "explainedBy": {
+   "$note": "polarity → ruling — s238-D6 typed link: the ruling explains the trade-off. Not named by the twelve. Not forced.",
+   "count": 1,
+   "nulls": 0
+  },
+  "triggeredBy": {
+   "$note": "component → component, 22 of 25 declared null — 'prose, awaiting Dave's-eye' in the schema; the audit's sentence names it in NEITHER list (not a contains/lives-in type, not machinery). A trigger relation is not containment and not kinship; no verb of the twelve honestly covers it.",
+   "count": 25,
+   "nulls": 22
+  },
+  "usesIcon": {
+   "$note": "component → icon: — landed AFTER the audit's list (assets family, s277-D4..D7). Read by the slice's `assets` field and ASK Q12 (so it HAS a consumer) but no verb of the twelve names it; a thirteenth verb ('uses') is Dave's to ratify, not this lane's to pad.",
+   "count": 371,
+   "nulls": 0
+  },
+  "usesLogo": {
+   "$note": "component → logo: — as usesIcon: read by `assets` / ASK Q12, no verb of the twelve; not padded.",
+   "count": 19,
+   "nulls": 1
+  },
+  "inGroup": {
+   "$note": "icon: → iconGroup: — the icon library's own grouping (s277-D4); structure of the assets family, not a reading for a design.",
+   "count": 666,
+   "nulls": 0
+  },
+  "activeVariantOf": {
+   "$note": "icon:-active → icon: base — the variant relation inside the library (s277-D4); `is-a` reads kinship between COMPONENTS and stretching it to glyph variants would be forcing; the 15 bases held null are under Dave's manual review (RI-3).",
+   "count": 234,
+   "nulls": 2
+  },
+  "defaultActive": {
+   "$note": "icon: → null ONLY — declared-null, never drawn, never resolved (s277-D4: no default ruled); a null carried, not a reading.",
+   "count": 15,
+   "nulls": 15
+  },
+  "defaultFor": {
+   "$note": "logo: → null ONLY — s230-D2 names the default lockup per theme but theme: is not a node kind; carried as a declared null with the theme on the edge. Not a reading.",
+   "count": 2,
+   "nulls": 2
+  }
+ },
+ "$notes": [
+  "The audit's list is exactly twelve and each verb has at least one live type — nothing padded, nothing dropped. The ruling's own parenthetical names 'chooses': that is s277-D8's SYSTEM-view posture (the agent chooses among what exists), not a thirteenth verb — the `is`-force verbs (is-a, contains, renders-as, lives-in, provides-answers, decided) are what the agent chooses over.",
+  "No verb carries force `may`: the two descriptive candidates (lives-in, is-a) are generated from the metas' own prose about where the component IS used and what it IS, and reading them as permission would be inference. The slot stays in the closed set for a verb that earns it.",
+  "`rests-on` is `should`, not `may`: the 14 obeys→ux edges are authored obligations at grade-A law (s276-D3) and s277-D8 says they stand — a design that ignores the principle it rests on is out of force, not out of taste.",
+  "Two storage types are SPLIT by a declared discriminator (obeys, governs) — see $splits. The bite proves each split's branches are exactly the verbs that list the type, so 'every type once' holds at the branch grain.",
+  "22 types are `unread`: the audit's ten machinery types, the five polarity types and triggeredBy the audit named nowhere, and six of the seven assets types that landed after the list. Every one carries its count and a note saying why no verb honestly covers it. A verb for the assets edges is Dave's to add.",
+  "Rows the slice reaches with NO storage edge (obeys class derived / routed / routed-by-scope; mustNot from relationships prose and not-with) take the verb their destiny or field would select and say so in `verbVia` — the verb names the force, the class names the provenance; neither is passed off as the other.",
+  "For the explorer lane (do NOT touch _build_kg_explorer.py here): a legend reading needs (1) verb per edge type from `reads` + `$splits` resolved per edge by target kind / destiny, (2) `reverse` to draw the arrow the reading way, (3) `unread` to label machinery as such rather than invent a verb, (4) the `force` colour ramp must|should|is over the four-valued closed set."
+ ]
+}

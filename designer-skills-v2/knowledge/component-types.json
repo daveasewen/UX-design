@@ -1,0 +1,914 @@
+{
+  "$description": "ADR-0013 — the component-type tier: ONE registry, both halves. (1) VALUES: this file is a token store — a path component-type/<group>/<param> resolves here, and each parameter $alias-references its semantic home (the alias hop: component var -> type-group -> semantic role -> default; $value is the gated cache, _STANDARDS.md §1 convention). (2) RULES: the $-keys carry the structural halves — $members (who consumes, with their selector map) and $partials (named rule-blocks injected from a source atom into consumers between AUTO-PARTIAL markers by gen_component_partials.py; sync gated in _build_all). Groups accrete from OBSERVED duplication only, never speculation (ADR-0013 ruling 3). Every member must carry the partial's AUTO-PARTIAL markers, the required vars, and the $manifestBinds manifest bindings — gen_component_partials.py --check fails the build otherwise.",
+  "component-type": {
+    "button-family": {
+      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon — travel is PIXEL-TRUE, scale(calc(1 ± travel/--phys-size)), darken 0.94 — superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced — RULED, Dave 2026-07-22: 'Console and mono can share the motion tokens for now'; divergence later = a deliberate override). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 — the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px). MULTI-CONTROL members register an :is() selector list (wave-1 convention, 2026-07-22) — a bare comma list would leave rewritten pseudo-classes bound to the last selector only; mixed sizes inside one member = a LOCAL --phys-size override on the smaller control (Drawer's .sheet .close 44 vs .dbtn 120 — geometry, not a token).",
+      "$members": {
+        "Button": {
+          "role": "source"
+        },
+        "Modals": {
+          "selector": ".btn"
+        },
+        "Progress-tracker": {
+          "selector": ".nav button"
+        },
+        "Icon-button": {
+          "selector": ".iconbtn"
+        },
+        "Form-layout": {
+          "selector": ".fl-btn"
+        },
+        "Secure-entry": {
+          "selector": ".se-btn"
+        },
+        "Alert": {
+          "selector": ".alert .x"
+        },
+        "Toast": {
+          "selector": ":is(.toast .x, .toast .act)"
+        },
+        "Banner": {
+          "selector": ":is(.banner .x, .banner .actions .abtn)"
+        },
+        "Drawer": {
+          "selector": ":is(.dbtn, .sheet .close)"
+        },
+        "Popover": {
+          "selector": ".pop .x"
+        },
+        "Modal-lightbox": {
+          "selector": ".lb-ctl"
+        },
+        "Empty-state": {
+          "selector": ".ebtn"
+        },
+        "Data-grid": {
+          "selector": ":is(.dg .sort, .dg .fchip .x, .dg .clearbtn, .dg .pbtn)"
+        },
+        "Date-picker": {
+          "selector": ".dp-nav"
+        },
+        "Date-range-picker": {
+          "selector": ".dr-nav"
+        },
+        "File-upload": {
+          "selector": ":is(.fu-browse, .fu-remove)"
+        },
+        "Stepper": {
+          "selector": ".st-nav button"
+        }
+      },
+      "$partials": {
+        "press-physics": {
+          "source": "Button",
+          "rootSelector": ".btn",
+          "requires": {
+            "vars": [
+              "--press-travel",
+              "--press-darken",
+              "--phys-size",
+              "--spring",
+              "--press"
+            ],
+            "matchValues": [
+              "--spring",
+              "--press"
+            ],
+            "declarations": [
+              "transform var(--spring)"
+            ]
+          },
+          "$manifestBinds": {
+            "--press-travel": "component-type/button-family/press-travel",
+            "--press-darken": "component-type/button-family/press-darken"
+          },
+          "$description": "hover grow + press recede/darken + full-width and disabled guards + reduced-motion override — single-sourced from Button's PARTIAL block. requires.vars must be declared by every consumer (--phys-size is local geometry, not a token); matchValues must equal the source atom's declared value (duration/easing composites — already tokens, pinned by match until composite manifest-binding exists); declarations are substrings the consumer's CSS must contain (the control's transition must carry the spring)."
+        }
+      },
+      "press-travel": {
+        "$alias": "motion/press/travel",
+        "$value": 2,
+        "$type": "number",
+        "$description": "type-group parameter — px of size change per interaction step (B-D7 pixel-true model). Cache of motion/press/travel; a theme may override the group without touching the semantic role, or the role to move every family at once."
+      },
+      "press-darken": {
+        "$alias": "motion/press/darken",
+        "$value": 0.94,
+        "$type": "number",
+        "$description": "type-group parameter — :active brightness factor. Cache of motion/press/darken."
+      }
+    },
+    "dataviz": {
+      "$description": "ADR-0015 (accepted Dave 2026-07-23) — the behaviour-partial group: retrieval reaches JS. ONE hand-authored source (knowledge/canon/dv-behaviour.js: value popover dvTip · responsive fit reflow · table-view popover panel · legend-as-filter) injected into every member between AUTO-BEHAVIOUR markers by gen_component_partials.py, --check sync-gated, byte-exact; the performance contract on the source (≤16KB raw · no setInterval/network/polling · single rAF-debounced resize · delegated events) is gated by _validate_behaviour.py. Members accrete as the chart-revisit wave lands (exemplar first: Chart-line, 2026-07-23). DELIBERATE NON-MEMBERSHIP of button-family: legend/table-toggle controls are quiet utility pressables, NOT B-D7 press physics (chart-revisit Q5, flagged to Dave, standing). $manifestBinds carry the DV-D07 two-channel chrome roles (data/axis + data/grid, colour + alpha slot) — the mint rides the same lane. Contracts fire on registration (ADR-0013 posture).",
+      "$members": {
+        "Chart-line": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "declarations": [
+              "data-fxs=\"",
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-line"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-bar": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-bar"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-combo": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "declarations": [
+              "data-fxs=\"",
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-bar",
+            "dv-render-line",
+            "dv-render-combo"
+          ],
+          "markup": "source"
+        },
+        "Chart-donut": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel",
+              "class=\"dv-leg-sw",
+              "data-tip-percent=\""
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-donut-sweep",
+            "dv-render",
+            "dv-render-donut"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-sparkline": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-sparkline"
+          ],
+          "markup": [],
+          "markupExempt": {
+            "dv-lockup-title": "s182-D2 (#182) — THE SPARKLINE IS AN ATOM, ALONE: no title slot. Dave: \"this doesn't need a title as it will usually live in a card\". The title belongs to the future trend-card COMPOSITION, not to this atom; the accessible name survives on the sr-only figcaption + the svg aria-label. The table-hook extraContract (dv-tabledetails / dv-table) was removed by the same ruling, with the markup it named."
+          },
+          "$note": "consumes dv-behaviour STAYS: the atom keeps ONE data-tip mark (the trend line's value popover), which is a dv-behaviour hook, plus the .dv-fit-on init. Only the table/title hooks went at s182-D2."
+        },
+        "Chart-scatter": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-scatter"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ],
+          "extraContract": {
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel",
+              "class=\"dv-leg-sw"
+            ],
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          }
+        },
+        "Chart-butterfly-h": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--data-grid"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-butterfly"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-butterfly-v": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--data-grid"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-butterfly"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-histogram": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-histogram"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-boxplot": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--data-grid"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-boxplot"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-bullet": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-bullet"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-candlestick": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--data-grid"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-candlestick"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-pie": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-tablepanel",
+              "class=\"dv-leg-sw",
+              "data-tip-percent=\""
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-donut"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Chart-stacked-area": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "declarations": [
+              "class=\"dv-tbl-toggle",
+              "class=\"dv-leg-sw",
+              "class=\"dv-tablepanel"
+            ],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend",
+            "dv-render",
+            "dv-render-stacked-area"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ]
+        },
+        "Template-dashboard-bento": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour",
+            "dp08-anchor"
+          ],
+          "markup": [
+            "dv-lockup-title"
+          ],
+          "$note": "s249-D4 (#249, FIT lane) — the dashboard role REGISTERED so the template carries the real dv-behaviour partial (both axes) instead of the #248 hand-carried fit stub (two engines on one svg.dv-fit selector = the DP18 collision). Its one figure is a Chart-bar column block; the title lockup rides data-lockup-title. No dv-legend (no legend on the page)."
+        },
+        "Legend": {
+          "selector": ".dv-leg",
+          "consumes": [
+            "dv-legend"
+          ],
+          "markup": [],
+          "markupExempt": {
+            "dv-lockup-title": "#261 lane L — the Legend is not a chart and has no chart title to carry. dv-lockup-title is the MANDATORY header item of a chart FIGURE (the dv-title composite above a canvas); this member draws no canvas, and its accessible name is the role=group aria-label on the list itself. Same shape as the sparkline's s182-D2 exemption: the mandatory partial is refused because the thing it heads does not exist here, not because the member would rather not carry it."
+          },
+          "$note": "#261 lane L — the FIRST non-chart member of the dataviz group. It joins for ONE reason: it consumes dv-legend, the registered legend interaction model (DV-D11…DV-D19), and a component that consumes an injected behaviour must be a registered member of that behaviour's group or the partial cannot be injected. It consumes NOTHING else: no dv-behaviour (no tips, no table, no fit — a legend has no canvas to fit), no dv-render (nothing is drawn from a spec). The legend was engine-only until today; this row is what makes it placeable."
+        }
+      },
+      "$behaviour": {
+        "dv-behaviour": {
+          "source": "canon/dv-behaviour.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-tip=\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The Layer-2 interaction layer (ADR-0015). NO LONGER SINGLE-SOURCED as of 2026-07-26 — see the sibling dv-legend entry: the deferred cap question recorded at the end of this description was RULED by Dave (split the source AND re-scope the gate to a per-page sum), so this file now carries fit/tip/table/seg/csv only and the legend model lives next door. ORIGINAL NOTE FOLLOWS, kept because the deferral is part of the record: The Layer-2 interaction layer, single-sourced (ADR-0015). PER-CAPABILITY SPLIT ENACTED 2026-07-24 (conductor absorb, chart-revisit wave — the exemplar's pre-authorised 'split from observed need' trigger; the wave landed 4 more members, whose real hook/chrome sets diverge from the line exemplar's). The UNIVERSAL contract now holds only the one hook every member carries (popover data-tip=); everything capability-specific lives in each member's $members[…].extraContract {vars · declarations · manifestBinds}, merged by check_contracts. Observed capability tiers: CARTESIAN CHROME (DV-D07 two-channel axis/grid — vars + manifestBinds) = line/bar/combo carry axis+grid, donut carries axis only (radial, no gridlines), sparkline carries neither (axis-free idiom). POLYLINE FIT (data-fxs=) = line+combo only (bar/donut/sparkline fit by rect/arc/CSS). TABLE+LEGEND (dv-tbl-toggle · data-series-toggle · dv-tablepanel) = all but sparkline (sparkline is compact: popover only). NOTE: the donut SWEEP animation hook is a SEPARATE future addition that would push dv-behaviour.js past the 16KB cap (measured 17,360B) — DEFERRED to Dave: amend the cap vs modularise per family. The existing under-cap module (14,620B) injects into all members as-is; sweep stays baked-static."
+        },
+        "dv-legend": {
+          "source": "canon/dv-legend.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "class=\"dv-legrow"
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The LEGEND INTERACTION MODEL — DV-D11 (dual gesture, two render levels, additive isolate) + DV-D12 (trapezoidal donut sweep keyed to segment spans) + DV-D13 (typed tooltip + selection-following centre). SECOND behaviour source for the group, added 2026-07-26. WHY A SECOND SOURCE, both beats: the sweep hook was DEFERRED on 2026-07-24 because it pushed dv-behaviour.js past the 16KB cap; the full v5.5 legend model made the overshoot decisive (one file would have landed at 26.0KB raw, 21.8KB even with every comment stripped). Dave ruled 2026-07-26: SPLIT the source AND re-scope the gate — _validate_behaviour.py now checks per-source 16KB (legibility) AND a per-group 32KB PAGE budget, so a future split cannot buy headroom. The single-rAF-debounced-resize check moved to group level in the same beat, for the same reason: it is a page invariant, and a second source legitimately carries zero resize listeners. UNIVERSAL contract hook = class=\"dv-legrow (the dual-gesture row); the swatch/label/reset chrome and the value-percent seg are member-specific and ride each member's extraContract. NOT a member of this contract: Chart-scatter and Chart-sparkline carry no legend. ★ MIGRATION CLOSED 2026-07-27 — and the promotion the older note instructed was TRIED, MEASURED and REVERSED the same hour; both beats are recorded here because the reversal is the more useful fact. DURING the wave it was deliberately EMPTY: no hook was carried by every member, so the legend hooks rode each MIGRATED member's extraContract and the contract tightened per member rather than failing four members for not having arrived yet. All four legend-carrying members (donut · bar · combo · line) have now moved and `_check_legend_migration.py` exits 0. Promoting class=\"dv-legrow to this universal contract FAILED THE BUILD, correctly: Chart-sparkline (and Chart-scatter) are members of the dataviz behaviour GROUP but carry no legend at all, so a hook required of every member is one two members can never satisfy. ⇒ THE UNIVERSAL CONTRACT STAYS EMPTY, for a different and permanent reason than during the wave: the GROUP IS BROADER THAN THE CAPABILITY. The older instruction ('when the last member migrates, promote it here') assumed group == legend-carrying members; it does not. The hook therefore stays on each of the four members' extraContracts, which is where a per-capability hook belongs. The real fix is the already-logged open item — a per-member behaviour OPT-IN in the registry schema (which would also stop Chart-sparkline carrying an inert legend payload); that is a schema change and Dave's call, not a lane's. What stays member-specific: class=\"dv-leg-sw and the value/percent tip hooks (chrome and seg vocabulary differ per member — bar and combo and line carry no value⇄percent seg, so they carry no typed tips). NAMING: the family is .dv-leg* (list .dv-leg, row .dv-legrow, controls .dv-leg-sw / .dv-leg-item / .dv-leg-reset). The v5.5 prototype called the list .lg, which COLLIDES with canon's .seg.lg size variant — the blast-radius gate caught it on first build. State classes .is-ghost/.is-faded/.is-peek keep their names because DV-D11 inscribes them verbatim. ★ RESOLVED 2026-07-28 (ADR-0015 Amendment 2, Dave, TENTATIVE): the per-member OPT-IN this note asked for now exists — a universal-default consumes-manifest on the member object (absent = everything, unchanged; declared = only what is listed; fail-loud both ways, gen_component_partials.py). And a correction, kept as loud as the claim: this note’s aside that Chart-scatter is a group member was DRIFT — $members never listed it and it carries 0 AUTO-BEHAVIOUR markers (measured #26); the promotion trial’s member-side failure was Chart-sparkline alone. First narrow declaration lands with DV-J2 (scatter joins consuming dv-behaviour only). ★ PROMOTED 2026-08-01 (#68-D2, Dave ruled the cleanup wave): class=\"dv-legrow now IS the universal contract — the ‘permanent’ stays-empty reasoning above aged out when Amendment 2’s consumes-manifest landed: contract checks are gated by each member’s declared consumes (gen_component_partials.py), so Chart-sparkline (consumes dv-behaviour only) is untouchable by dv-legend’s contract. The reversal record above is kept verbatim; this line supersedes its conclusion, not its evidence."
+        },
+        "dv-donut-sweep": {
+          "source": "canon/dv-donut-sweep.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-a1=\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The DONUT RADIAL-SWEEP INTRO — DV-D12 alone. THIRD behaviour source for the group, split out of dv-legend.js 2026-08-02 (#76-D1, Dave) when that file reached 17,035 B against ADR-0015's 16 KB per-source cap and _validate_behaviour.py went RED. WHY THIS SEAM AND NOT ANOTHER: sweepDonut/arcPath/pt hold ZERO references to the legend interaction model (all nine of rec/render/highlight/toggleSwatch/isolate/centreData/updateCentre/hostOf/hiTarget measured at 0 hits), so the cut follows a boundary that already existed rather than one invented to make the numbers work. ⚠ THE SPLIT BUYS NO HEADROOM AND THE GATE ENFORCES THAT, NOT A COMMENT: check_group sums every registered source against the 32 KB page budget, so this file is counted exactly as it was when it lived next door — which is the entire purpose of the 2026-07-26 re-scoping, and the reason registering it was the SECOND half of the split rather than an afterthought. ⛔ The gate read GREEN at 25,055 B / 2 sources in the window between the file being written and this entry existing — a false green caused by content leaving the gate's view, i.e. the exact failure the page budget exists to prevent. CONSUMER SCOPE = Chart-donut ALONE (Dave, #76): the sweep selects path.dv-series[data-a1], which only a donut carries, so bar/line/combo/scatter were shipping it as dead payload. That narrow scope is what lets requires.declarations be HONEST here ('data-a1=' is a hook its one member really carries) — the wider all-five scope would have forced an EMPTY contract, repeating the class=\"dv-legrow promotion failure recorded in the dv-legend entry, where a hook required of every member was one two members could never satisfy. ★ THE MOTION LAW IS SHARED WITH THE STACKED BAR AND ONLY THIS HALF IS BUILT: Dave's stacked-segment ruling (② wording, in force — bottom ease-IN, top ease-OUT, intermediates LINEAR, ONE shared timeline) is this same trapezoidal profile in a different geometry. They share a LAW and CANNOT share an implementation — the bar half must stay CSS (DEF-003 forbids JS transforms), this half must stay JS (an SVG arc's angular extent is not CSS-animatable, Batch 3 #7). The bar half is UNBUILT: animation-timing-function appears 0 times in Chart-bar.reference.html and what ships is a fixed stagger, one of the shapes ② superseded. Logged as its own item at #76, deliberately NOT fixed in this split."
+        },
+        "dp08-anchor": {
+          "source": "canon/dp08-anchor.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dp08-anchor",
+              "data-dp08-target"
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "THE STATUS-STRIP ARRIVAL — s251-D1 (Dave, #251): \"the user might even click on the chip and it anchor links to the needs attention panel\". FOURTH behaviour source for the group, added 2026-09-06 (#251 DP-08 build lane). It is NOT dataviz code, and the name says so: it is registered HERE because a behaviour partial is addressed per GROUP and Template-dashboard-bento is a member of exactly one group with behaviours (`dataviz`) — the probe measured that (notes/_subreports/2026-09-06-251-PROBE-dp08.md finding 9). Whether a Layer-2 template group should exist so a template behaviour does not have to live in the chart group is a RULING-SHAPED QUESTION carried in notes/_subreports/2026-09-06-251-BUILD-dp08.md, not a decision this lane took. CONSUMER SCOPE = Template-dashboard-bento ALONE, which is what lets requires.declarations be HONEST (`data-dp08-anchor` on the chip, `data-dp08-target` on the card): the 14 chart members declare it away in their own `consumes` and carry no payload, the narrow-scope shape the dv-donut-sweep entry above records. ZERO resize listeners by design — the group's ONE rAF-debounced listener stays dv-behaviour's; this behaviour has nothing to reflow. Byte cost at inscription: 1,821 code-only bytes (3,884 raw), taking the Template-dashboard-bento member page from 13,048 to 14,869 of PAGE_BYTES 34,816 (s250-D1, caps UNMOVED)."
+        },
+        "dv-render": {
+          "source": "canon/dv-render.js",
+          "shared": true,
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "dvRender("
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "THE DATA-DRIVEN CHART ENGINE, core — s249-D4 (Dave: the engine is the LIBRARY'S, not a recipe re-typed per build), built #259. FIFTH behaviour source for the group. `window.dvRender(figureEl, spec)` turns a data spec {type, categories, series:[{name, values, role}], format, unit} into the dv-fit SVG grammar canon/dv-behaviour.js already fits, writes the figure's <table> spine from the same numbers (so popover value == table value by construction, not by care), sets the svg's accessible name, and dispatches ONE `resize` so dv-behaviour's single rAF-debounced listener re-fits the fresh marks. It REPLACES rule 18 of ADS-generate-from-canon — the interim 'author the geometry yourself' recipe that five cold runs re-typed five different ways. WHY A SEPARATE SOURCE FROM dv-behaviour: the fit engine is the CONSUMER of this grammar and the renderer is its PRODUCER; they share a contract, not a lifetime, and dv-behaviour has 3.3 KB of code-only headroom against the 16 KB cap while this file needs 9. THE TYPE REGISTRY IS THE SEAM: `dvRender.types[name] = fn(ctx)`, so a type partial (dv-render-bar and its five siblings) owns the MARKS only and no type lane ever edits this file or the registry. requires `dvRender(` — a consumer that carries the engine and never calls it has an empty canvas and no way to know."
+        },
+        "dv-render-bar": {
+          "source": "canon/dv-render-bar.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": [
+              "data-dv-type=\""
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The BAR TYPE PARTIAL for dv-render — column, grouped-column, stacked-column and the horizontal bar, registered #259 as the REFERENCE IMPLEMENTATION the five sibling type partials are written against. One routine, two flags (horiz, stack): a grouped column and a horizontal bar are the same arithmetic with the band and value axes exchanged, and writing them twice is how the two copies drift. Enacts dv-004 (2px of REAL geometry between adjacent blocks, cut off the block below a join so the top segment still reads its true total), s116-D1 (24px thickness floor wherever the band can pay for it), DV-D09 (horizontal single-series default = data/series/3), dv-bar-007 (a negative on a horizontal bar THROWS, named) and §04.3 (>=2 series ⇒ an on-chart letter key, so colour is never the only channel). requires `data-dv-type=\"` — the figure must say which bar it is; the engine reads the type off the spec, the gate reads it off the figure, and a disagreement between them is the defect this catches."
+        },
+        "dv-render-line": {
+          "source": "canon/dv-render-line.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$description": "dv-render TYPE PARTIAL — line/multiline. Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
+        },
+        "dv-render-stacked-area": {
+          "source": "canon/dv-render-stacked-area.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$description": "dv-render TYPE PARTIAL — stacked-area. Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
+        },
+        "dv-render-donut": {
+          "source": "canon/dv-render-donut.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$description": "dv-render TYPE PARTIAL — donut/pie. Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
+        },
+        "dv-render-sparkline": {
+          "source": "canon/dv-render-sparkline.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$description": "dv-render TYPE PARTIAL — sparkline. Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
+        },
+        "dv-render-combo": {
+          "source": "canon/dv-render-combo.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$description": "dv-render TYPE PARTIAL — combo (composes column + line). Built #259. Registers dvRender.types[...] and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. No declaration contract: a composing consumer (Chart-combo) consumes bar+line without declaring itself either."
+        },
+          "dv-render-scatter": {
+            "source": "canon/dv-render-scatter.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — scatter. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.scatter and draws MARKS only from ctx; the core (dv-render) owns the value scale, the y furniture, the table spine and the resize dispatch. TWO things this partial owns that no sibling does: (1) a NUMERIC X AXIS — every other type reads spec.categories as a band, but a scatter's x is a measurement, so this partial parses a number out of each category and scales x by it (falling back to band centres when any category is not a number), and emits the second axis's gridlines and tick labels itself off dvRender.util.nice; the missing spec field is filed as a core request in knowledge/_tmp/260/scatter.core-requests.md. (2) SHAPE as the non-colour channel (§04.3) — circle/square/diamond/triangle by series index, each `.dv-mk` so the fit moves the glyph instead of stretching it, each wrapped in `g.dv-marker[data-fx][data-x0]` because fitOne branches on TAG and has no circle branch (the #72 discharge shape), each with an invisible r=12 `circle.dv-hit` carrying the interactive attributes (AA 2.5.8 / s116-D1: a 24px target around a 9px mark). requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          },
+          "dv-render-histogram": {
+            "source": "canon/dv-render-histogram.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — histogram. Built #260 (s259-D1, the fast follower to the #259 engine). Registers dvRender.types.histogram and draws MARKS only from ctx; the core (dv-render) owns the value scale, the axis furniture, the table spine and the resize dispatch. WHAT MAKES IT NOT `column`: the bins are CONTIGUOUS — band = plotW / bins and the mark IS the whole band — because the variable underneath is continuous and a gutter there would assert a range with no data in it. The 2px separation of adjacent filled blocks is therefore met by the page-coloured stroke canon.css already puts on `:where(.cn-chart-histogram) rect.dv-series` (#96-D3), NOT by geometry; cutting a geometric gap would destroy the contiguity the type exists to show, and _validate_dataviz scopes dv-004 to donut/pie/stacked and never reads this type. Two loud refusals: a SECOND series throws (a histogram is one distribution — grouped-column and stacked-column already exist for more) and a NEGATIVE frequency throws (dv-bar-009: a count below zero is a data defect, and drawing it downward would hide one). Bin labels thin themselves when the band cannot afford them, keeping the first and, where it does not collide, the last. requires `data-dv-type=\"` — the figure must say which chart it is; the engine reads the type off the spec and the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          },
+          "dv-render-boxplot": {
+            "source": "canon/dv-render-boxplot.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": []
+            },
+            "$manifestBinds": {},
+            "$description": "dv-render TYPE PARTIAL — boxplot. Built #260 (s259-D1 fast follower). Registers dvRender.types.boxplot and draws MARKS only from ctx; the core (dv-render) owns scale, furniture, table spine, resize dispatch. THE FIVE-NUMBER SUMMARY IS FIVE SERIES IN ORDER (Minimum, Q1, Median, Q3, Maximum) and any further series is an OUTLIER CANDIDATE, drawn only where the value escapes the whiskers — the s249-D4 spec is not extended. No declaration contract: a composing consumer consumes it without declaring itself."
+          },
+          "dv-render-bullet": {
+            "source": "canon/dv-render-bullet.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The BULLET TYPE PARTIAL for dv-render — one KPI per ROW: a measure bar read against a comparative target marker, with the qualitative performance bands behind both. Registered #260 as the first of the s259-D1 fast-follower types. The value axis runs ACROSS x (fn.axis = \"x\", the horizontal-bar arm of the core's furniture switch) and fn.domain returns the RANGE TOP rather than the largest measure, because a bullet is read against its bands — the one thing the core cannot infer from `series` alone. Enacts #96-D1 ② (row pitch 60px, the RULED constant, CAPPED and never stretched, so filtering a row out leaves the survivors' bands identical), #96-D1 ③ (the canon greys --dv-range-1/2/3, minted nothing, and a fourth band throws because a fourth token does not exist), the brief-ruled bindings (measure = data/series/1, marker = ink) and the bands→bar→marker z-order, which in SVG is DOM order and nothing else. Carries ONE spec extension, `ranges`, declared and validated by the partial itself — a bullet without its qualitative bands is a horizontal bar. ⚠ Discards the core's cartesian furniture (ctx.out.length = 0, the donut/sparkline work-around) and emits the one piece a bullet owns, the vertical zero baseline; core request filed at knowledge/_tmp/260/bullet.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes, so a consumer that carries a type partial has said which type it draws."
+          },
+          "dv-render-candlestick": {
+            "source": "canon/dv-render-candlestick.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The CANDLESTICK TYPE PARTIAL for dv-render — open/high/low/close per period, one candle per session. Registered #260 as the second of the s259-D1 fast-follower types. OHLC is expressed as FOUR NAMED SERIES IN ORDER (open, high, low, close), which is the s249-D4 spec UNEXTENDED and is why the core's own writeTable emits exactly the columns the promoted snippet baked by hand — ds-027 (Dave, #100) makes that table THE accessibility answer, so it must not be able to drift from the chart. Enacts ds-027's SOLID TWO-STATE encoding (colour is close-vs-open and nothing else, both directions filled, --data-delta-gain/--data-delta-loss consumed verbatim; the #96-D1 ① hollow-up channel stays retired), the OHLC clause only this type can enforce (a high below its own open/close/low, or a low above them, THROWS by name), DV-D02 (every candle rides a g[data-fx][data-x0] that dv-behaviour TRANSLATES, so the 1px wick and the body width survive every container width) and DEF-003 (entry motion is CSS). ⚠ Computes its OWN domain and re-emits its OWN furniture: dv-render.js clamps `if (lo > 0) { lo = 0; }` AFTER calling fn.domain (dv-bar-009's zero baseline, right for a bar, catastrophic for a price series), so fn.domain cannot escape it — the same obstacle dv-render-line reported and dv-render-sparkline worked around. Core request filed at knowledge/_tmp/260/candlestick.core-requests.md. requires `data-dv-type=\"` — the same declaration every type partial owes."
+          },
+          "dv-render-butterfly": {
+            "source": "canon/dv-render-butterfly.js",
+            "requires": {
+              "vars": [],
+              "matchValues": [],
+              "declarations": [
+                "data-dv-type=\""
+              ]
+            },
+            "$manifestBinds": {},
+            "$description": "The BUTTERFLY TYPE PARTIAL for dv-render — butterfly-h (mirrored horizontal wings either side of a shared centre gutter) and butterfly-v (mirrored columns above and below one shared baseline), registered #260 as the s259-D1 fast follower. ONE partial for BOTH orientations, on dv-render-bar's argument: the two share the symmetric domain, the pair validation, the DV-D09 fill rule, the mark writer and the wing arithmetic, and only the axis assignment differs — writing them twice is how the two copies drift. The DOMAIN is symmetric ([-M, +M] over the largest magnitude in either wing), which is what makes both wings share ONE scale; the mirror is the SECOND SERIES, not a sign, so a negative inside a wing THROWS, named, and so does a third series. ⛔ It DISCARDS the core's cartesian furniture (`ctx.out.length = 0`, the dv-render-donut move): both reference implementations draw no gridlines and no value-axis ticks by ds-020 declaration, and on a symmetric domain a tick would read \"-40\" under a wing whose value is 40 — a misstatement, not merely a redundancy. See knowledge/_tmp/260/butterfly.core-requests.md. Enacts dv-004 (the two butterfly-v wings MEET at the baseline — the pre-engine bake had 0.0px there and the engine cuts half a GAP off each wing, driven at 2.200px in 8 of 8 theme x mode combinations), s116-D1 (24px thickness floor where the band can pay for it), DV-D09 (the two wings bind data/series/1 and data/series/3, the pair both #token-manifests already declare) and DV-D02 (every x is data-fx / data-fw, INCLUDING the centre gutter, which is a FRACTION of the plot — 0.196, the reference's own 90/460 — precisely so the fit can re-derive it). §04.3 on-chart letter keys are deliberately OMITTED: direction is already the non-colour channel, receipted as a delta from the bar contract since #95. requires `data-dv-type=\"` — the figure must say which butterfly it is; the engine reads the type off the spec, the gate reads it off the figure, and a disagreement between them is the defect this catches."
+          }
+      },
+      "$markup": {
+        "dv-lockup-title": {
+          "source": "Chart-combo",
+          "dataAttr": "data-lockup-title",
+          "render": "text",
+          "mandatory": true,
+          "$description": "dv-lockup (#68, D4 of #66-D6) — the MANDATORY header item: the chart's title, a type composite (t-cm-section-label) via the dv-title form. One MARKUP source block (Chart-combo's cc1 h3, the exemplar) injected into every member's <figure> between AUTO-MARKUP markers, one pair PER figure (dataviz files hold multiple chart-blocks). Per-occurrence value = that figure's own data-lockup-title attribute (never a shared/default string — measuring-tool-must-not-guess applies: an absent attribute on a declared figure is a named loud fail, not a blank title). Closes the drift measured #67: scatter + sparkline never carried the dv-title composite at all."
+        },
+        "dv-lockup-table": {
+          "source": "Chart-combo",
+          "dataAttr": "data-lockup-table",
+          "render": "attr:aria-controls",
+          "mandatory": false,
+          "$description": "dv-lockup (#68) — the OPTIONAL header item: the 'View as table' disclosure. REBUILT #116 under s116-D2 (Dave: \"the table button and pop-over should be a molecule consumed by all of teh charts\"): the injected block is now a <summary class=\"dv-tbl-toggle\"> inside a hand-authored <details class=\"dv-tbl\"> that also wraps that figure's .dv-tablepanel. The disclosure is HTML+CSS and WORKS WITH JS OFF — the previous button + `hidden` + JS split left the table fallback unreachable without JS on every chart but the sparkline (MEASURED #116). canon/dv-behaviour.js now only clamps, moves focus and adds Escape, as progressive enhancement. aria-controls is still rewritten per-occurrence from the figure's data-lockup-table attribute; aria-expanded is GONE — a <summary>'s state is details[open], and a static value would lie with JS off. Sparkline does NOT declare this partial: it is the COMPACT variant of the same native mechanism (inline table, no floating panel, no toolbar chrome) and was the only chart that was already right."
+        }
+      }
+    },
+    "segmented": {
+      "$description": "s229 — THE SEGMENTED GROUP: one source for the segmented control's CONCENTRIC GEOMETRY. ADR-0013 ruling 3 accretion from OBSERVED duplication, and the duplication here was measured three times before the group existed: #227's canon-gap B6 (the chart toggle stayed square in every rounded theme), #227's A1 sweep (eight files repaired BY HAND, four missed entirely) and #229's F1 (the button — a box that only paints in :hover/:focus — carried no radius in any of the twelve). Same class every time: N hand-maintained copies of one geometry contract, with no instrument able to say a copy was missing. Dave ruled the class fix at #229 over the cheaper concentric-family validator: \"fix the class the other solution is a patch not a solution\". SCOPE IS DELIBERATELY NARROW — the partial carries the three border-radius declarations and NOTHING else. The members' hover fills legitimately differ (the charts paint rgba(127,127,127,.14), the atom and the toolbars var(--hover)), their track insets differ (flush in the four templates/View-options, 2px elsewhere) and their heights differ; unifying any of those MOVES PIXELS and is Dave's eye, not a generator's. What the group holds is the one thing that must never diverge: which minted local each of the three concentric boxes reads. $scan is the second half and the half that answers the RCA — a membership sweep no human has to remember to run.",
+      "$members": {
+        "Segmented-control": {
+          "role": "source"
+        },
+        "View-options": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s"
+            }
+          }
+        },
+        "Template-dashboard": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s"
+            }
+          }
+        },
+        "Template-list-index": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s"
+            }
+          }
+        },
+        "Template-report": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s"
+            }
+          }
+        },
+        "Template-settings": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Filter-toolbar-bar": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Chart-bar": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Chart-donut": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Chart-pie": {
+          "selector": ".seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Chart-line": {
+          "selector": ":is(.seg, .dv-toggle-seg)",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-s",
+              "--seg-thumb-s",
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-s": "border-radius/segmented-container/s",
+              "--seg-thumb-s": "border-radius/segmented-thumb/s",
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        },
+        "Chart-combo": {
+          "selector": ".dv-toggle-seg",
+          "extraContract": {
+            "vars": [
+              "--seg-rad-xs",
+              "--seg-thumb-xs"
+            ],
+            "manifestBinds": {
+              "--seg-rad-xs": "border-radius/segmented-container/xs",
+              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
+            }
+          }
+        }
+      },
+      "$partials": {
+        "seg-concentric": {
+          "source": "Segmented-control",
+          "rootSelector": ".seg",
+          "requires": {
+            "vars": [
+              "--seg-rad",
+              "--seg-thumb"
+            ],
+            "matchValues": [],
+            "declarations": [
+              "--seg-rad:var(--seg-rad-",
+              "--seg-thumb:var(--seg-thumb-"
+            ]
+          },
+          "$manifestBinds": {},
+          "$description": "The CONCENTRIC CONTRACT: track reads --seg-rad, sliding thumb and button read --seg-thumb. The thumb and the button are geometrically the SAME box (both fill the track's content box), so they read the SAME local — concentric by construction, never independently chosen. The button binding sits on the BASE rule, not on :hover, so hover, focus-visible and any future state inherit the corner from the box itself (s229 F1: a state box is a box). requires.vars are the two SCALE-SELECTED locals every member must declare; requires.declarations assert those locals are bound to a MINTED var (--seg-rad-<scale>) and not to a literal, which is the s200-D1 mint-time-derivation rule expressed as a build gate. matchValues is empty ON PURPOSE: members legitimately select different scales (the atom carries four, the charts s+xs, the templates s alone), so the VALUE must be free while the SHAPE is held. The per-scale manifest bindings ride each member's extraContract for the same reason."
+        }
+      },
+      "$scan": {
+        "selectors": [
+          ".seg",
+          ".dv-toggle-seg"
+        ],
+        "$description": "MEMBERSHIP COMPLETENESS (s229) — the half that closes the RCA. A PARTIAL group holds its MEMBERS byte-identical; it is blind to a snippet that grows a segmented control and never joins, which is exactly how #227's hand sweep left four files square. This scan reads every snippet's LIVE <style> CSS (HTML comments masked, CSS comments stripped) and requires every file that declares a rule on one of these selectors to be a registered member OR to carry a reasoned $exempt entry. A blank reason refuses; an exemption that also appears in $members refuses; an exemption naming a file that no longer declares the selector refuses (exemptions may not rot); a member that declares no such rule refuses. ⛔ NOT a substitute for eyes on a render: it proves membership, never geometry.",
+        "$exempt": {
+          "Tab-bar": "NOT the segmented atom. Tab-bar's `.seg` is the MOBILE PILL nav lozenge — 56px track, `border-radius:999px` on both track and indicator, `.seg__item` anchors rather than buttons, no aria-pressed. The atom's own header records the split: \"the rounded PILL shape is NOT a seg variant (Dave 2026-07-24) — reserved for a MOBILE tab-bar alternative\". Joining would flatten a deliberately round control onto the square themes' 0. The NAME COLLISION is the real finding and is left standing, not silently absorbed: two different atoms both call their track `.seg`. Flagged for Dave at #229, not decided here.",
+          "Table": "DEMO-HARNESS CHROME, and a different construction. Table's `.seg` is the snippet's own headerType variant switcher — the file labels it \"demo controls\" — built the pre-atom way: inter-segment `border-left` dividers, no sliding `.ind`, active state by background and `disabled`. The atom's construction explicitly abandoned the divider (\"NO inter-segment divider — one border frames the whole track\"), and injecting a thumb radius into a control with no thumb, plus a button radius onto divider-separated segments, would round interior corners against their dividers. FOUND BY THIS SWEEP AT s229 (the fifth instance the brief asked for) and reported, NOT fixed: it renders square in every theme, which is a real if minor gap, and it is Dave's call whether demo chrome follows the theme at all."
+        }
+      }
+    }
+  }
+}

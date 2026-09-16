@@ -1,0 +1,115 @@
+{
+  "name": "Image block",
+  "category": "molecule",
+  "purpose": "A media block using real figure/figcaption semantics: an image area plus an optional caption and an optional attribution line, with aspect-ratio variants on the 4px grid and a loading/skeleton state borrowed verbatim from Skeleton-loader. PROPOSED at #210 wave-4 lane C; not registered, not ruled.",
+  "props": [
+    { "name": "aspectRatio", "type": "enum", "values": ["16:9", "4:3", "1:1", "3:4"], "default": "16:9", "$note": "Declared once on .media via the CSS aspect-ratio property — a ratio, not a pixel value; the 4px grid discipline is enforced on every SURROUNDING measurement (figcaption padding 12/16, gap 4, line heights) rather than on the ratio itself." },
+    { "name": "caption", "type": "string", "$note": "Optional. When present, renders as the first paragraph inside <figcaption>, bound to .t-cm-caption." },
+    { "name": "attribution", "type": "string", "$note": "Optional, independent of caption. Renders as a second paragraph inside the SAME <figcaption> (not a sibling landmark) so one AT pass reads both, bound to .t-cm-legal." },
+    { "name": "state", "type": "enum", "values": ["loaded", "loading", "broken"], "default": "loaded", "$note": "loading borrows Skeleton-loader's .bone atom + token pair verbatim. broken swaps the media area for the byte-matched informative/broken-image.svg glyph, centred, no invented icon." }
+  ],
+  "variants": [
+    { "name": "16:9", "use": "Hero / video-adjacent crops." },
+    { "name": "4:3", "use": "Classic photo crop." },
+    { "name": "1:1", "use": "Square / avatar-scale media." },
+    { "name": "3:4", "use": "Portrait crop (mobile app-store style listings)." }
+  ],
+  "tokens": {
+    "font-family": "n/a for the media area; captions use .t-cm-caption, attribution uses .t-cm-legal",
+    "media": "tertiary/background/hover as the placeholder fill (--ph-fill), form/border/default as the diagonal corner-mark stroke (--ph-mark) — the same bone pair Skeleton-loader already uses for its media bone, deliberately kept in sync",
+    "shell": "border/subtle + border-radius/surface for the figure's own shell, matching Cards' surface discipline",
+    "$contrast": "No contrast pair declared for the placeholder fill itself (decorative, role=img with a real aria-label carries the meaning, not the pixels) — captions and attribution both declare pairs against the surface."
+  },
+  "motion": {
+    "shimmer": "Loading state's shimmer is Skeleton-loader's own keyframe, byte-identical (background-position sweep, 1.4s linear infinite).",
+    "reducedMotion": "Shimmer and gradient removed under prefers-reduced-motion: reduce — static bone, shape alone carries the loading read (2.3.3), same as Skeleton-loader.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Width is the container's — no fixed max-width baked into .imgblock; aspect-ratio keeps the media area proportional at any container width with zero JS.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Cards (the media card's .img area is a candidate consumer)", "Carousel (each slide's picture area is this component's media anatomy)", "Page sections", "article bodies"],
+    "mustNotNeighbour": ["Skeleton-loader's own generic media bone for the SAME region (one loading signal per region, same rule Skeleton-loader states for itself)"],
+    "commonPatterns": ["editorial figure with caption", "product shot with attribution", "hero crop", "gallery grid tile"],
+    "triggeredBy": ["any real photograph, illustration or diagram that needs a caption or credit line"]
+  },
+  "accessibility": {
+    "role": "The placeholder <svg> carries role=\"img\" + a descriptive aria-label naming what the crop would show — never a blank or generic announcement. A real deployment swaps the <svg> for <img alt=\"…\">, same alt-text discipline. The loading region carries role=\"status\" + aria-busy=\"true\" + a visually-hidden 'Loading image', identical wiring to Skeleton-loader.",
+    "name": "figcaption is the native accessible association for the caption/attribution pair — no aria-labelledby needed.",
+    "keyboard": "Nothing focusable in the static states; a real <img> would not be focusable either. If the block becomes a link (e.g. inside a media card), the LINK carries the interaction, not this component.",
+    "focus": "n/a — no interactive elements at this layer.",
+    "nonText": "Placeholder rectangles are decorative pattern-fills; the aria-label is what carries meaning to AT, and 1.4.11 does not apply to the fill itself for the same reason it does not apply to Skeleton-loader's bones.",
+    "relatedSC": ["1.1.1 Non-text Content", "1.4.11 Non-text Contrast (exempt for the decorative fill)", "4.1.3 Status Messages", "2.3.3 Animation from Interactions"]
+  },
+  "antiPatterns": [
+    "Real or fake photography standing in for the placeholder — SVG rect placeholders only, per the wave-4 DO-NOT-RULE",
+    "A second, differently-styled placeholder mechanism instead of reusing Skeleton-loader's bone atom",
+    "An attribution line with no visible caption above it and no aria-label explaining the credit's subject",
+    "A drawn broken-image glyph instead of the byte-matched informative/broken-image.svg",
+    "Cropping via object-fit without ever declaring aspect-ratio, so the layout jumps when the real asset arrives"
+  ],
+  "tokenValidation": {
+    "date": "2026-08-20",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — bound vars match resolved light+dark; re-verify via _validate_binds_resolve.py per the receipt's claim table (check-D canon-block failure is DECLARED, same class every unregistered wave-4 snippet carries).",
+    "$note": "Built wave 4, lane C (Sonnet), #210. Loading state deliberately shares Skeleton-loader's token pair rather than minting a parallel one."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Image-block.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:cards-the-media-card-s-img-area-is-a-candidate-consumer",
+        "$note": "Cards (the media card's .img area is a candidate consumer)"
+      },
+      {
+        "ref": "context:carousel-each-slide-s-picture-area-is-this-component-s-media-anatomy",
+        "$note": "Carousel (each slide's picture area is this component's media anatomy)"
+      },
+      {
+        "ref": "context:page-sections",
+        "$note": "Page sections"
+      },
+      {
+        "ref": "context:article-bodies",
+        "$note": "article bodies"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:editorial-figure-with-caption"
+      },
+      {
+        "ref": "pattern:product-shot-with-attribution"
+      },
+      {
+        "ref": "pattern:hero-crop"
+      },
+      {
+        "ref": "pattern:gallery-grid-tile"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Skeleton-loader's own generic media bone for the SAME region (one loading signal per region, same rule Skeleton-loader states for itself)"
+      }
+    ],
+    "triggeredBy": [
+      {
+        "ref": null,
+        "$note": "any real photograph, illustration or diagram that needs a caption or credit line"
+      }
+    ]
+  }
+}

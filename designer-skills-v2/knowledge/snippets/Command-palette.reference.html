@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command palette — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Command palette / global search (gated). Itinerary row 35, P2.
+     A modal, keyboard-first launcher: one query field over a GROUPED result listbox, where a
+     result may be a NAVIGATION target or an ACTION to run. Opened by a shortcut, driven by
+     arrow keys, committed by Enter, dismissed by Esc.
+
+     HOW THIS DIFFERS FROM ITS GATED NEIGHBOURS — read before extending:
+       • Search field (gated) is the FIELD only, inline in a page, results elsewhere. This
+         composes that same field chrome inside a dialog and owns the results surface too.
+       • Dropdown (gated) is a menu of actions hung off a trigger, `role="menu"`, no query.
+       • Modals (gated) is the generic centred dialog. This is a top-anchored, single-purpose
+         dialog whose entire body is one combobox — it does not take arbitrary content.
+       • Navigations (gated) carries the masthead's SEARCH FLYOUT. That flyout searches
+         CONTENT; this searches the application's own commands and destinations as well, and
+         is reachable without the mouse. PROPOSED #203, Dave's eye owed: whether the masthead
+         search flyout should become a placement of this component or stay separate.
+
+     STILL-VISIBLE BY CONSTRUCTION (the #203 Lane D lesson): the palette is NOT position:fixed.
+     Every specimen renders inside a bounded `.cp-stage` that plays the part of the app behind
+     it, so the component appears in a screenshot, a showroom thumbnail and a review pane with
+     no JS and no local override. Real placements swap `.cp-stage` for the viewport.
+
+     ACTIVE-OPTION INK, deliberate: the highlighted option carries a 3px INK bar
+     (text/default, s175-D1) plus a surface change plus aria-selected — never hue alone
+     (Dave is astigmatic; red/yellow are problem hues). Brand red is reserved in this family
+     for "you are HERE" (Sidebar nav / Anchor nav), not for a transient cursor. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: this snippet declares NO raw font-family, font-size or font-weight anywhere —
+     every text element carries a .t-cm-* composite from canon/type.css (the Progress-bar
+     precedent, #174). TYPE-002 contribution: 0. */
+  :root{ --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --panel:#FFFFFF; --cp-scrim:#00000080; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --cp-rule:#F0F0F0; --hover:#F0F0F0; --field-active:#000000; --focus:#305A85; --shadow:#00000033; --elev-border:#FFFFFF00; --radius:0; }
+  [data-theme="dark"]{ --page:#1A1A1A; --panel:#1F1F1F; --cp-scrim:#00000080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --cp-rule:#808080; --hover:#232323; --field-active:#FFFFFF; --focus:#4587A7; --shadow:#000000D9; --elev-border:#808080; --radius:0; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  .specimens{display:flex; flex-direction:column; gap:32px;}
+  .spec-note{color:var(--muted);}                 /* explicit gap above — leading-trim is ON */
+
+  /* ---- the stage: the app behind the palette, bounded so the component is visible at rest ---- */
+  .cp-stage{position:relative; overflow:hidden; height:460px; max-width:820px;
+            background:var(--page); border:1px solid var(--cp-rule); border-radius:var(--radius);}
+  .cp-stage-mock{padding:20px; display:flex; flex-direction:column; gap:12px;}
+  .cp-stage-mock span{display:block; height:12px; background:var(--cp-rule);}
+  .cp-stage-mock span:nth-child(1){width:38%;} .cp-stage-mock span:nth-child(2){width:72%;}
+  .cp-stage-mock span:nth-child(3){width:64%;} .cp-stage-mock span:nth-child(4){width:80%;}
+  .cp-stage-mock span:nth-child(5){width:46%;}
+  .cp-scrim{position:absolute; inset:0; background:var(--cp-scrim);}
+
+  /* ---- the panel ---- */
+  .cp{position:absolute; left:50%; transform:translateX(-50%); top:40px;
+      width:min(560px, calc(100% - 32px)); background:var(--panel);
+      border:1px solid var(--elev-border); border-radius:var(--radius);
+      box-shadow:0 8px 24px var(--shadow); display:flex; flex-direction:column;
+      max-height:calc(100% - 80px); overflow:hidden;}
+
+  /* ---- the query field: the Search-field chrome, composed, not re-drawn ---- */
+  .cp-field{display:flex; align-items:center; gap:12px; height:48px; flex:none; padding:0 12px;
+            border-bottom:1px solid var(--cp-rule);}
+  /* flex:none added #209 — Dave's eye caught the field rendering 43.9px (populated) vs 33.8px
+     (empty): .cp is a max-height flex column and the field was SHRINKABLE, so its declared 48px
+     lost to whatever height the results list took. MEASURED before/after in a real render. */
+  .cp-field .mag{flex:none; display:inline-flex; width:20px; height:20px; color:var(--icon);}
+  .cp-field .mag svg{width:20px; height:20px; fill:currentColor;}
+  .cp-field input{flex:1; min-width:0; height:100%; border:0; background:transparent;
+                  color:var(--text); outline:none;}
+  .cp-field input::placeholder{color:var(--muted); opacity:.62;}
+  .cp-field input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+  /* focus-within stroke takes form/border/active (INK), not form/border/default — measured:
+     form/border/default is 1.69:1 on the raised surface in Supercharge dark. See the manifest. */
+  .cp-field:focus-within{box-shadow:inset 0 -2px 0 var(--field-active);}
+  .cp-field input:focus-visible{outline:none;}
+
+  /* ---- keycap hints ---- */
+  kbd{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:20px;
+      padding:0 4px; border:1px solid var(--cp-rule); border-radius:var(--radius);
+      color:var(--muted); background:transparent;}
+
+  /* ---- results ---- */
+  .cp-results{overflow:auto; padding:4px 0; scrollbar-gutter:stable;}
+  .cp-group + .cp-group{border-top:1px solid var(--cp-rule); margin-top:4px; padding-top:4px;}
+  .cp-group-label{display:block; padding:8px 16px; color:var(--muted); opacity:.72;}
+  .cp-opt{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 16px;
+          color:var(--text); cursor:pointer; position:relative;
+          transition:background var(--ease);}
+  .cp-opt .oi{flex:none; display:inline-flex; width:18px; height:18px; color:var(--icon);}
+  .cp-opt .oi svg{width:18px; height:18px; fill:currentColor;}
+  .cp-opt .ol{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+              text-box-edge:text text;}              /* truncating label — descenders survive */
+  .cp-opt .om{flex:none; color:var(--muted); opacity:.72;}
+  .cp-opt:hover{background:var(--hover);}
+  /* ACTIVE (aria-activedescendant target): surface + a 3px INK bar + aria-selected.
+     Three carriers, none of them hue. */
+  .cp-opt[aria-selected="true"]{background:var(--hover); box-shadow:inset 3px 0 0 var(--text);}
+  .cp-opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* ---- empty result set ---- */
+  .cp-empty{display:flex; flex-direction:column; gap:4px; padding:28px 16px; color:var(--muted);}
+
+  /* ★ s218-D5 (3) — THE HIDDEN FIX, AT CAUSE. Every one of these classes carries an author
+     `display` rule above, and an AUTHOR rule beats the UA sheet's `[hidden]{display:none}` at any
+     specificity — so the hidden ATTRIBUTE alone did not hide them. #218 drove the consequence:
+     `#cp2-o1` ships `hidden` in the markup and was PAINTED anyway, a phantom option sitting in the
+     a11y tree of a listbox the page calls empty. The behaviour script had been compensating with an
+     inline `style.display` beside every attribute write; that compensation is belt-and-braces now,
+     not the mechanism. ONE LINE, and it must stay AFTER the display rules it corrects.
+     ⬛ The repo-wide `[hidden]`-vs-author-display sweep is a GATES BACKLOG class candidate
+     (s218-D5) — this file is the instance, not the class. */
+  .cp[hidden],.cp-opt[hidden],.cp-empty[hidden],.cp-group[hidden]{display:none}
+
+  /* ---- footer hint bar ---- */
+  .cp-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; min-height:40px;
+           padding:8px 16px; border-top:1px solid var(--cp-rule); color:var(--muted);}
+  .cp-foot .hint{display:inline-flex; align-items:center; gap:8px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol>
+    <symbol id="ic-transfer" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.302 9H10.999L13.999 6L10.999 3H9.302L11.702 5.4H4V6.6H11.702L9.302 9ZM8.698 9H7.002L4.002 12L7.002 15H8.699L6.299 12.6H14V11.4H6.298L8.698 9Z" fill="currentColor"/></symbol>
+    <symbol id="ic-document" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="specimens">
+
+    <!-- 1 · open, with a query, grouped results, one active option -->
+    <div>
+      <p class="spec-note t-cm-caption">Open with a query — destinations and actions in one list</p>
+      <div class="cp-stage">
+        <div class="cp-stage-mock" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="cp-scrim"></div>
+
+        <div class="cp" role="dialog" aria-modal="true" aria-labelledby="cp1-title">
+          <span id="cp1-title" hidden>Command palette</span>
+
+          <div class="cp-field">
+            <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+            <input class="t-cm-input" type="search" role="combobox" aria-autocomplete="list"
+                   aria-expanded="true" aria-controls="cp1-list" aria-activedescendant="cp1-o2"
+                   aria-label="Search commands and destinations" placeholder="Search commands and destinations" value="stat">
+            <kbd class="t-cm-ctl-12">Esc</kbd>
+          </div>
+
+          <div class="cp-results" id="cp1-list" role="listbox" aria-label="Results">
+            <div class="cp-group" role="group" aria-labelledby="cp1-g1">
+              <span class="cp-group-label t-cm-caption" id="cp1-g1">Go to</span>
+              <div class="cp-opt" id="cp1-o1" role="option" aria-selected="false" tabindex="-1">
+                <span class="oi" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></span>
+                <span class="ol t-cm-label">Statements</span>
+                <span class="om t-cm-caption">Accounts</span>
+              </div>
+              <div class="cp-opt" id="cp1-o2" role="option" aria-selected="true" tabindex="-1">
+                <span class="oi" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-document"/></svg></span>
+                <span class="ol t-cm-label">Statement preferences</span>
+                <span class="om t-cm-caption">Settings</span>
+              </div>
+              <div class="cp-opt" id="cp1-o3" role="option" aria-selected="false" tabindex="-1">
+                <span class="oi" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-card"/></svg></span>
+                <span class="ol t-cm-label">Card statement — everyday credit card</span>
+                <span class="om t-cm-caption">Cards</span>
+              </div>
+            </div>
+            <div class="cp-group" role="group" aria-labelledby="cp1-g2">
+              <span class="cp-group-label t-cm-caption" id="cp1-g2">Do</span>
+              <div class="cp-opt" id="cp1-o4" role="option" aria-selected="false" tabindex="-1">
+                <span class="oi" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-document"/></svg></span>
+                <span class="ol t-cm-label">Download last statement</span>
+                <kbd class="om t-cm-ctl-12">D</kbd>
+              </div>
+              <div class="cp-opt" id="cp1-o5" role="option" aria-selected="false" tabindex="-1">
+                <span class="oi" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-transfer"/></svg></span>
+                <span class="ol t-cm-label">Move money between my accounts</span>
+                <kbd class="om t-cm-ctl-12">M</kbd>
+              </div>
+            </div>
+          </div>
+
+          <p class="cp-foot t-cm-caption">
+            <span class="hint"><kbd class="t-cm-ctl-12">&#8593;</kbd><kbd class="t-cm-ctl-12">&#8595;</kbd> to move</span>
+            <span class="hint"><kbd class="t-cm-ctl-12">Enter</kbd> to open</span>
+            <span class="hint"><kbd class="t-cm-ctl-12">Ctrl</kbd><kbd class="t-cm-ctl-12">K</kbd> to reopen</span>
+          </p>
+          <span role="status" hidden>5 results</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 · no matches — the empty result set is part of the component, not an afterthought -->
+    <div>
+      <p class="spec-note t-cm-caption">No matches — the message is a live region, not a silent blank</p>
+      <div class="cp-stage" style="height:280px">
+        <div class="cp-stage-mock" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="cp-scrim"></div>
+
+        <div class="cp" role="dialog" aria-modal="true" aria-labelledby="cp2-title">
+          <span id="cp2-title" hidden>Command palette</span>
+
+          <div class="cp-field">
+            <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+            <input class="t-cm-input" type="search" role="combobox" aria-autocomplete="list"
+                   aria-expanded="true" aria-controls="cp2-list" aria-activedescendant=""
+                   aria-label="Search commands and destinations" placeholder="Search commands and destinations" value="zzzz">
+            <kbd class="t-cm-ctl-12">Esc</kbd>
+          </div>
+
+          <div class="cp-results" id="cp2-list" role="listbox" aria-label="Results">
+            <div class="cp-empty" role="status">
+              <span class="t-cm-label">Nothing matches that</span>
+              <span class="t-ed-caption">Try an account name, a payee, or a word from the action you want.</span>
+            </div>
+            <div class="cp-opt" id="cp2-o1" role="option" aria-selected="false" tabindex="-1" hidden>
+              <span class="ol t-cm-label">Placeholder</span>
+            </div>
+          </div>
+
+          <p class="cp-foot t-cm-caption">
+            <span class="hint"><kbd class="t-cm-ctl-12">Esc</kbd> to close</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Command palette",
+    "vars": {
+      "--page": "background/default",
+      "--panel": "tertiary/background/default",
+      "--cp-scrim": "overlay/version1",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--icon": "icon/default",
+      "--cp-rule": "divider/border/subsection",
+      "--hover": "tertiary/background/hover",
+      "--field-active": "form/border/active",
+      "--focus": "focus/ring",
+      "--shadow": "elevation/functional",
+      "--elev-border": "elevation/border",
+      "--radius": "border-radius/surface"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "form/border/active", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "knownFindings": [
+      "STILL-VISIBLE BY CONSTRUCTION. The panel is position:absolute inside a bounded .cp-stage, never position:fixed, so the component renders at rest in a screenshot, a showroom thumbnail and a review pane with no JS and no page-local override. This is a deliberate answer to the #203 Lane D finding that Popover cannot be seen standing still.",
+      "ACTIVE-OPTION CARRIERS: the aria-activedescendant target declares aria-selected=\"true\", changes surface to tertiary/background/hover, AND carries a 3px inset INK bar (text/default, s175-D1). Three carriers, none of them hue — required because Dave is astigmatic and red/yellow are problem hues. The hover surface change alone measures 1.07:1 against the panel in mono light, which is why it is never the only carrier and is NOT declared as a contrastPair.",
+      "BRAND RED IS DELIBERATELY ABSENT. In this navigation family brand red marks CURRENT LOCATION (Sidebar nav, Anchor nav, and the gated Navigations anchors underline). A palette cursor is transient selection, not location, so it takes ink. PROPOSED #203, Dave's eye owed.",
+      "OVERLAP WITH THE GATED MASTHEAD SEARCH FLYOUT (Navigations meta, flyout=search) is real: both are a modal search surface opened from the global chrome. This component additionally searches ACTIONS and is keyboard-reachable. Whether the flyout becomes a placement of this component or stays separate is a component-promotion question and is NOT resolved here.",
+      "44px MIN HIT AREA enforced by hand — no gate reads target/min. Every .cp-opt is min-height:44px; the field is 48px. The keycap hints are non-interactive labels, not targets.",
+      "A FOUR-THEME MEASUREMENT CHANGED THIS FILE. The first draft bound the field's focus-within stroke to form/border/default, which the MONO-only snippet gate passed at 3.95:1 light / 4.17:1 dark. Measured against the real canon.css in all four themes it is 1.69:1 in SUPERCHARGE DARK (#524842 on #2A2621) — under the 3:1 non-text floor, on the only visible focus affordance the field had. Rebound to form/border/active (INK: 21.00/19.44 light, 16.48/13.91 dark, all four themes). The failing token is the SAME #524842 that #203 Lane D measured at 1.96:1 as the Supercharge-dark elevation hairline — one theme-level seam, found twice from two directions. Queued for _DS-IMPROVEMENTS.md via the receipt; not fixed here, the token files are fenced.",
+      "SHORTCUT BINDING RULED s218-D4 — THE CHORD IS CLAIMED. Command+K on macOS / Ctrl+K elsewhere is the product's documented chord for this component; it is no longer PROPOSED #203. The wiring was already this pair (metaKey OR ctrlKey, Alt excluded) — s218-D4 changed the STATUS, not the behaviour. The footer keycap hint shows the Ctrl leg only; a visible trigger and a platform-aware hint MAY FOLLOW AS MARKUP (s218-D4's own words) and are not built here.",
+      "The snippet gate resolves tokens against tokens/semantic-colour.json — the MONO base only — so it cannot see the Legacy/Console/Supercharge legs of any declared pair. The four-theme figures live in the meta, computed against canon/canon.css."
+    ],
+    "requiredAria": ["role=\"dialog\"", "aria-modal=\"true\"", "role=\"combobox\"", "aria-expanded", "aria-controls", "aria-activedescendant", "role=\"listbox\"", "role=\"group\"", "role=\"option\"", "aria-selected", "role=\"status\"", "aria-label"]
+  }
+  </script>
+  <script type="application/json" id="behaviour-manifest">
+  {
+    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/command-palette.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+    "component": "component:command-palette",
+    "script": "knowledge/snippets/Command-palette.reference.html#script",
+    "partial": null,
+    "events": [
+      "click",
+      "focusin",
+      "input",
+      "keydown"
+    ],
+    "fallback": null
+  }
+  </script>
+
+  <script>
+  /* ------------------------------------------------------------------------------------------
+     BEHAVIOUR — Command palette. Self-contained, vanilla, no external src, no network, no timer.
+
+     HOUSE IDIOM, copied not invented:
+       • Drawer.reference.html — scrim click closes, Esc closes, focus RETURNS to where it came
+         from, background goes inert, and the OPEN ORDER is 1 show · 2 wait two frames ·
+         3 focus in · 4 only then inert. (Setting inert first blurs asynchronously and wipes an
+         earlier focus(); that is the #210/#211 lesson and it is not re-derived here.)
+       • App-shell-side-nav.reference.html — the Escape listener lives on the DOCUMENT, never on
+         the surface, because a surface listener is deaf in every moment before focus lands.
+       • Tabs.reference.html — wrap-around arrow traversal over a list of roles.
+
+     STATE LIVES IN ARIA FIRST: aria-expanded on the combobox, aria-activedescendant on the
+     combobox, aria-selected on the option. Classes are not used to carry state at all.
+
+     ⚠ AT-REST RENDER IS DELIBERATELY UNTOUCHED. Both specimens ship OPEN with their query
+     already typed and their result set already narrowed by hand — that is the whole point of
+     the "STILL-VISIBLE BY CONSTRUCTION" note at the top of this file. init() therefore does NOT
+     re-run the filter over the markup's value, so the screenshot, the showroom thumbnail and the
+     review pane are identical with and without this script.
+     ------------------------------------------------------------------------------------------ */
+  (function(){
+    'use strict';
+
+    /* .cp, .cp-opt, .cp-empty and .cp-group each carry an AUTHOR `display` rule, and an author
+       rule beats the UA sheet's [hidden]{display:none} whatever the specificity. ARIA state stays
+       on the attribute; the pixels follow.
+       ✅ s218-D5 (3): the CAUSE is now fixed in this file's own <style> — one rule,
+       `.cp[hidden],.cp-opt[hidden],.cp-empty[hidden],.cp-group[hidden]{display:none}`. The inline
+       `style.display` written here is kept as belt-and-braces (it also covers a consumer who
+       copies the markup without the stylesheet), but it is no longer the thing doing the hiding.
+       ⛔ Do not "simplify" show() back to `el.hidden = !on` alone AND delete the CSS rule: that
+       pair is exactly the defect — #cp2-o1 ships `hidden` in the markup and was painted anyway. */
+    function show(el, on){
+      if(!el) return;
+      el.hidden = !on;
+      el.style.display = on ? '' : 'none';
+    }
+
+    var palettes = [], active = null, lastClosed = null;
+
+    function paletteOf(node){
+      for(var i = 0; i < palettes.length; i++){
+        if(node && palettes[i].stage.contains(node)) return palettes[i];
+      }
+      return null;
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.cp-stage'), function(stage){
+      var panel = stage.querySelector('.cp[role="dialog"]');
+      if(!panel) return;
+      var scrim  = stage.querySelector('.cp-scrim');
+      var mock   = stage.querySelector('.cp-stage-mock');
+      var input  = panel.querySelector('input[role="combobox"]');
+      var empty  = panel.querySelector('.cp-empty');
+      var live   = panel.querySelector('[role="status"]:not(.cp-empty)');
+      var groups = Array.prototype.slice.call(panel.querySelectorAll('.cp-group'));
+      var all    = Array.prototype.slice.call(panel.querySelectorAll('[role="option"]'));
+      if(!input) return;
+
+      /* an option the author shipped `hidden` is scaffolding, not a result — never filtered
+         back into view, and enacted as hidden so it stops being painted. */
+      var pool = all.filter(function(o){ return !o.hasAttribute('hidden'); });
+      all.forEach(function(o){ if(o.hasAttribute('hidden')) show(o, false); });
+
+      stage.tabIndex = -1;                 /* the fallback focus home — no trigger exists here */
+      var returnTo = null;
+      var P = { stage: stage, panel: panel, input: input };
+
+      function isOpen(){ return panel.hidden !== true; }
+      function shown(){ return pool.filter(function(o){ return !o.hidden; }); }
+      function activeOpt(){
+        var id = input.getAttribute('aria-activedescendant');
+        return id ? panel.querySelector('#' + id) : null;
+      }
+
+      function setActive(opt){
+        pool.forEach(function(o){ o.setAttribute('aria-selected', String(o === opt)); });
+        input.setAttribute('aria-activedescendant', opt ? opt.id : '');
+        if(opt && opt.scrollIntoView) opt.scrollIntoView({ block: 'nearest' });
+      }
+
+      function move(delta){
+        var v = shown();
+        if(!v.length){ setActive(null); return; }
+        var i = v.indexOf(activeOpt());
+        var n = (i < 0) ? (delta > 0 ? 0 : v.length - 1) : (i + delta + v.length) % v.length;
+        setActive(v[n]);
+      }
+
+      function filter(q){
+        var s = String(q || '').trim().toLowerCase();
+        pool.forEach(function(o){
+          var t = (o.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+          show(o, s === '' || t.indexOf(s) !== -1);
+        });
+        groups.forEach(function(g){
+          show(g, g.querySelectorAll('[role="option"]:not([hidden])').length > 0);
+        });
+        var n = shown().length;
+        if(empty) show(empty, n === 0);
+        if(live) live.textContent = n + (n === 1 ? ' result' : ' results');
+        var a = activeOpt();
+        if(!a || a.hidden) setActive(shown()[0] || null);
+      }
+
+      function open(){
+        if(isOpen()){ input.focus(); active = P; return; }
+        var prev = document.activeElement;
+        returnTo = (prev && prev !== document.body && !stage.contains(prev)) ? prev : null;
+        show(panel, true); show(scrim, true);                                    /* 1 SHOW      */
+        stage.setAttribute('data-cp-open', 'true');
+        input.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){      /* 2 TWO FRAMES*/
+          input.focus();                                                         /* 3 FOCUS IN  */
+          if(mock) mock.inert = true;                                            /* 4 THEN INERT*/
+        }); });
+        active = P;
+        if(lastClosed === P) lastClosed = null;
+      }
+
+      function close(){
+        if(!isOpen()) return;
+        show(panel, false); show(scrim, false);
+        stage.setAttribute('data-cp-open', 'false');
+        input.setAttribute('aria-expanded', 'false');
+        if(mock) mock.inert = false;
+        lastClosed = P; active = P;
+        var back = (returnTo && document.contains(returnTo)) ? returnTo : stage;
+        back.focus();
+      }
+
+      P.open = open; P.close = close; P.isOpen = isOpen;
+
+      input.addEventListener('input', function(){ filter(input.value); });
+
+      /* Roving is by aria-activedescendant, per THIS file's markup: focus never leaves the
+         combobox, the options keep tabindex="-1" and only aria-selected moves. Home/End are
+         deliberately NOT claimed — in a text field they belong to the caret, and the footer
+         advertises only ↑ ↓ and Enter. */
+      input.addEventListener('keydown', function(e){
+        if(e.key === 'ArrowDown'){ e.preventDefault(); move(1); }
+        else if(e.key === 'ArrowUp'){ e.preventDefault(); move(-1); }
+        else if(e.key === 'Enter'){
+          e.preventDefault();
+          var o = activeOpt();
+          if(o && !o.hidden){ panel.setAttribute('data-cp-activated', o.id); close(); }
+        }
+      });
+
+      pool.forEach(function(o){
+        o.addEventListener('click', function(){
+          setActive(o);
+          panel.setAttribute('data-cp-activated', o.id);
+          close();
+        });
+      });
+
+      if(scrim) scrim.addEventListener('click', close);
+      stage.addEventListener('focusin', function(){ active = P; });
+
+      /* INIT — assert the invariants the markup already claims, and nothing more. */
+      panel.hidden = false;
+      stage.setAttribute('data-cp-open', 'true');
+      if(mock) mock.inert = true;
+      palettes.push(P);
+      if(!active) active = P;
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        var p = paletteOf(document.activeElement) || active;
+        if(p && p.isOpen()){ e.preventDefault(); p.close(); }
+        return;
+      }
+      /* ★ THE CHORD IS CLAIMED — s218-D4: Command+K on macOS / Ctrl+K elsewhere is the product's
+         documented chord. The wiring below is UNCHANGED (it already honoured both legs, with Alt
+         excluded so Ctrl+Alt+K stays free); s218-D4 moved it from PROPOSED #203 to ruled. */
+      if((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')){
+        e.preventDefault();
+        var t = lastClosed || active || palettes[0];
+        if(t) t.open();
+      }
+    });
+  })();
+  </script>
+  </body>
+</html>

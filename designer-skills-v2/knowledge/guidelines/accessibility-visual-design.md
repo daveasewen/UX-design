@@ -49,7 +49,7 @@ at source.*
   images are AT-ignorable; **never "Image of…", "Link to…", "Picture of…", "Add
   button"**; verbose alts harm speech-output users; unclear-purpose images should be
   replaced with ones that tell the story (HSBC's text-heavy pages especially). Visual
-  designers deliver alt-text WITH assets. [SPLIT RULING 2026-07-03: **prefix half GATED**
+  designers deliver alt-text WITH assets. [BLOCKING — SPLIT RULING 2026-07-03: **prefix half GATED**
   (RULED STRAIGHT TO BLOCKING; pre-swept 0 signals) — "Image of…"/"Picture of…"/
   "Link to…"-class alt/aria-label prefixes = snippet gate check 7, bite-tested. **Role-
   suffix half ADVISORY** (check G) — aria-label ending "… button"/"… link" had 4 live

@@ -2,6 +2,17 @@
   "name": "Button",
   "category": "atom",
   "purpose": "A control that triggers an action. Four emphasis levels form a hierarchy — primary (highest emphasis, the main action), secondary, tertiary (outlined), and quaternary (lowest emphasis / borderless). Available on-light and on-dark, in a default and a Large size.",
+  "provides": "action",
+  "answers": "what-can-i-do",
+  "shape": "no-data × control",
+  "span": {
+    "cols": {
+      "min": 1,
+      "max": 4
+    }
+  },
+  "priority": 60,
+  "when": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text — the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.",
   "props": [
     {
       "name": "type",
@@ -12,8 +23,7 @@
         "tertiary",
         "quaternary"
       ],
-      "default": "primary"
-    },
+      "default": "primary", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Prose 'font-5/medium' inscribed as the variant's typographic parameter -- preserved, not erased. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "state",
       "type": "enum",
@@ -26,8 +36,7 @@
         "success"
       ],
       "default": "default",
-      "$note": "processing + success seen on primary (rag/success); confirm which states apply to each type."
-    },
+      "$note": "processing + success seen on primary (rag/success); confirm which states apply to each type.", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "size",
       "type": "enum",
@@ -36,8 +45,7 @@
         "large"
       ],
       "default": "default",
-      "$note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height."
-    },
+      "$note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.", "binds": {"default": "icon", "large": "icon.large", "target-min": "target.min"}, "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp + interactive target.min floor per the row's address. 'large' matches an icon-scale rung; 'default' has no name correspondence, bound to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     {
       "name": "surface",
       "type": "enum",
@@ -45,8 +53,7 @@
         "on-light",
         "on-dark"
       ],
-      "default": "on-light"
-    }
+      "default": "on-light", "binds": "background.default", "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."}
   ],
   "variants": [
     {
@@ -67,7 +74,10 @@
     }
   ],
   "tokens": {
-    "type-style": "font-5/medium (16px medium)",
+    "type-style": {
+      "value": "font-5/medium",
+      "$note": "(16px medium)"
+    },
     "font-family": "typography/font-family/default",
     "primary": {
       "label": "text/reverse",
@@ -80,7 +90,10 @@
       "depricate (on-light)": "interactive (depricate)/on-light/surface/brand-1/default"
     },
     "secondary": {
-      "label": "text/on-inverse (NOT text/reverse) — secondary inverts to a light fill in dark, so flat-white text/reverse would be white-on-white; text/on-inverse is #FFF light / #333 dark (decision: Dave 2026-06-19)",
+      "label": {
+        "value": "text/on-inverse (NOT text/reverse)",
+        "$note": "secondary inverts to a light fill in dark, so flat-white text/reverse would be white-on-white; text/on-inverse is #FFF light / #333 dark (decision: Dave 2026-06-19)"
+      },
       "icon": "icon/default-reverse",
       "background-default": "secondary/background/default",
       "background-hover": "secondary/background/hover",
@@ -204,5 +217,156 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:64:90",
     "code_path": ""
+  },
+  "edges": {
+    "$obeys-contract": "AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is one line, written by reading the rule and this meta together, reviewed by eye. RATIFIED s276-D3 + s276-D4 (Dave's page export 2026-09-15T19:08:48.621Z — D-3 a, D-4 a — plus his 'go' on the read-back).",
+    "obeys": [
+      {
+        "ref": "rule:ctkb-002",
+        "$why": "Rank semantics for primary/secondary/tertiary/quaternary IS this meta's four-level emphasis hierarchy, stated as a rule."
+      },
+      {
+        "ref": "rule:ctkb-003",
+        "$why": "Cardinality — one primary and/or one secondary per page, never both in one group — a composition constraint on this atom."
+      },
+      {
+        "ref": "rule:ctkb-004",
+        "$why": "The buttons-vs-links boundary tells you when this atom is the WRONG answer, which is the `when` gate half of the meta."
+      },
+      {
+        "ref": "rule:ctkb-005",
+        "$why": "The two width modes (set vs dynamic, with fixed side padding) are this atom's width props in prose."
+      },
+      {
+        "ref": "rule:ctkb-006",
+        "$why": "8px between buttons and the primary ALWAYS first — a group-layout rule for this atom's commonest pattern."
+      },
+      {
+        "ref": "rule:ctkb-007",
+        "$why": "Stacking and full-width differ by platform (app always full width, web keeps dynamic widths) — binds the meta's `responsive` block."
+      },
+      {
+        "ref": "rule:ctkb-008",
+        "$why": "Placement: web left aligned, app bottom, processes back-left/continue-right with the primary stacking on top on small viewports."
+      },
+      {
+        "ref": "rule:ctkb-009",
+        "$why": "Buttons are always rectangular, never rounded — a shape token fixed for this atom."
+      },
+      {
+        "ref": "rule:ctkb-010",
+        "$why": "Label centred both ways, fixed side padding in BOTH width modes, copy should not wrap — the geometry of this atom's label slot."
+      },
+      {
+        "ref": "rule:ctkb-011",
+        "$why": "Icons in buttons: globally recognised only, used sparingly, from a blessed list, in three structural variations (label / icon-label / icon-only) — fixes this atom's icon prop."
+      },
+      {
+        "ref": "rule:ctkb-012",
+        "$why": "The app 'button activity' contract (loading indicator → RAG notification state → resolution, with an accessible label) is the contract behind this meta's `processing` and `sucess (app)` variants."
+      },
+      {
+        "ref": "rule:ctkb-013",
+        "$why": "Button copy: sentence case, ≤5 words, action verbs, precise, 'Continue' not 'Next' — the content contract for this atom's only slot."
+      },
+      {
+        "ref": "rule:ctkb-014",
+        "$why": "Accessible name = the visible label, and target ≥44×44 covering the ENTIRE container — the accessibility contract, and 2.5.3 Label in Name kin (one of the 17 this lane proposes)."
+      },
+      {
+        "ref": "rule:ctkb-015",
+        "$why": "OPEN: the quaternary-inline contradiction between the guide and the app standard. Destiny REVIEW, deferred by Dave 2026-07-03 — recorded here because it binds this atom and is unresolved, not because it is settled."
+      },
+      {
+        "ref": "ux:pr-fitts",
+        "$why": "ctkb-014's ≥44×44 over the entire container, and ctkb-005's fixed side padding, set target size directly."
+      },
+      {
+        "ref": "ux:pr-hick",
+        "$why": "ctkb-003's one-primary-per-page cardinality reduces the set of equally weighted choices to one."
+      },
+      {
+        "ref": "ux:pr-speed-accuracy",
+        "$why": "ctkb-006's 8px gap and primary-first order make the fast path also the safe one — adjacency is where mis-hits come from."
+      }
+    ],
+    "renderedBy": [
+      {
+        "ref": "snippet:Button.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      },
+      {
+        "ref": "component:banner",
+        "$note": "Banner"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:form",
+        "$note": "Form"
+      },
+      {
+        "ref": "context:dialog-modal",
+        "$note": "Dialog/Modal"
+      },
+      {
+        "ref": "context:page-header",
+        "$note": "Page header"
+      },
+      {
+        "ref": "context:toolbar",
+        "$note": "Toolbar"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:primary-secondary-action-pair"
+      },
+      {
+        "ref": "pattern:form-submit"
+      },
+      {
+        "ref": "pattern:dialog-confirm-cancel"
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:ds-026"
+      },
+      {
+        "ref": "ruling:ds-032"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:action"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:what-can-i-do"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:no-data × control"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:icon-button"
+      },
+      {
+        "ref": "component:split-button"
+      },
+      {
+        "ref": "component:links"
+      }
+    ]
   }
 }

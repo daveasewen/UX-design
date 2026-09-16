@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPI tile — reference implementation (PROPOSED #203, redesigned #261)</title>
+<!--
+  ⚠⚠ PROPOSED #203, REDESIGNED #261 (2026-09-08, lane K). NOT GATED, NOT PROMOTED, NOT RULED.
+  Dave's eye owed on every judgment below. This file is a SPECIMEN for review, built through the
+  gated-component route so it is reviewable at the same fidelity as a gated snippet — but the
+  component it specimens is FLOATED, NOT RULED, and it must not be read as canon.
+
+  ★★ WHY "PROPOSED" IS LOAD-BEARING HERE — s182-D2 (#182) names this exact component and
+  explicitly declines to rule it. Dave, verbatim, quoted in the ruling: "might be a partially
+  built trend card with option, I haven't decided yet". The ruling's own words: "FLOATED, NOT
+  RULED: the trend-card component itself — never launder into a ruling." Row 55 of the
+  2026-07-14 itinerary ("KPI / trend tile — Metric + delta + spark") is therefore NOT an
+  ordinary gap a worker may close. It is Dave's open question, and this file is the drawn
+  proposal that lets him answer it by eye. Nothing here closes it. #261 REDESIGNS the drawing
+  on Dave's nomination ("every cold run reached for the same one chart"); it does not promote it.
+
+  ── WHAT #261 CHANGED, and why ──────────────────────────────────────────────────────────────
+  1. BENTO SPANS ARE REAL. The board is a 12-column grid and every tile declares a span the meta
+     already legalises (cols 3–6): compact/default span 3, with-target span 4, hero span 6. Two
+     breakpoints re-span rather than reflow (s248-D3 — anything placed in a bento tile must be
+     responsive, because an edit mode is coming).
+  2. THE STACK IS SLOT-ALIGNED — but THE TEXT LAYOUT IS THE ORIGINAL'S (#261 K2). Dave, verbatim:
+     "I prefer the text layout in the original". So label · big value · ONE delta line reading
+     "▲ +12.4% up  vs February" — the period sits INSIDE the delta row, as it did at #203, not on
+     a fourth stacked line; and the value keeps the Amount-display recipe (no inter-part gap, no
+     dimmed unit). The slot reservation below is alignment, not typography, and survives.
+     Every row reserves `min-height:var(--slot)` — the height each
+     type composite already publishes in type.css and which is inert until something reads it.
+     Reading it here means the label / value / delta rows of NEIGHBOURING tiles line up even
+     when one tile has no delta, which is the thing that makes a dense board look built rather
+     than assembled. Leading-trim is on, so every gap is an explicit token (2/4/8/12).
+  3. THE DELTA GLYPH IS THE LIBRARY `direction` ARROW, ROTATED. Dave's review of #261 K, verbatim:
+     "please use the arrow from the assets I think its called 'direction' there is only up down
+     left and right, maybe we can rotate to get the 45 degree angle". Enacted #261 K2: geometry
+     byte-matched from assets/icons/global-controls/direction-up.svg · direction-down.svg ·
+     direction-right.svg, and the diagonal is a CSS transform on the icon — up-trend rotate(45deg)
+     (points up-right), down-trend rotate(-45deg) (down-right), flat direction-right at 0°.
+     ⛔ THE HSBC TREND MARK DRAWN AT #261 K IS DROPPED. Nothing new is drawn; the rotation is the
+     only departure from a shipped asset, and it is Dave's own instruction.
+     Direction still travels three ways — glyph, sign on the number, and the word — never hue.
+  4. NEW SLOTS: an optional TARGET/PROGRESS row (neutral ink on a border/subtle track, no hue at
+     all, with the figure spelled out in text) and a widened SPARK slot (28 compact / 40 default
+     / 56 hero) that now carries a low-alpha area under the line. #261 K2: THE END-POINT DOT IS
+     GONE (Dave: "can we remove the dot at the end of the spark line"). The line ends bare; the
+     .dv-end circle and its three CSS rules are deleted, not hidden.
+  5. FOUR STATES ARE DRAWN, not described: loading (skeleton), empty, error (with a real Retry
+     control), stale-data (a neutral marker chip — deliberately NOT amber; Dave is astigmatic and
+     yellow is a problem hue, so staleness is carried by a glyph and a sentence).
+
+  HOW THIS DIFFERS FROM THE GATED Stat-card ————————————————————————————————————————————————
+  Stat card (snippets/Stat-card.reference.html, GATED) is a PASSIVE ATOM: label · value · delta ·
+  period. It already carries full delta semantics — glyph + sign + wording, the R-D5 three-channel
+  treatment — so "metric + delta" is NOT the gap. KPI tile is a MOLECULE: Stat card's ANATOMY plus
+  the Chart-sparkline atom at its inline scale plus, from #261, a target row and a state model.
+  THE ONE REAL DIFFERENCE STANDS: Stat card states the CHANGE (a signed delta against one prior
+  period); KPI tile states the SHAPE of the change (twelve points of history). A KPI tile with no
+  series is a Stat card and should be one — do not ship an empty spark slot on a healthy tile.
+
+  ✅ THE TWO-SEAT QUESTION IS CLOSED — DAVE RULED IT AT #261 K3, VERBATIM:
+  "We need to use the dark versions of the colours on the arrows."
+  It had stood open since #203: the tile painted TWO green/red seats side by side because its two
+  parents bound different ones — the DELTA GLYPH took the FILL seat (rag/success #66CC8D /
+  rag/error #F6604C, inherited byte-for-byte from the gated Stat-card manifest, 1.980:1 for that
+  green on a white card, measured #203) while the SPARK STROKE took the INK seat (rag/success-ink
+  #137F3C / rag/error-ink #DA1A00, which s182-D3 RULES for this atom — "the rules for colours
+  should just follow the red and green ink colours for all themes" — 5.090:1 on the same card).
+  Driven across all four themes at #203 the two seats disagreed in SEVEN OF EIGHT PANES.
+  #261 K3 MOVES THE ARROW ONTO THE INK SEAT. The tile now has ONE green/red seat:
+    light  — rag/success-ink #137F3C · rag/error-ink #DA1A00 (s151-D1: red on white)
+    dark   — rag/success-ink #66CC8D · rag/error-ink #F6604C (s151-D1: "the light red everywhere else")
+  and because rag/*-ink is declared once per MODE in canon.css with no [data-apollo-theme]
+  override, the arrow is now theme-INVARIANT and mode-FORKED, exactly like the stroke beside it —
+  driven and confirmed on all 4 themes × 2 modes at #261 K3. The seat clears 4.5:1 as TEXT in
+  both modes (light 5.09:1 both; dark #66CC8D 8.31:1, #F6604C 5.26:1), so the manifest declares
+  both pairs at context "text", and rag/success + rag/error leave this file entirely.
+  ⚠ STAT CARD HAS NOT MOVED. The two must travel together; its rebind is the owed follow-on.
+
+  OPTIONAL TABLE CTA — s182-D2 standing direction, kept as an OPT-IN variant, still PROPOSED.
+  s182-D2 governs "the future trend-card component: table CTA optional, icon-button form" and
+  Dave's reason, verbatim: "a sparkline shows a trend beside a headline figure, it is not an
+  analysis tool", so NO "View as table" label — the accessible name survives as aria-label only.
+  #261 ADDS A RIVAL, drawn beside it: the whole-tile LINK variant, where the tile itself is the
+  affordance and the destination is the metric's own page. Both are in the file; the review page
+  asks Dave which one the tile keeps. Neither is ruled.
+
+  TYPE: composites only, no raw font declarations in component scope — label .t-cm-caption ·
+  value .t-cm-figure-2 (hero 40) / .t-cm-figure-4 (default 32) / .t-cm-figure-3 (compact 24) ·
+  delta .t-cm-figure-6 (tabular) · period + target caption .t-cm-legal · spark caption
+  .t-cm-chart-label. Bound by markup CLASS (the T-D14 pattern), so this file appends NOTHING to
+  type.css and records no new blast radius. TYPE-002 contribution: 0.
+  SHAPE: square (radius 0, border-radius/surface) — the angular rule; no exemption applies.
+  MOTION: none but the loading skeleton's opacity pulse, which is killed by prefers-reduced-motion.
+  No JS at all: the spark is baked static, so JS-off and JS-on render alike, and this file is NOT
+  registered in component-types.json (a shared file, outside this lane's fence) and therefore takes
+  no AUTO-BEHAVIOUR / dv-render-sparkline injection — declared, not an omission.
+  RESPONSIVE: 12-col bento board, spans re-declared at 900px and 560px; the spark carries NO width
+  of its own (s184-D1) and fills whatever the tile's slot gives it.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive enhancement. */
+:where(button,a,label,span,small,strong,b,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* NOTE: this snippet declares NO raw font-family on body — every text element carries a
+     .t-cm-* composite from canon/type.css, which is the mandatory route. */
+  :root{ --ease:140ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --page:#FFFFFF; --focus:#305A85;
+    /* DELTA GLYPH — the FILL seat is GONE from this file. #261 K3, Dave ruled verbatim: "We need
+       to use the dark versions of the colours on the arrows." The arrow now wears the same INK
+       seat as the spark stroke below, so it forks by MODE (and is theme-invariant, because
+       rag/*-ink is declared once per mode in canon.css and no [data-apollo-theme] block
+       overrides it — checked at #261 K3, driven across 4 themes × 2 modes). */
+    /* TREND INK — the INK seat, RULED for the sparkline by s182-D3 and inherited by the trend
+       card per that ruling's own governs-list. Background-keyed: this is the on-white leg.
+       #261 renamed these from --spark-* : the seat now also inks the target-miss caption and the
+       error glyph, so a spark-specific name had stopped telling the truth. Token paths unchanged. */
+    --pos-ink:#137F3C;      /* rag/success-ink light — s155-D1 mirror (values by ref to s144-D1) */
+    --neg-ink:#DA1A00;      /* rag/error-ink light — s151-D1 two-red law, red on white */
+    --flat-ink:#1A1A1A;     /* standing ink on light — s182-D3, Dave: "the default ink near-black" */
+    --grid-alpha:.10;
+    --border-radius-surface:0;
+    /* PROPOSED (s218-D4) — the DRAWN table panel specimen. Table.reference.html's own four cell
+       seats, copied verbatim so the specimen is the gated Table and not a re-drawing of one. */
+    --tbl-header:#F0F0F0; --tbl-colhdr:#F0F0F0; --tbl-cell:#FFFFFF; --tbl-border:#E1E1E1;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
+    /* s182-D3 — the NON-WHITE leg of the same fork. Glyph and stroke now converge in EVERY pane. */
+    --pos-ink:#66CC8D;      /* rag/success-ink dark — s155-D1 / s144-D1 */
+    --neg-ink:#F6604C;      /* rag/error-ink dark — s151-D1 "the light red everywhere else" */
+    --flat-ink:#FFFFFF;     /* Dave, s182-D3 verbatim: "white on dark" */
+    --grid-alpha:.16;
+    --border-radius-surface:0;
+    --tbl-header:#1F1F1F; --tbl-colhdr:#1F1F1F; --tbl-cell:#1A1A1A; --tbl-border:#808080;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ==== THE BENTO BOARD — 12 columns, spans declared per tile (meta span.cols 3..6) ========= */
+  .board{display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:16px; max-width:1040px;}
+  .kpi-tile{grid-column:span 3;}
+  .kpi-tile.wide{grid-column:span 4;}
+  .kpi-tile.hero{grid-column:span 6;}
+  @media (max-width:900px){
+    .kpi-tile, .kpi-tile.wide{grid-column:span 6;}
+    .kpi-tile.hero{grid-column:span 12;}
+  }
+  @media (max-width:560px){
+    .kpi-tile, .kpi-tile.wide, .kpi-tile.hero{grid-column:span 12;}
+  }
+
+  /* ==== THE TILE ============================================================================ */
+  .kpi-tile{background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--border-radius-surface); padding:16px; position:relative; min-width:0;
+    display:flex; flex-direction:column; gap:8px; align-items:stretch;}
+  .kpi-tile.compact{padding:12px; gap:4px;}
+  .kpi-tile.hero{padding:24px; gap:12px;}
+
+  /* #261 K3 — the --slot RESERVATIONS ARE REMOVED from label, value and delta. They were a #261 K
+     addition (tile-to-tile alignment) and they opened a 48px value→delta gap where the original
+     had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
+     concern and comes back, if it comes back, on the board's own grid rows — not by padding
+     every row of every tile. */
+  .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
+    text-overflow:ellipsis; text-box-edge:text text;}
+  /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
+     the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
+     unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
+  .kpi-val{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+
+  /* ---- the delta row — ORIGINAL single line: glyph + signed number + word + period ----
+     "▲ +12.4% up  vs February". The period is INSIDE this row again (#261 K2), not a fourth
+     stacked line. Glyph wears the INK seat (#261 K3); number, word and period stay standing ink.
+     VERTICAL RHYTHM IS THE ORIGINAL'S (#261 K3, Dave: "The type lock-up needs to be as tight as
+     the original") — no row reserves a --slot height any more; the tile's own 8px gap and the
+     composites' trimmed boxes set the rhythm, exactly as at 7647aaf. */
+  .kpi-delta{display:flex; align-items:center; gap:4px; min-width:0;}
+  .kpi-delta .glyph{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+  /* ROTATION IS THE GLYPH (s—, #261 K2, Dave: "please use the arrow from the assets ... maybe we
+     can rotate to get the 45 degree angle"). The library ships direction-up/down/left/right only,
+     so the diagonal is made by transform, never by a new drawing: up-trend = direction-up +45°
+     (up-right), down-trend = direction-down −45° (down-right), flat = direction-right at 0°.
+     scale(.78) keeps the rotated bounding box inside the 16px seat; overflow stays visible. */
+  .kpi-delta .glyph svg{width:16px; height:16px; display:block; fill:currentColor;
+    overflow:visible; transform-origin:50% 50%;}
+  .kpi-delta.up .glyph{color:var(--pos-ink);}
+  .kpi-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
+  .kpi-delta.down .glyph{color:var(--neg-ink);}
+  .kpi-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
+  .kpi-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+  .kpi-delta.flat .glyph svg{transform:scale(.78);}
+  .kpi-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
+
+  /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
+  .kpi-spark{margin-top:4px; width:100%;}
+  .compact .kpi-spark{margin-top:2px;}
+  .spark-inline{display:block; width:100%; height:40px; overflow:visible;}
+  .compact .spark-inline{height:28px;}
+  .hero .spark-inline{height:56px;}
+  .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-area{stroke:none; fill:var(--flat-ink); fill-opacity:var(--alpha-08);}
+  .spark-inline .dv-series{fill:none; stroke:var(--flat-ink); stroke-width:2;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-inline[data-trend="up"] .dv-series{stroke:var(--pos-ink);}
+  .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
+  .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
+  .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+
+  /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
+     fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out
+     in words underneath. Deliberate: a bank CAIO reads "72% of the £3.5m target", and a reader
+     who cannot separate the fill from the track still has the sentence. ---- */
+  .kpi-target{display:flex; flex-direction:column; gap:4px; margin-top:4px;}
+  .tgt-track{position:relative; width:100%; height:4px; background:var(--border);}
+  .tgt-fill{position:absolute; top:0; bottom:0; left:0; background:var(--text);}
+  .tgt-mark{position:absolute; top:-3px; bottom:-3px; width:1px; background:var(--text);
+    opacity:var(--alpha-60);}
+  /* #267 lane N — the last --slot RESERVATION, missed by the K3 reversal above: --slot is
+     defined nowhere in this file, so `min-height:var(--slot)` was already invalid-at-
+     computed-value-time (= auto) and rendered nothing. Removed to match K3's own words
+     ("no row reserves a --slot height any more"). No visual change; it reddened the
+     compose gate the moment canon.css was regenerated from this snippet. */
+  .tgt-cap{margin:0; opacity:var(--alpha-60); display:flex; align-items:center;}
+
+  /* ---- STATE: loading (skeleton) ---- */
+  .kpi-tile.is-loading .sk{display:block; background:var(--text); opacity:var(--alpha-08);
+    animation:kpi-sk 1.6s ease-in-out infinite;}
+  @keyframes kpi-sk{0%,100%{opacity:var(--alpha-08);} 50%{opacity:var(--alpha-16);}}
+  .sk-lbl{height:12px; width:56%;}
+  .sk-val{height:28px; width:72%;}
+  .sk-delta{height:12px; width:44%;}
+  .sk-spark{height:40px; width:100%; margin-top:4px;}
+
+  /* ---- STATE: empty / error / stale — one shared note row, no hue except the error glyph ---- */
+  .kpi-note{display:flex; align-items:flex-start; gap:4px; margin:0; opacity:var(--alpha-60);}
+  .kpi-note .glyph{flex:none; width:16px; height:16px; display:inline-flex;}
+  .kpi-note .glyph svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .kpi-tile.is-empty .kpi-val{opacity:var(--alpha-40);}
+  .kpi-tile.is-error .kpi-note{opacity:var(--alpha-96);}
+  .kpi-tile.is-error .kpi-note .glyph{color:var(--neg-ink);}
+  .kpi-tile.is-error .kpi-note .glyph .inner{fill:var(--surface);}
+  .kpi-retry{align-self:flex-start; min-height:44px; padding:0 12px; margin-top:4px;
+    display:inline-flex; align-items:center; gap:8px; background:transparent;
+    border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    color:var(--text); cursor:pointer; transition:border-color var(--ease);}
+  .kpi-retry svg{width:16px; height:16px; display:block; fill:currentColor; opacity:var(--alpha-60);}
+  /* HOVER MOVES THE BORDER, NOT THE FILL. A border/subtle hover fill measured 3.95:1 against the
+     label in dark mode — caught by _validate_state_contrast.py at #261, which is exactly the
+     undeclared state×theme combo that gate exists to find. The ground stays the tile surface. */
+  .kpi-retry:hover{border-color:var(--text);}
+  .kpi-retry:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* stale-data: a NEUTRAL marker. Not amber — Dave is astigmatic and yellow is a problem hue,
+     so age is carried by the glyph and the sentence, never by a colour rung. */
+  .kpi-stale{align-self:flex-start; display:inline-flex; align-items:center; gap:4px;
+    min-height:24px; padding:0 8px; margin-top:4px; border:1px solid var(--border);
+    color:var(--text); opacity:var(--alpha-80);}
+  .kpi-stale svg{width:12px; height:12px; display:block; fill:currentColor;}
+
+  /* ---- VARIANT: the whole tile is the affordance (new #261, RIVAL to the icon CTA) ---- */
+  .kpi-link{color:var(--text); text-decoration:none;}
+  .kpi-link::after{content:""; position:absolute; top:0; right:0; bottom:0; left:0;}
+  .kpi-link:focus-visible{outline:none;}
+  .kpi-tile.as-link:has(.kpi-link:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+  .kpi-tile.as-link:hover{border-color:var(--text);}
+  /* the chevron sits on the LABEL line, not the bottom corner — at the bottom it collided with
+     the spark's endpoint dot (seen in the #261 mono render before this fix). */
+  .kpi-chev{position:absolute; right:16px; top:16px; width:16px; height:16px;
+    opacity:var(--alpha-40);}
+  .kpi-tile.as-link .kpi-lbl{padding-right:24px;}
+  .kpi-chev svg{width:16px; height:16px; display:block; fill:currentColor;}
+
+  /* ---- OPT-IN table CTA (s182-D2 standing direction) — icon-button form, no label ---- */
+  .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none; z-index:1;
+    display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background:transparent; border:0; border-radius:var(--border-radius-surface);
+    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
+  .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .kpi-cta:hover{opacity:var(--alpha-96);}
+  .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
+  .kpi-tile.has-cta .kpi-lbl{padding-right:40px;}
+
+  /* ---- PROPOSED (s218-D4) · THE TABLE PANEL, DRAWN AS A SPECIMEN AND WIRED TO NOTHING --------
+     This file's own header forbids inventing the panel, verbatim: "The PANEL it would open is NOT
+     built: s116-D2's table molecule is a composition-level artefact and inventing one here would be
+     canon by improvisation." That prohibition STANDS. What #218 added is not a panel wired to the
+     CTA — it is a DRAWING of what the panel would contain, placed BESIDE the tile and marked, so
+     Dave can rule the thing by eye instead of from a description. The CTA remains inert; no
+     aria-controls, no aria-expanded, no script in this file at all. ---- */
+  :root{ --tbl-cell-py:12px; --tbl-cell-px:12px; }
+  .kpi-panel-spec{max-width:800px; margin-top:16px;}
+  .kpi-panel-spec .spec-mark{display:inline-flex; align-items:center; min-height:24px; padding:0 8px;
+    margin-bottom:8px; border:1px solid var(--tbl-border); color:var(--text);}
+  .kpi-panel-spec .scroll{overflow-x:auto;}
+  .kpi-panel-spec table{border-collapse:collapse; width:100%; background:var(--tbl-cell);
+    border:1px solid var(--tbl-border); border-radius:var(--border-radius-surface);}
+  .kpi-panel-spec caption{text-align:left; padding:0 0 8px; color:var(--text);}
+  .kpi-panel-spec th, .kpi-panel-spec td{padding:var(--tbl-cell-py) var(--tbl-cell-px);
+    border:1px solid var(--tbl-border); text-align:left; color:var(--text); white-space:nowrap;}
+  .kpi-panel-spec thead th{background:var(--tbl-header);}
+  .kpi-panel-spec tbody th[scope="row"]{background:var(--tbl-colhdr);}
+  .kpi-panel-spec td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  .kpi-panel-spec .scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
+/* ===== APOLLO-DEMO css END ===== */
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- #261 K2 — geometry byte-matched from assets/icons/global-controls/direction-up.svg ·
+         direction-down.svg · direction-right.svg, recoloured to currentColor. The HSBC trend
+         mark drawn at #261 K is DROPPED. The 45° diagonals are CSS rotations of these three
+         library icons (see .kpi-delta .glyph svg above) — no new glyph was drawn. -->
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7.06124L9 0L2 7.06124V8.77158L8.4 2.31744V18H9.6V2.31744L16 8.77158V7.06124Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 10.9388L9 18L16 10.9388V9.22842L9.6 15.6826V0H8.4V15.6826L2 9.22842V10.9388Z" fill="currentColor"/></symbol>
+    <symbol id="kpi-flat" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9388 2L18 9L10.9388 16H9.22842L15.6826 9.6H0V8.4H15.6826L9.22842 2H10.9388Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/status-icons/error.svg (inner marks take the tile surface) -->
+    <symbol id="kpi-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path class="inner" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path class="inner" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/refresh.svg -->
+    <symbol id="kpi-refresh" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.2 7H18V1.2L16.8 0V4.536C15.25 1.829 12.343 0 9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9H16.8C16.8 13.301 13.301 16.8 9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C12.16 1.2 14.88 3.092 16.103 5.8H11L12.2 7Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/status-icons/indeterminate.svg (reused for the empty rule) -->
+    <symbol id="kpi-none" viewBox="0 0 18 18"><rect y="8.3999" width="18" height="1.199" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/global-controls/view-grid.svg -->
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+    <!-- byte-matched: assets/icons/arrows-and-chevrons/chevron-right.svg -->
+    <symbol id="kpi-chev" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Default — span 3, 32px value, twelve-point spark</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile" role="group" aria-label="Net cash flow, March">
+      <p class="kpi-lbl t-cm-caption">Net cash flow</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- The sparkline atom at its INLINE scale. PASSIVE and aria-hidden by design (s184-D1:
+             "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's value and delta carry the
+             meaning; the line is ambient. Trend is read from FIRST vs LAST datum and DECLARED as
+             data-trend, so colour is never the only channel. -->
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Card spend, March">
+      <p class="kpi-lbl t-cm-caption">Card spend</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>9,200.00</span></span>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Pending payments">
+      <p class="kpi-lbl t-cm-caption">Pending payments</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>1,180.55</span></span>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <!-- FLAT trend: the neutral rule glyph, "No change", full ink — and the spark takes the
+             standing ink (s182-D3, Dave verbatim: "the default ink near-black colours are fine
+             for the neutrals, white on dark"). -->
+        <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="kpi-tile" role="group" aria-label="Average payment value, March">
+      <p class="kpi-lbl t-cm-caption">Average payment value</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>318.40</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+4.9% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,34.0 20.6,31.5 38.3,35.0 55.9,29.0 73.5,30.5 91.2,25.0 108.8,27.5 126.5,21.0 144.1,23.5 161.7,17.0 179.4,15.5 197.0,11.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,34.0 20.6,31.5 38.3,35.0 55.9,29.0 73.5,30.5 91.2,25.0 108.8,27.5 126.5,21.0 144.1,23.5 161.7,17.0 179.4,15.5 197.0,11.0"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Compact — the four-tile row that is the shipped dashboard default (DP-06, s246-D5)</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile compact" role="group" aria-label="Active payees">
+      <p class="kpi-lbl t-cm-legal">Active payees</p>
+      <span class="kpi-val t-cm-figure-3"><span>34</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="kpi-per t-cm-legal">this month</span></span>
+    </div>
+    <div class="kpi-tile compact" role="group" aria-label="Failed payments">
+      <p class="kpi-lbl t-cm-legal">Failed payments</p>
+      <span class="kpi-val t-cm-figure-3"><span>3</span></span>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="kpi-per t-cm-legal">this month</span></span>
+    </div>
+    <div class="kpi-tile compact" role="group" aria-label="Approvals waiting">
+      <p class="kpi-lbl t-cm-legal">Approvals waiting</p>
+      <span class="kpi-val t-cm-figure-3"><span>7</span></span>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">this week</span></span>
+    </div>
+    <div class="kpi-tile compact" role="group" aria-label="Straight-through rate">
+      <p class="kpi-lbl t-cm-legal">Straight-through rate</p>
+      <span class="kpi-val t-cm-figure-3"><span>96.2</span><span class="unit">%</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+0.8 up</span><span class="kpi-per t-cm-legal">this month</span></span>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">The third tile carries no series and no spark. Its value row still lines up with its neighbours because every row reserves the slot height its own type composite publishes.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Hero — span 6, one big number, 56px spark</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile hero" role="group" aria-label="Total payments settled, twelve months to March">
+      <p class="kpi-lbl t-cm-caption">Total payments settled</p>
+      <span class="kpi-val t-cm-figure-2"><span class="unit">£</span><span>41.7m</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+18.2% up</span><span class="kpi-per t-cm-legal">vs the twelve months to last March</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,40.0 20.6,42.5 38.3,35.0 55.9,37.5 73.5,29.0 91.2,31.5 108.8,24.0 126.5,26.5 144.1,17.0 161.7,19.5 179.4,10.0 197.0,4.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,40.0 20.6,42.5 38.3,35.0 55.9,37.5 73.5,29.0 91.2,31.5 108.8,24.0 126.5,26.5 144.1,17.0 161.7,19.5 179.4,10.0 197.0,4.0"/>
+        </svg>
+      </div>
+    </div>
+    <div class="kpi-tile hero" role="group" aria-label="Operating cost per payment, March">
+      <p class="kpi-lbl t-cm-caption">Operating cost per payment</p>
+      <span class="kpi-val t-cm-figure-2"><span class="unit">£</span><span>0.041</span></span>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−22.6% down</span><span class="kpi-per t-cm-legal">vs the twelve months to last March</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,6.0 20.6,10.0 38.3,8.5 55.9,14.0 73.5,12.5 91.2,18.0 108.8,17.0 126.5,23.5 144.1,22.0 161.7,28.0 179.4,30.5 197.0,36.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,6.0 20.6,10.0 38.3,8.5 55.9,14.0 73.5,12.5 91.2,18.0 108.8,17.0 126.5,23.5 144.1,22.0 161.7,28.0 179.4,30.5 197.0,36.0"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">A falling cost is a good outcome wearing the down glyph and the down seat. Direction and judgement are different things, and this tile only claims direction — which is exactly why the word, the sign and the glyph all say “down” and nothing on the tile says “bad”.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">With target — span 4, progress row carries no hue at all</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile wide" role="group" aria-label="New mandates, quarter to date">
+      <p class="kpi-lbl t-cm-caption">New mandates</p>
+      <span class="kpi-val t-cm-figure-4"><span>2,530</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+312 up</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
+      <div class="kpi-target">
+        <div class="tgt-track" role="img" aria-label="72 percent of the 3,500 quarterly target, with the pace marker at 66 percent">
+          <span class="tgt-fill" style="width:72%"></span>
+          <span class="tgt-mark" style="left:66%"></span>
+        </div>
+        <p class="tgt-cap t-cm-legal">72% of the 3,500 target · pace marker at 66%</p>
+      </div>
+    </div>
+    <div class="kpi-tile wide" role="group" aria-label="Digital adoption, quarter to date">
+      <p class="kpi-lbl t-cm-caption">Digital adoption</p>
+      <span class="kpi-val t-cm-figure-4"><span>48.1</span><span class="unit">%</span></span>
+      <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">−1.2 down</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
+      <div class="kpi-target">
+        <div class="tgt-track" role="img" aria-label="48 percent against a 60 percent target, with the pace marker at 55 percent">
+          <span class="tgt-fill" style="width:48%"></span>
+          <span class="tgt-mark" style="left:55%"></span>
+        </div>
+        <p class="tgt-cap t-cm-legal">48% against a 60% target · behind the 55% pace</p>
+      </div>
+    </div>
+    <div class="kpi-tile wide" role="group" aria-label="Complaints closed within five days, quarter to date">
+      <p class="kpi-lbl t-cm-caption">Complaints closed in five days</p>
+      <span class="kpi-val t-cm-figure-4"><span>91.4</span><span class="unit">%</span></span>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">vs the same point last quarter</span></span>
+      <div class="kpi-target">
+        <div class="tgt-track" role="img" aria-label="91 percent against a 90 percent target, with the pace marker at 90 percent">
+          <span class="tgt-fill" style="width:91%"></span>
+          <span class="tgt-mark" style="left:90%"></span>
+        </div>
+        <p class="tgt-cap t-cm-legal">91% against a 90% target · ahead of the 90% pace</p>
+      </div>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">The bar is standing ink on a border/subtle track and the pace marker is a one-pixel tick. Nothing here is red or green, on purpose: whether 48% against 60% is a problem is the reader's judgement, and the sentence under the bar carries every figure the bar draws.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">States — loading, empty, error, stale data</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile is-loading" role="group" aria-label="Net cash flow, loading" aria-busy="true">
+      <span class="sr-only">Net cash flow is loading.</span>
+      <span class="sk sk-lbl" aria-hidden="true"></span>
+      <span class="sk sk-val" aria-hidden="true"></span>
+      <span class="sk sk-delta" aria-hidden="true"></span>
+      <span class="sk sk-spark" aria-hidden="true"></span>
+    </div>
+
+    <div class="kpi-tile is-empty" role="group" aria-label="Interest earned, no data for this period">
+      <p class="kpi-lbl t-cm-caption">Interest earned</p>
+      <span class="kpi-val t-cm-figure-4"><span>—</span></span>
+      <p class="kpi-note t-cm-legal"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-none"/></svg></span><span>No data for this period. The account opened in March.</span></p>
+    </div>
+
+    <div class="kpi-tile is-error" role="group" aria-label="Settlement volume, unavailable">
+      <p class="kpi-lbl t-cm-caption">Settlement volume</p>
+      <span class="kpi-val t-cm-figure-4"><span>—</span></span>
+      <p class="kpi-note t-cm-legal" role="status"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-error"/></svg></span><span>This figure could not be loaded.</span></p>
+      <button type="button" class="kpi-retry t-cm-ctl-14">
+        <svg aria-hidden="true"><use href="#kpi-refresh"/></svg>
+        <span>Load settlement volume again</span>
+      </button>
+    </div>
+
+    <div class="kpi-tile is-stale" role="group" aria-label="Liquidity coverage ratio, last updated three days ago">
+      <p class="kpi-lbl t-cm-caption">Liquidity coverage ratio</p>
+      <span class="kpi-val t-cm-figure-4"><span>134</span><span class="unit">%</span></span>
+      <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">No change</span></span>
+      <span class="kpi-stale t-cm-legal"><svg aria-hidden="true"><use href="#kpi-refresh"/></svg><span>Last updated 3 days ago</span></span>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">Stale is a neutral marker, not an amber one. Dave is astigmatic and yellow is a problem hue, so the age of the number is carried by the refresh glyph and the sentence. The retry control is 44px tall and says what it will load, not “Retry”.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Two rival affordances — the whole tile as a link, and the opt-in icon button (s182-D2)</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <div class="board">
+    <div class="kpi-tile as-link" role="group" aria-label="Net cash flow, March">
+      <p class="kpi-lbl t-cm-caption"><a class="kpi-link" href="#net-cash-flow">Net cash flow</a></p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+        </svg>
+      </div>
+      <span class="kpi-chev" aria-hidden="true"><svg><use href="#kpi-chev"/></svg></span>
+    </div>
+
+    <div class="kpi-tile has-cta" role="group" aria-label="Net cash flow, March">
+      <button type="button" class="kpi-cta" aria-label="Show net cash flow as a table">
+        <svg aria-hidden="true"><use href="#kpi-table"/></svg>
+      </button>
+      <p class="kpi-lbl t-cm-caption">Net cash flow</p>
+      <span class="kpi-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
+      <span class="kpi-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="kpi-per t-cm-legal">vs February</span></span>
+      <div class="kpi-spark">
+        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+          <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
+          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">Left: the tile is the affordance — the accessible name is the metric, the hit area is the whole tile, and the focus ring lands on the tile, not on four words of label. Right: s182-D2's icon button, 44×44, kept unchanged. One question for Dave: does the tile keep both, or does the link replace the button?</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+
+  <!-- S218-D4-KPI-SPECIMEN START -->
+  <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
+  <h2 class="t-cm-caption demo-h">Proposed (s218-D4) — the table panel, drawn as a specimen and wired to nothing</h2>
+  <!-- ===== APOLLO-DEMO section-heading END ===== -->
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">This file's own header forbids inventing the panel, and the prohibition stands. Quoted verbatim: “The PANEL it would open is NOT built: s116-D2's table molecule is a composition-level artefact and inventing one here would be canon by improvisation.” Dave ruled the phantom-affordance CLASS at s218-D4 — build the missing surfaces — so what is added here is the panel's DESIGN, placed beside the tile so it can be ruled by eye, and <strong>nothing is wired</strong>: the CTA above keeps no aria-controls, no aria-expanded, and this file still carries no behaviour script. The drawing is Table.reference.html's markup and cell seats, copied — a passive data table with a caption, real <code>th scope</code> headers and a focusable scroll region.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+  <div class="kpi-panel-spec">
+    <span class="spec-mark t-cm-legal">Specimen — not wired, not a panel, not ruled</span>
+    <div class="scroll" role="region" aria-label="Net cash flow, twelve months to March, table specimen" tabindex="0">
+      <table>
+        <caption class="t-cm-caption">Net cash flow — twelve months to March</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="t-cm-ctl-14">Month</th>
+            <th scope="col" class="num t-cm-ctl-14">Net cash flow</th>
+            <th scope="col" class="num t-cm-ctl-14">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" class="t-cm-ctl-14">April</th><td class="num t-cm-figure-6">£390.00</td><td class="num t-cm-figure-6">—</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">May</th><td class="num t-cm-figure-6">£180.00</td><td class="num t-cm-figure-6">−£210.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">June</th><td class="num t-cm-figure-6">£708.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">July</th><td class="num t-cm-figure-6">£492.00</td><td class="num t-cm-figure-6">−£216.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">August</th><td class="num t-cm-figure-6">£1,020.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">September</th><td class="num t-cm-figure-6">£1,230.00</td><td class="num t-cm-figure-6">+£210.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">October</th><td class="num t-cm-figure-6">£912.00</td><td class="num t-cm-figure-6">−£318.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">November</th><td class="num t-cm-figure-6">£1,440.00</td><td class="num t-cm-figure-6">+£528.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">December</th><td class="num t-cm-figure-6">£1,752.00</td><td class="num t-cm-figure-6">+£312.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">January</th><td class="num t-cm-figure-6">£1,548.00</td><td class="num t-cm-figure-6">−£204.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">February</th><td class="num t-cm-figure-6">£2,180.00</td><td class="num t-cm-figure-6">+£632.00</td></tr>
+          <tr><th scope="row" class="t-cm-ctl-14">March</th><td class="num t-cm-figure-6">£2,450.00</td><td class="num t-cm-figure-6">+£270.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- ===== APOLLO-DEMO note START (showroom harness — never copy) ===== -->
+  <p class="t-cm-chart-label demo-h">For Dave, three questions this drawing exists to answer: does the panel belong to the TILE at all, or to a composition above it (s116-D2's table molecule)? does it open in place, in a Drawer, or in a Modal? and does the affordance survive at all — s182-D2 kept it optional, and Dave's own words there were “a sparkline shows a trend beside a headline figure, it is not an analysis tool”. Nothing here answers any of the three; it only makes them lookable-at.</p>
+  <!-- ===== APOLLO-DEMO note END ===== -->
+  <!-- S218-D4-KPI-SPECIMEN END -->
+
+  <!-- s151-D2 MIGRATION, inherited from Stat-card: this component's rag-on-neutral contrastPair(s)
+       are kept OUT of the contrastPairs list below and belong to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier (symbol + label) is checkable
+       against real DOM, per s151-D1 clause 4. rag/success on this surface measures 1.980:1 and is
+       therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
+       flagged glyph-seat question above. The two INK pairs ARE declared, and #261 RAISES them from
+       context "ui" to context "text": re-measured, they clear 4.5:1 in both modes. -->
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "KPI tile",
+    "$status": "PROPOSED #203, redesigned #261 on Dave's nomination, Dave's eye owed — the trend-card component is FLOATED, NOT RULED (s182-D2). This manifest is a proposal, not a proof-of-done.",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default",
+              "--page": "background/default", "--focus": "focus/ring",
+              "--pos-ink": "rag/success-ink", "--neg-ink": "rag/error-ink", "--flat-ink": "text/default",
+              "--border-radius-surface": "border-radius/surface",
+              "--tbl-header": "table/header/background", "--tbl-colhdr": "table/column/background",
+              "--tbl-cell": "background/default", "--tbl-border": "table/border" },
+    "contrastPairs": [
+      { "fg": "text/default",     "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "rag/error-ink",    "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "rag/success-ink",  "bg": "tertiary/background/default", "context": "text" }
+    ],
+    "icons": { "trend-positive": "status-icons/trend-positive.svg", "trend-negative": "status-icons/trend-negative.svg",
+               "indeterminate": "status-icons/indeterminate.svg", "error": "status-icons/error.svg",
+               "refresh": "global-controls/refresh.svg", "chevron-right": "arrows-and-chevrons/chevron-right.svg",
+               "view-grid": "global-controls/view-grid.svg" },
+    "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\"", "aria-busy=\"true\"", "role=\"status\"", "role=\"img\"", "role=\"region\"", "scope=\"col\"", "scope=\"row\"", "<caption"],
+    "$s261": "REDESIGN PASS, #261 lane K, on Dave's nomination of this tile as the dashboard element to fix first. Five changes, none of them a ruling: (1) the board is a real 12-column bento grid and every tile declares a span the meta already legalises (3 compact/default, 4 with-target, 6 hero), re-spanning at 900px and 560px per s248-D3; (2) [REVERSED at #261 K3] every row reserved min-height:var(--slot) so neighbouring tiles aligned even when one had no delta — Dave ruled the lock-up back to the original's rhythm and the reservations are gone; (3) the delta glyph moves from Stat-card's solid triangle to the HSBC trend mark (status-icons/trend-positive|negative|indeterminate), a DEPARTURE from Stat card that is drawn, not ruled, and put side by side with the old glyph on notes/_lanes/261-K-kpi-tile-review.html; (4) two new slots — a hue-free target/progress row (border/subtle track, standing-ink fill, one-pixel pace tick, every figure spelled out in the caption) and a spark slot that now carries a low-alpha area under the line at 28/40/56px; (5) four states are DRAWN — loading skeleton (aria-busy, opacity pulse killed by prefers-reduced-motion), empty, error (with a 44px retry control that names what it loads), and stale-data (a NEUTRAL marker chip, deliberately not amber — Dave is astigmatic and yellow is a problem hue). A second affordance is drawn beside s182-D2's icon button: the whole tile as a link, accessible name = the metric, focus ring on the tile. Both are in the file and the review page asks which survives.",
+    "$s261K3": "Dave's review of the K2 tile, ruled verbatim: 'We need to use the dark versions of the colours on the arrows. The type lock-up needs to be as tight as the original.' Two changes, both his. (1) THE SEAT: the delta arrow moves off Stat-card's FILL seat (rag/success #66CC8D / rag/error #F6604C) onto the INK seat the spark stroke already wears (rag/success-ink #137F3C light / #66CC8D dark, rag/error-ink #DA1A00 light / #F6604C dark, s151-D1 two-red law). rag/success and rag/error leave this file; the arrow is now theme-invariant and mode-forked, because canon.css declares rag/*-ink once per mode and no [data-apollo-theme] block overrides it — driven and read back on 4 themes x 2 modes. This CLOSES the two-seat seam open since #203, and leaves Stat card owing the same rebind. (2) THE LOCK-UP: the min-height:var(--slot) reservations added at #261 K on label, value and delta are REMOVED. They had opened a 48.00px value-to-delta step where 7647aaf has 30.02px. Measured in Chromium (both files rendered against the same canon/type.css, offsetTop deltas, 8 tiles paired by aria-label): label-to-value 22.00px original / 22.00px K3, value-to-delta 30.02px original / 30.02px K3 — 0.00px apart on every default tile, well inside the 1px acceptance. The .compact variant is a #261 addition the original has no counterpart for and sits 6.00/4.00px TIGHTER by its own 12px padding and 4px gap; reported, not held to the test. The spark and target rows keep their own margins below and .tgt-cap keeps its slot.",
+    "$note": "DIFFERENCE FROM THE GATED Stat-card: Stat card is a passive ATOM (label/value/delta/period) and already carries full delta semantics — glyph + sign + wording — so 'metric + delta' was never the gap. KPI tile is a MOLECULE: Stat card's anatomy, the Chart-sparkline atom at its inline scale, and from #261 a target row and a state model. The one real difference: Stat card states the CHANGE, KPI tile states the SHAPE of the change. A KPI tile with no series is a Stat card. ✅ THE TWO SEATS ARE NOW ONE, RULED BY DAVE AT #261 K3 ('use the dark versions of the colours on the arrows'): the delta glyph no longer inherits Stat card's FILL seat (rag/success 1.980:1 on white, measured #203) — it takes the INK seat that s182-D3 RULES for this atom and says the trend card inherits (rag/success-ink 5.090:1 on white), the same seat the spark stroke and the error glyph already wore. The seam that was visible in seven of eight panes is gone. The ink pairs were RE-MEASURED at #261 and raised from context 'ui' to context 'text' (light 5.09:1 both; dark 8.31:1 success, 5.26:1 error). ⚠ STAT CARD STILL WEARS THE FILL SEAT and owes the same move — the two must travel together. Not registered in component-types.json (shared file, outside this lane's fence) so no AUTO-BEHAVIOUR partial and no dv-render-sparkline injection — the spark is baked static and this file carries no script at all."
+  }
+  </script>
+  </body>
+</html>

@@ -2,10 +2,11 @@
   "name": "Tabs",
   "category": "molecule",
   "purpose": "Let users switch between peer views/panels within the same context. A horizontal tab bar with a selected indicator, a bottom track, and an overflow dropdown when tabs exceed the available width.",
+  "provides": "wayfinding",
   "props": [
-    { "name": "tabState", "type": "enum", "values": ["unselected", "unselected-hover", "unselected-pressed", "selected-first", "selected-middle", "selected-last"], "default": "unselected" },
-    { "name": "track", "type": "enum", "values": ["flat", "elevated"], "default": "flat", "$note": ".Tab track elevation=false/true (adds elevation/functional shadow)." },
-    { "name": "overflow", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Overflow dropdown (with menu items) when tabs don't fit." },
+    { "name": "tabState", "type": "enum", "values": ["unselected", "unselected-hover", "unselected-pressed", "selected-first", "selected-middle", "selected-last"], "default": "unselected", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). (classification routed here by C11.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "track", "type": "enum", "values": ["flat", "elevated"], "default": "flat", "$note": ".Tab track elevation=false/true (adds elevation/functional shadow).", "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "overflow", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Overflow dropdown (with menu items) when tabs don't fit.", "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true", "$note": "Tabs can be label or icon-only." }
   ],
   "subComponents": {
@@ -96,5 +97,68 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:629:23608",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Tabs.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page",
+        "$note": "Page"
+      },
+      {
+        "ref": "context:section-header",
+        "$note": "Section header"
+      },
+      {
+        "ref": "context:app-screen",
+        "$note": "App screen"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:view-switcher-tab-bar"
+      },
+      {
+        "ref": "pattern:tabs-with-overflow-menu"
+      }
+    ],
+    "hasPart": [
+      {
+        "ref": null,
+        "$note": "tab-items: Individual tab; unselected/hover/pressed + selected first/middle/last; selected shows a brand-red indicator."
+      },
+      {
+        "ref": "component:tabs",
+        "$note": "tab-track: Bottom rule under the tabs; elevation variant casts a shadow."
+      },
+      {
+        "ref": "component:dropdown",
+        "$note": "overflow-dropdown: Trigger that reveals hidden tabs in a menu."
+      },
+      {
+        "ref": "component:dropdown",
+        "$note": "tab-dropdown-items: Overflow menu items (default/hover/pressed/selected)."
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:s123-D4"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:wayfinding"
+      }
+    ]
   }
 }

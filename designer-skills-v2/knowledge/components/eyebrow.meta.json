@@ -3,6 +3,7 @@
   "interactive": false,
   "category": "atom",
   "purpose": "A small kicker label placed above a section heading to categorise it (e.g. 'Payments', 'Recent activity'). Sentence case (house type rule). Sets context without competing with the heading. Surfaced as a missing pattern by the journey gap report.",
+  "provides": "page-title",
   "props": [
     { "name": "text", "type": "string", "$note": "The kicker label; keep it to 1–3 words." }
   ],
@@ -18,7 +19,13 @@
     "mustNotNeighbour": [],
     "commonPatterns": ["eyebrow + heading section intro", "card title kicker"]
   },
-  "behaviour": "Passive display label — no states.",
+  "behaviour": {
+    "script": null,
+    "partial": null,
+    "events": [],
+    "fallback": "identical — the component carries no script",
+    "$note": "Passive display label — no states."
+  },
   "accessibility": {
     "role": "None — a decorative <span>, NOT a heading, so it does not break heading order.",
     "screenReader": "REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.",
@@ -40,5 +47,39 @@
     "figma_node": "",
     "code_path": "",
     "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated."
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Eyebrow.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:section-header",
+        "$note": "Section header"
+      },
+      {
+        "ref": "context:card-header",
+        "$note": "Card header"
+      },
+      {
+        "ref": "context:page-header",
+        "$note": "Page header"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:eyebrow-heading-section-intro"
+      },
+      {
+        "ref": "pattern:card-title-kicker"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:page-title"
+      }
+    ]
   }
 }

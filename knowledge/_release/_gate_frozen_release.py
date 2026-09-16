@@ -134,9 +134,17 @@ def received_versions(root):
 SURFACES = [
     ("designer-skills-v1", ["designer-skills-v1/"], "v1",
      "The first designer pack. Hand-cut, superseded, kept for history."),
-    ("designer-skills-v2", ["designer-skills-v2/"], "v2",
-     "The shipped v2 pack, baked from 7071538. s219-D4(1) copies its four SKILL.md FORWARD for "
-     "refresh — copying out is reading, and reading is not a change."),
+    # #279 lane PK: v2 -> v2.1 with the v2.1 bake (s279-D1, Dave: "i agree 'a' it is") — the
+    # pack ships the reader (`_compose_slice.py`) and the Constitution (`_rulings.json`) so ASK
+    # reads it live in-pack; generate-from-canon step 1 (RD, d6bd57b) moved the frozen surface
+    # first and this bump is what makes that move a VERSION, as s114-D4 asks. Same fourth-home
+    # caveat as the Spider rows below; bumped in the release commit, read back from the seed's
+    # printed table.
+    ("designer-skills-v2", ["designer-skills-v2/"], "v2.1",
+     "The v2 pack, re-baked at v2.1 (#279, s279-D1) from the commit the seed names: the reader, "
+     "the Constitution and the node files ship beside the KB. v2 was baked from 7071538. "
+     "s219-D4(1) copies its four SKILL.md FORWARD for refresh — copying out is reading, and "
+     "reading is not a change."),
     # ⛔ #220. THIS LITERAL IS THE VERSION BUMP THE LEDGER'S OWN README DEMANDS, and it is a
     # THIRD version home neither bake report's REPLAY-THESE named (they named the generator and
     # build-designer-pack.sh). `seed()` takes a row's `version` from HERE, not from the zip's
@@ -482,9 +490,14 @@ def _fixture(tmp):
     # s268-D4: the fixture's v1/v2 are RECEIVED packs — designers hold them — so the laundering
     # arm must still bite for them. The unreceived direction is driven separately, below, by
     # taking v2 back out of this register and asserting the same commit goes green.
+    # The fixture registers whatever version the LIVE v2 row declares (it was the literal "v2"
+    # until #279 bumped the row to v2.1) — `seed()` takes the version from SURFACES, so a
+    # register typed "v2" would stop naming the seeded row the moment the literal moved, and
+    # the laundering bites would go red for the wrong reason [[premise-ages-faster-than-rule]].
+    v2_live = next(d[2] for d in SURFACES if d[0] == "designer-skills-v2")
     with open(os.path.join(root, RECEIVED_REL), "w") as f:
         f.write(json.dumps({"received": {"v1": {"to": "designers", "date": "unknown"},
-                                         "v2": {"to": "designers", "date": "unknown"},
+                                         v2_live: {"to": "designers", "date": "unknown"},
                                          "v2.0.1": {"to": "designers", "date": "unknown"}}},
                            indent=1) + "\n")
     git(root, "add", "-A")

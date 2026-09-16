@@ -4,10 +4,11 @@
   "category": "organism",
   "$platform": "browser",
   "purpose": "Data tables let users scan, analyse and compare data. Header / sub-header / data cells arranged with a first-row header, a first-column header, or both; cells can be left- or right-aligned (right for numeric).",
+  "provides": "record-list",
   "props": [
-    { "name": "headerType", "type": "enum", "values": ["first-row", "first-column", "first-row-and-column"], "default": "first-row" },
-    { "name": "orientation", "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal" },
-    { "name": "cellAlign", "type": "enum", "values": ["left", "right"], "default": "left", "$note": "Right-aligned for numeric columns." }
+    { "name": "headerType", "type": "enum", "values": ["first-row", "first-column", "first-row-and-column"], "default": "first-row", "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- routed:variants-axis. Routes to the VARIANTS axis, not a param bind. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "orientation", "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal", "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "cellAlign", "type": "enum", "values": ["left", "right"], "default": "left", "$note": "Right-aligned for numeric columns.", "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "subComponents": {
     "header": { "node": "2147:126475", "use": "Column/row header cell — table/header/background (#ededed) + text/default font-5 medium." },
@@ -73,5 +74,60 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:547:22693",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Table.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page",
+        "$note": "Page"
+      },
+      {
+        "ref": "context:report",
+        "$note": "Report"
+      },
+      {
+        "ref": "context:dashboard",
+        "$note": "Dashboard"
+      },
+      {
+        "ref": "context:detail-view",
+        "$note": "Detail view"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:data-table-with-header-row"
+      },
+      {
+        "ref": "pattern:comparison-matrix-row-column-headers"
+      },
+      {
+        "ref": "pattern:numeric-table-with-right-aligned-cells"
+      }
+    ],
+    "hasPart": [
+      {
+        "ref": "component:table",
+        "$note": "header: Column/row header cell — table/header/background (#ededed) + text/default font-5 medium."
+      },
+      {
+        "ref": "component:table",
+        "$note": "sub-header: Secondary header on table/column/background (#f3f3f3) + font-5 light."
+      },
+      {
+        "ref": null,
+        "$note": "data-cell: Data cell — background/default (#fff) + text/default font-5 light; right-aligned variant for numbers."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:record-list"
+      }
+    ]
   }
 }

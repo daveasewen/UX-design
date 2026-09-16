@@ -25,7 +25,7 @@
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
-:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
     --row-h:76px; --row-pad:14px; --label-gap:12px; }   /* DEFAULT density (roomy). Compact toggle tightens these to the former default. */
@@ -33,27 +33,26 @@
     --surface:#FFFFFF; --hover:#F0F0F0; --pressed:#626262; --disabled-surface:#E1E1E1;
     --text:#1A1A1A; --muted:#1A1A1A; --reverse:#FFFFFF; --disabled-text:#E1E1E1;
     --icon:#1A1A1A; --icon-rev:#FFFFFF; --divider:#E1E1E1;
-    --success:#2B7E4F; --warning:#C58900; --error:#B92F1E; --info:#306EC6;
-    --success-tint:#DCEDE3; --warning-tint:#F6E5CC; --error-tint:#F1E0DC; --info-tint:#D6E3EC;
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
     --tag-border:#808080; --avatar:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010): tag/status atoms=indicator (matches canon census) */
+    --border-radius-indicator:0;
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --hover:#232323; --pressed:#1A1A1A; --disabled-surface:#484848;
     --text:#FFFFFF; --muted:#FFFFFF; --reverse:#FFFFFF; --disabled-text:#808080;
     --icon:#FFFFFF; --icon-rev:#FFFFFF; --divider:#808080;
-    --success:#4A9568; --warning:#C58900; --error:#CC4333; --info:#2674DC;
-    --success-tint:#12291D; --warning-tint:#3C2C13; --error-tint:#2C120D; --info-tint:#092131;
+    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
+    --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
     --tag-border:#808080; --avatar:#232323; --focus:#4587A7; --page:#1A1A1A;
+    --border-radius-indicator:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 12px;}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--success);}
 
-  .wrap{ width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size; }
+  .wrap{ width:100%; max-width:var(--wrap-max, 460px); margin-bottom:2.5rem; container-type:inline-size; }
 
   /* ---- canonical avatar atom (round; from Avatar.reference) ---- */
   .avatar{flex:none; border-radius:50%; background:var(--avatar); color:var(--text); width:36px; height:36px;
@@ -61,7 +60,7 @@
 
   /* ---- canonical tag atom (SQUARE outline; from Tags.reference) ---- */
   .tag{display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
-    border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
+    border-radius:var(--border-radius-indicator); font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
 
   /* ---- list + row ---- */
   ul.list{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--divider);}
@@ -83,7 +82,7 @@
   /* status detail = the Status-indicator atom (form B): SQUARE RAG tint badge, neutral text/default label + RAG dot.
      Label-on-tint is AA for every RAG (11-19:1); the warning dot is < 3:1 standalone (1.4.11) so meaning is carried
      by the label (1.4.1). flex:none so it hugs the right; the title takes the slack and truncates. */
-  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0; /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap;}
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator); /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap;}
   .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
   .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
   .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
@@ -119,11 +118,11 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
-    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Width <input id="w" type="range" min="300" max="640" value="460"> <span id="wv">460</span>px</label>
+  <!-- ===== APOLLO-DEMO density-dial START (showroom harness — never copy) ===== -->
+  <div>
     <label><input type="checkbox" id="dense"> Compact density</label>
   </div>
+  <!-- ===== APOLLO-DEMO density-dial END ===== -->
 
   <!-- ===== A. Live interactive list (hover / click / Tab to focus) ===== -->
   <div class="wrap">
@@ -132,21 +131,21 @@
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status warn"><span class="dot" aria-hidden="true"></span>Pending</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Pret a Manger">PM</span>
         <span class="body">
-          <span class="line"><span class="title">Pret a Manger</span><span class="status err"><span class="dot" aria-hidden="true"></span>Declined</span></span>
+          <span class="line"><span class="title">Pret a Manger</span><span class="status err" data-carries="label"><span class="dot" aria-hidden="true"></span>Declined</span></span>
           <span class="line"><span class="desc">21 Jun · Eating out</span><span class="amount">−48.50 HKD</span></span>
         </span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Salary">£</span>
         <span class="body">
-          <span class="line"><span class="title">Monthly salary</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Received</span></span>
+          <span class="line"><span class="title">Monthly salary</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Received</span></span>
           <span class="line"><span class="desc">20 Jun · Income</span><span class="amount">+32,000.00 HKD</span></span>
         </span>
       </button></li>
@@ -167,28 +166,28 @@
       <li><div class="stateLabel">default</div><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">hover (web)</div><button class="row is-hover" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">pressed — avatar + status reversed out</div><button class="row is-pressed" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
       <li><div class="stateLabel">disabled (native :disabled)</div><button class="row" type="button" disabled>
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body">
-          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="title">Amazon</span><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Approved</span></span>
           <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
         </span>
       </button></li>
@@ -202,11 +201,20 @@
     </ul>
   </div>
 
+  <!-- s160-D2 MIGRATION: this component's rag-on-TINT contrastPair(s) — rag/success on
+       rag/success-tint, rag/error on rag/error-tint, rag/information on rag/information-tint —
+       were REMOVED from the contrastPairs list below and moved to the RENDERING gate
+       (_validate_state_contrast.py), where the non-colour carrier is checkable against real DOM,
+       per s151-D1 clause 4. The .status chips carry a LABEL (the dot is decorative/aria-hidden and
+       is not an svg symbol), so they declare data-carries="label" — the same shape as the
+       Status-indicator atom they reuse. Same motion as s151-D2, which deliberately left the TINT
+       class behind; Dave ruled at #160 that the same intent applies. The absence is DECLARED, not
+       silent. The text/default-on-tint pairs are NOT migrated and are still measured here. -->
   <script type="application/json" id="token-manifest">
   {
     "component": "List items",
     "type": "transaction",
-    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default" },
+    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default", "--border-radius-indicator":"border-radius/indicator" },
     "contrastPairs": [
       { "fg":"text/default", "bg":"tertiary/background/default", "context":"text" },
       { "fg":"text/secondary", "bg":"tertiary/background/default", "context":"text" },
@@ -214,10 +222,7 @@
       { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
       { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
-      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" },
-      { "fg":"rag/success", "bg":"rag/success-tint", "context":"ui" },
-      { "fg":"rag/error", "bg":"rag/error-tint", "context":"ui" },
-      { "fg":"rag/information", "bg":"rag/information-tint", "context":"ui" }
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" }
     ],
     "knownFindings": [
       "LAYOUT 2026-06-29: row is avatar + two-line body (title|status / desc|amount) so left labels and right tag/status+amount align; one density gap scales both sides.",
@@ -230,13 +235,6 @@
   }
   </script>
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
-    const w=document.getElementById('w'), wv=document.getElementById('wv');
-    w.addEventListener('input', ()=>{ document.querySelectorAll('.wrap').forEach(el=>el.style.setProperty('--demo-width', w.value+'px')); wv.textContent=w.value; });
-    document.getElementById('dense').addEventListener('change', e=>{ const r=document.documentElement.style;
-      if(e.target.checked){ r.setProperty('--row-h','64px'); r.setProperty('--row-pad','10px'); r.setProperty('--label-gap','8px'); }   /* compact = the former default */
-      else { r.removeProperty('--row-h'); r.removeProperty('--row-pad'); r.removeProperty('--label-gap'); } });                          /* default = roomy (:root) */
-
     /* roving keyboard navigation on the live list — Arrow Up/Down + Home/End move focus between rows. */
     const live=document.getElementById('liveList'); const rows=[...live.querySelectorAll('.row')].filter(r=>!r.disabled);
     rows.forEach((r,i)=> r.tabIndex = i===0?0:-1);
@@ -250,5 +248,14 @@
       if(j!==null){ e.preventDefault(); rows[i].tabIndex=-1; rows[j].tabIndex=0; rows[j].focus(); }
     });
   </script>
+  <!-- ===== APOLLO-DEMO density-dial script START (showroom harness — never copy) ===== -->
+  <script>
+    /* Showroom density dial — harness only. It writes --row-h/--row-pad/--label-gap onto
+       :root; the component's own :root defaults (roomy) stand when this block is deleted. */
+    document.getElementById('dense').addEventListener('change', e=>{ const r=document.documentElement.style;
+      if(e.target.checked){ r.setProperty('--row-h','64px'); r.setProperty('--row-pad','10px'); r.setProperty('--label-gap','8px'); }   /* compact = the former default */
+      else { r.removeProperty('--row-h'); r.removeProperty('--row-pad'); r.removeProperty('--label-gap'); } });                          /* default = roomy (:root) */
+  </script>
+  <!-- ===== APOLLO-DEMO density-dial script END ===== -->
 </body>
 </html>

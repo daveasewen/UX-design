@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bullet chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Bullet chart (Apollo MONO) — measure bar + comparative marker + qualitative
+  ranges. ★ NET-NEW EXEMPLAR — chart-expansion programme WAVE 2, lane ② statistical/gauge (worker,
+  Sonnet, 2026-08-05, brief notes/_briefs/2026-08-05-chart-wave2-lane2-statistical.md). Built to the
+  Chart-scatter Layer-1 pattern (toolbar + table spine + token-manifest).
+
+  WHAT'S REUSED, verbatim: 580×260 frame convention adapted to a horizontal gauge row layout (bullet is
+  conventionally wide/short, not the 580×260 cartesian frame — kept the SAME toolbar chrome + table spine,
+  the canvas proportions are the newly-judged part, see below); toolbar chrome (.dv-vt/.dv-csv/
+  .dv-tbl-toggle/.dv-tablepanel) BYTE-FOR-BYTE from Chart-bar/Chart-scatter; AUTO-MARKUP
+  dv-lockup-title/dv-lockup-table comment blocks (content matches what gen_component_partials.py would
+  inject — registration is a CONDUCTOR SERIAL, see receipt). AUTO-BEHAVIOUR markers present but EMPTY,
+  same precedent as the 2026-07-24 lane-1 receipt.
+
+  ⛔ ds-020 FENCE (DIVVY-inherited, all wave-2 lanes): copy the mark contract + toolbar, NOT the axis/grid
+  CSS. This snippet's axis ticks use the PRE-DV-D07 ink-at-alpha idiom, not the minted two-channel roles.
+  Declared gap, not filled here.
+
+  #96-D1 ②: CANVAS HEIGHT FORMULA (RULED — canvas must FLEX with row count, not a fixed 200).
+  Row pitch = 60px is the CONSTANT (row band: range rect 32 tall starting 8px below the row's top,
+  target tick spans row-top−8 → row-top+40). Row i's top = 18 + i·60 (i = 0-based).
+  H = 80 + (rowCount−1)·60   — derived: axisTop(10) + rowCount·60 + bottom-margin(22), simplified.
+  n=3 (this file's reference): H = 80+120 = 200 (unchanged, proves the formula against the shipped
+  demo). n=1: H=80 (a single row keeps the SAME 60px band/appearance, just no extra rows below it —
+  "single-row appearance identical" per #96-D1). n=10: H=80+540=620. viewBox/svg height/data-h and
+  .dv-empty-frame height must all move together when an instance bakes a different row count; width
+  stays 580 always. This is a BAKED-geometry contract (DV-D02) — the derivation happens at
+  authoring/bake time, not at runtime (no JS row-count scale-physics, DEF-003).
+
+  WHAT'S NEWLY JUDGED for bullet (receipted for Dave's eyeball):
+  · MEASURE = the primary bar, data/series/1 fill, per the brief ("measure = series-1").
+  · COMPARATIVE MARKER (target) = a vertical ink tick spanning the full row height, per the brief
+    ("marker = ink") — the conventional bullet-chart target indicator.
+  · QUALITATIVE RANGES (poor/satisfactory/good bands behind the measure) = NEUTRAL SURFACE TINTS.
+    #96-D1 ③ RULED: the retired color-mix(ink,page) 8/16/24% approximation is replaced by CANON
+    greys — literal values mirroring canon.css's already-minted --color-grey-200/300/400 (light)
+    and --color-grey-dark-mode-500/400/300 (dark), MINTED NOTHING new. Z-order (bands behind bar
+    behind marker) confirmed correct — SVG paint order already follows the range→measure→target
+    DOM sequence.
+  · Table mirrors measure / target / range values per row.
+
+  RULES honoured: dv-017 var() fills only (ranges are the one declared exception, see grey-tint note
+  above — they are a computed tint of an existing token, not a raw hex) · composites-only type
+  (DV-D05/DV-D08 12px floor) · DEF-003 CSS-only motion · role-token radius only. Empty state consumes
+  the Empty-state pattern by reference.
+
+  ★ #260 (s259-D1 fast follower) — THE CANVAS IS NOW ENGINE-DRAWN. The gauge stack ships as an
+  EMPTY <svg> and `window.dvRender(figure, spec)` (knowledge/canon/dv-render.js + the type partial
+  knowledge/canon/dv-render-bullet.js, both injected below) draws it from the DATA object at the
+  foot of this file. Rule 18 of ADS-generate-from-canon — "author the geometry yourself" — no
+  longer applies to this component: the library owns the arithmetic, the author owns the data.
+  · #96-D1 ② is ENACTED, not re-typed: PITCH = 60 is a constant in the partial and it is CAPPED,
+    never stretched, so filtering a KPI out leaves the survivors' bands identical — driven at 60px
+    before and after, in all four themes and both modes.
+  · `ranges` is an EXTENSION to the s249-D4 spec, declared and validated by the partial (a bullet
+    without its bands is a horizontal bar). RULING-SHAPED — see the #260 F3 subreport.
+  · JS-OFF: the table below is authored, not generated, and carries the range breakpoints too. The
+    engine REWRITES its rows from the spec when it runs — and the engine's table spine has no
+    column for a qualitative band, so the three "…to" columns are present with JS OFF and absent
+    with JS ON. Named, not hidden: RULING-SHAPED in the same subreport.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
+:root{
+  --alpha-04: 0.04;
+  --alpha-08: 0.08;
+  --alpha-12: 0.12;
+  --alpha-16: 0.16;
+  --alpha-20: 0.2;
+  --alpha-24: 0.24;
+  --alpha-28: 0.28;
+  --alpha-32: 0.32;
+  --alpha-36: 0.36;
+  --alpha-40: 0.4;
+  --alpha-44: 0.44;
+  --alpha-48: 0.48;
+  --alpha-52: 0.52;
+  --alpha-56: 0.56;
+  --alpha-60: 0.6;
+  --alpha-64: 0.64;
+  --alpha-68: 0.68;
+  --alpha-72: 0.72;
+  --alpha-76: 0.76;
+  --alpha-80: 0.8;
+  --alpha-84: 0.84;
+  --alpha-88: 0.88;
+  --alpha-92: 0.92;
+  --alpha-96: 0.96;
+}
+/* ===== AUTO-TOKENS END ===== */
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --grow:760ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682;
+    --data-series-1-hc:#484D6F;
+    --data-axis:#626262; --axis-alpha:.6;
+    --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
+    --shadow:#00000033; --pop-border:#FFFFFF00;
+    --border-radius-control:0; --border-radius-surface:0;
+    /* #96-D1 ③: CANON greys, minted nothing — literal values MIRROR canon.css's already-minted
+       --color-grey-200/300/400 (#EDEDED/#D7D8D6/#B7B7B7), same convention as this file's own
+       --data-series-1 etc: this snippet doesn't link canon.css, so the value is copied verbatim,
+       not re-derived. Nearest steps to the retired color-mix(ink,page) 8/16/24% approximation. */
+    --dv-range-1:#EDEDED; --dv-range-2:#D7D8D6; --dv-range-3:#B7B7B7;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682;
+    --data-series-1-hc:#93B6CC;
+    --data-axis:#9D9D9D; --axis-alpha:.6;
+    --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
+    --shadow:#000000D9; --pop-border:#808080;
+    --border-radius-control:0; --border-radius-surface:0;
+    /* #96-D1 ③: CANON greys, minted nothing — literal values MIRROR canon.css's already-minted
+       --color-grey-dark-mode-500/400/300 (#212121/#404040/#474747), copied verbatim per this
+       file's own convention (no canon.css link). */
+    --dv-range-1:#212121; --dv-range-2:#404040; --dv-range-3:#474747;
+  }
+  [data-contrast="high"]{ --data-series-1:var(--data-series-1-hc); }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:200px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+
+  /* #96-D1 ③: CANON greys (not un-minted color-mix), z-order bands→bar→marker is DOM paint order
+     (SVG has no z-index) — range rects precede the measure rect precede the target line in the
+     markup below, already correct; unchanged here. */
+  .dv-range-1{fill:var(--dv-range-1);}
+  .dv-range-2{fill:var(--dv-range-2);}
+  .dv-range-3{fill:var(--dv-range-3);}
+  .dv-measure{fill:var(--data-series-1); transition:filter var(--ease);}
+  .dv-measure:hover{filter:brightness(1.12);}
+  [data-theme="dark"] .dv-measure:hover{filter:brightness(1.22);}
+  .dv-target{stroke:var(--ink); stroke-width:3;}
+  .dv-measure[tabindex]:focus-visible,.dv-target[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate rect.dv-measure{transform-box:fill-box; transform-origin:left; animation:dvGrowX var(--grow) both;}
+    .dv-animate .dv-row{opacity:0; animation:dvFade var(--ease) both;}
+  }
+  @keyframes dvGrowX{from{transform:scaleX(0);}}
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT, copied byte-for-byte from Chart-bar/Chart-scatter ── */
+  .dv-tbl-toggle,.dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease); border-radius:var(--border-radius-control);}
+  .dv-tbl-toggle::before,.dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .dv-tbl-toggle > *,.dv-vt > *{position:relative; z-index:1;}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  /* s116-D2 (Dave, #116) — THE TABLE CONTROL IS ONE MOLECULE, and it is NATIVE
+     <details>/<summary>. Verbatim: "the table button and pop-over should be a molecule
+     consumed by all of teh charts." The button + `hidden` + JS split was the defect:
+     MEASURED at #116, `.dv-tablepanel` shipped `hidden` and ONLY dv-behaviour.js
+     removed it, so with JS OFF the table fallback was UNREACHABLE on every chart but
+     the sparkline. The disclosure is now HTML+CSS; dv-behaviour.js only clamps, moves
+     focus and adds Escape (PROGRESSIVE ENHANCEMENT). The panel stays position:absolute
+     — a <details> does not force its children into flow — so the floating-overlay
+     appearance is unchanged and figure.dv is still the anchor. */
+  details.dv-tbl{position:static; margin:0;}
+  details.dv-tbl > summary{list-style:none; cursor:pointer;}
+  details.dv-tbl > summary::-webkit-details-marker{display:none;}
+  details.dv-tbl[open] > .dv-tbl-toggle{border-color:var(--ink);}
+  details.dv-tbl[open] > .dv-dd .dv-ico-arrow{transform:rotate(180deg);}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:var(--alpha-60); margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:var(--alpha-60); font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:200px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:var(--alpha-60); max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <h2>Bullet — three KPI rows (measure vs target, qualitative ranges)</h2>
+  <figure id="cbl1" class="dv dv-animate" data-dv-type="bullet" data-domain-min="0" data-domain-max="100" data-surface="page" role="group" aria-labelledby="cbl1-h" data-lockup-title="Revenue is ahead of target; satisfaction lags" data-lockup-table="cbl1-tbl">
+    <figcaption id="cbl1-h" class="sr-only">KPI performance against target and qualitative ranges</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Revenue is ahead of target; satisfaction lags</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="cbl1-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="cbl1-tbl" role="region" aria-label="KPI performance against target, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>KPI performance: measure vs target vs qualitative ranges (poor / satisfactory / good), 0 to 100</caption>
+          <thead><tr><th scope="col">KPI</th><th scope="col">Measure</th><th scope="col">Target</th><th scope="col">Poor to</th><th scope="col">Satisfactory to</th><th scope="col">Good to</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">Revenue</th><td>82</td><td>75</td><td>40</td><td>60</td><td>100</td></tr>
+          <tr><th scope="row">Satisfaction</th><td>58</td><td>70</td><td>40</td><td>60</td><td>100</td></tr>
+          <tr><th scope="row">Retention</th><td>91</td><td>85</td><td>40</td><td>60</td><td>100</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <!-- ⛔ THIS CANVAS SHIPS EMPTY. `dvRender(fig, DATA)` below draws every band, bar,
+           marker, row label and the zero baseline. data-pt="4" data-pb="16" are NOT
+           decoration: they are what makes the plot exactly H - 20 = 60 x rowCount, so the
+           partial's band arithmetic lands on #96-D1 ②'s RULED 60px pitch with no special
+           case (3 rows -> data-h="200", plot 180 = 3 x 60). Change the row count and BOTH
+           move together, at bake time (DV-D02). -->
+      <svg class="dv-svg dv-fit" data-pl="120" data-pl-fit="text.dv-label" data-pr="12"
+           data-h="200" data-pt="4" data-pb="16" data-h-min="200"
+           data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"
+           viewBox="0 0 580 200" role="group"
+           aria-label="KPI performance against target."></svg>
+    </div></div>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="KPI performance, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">KPI rows appear here once targets and measures are set for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Bullet chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle", "--shadow": "elevation/functional",
+              "--data-series-1": "data/series/1",
+              "--data-axis": "data/axis/color",
+              "--data-control-label-disabled": "data/control/label-disabled/color",
+              "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-controls", "role=\"region\""],
+    "$note": "NET-NEW EXEMPLAR (chart-expansion programme, wave 2 lane ②, 2026-08-05). Measure = data/series/1 (brief-ruled). Target marker = ink (brief-ruled), a 3px vertical tick spanning the row. Qualitative ranges: #96-D1 ③ RULED — CANON greys (--dv-range-1/2/3 literal values mirror canon.css --color-grey-200/300/400 light, --color-grey-dark-mode-500/400/300 dark; minted nothing, retired the color-mix approximation). Canvas height: #96-D1 ② RULED — H = 80 + (rowCount-1)*60, pitch=60 constant, not a fixed 200 (this file's 3 rows = 200, unchanged). ds-020 FENCE: axis idiom pre-DV-D07, declared gap. AUTO-BEHAVIOUR markers present but empty (dataviz $members registration is a conductor serial)."
+  }
+  </script>
+  <script type="application/json" id="behaviour-manifest">
+  {
+    "$generated": "by knowledge/gen_component_partials.py from knowledge/components/Chart-bullet.meta.json `behaviour` (s234-D5 — the meta is the one home). DO NOT hand-edit: edit the meta and regenerate.",
+    "component": "component:Chart-bullet",
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-render",
+      "dv-render-bullet"
+    ],
+    "events": [],
+    "fallback": "With CSS on and JS off the gauge canvas renders as an EMPTY <svg> and no row is drawn — dvRender is what fills it. The data is not lost and is not unlabelled: the figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so all three KPIs, their measures, their targets AND their three qualitative breakpoints open and read with no script at all (dv-005 tabular alternative + the a11y spine). The engine REWRITES those rows from the spec when it runs, so the popover value and the table value are one number by construction — and the engine's table spine has no column for a qualitative band, so the three \"…to\" columns are present with JS OFF and absent with JS ON. Lost with JS off: the chart itself, the value popover, the row fade / bar-grow entry and Copy CSV."
+  }
+  </script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow, BOTH axes (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive reflow on BOTH axes (proforma fitCharts, ported; s248-D2/D3
+     + s249-D4 carried the tile-height axis in from the bento template's stub — ONE engine).
+     x relayouts to the container width, y/height to the TILE's slack (VFIT below); text and
+     strokes never scale — the viewBox is re-pinned 1:1 and every position is RE-DERIVED from
+     cached fractions of the baked plot. Geometry rides data-fx/data-fw/data-dx/data-x0/
+     data-fx2 + polyline data-fxs/data-ys; plot frame per-svg via data-pl/data-pr/data-h/
+     data-pt/data-pb/data-h-min (defaults = the kit's 46/12/260/14/30/200).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  /* ---------- ds-012(b) GUTTER-RELATIVE PLOT AREA — RULED by Dave 2026-07-27 (ds-012 in
+     _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
+     never baked: the clipping was driven by label length and face looseness (the licensed
+     HSBC cut is looser than Helvetica), neither a design property — a build-time constant
+     is (a) wearing (b)'s clothes. Opt-in per svg via data-pl-fit="<selector>"; data-pl is
+     the FLOOR, so no gutter ends up NARROWER than its reviewed geometry.
+     PROVISIONAL-AWAITING-DAVE — the two constants below guard ds-012 point 3 ("do not let
+     the plot area collapse"); the narrow-width trade is Dave's eye, not a formula. */
+  var PL_MAX_FRAC = 0.42;   /* PROVISIONAL-AWAITING-DAVE — gutter ceiling as a share of width */
+  var PL_EDGE_PAD = 2;      /* PROVISIONAL-AWAITING-DAVE — clearance left of the longest label */
+  function gutterPL(svg, floorPL, W) {
+    var sel = svg.getAttribute('data-pl-fit');
+    if (!sel) { return floorPL; }
+    var labs = svg.querySelectorAll(sel), maxW = 0, pad = 0, i, bb, dx;
+    for (i = 0; i < labs.length; i++) {
+      try { bb = labs[i].getBBox(); } catch (e) { continue; }
+      if (bb.width > maxW) { maxW = bb.width; }
+      dx = Math.abs(parseFloat(labs[i].getAttribute('data-dx') || '0'));
+      if (dx > pad) { pad = dx; }
+    }
+    if (!maxW) { return floorPL; }                       /* nothing measurable — leave the bake */
+    var need = Math.ceil(maxW + pad + PL_EDGE_PAD);
+    var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
+    return Math.min(Math.max(floorPL, need), cap);
+  }
+  /* ---------- VFIT — the height axis (s248-D2: the chart fills its tile; s248-D3: probe at
+     data-h FIRST so the row never ratchets; s249-D4: one engine, here). H = data-h + the
+     empty ground under the figure inside its .c-bento__tile (no tile: the figure's parent),
+     floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
+     — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
+     centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
+     (an explicit attribute is RSQ, #249). H_MIN_DEFAULT is PROVISIONAL-AWAITING-DAVE. */
+  var H_MIN_DEFAULT = 200;
+  function slackBelow(svg) {
+    var fig = svg.closest('figure.dv'); if (!fig) { return 0; }
+    var tile = fig.closest('.c-bento__tile') || fig.parentElement, cs = getComputedStyle(tile);
+    var edge = tile.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom || '0') - parseFloat(cs.borderBottomWidth || '0');
+    return edge - fig.getBoundingClientRect().bottom;
+  }
+  function fitHeight(svg, W) {
+    var H0 = parseFloat(svg.getAttribute('data-h') || '260');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe at the preferred height */
+    var H = Math.max(Math.round(H0 + slackBelow(svg)), parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT)));
+    if (H === H0) { return H0; }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);    /* the box must FOLLOW the viewBox (height:auto released) — */
+    if (Math.abs(svg.getBoundingClientRect().height - H) > 1) { return H0; }   /* a CSS-pinned box would SCALE: keep the bake */
+    return H;
+  }
+  function fitY(svg, H) {
+    var PT = parseFloat(svg.getAttribute('data-pt') || '14'), PB = parseFloat(svg.getAttribute('data-pb') || '30');
+    var plot0 = parseFloat(svg.getAttribute('data-h') || '260') - PT - PB, plot = H - PT - PB;
+    if (plot0 <= 0 || plot <= 0) { return null; }
+    var Y = function (f) { return PT + parseFloat(f) * plot; };
+    var frac = function (el, key, px) {                   /* cache the bake ONCE, as a plot fraction */
+      if (el.getAttribute(key) === null) { el.setAttribute(key, ((px - PT) / plot0).toFixed(4)); }
+      return el.getAttribute(key);
+    };
+    var els = svg.querySelectorAll('rect[y],line[y1],text[y],circle[cy],polygon[points]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], tag = el.tagName.toLowerCase(), mark = /\bdv-mk\b/.test(el.getAttribute('class') || '');
+      if (tag === 'rect' && mark) {
+        var hh = parseFloat(el.getAttribute('height')) / 2;
+        el.setAttribute('y', (Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')) + hh)) - hh).toFixed(1));
+      } else if (tag === 'polygon') {
+        if (el.getAttribute('data-pts0') === null) { el.setAttribute('data-pts0', el.getAttribute('points')); }
+        var p0 = el.getAttribute('data-pts0').trim().split(/\s+/).map(function (s) { return s.split(',').map(parseFloat); });
+        var cy0 = 0; for (var q = 0; q < p0.length; q++) { cy0 += p0[q][1] / p0.length; }
+        var dyp = Y(frac(el, 'data-fy', cy0)) - cy0;
+        el.setAttribute('points', p0.map(function (pt) { return pt[0].toFixed(1) + ',' + (pt[1] + dyp).toFixed(1); }).join(' '));
+      } else if (tag === 'rect') {
+        if (el.getAttribute('data-fh') === null) { el.setAttribute('data-fh', (parseFloat(el.getAttribute('height')) / plot0).toFixed(4)); }
+        el.setAttribute('y', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('y')))).toFixed(1));
+        el.setAttribute('height', (parseFloat(el.getAttribute('data-fh')) * plot).toFixed(1));
+      } else if (tag === 'line') {
+        el.setAttribute('y1', Y(frac(el, 'data-fy1', parseFloat(el.getAttribute('y1')))).toFixed(1));
+        el.setAttribute('y2', Y(frac(el, 'data-fy2', parseFloat(el.getAttribute('y2')))).toFixed(1));
+      } else if (tag === 'circle') {
+        el.setAttribute('cy', Y(frac(el, 'data-fy', parseFloat(el.getAttribute('cy')))).toFixed(1));
+      } else if (tag === 'text') {
+        var dy = parseFloat(el.getAttribute('data-dy') || '0');
+        if (el.getAttribute('data-fy') === null) {          /* below the baseline = a fixed offset, not a fraction */
+          var a = parseFloat(el.getAttribute('y')) - dy, b0 = PT + plot0;
+          if (a > b0 + 0.5) { dy += a - b0; a = b0; el.setAttribute('data-dy', dy.toFixed(1)); }
+          el.setAttribute('data-fy', ((a - PT) / plot0).toFixed(4));
+        }
+        el.setAttribute('y', (Y(el.getAttribute('data-fy')) + dy).toFixed(1));
+      }
+    }
+    return Y;
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var H = fitHeight(svg, W);                          /* s248-D2 — the tile's height, floored */
+      PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var Y = fitY(svg, H);                               /* s248-D2 — y from data, after the pin */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j], isP = pl.tagName === 'path';
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/), fys = null;
+        if (Y) {                                          /* VFIT: y from cached plot fractions */
+          var PT0 = parseFloat(svg.getAttribute('data-pt') || '14'), pl0 = parseFloat(svg.getAttribute('data-h') || '260') - PT0 - parseFloat(svg.getAttribute('data-pb') || '30');
+          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return ((parseFloat(y) - PT0) / pl0).toFixed(4); }).join(' ')); }
+          fys = pl.getAttribute('data-fys').trim().split(/\s+/);
+        }
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + (fys ? Y(fys[k]).toFixed(1) : ys[k])); }
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
+  });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y, src) {
+    /* #230 T4 — .dv-tip is cn-chart-scoped: re-home, then write */
+    var h = src.closest('[class*=cn-chart-]') || document.body;
+    if (dvTip.parentNode !== h) { h.appendChild(dvTip); }
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14, el); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40, el);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
+  }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
+  document.addEventListener('click', function (e) {
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var det = e.target.closest && e.target.closest('details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render.js (behaviour "dv-render", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render — THE DATA-DRIVEN CHART ENGINE, core (s249-D4, built #259, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   WHAT IT IS. `window.dvRender(figureEl, spec)` turns a DATA SPEC into exactly the SVG grammar
+   `canon/dv-behaviour.js` already fits — rect `data-fx`+`data-fw`, line `data-fx`+`data-fx2`,
+   text `data-fx`+`data-dx`, g `data-fx`+`data-x0`, `.dv-mk` for glyphs that must keep their
+   size — plus `data-tip` on every mark and a real `<table>` spine. It REPLACES rule 18 of
+   `ADS-generate-from-canon` (the interim "author the geometry yourself" recipe): the library
+   owns the arithmetic, the author owns the data.
+   ⚠ THE TWO FIT PASSES ARE NOT SYMMETRIC (#260 A9, reported by scatter and boxplot): dv-behaviour's
+   `fitOne` moves rect/text/line/g and NOT `circle`, while `fitY` moves `circle` and NOT `g` — so a
+   POINT-MARK type must wrap its glyphs in `g[data-fx][data-x0]` and let the circle inside carry its
+   own y; a bare `<circle data-fx>` will not move in x, and a `<g>` alone will not move in y.
+
+   THE SPEC (the whole contract):
+     { type:       "column" | "bar" | "grouped-column" | "stacked-column" | …   (a registered type)
+       categories: ["Q1", "Q2", …],                     (the band axis, ≥1)
+       series:     [{ name: "Savings", values: [40, 45, …], role?: "positive" }, …],
+       format?:    "plain" | "compact" | "percent",     (default "plain")
+       unit?:      "£" | "%" | "k" | …,                 (1 char ⇒ prefix, else suffix)
+       caption?:   "…",  categoryLabel?: "…",  label?:  "…"   (a11y sentence; derived if absent) }
+
+   THE DIVISION OF LABOUR. This file owns everything that is the same for every chart: spec
+   VALIDATION (fail loud, named), the linear value SCALE with nice ticks, the band axis, the
+   AXIS/GRIDLINE/TICK-LABEL furniture, the `<table>` spine, the accessible name, the single
+   `resize` dispatch that hands the fresh marks to dv-behaviour, and the TYPE REGISTRY. A type
+   partial (`dv-render-bar` and its siblings) owns the MARKS only, and registers itself as
+   `dvRender.types["<name>"] = fn(ctx)`. That seam is why six type partials can be built in
+   parallel without any of them touching this file or each other.
+
+   PERFORMANCE CONTRACT (ADR-0015 §4, gated by _validate_behaviour.py): ≤16 KB code-only per
+   source · no setInterval / network / polling · NO NEW RESIZE LISTENER — re-fit is
+   `dispatchEvent(new Event('resize'))`, dv-behaviour's one rAF-debounced listener does the work ·
+   no external <script src> · events stay delegated at the document (dv-behaviour's, not ours).
+
+   PROGRESSIVE ENHANCEMENT (ADR-0015 §4). The SVG a consumer ships is EMPTY and this fills it, so
+   with JS off there is no chart — which is why the `<table>` spine is not optional and not
+   generated: the consumer ships a real `<table class="dv-table">` inside the figure (dv-005),
+   and this engine REWRITES its rows to match the render. JS off ⇒ the table is the answer.
+
+   DEF-004 / dv-017 — NO HARDCODED STYLING. Every colour this file emits is a var() token:
+   `--data-grid`, `--data-axis`, `--baseline`, `--data-series-1…5` (ds-026 solid palette) and the
+   s184-D3 status vocabulary `--status-positive|negative|monitor|neutral`. The two-red law
+   (s151-D1, #DA1A00-on-white / #F6604C-else) rides `--status-negative` → `--rag-error-graphic`,
+   which is where the per-theme pair already lives; this file never names a red.
+
+   DEF-003 boundary: data-driven geometry ONLY. No press-physics custom properties, no scale
+   transform assignment, no scale-physics of any kind — every number this file writes is an SVG
+   attribute derived from the data. Entry motion stays CSS (`.dv-animate` + `data-grow`). */
+(function () {
+  'use strict';
+  if (window.dvRender) { return; }
+
+  /* ---------- the type registry. A type partial does `dvRender.types.column = fn` and may hang
+     two optional properties on its own function:
+       fn.axis   — "y" (default: value runs UP, categories along x) or "x" (value runs ACROSS,
+                   categories down y — the horizontal bar). Decides which furniture is drawn.
+       fn.domain — fn(spec) -> [lo, hi]. Only stacked types need it (the domain is the stack
+                   TOTAL, not the largest single value). Absent ⇒ the min/max of every value.
+       fn.furniture — THE DIAL, not the switch (#260 A1, FIVE reporters: donut, sparkline, bullet,
+                   butterfly, histogram). true/absent (default) ⇒ gridlines + tick labels + baseline,
+                   exactly as before. "axis" ⇒ tick labels + baseline, NO gridlines. false ⇒ nothing,
+                   the plot is the partial's alone. `fn.axis = "none"` is the same as false, because
+                   that is the spelling four of the five reporters asked for. The four copies of
+                   `ctx.out.length = 0` in donut/sparkline/bullet/butterfly are what this replaces —
+                   they stay legal (the buffer is still theirs) and are their own lanes' to remove. */
+  var TYPES = {};
+
+  var ROLES = { positive: 1, negative: 1, monitor: 1, neutral: 1 };   /* s184-D3 status vocabulary */
+  var FORMATS = { plain: 1, compact: 1, percent: 1 };
+  var PAL = 5;        /* ds-026 — data/series/1…5, the solid categorical palette */
+  /* dv-004 — 2px between adjacent filled blocks, REAL geometry, never a painted stroke. The rule
+     is 2px MINIMUM RENDERED, and the constant carries a 0.2px rounding budget on top of it: the
+     fit re-derives a mark's x and its width INDEPENDENTLY from data-fx/data-fw and rounds each to
+     one decimal, so up to 0.15px can vanish out of the gap between them. MEASURED at #259 — an
+     authored 2.0 landed at 1.90px in the browser and the driven check went red, which is the whole
+     reason this is 2.2 and not 2. It is not a fudge of the rule; it is the rule stated in the
+     coordinate space the rule is actually judged in. */
+  var GAP = 2.2;
+  var HIT = 24;       /* s116-D1 — a mark that is a hit target wants 24px, where the band allows */
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&quot;';
+    });
+  }
+  function n1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+  function f4(v) { return v.toFixed(4); }
+  function attr(el, key, dflt) { var v = parseFloat(el.getAttribute(key)); return isFinite(v) ? v : dflt; }
+
+  /* ---------- NICE TICKS. A 1 / 2 / 2.5 / 5 / 10 × 10ⁿ step chosen against a target tick count,
+     then the domain WIDENED to whole steps. dv-bar-009's zero baseline is enforced by the caller
+     (bar-family domains floor at 0); a domain that genuinely spans zero keeps zero as a tick. */
+  function nice(lo, hi, want) {
+    if (!(hi > lo)) { hi = lo + (Math.abs(lo) || 1); }
+    var step = Math.pow(10, Math.floor(Math.log((hi - lo) / want) / Math.LN10));
+    var k = (hi - lo) / want / step;
+    step *= k <= 1 ? 1 : k <= 2 ? 2 : k <= 2.5 ? 2.5 : k <= 5 ? 5 : 10;
+    var min = Math.floor(lo / step) * step, max = Math.ceil(hi / step) * step;
+    var ticks = [], v = min;
+    while (v <= max + step * 1e-9) { ticks.push(Math.round(v * 1e9) / 1e9); v += step; }
+    return { min: min, max: max, step: step, ticks: ticks };
+  }
+
+  /* ---------- VALUE FORMATTING. Display only — the table's <td> always carries the RAW number,
+     because _validate_dataviz.py reads the table for dv-bar-007 (no negative horizontals) and
+     dv-pie-010 (slice sum), and a "£1.2k" cell would read as 1.2 to that gate. */
+  function fmt(spec, v) {
+    var s;
+    if (spec.format === 'percent') { s = (Math.round(v * 10) / 10) + '%'; }
+    else if (spec.format === 'compact' && Math.abs(v) >= 1000) {
+      s = (Math.round(v / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'k';
+    } else { s = String(Math.round(v * 1000) / 1000); }
+    var u = spec.unit || '';
+    return !u ? s : u.length === 1 ? u + s : s + ' ' + u;
+  }
+
+  /* ---------- FILL. A series with a `role` takes the status vocabulary (s184-D3) — that is the
+     salience ramp, and it is NEVER the isoluminant categorical set (R-D9). Everything else takes
+     data/series/N, wrapping at 5. Both are var() tokens: dv-017 has no other legal answer. */
+  function fillOf(s, i) {
+    if (s.role) { return 'var(--status-' + s.role + ')'; }
+    return 'var(--data-series-' + ((i % PAL) + 1) + ')';
+  }
+
+  /* ---------- VALIDATION — fail loud and NAMED. Every message says the field and what it wanted,
+     because this is the surface a build gets wrong and the only place it can be told so. */
+  function bad(msg) { throw new Error('dv-render: ' + msg); }
+
+  function validate(spec) {
+    if (!spec || typeof spec !== 'object') { bad('spec must be an object'); }
+    if (typeof spec.type !== 'string' || !spec.type) { bad('spec.type must be a non-empty string'); }
+    var c = spec.categories;
+    if (!Array.isArray(c) || !c.length) { bad('spec.categories must be a non-empty array'); }
+    var s = spec.series;
+    if (!Array.isArray(s) || !s.length) { bad('spec.series must be a non-empty array'); }
+    if (spec.format && !FORMATS[spec.format]) {
+      bad('spec.format "' + spec.format + '" is not one of plain|compact|percent');
+    }
+    for (var i = 0; i < s.length; i++) {
+      var one = s[i], at = 'spec.series[' + i + ']';
+      if (!one || typeof one !== 'object') { bad(at + ' must be an object'); }
+      if (typeof one.name !== 'string' || !one.name) { bad(at + '.name must be a non-empty string'); }
+      if (!Array.isArray(one.values)) { bad(at + '.values must be an array'); }
+
+      if (one.values.length !== c.length) {
+        bad(at + '.values has ' + one.values.length + ' for ' + c.length +
+            ' categories — one value per category, always');
+      }
+      for (var j = 0; j < one.values.length; j++) {
+        if (typeof one.values[j] !== 'number' || !isFinite(one.values[j])) {
+          bad(at + '.values[' + j + '] is not a finite number');
+        }
+      }
+      if (one.role && !ROLES[one.role]) {
+        bad(at + '.role "' + one.role + '" is not s184-D3 (positive|negative|monitor|neutral)');
+      }
+    }
+  }
+
+  /* ---------- THE TABLE SPINE (dv-005 + the a11y spine). Written into the figure's EXISTING
+     <table class="dv-table">, so the consumer's caption/lockup/table-popover chrome is untouched;
+     created inside .dv-tablepanel (else the figure) only when the consumer shipped none. The rows
+     are the render's own numbers, so popover value == table value by construction, not by care. */
+  function writeTable(fig, spec) {
+    var t = fig.querySelector('table.dv-table');
+    if (!t) {
+      t = document.createElement('table');
+      t.className = 'dv-table t-cm-legal';
+      (fig.querySelector('.dv-tablepanel') || fig).appendChild(t);
+    }
+    var cap = spec.caption;
+    if (!cap) { var fc = fig.querySelector('figcaption'); cap = fc ? fc.textContent.trim() : 'Chart data'; }
+    var head = '<caption>' + esc(cap) + '</caption><thead><tr><th scope="col">' +
+               esc(spec.categoryLabel || 'Category') + '</th>';
+    var i, j;
+    for (i = 0; i < spec.series.length; i++) {
+      head += '<th scope="col">' + esc(spec.series[i].name) +
+              (spec.unit ? ' (' + esc(spec.unit) + ')' : '') + '</th>';
+    }
+    head += '</tr></thead><tbody>';
+    for (i = 0; i < spec.categories.length; i++) {
+      head += '<tr><th scope="row">' + esc(spec.categories[i]) + '</th>';
+      for (j = 0; j < spec.series.length; j++) { head += '<td>' + spec.series[j].values[i] + '</td>'; }
+      head += '</tr>';
+    }
+    t.innerHTML = head + '</tbody>';
+    return t;
+  }
+
+  /* ---------- THE ACCESSIBLE NAME. A full sentence, the way the baked snippets read: the subject,
+     then every category and its value. Capped so a 40-category chart does not read for a minute;
+     the table is the complete answer past that point. */
+  function autoLabel(spec) {
+    var out = [], i, j, ns = spec.series.length, n = Math.min(spec.categories.length, 12);
+    for (i = 0; i < n; i++) {
+      for (j = 0; j < ns; j++) {
+        out.push((ns > 1 ? spec.series[j].name + ' ' : '') + spec.categories[i] + ' ' +
+                 fmt(spec, spec.series[j].values[i]));
+      }
+    }
+    return (spec.caption || 'Chart') + '. ' + out.join(', ') +
+           (n < spec.categories.length ? ', and more in the table' : '') + '.';
+  }
+
+  /* ---------- AXIS FURNITURE. Emitted by the CORE, identically for every type, in the fit
+     grammar: gridlines are lines with data-fx/data-fx2, tick labels are texts with data-fx/data-dx,
+     the baseline is a line in --baseline. `axis === "x"` swaps the two roles for horizontal bars. */
+  function furniture(ctx, axis, bare) {
+    var i, t, p, x, y;
+    if (axis === 'x') {
+      for (i = 0; i < ctx.ticks.length; i++) {
+        t = ctx.ticks[i]; p = ctx.vf(t); x = ctx.PL + p * ctx.plotW;
+        if (!bare) {
+          ctx.push('<line class="dv-grid" x1="' + n1(x) + '" y1="' + ctx.PT + '" x2="' + n1(x) +
+                   '" y2="' + ctx.y0 + '" stroke="var(--data-grid)" data-fx="' + f4(p) +
+                   '" data-fx2="' + f4(p) + '"/>');
+        }
+        ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + n1(x) +
+                 '" y="' + (ctx.y0 + 16) + '" text-anchor="middle" data-fx="' + f4(p) + '">' +
+                 esc(ctx.fmt(t)) + '</text>');
+      }
+      ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + ctx.PT + '" x2="' + ctx.PL +
+               '" y2="' + ctx.y0 + '" stroke="var(--baseline)" data-fx="' + f4(ctx.vf(0)) +
+               '" data-fx2="' + f4(ctx.vf(0)) + '"/>');
+      return;
+    }
+    for (i = 0; i < ctx.ticks.length; i++) {
+      t = ctx.ticks[i]; y = ctx.vy(t);
+      if (!bare) {
+        ctx.push('<line class="dv-grid" x1="' + ctx.PL + '" y1="' + n1(y) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+                 '" y2="' + n1(y) + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>');
+      }
+      ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + (ctx.PL - 8) +
+               '" y="' + n1(y + 3) + '" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">' +
+               esc(ctx.fmt(t)) + '</text>');
+    }
+    var zy = ctx.vy(Math.min(Math.max(0, ctx.min), ctx.max));
+    ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + n1(zy) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+             '" y2="' + n1(zy) + '" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>');
+  }
+
+  /* ---------- THE ENGINE. Idempotent by construction: everything inside the <svg> and everything
+     inside the <table> is REPLACED, so a filter re-render (rule 14) is one more call with a
+     smaller spec, never a diff. The cached fit fractions (data-fy/data-fh) go with the old marks,
+     which is exactly right — they described geometry that no longer exists. */
+  function dvRender(fig, spec) {
+    if (!fig || !fig.querySelector) { bad('first argument must be the <figure> element'); }
+    validate(spec);
+    var draw = TYPES[spec.type];
+    if (typeof draw !== 'function') {
+      bad('no type partial registered for "' + spec.type + '" — have: ' +
+          (Object.keys(TYPES).sort().join(', ') || '(none)'));
+    }
+    var svg = fig.querySelector('svg.dv-fit') || fig.querySelector('svg.dv-svg');
+    if (!svg) { bad('figure has no <svg class="dv-fit"> canvas to render into'); }
+
+    /* Geometry comes from the canvas's own data-* frame (the kit's 46/12/14/30/260 defaults), and
+       the value axis is authored in the data-h coordinate space — NEVER the live viewBox height.
+       dv-behaviour's fitY caches every y as a fraction of `data-h − PT − PB`; authoring into a
+       already-fitted taller box would cache fractions that describe the wrong plot. */
+    var PL = attr(svg, 'data-pl', 46), PR = attr(svg, 'data-pr', 12);
+    var PT = attr(svg, 'data-pt', 14), PB = attr(svg, 'data-pb', 30);
+    var VH = attr(svg, 'data-h', 260);
+    /* ⛔ THE WIDTH IS THE RENDERED ONE, not the authored viewBox. fitOne re-pins the viewBox 1:1
+       to the element's CSS width, so one viewBox unit IS one device-independent pixel after a fit
+       — and only then is a 2px dv-004 gap actually 2px. Authoring into a 580-wide box that then
+       fits to 496 shrank every constant by 5%: MEASURED at #259, the grouped gap landed at 1.90px
+       and the driven check went red. Read the box first, author into it, and the constant survives
+       the fit. Falls back to the authored viewBox when the element has no layout yet (display:none,
+       an unattached figure) — then the first resize does the honest thing. */
+    var vb = (svg.getAttribute('viewBox') || '').trim().split(/\s+/);
+    var VW = Math.round(svg.getBoundingClientRect().width);
+    if (!(VW > 0)) { VW = parseFloat(vb[2]); }
+    if (!isFinite(VW) || VW <= 0) { VW = 580; }
+
+    var lo = Infinity, hi = -Infinity, i, j, v;
+    if (typeof draw.domain === 'function') { v = draw.domain(spec); lo = v[0]; hi = v[1]; }
+    else {
+      for (i = 0; i < spec.series.length; i++) {
+        for (j = 0; j < spec.series[i].values.length; j++) {
+          v = spec.series[i].values[j];
+          if (v < lo) { lo = v; } if (v > hi) { hi = v; }
+        }
+      }
+    }
+    /* dv-bar-009 — the zero baseline. THE RULE IS A BAR RULE (#260 A2, three reporters at #260 —
+       candlestick, boxplot, scatter — and two before them, line and sparkline): a bar's LENGTH is
+       its value, so it must start at zero; a price is a POSITION on a scale, and a series of
+       90.41–108.52 held to a zero floor spends the top 17% of the plot on hairlines.
+       `_validate_dataviz.py` already scopes its own dv-bar-009 check to BAR_FAMILY; only the engine
+       did not. A type may now say `fn.zeroBaseline = false` and scale to its own extent. Default
+       true — every type registered before this line is unchanged, and no type in the tree opts out
+       today: which types SHOULD is each type partial's own call, not the core's. */
+    if (draw.zeroBaseline !== false && lo > 0) { lo = 0; }
+    var sc = nice(lo, hi, 4);
+    var plotW = VW - PL - PR, plotH = VH - PT - PB, y0 = VH - PB;
+    var span = sc.max - sc.min || 1;
+
+    var ctx = {
+      fig: fig, svg: svg, spec: spec, cats: spec.categories, series: spec.series,
+      PL: PL, PR: PR, PT: PT, PB: PB, VW: VW, VH: VH,
+      plotW: plotW, plotH: plotH, y0: y0,
+      min: sc.min, max: sc.max, step: sc.step, ticks: sc.ticks,
+      GAP: GAP, HIT: HIT, esc: esc, n1: n1, f4: f4,
+      fmt: function (n) { return fmt(spec, n); },
+      fill: function (k) { return fillOf(spec.series[k] || {}, k); },
+      vy: function (n) { return y0 - (n - sc.min) / span * plotH; },   /* value -> px, y axis */
+      vf: function (n) { return (n - sc.min) / span; },                /* value -> plot FRACTION */
+      fx: function (px) { return (px - PL) / plotW; },                 /* px -> data-fx fraction */
+      out: []
+    };
+    ctx.push = function (s) { ctx.out.push(s); };
+
+    /* #260 A1 — the dial. Default true: every type registered before this line is unchanged. */
+    var fu = draw.furniture === undefined ? draw.axis !== 'none' : draw.furniture;
+    if (fu) { furniture(ctx, draw.axis === 'x' ? 'x' : 'y', fu === 'axis'); }
+    draw(ctx);
+
+    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+    svg.innerHTML = ctx.out.join('\n');
+    /* #260 A6 — a type may name itself. `autoLabel` enumerates every series x category, which is
+       48 phrases for a 40-session candlestick; the partial's workaround was to write ctx.spec.label
+       behind a private flag, MUTATING the caller's spec — "which nothing forbids and nothing
+       sanctions". A registered `fn.label = fn(spec) -> string` is the sanctioned seam. Precedence
+       is unchanged where it matters: an AUTHORED spec.label still wins over both. */
+    svg.setAttribute('aria-label', spec.label ||
+      (typeof draw.label === 'function' ? draw.label(spec) : autoLabel(spec)) || autoLabel(spec));
+    writeTable(fig, spec);
+
+    /* #260 A7 — the spec is REMEMBERED on the figure so a caller can ask for a real re-render.
+       dvRender dispatches one `resize`, which re-FITS; it never re-DRAWS, so any decision a partial
+       took from the plot width (scatter's tick strategy, histogram's label thinning — measured: 11
+       of 20 bin labels at 1074px stay 11 at 654px) is frozen at first-render width. */
+    fig.__dvSpec = spec;
+
+    /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).
+       dv-behaviour's one rAF-debounced listener re-derives x from data-fx and caches y. */
+    window.dispatchEvent(new Event('resize'));
+    return fig;
+  }
+
+  /* #260 A7 — the re-entry point, and deliberately NOT an automatic width watcher: ADR-0015 §4
+     allows exactly one rAF-debounced resize listener in this group and it is dv-behaviour's. A
+     caller that wants width-sensitive marks calls this from inside its own existing handler. */
+  dvRender.redraw = function (fig) {
+    if (!fig || !fig.__dvSpec) { bad('redraw: this figure has not been rendered yet'); }
+    return dvRender(fig, fig.__dvSpec);
+  };
+
+  dvRender.types = TYPES;
+  dvRender.util = { esc: esc, n1: n1, f4: f4, nice: nice, fmt: fmt, fill: fillOf };
+  window.dvRender = dvRender;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bullet START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render-bullet.js (behaviour "dv-render-bullet", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render-bullet — the BULLET TYPE PARTIAL for the dv-render engine (s259-D1 fast follower,
+   built #260). Hand-authored SOURCE; injected between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py. Edit HERE and regenerate — never between a consumer's markers.
+
+   REGISTERS ONE TYPE: `bullet` — one KPI per ROW, a measure bar read against a comparative
+   target marker and, behind both, the qualitative performance bands. The value axis runs ACROSS
+   x (`fn.axis = "x"`, the horizontal-bar arm of the core's furniture switch); the rows run down y.
+
+   THE SPEC, and the ONE extension it needs:
+     { type: "bullet",
+       categories: ["Revenue", "Satisfaction", "Retention"],      one KPI per row
+       series:     [{ name: "Measure", values: [82, 58, 91] },    series[0] IS the measure
+                    { name: "Target",  values: [75, 70, 85] }],   series[1] IS the target marker
+       ranges:     [40, 60, 100],                                 ⚠ EXTENSION — see below
+       unit?, format?, caption?, categoryLabel? }
+
+   ⚠ `ranges` IS AN EXTENSION TO THE s249-D4 SPEC, and it is declared rather than smuggled. A
+   bullet chart without its qualitative bands is a horizontal bar; the bands are the component's
+   whole reason to beat stat-card and kpi-tile (Chart-bullet.meta `when`: "when the BENCHMARK …
+   is the point"). The core's `validate()` neither knows nor rejects extra keys, so this partial
+   validates `ranges` ITSELF, loudly and by name, exactly as the core validates what it owns.
+   Whether the ruled spec grows a `ranges` field is Dave's, not a lane's — filed RULING-SHAPED.
+
+   RULES ENACTED HERE:
+     #96-D1 ②  ROW PITCH = 60px, the RULED CONSTANT, and the canvas height formula that falls out
+               of it: H = 80 + (rowCount−1)·60 with data-pt="4" data-pb="16", because then
+               plotH = H − 20 = 60·rowCount EXACTLY and the band arithmetic below needs no
+               special case. The pitch is CAPPED, never stretched (`Math.min`), so filtering a
+               row out leaves the survivors' bands IDENTICAL — which is the ruling's own words,
+               "a single row keeps the SAME 60px band/appearance".
+     #96-D1 ③  the qualitative bands take the CANON greys `--dv-range-1/2/3`. Minted nothing;
+               canon.css already carries the pair per mode inside `.cn-chart-bullet`.
+     brief-ruled  measure = data/series/1 · target marker = ink. The measure rect carries
+               `fill="var(--data-series-1)"` as a presentation attribute so the dataviz gate can
+               READ it (it reads `fill` off `.dv-series`); canon.css's `.dv-measure{fill:…}`
+               rule wins at paint time and binds the SAME token, so the two cannot disagree.
+     z-order   bands → bar → marker, which in SVG is DOM order and nothing else. The push order
+               below IS the z-order; there is no z-index to get wrong.
+     dv-005    the value the popover says is the value the table says, because the core writes
+               both off one spec. See the RULING-SHAPED note about the range columns.
+     DEF-003   entry motion is CSS: `.dv-animate .dv-row` fades on an authored animation-delay
+               and `.dv-animate rect.dv-measure` grows from the axis. No JS geometry animation.
+     dv-017    every colour emitted is a var() token.
+
+   ⚠ THE CORE'S CARTESIAN FURNITURE IS DISCARDED (`ctx.out.length = 0`), the same WORK-AROUND
+   dv-render-donut and dv-render-sparkline already carry, for the same reason: `dvRender` calls
+   `furniture()` unconditionally before `draw(ctx)` and offers no opt-out. A bullet reads against
+   its BANDS, not against gridlines and tick labels — the promoted component has never carried
+   either — so drawing them and then painting opaque greys over them would be paying for ink
+   nobody sees. The core request ("honour fn.axis = 'none' / fn.furniture = false") is filed
+   verbatim in knowledge/_tmp/260/bullet.core-requests.md. This partial emits the one piece of
+   furniture the component does own: the vertical zero baseline. */
+(function () {
+  'use strict';
+  if (!window.dvRender) { return; }   /* core absent — dvRender's own error is the loud one */
+  var T = window.dvRender.types, U = window.dvRender.util;
+  var n1 = U.n1, f4 = U.f4, esc = U.esc;
+
+  /* #96-D1 ② — the RULED row geometry, in the coordinate space the ruling states it in:
+     row band 32 tall, measure bar 16 tall, target tick 48 tall, all inside a 60px pitch. */
+  var PITCH = 60, ROW_H = 32, MEAS_H = 16, TICK_H = 48;
+  var TINTS = 3;      /* --dv-range-1/2/3 — three canon greys exist and no fourth is minted */
+
+  function bad(msg) { throw new Error('dv-render-bullet: ' + msg); }
+
+  /* The qualitative breakpoints, validated the way the core validates its own fields: say the
+     field, say what it wanted. An ABSENT `ranges` is legal and draws a bare measure/target row. */
+  function bands(spec) {
+    var r = spec.ranges;
+    if (r === undefined || r === null) { return []; }
+    if (!Array.isArray(r) || !r.length) {
+      bad('spec.ranges must be a non-empty array of ascending breakpoints, or absent');
+    }
+    if (r.length > TINTS) {
+      bad('spec.ranges has ' + r.length + ' breakpoints — #96-D1 ③ mints THREE qualitative tints ' +
+        '(--dv-range-1/2/3) and a fourth band would bind a token that does not exist');
+    }
+    for (var i = 0; i < r.length; i++) {
+      if (typeof r[i] !== 'number' || !isFinite(r[i])) {
+        bad('spec.ranges[' + i + '] is not a finite number');
+      }
+      if (r[i] <= (i ? r[i - 1] : 0)) {
+        bad('spec.ranges must ascend from zero — ranges[' + i + '] is ' + r[i] +
+          ' and the band before it ends at ' + (i ? r[i - 1] : 0));
+      }
+    }
+    return r;
+  }
+
+  /* The domain is the RANGE TOP, not the largest measure — a bullet is read against its bands,
+     so a chart whose worst KPI is 58 must still show the whole 0–100 scale. This is exactly the
+     case `fn.domain` exists for: the core cannot infer it from `series` alone. */
+  function domain(spec) {
+    var hi = 0, i, j, v;
+    for (i = 0; i < spec.series.length; i++) {
+      for (j = 0; j < spec.series[i].values.length; j++) {
+        v = spec.series[i].values[j];
+        if (v > hi) { hi = v; }
+      }
+    }
+    var r = bands(spec);
+    if (r.length && r[r.length - 1] > hi) { hi = r[r.length - 1]; }
+    return [0, hi];
+  }
+
+  function bullet(ctx) {
+    ctx.out.length = 0;                 /* ⚠ the core's cartesian furniture — see the header */
+
+    var ns = ctx.series.length, nc = ctx.cats.length, i, j;
+    if (ns > 2) {
+      bad('a bullet row is ONE measure against AT MOST ONE target — got ' + ns +
+        ' series. Expected [measure] or [measure, target]; use type "bar" for a multi-series ' +
+        'horizontal comparison');
+    }
+    var rs = bands(ctx.spec);
+    var meas = ctx.series[0], tgt = ns > 1 ? ctx.series[1] : null;
+
+    /* #96-D1 ② — CAPPED, never stretched. With the ruled canvas (data-h = 80 + (n−1)·60,
+       data-pt="4", data-pb="16") plotH is exactly 60·n and the cap is inert; on any other
+       canvas the rows keep their 60px appearance and sit top-aligned in the space there is. */
+    var pitch = Math.min(PITCH, ctx.plotH / nc);
+    var k = pitch / PITCH;                          /* the one scale factor, applied to all three */
+    var rh = ROW_H * k, mh = MEAS_H * k, th = TICK_H * k;
+    var X = function (v) { return ctx.PL + ctx.vf(v) * ctx.plotW; };
+    var W = function (a, b) { return (ctx.vf(b) - ctx.vf(a)) * ctx.plotW; };
+
+    for (i = 0; i < nc; i++) {
+      var cy = ctx.PT + i * pitch + pitch / 2;
+      ctx.push('<g class="dv-row" style="animation-delay:' + (i * 90) + 'ms">');
+
+      /* The KPI name, in the LEFT GUTTER — data-fx="0" + data-dx so the 8px clearance stays 8px
+         on every width, and so ds-012(b)'s measured gutter (data-pl-fit) can size itself off it. */
+      ctx.push('<text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="' +
+        n1(ctx.PL - 8) + '" y="' + n1(cy + 4) + '" text-anchor="end" data-fx="0" data-dx="-8">' +
+        esc(ctx.cats[i]) + '</text>');
+
+      /* ① the qualitative bands, FIRST = furthest back (SVG paint order is the z-order) */
+      var from = 0;
+      for (j = 0; j < rs.length; j++) {
+        ctx.push('<rect class="dv-range-' + (j + 1) + '" fill="var(--dv-range-' + (j + 1) +
+          ')" x="' + n1(X(from)) + '" y="' + n1(cy - rh / 2) + '" width="' + n1(W(from, rs[j])) +
+          '" height="' + n1(rh) + '" data-fx="' + f4(ctx.vf(from)) + '" data-fw="' +
+          f4(W(from, rs[j]) / ctx.plotW) + '"></rect>');
+        from = rs[j];
+      }
+
+      /* ② the measure bar, over the bands. Its words carry the DOMAIN and the TARGET, because a
+         bullet's reading is a comparison — a bare number is the one thing this chart is not. */
+      var v = meas.values[i];
+      var w = W(0, v); if (w < 1) { w = 1; }
+      var words = ctx.cats[i] + ': ' + ctx.fmt(v) + ' of ' + ctx.fmt(ctx.max) +
+        (tgt ? ', target ' + ctx.fmt(tgt.values[i]) : '');
+      ctx.push('<rect class="dv-series dv-measure" data-series-i="1" fill="' + ctx.fill(0) +
+        '" data-grow="right" style="animation-delay:' + (i * 90) + 'ms" x="' + n1(X(0)) +
+        '" y="' + n1(cy - mh / 2) + '" width="' + n1(w) + '" height="' + n1(mh) +
+        '" data-fx="' + f4(ctx.vf(0)) + '" data-fw="' + f4(w / ctx.plotW) +
+        '" tabindex="0" role="img" aria-label="' + esc(words) + '" data-tip="' +
+        esc(words) + '"></rect>');
+
+      /* ③ the comparative marker, LAST = on top of everything. Ink, 3px, spanning the row —
+         the conventional bullet target indicator, and brief-ruled ("marker = ink"). */
+      if (tgt) {
+        var tv = tgt.values[i];
+        ctx.push('<line class="dv-target" x1="' + n1(X(tv)) + '" y1="' + n1(cy - th / 2) +
+          '" x2="' + n1(X(tv)) + '" y2="' + n1(cy + th / 2) + '" data-fx="' + f4(ctx.vf(tv)) +
+          '" data-fx2="' + f4(ctx.vf(tv)) + '"/>');
+      }
+      ctx.push('</g>');
+    }
+
+    /* The one piece of furniture a bullet owns: the vertical baseline the bars grow from. */
+    ctx.push('<line class="dv-axis" x1="' + n1(X(0)) + '" y1="' + n1(ctx.PT - 8) + '" x2="' +
+      n1(X(0)) + '" y2="' + n1(ctx.PT + nc * pitch + 8) + '" stroke="var(--baseline)" data-fx="' +
+      f4(ctx.vf(0)) + '" data-fx2="' + f4(ctx.vf(0)) + '"/>');
+  }
+
+  bullet.axis = 'x';        /* the value runs ACROSS — the same switch the horizontal bar throws */
+  bullet.domain = domain;
+  T.bullet = bullet;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bullet END ===== -->
+  <script>
+  /* THE DATA — rule 13, data-model-first. The numbers live here; the geometry does not exist
+     until dvRender draws it. This block is the shape a generated page copies, so it is NOT
+     inside an APOLLO-DEMO fence: the fence is for showroom harness, and this is the pattern.
+
+     series[0] is the MEASURE and series[1] is the TARGET — that ordering is the spec, and the
+     partial refuses a third series by name rather than drawing something nobody asked for.
+     `ranges` is the ONE extension to the s249-D4 spec (a bullet without its qualitative bands is
+     a horizontal bar); #96-D1 ③ mints exactly three tints, so exactly three breakpoints are legal
+     and a fourth throws. #96-D1 ②’s 60px pitch is the partial’s constant, capped rather than
+     stretched, so a filtered stack keeps the band it had. */
+  (function () {
+    var fig = document.getElementById('cbl1');
+    if (fig && window.dvRender) {
+      dvRender(fig, {
+        type: 'bullet',
+        categories: ['Revenue', 'Satisfaction', 'Retention'],
+        series: [
+          { name: 'Measure', values: [82, 58, 91] },
+          { name: 'Target',  values: [75, 70, 85] }
+        ],
+        ranges: [40, 60, 100],
+        categoryLabel: 'KPI',
+        caption: 'KPI performance: measure vs target, 0 to 100'
+      });
+    }
+  }());
+  </script>
+
+</body>
+</html>

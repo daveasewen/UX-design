@@ -1,11 +1,13 @@
 {
   "name": "Icon button",
+  "when": "the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label — CANON on the first half (roles.json: \"space is tight and the glyph is universal\"); beats button only where the glyph is unambiguous — our own meta: \"Use a labelled Button when the action is not unambiguous from a glyph alone\"; the tooltip is not optional company: Atlassian (\"Use tooltips with icon buttons to display the button label\") and Polaris (\"Be provided for icon-only buttons\") both make it a requirement, which our meta states only as an antiPattern.",
   "category": "atom",
   "purpose": "An icon-only control that triggers a single action where space is tight or the action is universally recognised (add, download, edit, search, close). Shares Button's four-level emphasis hierarchy (primary / secondary / tertiary / quaternary) and its tokens, but carries no visible label — so it must supply an accessible name and guarantee a 44x44 target. Use a labelled Button when the action is not unambiguous from a glyph alone.",
+  "provides": "action",
   "props": [
-    { "name": "type", "type": "enum", "values": ["primary", "secondary", "tertiary", "quaternary"], "default": "quaternary", "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add)." },
-    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled"], "default": "default" },
-    { "name": "glyph", "type": "string", "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides." },
+    { "name": "type", "type": "enum", "values": ["primary", "secondary", "tertiary", "quaternary"], "default": "quaternary", "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add).", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled"], "default": "default", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "glyph", "type": "string", "binds": ["button.primary.icon.default", "text.on-disabled", "text.on-inverse", "icon.default", "icon.default-reverse", "tertiary.text.disabled"], "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides.", "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "label", "type": "string", "$note": "REQUIRED accessible name (aria-label / visually-hidden text). Icon-only = no visible label, so the name is non-optional (4.1.2 / 2.4.4)." }
   ],
   "variants": [
@@ -72,5 +74,104 @@
     "source": "gap-report",
     "figma_node": "",
     "code_path": ""
+  },
+  "edges": {
+    "$obeys-contract": "AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is one line, written by reading the rule and this meta together, reviewed by eye. RATIFIED s276-D3 + s276-D4 (Dave's page export 2026-09-15T19:08:48.621Z — D-3 a, D-4 a — plus his 'go' on the read-back).",
+    "obeys": [
+      {
+        "ref": "rule:ctkb-002",
+        "$why": "This meta says it shares Button's four-level emphasis hierarchy and tokens, so the rank semantics rule binds it unchanged."
+      },
+      {
+        "ref": "rule:ctkb-006",
+        "$why": "8px between buttons and primary-first — icon buttons group the same way; the rule is about the group, not the label."
+      },
+      {
+        "ref": "rule:ctkb-009",
+        "$why": "Always rectangular, never rounded — a shape token shared with Button."
+      },
+      {
+        "ref": "rule:ctkb-011",
+        "$why": "The rule NAMES icon-only as one of the three structural variations and supplies the blessed icon list — this is the rule that makes this component legal."
+      },
+      {
+        "ref": "rule:ctkb-012",
+        "$why": "The button-activity contract, including the clause that an accessible label MUST accompany the spinner — sharper here, since there is no visible label to fall back on."
+      },
+      {
+        "ref": "rule:ctkb-014",
+        "$why": "Accessible name and ≥44×44 over the whole container — the binding constraint for a control with no visible text at all."
+      },
+      {
+        "ref": "ux:pr-fitts",
+        "$why": "an icon-only control is the smallest target in the set; ctkb-014's 44×44 is the whole reason it stays usable."
+      },
+      {
+        "ref": "ux:pr-speed-accuracy",
+        "$why": "dropping the label buys speed and costs certainty, which is exactly why ctkb-011 restricts icons to globally recognised ones and ctkb-014 insists on the accessible name."
+      }
+    ],
+    "renderedBy": [
+      {
+        "ref": "snippet:Icon-button.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:action-bar",
+        "$note": "Action-bar"
+      },
+      {
+        "ref": "component:table",
+        "$note": "Table (row actions)"
+      },
+      {
+        "ref": "component:input-fields",
+        "$note": "Input-fields (adornment)"
+      },
+      {
+        "ref": "component:modals",
+        "$note": "Modals (close)"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:toolbar",
+        "$note": "Toolbar"
+      },
+      {
+        "ref": "context:card-header",
+        "$note": "Card header"
+      },
+      {
+        "ref": "context:page-header",
+        "$note": "Page header"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:toolbar-action-cluster"
+      },
+      {
+        "ref": "pattern:input-clear-reveal-adornment"
+      },
+      {
+        "ref": "pattern:table-row-actions"
+      },
+      {
+        "ref": "pattern:dialog-close-x"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": "component:icon-button",
+        "$note": "Icon button (primary) x2 (a second primary icon action)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:action"
+      }
+    ]
   }
 }

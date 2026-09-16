@@ -3,10 +3,11 @@
   "category": "molecule",
   "$platform": "browser only",
   "purpose": "Breaks longer lists of content into digestible chunks and helps with content load times by letting users move between pages of results. Browser-only.",
+  "provides": "wayfinding",
   "$family": "Covers the 'Pagination (browser)' canvas: Pagination basic, Pagination dropdown, Pagination dropdown stacked, plus atoms — page-size dropdown (.Dropdown), Go button, Arrow button.",
   "props": [
-    { "name": "type", "type": "enum", "values": ["basic", "dropdown", "dropdown-stacked"], "default": "basic" },
-    { "name": "state", "type": "enum", "values": ["default", "hover", "completed", "disabled"], "default": "default", "$note": "Page buttons / dropdown trigger states; current page marked active." }
+    { "name": "type", "type": "enum", "values": ["basic", "dropdown", "dropdown-stacked"], "default": "basic", "$status": "s142-D1 (Dave, 2026-08-10) class C6 -- no-bind:variants-axis. Structural variance (a different assembly, not a scaled param); routes to the VARIANTS axis (s136-D1). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
+    { "name": "state", "type": "enum", "values": ["default", "hover", "completed", "disabled"], "default": "default", "$note": "Page buttons / dropdown trigger states; current page marked active.", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
   ],
   "variants": [
     { "name": "basic", "use": "Numbered page buttons with prev/next arrows; current page outlined (tertiary/border/default). CLEAN." },
@@ -70,5 +71,68 @@
     "source": "figma",
     "figma_node": "Cgbtrmfp15ruNFkIAClpkI:264:9250",
     "code_path": ""
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Pagination.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:table",
+        "$note": "Table"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:search-results",
+        "$note": "Search results"
+      },
+      {
+        "ref": "context:list-page",
+        "$note": "List page"
+      },
+      {
+        "ref": "context:content-grid",
+        "$note": "Content grid"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:numbered-page-nav-with-prev-next"
+      },
+      {
+        "ref": "pattern:jump-to-page-dropdown-go"
+      },
+      {
+        "ref": "pattern:results-per-page-selector"
+      }
+    ],
+    "hasPart": [
+      {
+        "ref": "component:dropdown",
+        "$note": "page-size-dropdown: Single-select dropdown trigger (closed/bottom/top × default/hover/completed) — reuses the Dropdown form-trigger pattern."
+      },
+      {
+        "ref": "component:button",
+        "$note": "go-button: Secondary-style 'Go' button to jump to a typed page."
+      },
+      {
+        "ref": "component:button",
+        "$note": "arrow-button: Prev/next arrow button (secondary-style border)."
+      }
+    ],
+    "family": [
+      {
+        "ref": "component:pagination",
+        "$note": "Covers the 'Pagination (browser)' canvas: Pagination basic, Pagination dropdown, Pagination dropdown stacked, plus atoms — page-size dropdown (.Dropdown), Go button, Arrow button."
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:wayfinding"
+      }
+    ]
   }
 }

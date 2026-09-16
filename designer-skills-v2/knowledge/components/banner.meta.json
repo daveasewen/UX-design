@@ -1,0 +1,155 @@
+{
+  "name": "Banner",
+  "category": "molecule",
+  "purpose": "The page-level, persistent member of the feedback family: a full-width solid RAG surface that sits above the content it governs and stays until the condition clears or the user dismisses it. Use for conditions that apply to the whole page or session (service outage, device verification, expiring card) — not for in-flow validation (Alert) or transient confirmations (Toast).",
+  "provides": "feedback",
+  "props": [
+    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\".", "binds": {"error": "rag.error", "warning": "rag.warning", "success": "rag.success", "information": "rag.information"}, "$status": "s142-D1 (Dave, 2026-08-10) class C4 -- bind:rag-map. status IS the RAG semantic. ADDRESS-INTENT recorded now -- the colour spine is NOT yet DTCG-migrated, the token VALUE lands at that migration. This prop's own $note names a background-fill + ink mechanism; that richer detail stays in $note, not duplicated into binds. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."},
+    { "name": "title", "type": "string", "$note": "Bold lead-in (.t-ed-body .em). Sentence case." },
+    { "name": "message", "type": "string" },
+    { "name": "link", "type": "string", "$note": "Optional inline link, descriptive text (aca-004)." },
+    { "name": "actions", "type": "array", "$note": "Up to two ghost actions — mutually exclusive with dismiss (Legacy family shape rule kept)." },
+    { "name": "dismissible", "type": "boolean", "default": false, "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."}
+  ],
+  "variants": [
+    { "name": "error", "use": "Page/session-level failure needing action; the ONE white-type surface IN BASE/MONO (type26-013 — white is red-only; fill #B92F1E, 6.02:1); assertive. s131-D1 (#131): in LEGACY white type also rides success and information — the red-only clause is base-scoped." },
+    { "name": "warning", "use": "Page-level caution; amber always carries near-black ink (R-D3)." },
+    { "name": "success", "use": "Page-level confirmation that should persist; black ink (text/on-success, B-D6 precedent). s131-D1 (#131): legacy overrides text/on-success to WHITE on its teal #00847F (4.56:1)." },
+    { "name": "information", "use": "Service notice; rag/text/on-information ink (minted s131-D1 #131 — base = the on-light dark ink; legacy reverses to white on its dark blue #305A85, 7.17:1). Formerly bound rag/text/on-light." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — copy .t-ed-body (.em title); actions .t-cm-button + .t-cm-slot",
+    "surface": "rag/{error,warning,success,information}-background — the R-D20 solid fills (Mono precedent: Button is-success)",
+    "ink": "error = rag/text/on-dark (white, red-only surface) · warning = rag/text/on-light · information = rag/text/on-information (minted s131-D1; base equals the on-light ink) · success = text/on-success. 5.22–9.16:1 both modes in base; legacy legs per s131-D1: 7.87 / 11.57 / 7.17 / 4.56.",
+    "glyph": "reverse-knockout — shape = the variant ink, internal mark = the fill (--mark), so icon legs match the declared text pairs",
+    "radius": "border-radius/surface",
+    "states": "action/dismiss overlays = color-mix of the INK at 14%/22% (active > hover); press physics pending button-family partial injection (ADR-0013)",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "dismiss": "Immediate removal (page-level surfaces do not animate away by default).",
+    "reducedMotion": "All transitions collapse under prefers-reduced-motion.",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "Full-width fluid; actions stack full-width at ≤480px container (verified to 320px, 1.4.10). Icon anchors to the first text line.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Page shell (above content)", "Section heads"],
+    "mustNotNeighbour": ["A second banner (one page-level message at a time)", "Alert/Toast carrying the identical message"],
+    "commonPatterns": ["service outage notice", "security verification prompt", "expiry warnings"],
+    "triggeredBy": ["session state", "service status", "account conditions"]
+  },
+  "accessibility": {
+    "role": "role=\"alert\" for error (assertive); role=\"status\" otherwise (4.1.3).",
+    "name": "Dismiss carries aria-label=\"Dismiss banner\"; glyphs aria-hidden (title carries meaning — colour never the sole channel).",
+    "keyboard": "Link, actions and dismiss are tabbable; Enter/Space activate.",
+    "focus": "Visible :focus-visible outlines (2px ink) on link, actions and dismiss.",
+    "target": "Actions 44px tall; dismiss 44×44 via ::before (2.5.8).",
+    "nonText": "Glyph legs ≥4.5:1 (they reuse the text pairs); banner fill vs page carries no indicator floor — the surface is not an indicator (1.4.11).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.4.10 Reflow", "2.5.8 Target Size (Minimum)", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Actions AND dismiss on the same banner (family shape rule: either, never both)",
+    "White type on any fill except the red error fill (type26-013)",
+    "Two banners stacked (one page-level message at a time; queue or consolidate)",
+    "Using a banner for in-flow form validation (Alert) or transient confirmation (Toast)",
+    "Re-implementing press physics locally on actions/dismiss (ADR-0013 ratchet)",
+    "Hardcoding RAG hexes instead of rag/*-background roles"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json, R-D20 -background fills + ruled inks) via #token-manifest",
+    "result": "PASS — bound vars match resolved light+dark; declared text pairs 5.22–9.16:1 both modes; icon legs reuse the text pairs (reverse-knockout).",
+    "$note": "Built Phase-2 wave 1 (worker B). Pressables await button-family $members registration (conductor); empty AUTO-PARTIAL pair in place."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  },
+  "slots": {
+    "actions": {
+      "accepts": {
+        "tier": [
+          "atom"
+        ],
+        "capability": [
+          "action-button"
+        ]
+      },
+      "use": "Holds the banner's response actions; the container lays them out but never authors them.",
+      "multiple": true,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    }
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Banner.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:page-shell-above-content",
+        "$note": "Page shell (above content)"
+      },
+      {
+        "ref": "context:section-heads",
+        "$note": "Section heads"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:service-outage-notice"
+      },
+      {
+        "ref": "pattern:security-verification-prompt"
+      },
+      {
+        "ref": "pattern:expiry-warnings"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": "component:banner",
+        "$note": "A second banner (one page-level message at a time)"
+      },
+      {
+        "ref": "component:toast",
+        "$note": "Alert/Toast carrying the identical message"
+      }
+    ],
+    "triggeredBy": [
+      {
+        "ref": null,
+        "$note": "session state"
+      },
+      {
+        "ref": null,
+        "$note": "service status"
+      },
+      {
+        "ref": null,
+        "$note": "account conditions"
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:s125-D1"
+      },
+      {
+        "ref": "ruling:s130-D4"
+      },
+      {
+        "ref": "ruling:s131-D1"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:feedback"
+      }
+    ]
+  }
+}

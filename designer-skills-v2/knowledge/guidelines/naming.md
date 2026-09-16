@@ -11,7 +11,7 @@ names — several are cost-0 gate candidates kin to the sentence-case family.*
 
 - **Never possessive with product names** — "HSBC should not appear in the possessive
   form": never "HSBC's Credit Card" / "HSBC's Easy Invest"; write "An HSBC Credit Card" /
-  "HSBC Easy Invest". [GATED — RULED STRAIGHT TO BLOCKING 2026-07-03 (sweep-batch
+  "HSBC Easy Invest". [BLOCKING — GATED, RULED STRAIGHT TO BLOCKING 2026-07-03 (sweep-batch
   ruling; pre-swept 0 signals): snippet gate check 7, visible text + accessible-name
   attributes, bite-tested in `_tests/test_gates.py`] {#nam-001}
 - **Names are never fully capitalised** — "CONNECTED MONEY" banned; capitalised first

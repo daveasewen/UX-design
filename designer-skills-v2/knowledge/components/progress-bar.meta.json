@@ -1,0 +1,92 @@
+{
+  "name": "Progress bar",
+  "category": "molecule",
+  "purpose": "THE PROGRESS READING OF THE ONE METER MOLECULE. Use this when the value is a task underway and a full bar means DONE — uploads, downloads, multi-part transfers, savings goals, completeness scores. The geometry, the tokens, the states and the full spec live ONCE, in meter.meta.json; this record exists so 'Progress bar' stays a findable, selectable identity in the catalogue with its own category, per s210-D5.",
+  "provides": "feedback",
+  "aliasOf": {
+    "component": "component:meter",
+    "reading": "progress",
+    "why": "A progress meter measures a task you WANT to complete: full is success. That is the meaning half of the split Dave named at #210 — 'they are the same molecule but they are categorised and might actually be different items when selecting them from the store'. Same molecule, different reading."
+  },
+  "relationships": {
+    "livesInside": ["Card", "List items", "Form layout", "File upload", "Dialog", "Stat card", "Account card"],
+    "mustNotNeighbour": ["Loading indicator (showing both for the same task is contradictory — one claims the duration is known, the other that it is not)"],
+    "commonPatterns": ["file upload progress", "multi-part transfer progress", "savings goal / limits meter", "profile completeness score"]
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Meter.reference.html",
+    "$note": "Built #174 as the first component through the scaffold route (s173-D1, Dave). No Figma node bound — this is a verified gap fill, not a Figma reconciliation. A design owner binds figma_node later. ⚠ code_path RE-POINTED at the Meter reference at #210 per s210-D5: the implementation of this reading now lives in Meter.reference.html. The original file knowledge/snippets/Progress-bar.reference.html is STILL PRESENT and BYTE-UNTOUCHED by this pass — its retirement is named by the memo's Option C but its mechanism and destination are not, so it was left in place for the conductor (see $snippetDisposition)."
+  },
+  "$aliasRecord": "ENACTED PER s210-D5 (#210, Dave verbatim: 'C looks good to me, all works'). This file WAS the full Progress-bar spec — 12,350 bytes of props, tokens, dimensions, motion, responsive, accessibility, antiPatterns and tokenValidation, including the s175-D1 four-theme ink finding and its $gateScope / $addressFinding notes. Every one of those facts is reproduced in knowledge/components/meter.meta.json, which is now the ONE home for the spec (ADR-0017 write-once). Nothing was deleted from the repo: the prior bytes of this file are in git history at the #210 pre-fold commit, and the full prose survives in meter.meta.json. THE STRUCTURAL POINT OF OPTION C, in the memo's words: 'No duplicated spec prose exists to drift, because the aliases hold no spec.'",
+  "$sizeFence": "⛔ THIS RECORD MAY NOT GROW A SPEC. meta.schema.json's alias seat (added #210 for s210-D5) BANS props, variants, tokens, antiPatterns, accessibility, tokenValidation, dimensions, motion, responsive, slots, subComponents, behaviour, usage, build, graphicIndicator and codeBindings on any meta carrying `aliasOf`, and caps the record at 14 top-level keys. That is the memo's own condition of Option C — 'If the aliases are allowed to grow spec prose over time, C decays into B and inherits B's drift. If you pick C, the aliases need a size fence, not just a convention.' probe_meta_schema.py --check is the consumer that enforces it.",
+  "$relationshipsRetained": "⚠ DELIBERATE AND DECLARED, NOT AN OVERSIGHT. `relationships` and `edges` are kept BYTE-IDENTICAL to the pre-fold file because they are KG WIRING, not spec: gen_kg_edges.py derives `edges` and the two node registries (_nodes-pattern.json / _nodes-context.json) from them, and dropping them here would have silently dropped this component's entries from those generated registries' `sources` lists — a regen this lane is not the owner of. They duplicate no geometry, no token and no rule. Whether an alias should carry graph wiring at all is a real question and is the conductor's/Dave's, not settled here.",
+  "$statusBeforeTheFold": "Progress-bar was GATED and PROMOTED. Demoting a promoted component to an alias is a STATUS MOVE and the memo says in terms that only Dave may make it: 'C cannot be executed by a worker on this memo.' He made it — s210-D5, Option C picked in chat #210. This file is enacted on that authority and on nothing else.",
+  "$snippetDisposition": "⬛ OPEN, NOT IMPROVISED. The memo's §4 table says Progress-bar.reference.html 'Retires' under every option including C, but names NO destination and NO mechanism (delete / move to _retired/ / leave with a marker). The file is therefore LEFT IN PLACE and byte-untouched by this pass, and the disposition is reported to the conductor. Consequence, declared: while the file exists, gen_kg_edges.py keeps deriving `edges.renderedBy -> snippet:Progress-bar.reference.html` for this record from the stem match; when the snippet does retire, that edge disappears on the next regen and this note should go with it.",
+  "$aliasPlacement": "⬛ NOT PLACED. gen_showroom.py CATEGORIES has no meter bucket and this slug is not in CAT_OF, so the page still falls through to the uncategorised 'More' tail — as do meter, limits-meter and runway-bar. The memo names this explicitly as a call it does not make: 'where they go (Feedback and status? a new bucket?) is a call this memo does not make.' Placement is promotion, promotion is Dave's, and no registry was touched by this pass.",
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Progress-bar.reference.html"
+      }
+    ],
+    "containedBy": [
+      {
+        "ref": "component:cards",
+        "$note": "Card"
+      },
+      {
+        "ref": "component:list-items",
+        "$note": "List items"
+      },
+      {
+        "ref": "component:form-layout",
+        "$note": "Form layout"
+      },
+      {
+        "ref": "component:file-upload",
+        "$note": "File upload"
+      },
+      {
+        "ref": "component:stat-card",
+        "$note": "Stat card"
+      },
+      {
+        "ref": "component:account-card",
+        "$note": "Account card"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dialog",
+        "$note": "Dialog"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:file-upload-progress"
+      },
+      {
+        "ref": "pattern:multi-part-transfer-progress"
+      },
+      {
+        "ref": "pattern:savings-goal-limits-meter"
+      },
+      {
+        "ref": "pattern:profile-completeness-score"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "Loading indicator (showing both for the same task is contradictory — one claims the duration is known, the other that it is not)"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:feedback"
+      }
+    ]
+  }
+}

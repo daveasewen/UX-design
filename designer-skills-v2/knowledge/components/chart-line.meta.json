@@ -1,0 +1,357 @@
+{
+  "name": "Line chart",
+  "category": "organism",
+  "purpose": "Trend over time as straight-segment polylines, single- or multi-series — the round-one dataviz kit's line family graduated into canon, LAYER-2 RESTORED (chart-revisit exemplar 2026-07-23: Dave ruled the proforma's interaction layer IS the bar). Semantic SVG styled by tokens, decorative motion by CSS, behaviour by the ADR-0015 generated JS partial (dv-behaviour), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); geometry, easing and marker cadence are OBSERVED kit values.",
+  "intent": "change-over-time",
+  "provides": "chart-panel",
+  "answers": "change-over-time",
+  "shape": "time-series × 1–5-series",
+  "span": {
+    "cols": {
+      "min": 6,
+      "max": 12
+    }
+  },
+  "priority": 88,
+  "when": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 — the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6.",
+  "props": [
+    {
+      "name": "series",
+      "type": "number",
+      "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011)."
+    },
+    {
+      "name": "data",
+      "type": "table",
+      "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source)."
+    },
+    {
+      "name": "markers",
+      "type": "enum",
+      "values": [
+        "background",
+        "white"
+      ],
+      "default": "background",
+      "binds": "background.default",
+      "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "default": false,
+      "$note": "No-data state = the Empty-state pattern by reference."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "$note": "OPTIONAL visible title slot (.dv-title, dv-006: reflects the main insight) — a type composite heading (t-cm-section-label); when absent the sr-only figcaption still names the chart."
+    },
+    {
+      "name": "tablePopover",
+      "type": "boolean",
+      "default": true,
+      "$note": "Table-view POPOVER panel (Dave's mock 2026-07-23): floating card on surface ground + elevation border/shadow recipe, 'View as table' ⇄ 'Hide table' toggle top-right; aria-controls/expanded, labelled region, Esc-dismiss, focus-managed. Supersedes the native <details>."
+    },
+    {
+      "name": "legendFilter",
+      "type": "boolean",
+      "default": true,
+      "$note": "Multi-series legend rows are FILTER buttons (data-series-toggle, aria-pressed; off = dim + line-through — never colour alone). QUIET utility state, deliberately NOT B-D7 press physics (chart-revisit Q5, standing)."
+    },
+    {
+      "name": "highContrast",
+      "type": "boolean",
+      "default": false,
+      "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern).",
+      "binds": "data.series-high-contrast",
+      "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind. data-contrast=\"high\" remaps series onto this token (kit pattern, v2-recommended, ratified). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+    }
+  ],
+  "variants": [
+    {
+      "name": "single series",
+      "use": "One measure over time; markers on every point, month labels along x."
+    },
+    {
+      "name": "multi-series",
+      "use": "2–5 measures; shapes + letters + legend names carry identity alongside colour."
+    },
+    {
+      "name": "no data",
+      "use": "Empty-state pattern in the chart frame."
+    }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — DV-D08 chart text ladder: axis ticks + on-chart values .t-cm-chart-value (12/500 tabular) · month labels + legend text + toggles .t-cm-chart-label (12/500) · legend letter-keys .t-cm-chart-key (12/700); table .t-cm-legal; title .t-cm-section-label",
+    "series": "data/series/1–3 bound here (mode-stable candidate C); measured 4.61–5.26:1 light / 3.31–3.78:1 dark vs the page (dv-016 ≥3:1 BLOCKING clean)",
+    "markers": "fill = the series token, stroke = background/default (page) at 2.5 — the halation-aware choice on dark (R-D6 bloom/dance axis)",
+    "axis": "DV-D07 ENACTED: axis text/ticks = data/axis (two-channel: colour snapped to neutral ramp 7L/9D + declared alpha slot 1.0) · gridlines = data/grid (12L/6D + alpha 1.0) · baseline = border/action-strong. Supersedes the promotion-time 'ink at alpha' judgment. Gridline contrast decorative-exempt (dv-016 advisory by design). Popover + table panel = elevation/functional shadow + elevation/border outline (the anchored-overlay recipe).",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); legend statics mirror the kit's layout minus its JS toggles."
+  },
+  "motion": {
+    "entry": "Lines draw via stroke-dasharray with pathLength=2400 (Batch 9 — the dash spans the full 2400ms timeline, rescale-immune), 2400ms cubic-bezier(.33,0,.3,1) (Batch 6); all series draw SIMULTANEOUSLY (Batch 4); markers land on the Batch-8 EASED cadence (delays follow the line's easing — 0·369·507·…·2400ms), each as the drawing head passes it.",
+    "hover": "Interactive value POPOVER (dvTip — behaviour partial): pointer + keyboard focus, edge-flips, role=status; replaces native <title>. Values == table.",
+    "reducedMotion": "Draw + fade sit inside prefers-reduced-motion:no-preference; global collapse also present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02 + fit RESTORED (behaviour partial): baked-fraction relayout (data-fx/-fxs/-ys/-fx2/-x0; frame data-pl/-pr/-h 46/12/260) to the container width on a single rAF-debounced resize — fixed height, TEXT NEVER SCALES (viewBox pinned 1:1). JS-off falls back to the static answer: fixed 580×260 + horizontal scroll.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": [
+      "Dashboards",
+      "Balance and trend views",
+      "Reports"
+    ],
+    "mustNotNeighbour": [
+      "A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)"
+    ],
+    "commonPatterns": [
+      "balance trend",
+      "balances by product",
+      "12-month performance"
+    ],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" + aria-label (interactive children — role img would hide the marker focus stops); table panel role=\"region\".",
+    "name": "Figcaption names the chart; markers carry aria-label == data-tip == table values; the real table is the full data surface.",
+    "keyboard": "Markers = focus stops (tabindex 0 + aria-label; popover shows on focus). Legend filter buttons + table toggle keyboard-operable; panel takes focus on open (tabindex -1), Esc returns to toggle.",
+    "focus": "summary:focus-visible = 2px ink outline, offset 2.",
+    "nonText": "Series strokes ≥3:1 vs the page both modes (dv-016); series identity = shape + letter + name, never colour alone (dv-line-002 / §04.3 / 1.4.1).",
+    "relatedSC": [
+      "1.4.1 Use of Color",
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover"
+    ]
+  },
+  "antiPatterns": [
+    "Curved/smoothed series paths (dv-line-011 — straight segments only)",
+    "Colour as the only series identity (shapes + letters + names, always)",
+    "White-fill markers hardcoded on dark (halation; the promoted default is series fill + page stroke)",
+    "A fixed stroke-dasharray without pathLength (the Batch-9 root cause — line finishes early, nodes trail)",
+    "Raw hex strokes (dv-017)",
+    "Scaling the SVG proportionally at narrow widths (DV-D02 — text must never scale)",
+    "A chart without its real data table (dv-005)",
+    "Re-typing dv-behaviour locally (ADR-0015 — consume the AUTO-BEHAVIOUR partial)",
+    "B-D7 press physics on legend/toolbar pressables (quiet utility state — Q5 posture)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-23",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — series 1–3 ≥3.31:1 both modes; axis (DV-D07 roles) 6.10:1 light / 6.42:1 dark; hc series ≥6.40:1; ink/baseline 17.4:1; grid decorative-exempt (1.31/1.90, advisory by design).",
+    "$note": "Chart-revisit exemplar (2026-07-23, worker lane): Layer-2 restored via ADR-0015 behaviour partial; DV-D07 axis/grid mint ENACTED; DV-D08 ladder ENACTED (month labels 14→12 — t-cm-caption bind superseded). PROVISIONAL-AGENT pending Dave's dataviz sign-off. White/Background marker comparison still UNRESOLVED kit-side."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  },
+  "slots": {
+    "series": {
+      "accepts": {
+        "capability": [
+          "data-series"
+        ]
+      },
+      "use": "One polyline per series over the shared time axis.",
+      "required": true,
+      "multiple": true,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    },
+    "data": {
+      "accepts": {
+        "capability": [
+          "chart-dataset",
+          "table-rows"
+        ]
+      },
+      "use": "Carries the values per point per series the chart renders, and the same rows the a11y data table exposes.",
+      "required": true,
+      "multiple": false,
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+    }
+  },
+  "edges": {
+    "obeys": [
+      {
+        "ref": "rule:dv-line-001",
+        "$why": "The zero y-axis is OPTIONAL for a line and MANDATORY for a bar, and this meta records only the mandatory side's absence - no data-domain-min antiPattern where chart-bar carries one. The engine it names in `behaviour.script` (dv-render.js) still floors every registered type at zero by default (a `zeroBaseline` opt-out exists; no type takes it today), and dv-render-line.js reports that clamp as a CORE REQUEST against this very rule - so the edge records a rule the line is built to honour and does not yet enact."
+      },
+      {
+        "ref": "rule:dv-line-002",
+        "$why": "Shape per data set, not colour alone: the meta's `series` prop already names this rule and fixes the three marker geometries (circle r4.2 · square 8.4 · diamond ±4.9), so the rule IS the prop."
+      },
+      {
+        "ref": "rule:dv-line-003",
+        "$why": "Axis titles, per-category X labels, incremental Y labels and gridlines are the parts DV-D07 mints tokens for (data/axis, data/grid) - the rule says which parts must exist, the meta says what colour they are."
+      },
+      {
+        "ref": "rule:dv-line-004",
+        "$why": "The reference point plus a tooltip repeating BOTH axis values is the dvTip popover in this meta's `motion.hover`, and the both-axes clause is why the popover cannot be a bare value."
+      },
+      {
+        "ref": "rule:dv-line-005",
+        "$why": "Comparable intervals and a gridline density the author may drop when it confuses is TASTE the meta hands to the author; the meta's `series` cap of 1–5 on ONE continuous time axis (`when`) is the only structural trace, and it is thin - this edge is the weakest of the nine."
+      },
+      {
+        "ref": "rule:dv-line-006",
+        "$why": "Dual y-axes only for different units is the rule this meta OBEYS BY YIELDING: its `when` hands the different-units case to chart-combo, so on this component the rule reads as a prohibition, and that is the binding worth recording."
+      },
+      {
+        "ref": "rule:dv-line-007",
+        "$why": "Filter/focus on multi-set charts is this meta's `legendFilter` prop - the rule is why that prop defaults to true rather than being an option."
+      },
+      {
+        "ref": "rule:dv-line-008",
+        "$why": "End-line markers plus a key when intervals are tight, and explicit labelling of projected states, govern the multi-series variant this meta declares; nothing else in the meta supplies that labelling contract."
+      },
+      {
+        "ref": "rule:dv-line-011",
+        "$why": "Straight segments only, never gratuitous curves - the meta's first antiPattern cites this rule by id, so the edge makes an existing prose citation a graph edge."
+      },
+      {
+        "ref": "rule:dv-001",
+        "$why": "Don't truncate or alter the scale to over- or understate a trend: on this component no author picks the y-range - the engine named in `behaviour.script` (dv-render.js) derives the domain from the data, widens it to whole steps and floors it at zero by default, and it REWRITES the table rows from the same spec - so the drawn scale and the tabled values cannot be set apart to flatter a trend."
+      },
+      {
+        "ref": "rule:dv-002",
+        "$why": "A full chart at a reasonable scale is enforced here by handoff, not by shrinking: the `when` yields \"to chart-sparkline (30, 'inline scale, no axes') when span.cols < 6\", so below six columns this component declines rather than drawing a cramped line."
+      },
+      {
+        "ref": "rule:dv-003",
+        "$why": "Never omit data to shift the interpretation: this meta makes completeness survive the loss of its own engine - with JS off \"The data is still complete and still labelled\", because the table is authored in the markup and not generated."
+      },
+      {
+        "ref": "rule:dv-005",
+        "$why": "The tabular alternative AND the link to it are two props here: `data` cites this rule by id as a real dv-table in the figure, and `tablePopover` is the 'View as table' toggle that links to it."
+      },
+      {
+        "ref": "rule:dv-006",
+        "$why": "The title-reflects-the-main-insight limb of this rule is cited by id inside the meta's own `title` prop, and the tooltip limb is the dvTip popover whose values are pinned to the table's - the edge makes an existing prose citation a graph edge."
+      },
+      {
+        "ref": "rule:dv-007",
+        "$why": "Chart elements must respond dynamically on resize while titles keep scaling with the user's text setting: this meta's fit does the first with a baked-fraction relayout on a single rAF-debounced resize, and keeps the second by pinning the viewBox 1:1 - TEXT NEVER SCALES with the geometry, so the type stays at the user's text setting instead of shrinking with the container."
+      },
+      {
+        "ref": "rule:dv-008",
+        "$why": "Horizontal scroll only as a last resort: on this meta scrolling is explicitly the FALLBACK and not the layout - the fit reflow is the answer, and the static 580×260 plus horizontal scroll is what is left when the engine cannot run."
+      },
+      {
+        "ref": "rule:dv-009",
+        "$why": "Flat colour only, no gradient and no 3D: every fill this meta declares is a single token value - marker fill is the series token, stroke is background/default at 2.5 - and the antiPattern guarding the same ground from the other side is \"Raw hex strokes (dv-017)\"."
+      },
+      {
+        "ref": "rule:dv-010",
+        "$why": "Nothing may obscure the data: the only thing this meta floats over the plot is the dvTip popover - a transient role=status readout raised by pointer or keyboard focus on one marker, replacing the native <title> and repeating the table's value - and the meta declares no persistent overlay, annotation layer or in-plot legend; the edge-flip keeps that one popover inside the viewport."
+      },
+      {
+        "ref": "rule:dv-011",
+        "$why": "Don't let colour carry the narrative alone: the `series` prop cites this rule by id in the same breath as the marker shape and the letter key - \"colour is never the only channel (dv-011)\"."
+      },
+      {
+        "ref": "rule:dv-012",
+        "$why": "Colour focuses attention and is never the chart's background: this meta's `tokens.surface` is background/default, the page's own ground, and the only attention colour in the component is the series token on the stroke."
+      },
+      {
+        "ref": "rule:dv-014",
+        "$why": "Same data, same colour across a journey: this meta's `mustNotNeighbour` cites the rule by id and carries the rule's own scope word - \"in the same journey\"."
+      },
+      {
+        "ref": "rule:dv-016",
+        "$why": "The 3:1 floor for chart building blocks is cited by id twice here and split exactly where the rule splits: series strokes are measured against the page in both modes as BLOCKING, and the gridline is declared decorative-exempt and advisory."
+      },
+      {
+        "ref": "rule:dv-017",
+        "$why": "Only palette colours in a chart: the meta's antiPatterns cite this rule by id as \"Raw hex strokes (dv-017)\", and its `tokens.series` binds data/series/1–3 by role rather than by value, so there is no path by which a raw hex reaches a stroke."
+      },
+      {
+        "ref": "rule:dv-018",
+        "$why": "A different colour per line is the `series` prop's own contract - each series carries colour (data/series/N) plus a marker shape and a letter key - with `tokens.series` naming the bound set the 1–5 range draws from."
+      }
+    ],
+    "renderedBy": [
+      {
+        "ref": "snippet:Chart-line.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:dashboards",
+        "$note": "Dashboards"
+      },
+      {
+        "ref": "context:balance-and-trend-views",
+        "$note": "Balance and trend views"
+      },
+      {
+        "ref": "context:reports",
+        "$note": "Reports"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:balance-trend"
+      },
+      {
+        "ref": "pattern:balances-by-product"
+      },
+      {
+        "ref": "pattern:12-month-performance"
+      }
+    ],
+    "mustNotNeighbour": [
+      {
+        "ref": null,
+        "$note": "A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)"
+      }
+    ],
+    "governedBy": [
+      {
+        "ref": "ruling:s116-D2"
+      }
+    ],
+    "providesRole": [
+      {
+        "ref": "role:chart-panel"
+      }
+    ],
+    "answersIntent": [
+      {
+        "ref": "intent:change-over-time"
+      }
+    ],
+    "hasDataShape": [
+      {
+        "ref": "shape:time-series × 1–5-series"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:chart-combo"
+      },
+      {
+        "ref": "component:Chart-candlestick"
+      },
+      {
+        "ref": "component:chart-sparkline"
+      }
+    ]
+  },
+  "behaviour": {
+    "script": "knowledge/canon/dv-render.js",
+    "partial": [
+      "dv-behaviour",
+      "dv-legend",
+      "dv-render",
+      "dv-render-line"
+    ],
+    "fallback": "With CSS on and JS off both engine-driven canvases (the single line and the multi-series overlay) render as EMPTY <svg> boxes and no chart is drawn — dvRender is what fills them. The data is still complete and still labelled: each figure carries a real <table class=\"dv-table\"> inside a native <details>/<summary> disclosure (s116-D2), authored in the markup and not generated, so the table opens, reads and copies with no script at all (dv-005 tabular alternative + the a11y spine). When the engine does run it REWRITES those same rows from the spec, so the popover value and the table value are one number by construction. Lost with JS off: the value popover, the responsive fit reflow in both axes, the legend filter/isolate, Copy CSV, the last-year and target overlays, and the monthly / year-to-date switch — which now re-renders from a second spec instead of toggling a second baked copy of the plot. The static empty-state figure is markup only and is unaffected.",
+    "$note": "Typed #259 by the LINE type lane, against the s249-D4 engine. `script` addresses the ENGINE CORE — dv-render.js is the file this component's behaviour begins at; dv-render-line.js is reached through its type registry (dvRender.types.line / .multiline) and is named in `partial`, which is where the registered AUTO-BEHAVIOUR names belong. `partial` lists ALL FOUR names the snippet carries, matching the registry's `consumes` for Chart-line — including dv-legend, which the multi-series canvas runs on. NOTE the divergence from chart-bar.meta.json, which lists three and flags dv-legend as an open question: the schema's own words are 'the AUTO-BEHAVIOUR name(s) … that the snippet carries', so all four are named here. Ruling-shaped, reported, not decided by this lane."
+  }
+}
