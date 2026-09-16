@@ -1,0 +1,502 @@
+{
+ "$comment": "A3 shortlist for A2's decisions page — 'which augmentation first'. #277 2026-09-16 lane A3 (Fable), pinned bedf383, reads A1 13a4cf2. Nothing enacted. Full argument: A3-AUGMENT.md.",
+ "shortlist": [
+  {
+   "name": "ASK",
+   "rank": 1,
+   "plain": "A command that takes one of the twelve designer questions and a node id and returns the answering slice of the graph — a few hundred tokens with the join class and Dave's sentence on every edge — instead of a 200K-token file read.",
+   "class": "meta",
+   "closes": [
+    "G6",
+    "G7",
+    "G13",
+    "Q1",
+    "Q2",
+    "Q4",
+    "Q5",
+    "Q6",
+    "Q7",
+    "Q8",
+    "Q10",
+    "Q11"
+   ],
+   "cost": "one Opus lane, ~1 day: _ask_kg.py (12 verbs, --budget, --fetch) + 12 selftest bites + runbook paragraph; query-time 20-600 tokens per question",
+   "touches": [
+    "_RUNBOOK-consult.md",
+    "designer-skills-v2/generate-from-canon/SKILL.md step 1 (Dave)",
+    "_compose_slice.py (wired as the compose verb)",
+    "P-269-8",
+    "s274-D10",
+    "pack: shipping the baked graph JSON is a release (P-269-1 pin)"
+   ],
+   "s274_D12": "PASS — reads ratified edges only, declares UNANSWERABLE with the missing type"
+  },
+  {
+   "name": "CLOSURE",
+   "rank": 2,
+   "plain": "Compute the missing direction of every ratified edge and the chains for containment at build time, mark them derived and dashed, never write them where a human authors — so a sink kind like context can be a starting point and 'is this ruling still in force' is one hop.",
+   "class": "meta",
+   "closes": [
+    "G10",
+    "G11",
+    "G13",
+    "Q5"
+   ],
+   "cost": "half an Opus lane: INVERSE/TRANSITIVE tables in _build_kg_explorer.py after extract_extra(), $derived label, explorer chip; +~6,600 derived edges if all bake",
+   "touches": [
+    "s270-D2 (one home — kept)",
+    "s274-D10",
+    "s267-D3",
+    "P-269-6 (inForce is its query half; window stays parked)"
+   ],
+   "s274_D12": "PASS for inverse/transitive over STRUCTURAL edges; chain inference across the PROSE `cites` edge REFUSED"
+  },
+  {
+   "name": "SHAPES",
+   "rank": 3,
+   "plain": "Write down once what a node of each kind must be connected to and what each edge type may point at, and have the build report every node that falls short — so 'orphan' means something and the explorer header stops printing 0.",
+   "class": "meta",
+   "closes": [
+    "G7",
+    "G8",
+    "G9",
+    "G12",
+    "G2/G3/G4/G5 measured per build"
+   ],
+   "cost": "half an Opus lane: knowledge/_kg-shapes.json + _validate_kg.py checks (g) shape conformance and (h) full-graph islands/orphans, advisory; joinClass on every baked edge",
+   "touches": [
+    "s131-D2",
+    "s133-D1",
+    "s274-D9 / s276-D6 (advisory vs blocking is Dave's)",
+    "A2 §2 per-kind minimums become this file's content"
+   ],
+   "s274_D12": "n/a — mints nothing"
+  },
+  {
+   "name": "TOKENS",
+   "rank": 4,
+   "plain": "Put the design tokens in the graph the way the DTCG 2025.10 spec models them — a token aliases the token it references, a component binds the tokens it uses — so 'what breaks if I change text/default' is a two-hop count instead of a 595K-token read.",
+   "class": "orthogonal",
+   "closes": [
+    "G1",
+    "Q9"
+   ],
+   "cost": "one Opus lane, ~1 day: gen_kg_tokens.py in lane RI's shape (dry-run default, --land refuses without a ruling id), ~950 nodes / ~3,000 edges (aliasOf, bindsToken, composite), sixth family chip, grammar addition to meta.schema.json, selftest + validator simulation",
+   "touches": [
+    "P-269-7 (the gate's data)",
+    "s269-D1",
+    "components/meta.schema.json",
+    "gen_canon_tokens.py (read only)",
+    "tokens/typography-composites.json"
+   ],
+   "s274_D12": "PASS — structural joins only (JSON reference chain + prefix parse of the meta tokens field); the prose tail stays $note"
+  },
+  {
+   "name": "NEIGHBOURS",
+   "rank": 5,
+   "plain": "For any node, show the ten nodes that read most like it, marked unratified — a place for Dave and a lane to find the rule-to-component and rule-to-principle bindings the graph is missing, never a place the agent takes an edge from.",
+   "class": "lateral",
+   "closes": [
+    "candidate recall for G2, G3, G4 only — nothing structural"
+   ],
+   "cost": "one lane (Opus build, Fable review of the first candidate page): index over label + $note text; dependency choice is Dave's — a local embedding model (new dependency the pack does not carry) or the pure-Python _ngram.py shingle/Jaccard fallback (P-269-3 widened)",
+   "touches": [
+    "P-269-3",
+    "s274-D12",
+    "s276-D5 (name-match tier not widened)"
+   ],
+   "s274_D12": "FAILS if landed as edges; PASSES only as advisory display, dashed, proposedType null — exactly the ruling's shape"
+  }
+ ],
+ "refused": [
+  "LLM entity/relationship extraction over guidelines or rulings (GraphRAG index stage, Graphiti ingestion) — s274-D12's 27 candidates at scale",
+  "LLM-written community summaries as nodes — prose wearing an id; compile views (P-269-8) are the container",
+  "Embedding-derived edges landed in metas or _ruling_edges.json — s276-D5 did not widen the name-match tier",
+  "Chain inference across the PROSE `cites` edge (obeys ∘ cites ⇒ appliesTo) — a manufactured obligation",
+  "A triple store / OWL reasoner / RDF-star migration — the pack is pure Python; ruling: nodes already reify",
+  "Graphiti/Zep or Mem0/Letta as the runtime memory — extraction + a database, memory-shaped persistence",
+  "Decay, salience or recency weighting on rules and rulings — the 2604.11364 category error; inForce is the only temporal signal",
+  "Auto-resolving the 51 dangling mustNotNeighbour notes by sibling name-match — A2 judges, Dave ratifies",
+  "Widening appliesTo (sc→component) into obeys to fix Q4 at a stroke — erases the join class A1 measured",
+  "Shipping the whole graph in the pack for Copilot to read — 798,152 tokens"
+ ],
+ "measure": {
+  "$method": "tiktoken cl100k_base; today = whole file(s) the agent must read for the question with no query surface; door = output tokens of the existing door if any; graph_slice = answering edges serialised {type,s,t,label,note}, averaged over five samples",
+  "samples": [
+   "component:button",
+   "component:chart-bar",
+   "component:notifications",
+   "component:list-items",
+   "component:data-grid"
+  ],
+  "corpus_tokens": {
+   "rulings.json": 232648,
+   "rules-index": 49450,
+   "all_metas": 414755,
+   "compliance_rules": 27009,
+   "guidelines_md": 114001,
+   "ux_principle_nodes": 52913,
+   "brain_principles": 34816,
+   "canon.css": 588102,
+   "tokens_json": 528168,
+   "icons_manifest": 40943,
+   "graph_report": 1854,
+   "photo_manifest": 66529
+  },
+  "whole_graph_serialised_tokens": 798152,
+  "lean_edge_list_tokens": 181531,
+  "one_hop_neighbourhood_per_component": {
+   "mean": 901,
+   "max": 3057,
+   "min": 391
+  },
+  "consult_output_tokens_per_sample": {
+   "component:button": 2706,
+   "component:chart-bar": 5217,
+   "component:notifications": 4078,
+   "component:list-items": 5602,
+   "component:data-grid": 4265
+  },
+  "compose_slice_explain_tokens": 895,
+  "questions": [
+   {
+    "q": "Q1",
+    "question": "what governs this component?",
+    "today_reads": "_rulings.json (grep governs[] for the component name) + the meta's edges.governedBy",
+    "today_tokens": 237934,
+    "door": "_consult.py '<component>' --json (keyword; returns rulings by text match, not by governs edge)",
+    "door_tokens": 4374,
+    "graph_slice_tokens": 305,
+    "graph_slice_edges": 7,
+    "graph_answer": "ANSWERED 78% coverage",
+    "note": {
+     "component:button": [
+      288,
+      7
+     ],
+     "component:chart-bar": [
+      463,
+      10
+     ],
+     "component:notifications": [
+      179,
+      4
+     ],
+     "component:list-items": [
+      363,
+      8
+     ],
+     "component:data-grid": [
+      231,
+      5
+     ]
+    }
+   },
+   {
+    "q": "Q2",
+    "question": "which components does this rule bind?",
+    "today_reads": "_rules-index.json (the rule row) + grep all 138 metas for edges.obeys[].ref == rule id",
+    "today_tokens": 464205,
+    "door": "none (consult finds the rule text, not its bindings)",
+    "door_tokens": null,
+    "graph_slice_tokens": 36,
+    "graph_slice_edges": 1,
+    "graph_answer": "PARTIAL 22.8% of rules",
+    "note": {
+     "rule:dv-004": [
+      71,
+      2
+     ],
+     "rule:nam-002": [
+      1,
+      0
+     ],
+     "rule:dv-016": [
+      105,
+      3
+     ],
+     "rule:avd-006": [
+      1,
+      0
+     ],
+     "rule:type26-019": [
+      1,
+      0
+     ]
+    }
+   },
+   {
+    "q": "Q3",
+    "question": "what principle underlies this rule and what is its grade?",
+    "today_reads": "_rules-index.json + _ux_principle_nodes.json (or brain/principles.json) and guess the link by reading",
+    "today_tokens": 102363,
+    "door": "none",
+    "door_tokens": null,
+    "graph_slice_tokens": 0,
+    "graph_slice_edges": 0,
+    "graph_answer": "UNANSWERABLE (rule→ux 0 edges)",
+    "note": {}
+   },
+   {
+    "q": "Q4",
+    "question": "which rules conflict for this component?",
+    "today_reads": "the meta's edges.obeys + the cited rows of _rules-index.json + the guideline .md files (conflict is stated nowhere)",
+    "today_tokens": 168737,
+    "door": "none",
+    "door_tokens": null,
+    "graph_slice_tokens": 441,
+    "graph_slice_edges": 13,
+    "graph_answer": "PARTIAL 7.3% (obeys list only; 'conflict' has no edge type)",
+    "note": {
+     "component:button": [
+      595,
+      17
+     ],
+     "component:chart-bar": [
+      940,
+      27
+     ],
+     "component:notifications": [
+      667,
+      19
+     ],
+     "component:list-items": [
+      1,
+      0
+     ],
+     "component:data-grid": [
+      1,
+      0
+     ]
+    }
+   },
+   {
+    "q": "Q5",
+    "question": "what did Dave rule about this and when?",
+    "today_reads": "_rulings.json read/grepped whole (813 KB) — the date and 'ruled' sentence live only there",
+    "today_tokens": 232648,
+    "door": "_consult.py '<component>' --json",
+    "door_tokens": 4374,
+    "graph_slice_tokens": 563,
+    "graph_slice_edges": 6,
+    "graph_answer": "ANSWERED via 2 hops (governs + ruledIn), typed direct 0%",
+    "note": {
+     "component:button": [
+      463,
+      5
+     ],
+     "component:chart-bar": [
+      812,
+      9
+     ],
+     "component:notifications": [
+      377,
+      4
+     ],
+     "component:list-items": [
+      761,
+      8
+     ],
+     "component:data-grid": [
+      400,
+      5
+     ]
+    }
+   },
+   {
+    "q": "Q6",
+    "question": "what evidence supports that ruling?",
+    "today_reads": "_rulings.json — find the entry (grep) and read evidence[]; the entry itself is ~300-600 tokens once found",
+    "today_tokens": 232648,
+    "door": "_consult.py --fetch <id> (only if the ruling is in the consult index)",
+    "door_tokens": null,
+    "graph_slice_tokens": 204,
+    "graph_slice_edges": 2,
+    "graph_answer": "ANSWERED 100%",
+    "note": {
+     "ruling:s274-D12": [
+      162,
+      1
+     ],
+     "ruling:s276-D5": [
+      205,
+      1
+     ],
+     "ruling:s151-D1": [
+      148,
+      2
+     ],
+     "ruling:ds-032": [
+      280,
+      4
+     ],
+     "ruling:s277-D1": [
+      224,
+      1
+     ]
+    }
+   },
+   {
+    "q": "Q7",
+    "question": "which components answer this intent / data shape?",
+    "today_reads": "chart-intents.json + roles.json + grep 138 metas for answers/shape",
+    "today_tokens": 419098,
+    "door": "_compose_slice.py '<task>' --explain (PROPOSAL, not wired)",
+    "door_tokens": 895,
+    "graph_slice_tokens": 96,
+    "graph_slice_edges": 3,
+    "graph_answer": "ANSWERED 100% (14 intents / 23 shapes)",
+    "note": {
+     "intent:distribution": [
+      64,
+      2
+     ],
+     "intent:comparison": [
+      129,
+      4
+     ],
+     "intent:change-over-time": [
+      214,
+      6
+     ],
+     "intent:relationship": [
+      33,
+      1
+     ],
+     "intent:what-holds-the-page": [
+      42,
+      1
+     ]
+    }
+   },
+   {
+    "q": "Q8",
+    "question": "what must this component not sit next to?",
+    "today_reads": "the component's own meta (edges.mustNotNeighbour, 51 of 70 are dangling notes)",
+    "today_tokens": 5286,
+    "door": "_compose_slice.py --explain (anti-neighbours section)",
+    "door_tokens": 895,
+    "graph_slice_tokens": 20,
+    "graph_slice_edges": 0,
+    "graph_answer": "PARTIAL 12.4% typed; most are $note prose",
+    "note": {
+     "component:button": [
+      1,
+      0
+     ],
+     "component:chart-bar": [
+      98,
+      2
+     ],
+     "component:notifications": [
+      1,
+      0
+     ],
+     "component:list-items": [
+      1,
+      0
+     ],
+     "component:data-grid": [
+      1,
+      0
+     ]
+    }
+   },
+   {
+    "q": "Q9",
+    "question": "what tokens does this component consume and what breaks if I change one?",
+    "today_reads": "the meta's token bindings + canon.css (588K) or tokens/*.json (528K); blast radius only in _GRAPH-REPORT.md (1.8K, 55-component reach for text/default)",
+    "today_tokens": 595242,
+    "door": "none",
+    "door_tokens": null,
+    "graph_slice_tokens": 0,
+    "graph_slice_edges": 0,
+    "graph_answer": "UNANSWERABLE (no token: kind) — P-269-7",
+    "note": {}
+   },
+   {
+    "q": "Q10",
+    "question": "which pattern / context is this component used in?",
+    "today_reads": "the component's own meta (edges.commonPattern / usedInContext)",
+    "today_tokens": 5286,
+    "door": "_compose_slice.py --explain",
+    "door_tokens": 895,
+    "graph_slice_tokens": 284,
+    "graph_slice_edges": 7,
+    "graph_answer": "ANSWERED 100% / 99.3%",
+    "note": {
+     "component:button": [
+      256,
+      7
+     ],
+     "component:chart-bar": [
+      270,
+      7
+     ],
+     "component:notifications": [
+      322,
+      8
+     ],
+     "component:list-items": [
+      291,
+      8
+     ],
+     "component:data-grid": [
+      283,
+      7
+     ]
+    }
+   },
+   {
+    "q": "Q11",
+    "question": "what is the accessible-name / WCAG obligation here?",
+    "today_reads": "grep the 55 compliance/rules/*.json for applies_to containing the component (read all 55)",
+    "today_tokens": 27009,
+    "door": "none (compliance is not in the consult index as sc records)",
+    "door_tokens": null,
+    "graph_slice_tokens": 190,
+    "graph_slice_edges": 5,
+    "graph_answer": "ANSWERED 97.8%",
+    "note": {
+     "component:button": [
+      206,
+      6
+     ],
+     "component:chart-bar": [
+      218,
+      6
+     ],
+     "component:notifications": [
+      138,
+      4
+     ],
+     "component:list-items": [
+      212,
+      6
+     ],
+     "component:data-grid": [
+      177,
+      5
+     ]
+    }
+   },
+   {
+    "q": "Q12",
+    "question": "what icon/logo/photo may I use here?",
+    "today_reads": "icons.manifest.json (41K) + photography manifest + the snippet, by eye",
+    "today_tokens": 112758,
+    "door": "none",
+    "door_tokens": null,
+    "graph_slice_tokens": 0,
+    "graph_slice_edges": 0,
+    "graph_answer": "UNANSWERABLE (no asset: kind) — lane RI proposes 688 nodes / 1,299 edges (5520d43)",
+    "note": {}
+   }
+  ],
+  "totals": {
+   "today_tokens": 2603214,
+   "graph_slice_tokens": 2139
+  }
+ },
+ "sources_count": 33
+}
