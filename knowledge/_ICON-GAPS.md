@@ -35,6 +35,26 @@ item in `_LIVE-STATE.md`).
 binding — the filenames are not trustworthy. T8 now uses `-facebook-2` / `-youtube-2` / `-twitter` / `-linkedin`.
 Consider renaming the mislabeled base files at source (Dave's call — it's an `assets/` change).
 
+## The drawings Dave says are their own icon (2026-09-16, his review of the 15 multi-active bases)
+
+Dave looked at every base that came out of the export with two or three drawings all named “… Active” and said, drawing by drawing, which one is the twin and which is a different icon wearing an active name. A drawing in this table is **not** the active state of its base: it is its own icon, it needs an inactive version drawn, and the name it carries came from the exporter's collision counter, not from a designer.
+
+His export: `notes/_lanes/279/active-review/DAVE-EXPORT-active-2026-09-16.json` (2026-09-16T15:55:41.531Z). The words in the last column are his, verbatim.
+
+| Drawing | Base it was exported under | The twin he named | His words |
+|---|---|---|---|
+| `alert-active-2` | `alert` | `alert-active` | alert-active-2 is incorrectly labeled |
+| `contact-chat-ai-active` | `contact-chat-ai` | `contact-chat-ai-active-2` | contact-chat-ai-active is incorrectly labeled |
+| `dentist-active` | `dentist` | `dentist-active-2` | dentist-active - wrong label<br>dentist-active-3 - wrong label |
+| `dentist-active-3` | `dentist` | `dentist-active-2` | dentist-active - wrong label<br>dentist-active-3 - wrong label |
+| `laboratory-active-2` | `laboratory` | `laboratory-active` | laboratory-active-2 - mislabeled |
+| `renew-active` | `renew` | `renew-active-2` | renew-active - mislabeled |
+| `user-staff-active` | `user-staff` | `user-staff-active-2` | user-staff-active - mislabeled |
+| `voice-active-2` | `voice` | `voice-active` | voice-active-2 - mislabeled |
+| `withdraw-overpayment-active` | `withdraw-overpayment` | `withdraw-overpayment-active-2` | withdraw-overpayment-active - mislabeled |
+
+**6 rows of his review are not on this list yet** — `electricity`, `employee-banking-solution`, `financial-health-check`, `jade-lifestyle`, `reward`, `traditional-chinese-medicine`. On each of those his tick and his note say different things, or he wrote that he was not certain, so nothing was written down from them and the question is back with him on `notes/_lanes/280/inscribe-active/ASK-2026-09-16.html`. The drawings they name join this table when he answers.
+
 ## The `-active` convention (for when these are filled in)
 Resting `name.svg` = line/outline glyph; `name-active.svg` = the **filled silhouette** of it
 (see `bookmark.svg` vs `bookmark-active.svg`). The icon gate (`_validate_icons.py`) byte-matches every

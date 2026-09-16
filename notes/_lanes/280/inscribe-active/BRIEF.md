@@ -1,0 +1,17 @@
+# LANE IN — BRIEF — inscribe Dave's 15-base active review into the icon nodes; ask on what is not his sentence
+#280 · 2026-09-16 · written by the conductor (Fable 5.1) · **model: opus** · bash root `/sessions/intelligent-serene-curie/mnt/UX-design/`
+
+## Why
+`s277-D6` (read WHOLE in `knowledge/_rulings.json`): the bare `-active` slug is Figma enumeration order, not the twin; the 15 bases carry declared-null `defaultActive` until Dave's manual review. His review is in: `notes/_lanes/279/active-review/DAVE-EXPORT-active-2026-09-16.json` (15:55Z). The record has not read it. Standing instruction from the #279 wrap: **twins → `activeVariantOf`/`defaultActive`; mislabels → the exporter-defect list; WHERE FLAG AND NOTE DISAGREE THE NOTE IS HIS SENTENCE — ASK, DO NOT GUESS.**
+
+## Read first
+- The export JSON, whole. `notes/_lanes/279/active-review/BRIEF.md` + `REPORT.md` (the sheet's export shape: `answers:{<base>:{choice, twin, flags[], note}}`). `notes/_subreports/2026-09-16-279-IL-icons-land.md` and `-IV-icons-verify.md` for how `knowledge/_icon_nodes.json` is shaped, its selftest (18/18) and mutants (26/26), and where the exporter-defect list lives.
+
+## Do
+1. Classify all 15 rows: UNAMBIGUOUS (flag, note and twin agree, or note is empty) vs ASK. Known ASK: `electricity` (flag names the twin, note names `-active-2`) and the four note-only rows `employee-banking-solution`, `financial-health-check`, `reward`, `jade-lifestyle` (*"Im not certain"*). Read every note yourself — if any other row's note contradicts its flag or twin it is ASK too.
+2. UNAMBIGUOUS rows: set `defaultActive` to his twin and confirm/repair the `activeVariantOf` edge; every candidate he flagged as "its own icon, needs an inactive drawn" goes to the exporter-defect list with his note verbatim. Edits by textual span in `_icon_nodes.json`, insertions/replacements only, `git diff --numstat` in the report. Re-run the selftest and the mutants; both must stay green; extend the selftest with one assertion per inscribed base.
+3. ASK rows: touch NOTHING. Build `notes/_lanes/280/inscribe-active/ASK-2026-09-16.html` (single file, swiss-design-system idiom `/sessions/intelligent-serene-curie/mnt/.claude/skills/swiss-design-system/SKILL.md`): one row per ASK base — the base glyph and each candidate at 48px + 16px, light + dark, his flag, his twin and his note quoted verbatim, then ONE plain-prose question and radios for the answer; Export button, same envelope as the #279 sheet. Plain prose only, no ruling ids in body copy.
+4. If Chromium is needed for screenshots use `knowledge/_render/seat_env.sh`; `/sessions` is at 99% — download NOTHING; if it cannot run, ship without screenshots and say so.
+
+## Report — `notes/_lanes/280/inscribe-active/REPORT.md` + `notes/_subreports/2026-09-16-280-IN-inscribe-active.md` (+ `_state.json` row `W-280in` via `_state.add()`, close condition = Dave's ASK export received). First section plain prose for Dave: how many inscribed, how many asked, and the one-line question per ASK row.
+Commit via `SESSION_N=280 SHOWROOM_ACK=1 bash knowledge/_git_commit.sh --reconciled <fresh msgfile> <paths…> < /dev/null`, msgfile `/tmp/_msg-280-IN-$(date +%s).txt`, bare subject `#280 lane IN: Dave's 15-base active review inscribed — N twins landed, M rows asked`. Regenerate `_CHAIN.md` if the store row trips the chain gate. Locks → `mv` to `.git/_orphan-locks/`, never `rm`. Never `git stash` / `gen_kg_edges.py` / `_build_all.py`. Do not push. Return: report path, commit sha, the plain-prose section.
