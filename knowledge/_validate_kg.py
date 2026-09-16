@@ -138,8 +138,8 @@ def ux_ids(path=None):
 
 
 def icon_ids(path=None):
-    """icon:<slug> and iconGroup:<slug> resolve against icons.manifest.json — the 666 slugs
-    under 10 group keys landed as nodes by gen_kg_icons.py --land --ratified s277-D4.
+    """icon:<slug> and iconGroup:<slug> resolve against icons.manifest.json — the slugs
+    under its group keys, landed as nodes by gen_kg_icons.py --land --ratified s277-D4.
     Returns (icons, groups). NOTE B1: `menu-search` is ruled library by s212-D9 and is NOT
     in this manifest, so icon:menu-search will not resolve until the manifest is reconciled.
     That is deliberate: a resolver that quietly admitted an unmanifested slug would make the
@@ -155,8 +155,8 @@ def icon_ids(path=None):
 
 
 def logo_ids(path=None):
-    """logo:<stem> resolves against the twelve files in knowledge/assets/logos/. There is no
-    logos manifest — knowledge/guidelines/logos.md states the 12 in prose and declines to
+    """logo:<stem> resolves against the .svg files in knowledge/assets/logos/. There is no
+    logos manifest — knowledge/guidelines/logos.md states the lockups in prose and declines to
     bind them ('the detailed logo standard lives on create.hsbc'), so the DIRECTORY is the
     store and a second registry would be the ADR-0017 violation. s277-D7."""
     path = path or LOGO_DIR

@@ -257,3 +257,9 @@ inside this file cannot contain the sha of the commit that contains this file. T
 `notes/_lanes/277/icons-propose/_simulate_validator.py`, `notes/_lanes/277/icons-propose/meta.schema.diff`,
 `notes/_lanes/279/icons-land/BRIEF.md` (new), `notes/_lanes/279/icons-land/REPORT.md` (new),
 `notes/_subreports/2026-09-16-279-IL-icons-land.md` (new).
+
+**CORRECTION (#279 lane IL2, added by addition — the list above is left exactly as it shipped).** The
+staged set was ELEVEN paths, not ten: `notes/_REHEARSAL-LOG.jsonl` (+4) is the eleventh. Those four rows
+are written by the commit gate itself, not hand-edited — `s137-D1` names that file as the instruments'
+own, and the prior commit `c9af467` carries two rows the same way — so the row is not a stray edit; the
+table above is simply one script-written row short. Found by lane IV's verify of `f641242` (check 14).

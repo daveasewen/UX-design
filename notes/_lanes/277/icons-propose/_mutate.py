@@ -44,10 +44,21 @@ MUTANTS = [
 
     ("M5", "a base with two or three -active glyphs is silently given a defaultActive edge",
      '    for b, v in sorted(multi.items()):\n'
-     '        unresolved.append({',
+     '        declare(ICON + b, "defaultActive",',
      '    for b, v in sorted(multi.items()):\n'
      '        link(ICON + sorted(v)[0], ICON + b, "defaultActive")\n'
-     '        unresolved.append({'),
+     '        declare(ICON + b, "defaultActive",'),
+
+    ("M27", "the declared nulls never reach the landed files — `--land` writes the nodes and "
+            "the drawn edges and leaves the 32 nulls in a report nobody commits (RIV FIX 1)",
+     '                "nodes": ns, "edges": es,',
+     '                "nodes": ns, "edges": [e for e in es if e["t"] is not None],'),
+
+    ("M28", "the type-routing is dropped for the one null whose SOURCE is a component, so the "
+            "s230-D2 residue lands in NEITHER file while the report's count still says 32",
+     '              if (e["t"] is None and NULL_FILE.get(e["type"]) == which)',
+     '              if (e["t"] is None and NULL_FILE.get(e["type"]) == which\n'
+     '                  and e["type"] != "usesLogo")'),
 
     ("M6", "norm() is dropped, so the byte-match becomes whitespace-sensitive",
      '    return re.sub(r"\\s+", " ", d.strip())',

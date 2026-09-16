@@ -27,6 +27,15 @@ copied out of that document as a number.
               defaultFor       logo  -> (null)      NEW     2   s230-D2 verbatim
               ruledBy          icon  -> ruling      NEW     9   ruling `governs`
 
+  DECLARED NULLS ARE LANDED, NOT REPORTED (#279 lane IL2, RIV FIX 1). `--land` writes
+  every declared null INTO the two node files: those that have a source as a `t: null`
+  + `$note` edge (the shape the orphan activeVariantOf and the s230-D2 defaultFor nulls
+  already use), and all of them — including the ones no node can source, like an icon
+  slug that has no node — in the file's own `unresolved` ledger, routed by type so the
+  union of the two files is the whole ledger. Two relations exist ONLY as nulls:
+  `defaultActive` (s277-D6) and `governedBy` (s277-D7, the unbound lockups "enter
+  VISIBLY"). Neither is ever drawn; the ratified six remain the only drawn types.
+
 ⛔ NO PROSE JOIN IS DRAWN, and the number says why. Testing every manifest slug
 as a whole word against every component meta's text fires on 138 of 138 metas
 and yields 1,736 (meta, slug) pairs, because `accessibility`, `no`, `time`,
@@ -153,6 +162,23 @@ EDGE_TYPES = ("inGroup", "activeVariantOf", "usesIcon", "usesLogo", "defaultFor"
 # MEASURED absent from the live graph (notes/_KG-EXPLORER.html carries 20 kinds and
 # none of these six edge types). Asserted by bite 13, never trusted.
 EDGE_STATUS = {t: "NEW" for t in EDGE_TYPES}
+
+# DECLARED-NULL ONLY (#279 lane IL2, RIV FIX 1). Two relations the rulings name BY NAME
+# as gaps and neither ratifies as a drawn edge: s277-D6 leaves `defaultActive` undrawn on
+# the multi-active bases ("NOTHING in the corpus says which is THE active twin"), s277-D7
+# has the unbound lockups "enter VISIBLY with a declared-null governedBy each". They exist
+# in the landed files ONLY as `t: null` + `$note` — the same shape the orphan
+# activeVariantOf and the s230-D2 defaultFor nulls already use. NO edge of either type
+# ever carries a target: the ratified six remain the only DRAWN types (#75, bite 13).
+NULL_ONLY_TYPES = ("defaultActive", "governedBy")
+NULL_ONLY_STATUS = {t: "DECLARED-NULL ONLY — never drawn, never resolved"
+                    for t in NULL_ONLY_TYPES}
+# Which of the two landed files a declared null belongs to, by its type. A null-target
+# edge has no target to route it by, so the TYPE routes it; the union of the two files'
+# `unresolved` lists is therefore the whole ledger, with nothing counted twice.
+NULL_FILE = {"defaultActive": "icon", "activeVariantOf": "icon", "usesIcon": "icon",
+             "ruledBy": "icon", "icon:": "icon",
+             "governedBy": "logo", "defaultFor": "logo", "usesLogo": "logo", "logo:": "logo"}
 
 # The manifest record fields carried verbatim onto the node. `slug` becomes the id.
 ICON_FIELDS = ("name", "slug", "file", "active", "fillMode", "fills")
@@ -459,12 +485,11 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                     note=f"{r['slug']} -> {base} (absent)")
     multi = {b: sorted(v) for b, v in by_base.items() if len(v) > 1}
     for b, v in sorted(multi.items()):
-        unresolved.append({
-            "source": ICON + b, "type": "defaultActive",
-            "why": "this base carries two or three -active glyphs and NOTHING in the corpus "
-                   "says which is THE active twin. activeVariantOf is drawn for all of them; "
-                   "defaultActive is NOT drawn — blocker B4, and it is Dave's (RI-3)",
-            "note": f"{b}: " + ", ".join(v)})
+        declare(ICON + b, "defaultActive",
+                "this base carries two or three -active glyphs and NOTHING in the corpus "
+                "says which is THE active twin. activeVariantOf is drawn for all of them; "
+                "defaultActive is NOT drawn — blocker B4, and it is Dave's (RI-3)",
+                note=f"{b}: " + ", ".join(v))
 
     # ---- usesIcon — the BYTE-MATCH ---------------------------------------
     scan_stats, comp_icon = {}, set()
@@ -554,13 +579,12 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                 continue
             if slug in bound:
                 continue
-            unresolved.append({
-                "source": "component:" + slug, "type": "usesLogo",
-                "why": f"{DEFAULT_RULING} names this component in its own clause as deliberately "
-                       "NOT rebound — a ruling-shaped residue that stays Dave's. The gap is "
-                       "DECLARED, never quietly completed",
-                "note": f"{slug}: no assets/logos/ src= in its snippet, and that is the ruling — "
-                        f"{DEFAULT_RULING} says \"{clause}\""})
+            declare("component:" + slug, "usesLogo",
+                    f"{DEFAULT_RULING} names this component in its own clause as deliberately "
+                    "NOT rebound — a ruling-shaped residue that stays Dave's. The gap is "
+                    "DECLARED, never quietly completed",
+                    note=f"{slug}: no assets/logos/ src= in its snippet, and that is the ruling "
+                         f"— {DEFAULT_RULING} says \"{clause}\"")
 
     # ---- ruledBy — a `governs` entry that NAMES an icon .svg --------------
     ruled_pairs, ruled_declared = [], []
@@ -599,14 +623,13 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                                 for m in [GOVERNS_LOGO_RX.search(str(e).strip())] if m})
     unbound = sorted(s for s in logo_fields if s not in named) if not no_logos else []
     for s in unbound:
-        unresolved.append({
-            "source": LOGO + s, "type": "governedBy",
-            "why": f"NOTHING binds this lockup: {DEFAULT_RULING} does not name it, "
-                   f"_rules-index.json holds {logo_rules} rules whose file is logos.md, and "
-                   f"{len(logo_ruling_paths)} rulings name a logo .svg in governs. logos.md says "
-                   "the standard lives on create.hsbc — blocker B3, and it is not ours",
-            "note": f"{s}: referenced by "
-                    f"{len([1 for c, st in logo_comp if st == s])} component(s)"})
+        declare(LOGO + s, "governedBy",
+                f"NOTHING binds this lockup: {DEFAULT_RULING} does not name it, "
+                f"_rules-index.json holds {logo_rules} rules whose file is logos.md, and "
+                f"{len(logo_ruling_paths)} rulings name a logo .svg in governs. logos.md says "
+                "the standard lives on create.hsbc — blocker B3, and it is not ours",
+                note=f"{s}: referenced by "
+                     f"{len([1 for c, st in logo_comp if st == s])} component(s)")
 
     # ---- the declined and the handed-over ---------------------------------
     fillmodes = {}
@@ -623,28 +646,41 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
         if e["t"] is not None:
             drawn[e["type"]] = drawn.get(e["type"], 0) + 1
 
-    def split(kinds):
+    def split(kinds, which):
         ns = [n for n in nodes.values() if n["type"] in kinds]
         ids = {n["id"] for n in ns}
-        es = [e for e in edges if e["s"] in ids or e["t"] in ids
+        # A null-target edge is routed by its TYPE (NULL_FILE): it has no target to route
+        # it by, and a declared null that lands in NEITHER file is a dropped null (RIV FIX 1).
+        es = [e for e in edges
+              if (e["t"] is None and NULL_FILE.get(e["type"]) == which)
+              or e["s"] in ids or e["t"] in ids
               or (str(e["s"]).startswith("component:") and e["t"] in ids)]
-        return sorted(ns, key=lambda n: n["id"]), es
+        un = [u for u in unresolved if NULL_FILE.get(u["type"], "icon") == which]
+        return sorted(ns, key=lambda n: n["id"]), es, un
 
-    inodes, iedges = split({"icon", "iconGroup"})
-    lnodes, ledges = split({"logo"})
+    inodes, iedges, iun = split({"icon", "iconGroup"}, "icon")
+    lnodes, ledges, lun = split({"logo"}, "logo")
 
-    def payload(kind, ns, es):
+    def payload(kind, ns, es, un):
+        et = {t: EDGE_STATUS[t] for t in EDGE_TYPES}
+        et.update({t: NULL_ONLY_STATUS[t] for t in NULL_ONLY_TYPES
+                   if any(e["type"] == t for e in es)})
         return {"$description":
                 f"PROPOSED {kind} nodes and their edges (#277 lane RI, s269-D1 STEP 4). "
                 "NOT RATIFIED until a ruling id is recorded in knowledge/_rulings.json "
                 "and listed in gen_kg_icons.RATIFIES.",
                 "generated_by": "notes/_lanes/277/icons-propose/gen_kg_icons.py",
                 "family": FAMILY,
-                "edge_types": {t: EDGE_STATUS[t] for t in EDGE_TYPES},
-                "nodes": ns, "edges": es}
+                "edge_types": et,
+                "nodes": ns, "edges": es,
+                "$unresolved": "EVERY declared null this file owns, source-bearing or not. "
+                               "The ones that carry a source are ALSO in `edges` as "
+                               "`t: null` + `$note`; the ones that cannot (no node exists to "
+                               "source them from) live here only. Nothing is dropped.",
+                "unresolved": un}
 
-    ipay = payload("icon:/iconGroup:", inodes, iedges)
-    lpay = payload("logo:", lnodes, ledges)
+    ipay = payload("icon:/iconGroup:", inodes, iedges, iun)
+    lpay = payload("logo:", lnodes, ledges, lun)
 
     blob = json.dumps({"nodes": sorted(nodes.values(), key=lambda n: n["id"]), "edges": edges},
                       separators=(",", ":"), ensure_ascii=False)
@@ -696,6 +732,10 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
         "node_total": len(nodes),
         "unresolved": unresolved,
         "unresolved_total": len(unresolved),
+        "unresolved_by_file": {"icon": len(iun), "logo": len(lun)},
+        "unresolved_landed_as_null_edge": len([e for e in edges if e["t"] is None]),
+        "unresolved_ledger_only": len([u for u in unresolved if u["source"] is None]),
+        "edge_status_null_only": {t: NULL_ONLY_STATUS[t] for t in NULL_ONLY_TYPES},
         "payload_bytes": len(blob.encode("utf-8")),
         "explorer_bytes": exp_bytes,
         "payload_pct_of_explorer": (round(100.0 * len(blob.encode("utf-8")) / exp_bytes, 2)
@@ -948,7 +988,8 @@ def selftest():
              and len(orph) == 1 and "ghost-active" in orph[0]["$note"]
              and "icon:ghost" not in ids
              and rep["bases_with_multiple_actives"] == {"alpha": ["alpha-active", "alpha-active-2"]}
-             and not of("defaultActive")
+             and not [e for e in of("defaultActive") if e["t"] is not None]
+             and [e["s"] for e in of("defaultActive")] == ["icon:alpha"]
              and any(u["type"] == "defaultActive" and "B4" in u["why"] for u in rep["unresolved"]))
 
         # 4 — MUTATION: the byte-match is `_validate_icons.py`'s OWN norm(). The snippet's
@@ -1076,12 +1117,15 @@ def selftest():
              and all("does not ratify THIS proposal" in msgs[r] for r in not_listed)
              and not (k / LANDED_ICONS).exists() and not (k / LANDED_LOGOS).exists())
 
-        # 13 — the edge-status table is honest: all six are NEW, and no edge type outside
-        #      the declared six is ever emitted.
-        bite(13, "all six edge types are declared NEW and no seventh type is emitted", lambda:
+        # 13 — the edge-status table is honest: all six are NEW, the only types outside the
+        #      six are the two DECLARED-NULL-ONLY ones, and NOTHING outside the six is ever
+        #      DRAWN. A declared null may mint a type; a resolved target may not.
+        bite(13, "all six edge types are declared NEW, only defaultActive/governedBy exist beyond them, and no seventh type is ever DRAWN", lambda:
              sorted(rep["edge_status"]) == sorted(EDGE_TYPES)
              and set(rep["edge_status"].values()) == {"NEW"}
-             and set(rep["edge_counts"]) <= set(EDGE_TYPES))
+             and set(rep["edge_targets_resolved"]) <= set(EDGE_TYPES)
+             and set(rep["edge_counts"]) <= set(EDGE_TYPES) | set(NULL_ONLY_TYPES)
+             and not [e for e in E if e["type"] in NULL_ONLY_TYPES and e["t"] is not None])
 
         # 14 — themedBy is DECLINED in words and in fact: 0 edges, and the fill split is
         #      reported so the decline can be checked rather than believed.
@@ -1131,6 +1175,29 @@ def selftest():
              and not any(w in li["$description"] + ll["$description"]
                          for w in ("PROPOSED", "NOT RATIFIED"))
              and after == snap)
+
+        # 19 — THE DECLARED NULLS ARE IN THE LANDED FILES (#279 lane IL2, RIV FIX 1). Before
+        #      this, `--land` wrote the nodes and the drawn edges and the 32 declared nulls
+        #      lived only in a dry-run report nobody commits — so D7's "enter VISIBLY" was
+        #      true of no file under knowledge/. The invariant, checked on the LANDED bytes:
+        #      the two files' `unresolved` lists partition the ledger exactly (none dropped,
+        #      none duplicated), every null that HAS a source is also a `t: null` + `$note`
+        #      edge in the same file, and the ones that cannot be sourced are still there.
+        _lun = li["unresolved"] + ll["unresolved"]
+        _lnull = [e for e in li["edges"] + ll["edges"] if e["t"] is None]
+        _sourced = [u for u in rep["unresolved"] if u["source"] is not None]
+        bite(19, "the landed files carry EVERY declared null: `unresolved` partitions the ledger across the two files, and each source-bearing null is also a t:null + $note edge in its own file", lambda:
+             len(_lun) == rep["unresolved_total"] == len(rep["unresolved"])
+             and sorted((u["source"] or "", u["type"], u["note"]) for u in _lun)
+                 == sorted((u["source"] or "", u["type"], u["note"]) for u in rep["unresolved"])
+             and len(_lnull) == len(_sourced)
+             and all(e.get("$note") for e in _lnull)
+             and {(e["s"], e["type"]) for e in _lnull}
+                 == {(u["source"], u["type"]) for u in _sourced}
+             and any(u["source"] is None for u in _lun)   # the ledger-only ones survive too
+             and all(len([u for u in (li, ll)[i]["unresolved"]
+                          if NULL_FILE.get(u["type"], "icon") != ("icon", "logo")[i]]) == 0
+                     for i in (0, 1)))
 
     print("SELFTEST PASS" if not fails else f"SELFTEST FAIL — bites {fails}")
     return 1 if fails else 0
