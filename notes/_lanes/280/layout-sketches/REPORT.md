@@ -106,7 +106,8 @@ to reverse if the real thing is ever built.
 
 ## Shipped
 
-Commit `SHA`. Store row `W-280ls` (owner: dave; closes when Dave's export is received).
+Commit `a7ecd8f` (this line landed one commit later). Store rows `W-280ls` (owner: dave; closes when
+Dave's export is received) and `W-280lr` (the filed subreport and its four findings).
 
 ---
 The three views and THE CONSTITUTION are `s277-D8`.
