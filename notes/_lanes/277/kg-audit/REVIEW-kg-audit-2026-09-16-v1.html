@@ -1,0 +1,486 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The knowledge graph — #277 audit, the decisions</title>
+<style>
+:root{
+ --accent:#DA1A00; --ink:#000; --paper:#fff;
+ --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+ --rule:#EDEDED; --soft:#F3F3F3; --muted:#545454;
+ --max:1200px;
+ --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+ --font:"Univers Next for HSBC","Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+  --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+  --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --accent:#F6604C; --ink:#F2F2F2; --paper:#111;
+ --g1:#1A1A1A; --g2:#2A2A2A; --g3:#3A3A3A; --g6:#9B9B9B; --g7:#B7B7B7; --g8:#D7D8D6;
+ --rule:#2A2A2A; --soft:#1A1A1A; --muted:#B7B7B7; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+ font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--s4);padding-right:var(--s4)}
+@media (max-width:520px){.wrap{padding-left:var(--s2);padding-right:var(--s2)}}
+section{padding-block:var(--s6);border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+/* The label pattern (#261). NO text-transform (nam-002): tracking and weight
+   carry it, and the line-height is generous so no descender can be cropped. */
+.label{font-size:.8125rem;font-weight:500;letter-spacing:.14em;line-height:1.6;
+ color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+h1{font-size:3.5625rem;line-height:1.18;font-weight:400;letter-spacing:0;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.25;font-weight:400;margin:0 0 var(--s3)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0}
+p{margin:0 0 var(--s2);max-width:78ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
+ background:var(--soft);padding:.08em .3em;border-radius:2px;
+ overflow-wrap:anywhere;word-break:break-word}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums;font-weight:500}
+@media (max-width:760px){h1{font-size:2.125rem}h2{font-size:1.6rem}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);
+ border:1px solid var(--g2);margin:var(--s5) 0 var(--s4)}
+.stat{background:var(--paper);padding:var(--s3);min-width:0}
+.stat b{display:block;font-size:2.6875rem;font-weight:200;line-height:1.25;
+ font-variant-numeric:tabular-nums;margin-bottom:var(--s1);overflow-wrap:anywhere}
+.stat span{display:block;font-size:.8125rem;letter-spacing:.06em;line-height:1.5;color:var(--g6)}
+/* The hero figures are the widest unbreakable strings on the page (81 -> 157).
+   1fr floors at min-content, so the grid has to lose a column AND the figure
+   has to lose points before the document can stop scrolling sideways at 390. */
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.stat b{font-size:1.875rem}}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+.zeros{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s4)}
+.zeros div{border-top:1px solid var(--g3);padding-top:var(--s1);font-size:.875rem;color:var(--muted)}
+.zeros b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.zeros{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.zeros{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:var(--s3)}}
+.dec{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.dec:first-of-type{margin-top:var(--s3)}
+.dechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2)}
+.decid{font-size:.8125rem;letter-spacing:.14em;line-height:1.6;font-weight:500;color:var(--accent)}
+.opts{list-style:none;margin:var(--s3) 0 0;padding:0}
+.opts li{border-top:1px solid var(--rule);padding:var(--s2) 0}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2);align-items:start}
+.opt input{margin-top:.45rem;accent-color:var(--accent);width:16px;height:16px;flex:0 0 16px}
+.opt label{cursor:pointer;max-width:78ch}
+.okey{font-weight:500;letter-spacing:.06em;font-size:.8125rem;color:var(--g6);margin-right:var(--s1)}
+.rec{display:inline-block;font-size:.75rem;letter-spacing:.1em;line-height:1.5;
+ font-weight:500;color:var(--accent);border:1px solid var(--accent);padding:.05rem .4rem;
+ border-radius:2px;margin-right:var(--s1);white-space:nowrap}
+.why{border-top:1px solid var(--rule);margin-top:var(--s2);padding-top:var(--s2);
+ font-size:.875rem;color:var(--muted)}
+.attrib{font-size:.8125rem;line-height:1.6;color:var(--g6);margin:0 0 var(--s2);max-width:78ch}
+.opencell{border-left:2px solid var(--accent);padding:var(--s1) 0 var(--s1) var(--s3);
+ margin:var(--s2) 0 var(--s3);font-size:.875rem;color:var(--muted);max-width:74ch}
+.opencell b{color:var(--ink);font-weight:500}
+.flag{border-top:1px solid var(--g3);padding-top:var(--s3);margin-top:var(--s5)}
+.flag h3{margin-bottom:var(--s1)}
+.flagline{font-size:.875rem;color:var(--muted);max-width:78ch}
+.ph{color:var(--accent);font-weight:500}
+.tag{display:inline-block;font-size:.6875rem;letter-spacing:.08em;line-height:1.6;
+ font-weight:500;margin-left:var(--s1);padding:0 .3rem;border-radius:2px;border:1px solid var(--g3);
+ color:var(--g6)}
+.tag.open{border-color:var(--accent);color:var(--accent);border-left-width:1px;padding:0 .3rem;margin-left:var(--s1)}
+textarea{width:100%;max-width:100%;font:inherit;font-size:.875rem;margin-top:var(--s2);
+ padding:var(--s1) var(--s2);border:1px solid var(--g3);background:var(--paper);
+ color:var(--ink);border-radius:2px;resize:vertical;min-height:2.6rem}
+textarea:focus,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s5);
+ border-top:1px solid var(--g3);padding-top:var(--s3)}
+button{font:inherit;font-size:.875rem;letter-spacing:.04em;padding:.5rem 1rem;cursor:pointer;
+ background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+button:hover{background:var(--ink);color:var(--paper)}
+button.ghost{border-color:var(--g3);color:var(--muted)}
+.said{font-size:.8125rem;color:var(--g6)}
+pre.exp{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--g2);
+ padding:var(--s2);font-size:.8125rem;max-height:20rem;overflow:auto;margin-top:var(--s2)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:var(--s3);border-top:1px solid var(--g3)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:760px}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.08em;line-height:1.6;color:var(--g6);font-weight:500;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;white-space:nowrap}
+.newmark{color:var(--accent);font-weight:500}
+.defn{font-size:.8125rem;color:var(--muted);max-width:56ch}
+blockquote{margin:var(--s3) 0;padding-left:var(--s3);border-left:2px solid var(--accent);
+ font-size:1.0625rem;max-width:70ch}
+blockquote cite{display:block;font-size:.8125rem;font-style:normal;color:var(--g6);margin-top:var(--s1)}
+footer{border-top:1px solid var(--g3);padding-block:var(--s5);font-size:.8125rem;color:var(--muted)}
+.recs{font-size:.875rem}
+.recs dt{font-weight:500;margin-top:var(--s2)}
+.recs dd{margin:0;color:var(--muted);word-break:break-word}
+
+.v-answered{color:var(--ink);font-weight:500}.v-partial{color:var(--g7)}.v-unanswerable{color:var(--accent);font-weight:500}
+.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin:var(--s4) 0}
+.layers div{border-top:2px solid var(--ink);padding-top:var(--s2)}
+.layers b{display:block;font-weight:500;margin-bottom:var(--s1)}
+.layers span{font-size:.875rem;color:var(--muted)}
+@media (max-width:760px){.layers{grid-template-columns:1fr}}
+ol.refuse{padding-left:1.2em;max-width:78ch}ol.refuse li{margin-bottom:var(--s1);font-size:.9375rem}
+</style>
+<script type="application/json" id="measured">{"a1_nodes": 3897, "a1_edges": 6616, "a1_dangling": 105, "a1_edge_types": 51, "a1_kinds": 20, "a1_nc_types": 12, "a1_nc_edges": 3125, "a1_nc_pct": 47, "a1_schema_only": 7, "a1_islands": 36, "a1_orphans": 99, "a1_prose": 291, "a1_authored": 153, "a1_structural": 6277, "rules_total": 470, "rules_files": 34, "rules_obeyed": 107, "files_reached": 8, "files_unreached": 26, "rules_unreached": 350, "blocking": 59, "blocking_obeyed": 9, "blocking_unbound": 50, "f_copy": 55, "f_tone": 40, "f_colour": 34, "f_type": 32, "f_icons": 31, "f_neuro": 26, "ux_total": 145, "ux_orphans": 99, "ux_a_orphans": 2, "a11y_sc": 55, "a11y_rules": 52, "a11y_ux": 20, "a11y_links": 0, "rul_total": 593, "rul_system": 432, "rul_design": 99, "rul_both": 62, "rul_system_pct": 73, "rul_no_session": 394, "rul_session_in_id": 392, "rul_dated": 593, "metas_total": 137, "metas_tokens": 135, "token_refs": 316, "token_files": 10, "comp_with_obeys": 10, "comp_without_role": 29, "metas_tokens_k": "730", "slice_tokens": "19,113", "slice_replaced": "111,468", "governs_n": 1484, "governedBy_n": 28, "q_answered": 6, "q_partial": 2, "q_unanswerable": 4, "q_rate": 50, "q_rate_incl": 67, "q_design": 4, "q_after": 9, "chips_off": 4, "not_in_chip": 5}</script>
+<section id="headline"><div class="wrap">
+<p class="label">#277 &middot; lane A2 &middot; the KG audit &middot; decisions, v1</p>
+<h1>Six decisions about the shape of the designer brain.</h1>
+<p>Six decisions sit below, recommendation first on each; everything after them is the evidence they rest on.
+<b>The headline is the answer rate:</b> the graph answers <b>6 of the 12</b> questions a designer asks
+mid-task by a path, half-answers 2, cannot answer 4 &mdash; and the agent, at design
+time, can reach <b>4 of the 12</b>, because nothing on the compose path reads the graph. If you take D-2, D-3 and
+D-5 the graph answers 9 and the agent reaches the same. If you take D-1 the layers stop being the commit
+history and start being how a designer thinks.</p>
+<div class="stats">
+<div class="stat"><b>6&nbsp;of&nbsp;12</b><span>designer questions answered by a graph path</span></div>
+<div class="stat"><b>4&nbsp;of&nbsp;12</b><span>reachable by the agent at design time today</span></div>
+<div class="stat"><b>50&nbsp;of&nbsp;59</b><span>BLOCKING HSBC rules that bind no component</span></div>
+<div class="stat"><b>47%</b><span>of edges read by nothing &mdash; 12 types, 3,125 edges</span></div>
+</div>
+<div class="zeros">
+<div><b>3,897</b> nodes &middot; <b>6,616</b> edges &middot; <b>51</b> types &middot; <b>20</b> kinds, at <code>bedf383</code></div>
+<div><b>432</b> of 593 rulings govern only files &mdash; the system's own record, not design precedent</div>
+<div><b>0</b> edges between the three places accessibility lives (55 sc &middot; 52 rules &middot; 20 principles)</div>
+<div><b>0</b> files under <code>knowledge/</code> written &mdash; this page proposes</div>
+</div>
+<blockquote>also think about the organisation of the the different layers in this graph, are the 5 layers currently,
+maybe this needs reconstituted, should they be layered and conjoined as they are, should it be one or less than 5. in my
+mind (this may not be correct) all the accessibility nodes should be design governance nodes, and what we have as
+governance should be something like 'system constitution' or 'codex' or 'system management' I don't know right now, but
+it seems the categorisation might net be corrcet.<cite>Dave, #277, 2026-09-16 (verbatim, his spelling)</cite></blockquote>
+</div></section>
+
+<section id="decisions"><div class="wrap">
+<p class="label">Your words &middot; the ask</p>
+<h2>Six decisions.</h2>
+<p>One letter is an answer; a letter with a sentence attached is a sequel, and it is read back before anything is built
+on it. D-1 carries the most weight and D-3 is the one every other decision waits on.</p>
+<div class="dec" data-id="D-1">
+<div class="dechead"><span class="decid">D-1</span><h3>The layers — five ingestion waves, or three views by force?</h3></div>
+<p>The five layers as built are the order the graph was landed in: base wiring, rulings, the WCAG corpus, the 470 HSBC rules, the 145 UX principles — each behind the chip its lane earned. They are not five kinds of knowledge. The proof is accessibility: it sits in <b>three</b> of the five today — 55 WCAG criteria in “guidelines”, 52 rules from the <code>accessibility-*.md</code> files in “guideline rules”, 20 standards-family principles in “UX principles” — with <b>0 edges</b> between the three holdings (s275-D4 said so and deferred the joins to a named lane). And the record called “governance” is measured as <b>432 of 593</b> rulings that govern only files, scripts and notes, 99 that govern only components, 62 both: three-quarters of it is how the system was built, one quarter is design precedent.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-a" value="a"><label for="D-1-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>One graph, three views by force.</b> <i>System</i> (what exists) · <i>Design governance</i> (what a design must or should do: WCAG + the HSBC rules + the design-scoped rulings, three provenances shown as sub-chips, one precedence ladder — accessibility lives here entirely) · <i>Explanation</i> (the graded principles and polarities). The ruling record is named the <b>Codex</b>; every ruling carries a derived <code>scope</code> (design · system · both); the dozen fences everything defers to are written once as the <b>Constitution</b> — the precedence ladder. Storage untouched: no node id, no edge type changes; the template’s chips and the <code>fam</code> labels do. Supersedes the “behind its own chip” clauses of s274-D11 and s275-D6 by name; is the named lane s275-D4 deferred to.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-b" value="b"><label for="D-1-b"><span class="okey">(b)</span><b>Keep the five, rename one.</b> “Governance” becomes “Codex” (or “system management”); the WCAG, rules and principle chips stay as landed. Cheapest; leaves accessibility in three places and leaves the agent, when a reader exists, to assemble “what must this do” from four stores.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-c" value="c"><label for="D-1-c"><span class="okey">(c)</span><b>One graph, no views.</b> Drop the chips; every kind is one colour on one canvas. Loses what s274-D11 and s275-D6 wanted visible and gives the agent no precedence order either.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-1" id="D-1-none" value=""><label for="D-1-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Dave’s instinct is right about the symptom and half right about the cure: the categorisation is wrong, and accessibility does belong in design governance — but the cut that fixes it is by <i>force</i> (chooses / obeys / consults), not by topic. Of his three words, <i>codex</i> fits the ruling record (bound, ordered, cited by id, with receipts); <i>constitution</i> fits only the dozen fences, which should be written down as the precedence ladder; <i>system management</i> is a scope on a ruling, not the name of the record. What the agent does differently: nothing until D-3 wires a reader — and then everything, because a reader over three force layers asks one question, “the obligations for this component, in precedence order”, instead of learning four stores and 51 edge types.</p>
+<p class="attrib">Lane A2 (Fable), from A1’s census and this lane’s ruling-scope and accessibility-holdings measurements.</p>
+<textarea class="note" data-id="D-1" aria-label="Notes for D-1" placeholder="Notes for D-1 — your words"></textarea>
+</div><div class="dec" data-id="D-2">
+<div class="dechead"><span class="decid">D-2</span><h3>How do the 470 HSBC rules reach a component?</h3></div>
+<p>Today a rule reaches a component only by an edge to that component: <code>obeys</code> on 10 metas, 107 rules, 8 of 34 guideline files — the files named after a component. The other 26 files hold <b>350 rules</b> that bind a <i>facet</i> every component has: copywriting 55, tone of voice 40, colour 34, typography 32, icons and pictograms 31, neurodiversity 26. A designer knows the tone-of-voice rules apply to every label on the screen. The graph cannot say so, which is why <b>50 of the 59 BLOCKING rules bind nothing</b> from the agent’s seat. s277-D3 priced the per-component route for one family file and refused the all-to-all shape; the family-node option was declined because nothing could carry it.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-a" value="a"><label for="D-2-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>A <code>scope</code> per guideline file.</b> 34 rows, authored once by a lane and read by Dave: <i>universal</i> (copy, tone, neurodiversity), <i>facet:&lt;token group&gt;</i> (colour → <code>rag/</code> <code>background/</code> …, type → <code>text/</code> <code>font-</code>, icons → <code>icon/</code>), or <i>component:&lt;slug&gt;</i> (the 8 already reached). Applicability then derives structurally through the <code>tokens</code> block 135 metas already carry — no regex, no sentence per pair. <code>obeys</code> stays for the specific binding and for the declared escape. Cost: 34 rows, one reader of about forty lines, one lane. Consistent with s274-D9 (an attribute, not a hub) and s274-D12 (no inference).</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-b" value="b"><label for="D-2-b"><span class="okey">(b)</span><b>Continue the per-meta <code>obeys</code> route.</b> The s276-D3 / s277-D1..D3 shape, file by file: about ten metas a lane, one sentence a pair. It reaches the component-named files and stops there — the 350 facet rules would need 137 × 350 sentences to say what one attribute says.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-c" value="c"><label for="D-2-c"><span class="okey">(c)</span><b>A family or facet node with an inheritance edge.</b> s277-D3 option (c): a new node kind, a new edge type and a propagation rule — three vocabulary changes — to carry what a 34-row attribute carries.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-2" id="D-2-none" value=""><label for="D-2-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Option (a). It is the single change that moves the most obligations into the agent’s reach for the least authored work, and it is the s274-D9 shape (one place for one fact) rather than the s274-D12 shape (inference wearing a ref). The join key it needs — which token groups a component uses — is already a typed field in the metas and is what D-5 turns into nodes.</p>
+<p class="attrib">Lane A2 (Fable); the BLOCKING count is measured over _rules-index.json against every meta’s edges.obeys.</p>
+<textarea class="note" data-id="D-2" aria-label="Notes for D-2" placeholder="Notes for D-2 — your words"></textarea>
+</div><div class="dec" data-id="D-3">
+<div class="dechead"><span class="decid">D-3</span><h3>Wire the design-time reader, or keep reading the metas?</h3></div>
+<p><b>12 edge types carrying 3125 edges — 47% of the graph — are read by nothing</b>, and 7 more are permitted by the schema and read by nothing. Not because they are wrong: nine of the twelve answer a designer’s question directly. Because the reader they were built for does not exist. The compose skill says “read the metas” — 137 files, about 730K tokens — and names three edge types in total; the pack ships <code>_rulings.json</code> empty by design and does not ship the rule nodes or the principle nodes. One tool already does the right thing: <code>knowledge/_compose_slice.py</code> turns a task sentence into roles → components → edges → BLOCKING rules → anti-neighbours → rulings at a self-measured 19,113 tokens against 111,468 for the metas it replaces — and it is marked <i>PROPOSAL, ADVISORY, NOT WIRED</i>, with the wiring recorded as yours to rule.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-a" value="a"><label for="D-3-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>Wire it.</b> <code>_compose_slice.py</code> becomes the generate skill’s step 1 at the next pack cut, extended to read the rule and principle stores by force layer (D-1) and the file scopes (D-2). Every consumer-less edge type gets its consumer in one move; the s274-D11 principle — an instrument without a consumer is refused — finally applies to the graph itself. Cost: one lane on the slice, one pack cut; touches the pack-manifest rulings (s269-D9 pins <code>_search_core.py</code>, so the slice ships beside it, not inside it).</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-b" value="b"><label for="D-3-b"><span class="okey">(b)</span><b>Keep read-the-metas.</b> The graph stays a human’s explorer; the 12 types stay explorer-only; the agent’s design-time answer rate stays at 4/12 whatever D-1, D-2 and D-5 land.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-c" value="c"><label for="D-3-c"><span class="okey">(c)</span><b>Retire the 12 consumer-less types.</b> Makes the census clean by deleting the answers to Q1, Q2, Q5, Q6 and Q11 before anyone has asked them.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-3" id="D-3-none" value=""><label for="D-3-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Option (a). Every other decision on this page changes what the agent does only after this one. The answer rate the audit measures — 6 of 12 by graph path, 4 of 12 reachable at design time — is the gap between a graph that exists and a graph that is consulted.</p>
+<p class="attrib">Lane A2 (Fable), on the consumer census in A1 §4 and the compose-path read in this lane’s §6.</p>
+<textarea class="note" data-id="D-3" aria-label="Notes for D-3" placeholder="Notes for D-3 — your words"></textarea>
+</div><div class="dec" data-id="D-4">
+<div class="dechead"><span class="decid">D-4</span><h3>The vocabulary — 51 storage types, and what the agent is told</h3></div>
+<p>A1 finds the real concentrations: thirteen component→component types and eleven ruling→ruling types. Both were ratified deliberately — s267-D3 retyped twenty ruling edges by hand into those eleven. The conductor’s suspected cluster (<code>governs</code> / <code>boundBy</code> / <code>enforcedBy</code> / <code>under</code> / <code>appliesTo</code>) is six different endpoint signatures, not one. The only true inverse pair is <code>governs</code> (1484) / <code>governedBy</code> (28), and that is two ends of one authored join, not a synonym. The 51 types cost the <i>system</i> a line each in the validator and the explorer; they cost the <i>agent</i> nothing, because the agent is told three.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-a" value="a"><label for="D-4-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>A reading vocabulary, storage untouched.</b> Twelve verbs the agent will ever be told — <i>is-a · contains · sits-with · must-not-sit-with · yields-to · renders-as · lives-in · provides/answers · must · should · rests-on · decided</i> — mapped onto the 51 storage types in one table the reader (D-3) and the skills use. <code>definedIn</code>, <code>enforcedBy</code>, <code>flaggedBy</code>, <code>checkedBy</code>, <code>verifiedBy</code>, <code>boundBy</code>, <code>enClause</code>, <code>under</code>, <code>cites</code>, <code>mentions</code> are machinery the reader uses and the agent never names. Touches no ruling.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-b" value="b"><label for="D-4-b"><span class="okey">(b)</span><b>Merge in storage.</b> Fold the eleven ruling verbs and the thirteen component verbs into fewer types. Touches s267-D3, s270-D2, s274-D8, s275-D2 and s276-D3 by name, to save nothing the agent pays for.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-c" value="c"><label for="D-4-c"><span class="okey">(c)</span><b>Leave it.</b> Fifty-one types, three named to the agent, and every new lane adds its own.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-4" id="D-4-none" value=""><label for="D-4-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Option (a). The cost of 51 types is in the reader, not in the agent; a merge undoes a hand-ratified set to tidy a census. The prose tier stays as it is — <code>mentions</code> dashed and advisory under s267-D3, <code>cites</code> kept solid but labelled “parsed citation” because the author wrote the SC number in the rule text.</p>
+<p class="attrib">Lane A2 (Fable), on A1 §4’s endpoint signatures and §5’s join classes.</p>
+<textarea class="note" data-id="D-4" aria-label="Notes for D-4" placeholder="Notes for D-4 — your words"></textarea>
+</div><div class="dec" data-id="D-5">
+<div class="dechead"><span class="decid">D-5</span><h3>Tokens enter the graph — at what grain, and when?</h3></div>
+<p>There is no <code>token:</code> node, so Q9 — <i>what tokens does this component consume and what breaks if I change one</i> — cannot be asked. Yet <code>tokens</code> is a typed block in <b>135 of 137 metas</b> (316 distinct references; <code>text/</code>, <code>rag/</code>, <code>tertiary/</code>, <code>form/</code>, <code>border-radius/</code>, <code>icon/</code> carry most of them; 10 live token files), and <code>tokens/_blast-radius.json</code> already computes reach. s269-D3 ruled the grain: tier, never 932 leaves. Nothing was built. D-2’s facet scopes key on exactly these groups.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-a" value="a"><label for="D-5-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>Tier grain, now.</b> The 10 live token files — or the dozen groups that carry most references — as <code>token:</code> nodes, and <code>bindsToken</code> minted structurally from each meta’s <code>tokens</code> block; blast radius carried from <code>_blast-radius.json</code> as an attribute. Roughly ten to twenty nodes and a thousand edges, one lane, no sentence authored. Consistent with s269-D3; the P-269-7 tripwire is met by building the thing it waits for.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-b" value="b"><label for="D-5-b"><span class="okey">(b)</span><b>Wait for the tripwire.</b> P-269-7 fires when <code>_GRAPH-REPORT.md</code> next regenerates. D-2 then has no structural join key and falls back to naming token groups by hand in each scope row.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-c" value="c"><label for="D-5-c"><span class="okey">(c)</span><b>Leaf grain.</b> 932 nodes. Refused by s269-D3 as a graph that cannot be read; listed so the refusal is visible.</label></div></li>
+<li><div class="opt"><input type="radio" name="D-5" id="D-5-none" value=""><label for="D-5-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Option (a). It is the cheapest structural family left — a typed field in 135 metas that nobody has turned into edges — and it is the join key D-2 uses, so the two land together or D-2 lands weaker.</p>
+<p class="attrib">Lane A2 (Fable); the meta count and group census are this lane’s measurement (A2-measure.json §tokens).</p>
+<textarea class="note" data-id="D-5" aria-label="Notes for D-5" placeholder="Notes for D-5 — your words"></textarea>
+</div><div class="dec" data-id="D-6">
+<div class="dechead"><span class="decid">D-6</span><h3>Which augmentation first?</h3></div>
+<p>Lane A3’s shortlist &mdash; 5 candidates in <code>A3-shortlist.json</code>, ranked as A3 ranked them (ASK, CLOSURE, SHAPES, TOKENS, NEIGHBOURS); the first is A3’s recommendation. Each is priced at one lane or less and tested against s274-D12. The full argument and A3's ten refusals are in <code>A3-AUGMENT.md</code>.</p>
+<ul class="opts">
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-a" value="a"><label for="D-6-a"><span class="okey">(a)</span><span class="rec">Recommended</span><b>ASK</b> <span class="tag">meta</span> — A command that takes one of the twelve designer questions and a node id and returns the answering slice of the graph — a few hundred tokens with the join class and Dave&#x27;s sentence on every edge — instead of a 200K-token file read. <span class="defn">Closes G6 · G7 · G13 · Q1 · Q2 · Q4 · Q5 · Q6 · Q7 · Q8 · Q10 · Q11. Cost: one Opus lane, ~1 day: _ask_kg.py (12 verbs, --budget, --fetch) + 12 selftest bites + runbook paragraph; query-time 20-600 tokens per question. Touches _RUNBOOK-consult.md · designer-skills-v2/generate-from-canon/SKILL.md step 1 (Dave) · _compose_slice.py (wired as the compose verb) · P-269-8 · s274-D10 · pack: shipping the baked graph JSON is a release (P-269-1 pin). s274-D12: PASS — reads ratified edges only, declares UNANSWERABLE with the missing type</span></label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-b" value="b"><label for="D-6-b"><span class="okey">(b)</span><b>CLOSURE</b> <span class="tag">meta</span> — Compute the missing direction of every ratified edge and the chains for containment at build time, mark them derived and dashed, never write them where a human authors — so a sink kind like context can be a starting point and &#x27;is this ruling still in force&#x27; is one hop. <span class="defn">Closes G10 · G11 · G13 · Q5. Cost: half an Opus lane: INVERSE/TRANSITIVE tables in _build_kg_explorer.py after extract_extra(), $derived label, explorer chip; +~6,600 derived edges if all bake. Touches s270-D2 (one home — kept) · s274-D10 · s267-D3 · P-269-6 (inForce is its query half; window stays parked). s274-D12: PASS for inverse/transitive over STRUCTURAL edges; chain inference across the PROSE `cites` edge REFUSED</span></label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-c" value="c"><label for="D-6-c"><span class="okey">(c)</span><b>SHAPES</b> <span class="tag">meta</span> — Write down once what a node of each kind must be connected to and what each edge type may point at, and have the build report every node that falls short — so &#x27;orphan&#x27; means something and the explorer header stops printing 0. <span class="defn">Closes G7 · G8 · G9 · G12 · G2/G3/G4/G5 measured per build. Cost: half an Opus lane: knowledge/_kg-shapes.json + _validate_kg.py checks (g) shape conformance and (h) full-graph islands/orphans, advisory; joinClass on every baked edge. Touches s131-D2 · s133-D1 · s274-D9 / s276-D6 (advisory vs blocking is Dave&#x27;s) · A2 §2 per-kind minimums become this file&#x27;s content. s274-D12: n/a — mints nothing</span></label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-d" value="d"><label for="D-6-d"><span class="okey">(d)</span><b>TOKENS</b> <span class="tag">orthogonal</span> — Put the design tokens in the graph the way the DTCG 2025.10 spec models them — a token aliases the token it references, a component binds the tokens it uses — so &#x27;what breaks if I change text/default&#x27; is a two-hop count instead of a 595K-token read. <span class="defn">Closes G1 · Q9. Cost: one Opus lane, ~1 day: gen_kg_tokens.py in lane RI&#x27;s shape (dry-run default, --land refuses without a ruling id), ~950 nodes / ~3,000 edges (aliasOf, bindsToken, composite), sixth family chip, grammar addition to meta.schema.json, selftest + validator simulation. Touches P-269-7 (the gate&#x27;s data) · s269-D1 · components/meta.schema.json · gen_canon_tokens.py (read only) · tokens/typography-composites.json. s274-D12: PASS — structural joins only (JSON reference chain + prefix parse of the meta tokens field); the prose tail stays $note</span></label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-e" value="e"><label for="D-6-e"><span class="okey">(e)</span><b>NEIGHBOURS</b> <span class="tag">lateral</span> — For any node, show the ten nodes that read most like it, marked unratified — a place for Dave and a lane to find the rule-to-component and rule-to-principle bindings the graph is missing, never a place the agent takes an edge from. <span class="defn">Closes candidate recall for G2, G3, G4 only — nothing structural. Cost: one lane (Opus build, Fable review of the first candidate page): index over label + $note text; dependency choice is Dave&#x27;s — a local embedding model (new dependency the pack does not carry) or the pure-Python _ngram.py shingle/Jaccard fallback (P-269-3 widened). Touches P-269-3 · s274-D12 · s276-D5 (name-match tier not widened). s274-D12: FAILS if landed as edges; PASSES only as advisory display, dashed, proposedType null — exactly the ruling&#x27;s shape</span></label></div></li>
+<li><div class="opt"><input type="radio" name="D-6" id="D-6-none" value=""><label for="D-6-none"><span class="okey">(&mdash;)</span>No choice yet &mdash; clear this decision.</label></div></li>
+</ul>
+<p class="why"><b>Recommendation.</b> Take A3’s first, <b>ASK</b>, and take it as the same lane as D-3: a typed-question door over the graph and the wired compose slice are one instrument with two verbs, not two. A3’s TOKENS reaches the same gap as D-5 but at about 950 nodes — the leaf grain s269-D3 refused — so the two disagree on grain and not on need: take D-5(a) and A3’s <code>aliasOf</code> lands on the tier nodes, or take A3’s shape and s269-D3 is superseded by id, never silently. Its SHAPES is Part C of this page written into the validator — the two lanes converged without reading each other, which is the strongest signal either produced.</p>
+<p class="attrib">Lane A3 (Fable) ranked and priced the five; the convergence line is lane A2’s.</p>
+<textarea class="note" data-id="D-6" aria-label="Notes for D-6" placeholder="Notes for D-6 — your words"></textarea>
+</div>
+<div class="bar">
+<button id="btnExport">Export JSON</button>
+<button id="btnCopy">Copy to clipboard</button>
+<button class="ghost" id="btnClear">Clear all</button>
+<span class="said" id="said"></span>
+</div>
+<pre class="exp" id="exp" hidden></pre>
+</div></section>
+
+<section id="evidence"><div class="wrap">
+<p class="label">Evidence &middot; behind the ask</p>
+<h2>Everything below this line is working.</h2>
+<p>You have already been asked. What follows is what the answers rest on: the twelve questions scored, the three
+layers by force, each node kind against its own minimum, the ranked gaps with cost, and the fixes this lane would
+refuse. The long form is <code>notes/_lanes/277/kg-audit/A2-AUDIT.md</code>; the numbers are
+<code>A1-measure.json</code> and <code>A2-measure.json</code>.</p>
+</div></section>
+
+<section id="questions"><div class="wrap">
+<p class="label">Part A &middot; the headline's evidence</p>
+<h2>The twelve questions a designer asks mid-task.</h2>
+<p>Scored twice: can the graph answer it by a path (A1's reachability seeds, judged), and can the agent reach that
+answer at design time today (the compose skill reads the metas; the pack ships <code>_rulings.json</code> empty and
+does not ship the rule or principle nodes).</p>
+<div class="tw"><table>
+<tr><th>q</th><th>the question</th><th>graph</th><th>path &middot; coverage</th><th>design time today</th><th>what closes it</th></tr>
+<tr><td class="slug">Q1</td><td>what governs this component?</td><td class="v-answered">answered</td><td class="defn"><code>governs</code> ruling→component, length 1, 107 of 137; the 30 without are true absences</td><td class="defn">partial — 28 <code>governedBy</code> ship; the 295 <code>governs</code> do not</td><td class="defn">D-3</td></tr>
+<tr><td class="slug">Q2</td><td>which components does this rule bind?</td><td class="v-partial">partial</td><td class="defn"><code>obeys</code> on 10 metas, 8 of 34 files; the facet files cannot be expressed</td><td class="defn">no</td><td class="defn">D-2</td></tr>
+<tr><td class="slug">Q3</td><td>what principle underlies this rule, and its grade?</td><td class="v-unanswerable">unanswerable</td><td class="defn">rule→ux 0 of 470; no edge type in either direction</td><td class="defn">no</td><td class="defn">authored <code>restsOn</code> (G6)</td></tr>
+<tr><td class="slug">Q4</td><td>which rules conflict for this component?</td><td class="v-unanswerable">unanswerable</td><td class="defn">needs component→rule (7.3%) and a <code>conflictsWith</code> that does not exist; the 5-vs-6 cap is prose in s277-D3</td><td class="defn">no</td><td class="defn">authored <code>conflictsWith</code> + the Constitution (G7)</td></tr>
+<tr><td class="slug">Q5</td><td>what did Dave rule about this, and when?</td><td class="v-answered">answered</td><td class="defn"><code>governs</code> + <code>date</code> 593/593; <code>ruledIn</code> covers 199, the session is in the id for 392 of the other 394</td><td class="defn">no — rulings do not ship</td><td class="defn">read the id (G9); D-3</td></tr>
+<tr><td class="slug">Q6</td><td>what evidence supports that ruling?</td><td class="v-answered">answered</td><td class="defn"><code>evidencedBy</code> length 1, 593/593</td><td class="defn">no</td><td class="defn">D-3</td></tr>
+<tr><td class="slug">Q7</td><td>which components answer this intent / data shape?</td><td class="v-answered">answered</td><td class="defn"><code>answersIntent</code> 14/14, <code>hasDataShape</code> 23/23 (charts); <code>providesRole</code> 108/137 for the rest</td><td class="defn">yes (roles.json ships)</td><td class="defn">29 without a role — s273-D2 held sets</td></tr>
+<tr><td class="slug">Q8</td><td>what must this component not sit next to?</td><td class="v-partial">partial</td><td class="defn">19 resolved on 17 components + 51 declared nulls that are anti-pattern statements, not components</td><td class="defn">yes — the skill reads the meta prose</td><td class="defn">keep the nulls (ruled shape)</td></tr>
+<tr><td class="slug">Q9</td><td>what tokens does this component consume; what breaks?</td><td class="v-unanswerable">unanswerable</td><td class="defn">no <code>token:</code> kind; <code>tokens</code> is a typed block in 135 metas</td><td class="defn">no</td><td class="defn">D-5</td></tr>
+<tr><td class="slug">Q10</td><td>which pattern / context is this used in?</td><td class="v-answered">answered</td><td class="defn">length 1, 100% / 99.3% — but 341 of 380 patterns and 176 of 222 contexts are one-component labels</td><td class="defn">yes (metas)</td><td class="defn">G8 — a pattern of one is a tag</td></tr>
+<tr><td class="slug">Q11</td><td>what is the WCAG / accessible-name obligation?</td><td class="v-answered">answered</td><td class="defn"><code>appliesTo</code> 134/137 + the meta’s <code>accessibility.relatedSC</code> block</td><td class="defn">yes (compliance ships)</td><td class="defn">—</td></tr>
+<tr><td class="slug">Q12</td><td>what icon / logo / photo may I use?</td><td class="v-unanswerable">unanswerable</td><td class="defn">no asset kind; lane RI proposes 688 nodes / 1,299 edges (5520d43), unruled; photography ruled s269-D4, unbuilt</td><td class="defn">partial (manifest ships, unlinked)</td><td class="defn">RI’s page; then photography</td></tr>
+</table></div>
+<p class="why">Answer rate <b>6 / 2 / 4</b> &mdash; 50% answered,
+67% counting partial. With RI landed and Q5 read from the id: 7 / 2 / 3. With D-2 and D-5: 9 / 1 / 2.</p>
+</div></section>
+
+<section id="layers"><div class="wrap">
+<p class="label">Part B &middot; D-1's evidence</p>
+<h2>Three layers by force, not five by wave.</h2>
+<div class="layers">
+<div><b>The system</b><span>what exists &mdash; component, snippet, pattern, context, role, intent, shape; tokens (D-5) and assets (RI) when they land. The agent <i>chooses</i> here.</span></div>
+<div><b>Design governance</b><span>what a design must or should do &mdash; 55 WCAG criteria (external law), 470 HSBC rules with a destiny (internal standard), the 161 design-scoped rulings (case law). Three provenances as sub-chips, one precedence ladder. Accessibility lives here entirely. The agent <i>obeys</i> here.</span></div>
+<div><b>Explanation</b><span>why &mdash; 145 graded principles, 30 polarities, the evidence trail. Never an obligation. The agent <i>consults</i> here when obligations pull against each other.</span></div>
+</div>
+<p>The ruling record is not a layer of the designer brain. It is the <b>Codex</b> &mdash; 593 rulings, each with
+its evidence and its session, superseding and refining one another by the authored edges s267-D3 ratified. Measured over
+what each ruling governs: <b>432 system-only</b>, <b>99 design-only</b>, 62 both. A derived
+<code>scope</code> on each ruling puts the design ones inside the governance view and leaves the system ones where the
+conductor reads them. The <b>Constitution</b> is the dozen fences everything else defers to &mdash; fence 3 of #261, the two-red
+law, nam-002, "an instrument without a consumer is refused" &mdash; and the precedence ladder: law, then ruling, then BLOCKING,
+then ADVISORY, then the principles behind them. It does not exist as a document today.</p>
+<p class="why">Rulings a re-cut touches, by id: s274-D11 and s275-D6 (the "behind its own chip" clauses become sub-chips of
+Design governance; the reader-in-the-same-commit clauses stand); s275-D4 (the named lane it defers the joins to is this
+lane); s269-D2 (the <code>ux:</code> prefix stays); s274-D7, s274-D8, s275-D1..D3, s270-D2, s276-D3, s277-D1..D3 (node kinds
+and edge types &mdash; untouched: a view re-cut changes <code>fam</code> labels and the template's chips, never an id or a
+type); s267-D3 (untouched). The five edge types no chip draws today &mdash; <code>answersIntent</code>, <code>hasDataShape</code>, <code>obeys</code>, <code>providesRole</code>, <code>yieldsTo</code> &mdash;
+get a chip in the same move.</p>
+</div></section>
+
+<section id="kinds"><div class="wrap">
+<p class="label">Part C &middot; connectivity has an intent</p>
+<h2>Each kind against its own minimum.</h2>
+<p>"Orphan" means something only against a stated minimum. A snippet with one edge is perfect; a rule with one edge
+binds nothing. Three kinds fail their own purpose at scale: rule, pattern, ux.</p>
+<div class="tw"><table>
+<tr><th>kind</th><th class="num">n</th><th>what it is for</th><th>minimum</th><th>gap</th></tr>
+<tr><td class="slug">component</td><td class="num">137</td><td class="defn">the thing chosen</td><td class="defn">renderedBy 1 · usedInContext ≥1 · providesRole ≥1 · ≥1 obligation</td><td class="defn">0 at degree 0; 29 without a role; 127 without an obeys</td></tr>
+<tr><td class="slug">snippet</td><td class="num">137</td><td class="defn">the render</td><td class="defn">1</td><td class="defn">none — 87 at degree 1 is correct</td></tr>
+<tr><td class="slug">pattern</td><td class="num">380</td><td class="defn">a composition of ≥2 components</td><td class="defn">≥2 in-edges</td><td class="defn"><b>341 at degree 1</b> — labels, not patterns</td></tr>
+<tr><td class="slug">context</td><td class="num">222</td><td class="defn">where a component lives</td><td class="defn">≥2 in-edges</td><td class="defn"><b>176 at degree 1</b></td></tr>
+<tr><td class="slug">role · intent · shape</td><td class="num">12 · 14 · 23</td><td class="defn">the DESK address (s270-D2)</td><td class="defn">≥1 provider</td><td class="defn">none</td></tr>
+<tr><td class="slug">ruling</td><td class="num">593</td><td class="defn">a decision cited by id</td><td class="defn">governs ≥1 · evidencedBy ≥1 · a session</td><td class="defn">394 without a session edge (392 recoverable from the id); no scope</td></tr>
+<tr><td class="slug">evidence</td><td class="num">886</td><td class="defn">the receipt</td><td class="defn">1</td><td class="defn">none by intent; ids are the evidence string</td></tr>
+<tr><td class="slug">artefact</td><td class="num">618</td><td class="defn">a governed file</td><td class="defn">1</td><td class="defn">none; the guideline-file artefacts are the natural scope hub for D-2</td></tr>
+<tr><td class="slug">session</td><td class="num">92</td><td class="defn">when</td><td class="defn">≥1</td><td class="defn">none</td></tr>
+<tr><td class="slug">rule</td><td class="num">470</td><td class="defn">an obligation the agent applies</td><td class="defn">definedIn 1 + a scope</td><td class="defn"><b>363 with no scope; 50 of 59 BLOCKING bind nothing</b></td></tr>
+<tr><td class="slug">sc</td><td class="num">55</td><td class="defn">the legal obligation</td><td class="defn">under + appliesTo ≥1</td><td class="defn">none</td></tr>
+<tr><td class="slug">guideline · principle · standard · policy</td><td class="num">13 · 4 · 1 · 1</td><td class="defn">the WCAG taxonomy</td><td class="defn">≥1</td><td class="defn">none</td></tr>
+<tr><td class="slug">axe</td><td class="num">64</td><td class="defn">the automatable check</td><td class="defn">1</td><td class="defn">none by intent; no consumer</td></tr>
+<tr><td class="slug">ux</td><td class="num">145</td><td class="defn">the explanation, graded</td><td class="defn">≥1 (a rule or component resting on it, or a polarity)</td><td class="defn"><b>99 at degree 0</b>, 2 of the six A-grade laws among them; the 20 standards-family principles have 0 links to sc:</td></tr>
+<tr><td class="slug">polarity</td><td class="num">30</td><td class="defn">a tension between principles</td><td class="defn">hasParty 2</td><td class="defn">5 at degree ≤1 — the declared stubs (s275-D3)</td></tr>
+</table></div>
+</div></section>
+
+<section id="gaps"><div class="wrap">
+<p class="label">Part D &middot; ranked, with cost</p>
+<h2>The gaps, in the order they change a 30-second decision.</h2>
+<div class="tw"><table>
+<tr><th>#</th><th>gap</th><th>closes with</th><th>join</th><th>cost</th><th>touches</th><th>where</th></tr>
+<tr><td class="slug">G1</td><td class="defn">50 of 59 BLOCKING rules bind no component; 363 of 470 rules have no scope</td><td class="defn">a scope per guideline file</td><td class="slug">authored once + structural</td><td class="defn">34 rows · 1 reader · 1 lane</td><td class="slug">s274-D9 · s274-D12 · s276-D5 · s277-D3 · P-274-3</td><td class="slug">D-2</td></tr>
+<tr><td class="slug">G2</td><td class="defn">no design-time reader — 47% of edges have no consumer; the agent reads ~730K tokens of metas</td><td class="defn">wire _compose_slice.py as generate step 1</td><td class="slug">—</td><td class="defn">1 lane + pack cut</td><td class="slug">s274-D11 · s269-D9 · apollo-spider SKILL :130</td><td class="slug">D-3</td></tr>
+<tr><td class="slug">G3</td><td class="defn">the layers are ingestion waves; accessibility sits in three with 0 links</td><td class="defn">three views by force; scope on rulings; 20 authored links</td><td class="slug">template + authored</td><td class="defn">1 lane</td><td class="slug">s274-D11 · s275-D6 · s275-D4 · s269-D2 kept</td><td class="slug">D-1</td></tr>
+<tr><td class="slug">G4</td><td class="defn">no token kind (Q9)</td><td class="defn">token: at tier grain + bindsToken from metas.tokens</td><td class="slug">structural</td><td class="defn">10–20 nodes · ~1,000 edges · 1 lane</td><td class="slug">s269-D3 · P-269-7</td><td class="slug">D-5</td></tr>
+<tr><td class="slug">G5</td><td class="defn">no asset kind (Q12)</td><td class="defn">lane RI’s 688 nodes / 1,299 edges</td><td class="slug">structural</td><td class="defn">ruled + 1 land lane</td><td class="slug">s269-D1 step 4 · RI-1..4 · s230-D2</td><td class="slug">RI’s page</td></tr>
+<tr><td class="slug">G6</td><td class="defn">rule → principle absent (Q3)</td><td class="defn">authored restsOn, 59 BLOCKING × six A-grade laws first</td><td class="slug">authored</td><td class="defn">≤ 60 sentences · 1 lane</td><td class="slug">s269-D5 · s275-D5</td><td class="slug">gap list</td></tr>
+<tr><td class="slug">G7</td><td class="defn">conflicts between rules absent (Q4)</td><td class="defn">authored conflictsWith + the Constitution</td><td class="slug">authored</td><td class="defn">rare; the known one first</td><td class="slug">s277-D3</td><td class="slug">gap list</td></tr>
+<tr><td class="slug">G8</td><td class="defn">341 patterns / 176 contexts are one-component labels</td><td class="defn">decide: tag attribute, or members</td><td class="slug">decision</td><td class="defn">0 build</td><td class="slug">none</td><td class="slug">gap list</td></tr>
+<tr><td class="slug">G9</td><td class="defn">394 rulings lack a session edge; no scope on rulings</td><td class="defn">read the session from the id; derive scope from governs[]</td><td class="slug">structural</td><td class="defn">~10 lines</td><td class="slug">none</td><td class="slug">inside D-1</td></tr>
+<tr><td class="slug">G10</td><td class="defn">explorer prints islands 2 · orphans 0 over the base graph only</td><td class="defn">compute after the append</td><td class="slug">fix</td><td class="defn">8 lines</td><td class="slug">none</td><td class="slug">fix</td></tr>
+<tr><td class="slug">G11</td><td class="defn">99 orphan principles incl. 2 A-grade laws</td><td class="defn">G6 + s275-D5’s component citations</td><td class="slug">authored</td><td class="defn">inside G6</td><td class="slug">s275-D5</td><td class="slug">gap list</td></tr>
+<tr><td class="slug">G12</td><td class="defn">Figma specs · photography · fonts · personas/JTBD · content standard · lifecycle · temporal window</td><td class="defn">parked</td><td class="slug">—</td><td class="defn">—</td><td class="slug">P-273-1 · s269-D4 · P-269-9 · s269-D6 · P-269-6</td><td class="slug">parked</td></tr>
+</table></div>
+<p class="why">The 105 dangling edges are not on this list: every one carries a sentence and the shape is ruled
+(s270-D2, s274-D10, s275-D2). Fifty-one are anti-pattern statements, twenty-two are events, eight are sub-parts, fifteen
+are declared stubs, two are true anaphora a human resolves in a minute. The prose tier (291 edges) stays: <code>mentions</code>
+dashed and advisory, <code>cites</code> solid and labelled a parsed citation.</p>
+</div></section>
+
+<section id="refuse"><div class="wrap">
+<p class="label">Part E &middot; what this lane would refuse</p>
+<h2>The attractive fixes that are the s274-D12 shape.</h2>
+<ol class="refuse">
+<li>Rule → component by any text match — the 27 regex candidates, name-in-prose, shingle overlap (s274-D12, s276-D5; RI measured the route at 1,947 junk pairs).</li>
+<li>Principle → SC by family name (fam-wcag22 → perceivable) — a name match, refused by s275-D4; the 20 links are authored under D-1 or not at all.</li>
+<li>Token leaves as nodes — 932 of them (s269-D3).</li>
+<li>A family node without a carrier (s277-D3 c) — D-2’s attribute carries what it would.</li>
+<li>Promoting mentions to typed edges by verb proximity — the regex proposes, Dave ratifies (s267-D3).</li>
+<li>Merging the eleven ruling verbs into one — undoes twenty hand-retyped edges to tidy a census.</li>
+<li>Inferring a ruling’s scope from its prose — derive it from governs[] only.</li>
+<li>Retiring the 12 consumer-less types — they answer five of the twelve questions; the defect is the missing reader.</li>
+</ol>
+</div></section>
+
+<section id="receipts"><div class="wrap">
+<div class="split"><div>
+<p class="label">Receipts</p>
+<dl class="recs">
+<dt>Measurement</dt><dd><code>A1-measure.json</code> (lane A1, 13a4cf2) + <code>A2-measure.json</code> (<code>_measure_a2.py</code>, this lane)</dd>
+<dt>Long form</dt><dd><code>A2-AUDIT.md</code> &mdash; nine sections, plain prose first, then the technical prose, then one line</dd>
+<dt>Graph</dt><dd>3,897 nodes &middot; 6,616 live edges &middot; 105 declared nulls &middot; 51 types &middot; join classes structural 6,277 / prose 291 / authored 153</dd>
+<dt>Nothing run</dt><dd>no <code>gen_kg_edges.py</code>, no <code>_build_all.py</code>, no <code>_build_kg_explorer.main()</code>; nothing under <code>knowledge/</code> written</dd>
+<dt>D-6</dt><dd>fed from A3-shortlist.json</dd>
+</dl>
+</div><div>
+<p>Every integer on this page is read at build time from the two measurement files; none was typed into the page or
+the decisions file, and the builder refuses to write the page if the three figures it asserts drift.</p>
+<p>Dave's words appear once, verbatim, in the hero. Nothing on this page is a ruling.</p>
+</div></div>
+</div></section>
+<footer><div class="wrap">Nothing on this page is a ruling. Dave rules; the lane enacts by addition.</div></footer>
+<script>
+(function(){
+ var KEY="apollo-277-kg-audit-v1";
+ var IDS=["D-1", "D-2", "D-3", "D-4", "D-5", "D-6"];
+ var state={};
+ var lastSaved=null;
+ function el(id){return document.getElementById(id);}
+ function load(){
+  try{var raw=localStorage.getItem(KEY);
+   if(raw){var o=JSON.parse(raw);
+    if(o&&typeof o==="object"){state=o.decisions||{};lastSaved=o.at||null;}}}
+  catch(e){state={};}
+  if(!state||typeof state!=="object")state={};
+ }
+ function save(){
+  lastSaved=new Date().toISOString();
+  try{localStorage.setItem(KEY,JSON.stringify({decisions:state,at:lastSaved}));}catch(e){}
+  paint();
+ }
+ function two(v){return (v<10?"0":"")+v;}
+ function paint(){
+  var done=0;
+  IDS.forEach(function(id){var r=state[id];if(r&&r.choice)done++;});
+  var t="\u2014";
+  if(lastSaved){try{var d=new Date(lastSaved);t=two(d.getHours())+":"+two(d.getMinutes());}catch(e){}}
+  el("said").textContent=done+" of "+IDS.length+" decided \u00b7 saved "+t;
+ }
+ function put(id,k,v){
+  var r=state[id]||{};r[k]=v;r.at=new Date().toISOString();
+  if(!r.choice&&!r.note){delete state[id];}else{state[id]=r;}
+ }
+ function restore(){
+  IDS.forEach(function(id){
+   var r=state[id]||{};
+   if(r.choice){
+    var b=document.querySelector('input[name="'+id+'"][value="'+r.choice+'"]');
+    if(b)b.checked=true;
+   }
+   var ta=document.querySelector('textarea.note[data-id="'+id+'"]');
+   if(ta&&r.note)ta.value=r.note;
+  });
+ }
+ function exportObj(){
+  return {page:"REVIEW-kg-audit-2026-09-16-v1.html",
+          at:new Date().toISOString(),
+          decisions:IDS.map(function(id){
+            var r=state[id]||{};
+            return {id:id,choice:r.choice||null,note:r.note||""};
+          })};
+ }
+ function show(){
+  var j=JSON.stringify(exportObj(),null,2);
+  var p=el("exp");p.hidden=false;p.textContent=j;return j;
+ }
+ document.addEventListener("change",function(e){
+  if(e.target.type==="radio"&&IDS.indexOf(e.target.name)>-1){
+   put(e.target.name,"choice",e.target.value||null);save();
+  }
+ });
+ var timer=null;
+ document.addEventListener("input",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){
+   put(e.target.dataset.id,"note",e.target.value);
+   clearTimeout(timer);timer=setTimeout(save,400);
+  }
+ });
+ document.addEventListener("focusout",function(e){
+  if(e.target.classList&&e.target.classList.contains("note")){clearTimeout(timer);save();}
+ });
+ window.addEventListener("beforeunload",function(){clearTimeout(timer);save();});
+ el("btnExport").addEventListener("click",function(){
+  var j=show();
+  try{
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));
+   a.download="kg-audit-decisions-2026-09-16-v1.json";
+   document.body.appendChild(a);a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }catch(e){}
+  el("exp").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ el("btnCopy").addEventListener("click",function(){
+  var j=show();var b=el("btnCopy");
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy to clipboard";},1600);}
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j).then(ok,function(){ok();});return;
+   }
+  }catch(e){}
+  try{var t=el("exp");var r=document.createRange();r.selectNodeContents(t);
+   var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");ok();}catch(e){}
+ });
+ el("btnClear").addEventListener("click",function(){
+  if(!confirm("Clear every choice and note on this page?"))return;
+  state={};try{localStorage.removeItem(KEY);}catch(e){}
+  document.querySelectorAll('input[type="radio"]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll("textarea.note").forEach(function(t){t.value="";});
+  el("exp").hidden=true;save();
+ });
+ load();restore();paint();
+})();
+</script>

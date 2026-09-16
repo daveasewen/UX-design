@@ -1,0 +1,76 @@
+{
+  "title": "The knowledge graph — #277 audit, the decisions",
+  "page": "REVIEW-kg-audit-2026-09-16-v1.html",
+  "storage_key": "apollo-277-kg-audit-v1",
+  "headline": "Six decisions about the shape of the designer brain.",
+  "decisions": [
+    {
+      "id": "D-1",
+      "title": "The layers — five ingestion waves, or three views by force?",
+      "lede": "The five layers as built are the order the graph was landed in: base wiring, rulings, the WCAG corpus, the {rules_total} HSBC rules, the {ux_total} UX principles — each behind the chip its lane earned. They are not five kinds of knowledge. The proof is accessibility: it sits in <b>three</b> of the five today — {a11y_sc} WCAG criteria in “guidelines”, {a11y_rules} rules from the <code>accessibility-*.md</code> files in “guideline rules”, {a11y_ux} standards-family principles in “UX principles” — with <b>{a11y_links} edges</b> between the three holdings (s275-D4 said so and deferred the joins to a named lane). And the record called “governance” is measured as <b>{rul_system} of {rul_total}</b> rulings that govern only files, scripts and notes, {rul_design} that govern only components, {rul_both} both: three-quarters of it is how the system was built, one quarter is design precedent.",
+      "options": [
+        ["a", true, "<b>One graph, three views by force.</b> <i>System</i> (what exists) · <i>Design governance</i> (what a design must or should do: WCAG + the HSBC rules + the design-scoped rulings, three provenances shown as sub-chips, one precedence ladder — accessibility lives here entirely) · <i>Explanation</i> (the graded principles and polarities). The ruling record is named the <b>Codex</b>; every ruling carries a derived <code>scope</code> (design · system · both); the dozen fences everything defers to are written once as the <b>Constitution</b> — the precedence ladder. Storage untouched: no node id, no edge type changes; the template’s chips and the <code>fam</code> labels do. Supersedes the “behind its own chip” clauses of s274-D11 and s275-D6 by name; is the named lane s275-D4 deferred to."],
+        ["b", false, "<b>Keep the five, rename one.</b> “Governance” becomes “Codex” (or “system management”); the WCAG, rules and principle chips stay as landed. Cheapest; leaves accessibility in three places and leaves the agent, when a reader exists, to assemble “what must this do” from four stores."],
+        ["c", false, "<b>One graph, no views.</b> Drop the chips; every kind is one colour on one canvas. Loses what s274-D11 and s275-D6 wanted visible and gives the agent no precedence order either."]
+      ],
+      "why": "Dave’s instinct is right about the symptom and half right about the cure: the categorisation is wrong, and accessibility does belong in design governance — but the cut that fixes it is by <i>force</i> (chooses / obeys / consults), not by topic. Of his three words, <i>codex</i> fits the ruling record (bound, ordered, cited by id, with receipts); <i>constitution</i> fits only the dozen fences, which should be written down as the precedence ladder; <i>system management</i> is a scope on a ruling, not the name of the record. What the agent does differently: nothing until D-3 wires a reader — and then everything, because a reader over three force layers asks one question, “the obligations for this component, in precedence order”, instead of learning four stores and {a1_edge_types} edge types.",
+      "attrib": "Lane A2 (Fable), from A1’s census and this lane’s ruling-scope and accessibility-holdings measurements."
+    },
+    {
+      "id": "D-2",
+      "title": "How do the {rules_total} HSBC rules reach a component?",
+      "lede": "Today a rule reaches a component only by an edge to that component: <code>obeys</code> on {comp_with_obeys} metas, {rules_obeyed} rules, {files_reached} of {rules_files} guideline files — the files named after a component. The other {files_unreached} files hold <b>{rules_unreached} rules</b> that bind a <i>facet</i> every component has: copywriting {f_copy}, tone of voice {f_tone}, colour {f_colour}, typography {f_type}, icons and pictograms {f_icons}, neurodiversity {f_neuro}. A designer knows the tone-of-voice rules apply to every label on the screen. The graph cannot say so, which is why <b>{blocking_unbound} of the {blocking} BLOCKING rules bind nothing</b> from the agent’s seat. s277-D3 priced the per-component route for one family file and refused the all-to-all shape; the family-node option was declined because nothing could carry it.",
+      "options": [
+        ["a", true, "<b>A <code>scope</code> per guideline file.</b> {rules_files} rows, authored once by a lane and read by Dave: <i>universal</i> (copy, tone, neurodiversity), <i>facet:&lt;token group&gt;</i> (colour → <code>rag/</code> <code>background/</code> …, type → <code>text/</code> <code>font-</code>, icons → <code>icon/</code>), or <i>component:&lt;slug&gt;</i> (the {files_reached} already reached). Applicability then derives structurally through the <code>tokens</code> block {metas_tokens} metas already carry — no regex, no sentence per pair. <code>obeys</code> stays for the specific binding and for the declared escape. Cost: {rules_files} rows, one reader of about forty lines, one lane. Consistent with s274-D9 (an attribute, not a hub) and s274-D12 (no inference)."],
+        ["b", false, "<b>Continue the per-meta <code>obeys</code> route.</b> The s276-D3 / s277-D1..D3 shape, file by file: about ten metas a lane, one sentence a pair. It reaches the component-named files and stops there — the {rules_unreached} facet rules would need {metas_total} × {rules_unreached} sentences to say what one attribute says."],
+        ["c", false, "<b>A family or facet node with an inheritance edge.</b> s277-D3 option (c): a new node kind, a new edge type and a propagation rule — three vocabulary changes — to carry what a {rules_files}-row attribute carries."]
+      ],
+      "why": "Option (a). It is the single change that moves the most obligations into the agent’s reach for the least authored work, and it is the s274-D9 shape (one place for one fact) rather than the s274-D12 shape (inference wearing a ref). The join key it needs — which token groups a component uses — is already a typed field in the metas and is what D-5 turns into nodes.",
+      "attrib": "Lane A2 (Fable); the BLOCKING count is measured over _rules-index.json against every meta’s edges.obeys."
+    },
+    {
+      "id": "D-3",
+      "title": "Wire the design-time reader, or keep reading the metas?",
+      "lede": "<b>{a1_nc_types} edge types carrying {a1_nc_edges} edges — {a1_nc_pct}% of the graph — are read by nothing</b>, and {a1_schema_only} more are permitted by the schema and read by nothing. Not because they are wrong: nine of the twelve answer a designer’s question directly. Because the reader they were built for does not exist. The compose skill says “read the metas” — {metas_total} files, about {metas_tokens_k}K tokens — and names three edge types in total; the pack ships <code>_rulings.json</code> empty by design and does not ship the rule nodes or the principle nodes. One tool already does the right thing: <code>knowledge/_compose_slice.py</code> turns a task sentence into roles → components → edges → BLOCKING rules → anti-neighbours → rulings at a self-measured {slice_tokens} tokens against {slice_replaced} for the metas it replaces — and it is marked <i>PROPOSAL, ADVISORY, NOT WIRED</i>, with the wiring recorded as yours to rule.",
+      "options": [
+        ["a", true, "<b>Wire it.</b> <code>_compose_slice.py</code> becomes the generate skill’s step 1 at the next pack cut, extended to read the rule and principle stores by force layer (D-1) and the file scopes (D-2). Every consumer-less edge type gets its consumer in one move; the s274-D11 principle — an instrument without a consumer is refused — finally applies to the graph itself. Cost: one lane on the slice, one pack cut; touches the pack-manifest rulings (s269-D9 pins <code>_search_core.py</code>, so the slice ships beside it, not inside it)."],
+        ["b", false, "<b>Keep read-the-metas.</b> The graph stays a human’s explorer; the {a1_nc_types} types stay explorer-only; the agent’s design-time answer rate stays at {q_design}/12 whatever D-1, D-2 and D-5 land."],
+        ["c", false, "<b>Retire the {a1_nc_types} consumer-less types.</b> Makes the census clean by deleting the answers to Q1, Q2, Q5, Q6 and Q11 before anyone has asked them."]
+      ],
+      "why": "Option (a). Every other decision on this page changes what the agent does only after this one. The answer rate the audit measures — {q_answered} of 12 by graph path, {q_design} of 12 reachable at design time — is the gap between a graph that exists and a graph that is consulted.",
+      "attrib": "Lane A2 (Fable), on the consumer census in A1 §4 and the compose-path read in this lane’s §6."
+    },
+    {
+      "id": "D-4",
+      "title": "The vocabulary — {a1_edge_types} storage types, and what the agent is told",
+      "lede": "A1 finds the real concentrations: thirteen component→component types and eleven ruling→ruling types. Both were ratified deliberately — s267-D3 retyped twenty ruling edges by hand into those eleven. The conductor’s suspected cluster (<code>governs</code> / <code>boundBy</code> / <code>enforcedBy</code> / <code>under</code> / <code>appliesTo</code>) is six different endpoint signatures, not one. The only true inverse pair is <code>governs</code> ({governs_n}) / <code>governedBy</code> ({governedBy_n}), and that is two ends of one authored join, not a synonym. The {a1_edge_types} types cost the <i>system</i> a line each in the validator and the explorer; they cost the <i>agent</i> nothing, because the agent is told three.",
+      "options": [
+        ["a", true, "<b>A reading vocabulary, storage untouched.</b> Twelve verbs the agent will ever be told — <i>is-a · contains · sits-with · must-not-sit-with · yields-to · renders-as · lives-in · provides/answers · must · should · rests-on · decided</i> — mapped onto the {a1_edge_types} storage types in one table the reader (D-3) and the skills use. <code>definedIn</code>, <code>enforcedBy</code>, <code>flaggedBy</code>, <code>checkedBy</code>, <code>verifiedBy</code>, <code>boundBy</code>, <code>enClause</code>, <code>under</code>, <code>cites</code>, <code>mentions</code> are machinery the reader uses and the agent never names. Touches no ruling."],
+        ["b", false, "<b>Merge in storage.</b> Fold the eleven ruling verbs and the thirteen component verbs into fewer types. Touches s267-D3, s270-D2, s274-D8, s275-D2 and s276-D3 by name, to save nothing the agent pays for."],
+        ["c", false, "<b>Leave it.</b> Fifty-one types, three named to the agent, and every new lane adds its own."]
+      ],
+      "why": "Option (a). The cost of {a1_edge_types} types is in the reader, not in the agent; a merge undoes a hand-ratified set to tidy a census. The prose tier stays as it is — <code>mentions</code> dashed and advisory under s267-D3, <code>cites</code> kept solid but labelled “parsed citation” because the author wrote the SC number in the rule text.",
+      "attrib": "Lane A2 (Fable), on A1 §4’s endpoint signatures and §5’s join classes."
+    },
+    {
+      "id": "D-5",
+      "title": "Tokens enter the graph — at what grain, and when?",
+      "lede": "There is no <code>token:</code> node, so Q9 — <i>what tokens does this component consume and what breaks if I change one</i> — cannot be asked. Yet <code>tokens</code> is a typed block in <b>{metas_tokens} of {metas_total} metas</b> ({token_refs} distinct references; <code>text/</code>, <code>rag/</code>, <code>tertiary/</code>, <code>form/</code>, <code>border-radius/</code>, <code>icon/</code> carry most of them; {token_files} live token files), and <code>tokens/_blast-radius.json</code> already computes reach. s269-D3 ruled the grain: tier, never 932 leaves. Nothing was built. D-2’s facet scopes key on exactly these groups.",
+      "options": [
+        ["a", true, "<b>Tier grain, now.</b> The {token_files} live token files — or the dozen groups that carry most references — as <code>token:</code> nodes, and <code>bindsToken</code> minted structurally from each meta’s <code>tokens</code> block; blast radius carried from <code>_blast-radius.json</code> as an attribute. Roughly ten to twenty nodes and a thousand edges, one lane, no sentence authored. Consistent with s269-D3; the P-269-7 tripwire is met by building the thing it waits for."],
+        ["b", false, "<b>Wait for the tripwire.</b> P-269-7 fires when <code>_GRAPH-REPORT.md</code> next regenerates. D-2 then has no structural join key and falls back to naming token groups by hand in each scope row."],
+        ["c", false, "<b>Leaf grain.</b> 932 nodes. Refused by s269-D3 as a graph that cannot be read; listed so the refusal is visible."]
+      ],
+      "why": "Option (a). It is the cheapest structural family left — a typed field in {metas_tokens} metas that nobody has turned into edges — and it is the join key D-2 uses, so the two land together or D-2 lands weaker.",
+      "attrib": "Lane A2 (Fable); the meta count and group census are this lane’s measurement (A2-measure.json §tokens)."
+    },
+    {
+      "id": "D-6",
+      "title": "Which augmentation first?",
+      "lede": "{d6_lede}",
+      "options": "{d6_options}",
+      "why": "{d6_why}",
+      "attrib": "{d6_attrib}"
+    }
+  ]
+}
