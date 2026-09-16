@@ -656,6 +656,25 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      ⚠ **The gate arm is a signal, not the judgement.** A same-day ruling on the same subject is
      a strong match, not a proof — read both before striking, and a strike that is wrong is
      worse than an item that is merely stale.
+   ### ★ THE MEMORY DIRECTORY IS THE CLAUDE.AI PROJECT MEMORY, AND THE SEAT LIMIT IS NOW STRUCTURAL (#278, 2026-09-16 — ADDED BY ADDITION; nothing above is rewritten)
+
+   The Cowork memory directory this step describes **is now the claude.ai Project memory** (import
+   2026-09-16 03:14–17Z, `sources: [cowork-import]`). **Only the CONDUCTOR'S seat can write it** — a
+   delegated wrap sub cannot reach the store at all, so at a delegated wrap this step is a SEAT
+   LIMIT and never a skip: **the sub writes `notes/_lanes/<n>/WRAP-MEMORY-HOOK.md`** — the index
+   line plus the file body, in the `s271-D4` form — **and the CONDUCTOR places it at the NEXT
+   opener**, at a cold seat for ≈4K tokens. Proven at #278: #277's hook was placed exactly that way
+   (`d7b8d72`), with the receipt appended to the hook file itself. ⚠ Three properties of the new
+   store that the hand-checks at this step must respect: it is **account-wide on READ** (other
+   Projects' subtrees are visible) and **Apollo-only on WRITE**, so keep Apollo files Apollo-only;
+   the index file **caps at 49,152 B**, so periodic compaction is owed and the dream pass is its
+   seat; and the forward risk is **one-way** — a re-import could overwrite cloud-only lines.
+   ⛔ **THE RULE ITSELF IS UNCHANGED AND IS NOT RESTATED HERE: the repo is the record, memory is the
+   accelerator.** That is what the paragraphs above already say; the cloud move gave it a new place
+   to point at and moved nothing else. ⚠ **There is NO `MEMORY.md` in the repo and there never
+   was** (`git ls-files` reads 0) — the file this step's older prose names was the Cowork LOCAL
+   index, and its cloud successor is `index.md` inside the Project store.
+
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.
