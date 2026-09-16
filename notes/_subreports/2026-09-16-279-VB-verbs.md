@@ -109,3 +109,18 @@ A legend reading needs: `reads` + `$splits` resolved per edge by target kind / d
 1. A thirteenth verb for the assets edges (`usesIcon` 371 / `usesLogo` 19) — *uses*? — or leave them read by `assets` without a verb.
 2. Whether `resolvedBy` / `challengedBy` / `explainedBy` / `touches` / `hasParty` get a verb (the audit named none) — one *decided* for `resolvedBy` alone would split s238-D6's four.
 3. `verbVia` on seed rows: keep (provenance, +~1,500 tokens) or drop to `verb` only.
+
+## 10. Shipped — sha `eb2ff7c` (`--numstat`)
+
+```
+2	2	_CHAIN.md
+312	18	knowledge/_compose_slice.py
+383	0	knowledge/_kg_verbs.json
+21	0	knowledge/_state.json
+5	0	notes/_REHEARSAL-LOG.jsonl
+21	0	notes/_lanes/279/verbs/BRIEF.md
+111	0	notes/_lanes/279/verbs/REPORT.md
+111	0	notes/_subreports/2026-09-16-279-VB-verbs.md
+```
+
+The committed `_compose_slice.py` blob carries this lane's hunks only (312+ / 18−); lane PK's 64 uncommitted lines (`OPENED`, the four PACK bites) stay in the working tree for PK's own commit. Gate lines from the run: chain fresh (after one `_gen_chain.py` regen — the gate tripped once, as the brief foresaw) · doc rows present (both halves) · showroom sync DECLARED GAP (SHOWROOM_ACK) · polarity gate green · mention map fresh · session witness agrees (#279) · wrap gate RED, visible not blocking (mid-session, not-a-wrap) · spine-writer selftest green · `_REHEARSAL-LOG.jsonl` auto-staged (#261 M2). One sandbox finding for the runbook: the commit script must be run with `< /dev/null` here — a gate reads stdin and the harness kills the call at ~40s otherwise — and a re-run after a partial run must `git reset` the already-staged paths first, because a `git add` that changes nothing rolls back by unlinking `index.lock`, which the delete-guard refuses, and the next add then fails on the surviving lock.
