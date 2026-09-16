@@ -32,10 +32,33 @@ the system is genuinely missing something you need, use `draft-a-new-pattern`.
 8. Carry **provenance** — note which canon component and tokens each part came from.
 
 ## Procedure
-1. Read the request. Find the canon components each screen needs — look in
-   `knowledge/components/*.meta.json` for the contract, `knowledge/canon/canon.css`
-   + `knowledge/canon/type.css` and `knowledge/snippets/` for the reviewed
-   markup/CSS.
+1. **Seed — ask the graph, do not read the library** (`s277-D10`, `s278-D1`). Run the
+   reader once and work from the slice it returns:
+   ```
+   python3 knowledge/_compose_slice.py "<the request>" --out seed.json --explain
+   ```
+   Typed inputs sharpen it: `--roles page-frame,record-list --intent comparison
+   --components button,table --shape "parts-of-whole" --budget 20000`. The seed's
+   fields are the contract — `components` · `governs` (rulings) · `obeys`
+   (authored / derived / routed, BLOCKING first) · `mustNot` (incl. `ref:null`) ·
+   `tokens` (group + tier) · `assets` (icons / logos) · `unresolved` · `sized` — and
+   a field that is `null` says why in `$nulls`. Open a meta only for a component the
+   seed names (`components[].meta`), and the snippet it names (`components[].snippet`);
+   `knowledge/canon/canon.css` + `type.css` are what you LINK, not what you read.
+   The seed is composed ONCE; the session works from it. When a later prompt needs a
+   node the seed excluded — or a ruling inscribed after it — use the ASK door, which
+   reads the Constitution live and answers one of the 12 designer questions in ≤1K
+   tokens:
+   ```
+   python3 knowledge/_compose_slice.py --ask "what governs component:button?" --seed seed.json
+   ```
+   (governs · binds · principle · conflicts · ruled · evidence · answers · avoid ·
+   tokens · usedIn · wcag · assets — `python3 knowledge/_compose_slice.py --help`
+   lists them.) A refusal names its first obstacle; do not work around it.
+   **Fallback, declared, not default:** only if `knowledge/_compose_slice.py` is not
+   in the pack you were given, read `knowledge/components/*.meta.json` for the
+   contract as before — and write `step 1: metas-read fallback (no reader in pack)`
+   in the used / missing note so the run says which door it used.
 2. Compose the screen from those pieces; bind tokens; set the states.
 3. Anything the system can't supply → list under **Gaps**, don't invent.
 4. Produce the output: **React** (wire the real components) preferred, or plain

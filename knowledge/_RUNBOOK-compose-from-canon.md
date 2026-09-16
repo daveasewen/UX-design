@@ -132,3 +132,67 @@ JOURNEY/SCREEN PATTERNS block as `.c-*`.
   belongs in `tokens/semantic-colour.json`, then re-run the generators.
 - **Promote gap patterns to snippets** — the `.c-*` JOURNEY/SCREEN patterns aren't gated yet; once
   reviewed, give each a snippet so it generates into the `.cn-*` layer like the rest.
+
+---
+
+## Step 1 is the reader — the thin-slice SEED and the ASK door (`s277-D10` · `s277-D13` · `s278-D1`, #279)
+
+**What changed.** Step 1 of generate-from-canon no longer reads the library. It runs
+`knowledge/_compose_slice.py` once and works from the SEED it returns; the consumer is
+`designer-skills-v2/generate-from-canon/SKILL.md` § Procedure step 1 (landed in the same commit —
+`s274-D11`). Reading the 137 metas + `canon/canon.css` is the DECLARED FALLBACK for a pack that
+does not carry the reader, never the default.
+
+```
+python3 knowledge/_compose_slice.py "<request>" --out seed.json --explain      # the seed, once
+python3 knowledge/_compose_slice.py "<request>" --roles page-frame,record-list --intent comparison \
+        --components button,table --shape "parts-of-whole" --budget 20000       # typed inputs
+python3 knowledge/_compose_slice.py --ask "what governs component:button?" --seed seed.json   # on demand
+python3 knowledge/_compose_slice.py --measure                                   # the claim, re-measured
+python3 knowledge/_compose_slice.py --selftest                                  # 43 named bites
+```
+
+**The contract (in).** `task` sentence, and/or the typed inputs: `intent` (a `chart-intents.json`
+word), `shape` (a meta `shape` string), `roles` (`roles.json` keys), `components` (an optional
+explicit set, forced in), `budget` (cl100k tokens for the seed).
+
+**The contract (out) — eight fields, every one content or `null` + a note in `$nulls`:**
+
+| field | what it carries | read from |
+|---|---|---|
+| `components` | one winner per role + capped alternates; `why`, `when`, `snippet`, edges, `score` | `components/*.meta.json`, `roles.json` providers + `providesRole` edges, `chart-intents.json` |
+| `governs` | the rulings over those components — Dave's law | `edges.governedBy` + `_rulings.json` `governs[]` (meta path or renderedBy snippet), read LIVE |
+| `obeys` | rules + UX principles in three classes, BLOCKING first: **authored** (`edges.obeys`, with the meta's `$why`) · **derived** (a typed hop the meta did not author: `flaggedBy` via its snippet, a rule id cited in prose) · **routed** (a BLOCKING rule whose file the vocabulary routes) | `edges.obeys`, `_rule_nodes.json`, `guidelines/_rules-index.json` |
+| `mustNot` | `mustNotNeighbour` from edges AND prose, plus `not-with` — the `ref:null` rows are carried with their `$note` (51 of 70 today) | the metas |
+| `tokens` | the token GROUP and its tier (semantic / component-type / foundation / primitive / composite), ≤4 members, an honest count — never the leaves | the metas' `tokens` blocks against `tokens/*.json`; `typography-composites.json` as tier `composite` |
+| `assets` | every `usesIcon` / `usesLogo` edge from a chosen component, plus its declared-null asset edges | `_icon_nodes.json` + `_logo_nodes.json` (`s277-D4..D7`) |
+| `unresolved` | everything not resolved, each `ref:null` + `$note` + `why` — incl. the photo limit (no node kind) | — |
+| `sized` | cl100k tokens (a LABELLED estimator, `ds-021`) whole and per field, vs the metas it replaces and the library; `budget`, `within_budget`, `reductions` | tiktoken |
+
+Over `budget` the seed REDUCES by declared steps (drop alternates → drop routed obeys), each recorded
+in `sized.reductions`; if still over it refuses (`SliceRefused`, exit 3) — never a silent truncation.
+
+**ASK — the on-demand half.** The seed is composed once and is NOT session state (`s278-D1`). When
+the next prompt needs a node the seed excluded, or a ruling inscribed after the seed, ASK reads the
+Constitution LIVE (`_rulings.json` + the metas' edges + the ratified node files are re-read on every
+call) and returns the answering slice for one of the 12 canonical questions in ≤1,000 cl100k tokens,
+or refuses loudly naming the count. The verbs: `governs` · `binds` · `principle` · `conflicts` ·
+`ruled` · `evidence` · `answers` · `avoid` · `tokens` · `usedIn` · `wcag` · `assets`. Name the node
+as `kind:id` (`component:button`, `rule:ctkb-003`, `ruling:s277-D10`, `sc:1.4.3`,
+`intent:comparison`) or by its meta name. Three answers carry a declared limit because the graph has
+no such edge: `principle` (no rule→ux edge), `conflicts` (no rule→rule conflict type; the 2-hop
+`tensionWith` between obeyed principles is walked and is empty on today's tree), `tokens` (no
+`token:` node kind — blast radius comes from `tokens/_blast-radius.json`, a derived index). ASK never
+mutates the seed (selftest proves it byte-for-byte) and never touches `_rulings.json`.
+
+**Gate it.** `python3 knowledge/_compose_slice.py --selftest` (43 bites: every out field present;
+nulls carry notes; ASK ≤1K on all 12; ASK sees a ruling planted AFTER the seed in a scratch copy of
+`_rulings.json`, never the live file; seed unchanged by ASK; budget refusal; the live reader agrees
+with `_build_kg_explorer.extract()`+`extract_extra()` on shared edge-type counts), then
+`python3 knowledge/_validate_kg.py` on the live tree.
+
+**Measured, not asserted (2026-09-16, `--measure`, the dashboard task).** Seed 28,621 tokens
+against 111,468 for the 31 metas it names (3.9×) and against 1,005,758 for what step 1 read before
+the wiring — every meta 414,184 + `canon.css` 588,102 + `type.css` 3,472 (31.8×). The `s277-D10`
+figure (19,117 / 5.8×) was the PROPOSAL's field set; the contract's `governs` (38 live rulings, not
+3) and `assets` (31 rows, not 0) are the difference, and are content the old slice did not carry.
