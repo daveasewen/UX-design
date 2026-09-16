@@ -180,7 +180,7 @@
     "obeys": [
       {
         "ref": "rule:dv-line-001",
-        "$why": "The zero y-axis is OPTIONAL for a line and MANDATORY for a bar, and this meta is the line side of that deliberate asymmetry - it carries no data-domain-min antiPattern, where chart-bar carries one."
+        "$why": "The zero y-axis is OPTIONAL for a line and MANDATORY for a bar, and this meta records only the mandatory side's absence - no data-domain-min antiPattern where chart-bar carries one. The engine it names in `behaviour.script` (dv-render.js) still floors every registered type at zero by default (a `zeroBaseline` opt-out exists; no type takes it today), and dv-render-line.js reports that clamp as a CORE REQUEST against this very rule - so the edge records a rule the line is built to honour and does not yet enact."
       },
       {
         "ref": "rule:dv-line-002",
@@ -216,7 +216,7 @@
       },
       {
         "ref": "rule:dv-001",
-        "$why": "Don't alter the scale to over- or understate a trend: this meta's `responsive.rule` relayouts by baked fractions at a fixed height with the viewBox pinned 1:1, so a narrower container moves x positions and never re-stretches the y scale the trend is read off."
+        "$why": "Don't truncate or alter the scale to over- or understate a trend: on this component no author picks the y-range - the engine named in `behaviour.script` (dv-render.js) derives the domain from the data, widens it to whole steps and floors it at zero by default, and it REWRITES the table rows from the same spec - so the drawn scale and the tabled values cannot be set apart to flatter a trend."
       },
       {
         "ref": "rule:dv-002",
@@ -236,7 +236,7 @@
       },
       {
         "ref": "rule:dv-007",
-        "$why": "Chart elements must respond dynamically on resize while titles keep scaling with the user's text setting: this meta's fit does the first with a baked-fraction relayout on a single rAF-debounced resize, and refuses to do the second to the type by pinning the viewBox."
+        "$why": "Chart elements must respond dynamically on resize while titles keep scaling with the user's text setting: this meta's fit does the first with a baked-fraction relayout on a single rAF-debounced resize, and keeps the second by pinning the viewBox 1:1 - TEXT NEVER SCALES with the geometry, so the type stays at the user's text setting instead of shrinking with the container."
       },
       {
         "ref": "rule:dv-008",
@@ -248,7 +248,7 @@
       },
       {
         "ref": "rule:dv-010",
-        "$why": "Nothing may obscure the data: this meta's one overlay is the dvTip popover and it edge-flips rather than covering the plot, which is why the flip is declared in `motion.hover` at all."
+        "$why": "Nothing may obscure the data: the only thing this meta floats over the plot is the dvTip popover - a transient role=status readout raised by pointer or keyboard focus on one marker, replacing the native <title> and repeating the table's value - and the meta declares no persistent overlay, annotation layer or in-plot legend; the edge-flip keeps that one popover inside the viewport."
       },
       {
         "ref": "rule:dv-011",

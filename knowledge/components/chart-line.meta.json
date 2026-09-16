@@ -177,6 +177,104 @@
     }
   },
   "edges": {
+    "obeys": [
+      {
+        "ref": "rule:dv-line-001",
+        "$why": "The zero y-axis is OPTIONAL for a line and MANDATORY for a bar, and this meta records only the mandatory side's absence - no data-domain-min antiPattern where chart-bar carries one. The engine it names in `behaviour.script` (dv-render.js) still floors every registered type at zero by default (a `zeroBaseline` opt-out exists; no type takes it today), and dv-render-line.js reports that clamp as a CORE REQUEST against this very rule - so the edge records a rule the line is built to honour and does not yet enact."
+      },
+      {
+        "ref": "rule:dv-line-002",
+        "$why": "Shape per data set, not colour alone: the meta's `series` prop already names this rule and fixes the three marker geometries (circle r4.2 · square 8.4 · diamond ±4.9), so the rule IS the prop."
+      },
+      {
+        "ref": "rule:dv-line-003",
+        "$why": "Axis titles, per-category X labels, incremental Y labels and gridlines are the parts DV-D07 mints tokens for (data/axis, data/grid) - the rule says which parts must exist, the meta says what colour they are."
+      },
+      {
+        "ref": "rule:dv-line-004",
+        "$why": "The reference point plus a tooltip repeating BOTH axis values is the dvTip popover in this meta's `motion.hover`, and the both-axes clause is why the popover cannot be a bare value."
+      },
+      {
+        "ref": "rule:dv-line-005",
+        "$why": "Comparable intervals and a gridline density the author may drop when it confuses is TASTE the meta hands to the author; the meta's `series` cap of 1–5 on ONE continuous time axis (`when`) is the only structural trace, and it is thin - this edge is the weakest of the nine."
+      },
+      {
+        "ref": "rule:dv-line-006",
+        "$why": "Dual y-axes only for different units is the rule this meta OBEYS BY YIELDING: its `when` hands the different-units case to chart-combo, so on this component the rule reads as a prohibition, and that is the binding worth recording."
+      },
+      {
+        "ref": "rule:dv-line-007",
+        "$why": "Filter/focus on multi-set charts is this meta's `legendFilter` prop - the rule is why that prop defaults to true rather than being an option."
+      },
+      {
+        "ref": "rule:dv-line-008",
+        "$why": "End-line markers plus a key when intervals are tight, and explicit labelling of projected states, govern the multi-series variant this meta declares; nothing else in the meta supplies that labelling contract."
+      },
+      {
+        "ref": "rule:dv-line-011",
+        "$why": "Straight segments only, never gratuitous curves - the meta's first antiPattern cites this rule by id, so the edge makes an existing prose citation a graph edge."
+      },
+      {
+        "ref": "rule:dv-001",
+        "$why": "Don't truncate or alter the scale to over- or understate a trend: on this component no author picks the y-range - the engine named in `behaviour.script` (dv-render.js) derives the domain from the data, widens it to whole steps and floors it at zero by default, and it REWRITES the table rows from the same spec - so the drawn scale and the tabled values cannot be set apart to flatter a trend."
+      },
+      {
+        "ref": "rule:dv-002",
+        "$why": "A full chart at a reasonable scale is enforced here by handoff, not by shrinking: the `when` yields \"to chart-sparkline (30, 'inline scale, no axes') when span.cols < 6\", so below six columns this component declines rather than drawing a cramped line."
+      },
+      {
+        "ref": "rule:dv-003",
+        "$why": "Never omit data to shift the interpretation: this meta makes completeness survive the loss of its own engine - with JS off \"The data is still complete and still labelled\", because the table is authored in the markup and not generated."
+      },
+      {
+        "ref": "rule:dv-005",
+        "$why": "The tabular alternative AND the link to it are two props here: `data` cites this rule by id as a real dv-table in the figure, and `tablePopover` is the 'View as table' toggle that links to it."
+      },
+      {
+        "ref": "rule:dv-006",
+        "$why": "The title-reflects-the-main-insight limb of this rule is cited by id inside the meta's own `title` prop, and the tooltip limb is the dvTip popover whose values are pinned to the table's - the edge makes an existing prose citation a graph edge."
+      },
+      {
+        "ref": "rule:dv-007",
+        "$why": "Chart elements must respond dynamically on resize while titles keep scaling with the user's text setting: this meta's fit does the first with a baked-fraction relayout on a single rAF-debounced resize, and keeps the second by pinning the viewBox 1:1 - TEXT NEVER SCALES with the geometry, so the type stays at the user's text setting instead of shrinking with the container."
+      },
+      {
+        "ref": "rule:dv-008",
+        "$why": "Horizontal scroll only as a last resort: on this meta scrolling is explicitly the FALLBACK and not the layout - the fit reflow is the answer, and the static 580×260 plus horizontal scroll is what is left when the engine cannot run."
+      },
+      {
+        "ref": "rule:dv-009",
+        "$why": "Flat colour only, no gradient and no 3D: every fill this meta declares is a single token value - marker fill is the series token, stroke is background/default at 2.5 - and the antiPattern guarding the same ground from the other side is \"Raw hex strokes (dv-017)\"."
+      },
+      {
+        "ref": "rule:dv-010",
+        "$why": "Nothing may obscure the data: the only thing this meta floats over the plot is the dvTip popover - a transient role=status readout raised by pointer or keyboard focus on one marker, replacing the native <title> and repeating the table's value - and the meta declares no persistent overlay, annotation layer or in-plot legend; the edge-flip keeps that one popover inside the viewport."
+      },
+      {
+        "ref": "rule:dv-011",
+        "$why": "Don't let colour carry the narrative alone: the `series` prop cites this rule by id in the same breath as the marker shape and the letter key - \"colour is never the only channel (dv-011)\"."
+      },
+      {
+        "ref": "rule:dv-012",
+        "$why": "Colour focuses attention and is never the chart's background: this meta's `tokens.surface` is background/default, the page's own ground, and the only attention colour in the component is the series token on the stroke."
+      },
+      {
+        "ref": "rule:dv-014",
+        "$why": "Same data, same colour across a journey: this meta's `mustNotNeighbour` cites the rule by id and carries the rule's own scope word - \"in the same journey\"."
+      },
+      {
+        "ref": "rule:dv-016",
+        "$why": "The 3:1 floor for chart building blocks is cited by id twice here and split exactly where the rule splits: series strokes are measured against the page in both modes as BLOCKING, and the gridline is declared decorative-exempt and advisory."
+      },
+      {
+        "ref": "rule:dv-017",
+        "$why": "Only palette colours in a chart: the meta's antiPatterns cite this rule by id as \"Raw hex strokes (dv-017)\", and its `tokens.series` binds data/series/1–3 by role rather than by value, so there is no path by which a raw hex reaches a stroke."
+      },
+      {
+        "ref": "rule:dv-018",
+        "$why": "A different colour per line is the `series` prop's own contract - each series carries colour (data/series/N) plus a marker shape and a letter key - with `tokens.series` naming the bound set the 1–5 range draws from."
+      }
+    ],
     "renderedBy": [
       {
         "ref": "snippet:Chart-line.reference.html"
