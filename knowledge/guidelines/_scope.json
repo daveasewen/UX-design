@@ -9,6 +9,7 @@
  "authored": "2026-09-16 #279 lane SC",
  "$sourceRule": "every $source is a verbatim sentence or clause of the named file, matched as a substring after collapsing runs of whitespace to one space (the files hard-wrap at ~90 columns). Markdown ** marks are outside the quoted span.",
  "$joinRule": "a rule in file F reaches component C when (a) F.kind == component and C is in F.components, or (b) F.kind == facet and C's meta binds one of F's facets: a token group named under facets[f].binds.tokenGroups appears in the meta's `tokens` block (same TOKEN_PATH_RX walk as tokens_for), or a meta field named under binds.metaFields is present and non-empty, or an edge of a type under binds.edges leaves C (usesIcon/usesLogo from the ratified node files, renderedBy from the meta). Authored `components` on a facet row add to (b). A rule listed in F.exceptions never routes. A row with kind null routes nothing.",
+ "$overrideRule": "#279 lane SC2 (RV F4): a facet row may carry `ruleFacets` — [{rule, facets, $source, $why}] — the rule's OWN facets, a SUBSET of the row's facets (narrower, never wider; the reader refuses an override that names a facet outside the row's set or sits on a null/component row). The rule then reaches only the components binding ITS facets (∩ the file's reach). Each $source is a verbatim span of the rule's own text in the file, graded like the row $source (whitespace-collapsed substring). Exceptions still win over an override.",
  "facets": {
   "copy": {
    "binds": {
@@ -358,9 +359,24 @@
    "$why": "DECLARED: no token group, meta field or edge carries audio/video today — reach only by an authored component (video-player)",
    "files": [
     "accessibility-client-side-dev.md",
-    "accessibility-content-authoring.md"
+    "accessibility-content-authoring.md",
+    "neurodiversity.md"
    ],
-   "covers": 2
+   "covers": 3
+  },
+  "hexagons": {
+   "binds": {
+    "tokenGroups": [],
+    "metaFields": [],
+    "edges": []
+   },
+   "$why": "DECLARED (#279 lane SC2, RV F5): no token group, meta field or edge carries a Creative Hexagon today — the shape lives in the composition/journey strand (typography-usage.md fences it; brand-refresh-assets.md and visual-assets.md record it) — reach 0 by scope, like pictograms / illustration / media",
+   "files": [
+    "brand-refresh-assets.md",
+    "typography-usage.md",
+    "visual-assets.md"
+   ],
+   "covers": 3
   }
  },
  "count": 34,
@@ -368,6 +384,11 @@
   "facet": 23,
   "None": 3,
   "component": 8
+ },
+ "overrides": {
+  "rows": 5,
+  "rules": 27,
+  "authored": "2026-09-16 #279 lane SC2"
  },
  "rows": [
   {
@@ -539,7 +560,43 @@
    ],
    "$source": "Accessibility for visual designers — VD standards (ingested)",
    "rules": 7,
-   "$why": "sections Colour · Text + components · Motion + journeys; VD-7 alt binds imagery, VD-9 binds focus"
+   "$why": "sections Colour · Text + components · Motion + journeys; VD-7 alt binds imagery, VD-9 binds focus",
+   "ruleFacets": [
+    {
+     "rule": "avd-001",
+     "facets": [
+      "colour"
+     ],
+     "$source": "colour is never the only carrier of meaning",
+     "$why": "section Colour"
+    },
+    {
+     "rule": "avd-002",
+     "facets": [
+      "colour",
+      "type"
+     ],
+     "$source": "text contrast 4.5:1, large text 3:1",
+     "$why": "section Colour — a text-contrast rule binds where colour and type are set"
+    },
+    {
+     "rule": "avd-004",
+     "facets": [
+      "type",
+      "imagery"
+     ],
+     "$source": "no images of text",
+     "$why": "section Text + components — rendered text vs an image asset"
+    },
+    {
+     "rule": "avd-009",
+     "facets": [
+      "interaction"
+     ],
+     "$source": "focus indicator thickness + change-contrast",
+     "$why": "section Motion + journeys — a focus rule binds interactive components"
+    }
+   ]
   },
   {
    "file": "app-foundations.md",
@@ -567,7 +624,8 @@
    "kind": "facet",
    "facets": [
     "logos",
-    "imagery"
+    "imagery",
+    "hexagons"
    ],
    "tokenGroups": [
     "image"
@@ -589,7 +647,41 @@
    ],
    "$source": "Marketing-weighted content — encoded for completeness and for the composition/journey strand; component relevance flagged where real.",
    "rules": 7,
-   "$why": "logo rules bind logo-bearing components (usesLogo); photography rules bind image-bearing ones; hexagon rules are fenced to the composition strand and are REVIEW rows"
+   "$why": "logo rules bind logo-bearing components (usesLogo); photography rules bind image-bearing ones; hexagon rules are fenced to the composition strand and are REVIEW rows · `hexagons` named by its section header (#279 SC2, RV F5; binds nothing today)",
+   "ruleFacets": [
+    {
+     "rule": "logo26-001",
+     "facets": [
+      "logos"
+     ],
+     "$source": "An HSBC logo appears at least once on every piece of communication or customer journey.",
+     "$why": "a logo rule — binds logo-bearing components (usesLogo), not image-bearing ones"
+    },
+    {
+     "rule": "photo26-001",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "lead with photography as the principal creative medium",
+     "$why": "a photography register rule — image-bearing components only"
+    },
+    {
+     "rule": "photo26-002",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "a generation engine must never fabricate photographic imagery",
+     "$why": "the gen-AI imagery ban binds where a photograph is framed (image/* tokens); RV F4 — it must not reach a nav through `logos`"
+    },
+    {
+     "rule": "photo26-003",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "briefing vocabulary for image selection at composition time",
+     "$why": "shot vocabulary — image-bearing components only"
+    }
+   ]
   },
   {
    "file": "colour-standards-2026.md",
@@ -695,7 +787,33 @@
    ],
    "$source": "The token store IS the 2025 standard",
    "rules": 13,
-   "$why": "the 2025 palette application rules; RAG, dark-mode greys, data-vis and illustration palettes each named as a scope in the file"
+   "$why": "the 2025 palette application rules; RAG, dark-mode greys, data-vis and illustration palettes each named as a scope in the file",
+   "ruleFacets": [
+    {
+     "rule": "col25-013",
+     "facets": [
+      "dark-mode"
+     ],
+     "$source": "Exclusively dark-mode, digital only",
+     "$why": "the dark-mode grey ramp — mode-scoped"
+    },
+    {
+     "rule": "col25-014",
+     "facets": [
+      "illustration"
+     ],
+     "$source": "the illustration palette must never dominate",
+     "$why": "illustration palette — `illustration` binds nothing today, so this reaches 0 by scope rather than every colour-bearing component"
+    },
+    {
+     "rule": "col25-017",
+     "facets": [
+      "status"
+     ],
+     "$source": "Digital-UX context ONLY",
+     "$why": "the RAG palette — status-bearing components (rag/* tokens)"
+    }
+   ]
   },
   {
    "file": "common-toolkit-buttons.md",
@@ -999,7 +1117,8 @@
     "copy",
     "imagery",
     "motion",
-    "interaction"
+    "interaction",
+    "media"
    ],
    "tokenGroups": [
     "layout",
@@ -1054,7 +1173,57 @@
    ],
    "$source": "This is the strongest new source of GENERATION-TIME checkable numbers since the icons standard: view-length caps, banner-height caps, bright-colour area caps, sentence/ paragraph limits, column-layout limits.",
    "rules": 26,
-   "$why": "sections Page layout · Navigation · Colours · Fonts · Text · Language · Images · Video · Movement — one facet per section"
+   "$why": "sections Page layout · Navigation · Colours · Fonts · Text · Language · Images · Video · Movement — one facet per section · `media` added for section Video content (#279 SC2; binds nothing today)",
+   "ruleFacets": [
+    {
+     "rule": "neuro-014",
+     "facets": [
+      "colour"
+     ],
+     "$source": "bright colours ≤20% of screen content",
+     "$why": "section Colours — a saturated-area rule, not a type/layout/copy rule"
+    },
+    {
+     "rule": "neuro-028",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "Simple images, understood within ~2 seconds; single object in focus.",
+     "$why": "section Images"
+    },
+    {
+     "rule": "neuro-029",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "Meaningful images only",
+     "$why": "section Images"
+    },
+    {
+     "rule": "neuro-030",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "Background images sparingly; no content/form inputs overlaid on decorative images",
+     "$why": "section Images — the image is the subject"
+    },
+    {
+     "rule": "neuro-034",
+     "facets": [
+      "media"
+     ],
+     "$source": "Text intro above every video",
+     "$why": "section Video content — `media` binds nothing today, so this reaches 0 by scope (video-player is authored only on the content-authoring row)"
+    },
+    {
+     "rule": "neuro-036",
+     "facets": [
+      "motion"
+     ],
+     "$source": "Attention-attracting movement is a LAST resort",
+     "$why": "section Movement"
+    }
+   ]
   },
   {
    "file": "pictograms.md",
@@ -1130,7 +1299,8 @@
    "file": "typography-usage.md",
    "kind": "facet",
    "facets": [
-    "type"
+    "type",
+    "hexagons"
    ],
    "tokenGroups": [
     "text",
@@ -1140,7 +1310,7 @@
    "exceptions": [],
    "$source": "Brand-approved fonts, weights and colours only.",
    "rules": 8,
-   "$why": "the 2025 type standard, parallel-valid; binds every type-bearing component"
+   "$why": "the 2025 type standard, parallel-valid; binds every type-bearing component · `hexagons` named by its section header (#279 SC2, RV F5; binds nothing today)"
   },
   {
    "file": "visual-assets.md",
@@ -1148,7 +1318,8 @@
    "facets": [
     "imagery",
     "icons",
-    "logos"
+    "logos",
+    "hexagons"
    ],
    "tokenGroups": [
     "image",
@@ -1161,7 +1332,90 @@
    "exceptions": [],
    "$source": "journey-tier imagery budgets, pattern-consistency rules for empty states and confirmations, icon semantic-fit, and placement/ratio taxonomies",
    "rules": 20,
-   "$why": "the file's own scope note; empty-state and confirmation authored from its words"
+   "$why": "the file's own scope note; empty-state and confirmation authored from its words · `hexagons` named by its section header (#279 SC2, RV F5; binds nothing today)",
+   "ruleFacets": [
+    {
+     "rule": "va25-003",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "a page-type parameter that caps complementary imagery",
+     "$why": "the engagement tiers cap COMPLEMENTARY imagery — not icons or logos"
+    },
+    {
+     "rule": "va25-004",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "new-to-HSBC users may get more complementary assets",
+     "$why": "complementary = photography/illustration (va25-002)"
+    },
+    {
+     "rule": "va25-014",
+     "facets": [
+      "logos"
+     ],
+     "$source": "clear space = 1× hexagon height on all sides",
+     "$why": "logo placement geometry (the 2025 Logos page) — the hexagon here is the logo's own; RV F4 — must not reach icon-bearing components"
+    },
+    {
+     "rule": "va25-015",
+     "facets": [
+      "logos"
+     ],
+     "$source": "the Masterbrand logo appears in ALL digital mastheads",
+     "$why": "masthead logo contract — logo-bearing components only"
+    },
+    {
+     "rule": "va25-016",
+     "facets": [
+      "logos"
+     ],
+     "$source": "never distort, recolour, reorient or recreate",
+     "$why": "logo never-rules"
+    },
+    {
+     "rule": "va25-017",
+     "facets": [
+      "logos"
+     ],
+     "$source": "Variant selection on photographic backgrounds",
+     "$why": "logo variant selection — the logo is the subject, the photograph is its background"
+    },
+    {
+     "rule": "va25-018",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "No Generative AI, mixed media or CGI-rendered elements in imagery",
+     "$why": "second receipt for photo26-002 — same facet"
+    },
+    {
+     "rule": "va25-019",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "governs fixture-image selection if the engine ever picks photos",
+     "$why": "D&I imagery — photographs only"
+    },
+    {
+     "rule": "va25-020",
+     "facets": [
+      "imagery",
+      "hexagons"
+     ],
+     "$source": "hexagon- geometry angles, never a forced 45°; wide 'opening up' frames + intimate close crops",
+     "$why": "expressive-imagery register + hexagon geometry; RV F4/F5 — must not reach icon-bearing components; `hexagons` binds nothing today"
+    },
+    {
+     "rule": "va25-022",
+     "facets": [
+      "imagery"
+     ],
+     "$source": "Photography textures always use the red/white/grey palette.",
+     "$why": "photography textures"
+    }
+   ]
   },
   {
    "file": "web-foundations.md",

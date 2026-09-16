@@ -80,6 +80,8 @@ Command: `python3 knowledge/_compose_slice.py --measure` (task = "a payments das
 | step 1 as written before the wiring (all metas + canon.css + type.css) | **1,005,758** | `step1_before_wiring_tokens` |
 | ratio vs that | **31.83×** | |
 
+> **CORRECTION (#279 lane SC2, 2026-09-16, RV F2 — by addition, the lines above stand as written).** The "31.83×" / "31.8×" above is a re-typed figure, not the measured one: this lane's own `measure.json:22` says `"ratio_vs_step1_before_wiring": 35.14` (1,005,758 / 28,621 = 35.14×). 31.8× is what the ratio became AFTER lane SC added the routed-by-scope rows (31,536 → 31.89×), which this lane could not have had. The live figure today, after SC2's per-rule facet override (`python3 knowledge/_compose_slice.py --measure`): seed 31,372 / 111,468 = 3.55×, and 1,005,758 / 31,372 = **32.06×**.
+
 **The ratio moved, and here is why, measured.** At `f641242`, before this lane, `python3 knowledge/_compose_slice.py "<dashboard>" --explain` printed `slice 19117 tok vs 111468 … = 5.83x` — the ruling's figure reproduces on the OLD code. The landed contract adds content the proposal's slice did not carry: `governs` is 38 rulings read live from `governs[]` (the old `rulings` field had 3, from `edges.governedBy` alone) and `assets` is 31 rows from the ratified node files (the old `icons` was empty). Those two fields are 7,822 of the 9,504 extra tokens. I trimmed what was fat (ruling `ruled` ≤200 and `says` left to ASK Q6; asset `via` to a code; rule text ≤280) and stopped: cutting `governs` to reach 5.8× would mean seeding fewer of Dave's rulings. The house figure is now **28,621 vs 111,468 (3.9×) and vs 1,005,758 (31.8×)**; the runbook carries both and says the 19,117 was the proposal's field set.
 
 ## 5. Gates — every line
@@ -119,3 +121,22 @@ The runbook names `_validate_screen.py --render` for composed screens; no screen
 ## 8. Shipped sha and `git diff --numstat` from it
 
 (appended below after the commit landed)
+
+> **APPENDED (#279 lane SC2, 2026-09-16, RV F3 — the numstat this section promised).** Shipped sha **`d6bd57b`**; `git diff --numstat d6bd57b~1 d6bd57b`:
+>
+> ```
+> 2	2	_CHAIN.md
+> 27	4	designer-skills-v2/generate-from-canon/SKILL.md
+> 64	0	knowledge/_RUNBOOK-compose-from-canon.md
+> 1299	469	knowledge/_compose_slice.py
+> 75	40	knowledge/_state.json
+> 1	0	notes/_REHEARSAL-LOG.jsonl
+> 730	0	notes/_lanes/279/reader/ASK-12.json
+> 28	0	notes/_lanes/279/reader/BRIEF.md
+> 121	0	notes/_lanes/279/reader/REPORT.md
+> 24	0	notes/_lanes/279/reader/measure.json
+> 3240	0	notes/_lanes/279/reader/seed-dashboard.json
+> 121	0	notes/_subreports/2026-09-16-279-RD-reader.md
+> ```
+>
+> `_state.json`'s 40 deletions are diff alignment (RV § 8: ids 647 → 649, `W-279il` + `W-279rd` added, 0 rows changed). RV F1 (the frozen-release gate, s114-D4, tripped by the SKILL.md hunk) is NOT addressed here — `designer-skills-v2/` and `knowledge/_release/` are lane PK's.

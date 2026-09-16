@@ -58,8 +58,11 @@ OUT — a dict with exactly these CONTRACT FIELDS (plus $-prefixed metadata, `ta
                                kind facet (the meta binds a token group / field / edge the
                                facet names). Inference by declared scope — never authored,
                                never vocabulary; a null-scope file routes nothing and an
-                               exception row suppresses its rule. The non-BLOCKING reach
-                               is ASK Q2's `routedByScope`.
+                               exception row suppresses its rule. A rule may declare its
+                               OWN facets on the row (`ruleFacets`, #279 SC2 / RV F4) — a
+                               subset of the file's, narrower never wider; a facet outside
+                               the file's set or an override on a null/component row is
+                               refused. The non-BLOCKING reach is ASK Q2's `routedByScope`.
                   Each row: id · class · destiny · blocking · file · text (≤280) · why
       mustNot     mustNotNeighbour from both homes (edges + relationships prose) and meta
                   `not-with`, INCLUDING the ref:null entries with their $note — a prohibition
@@ -849,11 +852,31 @@ def scope_reach(g):
                 hits = [f for f in row.get("facets") or [] if f in mine]
                 if hits and slug not in reach:
                     reach[slug] = "facet %s <- %s" % ("/".join(hits), "; ".join(mine[hits[0]][:2]))
+        # per-rule facet override (#279 lane SC2, RV F4): a rule on a facet row may declare its OWN facets,
+        # a subset of the file's — narrower, never wider; a null/component row or a facet outside the file's
+        # set is REFUSED (recorded, not applied). Reach = the rule's facets over the file's own reach.
+        overrides, refused = {}, []
+        for o in row.get("ruleFacets") or []:
+            rid, fs = o.get("rule"), list(o.get("facets") or [])
+            if kind != "facet" or not fs or not set(fs) <= set(row.get("facets") or []):
+                refused.append(rid)
+                continue
+            overrides[rid] = {"facets": fs, "$source": o.get("$source"), "components": {
+                slug: "rule facet %s <- %s" % ("/".join(h), "; ".join(mine[h[0]][:2]))
+                for slug, mine in cf.items() if slug in reach for h in [[f for f in fs if f in mine]] if h}}
         out[row["file"]] = {"kind": kind, "components": reach,
                             "exceptions": {e["rule"] for e in row.get("exceptions") or [] if e.get("rule")},
-                            "facets": list(row.get("facets") or []), "row": row}
+                            "facets": list(row.get("facets") or []), "row": row,
+                            "ruleFacets": overrides, "refusedOverrides": refused}
     g["$scope_reach"] = out
     return out
+
+
+def _rule_components(d, rid):
+    """The components rule `rid` reaches on scope entry d: its own declared facets when the row overrides
+    them (always a subset of the file's reach), else the file's."""
+    o = (d.get("ruleFacets") or {}).get(rid)
+    return o["components"] if o else d["components"]
 
 
 def rule_reach(g):
@@ -869,7 +892,7 @@ def rule_reach(g):
     for r in g["rules"]:
         rid = r["id"]
         f = sr.get(r.get("file"))
-        sc = set(f["components"]) if f and f["kind"] in ("component", "facet") and rid not in f["exceptions"] else set()
+        sc = set(_rule_components(f, rid)) if f and f["kind"] in ("component", "facet") and rid not in f["exceptions"] else set()
         out[rid] = {"obeys": obeys.get(rid, set()), "scope": sc}
     return out
 
@@ -900,6 +923,9 @@ def measure_scope(root=HERE):
         "byKind": (g["scope"] or {}).get("byKind"),
         "facets": {f: {"covers": v.get("covers"), "components_binding": sum(1 for m in cf.values() if f in m)}
                    for f, v in ((g["scope"] or {}).get("facets") or {}).items()},
+        "ruleFacets": {f: {rid: {"facets": o["facets"], "components": len(o["components"]), "file_components": len(d["components"])}
+                           for rid, o in d["ruleFacets"].items()} for f, d in sr.items() if d.get("ruleFacets")},
+        "refusedOverrides": {f: d["refusedOverrides"] for f, d in sr.items() if d.get("refusedOverrides")},
     }
 
 
@@ -981,12 +1007,16 @@ def obeys_for(chosen, g, task):
         for r in g["rules"]:
             if r.get("file") != fn or r.get("destiny") != "BLOCKING" or r["id"] in d["exceptions"]:
                 continue
+            comps = _rule_components(d, r["id"])   # the rule's own facets when overridden (narrower), else the file's
+            hit = [sl for sl in slugs if sl in comps]
+            if not hit:
+                continue
             ref = "rule:" + r["id"]
             row = out.setdefault(ref, _obeys_row(ref, g))
             if row["class"] is None:
                 row["class"] = "routed-by-scope"
             row["why"].append("routed-by-scope: %s scope kind=%s reaches %s (%s)" % (
-                fn, d["kind"], ", ".join(sorted(hit)[:3]), d["components"][sorted(hit)[0]][:90]))
+                fn, d["kind"], ", ".join(sorted(hit)[:3]), comps[sorted(hit)[0]][:90]))
     rows = list(out.values())
     for row in rows:
         row["why"] = "; ".join(sorted(set(row["why"])))[:600]
@@ -1545,9 +1575,17 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
         if node.startswith("rule:"):   # the declared-scope path (s277-D9), kept apart from obeys
             rn = g["rules_by_id"].get(node[5:]) or {}
             d = scope_reach(g).get(rn.get("file"))
-            if d and d["kind"] in ("component", "facet") and node[5:] not in d["exceptions"] and d["components"]:
+            ov = (d or {}).get("ruleFacets", {}).get(node[5:])
+            comps = _rule_components(d, node[5:]) if d else {}
+            if d and d["kind"] in ("component", "facet") and node[5:] not in d["exceptions"] and comps:
                 ans["routedByScope"] = {"file": rn.get("file"), "kind": d["kind"], "facets": d["facets"],
-                                        "count": len(d["components"]), "components": sorted(d["components"])}
+                                        "count": len(comps), "components": sorted(comps)}
+                if ov:
+                    ans["routedByScope"]["ruleFacets"] = ov["facets"]
+                    declared.append("%s declares its own facets %s (narrower than %s's %s) — $source: %s" % (
+                        node, "/".join(ov["facets"]), rn.get("file"), "/".join(d["facets"]), (ov.get("$source") or "")[:120]))
+            elif d and ov and d["kind"] in ("component", "facet") and node[5:] not in d["exceptions"]:
+                declared.append("%s declares its own facets %s and they reach no component today" % (node, "/".join(ov["facets"])))
             elif d and node[5:] in d["exceptions"]:
                 declared.append("%s is an exception row on %s's scope — routed-by-scope does not fire" % (node, rn.get("file")))
             elif d and d["kind"] is None:
@@ -2079,6 +2117,71 @@ def selftest():
     r3 = ask("which components does rule:axf-002 bind?", live=live)
     bite("ASK Q2 on a null-scope file DECLARES the null instead of routing (rule:axf-002)",
          "routedByScope" not in r3["answer"] and any("DECLARED NULL" in d for d in r3["declared"]))
+    # — per-rule facet override (#279 lane SC2, RV F4) + the hexagons facet (RV F5)
+    ov_rows = {f: r for f, r in rows.items() if r.get("ruleFacets")}
+    ov_bad = []
+    for f, r in ov_rows.items():
+        ftxt = _collapse(_read(os.path.join(HERE, "guidelines", f)))
+        mine = {x["id"] for x in g["rules"] if x["file"] == f}
+        for o in r["ruleFacets"]:
+            rid = o.get("rule")
+            if rid not in mine:
+                ov_bad.append((f, rid, "not a rule of this file"))
+            if not o.get("facets") or not set(o["facets"]) <= set(r["facets"]):
+                ov_bad.append((f, rid, "facets not a subset of the row's"))
+            if not o.get("$source") or o["$source"] not in ftxt:
+                ov_bad.append((f, rid, "$source not a live substring"))
+            if rid in sr[f]["ruleFacets"] and not set(sr[f]["ruleFacets"][rid]["components"]) <= set(sr[f]["components"]):
+                ov_bad.append((f, rid, "override WIDENS"))
+    n_ov = sum(len(r["ruleFacets"]) for r in ov_rows.values())
+    narrower = [rid for f in ov_rows for rid, o in sr[f]["ruleFacets"].items() if len(o["components"]) < len(sr[f]["components"])]
+    bite("OVERRIDE: every ruleFacets override (%d on %d rows) names a rule OF ITS FILE, facets ⊆ the row's, a live $source substring, and reaches ⊆ the file's reach — %d strictly narrower, 0 refused"
+         % (n_ov, len(ov_rows), len(narrower)),
+         ov_rows and not ov_bad and narrower and not any(sr[f]["refusedOverrides"] for f in sr), ov_bad[:6])
+    # MUTATION: an override naming a facet OUTSIDE the row's set is refused — it never widens
+    g5 = dict(g); g5.pop("$scope_reach", None); g5["scope"] = copy.deepcopy(sc)
+    for r in g5["scope"]["rows"]:
+        if r["file"] == "naming.md":
+            r["ruleFacets"] = [{"rule": "nam-001", "facets": ["copy", "icons"], "$source": "PLANTED"}]
+        if r["file"] == "accessibility-framework.md":   # a null-scope row
+            r["ruleFacets"] = [{"rule": "axf-002", "facets": ["copy"], "$source": "PLANTED"}]
+    sr5 = scope_reach(g5)
+    rr5 = rule_reach(g5)
+    bite("MUTATION: an override that would WIDEN (naming.md nam-001 -> copy+icons, scratch copy) is REFUSED — reach stays the file's (%d), never wider"
+         % len(sr5["naming.md"]["components"]),
+         "nam-001" in sr5["naming.md"]["refusedOverrides"] and not sr5["naming.md"]["ruleFacets"] and
+         rr5["nam-001"]["scope"] == set(sr5["naming.md"]["components"]) == set(sr["naming.md"]["components"]))
+    bite("MUTATION: an override on a NULL-scope row (accessibility-framework.md axf-002, scratch copy) is REFUSED and routes nothing; live file untouched",
+         "axf-002" in sr5["accessibility-framework.md"]["refusedOverrides"] and rr5["axf-002"]["scope"] == set() and
+         sr5["accessibility-framework.md"]["components"] == {} and "PLANTED" not in _read(os.path.join(HERE, "guidelines", "_scope.json")))
+    cfx = component_facets(g)
+    logo_set = {s for s, m in cfx.items() if "logos" in m}
+    img_set = {s for s, m in cfx.items() if "imagery" in m}
+    rr = rule_reach(g)
+    bite("RV F4 case: photo26-002 (imagery) no longer reaches app-shell-top-nav through `logos` — every component it reaches binds imagery (%d); logo26-001 reaches exactly the usesLogo set (%d)"
+         % (len(rr["photo26-002"]["scope"]), len(rr["logo26-001"]["scope"])),
+         "app-shell-top-nav" not in rr["photo26-002"]["scope"] and rr["photo26-002"]["scope"] and rr["photo26-002"]["scope"] <= img_set and
+         rr["logo26-001"]["scope"] == logo_set and "app-shell-top-nav" in logo_set)
+    bite("RV F4 case: visual-assets.md va25-014 (logos) and va25-020 (imagery/hexagons) reach no component through `icons` — %d / %d, vs the file's %d"
+         % (len(rr["va25-014"]["scope"]), len(rr["va25-020"]["scope"]), len(sr["visual-assets.md"]["components"])),
+         rr["va25-014"]["scope"] == logo_set and rr["va25-020"]["scope"] <= img_set and
+         len(sr["visual-assets.md"]["components"]) > 100 and len(rr["va25-020"]["scope"]) < 10)
+    s6 = build_slice(components=["app-shell-top-nav"], graph=g, max_components=5)
+    bite("OVERRIDE in obeys_for: a slice on app-shell-top-nav carries logo26-001 routed-by-scope and NOT photo26-002 (the dashboard misroute RV named)",
+         any(r["id"] == "rule:logo26-001" and r["class"] == "routed-by-scope" for r in s6["obeys"]) and
+         not any(r["id"] == "rule:photo26-002" for r in s6["obeys"]))
+    r7 = ask("which components does rule:photo26-002 bind?", live=live)
+    bite("ASK Q2 on an overridden rule (photo26-002) reports ruleFacets=imagery, %d components, and DECLARES the override with its $source"
+         % (r7["answer"].get("routedByScope") or {}).get("count", 0),
+         (r7["answer"].get("routedByScope") or {}).get("ruleFacets") == ["imagery"] and
+         (r7["answer"].get("routedByScope") or {}).get("count", 0) < 10 and any("declares its own facets" in x for x in r7["declared"]))
+    hx = facets.get("hexagons") or {}
+    hx_rows = {f for f, r in rows.items() if "hexagons" in r["facets"]}
+    bite("RV F5: `hexagons` is in the closed facet set, DECLARED binding nothing (0 components), named by the three rows whose sections name it (%s)"
+         % ", ".join(sorted(hx_rows)),
+         hx and not any((hx.get("binds") or {}).get(k) for k in ("tokenGroups", "metaFields", "edges")) and "DECLARED" in (hx.get("$why") or "") and
+         set(hx.get("files") or []) == hx_rows == {"brand-refresh-assets.md", "typography-usage.md", "visual-assets.md"} and
+         not any("hexagons" in m for m in cfx.values()))
     print("\n%d bites, %d failed" % (n, len(fails)))
     print("ASK token counts: " + json.dumps(counts))
     return 1 if fails else 0

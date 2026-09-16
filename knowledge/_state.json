@@ -9600,6 +9600,27 @@
     },
     {
       "links": [
+        "notes/_lanes/279/explorer-verify/VERIFY.md",
+        "notes/_lanes/279/explorer/REPORT.md",
+        "knowledge/_build_kg_explorer.py",
+        "knowledge/_kg_explorer.template.html",
+        "notes/_KG-EXPLORER.html",
+        "W-279ex"
+      ],
+      "home": "notes/_subreports/2026-09-16-279-EV-explorer-verify.md",
+      "id": "W-279ev",
+      "title": "#279 EV filed report - explorer 1.15 (EX 2c6b640 + e7ff7b9) VERIFIED: GREEN WITH FIXES - storage untouched, chip-off identity holds, every count re-derives; the designrulings sub-chip is a citation-edge gate that reaches into the base draw, a ruling-shaped question for Dave",
+      "state": "open",
+      "owner": "dave",
+      "opened": 279,
+      "project": "apollo",
+      "closes_when": "Dave has answered the verify's designrulings chip question (EV section 9) - (a) the third provenance IS the rulings a design cites, an edge chip with no ruling nodes, kept ON by default with its count fixed to the edges it governs and labelled as citations; or (b) it is a set of RULING nodes that cannot be drawn until a per-ruling scope is ratified, so the sub-chip comes out and DESIGN GOVERNANCE ships with two provenances and a visible pending slot - or explicitly parks it",
+      "body": "s277-D8 + s277-D4 verify, read-only on the tree; both pages rebuilt from the shipped shas and the page's own predicates re-implemented over the embedded KG JSON. Storage untouched (EX's own commit touches builder 52/2, template 78/20, _state.json 19/0 only); view mapping graded row by row (rules->SYSTEM with governedBy and the designrulings sub-chip both 'stretched', declared); at page defaults the draw is identical to 1.14; sub-chip OFF hides 28 base governedBy edges while the header does not move. Rowed through _state.add() by lane SC2.",
+      "provenance": "#279 2026-09-16 - rowed at creation by lane SC2",
+      "condition": "stated"
+    },
+    {
+      "links": [
         "knowledge/_build_kg_explorer.py",
         "knowledge/_kg_explorer.template.html",
         "notes/_KG-EXPLORER.html",
@@ -9673,6 +9694,28 @@
     },
     {
       "links": [
+        "notes/_lanes/279/reader-verify/VERIFY.md",
+        "notes/_lanes/279/scope-fix/REPORT.md",
+        "knowledge/guidelines/_scope.json",
+        "knowledge/_compose_slice.py",
+        "W-279rd",
+        "W-279sc"
+      ],
+      "home": "notes/_subreports/2026-09-16-279-RV-reader-scope-verify.md",
+      "id": "W-279rv",
+      "title": "#279 RV filed report - the reader (RD d6bd57b) and scope (SC 9e7a158..a39d4cd) VERIFIED against the live tree: both GREEN WITH FIXES (F1 frozen-release gate RED, F2 re-typed 31.8x, F3 numstat never appended, F4 per-rule facet override, F5 hexagons facet)",
+      "state": "done",
+      "owner": "claude",
+      "opened": 279,
+      "project": "apollo",
+      "closes_when": "lane SC2's fix commit lands F4 (per-rule facet override in _scope.json + _compose_slice.py) and F5 (hexagons facet), and RD's F2/F3 by addition - this commit",
+      "closed_by": "#279 lane SC2 commit - per-rule facet override + hexagons facet (RV F4/F5), RD F2/F3 by addition, RV + EV verifies filed; F1 (s114-D4 frozen-release gate, designer-skills-v2) is lane PK's and is named in RD section 8's appended note",
+      "body": "s218-D7 verify, read-only on the tree, every check RUN against the live tree at e7ff7b9 (contract by own code 8/8 fields; ASK 12 questions re-counted with own tiktoken, 4,570 total, Q2 162->205 from SC's routedByScope; planted ruling s998-D7 on a scratch copy returned by ask() with the seed byte-identical; --measure reproduces 19,117/5.83x at f641242, 28,621/35.14x at d6bd57b, 31,536/3.53x live; 12 scope rows read by eye 8 honest / 4 stretched / 0 wrong; reach figures reproduce from an independent join; hand-breaks trip bites 45, 1/3/16). Rowed through _state.add().",
+      "provenance": "#279 2026-09-16 - rowed at creation by lane SC2",
+      "condition": "stated"
+    },
+    {
+      "links": [
         "knowledge/guidelines/_scope.json",
         "knowledge/_compose_slice.py",
         "notes/_lanes/279/scope/REPORT.md",
@@ -9687,6 +9730,29 @@
       "project": "apollo",
       "closes_when": "Dave has ruled or explicitly parked the report's two ruling-shaped items - whether the explorer draws the 'inference by declared scope' chip from scope_reach() (s277-D9's own wording, lane EX's file this session), and whether the file-grain facet set stands or a per-rule facet override is wanted (section 7 items 1-2)",
       "body": "s277-D9 filed report. Measured (python3 knowledge/_compose_slice.py --measure-scope): rules reaching >=1 component 107 -> 410 of 470; BLOCKING 9 -> 52 of 59; by scope alone 303 / obeys alone 1 / both 106. 18 facets, closed set, three bind nothing today (pictograms, illustration, media) - declared. 27 exception rows. Selftest 54/54 (11 bites added); _validate_kg.py rc 0. Seed on the worked task 28,621 -> 31,536 (W-279rd's 3.9x is now the pre-scope figure). Rowed through _state.add().",
+      "provenance": "#279 2026-09-16 - rowed at creation",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "knowledge/guidelines/_scope.json",
+        "knowledge/_compose_slice.py",
+        "notes/_lanes/279/scope-fix/REPORT.md",
+        "notes/_lanes/279/reader/REPORT.md",
+        "knowledge/_RUNBOOK-compose-from-canon.md",
+        "W-279sc",
+        "W-279rv",
+        "W-279ev"
+      ],
+      "home": "notes/_subreports/2026-09-16-279-SC2-scope-fix.md",
+      "id": "W-279sf",
+      "title": "#279 SC2 filed report (id W-279sf: the store's id pattern allows two trailing letters, so 'sc2' is not a legal id) - per-rule facet override (ruleFacets, 27 on 5 rows) + hexagons facet in knowledge/guidelines/_scope.json, read on every path in _compose_slice.py; RD F2/F3 by addition; RV + EV verifies filed as W-279rv / W-279ev",
+      "state": "open",
+      "owner": "dave",
+      "opened": 279,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or explicitly parked the report's two ruling-shaped items - whether the explorer's 'inference by declared scope' chip reads the per-rule reach (scope_reach()[file]['ruleFacets'], lane EX2's file), and whether va25-013 (aspect ratios, kept at 111 by its own 'icons/avatars 1:1 square' words) is split at the guideline rather than overridden (section 7 items 2-3)",
+      "body": "Measured (python3 knowledge/_compose_slice.py --measure-scope): rules reaching >=1 component 410 -> 408 of 470 (col25-014 -> illustration and neuro-034 -> media now honestly reach 0); BLOCKING 52 unchanged; scope alone 301 / obeys alone 1 / both 106; 27 overrides, 26 strictly narrower, 0 refused. photo26-002 11 -> 2 (no nav through logos); va25-014 111 -> 9; va25-020 111 -> 2. Facet set 19 (hexagons binds nothing, declared). Dashboard seed 31,536 -> 31,372 (3.55x; 32.06x vs step 1), routed-by-scope rows 15 -> 14. Selftest 62/62 (8 bites added, 0 rewritten); _validate_kg.py rc 0. Rowed through _state.add().",
       "provenance": "#279 2026-09-16 - rowed at creation",
       "condition": "stated"
     },

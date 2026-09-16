@@ -196,3 +196,10 @@ against 111,468 for the 31 metas it names (3.9×) and against 1,005,758 for what
 the wiring — every meta 414,184 + `canon.css` 588,102 + `type.css` 3,472 (31.8×). The `s277-D10`
 figure (19,117 / 5.8×) was the PROPOSAL's field set; the contract's `governs` (38 live rulings, not
 3) and `assets` (31 rows, not 0) are the difference, and are content the old slice did not carry.
+
+**Correction, by addition (#279 lane SC2, 2026-09-16, RV F2).** The "31.8×" in the paragraph above
+was re-typed, not measured: `notes/_lanes/279/reader/measure.json` line 22 says
+`"ratio_vs_step1_before_wiring": 35.14` (1,005,758 / 28,621). The live figure today, after lane SC's
+routed-by-scope rows and lane SC2's per-rule facet override: seed 31,372 vs 111,468 (3.55×) and vs
+1,005,758 (32.06×) — `python3 knowledge/_compose_slice.py --measure`. The paragraph stands as
+written; this note is the record of the slip.
