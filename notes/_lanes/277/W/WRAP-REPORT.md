@@ -114,7 +114,7 @@ showroom 108 pages stale (5th wrap running) · `compliance/README.md` says 31 ag
 the **#179 class** — a whole-file re-dump riding under a commit message about one row — and the brief's
 own hard rule was *textual span only on every JSON*.
 
-**Repaired at `<the follow-up sha, below>` by ADDITION, never by amending:** the file was restored from
+**Repaired at `d23ebaa` by ADDITION, never by amending:** the file was restored from
 `git show 22d0ef0~1:knowledge/_state.json` and the one row spliced in at the file's own indentation.
 `diff` against the pre-wrap file now reads **19 lines added, 0 removed**, and `_gate_doc_rows.py --check`
 still passes at 428 in population. ⛔ **The wrap commit `22d0ef0` is NOT amended** — amending would move
