@@ -26,7 +26,7 @@ edges as v1.1), so with both new chips off the page is v1.1 to the pixel; the tw
 families are laid out separately and parked either side of it.
 """
 import json, glob, os, re, sys, datetime, subprocess
-VERSION = "1.16"  # 1.16 (#279 lane EX2, the EV fixes on 1.15 — template only, no reader, no layout change, no node/edge/fam key moved) (a) at phone width the legend is a BOTTOM SHEET closed by default to one bar — the graph gets the stage; open, the four view boxes come FIRST and the type rows scroll under them, capped at 62% of the stage so the graph never vanishes; the scrub row is three rows at 390 so its counts no longer clip (b) fit() measures the SHOWN extent on BOTH axes against the USABLE stage (the rectangle above the legend) — the assets column is fitted by width, the axis that binds, not by min(W,H), and a family chip toggle re-fits (c) the legend is COLLAPSIBLE at every width and the stage RESERVES its measured height: fit() and the dig centre in usable(), so no chip row sits on the base hub and no dug neighbour paints through a view box; folding the legend and pressing Fit gives the whole stage back (d) the "rulings a design cites" sub-chip counts the citation edges it GOVERNS under the family chips now (28 at defaults; 341 was a total that included 10 never-drawn nulls and 295 Constitution-only edges) and recount()/the scrub counts/the panel/the path honour the sub-chip, so the header agrees with the canvas when it is toggled; its label and its default are untouched (EV §9, Dave's question) · 1.15 (#279, s277-D8 + s277-D4) ONE GRAPH, THREE VIEWS BY FORCE — the chip bar is re-labelled into SYSTEM (what exists; the agent chooses: structure · usage · rendering · rules & wiring · assets) / DESIGN GOVERNANCE (what a design must or should do; the agent obeys: ONE obligation with THREE provenance sub-chips — WCAG sc: · HSBC rule: · rulings a design cites — each still its own chip, s275-D6) / EXPLANATION (why; the agent consults: UX principles + polarities), and THE CONSTITUTION — the ruling record, 593 rulings with their sessions, evidence and artefacts — named on the page as its own thing, NOT one of the three views. Storage untouched: no node id, edge type, file or fam KEY changes (RULE_FAM/UX_FAM/'governance'/'guidelines' stay; only labels move). A FIFTH additive family behind chip `assets`, OFF by default: the 688 icon:/iconGroup:/logo: nodes from knowledge/_icon_nodes.json + _logo_nodes.json (six edge types drawn — inGroup/activeVariantOf/usesIcon/usesLogo/defaultFor/ruledBy; every `t: null` carried as a declared null, never dropped, never drawn). The precedence ladder and the derived per-ruling scope are UNRATIFIED and are not drawn; the "rulings a design cites" sub-chip is AUTHORED citation only (governedBy from a meta, ruledBy from the asset files, a ruling's own `governs` naming a component) — no scope is derived. edges.obeys is still not drawn (the s276 declared gap, unchanged) · 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
+VERSION = "1.17"  # 1.17 (#280 lane LY, s277-D8 rendered rather than ruled) THE STRATA LAYOUT — the three views laid out as three VISIBLE LAYERS, offered as a switch beside the force layout. Every node keeps the builder's `x` (so the columns and clusters below survive left-to-right) and gains a SECOND y, `y2`, packed inside its view's horizontal band by a light force at BUILD time (collide in y only, x frozen, plus a weak pull to the band centre); the bands run top to bottom EXPLANATION · DESIGN GOVERNANCE · SYSTEM, with THE CONSTITUTION as a fourth band below System — the bedrock, dimmed, drawn only when its chip is on. A node's band is its view under the fam→view map the page already carries (VIEWS): base nodes carry no `fam` and are SYSTEM. `x`, `y`, `x3`, `y3`, `z3` are NOT touched — the force layout is in the file byte for byte and the page opens in `force` unless the switch or `?layout=strata` says otherwise, so the shipped default is 1.16 to the pixel. The page gets a LAYOUT switch in the tool row, a `bands` block in the data (each band's name and its y0/y1), band tints + hairlines + left-edge labels painted under the graph, and cross-band edges drawn brighter than within-band ones — the crossings are the point of the picture. The switch SNAPS (no tween), so a never-driven screenshot is stable as soon as the page settles · 1.16 (#279 lane EX2, the EV fixes on 1.15 — template only, no reader, no layout change, no node/edge/fam key moved) (a) at phone width the legend is a BOTTOM SHEET closed by default to one bar — the graph gets the stage; open, the four view boxes come FIRST and the type rows scroll under them, capped at 62% of the stage so the graph never vanishes; the scrub row is three rows at 390 so its counts no longer clip (b) fit() measures the SHOWN extent on BOTH axes against the USABLE stage (the rectangle above the legend) — the assets column is fitted by width, the axis that binds, not by min(W,H), and a family chip toggle re-fits (c) the legend is COLLAPSIBLE at every width and the stage RESERVES its measured height: fit() and the dig centre in usable(), so no chip row sits on the base hub and no dug neighbour paints through a view box; folding the legend and pressing Fit gives the whole stage back (d) the "rulings a design cites" sub-chip counts the citation edges it GOVERNS under the family chips now (28 at defaults; 341 was a total that included 10 never-drawn nulls and 295 Constitution-only edges) and recount()/the scrub counts/the panel/the path honour the sub-chip, so the header agrees with the canvas when it is toggled; its label and its default are untouched (EV §9, Dave's question) · 1.15 (#279, s277-D8 + s277-D4) ONE GRAPH, THREE VIEWS BY FORCE — the chip bar is re-labelled into SYSTEM (what exists; the agent chooses: structure · usage · rendering · rules & wiring · assets) / DESIGN GOVERNANCE (what a design must or should do; the agent obeys: ONE obligation with THREE provenance sub-chips — WCAG sc: · HSBC rule: · rulings a design cites — each still its own chip, s275-D6) / EXPLANATION (why; the agent consults: UX principles + polarities), and THE CONSTITUTION — the ruling record, 593 rulings with their sessions, evidence and artefacts — named on the page as its own thing, NOT one of the three views. Storage untouched: no node id, edge type, file or fam KEY changes (RULE_FAM/UX_FAM/'governance'/'guidelines' stay; only labels move). A FIFTH additive family behind chip `assets`, OFF by default: the 688 icon:/iconGroup:/logo: nodes from knowledge/_icon_nodes.json + _logo_nodes.json (six edge types drawn — inGroup/activeVariantOf/usesIcon/usesLogo/defaultFor/ruledBy; every `t: null` carried as a declared null, never dropped, never drawn). The precedence ladder and the derived per-ruling scope are UNRATIFIED and are not drawn; the "rulings a design cites" sub-chip is AUTHORED citation only (governedBy from a meta, ruledBy from the asset files, a ruling's own `governs` naming a component) — no scope is derived. edges.obeys is still not drawn (the s276 declared gap, unchanged) · 1.14 (#277, s277-D1..D3) the four chart metas carry edges.obeys — chart-line 24, chart-pie 25, chart-bar 27, chart-donut 11 = 87 new entries, each with an authored `$why` grounded by grep in the live meta (corpus obeys 81 -> 168 across 10 metas); no new family and no new reader — the explorer still does not DRAW edges.obeys (the s276 declared gap, unchanged) · 1.13 (#276, s276-D1..D4) the 17 missing WCAG success criteria land in knowledge/compliance/rules/ (sc: nodes 38 -> 55) so the rules family's 19 declared `cites` nulls all resolve to real sc: nodes — 0 nulls left in _rule_nodes.json; the six authored metas carry edges.obeys (81 entries, 67 rule: + 14 ux:) · 1.12 (#275, s275-D1..D6) a FOURTH additive family behind its own chip: the 145 UX principles + 30 polarities from knowledge/_ux_principle_nodes.json (tensionWith/hasParty/touches/resolvedBy/challengedBy/explainedBy; 15 declared nulls carried, never dropped) · 1.11 (#274, s274-D7..D12) a THIRD additive family behind its own chip: the 470 guideline rules from knowledge/_rule_nodes.json (definedIn/cites/enforcedBy/flaggedBy; 19 declared nulls carried, never dropped) · 1.10 (#267, s267-D3) AUTHORED ruling→ruling edges from knowledge/_ruling_edges.json (solid; supersedesClause dotted), and the regex proposal loop no longer re-proposes a judged pair · … 1.7 halo dots above labels · 1.8 camera-plane ring (flattened the dig — reverted) · 1.9 the dig is a WORLD-SPACE SPHERE again (v1.6 geometry), sector labels ride the same sphere, occlusion mitigated by a <=12px screen-space nudge + occluded dots painted after the focus
 from collections import defaultdict
 import numpy as np
 
@@ -485,6 +485,85 @@ def place_extra(xnodes, xedges, base_extent):
     del idx
 
 
+# ---------------------------------------------------------------- #280 s277-D8: the STRATA layout
+# ONE GRAPH, THREE VIEWS — laid out as three visible LAYERS. This computes a SECOND y per node,
+# `y2`, and touches nothing else: `x`, `y`, `x3`, `y3`, `z3` stay exactly as the force layout left
+# them, so the page's default layout is unchanged and the 1.16 file is still in here byte for byte.
+# A node's band is its VIEW, read off the same fam→view map the page carries in VIEWS: base nodes
+# carry no `fam` and are SYSTEM (what exists), and that includes the handful of ruling: nodes a
+# component meta points at directly — they are in the base graph, so they stay in the base's band.
+VIEW_OF_FAM = {None: 'system', 'guidelines': 'design', RULE_FAM: 'design',
+               UX_FAM: 'explain', ASSET_FAM: 'system', 'governance': 'constitution'}
+BAND_ORDER = ['explain', 'design', 'system', 'constitution']  # top → bottom; the Constitution is the bedrock
+BAND_NAME = {'explain': 'Explanation', 'design': 'Design governance',
+             'system': 'System', 'constitution': 'The Constitution'}
+
+
+def pack_y(xs, r, band_h, seed, iters=140, win=26):
+    """Pack n nodes into a band by relaxing y ONLY — x is frozen, so the left-to-right order the
+    force layout produced survives. Two forces: collide (two nodes closer than 2r are pushed apart
+    along y, by exactly the y-distance their frozen dx still owes) and a weak pull to the band's
+    centre. Neighbours are taken in x order inside a window, which is exact enough because a pair
+    further than `win` apart in x order is further than 2r apart in x for any band we build."""
+    n = len(xs)
+    if n == 0: return np.zeros(0)
+    rng = np.random.default_rng(seed)
+    o = np.argsort(xs, kind='stable')
+    X = xs[o]
+    y = rng.uniform(-0.5, 0.5, n) * band_h
+    d2 = (2.0 * r) ** 2
+    for _ in range(iters):
+        for off in range(1, min(win, n)):
+            dx = X[off:] - X[:-off]
+            need2 = d2 - dx * dx
+            m = need2 > 0
+            if not m.any(): continue
+            a = np.nonzero(m)[0]
+            b = a + off
+            need = np.sqrt(need2[m])
+            dy = y[b] - y[a]
+            k = need - np.abs(dy)
+            sel = k > 0
+            if not sel.any(): continue
+            a, b = a[sel], b[sel]
+            s = np.sign(dy[sel]); s[s == 0] = 1.0
+            push = k[sel] * 0.5 * s
+            np.add.at(y, b, push)
+            np.add.at(y, a, -push)
+        y *= 0.992   # the weak y-centre pull
+    out = np.empty(n); out[o] = y
+    return out
+
+
+def strata(nodes, band_h=760.0, gap_frac=0.16):
+    """Give every node `view` and `y2`. Returns the band list for the page (name + y0/y1)."""
+    for n in nodes:
+        n['view'] = VIEW_OF_FAM.get(n.get('fam'), 'system')
+    step = band_h * (1.0 + gap_frac)
+    centres = {v: (i - (len(BAND_ORDER) - 1) / 2.0) * step for i, v in enumerate(BAND_ORDER)}
+    bands = []
+    for bi, v in enumerate(BAND_ORDER):
+        grp = [n for n in nodes if n['view'] == v]
+        cy = centres[v]
+        bands.append({'id': v, 'name': BAND_NAME[v], 'y0': round(cy - band_h / 2, 1),
+                      'y1': round(cy + band_h / 2, 1), 'n': len(grp)})
+        if not grp: continue
+        xs = np.array([float(n['x']) for n in grp])
+        span = max(1.0, float(xs.max() - xs.min()))
+        r = float(np.sqrt(max(1.0, band_h * span / (4.0 * len(grp)))))  # first guess at the collide radius
+        y = pack_y(xs, r, band_h, 1280 + bi)
+        for _ in range(2):   # calibrate the radius so the pack fills the band instead of over/under-flowing it
+            h = float(y.max() - y.min()) or 1.0
+            if abs(h - band_h) / band_h < 0.08: break
+            r *= float(np.sqrt(band_h / h))
+            y = pack_y(xs, r, band_h, 1280 + bi)
+        mx = float(np.abs(y).max()) or 1.0
+        y = y * min(1.0, (band_h / 2.0) / mx)   # the guarantee: no node leaves its own band
+        for n, v2 in zip(grp, y):
+            n['y2'] = round(float(v2) + cy, 1)
+    return bands
+
+
 def fr(n, Es, dim, k, IT, R0, seed):
     rng = np.random.default_rng(seed)
     pos = rng.normal(size=(n, dim)); pos /= np.linalg.norm(pos, axis=1, keepdims=True); pos *= rng.uniform(0.2, 1, (n, 1)) * R0
@@ -592,9 +671,12 @@ def main():
     for e in xedges: xdeg[e['s']] += 1; xdeg[e['t']] += 1
     for n in xnodes: n['deg'] = xdeg[n['id']]
     nodes = nodes + xnodes; edges = edges + xedges
+    # #280 — the second coordinate set. Runs LAST, over the finished node list, and writes only
+    # `view` and `y2`; every position the force layout wrote is already final and is left alone.
+    bands = strata(nodes)
     sha = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     data = {'generated': datetime.date.today().isoformat(), 'version': VERSION, 'commit': sha, 'nodes': nodes, 'edges': edges,
-            'islands': islands, 'orphans': orphans, 'snaps': snaps,
+            'islands': islands, 'orphans': orphans, 'snaps': snaps, 'bands': bands,
             'extra': {'nodes': len(xnodes), 'edges': len(xedges),
                       'rulings': sum(1 for n in nodes if n['type'] == 'ruling'),
                       'sc': sum(1 for n in nodes if n['type'] == 'sc'),
@@ -628,6 +710,8 @@ def main():
     print(f"  assets family (s277-D4..D7, ratified s277-D4; chip OFF by default): {rep.get('asset_nodes', 0)} new nodes"
           f" / {rep.get('asset_edges', 0)} edges + {rep.get('asset_edges_null', 0)} declared nulls"
           + (f" · SKIPPED {rep['asset_edges_skipped']}" if rep.get('asset_edges_skipped') else ''))
+    print("  strata bands (#280, s277-D8 rendered): " + " · ".join(
+        f"{b['name']} {b['n']} @ {b['y0']}…{b['y1']}" for b in bands))
     if rep.get('unmatched_applies_to'): print(f"  UNMATCHED applies_to names: {rep['unmatched_applies_to']}")
 
 if __name__ == '__main__':

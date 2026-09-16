@@ -201,6 +201,7 @@ aside{overflow:auto;background:var(--bg)}
     <div class="tools">
       <button id="three" title="Switch to a 3D view and spin it">3D</button><button id="spin" title="Auto-rotate (3D)" hidden>Spin</button><button id="dof" title="Depth of field — blur grows with distance from the focal plane (3D)" hidden>Depth</button><button id="depth" title="Show second-hop neighbours">Depth 2</button>
       <button id="pathBtn" title="Shift-click a second node to trace the shortest path">Path</button>
+      <button id="layout" title="Force — the graph finds its own shape. Strata — the three views as three stacked layers, one band each, the Constitution as the bedrock below them. Same nodes, same x; only y moves.">Layout: force</button>
       <button id="fit">Fit</button><button id="theme" title="Auto / dark / light">Auto</button>
     </div>
     <div class="legend" id="legend"></div>
@@ -217,7 +218,7 @@ const NODES=KG.nodes, EDGES=KG.edges;
 const byId=new Map(NODES.map(n=>[n.id,n]));
 const RAD={session:3.4,artefact:1.9,evidence:1.7,sc:4.6,guideline:5.2,principle:7.5,policy:7,standard:7,axe:2.1,icon:2.0,iconGroup:5.4,logo:3.6};
 const SNAPS=KG.snaps||[];let T=SNAPS.length?SNAPS.length-1:0;const alive=o=>o.born==null||(o.born<=T&&(o.died==null||o.died>T));
-NODES.forEach((n,i)=>{n.i=i;n.ox=n.x;n.oy=n.y;n.z=0;n.tz=0;n.tx=n.x;n.ty=n.y;n.a=1;n.ta=1;n.r=n.type==='component'?4.2+Math.min(n.deg,29)*0.16:n.type==='ruling'?4.5:RAD[n.type]||2.6});
+NODES.forEach((n,i)=>{n.i=i;n.ox=n.x;n.oy=n.y;n.oy2=(n.y2==null?n.y:n.y2);n.z=0;n.tz=0;n.tx=n.x;n.ty=n.y;n.a=1;n.ta=1;n.r=n.type==='component'?4.2+Math.min(n.deg,29)*0.16:n.type==='ruling'?4.5:RAD[n.type]||2.6});
 const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure',family:'structure',groupsWith:'structure',partial:'structure',reuses:'structure',delegatesTo:'structure',
   usedInContext:'usage',commonPattern:'usage',renderedBy:'render',
   governedBy:'rules',mustNotNeighbour:'rules',consumes:'rules',triggeredBy:'rules',drivesConsumer:'rules',
@@ -251,6 +252,14 @@ const VIEWS=[
 // UNRATIFIED under s277-D8): it is the AUTHORED citation of a ruling by a design — `governedBy` in a
 // component meta, `ruledBy` in the asset files, or a ruling's own `governs` naming a component or
 // snippet. It gates those edges only; it adds no node and no count. ON by default, like the base.
+// #280 — THE STRATA LAYOUT. Two coordinate sets ship in the file: the force layout (`x`,`y`, untouched
+// since 1.15) and the strata layout (the same `x`, a second `y2` packed into the node's own view band).
+// `force` is the default; `?layout=strata` or the tool-row switch selects the other. Only y moves.
+const BANDS=KG.bands||[];
+const BANDFAM={system:'structure',design:'guidelines',explain:'uxprinciples',constitution:'governance'};
+let LAYOUT=((new URLSearchParams(location.search)).get('layout')==='strata'&&BANDS.length)?'strata':'force';
+const BY=n=>LAYOUT==='strata'?n.oy2:n.oy;          // a node's y at rest, in the layout that is live
+const bandShown=b=>b.id!=='constitution'||famOn.governance;  // the bedrock appears with its chip
 const DR=e=>e.type==='governedBy'||e.type==='ruledBy'||(e.type==='governs'&&/^(component|snippet):/.test(e.t||''));
 const NEWFAM=['governance','guidelines','guidelinerules','uxprinciples','assets'];
 const READ={containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
@@ -275,6 +284,10 @@ EDGES.forEach((e,k)=>{e.k=k;if(!e.t){(unresolved.get(e.s)||unresolved.set(e.s,[]
   adj.get(e.s).push({e,other:e.t,out:true});adj.get(e.t).push({e,other:e.s,out:false});e.a=1;e.ta=1;});
 const typeOn={};ALLTYPES.forEach(t=>typeOn[t]=1);
 const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guidelinerules:0,uxprinciples:0,assets:0,designrulings:1}; // every additive family loads OFF (assets too, s277-D4): the page opens as v1.1 and Dave adds a layer by chip. designrulings is the view sub-chip, ON like the base it gates
+// #280: the same never-driven idea as ?layout — `?fam=assets,governance` switches those family chips ON
+// before the first render, so a layer can be photographed without the page ever being clicked. No flag,
+// no effect: the defaults above are untouched and the page still opens as v1.1 plus nothing.
+((new URLSearchParams(location.search)).get('fam')||'').split(',').filter(Boolean).forEach(f=>{if(f in famOn)famOn[f]=1});
 // v1.2: a node from a new family answers to BOTH its type chip and its family chip. Base nodes
 // carry no `fam`, so with both new family chips off the page is exactly the v1.1 graph.
 const famOK=o=>!o.fam||famOn[o.fam];
@@ -323,7 +336,7 @@ const DRGOV=()=>LIVEE.filter(e=>e.t&&DR(e)&&famOn[FAMILY[e.type]]&&famOK(e)&&fam
 const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified). The count is the citation edges drawn under the family chips now."><i></i>rulings a design cites<b>${DRGOV()}</b></span>`;
 // v1.16: the legend folds to one bar (EV §5.1 / §5.3). Open at desktop; a closed bottom sheet at phone width.
 let legendOpen=!matchMedia('(max-width:900px)').matches;
-function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',NEWFAM.some(f=>famOn[f]));legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
+function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',NEWFAM.some(f=>famOn[f])||LAYOUT==='strata');  /* #280: strata is landscape by construction — the legend takes the bottom strip, never the side column that would halve the stack's width */legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
 <div class="lbody"><div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
   ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
   :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>
@@ -348,7 +361,7 @@ function proj(x,y,z){if(!three)return {x:W/2+(x+view.x)*view.k,y:H/2+(y+view.y)*
   const x1=x*cy+z*sy_, z1=-x*sy_+z*cy; const y2=y*cx-z1*sx_, z2=y*sx_+z1*cx;
   const s=F/Math.max(F*0.15,F+z2); return {x:W/2+(x1*s+view.x)*view.k,y:H/2+(y2*s+view.y)*view.k,s,d:z2}}
 const P=n=>proj(n.x,n.y,n.z);
-function base(n){return three?[n.x3,n.y3,n.z3]:[n.ox,n.oy,0]}
+function base(n){return three?[n.x3,n.y3,n.z3]:[n.ox,BY(n),0]}   // #280: 2D reads whichever y-set is live
 function resize(){DPR=devicePixelRatio||1;W=stage.clientWidth;H=stage.clientHeight;cv.width=W*DPR;cv.height=H*DPR;draw()}
 addEventListener('resize',resize);
 
@@ -371,6 +384,10 @@ function usable(ew,eh){const sr=stage.getBoundingClientRect();let bot=H-16;
 function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
   for(const n of LIVE){if(!NODEON(n))continue;const x=three?n.x3:n.x,y=three?n.y3:n.y,z=three?n.z3:0;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);z0=Math.min(z0,z);z1=Math.max(z1,z)}
   if(!(x1>x0)){x0=-1000;x1=1000;y0=-1000;y1=1000;z0=z1=0}
+  // #280: in strata the picture IS the stack, so the vertical extent is the BANDS' own, not the shown
+  // nodes' — a view whose chips are all off still shows as an empty layer instead of falling off stage.
+  if(LAYOUT==='strata'&&!three&&BANDS.length){const bs=BANDS.filter(bandShown);
+    if(bs.length){y0=Math.min(...bs.map(b=>b.y0));y1=Math.max(...bs.map(b=>b.y1))}}
   // 3D: the cloud rotates, so its depth range can become height; fit the larger of the two, with the old
   // 3D margin. 2D: a 6% margin each side of the shown extent.
   const m=three?1.3:1.12,yr=three?Math.max(y1-y0,z1-z0):(y1-y0),ew=(x1-x0)*m+1,eh=yr*m+1;
@@ -379,11 +396,27 @@ function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
   const cx=-(x0+x1)/2+(u.cx-W/2)/k,cy=-(y0+y1)/2+(u.cy-H/2)/k;
   view={x:cx,y:cy,k};draw()}
 
+// #280 — the layers, painted UNDER the graph: each band its view's own tint at 4%, a hairline at the
+// boundaries, and the band's name at the left edge in that tint. The Constitution band is dimmed —
+// it is the bedrock, not a view — and is drawn only when its chip is on.
+function drawBands(){const pad=W<600?12:24;ctx.save();ctx.setLineDash([]);
+  for(const b of BANDS){if(!bandShown(b))continue;
+    const t=proj(0,b.y0,0).y,bt=proj(0,b.y1,0).y;if(bt<-40||t>H+40)continue;
+    const dim=b.id==='constitution'?0.5:1,col=C.f[BANDFAM[b.id]]||C.ink3;
+    ctx.globalAlpha=0.04*dim;ctx.fillStyle=col;ctx.fillRect(0,t,W,bt-t);
+    ctx.globalAlpha=0.9;ctx.strokeStyle=C.rule;ctx.lineWidth=1;
+    for(const yy of [t,bt]){ctx.beginPath();ctx.moveTo(0,Math.round(yy)+0.5);ctx.lineTo(W,Math.round(yy)+0.5);ctx.stroke()}
+    ctx.globalAlpha=0.8*dim;ctx.fillStyle=col;ctx.textBaseline='top';
+    ctx.font='11px "SF Mono",Menlo,Consolas,monospace';
+    ctx.fillText(b.name.toUpperCase(),pad,Math.max(2,Math.min(H-16,t+7)));}
+  ctx.restore();ctx.globalAlpha=1;ctx.textBaseline='alphabetic'}
+
 let GROW=[];
 let hover=null, focus=null, trail=[], depth2=false, pathMode=false, pathNodes=null, pathEdges=null, anim=null;
 function draw(){
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
   ctx.lineWidth=focus?0.9:0.5;
+  if(LAYOUT==='strata'&&!three&&BANDS.length)drawBands();
   const focalD=(three&&focus)?P(focus).d:0;
   // smoothed depth distance per node — band membership no longer pops frame to frame (the flicker)
   const halo=new Set();if(focus){halo.add(focus.id);for(const x of adj.get(focus.id)){if(alive(x.e))halo.add(x.other)}}
@@ -417,8 +450,15 @@ function draw(){
     const on=NODEON(s)&&NODEON(t)&&EON(e);
     let a=on?Math.min(s.a,t.a)*(focus?0.9:0.32):0.04; if(pathEdges){a=pathEdges.has(e.k)?1:a*0.15}
     if(hover&&!focus){a=(e.s===hover.id||e.t===hover.id)?0.95:0.06}
+    // #280 STRATA: an edge that CROSSES a band boundary is the point of the picture — it is drawn
+    // brighter and a touch heavier; an edge that stays inside one layer is dropped back.
+    const xb=LAYOUT==='strata'&&!three&&s.view!==t.view;
+    // ... and the GHOST layer (an edge to a family whose chip is off, 1.16 draws it at 0.04) is dropped
+    // here: in force it is a faint halo round the hub, but across a stack of bands it is a long diagonal
+    // smear over every layer, which reads as traffic that is not in fact drawn.
+    if(LAYOUT==='strata'&&!three&&!focus&&!pathEdges)a=on?Math.min(1,a*(xb?1.9:0.45)):a*0.4;
     if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
-    ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:0.6;
+    ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:(xb?1:0.6);
     ctx.setLineDash(e.derived?[4,3]:e.type==='supersedesClause'?[1.5,2.5]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them. #267: supersedesClause is AUTHORED but DOTTED — a clause, not the whole ruling.
     let ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);
     if(e.g!=null&&e.g<1&&focus){const f=(e.s===focus.id)?ps:pt,o=(e.s===focus.id)?pt:ps;if(e.gd>0)continue;const g=1-Math.pow(1-e.g,3);pt={x:f.x+(o.x-f.x)*g,y:f.y+(o.y-f.y)*g};ps=f}
@@ -568,6 +608,17 @@ document.getElementById('spin').classList.add('on');
 document.getElementById('depth').onclick=function(){depth2=!depth2;this.classList.toggle('on',depth2);if(focus)applyFocus()};
 document.getElementById('pathBtn').onclick=function(){pathMode=!pathMode;this.classList.toggle('on',pathMode)};
 document.getElementById('fit').onclick=()=>{if(focus)applyFocus();else fit()};
+// #280 — the layout switch. It SNAPS: every node goes straight to its place in the new coordinate
+// set and the stage re-fits, so a screenshot taken the moment the page settles is the real thing.
+// `force` restores exactly the positions the page loads with, which is why the default is pixel-1.16.
+function setLayout(v,quiet){LAYOUT=(v==='strata'&&BANDS.length)?'strata':'force';
+  const b=document.getElementById('layout');
+  b.textContent='Layout: '+LAYOUT;b.classList.toggle('on',LAYOUT==='strata');
+  renderLegend();   // the legend's place follows the layout (strip for strata, the 1.16 rule otherwise)
+  for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.x=n.tx;n.y=n.ty;n.z=n.tz}
+  if(focus)applyFocus();else fit();
+  if(!quiet)animate()}
+document.getElementById('layout').onclick=()=>setLayout(LAYOUT==='strata'?'force':'strata');
 
 // ---------- search
 const q=document.getElementById('q'),hits=document.getElementById('hits');let sel=0,cur=[];
@@ -597,7 +648,7 @@ document.getElementById('play').onclick=function(){playing=!playing;this.classLi
     setT(T+1);const d=SNAPS[T],p=SNAPS[T-1];playT=setTimeout(step,(d.nodes-p.nodes)+(d.edges-p.edges)>50?1400:450)};step()}else clearTimeout(playT)};
 addEventListener('keydown',e=>{if(e.target===q)return;if(e.key==='ArrowLeft')setT(T-1);if(e.key==='ArrowRight')setT(T+1)});
 document.getElementById('theme').onclick=()=>{themeI=(themeI+1)%3;applyTheme()};applyTheme();
-resize();fit();renderEmpty();
+resize();setLayout(LAYOUT,true);renderEmpty();   // #280: in `force` this is exactly resize();fit();
 </script>
 </body>
 </html>
