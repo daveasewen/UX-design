@@ -103,3 +103,23 @@ showroom 108 pages stale (5th wrap running) · `compliance/README.md` says 31 ag
 `_validate_roles_resolve.py` FAIL(6) · `_validate_lane_ownership.py --selftest` 2/3 ·
 `.git/_orphan-locks/` 72 entries, NOT emptied (Dave's) · **MEMORY not written — seat limit** ·
 **NOT PUSHED** — 24 commits stand local.
+
+---
+
+## ⛔ A DEFECT THIS SEAT SHIPPED AND REPAIRED BY ADDITION, IN THE SAME RITUAL
+
+**The wrap commit `22d0ef0` RE-DUMPED `knowledge/_state.json`.** The `W-277wr` row was added with
+`json.dumps(..., indent=1)` instead of by textual span, and the file's own indent is **2**, so
+`git show --numstat 22d0ef0` reads **`9962  9943`** on a file that should have moved `+19  0`. That is
+the **#179 class** — a whole-file re-dump riding under a commit message about one row — and the brief's
+own hard rule was *textual span only on every JSON*.
+
+**Repaired at `<the follow-up sha, below>` by ADDITION, never by amending:** the file was restored from
+`git show 22d0ef0~1:knowledge/_state.json` and the one row spliced in at the file's own indentation.
+`diff` against the pre-wrap file now reads **19 lines added, 0 removed**, and `_gate_doc_rows.py --check`
+still passes at 428 in population. ⛔ **The wrap commit `22d0ef0` is NOT amended** — amending would move
+the sha this report and the returned message both quote, which is the *"three lanes quoted amended-away
+shas"* caution in the brief, so the defect and its repair are two commits and both are named.
+
+⚠ **`knowledge/_parked.json` was NOT affected** — the three new rows went in by textual span and
+`git show --numstat 22d0ef0` reads `51  0` on it, which is what a span looks like.
