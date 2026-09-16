@@ -1,0 +1,9 @@
+after #277 2026-09-16 — #277 wrap repair: knowledge/_state.json restored to its own indentation and the W-277wr row r…
+
+The wrap commit 22d0ef0 added the W-277wr filed-report row with json.dumps(indent=1) against a file whose indent is 2, so --numstat read 9962 9943 on a change that is one row: the #179 whole-file re-dump class, under a commit message about the capture ritual, and against the wrap brief's own rule that every JSON edit is a textual span.
+
+REPAIRED BY ADDITION, NOT BY AMENDING. knowledge/_state.json was restored from git show 22d0ef0~1:knowledge/_state.json and the single W-277wr row spliced back at the file's own indentation. diff against the pre-wrap file now reads 19 lines added and 0 removed; json.load parses; _gate_doc_rows.py --check passes with every in-scope document rowed. 22d0ef0 is deliberately NOT amended, because this report, the returned wrap message and the #277 stratum all quote that sha, and moving it is the amended-away-sha defect the brief warns about. The defect and its repair are two commits and both are named.
+
+knowledge/_parked.json was not affected: P-277-3, P-277-4 and P-277-5 went in by textual span and 22d0ef0 reads 51 0 on it.
+
+Recorded by addition at the foot of notes/_lanes/277/W/WRAP-REPORT.md.
