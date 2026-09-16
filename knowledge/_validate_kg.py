@@ -84,9 +84,10 @@ SCHEMA = COMPONENTS / "meta.schema.json"
 GEN_SCRIPT = HERE / "gen_kg_edges.py"
 RESOLUTIONS = ROOT / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json"
 
-REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape|rule|ux):.+$")
+REF_RE = re.compile(r"^(component|pattern|context|snippet|ruling|role|intent|shape|rule|ux"
+                    r"|icon|iconGroup|logo):.+$")
 NODE_KINDS = ("component", "pattern", "context", "snippet", "ruling", "role", "intent", "shape",
-              "rule", "ux")
+              "rule", "ux", "icon", "iconGroup", "logo")
 ROLES = HERE / "roles.json"
 INTENTS = HERE / "chart-intents.json"
 SHAPES = HERE / "shapes.json"
@@ -97,6 +98,13 @@ SHAPES = HERE / "shapes.json"
 # resolve against their stores.
 RULES_INDEX = HERE / "guidelines" / "_rules-index.json"
 UX_NODES = HERE / "_ux_principle_nodes.json"
+# s277-D4/s277-D5 (#277 lane RI, landed #279 lane IL enacting s269-D1 STEP 4): three more
+# kinds, ADDED to the grammar above and never rewriting one of the ten that were there.
+# `icon:<slug>` and `iconGroup:<slug>` resolve against the icon manifest, `logo:<stem>`
+# against the logo DIRECTORY — each against the file that IS its home (ADR-0017
+# write-once), exactly as role:/intent:/shape: and rule:/ux: do.
+ICON_MANIFEST = HERE / "assets" / "icons" / "icons.manifest.json"
+LOGO_DIR = HERE / "assets" / "logos"
 
 
 def store_ids(path, key, prefix):
@@ -127,6 +135,34 @@ def ux_ids(path=None):
         return set()
     data = json.loads(path.read_text(encoding="utf-8"))
     return {n["id"] for n in data.get("nodes", []) if str(n.get("id", "")).startswith("ux:")}
+
+
+def icon_ids(path=None):
+    """icon:<slug> and iconGroup:<slug> resolve against icons.manifest.json — the 666 slugs
+    under 10 group keys landed as nodes by gen_kg_icons.py --land --ratified s277-D4.
+    Returns (icons, groups). NOTE B1: `menu-search` is ruled library by s212-D9 and is NOT
+    in this manifest, so icon:menu-search will not resolve until the manifest is reconciled.
+    That is deliberate: a resolver that quietly admitted an unmanifested slug would make the
+    manifest stop being the home. s277-D4."""
+    path = path or ICON_MANIFEST
+    if not path.exists():
+        return set(), set()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    groups = data.get("groups", {})
+    icons = {f"icon:{r['slug']}" for lst in groups.values() for r in lst if r.get("slug")}
+    gids = {"iconGroup:" + re.sub(r"[^a-z0-9]+", "-", g.lower()).strip("-") for g in groups}
+    return icons, gids
+
+
+def logo_ids(path=None):
+    """logo:<stem> resolves against the twelve files in knowledge/assets/logos/. There is no
+    logos manifest — knowledge/guidelines/logos.md states the 12 in prose and declines to
+    bind them ('the detailed logo standard lives on create.hsbc'), so the DIRECTORY is the
+    store and a second registry would be the ADR-0017 violation. s277-D7."""
+    path = path or LOGO_DIR
+    if not path.exists():
+        return set()
+    return {"logo:" + p.stem for p in sorted(path.glob("*.svg"))}
 
 
 # --------------------------------------------------------------- corpus load
@@ -275,6 +311,9 @@ def validate_corpus(components_dir=None, proforma_dir=None, snippets_dir=None,
         "shape": store_ids(SHAPES, "shapes", "shape"),
         "rule": rule_ids(),
         "ux": ux_ids(),
+        "icon": icon_ids()[0],
+        "iconGroup": icon_ids()[1],
+        "logo": logo_ids(),
     }
 
     fails = []

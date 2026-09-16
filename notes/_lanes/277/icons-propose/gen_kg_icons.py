@@ -57,18 +57,20 @@ only honest with them attached):
      not measured, so no weight may be put on the edge.
 
 ⛔ A NEW NODE KIND AND A NEW EDGE TYPE ARE CLOSED-VOCABULARY CHANGES (#75). This
-script PROPOSES; Dave ratifies; only then does it land. `--dry-run` is the
-DEFAULT and writes three JSON files into THIS LANE FOLDER and nothing else.
-`--land` REFUSES unless `--ratified sNNN-DN` names an id that is BOTH recorded in
-knowledge/_rulings.json AND listed in RATIFIES below. **RATIFIES IS EMPTY.** No
-`s277-D*` id ratifies this proposal yet, so `--land` cannot succeed against any
-argument, and bite 12 proves it against every live ruling id in the tree.
+script PROPOSED; Dave ratified at #277; the door is now OPEN ON THOSE IDS AND NO
+OTHERS. `--dry-run` is still the DEFAULT and writes three JSON files into THIS
+LANE FOLDER and nothing else. `--land` REFUSES unless `--ratified sNNN-DN` names
+an id that is BOTH recorded in knowledge/_rulings.json AND listed in RATIFIES
+below. **RATIFIES IS `("s277-D4", "s277-D5", "s277-D6", "s277-D7")`** — the four
+rulings of 2026-09-16 that ratify exactly this proposal. Every other id there is,
+live or invented, is still refused, and bite 12 proves each refusal for its own
+reason with the allowlist open.
 
-WHERE IT WOULD LAND. `--land` would write TWO files, knowledge/_icon_nodes.json
-and knowledge/_logo_nodes.json, in the shape of knowledge/_rule_nodes.json and
+WHERE IT LANDS. `--land` writes TWO files, knowledge/_icon_nodes.json and
+knowledge/_logo_nodes.json, in the shape of knowledge/_rule_nodes.json and
 knowledge/_ux_principle_nodes.json (the s274-D11 / s275-D4 precedent: an authored
-node/edge file the explorer reads behind its own chip). It does not write them
-today.
+node/edge file the explorer reads behind its own chip). Landed at #279 lane IL by
+`--land --ratified s277-D4`.
 
 NEVER INVENTED (fence 3, #261): a target that does not resolve to a measured node
 becomes `{"t": null, "$note": "<the evidence>"}` and is counted in `unresolved`.
@@ -82,7 +84,13 @@ Five declared nulls are structural and permanent until someone rules:
   B3  the 10 logos bound by no rule: `_rules-index.json` has 0 rules whose `file`
       is `logos.md`, and 0 rulings name a logo `.svg` in `governs`.
   --  `app-shell-nav-rail`, which `s230-D2` records as deliberately NOT rebound.
-      It is a gap with a ruling behind it and it enters as a declared null.
+      It is a gap with a ruling behind it and it enters as a declared null. The
+      name is taken from `s230-D2`'s OWN CLAUSE — the `says` field literally reads
+      "App-shell-nav-rail deliberately NOT rebound" and `RESIDUE_RX` reads that
+      clause and nothing else (#279 lane IL, RIV A3). Every component slug is NO
+      LONGER tested as a substring of the ruling's English: `app-shell-top-nav`
+      and `navigations` are substrings of the same sentence and must not, and now
+      cannot, inherit the rail's reason. Bite 18 proves the second one stays out.
 
 `defaultFor` is drawn with `t: null` ON PURPOSE. `s230-D2` names two of the twelve
 as the theme defaults, but `theme:` is NOT a node kind in the live graph (measured
@@ -98,6 +106,7 @@ Usage:
   python3 .../gen_kg_icons.py --no-logos                            # RI-4 option (c): logos wait
   python3 .../gen_kg_icons.py --no-usesicon                         # RI-2 option (b): hold the byte-match
   python3 .../gen_kg_icons.py --prose-count                         # MEASURE the refused route
+  python3 .../gen_kg_icons.py --land --ratified s277-D4                # THE LAND (#279 lane IL)
   python3 .../gen_kg_icons.py --selftest
   python3 .../gen_kg_icons.py --corpus <dir>                        # a scratch knowledge/ dir
 
@@ -166,15 +175,27 @@ LOGO_SRC_RX = re.compile(r'(?:src|href)="[^"]*assets/logos/([^"/]+)\.svg"')
 GOVERNS_ICON_RX = re.compile(r'(?:^|/)assets/icons/(?:.+/)?([^/]+)\.svg$')
 GOVERNS_LOGO_RX = re.compile(r'(?:^|/)assets/logos/(?:.+/)?([^/]+)\.svg$')
 
-# THE DOOR (#75). A ratifying id must be in _rulings.json AND in this tuple. It is
-# EMPTY: no s277-D* id ratifies this proposal. Bite 12 proves --land refuses every
-# live ruling id while it stays empty.
-RATIFIES = ()
+# THE DOOR (#75). A ratifying id must be in _rulings.json AND in this tuple. It was
+# EMPTY through the proposal wave (#277). Dave ruled on 2026-09-16 and the four ids
+# below are the ratification of THIS proposal and of nothing else: s277-D4 the three
+# node kinds, s277-D5 the byte-match edges, s277-D6 the 15 bases carrying no
+# activeVariantOf, s277-D7 the twelve logos. Bite 12 proves that with the list open
+# every other id — none, malformed, unrecorded, and a live ruling about something
+# else — is still refused, each for its own reason.
+RATIFIES = ("s277-D4", "s277-D5", "s277-D6", "s277-D7")
 
 # s230-D2 is the ONE ruling that names logo defaults. The join is byte-containment of
 # a LOGO FILENAME STEM in that ruling's own fields — not a pattern over English. The
 # theme comes from the STEM's own parsed field, never from a word in the sentence.
 DEFAULT_RULING = "s230-D2"
+# THE RESIDUE ANCHOR (#279 lane IL, RIV A3). `s230-D2` records, in its own words, one
+# component it deliberately did NOT rebind: "App-shell-nav-rail deliberately NOT
+# rebound". This regex reads THAT CLAUSE and takes the name out of it. It is NOT the
+# old test, which asked of every component slug "are you a substring of this ruling's
+# English?" — three slugs answer yes (`app-shell-nav-rail`, `app-shell-top-nav`,
+# `navigations`) and a fourth would have inherited the rail's reason verbatim. The
+# clause names one component; only a component the clause NAMES can be a residue.
+RESIDUE_RX = re.compile(r"([A-Za-z0-9][A-Za-z0-9._-]*)\s+deliberately NOT rebound", re.I)
 
 
 def norm(d):
@@ -512,20 +533,34 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
             edges[-1]["theme"] = logo_fields[stem]["theme"]
             edges[-1]["ruling"] = DEFAULT_RULING
 
-        # the residue s230-D2 records by name: a component it deliberately did NOT rebind
-        # Case-folded because the ruling names the SNIPPET file (`App-shell-nav-rail`) and
-        # the component slug is the lower-cased stem of the same name. Still filename
-        # containment — never a pattern over English.
+        # the residue s230-D2 records BY NAME IN ITS OWN CLAUSE: a component it deliberately
+        # did NOT rebind. Anchored on the clause (RESIDUE_RX), never on "is this slug a
+        # substring of the ruling's English?" — that old test made a prose join produce a
+        # declared null and would have handed a fourth substring slug the rail's reason
+        # verbatim (RIV A3, fixed #279 lane IL). Case-folded because the ruling names the
+        # SNIPPET file (`App-shell-nav-rail`) and the component slug is the lower-cased stem
+        # of the same name.
         bound = {c for c, _s in logo_comp}
-        low = text.lower()
-        for slug in sorted(metas):
-            if slug.lower() in low and slug not in bound:
+        by_low = {s.lower(): s for s in sorted(metas)}
+        for name, clause in residue_clauses(dr):
+            slug = by_low.get(name.lower())
+            if slug is None:
                 unresolved.append({
-                    "source": "component:" + slug, "type": "usesLogo",
-                    "why": f"{DEFAULT_RULING} records this component as deliberately NOT rebound "
-                           "(56px rail head, no lockup fits — a ruling-shaped residue that stays "
-                           "Dave's). The gap is DECLARED, never quietly completed",
-                    "note": f"{slug}: no assets/logos/ src= in its snippet, and that is the ruling"})
+                    "source": None, "type": "usesLogo",
+                    "why": f"{DEFAULT_RULING}'s own clause names a component as deliberately NOT "
+                           "rebound but no component meta carries that slug — the residue is "
+                           "DECLARED against the ruling's words, never attached to a guess",
+                    "note": f"{name}: named by {DEFAULT_RULING} — \"{clause}\""})
+                continue
+            if slug in bound:
+                continue
+            unresolved.append({
+                "source": "component:" + slug, "type": "usesLogo",
+                "why": f"{DEFAULT_RULING} names this component in its own clause as deliberately "
+                       "NOT rebound — a ruling-shaped residue that stays Dave's. The gap is "
+                       "DECLARED, never quietly completed",
+                "note": f"{slug}: no assets/logos/ src= in its snippet, and that is the ruling — "
+                        f"{DEFAULT_RULING} says \"{clause}\""})
 
     # ---- ruledBy — a `governs` entry that NAMES an icon .svg --------------
     ruled_pairs, ruled_declared = [], []
@@ -683,6 +718,23 @@ def text_default(dr, logo_fields):
     return {s for s in logo_fields if s in text}
 
 
+def residue_clauses(dr):
+    """[(name, clause)] — the components the ruling's OWN CLAUSE names as deliberately
+    NOT rebound, with the ruling's sentence quoted back so the declared null carries the
+    ruling's reason and never a reason hardcoded here (RIV A3). Returns [] if the ruling
+    is absent or carries no such clause: a residue nobody wrote down is not a residue."""
+    if not dr:
+        return []
+    text = (dr.get("ruled") or "") + "\n" + (dr.get("says") or "")
+    out = []
+    for m in RESIDUE_RX.finditer(text):
+        tail = text[m.start():]
+        stop = tail.find(". ")
+        clause = tail[:stop + 1] if 0 < stop <= 200 else tail[:200]
+        out.append((m.group(1), re.sub(r"\s+", " ", clause).strip()))
+    return out
+
+
 # ------------------------------------------------------------------ the door
 
 def ruling_exists(rid, corpus=None):
@@ -691,7 +743,8 @@ def ruling_exists(rid, corpus=None):
 
 def land(corpus=None, ratified=None, **kw):
     """Refuses unless the id is well-formed, RECORDED in _rulings.json, and LISTED in
-    RATIFIES. RATIFIES is empty, so this refuses everything today (#75)."""
+    RATIFIES. RATIFIES now holds the four s277-D4..D7 ids and NOTHING else, so every
+    other id — live, malformed, absent — is still refused, each at its own gate (#75)."""
     if not ratified:
         raise SystemExit("REFUSED — --land needs --ratified sNNN-DN (three new node kinds and six "
                          "new edge types are closed-vocabulary changes, #75)")
@@ -702,8 +755,8 @@ def land(corpus=None, ratified=None, **kw):
                          "An unrecorded ratification is not a ratification.")
     if ratified not in RATIFIES:
         raise SystemExit(f"REFUSED — '{ratified}' is a real ruling but it does not ratify THIS "
-                         f"proposal. gen_kg_icons.RATIFIES is {RATIFIES!r}: no s277-D* id names "
-                         "this family yet. A ruling about something else is not a door.")
+                         f"proposal. gen_kg_icons.RATIFIES is {RATIFIES!r}. A ruling about "
+                         "something else is not a door.")
     ipay, lpay, report = build(corpus, **kw)
     for pay, name in ((ipay, LANDED_ICONS), (lpay, LANDED_LOGOS)):
         pay["ratified"] = ratified
@@ -808,6 +861,12 @@ def _mini(tmp):
         {"name": "Skip", "edges": {}}, indent=1), encoding="utf-8")
     (k / "components" / "rail.meta.json").write_text(json.dumps(
         {"name": "Rail", "provenance": {"by": "mini"}, "edges": {}}, indent=1), encoding="utf-8")
+    # `chrome` is the A3 control: its slug IS a substring of the ruling's English ("on light
+    # chrome"), it binds no logo, and the ruling's clause does NOT name it. The old
+    # substring-over-English test gave it a declared null with the rail's reason attached;
+    # the clause anchor must leave it alone. Bite 18 is the whole point of this file.
+    (k / "components" / "chrome.meta.json").write_text(json.dumps(
+        {"name": "Chrome", "provenance": {"by": "mini"}, "edges": {}}, indent=1), encoding="utf-8")
 
     (k / "_rulings.json").write_text(json.dumps({"rulings": [
         {"id": "s001-D1", "ruled": "the stray glyph is library", "date": "2026-01-02", "by": "Dave",
@@ -818,7 +877,11 @@ def _mini(tmp):
                                    "mark-dark-colour on dark chrome",
          "date": "2026-01-03", "by": "Dave",
          "says": "rail deliberately NOT rebound — a ruling-shaped residue that stays Dave's",
-         "governs": ["knowledge/snippets/one.reference.html"]}]}, indent=1), encoding="utf-8")
+         "governs": ["knowledge/snippets/one.reference.html"]},
+        # the mini's ratifying id: the ONE recorded ruling that is also in RATIFIES, so the
+        # door can be shown to open for it and for nothing else (bites 12 and 17).
+        {"id": "s277-D4", "ruled": "the mini asset kinds enter", "date": "2026-01-04",
+         "by": "Dave", "says": "go"}]}, indent=1), encoding="utf-8")
     (k / "guidelines" / "_rules-index.json").write_text(json.dumps(
         {"rules": [{"id": "icon-001", "file": "icons.md"}]}, indent=1), encoding="utf-8")
     (k / "_validate_icons.py").write_text(
@@ -911,7 +974,7 @@ def selftest():
         #     word in widget's meta; the byte-match found no alpha-free pair for it.
         hits, metas_n, pairs, _top = prose_pair_count(k, {r["slug"] for r in rows.values()})
         bite(5, "the prose route fires in the corpus and NO edge is drawn from it — measured, refused, counted", lambda:
-             hits >= 1 and pairs >= 1 and metas_n == 2
+             hits >= 1 and pairs >= 1 and metas_n == 3
              and not [e for e in of("usesIcon") if e["t"] == "icon:accessibility"]
              and not [e for e in E if e.get("via", "").startswith("prose")])
 
@@ -952,13 +1015,30 @@ def selftest():
              and not any(i.startswith("theme:") for i in ids)
              and all("s230-D2" in e["$note"] for e in df))
 
-        # 10 — the s230-D2 RESIDUE: a component the ruling names and that binds no logo is
-        #      declared as a gap, never quietly completed.
-        bite(10, "a component s230-D2 names but that binds no logo enters as a declared null quoting the ruling", lambda:
-             any(u["source"] == "component:rail" and u["type"] == "usesLogo"
-                 and "s230-D2" in u["why"] for u in rep["unresolved"])
+        # 10 — the s230-D2 RESIDUE: a component the ruling's CLAUSE names and that binds no
+        #      logo is declared as a gap, never quietly completed, and the ruling's own
+        #      sentence is quoted into the note instead of a reason hardcoded in this file.
+        _res = [u for u in rep["unresolved"]
+                if u["source"] == "component:rail" and u["type"] == "usesLogo"]
+        bite(10, "a component s230-D2's own clause names but that binds no logo enters as a declared null quoting the ruling", lambda:
+             len(_res) == 1 and "s230-D2" in _res[0]["why"]
+             and "deliberately NOT rebound" in _res[0]["note"]
+             and "56px" not in _res[0]["why"] + _res[0]["note"]   # the reason is the ruling's, not ours
              and not any(u["source"] == "component:widget" and u["type"] == "usesLogo"
                          for u in rep["unresolved"]))
+
+        # 18 — A3 (RIV, #279 lane IL): THE SECOND SUBSTRING SLUG. `chrome` is a substring of
+        #      s230-D2's English ("on light chrome") and binds no logo, so the old
+        #      substring-over-English test produced a null for it with the rail's reason
+        #      attached. The clause anchor must leave it — and every other non-named slug —
+        #      alone, while still finding the one the ruling names.
+        dr10 = next(r for r in rulings(k) if r["id"] == "s230-D2")
+        _rtext = ((dr10.get("ruled") or "") + "\n" + (dr10.get("says") or "")).lower()
+        bite(18, "the residue is anchored on s230-D2's own clause: a SECOND slug that is merely a substring of the ruling's English produces NO null", lambda:
+             "chrome" in _rtext and "chrome" in component_metas(k)
+             and [n for n, _c in residue_clauses(dr10)] == ["rail"]
+             and {u["source"] for u in rep["unresolved"] if u["type"] == "usesLogo"}
+                 == {"component:rail"})
 
         # 11 — MUTATION: the three option flags each remove exactly their own thing.
         p_i, l_i, r_i = build(k, icons_only=True)
@@ -972,26 +1052,28 @@ def selftest():
                       if e["type"] in ("usesLogo", "defaultFor")]
              and "usesIcon" not in r_u["edge_counts"] and r_u["edge_counts"]["inGroup"] == 6)
 
-        # 12 — THE DOOR. RATIFIES is empty, so --land refuses EVERY live ruling id in the
-        #      tree as well as a malformed one and a ghost, and writes nothing.
+        # 12 — THE DOOR, WITH THE ALLOWLIST OPEN (#279 lane IL). RATIFIES now holds the four
+        #      s277-D4..D7 ids, and the door must still refuse everything else: no id, a
+        #      malformed id, an unrecorded id, and a LIVE ruling that is not in the list —
+        #      each for ITS OWN reason, writing nothing. A door that gives one answer to four
+        #      different keys cannot be shown to be checking four things.
         live = [r["id"] for r in rulings(k)]
+        not_listed = [r for r in live if r not in RATIFIES]
         msgs = {}
-        for bad in [None, "not-a-ruling", "s999-D9"] + live:
+        for bad in [None, "not-a-ruling", "s999-D9"] + not_listed:
             try:
                 land(k, bad)
                 msgs[bad] = "LANDED"
             except SystemExit as e:
                 msgs[bad] = str(e)
-        # Each refusal must refuse for ITS OWN reason, in order: no id, malformed,
-        # unrecorded, then the allowlist. A door that gives one answer to four
-        # different keys cannot be shown to be checking four things.
-        bite(12, "--land REFUSES for the RIGHT reason at each gate — no id, malformed, not in _rulings.json, not in RATIFIES — and writes no file", lambda:
-             RATIFIES == () and len(live) == 2
+        bite(12, "with the allowlist OPEN, --land still REFUSES for the RIGHT reason at each gate — no id, malformed, not in _rulings.json, a live ruling not in RATIFIES — and writes no file", lambda:
+             RATIFIES == ("s277-D4", "s277-D5", "s277-D6", "s277-D7")
+             and len(live) == 3 and sorted(not_listed) == ["s001-D1", "s230-D2"]
              and all(v != "LANDED" for v in msgs.values())
              and "--ratified sNNN-DN" in msgs[None]
              and "is not a ruling id" in msgs["not-a-ruling"]
              and "is not in _rulings.json" in msgs["s999-D9"]
-             and all("does not ratify THIS proposal" in msgs[r] for r in live)
+             and all("does not ratify THIS proposal" in msgs[r] for r in not_listed)
              and not (k / LANDED_ICONS).exists() and not (k / LANDED_LOGOS).exists())
 
         # 13 — the edge-status table is honest: all six are NEW, and no edge type outside
@@ -1027,29 +1109,25 @@ def selftest():
              isinstance(rep["payload_bytes"], int) and rep["payload_bytes"] > 0
              and rep["chip"]["family"] == FAMILY and rep["chip"]["default"] == "OFF")
 
-        # 17 — THE LANDING PATH, reached the only way it can be reached today: by
-        #      TEMPORARILY opening the allowlist inside the test. Without this bite the
-        #      whole of land() is unreachable code and a mutant could gut it unseen.
-        #      RATIFIES is restored before the bite is scored.
-        g = globals()
-        was = g["RATIFIES"]
+        # 17 — THE LANDING PATH, reached the way the real land is reached (#279 lane IL): the
+        #      REAL allowlist, an id that is BOTH recorded in the corpus's _rulings.json and
+        #      listed in RATIFIES. No global is mutated by this bite any more — the door is
+        #      open on s277-D4 and the test walks through the same door the lane does.
+        snap = {str(p): p.read_bytes() for p in k.rglob("*") if p.is_file()}
         try:
-            g["RATIFIES"] = ("s001-D1",)
-            snap = {str(p): p.read_bytes() for p in k.rglob("*") if p.is_file()}
-            r17 = land(k, "s001-D1")
+            r17 = land(k, "s277-D4")
             li = json.loads((k / LANDED_ICONS).read_text(encoding="utf-8"))
             ll = json.loads((k / LANDED_LOGOS).read_text(encoding="utf-8"))
             after = {str(p): p.read_bytes() for p in k.rglob("*") if p.is_file()
                      and p.name not in (LANDED_ICONS, LANDED_LOGOS)}
         finally:
-            g["RATIFIES"] = was
             for nm in (LANDED_ICONS, LANDED_LOGOS):
                 (k / nm).unlink(missing_ok=True)
-        bite(17, "--land with an OPEN allowlist writes exactly the two node files, NAMES the ruling, drops the PROPOSED text, and leaves every input byte-identical", lambda:
-             was == () and RATIFIES == ()
-             and r17["landed"]["ratified"] == "s001-D1"
-             and li["ratified"] == "s001-D1" and ll["ratified"] == "s001-D1"
-             and "s001-D1" in li["$description"] and "s001-D1" in ll["$description"]
+        bite(17, "--land through the REAL allowlist writes exactly the two node files, NAMES the ruling, drops the PROPOSED text, and leaves every input byte-identical", lambda:
+             "s277-D4" in RATIFIES and ruling_exists("s277-D4", k)
+             and r17["landed"]["ratified"] == "s277-D4"
+             and li["ratified"] == "s277-D4" and ll["ratified"] == "s277-D4"
+             and "s277-D4" in li["$description"] and "s277-D4" in ll["$description"]
              and not any(w in li["$description"] + ll["$description"]
                          for w in ("PROPOSED", "NOT RATIFIED"))
              and after == snap)
@@ -1108,8 +1186,9 @@ def main():
           f"= +{rep['payload_pct_of_explorer']}%")
     print(f"  chip: {rep['chip']['family']} default {rep['chip']['default']}")
     print(f"  wrote {out}")
-    print("  NOT LANDED — three node kinds and six edge types are closed-vocabulary changes "
-          f"(#75); RATIFIES is {RATIFIES!r}, so --land refuses every id there is.")
+    print("  NOT LANDED — this is a dry run. Three node kinds and six edge types are "
+          f"closed-vocabulary changes (#75); RATIFIES is {RATIFIES!r}, so --land accepts "
+          "those ids and refuses every other id there is.")
     return 0
 
 

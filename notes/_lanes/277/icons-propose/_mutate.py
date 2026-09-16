@@ -111,10 +111,18 @@ MUTANTS = [
      '             if not no_logos else set())'),
 
     ("M16", "the s230-D2 residue is quietly completed instead of declared",
-     '        for slug in sorted(metas):\n'
-     '            if slug.lower() in low and slug not in bound:',
-     '        for slug in sorted(metas):\n'
-     '            if False:'),
+     '        for name, clause in residue_clauses(dr):\n'
+     '            slug = by_low.get(name.lower())',
+     '        for name, clause in []:\n'
+     '            slug = by_low.get(name.lower())'),
+
+    ("M26", "the residue goes back to the substring-over-English test (A3: a second substring "
+            "slug inherits the rail's reason)",
+     '        by_low = {s.lower(): s for s in sorted(metas)}\n'
+     '        for name, clause in residue_clauses(dr):',
+     '        by_low = {s.lower(): s for s in sorted(metas)}\n'
+     '        for name, clause in [(s, "substring") for s in sorted(metas)\n'
+     '                             if s.lower() in text.lower()]:'),
 
     ("M17", "themedBy is drawn from fillMode after all (613 identical edges)",
      '    fillmodes = {}',

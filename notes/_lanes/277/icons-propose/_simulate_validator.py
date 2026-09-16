@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """_simulate_validator.py — apply meta.schema.diff to a SCRATCH copy of knowledge/
+
+⚠ SUPERSEDED IN PART AT #279 (lane IL). The `_validate_kg.py` arm of the diff was LANDED
+on the live tree (three kinds added to REF_RE / NODE_KINDS, icon_ids()/logo_ids() added,
+three resolver entries added), so `patch_validator()` now stops at `ANCHOR MISS applying
+REF_RE/NODE_KINDS: found 0 of 1` — which is the anchor guard doing its job, not a defect:
+the thing it wanted to add is already there. The `meta.schema.json` arm is still unapplied.
 and run _validate_kg.py against the simulated tree (#277 lane RI).
 
 Why this exists. The diff proposes three node kinds and two new meta `edges`

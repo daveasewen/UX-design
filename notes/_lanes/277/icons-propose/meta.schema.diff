@@ -1,4 +1,13 @@
 PROPOSED — NOT APPLIED. Lane RI, #277, s269-D1 STEP 4.
+A4 FIX (#279 lane IL, RIV A4): the two `edges` descriptions below no longer bake live
+integers into text that would land under knowledge/ and go stale on the first
+regeneration. The FOUR DECLARED LIMITS stay, word for word in substance; the counts
+that carried them are gone, and the figures are re-derived on every run by
+gen_kg_icons.py into the generated node file, which is where a measured number belongs.
+The `_validate_kg.py` arm of this diff WAS applied at #279 lane IL, by textual addition
+(the three kinds added to REF_RE / NODE_KINDS and three resolvers added to the dict);
+the `meta.schema.json` arm below is still NOT applied — no meta carries a usesIcon or
+usesLogo list in the live tree, and the landed edges live in the node files.
 Targets: knowledge/_validate_kg.py  and  knowledge/components/meta.schema.json
 Decisions: RI-1 (the node kinds) and RI-2 (usesIcon) on
            REVIEW-icons-2026-09-16-v1.html.
@@ -131,14 +140,14 @@ knowledge/ and this lane writes nothing there.
 +          "items": {
 +            "$ref": "#/definitions/assetEdge"
 +          },
-+          "description": "s277-Dn (PROPOSED). The library glyphs this component's REFERENCE SNIPPET renders, found by byte-matching every inline <path d> against the 758 distinct normalised path keys in knowledge/assets/icons/, using _validate_icons.py's own norm() and DRE — never a second geometry index, never a regex. Measured live: 371 pairs across 105 components and 81 of the 666 icons. FOUR DECLARED LIMITS travel with the type and must not be dropped when it is read: (1) it measures the reference render, NOT the component's contract, which is why it is `usesIcon` and never `requiresIcon`; (2) 81 of 666 icons are used, so it illuminates 12% of the family — the library is a catalogue and the system consumes a twelfth of it; (3) 102 inline paths byte-match nothing and get NO entry (_validate_icons.py calls those bespoke or UNKNOWN); (4) 835 <svg> elements carry no <path> at all because they are sprite <use href=\"#…\"> refs into a <symbol> in the same file — the PAIR SET is right but per-use FREQUENCY is not measured, so no weight may be put on an entry."
++          "description": "s277-D5. The library glyphs this component's REFERENCE SNIPPET renders, found by byte-matching every inline <path d> against the distinct normalised path keys in knowledge/assets/icons/, using _validate_icons.py's own norm() and DRE — never a second geometry index, never a regex. NO COUNT IS WRITTEN HERE: the pair, component and icon totals are re-derived on every run by gen_kg_icons.py and live in knowledge/_icon_nodes.json, because a live integer baked into schema text goes stale on the first regeneration. FOUR DECLARED LIMITS travel with the type and must not be dropped when it is read: (1) it measures the reference render, NOT the component's contract, which is why it is `usesIcon` and never `requiresIcon`; (2) only a minority of the library is used at all — the library is a catalogue and the system consumes a fraction of it; (3) inline paths that byte-match nothing get NO entry (_validate_icons.py calls those bespoke or UNKNOWN); (4) many <svg> elements carry no <path> at all because they are sprite <use href=\"#…\"> refs into a <symbol> in the same file — the PAIR SET is right but per-use FREQUENCY is not measured, so no weight may be put on an entry."
 +        },
 +        "usesLogo": {
 +          "type": "array",
 +          "items": {
 +            "$ref": "#/definitions/assetEdge"
 +          },
-+          "description": "s277-Dn (PROPOSED). The logo lockups this component's reference snippet loads, read from an explicit src=/href= at an assets/logos/ path. Measured live: 18 entries across 9 components and 4 of the 12 lockups. The structural set and the prose set differ IN THE USEFUL DIRECTION — the 9 metas that say 'logo' include payment-card-visual and qr-code, which reference no logo file, and MISS app-shell-split and template-dashboard-bento, which do. app-shell-nav-rail carries NO entry and that is s230-D2's own words ('deliberately NOT rebound — 56px rail head, no lockup fits'): the gap is a declared null with a $note in the generated node file and must never be quietly completed."
++          "description": "s277-D5 / s277-D7. The logo lockups this component's reference snippet loads, read from an explicit src=/href= at an assets/logos/ path. NO COUNT IS WRITTEN HERE, for the same reason as usesIcon: the entry, component and lockup totals are re-derived on every run into knowledge/_logo_nodes.json. The structural set and the prose set differ IN THE USEFUL DIRECTION — the metas that say 'logo' include payment-card-visual and qr-code, which reference no logo file, and MISS app-shell-split and template-dashboard-bento, which do. app-shell-nav-rail carries NO entry and that is s230-D2's own words ('deliberately NOT rebound — 56px rail head, no lockup fits'): the gap is a declared null with a $note in the generated node file and must never be quietly completed."
 +        },
          "$contract": {
 
