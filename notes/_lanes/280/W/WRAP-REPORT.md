@@ -49,3 +49,19 @@ the lanes that built them, both before this ritual opened.
 7. **`s277-D12`** — still never started; nothing closed it.
 
 ⚠ **Every open item above is written as the QUESTION IT IS, not as a state of the world.**
+
+---
+
+## POST-WRAP ADDENDUM (5b) — the shipped line, written after the gate ran
+
+✅ **SHIPPED: `0317bb6`** — `SESSION_N=280 SHOWROOM_ACK=1 bash knowledge/_git_commit.sh --reconciled <msgfile> <21 named paths>`, the `#243` DECLARED not-a-wrap path, **sixth wrap running**. ⚠ **The commit was REFUSED TWICE BEFORE IT LANDED AND BOTH REFUSALS WERE THE SCRIPT WORKING:** the `#208` REUSED-MSGFILE gate caught a msgfile whose line 1 already carried a T3 prefix (a fresh, uniquely-named file fixed it), and the `#208` MENTION-MAP gate found `knowledge/_graph-mention-map.json` stale, regenerated it, and **refused to stage a path this seat had not named** — the P5 rule. Both were repaired by re-running with the path named, never by widening the stage.
+
+✅ **PUSHED AND VERIFIED. The script's own literal verdict line, quoted and not paraphrased:**
+
+```
+✅ pushed and VERIFIED: remote master == local 0317bb62edd4a8a6faa466130a37bdb8bbc792cf
+```
+
+`5cc3ecd..0317bb6  master -> master` — the eighteen commits that stood unpushed at the ritual's open (the seventeen lane commits plus this wrap's) are now on the remote.
+
+⛔ **CI IS NOT OBSERVABLE FROM THIS SEAT AND IS DECLARED RATHER THAN GUESSED.** `knowledge/_git_commit.sh` emits **no CI term at all** — its only verdict line is the push line quoted above — and `gh` is not installed in this sandbox, so no run of `.github/workflows/gates.yml` can be read back here. ⚠ **What is known, and is another session's testimony rather than this one's measurement:** #279's own record states CI `gates` was **RED on its wrap commit and INHERITED** (the same red on `7c72cc1`). **This wrap makes no claim about CI's colour on `0317bb6`** — an unobservable is written as an unobservable [[feedback-measuring-tool-must-not-guess]], and the conductor may read it back at the #281 opener.
