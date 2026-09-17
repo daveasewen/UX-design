@@ -365,7 +365,7 @@ const VIEWS=[
   {id:'design',name:'Governance',say:'what a design must or should do — the agent obeys here',obligation:['guidelines','guidelinerules','designrulings']},
   // #281 s281-D4 — `cited` renders the citation sub-chip AFTER this view's family chips: the 14
   // authored obeys→ux lines, beside the polarities, off by default like the family they join.
-  {id:'explain',name:'Theory',say:'why — the agent consults here',fams:['uxprinciples'],cited:true},
+  {id:'explain',name:'Theory',say:'why — the agent consults here',fams:['uxprinciples'],cited:true,rests:true},
   {id:'constitution',name:'The Constitution',say:'the ruling record — not a view',fams:['governance']}];
 // The third provenance sub-chip is NOT a family and NOT a derived scope (A2's per-ruling scope is
 // UNRATIFIED under s277-D8): it is the AUTHORED citation of a ruling by a design — `governedBy` in a
@@ -413,6 +413,8 @@ const READ={containedBy:['is contained by','contains'],hasPart:['has part','is p
   answersIntent:['answers intent','is answered by'],hasDataShape:['takes data shape','is taken by'],
   providesRole:['provides role','is provided by'],yieldsTo:['yields to','is yielded to by'],
   defaultActive:['is active by default for','defaults to'],obeys:['obeys','binds'],
+  // #281 s281-D6 — the rule→principle line's own reading, both ways round.
+  restsOn:['rests on','is what this rule rests on'],
   // #281 s281-D1. NOTE the neighbour two rows up: `family` is an EDGE type (component→component,
   // structure) and has been since v1.1. `inFamily` is the new one and `family:` is the new NODE
   // type; neither renames nor moves the other.
@@ -434,7 +436,7 @@ const unresolved=new Map();
 EDGES.forEach((e,k)=>{e.k=k;if(!e.t){(unresolved.get(e.s)||unresolved.set(e.s,[]).get(e.s)).push(e);return;}
   adj.get(e.s).push({e,other:e.t,out:true});adj.get(e.t).push({e,other:e.s,out:false});e.a=1;e.ta=1;});
 const typeOn={};ALLTYPES.forEach(t=>typeOn[t]=1);
-const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guidelinerules:0,uxprinciples:0,assets:0,designrulings:1,uxcited:0}; // every additive family loads OFF (assets too, s277-D4): the page opens as v1.1 and Dave adds a layer by chip. designrulings is the view sub-chip, ON like the base it gates. #281 s281-D4: uxcited is the THEORY view's sub-chip — OFF, like the family it sits beside, so the default canvas does not move a pixel
+const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guidelinerules:0,uxprinciples:0,assets:0,designrulings:1,uxcited:0,restson:0}; // every additive family loads OFF (assets too, s277-D4): the page opens as v1.1 and Dave adds a layer by chip. designrulings is the view sub-chip, ON like the base it gates. #281 s281-D4: uxcited is the THEORY view's sub-chip — OFF, like the family it sits beside, so the default canvas does not move a pixel. #281 s281-D6: restson is the same shape one type along — the rule→principle lines, also OFF
 // #280: the same never-driven idea as ?layout — `?fam=assets,governance` switches those family chips ON
 // before the first render, so a layer can be photographed without the page ever being clicked. No flag,
 // no effect: the defaults above are untouched and the page still opens as v1.1 plus nothing.
@@ -466,8 +468,16 @@ const EFAM=e=>e.fam||FAMILY[e.type];
 // shown, as for every edge — so the UX-principles chip is what puts the dots on the stage and this
 // chip is what puts the lines between them, exactly the designrulings shape.
 const UXC=e=>e.cited===true;
-const EDRAWF=e=>UXC(e)?'uxprinciples':EFAM(e);   // the colour of the view it is DRAWN in
-const EON=e=>(UXC(e)?famOn.uxcited:famOn[EFAM(e)])&&(!DR(e)||famOn.designrulings)&&!e.held;
+// #281 s281-D6 — A RULE'S OWN REASON, the same shape one type along. `restsOn` is not a split type:
+// the storage TYPE is the discriminator, so no builder flag is needed and the predicate is the type
+// itself. Like a cited line it answers to the THEORY view's chip and NOT to its storage family
+// (`guidelinerules`, the rule index it is filed in, still what INSPECT names) — a rule's reason is
+// read where the principle lives, and turning the HSBC obligation chip on is not the price of it.
+// Both ends must be on the stage, as for every edge: the HSBC rule: chip puts the rule dots there,
+// the UX-principles chip puts the principle dots there, and this chip puts the lines between them.
+const ROC=e=>e.type==='restsOn';
+const EDRAWF=e=>(UXC(e)||ROC(e))?'uxprinciples':EFAM(e);   // the colour of the view it is DRAWN in
+const EON=e=>(UXC(e)?famOn.uxcited:ROC(e)?famOn.restson:famOn[EFAM(e)])&&(!DR(e)||famOn.designrulings)&&!e.held;
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2'),ink3:css('--ink-3'),rule:css('--rule'),
   t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
@@ -502,8 +512,11 @@ const DRON=e=>!e.t||!DR(e)||famOn.designrulings;
 // canvas (which read `held`) drew none of them — a 14-line disagreement between the number and the
 // picture, inherited from 1.21. One gate, in both places, and they cannot disagree again.
 const UXCON=e=>!e.t||!UXC(e)||famOn.uxcited;
+// #281 s281-D6: and a rule→principle line answers to the Theory view's `rests on` chip in the COUNTS
+// too — the same gate in both places, so the header and the canvas cannot disagree about the 65.
+const ROON=e=>!e.t||!ROC(e)||famOn.restson;
 function recount(){SHOWN=LIVE.filter(famOK);
-  SHOWNE=LIVEE.filter(e=>famOK(e)&&DRON(e)&&UXCON(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
+  SHOWNE=LIVEE.filter(e=>famOK(e)&&DRON(e)&&UXCON(e)&&ROON(e)&&(!e.t||(famOK(byId.get(e.s))&&famOK(byId.get(e.t)))));
   count={};SHOWN.forEach(n=>count[n.type]=(count[n.type]||0)+1);
   // #279: a declared null follows its family chip like every other count (v1.12..1.14 counted the
   // 15 UX nulls chip-blind — with every family chip off the headline now reads the base's own nulls).
@@ -513,11 +526,13 @@ let UNRES=0;
 // #281 s281-D4: `obeys` is one storage type drawn under TWO chips — the HSBC rule: chip (154 lines)
 // and the Theory view's citation chip (14). A Set, so it is named once when both are on.
 const ETYPES=()=>{const s=new Set(Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]&&(famOn.designrulings||!(t==='governedBy'||t==='ruledBy'))));
-  if(famOn.uxcited)s.add(XTRA.citedType||'obeys');return [...s]};
+  if(famOn.uxcited)s.add(XTRA.citedType||'obeys');
+  if(famOn.restson)s.add(XTRA.restsType||'restsOn');else s.delete(XTRA.restsType||'restsOn');   /* #281 s281-D6: restsOn is drawn by its OWN chip, never by the family it is stored in */
+  return [...s]};
 function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${ETYPES().length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
 const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
-const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>EFAM(e)===f&&!e.held&&!UXC(e)).length}</b></span>`; // #281: a held line is in no chip's count — it is counted once, in the legend's own held row. s281-D4: and a CITED line is counted in its own chip, not in the storage family it is filed under — otherwise the HSBC rule: chip would claim 168 and draw 154
+const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>EFAM(e)===f&&!e.held&&!UXC(e)&&!ROC(e)).length}</b></span>`; // #281: a held line is in no chip's count — it is counted once, in the legend's own held row. s281-D4: and a CITED line is counted in its own chip, not in the storage family it is filed under — otherwise the HSBC rule: chip would claim 168 and draw 154
 // the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). It gates
 // edges, never nodes. v1.16 (EV §2, §5.4): its count is the citation edges it GOVERNS RIGHT NOW — drawn
 // (t resolved), both ends shown by the family chips — 28 at the page's defaults (the base metas' governedBy),
@@ -534,6 +549,15 @@ const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-f
 // lines. Painted in the Theory colour, which is the colour the canvas strokes them.
 const UXCGOV=()=>LIVEE.filter(e=>e.t&&UXC(e)&&!e.dead&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
 const chipUXC=()=>`<span class="chip edge ${famOn.uxcited?'':'off'}" data-fam="uxcited" style="--c:var(--f-uxprinciples)" title="${ESC0(XTRA.citedWhy||'cited by a design: an authored obeys from a component to a UX principle')}"><i></i>cited by a design<b>${UXCGOV()}</b></span>`;
+// #281 s281-D6 — THE THEORY VIEW'S SECOND SUB-CHIP: the authored `restsOn` lines from an HSBC rule to
+// the UX principle it rests on. Same shape as chipUXC: it gates EDGES, adds no node and no family,
+// and loads OFF so the default canvas does not move. Its count is the lines it would GOVERN right
+// now — both ends shown by the family chips — so with the HSBC rule: chip or the UX-principles chip
+// off it honestly reads 0: the dots are not on the stage, so neither are the lines. The 8 declared
+// nulls are not counted here and are never drawn; they are in the "declared, unresolved" tally with
+// every other rule-family null, which is where s275-D2 put them.
+const ROGOV=()=>LIVEE.filter(e=>e.t&&ROC(e)&&!e.dead&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
+const chipROC=()=>`<span class="chip edge ${famOn.restson?'':'off'}" data-fam="restson" style="--c:var(--f-uxprinciples)" title="${ESC0(XTRA.restsWhy||'rests on: an authored line from an HSBC rule to the UX principle it rests on')}"><i></i>rests on<b>${ROGOV()}</b></span>`;
 // v1.16: the legend folds to one bar (EV §5.1 / §5.3). Open at desktop; a closed bottom sheet at phone width.
 let legendOpen=!matchMedia('(max-width:900px)').matches;
 // #280 v1.19 — THE LEGEND DOES NOT MOVE BY ITSELF (Dave: "the legend jumps from the side to the bottom
@@ -567,7 +591,7 @@ function setLegPlace(p){legPlace=(p==='bottom')?'bottom':'side';legChosen=true;
 function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',legPlace==='bottom');legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><button class="ltog lplace" type="button" title="Move the legend. It stays where you put it — a chip, a dig or a scrub never moves it — and the choice is remembered.">${legPlace==='bottom'?'⇥ side':'⇣ bottom'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
 <div class="lbody"><div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
   ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
-  :`<div class="row">${v.fams.map(chipF).join('')}${v.cited?chipUXC():''}</div>`}</div>`).join('')}</div>
+  :`<div class="row">${v.fams.map(chipF).join('')}${v.cited?chipUXC():''}${v.rests?chipROC():''}</div>`}</div>`).join('')}</div>
 ${HELDN?`<div class="held" title="${HELDWHY}"><b>${HELDN}</b> ${HELDLBL} lines held pending a ruling — carried and readable in INSPECT, drawn by no chip, counted in none above.</div>`:''}
 <div class="trows"><div class="row">${TYPES.map(chipT).join('')}</div><div class="row">${TYPES2.map(chipT).join('')}</div></div></div>`;}
 recount();renderStats();renderLegend();
@@ -843,13 +867,15 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
-<div class="k">One graph, three views — System · Governance · Theory (s277-D8, renamed by s281-D5)</div><p>The layers were ingestion waves, not kinds of knowledge. The chips are grouped by FORCE, and the triad is three one-word nouns with a verb line under each. <b>System</b> — what exists; the agent <em>chooses</em> here: structure, usage, rendering, the components' own wiring, and the ${XTRA.assets||0} assets (icons, icon groups, logos — chip off by default, ${XTRA.assetNulls||0} declared nulls carried, never drawn). <b>Governance</b> — what a design must or should do; the agent <em>obeys</em> here: ONE obligation with three provenance sub-chips, each still its own chip — the ${XTRA.sc||0} WCAG success criteria, the ${LIVE.filter(n=>n.type==='rule').length} HSBC rules, and the rulings a design cites (authored citation only: <code>governedBy</code> in a meta, <code>ruledBy</code> in the asset files, a ruling's own <code>governs</code> naming a component — no per-ruling scope is derived; that ladder is unratified). <b>Theory</b> — why; the agent <em>consults</em> here: the graded UX principles, their polarities, and the ${XTRA.cited||0} lines a design has <b>cited</b> one of them by. Force is the edge's, not the node's: a principle cited by a meta's <code>edges.obeys</code> binds through that edge. #281 gave <code>obeys</code> a family at last — the ${LIVEE.filter(e=>e.type==='obeys'&&!UXC(e)).length} component→rule lines answer to the HSBC <code>rule:</code> chip, where a rule's own obligation belongs — and <b>s281-D4</b> settled the other branch: the ${XTRA.cited||0} component→ux lines are EXPLANATION, not obligation, so they are drawn HERE, under their own <b>cited by a design</b> chip beside the polarities, off by default like the rest of this view. Governance keeps its three provenances; no fourth was added. Each of those lines carries the designer's own <code>$why</code> sentence, readable in the edge's ↔ door. Whether force follows a principle's grade is NOT ruled by s281-D4: these 14 are the hand-authored seed of applicability, and that question waits on the rule→principle lines s281-D3 authorises.</p>
+<div class="k">One graph, three views — System · Governance · Theory (s277-D8, renamed by s281-D5)</div><p>The layers were ingestion waves, not kinds of knowledge. The chips are grouped by FORCE, and the triad is three one-word nouns with a verb line under each. <b>System</b> — what exists; the agent <em>chooses</em> here: structure, usage, rendering, the components' own wiring, and the ${XTRA.assets||0} assets (icons, icon groups, logos — chip off by default, ${XTRA.assetNulls||0} declared nulls carried, never drawn). <b>Governance</b> — what a design must or should do; the agent <em>obeys</em> here: ONE obligation with three provenance sub-chips, each still its own chip — the ${XTRA.sc||0} WCAG success criteria, the ${LIVE.filter(n=>n.type==='rule').length} HSBC rules, and the rulings a design cites (authored citation only: <code>governedBy</code> in a meta, <code>ruledBy</code> in the asset files, a ruling's own <code>governs</code> naming a component — no per-ruling scope is derived; that ladder is unratified). <b>Theory</b> — why; the agent <em>consults</em> here: the graded UX principles, their polarities, and the ${XTRA.cited||0} lines a design has <b>cited</b> one of them by. Force is the edge's, not the node's: a principle cited by a meta's <code>edges.obeys</code> binds through that edge. #281 gave <code>obeys</code> a family at last — the ${LIVEE.filter(e=>e.type==='obeys'&&!UXC(e)).length} component→rule lines answer to the HSBC <code>rule:</code> chip, where a rule's own obligation belongs — and <b>s281-D4</b> settled the other branch: the ${XTRA.cited||0} component→ux lines are EXPLANATION, not obligation, so they are drawn HERE, under their own <b>cited by a design</b> chip beside the polarities, off by default like the rest of this view. Governance keeps its three provenances; no fourth was added. Each of those lines carries the designer's own <code>$why</code> sentence, readable in the edge's ↔ door. Whether force follows a principle's grade is NOT ruled by s281-D4: these 14 are the hand-authored seed of applicability, and that question waits on the rule→principle lines s281-D3 authorises. <b>s281-D6 landed those lines</b>: ${XTRA.rests||0} authored <code>restsOn</code> edges from an HSBC rule to the principle it rests on, over ${XTRA.restsRules||0} of the 59 BLOCKING rules, plus ${XTRA.restsNulls||0} declared nulls for the rules that rest on convention alone. They are drawn under the <b>rests on</b> chip beside this one, off by default, in this view for the same reason — a rule's reason is read where the principle lives. <b>It is many-to-many</b>: ${XTRA.restsBoth||0} of the rules rest on TWO principles, because the radio on Dave's page took one answer and his own sentence said two, and where the instrument could not hold what he said the sentence wins. Each line carries the card's <code>$why</code> for the option he picked, the grade at the time of writing, and — on ${XTRA.restsNotes||0} of them — <b>his own note, verbatim</b>, all four readable in the edge's ↔ door.</p>
 <div class="k">The Constitution — not a view</div><p>The ruling record: every one of the ${XTRA.rulings||0} rulings in <code>knowledge/_rulings.json</code> — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Process, gauge and ritual rulings live here with the design-scoped ones: the record is one thing, and a ruling enters Governance only by a design's authored citation of it. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it. <b>Solid</b> ruling&rarr;ruling edges are AUTHORED: the 48 in <code>knowledge/_ruling_edges.json</code>, ratified by <b>s267-D3</b>; <code>supersedesClause</code> (dotted) supersedes or retires ONE CLAUSE of its target, not the ruling. A pair carried by an authored edge, or ratified as a plain citation, is never re-proposed.</p>
 <div class="k">Node types</div><p>${ALLTYPES.filter(t=>count[t]).map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
 <div class="k">Edge families, by view</div><p>${VIEWS.map(v=>{const fs=(v.fams||v.obligation).filter(f=>f!=='designrulings'&&famOn[f]);
   /* #281 s281-D4: the Theory view's citation sub-chip is not a family and has no FAMLABEL, so it is named here by hand when it is on — it draws in the view's own colour */
   const ex=(v.cited&&famOn.uxcited)?` &nbsp; <span class="kind" style="--c:var(--f-uxprinciples)"><i style="border-radius:0;height:2px;width:14px"></i>cited by a design</span>`:'';
-  return (fs.length||ex)?`<span class="kind" style="--c:var(--ink)"><b>${v.name}</b></span> ${fs.map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}${ex}`:''}).filter(Boolean).join('<br>')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
+  /* #281 s281-D6: and the rule→principle chip, named the same way */
+  const ro=(v.rests&&famOn.restson)?` &nbsp; <span class="kind" style="--c:var(--f-uxprinciples)"><i style="border-radius:0;height:2px;width:14px"></i>rests on</span>`:'';
+  return (fs.length||ex||ro)?`<span class="kind" style="--c:var(--ink)"><b>${v.name}</b></span> ${fs.map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}${ex}${ro}`:''}).filter(Boolean).join('<br>')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
 function renderPanel(n,nb){
   const isComp=n.type==='component';
   let h=`<div class="head"><span class="kind" style="--c:var(--c-${n.type})"><i></i>${n.type}</span><h2>${esc(n.label)}</h2><div class="id">${esc(n.id)}</div>`;
@@ -945,7 +971,7 @@ function edgeSec(n){const groups=new Map();
     const badges=vs.length?vs.map(v=>`<span class="verb" title="the twelve verbs — s277-D11, a reading map over the storage types">${esc(V[v]?V[v].force:v)} · ${esc(v)}</span>`).join('')
       :`<span class="verb" title="${esc((VERBS.unread||{})[t]||'no verb reads this storage type')}">unread</span>`;
     const reads=vs.map(v=>V[v]&&V[v].reads).filter(Boolean),sp=(VERBS.splits||{})[t];
-    h+=`<div class="egroup"><h4 style="--c:var(--f-${fam})"><i class="${g[0].e.derived?'dash':''}"></i><span>${esc(t)}</span>${badges}<b>${g.length}</b>${(g.every(x=>EON(x.e))||(fam&&famOn[fam]))?'':'<span class="verb" title="this family’s chip is off, so these are not drawn right now">chip off</span>'}${g.some(x=>x.e.held)?`<span class="verb" title="${esc(XTRA.heldWhy||'')}">held · drawn by no chip</span>`:''}${g.some(x=>UXC(x.e))?`<span class="verb" title="${esc(XTRA.citedWhy||'')}">cited by a design · drawn in Theory</span>`:''}</h4>`;
+    h+=`<div class="egroup"><h4 style="--c:var(--f-${fam})"><i class="${g[0].e.derived?'dash':''}"></i><span>${esc(t)}</span>${badges}<b>${g.length}</b>${(g.every(x=>EON(x.e))||(fam&&famOn[fam]))?'':'<span class="verb" title="this family’s chip is off, so these are not drawn right now">chip off</span>'}${g.some(x=>x.e.held)?`<span class="verb" title="${esc(XTRA.heldWhy||'')}">held · drawn by no chip</span>`:''}${g.some(x=>UXC(x.e))?`<span class="verb" title="${esc(XTRA.citedWhy||'')}">cited by a design · drawn in Theory</span>`:''}${g.some(x=>ROC(x.e))?`<span class="verb" title="${esc(XTRA.restsWhy||'')}">rests on · drawn in Theory</span>`:''}</h4>`;
     if(reads.length)h+=`<p class="reads">${reads.map(esc).join('<br>')}</p>`;
     if(sp)h+=`<p class="reads">split by ${esc(sp.by)}</p>`;
     for(const x of g.slice().sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
@@ -1183,8 +1209,22 @@ function openEdge(e,back){if(!e)return;
      different, and the ruling's whole claim is that this line's FORCE is explanation while its
      FILING is untouched. */
   if(UXC(e))row('cited by a design',`<b>drawn in the THEORY view</b>, under its own chip <b>cited by a design</b>${famOn.uxcited?'':' · that chip is off, so it is not drawn right now'}. ${esc(e.citedWhy||XTRA.citedWhy||'explanation, not obligation (s281-D4)')}`);
-  /* #281 s281-D4 — the DESIGNER'S OWN SENTENCE, authored in the meta beside the ref as `$why`. */
-  if(e.why)row('why — the designer’s own words',`<i>${esc(e.why)}</i>`);
+  /* #281 s281-D6 — a restsOn line says the same three things: where it is drawn, why there, and
+     that its FILING is untouched. Then the four facts the card carried: the sentence, the grade at
+     the time of writing, the radio letter he saw, and HIS OWN NOTE, verbatim and unedited. */
+  if(ROC(e)){
+    row('rests on',`<b>drawn in the THEORY view</b>, under its own chip <b>rests on</b>${famOn.restson?'':' · that chip is off, so it is not drawn right now'}. ${esc(XTRA.restsWhy||'an authored line from a rule to the principle it rests on (s281-D6)')}`);
+    if(e.both)row('one of two',`<b>this rule rests on TWO principles.</b> Dave’s note said “both 1 and 2” where the radio could take one answer, so both options landed, each with its own sentence (s281-D6).`);
+    if(e.besideNull)row('beside a declared null',`<b>this rule is ALSO filed as resting on convention alone.</b> He chose convention and named this option in the same note, so the null and this line both stand (s281-D6).`);
+    if(e.besideOption)row('beside a principle',`<b>this rule ALSO rests on option ${esc(e.besideOption)}.</b> He chose convention and named that option in the same note, so both stand (s281-D6).`);
+    if(e.grade)row('the principle’s grade, at the time of writing',`<b>${esc(e.grade)}</b> — the <code>ux:</code> node’s own <code>grade</code> field stays authoritative if it is ever re-graded`);
+    if(e.choice)row('the answer he gave',`option <b>${esc(e.choice)}</b> on the card${e.recommended?' · which was the recommendation':''}${e.overruled?' · <b>he OVERRULED the recommendation</b>':''}`);
+    if(e.daveNote)row('Dave’s own note, verbatim',`<i>${esc(e.daveNote)}</i>`);
+  }
+  /* #281 s281-D4 — the DESIGNER'S OWN SENTENCE, authored in the meta beside the ref as `$why`.
+     #281 s281-D6 — on a restsOn line the same field is the CARD's sentence for the option he
+     picked, so it is labelled for what it is rather than passed off as the designer's. */
+  if(e.why)row(ROC(e)?'why — the sentence on the card he answered':'why — the designer’s own words',`<i>${esc(e.why)}</i>`);
   if(e.note)row('note',esc(e.note));
   row('provenance',(e.authored?'<b>authored</b> — written in the record itself':'')
     +(e.derived?(e.authored?' · ':'')+'<b>derived</b> — proposed by a builder pass':'')
