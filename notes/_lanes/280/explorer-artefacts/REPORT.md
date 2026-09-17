@@ -276,7 +276,7 @@ with the serve command in the banner where the tabs would be.
 ## 10. Shipped
 
 * `9e04796` — **`s280-D2`** inscribed, on its own, with `notes/_RULINGS.html` re-rendered.
-* (this lane's second commit) — explorer **1.20**: `knowledge/_serve_explorer.py`, the template's
+* `e518cd6` — explorer **1.20**: `knowledge/_serve_explorer.py`, the template's
   artefact section with its tabs and its four renderers, edge inspect and the trail, the builder's
   VERSION, the regenerated page, this report, its `_subreports` copy, `shots/` (10 PNG + `shots.json`
   + `drive-served.json` + `drive-file.json`), the driver and the shot script, and the store row
