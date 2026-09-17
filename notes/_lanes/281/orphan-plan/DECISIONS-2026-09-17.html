@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Five questions — the orphan plan — #281</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;--ok:#0B6E3A;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font:400 1rem/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrapper{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;z-index:9;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrapper{display:flex;align-items:center;justify-content:space-between;height:54px;gap:var(--s3)}
+nav a,nav span{font-size:.875rem;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+nav .now{color:var(--black);font-weight:500}
+nav .jump{display:flex;gap:var(--s3)}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+h1{font-size:3.5625rem;line-height:1.05;font-weight:400;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s4)}
+h3{font-size:1.1875rem;line-height:1.25;font-weight:500;margin:0 0 var(--s3)}
+p{margin:0 0 var(--s3);max-width:72ch}
+.lede{font-size:1.1875rem;line-height:1.7;max-width:60ch}
+.meta{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+.stats div b{display:block;font-size:2.6875rem;font-weight:200;line-height:1}
+.stats div span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.dim .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:5.25rem;font-weight:100;line-height:.9;color:var(--grey-3);margin-bottom:var(--s3)}
+.tier{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin:0 0 var(--s3)}
+.unblocks{font-size:.875rem;color:var(--grey-7);border-top:1px solid var(--grey-2);padding-top:var(--s3);margin:0}
+.unblocks span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.plain{font-size:1.0625rem;line-height:1.7}
+details.tech{margin:var(--s3) 0 0;font-size:.875rem;color:var(--grey-7);max-width:72ch}
+details.tech summary{cursor:pointer;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500;padding:var(--s2) 0}
+details.tech code{font:400 .8125rem/1.6 Menlo,monospace}
+.opts{margin-top:var(--s4);border-top:1px solid var(--black)}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s3);padding:var(--s3) 0;border-bottom:1px solid var(--grey-2);cursor:pointer;align-items:start}
+.opt input{margin:6px 0 0;flex:none}
+.opt b{font-weight:500;display:block}
+.opt .tag{font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);font-weight:500;margin-left:var(--s2)}
+.opt .fa{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s1);font-size:.875rem;color:var(--grey-7);line-height:1.6}
+.opt .fa span{display:block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6)}
+label.note{display:block;margin-top:var(--s3)}
+label.note span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+label.note input{width:100%;max-width:46rem;font:400 .9375rem/1.6 inherit;padding:var(--s1) 0;border:none;border-bottom:1px solid var(--grey-3);background:none;color:var(--black)}
+label.note input:focus{outline:none;border-bottom-color:var(--accent)}
+.grey{background:var(--grey-1)}
+button{font:500 .875rem/1 inherit;letter-spacing:.06em;text-transform:uppercase;padding:14px 22px;border:none;background:var(--black);color:var(--white);cursor:pointer}
+button.ghost{background:none;color:var(--black);border-bottom:1px solid var(--accent);padding:14px 0;margin-left:var(--s4)}
+pre{background:var(--white);padding:var(--s3);overflow:auto;font:400 .8125rem/1.6 Menlo,monospace;max-height:26rem;border:1px solid var(--grey-2)}
+#msg{font-size:.875rem;color:var(--grey-7);margin-left:var(--s3)}
+footer{padding:var(--s6) 0;font-size:.75rem;letter-spacing:.06em;color:var(--grey-6)}
+@media (max-width:900px){
+ :root{--gutter:1rem}
+ h1{font-size:2.125rem} h2{font-size:1.5rem}
+ section{padding:var(--s5) 0}
+ nav .jump{display:none}
+ .stats{grid-template-columns:repeat(2,1fr);gap:var(--s3)}
+ .dim .wrap{grid-template-columns:1fr;gap:var(--s3)}
+ .idx{font-size:2.6875rem;margin-bottom:var(--s2)}
+ .opt .fa{grid-template-columns:1fr}
+ button.ghost{margin-left:0;display:block;margin-top:var(--s2)}
+}
+</style></head><body>
+<nav><div class="wrapper"><span>#281 · the orphan plan</span><span class="now">Five questions</span><span class="jump"><a href="#q1">1</a><a href="#q2">2</a><a href="#q3">3</a><a href="#q4">4</a><a href="#q5">5</a><a href="#export">Export</a></span></div></nav>
+
+<section><div class="wrapper">
+ <p class="label">The questions</p>
+ <h1>Five things only you can say. Three of them unblock a lane today.</h1>
+ <p class="lede">Your export took every recommendation on the orphan plan. Five of the eleven were “put the question”. Here are the five, each as a plain sentence with the choices under it. The first three are tier one: answer them and two lanes cut this afternoon. Four and five can wait a day without blocking anything.</p>
+ <p class="meta">Lane CM has already landed the wire answers: explorer 1.21, dark dots 157 → 108, every baked coordinate byte-identical · the 108 left are exactly the sets waiting on these questions plus the eight lockups you declared</p>
+ <div class="stats">
+  <div><b>5</b><span>questions</span></div>
+  <div><b>3</b><span>tier one — unblock a lane</span></div>
+  <div><b>2</b><span>lanes waiting on them</span></div>
+  <div><b>108</b><span>dark dots left, 100 of them question 1</span></div>
+ </div>
+</div></section>
+
+<!-- Q1 -->
+<section class="dim" id="q1"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">01</div>
+  <p class="tier">Tier one</p>
+  <p class="unblocks"><span>Unblocks</span>The principles lane: 100 dark principles lit, 32 family nodes on the stage, every principle carrying the sources it was graded on.</p>
+ </div>
+ <div class="main">
+  <h3>May a research family be a node on the stage?</h3>
+  <p class="plain">Every one of the 145 UX principles already knows which research family it came from — Laws of UX, the NN/g heuristics, GOV.UK, WCAG 2.2, Tognazzini, deceptive design, and twenty-six more. Every one also knows the sources it was graded on. The generator can draw both lines today and is holding them back because you have not yet said whether a family may be a thing on the stage. Nothing else about the graph changes: no principle moves, no polarity changes, no rule is touched.</p>
+  <p class="plain">If a family is a node, a designer can walk from “Laws of UX” to its twenty-six principles, and from any principle to its shelf. Today the only way to reach a principle is through a polarity, and polarities reach forty-five of the hundred and forty-five.</p>
+  <details class="tech"><summary>Technical</summary>
+   <p>The ruling that landed the family (<code>s275-D2</code>) put <code>inFamily</code> and <code>evidencedBy</code> behind flags in <code>gen_kg_principles.py</code>. Census <code>facts.json</code>: 145 principles, 145 with a family (32 distinct), 145 with evidence, 99 with no storage edge of any kind, 100 dark at every chip setting. Top families: fam-laws-of-ux 26 · fam-nng-heuristics 13 · fam-govuk 11 · fam-wcag22 11 · fam-tognazzini 10 · fam-deceptive-design 8. Family nodes would be a new node type (<code>family:</code>) in the <code>uxprinciples</code> family, Explanation view; evidence targets are the source records already in storage. The lane flips both flags, re-runs <code>_validate_kg.py</code>, re-runs the census and proves 100 → 0.</p>
+  </details>
+  <div class="opts">
+   <label class="opt"><input type="radio" name="q1" value="a"><div><b>Yes — families enter as nodes, and both lines go on<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Every dark principle lights the day it runs. The family is the shelf a designer browses by; the sources are the receipt, the same thing every ruling already has.</div><div><span>Against</span>A new kind of node on the stage — thirty-two of them — and the Explanation view gets busier.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q1" value="b"><div><b>Sources only — the evidence line goes on, no family nodes</b><div class="fa"><div><span>For</span>No new node kind. Every principle gets a line and a receipt.</div><div><span>Against</span>No shelf. The principles light but you still cannot browse them by where they came from.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q1" value="c"><div><b>No — both stay off, the cloud is declared</b><div class="fa"><div><span>For</span>Nothing changes.</div><div><span>Against</span>A hundred graded principles stay unreachable except through a polarity.</div></div></div></label>
+  </div>
+  <label class="note"><span>Note</span><input type="text" id="note-q1" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+
+<!-- Q2 -->
+<section class="dim" id="q2"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">02</div>
+  <p class="tier">Tier one</p>
+  <p class="unblocks"><span>Unblocks</span>A short builder lane: 24 rules get their line back without the Constitution chip.</p>
+ </div>
+ <div class="main">
+  <h3>When a ruling and a rule index both name the same guideline file, whose is it?</h3>
+  <p class="plain">Three guideline files — data visualisation, accessibility for interaction design, and naming — were claimed by the Constitution because a ruling listed them among its artefacts before the rule family got to them. Twenty-four rules defined in those files now show a line only when the whole ruling record is switched on. The builder resolved the tie by whichever record it read first. That is an accident, not a decision.</p>
+  <p class="plain">A guideline file is a guideline file whoever cites it. The cleanest answer is that the file belongs to the guideline family, and a ruling that names it draws its line to it there.</p>
+  <details class="tech"><summary>Technical</summary>
+   <p>Census set <code>rules-in-the-constitution</code>: 24 <code>rule:</code> nodes dark at “every chip on”, lit at “+ Constitution”. Files: <code>knowledge/guidelines/data-visualisation.md</code> (15 rules), <code>accessibility-interaction-design.md</code> (6), <code>naming.md</code> (3). Cause in <code>_build_kg_explorer.py</code>: the artefact node for a file is created by whichever pass runs first, and the <code>governance</code> pass runs before <code>guidelinerules</code>. The lane makes the builder declare the tie (both families name it) and assign by file kind, then re-runs the census: 24 → 0 at every-chip-on.</p>
+  </details>
+  <div class="opts">
+   <label class="opt"><input type="radio" name="q2" value="a"><div><b>The guideline family owns it; the builder declares the tie instead of resolving it by read order<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The file’s family is decided by what the file is. Twenty-four rules light without the Constitution. The tie is visible in the record.</div><div><span>Against</span>A small builder change and a re-run.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q2" value="b"><div><b>The file appears in both families</b><div class="fa"><div><span>For</span>Nobody loses a line.</div><div><span>Against</span>One file, two dots — the graph would say there are two things where there is one.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q2" value="c"><div><b>Leave it — first-named keeps it</b><div class="fa"><div><span>For</span>Nothing changes.</div><div><span>Against</span>Read order stays a hidden rule, and the next file to be double-named goes the same way.</div></div></div></label>
+  </div>
+  <label class="note"><span>Note</span><input type="text" id="note-q2" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+
+<!-- Q3 -->
+<section class="dim" id="q3"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">03</div>
+  <p class="tier">Tier one</p>
+  <p class="unblocks"><span>Unblocks</span>Fourteen held lines drawn — one more family in the chip map, already built and waiting.</p>
+ </div>
+ <div class="main">
+  <h3>Where is a design’s citation of a principle drawn?</h3>
+  <p class="plain">Ten components carry a hand-written list of what they obey, with a sentence for each. Fourteen of those lines point at a UX principle rather than a rule. You ruled they stand. Lane CM has wired everything else in that list and is holding these fourteen, drawn nowhere, until you say which view they belong to.</p>
+  <p class="plain">Two readings. One says a component citing a principle is an obligation like any other — it goes inside the Design governance box as a fourth provenance beside WCAG, the HSBC rules and the rulings a design cites. The other says a principle is a reason, not a rule — a component citing one is explaining itself, and the line belongs in the Explanation view, where the principles already live. I hold the second: the governance box was fixed at three provenances on purpose, and a principle has a grade, not a must.</p>
+  <details class="tech"><summary>Technical</summary>
+   <p>Explorer 1.21 (<code>06e28bb</code>) writes the 14 <code>obeys</code> component→<code>ux:</code> edges with <code>held: true</code>; legend and the edge’s INSPECT door say so in words. The other 154 <code>obeys</code> lines (component→rule) are drawn under the HSBC <code>rule:</code> sub-chip. <code>s277-D8</code> fixed Design governance at three provenance sub-chips and said “force is the edge’s not the node’s, so the 14 obeys→ux edges stand”. Lane CM’s report recommends option (b); this page recommends (a). Either is one chip family in the map and one line of builder change; nothing in storage moves.</p>
+  </details>
+  <div class="opts">
+   <label class="opt"><input type="radio" name="q3" value="a"><div><b>The Explanation view — a “cited by a design” chip beside the polarities<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Governance keeps its three provenances. The Explanation view gets its first door that does not start at a polarity. The designer’s own sentence rides the line.</div><div><span>Against</span>A line from a component crosses into the “why” view — the first edge of its kind to do so.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q3" value="b"><div><b>Design governance — a fourth provenance sub-chip inside the obligation box</b><div class="fa"><div><span>For</span>Everything a design obeys sits in one box, whatever it obeys.</div><div><span>Against</span>A graded principle is shown as a must. The three-provenance shape you fixed gets a fourth.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q3" value="c"><div><b>Not drawn — the fourteen stay held</b><div class="fa"><div><span>For</span>Nothing changes.</div><div><span>Against</span>The only component→principle chain in the graph stays invisible.</div></div></div></label>
+  </div>
+  <label class="note"><span>Note</span><input type="text" id="note-q3" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+
+<!-- Q4 -->
+<section class="dim" id="q4"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">04</div>
+  <p class="tier">Tier two</p>
+  <p class="unblocks"><span>Unblocks</span>The next authored edge — the one that makes “why does this rule exist” answerable.</p>
+ </div>
+ <div class="main">
+  <h3>Do we author a line from each rule to the principle it rests on?</h3>
+  <p class="plain">The graph holds four hundred and seventy rules and a hundred and forty-five graded principles, and not one line between them. A designer asking why the pie stops at five parts gets a rule and no reason. This is the question a designer brain exists to answer, and it is the one line type nobody has authored, because it orphans no dot and so never showed up on a census.</p>
+  <p class="plain">This is judgment work, not a switch. Each link needs a sentence and the principle’s grade is what makes it worth having. The audit’s proposal is to start with the fifty-nine blocking rules against the six A-grade laws — the smallest set that answers the question for the rules a design cannot ship without.</p>
+  <details class="tech"><summary>Technical</summary>
+   <p>Audit A2 Q3: rule→ux 0 of 470, no edge type in either direction; proposal <code>restsOn</code> (rule → ux), authored not parsed, starting with the 59 BLOCKING rules against the six A-grade laws (<code>s269-D5</code>, <code>s275-D5</code> extend). First move if yes: a page in this idiom, one card per rule with the proposed principle and sentence, for your export — the same shape as the icons and charts waves. Lands after questions 1 and 3 so there is something to draw it on.</p>
+  </details>
+  <div class="opts">
+   <label class="opt"><input type="radio" name="q4" value="a"><div><b>Yes — start with the fifty-nine blocking rules; bring a page for my export<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The “why” becomes answerable for the rules that matter most. Fifty-nine cards is one sitting.</div><div><span>Against</span>A lane to propose, a sitting to rule, then a lane to land. Three steps, not one.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q4" value="b"><div><b>Yes — all four hundred and seventy, proposed by a lane, reviewed in batches</b><div class="fa"><div><span>For</span>The whole question answered, eventually.</div><div><span>Against</span>Four hundred and seventy cards is many sittings, and most rules rest on a principle only loosely.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q4" value="c"><div><b>Not now — park it with a hook</b><div class="fa"><div><span>For</span>Nothing to rule on today.</div><div><span>Against</span>The designer brain’s biggest hole stays open, and nothing on the census will ever point at it.</div></div></div></label>
+  </div>
+  <label class="note"><span>Note</span><input type="text" id="note-q4" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+
+<!-- Q5 -->
+<section class="dim" id="q5"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">05</div>
+  <p class="tier">Tier two</p>
+  <p class="unblocks"><span>Unblocks</span>Nothing — a label. Rides whichever lane touches the chip bar next.</p>
+ </div>
+ <div class="main">
+  <h3>Is “Explanation” the right name for the third view?</h3>
+  <p class="plain">Your note on the plan: <em>“Explanation ist a great label maybe something like ‘UX Theory’”</em>. I read that as <em>isn’t</em>, and it is put here as a question rather than inscribed as a rename, because the note is one word away from meaning the opposite.</p>
+  <p class="plain">The three views were named by what the agent does in them — chooses, obeys, consults. “Explanation” names the act. “UX Theory” names the content, the way “Design governance” does. It reads better as a shelf label and it is your word. I would take it, and keep the small line under it — <em>why · the agent consults here</em> — so the act is still said.</p>
+  <details class="tech"><summary>Technical</summary>
+   <p><code>s277-D8</code> named the three views SYSTEM / DESIGN GOVERNANCE / EXPLANATION; the ruling says storage is untouched and only chips and fam labels move, so a rename is a label change in <code>_build_kg_explorer.py</code> (VIEWS) and the strata band label, no node id or fam key. The export from the orphan plan carries the note verbatim at <code>answers.polarity-reach.note</code>.</p>
+  </details>
+  <div class="opts">
+   <label class="opt"><input type="radio" name="q5" value="a"><div><b>Rename it “UX Theory”, keep the “why — the agent consults here” line under it<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Names what is on the shelf. Your word.</div><div><span>Against</span>The triad stops being three verbs.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q5" value="b"><div><b>Keep “Explanation”</b><div class="fa"><div><span>For</span>The three views stay named by what the agent does.</div><div><span>Against</span>You said it is not a great label.</div></div></div></label>
+   <label class="opt"><input type="radio" name="q5" value="c"><div><b>Another word — say it in the note</b><div class="fa"><div><span>For</span>Your word, exactly.</div><div><span>Against</span>—</div></div></div></label>
+  </div>
+  <label class="note"><span>Note</span><input type="text" id="note-q5" placeholder="optional — the word, if it is another one"></label>
+ </div>
+</div></div></section>
+
+<section class="grey" id="export"><div class="wrapper">
+ <p class="label">Export</p>
+ <h2>Send the answers back</h2>
+ <p>One choice per question. Nothing is inscribed until the file comes back. The export carries your pick and the recommendation side by side so the record shows where you overruled me. Also carried: your note on the logo review — <em>“we need to do the logo review soon”</em> — which is not a question here but is on the desk.</p>
+ <p><button id="takeall" type="button">Take all the recommendations</button><button id="dl" class="ghost" type="button">Download the answers</button><button id="cp" class="ghost" type="button">Copy to clipboard</button><span id="msg"></span></p>
+ <pre id="exp" hidden></pre>
+</div></section>
+
+<footer><div class="wrapper">#281 · notes/_lanes/281/orphan-plan/DECISIONS-2026-09-17.html · recommended, not ruled</div></footer>
+
+<script>
+var PAGE="DECISIONS-2026-09-17";
+var IDS=["q1","q2","q3","q4","q5"];
+var REC={q1:"a",q2:"a",q3:"a",q4:"a",q5:"a"};
+var TITLE={q1:"May a research family be a node on the stage?",q2:"When a ruling and a rule index both name the same guideline file, whose is it?",q3:"Where is a design's citation of a principle drawn?",q4:"Do we author a line from each rule to the principle it rests on?",q5:"Is 'Explanation' the right name for the third view?"};
+function state(id){var r=document.querySelector('input[name="'+id+'"]:checked');var n=document.getElementById('note-'+id);
+ var c=r?r.value:null;return {question:TITLE[id],choice:c,note:(n&&n.value)||"",recommended:REC[id],overruled:c!==null&&c!==REC[id]}}
+function envelope(){var a={};IDS.forEach(function(id){a[id]=state(id)});
+ return {exportedAt:new Date().toISOString(),page:PAGE,follows:"ORPHAN-PLAN-2026-09-17",carried:{"logo-review":"we need to do the logo review soon"},decisions:a}}
+function show(){var j=JSON.stringify(envelope(),null,2);var p=document.getElementById('exp');p.hidden=false;p.textContent=j;return j}
+document.getElementById('takeall').onclick=function(){IDS.forEach(function(id){var el=document.querySelector('input[name="'+id+'"][value="'+REC[id]+'"]');if(el)el.checked=true});show();document.getElementById('msg').textContent='all five set to the recommendation — change any before you export'};
+document.getElementById('dl').onclick=function(){var j=show();var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download=PAGE+'-export.json';a.click();document.getElementById('msg').textContent='downloaded'};
+document.getElementById('cp').onclick=function(){var j=show();try{if(navigator.clipboard&&navigator.clipboard.writeText){var w=navigator.clipboard.writeText(j);if(w&&w["catch"])w["catch"](function(){})}}catch(e){}document.getElementById('msg').textContent='copied — the JSON is below too'};
+document.addEventListener('change',function(){if(!document.getElementById('exp').hidden)show()});
+</script>
+</body></html>

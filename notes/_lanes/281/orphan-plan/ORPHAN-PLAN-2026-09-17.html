@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The orphan plan — #281</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;--ok:#0B6E3A;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--white);color:var(--black);font:400 1rem/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrapper{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;z-index:9;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrapper{display:flex;align-items:center;justify-content:space-between;height:54px;gap:var(--s3)}
+nav a,nav span{font-size:.875rem;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+nav .now{color:var(--black);font-weight:500}
+nav .jump{display:flex;gap:var(--s3)}
+nav .jump a:hover{color:var(--black)}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+section.tight{padding:var(--s6) 0}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+h1{font-size:3.5625rem;line-height:1.05;letter-spacing:0;font-weight:400;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s4)}
+h3{font-size:1.1875rem;line-height:1.25;font-weight:500;margin:0 0 var(--s3)}
+p{margin:0 0 var(--s3);max-width:72ch}
+.lede{font-size:1.1875rem;line-height:1.7;max-width:60ch}
+.meta{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+.stats div b{display:block;font-size:2.6875rem;font-weight:200;line-height:1}
+.stats div span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+caption{text-align:left;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);padding-bottom:var(--s2)}
+th,td{text-align:left;padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:baseline}
+thead th{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--black);border-bottom:1px solid var(--black)}
+tbody th{font-weight:400;white-space:nowrap}
+td b{font-weight:500}
+.of{color:var(--grey-6)}
+.st{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;white-space:nowrap}
+.st.yes{color:var(--ok)} .st.part{color:var(--grey-7)} .st.no{color:var(--accent)}
+.mv{font-size:.8125rem;color:var(--grey-7)}
+ol.plan{counter-reset:p;list-style:none;margin:0;padding:0;max-width:72ch}
+ol.plan li{counter-increment:p;position:relative;padding:var(--s3) 0 var(--s3) 4rem;border-top:1px solid var(--grey-2)}
+ol.plan li::before{content:counter(p,decimal-leading-zero);position:absolute;left:0;top:var(--s3);font-size:1.75rem;font-weight:100;color:var(--grey-5);line-height:1}
+ol.plan li b{display:block;font-weight:500;margin-bottom:var(--s1)}
+ol.plan li .who{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-left:var(--s2)}
+.dim .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:5.25rem;font-weight:100;line-height:.9;color:var(--grey-3);margin-bottom:var(--s3)}
+.aside .label{margin-bottom:var(--s2)}
+.where{font-size:.875rem;color:var(--grey-7);margin:0 0 var(--s3)}
+.cause{font-size:.875rem;font-weight:500;margin:0 0 var(--s1);border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+.cause span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:400;margin-bottom:var(--s1)}
+.causedesc{font-size:.875rem;color:var(--grey-7);line-height:1.6;margin:0}
+.qs{margin-top:var(--s3);border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+.qs span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.qs em{font-style:normal;display:block;font-size:.875rem;line-height:1.6}
+dl.fix{margin:var(--s4) 0 0;border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+dl.fix dt{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+dl.fix dd{margin:0 0 var(--s3);max-width:72ch}
+.rec{margin:var(--s4) 0 0;padding:var(--s3);background:var(--grey-1);border-left:2px solid var(--accent);max-width:72ch}
+.rec span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:var(--s1)}
+.rec p{margin:0}
+.rec p+p{margin-top:var(--s2)}
+fieldset.ask{border:none;margin:var(--s4) 0 0;padding:0}
+fieldset.ask legend{float:left;width:100%;border-top:1px solid var(--black);padding:var(--s3) 0 var(--s2);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500}
+fieldset.ask .opt:first-of-type{clear:both}
+.opt{display:flex;gap:var(--s2);align-items:baseline;padding:var(--s1) 0;cursor:pointer}
+.opt input{margin:0;flex:none;position:relative;top:2px}
+.opt span{font-size:.9375rem}
+.opt .tag{font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);font-weight:500;margin-left:var(--s1)}
+label.note{display:block;margin-top:var(--s3)}
+label.note span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+label.note input{width:100%;max-width:46rem;font:400 .9375rem/1.6 inherit;padding:var(--s1) 0;border:none;border-bottom:1px solid var(--grey-3);background:none;color:var(--black)}
+label.note input:focus{outline:none;border-bottom-color:var(--accent)}
+.grey{background:var(--grey-1)}
+.prop{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start}
+.prop .div{border-left:1px solid var(--grey-3);min-height:120px}
+button{font:500 .875rem/1 inherit;letter-spacing:.06em;text-transform:uppercase;padding:14px 22px;border:none;background:var(--black);color:var(--white);cursor:pointer}
+button:hover{background:var(--grey-8)}
+button.ghost{background:none;color:var(--black);border-bottom:1px solid var(--accent);padding:14px 0;margin-left:var(--s4)}
+pre{background:var(--white);padding:var(--s3);overflow:auto;font:400 .8125rem/1.6 Menlo,monospace;max-height:26rem;border:1px solid var(--grey-2)}
+#msg{font-size:.875rem;color:var(--grey-7);margin-left:var(--s3)}
+footer{padding:var(--s6) 0;font-size:.75rem;letter-spacing:.06em;color:var(--grey-6)}
+.tech{margin-top:var(--s4);font-size:.8125rem;color:var(--grey-7);max-width:72ch}
+.tech summary{cursor:pointer;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500}
+.tech code{font:400 .8125rem/1.6 Menlo,monospace}
+@media (max-width:900px){
+ :root{--gutter:1rem}
+ h1{font-size:2.125rem} h2{font-size:1.5rem}
+ section{padding:var(--s5) 0}
+ nav .jump{display:none}
+ .stats{grid-template-columns:repeat(2,1fr);gap:var(--s3)}
+ .dim .wrap,.prop{grid-template-columns:1fr;gap:var(--s3)}
+ .prop .div{display:none}
+ .idx{font-size:2.6875rem;margin-bottom:var(--s2)}
+ .scroll{overflow-x:auto}
+ table{min-width:34rem}
+ button.ghost{margin-left:0;display:block;margin-top:var(--s2)}
+ ol.plan li{padding-left:3rem}
+}
+</style></head><body>
+<nav><div class="wrapper"><span>#281 · recut of #280 lane OC</span><span class="now">The orphan plan</span><span class="jump"><a href="#lens">Lens</a><a href="#plan">Plan</a><a href="#sets">Sets</a><a href="#export">Export</a></span></div></nav>
+
+<section><div class="wrapper">
+ <p class="label">The plan</p>
+ <h1>157 dark dots. What each move buys a designer brain.</h1>
+ <p class="lede">The census counted the orphans and priced them. This recut turns it into a plan, and judges every set by one question: does wiring it let a designer ask the graph something they cannot ask today? Three of the sets do. Two are free to declare. And the biggest hole for a designer brain is not on the census at all, because it orphans nobody.</p>
+ <p class="meta">Figures from the #280 census (explorer 1.19, graph 2026-09-17) · the twelve designer questions from the #277 knowledge-graph audit · recommendations are mine, the radios are yours</p>
+ <div class="stats">
+  <div><b>157</b><span>dark at every setting</span></div>
+  <div><b>3</b><span>lanes if you take the recommendations</span></div>
+  <div><b>4</b><span>questions only you can answer</span></div>
+  <div><b>6 → 8</b><span>designer questions the stage can draw, of 12 · 9 with the new line</span></div>
+ </div>
+</div></section>
+
+<section id="lens"><div class="wrapper">
+ <p class="label">The lens</p>
+ <div class="prop">
+  <h2>A designer brain is a graph that answers a designer’s questions at build time.</h2>
+  <div class="div"></div>
+  <div>
+   <p>The #277 audit wrote down the twelve questions a designer actually asks of a design system, and measured which ones the graph could answer. Six are answered in storage. Two are partial. Four cannot be answered by any edge that exists.</p>
+   <p>The orphans matter only where they sit on one of those twelve. Below, each set says which question it serves — and where a set serves none, the recommendation is to declare it and stop counting it.</p>
+  </div>
+ </div>
+ <div class="scroll" style="margin-top:var(--s5)"><table>
+  <caption>The twelve questions · status in storage (audit A2) · status on the stage today · which move on this page touches it</caption>
+  <thead><tr><th scope="col">Question</th><th scope="col">In storage</th><th scope="col">On the stage</th><th scope="col">Which move</th></tr></thead>
+  <tbody>
+<tr><th scope="row">Q1 what governs this component?</th><td><span class="st yes">answered</span> <span class="of">78%</span></td><td><span class="st yes">drawn</span></td><td class="mv">—</td></tr>
+<tr><th scope="row">Q2 which components does this rule bind?</th><td><span class="st part">partial</span> <span class="of">23%</span></td><td><span class="st no">not drawn</span></td><td class="mv">03 chip map (the 154 obeys→rule lines) · 04 file ownership</td></tr>
+<tr><th scope="row">Q3 what principle underlies this rule, and its grade?</th><td><span class="st no">unanswerable</span> <span class="of">0 of 470</span></td><td><span class="st no">—</span></td><td class="mv">11 beyond the census — a new line type</td></tr>
+<tr><th scope="row">Q4 which rules conflict for this component?</th><td><span class="st no">unanswerable</span></td><td><span class="st no">—</span></td><td class="mv">03 chip map gets it to partial · the conflict edge is a separate ask</td></tr>
+<tr><th scope="row">Q5 what did Dave rule about this, and when?</th><td><span class="st yes">answered</span></td><td><span class="st yes">drawn</span> <span class="of">Constitution chip</span></td><td class="mv">04 file ownership (24 rules)</td></tr>
+<tr><th scope="row">Q6 what evidence supports that ruling?</th><td><span class="st yes">answered</span> <span class="of">593 of 593</span></td><td><span class="st yes">drawn</span></td><td class="mv">— · 01 gives principles the same thing</td></tr>
+<tr><th scope="row">Q7 which components answer this intent / data shape / role?</th><td><span class="st yes">answered</span> <span class="of">100%</span></td><td><span class="st no">not drawn</span> <span class="of">0 of 162 lines</span></td><td class="mv">03 chip map — the whole of it</td></tr>
+<tr><th scope="row">Q8 what must this not sit next to?</th><td><span class="st part">partial</span></td><td><span class="st yes">drawn</span></td><td class="mv">—</td></tr>
+<tr><th scope="row">Q9 what tokens does this consume, what breaks?</th><td><span class="st no">unanswerable</span> <span class="of">no token kind</span></td><td><span class="st no">—</span></td><td class="mv">ruled, never started (tokens at group + tier)</td></tr>
+<tr><th scope="row">Q10 which pattern / context is this used in?</th><td><span class="st yes">answered</span></td><td><span class="st yes">drawn</span></td><td class="mv">—</td></tr>
+<tr><th scope="row">Q11 what is the WCAG obligation here?</th><td><span class="st yes">answered</span> <span class="of">98%</span></td><td><span class="st yes">drawn</span></td><td class="mv">—</td></tr>
+<tr><th scope="row">Q12 what icon / logo / photo may I use here?</th><td><span class="st no">unanswerable</span> <span class="of">no asset kind</span></td><td><span class="st no">—</span></td><td class="mv">07 logos is the visible edge of it · the icons wave is ruled</td></tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:var(--s4)" class="causedesc">“On the stage” means a chip exists that draws the line. Q7 is the clearest case on the page: perfect in storage, invisible on the explorer, and fixed by one lane.</p>
+</div></section>
+
+<section id="plan" class="grey"><div class="wrapper">
+ <p class="label">The recommendation</p>
+ <h2>Six moves, in this order.</h2>
+ <ol class="plan">
+  <li><b>Wire the chip map — one lane, no question.<span class="who">Mine</span></b>Six edge types, 376 authored lines, no chip can draw any of them. Putting them in the System view lights the shapes, the intents and the roles (49 dots), and puts Q7 on the stage at 100%. Nothing new enters the graph; the page just stops hiding what is there.</li>
+  <li><b>Say whether a research family may be a node.<span class="who">Yours</span></b>The pink cloud is a switch left off. Flipping it puts 32 family nodes on the stage — a new kind of thing. I recommend yes: a principle without a home is a card without a drawer, and the designer brain needs to walk from “Laws of UX” to its 26 principles, not only from 30 polarities to 45 of them.</li>
+  <li><b>Say which family owns a file two records both name.<span class="who">Yours</span></b>Three guideline files got claimed by the Constitution because a ruling listed them first, and 24 rules went dark for it. I recommend: a guideline file belongs to the guideline family whichever record names it first, and the builder declares the tie instead of resolving it by read order.</li>
+  <li><b>Say where a component’s citation of a principle is drawn.<span class="who">Yours</span></b>14 hand-written lines from ten components to four principles. Already ruled to stand; no chip draws them. I recommend they live in the Explanation view as “cited by a design”, not as a fourth provenance in Design governance — a principle is a reason, not an obligation.</li>
+  <li><b>Put the line type the census cannot see.<span class="who">Yours</span></b>Q3 — what principle underlies this rule — is the question a designer brain exists to answer, and there is no edge type in either direction. It orphans nobody, so the census never saw it. I recommend an authored rule→principle edge, started on the 59 blocking rules against the six A-grade laws.</li>
+  <li><b>Declare the two that are not orphans.<span class="who">Mine, on your radio</span></b>94 HSBC rules are dark only because their chip loads off; 8 lockups are dark because you ruled they should show as bound by nothing. Both are declared and leave the count.</li>
+ </ol>
+ <p class="causedesc" style="margin-top:var(--s4)">If you take all six, the stage goes from six drawn designer questions to eight (nine once the rule→principle edge is authored), three lanes run (chip map · principles · file ownership), and the rule→principle edge becomes the next thing to author.</p>
+</div></section>
+
+<section id="sets" class="tight"><div class="wrapper">
+ <p class="label">The sets</p>
+ <h2>Eleven blocks. The ten from the census, plus the one it could not see.</h2>
+ <p>Each block keeps the census figure and cause, adds which designer question it serves, and marks the answer I would give. The radio is yours; the marked one is a recommendation, not a default — nothing is pre-selected.</p>
+</div></section>
+
+<!-- 01 -->
+<section class="dim" id="ux-cloud">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">01</div>
+   <p class="label">100 nodes</p>
+   <p class="where">dark at all three settings</p>
+   <p class="cause"><span>Cause</span>The source never emitted the edge</p>
+   <p class="causedesc">The edge type exists and the generator can write it; it was switched off, so nothing was emitted.</p>
+   <div class="qs"><span>Designer question</span><em>Q6 for principles — what is this principle’s home, and what was it graded on. And the walk from a family to its principles, which no question on the list asks because it has never been possible.</em></div>
+  </div>
+  <div class="main">
+   <h3>The pink cloud — 100 of 145 UX principles</h3>
+   <p>The Explanation view holds 145 principles and 30 polarities. Every polarity is wired; a principle gets a line only when a polarity names it as a party, and between them the 30 polarities reach 45 principles. The other 100 have no edge of any kind in storage.</p>
+   <p>The wiring is written. The principle generator can emit two more edge kinds, both held behind flags by the ruling that landed the family: one groups each principle under its research family (all 145 carry it, across 32 families — Laws of UX 26, NN/g heuristics 13, GOV.UK 11, WCAG 2.2 11, Tognazzini 10, deceptive design 8), the other links a principle to the sources it was graded on (all 145 carry it).</p>
+   <p>Turning the first on gives every dark dot a line the day it runs, and puts 32 family nodes on the stage.</p>
+   <div class="rec"><span>Recommendation — put the question, answer yes</span>
+    <p>Families enter as nodes in the Explanation view, and both flags go on. A designer brain that can only reach a principle through a polarity is a library where you can only find a book by its argument with another book. The family is the shelf. The sources are the receipt — the same thing Q6 already gives every ruling.</p>
+    <p>What it costs: one ruling, then one lane that flips the flags, re-runs the validator and proves the count moved from 100 to 0.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="ux-cloud" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="ux-cloud" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="ux-cloud" value="ruling"><span>It needs a ruling first — put the question<b class="tag">recommended</b></span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-ux-cloud" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 02 -->
+<section class="dim" id="polarity-reach">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">02</div>
+   <p class="label">45 of 145 principles lit</p>
+   <p class="where">not an orphan set — the reason there is one</p>
+   <p class="cause"><span>Cause</span>The source never emitted the edge</p>
+   <p class="causedesc">The Explanation view is built on one hinge: every line in it starts at a polarity.</p>
+   <div class="qs"><span>Designer question</span><em>The same as 01, seen from the other side.</em></div>
+  </div>
+  <div class="main">
+   <h3>What the Explanation view is holding up</h3>
+   <p>Every line in the Explanation view today starts at a polarity. 30 polarities, all wired, reaching 45 principles. Nothing else in the graph reaches a principle at all: not a component, not a rule, not a ruling, not a family.</p>
+   <p>So the view is not half-built — it is built on one hinge. Widening it is the same decision as the pink cloud, and answering that one answers this.</p>
+   <div class="rec"><span>Recommendation — same answer as 01</span>
+    <p>Tick whatever you tick on the pink cloud. This block exists so the export says, in your words, that the two are one decision.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="polarity-reach" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="polarity-reach" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="polarity-reach" value="ruling"><span>It needs a ruling first — put the question<b class="tag">recommended</b></span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-polarity-reach" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 03 -->
+<section class="dim" id="homeless-edges">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">03</div>
+   <p class="label">376 relations, 6 edge types</p>
+   <p class="where">never drawn, at any setting</p>
+   <p class="cause"><span>Cause</span>No edge type reaches the page</p>
+   <p class="causedesc">Authored, live, validated — and the explorer’s chip map gives the edge type no family, so no chip anywhere can draw it.</p>
+   <div class="qs"><span>Designer question</span><em>Q7 — which components answer this intent, take this data shape, provide this role. 100% in storage, 0% on the stage. Also the 154 obeys→rule lines, which are most of what Q2 and Q4 have.</em></div>
+  </div>
+  <div class="main">
+   <h3>376 lines no chip can turn on</h3>
+   <p>The whole condition, counted once: answersIntent 28 · hasDataShape 26 · providesRole 108 · obeys 168 (154 to rules, 14 to principles) · yieldsTo 45 · defaultActive 1. They pass the validator and the page has no family for any of them.</p>
+   <p>One of them orphans nobody and is the best line on the list for a designer: 45 lines saying which component yields to which. Both ends are components, both are on the stage, and the line has never appeared. That is composition knowledge — the thing a designer brain is for.</p>
+   <div class="rec"><span>Recommendation — wire it, one lane, no question</span>
+    <p>All six types get a family in the chip map; the System-view ones (intent, shape, role, yieldsTo, defaultActive, obeys→rule) light with the wiring chip they already belong beside. The 14 obeys→principle lines are the one exception and get their own block (08) because where they are drawn is your word.</p>
+    <p>What it proves: Q7 drawn at 100%, the 49 dots in 04–06 lit, pixel proof that nothing else on the stage moved. This is the free win and it goes first.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="homeless-edges" value="wire"><span>Wire it — cut the lane<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="homeless-edges" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="homeless-edges" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-homeless-edges" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 04 -->
+<section class="dim" id="shapes">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">04</div>
+   <p class="label">23 nodes</p>
+   <p class="where">dark at all three settings</p>
+   <p class="cause"><span>Cause</span>No edge type reaches the page</p>
+   <p class="causedesc">26 hasDataShape lines end here; the chip map has no family for them.</p>
+   <div class="qs"><span>Designer question</span><em>Q7b — I have this data; which chart takes it?</em></div>
+  </div>
+  <div class="main">
+   <h3>23 data shapes</h3>
+   <p>Every chart component declares the data shape it takes. 26 declarations are in the graph as lines and 23 shape dots stand at the end of them. For a designer with a dataset and no chart yet, this is the first door into the system — and it is invisible.</p>
+   <div class="rec"><span>Recommendation — wire it, rides lane 03</span>
+    <p>No question to put. It lights the moment the chip map has a family for hasDataShape.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="shapes" value="wire"><span>Wire it — cut the lane<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="shapes" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="shapes" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-shapes" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 05 -->
+<section class="dim" id="intents">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">05</div>
+   <p class="label">14 nodes</p>
+   <p class="where">dark at all three settings</p>
+   <p class="cause"><span>Cause</span>No edge type reaches the page</p>
+   <p class="causedesc">28 answersIntent lines end here; the chip map has no family for them.</p>
+   <div class="qs"><span>Designer question</span><em>Q7a — the user wants to do X; which component answers that?</em></div>
+  </div>
+  <div class="main">
+   <h3>14 intents</h3>
+   <p>28 lines say which user intent a component answers, ending on 14 dots the page will not connect. These are the closest thing the graph has to a job-to-be-done, and the least visible thing on it. A designer brain that starts from the user’s intent rather than the component catalogue starts here.</p>
+   <div class="rec"><span>Recommendation — wire it, rides lane 03</span>
+    <p>No question to put. Same one line in the chip map.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="intents" value="wire"><span>Wire it — cut the lane<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="intents" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="intents" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-intents" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 06 -->
+<section class="dim" id="roles">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">06</div>
+   <p class="label">12 nodes</p>
+   <p class="where">dark at all three settings</p>
+   <p class="cause"><span>Cause</span>No edge type reaches the page</p>
+   <p class="causedesc">108 providesRole lines end here; the chip map has no family for them.</p>
+   <div class="qs"><span>Designer question</span><em>Q7 — which components can play this role in a layout? The heaviest edge on the page by traffic.</em></div>
+  </div>
+  <div class="main">
+   <h3>12 roles</h3>
+   <p>108 lines say which role a component provides, and all of them land on 12 dots. This one edge type carries more traffic than the whole Explanation view puts on the stage, and none of it shows. The 29 components with no role are a separate held set and are not orphans here.</p>
+   <div class="rec"><span>Recommendation — wire it, rides lane 03</span>
+    <p>No question to put. Same one line in the chip map.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="roles" value="wire"><span>Wire it — cut the lane<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="roles" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="roles" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-roles" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 07 -->
+<section class="dim" id="rules-in-the-constitution">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">07</div>
+   <p class="label">24 nodes</p>
+   <p class="where">dark until the Constitution chip joins</p>
+   <p class="cause"><span>Cause</span>The relation has no declared home</p>
+   <p class="causedesc">Both ends exist and the line is drawn — but the far end was filed in a family that hides it.</p>
+   <div class="qs"><span>Designer question</span><em>Q2 and Q5 — which rules bind me, and what was ruled about them. 24 rules answer only when the whole Constitution is switched on.</em></div>
+  </div>
+  <div class="main">
+   <h3>24 rules that need the Constitution to show a line</h3>
+   <p>With every chip on, 24 rule dots are still dark. Their only line names the guideline file that defines them — and for these, that file was claimed by the Constitution family, because a ruling listed the file among its own artefacts before the rule family got to it. Three files do all the damage: data-visualisation (15 rules), accessibility-interaction-design (6), naming (3).</p>
+   <p>A guideline file is a guideline file whichever record names it first. The graph currently says otherwise, and three dots decide the fate of 24.</p>
+   <div class="rec"><span>Recommendation — put the question, answer: the guideline family owns it</span>
+    <p>A file’s family is decided by what the file is, not by who cited it first. The builder should declare a tie when two records claim one file, and the tie-break should be a rule, not read order. This is a build-order accident with a visible cost and a one-line answer.</p>
+    <p>What it costs: one ruling, then a short lane in the builder. The lane is small; the ruling is the part that has to come first.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="rules-in-the-constitution" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="rules-in-the-constitution" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="rules-in-the-constitution" value="ruling"><span>It needs a ruling first — put the question<b class="tag">recommended</b></span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-rules-in-the-constitution" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 08 -->
+<section class="dim" id="obeys-ux">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">08</div>
+   <p class="label">4 of 145 principles</p>
+   <p class="where">the edge exists, no chip draws it</p>
+   <p class="cause"><span>Cause</span>No edge type reaches the page</p>
+   <p class="causedesc">14 obeys lines from ten components to four principles, ruled to stand, never drawn.</p>
+   <div class="qs"><span>Designer question</span><em>The only component→principle chain the graph has. It is the seed of Q3 and Q4 — why does this design do what it does.</em></div>
+  </div>
+  <div class="main">
+   <h3>The 4 principles a design actually cites</h3>
+   <p>Ten components carry a hand-written list of the rules and principles they obey, with a sentence attached to each, and 14 of those 168 lines land on a principle. It was ruled that those lines stand. The page has never drawn one.</p>
+   <p>Drawing it is not the same one-line change as the shapes and the roles. The Design governance view was fixed at three provenances (WCAG, HSBC rules, design-scoped rulings). A principle is not an obligation, so putting it there as a fourth is the wrong shape.</p>
+   <div class="rec"><span>Recommendation — put the question, answer: draw it in the Explanation view</span>
+    <p>“Cited by a design” is an explanation, not a rule. The chip belongs beside the polarities, and the line reads component → principle with the designer’s own sentence on the edge. That keeps Design governance at its three provenances and gives the Explanation view its first door that does not start at a polarity.</p>
+    <p>What it costs: one ruling, then it rides lane 03 — the same chip-map line, one more family.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="obeys-ux" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="obeys-ux" value="leaf"><span>It is a leaf by design — declare it and stop counting it</span></label>
+    <label class="opt"><input type="radio" name="obeys-ux" value="ruling"><span>It needs a ruling first — put the question<b class="tag">recommended</b></span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-obeys-ux" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 09 -->
+<section class="dim" id="base-rules-chip-off">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">09</div>
+   <p class="label">94 nodes</p>
+   <p class="where">dark at the page defaults only</p>
+   <p class="cause"><span>Cause</span>A chip that is simply off</p>
+   <p class="causedesc">Nothing is broken. The chip that lights them loads off by default.</p>
+   <div class="qs"><span>Designer question</span><em>None. This is a page default, not a gap in the brain.</em></div>
+  </div>
+  <div class="main">
+   <h3>94 HSBC rules with the chip off</h3>
+   <p>At the defaults the page shows 107 rule dots in the base graph and not one line between them. It reads like the worst cloud on the page and is the cheapest: 94 light the moment the HSBC rule chip goes on, because the line that holds them belongs to the rule family, whose chip loads off.</p>
+   <div class="rec"><span>Recommendation — declare it, stop counting it</span>
+    <p>Not an orphan set. If the picture at the defaults bothers you, the fix is a page default (rule dots hide when their chip is off), and that is a one-line note here, not a lane.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="base-rules-chip-off" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="base-rules-chip-off" value="leaf"><span>It is a leaf by design — declare it and stop counting it<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="base-rules-chip-off" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-base-rules-chip-off" placeholder="optional — e.g. hide a dot whose chip is off"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 10 -->
+<section class="dim" id="logos">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">10</div>
+   <p class="label">8 nodes</p>
+   <p class="where">dark at all three settings, declared nulls only</p>
+   <p class="cause"><span>Cause</span>A leaf by design</p>
+   <p class="causedesc">Each carries a declared line to a rule that does not exist — that is what “bound by nothing” looks like drawn honestly.</p>
+   <div class="qs"><span>Designer question</span><em>Q12 — what logo may I use here — is unanswerable today, and these eight are the visible edge of it. The answer is the parked logo review, not a wire.</em></div>
+  </div>
+  <div class="main">
+   <h3>8 lockups bound by nothing</h3>
+   <p>The only orphans on the page that are orphans on purpose. You ruled they enter visibly with a declared null so the graph shows the condition the logo rule was written to fix. A separate logo review is parked against them and is already yours.</p>
+   <div class="rec"><span>Recommendation — declare it, stop counting it</span>
+    <p>They are doing their job. The count should stop including them; the logo review, when it runs, is what changes their state.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="logos" value="wire"><span>Wire it — cut the lane</span></label>
+    <label class="opt"><input type="radio" name="logos" value="leaf"><span>It is a leaf by design — declare it and stop counting it<b class="tag">recommended</b></span></label>
+    <label class="opt"><input type="radio" name="logos" value="ruling"><span>It needs a ruling first — put the question</span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-logos" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<!-- 11 -->
+<section class="dim" id="rests-on">
+ <div class="wrapper"><div class="wrap">
+  <div class="aside">
+   <div class="idx">11</div>
+   <p class="label">0 nodes — 470 rules</p>
+   <p class="where">beyond the census</p>
+   <p class="cause"><span>Cause</span>No edge type exists, in either direction</p>
+   <p class="causedesc">Not an orphan set. Every rule has a line; none of them goes to a principle. The census counts dark dots and this is a missing line.</p>
+   <div class="qs"><span>Designer question</span><em>Q3 — what principle underlies this rule, and how strong is the evidence for it. Zero of 470 today.</em></div>
+  </div>
+  <div class="main">
+   <h3>The line the census could not see</h3>
+   <p>A designer brain is asked “why” more than anything else. Why must the pie stop at five parts; why does the form label sit above the field. The answer is a principle with a grade, and the graph holds 145 graded principles and 470 rules — and not one line between them. Q3 is unanswerable not because a switch is off but because the line type was never authored.</p>
+   <p>The audit’s proposal is a rule → principle edge, authored not parsed, started where it pays most: the 59 blocking rules against the six A-grade laws. That is the smallest set that makes Q3 answerable for the rules a design cannot ship without.</p>
+   <div class="rec"><span>Recommendation — put the question; this is the next authored edge</span>
+    <p>Not a lane yet: authoring 59 links with a sentence each is judgment work, and the grade on the far end is what makes the link worth having. It lands after the chip map and the family nodes, because those two give it something to be drawn on.</p>
+    <p>If you say yes, the first move is a page like this one — the 59 rules, each with a proposed principle and the sentence — for your export.</p>
+   </div>
+   <fieldset class="ask">
+    <legend>Your call</legend>
+    <label class="opt"><input type="radio" name="rests-on" value="wire"><span>Wire it — author the 59, bring me the page</span></label>
+    <label class="opt"><input type="radio" name="rests-on" value="leaf"><span>Not now — park it with a hook</span></label>
+    <label class="opt"><input type="radio" name="rests-on" value="ruling"><span>It needs a ruling first — put the question<b class="tag">recommended</b></span></label>
+    <label class="note"><span>Note</span><input type="text" id="note-rests-on" placeholder="optional — your words, kept verbatim"></label>
+   </fieldset>
+  </div>
+ </div></div>
+</section>
+
+<section id="export" class="grey"><div class="wrapper">
+ <p class="label">Export</p>
+ <h2>Send the answers back</h2>
+ <p>One choice per block, a note where you want one. The file is the record — nothing here is inscribed until it comes back. The export carries your choice and the recommendation side by side, so the record shows where you overruled me.</p>
+ <p><button id="takeall" type="button">Take all the recommendations</button><button id="dl" class="ghost" type="button">Download the answers</button><button id="cp" class="ghost" type="button">Copy to clipboard</button><span id="msg"></span></p>
+ <pre id="exp" hidden></pre>
+ <details class="tech"><summary>Technical</summary>
+  <p>Envelope <code>{exportedAt, page, recutOf, answers:{&lt;set&gt;:{choice, note, recommended}}}</code>. The ten census ids are unchanged so a reader of the #280 envelope reads this one; <code>rests-on</code> is the eleventh and is new. Census figures: <code>notes/_lanes/280/orphan-census/facts.json</code> (explorer 1.19, commit 94204dc). Designer questions and their storage status: <code>notes/_lanes/277/kg-audit/A2-AUDIT.md</code> §Q1–Q12, corrected by <code>kg-audit-verify/VERIFY.md</code> (F5, F25, F28). “On the stage” = a chip family exists for the edge type in <code>_build_kg_explorer.py</code>. Rulings behind the blocks: the principles wave (families and evidence held behind flags), one graph three views (Design governance fixed at three provenances; the 14 obeys→ux lines stand), the twelve logos entering with declared nulls, tokens at group + tier (ruled, not started). The “6 → 8” headline: drawn today = Q1 Q5 Q6 Q8 Q10 Q11 (a chip family exists for their edge types); the plan adds Q7 (chip map) and Q2 at partial (the 154 obeys→rule lines plus file ownership); the rule→principle edge would make Q3 the ninth. Estimates from the chip map, not measured on the page — lane 03 measures them.</p>
+ </details>
+</div></section>
+
+<footer><div class="wrapper">#281 · notes/_lanes/281/orphan-plan/ORPHAN-PLAN-2026-09-17.html · recut of #280 lane OC · recommended, not ruled</div></footer>
+
+<script>
+var PAGE="ORPHAN-PLAN-2026-09-17";
+var IDS=["ux-cloud","polarity-reach","homeless-edges","shapes","intents","roles","rules-in-the-constitution","obeys-ux","base-rules-chip-off","logos","rests-on"];
+var REC={"ux-cloud":"ruling","polarity-reach":"ruling","homeless-edges":"wire","shapes":"wire","intents":"wire","roles":"wire","rules-in-the-constitution":"ruling","obeys-ux":"ruling","base-rules-chip-off":"leaf","logos":"leaf","rests-on":"ruling"};
+function state(id){
+ var r=document.querySelector('input[name="'+id+'"]:checked');
+ var n=document.getElementById('note-'+id);
+ return {choice:r?r.value:null,note:(n&&n.value)||"",recommended:REC[id]};
+}
+function envelope(){
+ var a={};IDS.forEach(function(id){a[id]=state(id)});
+ return {exportedAt:new Date().toISOString(),page:PAGE,recutOf:"ORPHANS-2026-09-17",answers:a};
+}
+function show(){var j=JSON.stringify(envelope(),null,2);var p=document.getElementById('exp');
+ p.hidden=false;p.textContent=j;return j}
+document.getElementById('takeall').onclick=function(){
+ IDS.forEach(function(id){var el=document.querySelector('input[name="'+id+'"][value="'+REC[id]+'"]');if(el)el.checked=true});
+ show();document.getElementById('msg').textContent='all eleven set to the recommendation — change any before you export'};
+document.getElementById('dl').onclick=function(){var j=show();var a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download=PAGE+'-export.json';a.click();
+ document.getElementById('msg').textContent='downloaded'};
+document.getElementById('cp').onclick=function(){var j=show();
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){
+  var w=navigator.clipboard.writeText(j);if(w&&w["catch"])w["catch"](function(){})}}catch(e){}
+ document.getElementById('msg').textContent='copied — the JSON is below too'};
+document.addEventListener('change',function(){if(!document.getElementById('exp').hidden)show()});
+</script>
+</body></html>
