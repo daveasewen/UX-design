@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What each blocking rule rests on — fifty-nine proposals — #281</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;--ok:#0B6E3A;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font:400 1rem/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrapper{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;z-index:9;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrapper{display:flex;align-items:center;justify-content:space-between;height:54px;gap:var(--s3)}
+nav a,nav span{font-size:.875rem;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+nav .now{color:var(--black);font-weight:500}
+nav .jump{display:flex;gap:var(--s3);overflow:hidden}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+h1{font-size:3.5625rem;line-height:1.05;font-weight:400;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s4)}
+h3{font-size:1.1875rem;line-height:1.35;font-weight:500;margin:0 0 var(--s3);max-width:60ch}
+p{margin:0 0 var(--s3);max-width:72ch}
+.lede{font-size:1.1875rem;line-height:1.7;max-width:60ch}
+.meta{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+.stats div b{display:block;font-size:2.6875rem;font-weight:200;line-height:1}
+.stats div span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.spread{margin-top:var(--s5);border-top:1px solid var(--black);max-width:72ch}
+.spread div{display:grid;grid-template-columns:5rem 1fr auto;gap:var(--s3);padding:var(--s2) 0;border-bottom:1px solid var(--grey-2);font-size:.9375rem}
+.spread b{font-weight:500}
+.spread span{color:var(--grey-7)}
+.grouphead{padding:var(--s6) 0 var(--s3);border-bottom:1px solid var(--black);margin-bottom:0}
+.grouphead h2{margin:0 0 var(--s1);font-size:1.5rem}
+.grouphead p{margin:0;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6)}
+.card{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;padding:var(--s5) 0;border-bottom:1px solid var(--grey-2)}
+.card>div{min-width:0}
+.opt>div{min-width:0}
+code{overflow-wrap:anywhere}
+h3,.plain,.sub,b{overflow-wrap:break-word}
+.idx{font-size:3.5625rem;font-weight:100;line-height:.9;color:var(--grey-3);margin-bottom:var(--s2)}
+.rid{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin:0 0 var(--s3)}
+.restson{font-size:.875rem;color:var(--grey-7);border-top:1px solid var(--grey-2);padding-top:var(--s3);margin:0}
+.restson span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.plain{font-size:1.0625rem;line-height:1.7}
+.said{border-left:2px solid var(--accent);padding-left:var(--s3);margin:0 0 var(--s3)}
+.said span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.gradechip{display:inline-block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);border:1px solid var(--grey-3);padding:2px 8px;margin-left:var(--s1)}
+details.tech{margin:var(--s3) 0 0;font-size:.875rem;color:var(--grey-7);max-width:72ch}
+details.tech summary{cursor:pointer;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500;padding:var(--s2) 0}
+details.tech code{font:400 .8125rem/1.6 Menlo,monospace}
+details.tech p{margin:0 0 var(--s2)}
+.opts{margin-top:var(--s4);border-top:1px solid var(--black)}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s3);padding:var(--s3) 0;border-bottom:1px solid var(--grey-2);cursor:pointer;align-items:start}
+.opt input{margin:6px 0 0;flex:none}
+.opt b{font-weight:500;display:block}
+.opt .tag{font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);font-weight:500;margin-left:var(--s2)}
+.opt .sub{font-size:.875rem;color:var(--grey-7);line-height:1.6;margin-top:var(--s1)}
+.opt input[type=text]{width:100%;max-width:32rem;font:400 .9375rem/1.6 inherit;padding:var(--s1) 0;border:none;border-bottom:1px solid var(--grey-3);background:none;color:var(--black);margin-top:var(--s1)}
+label.note{display:block;margin-top:var(--s3)}
+label.note span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+label.note input{width:100%;max-width:46rem;font:400 .9375rem/1.6 inherit;padding:var(--s1) 0;border:none;border-bottom:1px solid var(--grey-3);background:none;color:var(--black)}
+label.note input:focus,.opt input[type=text]:focus{outline:none;border-bottom-color:var(--accent)}
+.grey{background:var(--grey-1)}
+button{font:500 .875rem/1 inherit;letter-spacing:.06em;text-transform:uppercase;padding:14px 22px;border:none;background:var(--black);color:var(--white);cursor:pointer}
+button.ghost{background:none;color:var(--black);border-bottom:1px solid var(--accent);padding:14px 0;margin-left:var(--s4)}
+pre{background:var(--white);padding:var(--s3);overflow:auto;font:400 .8125rem/1.6 Menlo,monospace;max-height:26rem;border:1px solid var(--grey-2)}
+#msg{font-size:.875rem;color:var(--grey-7);margin-left:var(--s3)}
+#count{font-size:.875rem;color:var(--grey-7)}
+footer{padding:var(--s6) 0;font-size:.75rem;letter-spacing:.06em;color:var(--grey-6)}
+@media (max-width:900px){
+ :root{--gutter:1rem}
+ h1{font-size:2.125rem} h2{font-size:1.5rem}
+ section{padding:var(--s5) 0}
+ nav .jump{display:none}
+ .stats{grid-template-columns:repeat(2,1fr);gap:var(--s3)}
+ .card{grid-template-columns:1fr;gap:var(--s3)}
+ .idx{font-size:2.6875rem;margin-bottom:var(--s1)}
+ .spread div{grid-template-columns:3.5rem 1fr auto;gap:var(--s2)}
+ button.ghost{margin-left:0;display:block;margin-top:var(--s2)}
+ .opt input[type=text]{max-width:100%}
+}
+</style></head><body>
+<nav><div class="wrapper"><span>#281 · rests on</span><span class="now">59 blocking rules</span><span class="jump"><a href="#top">Top</a><a href="#cards">The rules</a><a href="#export">Export</a><span id="count"></span></span></div></nav>
+<section id="top"><div class="wrapper">
+<p class="label">The proposals</p>
+<h1>Fifty-nine rules, and what each one rests on.</h1>
+<p class="lede">You said start with the fifty-nine blocking rules and bring a page. Here they are, one card each: the rule in its own words, the principle I think it rests on, one sentence of why, and the grade that principle carries. Nothing is drawn in the graph until this page comes back from you.</p>
+<p class="plain">A card is not asking whether the rule is right. The rule is already blocking and stays blocking. It is asking what the rule's <em>reason</em> is — the thing a designer gets when they ask why the pie stops at six slices and today gets nothing. Where two reasons compete I have put both and marked the one I would take. Where nothing in the register honestly explains the rule, the card says so: <em>convention — no principle</em> is a real answer, not a gap, and 7 of the fifty-nine get it.</p>
+<p class="plain">Take all the recommendations at the bottom if you agree with the shape of it, then change the ones you do not, and send the file back. Where you pick something other than my recommendation the export records that you overruled me, so the record shows it.</p>
+<div class="stats">
+<div><b>59</b><span>blocking rules</span></div>
+<div><b>52</b><span>with a proposed principle</span></div>
+<div><b>7</b><span>convention — no principle</span></div>
+<div><b>50</b><span>offered a second reading</span></div>
+</div>
+<div class="spread">
+<div><b>A</b><span>replicated, a measured law</span><span>8 rules</span></div>
+<div><b>B</b><span>studied, a real effect with limits</span><span>9 rules</span></div>
+<div><b>C</b><span>practised, agreed guidance rather than measurement</span><span>19 rules</span></div>
+<div><b>L</b><span>an obligation in law or standard</span><span>16 rules</span></div>
+<div><b>—</b><span>convention, no principle named</span><span>7 rules</span></div>
+</div>
+<p class="meta" style="margin-top:2rem">Carrying the most rules: Text must meet a minimum contrast ratio agains 8 · People judge position on a common scale far mo 6 · Text must be readable by people with less than 6 · Information and interface components must be p 5 · Do not make people wonder whether different wo 4</p>
+</div></section>
+<div id="cards"></div>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Accessibility — content authoring</h2><p>accessibility-content-authoring.md · 2 blocking rules</p></div>
+<div class="card" id="c-aca-003">
+<div>
+<div class="idx">01</div>
+<p class="rid">aca-003</p>
+<p class="restson"><span>Rests on</span>People choose navigation paths the way animals forage: by the strongest cue that the target lies that way.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A page title is the first and often only cue a speech-output user has that they have arrived in the right place, which is exactly the foraging cue the principle describes.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:aca-003</code> — <code>accessibility-content-authoring.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “first thing a speech-output user hears”.</p>
+<p><code>restsOn → ux:pr-information-scent</code> (grade B, STUDIED; Pirolli &amp; Card). The clause of the statement that carries the link: “the strongest cue that the target lies that way”. Scope: Information-seeking in large corpora; formal model with measurable scent and patch-leaving predictions.</p>
+<p><code>restsOn → ux:pr-coga-2</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Help users find what they need”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="aca-003" value="a"><div><b>People choose navigation paths the way animals forage: by the strongest cue that the target lies that way.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">A page title is the first and often only cue a speech-output user has that they have arrived in the right place, which is exactly the foraging cue the principle describes.</div></div></label>
+<label class="opt"><input type="radio" name="aca-003" value="b"><div><b>COGA objective 2: Help users find what they need.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a findability rule rather than a perception one, a unique title is what lets someone locate the page again among a dozen open frames.</div></div></label>
+<label class="opt"><input type="radio" name="aca-003" value="c"><div><b>Convention — no principle</b><div class="sub">The title could be called a naming convention, but the rule states a perceptual consequence, so a principle is the honest home.</div></div></label>
+<label class="opt"><input type="radio" name="aca-003" value="d"><div><b>Another principle — name it</b><input type="text" id="other-aca-003" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-aca-003" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-aca-004">
+<div>
+<div class="idx">02</div>
+<p class="rid">aca-004</p>
+<p class="restson"><span>Rests on</span>People choose navigation paths the way animals forage: by the strongest cue that the target lies that way.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>CA-4 — link text uniquely describes the target (SC 2.4.4 A): unique link/nav text, in context; audio-labelled repeats (&quot;Info&quot;, &quot;Add to favourites&quot;) must be made unique.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A link is chosen on its text alone when the text is read out of context, so text that does not describe the target removes the only scent the person had.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:aca-004</code> — <code>accessibility-content-authoring.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “link text uniquely describes the target”.</p>
+<p><code>restsOn → ux:pr-information-scent</code> (grade B, STUDIED; Pirolli &amp; Card). The clause of the statement that carries the link: “People choose navigation paths the way animals forage”. Scope: Information-seeking in large corpora; formal model with measurable scent and patch-leaving predictions.</p>
+<p><code>restsOn → ux:pr-coga-2</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Help users find what they need”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="aca-004" value="a"><div><b>People choose navigation paths the way animals forage: by the strongest cue that the target lies that way.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">A link is chosen on its text alone when the text is read out of context, so text that does not describe the target removes the only scent the person had.</div></div></label>
+<label class="opt"><input type="radio" name="aca-004" value="b"><div><b>COGA objective 2: Help users find what they need.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Six identical “Info” links are six identical answers to “where do I go”, which is the finding problem stated plainly.</div></div></label>
+<label class="opt"><input type="radio" name="aca-004" value="c"><div><b>Convention — no principle</b><div class="sub">Link wording is sometimes treated as a house style matter, but the rule gives a functional test — uniqueness in context — so it is not style alone.</div></div></label>
+<label class="opt"><input type="radio" name="aca-004" value="d"><div><b>Another principle — name it</b><input type="text" id="other-aca-004" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-aca-004" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Accessibility — interaction design</h2><p>accessibility-interaction-design.md · 1 blocking rule</p></div>
+<div class="card" id="c-aid-009">
+<div>
+<div class="idx">03</div>
+<p class="rid">aid-009</p>
+<p class="restson"><span>Rests on</span>Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44, minimum exception 24×24 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; &quot;HSBC already has formal design guidance… 44×44 is therefore considered the default requirement.&quot;</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The whole rule is a size floor, and the law says in numbers why a floor exists at all: acquisition time rises as the target shrinks.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:aid-009</code> — <code>accessibility-interaction-design.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “44×44”.</p>
+<p><code>restsOn → ux:pr-fitts</code> (grade A, REPLICATED; Paul Fitts). The clause of the statement that carries the link: “shrinks with target size”. Scope: Rapid aimed movement, one dimension, mouse/stylus/finger; derived from tapping and disc-transfer tasks, not reading or decision tasks.</p>
+<p><code>restsOn → ux:pr-wcag-2-5-5</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Pointer targets are at least 44 by 44 CSS pixels”. Scope: Level AAA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="aid-009" value="a"><div><b>Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">The whole rule is a size floor, and the law says in numbers why a floor exists at all: acquisition time rises as the target shrinks.</div></div></label>
+<label class="opt"><input type="radio" name="aid-009" value="b"><div><b>Pointer targets are at least 44 by 44 CSS pixels.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Read as an obligation rather than an explanation, the rule is 2.5.5 adopted as the HSBC default with 2.5.8&#x27;s 24 as the named exception.</div></div></label>
+<label class="opt"><input type="radio" name="aid-009" value="c"><div><b>Convention — no principle</b><div class="sub">The 44 and the 24 are statutory numbers, not house convention, so a declared null would hide their source.</div></div></label>
+<label class="opt"><input type="radio" name="aid-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-aid-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-aid-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Accessibility — visual design</h2><p>accessibility-visual-design.md · 1 blocking rule</p></div>
+<div class="card" id="c-avd-006">
+<div>
+<div class="idx">04</div>
+<p class="rid">avd-006</p>
+<p class="restson"><span>Rests on</span>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images describe the ACTION (&quot;Play&quot;, not the picture); decorative images are AT-ignorable; never &quot;Image of…&quot;, &quot;Link to…&quot;, &quot;Picture of…&quot;, &quot;Add button&quot;; verbose alts harm speech-output users; unclear-purpose images should be replaced with ones that tell the story (HSBC&#x27;s text-heavy pages especially). Visu</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">An image with no text alternative is information that one population simply cannot receive, which is the perceivable principle in its plainest form.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:avd-006</code> — <code>accessibility-visual-design.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “alt describes PURPOSE”.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="avd-006" value="a"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">An image with no text alternative is information that one population simply cannot receive, which is the perceivable principle in its plainest form.</div></div></label>
+<label class="opt"><input type="radio" name="avd-006" value="b"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">The rule&#x27;s sharper half — actionable images describe the ACTION, not the picture — is a signifier rule: the alt has to say where and how to act, not what the thing looks like.</div></div></label>
+<label class="opt"><input type="radio" name="avd-006" value="c"><div><b>Convention — no principle</b><div class="sub">Alt text is a statutory requirement, not a convention, so convention would be the wrong answer here.</div></div></label>
+<label class="opt"><input type="radio" name="avd-006" value="d"><div><b>Another principle — name it</b><input type="text" id="other-avd-006" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-avd-006" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>App foundations</h2><p>app-foundations.md · 1 blocking rule</p></div>
+<div class="card" id="c-appf-002">
+<div>
+<div class="idx">05</div>
+<p class="rid">appf-002</p>
+<p class="restson"><span>Rests on</span>Do not override or remove the user&#x27;s control of their view, including motion and zoom.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>iOS: use Dynamic Type and test that the layout adapts to ALL accessibility font sizes, including the largest.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Dynamic Type is the user&#x27;s own declaration of what they can read, and a layout that breaks at the largest sizes takes that control back.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:appf-002</code> — <code>app-foundations.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “test that the layout adapts to ALL accessibility font sizes”.</p>
+<p><code>restsOn → ux:pr-idp-give-control</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Do not override or remove the user&#x27;s control of their view”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="appf-002" value="a"><div><b>Do not override or remove the user&#x27;s control of their view, including motion and zoom.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Dynamic Type is the user&#x27;s own declaration of what they can read, and a layout that breaks at the largest sizes takes that control back.</div></div></label>
+<label class="opt"><input type="radio" name="appf-002" value="b"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a legibility rule, the largest accessibility sizes exist for the sight the principle says most adults eventually have.</div></div></label>
+<label class="opt"><input type="radio" name="appf-002" value="c"><div><b>Convention — no principle</b><div class="sub">The rule names an iOS API, which could read as platform convention, but honouring a user&#x27;s own setting is a principle, not a habit.</div></div></label>
+<label class="opt"><input type="radio" name="appf-002" value="d"><div><b>Another principle — name it</b><input type="text" id="other-appf-002" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-appf-002" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Brand refresh assets</h2><p>brand-refresh-assets.md · 2 blocking rules</p></div>
+<div class="card" id="c-logo26-001">
+<div>
+<div class="idx">06</div>
+<p class="rid">logo26-001</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>An HSBC logo appears at least once on every piece of communication or customer journey.</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">Brand presence. Nothing in the register explains why a mark must appear; it is an identity requirement the business sets and no graded principle predicts.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:logo26-001</code> — <code>brand-refresh-assets.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “An HSBC logo appears at least once”.</p>
+<p><code>restsOn → ref:null</code> with the note above — the declared-null shape of <code>s275-D2</code> (RP-2 option a), a legal answer, never a dropped row.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="logo26-001" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">Brand presence. Nothing in the register explains why a mark must appear; it is an identity requirement the business sets and no graded principle predicts.</div></div></label>
+<label class="opt"><input type="radio" name="logo26-001" value="d"><div><b>Another principle — name it</b><input type="text" id="other-logo26-001" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-logo26-001" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-photo26-002">
+<div>
+<div class="idx">07</div>
+<p class="rid">photo26-002</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clichéd shots; no text as a mask. ⚠ The gen-AI ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic imagery — photography comes from the Global Image Library/approved sources only. Direct kin of the gen-AI governance regime (gai-*); Apollo&#x27;s imagery story</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">Provenance and trust governance, not perception. The ban says where an image may come from, which is a sourcing rule; no graded principle in the register speaks to image provenance.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:photo26-002</code> — <code>brand-refresh-assets.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “no Generative AI, mixed media or CGI-rendered elements in imagery”.</p>
+<p><code>restsOn → ref:null</code> with the note above — the declared-null shape of <code>s275-D2</code> (RP-2 option a), a legal answer, never a dropped row.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="photo26-002" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">Provenance and trust governance, not perception. The ban says where an image may come from, which is a sourcing rule; no graded principle in the register speaks to image provenance.</div></div></label>
+<label class="opt"><input type="radio" name="photo26-002" value="d"><div><b>Another principle — name it</b><input type="text" id="other-photo26-002" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-photo26-002" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Colour standards 2026</h2><p>colour-standards-2026.md · 9 blocking rules</p></div>
+<div class="card" id="c-col26-004">
+<div>
+<div class="idx">08</div>
+<p class="rid">col26-004</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Don&#x27;t use red backgrounds for text — prolonged exposure causes visual fatigue and reduces legibility.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule&#x27;s own reason is legibility over time, and the principle is the register&#x27;s statement that legibility is a design obligation rather than a preference.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-004</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “prolonged exposure causes visual fatigue and reduces legibility”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “Text must be readable by people with less than perfect sight”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-004" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">The rule&#x27;s own reason is legibility over time, and the principle is the register&#x27;s statement that legibility is a design obligation rather than a preference.</div></div></label>
+<label class="opt"><input type="radio" name="col26-004" value="b"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Read as a contrast rule, red is the background most likely to fail 4.5:1 against the text colours the brand allows.</div></div></label>
+<label class="opt"><input type="radio" name="col26-004" value="c"><div><b>Convention — no principle</b><div class="sub">The rule gives its own reason in the clause, so convention would be discarding a stated one.</div></div></label>
+<label class="opt"><input type="radio" name="col26-004" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-004" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-004" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-008">
+<div>
+<div class="idx">09</div>
+<p class="rid">col26-008</p>
+<p class="restson"><span>Rests on</span>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Scope: illustrations, data visualisations, status-driven interfaces (RAG, risk, gain/loss) only. &quot;Don&#x27;t use the supporting palette outside of illustration, data visualisation or RAG applications.&quot;</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Confining the supporting palette to status and chart contexts is what stops the same green meaning “good” in one place and “decoration” in another.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-008</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “illustrations, data visualisations, status-driven interfaces (RAG, risk, gain/loss) only”.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+<p><code>restsOn → ux:pr-gestalt-similarity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements sharing shape, colour or size are read as belonging to the same set”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-008" value="a"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Confining the supporting palette to status and chart contexts is what stops the same green meaning “good” in one place and “decoration” in another.</div></div></label>
+<label class="opt"><input type="radio" name="col26-008" value="b"><div><b>Elements sharing shape, colour or size are read as belonging to the same set, even when separated.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">If the supporting colours appear outside those contexts, everything wearing them reads as one set when it is not.</div></div></label>
+<label class="opt"><input type="radio" name="col26-008" value="c"><div><b>Convention — no principle</b><div class="sub">A palette scope could be pure convention, but the scope is chosen so that a supporting colour keeps one meaning, which is a usability reason.</div></div></label>
+<label class="opt"><input type="radio" name="col26-008" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-008" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-008" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-009">
+<div>
+<div class="idx">10</div>
+<p class="rid">col26-009</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Don&#x27;t use the supporting palette as text.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The supporting palette was built for fills and indicators, and its mid-tones cannot reach the text contrast floor on the brand&#x27;s backgrounds.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-009</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t use the supporting palette as text”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-009" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The supporting palette was built for fills and indicators, and its mid-tones cannot reach the text contrast floor on the brand&#x27;s backgrounds.</div></div></label>
+<label class="opt"><input type="radio" name="col26-009" value="b"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Kept out of text, a supporting colour keeps its one job as a status fill.</div></div></label>
+<label class="opt"><input type="radio" name="col26-009" value="c"><div><b>Convention — no principle</b><div class="sub">The rule is a contrast consequence, not a taste call, so a null would lose the reason.</div></div></label>
+<label class="opt"><input type="radio" name="col26-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-011">
+<div>
+<div class="idx">11</div>
+<p class="rid">col26-011</p>
+<p class="restson"><span>Rests on</span>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Data visualisation: every colour used must meet ≥3:1 against its background.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule is 1.4.11 applied to chart marks: a bar or a line is a graphical object carrying information, so the 3:1 floor is the statutory one.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-011</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “every colour used must meet ≥3:1 against its background”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-011" value="a"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The rule is 1.4.11 applied to chart marks: a bar or a line is a graphical object carrying information, so the 3:1 floor is the statutory one.</div></div></label>
+<label class="opt"><input type="radio" name="col26-011" value="b"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Read one level up, a chart colour nobody can separate from the page is information that was never delivered.</div></div></label>
+<label class="opt"><input type="radio" name="col26-011" value="c"><div><b>Convention — no principle</b><div class="sub">This is a statutory threshold quoted directly; convention would be wrong.</div></div></label>
+<label class="opt"><input type="radio" name="col26-011" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-011" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-011" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-012">
+<div>
+<div class="idx">12</div>
+<p class="rid">col26-012</p>
+<p class="restson"><span>Rests on</span>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Don&#x27;t combine HSBC Red with the supporting palette in data visualisations.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Red means call to action and, in RAG, means alert; used as an ordinary chart category alongside the supporting palette it stops meaning either.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-012</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t combine HSBC Red with the supporting palette in data visualisations”.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+<p><code>restsOn → ux:pr-von-restorff</code> (grade B, STUDIED; Hedwig von Restorff). The clause of the statement that carries the link: “An item that differs from its neighbours is remembered better”. Scope: List learning of verbal items; extended to visual salience in interfaces without direct interface replication being fetched here.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-012" value="a"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Red means call to action and, in RAG, means alert; used as an ordinary chart category alongside the supporting palette it stops meaning either.</div></div></label>
+<label class="opt"><input type="radio" name="col26-012" value="b"><div><b>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Red is the strongest attention cue the palette has, and spending it on an arbitrary category spends the salience that the alert case needs.</div></div></label>
+<label class="opt"><input type="radio" name="col26-012" value="c"><div><b>Convention — no principle</b><div class="sub">Could be read as brand hygiene, but red already carries a reserved meaning in this system, so the reason is functional.</div></div></label>
+<label class="opt"><input type="radio" name="col26-012" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-012" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-012" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-015">
+<div>
+<div class="idx">13</div>
+<p class="rid">col26-015</p>
+<p class="restson"><span>Rests on</span>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Don&#x27;t introduce colours outside the palettes.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">In this system colour is load-bearing — red is action, the supporting palette is status — so an off-palette colour is a signal with no agreed meaning.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-015</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t introduce colours outside the palettes”.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+<p><code>restsOn → ux:pr-idp-be-consistent</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Use familiar conventions and apply them consistently across the service”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-015" value="a"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">In this system colour is load-bearing — red is action, the supporting palette is status — so an off-palette colour is a signal with no agreed meaning.</div></div></label>
+<label class="opt"><input type="radio" name="col26-015" value="b"><div><b>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read more simply, a closed palette is the mechanism that makes the service look and behave like one service.</div></div></label>
+<label class="opt"><input type="radio" name="col26-015" value="c"><div><b>Convention — no principle</b><div class="sub">A closed palette is partly identity, and if the panel reads it that way the null is legal — the note would be “brand asset list”.</div></div></label>
+<label class="opt"><input type="radio" name="col26-015" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-015" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-015" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-016">
+<div>
+<div class="idx">14</div>
+<p class="rid">col26-016</p>
+<p class="restson"><span>Rests on</span>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Don&#x27;t use red typography — red text is reserved for call to actions.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Reserving red for calls to action is how the one red thing on the page stays the thing people notice; spend red on body copy and the effect is gone.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-016</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “red text is reserved for call to actions”.</p>
+<p><code>restsOn → ux:pr-von-restorff</code> (grade B, STUDIED; Hedwig von Restorff). The clause of the statement that carries the link: “An item that differs from its neighbours is remembered better than the items it sits among”. Scope: List learning of verbal items; extended to visual salience in interfaces without direct interface replication being fetched here.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-016" value="a"><div><b>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">Reserving red for calls to action is how the one red thing on the page stays the thing people notice; spend red on body copy and the effect is gone.</div></div></label>
+<label class="opt"><input type="radio" name="col26-016" value="b"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">If red sometimes means “click me” and sometimes means nothing, the reader has to check each time.</div></div></label>
+<label class="opt"><input type="radio" name="col26-016" value="c"><div><b>Convention — no principle</b><div class="sub">The rule states a reservation, and a reservation exists to protect a signal, which is a principle.</div></div></label>
+<label class="opt"><input type="radio" name="col26-016" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-016" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-016" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-017">
+<div>
+<div class="idx">15</div>
+<p class="rid">col26-017</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Dark colours on light backgrounds; light colours on dark backgrounds — never light-on-light or dark-on-dark.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Opposing luminance is the precondition for any contrast ratio at all: same-polarity pairs cannot reach the floor whatever the hue.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-017</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “never light-on-light or dark-on-dark”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-gestalt-figure-ground</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “ambiguity here is disorienting”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-017" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">Opposing luminance is the precondition for any contrast ratio at all: same-polarity pairs cannot reach the floor whatever the hue.</div></div></label>
+<label class="opt"><input type="radio" name="col26-017" value="b"><div><b>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Read perceptually, same-polarity pairs leave the eye unable to decide which layer is the object and which is the ground.</div></div></label>
+<label class="opt"><input type="radio" name="col26-017" value="c"><div><b>Convention — no principle</b><div class="sub">A luminance-polarity rule restates a statutory floor, so convention would hide its source.</div></div></label>
+<label class="opt"><input type="radio" name="col26-017" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-017" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-017" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-col26-018">
+<div>
+<div class="idx">16</div>
+<p class="rid">col26-018</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>RAG: text 4.5:1 · graphic elements (icons, chart indicators) 3:1 · surface/background use varies by scenario — refer to the specific standard.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule&#x27;s first threshold is 1.4.3 exactly — RAG labels are text and take the 4.5:1 floor.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:col26-018</code> — <code>colour-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “text 4.5:1 · graphic elements (icons, chart indicators) 3:1”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="col26-018" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The rule&#x27;s first threshold is 1.4.3 exactly — RAG labels are text and take the 4.5:1 floor.</div></div></label>
+<label class="opt"><input type="radio" name="col26-018" value="b"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">The rule&#x27;s second threshold is 1.4.11 exactly — a RAG dot or chart indicator is a graphical object at 3:1.</div></div></label>
+<label class="opt"><input type="radio" name="col26-018" value="c"><div><b>Convention — no principle</b><div class="sub">Two statutory thresholds quoted verbatim; a null would be false.</div></div></label>
+<label class="opt"><input type="radio" name="col26-018" value="d"><div><b>Another principle — name it</b><input type="text" id="other-col26-018" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-col26-018" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Data visualisation — bar charts</h2><p>data-visualisation-bar-charts.md · 2 blocking rules</p></div>
+<div class="card" id="c-dv-bar-007">
+<div>
+<div class="idx">17</div>
+<p class="rid">dv-bar-007</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>Positive + negative values: vertical bars only. Don&#x27;t put negative values on a horizontal bar chart.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Vertical bars put positive and negative on one common scale through zero, so the sign is read as position; horizontal bars make the reader judge direction instead.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-bar-007</code> — <code>data-visualisation-bar-charts.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t put negative values on a horizontal bar chart”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “People judge position on a common scale far more accurately”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+<p><code>restsOn → ux:pr-jakobs-law</code> (grade C, PRACTISED; Jakob Nielsen). The clause of the statement that carries the link: “they expect yours to work like those”. Scope: Conventional web and app interactions; strongest for structural conventions, weakest for brand-level distinctiveness.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-bar-007" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">Vertical bars put positive and negative on one common scale through zero, so the sign is read as position; horizontal bars make the reader judge direction instead.</div></div></label>
+<label class="opt"><input type="radio" name="dv-bar-007" value="b"><div><b>People spend their time on other products, so they expect yours to work like those.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as an expectation rule, up-is-more and down-is-less is what every other chart the reader has seen has taught them.</div></div></label>
+<label class="opt"><input type="radio" name="dv-bar-007" value="c"><div><b>Convention — no principle</b><div class="sub">A chart-form rule could be convention, but the reason is a measured perceptual one.</div></div></label>
+<label class="opt"><input type="radio" name="dv-bar-007" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-bar-007" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-bar-007" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-dv-bar-009">
+<div>
+<div class="idx">18</div>
+<p class="rid">dv-bar-009</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>All bar charts must include a zero baseline for the Y-axis.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A bar encodes its value as length from zero, so removing the zero baseline leaves the accurate encoding — position on a common scale — measuring something other than the value.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-bar-009</code> — <code>data-visualisation-bar-charts.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “must include a zero baseline”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “People judge position on a common scale far more accurately than angle, area or colour saturation”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-bar-009" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">A bar encodes its value as length from zero, so removing the zero baseline leaves the accurate encoding — position on a common scale — measuring something other than the value.</div></div></label>
+<label class="opt"><input type="radio" name="dv-bar-009" value="c"><div><b>Convention — no principle</b><div class="sub">The zero baseline is the single most measured rule in chart perception; convention would be a false answer.</div></div></label>
+<label class="opt"><input type="radio" name="dv-bar-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-bar-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-bar-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Data visualisation — line charts</h2><p>data-visualisation-line-charts.md · 1 blocking rule</p></div>
+<div class="card" id="c-dv-line-011">
+<div>
+<div class="idx">19</div>
+<p class="rid">dv-line-011</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>Straight lines between data points. Never gratuitous curves for aesthetics — they distort the data.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The reader takes position on the line as the value, so a spline between two points asserts positions that were never measured.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-line-011</code> — <code>data-visualisation-line-charts.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Never gratuitous curves for aesthetics — they distort the data”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “People judge position on a common scale far more accurately”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+<p><code>restsOn → ux:pr-gestalt-continuity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements on a line or curve are read as related and as continuing in that direction”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-line-011" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">The reader takes position on the line as the value, so a spline between two points asserts positions that were never measured.</div></div></label>
+<label class="opt"><input type="radio" name="dv-line-011" value="b"><div><b>Elements on a line or curve are read as related and as continuing in that direction.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">A curve is read as a continuing trend, which is the specific false claim a smoothed line makes between samples.</div></div></label>
+<label class="opt"><input type="radio" name="dv-line-011" value="c"><div><b>Convention — no principle</b><div class="sub">The rule states the distortion in its own clause, so it does not rest on convention.</div></div></label>
+<label class="opt"><input type="radio" name="dv-line-011" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-line-011" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-line-011" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Data visualisation — pie charts</h2><p>data-visualisation-pie-charts.md · 2 blocking rules</p></div>
+<div class="card" id="c-dv-pie-009">
+<div>
+<div class="idx">20</div>
+<p class="rid">dv-pie-009</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>Maximum 6 slices — both pie and doughnut. More than 6 categories → combine the smallest into a single &quot;Other&quot; slice, or use a different chart type.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A pie already uses the least accurate encodings the principle names, and every extra slice shrinks the angles being compared, so a ceiling is damage control.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-pie-009</code> — <code>data-visualisation-pie-charts.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Maximum 6 slices”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “far more accurately than angle, area or colour saturation”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+<p><code>restsOn → ux:pr-working-memory-4</code> (grade B, STUDIED; Nelson Cowan). The clause of the statement that carries the link: “Working memory holds about four chunks, not seven”. Scope: Capacity measured when rehearsal and chunking are blocked; adults, laboratory tasks.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-pie-009" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">A pie already uses the least accurate encodings the principle names, and every extra slice shrinks the angles being compared, so a ceiling is damage control.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-009" value="b"><div><b>Working memory holds about four chunks, not seven; the classic seven came from tasks that allowed rehearsal.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Read as a load rule, a legend of seven or more categories is more than the reader can hold while looking at the wedges.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-009" value="c"><div><b>Convention — no principle</b><div class="sub">The exact number 6 is a house choice, but the reason for having a ceiling is measured.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-pie-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-pie-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-dv-pie-010">
+<div>
+<div class="idx">21</div>
+<p class="rid">dv-pie-010</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>Values must add up to the total sum; always include value indicators.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Printing the number beside the wedge replaces the angle judgment the principle says is inaccurate with a reading, which is accurate.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-pie-010</code> — <code>data-visualisation-pie-charts.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “always include value indicators”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “far more accurately than angle, area or colour saturation”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+<p><code>restsOn → ux:pr-mental-model</code> (grade C, PRACTISED; Craik; Johnson-Laird; Norman). The clause of the statement that carries the link: “mismatches with it produce errors”. Scope: Broad cognitive claim with a large literature; the interface application is via Norman&#x27;s gulfs of execution and evaluation.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-pie-010" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">Printing the number beside the wedge replaces the angle judgment the principle says is inaccurate with a reading, which is accurate.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-010" value="b"><div><b>People act on a compressed internal model of how the system works, and mismatches with it produce errors.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">A pie asserts that the parts are the whole; slices that do not sum to the total contradict the model the form itself created.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-010" value="c"><div><b>Convention — no principle</b><div class="sub">The summing requirement is arithmetic honesty; the label requirement has a perceptual reason, so neither is convention.</div></div></label>
+<label class="opt"><input type="radio" name="dv-pie-010" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-pie-010" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-pie-010" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Data visualisation</h2><p>data-visualisation.md · 4 blocking rules</p></div>
+<div class="card" id="c-dv-004">
+<div>
+<div class="idx">22</div>
+<p class="rid">dv-004</p>
+<p class="restson"><span>Rests on</span>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Colour separation: don&#x27;t rely on colour to separate values — minimum 2px separation between colour blocks.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A reader who cannot separate two hues gets no boundary at all unless a second, non-colour cue carries it, which is what the 2px gap is.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-004</code> — <code>data-visualisation.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “don&#x27;t rely on colour to separate values”.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Information and interface components must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+<p><code>restsOn → ux:pr-gestalt-common-region</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “the boundary outranks proximity”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-004" value="a"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">A reader who cannot separate two hues gets no boundary at all unless a second, non-colour cue carries it, which is what the 2px gap is.</div></div></label>
+<label class="opt"><input type="radio" name="dv-004" value="b"><div><b>Elements inside a shared, bounded area are read as a group, and the boundary outranks proximity.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">The gap is a boundary, and the principle says a boundary is read before and above anything else, including colour.</div></div></label>
+<label class="opt"><input type="radio" name="dv-004" value="c"><div><b>Convention — no principle</b><div class="sub">“Not colour alone” is statutory; the 2px figure is the house&#x27;s implementation of it.</div></div></label>
+<label class="opt"><input type="radio" name="dv-004" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-004" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-004" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-dv-009">
+<div>
+<div class="idx">23</div>
+<p class="rid">dv-009</p>
+<p class="restson"><span>Rests on</span>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>2-dimensional, flat colour fills only. No 3D styles, no gradient fills.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A 3D extrusion adds area and a gradient adds saturation — the two encodings the principle names as least accurate — on top of the length that was carrying the value.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-009</code> — <code>data-visualisation.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “No 3D styles, no gradient fills”.</p>
+<p><code>restsOn → ux:pr-graphical-perception</code> (grade A, REPLICATED; Cleveland &amp; McGill). The clause of the statement that carries the link: “far more accurately than angle, area or colour saturation”. Scope: Static 2D statistical graphics, accuracy of magnitude judgement. Not aesthetic preference, not memorability.</p>
+<p><code>restsOn → ux:pr-nng-minimalist</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “Every extra element on a screen competes with the elements that matter”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-009" value="a"><div><b>People judge position on a common scale far more accurately than angle, area or colour saturation.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">A 3D extrusion adds area and a gradient adds saturation — the two encodings the principle names as least accurate — on top of the length that was carrying the value.</div></div></label>
+<label class="opt"><input type="radio" name="dv-009" value="b"><div><b>Every extra element on a screen competes with the elements that matter.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a noise rule, bevels and gradients are ink that carries no data and competes with the ink that does.</div></div></label>
+<label class="opt"><input type="radio" name="dv-009" value="c"><div><b>Convention — no principle</b><div class="sub">A style ban that has a measured reason is not convention.</div></div></label>
+<label class="opt"><input type="radio" name="dv-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-dv-016">
+<div>
+<div class="idx">24</div>
+<p class="rid">dv-016</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Chart building blocks (titles, axis labels, axis/grid lines): black-or-grey on light, white-or-grey on dark, ≥3:1 (WCAG 2.1 AA).</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Titles and axis labels are text, so the rule is the text-contrast obligation applied to the furniture of a chart rather than to its body copy.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-016</code> — <code>data-visualisation.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “black-or-grey on light, white-or-grey on dark, ≥3:1”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-016" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">Titles and axis labels are text, so the rule is the text-contrast obligation applied to the furniture of a chart rather than to its body copy.</div></div></label>
+<label class="opt"><input type="radio" name="dv-016" value="b"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Axis and grid lines are graphical objects, and 3:1 is the floor the rule quotes, so half of it is 1.4.11 rather than 1.4.3.</div></div></label>
+<label class="opt"><input type="radio" name="dv-016" value="c"><div><b>Convention — no principle</b><div class="sub">The 3:1 is quoted from WCAG in the rule itself; convention would be wrong.</div></div></label>
+<label class="opt"><input type="radio" name="dv-016" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-016" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-016" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-dv-017">
+<div>
+<div class="idx">25</div>
+<p class="rid">dv-017</p>
+<p class="restson"><span>Rests on</span>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Only palette colours in charts (print/digital palette, or the programme toolkit). Now: the unified supporting palette.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A fixed chart palette is what lets a reader carry the meaning of a colour from one chart to the next without relearning it.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:dv-017</code> — <code>data-visualisation.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Only palette colours in charts”.</p>
+<p><code>restsOn → ux:pr-idp-be-consistent</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Use familiar conventions and apply them consistently across the service”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="dv-017" value="a"><div><b>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">A fixed chart palette is what lets a reader carry the meaning of a colour from one chart to the next without relearning it.</div></div></label>
+<label class="opt"><input type="radio" name="dv-017" value="b"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">An off-palette colour in a chart is a category the reader has to decode from scratch.</div></div></label>
+<label class="opt"><input type="radio" name="dv-017" value="c"><div><b>Convention — no principle</b><div class="sub">If the panel reads the palette as a brand asset list rather than a meaning system, the null is legal.</div></div></label>
+<label class="opt"><input type="radio" name="dv-017" value="d"><div><b>Another principle — name it</b><input type="text" id="other-dv-017" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-dv-017" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Icons</h2><p>icons.md · 6 blocking rules</p></div>
+<div class="card" id="c-icon-002">
+<div>
+<div class="idx">26</div>
+<p class="rid">icon-002</p>
+<p class="restson"><span>Rests on</span>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Don&#x27;t use illustrations as icons (site echoes our icon-source rule at brand level).</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">An icon is a signifier of an available action; an illustration is a picture, and putting one in the action slot removes the cue that says “you can act here”.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-002</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t use illustrations as icons”.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+<p><code>restsOn → ux:pr-gestalt-similarity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements sharing shape, colour or size are read as belonging to the same set”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-002" value="a"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">An icon is a signifier of an available action; an illustration is a picture, and putting one in the action slot removes the cue that says “you can act here”.</div></div></label>
+<label class="opt"><input type="radio" name="icon-002" value="b"><div><b>Elements sharing shape, colour or size are read as belonging to the same set, even when separated.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Icons are recognised as a set by their shared weight and construction, and an illustration dropped among them is read as a different kind of thing.</div></div></label>
+<label class="opt"><input type="radio" name="icon-002" value="c"><div><b>Convention — no principle</b><div class="sub">The two forms are separate brand assets, so a convention reading is defensible — but the rule protects a functional signal.</div></div></label>
+<label class="opt"><input type="radio" name="icon-002" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-002" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-002" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-icon-005">
+<div>
+<div class="idx">27</div>
+<p class="rid">icon-005</p>
+<p class="restson"><span>Rests on</span>Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.<span class="gradechip">grade A — replicated, a measured law</span></p>
+</div>
+<div>
+<h3>Functional icons need a minimum 44×44px target area.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A 16px glyph is not a 16px target, and the law is why the touchable area rather than the drawn area is what the rule constrains.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-005</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “minimum 44×44px target area”.</p>
+<p><code>restsOn → ux:pr-fitts</code> (grade A, REPLICATED; Paul Fitts). The clause of the statement that carries the link: “shrinks with target size”. Scope: Rapid aimed movement, one dimension, mouse/stylus/finger; derived from tapping and disc-transfer tasks, not reading or decision tasks.</p>
+<p><code>restsOn → ux:pr-wcag-2-5-5</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Pointer targets are at least 44 by 44 CSS pixels”. Scope: Level AAA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-005" value="a"><div><b>Time to hit a target grows with distance and shrinks with target size, by a logarithmic relation that predicts real numbers.<span class="gradechip">grade A — replicated, a measured law</span><span class="tag">recommended</span></b><div class="sub">A 16px glyph is not a 16px target, and the law is why the touchable area rather than the drawn area is what the rule constrains.</div></div></label>
+<label class="opt"><input type="radio" name="icon-005" value="b"><div><b>Pointer targets are at least 44 by 44 CSS pixels.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Read as an obligation, 44×44 is 2.5.5 verbatim.</div></div></label>
+<label class="opt"><input type="radio" name="icon-005" value="c"><div><b>Convention — no principle</b><div class="sub">A measured size floor with a statutory twin; convention would be false.</div></div></label>
+<label class="opt"><input type="radio" name="icon-005" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-005" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-005" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-icon-006">
+<div>
+<div class="idx">28</div>
+<p class="rid">icon-006</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Minimum 16px, maximum 48px; scale proportionately in 2px increments.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The floor exists because an icon&#x27;s strokes stop resolving at small sizes for exactly the sight the principle describes; the ceiling and the increments are construction.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-006</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Minimum 16px, maximum 48px”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-gestalt-similarity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements sharing shape, colour or size are read as belonging to the same set”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-006" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">The floor exists because an icon&#x27;s strokes stop resolving at small sizes for exactly the sight the principle describes; the ceiling and the increments are construction.</div></div></label>
+<label class="opt"><input type="radio" name="icon-006" value="b"><div><b>Elements sharing shape, colour or size are read as belonging to the same set, even when separated.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Read as a set rule, the size band and the 2px step are what keep a row of icons reading as one family.</div></div></label>
+<label class="opt"><input type="radio" name="icon-006" value="c"><div><b>Convention — no principle</b><div class="sub">The 2px increments and the 48px ceiling are house construction rules with no principle behind them; only the 16px floor has a perceptual reason.</div></div></label>
+<label class="opt"><input type="radio" name="icon-006" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-006" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-006" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-icon-011">
+<div>
+<div class="idx">29</div>
+<p class="rid">icon-011</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Icons require 4.5:1 contrast in all instances — &quot;like text&quot;, labelled or not.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule says “like text” in its own words: the house takes the 4.5:1 text floor for icons rather than the 3:1 graphical one.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-011</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Icons require 4.5:1 contrast in all instances”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-011" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The rule says “like text” in its own words: the house takes the 4.5:1 text floor for icons rather than the 3:1 graphical one.</div></div></label>
+<label class="opt"><input type="radio" name="icon-011" value="b"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">The statutory floor for an icon is 3:1, so read against the obligation the house rule is deliberately stricter than the law requires.</div></div></label>
+<label class="opt"><input type="radio" name="icon-011" value="c"><div><b>Convention — no principle</b><div class="sub">A stricter-than-statutory threshold is still a threshold with a source.</div></div></label>
+<label class="opt"><input type="radio" name="icon-011" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-011" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-011" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-icon-012">
+<div>
+<div class="idx">30</div>
+<p class="rid">icon-012</p>
+<p class="restson"><span>Rests on</span>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Code: icon with label → `alt=&quot;&quot;` (null); icon without label → `alt` = icon name.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The second half is the obligation exactly: an unlabelled icon carries meaning nobody using speech output can perceive unless it is named.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-012</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “icon with label → `alt=&quot;&quot;` (null); icon without label → `alt` = icon name”.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Information and interface components must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+<p><code>restsOn → ux:pr-nng-minimalist</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “Every extra element on a screen competes with the elements that matter”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-012" value="a"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The second half is the obligation exactly: an unlabelled icon carries meaning nobody using speech output can perceive unless it is named.</div></div></label>
+<label class="opt"><input type="radio" name="icon-012" value="b"><div><b>Every extra element on a screen competes with the elements that matter.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">The first half is the mirror of that: naming an icon that already sits beside its label makes the screen reader say everything twice.</div></div></label>
+<label class="opt"><input type="radio" name="icon-012" value="c"><div><b>Convention — no principle</b><div class="sub">Both halves have reasons, so neither is convention.</div></div></label>
+<label class="opt"><input type="radio" name="icon-012" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-012" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-012" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-icon-013">
+<div>
+<div class="idx">31</div>
+<p class="rid">icon-013</p>
+<p class="restson"><span>Rests on</span>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>RAG-coloured notification/status icons: maintain contrast against actual background; never colour alone for status — supporting information required.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Status carried by hue alone is invisible to a large population, so the rule requires a second channel — a shape, a word — to carry the same fact.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:icon-013</code> — <code>icons.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “never colour alone for status — supporting information required”.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Information and interface components must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="icon-013" value="a"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">Status carried by hue alone is invisible to a large population, so the rule requires a second channel — a shape, a word — to carry the same fact.</div></div></label>
+<label class="opt"><input type="radio" name="icon-013" value="b"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">The rule&#x27;s other half is the contrast obligation, applied against the background the icon actually lands on rather than the one it was designed against.</div></div></label>
+<label class="opt"><input type="radio" name="icon-013" value="c"><div><b>Convention — no principle</b><div class="sub">“Never colour alone” is statutory, not house habit.</div></div></label>
+<label class="opt"><input type="radio" name="icon-013" value="d"><div><b>Another principle — name it</b><input type="text" id="other-icon-013" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-icon-013" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Illustration standards</h2><p>illustration-standards.md · 1 blocking rule</p></div>
+<div class="card" id="c-ill-010">
+<div>
+<div class="idx">32</div>
+<p class="rid">ill-010</p>
+<p class="restson"><span>Rests on</span>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Don&#x27;t use typography within illustrations.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Words baked into an image cannot be resized, restyled, translated or read aloud, so the text is only available to people who can see it as drawn.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:ill-010</code> — <code>illustration-standards.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Don&#x27;t use typography within illustrations”.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Information and interface components must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+<p><code>restsOn → ux:pr-idp-comparable-experience</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “an equivalent way to accomplish the task, not a degraded alternative”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="ill-010" value="a"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">Words baked into an image cannot be resized, restyled, translated or read aloud, so the text is only available to people who can see it as drawn.</div></div></label>
+<label class="opt"><input type="radio" name="ill-010" value="b"><div><b>Give everyone an equivalent way to accomplish the task, not a degraded alternative.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as an equity rule, text-in-image leaves some readers with an alt-text summary where others get the words themselves.</div></div></label>
+<label class="opt"><input type="radio" name="ill-010" value="c"><div><b>Convention — no principle</b><div class="sub">Could be read as an asset-production convention; the accessibility consequence is the stronger reason.</div></div></label>
+<label class="opt"><input type="radio" name="ill-010" value="d"><div><b>Another principle — name it</b><input type="text" id="other-ill-010" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-ill-010" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Motion standards</h2><p>motion-standards.md · 1 blocking rule</p></div>
+<div class="card" id="c-mot-005">
+<div>
+<div class="idx">33</div>
+<p class="rid">mot-005</p>
+<p class="restson"><span>Rests on</span>Do not override or remove the user&#x27;s control of their view, including motion and zoom.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Any motion over 5 seconds needs play and pause.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Motion nobody can stop is the interface deciding what the reader looks at, and the principle names motion specifically as control the reader keeps.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:mot-005</code> — <code>motion-standards.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Any motion over 5 seconds needs play and pause”.</p>
+<p><code>restsOn → ux:pr-idp-give-control</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Do not override or remove the user&#x27;s control of their view, including motion and zoom”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+<p><code>restsOn → ux:pr-wcag-operable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Interface components and navigation must be operable”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="mot-005" value="a"><div><b>Do not override or remove the user&#x27;s control of their view, including motion and zoom.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Motion nobody can stop is the interface deciding what the reader looks at, and the principle names motion specifically as control the reader keeps.</div></div></label>
+<label class="opt"><input type="radio" name="mot-005" value="b"><div><b>Interface components and navigation must be operable.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">Read as an obligation, unstoppable movement makes the content around it unusable for people it distracts or sickens.</div></div></label>
+<label class="opt"><input type="radio" name="mot-005" value="c"><div><b>Convention — no principle</b><div class="sub">The five seconds is the statutory figure, so the rule has a source and not a habit.</div></div></label>
+<label class="opt"><input type="radio" name="mot-005" value="d"><div><b>Another principle — name it</b><input type="text" id="other-mot-005" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-mot-005" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Naming</h2><p>naming.md · 1 blocking rule</p></div>
+<div class="card" id="c-nam-001">
+<div>
+<div class="idx">34</div>
+<p class="rid">nam-001</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>Never possessive with product names — &quot;HSBC should not appear in the possessive form&quot;: never &quot;HSBC&#x27;s Credit Card&quot; / &quot;HSBC&#x27;s Easy Invest&quot;; write &quot;An HSBC Credit Card&quot; / &quot;HSBC Easy Invest&quot;.</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">Brand naming convention, stated as such in the source. It is a house style rule about the word HSBC, and no graded principle predicts or explains it.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:nam-001</code> — <code>naming.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “HSBC should not appear in the possessive form”.</p>
+<p><code>restsOn → ref:null</code> with the note above — the declared-null shape of <code>s275-D2</code> (RP-2 option a), a legal answer, never a dropped row.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="nam-001" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">Brand naming convention, stated as such in the source. It is a house style rule about the word HSBC, and no graded principle predicts or explains it.</div></div></label>
+<label class="opt"><input type="radio" name="nam-001" value="d"><div><b>Another principle — name it</b><input type="text" id="other-nam-001" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-nam-001" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Neurodiversity</h2><p>neurodiversity.md · 1 blocking rule</p></div>
+<div class="card" id="c-neuro-026">
+<div>
+<div class="idx">35</div>
+<p class="rid">neuro-026</p>
+<p class="restson"><span>Rests on</span>COGA objective 1: Help users understand what things are and how to use them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Icons/visuals support text, never replace it — content must remain comprehensible with all images and icons removed.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule is that test made concrete: strip the pictures and the words must still say what each thing is and how to use it.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:neuro-026</code> — <code>neurodiversity.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “content must remain comprehensible with all images and icons removed”.</p>
+<p><code>restsOn → ux:pr-coga-1</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Help users understand what things are and how to use them”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+<p><code>restsOn → ux:pr-coga-3</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Use clear and understandable content”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="neuro-026" value="a"><div><b>COGA objective 1: Help users understand what things are and how to use them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">The rule is that test made concrete: strip the pictures and the words must still say what each thing is and how to use it.</div></div></label>
+<label class="opt"><input type="radio" name="neuro-026" value="b"><div><b>COGA objective 3: Use clear and understandable content.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a content rule, an icon that carries meaning alone is content that is only clear to the people who already know the icon.</div></div></label>
+<label class="opt"><input type="radio" name="neuro-026" value="c"><div><b>Convention — no principle</b><div class="sub">The rule states a comprehension test, which is a principle&#x27;s kind of claim.</div></div></label>
+<label class="opt"><input type="radio" name="neuro-026" value="d"><div><b>Another principle — name it</b><input type="text" id="other-neuro-026" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-neuro-026" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Pictograms</h2><p>pictograms.md · 6 blocking rules</p></div>
+<div class="card" id="c-pict-001">
+<div>
+<div class="idx">36</div>
+<p class="rid">pict-001</p>
+<p class="restson"><span>Rests on</span>COGA objective 1: Help users understand what things are and how to use them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Every pictogram carries a label or copy that underpins its meaning — no exceptions (unlike icons&#x27; universal-meaning carve-out).</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A pictogram is an invented sign with no universal meaning, so the label is the only thing that tells the reader what it stands for.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-001</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Every pictogram carries a label or copy that underpins its meaning — no exceptions”.</p>
+<p><code>restsOn → ux:pr-coga-1</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Help users understand what things are and how to use them”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-001" value="a"><div><b>COGA objective 1: Help users understand what things are and how to use them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">A pictogram is an invented sign with no universal meaning, so the label is the only thing that tells the reader what it stands for.</div></div></label>
+<label class="opt"><input type="radio" name="pict-001" value="b"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a signifier rule, an unlabelled pictogram is a cue whose referent the designer knows and the reader has to guess.</div></div></label>
+<label class="opt"><input type="radio" name="pict-001" value="c"><div><b>Convention — no principle</b><div class="sub">The no-exceptions clause is a house decision, but the reason for it is a comprehension one.</div></div></label>
+<label class="opt"><input type="radio" name="pict-001" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-001" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-001" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-pict-007">
+<div>
+<div class="idx">37</div>
+<p class="rid">pict-007</p>
+<p class="restson"><span>Rests on</span>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Don&#x27;t place pictograms on a red background — interferes with the red accent and causes contrast issues with the primary form.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule names the failure it is preventing: on red, the pictogram&#x27;s primary form cannot hold the 3:1 a graphical object owes its background.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-007</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “causes contrast issues with the primary form”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-von-restorff</code> (grade B, STUDIED; Hedwig von Restorff). The clause of the statement that carries the link: “An item that differs from its neighbours is remembered better”. Scope: List learning of verbal items; extended to visual salience in interfaces without direct interface replication being fetched here.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-007" value="a"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The rule names the failure it is preventing: on red, the pictogram&#x27;s primary form cannot hold the 3:1 a graphical object owes its background.</div></div></label>
+<label class="opt"><input type="radio" name="pict-007" value="b"><div><b>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">The rule&#x27;s other stated reason is interference with the red accent, which only works as an attention cue while it is the exception on the page.</div></div></label>
+<label class="opt"><input type="radio" name="pict-007" value="c"><div><b>Convention — no principle</b><div class="sub">The rule gives the contrast reason in its own clause.</div></div></label>
+<label class="opt"><input type="radio" name="pict-007" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-007" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-007" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-pict-008">
+<div>
+<div class="idx">38</div>
+<p class="rid">pict-008</p>
+<p class="restson"><span>Rests on</span>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>≥3:1 contrast against the background in all placements, with clearly descriptive alt text. L1 on dark backgrounds only with white lines; L1 over photography only where the background doesn&#x27;t compromise contrast; nothing on visually busy imagery.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A pictogram is a graphical object carrying meaning, so 3:1 against whatever it actually sits on — including photography — is the statutory floor.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-008</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “≥3:1 contrast against the background in all placements”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-11</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “graphical objects need at least 3:1 contrast against adjacent colours”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-wcag-perceivable</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Information and interface components must be presentable in ways users can perceive”. Scope: Web content. Referenced by EN 301 549 and, through it, by the European Accessibility Act.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-008" value="a"><div><b>UI components and graphical objects need at least 3:1 contrast against adjacent colours.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">A pictogram is a graphical object carrying meaning, so 3:1 against whatever it actually sits on — including photography — is the statutory floor.</div></div></label>
+<label class="opt"><input type="radio" name="pict-008" value="b"><div><b>Information and interface components must be presentable in ways users can perceive.<span class="gradechip">grade L — an obligation in law or standard</span></b><div class="sub">The rule&#x27;s alt-text clause is the same obligation on the other channel: the meaning must also arrive without the picture.</div></div></label>
+<label class="opt"><input type="radio" name="pict-008" value="c"><div><b>Convention — no principle</b><div class="sub">A statutory threshold quoted directly.</div></div></label>
+<label class="opt"><input type="radio" name="pict-008" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-008" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-008" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-pict-009">
+<div>
+<div class="idx">39</div>
+<p class="rid">pict-009</p>
+<p class="restson"><span>Rests on</span>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>No drop shadows — elevation is functional-only (an object moving over another), which a pictogram never needs.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A shadow tells the reader this thing is above and separate from what it covers; on a pictogram, which never moves over anything, it says something untrue.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-009</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “elevation is functional-only (an object moving over another)”.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+<p><code>restsOn → ux:pr-gestalt-figure-ground</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “ambiguity here is disorienting”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-009" value="a"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">A shadow tells the reader this thing is above and separate from what it covers; on a pictogram, which never moves over anything, it says something untrue.</div></div></label>
+<label class="opt"><input type="radio" name="pict-009" value="b"><div><b>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Read perceptually, decorative shadows put layers into a scene that has none, which is exactly the figure-ground ambiguity the principle warns about.</div></div></label>
+<label class="opt"><input type="radio" name="pict-009" value="c"><div><b>Convention — no principle</b><div class="sub">A shadow ban could be pure style, but the rule states a functional meaning for elevation, which is a signifier claim.</div></div></label>
+<label class="opt"><input type="radio" name="pict-009" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-009" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-009" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-pict-010">
+<div>
+<div class="idx">40</div>
+<p class="rid">pict-010</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead.</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">House construction figures. The 60px floor does have a perceptual reason — a pictogram&#x27;s line detail stops resolving — but the register holds no acuity or minimum-legible-detail principle to rest it on, and 192px and the 2px interval are pure system construction.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-010</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Below 60px, use an icon instead”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-010" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">The nearest graded fit: the floor exists so the detail survives for readers whose sight the principle describes, though the principle is about text, not marks.</div></div></label>
+<label class="opt"><input type="radio" name="pict-010" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">House construction figures. The 60px floor does have a perceptual reason — a pictogram&#x27;s line detail stops resolving — but the register holds no acuity or minimum-legible-detail principle to rest it on, and 192px and the 2px interval are pure system construction.</div></div></label>
+<label class="opt"><input type="radio" name="pict-010" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-010" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-010" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-pict-011">
+<div>
+<div class="idx">41</div>
+<p class="rid">pict-011</p>
+<p class="restson"><span>Rests on</span>Elements sharing shape, colour or size are read as belonging to the same set, even when separated.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Never squash, stretch, skew or distort; scale with locked aspect ratio.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A pictogram is recognised by its shape, so a stretched one stops reading as a member of the set the reader has already learned.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:pict-011</code> — <code>pictograms.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Never squash, stretch, skew or distort”.</p>
+<p><code>restsOn → ux:pr-gestalt-similarity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements sharing shape, colour or size are read as belonging to the same set”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+<p><code>restsOn → ux:pr-idp-be-consistent</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Use familiar conventions and apply them consistently across the service”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="pict-011" value="a"><div><b>Elements sharing shape, colour or size are read as belonging to the same set, even when separated.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">A pictogram is recognised by its shape, so a stretched one stops reading as a member of the set the reader has already learned.</div></div></label>
+<label class="opt"><input type="radio" name="pict-011" value="b"><div><b>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a system rule, a locked ratio is what makes the same mark the same mark everywhere it appears.</div></div></label>
+<label class="opt"><input type="radio" name="pict-011" value="c"><div><b>Convention — no principle</b><div class="sub">Aspect-ratio locking is often pure asset convention, and if the panel reads it that way the null is legal.</div></div></label>
+<label class="opt"><input type="radio" name="pict-011" value="d"><div><b>Another principle — name it</b><input type="text" id="other-pict-011" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-pict-011" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Tone of voice</h2><p>tone-of-voice.md · 1 blocking rule</p></div>
+<div class="card" id="c-tov-038">
+<div>
+<div class="idx">42</div>
+<p class="rid">tov-038</p>
+<p class="restson"><span>Rests on</span>Use the words and concepts of the user&#x27;s world, in the order they expect them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Device-agnostic language: &#x27;select&#x27;, never &#x27;click&#x27;; never describe UI visually. Writing must work on desktop, mobile, tablet. Canon swept 2026-07-02: 0 signals.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">“Click” is the designer&#x27;s world; a reader on a phone or a screen reader has no click, so the instruction describes an action they cannot take.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:tov-038</code> — <code>tone-of-voice.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “&#x27;select&#x27;, never &#x27;click&#x27;; never describe UI visually”.</p>
+<p><code>restsOn → ux:pr-nng-match-real-world</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “Use the words and concepts of the user&#x27;s world”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+<p><code>restsOn → ux:pr-govuk-understand-context</code> (grade C, PRACTISED; UK Government Digital Service). The clause of the statement that carries the link: “Design for the real context: the device, the place, the pressure people are under”. Scope: UK public services at national scale; explicitly organisational as well as interface-level.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="tov-038" value="a"><div><b>Use the words and concepts of the user&#x27;s world, in the order they expect them.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">“Click” is the designer&#x27;s world; a reader on a phone or a screen reader has no click, so the instruction describes an action they cannot take.</div></div></label>
+<label class="opt"><input type="radio" name="tov-038" value="b"><div><b>Design for the real context: the device, the place, the pressure people are under.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a context rule, the same sentence has to survive a desktop, a phone, a tablet and speech output, which is what device-agnostic wording buys.</div></div></label>
+<label class="opt"><input type="radio" name="tov-038" value="c"><div><b>Convention — no principle</b><div class="sub">Word choice is house style, but this rule states a functional test — it must work on every device — so it is not style alone.</div></div></label>
+<label class="opt"><input type="radio" name="tov-038" value="d"><div><b>Another principle — name it</b><input type="text" id="other-tov-038" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-tov-038" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Typography standards 2026</h2><p>typography-standards-2026.md · 9 blocking rules</p></div>
+<div class="card" id="c-type26-002">
+<div>
+<div class="idx">43</div>
+<p class="rid">type26-002</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>Only use brand-approved fonts, weights and colours.</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">Brand and licensing. The approved list is an asset and rights decision; an unapproved typeface is not less usable, it is not ours to use. Consistency is a side effect, not the reason.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-002</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Only use brand-approved fonts, weights and colours”.</p>
+<p><code>restsOn → ux:pr-idp-be-consistent</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Use familiar conventions and apply them consistently across the service”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-002" value="a"><div><b>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">The nearest graded fit if the panel reads the approved list as a consistency mechanism rather than a rights one.</div></div></label>
+<label class="opt"><input type="radio" name="type26-002" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">Brand and licensing. The approved list is an asset and rights decision; an unapproved typeface is not less usable, it is not ours to use. Consistency is a side effect, not the reason.</div></div></label>
+<label class="opt"><input type="radio" name="type26-002" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-002" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-002" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-003">
+<div>
+<div class="idx">44</div>
+<p class="rid">type26-003</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>All text legible and ≥4.5:1 contrast.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule is 1.4.3 restated at brand level, with the same number.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-003</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “All text legible and ≥4.5:1 contrast”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-003" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The rule is 1.4.3 restated at brand level, with the same number.</div></div></label>
+<label class="opt"><input type="radio" name="type26-003" value="b"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">The rule&#x27;s first word — legible — is broader than the ratio, and the principle is what that broader half rests on.</div></div></label>
+<label class="opt"><input type="radio" name="type26-003" value="c"><div><b>Convention — no principle</b><div class="sub">A statutory threshold quoted verbatim.</div></div></label>
+<label class="opt"><input type="radio" name="type26-003" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-003" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-003" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-004">
+<div>
+<div class="idx">45</div>
+<p class="rid">type26-004</p>
+<p class="restson"><span>Rests on</span>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Never use red typography except within specific digital toolkit use-cases. Sharpens the col26 red-text rule: the exception scope is toolkit-defined (e.g. CTA links), not designer judgment.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Red type works as a call-to-action cue only while it is rare, and the exception scope is what keeps it rare.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-004</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Never use red typography except within specific digital toolkit use-cases”.</p>
+<p><code>restsOn → ux:pr-von-restorff</code> (grade B, STUDIED; Hedwig von Restorff). The clause of the statement that carries the link: “An item that differs from its neighbours is remembered better than the items it sits among”. Scope: List learning of verbal items; extended to visual salience in interfaces without direct interface replication being fetched here.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-004" value="a"><div><b>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">Red type works as a call-to-action cue only while it is rare, and the exception scope is what keeps it rare.</div></div></label>
+<label class="opt"><input type="radio" name="type26-004" value="b"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Toolkit-defined rather than designer-judged exceptions are what stop red from meaning different things on different screens.</div></div></label>
+<label class="opt"><input type="radio" name="type26-004" value="c"><div><b>Convention — no principle</b><div class="sub">A reservation exists to protect a signal, so the rule has a reason.</div></div></label>
+<label class="opt"><input type="radio" name="type26-004" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-004" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-004" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-005">
+<div>
+<div class="idx">46</div>
+<p class="rid">type26-005</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>&quot;We don&#x27;t use uppercase or italics lettering — use sentence case.&quot; ⚑ This makes the house sentence-case rule (and the G5 all-caps advisory check) source-backed at brand level — and extends it: *italics are also out*. Informs the open all-caps scope ruling on Dave&#x27;s desk: the source is brand-wide, favouring canon-wide over brief-scoped.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Uppercase removes the word shapes readers use to recognise words without reading them, and italics thin the strokes; both cost most for the sight the principle names.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-005</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “We don&#x27;t use uppercase or italics lettering — use sentence case”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-coga-3</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Use clear and understandable content”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-005" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Uppercase removes the word shapes readers use to recognise words without reading them, and italics thin the strokes; both cost most for the sight the principle names.</div></div></label>
+<label class="opt"><input type="radio" name="type26-005" value="b"><div><b>COGA objective 3: Use clear and understandable content.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a content rule, sentence case is the casing people read fastest and the one dyslexia guidance asks for.</div></div></label>
+<label class="opt"><input type="radio" name="type26-005" value="c"><div><b>Convention — no principle</b><div class="sub">The sister rule type26-019 states the legibility reason, so this one is not bare convention.</div></div></label>
+<label class="opt"><input type="radio" name="type26-005" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-005" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-005" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-012">
+<div>
+<div class="idx">47</div>
+<p class="rid">type26-012</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Latin: 12pt minimum, print AND digital. Captions/small legal copy may go to 6pt minimum. Ultra Light/Thin forbidden at small sizes (line too thin to be legible). Chinese (MYing Hei): 14pt body minimum. Arabic: 12pt (as Latin).</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Every clause in the rule is a floor below which strokes stop resolving — including the Ultra Light ban, which is a floor on stroke weight rather than size.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-012</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “12pt minimum, print AND digital”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-govuk-understand-context</code> (grade C, PRACTISED; UK Government Digital Service). The clause of the statement that carries the link: “Design for the real context: the device, the place, the pressure people are under”. Scope: UK public services at national scale; explicitly organisational as well as interface-level.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-012" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Every clause in the rule is a floor below which strokes stop resolving — including the Ultra Light ban, which is a floor on stroke weight rather than size.</div></div></label>
+<label class="opt"><input type="radio" name="type26-012" value="b"><div><b>Design for the real context: the device, the place, the pressure people are under.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a context rule, the separate Chinese and Arabic floors exist because the same point size does not deliver the same legible detail in every script.</div></div></label>
+<label class="opt"><input type="radio" name="type26-012" value="c"><div><b>Convention — no principle</b><div class="sub">Minimum type sizes have a perceptual reason even though the exact points are house-set.</div></div></label>
+<label class="opt"><input type="radio" name="type26-012" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-012" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-012" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-013">
+<div>
+<div class="idx">48</div>
+<p class="rid">type26-013</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Black/dark-grey on light · white/light-grey on dark · NO other colours for typography, ever. White-only on HSBC Red and supporting reds; no long-form copy on red or coloured backgrounds; no highlighted type blocks; over photography black or white only.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Restricting type to the two luminance extremes is how the brand guarantees the contrast floor without measuring every pairing.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-013</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “NO other colours for typography, ever”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+<p><code>restsOn → ux:pr-gestalt-figure-ground</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “ambiguity here is disorienting”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-013" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">Restricting type to the two luminance extremes is how the brand guarantees the contrast floor without measuring every pairing.</div></div></label>
+<label class="opt"><input type="radio" name="type26-013" value="b"><div><b>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">The photography clause is the figure-ground case: over an image, only black or white reliably separates the word from the scene behind it.</div></div></label>
+<label class="opt"><input type="radio" name="type26-013" value="c"><div><b>Convention — no principle</b><div class="sub">A colour restriction that exists to guarantee contrast is not convention.</div></div></label>
+<label class="opt"><input type="radio" name="type26-013" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-013" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-013" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-014">
+<div>
+<div class="idx">49</div>
+<p class="rid">type26-014</p>
+<p class="restson"><span>Rests on</span>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span></p>
+</div>
+<div>
+<h3>Headline-on-photography contrast: 3:1 large AA · 4.5:1 small AA · 7:1 AAA.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The three numbers are 1.4.3&#x27;s large-text, small-text and enhanced levels exactly, applied to the hardest background there is.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-014</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “3:1 large AA · 4.5:1 small AA · 7:1 AAA”.</p>
+<p><code>restsOn → ux:pr-wcag-1-4-3</code> (grade L, OBLIGATION; W3C / WAI). The clause of the statement that carries the link: “Text must meet a minimum contrast ratio against its background”. Scope: Level AA. Web content; exceptions are written into the criterion and matter as much as the number.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-014" value="a"><div><b>Text must meet a minimum contrast ratio against its background.<span class="gradechip">grade L — an obligation in law or standard</span><span class="tag">recommended</span></b><div class="sub">The three numbers are 1.4.3&#x27;s large-text, small-text and enhanced levels exactly, applied to the hardest background there is.</div></div></label>
+<label class="opt"><input type="radio" name="type26-014" value="c"><div><b>Convention — no principle</b><div class="sub">Three statutory thresholds quoted verbatim.</div></div></label>
+<label class="opt"><input type="radio" name="type26-014" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-014" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-014" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-019">
+<div>
+<div class="idx">50</div>
+<p class="rid">type26-019</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Title case AND sentence case are the brand-legal casings; uppercase banned outside acronyms (explicitly: harder to read, reduces word shapes, dyslexia/low-vision cost). Note: the house rule (sentence case ONLY, no title case) is *stricter* than brand — house wins locally, no conflict. ✅ ENACTED 2026-07-02 (Dave ruling): canon-wide sweep done — 14 snippets + gallery chrome de-capped (caps tracking </h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule names its own reason — word shapes, dyslexia, low vision — and the principle is the register&#x27;s statement that those readers set the floor.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-019</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “harder to read, reduces word shapes, dyslexia/low-vision cost”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-coga-3</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Use clear and understandable content”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-019" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">The rule names its own reason — word shapes, dyslexia, low vision — and the principle is the register&#x27;s statement that those readers set the floor.</div></div></label>
+<label class="opt"><input type="radio" name="type26-019" value="b"><div><b>COGA objective 3: Use clear and understandable content.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a content rule, casing is part of whether the words are understandable at speed.</div></div></label>
+<label class="opt"><input type="radio" name="type26-019" value="c"><div><b>Convention — no principle</b><div class="sub">The rule carries its own evidence clause, so a null would discard a stated reason.</div></div></label>
+<label class="opt"><input type="radio" name="type26-019" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-019" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-019" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type26-020">
+<div>
+<div class="idx">51</div>
+<p class="rid">type26-020</p>
+<p class="restson"><span>Rests on</span>Elements on a line or curve are read as related and as continuing in that direction.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Left-aligned is primary; centred sparingly (short headings/labels/callouts, small word counts); right rare (&quot;Headline A of the magnetic type construct&quot;); body copy stays horizontal. Never justified (rivers); avoid hyphenation — rebalance lines instead.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">A hard left edge is the line the eye returns to at every line break, and justification breaks it by opening rivers of white that the eye reads as a competing vertical.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type26-020</code> — <code>typography-standards-2026.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Never justified (rivers); avoid hyphenation”.</p>
+<p><code>restsOn → ux:pr-gestalt-continuity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements on a line or curve are read as related and as continuing in that direction”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type26-020" value="a"><div><b>Elements on a line or curve are read as related and as continuing in that direction.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">A hard left edge is the line the eye returns to at every line break, and justification breaks it by opening rivers of white that the eye reads as a competing vertical.</div></div></label>
+<label class="opt"><input type="radio" name="type26-020" value="b"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a legibility rule, uneven word spacing and broken words cost most for the readers already working hardest.</div></div></label>
+<label class="opt"><input type="radio" name="type26-020" value="c"><div><b>Convention — no principle</b><div class="sub">Alignment is often taste, and the panel could legally call this one convention.</div></div></label>
+<label class="opt"><input type="radio" name="type26-020" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type26-020" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type26-020" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Typography usage</h2><p>typography-usage.md · 4 blocking rules</p></div>
+<div class="card" id="c-type25-003">
+<div>
+<div class="idx">52</div>
+<p class="rid">type25-003</p>
+<p class="restson"><span>Rests on</span>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Never red typography for headlines or body copy — red only for text links (CTAs) and &quot;specific digital toolkit use-cases&quot;.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The link is supposed to be the thing that stands out from the paragraph, and it can only do that while nothing else in the paragraph is red.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type25-003</code> — <code>typography-usage.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “red only for text links (CTAs)”.</p>
+<p><code>restsOn → ux:pr-von-restorff</code> (grade B, STUDIED; Hedwig von Restorff). The clause of the statement that carries the link: “An item that differs from its neighbours is remembered better than the items it sits among”. Scope: List learning of verbal items; extended to visual salience in interfaces without direct interface replication being fetched here.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type25-003" value="a"><div><b>An item that differs from its neighbours is remembered better than the items it sits among.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">The link is supposed to be the thing that stands out from the paragraph, and it can only do that while nothing else in the paragraph is red.</div></div></label>
+<label class="opt"><input type="radio" name="type25-003" value="b"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">One meaning for red text — this is a link — is what saves the reader from testing each red word.</div></div></label>
+<label class="opt"><input type="radio" name="type25-003" value="c"><div><b>Convention — no principle</b><div class="sub">Same reservation as col26-016 and type26-004; it protects a signal.</div></div></label>
+<label class="opt"><input type="radio" name="type25-003" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type25-003" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type25-003" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type25-007">
+<div>
+<div class="idx">53</div>
+<p class="rid">type25-007</p>
+<p class="restson"><span>Rests on</span>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>No italics — not licensed, and harder to read, especially for people with dyslexia.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The rule gives the reason itself: slanted, lighter strokes cost the readers who are already working hardest. The licensing half is a separate, conventional reason.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type25-007</code> — <code>typography-usage.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “harder to read, especially for people with dyslexia”.</p>
+<p><code>restsOn → ux:pr-tog-readability</code> (grade C, PRACTISED; Bruce Tognazzini). The clause of the statement that carries the link: “readable by people with less than perfect sight, which is most people over forty”. Scope: Desktop and web interaction design; expert synthesis over decades at Apple and NN/g.</p>
+<p><code>restsOn → ux:pr-coga-3</code> (grade C, PRACTISED; W3C COGA Task Force). The clause of the statement that carries the link: “Use clear and understandable content”. Scope: People with cognitive and learning disabilities; a W3C Note, not a normative standard.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type25-007" value="a"><div><b>Text must be readable by people with less than perfect sight, which is most people over forty.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">The rule gives the reason itself: slanted, lighter strokes cost the readers who are already working hardest. The licensing half is a separate, conventional reason.</div></div></label>
+<label class="opt"><input type="radio" name="type25-007" value="b"><div><b>COGA objective 3: Use clear and understandable content.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a content rule, italics are a styling device that carries emphasis at a comprehension cost for some readers.</div></div></label>
+<label class="opt"><input type="radio" name="type25-007" value="c"><div><b>Convention — no principle</b><div class="sub">The licensing half is convention, but the rule also states a legibility reason, so the honest answer keeps the principle.</div></div></label>
+<label class="opt"><input type="radio" name="type25-007" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type25-007" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type25-007" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type25-008">
+<div>
+<div class="idx">54</div>
+<p class="rid">type25-008</p>
+<p class="restson"><span>Rests on</span>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>Emphasis = Univers Bold only, keywords/phrases not sections. No underline for emphasis (underline = links only — neuro-007 dual-source) · no shapes/graphic devices · no drop shadows on text · no outlines or graphic styling on type.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">If underline sometimes means link and sometimes means emphasis, every underlined word becomes a question the reader has to test.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type25-008</code> — <code>typography-usage.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “underline = links only”.</p>
+<p><code>restsOn → ux:pr-nng-consistency</code> (grade C, PRACTISED; Jakob Nielsen (1994), revised by NN/g). The clause of the statement that carries the link: “wonder whether different words or actions mean the same thing”. Scope: General interactive systems; the list is an inspection aid, validated as a method rather than as ten separate empirical claims.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type25-008" value="a"><div><b>Do not make people wonder whether different words or actions mean the same thing.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">If underline sometimes means link and sometimes means emphasis, every underlined word becomes a question the reader has to test.</div></div></label>
+<label class="opt"><input type="radio" name="type25-008" value="b"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a signifier rule, underline is the web&#x27;s oldest cue for “this is actionable”, and spending it on emphasis makes the cue lie.</div></div></label>
+<label class="opt"><input type="radio" name="type25-008" value="c"><div><b>Convention — no principle</b><div class="sub">An emphasis palette could be house style, but the underline clause protects a learned signal.</div></div></label>
+<label class="opt"><input type="radio" name="type25-008" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type25-008" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type25-008" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-type25-020">
+<div>
+<div class="idx">55</div>
+<p class="rid">type25-020</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>Three cost-0 gate candidates surfaced: no-italics scan (type25-007), no-text-shadow scan (type25-008), red-text-role check (type25-003) — all passed canon with zero occurrences. RULED by Dave 2026-07-03: STRAIGHT TO BLOCKING (his override of the advisory-first convention — zero occurrences + exact checks = the advisory step buys nothing). ENACTED as snippet-gate check 6 (`_validate_snippets.py`), </h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">Not a design rule. This entry records a gate decision — three checks promoted past the advisory step and enacted in _validate_snippets.py — so what it rests on is the three rules it enforces (type25-003, type25-007, type25-008), each of which carries its own proposal on this page, and the ruling that promoted them. A principle here would be a category error.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:type25-020</code> — <code>typography-usage.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “STRAIGHT TO BLOCKING”.</p>
+<p><code>restsOn → ref:null</code> with the note above — the declared-null shape of <code>s275-D2</code> (RP-2 option a), a legal answer, never a dropped row.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="type25-020" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">Not a design rule. This entry records a gate decision — three checks promoted past the advisory step and enacted in _validate_snippets.py — so what it rests on is the three rules it enforces (type25-003, type25-007, type25-008), each of which carries its own proposal on this page, and the ruling that promoted them. A principle here would be a category error.</div></div></label>
+<label class="opt"><input type="radio" name="type25-020" value="d"><div><b>Another principle — name it</b><input type="text" id="other-type25-020" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-type25-020" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section><div class="wrapper">
+<div class="grouphead"><h2>Web foundations</h2><p>web-foundations.md · 4 blocking rules</p></div>
+<div class="card" id="c-webf-011">
+<div>
+<div class="idx">56</div>
+<p class="rid">webf-011</p>
+<p class="restson"><span>Rests on</span>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>Level taxonomy: 0 = base content (body, imagery, cards, buttons — NEVER elevated) · 1 = sticky content (top navigation, drawer, tooltip) · 2 = modality (partial modals, dialogs) · 3 = notifications (snackbars). Elements contained within a level do not display further elevation.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">The taxonomy is a declared depth order, and its whole job is to stop two things claiming the same layer, which is the ambiguity the principle says disorients.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:webf-011</code> — <code>web-foundations.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “0 = base content (body, imagery, cards, buttons — NEVER elevated)”.</p>
+<p><code>restsOn → ux:pr-gestalt-figure-ground</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “People separate a scene into a foreground object and a background, and ambiguity here is disorienting”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+<p><code>restsOn → ux:pr-mental-model</code> (grade C, PRACTISED; Craik; Johnson-Laird; Norman). The clause of the statement that carries the link: “People act on a compressed internal model of how the system works”. Scope: Broad cognitive claim with a large literature; the interface application is via Norman&#x27;s gulfs of execution and evaluation.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="webf-011" value="a"><div><b>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">The taxonomy is a declared depth order, and its whole job is to stop two things claiming the same layer, which is the ambiguity the principle says disorients.</div></div></label>
+<label class="opt"><input type="radio" name="webf-011" value="b"><div><b>People act on a compressed internal model of how the system works, and mismatches with it produce errors.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a model rule, four named levels are a depth model simple enough for a reader to hold and predict.</div></div></label>
+<label class="opt"><input type="radio" name="webf-011" value="c"><div><b>Convention — no principle</b><div class="sub">A four-level taxonomy is a system construction, and the panel could legally call the numbering convention.</div></div></label>
+<label class="opt"><input type="radio" name="webf-011" value="d"><div><b>Another principle — name it</b><input type="text" id="other-webf-011" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-webf-011" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-webf-013">
+<div>
+<div class="idx">57</div>
+<p class="rid">webf-013</p>
+<p class="restson"><span>Rests on</span>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></p>
+</div>
+<div>
+<h3>No purely aesthetic shadows (inner or outer) — elevation is functional.</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Elevation is a cue that says this thing is over that thing and can move; used decoratively it is a cue with nothing behind it.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:webf-013</code> — <code>web-foundations.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “No purely aesthetic shadows (inner or outer) — elevation is functional”.</p>
+<p><code>restsOn → ux:pr-norman-signifier</code> (grade C, PRACTISED; Don Norman). The clause of the statement that carries the link: “the perceivable cue that tells someone where and how to act”. Scope: General designed artefacts, physical and digital; derived from error analysis rather than controlled experiment.</p>
+<p><code>restsOn → ux:pr-gestalt-figure-ground</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “ambiguity here is disorienting”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="webf-013" value="a"><div><b>A signifier is the perceivable cue that tells someone where and how to act.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span><span class="tag">recommended</span></b><div class="sub">Elevation is a cue that says this thing is over that thing and can move; used decoratively it is a cue with nothing behind it.</div></div></label>
+<label class="opt"><input type="radio" name="webf-013" value="b"><div><b>People separate a scene into a foreground object and a background, and ambiguity here is disorienting.<span class="gradechip">grade B — studied, a real effect with limits</span></b><div class="sub">Read perceptually, shadows on things that are not raised invent layers and leave the reader unsure what is on top.</div></div></label>
+<label class="opt"><input type="radio" name="webf-013" value="c"><div><b>Convention — no principle</b><div class="sub">The rule states the functional meaning in its own clause.</div></div></label>
+<label class="opt"><input type="radio" name="webf-013" value="d"><div><b>Another principle — name it</b><input type="text" id="other-webf-013" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-webf-013" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-webf-018">
+<div>
+<div class="idx">58</div>
+<p class="rid">webf-018</p>
+<p class="restson"><span>Rests on</span>Convention alone. No principle in the register honestly explains this one.</p>
+</div>
+<div>
+<h3>Base unit 4px for horizontal and vertical measurement — &quot;normally express this unit in multiples of 8, however multiples of 4 can be used as a fallback&quot;.</h3>
+<div class="said"><span>Why there is no principle</span><p class="plain" style="margin:0">A chosen modulus. Four is divisible, halves cleanly and matches the platforms&#x27; own grids, but no graded principle predicts four rather than five or eight — the value of a base unit is that it is agreed, which is the definition of a convention.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:webf-018</code> — <code>web-foundations.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “Base unit 4px”.</p>
+<p><code>restsOn → ref:null</code> with the note above — the declared-null shape of <code>s275-D2</code> (RP-2 option a), a legal answer, never a dropped row.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="webf-018" value="c"><div><b>Convention — no principle<span class="tag">recommended</span></b><div class="sub">A chosen modulus. Four is divisible, halves cleanly and matches the platforms&#x27; own grids, but no graded principle predicts four rather than five or eight — the value of a base unit is that it is agreed, which is the definition of a convention.</div></div></label>
+<label class="opt"><input type="radio" name="webf-018" value="d"><div><b>Another principle — name it</b><input type="text" id="other-webf-018" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-webf-018" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+<div class="card" id="c-webf-027">
+<div>
+<div class="idx">59</div>
+<p class="rid">webf-027</p>
+<p class="restson"><span>Rests on</span>Elements placed close together are seen as one group before anything else about them is processed.<span class="gradechip">grade B — studied, a real effect with limits</span></p>
+</div>
+<div>
+<h3>All spacing in multiples of 4, mapping to grid margins/gutters; padding/margins follow the system (e.g. 16px gutters → 16px card side-padding).</h3>
+<div class="said"><span>Why I think it rests there</span><p class="plain" style="margin:0">Spacing is the grouping signal, and a shared scale is what makes the same gap mean the same degree of belonging in every layout.</p></div>
+<details class="tech"><summary>Technical</summary>
+<p><code>rule:webf-027</code> — <code>web-foundations.md</code>, destiny BLOCKING. The clause of the rule that carries the link: “padding/margins follow the system (e.g. 16px gutters → 16px card side-padding)”.</p>
+<p><code>restsOn → ux:pr-gestalt-proximity</code> (grade B, STUDIED; Wertheimer / Koffka (Berlin school)). The clause of the statement that carries the link: “Elements placed close together are seen as one group before anything else about them is processed”. Scope: Static visual perception in adults; grouping strength is relative and can be set against another grouping cue.</p>
+<p><code>restsOn → ux:pr-idp-be-consistent</code> (grade C, PRACTISED; Swan, Pouncey, Pickering, Watson). The clause of the statement that carries the link: “Use familiar conventions and apply them consistently across the service”. Scope: Web and application design; authored by accessibility practitioners, posters produced with Barclays Access.</p>
+</details>
+<div class="opts">
+<label class="opt"><input type="radio" name="webf-027" value="a"><div><b>Elements placed close together are seen as one group before anything else about them is processed.<span class="gradechip">grade B — studied, a real effect with limits</span><span class="tag">recommended</span></b><div class="sub">Spacing is the grouping signal, and a shared scale is what makes the same gap mean the same degree of belonging in every layout.</div></div></label>
+<label class="opt"><input type="radio" name="webf-027" value="b"><div><b>Use familiar conventions and apply them consistently across the service.<span class="gradechip">grade C — practised, agreed guidance rather than measurement</span></b><div class="sub">Read as a system rule, tying padding to the grid&#x27;s own gutters is what keeps one service from looking like six.</div></div></label>
+<label class="opt"><input type="radio" name="webf-027" value="c"><div><b>Convention — no principle</b><div class="sub">The 4px modulus itself is convention — webf-018 says so — but this rule is about what the spacing does, which is a principle.</div></div></label>
+<label class="opt"><input type="radio" name="webf-027" value="d"><div><b>Another principle — name it</b><input type="text" id="other-webf-027" placeholder="the principle you would rest it on, in your words"></div></label>
+</div>
+<label class="note"><span>Note</span><input type="text" id="note-webf-027" placeholder="optional — your words, kept verbatim"></label>
+</div></div>
+</div></section>
+<section class="grey" id="export"><div class="wrapper">
+<p class="label">Export</p>
+<h2>Send the answers back</h2>
+<p>One choice per rule. Nothing is inscribed in the graph until the file comes back — the ruling already says the lines land only on your export of this page. The export carries your pick and my recommendation side by side, so the record shows where you overruled me.</p>
+<p><button id="takeall" type="button">Take all the recommendations</button><button id="dl" class="ghost" type="button">Download the answers</button><button id="cp" class="ghost" type="button">Copy to clipboard</button><span id="msg"></span></p>
+<pre id="exp" hidden></pre>
+</div></section>
+<footer><div class="wrapper">#281 · notes/_lanes/281/rests-on/RESTS-ON-2026-09-17.html · proposed, not ruled · 59 cards · 222 radios</div></footer>
+<script>
+var PAGE="RESTS-ON-2026-09-17";
+var IDS=["aca-003", "aca-004", "aid-009", "avd-006", "appf-002", "logo26-001", "photo26-002", "col26-004", "col26-008", "col26-009", "col26-011", "col26-012", "col26-015", "col26-016", "col26-017", "col26-018", "dv-bar-007", "dv-bar-009", "dv-line-011", "dv-pie-009", "dv-pie-010", "dv-004", "dv-009", "dv-016", "dv-017", "icon-002", "icon-005", "icon-006", "icon-011", "icon-012", "icon-013", "ill-010", "mot-005", "nam-001", "neuro-026", "pict-001", "pict-007", "pict-008", "pict-009", "pict-010", "pict-011", "tov-038", "type26-002", "type26-003", "type26-004", "type26-005", "type26-012", "type26-013", "type26-014", "type26-019", "type26-020", "type25-003", "type25-007", "type25-008", "type25-020", "webf-011", "webf-013", "webf-018", "webf-027"];
+var REC={"aca-003": "a", "aca-004": "a", "aid-009": "a", "avd-006": "a", "appf-002": "a", "logo26-001": "c", "photo26-002": "c", "col26-004": "a", "col26-008": "a", "col26-009": "a", "col26-011": "a", "col26-012": "a", "col26-015": "a", "col26-016": "a", "col26-017": "a", "col26-018": "a", "dv-bar-007": "a", "dv-bar-009": "a", "dv-line-011": "a", "dv-pie-009": "a", "dv-pie-010": "a", "dv-004": "a", "dv-009": "a", "dv-016": "a", "dv-017": "a", "icon-002": "a", "icon-005": "a", "icon-006": "a", "icon-011": "a", "icon-012": "a", "icon-013": "a", "ill-010": "a", "mot-005": "a", "nam-001": "c", "neuro-026": "a", "pict-001": "a", "pict-007": "a", "pict-008": "a", "pict-009": "a", "pict-010": "c", "pict-011": "a", "tov-038": "a", "type26-002": "c", "type26-003": "a", "type26-004": "a", "type26-005": "a", "type26-012": "a", "type26-013": "a", "type26-014": "a", "type26-019": "a", "type26-020": "a", "type25-003": "a", "type25-007": "a", "type25-008": "a", "type25-020": "c", "webf-011": "a", "webf-013": "a", "webf-018": "c", "webf-027": "a"};
+var UX={"aca-003": {"a": "pr-information-scent", "b": "pr-coga-2"}, "aca-004": {"a": "pr-information-scent", "b": "pr-coga-2"}, "aid-009": {"a": "pr-fitts", "b": "pr-wcag-2-5-5"}, "avd-006": {"a": "pr-wcag-perceivable", "b": "pr-norman-signifier"}, "appf-002": {"a": "pr-idp-give-control", "b": "pr-tog-readability"}, "logo26-001": {}, "photo26-002": {}, "col26-004": {"a": "pr-tog-readability", "b": "pr-wcag-1-4-3"}, "col26-008": {"a": "pr-nng-consistency", "b": "pr-gestalt-similarity"}, "col26-009": {"a": "pr-wcag-1-4-3", "b": "pr-nng-consistency"}, "col26-011": {"a": "pr-wcag-1-4-11", "b": "pr-wcag-perceivable"}, "col26-012": {"a": "pr-nng-consistency", "b": "pr-von-restorff"}, "col26-015": {"a": "pr-nng-consistency", "b": "pr-idp-be-consistent"}, "col26-016": {"a": "pr-von-restorff", "b": "pr-nng-consistency"}, "col26-017": {"a": "pr-wcag-1-4-3", "b": "pr-gestalt-figure-ground"}, "col26-018": {"a": "pr-wcag-1-4-3", "b": "pr-wcag-1-4-11"}, "dv-bar-007": {"a": "pr-graphical-perception", "b": "pr-jakobs-law"}, "dv-bar-009": {"a": "pr-graphical-perception"}, "dv-line-011": {"a": "pr-graphical-perception", "b": "pr-gestalt-continuity"}, "dv-pie-009": {"a": "pr-graphical-perception", "b": "pr-working-memory-4"}, "dv-pie-010": {"a": "pr-graphical-perception", "b": "pr-mental-model"}, "dv-004": {"a": "pr-wcag-perceivable", "b": "pr-gestalt-common-region"}, "dv-009": {"a": "pr-graphical-perception", "b": "pr-nng-minimalist"}, "dv-016": {"a": "pr-wcag-1-4-3", "b": "pr-wcag-1-4-11"}, "dv-017": {"a": "pr-idp-be-consistent", "b": "pr-nng-consistency"}, "icon-002": {"a": "pr-norman-signifier", "b": "pr-gestalt-similarity"}, "icon-005": {"a": "pr-fitts", "b": "pr-wcag-2-5-5"}, "icon-006": {"a": "pr-tog-readability", "b": "pr-gestalt-similarity"}, "icon-011": {"a": "pr-wcag-1-4-3", "b": "pr-wcag-1-4-11"}, "icon-012": {"a": "pr-wcag-perceivable", "b": "pr-nng-minimalist"}, "icon-013": {"a": "pr-wcag-perceivable", "b": "pr-wcag-1-4-11"}, "ill-010": {"a": "pr-wcag-perceivable", "b": "pr-idp-comparable-experience"}, "mot-005": {"a": "pr-idp-give-control", "b": "pr-wcag-operable"}, "nam-001": {}, "neuro-026": {"a": "pr-coga-1", "b": "pr-coga-3"}, "pict-001": {"a": "pr-coga-1", "b": "pr-norman-signifier"}, "pict-007": {"a": "pr-wcag-1-4-11", "b": "pr-von-restorff"}, "pict-008": {"a": "pr-wcag-1-4-11", "b": "pr-wcag-perceivable"}, "pict-009": {"a": "pr-norman-signifier", "b": "pr-gestalt-figure-ground"}, "pict-010": {"a": "pr-tog-readability"}, "pict-011": {"a": "pr-gestalt-similarity", "b": "pr-idp-be-consistent"}, "tov-038": {"a": "pr-nng-match-real-world", "b": "pr-govuk-understand-context"}, "type26-002": {"a": "pr-idp-be-consistent"}, "type26-003": {"a": "pr-wcag-1-4-3", "b": "pr-tog-readability"}, "type26-004": {"a": "pr-von-restorff", "b": "pr-nng-consistency"}, "type26-005": {"a": "pr-tog-readability", "b": "pr-coga-3"}, "type26-012": {"a": "pr-tog-readability", "b": "pr-govuk-understand-context"}, "type26-013": {"a": "pr-wcag-1-4-3", "b": "pr-gestalt-figure-ground"}, "type26-014": {"a": "pr-wcag-1-4-3"}, "type26-019": {"a": "pr-tog-readability", "b": "pr-coga-3"}, "type26-020": {"a": "pr-gestalt-continuity", "b": "pr-tog-readability"}, "type25-003": {"a": "pr-von-restorff", "b": "pr-nng-consistency"}, "type25-007": {"a": "pr-tog-readability", "b": "pr-coga-3"}, "type25-008": {"a": "pr-nng-consistency", "b": "pr-norman-signifier"}, "type25-020": {}, "webf-011": {"a": "pr-gestalt-figure-ground", "b": "pr-mental-model"}, "webf-013": {"a": "pr-norman-signifier", "b": "pr-gestalt-figure-ground"}, "webf-018": {}, "webf-027": {"a": "pr-gestalt-proximity", "b": "pr-idp-be-consistent"}};
+
+function state(id){var r=document.querySelector('input[name="'+id+'"]:checked');
+ var c=r?r.value:null;var n=document.getElementById('note-'+id);var o=document.getElementById('other-'+id);
+ var ux=null;if(c&&UX[id]&&UX[id][c])ux=UX[id][c];else if(c==='d')ux=(o&&o.value.trim())||null;
+ return {choice:c,uxId:ux,note:(n&&n.value)||"",recommended:REC[id],overruled:c!==null&&c!==REC[id]}}
+function envelope(){var a={};IDS.forEach(function(id){a[id]=state(id)});
+ return {exportedAt:new Date().toISOString(),page:PAGE,answers:a}}
+function show(){var j=JSON.stringify(envelope(),null,2);var p=document.getElementById('exp');p.hidden=false;p.textContent=j;return j}
+function tally(){var d=0;IDS.forEach(function(id){if(document.querySelector('input[name="'+id+'"]:checked'))d++});
+ document.getElementById('count').textContent=d+'/'+IDS.length}
+document.getElementById('takeall').onclick=function(){IDS.forEach(function(id){
+ var el=document.querySelector('input[name="'+id+'"][value="'+REC[id]+'"]');if(el)el.checked=true});
+ tally();show();document.getElementById('msg').textContent='all '+IDS.length+' set to the recommendation \u2014 change any before you export'};
+document.getElementById('dl').onclick=function(){var j=show();var a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download=PAGE+'-export.json';a.click();
+ document.getElementById('msg').textContent='downloaded'};
+document.getElementById('cp').onclick=function(){var j=show();try{if(navigator.clipboard&&navigator.clipboard.writeText){
+ var w=navigator.clipboard.writeText(j);if(w&&w["catch"])w["catch"](function(){})}}catch(e){}
+ document.getElementById('msg').textContent='copied \u2014 the JSON is below too'};
+document.addEventListener('change',function(){tally();if(!document.getElementById('exp').hidden)show()});
+document.addEventListener('input',function(){if(!document.getElementById('exp').hidden)show()});
+tally();
+
+</script>
+</body></html>
