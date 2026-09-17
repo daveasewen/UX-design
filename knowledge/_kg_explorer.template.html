@@ -101,6 +101,11 @@ canvas.grabbing{cursor:grabbing}
 .legend .view.constitution{border-color:var(--ink);border-width:1px 1px 1px 3px}
 .legend .obligation{display:flex;flex-direction:column;gap:3px;padding:4px 5px 5px;border:1px dashed var(--rule)}
 .legend .obligation>span{font-size:9px;color:var(--ink-3);letter-spacing:.08em}
+/* #281 s281 lane CM — the HELD row. Authored lines that no chip draws are said in words rather than
+   dropped; a dashed left edge marks it as a declared gap, not a family. */
+.legend .held{font-size:9px;line-height:1.4;letter-spacing:.02em;text-transform:none;color:var(--ink-3);border-left:2px dashed var(--rule);padding:1px 0 1px 6px;max-width:400px;pointer-events:auto}
+.legend .held b{color:var(--ink);font-weight:600}
+.legend.strip .held{max-width:none}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--rule);background:var(--bg);cursor:pointer;user-select:none;min-height:24px;font-size:10px} /* #279: compacted (was 6px 10px / 30px) so the three views + the Constitution fit where three rows sat */
 .chip.off{opacity:.35}
 .chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
@@ -323,7 +328,20 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   // #279 s277-D4 — the six ratified asset edge types, their own family and chip (OFF by default).
   // defaultActive (s277-D6) and the logos' governedBy (s277-D7) are DECLARED-NULL ONLY: never drawn,
   // so they need no family here — they are counted and listed as declared nulls.
-  inGroup:'assets',activeVariantOf:'assets',usesIcon:'assets',usesLogo:'assets',defaultFor:'assets',ruledBy:'assets'};
+  inGroup:'assets',activeVariantOf:'assets',usesIcon:'assets',usesLogo:'assets',defaultFor:'assets',ruledBy:'assets',
+  // #281 s281 lane CM — THE CHIP MAP. Six authored edge types reached storage and stopped here: they
+  // were not keys of this map, so EON asked famOn[undefined] and no chip anywhere could draw them.
+  // The five SYSTEM-view types join `rules`, the base wiring chip they already sit beside (ON by
+  // default: the 23 shape:, 14 intent: and 12 role: dots light, and the 43 component→component
+  // yieldsTo lines are drawn for the first time; yieldsTo's 2 declared nulls and defaultActive's 1
+  // are carried and never drawn, the s270-D2 shape — defaultActive has a home here for its TYPE, not
+  // for a line, since its only edge is that null). `obeys` joins `guidelinerules`: a component
+  // obeying an HSBC rule is the rule family's own line, and that chip loads OFF, so the 154
+  // component→rule lines change no default. The 14 component→ux lines carry `held:true` from the
+  // builder and are drawn by NOTHING at any chip setting — where an obligation on a UX principle is
+  // drawn is Dave's word, and until it is ruled the line is carried, counted and readable, not lost.
+  answersIntent:'rules',hasDataShape:'rules',providesRole:'rules',yieldsTo:'rules',defaultActive:'rules',
+  obeys:'guidelinerules'};
 // #279 s277-D8 — ONE GRAPH, THREE VIEWS BY FORCE. The fam KEYS are storage (untouched); the LABELS
 // and the grouping are the page's. governance = THE CONSTITUTION (the ruling record; NOT a view).
 const FAMLABEL={structure:'Structure',usage:'Usage',render:'Rendering',rules:'Rules & wiring',assets:'Assets',
@@ -374,8 +392,19 @@ const READ={containedBy:['is contained by','contains'],hasPart:['has part','is p
   appliesTo:['applies to','must satisfy'],under:['sits under','contains'],enClause:['has EN 301 549 clause','is the clause for'],
   boundBy:['is bound by','binds'],checkedBy:['is checked by','can check'],verifiedBy:['is verified by','verifies'],
   inGroup:['is in group','groups'],activeVariantOf:['is the active variant of','has active variant'],usesIcon:['uses icon','is used by'],
-  usesLogo:['uses logo','is used by'],defaultFor:['is the default for','defaults to'],ruledBy:['is ruled by','rules']};
-const TYPES=['component','snippet','pattern','context','ruling'];
+  usesLogo:['uses logo','is used by'],defaultFor:['is the default for','defaults to'],ruledBy:['is ruled by','rules'],
+  // #281 s281 lane CM — the six that now have a family need a reading too (the panel takes READ[t][0|1]).
+  answersIntent:['answers intent','is answered by'],hasDataShape:['takes data shape','is taken by'],
+  providesRole:['provides role','is provided by'],yieldsTo:['yields to','is yielded to by'],
+  defaultActive:['is active by default for','defaults to'],obeys:['obeys','binds']};
+// #281 s281 lane CM — SECOND FALL-THROUGH, found by the probe. The chip map was not the only place
+// these dots were missing from: `shape`, `intent` and `role` are base node types with 23/14/12 nodes
+// and their OWN palette entries (--c-shape / --c-intent / --c-role have been in the stylesheet all
+// along), but they were not in this list — so typeOn[t] was `undefined`, NODEON returned undefined,
+// and the dots were not drawn even once their edges had a family. Giving the edge a family without
+// giving the node a chip lights nothing; both were needed and both are one line. No type is renamed
+// and no id moves — three names join the row they always belonged to.
+const TYPES=['component','snippet','pattern','context','ruling','shape','intent','role'];
 const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','icon','iconGroup','logo'];
 const ALLTYPES=TYPES.concat(TYPES2);
 const adj=new Map(NODES.map(n=>[n.id,[]]));
@@ -392,7 +421,11 @@ const famOn={structure:1,usage:1,render:1,rules:1,governance:0,guidelines:0,guid
 // carry no `fam`, so with both new family chips off the page is exactly the v1.1 graph.
 const famOK=o=>!o.fam||famOn[o.fam];
 const NODEON=n=>typeOn[n.type]&&famOK(n);
-const EON=e=>famOn[FAMILY[e.type]]&&(!DR(e)||famOn.designrulings); // #279: an edge answers to its family chip AND, if it is a design's citation of a ruling, to the design-governance sub-chip
+// #279: an edge answers to its family chip AND, if it is a design's citation of a ruling, to the
+// design-governance sub-chip. #281 s281 lane CM: and a HELD edge answers to nothing — the 14
+// obeys→ux lines are carried in the data and drawn at no chip setting until Dave rules where an
+// obligation on a UX principle belongs. `held` is written by the builder, never by the page.
+const EON=e=>famOn[FAMILY[e.type]]&&(!DR(e)||famOn.designrulings)&&!e.held;
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2'),ink3:css('--ink-3'),rule:css('--rule'),
   t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
@@ -407,6 +440,14 @@ function applyTheme(){const th=THEMES[themeI];if(th==='auto')delete document.doc
 // ---------- stats + legend
 const LIVE=NODES.filter(n=>!n.dead&&n.died==null),LIVEE=EDGES.filter(e=>!e.dead&&e.died==null);
 const XTRA=KG.extra||{};
+// #281 s281 lane CM — THE HELD BRANCH, said in words. The builder marks the obeys→ux lines `held`
+// and names them here; the legend prints this row so the page never drops 14 authored lines in
+// silence. `esc` is defined further down the file and renderLegend runs before it, so the two
+// strings are escaped here, once, at module scope.
+const ESC0=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HELDN=LIVEE.filter(e=>e.held).length;
+const HELDWHY=ESC0(XTRA.heldWhy||'held pending a ruling');
+const HELDLBL=ESC0(XTRA.heldType||'obeys')+'→'+ESC0(XTRA.heldTo||'ux');
 // counts follow the FAMILY chips only (never the type chips), so with governance + guidelines
 // off the strip and the headline read the v1.1 numbers to the digit.
 let SHOWN=[],SHOWNE=[],count={};
@@ -426,7 +467,7 @@ const ETYPES=()=>Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]&&(famOn.designru
 function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${ETYPES().length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
 const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
-const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f).length}</b></span>`;
+const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f&&!e.held).length}</b></span>`; // #281: a held line is in no chip's count — it is counted once, in the legend's own held row
 // the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). It gates
 // edges, never nodes. v1.16 (EV §2, §5.4): its count is the citation edges it GOVERNS RIGHT NOW — drawn
 // (t resolved), both ends shown by the family chips — 28 at the page's defaults (the base metas' governedBy),
@@ -469,6 +510,7 @@ function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.cla
 <div class="lbody"><div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
   ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
   :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>
+${HELDN?`<div class="held" title="${HELDWHY}"><b>${HELDN}</b> ${HELDLBL} lines held pending a ruling — carried and readable in INSPECT, drawn by no chip, counted in none above.</div>`:''}
 <div class="trows"><div class="row">${TYPES.map(chipT).join('')}</div><div class="row">${TYPES2.map(chipT).join('')}</div></div></div>`;}
 recount();renderStats();renderLegend();
 legend.addEventListener('click',ev=>{
@@ -743,7 +785,7 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
-<div class="k">One graph, three views (s277-D8)</div><p>The layers were ingestion waves, not kinds of knowledge. The chips are grouped by FORCE. <b>System</b> — what exists; the agent <em>chooses</em> here: structure, usage, rendering, the components' own wiring, and the ${XTRA.assets||0} assets (icons, icon groups, logos — chip off by default, ${XTRA.assetNulls||0} declared nulls carried, never drawn). <b>Design governance</b> — what a design must or should do; the agent <em>obeys</em> here: ONE obligation with three provenance sub-chips, each still its own chip — the ${XTRA.sc||0} WCAG success criteria, the ${LIVE.filter(n=>n.type==='rule').length} HSBC rules, and the rulings a design cites (authored citation only: <code>governedBy</code> in a meta, <code>ruledBy</code> in the asset files, a ruling's own <code>governs</code> naming a component — no per-ruling scope is derived; that ladder is unratified). <b>Explanation</b> — why; the agent <em>consults</em> here: the graded UX principles and their polarities. Force is the edge's, not the node's: a principle cited by a meta's <code>edges.obeys</code> binds through that edge (not drawn — the s276 declared gap stands).</p>
+<div class="k">One graph, three views (s277-D8)</div><p>The layers were ingestion waves, not kinds of knowledge. The chips are grouped by FORCE. <b>System</b> — what exists; the agent <em>chooses</em> here: structure, usage, rendering, the components' own wiring, and the ${XTRA.assets||0} assets (icons, icon groups, logos — chip off by default, ${XTRA.assetNulls||0} declared nulls carried, never drawn). <b>Design governance</b> — what a design must or should do; the agent <em>obeys</em> here: ONE obligation with three provenance sub-chips, each still its own chip — the ${XTRA.sc||0} WCAG success criteria, the ${LIVE.filter(n=>n.type==='rule').length} HSBC rules, and the rulings a design cites (authored citation only: <code>governedBy</code> in a meta, <code>ruledBy</code> in the asset files, a ruling's own <code>governs</code> naming a component — no per-ruling scope is derived; that ladder is unratified). <b>Explanation</b> — why; the agent <em>consults</em> here: the graded UX principles and their polarities. Force is the edge's, not the node's: a principle cited by a meta's <code>edges.obeys</code> binds through that edge. #281 gave <code>obeys</code> a family at last — the ${LIVEE.filter(e=>e.type==='obeys'&&!e.held).length} component→rule lines answer to the HSBC <code>rule:</code> chip, where a rule's own obligation belongs — and HELD the ${HELDN} component→ux lines: carried, readable here and in INSPECT, drawn by no chip, because s277-D8 fixed this view at three provenances and a <code>ux:</code> target is none of them. That is a question waiting on Dave, kept visible instead of dropped.</p>
 <div class="k">The Constitution — not a view</div><p>The ruling record: every one of the ${XTRA.rulings||0} rulings in <code>knowledge/_rulings.json</code> — not only the ${LIVE.filter(n=>n.type==='ruling'&&!n.fam).length} a component points at — with the sessions they were ruled in, the artefacts they govern and the evidence they cite. Process, gauge and ritual rulings live here with the design-scoped ones: the record is one thing, and a ruling enters Design governance only by a design's authored citation of it. <b>Dashed</b> edges are DERIVED, not authored: <code>mentions</code> is a regex over each ruling's words, and the verb near the mention is carried as a proposal only until Dave rules it. <b>Solid</b> ruling&rarr;ruling edges are AUTHORED: the 48 in <code>knowledge/_ruling_edges.json</code>, ratified by <b>s267-D3</b>; <code>supersedesClause</code> (dotted) supersedes or retires ONE CLAUSE of its target, not the ruling. A pair carried by an authored edge, or ratified as a plain citation, is never re-proposed.</p>
 <div class="k">Node types</div><p>${ALLTYPES.filter(t=>count[t]).map(t=>`<span class="kind" style="--c:var(--c-${t})"><i></i>${t} ${count[t]}</span>`).join(' &nbsp; ')}</p>
 <div class="k">Edge families, by view</div><p>${VIEWS.map(v=>{const fs=(v.fams||v.obligation).filter(f=>f!=='designrulings'&&famOn[f]);return fs.length?`<span class="kind" style="--c:var(--ink)"><b>${v.name}</b></span> ${fs.map(f=>`<span class="kind" style="--c:var(--f-${f})"><i style="border-radius:0;height:2px;width:14px"></i>${FAMLABEL[f]}</span>`).join(' &nbsp; ')}`:''}).filter(Boolean).join('<br>')}</p></div>`;panel.querySelectorAll('.orph').forEach(a=>a.onclick=ev=>{ev.preventDefault();setFocus(byId.get(a.dataset.id))})}
@@ -839,7 +881,7 @@ function edgeSec(n){const groups=new Map();
     const badges=vs.length?vs.map(v=>`<span class="verb" title="the twelve verbs — s277-D11, a reading map over the storage types">${esc(V[v]?V[v].force:v)} · ${esc(v)}</span>`).join('')
       :`<span class="verb" title="${esc((VERBS.unread||{})[t]||'no verb reads this storage type')}">unread</span>`;
     const reads=vs.map(v=>V[v]&&V[v].reads).filter(Boolean),sp=(VERBS.splits||{})[t];
-    h+=`<div class="egroup"><h4 style="--c:var(--f-${fam})"><i class="${g[0].e.derived?'dash':''}"></i><span>${esc(t)}</span>${badges}<b>${g.length}</b>${(fam&&famOn[fam])?'':'<span class="verb" title="this family’s chip is off, so these are not drawn right now">chip off</span>'}</h4>`;
+    h+=`<div class="egroup"><h4 style="--c:var(--f-${fam})"><i class="${g[0].e.derived?'dash':''}"></i><span>${esc(t)}</span>${badges}<b>${g.length}</b>${(fam&&famOn[fam])?'':'<span class="verb" title="this family’s chip is off, so these are not drawn right now">chip off</span>'}${g.some(x=>x.e.held)?`<span class="verb" title="${esc(XTRA.heldWhy||'')}">held · drawn by no chip</span>`:''}</h4>`;
     if(reads.length)h+=`<p class="reads">${reads.map(esc).join('<br>')}</p>`;
     if(sp)h+=`<p class="reads">split by ${esc(sp.by)}</p>`;
     for(const x of g.slice().sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
@@ -1040,7 +1082,13 @@ ${crumbBar()}
 // declaration itself. Both ends are buttons into their own artefacts.
 const EFAMFILE={guidelines:'knowledge/_rule_nodes.json · knowledge/compliance/rules/',
   governance:'knowledge/_rulings.json · knowledge/_ruling_edges.json',
-  rules:'knowledge/_rule_nodes.json',assets:'knowledge/_icon_nodes.json · knowledge/_logo_nodes.json',
+  // #281 s281 lane CM — CORRECTED. This map read `rules:'knowledge/_rule_nodes.json'`, and `rules`
+  // is the BASE WIRING chip, whose edges are authored in the component metas; `_rule_nodes.json` is
+  // the HSBC rule family, whose key is `guidelinerules` (the template says so at RULE_FAM's own
+  // comment: "NOT 'rules': that family key is taken by the base wiring chip"). So every base wiring
+  // edge's ↔ door named the wrong file, and #281 would have put five more types through it. No fam
+  // KEY moves — one map value is corrected and one is added.
+  guidelinerules:'knowledge/_rule_nodes.json',assets:'knowledge/_icon_nodes.json · knowledge/_logo_nodes.json',
   uxprinciples:'knowledge/_ux_principle_nodes.json'};
 function endBtn(id){const m=byId.get(id);if(!m)return `<span class="end"><b>—</b><small>no node</small></span>`;
   return `<button class="end" type="button" data-insp="${esc(m.id)}"><b>${esc(m.label)}</b><small>${esc(m.type)} · ${esc(m.id)}</small></button>`}
@@ -1064,12 +1112,18 @@ function openEdge(e,back){if(!e)return;
   if(reads.length)row('the verb’s own sentence',reads.map(esc).join('<br>'));
   if(sp)row('split by',esc(sp.by));
   row('family',esc(fam||'—')+(fam&&famOn[fam]===false?' · chip off, so it is not drawn right now':''));
+  /* #281 s281 lane CM — a HELD line says so here, in the edge's own door, with its reason. */
+  if(e.held)row('held',`<b>drawn by no chip, at any setting</b> — ${esc(e.heldWhy||XTRA.heldWhy||'pending a ruling')}. The line is carried in the data and counted in storage; it is not dropped.`);
   if(e.note)row('note',esc(e.note));
   row('provenance',(e.authored?'<b>authored</b> — written in the record itself':'')
     +(e.derived?(e.authored?' · ':'')+'<b>derived</b> — proposed by a builder pass':'')
     +(e.ratified?` · ratified ${esc(e.ratified)}`:'')
     +(e.at?` · at ${esc(String(e.at))}`:'')||'—');
-  if(EFAMFILE[fam])row('stored in',`<code>${esc(EFAMFILE[fam])}</code>`);
+  /* #281 s281 lane CM: an edge that carries its own `fam` was READ OUT OF that family's file; an
+     edge with no `fam` is a base edge and is authored in its source's own record. Asking that first
+     is what makes `obeys` — family guidelinerules, stored in the component's meta — name its meta. */
+  const efam=(!e.fam&&sN&&sN.type==='component')?null:EFAMFILE[fam];
+  if(efam)row('stored in',`<code>${esc(efam)}</code>`);
   else if(sN&&sN.type==='component')row('stored in',`<code>knowledge/components/${esc(sN.id.slice(sN.id.indexOf(':')+1))}.meta.json</code>`);
   if(SNAPS.length&&e.born!=null)row('born',esc(SNAPS[e.born].date+' · snapshot '+e.born));
   if(e.died!=null&&SNAPS[e.died])row('gone',esc(SNAPS[e.died].date));
