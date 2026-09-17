@@ -13,7 +13,9 @@ for the composition/journey strand; component relevance flagged where real.*
 ## Logos (2026)
 
 - **An HSBC logo appears at least once on every piece of communication or customer
-  journey.** [BLOCKING-derivable at journey/screen level — a composition gate candidate
+  journey.** In a native app the journey's logon or splash screen satisfies the rule —
+  "the user summoned an HSBC app, they know where the destination is".
+  (s282-D1, Dave 2026-09-17) [BLOCKING-derivable at journey/screen level — a composition gate candidate
   for the journey tranche; the payments-journey proof is where this bites first]
   {#logo26-001}
 - **Originals only** (Global Brand Design supplied); never recreate/edit; always in
@@ -53,7 +55,9 @@ for the composition/journey strand; component relevance flagged where real.*
   ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic
   imagery — photography comes from the Global Image Library/approved sources only.
   Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story =
-  retrieval from licensed libraries, full stop. [BLOCKING-derivable at asset-provenance
+  retrieval from licensed libraries, full stop. The gen-AI clause carries a review date —
+  review by 2027-03 — which changes nothing about the ban until then.
+  (s282-D1, Dave 2026-09-17) [BLOCKING-derivable at asset-provenance
   level — generated experiences may only reference library assets; pairs with the
   icon-source rule] {#photo26-002}
 - **Shot vocabulary:** cinematic · people (real moments; diversity; disability shown

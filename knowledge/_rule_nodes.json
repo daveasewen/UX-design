@@ -1,5 +1,5 @@
 {
-  "$description": "RATIFIED rule: nodes and their edges under s274-D8 (s274-D7..D12, #274 lane RL; s269-D1 item 2). Regenerate with `gen_kg_rules.py --land --ratified s274-D8`; never hand-edit. AUTHORED, never generated: the `restsOn` block (s281-D3, landed #281 lane RL under s281-D6) is written BY HAND from Dave's export of notes/_lanes/281/rests-on/RESTS-ON-2026-09-17.html and is NOT produced by gen_kg_rules.py — re-running that generator would drop it. Re-land it with notes/_lanes/281/rests-on-land/land_rests_on.py, which is idempotent.",
+  "$description": "RATIFIED rule: nodes and their edges under s274-D8 (s274-D7..D12, #274 lane RL; s269-D1 item 2). Regenerate with `gen_kg_rules.py --land --ratified s274-D8`; never hand-edit. AUTHORED, never generated: the `restsOn` block (s281-D3, landed #281 lane RL under s281-D6) is written BY HAND from Dave's export of notes/_lanes/281/rests-on/RESTS-ON-2026-09-17.html and is NOT produced by gen_kg_rules.py — re-running that generator would drop it. Re-land it with notes/_lanes/281/rests-on-land/land_rests_on.py, which is idempotent. s282-D1 (#282 lane RN) adds TWO more authored `restsOn` lines by hand — rule:mot-005 -> ux:pr-wcag-operable and rule:type26-003 -> ux:pr-tog-readability — and refreshes the `text` of the eleven rules his rule notes edited. land_rests_on.py rebuilds the restsOn block FROM THE #281 EXPORT and would drop these two: re-land them with notes/_lanes/282/rule-notes-land/land_rule_notes.py, which is idempotent.",
   "generated_by": "knowledge/gen_kg_rules.py",
   "family": "rules",
   "edge_types": {
@@ -381,7 +381,7 @@
       "ruleId": "aca-003",
       "file": "accessibility-content-authoring.md",
       "destinyFull": "BLOCKING",
-      "text": "CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.",
+      "text": "CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears. The first heading need not repeat the page title — an active navigation state or a salutation may lead; the title, not the H1, is what orientation rests on. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -722,7 +722,7 @@
       "ruleId": "aid-009",
       "file": "accessibility-interaction-design.md",
       "destinyFull": "BLOCKING",
-      "text": "ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44, minimum exception 24×24 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance… 44×44 is therefore considered the default requirement.\"",
+      "text": "ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44, minimum exception 24×24 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance… 44×44 is therefore considered the default requirement.\" The 44 default and the 24 floor are measured on the HIT AREA, not on the visible target. (s282-D1, Dave 2026-09-17) Beside that floor, a graded heuristic the designer weighs: the size of the visible target, the clear space around it — spacing is also emphasis — and compact views, which are a user choice. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -1206,7 +1206,7 @@
       "ruleId": "col26-009",
       "file": "colour-standards-2026.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Don't use the supporting palette as text.",
+      "text": "Don't use the supporting palette as text. Two reasons, not one: the contrast floor and brand consistency — \"if designers were allowed to use the supporting palette we would get dramatically varied designs\". (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -1283,7 +1283,7 @@
       "ruleId": "col26-016",
       "file": "colour-standards-2026.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Don't use red typography — red text is reserved for call to actions.",
+      "text": "Don't use red typography — red text is reserved for call to actions. One exception: RAG red text for downward and RAG green text for upward position movement, stat-card style — the delta clause under `data-visualisation.md` {#dv-017} ({#dv-019} (a)) carries the semantics and is not restated here. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -3032,7 +3032,7 @@
       "ruleId": "dv-bar-007",
       "file": "data-visualisation-bar-charts.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Positive + negative values: vertical bars only. Don't put negative values on a horizontal bar chart.",
+      "text": "Positive + negative values: vertical bars only. Don't put negative values on a horizontal bar chart. Scope: positive-scale bar charts. Negative values use the vertical below-zero form, which is the sanctioned way to show them. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -3461,7 +3461,7 @@
       "ruleId": "icon-006",
       "file": "icons.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Minimum 16px, maximum 48px; scale proportionately in 2px increments.",
+      "text": "Minimum 16px, maximum 48px; scale proportionately in 2px increments. The floor is legibility; the ceiling is the icon/illustration boundary — at the ceiling an icon is close to illustration dimensions; and the fixed set holds consistency. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -3703,7 +3703,7 @@
       "ruleId": "logo26-001",
       "file": "brand-refresh-assets.md",
       "destinyFull": "BLOCKING-derivable at journey/screen level",
-      "text": "An HSBC logo appears at least once on every piece of communication or customer journey.",
+      "text": "An HSBC logo appears at least once on every piece of communication or customer journey. In a native app the journey's logon or splash screen satisfies the rule — \"the user summoned an HSBC app, they know where the destination is\". (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -4033,7 +4033,7 @@
       "ruleId": "neuro-026",
       "file": "neurodiversity.md",
       "destinyFull": "BLOCKING-derivable kin",
-      "text": "Icons/visuals support text, never replace it — content must remain comprehensible with all images and icons removed.",
+      "text": "Icons/visuals support text, never replace it — content must remain comprehensible with all images and icons removed. Carve-out by reference: unpaired icons are allowed only for the universal set named in `icons.md` ({#icon-004}); pictograms stay no-exception ({#pict-001}). (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -4143,7 +4143,7 @@
       "ruleId": "photo26-002",
       "file": "brand-refresh-assets.md",
       "destinyFull": "BLOCKING-derivable at asset-provenance level",
-      "text": "HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clichéd shots; no text as a mask. ⚠ The gen-AI ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic imagery — photography comes from the Global Image Library/approved sources only. Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story",
+      "text": "HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clichéd shots; no text as a mask. ⚠ The gen-AI ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic imagery — photography comes from the Global Image Library/approved sources only. Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story = retrieval from licensed libraries, full stop. The gen-AI clause carries a review date — review by 2027-03 — which changes nothing about the ban until then. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -4165,7 +4165,7 @@
       "ruleId": "pict-001",
       "file": "pictograms.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Every pictogram carries a label or copy that underpins its meaning — no exceptions (unlike icons' universal-meaning carve-out).",
+      "text": "Every pictogram carries a label or copy that underpins its meaning — no exceptions (unlike icons' universal-meaning carve-out). The usage boundary: a pictogram supports a concept; an icon signals an action. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -4264,7 +4264,7 @@
       "ruleId": "pict-010",
       "file": "pictograms.md",
       "destinyFull": "BLOCKING-derivable",
-      "text": "Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead.",
+      "text": "Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead. The figures are consistency and enforcement against misuse by designers, not a perceptual threshold. (s282-D1, Dave 2026-09-17)",
       "destiny": "BLOCKING"
     },
     {
@@ -10179,6 +10179,30 @@
       "overruled": true,
       "daveNote": "1 and 2",
       "both": true
+    },
+    {
+      "s": "rule:mot-005",
+      "t": "ux:pr-wcag-operable",
+      "type": "restsOn",
+      "fam": "rules",
+      "why": "The 5-second play/pause requirement is SC 2.2.2 Pause, Stop, Hide restated at brand level: moving content that starts automatically and lasts more than five seconds must have a mechanism to pause, stop or hide it. The obligation is statutory, so it rests on the operable principle as well as on the control principle it already names.",
+      "grade": "L",
+      "choice": "a",
+      "recommended": true,
+      "both": true,
+      "daveNote": "The principle is correct here but is is also a Ally rule we adhere to so the grade is probably wrong"
+    },
+    {
+      "s": "rule:type26-003",
+      "t": "ux:pr-tog-readability",
+      "type": "restsOn",
+      "fam": "rules",
+      "why": "\"All text legible\" is the readability claim, not the ratio: text must be readable by people with less than perfect sight, which is most people over forty. The contrast number is 1.4.3; legibility is the reason the number exists.",
+      "grade": "C",
+      "choice": "a",
+      "recommended": true,
+      "both": true,
+      "daveNote": "linked to 2 as you stated"
     }
   ],
   "ratified": "s274-D8"

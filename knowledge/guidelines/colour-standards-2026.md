@@ -38,7 +38,10 @@ palette. Values: brand core below; supporting values already penned with contras
 - Use red **tactically** to highlight what matters most; don't overuse ("if everything competes
   for attention, nothing stands out"). To draw attention to a CTA, consider an image with less
   red rather than more red. [TASTE] {#col26-003}
-- **Don't use red typography — red text is reserved for call to actions.** [BLOCKING-derivable —
+- **Don't use red typography — red text is reserved for call to actions.** One exception:
+  RAG red text for downward and RAG green text for upward position movement, stat-card
+  style — the delta clause under `data-visualisation.md` {#dv-017} ({#dv-019} (a)) carries
+  the semantics and is not restated here. (s282-D1, Dave 2026-09-17) [BLOCKING-derivable —
   text-colour check: red foreground legal only on CTA elements] {#col26-016}
 - **Don't use red backgrounds for text** — prolonged exposure causes visual fatigue and reduces
   legibility. [BLOCKING-derivable — background-behind-text check] {#col26-004}
@@ -58,7 +61,9 @@ palette. Values: brand core below; supporting values already penned with contras
 - Scope: **illustrations, data visualisations, status-driven interfaces (RAG, risk, gain/loss)
   only.** "Don't use the supporting palette outside of illustration, data visualisation or RAG
   applications." [BLOCKING-derivable — usage-scope check on fill contexts] {#col26-008}
-- **Don't use the supporting palette as text.** [BLOCKING-derivable — text-colour whitelist] {#col26-009}
+- **Don't use the supporting palette as text.** Two reasons, not one: the contrast floor
+  and brand consistency — "if designers were allowed to use the supporting palette we
+  would get dramatically varied designs". (s282-D1, Dave 2026-09-17) [BLOCKING-derivable — text-colour whitelist] {#col26-009}
 - Don't use the supporting palette to create sections or segmentations within content.
   [ADVISORY-derivable] {#col26-010}
 - **Dark colours on light backgrounds; light colours on dark backgrounds** — never light-on-light

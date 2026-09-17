@@ -14,7 +14,8 @@ less narrative than illustration. If a message can't be carried by a single meta
 photograph or illustration instead.
 
 - **Every pictogram carries a label or copy that underpins its meaning** — no exceptions
-  (unlike icons' universal-meaning carve-out). [BLOCKING-derivable — pictogram-without-label
+  (unlike icons' universal-meaning carve-out). The usage boundary: a pictogram supports a
+  concept; an icon signals an action. (s282-D1, Dave 2026-09-17) [BLOCKING-derivable — pictogram-without-label
   check] {#pict-001}
 - Not a replacement for icons or illustrations; never interchange. [ADVISORY] {#pict-002}
 - Don't use pictograms as a replacement for a hero illustration. [ADVISORY] {#pict-003}
@@ -53,7 +54,8 @@ L1 while a small brochure figure is L2).
 ## Sizing
 
 - **Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals.** Below
-  60px, use an icon instead. [BLOCKING-derivable — rendered-size check] {#pict-010}
+  60px, use an icon instead. The figures are consistency and enforcement against misuse by
+  designers, not a perceptual threshold. (s282-D1, Dave 2026-09-17) [BLOCKING-derivable — rendered-size check] {#pict-010}
 - **Never squash, stretch, skew or distort; scale with locked aspect ratio.**
   [BLOCKING-derivable — aspect-ratio check] {#pict-011}
 - Don't position different-scale pictograms immediately next to one another in common

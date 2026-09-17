@@ -46,7 +46,11 @@ Duplicates xref'd per the F4 rule — destiny carried once.*
 - **ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44,
   minimum exception 24×24** (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/
   inline/UA/essential outs; "HSBC already has formal design guidance… 44×44 is therefore
-  considered the default requirement." [BLOCKING — RULED 2026-07-03 (Dave): ENACTED — <24 now BLOCKING in _validate_a11y.py
+  considered the default requirement." The 44 default and the 24 floor are measured on
+  the HIT AREA, not on the visible target. (s282-D1, Dave 2026-09-17)
+  Beside that floor, a graded heuristic the designer weighs: the size of the visible
+  target, the clear space around it — spacing is also emphasis — and compact views,
+  which are a user choice. (s282-D1, Dave 2026-09-17) [BLOCKING — RULED 2026-07-03 (Dave): ENACTED — <24 now BLOCKING in _validate_a11y.py
   (EITHER-dimension semantics per the SC), 24–43 signals advisory against the 44
   default; promotion of the 44 tier waits on modelling the exception outs. Sole
   floor offender (Selection-controls chip dismiss, 18×18) fixed via the Tooltip

@@ -133,7 +133,9 @@ people-manager guidance — captured as skeleton, out of engine scope.
 ## Non-textual information
 
 - **Icons/visuals support text, never replace it** — content must remain comprehensible
-  with all images and icons removed. [BLOCKING-derivable kin — we already require
+  with all images and icons removed. Carve-out by reference: unpaired icons are allowed
+  only for the universal set named in `icons.md` ({#icon-004}); pictograms stay
+  no-exception ({#pict-001}). (s282-D1, Dave 2026-09-17) [BLOCKING-derivable kin — we already require
   icon+label on RAG; this generalises it] {#neuro-026}
 - **Toggle for decorative graphics/images** — platform-level. [structure] {#neuro-027}
 

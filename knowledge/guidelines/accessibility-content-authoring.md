@@ -19,7 +19,10 @@ work" (self-check duty again).*
   programmatically determinable. [ADVISORY — composition-layer rule; DOM order =
   reading order in canon, keep it that way when composing] {#aca-002}
 - **CA-3 — unique, concise page/frame/iframe titles** (SC 2.4.2 A + 4.1.2 A): first
-  thing a speech-output user hears. [BLOCKING — GATED, RULED BLOCKING 2026-07-03 (sweep-batch
+  thing a speech-output user hears.
+  The first heading need not repeat the page title — an active navigation state or a
+  salutation may lead; the title, not the H1, is what orientation rests on.
+  (s282-D1, Dave 2026-09-17) [BLOCKING — GATED, RULED BLOCKING 2026-07-03 (sweep-batch
   ruling): compose gate check 8, every `*.canon.html` carries a non-empty <title>,
   unique across the composed set; showcase/fitness-test surfaces exempt by scope (the
   cold-A/cold-B duplicate is a deliberate A/B pair). Bite-tested, enforced per-screen

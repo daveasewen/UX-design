@@ -31,5 +31,7 @@ change over a period.
   categories** — split into multiple charts or switch chart type. [ADVISORY/TASTE — no
   numeric cap given (contrast: pies cap at 6)] {#dv-bar-010}
 - **Positive + negative values: vertical bars only. Don't put negative values on a
-  horizontal bar chart.** [BLOCKING-derivable — orientation × sign check] {#dv-bar-007}
+  horizontal bar chart.** Scope: positive-scale bar charts. Negative values use the
+  vertical below-zero form, which is the sanctioned way to show them.
+  (s282-D1, Dave 2026-09-17) [BLOCKING-derivable — orientation × sign check] {#dv-bar-007}
 - Projected states: always label past vs projected. [ADVISORY-derivable] {#dv-bar-008}

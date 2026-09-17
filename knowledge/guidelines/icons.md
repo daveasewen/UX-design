@@ -38,6 +38,9 @@ guidelines) + **tappable area**.
 
 - Designed on an **18×18px grid, 1.2px line weight** (72dpi). [structure fact]
 - **Minimum 16px, maximum 48px; scale proportionately in 2px increments.**
+  The floor is legibility; the ceiling is the icon/illustration boundary — at the ceiling
+  an icon is close to illustration dimensions; and the fixed set holds consistency.
+  (s282-D1, Dave 2026-09-17)
   [BLOCKING-derivable — rendered-size check] {#icon-006}
 - Rationalise a standardised size set (e.g. 18/24/36/48) per toolkit/journey; don't use
   uneven scales. [ADVISORY-derivable] {#icon-007}
