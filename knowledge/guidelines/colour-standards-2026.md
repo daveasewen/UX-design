@@ -38,10 +38,14 @@ palette. Values: brand core below; supporting values already penned with contras
 - Use red **tactically** to highlight what matters most; don't overuse ("if everything competes
   for attention, nothing stands out"). To draw attention to a CTA, consider an image with less
   red rather than more red. [TASTE] {#col26-003}
-- **Don't use red typography — red text is reserved for call to actions.** One exception:
-  RAG red text for downward and RAG green text for upward position movement, stat-card
-  style — the delta clause under `data-visualisation.md` {#dv-017} ({#dv-019} (a)) carries
-  the semantics and is not restated here. (s282-D1, Dave 2026-09-17) [BLOCKING-derivable —
+- **Don't use red typography — red text is reserved for call to actions.** The ban is on the
+  PRIMARY HSBC Red as text. One exception, and it is never the primary red: a SECONDARY red —
+  usually the RAG/delta red (`data/delta/loss`) — for downward, and RAG green for upward
+  position movement, stat-card style; the delta clause under `data-visualisation.md` {#dv-017}
+  ({#dv-019} (a)) carries the semantics and is not restated here. Dave: "I think we have RAG
+  red and a readable secondary red for 1 or two of the themes" — no such theme token is in the
+  live token set today; recorded as his word, not as a token. (s282-D1 · s282-D2, Dave
+  2026-09-17) [BLOCKING-derivable —
   text-colour check: red foreground legal only on CTA elements] {#col26-016}
 - **Don't use red backgrounds for text** — prolonged exposure causes visual fatigue and reduces
   legibility. [BLOCKING-derivable — background-behind-text check] {#col26-004}
