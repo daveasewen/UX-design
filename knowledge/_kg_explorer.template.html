@@ -19,8 +19,11 @@
   --c-rule:#2E6B1F;--f-guidelinerules:#2E6B1F;
   /* #275 s275-D1..D6 — the UX-principle family: a plum for the principle node, a lighter
      sibling for the polarity hub, the plum again for the edge family. Not a red: the
-     TWO-RED LAW (s151-D1) is untouched — --accent is still the only red token. */
-  --c-ux:#8A1A5C;--c-polarity:#B03A7A;--f-uxprinciples:#8A1A5C;
+     TWO-RED LAW (s151-D1) is untouched — --accent is still the only red token.
+     #281 s281-D1 — a THIRD sibling, a deeper plum, for the 32 research-family hubs. A type with no
+     --c- token paints transparent and a type with no CHIP is not drawn at all (#281 lane CM's second
+     fall-through): the token and the chip are one change, never one without the other. */
+  --c-ux:#8A1A5C;--c-polarity:#B03A7A;--c-family:#5E1149;--f-uxprinciples:#8A1A5C;
   /* #279 s277-D4 — the assets family: a teal for the icon glyph, a deeper sibling for the group
      hub, a slate for the logo lockup, the teal again for the edge family. Not a red: the
      TWO-RED LAW (s151-D1) is untouched — --accent is still the only red token. */
@@ -33,7 +36,7 @@
     --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;
     --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
     --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
-    --c-ux:#E68ABF;--c-polarity:#F0B4D6;--f-uxprinciples:#E68ABF;
+    --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
     --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
   }
 }
@@ -42,7 +45,7 @@
   --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;
   --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
   --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
-  --c-ux:#E68ABF;--c-polarity:#F0B4D6;--f-uxprinciples:#E68ABF;
+  --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
   --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
 }
 *{box-sizing:border-box}
@@ -325,6 +328,10 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   definedIn:'guidelinerules',cites:'guidelinerules',enforcedBy:'guidelinerules',flaggedBy:'guidelinerules',
   // #275 s275-D2 — the six ratified UX-principle edge types, their own family and chip.
   tensionWith:'uxprinciples',hasParty:'uxprinciples',touches:'uxprinciples',resolvedBy:'uxprinciples',challengedBy:'uxprinciples',explainedBy:'uxprinciples',
+  // #281 s281-D1 — inFamily joins them: the 145 ux→family: lines are the Explanation view's own.
+  // `evidencedBy` is NOT added here — it is already a key (governance: a ruling and its evidence).
+  // Its 134 new ux→evidence: lines carry fam 'uxprinciples' on the edge, and EON reads that first.
+  inFamily:'uxprinciples',
   // #279 s277-D4 — the six ratified asset edge types, their own family and chip (OFF by default).
   // defaultActive (s277-D6) and the logos' governedBy (s277-D7) are DECLARED-NULL ONLY: never drawn,
   // so they need no family here — they are counted and listed as declared nulls.
@@ -396,7 +403,11 @@ const READ={containedBy:['is contained by','contains'],hasPart:['has part','is p
   // #281 s281 lane CM — the six that now have a family need a reading too (the panel takes READ[t][0|1]).
   answersIntent:['answers intent','is answered by'],hasDataShape:['takes data shape','is taken by'],
   providesRole:['provides role','is provided by'],yieldsTo:['yields to','is yielded to by'],
-  defaultActive:['is active by default for','defaults to'],obeys:['obeys','binds']};
+  defaultActive:['is active by default for','defaults to'],obeys:['obeys','binds'],
+  // #281 s281-D1. NOTE the neighbour two rows up: `family` is an EDGE type (component→component,
+  // structure) and has been since v1.1. `inFamily` is the new one and `family:` is the new NODE
+  // type; neither renames nor moves the other.
+  inFamily:['is in research family','is the research family of']};
 // #281 s281 lane CM — SECOND FALL-THROUGH, found by the probe. The chip map was not the only place
 // these dots were missing from: `shape`, `intent` and `role` are base node types with 23/14/12 nodes
 // and their OWN palette entries (--c-shape / --c-intent / --c-role have been in the stylesheet all
@@ -405,7 +416,9 @@ const READ={containedBy:['is contained by','contains'],hasPart:['has part','is p
 // giving the node a chip lights nothing; both were needed and both are one line. No type is renamed
 // and no id moves — three names join the row they always belonged to.
 const TYPES=['component','snippet','pattern','context','ruling','shape','intent','role'];
-const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','icon','iconGroup','logo'];
+// #281 s281-D1 — `family` joins the row for the same reason shape/intent/role did in 1.21: an edge
+// with a family draws nothing if the dot at its end has no type chip. 32 research-family hubs.
+const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','family','icon','iconGroup','logo'];
 const ALLTYPES=TYPES.concat(TYPES2);
 const adj=new Map(NODES.map(n=>[n.id,[]]));
 const unresolved=new Map();
@@ -425,7 +438,17 @@ const NODEON=n=>typeOn[n.type]&&famOK(n);
 // design-governance sub-chip. #281 s281 lane CM: and a HELD edge answers to nothing — the 14
 // obeys→ux lines are carried in the data and drawn at no chip setting until Dave rules where an
 // obligation on a UX principle belongs. `held` is written by the builder, never by the page.
-const EON=e=>famOn[FAMILY[e.type]]&&(!DR(e)||famOn.designrulings)&&!e.held;
+// #281 s281-D1: an edge's OWN `fam` is read first, and the type map is the fallback for an edge
+// that carries none (every base edge). This is what recount()'s famOK(e) has always done for the
+// COUNTS and what INSPECT's edge door has done since 1.21 — EON was the one place still type-only,
+// and `evidencedBy` is the type that makes the difference visible: 1,254 governance lines (a ruling
+// and its evidence) and 134 uxprinciples lines (a principle and the source it was graded on) are one
+// storage type in two families. Type-only, the header counted the second lot under the Explanation
+// chip and the canvas drew them only under the Constitution. MEASURED no-op for every other edge in
+// the graph: the only edges whose `fam` disagrees with FAMILY[type] are 11 declared nulls (10 asset
+// governedBy + 1 defaultActive, fam 'assets'), and a null is drawn at no setting, ever.
+const EFAM=e=>e.fam||FAMILY[e.type];
+const EON=e=>famOn[EFAM(e)]&&(!DR(e)||famOn.designrulings)&&!e.held;
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2'),ink3:css('--ink-3'),rule:css('--rule'),
   t:Object.fromEntries(ALLTYPES.map(t=>[t,css('--c-'+t)])),
@@ -467,14 +490,14 @@ const ETYPES=()=>Object.keys(FAMILY).filter(t=>famOn[FAMILY[t]]&&(famOn.designru
 function renderStats(){document.getElementById('stats').innerHTML=`<span><b>${SHOWN.length}</b> nodes</span><span><b>${SHOWNE.length.toLocaleString()}</b> relations</span><span><b>${ETYPES().length}</b> edge types</span><span><b>${count.component||0}</b> components</span><span><b>${UNRES}</b> declared, unresolved</span>`;}
 const legend=document.getElementById('legend');
 const chipT=t=>`<span class="chip ${typeOn[t]?'':'off'}" data-type="${t}" style="--c:var(--c-${t})"><i></i>${t}<b>${count[t]||0}</b></span>`;
-const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>FAMILY[e.type]===f&&!e.held).length}</b></span>`; // #281: a held line is in no chip's count — it is counted once, in the legend's own held row
+const chipF=f=>`<span class="chip edge ${f==='governance'?'dash':''} ${famOn[f]?'':'off'}" data-fam="${f}" style="--c:var(--f-${f})"><i></i>${FAMLABEL[f]}<b>${LIVEE.filter(e=>EFAM(e)===f&&!e.held).length}</b></span>`; // #281: a held line is in no chip's count — it is counted once, in the legend's own held row
 // the third provenance sub-chip: the rulings a design CITES (authored edges only — see DR). It gates
 // edges, never nodes. v1.16 (EV §2, §5.4): its count is the citation edges it GOVERNS RIGHT NOW — drawn
 // (t resolved), both ends shown by the family chips — 28 at the page's defaults (the base metas' governedBy),
 // +295 governs→component/snippet with the Constitution on, +8 ruledBy with assets AND the Constitution on.
 // The 10 asset governedBy nulls are never drawn and never counted here. Its own state does not zero it,
 // like every family chip. Label and default are Dave's open question (EV §9) — untouched.
-const DRGOV=()=>LIVEE.filter(e=>e.t&&DR(e)&&famOn[FAMILY[e.type]]&&famOK(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
+const DRGOV=()=>LIVEE.filter(e=>e.t&&DR(e)&&famOn[EFAM(e)]&&famOK(e)&&famOK(byId.get(e.s))&&famOK(byId.get(e.t))).length;
 const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified). The count is the citation edges drawn under the family chips now."><i></i>rulings a design cites<b>${DRGOV()}</b></span>`;
 // v1.16: the legend folds to one bar (EV §5.1 / §5.3). Open at desktop; a closed bottom sheet at phone width.
 let legendOpen=!matchMedia('(max-width:900px)').matches;
@@ -706,7 +729,7 @@ function draw(){
     // here: in force it is a faint halo round the hub, but across a stack of bands it is a long diagonal
     // smear over every layer, which reads as traffic that is not in fact drawn.
     if(LAYOUT!=='force'&&!focus&&!pathEdges)a=on?Math.min(1,a*(xb?1.9:0.45)):a*0.4;
-    if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[FAMILY[e.type]]||C.ink3;
+    if(a<0.02)continue; ctx.globalAlpha=a*we;ctx.strokeStyle=C.f[EFAM(e)]||C.ink3;
     ctx.lineWidth=(pathEdges&&pathEdges.has(e.k))?2.2:(focus&&(e.s===focus.id||e.t===focus.id))?1.3:(xb?1:0.6);
     ctx.setLineDash(e.derived?[4,3]:e.type==='supersedesClause'?[1.5,2.5]:[]);  // v1.2: DERIVED edges are dashed — nothing authored them. #267: supersedesClause is AUTHORED but DOTTED — a clause, not the whole ruling.
     let ps=P(s),pt=P(t);if(three)ctx.globalAlpha*=0.55+0.45*Math.min(ps.s,pt.s);
@@ -811,7 +834,7 @@ function renderPanel(n,nb){
   const groups=new Map();for(const x of adj.get(n.id)){if(!alive(x.e)||!famOK(x.e)||!EON(x.e)||!famOK(byId.get(x.other)))continue; /* v1.16: the panel lists what the canvas draws — the DR sub-chip gates here too */(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
-    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
+    h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${EFAM(g[0].e)})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
     for(const x of g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
       h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div><span class="ibtns"><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect the artefact — the record, the relations and the file itself">i</button><button class="insp einsp" type="button" data-einsp="${x.e.k}" title="Inspect the RELATION itself — its type, its verb, its provenance">↔</button></span></div>`}
     h+=`</div></div>`}
@@ -877,7 +900,10 @@ function edgeSec(n){const groups=new Map();
   for(const x of adj.get(n.id)){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
   const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
   const V=VERBS.verbs||{};let h='';
-  for(const t of order){const g=groups.get(t),fam=FAMILY[t],vs=verbsFor(t);
+  // #281 s281-D1: the group's family is read off the EDGES, not off the type — a node's edges of one
+  // type share one family, and `evidencedBy` is two families across the graph, so a type-only read
+  // told a principle its source line was "chip off" while the canvas was drawing it.
+  for(const t of order){const g=groups.get(t),fam=EFAM(g[0].e),vs=verbsFor(t);
     const badges=vs.length?vs.map(v=>`<span class="verb" title="the twelve verbs — s277-D11, a reading map over the storage types">${esc(V[v]?V[v].force:v)} · ${esc(v)}</span>`).join('')
       :`<span class="verb" title="${esc((VERBS.unread||{})[t]||'no verb reads this storage type')}">unread</span>`;
     const reads=vs.map(v=>V[v]&&V[v].reads).filter(Boolean),sp=(VERBS.splits||{})[t];
