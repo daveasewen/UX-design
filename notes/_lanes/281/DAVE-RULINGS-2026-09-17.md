@@ -9,3 +9,4 @@
   - q4: *"I think this feels right, but maybe we need to talk it through"*
   - q5: *"What is the triad of verbs, i like neatness so maybe we can think of something else"*
 - After the chat (q3: the citation line is the seed, q4 is the applicability loop, force-by-grade ruled later once lines exist; q4: 59 blocking rules, one card each, declared-null "convention" legal; q5: triad option 1 System · Governance · Theory, verb line under each): *"Okay these all look good to me, thanks for the explanation"* ⇒ q3 (a), q4 (a), q5 = **System · Governance · Theory** stand as ruled.
+- The rests-on export, 14:49:41Z (`notes/_lanes/281/rests-on/DAVE-EXPORT-2026-09-17.json`): 59 answers — 13 "both 1 and 2", 8 overruled, 8 convention, 13 notes about the rule itself (filed, not edited: `notes/_lanes/281/rests-on-land/RULE-NOTES-2026-09-17.md`). Landed by lane RL as `s281-D6` (many-to-many; his "both" lands both).
