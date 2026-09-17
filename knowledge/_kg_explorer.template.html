@@ -163,6 +163,8 @@ aside{overflow:auto;background:var(--bg)}
 .rel .note{color:var(--ink-2);font-size:12px;margin-top:2px;line-height:1.4}
 .rel.unres{cursor:default;opacity:.85}
 .rel.unres .n{color:var(--ink-3);font-style:italic;font-weight:400}
+/* #280 v1.20: the third column now holds TWO doors — the node's `i` and the RELATION's own `↔` */
+.ibtns{display:flex;gap:4px;align-items:center;align-self:center}
 .path{padding:14px 24px;border-bottom:1px solid var(--rule);background:var(--panel);font-family:var(--mono);font-size:11px}
 .path .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .path .steps span{padding:4px 7px;border:1px solid var(--rule);background:var(--bg)}
@@ -216,7 +218,35 @@ aside{overflow:auto;background:var(--bg)}
 .modal .fbody p,.modal .fbody li{font-size:13px;color:var(--ink-2);margin:0 0 7px;line-height:1.5}
 .modal .fbody ul{margin:0 0 9px;padding-left:20px}
 .modal .fbody code{font-family:var(--mono);font-size:11px;color:var(--ink)}
-@media (max-width:900px){.modal .sheet{width:calc(100vw - 16px);max-height:calc(100vh - 24px)}.modal .sec{padding:14px 14px 4px}.modal dl.rec{grid-template-columns:1fr;gap:1px 0}.modal dl.rec dd{margin:0 0 7px}}
+/* #280 v1.20 — s280-D2: INSPECT opens the ARTEFACT itself. The artefact section carries TABS
+   (RENDER · SOURCE · DRAWN …) chosen by the node's kind, and a component's or a snippet's RENDER
+   tab is the snippet itself in a sandboxed iframe, with the showroom's own stylesheet links. */
+.modal .tabs{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--rule);width:max-content;max-width:100%;margin:0 0 12px}
+.modal .tabs button{border:0;border-right:1px solid var(--rule);background:var(--bg);color:var(--ink-3);font:inherit;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;padding:6px 11px;min-height:28px;cursor:pointer;border-radius:0}
+.modal .tabs button:last-child{border-right:0}
+.modal .tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.modal .tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.modal .rframe{display:block;width:100%;height:46vh;min-height:260px;border:1px solid var(--rule);background:var(--panel);margin:0 0 8px}
+.modal .icells{display:grid;grid-template-columns:repeat(4,max-content);gap:14px;align-items:end;margin:0 0 12px}
+.modal .icell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.modal .icell .box{display:flex;align-items:center;justify-content:center;border:1px solid var(--rule)}
+.modal .icell .box.lt{background:#FAFAFA;color:#1A1A1A}
+.modal .icell .box.dk{background:#1A1A1A;color:#FFFFFF}
+.modal .icell .box svg{display:block;width:100%;height:100%}
+.modal .icell small{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.modal .mdblk.hit{background:color-mix(in srgb,var(--accent) 16%,transparent);outline:1px solid var(--accent);outline-offset:3px}
+.modal .crumbs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:9px 22px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);flex:0 0 auto}
+.modal .crumbs button{border:1px solid var(--rule);background:var(--bg);color:var(--ink-2);font:inherit;padding:3px 7px;cursor:pointer;border-radius:0}
+.modal .crumbs button:hover,.modal .crumbs button:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+.modal .crumbs .here{color:var(--ink)}
+.modal .ends{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:0 0 14px}
+.modal .ends .end{border:1px solid var(--rule);padding:9px 11px;text-align:left;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer;border-radius:0}
+.modal .ends .end:hover,.modal .ends .end:focus-visible{border-color:var(--ink);outline:none}
+.modal .ends .end b{display:block;font-size:13px;font-weight:600}
+.modal .ends .end small{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.modal .ends .arrow{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center}
+.einsp{font-family:var(--mono)}
+@media (max-width:900px){.modal .sheet{width:calc(100vw - 16px);max-height:calc(100vh - 24px)}.modal .sec{padding:14px 14px 4px}.modal dl.rec{grid-template-columns:1fr;gap:1px 0}.modal dl.rec dd{margin:0 0 7px}.modal .ends{grid-template-columns:1fr}.modal .icells{grid-template-columns:repeat(2,max-content)}}
 /* #279: `header{grid-column:1/3}` made an IMPLICIT second column under the one-column mobile grid, so
    the stage was 48px wide at 390 (inherited from v1.0; measured, not guessed). One declaration fixes it.
    The legend is a scrolling stack at phone width; the views go column-wise (heading above chips). */
@@ -370,7 +400,8 @@ let C={};function palette(){C={bg:css('--bg'),ink:css('--ink'),ink2:css('--ink-2
 palette();matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{palette();draw()});
 const THEMES=['auto','dark','light'];let themeI=0;try{themeI=Math.max(0,THEMES.indexOf(localStorage.getItem('kg-theme')||'auto'))}catch(e){}
 function applyTheme(){const th=THEMES[themeI];if(th==='auto')delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=th;
-  const b=document.getElementById('theme');if(b){b.textContent=th;b.classList.toggle('on',th!=='auto')}try{localStorage.setItem('kg-theme',th)}catch(e){}palette();if(typeof W!=='undefined'&&W)draw()}
+  const b=document.getElementById('theme');if(b){b.textContent=th;b.classList.toggle('on',th!=='auto')}try{localStorage.setItem('kg-theme',th)}catch(e){}palette();if(typeof W!=='undefined'&&W)draw();
+  try{retheme()}catch(e){}}   /* #280 v1.20: a snippet rendering in the modal follows this toggle */
 
 
 // ---------- stats + legend
@@ -708,7 +739,7 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <p class="plus">+ ${XTRA.rulings||0} rulings &middot; ${XTRA.sc||0} success criteria &middot; ${XTRA.derived||0} derived edges (dashed, unratified)</p>
 <p>The graph is authored from the inside out: each of the ${count.component||0} components states what it contains, where it is used, which patterns it follows, what renders it and which rulings govern it. Patterns, contexts, snippets and rulings are the things those statements point at.</p>
 <p>Click any node to dig. The node moves to the centre and its relations fan out in sectors, one per relationship type; click a neighbour to follow the thread. Shift-click two nodes to see the shortest path between them.</p>
-<p>Every row here — a search hit, a neighbour, a step of a path — carries a small <b>i</b> at its right edge, and <b>i</b> on the keyboard inspects whatever you have dug. It opens the node's own record: every field the graph stores for it, its relations read with the verb's own wording, and the file the record was read from. Served, the file itself is in the modal; opened straight off the disk, the page can name the file but not read it, and says so.</p>
+<p>Every row here — a search hit, a neighbour, a step of a path — carries a small <b>i</b> at its right edge, and <b>i</b> on the keyboard inspects whatever you have dug. It opens <b>the artefact itself</b>, not a summary of it: a component opens its record <i>and</i> a live render of its snippet, a snippet renders, a rule opens its guideline with its own row highlighted, a ruling opens its record, an icon is drawn at both sizes on both grounds. Every relation row also carries a <b>↔</b>, and that opens the relation itself — its type, its verb, its provenance, both ends clickable. For any of it to open, the page must be <b>served</b>: from the repo root run <code>python3 knowledge/_serve_explorer.py</code> and follow the URL it prints. Opened straight off the disk the page can name each artefact but not read it, and says so.</p>
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
@@ -740,10 +771,11 @@ function renderPanel(n,nb){
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
     h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
     for(const x of g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
-      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect the record — the stored fields, the relations and the file">i</button></div>`}
+      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div><span class="ibtns"><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect the artefact — the record, the relations and the file itself">i</button><button class="insp einsp" type="button" data-einsp="${x.e.k}" title="Inspect the RELATION itself — its type, its verb, its provenance">↔</button></span></div>`}
     h+=`</div></div>`}
   const un=unresolved.get(n.id);if(un&&un.length){h+=`<div class="group closed"><h3 style="--c:var(--ink-3)"><i></i><span>declared, unresolved<span class="dir">ref:null · awaiting Dave's-eye migration</span></span><b>${un.length}</b></h3><div class="rows">`;
-    for(const e of un)h+=`<div class="rel unres" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div></div>`;h+=`</div></div>`}
+    /* #280 v1.20: a declared null names no node, so it has no `i` — but it IS an edge record, so it has `↔` */
+    for(const e of un)h+=`<div class="rel unres" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div><span class="ibtns"><button class="insp einsp" type="button" data-einsp="${e.k}" title="Inspect the declared null itself">↔</button></span></div>`;h+=`</div></div>`}
   panel.innerHTML=h;panel.scrollTop=0;
   panel.querySelectorAll('.group h3').forEach(x=>x.onclick=()=>x.parentElement.classList.toggle('closed'));
   panel.querySelectorAll('.rel[data-id]').forEach(x=>{x.onclick=()=>setFocus(byId.get(x.dataset.id));x.onmouseenter=()=>{hover=byId.get(x.dataset.id);draw()};x.onmouseleave=()=>{hover=null;draw()}});
@@ -812,11 +844,11 @@ function edgeSec(n){const groups=new Map();
     if(sp)h+=`<p class="reads">split by ${esc(sp.by)}</p>`;
     for(const x of g.slice().sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
       const dir=READ[t]?(x.out?READ[t][0]:READ[t][1]):(x.out?'→':'←');
-      h+=`<div class="erow" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${esc(m.type)}</small></div><div class="note">${esc(dir)}${x.e.note?' · '+esc(x.e.note):''}${x.e.derived?' · derived':''}${x.e.ratified?' · ratified '+esc(x.e.ratified):''}</div></div><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect this node's record">i</button></div>`}
+      h+=`<div class="erow" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${esc(m.type)}</small></div><div class="note">${esc(dir)}${x.e.note?' · '+esc(x.e.note):''}${x.e.derived?' · derived':''}${x.e.ratified?' · ratified '+esc(x.e.ratified):''}</div></div><span class="ibtns"><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect this node's artefact">i</button><button class="insp einsp" type="button" data-einsp="${x.e.k}" title="Inspect the RELATION itself">↔</button></span></div>`}
     h+='</div>'}
   const un=unresolved.get(n.id)||[];
   if(un.length){h+=`<div class="egroup"><h4 style="--c:var(--ink-3)"><i></i><span>declared, unresolved</span><span class="verb">ref: null</span><b>${un.length}</b></h4>`;
-    for(const e of un)h+=`<div class="erow null" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div><span></span></div>`;h+='</div>'}
+    for(const e of un)h+=`<div class="erow null" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div><span class="ibtns"><button class="insp einsp" type="button" data-einsp="${e.k}" title="Inspect the declared null itself">↔</button></span></div>`;h+='</div>'}
   return h||`<p class="reads">no edges are stored for this node.</p>`}
 // the FILE the record was read from. `byId` is the builder's own per-file join (the sc: rule files); an
 // artefact IS its path and an evidence node names its document; everything else resolves through the
@@ -834,56 +866,234 @@ const declaredFile=n=>n.file?(((SRC.fileRoot||{})[n.type])||'')+n.file:null;
 const cpBtn=p=>`<button type="button" data-copy="${esc(p)}">copy path</button>`;
 function fallbackCopy(v,done){const ta=document.createElement('textarea');ta.value=v;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}ta.remove()}
 const MDINL=s=>s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
-function mdLite(s){return esc(s).split(/\n{2,}/).map(b=>{const l=b.trim();if(!l)return '';
-  if(/^#{1,6}\s/.test(l)){const d=Math.min(6,l.match(/^#+/)[0].length+2);return `<h${d}>${MDINL(l.replace(/^#+\s*/,''))}</h${d}>`}
-  if(/^\s*[-*]\s/.test(l))return '<ul>'+l.split('\n').map(x=>`<li>${MDINL(x.replace(/^\s*[-*]\s*/,''))}</li>`).join('')+'</ul>';
-  return `<p>${MDINL(l).replace(/\n/g,'<br>')}</p>`}).join('')}
-function renderFile(path,txt,cut){const ext=(path.split('.').pop()||'').toLowerCase();let body;
-  if(ext==='md')body=mdLite(txt);
+// #280 v1.20: every block is wrapped, so ONE of them can be marked and scrolled to (a rule's own row
+// inside its guideline; an evidence node's own anchor inside the document it quotes).
+function mdLite(s,mark){const m=mark?esc(String(mark)):null;let hit=false;
+  return esc(s).split(/\n{2,}/).map(b=>{const l=b.trim();if(!l)return '';let inner;
+  if(/^#{1,6}\s/.test(l)){const d=Math.min(6,l.match(/^#+/)[0].length+2);inner=`<h${d}>${MDINL(l.replace(/^#+\s*/,''))}</h${d}>`}
+  else if(/^\s*[-*]\s/.test(l))inner='<ul>'+l.split('\n').map(x=>`<li>${MDINL(x.replace(/^\s*[-*]\s*/,''))}</li>`).join('')+'</ul>';
+  else inner=`<p>${MDINL(l).replace(/\n/g,'<br>')}</p>`;
+  if(m&&!hit&&b.indexOf(m)>=0){hit=true;return `<div class="mdblk hit" id="mdhit">${inner}</div>`}
+  return `<div class="mdblk">${inner}</div>`}).join('')}
+function renderFile(path,txt,cut,mark){const ext=(path.split('.').pop()||'').toLowerCase();let body;
+  if(ext==='md')body=mdLite(txt,mark);
   else if(ext==='json'){let p=txt;try{p=JSON.stringify(JSON.parse(txt),null,1)}catch(e){}body=`<pre>${esc(p)}</pre>`}
   else body=`<pre>${esc(txt)}</pre>`;                                  // css, svg, html, py — mono, as stored
   return `<div class="fbody">${body}</div>${cut?'<p class="fnote">shown to the first 180,000 characters — the file is longer.</p>':''}`}
 const FCAP=180000;
-async function fillFile(n,el){const s=srcOf(n),df=declaredFile(n);let head='';
+
+// ---------- #280 v1.20 (s280-D2) — INSPECT OPENS THE ARTEFACT ITSELF
+// Dave: "I want to see any artifact that exists here, including a render of the actual component
+// snippet" · "no i want to inspect the edge or indeed the actual file, a component for example".
+// So the modal's third section is no longer "the file, as text": it is THE ARTEFACT, rendered by its
+// own kind, behind tabs. A component and a snippet RENDER — the snippet document itself, in a
+// sandboxed iframe, with its own stylesheet links re-pointed exactly the way gen_showroom.py
+// re-points them for the showroom pane (a srcdoc document inherits the PARENT's base URL, so a
+// snippet's `../canon/type.css` must become `../knowledge/canon/type.css` from notes/ — the same
+// one-directory-deep rebase). NOTHING is embedded at build time: every byte is fetched from the
+// served root when the tab is opened, which is why the page must be SERVED (_serve_explorer.py).
+const SNIPDIR='knowledge/snippets';
+const SERVECMD='python3 knowledge/_serve_explorer.py';
+let inspSeq=0;                                        // bumped on every open; a stale fetch drops itself
+async function getText(p){const r=await fetch(REL+p,{cache:'no-store'});
+  if(!r.ok)throw new Error('the server answered '+r.status);return await r.text()}
+const SKIPURL=/^(#|\/|data:|https?:|mailto:|tel:|\/\/)/i;
+function repoJoin(dir,url){if(SKIPURL.test(url))return null;
+  const i=url.search(/[?#]/),q=i<0?'':url.slice(i),p=i<0?url:url.slice(0,i),out=[];
+  for(const seg of (dir+'/'+p).split('/')){if(seg===''||seg==='.')continue;if(seg==='..')out.pop();else out.push(seg)}
+  return out.join('/')+q}
+// ⚠ ANTI-FALSE-FIX, inherited verbatim from gen_showroom.py: do NOT "simplify" this to a <base href>.
+// A <base> re-bases FRAGMENT-only URLs too, which breaks every `<use href="#ic-*">` icon-sprite
+// reference in the library — trading a type outage for an icon outage. Rewriting the URLs is the fix.
+function rebase(html,dir){return html.replace(/\b(href|src)="([^"]+)"/g,(m,a,u)=>{
+  const p=repoJoin(dir,u);return p==null?m:a+'="'+REL+p+'"'})}
+function themeMode(){const t=document.documentElement.dataset.theme;
+  if(t==='dark'||t==='light')return t;
+  try{return matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){return 'light'}}
+function snippetDoc(src,dir,mode){
+  // the frame is sandboxed WITHOUT allow-scripts, so the snippet's own scripts cannot run; they are
+  // cut out rather than left to be blocked, because a blocked script writes a console error per
+  // render that nobody can act on — the same rule as the file:// fetch: a known outcome is declared,
+  // not discovered. What is left is the markup, the stylesheets and the inline icon sprites.
+  let d=rebase(src.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<script[^>]*\/>/gi,''),dir);
+  d=/<body[^>]*data-theme="/i.test(d)
+    ? d.replace(/(<body[^>]*data-theme=")[a-z]+(")/i,(m,a,b)=>a+mode+b)
+    : d.replace(/<body/i,'<body data-theme="'+mode+'"');
+  if(!/<html[^>]*data-apollo-theme=/i.test(d))d=d.replace(/<html/i,'<html data-apollo-theme="mono"');
+  return d}
+// sandbox="allow-same-origin" and NOT allow-scripts: the snippet's stylesheets, its markup and its
+// icon sprites are the render; its own scripts do not run inside the explorer. Same-origin is kept so
+// the page (and a driver) can read the frame's computed styles and prove type.css actually applied.
+function mountSnippet(el,src,dir){const f=document.createElement('iframe');
+  f.className='rframe';f.setAttribute('sandbox','allow-same-origin');f.setAttribute('title','the snippet, rendered');
+  f.dataset.snip='1';f._src=src;f._dir=dir;f.srcdoc=snippetDoc(src,dir,themeMode());el.appendChild(f);return f}
+// the explorer's own light/dark toggle drives the frames that are open (hoisted: applyTheme runs first)
+function retheme(){const m=document.getElementById('insp');if(!m)return;
+  m.querySelectorAll('iframe[data-snip]').forEach(f=>{if(f._src)f.srcdoc=snippetDoc(f._src,f._dir,themeMode())})}
+function tabsUI(el,tabs){const bar=document.createElement('div');bar.className='tabs';bar.setAttribute('role','tablist');
+  const box=document.createElement('div');el.appendChild(bar);el.appendChild(box);
+  const show=i=>{[...bar.children].forEach((b,j)=>b.setAttribute('aria-selected',String(j===i)));
+    box.innerHTML='';const p=document.createElement('div');p.dataset.pane=tabs[i].key;box.appendChild(p);
+    try{tabs[i].build(p)}catch(err){p.innerHTML=`<p class="fnote">${esc(String((err&&err.message)||err))}</p>`}};
+  tabs.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','tab');
+    b.dataset.tab=t.key;b.setAttribute('aria-selected','false');b.textContent=t.label;b.onclick=()=>show(i);bar.appendChild(b)});
+  if(tabs.length)show(0);return show}
+function paneErr(p,err){p.innerHTML=`<p class="fnote">this could not be read (${esc(String((err&&err.message)||err))}) — open it from the repo; the path is above.</p>`}
+function loading(p,what){p.innerHTML=`<p class="fnote">reading <code>${esc(what)}</code>…</p>`}
+// a pane's own fetch: it drops itself if the modal has moved on since it started
+function pane(p,path,then){const seq=inspSeq;loading(p,path);
+  getText(path).then(t=>{if(seq!==inspSeq)return;then(t)},e=>{if(seq!==inspSeq)return;paneErr(p,e)})}
+function renderTab(path,dir){return {key:'render',label:'Render',build(p){pane(p,path,txt=>{
+  p.innerHTML=`<p class="fnote">the snippet itself, rendered the way the showroom renders it — its own stylesheet links, re-pointed for this page; <code>data-apollo-theme="mono"</code> and the body’s <code>data-theme</code> following this page’s light/dark. Its own scripts do not run here.</p>`;
+  mountSnippet(p,txt,dir)})}}}
+function sourceTab(path,label){return {key:'source',label:label||'Source',build(p){pane(p,path,txt=>{
+  let cut=false;if(txt.length>FCAP){txt=txt.slice(0,FCAP);cut=true}
+  p.innerHTML=`<div class="fpath"><code>${esc(path)}</code>${cpBtn(path)}</div>`+renderFile(path,txt,cut)})}}}
+function fileTab(path,label,mark){return {key:'file',label:label||'The file',build(p){pane(p,path,txt=>{
+  let cut=false;if(txt.length>FCAP){txt=txt.slice(0,FCAP);cut=true}
+  p.innerHTML=renderFile(path,txt,cut,mark);
+  const h=p.querySelector('#mdhit');if(h)try{h.scrollIntoView({block:'center'})}catch(e){}})}}}
+function svgTab(path){return {key:'drawn',label:'Drawn',build(p){pane(p,path,txt=>{
+  const svg=txt.replace(/<\?xml[^>]*\?>/i,'').replace(/<script[\s\S]*?<\/script>/gi,'').trim();
+  const cell=(px,mode)=>`<div class="icell"><div class="box ${mode==='dark'?'dk':'lt'}" style="width:${px}px;height:${px}px">${svg}</div><small>${px}px ${mode}</small></div>`;
+  p.innerHTML=`<p class="fnote">the file drawn at its two working sizes, on both grounds — the marks are <code>currentColor</code>, so the ink is the ground’s.</p>`
+    +`<div class="icells">${cell(48,'light')}${cell(16,'light')}${cell(48,'dark')}${cell(16,'dark')}</div>`})}}}
+// a ruling (or a session) is one entry inside knowledge/_rulings.json — the modal reads the record,
+// not the 830 KB around it, so the file is parsed and the entry is written out as a definition list.
+const RULKEY={id:'id',ruled:'ruled',date:'date',by:'by',says:'says',governs:'governs',evidence:'evidence',status:'status'};
+function rulingTab(slug){return {key:'record',label:'The ruling',build(p){const seq=inspSeq;
+  loading(p,'knowledge/_rulings.json');
+  getText('knowledge/_rulings.json').then(txt=>{if(seq!==inspSeq)return;
+    let e=null;try{e=(JSON.parse(txt).rulings||[]).find(r=>r&&r.id===slug)||null}catch(err){return paneErr(p,err)}
+    if(!e){p.innerHTML=`<p class="fnote">no entry with id <code>${esc(slug)}</code> is in <code>knowledge/_rulings.json</code>.</p>`;return}
+    let rows='';for(const k of Object.keys(RULKEY)){if(!(k in e))continue;const v=e[k];
+      rows+=`<dt>${esc(k)}</dt><dd>${Array.isArray(v)?v.map(x=>`<div>${esc(String(x))}</div>`).join(''):esc(String(v))}</dd>`}
+    p.innerHTML=`<dl class="rec">${rows}</dl>`},err=>{if(seq===inspSeq)paneErr(p,err)})}}}
+function sessionTab(label){return {key:'record',label:'What was ruled',build(p){const seq=inspSeq;
+  const n=String(label).replace(/^#/,'');loading(p,'knowledge/_rulings.json');
+  getText('knowledge/_rulings.json').then(txt=>{if(seq!==inspSeq)return;let rs=[];
+    try{rs=(JSON.parse(txt).rulings||[]).filter(r=>r&&(String(r.ruled)==='#'+n||new RegExp('^s'+n+'-').test(String(r.id))))}
+    catch(err){return paneErr(p,err)}
+    if(!rs.length){p.innerHTML=`<p class="fnote">no ruling in <code>knowledge/_rulings.json</code> names session <code>#${esc(n)}</code>.</p>`;return}
+    p.innerHTML=`<p class="fnote"><b>${rs.length}</b> ruling${rs.length===1?'':'s'} carry this session.</p>`
+      +`<dl class="rec">${rs.map(r=>`<dt>${esc(r.id)}</dt><dd>${esc(String(r.ruled||r.says||'').slice(0,600))}</dd>`).join('')}</dl>`},
+    err=>{if(seq===inspSeq)paneErr(p,err)})}}}
+// which tabs a node's kind earns. Unknown kinds fall through to the raw file with its type — 1.19's
+// behaviour, kept, because "there is no renderer for this yet" must never look like "there is nothing".
+function artTabs(n,s,df){const t=n.type,slug=n.id.slice(n.id.indexOf(':')+1);
+  const path=df||((s&&s.get)?s.path:null);
+  if(t==='component'){const tabs=[];
+    const sn=(adj.get(n.id)||[]).filter(x=>x.out&&x.e.type==='renderedBy').map(x=>byId.get(x.other)).filter(Boolean)[0];
+    if(sn){const sp='knowledge/snippets/'+sn.id.slice(sn.id.indexOf(':')+1);
+      tabs.push(renderTab(sp,SNIPDIR));tabs.push(sourceTab(sp,'Snippet source'))}
+    if(path)tabs.push(fileTab(path,'The meta record'));
+    if(!sn)tabs.push({key:'norender',label:'No render',build(p){p.innerHTML='<p class="fnote">no <code>renderedBy</code> snippet is stored for this component, so there is nothing to render.</p>'}});
+    return tabs}
+  if(t==='snippet'&&path)return [renderTab(path,SNIPDIR),sourceTab(path,'Source')];
+  if((t==='icon'||t==='logo')&&path)return [svgTab(path),sourceTab(path,'SVG source')];
+  if(t==='rule'&&df)return [fileTab(df,'In the guideline','{#'+slug+'}'),
+    {key:'about',label:'Where',build(p){p.innerHTML=`<p class="fnote">the rule’s own row is highlighted in its guideline above — the guideline is the artefact, the rule is a line of it. Its record file is <code>${esc(s?s.path:'—')}</code>.</p>`}}];
+  if(t==='ruling')return [rulingTab(slug)];
+  if(t==='session')return [sessionTab(n.label||slug)];
+  if(t==='evidence'&&path)return [fileTab(path,'The document',(s&&s.anchor)||null)];
+  if(path)return [fileTab(path,'The file')];
+  return []}
+async function fillArtefact(n,el){const s=srcOf(n),df=declaredFile(n);let head='';
   if(s)head+=`<div class="fpath"><code>${esc(s.path)}</code>${cpBtn(s.path)}</div><p class="fnote">${esc(s.why)}${s.anchor?' · anchor “'+esc(s.anchor)+'”':''}</p>`;
   if(df)head+=`<div class="fpath"><code>${esc(df)}</code>${cpBtn(df)}</div><p class="fnote">the node’s own declared <code>file</code>.</p>`;
-  if(!s&&!df){el.innerHTML=`<p class="fnote">no source path is stored for this node.</p>`;return}
-  const target=df||((s&&s.get)?s.path:null);
-  if(!target){el.innerHTML=head;return}
-  // A `file://` page CANNOT fetch a sibling file — the browser refuses the scheme. That is not an error
-  // to discover by making the request (which only writes a console error nobody can act on): it is the
-  // known outcome, so the modal says it straight and shows the path. Served, the fetch is made for real
-  // and a 404 or a refusal lands in the same place, with the reason named.
+  if(!s&&!df){el.innerHTML=`<p class="fnote">no artefact is stored for this node — it is created by another record’s reference and has no file of its own.</p>`;return}
+  el.innerHTML=head;
+  const tabs=artTabs(n,s,df);
+  if(!tabs.length){el.innerHTML=head+`<p class="fnote">there is nothing single to open here.</p>`;return}
+  // A `file://` page CANNOT fetch a sibling file — the browser refuses the SCHEME, not the path. That
+  // is not an error to discover by making the request (it only writes a console error nobody can act
+  // on): it is the known outcome, so the page says it straight and names the one command that fixes it.
   if(location.protocol==='file:'){
-    el.innerHTML=head+`<p class="fnote">this page is open from disk (<code>file://</code>), so it can name the file but not read it — open from the repo, or serve the folder and the contents appear here.</p>`;return}
-  el.innerHTML=head+`<p class="fnote">reading <code>${esc(target)}</code>…</p>`;
-  let ok=false,txt='',cut=false,why='';
-  try{const r=await fetch(REL+target,{cache:'no-store'});
-    if(!r.ok)throw new Error('the server answered '+r.status);
-    txt=await r.text();if(txt.length>FCAP){txt=txt.slice(0,FCAP);cut=true}ok=true}
-  catch(err){why=(err&&err.message)?String(err.message):'the fetch was refused'}
-  if(inspNode!==n)return;                                              // the modal has moved on
-  el.innerHTML=head+(ok?renderFile(target,txt,cut)
-    :`<p class="fnote">the file could not be read (${esc(why)}) — open it from the repo; the path is above.</p>`)}
-function openInspect(n){if(!n)return;
-  if(!modal.classList.contains('on'))lastFocus=document.activeElement;
-  inspNode=n;
+    el.innerHTML=head+`<p class="fnote">this page is open from disk (<code>file://</code>), so it can name the artefact but not open it — a browser will not let a <code>file://</code> page read the file next to it. <b>Serve the repo</b> and everything here opens: from the repo root run <code>${esc(SERVECMD)}</code>, then follow the URL it prints.</p>`;return}
+  const box=document.createElement('div');el.appendChild(box);tabsUI(box,tabs)}
+// #280 v1.20 — the trail. Every open pushes a crumb, so the modal WALKS: a component → its snippet →
+// the relation that joins them → the ruling that governs it, and back, without closing.
+let TRAIL=[];
+function crumbBar(){if(TRAIL.length<2)return '';
+  return `<div class="crumbs"><span>trail</span>`+TRAIL.map((t,i)=>i===TRAIL.length-1
+    ?`<span class="here">${esc(t.label)}</span>`
+    :`<button type="button" data-crumb="${i}">${esc(t.label)}</button>`).join('<span>›</span>')+`</div>`}
+function openInspect(n,back){if(!n)return;
+  if(!modal.classList.contains('on')){lastFocus=document.activeElement;TRAIL=[]}
+  inspNode=n;inspSeq++;
+  if(!back)TRAIL.push({kind:'node',n:n,label:n.label});
   hits.classList.remove('on');   // inspecting FROM a search row leaves no dropdown hanging over the page
   modal.innerHTML=`<div class="veil" data-veil></div><div class="sheet" role="document">
 <div class="mhead"><div><span class="kind" style="--c:var(--c-${n.type})"><i></i>${esc(n.type)}</span><h2 id="inspTitle">${esc(n.label)}</h2><div class="id">${esc(n.id)}</div></div><button class="mclose" type="button" data-close>Close · esc</button></div>
+${crumbBar()}
 <div class="mbody">
 <div class="sec"><h3>The record — every field the graph stores for this node</h3>${recDL(n)}</div>
+<div class="sec"><h3>The artefact — the thing itself, not a summary of it</h3><div data-file></div></div>
 <div class="sec"><h3>Relations — by storage type, read with the verb’s own wording</h3>${edgeSec(n)}</div>
-<div class="sec"><h3>File</h3><div data-file></div></div>
 </div></div>`;
   modal.classList.add('on');
   const b=modal.querySelector('.mclose');if(b)b.focus();
-  fillFile(n,modal.querySelector('[data-file]'));}
+  fillArtefact(n,modal.querySelector('[data-file]'));}
+// ---------- #280 v1.20 — INSPECT AN EDGE. Dave: "no i want to inspect the edge or indeed the actual
+// file". An edge is a record too: its storage type, the verb that reads it (s277-D11) with THIS edge's
+// own ends named in the sentence, its provenance, its note, and — where it is a declared null — the
+// declaration itself. Both ends are buttons into their own artefacts.
+const EFAMFILE={guidelines:'knowledge/_rule_nodes.json · knowledge/compliance/rules/',
+  governance:'knowledge/_rulings.json · knowledge/_ruling_edges.json',
+  rules:'knowledge/_rule_nodes.json',assets:'knowledge/_icon_nodes.json · knowledge/_logo_nodes.json',
+  uxprinciples:'knowledge/_ux_principle_nodes.json'};
+function endBtn(id){const m=byId.get(id);if(!m)return `<span class="end"><b>—</b><small>no node</small></span>`;
+  return `<button class="end" type="button" data-insp="${esc(m.id)}"><b>${esc(m.label)}</b><small>${esc(m.type)} · ${esc(m.id)}</small></button>`}
+function openEdge(e,back){if(!e)return;
+  if(!modal.classList.contains('on')){lastFocus=document.activeElement;TRAIL=[]}
+  inspNode=null;inspSeq++;
+  const sN=byId.get(e.s),tN=e.t?byId.get(e.t):null,fam=e.fam||FAMILY[e.type];
+  const label=(sN?sN.label:e.s)+' —'+e.type+'→ '+(tN?tN.label:'null');
+  if(!back)TRAIL.push({kind:'edge',e:e,label:e.type});
+  hits.classList.remove('on');
+  const V=VERBS.verbs||{},vs=verbsFor(e.type);
+  const badges=vs.length?vs.map(v=>`<span class="verb">${esc(V[v]?V[v].force:v)} · ${esc(v)}</span>`).join('')
+    :`<span class="verb" title="${esc((VERBS.unread||{})[e.type]||'no verb reads this storage type')}">unread</span>`;
+  const reads=vs.map(v=>V[v]&&V[v].reads).filter(Boolean);
+  const sp=(VERBS.splits||{})[e.type];
+  let rows='';
+  const row=(k,v)=>{rows+=`<dt>${esc(k)}</dt><dd>${v}</dd>`};
+  row('storage type',`<b>${esc(e.type)}</b>`);
+  row('verb',badges||'—');
+  row('this relation, read',`<b>${esc(sN?sN.label:e.s)}</b> ${esc(READ[e.type]?READ[e.type][0]:'→')} <b>${esc(tN?tN.label:'— nothing: a declared null')}</b>`);
+  if(reads.length)row('the verb’s own sentence',reads.map(esc).join('<br>'));
+  if(sp)row('split by',esc(sp.by));
+  row('family',esc(fam||'—')+(fam&&famOn[fam]===false?' · chip off, so it is not drawn right now':''));
+  if(e.note)row('note',esc(e.note));
+  row('provenance',(e.authored?'<b>authored</b> — written in the record itself':'')
+    +(e.derived?(e.authored?' · ':'')+'<b>derived</b> — proposed by a builder pass':'')
+    +(e.ratified?` · ratified ${esc(e.ratified)}`:'')
+    +(e.at?` · at ${esc(String(e.at))}`:'')||'—');
+  if(EFAMFILE[fam])row('stored in',`<code>${esc(EFAMFILE[fam])}</code>`);
+  else if(sN&&sN.type==='component')row('stored in',`<code>knowledge/components/${esc(sN.id.slice(sN.id.indexOf(':')+1))}.meta.json</code>`);
+  if(SNAPS.length&&e.born!=null)row('born',esc(SNAPS[e.born].date+' · snapshot '+e.born));
+  if(e.died!=null&&SNAPS[e.died])row('gone',esc(SNAPS[e.died].date));
+  if(tN&&tN.type==='evidence')row('evidence',`<code>${esc(String(tN.full||tN.label))}</code>`);
+  modal.innerHTML=`<div class="veil" data-veil></div><div class="sheet" role="document">
+<div class="mhead"><div><span class="kind" style="--c:var(--f-${fam})"><i></i>relation</span><h2 id="inspTitle">${esc(e.type)}</h2><div class="id">${esc(label)}</div></div><button class="mclose" type="button" data-close>Close · esc</button></div>
+${crumbBar()}
+<div class="mbody">
+<div class="sec"><h3>The two ends — each one a door to its own artefact</h3>
+<div class="ends">${endBtn(e.s)}<div class="arrow">—${esc(e.type)}→</div>${e.t?endBtn(e.t):'<span class="end"><b>nothing</b><small>declared null · ref: null</small></span>'}</div>
+${e.t?'':`<p class="fnote">this is a <b>declared null</b>: the record names a target that is not a node in the graph, and the graph carries the declaration rather than dropping it. What it names: <b>${esc(e.note||'—')}</b></p>`}</div>
+<div class="sec"><h3>The relation’s own record</h3><dl class="rec">${rows}</dl></div>
+</div></div>`;
+  modal.classList.add('on');
+  const b=modal.querySelector('.mclose');if(b)b.focus()}
 function closeInspect(){if(!modal.classList.contains('on'))return;
-  modal.classList.remove('on');modal.innerHTML='';inspNode=null;
+  modal.classList.remove('on');modal.innerHTML='';inspNode=null;inspSeq++;TRAIL=[];
   if(lastFocus&&document.contains(lastFocus)){try{lastFocus.focus()}catch(e){}}lastFocus=null}
 modal.addEventListener('click',ev=>{
   if(ev.target.closest('[data-close]')||ev.target.closest('[data-veil]')){closeInspect();return}
+  // #280 v1.20: a crumb walks BACK along the trail — it truncates rather than pushing
+  const cb=ev.target.closest('[data-crumb]');
+  if(cb){const i=+cb.dataset.crumb,t=TRAIL[i];if(!t)return;TRAIL=TRAIL.slice(0,i+1);
+    if(t.kind==='edge')openEdge(t.e,true);else openInspect(t.n,true);return}
   const cp=ev.target.closest('[data-copy]');
   if(cp){const v=cp.dataset.copy,o=cp.textContent,done=()=>{cp.textContent='copied';setTimeout(()=>{cp.textContent=o},1200)};
     try{navigator.clipboard.writeText(v).then(done,()=>fallbackCopy(v,done))}catch(e){fallbackCopy(v,done)}}});
@@ -896,7 +1106,10 @@ modal.addEventListener('keydown',ev=>{
   if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus()}
   else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus()}});
 // ONE delegated handler, in the CAPTURE phase, so a row's `i` never also digs the row
-document.addEventListener('click',ev=>{const b=ev.target.closest('[data-insp]');if(!b)return;
+document.addEventListener('click',ev=>{
+  const eb=ev.target.closest('[data-einsp]');                 // #280 v1.20: the RELATION's own door
+  if(eb){ev.preventDefault();ev.stopPropagation();const e=EDGES[+eb.dataset.einsp];if(e)openEdge(e);return}
+  const b=ev.target.closest('[data-insp]');if(!b)return;
   ev.preventDefault();ev.stopPropagation();const m=byId.get(b.dataset.insp);if(m)openInspect(m)},true);
 addEventListener('keydown',ev=>{if(modal.classList.contains('on'))return;
   const tg=ev.target;if(tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.isContentEditable))return;
