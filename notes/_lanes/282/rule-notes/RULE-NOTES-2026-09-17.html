@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The rule notes — fifteen rows — #282</title>
+<style>
+:root{--accent:#DB0011;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;--ok:#0B6E3A;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1200px;--gutter:2rem}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font:400 1rem/1.75 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrapper{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+nav{position:sticky;top:0;z-index:9;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrapper{display:flex;align-items:center;justify-content:space-between;height:54px;gap:var(--s3)}
+nav a,nav span{font-size:.875rem;letter-spacing:.05em;color:var(--grey-6);text-decoration:none}
+nav .now{color:var(--black);font-weight:500}
+nav .jump{display:flex;gap:var(--s2)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);flex:none}
+h1{font-size:3.5625rem;line-height:1.05;font-weight:400;margin:0 0 var(--s4);max-width:22ch}
+h2{font-size:2.125rem;line-height:1.15;font-weight:400;margin:0 0 var(--s4)}
+h3{font-size:1.1875rem;line-height:1.4;font-weight:500;margin:0 0 var(--s3);max-width:60ch}
+p{margin:0 0 var(--s3);max-width:72ch}
+.lede{font-size:1.1875rem;line-height:1.7;max-width:60ch}
+.meta{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+.stats div b{display:block;font-size:2.6875rem;font-weight:200;line-height:1}
+.stats div span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.dim .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:5.25rem;font-weight:100;line-height:.9;color:var(--grey-3);margin-bottom:var(--s3)}
+.tier{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin:0 0 var(--s3)}
+.unblocks{font-size:.875rem;color:var(--grey-7);border-top:1px solid var(--grey-2);padding-top:var(--s3);margin:0}
+.unblocks span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.unblocks code{font:400 .8125rem/1.6 Menlo,monospace}
+.plain{font-size:1.0625rem;line-height:1.7}
+.plain .k{display:block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6)}
+.quote{font-size:1.1875rem;line-height:1.6;border-left:2px solid var(--accent);padding-left:var(--s3);margin:0 0 var(--s4);max-width:60ch}
+.opts{margin-top:var(--s3);border-top:1px solid var(--black)}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s3);padding:var(--s3) 0;border-bottom:1px solid var(--grey-2);cursor:pointer;align-items:start}
+.opt input{margin:6px 0 0;flex:none}
+.opt b{font-weight:500;display:block}
+.opt .tag{font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);font-weight:500;margin-left:var(--s2)}
+.opt .fa{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s1);font-size:.875rem;color:var(--grey-7);line-height:1.6}
+.opt .fa span{display:block;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6)}
+label.note{display:block;margin-top:var(--s3)}
+label.note span{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+label.note input{width:100%;max-width:46rem;font:400 .9375rem/1.6 inherit;padding:var(--s1) 0;border:none;border-bottom:1px solid var(--grey-3);background:none;color:var(--black)}
+label.note input:focus{outline:none;border-bottom-color:var(--accent)}
+.grey{background:var(--grey-1)}
+button{font:500 .875rem/1 inherit;letter-spacing:.06em;text-transform:uppercase;padding:14px 22px;border:none;background:var(--black);color:var(--white);cursor:pointer}
+button.ghost{background:none;color:var(--black);border-bottom:1px solid var(--accent);padding:14px 0;margin-left:var(--s4)}
+pre{background:var(--white);padding:var(--s3);overflow:auto;font:400 .8125rem/1.6 Menlo,monospace;max-height:26rem;border:1px solid var(--grey-2)}
+#msg{font-size:.875rem;color:var(--grey-7);margin-left:var(--s3)}
+footer{padding:var(--s6) 0;font-size:.75rem;letter-spacing:.06em;color:var(--grey-6)}
+@media (max-width:900px){
+ :root{--gutter:1rem}
+ h1{font-size:2.125rem} h2{font-size:1.5rem}
+ section{padding:var(--s5) 0}
+ nav .jump{display:none}
+ .stats{grid-template-columns:repeat(2,1fr);gap:var(--s3)}
+ .dim .wrap{grid-template-columns:1fr;gap:var(--s3)}
+ .idx{font-size:2.6875rem;margin-bottom:var(--s2)}
+ .opt .fa{grid-template-columns:1fr}
+ button.ghost{margin-left:0;display:block;margin-top:var(--s2)}
+}
+</style></head><body>
+<nav><div class="wrapper"><span>#282 · the rule notes</span><span class="now">Fifteen rows</span><span class="jump"><a href="#r1">1</a><a href="#r2">2</a><a href="#r3">3</a><a href="#r4">4</a><a href="#r5">5</a><a href="#r6">6</a><a href="#r7">7</a><a href="#r8">8</a><a href="#r9">9</a><a href="#r10">10</a><a href="#r11">11</a><a href="#r12">12</a><a href="#r13">13</a><a href="#r14">14</a><a href="#r15">15</a><a href="#export">Export</a></span></div></nav>
+
+<section><div class="wrapper">
+ <p class="label">Your notes, back to you</p>
+ <h1>Fifteen things you said about a rule. Each becomes a guideline edit, or stays a note.</h1>
+ <p class="lede">Yesterday’s 59 cards asked which principle each blocking rule rests on. In 15 of your answers you argued with the rule itself — its scope, its reason, a missing exception. None of that has touched a guideline: a note is not an edit. This page puts each one back as a choice, with a recommendation. Where you said “not sure” or “let’s discuss”, it says so.</p>
+ <p class="meta">Every quote is yours, verbatim, from the 14:49Z export · rule text is as stored · the “if inscribed” sentence and the recommendation are mine · nothing lands until the file comes back</p>
+ <div class="stats">
+  <div><b>15</b><span>rows</span></div>
+  <div><b>3</b><span>your ASKs — rows 2, 4, 12</span></div>
+  <div><b>5</b><span>touch the accessibility floor</span></div>
+  <div><b>11</b><span>would edit a guideline file</span></div>
+ </div>
+</div></section>
+
+<section class="dim" id="r1"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">01</div>
+  <p class="tier">Accessibility floor · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>aca-003</code> · accessibility-content-authoring.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.</h3>
+  <p class="quote">“This is interesting, so a designer may argue that an active navigation element might be enough for orientation at the top level of at least, sometimes a salutation might be the first heading and sometimes it might be more marketing lead messging.”</p>
+  <p class="plain"><span class="k">If inscribed</span>A stated exception for top-level pages where an active navigation state already carries the orientation — which weakens a WCAG-A obligation.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="aca-003" value="a"><div><b>Keep the rule as it is; your note stays on the edge as designer knowledge, not as an exception</b><div class="fa"><div><span>For</span>The floor holds. The title is heard before any navigation is reached, so the nav can’t substitute for it. Your point about salutations and marketing headings is real and is kept — as the reason the H1 and the title are two different things.</div><div><span>Against</span>The tension you spotted isn’t written into the rule.</div></div></div></label><label class="opt"><input type="radio" name="aca-003" value="b"><div><b>Add the exception: top-level pages may rely on an active navigation state</b><div class="fa"><div><span>For</span>Says what a designer might argue.</div><div><span>Against</span>A speech-output user hears the title first and the nav later; the exception fails the person the rule exists for, and it is a WCAG A criterion.</div></div></div></label><label class="opt"><input type="radio" name="aca-003" value="c"><div><b>Split it: the title stays an obligation; add a heuristic that the first heading need not repeat the title<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Captures your actual observation — first heading ≠ title — without touching the floor.</div><div><span>Against</span>One more guideline line.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-aca-003" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r2"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">02</div>
+  <p class="tier">Accessibility floor · Your ASK</p>
+  <p class="unblocks"><span>Rule</span><code>aid-009</code> · accessibility-interaction-design.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44, minimum exception 24×24 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/inline/UA/essential outs; “HSBC already has formal design guidance… 44×44 is therefore considered the default requirement.”</h3>
+  <p class="quote">“So this is about the actual size of the visible target, we have a 44px invisible hit area to meet the rule, this doesn&#x27;t take into account context, the clear area around the target spacing can create emphasis also, we also have compact views to think about, but that would be a user choice. I like this principle, but it feels too boolian, maybe we need to discuss.”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule would have to say whether 44 is measured on the visible target or the hit area, and admit clear space and compact views as context — a rewrite, not a clarification. You said “maybe we need to discuss”.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="aid-009" value="a"><div><b>Split it: the hit area stays boolean (44 default, 24 floor); the visible target, clear space and compact views become a graded heuristic beside it<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The a11y floor stays a floor and stays testable. The “too boolean” part — context, emphasis, compact as a user choice — gets a home where taste is allowed.</div><div><span>Against</span>Two lines where there was one; the heuristic needs a principle to rest on (Fitts already landed).</div></div></div></label><label class="opt"><input type="radio" name="aid-009" value="b"><div><b>Rewrite the one rule to say 44 is the hit area and name clear space and compact views as context</b><div class="fa"><div><span>For</span>One rule, fuller.</div><div><span>Against</span>An obligation carrying context clauses is exactly the boolean-with-exceptions shape you don’t like; harder to gate.</div></div></div></label><label class="opt"><input type="radio" name="aid-009" value="c"><div><b>Leave it; talk it through in a sitting first</b><div class="fa"><div><span>For</span>Nothing changes until you’ve discussed it.</div><div><span>Against</span>It stays boolean meanwhile.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-aid-009" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r3"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">03</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>col26-009</code> · colour-standards-2026.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Don’t use the supporting palette as text.</h3>
+  <p class="quote">“This is also a brand consistency rule, if designers were allowed to use the supporting palette we would get dramatically varied designs.”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule states two reasons — a contrast floor and a brand-consistency floor. The edge already carries both; the rule text would be catching up.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="col26-009" value="a"><div><b>Add the second reason to the rule text<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The rule says why in your words; the two edges and the text agree.</div><div><span>Against</span>A guideline edit and a regen.</div></div></div></label><label class="opt"><input type="radio" name="col26-009" value="b"><div><b>Leave the text; the two edges carry it</b><div class="fa"><div><span>For</span>No edit.</div><div><span>Against</span>A designer reading the guideline sees one reason; the graph knows two.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-col26-009" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r4"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">04</div>
+  <p class="tier">Brand · Your ASK</p>
+  <p class="unblocks"><span>Rule</span><code>col26-012</code> · colour-standards-2026.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Don’t combine HSBC Red with the supporting palette in data visualisations.</h3>
+  <p class="quote">“I&#x27;m actually not sure about this, the rule is partly a brand concern the primary red is only for the logo and for CTAs, tabs and the &#x27;brand-bar&#x27; tilting. We allow the use of RAG in charts as long as it&#x27;s used appropriately.”</p>
+  <p class="plain"><span class="k">If inscribed</span>A flat ban becomes a reservation with a named exception: primary red is reserved for logo, CTAs, tabs and the brand bar; RAG red in charts is allowed when it means status. You said “I’m actually not sure”.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="col26-012" value="a"><div><b>Rewrite as a reservation: primary red reserved for logo · CTAs · tabs · brand bar; RAG red permitted in charts only as status<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Matches what you actually allow. A chart lane can gate it: red in a chart must be a RAG token, never the brand token.</div><div><span>Against</span>It touches the charts guideline as well, so two files move.</div></div></div></label><label class="opt"><input type="radio" name="col26-012" value="b"><div><b>Keep the ban as written</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>The rule forbids something you say is allowed; the graph records a rule you don’t believe.</div></div></div></label><label class="opt"><input type="radio" name="col26-012" value="c"><div><b>Discuss first</b><div class="fa"><div><span>For</span>Your uncertainty is respected.</div><div><span>Against</span>Stays wrong meanwhile.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-col26-012" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r5"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">05</div>
+  <p class="tier">Charts · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>dv-bar-007</code> · data-visualisation-bar-charts.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Positive + negative values: vertical bars only. Don’t put negative values on a horizontal bar chart.</h3>
+  <p class="quote">“We do have specific bar charts that show negative values that sink below the zero line. so this rule s for a specific type of bar chart, one that only has a positive scale”</p>
+  <p class="plain"><span class="k">If inscribed</span>Scope narrowing: the rule applies to positive-scale bar charts, and the below-zero vertical form is named as the sanctioned way to show negatives.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="dv-bar-007" value="a"><div><b>Scope it: applies to positive-scale bar charts; negatives use the vertical below-zero form<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Says what ships. Removes a false conflict with the diverging bar in the chart engine.</div><div><span>Against</span>A guideline edit and a regen.</div></div></div></label><label class="opt"><input type="radio" name="dv-bar-007" value="b"><div><b>Leave it</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>The rule reads as a ban on a chart you already ship.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-dv-bar-007" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r6"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">06</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>icon-006</code> · icons.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Minimum 16px, maximum 48px; scale proportionately in 2px increments.</h3>
+  <p class="quote">“this is true but it is also in place for consistence and at the ceiling its close illustration dimensions”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule states that the 16px floor is perceptual and the 48px ceiling exists to keep an icon from reading as an illustration.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="icon-006" value="a"><div><b>Add the two reasons to the rule text: floor = legibility, ceiling = the icon/illustration boundary<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>A designer learns why, not just what; the pictogram boundary (rows 10–11) gets its mirror.</div><div><span>Against</span>A guideline edit and a regen.</div></div></div></label><label class="opt"><input type="radio" name="icon-006" value="b"><div><b>Leave it</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>The ceiling stays an unexplained number.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-icon-006" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r7"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">07</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>logo26-001</code> · brand-refresh-assets.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>An HSBC logo appears at least once on every piece of communication or customer journey.</h3>
+  <p class="quote">“So this is nuanced, the logo will appear on webpages in the nav header anyway but not on native apps, the rational is that the user summoned an HSBC app, they know where the destination is, and the logo will usually appear on a logon or splash screen.”</p>
+  <p class="plain"><span class="k">If inscribed</span>A genuine relaxation: native apps are satisfied by the logon or splash screen, not by every screen.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="logo26-001" value="a"><div><b>Add the native-app clause: in a native app the journey’s logon or splash screen satisfies the rule<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Describes what ships and why. The logo review you keep asking for can start from a true rule.</div><div><span>Against</span>A brand obligation gets its first stated exception.</div></div></div></label><label class="opt"><input type="radio" name="logo26-001" value="b"><div><b>Leave it as “every piece”</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>Every native screen is technically in breach.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-logo26-001" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r8"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">08</div>
+  <p class="tier">Accessibility floor · About the link</p>
+  <p class="unblocks"><span>Rule</span><code>mot-005</code> · motion-standards.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Any motion over 5 seconds needs play and pause.</h3>
+  <p class="quote">“The principle is correct here but is is also a Ally rule we adhere to so the grade is probably wrong”</p>
+  <p class="plain"><span class="k">If inscribed</span>A grade question about the link, not the words: the edge moves from the C-graded control principle to the statutory obligation — or both land, since the link is many-to-many.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="mot-005" value="a"><div><b>Both land: the control principle and the WCAG obligation (SC 2.2.2) as two edges; rule text unchanged<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Your “both” shape, already ruled. The statutory edge carries the grade that matters.</div><div><span>Against</span>None of substance.</div></div></div></label><label class="opt"><input type="radio" name="mot-005" value="b"><div><b>Replace the principle with the obligation</b><div class="fa"><div><span>For</span>Cleaner.</div><div><span>Against</span>Loses the design reason you said is correct.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-mot-005" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r9"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">09</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>photo26-002</code> · brand-refresh-assets.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clichéd shots; no text as a mask. The gen-AI ban is PIPELINE-CRITICAL.</h3>
+  <p class="quote">“On the AI part. This will probably change in the future”</p>
+  <p class="plain"><span class="k">If inscribed</span>Nothing today — a forecast, not a correction. The honest action is a review date on the gen-AI clause.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="photo26-002" value="a"><div><b>Put a review date on the gen-AI clause — March 2027 — no edit to the ban<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The record shows the clause is expected to move and when to look again.</div><div><span>Against</span>A date is a promise to revisit.</div></div></div></label><label class="opt"><input type="radio" name="photo26-002" value="b"><div><b>Leave it, no date</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>The forecast is lost.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-photo26-002" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r10"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">10</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>pict-001</code> · pictograms.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Every pictogram carries a label or copy that underpins its meaning — no exceptions (unlike icons’ universal-meaning carve-out).</h3>
+  <p class="quote">“the usage rule for pictograms is that they do not signal an action they support a concept”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule states the boundary in its own words: pictograms support a concept, icons signal an action.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="pict-001" value="a"><div><b>Write the definition into the rule: a pictogram supports a concept; an icon signals an action<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>The boundary the guideline only implies becomes a sentence a designer and an agent can both quote. Row 15 depends on it.</div><div><span>Against</span>A guideline edit and a regen.</div></div></div></label><label class="opt"><input type="radio" name="pict-001" value="b"><div><b>Leave it implied</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>The carve-out keeps doing the defining.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-pict-001" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r11"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">11</div>
+  <p class="tier">Brand · Argues with the rule</p>
+  <p class="unblocks"><span>Rule</span><code>pict-010</code> · pictograms.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead.</h3>
+  <p class="quote">“consistency, and misuse by designers”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule says the figures are enforcement against misuse, not a perceptual threshold — so the link stays a declared null.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="pict-010" value="a"><div><b>Add the reason line; the null stands<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Honest about what the number is for.</div><div><span>Against</span>A guideline edit and a regen.</div></div></div></label><label class="opt"><input type="radio" name="pict-010" value="b"><div><b>Leave it</b><div class="fa"><div><span>For</span>No change.</div><div><span>Against</span>A designer may assume the numbers are perceptual.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-pict-010" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r12"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">12</div>
+  <p class="tier">Brand · Your ASK</p>
+  <p class="unblocks"><span>Rule</span><code>type26-002</code> · typography-standards-2026.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Only use brand-approved fonts, weights and colours.</h3>
+  <p class="quote">“I think 1 is also applicable, think of different H1s on every page”</p>
+  <p class="plain"><span class="k">If inscribed</span>Nothing in the rule changes. Landed both ways under yesterday’s ruling: the declared null (brand and licensing) and “be consistent” beside it. The question is whether you meant the null to stand.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="type26-002" value="a"><div><b>Both stand — the null and the consistency principle<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>As landed.</div><div><span>Against</span>—</div></div></div></label><label class="opt"><input type="radio" name="type26-002" value="b"><div><b>The principle only; drop the null</b><div class="fa"><div><span>For</span>One reason.</div><div><span>Against</span>Brand and licensing is a real reason with no principle to hang on.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-type26-002" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r13"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">13</div>
+  <p class="tier">Accessibility floor · About the link</p>
+  <p class="unblocks"><span>Rule</span><code>type26-003</code> · typography-standards-2026.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>All text legible and ≥4.5:1 contrast.</h3>
+  <p class="quote">“linked to 2 as you stated”</p>
+  <p class="plain"><span class="k">If inscribed</span>Not landed. If “linked to 2” means what your thirteen “both” rows mean, readability lands beside the WCAG contrast principle as a second edge.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="type26-003" value="a"><div><b>Yes — land readability as a second edge<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Reads as your other thirteen.</div><div><span>Against</span>—</div></div></div></label><label class="opt"><input type="radio" name="type26-003" value="b"><div><b>No — the contrast principle only</b><div class="fa"><div><span>For</span>The edge that was proposed stands alone.</div><div><span>Against</span>—</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-type26-003" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r14"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">14</div>
+  <p class="tier">Brand · Rider on a “both”</p>
+  <p class="unblocks"><span>Rule</span><code>col26-016</code> · colour-standards-2026.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Don’t use red typography — red text is reserved for call to actions.</h3>
+  <p class="quote">“This is both 1 and 2, there is one caveat, red text is allowed, but only the RAG red when used for position movement downward, as in a stat card”</p>
+  <p class="plain"><span class="k">If inscribed</span>The most concrete rule change on the list: “reserved for call to actions” becomes “reserved for call to actions and RAG-negative movement, as in a stat card”. Both edges are already landed.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="col26-016" value="a"><div><b>Inscribe the exception: RAG red text is allowed for downward movement, stat-card style<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>Says what ships. Pairs with row 4 — the same reservation, seen from the typography side.</div><div><span>Against</span>A guideline edit and a regen; the stat-card component should cite it.</div></div></div></label><label class="opt"><input type="radio" name="col26-016" value="b"><div><b>Leave it as a note on the edge</b><div class="fa"><div><span>For</span>No edit.</div><div><span>Against</span>The rule bans something the stat card does.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-col26-016" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+<section class="dim" id="r15"><div class="wrapper"><div class="wrap">
+ <div class="aside">
+  <div class="idx">15</div>
+  <p class="tier">Accessibility floor · Rider on a “both”</p>
+  <p class="unblocks"><span>Rule</span><code>neuro-026</code> · neurodiversity.md · BLOCKING</p>
+ </div>
+ <div class="main">
+  <h3>Icons/visuals support text, never replace it — content must remain comprehensible with all images and icons removed.</h3>
+  <p class="quote">“This 1 and 2. we also allow unpaired icons for the most commonly understood icons”</p>
+  <p class="plain"><span class="k">If inscribed</span>The rule gains the icons’ universal-meaning carve-out — which brings it in line with icons.md and directly against pict-001’s “no exceptions”, so the two must be read together. Both edges are already landed.</p>
+  <div class="opts"><label class="opt"><input type="radio" name="neuro-026" value="a"><div><b>Inscribe the carve-out by reference: unpaired icons allowed only for the universal set named in icons.md; pictograms stay no-exception<span class="tag">recommended</span></b><div class="fa"><div><span>For</span>One list, named once, in one place; neuro and icons agree; pictograms stay strict because a pictogram is a concept, not an action (row 10).</div><div><span>Against</span>A guideline edit and a regen; the universal set must actually be a list in icons.md.</div></div></div></label><label class="opt"><input type="radio" name="neuro-026" value="b"><div><b>Leave it as a note</b><div class="fa"><div><span>For</span>No edit.</div><div><span>Against</span>Neuro forbids what icons allows.</div></div></div></label></div>
+  <label class="note"><span>Note</span><input type="text" id="note-neuro-026" placeholder="optional — your words, kept verbatim"></label>
+ </div>
+</div></div></section>
+
+<section class="grey" id="export"><div class="wrapper">
+ <p class="label">Export</p>
+ <h2>Send the answers back</h2>
+ <p>One choice per row. The export carries your pick and the recommendation side by side, so the record shows where you overruled me. Rows you leave blank stay as notes, exactly as they are today. Anything you pick that edits a guideline goes to one lane: the edit in your words, the rules index regenerated, the graph re-checked.</p>
+ <p><button id="takeall" type="button">Take all the recommendations</button><button id="dl" class="ghost" type="button">Download the answers</button><button id="cp" class="ghost" type="button">Copy to clipboard</button><span id="msg"></span></p>
+ <pre id="exp" hidden></pre>
+</div></section>
+
+<footer><div class="wrapper">#282 · notes/_lanes/282/rule-notes/RULE-NOTES-2026-09-17.html · recommended, not ruled · generated 2026-09-17</div></footer>
+
+<script>
+var PAGE="RULE-NOTES-2026-09-17";
+var IDS=["aca-003", "aid-009", "col26-009", "col26-012", "dv-bar-007", "icon-006", "logo26-001", "mot-005", "photo26-002", "pict-001", "pict-010", "type26-002", "type26-003", "col26-016", "neuro-026"];
+var REC={"aca-003": "c", "aid-009": "a", "col26-009": "a", "col26-012": "a", "dv-bar-007": "a", "icon-006": "a", "logo26-001": "a", "mot-005": "a", "photo26-002": "a", "pict-001": "a", "pict-010": "a", "type26-002": "a", "type26-003": "a", "col26-016": "a", "neuro-026": "a"};
+var TITLE={"aca-003": "CA-3 \u2014 unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.", "aid-009": "ID-26 [introduced 2024] \u2014 target size, the formal 2.2 rule: HSBC DEFAULT 44\u00d744, minimum exception 24\u00d724 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/inline/UA/essential outs; \u201cHSBC already has formal design guidance\u2026 44\u00d744 is therefore considered the default requirement.\u201d", "col26-009": "Don\u2019t use the supporting palette as text.", "col26-012": "Don\u2019t combine HSBC Red with the supporting palette in data visualisations.", "dv-bar-007": "Positive + negative values: vertical bars only. Don\u2019t put negative values on a horizontal bar chart.", "icon-006": "Minimum 16px, maximum 48px; scale proportionately in 2px increments.", "logo26-001": "An HSBC logo appears at least once on every piece of communication or customer journey.", "mot-005": "Any motion over 5 seconds needs play and pause.", "photo26-002": "HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clich\u00e9d shots; no text as a mask. The gen-AI ban is PIPELINE-CRITICAL.", "pict-001": "Every pictogram carries a label or copy that underpins its meaning \u2014 no exceptions (unlike icons\u2019 universal-meaning carve-out).", "pict-010": "Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead.", "type26-002": "Only use brand-approved fonts, weights and colours.", "type26-003": "All text legible and \u22654.5:1 contrast.", "col26-016": "Don\u2019t use red typography \u2014 red text is reserved for call to actions.", "neuro-026": "Icons/visuals support text, never replace it \u2014 content must remain comprehensible with all images and icons removed."};
+function state(id){var r=document.querySelector('input[name="'+id+'"]:checked');var n=document.getElementById('note-'+id);
+ var c=r?r.value:null;return {rule:TITLE[id],choice:c,note:(n&&n.value)||"",recommended:REC[id],overruled:c!==null&&c!==REC[id]}}
+function envelope(){var a={};IDS.forEach(function(id){a[id]=state(id)});
+ return {exportedAt:new Date().toISOString(),page:PAGE,follows:"RESTS-ON-2026-09-17",source:"notes/_lanes/281/rests-on-land/RULE-NOTES-2026-09-17.md",answers:a}}
+function show(){var j=JSON.stringify(envelope(),null,2);var p=document.getElementById('exp');p.hidden=false;p.textContent=j;return j}
+document.getElementById('takeall').onclick=function(){IDS.forEach(function(id){var el=document.querySelector('input[name="'+id+'"][value="'+REC[id]+'"]');if(el)el.checked=true});show();document.getElementById('msg').textContent='all fifteen set to the recommendation — change any before you export'};
+document.getElementById('dl').onclick=function(){var j=show();var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download=PAGE+'-export.json';a.click();document.getElementById('msg').textContent='downloaded'};
+document.getElementById('cp').onclick=function(){var j=show();try{if(navigator.clipboard&&navigator.clipboard.writeText){var w=navigator.clipboard.writeText(j);if(w&&w["catch"])w["catch"](function(){})}}catch(e){}document.getElementById('msg').textContent='copied — the JSON is below too'};
+document.addEventListener('change',function(){if(!document.getElementById('exp').hidden)show()});
+</script>
+</body></html>
