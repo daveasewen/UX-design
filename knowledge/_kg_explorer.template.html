@@ -60,7 +60,7 @@ header{grid-column:1/3;display:grid;grid-template-columns:auto 1fr auto;align-it
 .search input:focus{border-color:var(--ink)}
 .hits{position:absolute;top:38px;left:0;right:0;background:var(--bg);border:1px solid var(--rule);max-height:360px;overflow:auto;z-index:20;display:none}
 .hits.on{display:block}
-.hit{display:grid;grid-template-columns:82px 1fr auto;gap:10px;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--rule);align-items:center}
+.hit{display:grid;grid-template-columns:82px 1fr auto auto;gap:10px;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--rule);align-items:center} /* #280 v1.19: the last column is INSPECT */
 .hit:hover,.hit.sel{background:var(--panel)}
 .hit small{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
 .stage{position:relative;overflow:hidden;border-right:1px solid var(--rule)}
@@ -155,7 +155,7 @@ aside{overflow:auto;background:var(--bg)}
 .group h3 .dir{font-size:10px;color:var(--ink-3);text-transform:uppercase;margin-left:8px}
 .group.closed .rows{display:none}
 .rows{padding:0 0 6px}
-.rel{display:grid;grid-template-columns:9px 1fr;gap:10px;padding:8px 24px;cursor:pointer;align-items:start}
+.rel{display:grid;grid-template-columns:9px 1fr auto;gap:10px;padding:8px 24px;cursor:pointer;align-items:start} /* #280 v1.19: the third column is INSPECT */
 .rel:hover{background:var(--panel)}
 .rel i{width:9px;height:9px;border-radius:50%;background:var(--c);margin-top:5px}
 .rel .n{font-weight:600;font-size:13px}
@@ -167,6 +167,56 @@ aside{overflow:auto;background:var(--bg)}
 .path .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .path .steps span{padding:4px 7px;border:1px solid var(--rule);background:var(--bg)}
 .path .steps em{color:var(--ink-3);font-style:normal}
+/* #280 v1.19 — INSPECT. A small `i` at a row's right edge opens the node's own record in a modal.
+   The affordance is the same in a search hit, a dig row and a path step; it never swallows the row's
+   own click (the row still digs). */
+.insp{border:1px solid var(--rule);background:var(--bg);color:var(--ink-3);font-family:var(--mono);font-size:10px;line-height:1;padding:4px 7px;cursor:pointer;border-radius:0;text-transform:uppercase;letter-spacing:.06em;align-self:center}
+.insp:hover,.insp:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+.path .steps span.pstep{display:inline-flex;align-items:center;gap:7px}
+/* the modal itself — the page's own idiom: no radius, a hairline, mono for anything stored */
+.modal{position:fixed;inset:0;z-index:60;display:none}
+.modal.on{display:block}
+.modal .veil{position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 34%,transparent)}
+.modal .sheet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(920px,calc(100vw - 40px));max-height:calc(100vh - 56px);display:flex;flex-direction:column;background:var(--bg);color:var(--ink);border:1px solid var(--ink);box-shadow:0 18px 60px rgba(0,0,0,.30)}
+.modal .mhead{padding:18px 22px 15px;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;flex:0 0 auto}
+.modal .mhead h2{font-size:22px;line-height:1.1;letter-spacing:-.02em;margin:9px 0 5px;font-weight:700}
+.modal .mhead .id{font-family:var(--mono);font-size:11px;color:var(--ink-3);word-break:break-all}
+.modal .mclose{border:1px solid var(--rule);background:var(--bg);color:var(--ink);font:inherit;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:7px 10px;min-height:30px;cursor:pointer;border-radius:0}
+.modal .mclose:hover,.modal .mclose:focus-visible{border-color:var(--ink);outline:none}
+.modal .mbody{overflow:auto;flex:1 1 auto;padding:0 0 26px}
+.modal .sec{padding:16px 22px 4px;border-bottom:1px solid var(--rule)}
+.modal .sec:last-child{border-bottom:0}
+.modal .sec>h3{margin:0 0 12px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:400}
+.modal dl.rec{display:grid;grid-template-columns:168px 1fr;gap:5px 18px;margin:0 0 14px;font-size:13px}
+.modal dl.rec dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);word-break:break-word}
+.modal dl.rec dd{margin:0;color:var(--ink-2);word-break:break-word}
+.modal dl.rec dd b{color:var(--ink);font-weight:600}
+.modal dl.rec dd.coord{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.modal .egroup{margin:0 0 14px}
+.modal .egroup h4{margin:0 0 3px;font-size:12px;font-family:var(--mono);letter-spacing:.04em;font-weight:400;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.modal .egroup h4 i{width:14px;height:2px;background:var(--c);flex:0 0 14px}
+.modal .egroup h4 i.dash{background:repeating-linear-gradient(90deg,var(--c) 0 4px,transparent 4px 7px)}
+.modal .egroup h4 b{color:var(--ink-3);font-weight:400}
+.modal .verb{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);color:var(--ink-2);padding:1px 5px}
+.modal .reads{margin:0 0 7px;font-size:12px;color:var(--ink-3);line-height:1.5;max-width:82ch}
+.modal .erow{display:grid;grid-template-columns:9px 1fr auto;gap:10px;padding:5px 0 5px 2px;align-items:start;border-top:1px solid var(--rule)}
+.modal .erow i{width:9px;height:9px;border-radius:50%;background:var(--c);margin-top:5px}
+.modal .erow .n{font-size:13px;font-weight:600}
+.modal .erow .n small{font-family:var(--mono);font-weight:400;color:var(--ink-3);margin-left:6px;font-size:10px;text-transform:uppercase}
+.modal .erow .note{color:var(--ink-2);font-size:12px;margin-top:2px;line-height:1.4}
+.modal .erow.null .n{color:var(--ink-3);font-style:italic;font-weight:400}
+.modal .fpath{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;margin:0 0 10px}
+.modal .fpath code{color:var(--ink);word-break:break-all}
+.modal .fpath button{border:1px solid var(--rule);background:var(--bg);color:var(--ink);font:inherit;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px;cursor:pointer;border-radius:0}
+.modal .fpath button:hover,.modal .fpath button:focus-visible{border-color:var(--ink);outline:none}
+.modal .fnote{font-size:12px;color:var(--ink-3);margin:0 0 12px;line-height:1.5}
+.modal .fbody{border:1px solid var(--rule);background:var(--panel);padding:12px 14px;max-height:44vh;overflow:auto;margin:0 0 14px}
+.modal .fbody pre{margin:0;font-family:var(--mono);font-size:11px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--ink-2)}
+.modal .fbody h3,.modal .fbody h4,.modal .fbody h5,.modal .fbody h6{margin:12px 0 5px;font-size:13px;letter-spacing:-.01em}
+.modal .fbody p,.modal .fbody li{font-size:13px;color:var(--ink-2);margin:0 0 7px;line-height:1.5}
+.modal .fbody ul{margin:0 0 9px;padding-left:20px}
+.modal .fbody code{font-family:var(--mono);font-size:11px;color:var(--ink)}
+@media (max-width:900px){.modal .sheet{width:calc(100vw - 16px);max-height:calc(100vh - 24px)}.modal .sec{padding:14px 14px 4px}.modal dl.rec{grid-template-columns:1fr;gap:1px 0}.modal dl.rec dd{margin:0 0 7px}}
 /* #279: `header{grid-column:1/3}` made an IMPLICIT second column under the one-column mobile grid, so
    the stage was 48px wide at 390 (inherited from v1.0; measured, not guessed). One declaration fixes it.
    The legend is a scrolling stack at phone width; the views go column-wise (heading above chips). */
@@ -183,6 +233,8 @@ aside{overflow:auto;background:var(--bg)}
   .legend .trows{flex:1 1 auto;min-height:48px;overflow:auto;gap:3px;padding-top:2px;border-top:1px solid var(--rule)}
   .legend .view,.legend.strip .view{flex-direction:column;align-items:stretch;gap:2px;padding:3px 5px 4px}.legend .view>h4,.legend.strip .view>h4{width:auto;flex:0 0 auto}.legend .view>h4 small,.legend.strip .view>h4 small{display:none}.legend .view .row{gap:3px}.legend .obligation{gap:2px;padding:3px 4px 4px}
   .chip{padding:2px 5px;min-height:20px;font-size:9px;gap:4px}.hint{display:none}.crumbs{max-width:100%;left:12px}
+  /* #280 v1.19: the phone sheet is UNCHANGED, so the side/bottom toggle is not offered here */
+  .legend .lplace{display:none}
   /* the scrub row was one 482px-wide line at 390 (date 150 + counts 230 + Play) — three rows now, nothing clips */
   .scrub{left:12px;right:12px;bottom:12px;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;gap:6px 10px;font-size:10px}
   .scrub input[type=range]{grid-column:1/3;grid-row:2}.scrub .counts{grid-column:1/3;grid-row:3;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.scrub .date{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tools{right:12px}}
@@ -207,10 +259,13 @@ aside{overflow:auto;background:var(--bg)}
     <div class="legend" id="legend"></div>
     <div class="tip" id="tip"></div>
     <div class="scrub" id="scrub"><button id="play">Play</button><span class="date" id="sdate"></span><input type="range" id="srange" min="0" max="0" value="0" step="1"><span class="counts" id="scounts"></span></div>
-    <div class="hint">click a node to dig · click again to follow<br>shift-click two nodes for a path · esc to surface<br>3D: drag to rotate · shift-drag to pan</div>
+    <div class="hint">click a node to dig · click again to follow<br>shift-click two nodes for a path · esc to surface<br>any row's <b>i</b> — or the i key — opens its record<br>3D: drag to rotate · shift-drag to pan</div>
   </div>
   <aside id="panel"></aside>
 </div>
+<!-- #280 v1.19 — INSPECT's modal. Empty until a row's `i` is pressed; the file it names is FETCHED at
+     runtime, never embedded (the build measures its own size and the size is a gate). -->
+<div class="modal" id="insp" role="dialog" aria-modal="true" aria-labelledby="inspTitle"></div>
 <script id="kg" type="application/json">__KG__</script>
 <script>
 const KG=JSON.parse(document.getElementById('kg').textContent);
@@ -351,13 +406,43 @@ const DRGOV=()=>LIVEE.filter(e=>e.t&&DR(e)&&famOn[FAMILY[e.type]]&&famOK(e)&&fam
 const chipDR=()=>`<span class="chip edge ${famOn.designrulings?'':'off'}" data-fam="designrulings" style="--c:var(--c-ruling)" title="rulings a design cites: governedBy (meta) · ruledBy (assets) · governs→component (the ruling's own list). Authored citation only — no scope is derived (s277-D8: the per-ruling scope is unratified). The count is the citation edges drawn under the family chips now."><i></i>rulings a design cites<b>${DRGOV()}</b></span>`;
 // v1.16: the legend folds to one bar (EV §5.1 / §5.3). Open at desktop; a closed bottom sheet at phone width.
 let legendOpen=!matchMedia('(max-width:900px)').matches;
-function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',NEWFAM.some(f=>famOn[f])||LAYOUT!=='force');  /* #280: every layout but force is landscape or square by construction — the legend takes the bottom strip, never the side column that would halve the stack's width */legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
+// #280 v1.19 — THE LEGEND DOES NOT MOVE BY ITSELF (Dave: "the legend jumps from the side to the bottom
+// when you interact with it"). 1.16..1.18 recomputed its place on EVERY render, so any family chip that
+// made the graph landscape threw it from the right column to the bottom strip mid-interaction. Its place
+// is now STICKY: it stays where it is until the user moves it with the toggle in its own bar. The place
+// is chosen automatically ONCE at load and again only at a LAYOUT or DIMENSION switch — side when the
+// shown extent is portrait, bottom when it is landscape — and a user's own choice is remembered in
+// localStorage (`kg-legend`, beside `kg-theme`) and is never overridden after that. A chip toggle, a dig,
+// a scrub, a search and a fold all leave it alone. fit() reads usable() from wherever the legend IS.
+const LEGKEY='kg-legend';
+let legPlace='side',legChosen=false;
+try{const lv=localStorage.getItem(LEGKEY);if(lv==='side'||lv==='bottom'){legPlace=lv;legChosen=true}}catch(e){}
+// PORTRAIT or LANDSCAPE — asked of fit()'s own extent (the live cell's coordinates AND its furniture: an
+// empty band is still a band, and it is what makes the strata stack portrait), and asked EXACTLY: a
+// picture is portrait FOR THIS STAGE when the side column leaves it larger than the bottom strip would.
+// That is the same question — a side column leaves a tall narrow rectangle, a bottom strip a wide short
+// one — with the stage's own proportions in it, so a square picture on a stage wider than it is tall
+// still counts as portrait. Both places are measured from the live DOM, the way usable() always measures.
+function autoPlace(){if(legChosen)return;const E=extent();
+  const m=three?1.3:1.12,yr=three?Math.max(E.y1-E.y0,E.z1-E.z0):(E.y1-E.y0);
+  const ew=(E.x1-E.x0)*m+1,eh=yr*m+1;
+  const score=p=>{legend.classList.toggle('strip',p==='bottom');const u=usable(ew,eh);
+    return Math.min((u.x1-u.x0)/ew,(u.y1-u.y0)/eh)};
+  const side=score('side'),bottom=score('bottom');
+  legPlace=(side>=bottom)?'side':'bottom';
+  legend.classList.toggle('strip',legPlace==='bottom')}
+function setLegPlace(p){legPlace=(p==='bottom')?'bottom':'side';legChosen=true;
+  try{localStorage.setItem(LEGKEY,legPlace)}catch(e){}
+  renderLegend();if(focus)applyFocus();else fit()}
+function renderLegend(){legend.classList.toggle('closed',!legendOpen);legend.classList.toggle('strip',legPlace==='bottom');legend.innerHTML=`<div class="lbar"><button class="ltog" type="button" title="${legendOpen?'Fold the legend to this bar; Fit re-measures the stage':'Open the legend: node types and the three views + the Constitution'}">${legendOpen?'Hide legend ▾':'Legend ▴'}</button><button class="ltog lplace" type="button" title="Move the legend. It stays where you put it — a chip, a dig or a scrub never moves it — and the choice is remembered.">${legPlace==='bottom'?'⇥ side':'⇣ bottom'}</button><span class="lsum"><b>${SHOWN.length}</b> nodes · <b>${SHOWNE.length.toLocaleString()}</b> relations · <b>${ETYPES().length}</b> edge types</span></div>
 <div class="lbody"><div class="views">${VIEWS.map(v=>`<div class="view ${v.id}"><h4>${v.name}<small>${v.say}</small></h4>${v.obligation
   ?`<div class="obligation"><span>one obligation · three provenances</span><div class="row">${v.obligation.map(f=>f==='designrulings'?chipDR():chipF(f)).join('')}</div></div>`
   :`<div class="row">${v.fams.map(chipF).join('')}</div>`}</div>`).join('')}</div>
 <div class="trows"><div class="row">${TYPES.map(chipT).join('')}</div><div class="row">${TYPES2.map(chipT).join('')}</div></div></div>`;}
 recount();renderStats();renderLegend();
 legend.addEventListener('click',ev=>{
+  // #280 v1.19: the place toggle is checked FIRST (it wears .ltog for the same button styling)
+  if(ev.target.closest('.lplace')){setLegPlace(legPlace==='bottom'?'side':'bottom');return}
   if(ev.target.closest('.ltog')){legendOpen=!legendOpen;renderLegend();if(focus)applyFocus();else fit();return}
   const c=ev.target.closest('.chip');if(!c)return;
   if(c.dataset.type){typeOn[c.dataset.type]^=1;c.classList.toggle('off');if(focus)applyFocus();draw();return}
@@ -401,7 +486,10 @@ function usable(ew,eh){const sr=stage.getBoundingClientRect();let bot=H-16;
   let best=null,bk=-1;for(const r of R){const w=r.x1-r.x0,h=r.y1-r.y0;if(w<80||h<80)continue;const k=Math.min(w/(ew||1),h/(eh||1));if(k>bk){bk=k;best=r}}
   if(!best)best={x0:pad,y0:top,x1:W-pad,y1:Math.max(top+80,bot)};
   best.cx=(best.x0+best.x1)/2;best.cy=(best.y0+best.y1)/2;return best}
-function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
+// #280 v1.19 — the SHOWN EXTENT, lifted out of fit() unchanged so that the legend's automatic place
+// (autoPlace) asks exactly the question fit() asks — is this picture portrait or landscape — of exactly
+// the same numbers, furniture included. fit() is byte-for-byte what it was; only the braces moved.
+function extent(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
   // #280: the extent is the LIVE CELL's own coordinate set, read through base() — never a cell's
   // coordinates fitted with another cell's numbers.
   for(const n of LIVE){if(!NODEON(n))continue;const b=base(n),x=b[0],y=b[1],z=three?b[2]:0;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);z0=Math.min(z0,z);z1=Math.max(z1,z)}
@@ -420,6 +508,8 @@ function fit(){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
   if(LAYOUT==='shells'&&three&&SHELLS.length)for(const h of SHELLS){if(!bandShown(h))continue;
     if(h.plinthY!=null){grow(-h.r,h.plinthY,-h.r);grow(h.r,h.plinthY,h.r)}
     else{grow(-h.r,-h.r,-h.r);grow(h.r,h.r,h.r)}}
+  return {x0,x1,y0,y1,z0,z1}}
+function fit(){const E=extent(),x0=E.x0,x1=E.x1,y0=E.y0,y1=E.y1,z0=E.z0,z1=E.z1;
   // 3D: the cloud rotates, so its depth range can become height; fit the larger of the two, with the old
   // 3D margin. 2D: a 6% margin each side of the shown extent.
   const m=three?1.3:1.12,yr=three?Math.max(y1-y0,z1-z0):(y1-y0),ew=(x1-x0)*m+1,eh=yr*m+1;
@@ -618,6 +708,7 @@ function renderEmpty(){panel.innerHTML=`<div class="empty"><h2>${SHOWN.length} n
 <p class="plus">+ ${XTRA.rulings||0} rulings &middot; ${XTRA.sc||0} success criteria &middot; ${XTRA.derived||0} derived edges (dashed, unratified)</p>
 <p>The graph is authored from the inside out: each of the ${count.component||0} components states what it contains, where it is used, which patterns it follows, what renders it and which rulings govern it. Patterns, contexts, snippets and rulings are the things those statements point at.</p>
 <p>Click any node to dig. The node moves to the centre and its relations fan out in sectors, one per relationship type; click a neighbour to follow the thread. Shift-click two nodes to see the shortest path between them.</p>
+<p>Every row here — a search hit, a neighbour, a step of a path — carries a small <b>i</b> at its right edge, and <b>i</b> on the keyboard inspects whatever you have dug. It opens the node's own record: every field the graph stores for it, its relations read with the verb's own wording, and the file the record was read from. Served, the file itself is in the modal; opened straight off the disk, the page can name the file but not read it, and says so.</p>
 <div class="k">Scrub line</div><p>${SNAPS.length} snapshots, one per day the graph changed, ${SNAPS[0]?SNAPS[0].date:""} → ${SNAPS.length?SNAPS[SNAPS.length-1].date:""}. Drag the line or press Play; ← → step a day. Everything you click respects the day you are on.</p>
 <div class="k">Orphans — registered, referenced by nothing</div><p>${KG.orphans.length?KG.orphans.map(id=>`<a href="#" data-id="${esc(id)}" class="orph">${esc(byId.get(id).label)}</a>`).join(' · '):'none'}</p>
 <div class="k">Islands — connected to each other, not to the graph</div><p>${KG.islands.map(is=>`<a href="#" data-id="${esc(is[0])}" class="orph">${esc(byId.get(is.find(i=>i.startsWith('component:'))||is[0]).label)} <b>${is.length}</b></a>`).join(' · ')}</p>
@@ -649,7 +740,7 @@ function renderPanel(n,nb){
   for(const t of order){const g=groups.get(t);const dir=g[0].out?READ[t][0]:READ[t][1];
     h+=`<div class="group ${g.length>12?'closed':''}"><h3 style="--c:var(--f-${FAMILY[t]})"><i class="${g[0].e.derived?'dash':''}"></i><span>${t}<span class="dir">${esc(dir)}</span>${g[0].e.derived?'<span class="tag">derived</span>':''}${g[0].e.ratified?`<span class="tag">ratified ${esc(g[0].e.ratified)}</span>`:''}</span><b>${g.length}</b></h3><div class="rows">`;
     for(const x of g.sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
-      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div></div>`}
+      h+=`<div class="rel" data-id="${esc(m.id)}" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${m.type}</small>${x.e.derived?`<span class="tag">derived${x.e.proposedType?' · '+esc(x.e.proposedType)+'?':''}</span>`:''}</div>${x.e.note?`<div class="note">${esc(x.e.note)}</div>`:''}</div><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect the record — the stored fields, the relations and the file">i</button></div>`}
     h+=`</div></div>`}
   const un=unresolved.get(n.id);if(un&&un.length){h+=`<div class="group closed"><h3 style="--c:var(--ink-3)"><i></i><span>declared, unresolved<span class="dir">ref:null · awaiting Dave's-eye migration</span></span><b>${un.length}</b></h3><div class="rows">`;
     for(const e of un)h+=`<div class="rel unres" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div></div>`;h+=`</div></div>`}
@@ -657,7 +748,9 @@ function renderPanel(n,nb){
   panel.querySelectorAll('.group h3').forEach(x=>x.onclick=()=>x.parentElement.classList.toggle('closed'));
   panel.querySelectorAll('.rel[data-id]').forEach(x=>{x.onclick=()=>setFocus(byId.get(x.dataset.id));x.onmouseenter=()=>{hover=byId.get(x.dataset.id);draw()};x.onmouseleave=()=>{hover=null;draw()}});
 }
-function renderPath(){if(!pathNodes)return '';const ids=[...pathNodes];const steps=[];for(let i=0;i<ids.length;i++){const n=byId.get(ids[i]);steps.push(`<span>${esc(n.label)}</span>`);if(i<ids.length-1){const e=pathEdgeList[i];steps.push(`<em>—${e.type}→</em>`)}}
+function renderPath(){if(!pathNodes)return '';const ids=[...pathNodes];const steps=[];for(let i=0;i<ids.length;i++){const n=byId.get(ids[i]);
+  /* #280 v1.19: a step of the path is a node row too, so it carries INSPECT like the others */
+  steps.push(`<span class="pstep" data-id="${esc(n.id)}">${esc(n.label)}<button class="insp" type="button" data-insp="${esc(n.id)}" title="Inspect the record — the stored fields, the relations and the file">i</button></span>`);if(i<ids.length-1){const e=pathEdgeList[i];steps.push(`<em>—${e.type}→</em>`)}}
   return `<div class="path">shortest path · ${ids.length-1} hops<div class="steps">${steps.join('')}</div></div>`}
 
 // ---------- shortest path (BFS)
@@ -669,6 +762,145 @@ function showPath(a,b){const p=shortestPath(a,b);if(!p){alert('No path between t
   // lay the path out: keep focus layout but make sure path nodes are visible
   for(const id of p.ids){const n=byId.get(id);n.ta=1}
   animate();renderPanel(a,adj.get(a.id));}
+
+// ---------- #280 v1.19 — INSPECT: the node's own record, in a modal over the page
+// Dave: "Could the[y] have an 'inspect' button on the list items that actually summon the file in a modal."
+// Every node row in the aside — a search hit, a dig group's row, a step of the path — carries a small `i`,
+// and `i` on the keyboard inspects the dug node. The modal shows THE RECORD (every field the embedded KG
+// stores for the node, as a definition list — the six baked coordinate sets collapse to one row), THE
+// RELATIONS (grouped by storage type and read with the verb's own wording from knowledge/_kg_verbs.json,
+// s277-D11 — storage untouched) and THE FILE. The file is fetched at runtime: `fetch()` of a repo path
+// works when the page is SERVED and cannot work from `file://`, so a failure is a first-class outcome —
+// the path is shown with a copy button and "open from the repo", never a blank and never an error.
+const SRC=KG.src||{},VERBS=KG.verbs||{},REL='../';   // the page lives in notes/; the paths are repo-root-relative
+const COORDK=new Set(['x','y','y2','x3','y3','z3','xf','yf','zf','xo','yo','xs','ys','zs']);
+const RUNK=new Set(['i','ox','oy','oy2','z','tx','ty','tz','a','ta','r','bd','_sx','_sy']); // the page's own runtime fields — not part of the stored record
+const HEADK=new Set(['id','type','label']);        // shown in the modal's head instead
+const KEYNAME={deg:'degree',fam:'family chip',born:'born',died:'gone',full:'full reference',docOf:'documents',
+  registered:'registered',$derived:'derived by',dead:'dead in the history'};
+const modal=document.getElementById('insp');
+let inspNode=null,lastFocus=null;
+function fmtVal(v){if(Array.isArray(v))return v.map(x=>esc(String(x))).join(' · ')||'—';
+  if(v===true)return '<b>yes</b>';if(v===false)return 'no';
+  if(v===null||v===undefined||v==='')return '—';
+  if(typeof v==='object')return esc(JSON.stringify(v));
+  return esc(String(v))}
+function recDL(n){let rows='';
+  for(const k of Object.keys(n)){if(HEADK.has(k)||COORDK.has(k)||RUNK.has(k))continue;
+    let v=n[k];if((k==='born'||k==='died')&&typeof v==='number'&&SNAPS[v])v=SNAPS[v].date+' · snapshot '+v;
+    rows+=`<dt>${esc(KEYNAME[k]||k)}</dt><dd>${fmtVal(v)}</dd>`}
+  // the six cells' baked coordinates are stored fields too — one row, not six (they are not reading matter)
+  const c=[`force 2D ${n.ox},${n.oy}`];
+  if(n.x3!=null)c.push(`force 3D ${n.x3},${n.y3},${n.z3}`);
+  if(n.oy2!=null)c.push(`strata 2D y ${n.oy2}`);
+  if(n.xf!=null)c.push(`strata 3D ${n.xf},${n.yf},${n.zf}`);
+  if(n.xo!=null)c.push(`shells 2D ${n.xo},${n.yo}`);
+  if(n.xs!=null)c.push(`shells 3D ${n.xs},${n.ys},${n.zs}`);
+  rows+=`<dt>layout coordinates</dt><dd class="coord">${esc(c.join(' · '))}</dd>`;
+  return `<dl class="rec">${rows}</dl>`}
+const verbsFor=t=>{const o=(VERBS.of||{})[t];return Array.isArray(o)?o:(o?[o]:[])};
+function edgeSec(n){const groups=new Map();
+  for(const x of adj.get(n.id)){(groups.get(x.e.type)||groups.set(x.e.type,[]).get(x.e.type)).push(x)}
+  const order=[...groups.keys()].sort((a,b)=>groups.get(b).length-groups.get(a).length);
+  const V=VERBS.verbs||{};let h='';
+  for(const t of order){const g=groups.get(t),fam=FAMILY[t],vs=verbsFor(t);
+    const badges=vs.length?vs.map(v=>`<span class="verb" title="the twelve verbs — s277-D11, a reading map over the storage types">${esc(V[v]?V[v].force:v)} · ${esc(v)}</span>`).join('')
+      :`<span class="verb" title="${esc((VERBS.unread||{})[t]||'no verb reads this storage type')}">unread</span>`;
+    const reads=vs.map(v=>V[v]&&V[v].reads).filter(Boolean),sp=(VERBS.splits||{})[t];
+    h+=`<div class="egroup"><h4 style="--c:var(--f-${fam})"><i class="${g[0].e.derived?'dash':''}"></i><span>${esc(t)}</span>${badges}<b>${g.length}</b>${(fam&&famOn[fam])?'':'<span class="verb" title="this family’s chip is off, so these are not drawn right now">chip off</span>'}</h4>`;
+    if(reads.length)h+=`<p class="reads">${reads.map(esc).join('<br>')}</p>`;
+    if(sp)h+=`<p class="reads">split by ${esc(sp.by)}</p>`;
+    for(const x of g.slice().sort((a,b)=>byId.get(a.other).label.localeCompare(byId.get(b.other).label))){const m=byId.get(x.other);
+      const dir=READ[t]?(x.out?READ[t][0]:READ[t][1]):(x.out?'→':'←');
+      h+=`<div class="erow" style="--c:var(--c-${m.type})"><i></i><div><div class="n">${esc(m.label)}<small>${esc(m.type)}</small></div><div class="note">${esc(dir)}${x.e.note?' · '+esc(x.e.note):''}${x.e.derived?' · derived':''}${x.e.ratified?' · ratified '+esc(x.e.ratified):''}</div></div><button class="insp" type="button" data-insp="${esc(m.id)}" title="Inspect this node's record">i</button></div>`}
+    h+='</div>'}
+  const un=unresolved.get(n.id)||[];
+  if(un.length){h+=`<div class="egroup"><h4 style="--c:var(--ink-3)"><i></i><span>declared, unresolved</span><span class="verb">ref: null</span><b>${un.length}</b></h4>`;
+    for(const e of un)h+=`<div class="erow null" style="--c:var(--ink-3)"><i></i><div><div class="n">${esc(e.type)}</div><div class="note">${esc(e.note)}</div></div><span></span></div>`;h+='</div>'}
+  return h||`<p class="reads">no edges are stored for this node.</p>`}
+// the FILE the record was read from. `byId` is the builder's own per-file join (the sc: rule files); an
+// artefact IS its path and an evidence node names its document; everything else resolves through the
+// builder's TYPE→path map. A node's own declared `file` (a rule's guideline .md, an icon or logo svg)
+// is resolved against its family's root and is the thing fetched when it exists.
+function srcOf(n){const id=n.id,slug=id.slice(id.indexOf(':')+1);
+  if((SRC.byId||{})[id])return {path:SRC.byId[id],get:true,why:'the success criterion’s own rule file'};
+  if(n.type==='artefact')return {path:slug,get:true,why:'the artefact IS this file'};
+  if(n.type==='evidence'){const f=String(n.full||slug),p=f.split('#');return {path:p[0],get:true,anchor:p[1]||'',why:'the document the evidence quotes'}}
+  const t=(SRC.byType||{})[n.type];
+  if(t)return {path:t.replace('{slug}',slug),get:true,why:'the record the builder read this node from'};
+  if((SRC.dirs||[]).indexOf(n.type)>=0)return {path:SRC.dir||'knowledge/compliance/rules/',get:false,why:'a directory of files, not one — there is nothing single to fetch'};
+  return null}
+const declaredFile=n=>n.file?(((SRC.fileRoot||{})[n.type])||'')+n.file:null;
+const cpBtn=p=>`<button type="button" data-copy="${esc(p)}">copy path</button>`;
+function fallbackCopy(v,done){const ta=document.createElement('textarea');ta.value=v;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}ta.remove()}
+const MDINL=s=>s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+function mdLite(s){return esc(s).split(/\n{2,}/).map(b=>{const l=b.trim();if(!l)return '';
+  if(/^#{1,6}\s/.test(l)){const d=Math.min(6,l.match(/^#+/)[0].length+2);return `<h${d}>${MDINL(l.replace(/^#+\s*/,''))}</h${d}>`}
+  if(/^\s*[-*]\s/.test(l))return '<ul>'+l.split('\n').map(x=>`<li>${MDINL(x.replace(/^\s*[-*]\s*/,''))}</li>`).join('')+'</ul>';
+  return `<p>${MDINL(l).replace(/\n/g,'<br>')}</p>`}).join('')}
+function renderFile(path,txt,cut){const ext=(path.split('.').pop()||'').toLowerCase();let body;
+  if(ext==='md')body=mdLite(txt);
+  else if(ext==='json'){let p=txt;try{p=JSON.stringify(JSON.parse(txt),null,1)}catch(e){}body=`<pre>${esc(p)}</pre>`}
+  else body=`<pre>${esc(txt)}</pre>`;                                  // css, svg, html, py — mono, as stored
+  return `<div class="fbody">${body}</div>${cut?'<p class="fnote">shown to the first 180,000 characters — the file is longer.</p>':''}`}
+const FCAP=180000;
+async function fillFile(n,el){const s=srcOf(n),df=declaredFile(n);let head='';
+  if(s)head+=`<div class="fpath"><code>${esc(s.path)}</code>${cpBtn(s.path)}</div><p class="fnote">${esc(s.why)}${s.anchor?' · anchor “'+esc(s.anchor)+'”':''}</p>`;
+  if(df)head+=`<div class="fpath"><code>${esc(df)}</code>${cpBtn(df)}</div><p class="fnote">the node’s own declared <code>file</code>.</p>`;
+  if(!s&&!df){el.innerHTML=`<p class="fnote">no source path is stored for this node.</p>`;return}
+  const target=df||((s&&s.get)?s.path:null);
+  if(!target){el.innerHTML=head;return}
+  // A `file://` page CANNOT fetch a sibling file — the browser refuses the scheme. That is not an error
+  // to discover by making the request (which only writes a console error nobody can act on): it is the
+  // known outcome, so the modal says it straight and shows the path. Served, the fetch is made for real
+  // and a 404 or a refusal lands in the same place, with the reason named.
+  if(location.protocol==='file:'){
+    el.innerHTML=head+`<p class="fnote">this page is open from disk (<code>file://</code>), so it can name the file but not read it — open from the repo, or serve the folder and the contents appear here.</p>`;return}
+  el.innerHTML=head+`<p class="fnote">reading <code>${esc(target)}</code>…</p>`;
+  let ok=false,txt='',cut=false,why='';
+  try{const r=await fetch(REL+target,{cache:'no-store'});
+    if(!r.ok)throw new Error('the server answered '+r.status);
+    txt=await r.text();if(txt.length>FCAP){txt=txt.slice(0,FCAP);cut=true}ok=true}
+  catch(err){why=(err&&err.message)?String(err.message):'the fetch was refused'}
+  if(inspNode!==n)return;                                              // the modal has moved on
+  el.innerHTML=head+(ok?renderFile(target,txt,cut)
+    :`<p class="fnote">the file could not be read (${esc(why)}) — open it from the repo; the path is above.</p>`)}
+function openInspect(n){if(!n)return;
+  if(!modal.classList.contains('on'))lastFocus=document.activeElement;
+  inspNode=n;
+  hits.classList.remove('on');   // inspecting FROM a search row leaves no dropdown hanging over the page
+  modal.innerHTML=`<div class="veil" data-veil></div><div class="sheet" role="document">
+<div class="mhead"><div><span class="kind" style="--c:var(--c-${n.type})"><i></i>${esc(n.type)}</span><h2 id="inspTitle">${esc(n.label)}</h2><div class="id">${esc(n.id)}</div></div><button class="mclose" type="button" data-close>Close · esc</button></div>
+<div class="mbody">
+<div class="sec"><h3>The record — every field the graph stores for this node</h3>${recDL(n)}</div>
+<div class="sec"><h3>Relations — by storage type, read with the verb’s own wording</h3>${edgeSec(n)}</div>
+<div class="sec"><h3>File</h3><div data-file></div></div>
+</div></div>`;
+  modal.classList.add('on');
+  const b=modal.querySelector('.mclose');if(b)b.focus();
+  fillFile(n,modal.querySelector('[data-file]'));}
+function closeInspect(){if(!modal.classList.contains('on'))return;
+  modal.classList.remove('on');modal.innerHTML='';inspNode=null;
+  if(lastFocus&&document.contains(lastFocus)){try{lastFocus.focus()}catch(e){}}lastFocus=null}
+modal.addEventListener('click',ev=>{
+  if(ev.target.closest('[data-close]')||ev.target.closest('[data-veil]')){closeInspect();return}
+  const cp=ev.target.closest('[data-copy]');
+  if(cp){const v=cp.dataset.copy,o=cp.textContent,done=()=>{cp.textContent='copied';setTimeout(()=>{cp.textContent=o},1200)};
+    try{navigator.clipboard.writeText(v).then(done,()=>fallbackCopy(v,done))}catch(e){fallbackCopy(v,done)}}});
+// focus is TRAPPED while the modal is open, and Escape closes the modal without surfacing the dig
+modal.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();closeInspect();return}
+  if(ev.key!=='Tab')return;
+  const f=[...modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);
+  if(!f.length)return;const first=f[0],last=f[f.length-1];
+  if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus()}
+  else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus()}});
+// ONE delegated handler, in the CAPTURE phase, so a row's `i` never also digs the row
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-insp]');if(!b)return;
+  ev.preventDefault();ev.stopPropagation();const m=byId.get(b.dataset.insp);if(m)openInspect(m)},true);
+addEventListener('keydown',ev=>{if(modal.classList.contains('on'))return;
+  const tg=ev.target;if(tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.isContentEditable))return;
+  if((ev.key==='i'||ev.key==='I')&&!ev.metaKey&&!ev.ctrlKey&&!ev.altKey&&focus){ev.preventDefault();openInspect(focus)}});
 
 // ---------- interaction
 let drag=null,moved=false;
@@ -684,13 +916,14 @@ addEventListener('mouseup',e=>{if(!drag)return;cv.classList.remove('grabbing');c
   setFocus(n)});
 cv.addEventListener('wheel',e=>{e.preventDefault();const r=cv.getBoundingClientRect();const mx=e.clientX-r.left-W/2,my=e.clientY-r.top-H/2;const k0=view.k;view.k=Math.max(0.12,Math.min(6,view.k*Math.exp(-e.deltaY*0.0016)));
   view.x-=mx/k0-mx/view.k;view.y-=my/k0-my/view.k;draw()},{passive:false});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(pathNodes){pathNodes=pathEdges=null;renderPanel(focus,adj.get(focus.id));animate()}else if(focus)surface();document.getElementById('hits').classList.remove('on')}});
+addEventListener('keydown',e=>{if(modal.classList.contains('on'))return;   /* #280 v1.19: Escape belongs to the modal while it is open — it closes the modal, it does not surface the dig */
+  if(e.key==='Escape'){if(pathNodes){pathNodes=pathEdges=null;renderPanel(focus,adj.get(focus.id));animate()}else if(focus)surface();document.getElementById('hits').classList.remove('on')}});
 // #280 — the matrix's SECOND AXIS. The old 3D button is now the dimension switch: it keeps the live
 // layout and changes only which of its two coordinate sets the page reads.
 function setDim(v,quiet){three=!!v;const b=document.getElementById('three');
   b.textContent=three?'3D':'2D';b.classList.toggle('on',three);
   document.getElementById('spin').hidden=!three;document.getElementById('dof').hidden=!three;
-  renderLegend();
+  autoPlace();renderLegend();   // #280 v1.19: a DIMENSION switch is one of the two moments the place is recomputed — and only while the user has not chosen one
   for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.x=n.tx;n.y=n.ty;n.z=n.tz}
   if(focus)applyFocus();else{ctr=[0,0,0];fit()}
   if(!quiet)animate()}
@@ -708,7 +941,10 @@ document.getElementById('fit').onclick=()=>{if(focus)applyFocus();else fit()};
 function setLayout(v,quiet){LAYOUT=LAYOUTS.includes(v)?v:'force';
   const b=document.getElementById('layout');
   b.textContent='Layout: '+LNAME[LAYOUT];b.classList.toggle('on',LAYOUT!=='force');
-  renderLegend();   // the legend's place follows the layout (strip for strata, the 1.16 rule otherwise)
+  // #280 v1.19: a LAYOUT switch is the other moment the place is recomputed (a stack of bands or a ring
+  // of shells is landscape or square, so the legend wants the bottom) — and only if the user has not
+  // already put it somewhere. This call at load is what gives the page its opening place.
+  autoPlace();renderLegend();
   for(const n of NODES){[n.tx,n.ty,n.tz]=base(n);n.x=n.tx;n.y=n.ty;n.z=n.tz}
   if(focus)applyFocus();else fit();
   if(!quiet)animate()}
@@ -719,7 +955,7 @@ document.getElementById('layout').onclick=()=>setLayout(LAYOUTS[(LAYOUTS.indexOf
 const q=document.getElementById('q'),hits=document.getElementById('hits');let sel=0,cur=[];
 q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits.classList.remove('on');return}
   cur=NODES.filter(n=>alive(n)&&(n.label.toLowerCase().includes(s)||n.id.toLowerCase().includes(s))).sort((a,b)=>(b.type==='component')-(a.type==='component')||b.deg-a.deg).slice(0,40);sel=0;
-  hits.innerHTML=cur.map((n,i)=>`<div class="hit ${i===0?'sel':''}" data-i="${i}"><small>${n.type}</small><span>${esc(n.label)}${famOK(n)&&typeOn[n.type]?'':' <small>· hidden layer, will switch on</small>'}</span><small>${adj.get(n.id).length}</small></div>`).join('')||`<div class="hit"><small></small><span>nothing</span></div>`;
+  hits.innerHTML=cur.map((n,i)=>`<div class="hit ${i===0?'sel':''}" data-i="${i}"><small>${n.type}</small><span>${esc(n.label)}${famOK(n)&&typeOn[n.type]?'':' <small>· hidden layer, will switch on</small>'}</span><small>${adj.get(n.id).length}</small><button class="insp" type="button" data-insp="${esc(n.id)}" title="Inspect the record — the stored fields, the relations and the file">i</button></div>`).join('')||`<div class="hit"><small></small><span>nothing</span></div>`;
   hits.classList.add('on');hits.querySelectorAll('.hit[data-i]').forEach(h=>h.onclick=()=>choose(+h.dataset.i))});
 q.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){sel=Math.min(cur.length-1,sel+1)}else if(e.key==='ArrowUp'){sel=Math.max(0,sel-1)}else if(e.key==='Enter'){choose(sel);return}else return;hits.querySelectorAll('.hit').forEach((h,i)=>h.classList.toggle('sel',i===sel))});
 function flyTo(n,cb){if(three){const c0=ctr.slice(),c1=base(n),t0=performance.now(),D=700;(function step(){const u=Math.min(1,(performance.now()-t0)/D),s=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;ctr=[0,1,2].map(i=>c0[i]+(c1[i]-c0[i])*s);if(u<1)requestAnimationFrame(step);else cb()})();animate();return}const k1=Math.max(view.k,1.1),x0=view.x,y0=view.y,k0=view.k,x1=-n.x,y1=-n.y,t0=performance.now(),D=650;
