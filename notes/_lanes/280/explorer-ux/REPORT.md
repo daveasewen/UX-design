@@ -250,4 +250,9 @@ under `governs`, and the File section naming the path and saying it cannot read 
 
 ## 9. Shipped
 
-The sha is appended below.
+* `2a406f1` — explorer **1.19**: the sticky legend with its `⇥ side / ⇣ bottom` toggle, INSPECT and its
+  modal, the `src` + `verbs` build-time blocks, the regenerated page, this report, its `_subreports`
+  copy, `shots/` (9 PNG + `shots.json` + `drive-file.json` + `drive-served.json` + `cells.json`), the
+  driver and the shot script, and the store row **W-280ex**. `_CHAIN.md` regenerated (the store row
+  tripped the chain gate). `_validate_kg.py` rc 0; `_validate_lane_ownership.py` "LANE OWNERSHIP: OK".
+  Nothing pushed.
