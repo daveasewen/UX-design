@@ -8,5 +8,13 @@
 
 - On the regenerated masters, the seam's STANDING block and the verifier's 16/16: *"excellent work!"* — ⚠ ENTHUSIASM, NOT A RULING (`s271-D4`). The masters' acceptance by eye and the `_standing.md` wording are still his words to give. The commit lane was cut on the verifier's pass, not on this line.
 
-## Still unanswered from #284's opener
-- Which connectors Apollo needs (the boot experiment's one variable).
+- **"1. go" — the showroom re-sync (108 pages stale from the `:is(`→`:where(` canon change) is cut as its own commit lane.**
+- **"2. accept" — THE REGENERATED MASTERS ARE ACCEPTED BY EYE.** This replaces the #284 acceptance, which Dave reopened himself with the B crop. `W-285lm`'s eye-half is closed; registration in `_logo_nodes.json` (the `gen_kg_icons.py` fence) is still owed and still his word on HOW. The `_standing.md` wording is NOT yet ruled — "accept" was answered to the masters question only.
+
+- *"what about the context management part?"* — the conductor's answer: the tail re-quote is done; the 80K boot is system + tools + connectors and moves only with connectors; auto-compaction fires near 1M and is not a lever. He showed the setup (connectors: Browser, Claude Docs, Claude in Chrome, GitHub; skills: dave-voice, dream-pass, swiss-design-system, gtb-brand off, docs, deep-research, import-memory; computer use OFF): *"this is how the setup stand now"* · *"I havnt touched anything and computer use is off"*.
+- *"but deep research might be useful no? is it big"* — kept; a skill costs its description only (~80 tokens).
+- **THE CONNECTOR ANSWER, BY ACT: he set the built-in Browser's 17 tools to BLOCKED in Tool permissions** (screenshot). The `mcp__Claude_Browser__*` server dropped out of the conductor's tool set in the same session. ⇒ **#286's opener measures boot COLD with this ONE variable changed against today's 80,863.** Skills untouched by design (second run, if the first moves).
+
+## Still his
+- The wording of the eight lines in `knowledge/_standing.md` (DRAFT).
+- HOW the accepted masters get registered in `_logo_nodes.json` (the `gen_kg_icons.py` fence).

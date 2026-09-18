@@ -5146,6 +5146,39 @@
     {
       "links": [
         "notes/_subreports/2026-09-18-285-LM2-logo-masters-regen.md",
+        "notes/_subreports/2026-09-18-285-SC-seam-standing.md",
+        "knowledge/_RUNBOOK-git-commit.md"
+      ],
+      "home": "notes/_subreports/2026-09-18-285-C-commit.md",
+      "state": "open",
+      "owner": "dave",
+      "opened": 285,
+      "project": "apollo",
+      "id": "W-285c",
+      "title": "#285 C filed report - the commit lane that landed LM2 + SC (b99d092c)",
+      "closes_when": "Dave has read or explicitly parked the lane's ruling-shaped questions - chiefly the store id pattern that REFUSED W-285lm2 (no digit after the trailing letters, so the LM2 row is W-285lm) and the declared showroom gap this lane measured, verified and then reverted rather than landing",
+      "why": "Lane C landed b99d092c in three runs, each refusal the script working: the showroom sync gate, the doc-row gate and a chain-stale check. It met a stranded .git/index.lock at lane start with the documented stale 0-byte signature and did NOT rm it - the script's own clear_locks() mv-aside cleared it, which is the sanctioned path. It also measured the 108-page showroom re-sync, verified it, and then REVERTED it as a DECLARED gap rather than widening its own scope; Dave's '1. go' turned that measurement into lane C2",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-09-18-285-C-commit.md",
+        "notes/_subreports/2026-09-18-285-C2-showroom.md"
+      ],
+      "home": "notes/_subreports/2026-09-18-285-P-push.md",
+      "state": "open",
+      "owner": "dave",
+      "opened": 285,
+      "project": "apollo",
+      "id": "W-285p",
+      "title": "#285 P filed report - the push lane that refused on a dirty tree, and its CI read-back",
+      "closes_when": "Dave has read or explicitly parked the lane's finding - that the ratified push path refused on a tree made dirty by OTHER lanes' outputs, so a push lane cut before the session's own reports are committed cannot succeed, and whether the push should therefore be cut only after the wrap's commit",
+      "why": "The lane ran the only sanctioned push path and got '✗ push refused: tree not clean - commit first (s133-D2; rehearsal log excluded per s137-D1)', naming three dirty paths that belonged to other lanes. It was forbidden to commit, so it STOPPED and said so rather than widening its scope to clear its own blocker - the lane contract working. It also read CI back unauthed and quoted three runs literally, claiming no colour for a commit that was not on the remote",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-09-18-285-LM2-logo-masters-regen.md",
         "notes/_subreports/2026-09-18-285-SC-seam-standing.md"
       ],
       "home": "notes/_subreports/2026-09-18-285-V-verifier.md",
@@ -10441,6 +10474,22 @@
     },
     {
       "links": [
+        "notes/_subreports/2026-09-18-285-C-commit.md",
+        "notes/_lanes/285/DAVE-RULINGS-2026-09-18.md"
+      ],
+      "home": "notes/_subreports/2026-09-18-285-C2-showroom.md",
+      "state": "open",
+      "owner": "dave",
+      "opened": 285,
+      "project": "apollo",
+      "id": "W-285cs",
+      "title": "#285 C2 filed report - the showroom re-sync commit lane (ff354475)",
+      "closes_when": "Dave has read or explicitly parked the lane's findings - chiefly that showroom/ holds 138 top-level .html because 137 are generator-owned and index.html is owned by gen_library_214.py, so the long-carried '138 v 108' is an explanation rather than a gap, and that the W-285lm row was amended with his acceptance through the store's own writer without inventing a close condition",
+      "why": "Cut on Dave's '1. go'. Two runs, cap four. It ran exactly one generator - the one the gate itself names - and verified the 108-page diff BY DECODING every base64 payload rather than sampling: non-payload lines byte-identical in all 108, and in all 108 the single changed line is the old line with :is( replaced by :where( and nothing else. It recorded Dave's '2. accept' into the W-285lm row's body, leaving closes_when untouched, so an acceptance did not become an invented closure",
+      "condition": "stated"
+    },
+    {
+      "links": [
         "knowledge/assets/logos/_gen_masters.py",
         "knowledge/assets/logos/masters/",
         "notes/_lanes/285/logo-masters-2/BRIEF.md",
@@ -10472,6 +10521,31 @@
       "opened": 285,
       "project": "apollo",
       "closes_when": "Dave has approved knowledge/_standing.md out of DRAFT (or named what to change), so the STANDING block the seam re-quotes is ratified rather than provisional",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_lanes/285/W/WRAP-REPORT.md",
+        "notes/_lanes/285/WRAP-MEMORY-HOOK.md",
+        "notes/_lanes/285/DAVE-RULINGS-2026-09-18.md",
+        "_DECISION-HISTORY/2026-09-18-285-the-b-is-straightened-and-the-seam-re-quotes.md",
+        "_HANDOFF-136-the-b-is-straightened-and-the-connector-answer-comes-by-act.md",
+        "notes/_subreports/2026-09-18-285-LM2-logo-masters-regen.md",
+        "notes/_subreports/2026-09-18-285-SC-seam-standing.md",
+        "notes/_subreports/2026-09-18-285-V-verifier.md",
+        "notes/_subreports/2026-09-18-285-C-commit.md",
+        "notes/_subreports/2026-09-18-285-C2-showroom.md",
+        "notes/_subreports/2026-09-18-285-P-push.md"
+      ],
+      "home": "notes/_subreports/2026-09-18-285-W-wrap.md",
+      "id": "W-285wr",
+      "title": "#285 W filed report - the delegated capture ritual for #285 -> #286",
+      "state": "open",
+      "owner": "dave",
+      "opened": 285,
+      "project": "apollo",
+      "closes_when": "Dave has ruled or explicitly parked the report's ruling-shaped questions - chiefly the wording of the eight DRAFT lines in knowledge/_standing.md, HOW the accepted masters get registered in _logo_nodes.json behind the gen_kg_icons.py fence, the _gauge_tokens.py 256,000 wording fix carried from #284, the delegation rule his own sentence states, the boot ceiling at its tenth reading, whether the skills get a second run after #286's cold boot measurement, whether the ritual owes a RESUME contract after a mid-ritual sub death, what to do about _seam.py's SCRATCH arm deleting a lane's own /tmp files, and what a session should do at the hard wall",
+      "why": "The #285 wrap inscribed nothing and verified that by json.load over the rulings list (620 unchanged at the open and at the close); it STRUCK two carries with receipts - the #284 masters acceptance, which Dave reopened himself with a 4x crop of the wordmark, and the showroom's 108 stale pages, re-synced at ff354475 and verified by decoding all 108 payloads rather than sampling; it recorded Dave's re-acceptance of the regenerated masters in his own words as an ENACTMENT of s282-D3 rather than a closure of row W-285lm, whose registration half is untouched behind the generator fence; it named the connector question as ANSWERED BY AN ACT rather than a sentence, which makes #286's first move a measurement; it measured the delegation rule OBEYED for a whole session - seven Agent lanes at spawnDepth 1, none in seat, 3,382 cl100k of replies against about 738,851 real of sub FILL - without treating that as a closure of a ruling-shaped carry; it closed the one gate fail that was its own (ds-021 on knowledge/_seam.py, registered estimate-only as a declaration, not a ruling) while carrying the six inherited ones in the #243 declared not-a-wrap form for the eleventh wrap; and it named a wrap sub's mid-ritual death on a network error as luck rather than design, because nothing guarantees all-or-nothing across the ritual",
       "condition": "stated"
     },
     {

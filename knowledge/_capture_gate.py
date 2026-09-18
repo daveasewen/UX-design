@@ -554,6 +554,21 @@ MEASURERS = {
         "site to declare what it can name, and leaving it unregistered is the 27-sessions-of-"
         "silence failure this registry exists to stop. Whether the door is WIRED at all is "
         "Dave's, and is untouched by this entry."),
+    "_seam.py": ("estimate-only",
+        "BORN #283 (the lane-seam check, `s283-D1`); the COUNTING SITE was added at #285 by lane "
+        "SC with the fourth STANDING block (Dave: \"yes to the seam re-quoting the standing "
+        "constraints\"). `standing_tokens()` encodes the printed constraint block with tiktoken "
+        "cl100k ONLY, to size the tail it prints — it never calls `_gauge_tokens.count()`, has no "
+        "API path, and the figure is never a FILL claim or a budget figure; the seam's FILL line "
+        "is `_checkin.py`'s REAL reading, imported, not re-derived here. So estimate-only is the "
+        "honest label rather than a tier it would have to borrow, and the unit is NAMED on the "
+        "line it prints on (`STANDING <n> lines · <tokens> cl100k`). ⚠ Unavailable tiktoken "
+        "prints `?`, never a guessed number, and the seam's selftest FAILS on `?` rather than "
+        "passing a blind arm. REGISTERED AT THE #285 WRAP AS A DECLARATION, NOT A RULING — the "
+        "`_compose_slice.py` precedent (#270 wrap) exactly: ds-021 (C) asks a counting site to "
+        "declare what it can name, this site was born unregistered in this session's own commit "
+        "`b99d092c`, and it is THIS SEAT'S fail to close rather than an inherited one. Whether "
+        "`_standing.md` itself is ever inscribed is Dave's and is untouched by this entry."),
     "_context_gauge.py": ("estimate-only",
         "REFUSES without tiktoken unless --estimate labels the output (#74). Honest about "
         "estimate-vs-nothing; still blind to cl100k-vs-real."),
