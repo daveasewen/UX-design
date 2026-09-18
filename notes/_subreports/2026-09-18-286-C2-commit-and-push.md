@@ -81,7 +81,59 @@ untracked would have reproduced exactly the failure it was sent to clear.
 ⬛ **The `.t3-rendered` leftover is committed as a session record**, per the brief. It is lane C's
 T3-rendered message file and the single path that refused lane P's push.
 
-<!-- C2-RUNS -->
+### The commit — runs taken, refusals quoted
+
+**One run. Cap was four. NO refusal was met** — nothing to quote. This is the first commit this
+session to go through on its first invocation; lane C needed two (an `SESSION_N` s130-D3 refusal
+first). The difference is that this lane read lane C's report before calling, so `SESSION_N=286`
+was on the first call.
+
+Gate verdicts, in order, from the `--quiet` stream:
+
+```
+— msgfile line 1 carries no T3 prefix (#208 reuse gate passed)
+— chain fresh (_gen_chain.py --check passed)
+— doc rows present (_gate_doc_rows.py passed)
+— showroom in sync (gen_showroom --check passed, s191-D1)
+— polarity gate green (_validate_polarities.py --check passed, s238-D7)
+— mention map fresh (_build_graph_mention_map.py --check passed)
+— session witness agrees (#286)
+⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1).
+— spine-writer selftest green (mid-session commit, DECLARED not-a-wrap)
+— T3 headline: after #286 2026-09-18 — #286 lane R2: the 40 masters registered as sizes …
+— AUTO-STAGED (#261 M2): notes/_REHEARSAL-LOG.jsonl
+— doc rows present for this commit's staged adds (post-staging)
+— committed: 7ed49d37 …
+— subject asserted identical to the headline T3 generated (#171)
+— subject carries exactly ONE T3 prefix (#208 doubled-subject assert)
+✓ done — locks clear, safe for Dave to push via GitHub Desktop
+— --quiet: 375 transcript lines · exit 0
+```
+
+**sha `7ed49d37b749929e5a7dbb5c7704b6bc698aefb9`.** `git status --short` after the commit:
+**empty** — zero lines, the condition lane P's push gate requires.
+
+⚠ **The subject was TRUNCATED by the script, not by this lane.** `_git_commit.sh:712` caps the
+headline at 120 characters and appends `…`. The conductor's subject plus the mandatory
+`after #286 2026-09-18 — ` prefix is ~175 characters, so the stored subject ends at
+`…— Dave's 'size-on-the-ex…`. The `merge-on-write preserves hand-authored state` clause is
+therefore **not in the git subject**; it is in the body's first paragraphs. Named here because a
+reader diffing the conductor's brief against `git log --oneline` will otherwise read the
+truncation as a lane substituting its own words.
+
+### The two gate reds seen and NOT paid to unblock
+
+Both were RED on the committing run, both non-blocking on a declared not-a-wrap (#74-D1), and
+neither was touched — they are lane C's carried pair, unchanged:
+
+- **`boot-drift CEILING BREACH`** — `BOOT_CEILING_TK` = 70,000, 7 post-diet readings above it
+  (#277–#283). The gate quotes its own rule: shrink-only under `s240-D2`/`s241-D1`, the remedy is
+  to cut the boot, and raising the literal is Dave's word alone.
+- **`boot double-count`** ×5 (#243 five statements; #264/#272/#273/#274 two each), the `s241-D2`
+  ONCE rule.
+
+⚠ **Both will BLOCK at the wrap's `--wrap` run.**
+
 
 ## 4. Carried, not settled
 
@@ -108,4 +160,68 @@ T3-rendered message file and the single path that refused lane P's push.
 - Store row `W-286cs` written through `knowledge/_state.py`'s module API, **before** the commit so
   the doc-row gate passes on the report.
 
-<!-- C2-PUSH -->
+---
+
+## 5. The push — VERDICT
+
+Called as `bash knowledge/_git_commit.sh --push`, the only sanctioned path
+(`git-push-method` / `s203-D1` / `s133-D2`). Exit 0. The verdict line, verbatim:
+
+> `✅ pushed and VERIFIED: remote master == local 7ed49d37b749929e5a7dbb5c7704b6bc698aefb9`
+
+```
+To https://github.com/daveasewen/UX-design.git
+   09ddf155..7ed49d37  master -> master
+```
+
+Per #227 that literal line is the only proof of a push, and it is present. The clean-tree gate was
+reached and PASSED — the first time this session — because the commit above left
+`git status --short` empty, including this lane's own working files and the `.t3-rendered`
+leftover that was the sole path refusing lane P's attempt.
+
+⬛ **Three commits went up, not one.** The range is `09ddf155..7ed49d37`: lane C's `1caaa0b1`, lane
+C's report commit `db0830f7`, and this lane's `7ed49d37`. The two lane-C commits had been local
+only since lane P's refusal.
+
+## 6. CI read-back
+
+`curl -s "https://api.github.com/repos/daveasewen/UX-design/actions/runs?per_page=3"`, unauthed,
+read at 19:27:37Z, then re-read at 19:29:10Z, 19:30:49Z and 19:33:00Z.
+
+| id | name | head_sha(8) | status | conclusion |
+|---|---|---|---|---|
+| 35386047978 | gates | `7ed49d37` | **in_progress** | — |
+| 35365010402 | gates | `09ddf155` | completed | failure |
+| 35363982989 | gates | `d2ae9c73` | completed | failure |
+
+A run for this lane's sha **exists** — `35386047978`, created 19:27:35Z, two seconds after the
+push, `queued` → `in_progress`. ⬛ **The RUN has not completed, so NO colour is claimed for it.**
+
+### The `gates` job, however, HAS completed — and its failure is INHERITED
+
+`/actions/runs/35386047978/jobs` at 19:33:00Z:
+
+| job | status | conclusion | failed steps |
+|---|---|---|---|
+| `gates` | completed | **failure** | `Survey the COMMITTED tree — every check/selftest before any regeneration` · `Knowledge build — all derived views + blocking gates` |
+| `release` | completed | success | — |
+| `render` | in_progress | — | still on step 6, `Full state-contrast sweep — BLOCKING (s218-D4)` |
+
+⬛ **Same two steps, same job, same order as `09ddf155` and `d2ae9c73`** (lane P's table). **These
+are the two INHERITED steps, not new ones.** Lane R2's registration did not introduce a CI failure
+and did not clear one. `release` passes here as it did there.
+
+⚠ **`render` is unresolved.** It passed on `09ddf155` and `d2ae9c73`; on this run it was still
+executing at the last read, so whether it passes is unknown and is NOT claimed either way. The run
+conclusion will be `failure` regardless, because `gates` has already failed — but the question of
+whether `render` is a *third* failed job is open. **The next reader should re-poll
+`35386047978`.**
+
+## 7. Report state
+
+⚠ **This report is DIRTY in the working tree.** Sections 5, 6 and 7 — the push verdict, the CI
+table and this note — were written AFTER the commit, by instruction. The committed copy of this
+file stops at the compliance block and carries two HTML-comment placeholders. **The wrap must
+commit this file again** to land the push verdict and the CI read. Nothing else in the tree is
+dirty.
+
