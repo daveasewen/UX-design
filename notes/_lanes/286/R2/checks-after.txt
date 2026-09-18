@@ -1,0 +1,31 @@
+### python3 knowledge/gen_showroom.py --check
+exit=0
+gen_showroom --check OK — 137 page(s) + index in sync (index owned by knowledge/_render/gen_library_214.py).
+### python3 knowledge/_validate_polarities.py --check
+exit=0
+  ✓ _generated/polarity-status.json fresh (generated_at 2026-09-02T15:18:55Z, content byte-identical)
+  ✓ _generated/polarity-edges.json fresh (generated_at 2026-09-02T15:18:55Z, content byte-identical)
+  ✓ _generated/defaults-declaration.txt fresh (generated_at 2026-09-02T15:18:55Z, content byte-identical)
+✓ polarity gate GREEN — five refusals asked and none fired; generated files content-fresh
+### python3 knowledge/_build_graph_mention_map.py --check
+exit=0
+graph mention map --check: current (102 of 102 node(s) mentioned)
+### python3 knowledge/_gen_chain.py --check
+exit=1
+  ✗ _CHAIN.md is STALE — it does not match GOOD-MORNING.md / _LIVE-STATE.md as they now stand, so a cold session would read a PREVIOUS session's record as if it were current. Run `python3 knowledge/_gen_chain.py` and stage the result.
+### python3 knowledge/_gate_doc_rows.py
+exit=0
+doc-row gate: population 478 (added >= 2026-08-15, PICKED) · of which staged-in-THIS-commit 0 (#207 postscript: the single-commit blindspot) · unrowed 0
+✅ PASS — every in-scope document has a store row.
+### python3 knowledge/_validate_kg.py
+exit=0
+ref:null + $note (declared, awaiting Dave's-eye migration): 90
+resolutions consumed (s135-D4, KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json): 82 ruled verdicts asserted present (MERGE 5 / PROMOTE 52 / ATTACH 25)
+
+_validate_kg.py: OK — every ref parses+resolves, every null carries a note, every meta has provenance, edges match schema, gen_kg_edges.py is idempotent-clean, and the s135-D4 resolutions input was consumed.
+### python3 knowledge/_compose_slice.py --selftest
+exit=1
+  ok   79. VERBS: an unknown obeys target kind / a split with no rule is `unread` with a note, never a guess
+
+79 bites, 6 failed
+ASK token counts: {"what governs component:button?": 680, "which components does rule:ctkb-003 bind?": 222, "what principle underlies rule:ctkb-002, and its grade?": 261, "which rules conflict for component:button?": 319, "what did Dave rule about component:table, and when?": 245, "what evidence supports ruling:s277-D10?": 337, "which components answer intent:comparison?": 271, "what must component:toast not sit next to?": 281, "what tokens does component:button consume; what breaks if I change one?": 755, "which pattern / context is component:button used in?": 371, "what is the WCAG / accessible-name obligation for component:button?": 633, "what icon / logo / photo may I use in component:app-shell-doormat?": 678}

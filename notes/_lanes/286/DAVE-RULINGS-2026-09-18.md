@@ -33,3 +33,22 @@ Lane S acted on that reading: `knowledge/_standing.md` is taken out of DRAFT and
 
 - Nothing on the standing wording, unless he reopens it — but the reading above is the conductor's, so it stays reversible by one word from him.
 - The shape of the master registration in `_logo_nodes.json`, if he wants a say in it beyond releasing the fence.
+
+## His second sentence, later the same session — the SHAPE of a master registration
+
+The question put to him (lane R left it open as ruling-shaped, and this file's **Still his**
+section named it): **whether a master is its own node under its lockup, or a size field on the
+lockup's existing node.**
+
+His answer, verbatim:
+
+> *"okay size-on-the-existing-node"*
+
+⬛ **A master is a SIZE FIELD on its lockup's existing node — NOT its own node.** The node count
+does not move. Lane R's shapes 2 (40 new `logo:<stem>-<h>` nodes) and 3 (a new `logoMaster:` kind)
+are both refused by this sentence; shape 1 is his word.
+
+⚠ **What is still NOT his:** the field's KEY NAME. He named the location, not the spelling. Lane R2
+reads the file's own vocabulary and uses `sizes` (plural, because five masters hang on each node —
+the generator's other collection fields are plural: `nodes`, `edges`, `unresolved`, `fills`), and
+records the reasoning in its report rather than claiming it as his word.

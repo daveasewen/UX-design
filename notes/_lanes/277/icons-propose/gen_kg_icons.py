@@ -45,6 +45,28 @@ copied out of that document as a number.
   answers instead of wiping them; a base he has not settled stays a declared null
   and carries his words. Nothing about a base he never named is ever drawn.
 
+THE PER-SIZE MASTERS ARE FIELDS, NOT NODES (#286 lane R2). `assets/logos/masters/`
+holds 40 SVGs — 8 lockups x heights 24/28/32/36/40, written by
+`knowledge/assets/logos/_gen_masters.py` and accepted by Dave's eye at #285. Until
+#286 this file could not see them: `logo_stems()` globs `assets/logos/*.svg`
+NON-recursively, so a `--land` read 8 of 48 SVGs and registered 0 masters (#286
+lane R measured it). Dave, 2026-09-18, on whether a master is its own node under its
+lockup or a size field on the lockup's existing node: **"okay size-on-the-existing-
+node"**. So each master enters as one entry of a `sizes` map ON THE LOCKUP'S EXISTING
+`logo:` NODE — raw height -> {file, width, height, sha256}, every figure MEASURED off
+the file. NO id is minted and the node count is identical either side of a land. A
+field on an existing kind is neither a new node kind nor a new edge type, so the #75
+door below is NOT opened and RATIFIES is unchanged.
+
+`--land` MERGES, IT NO LONGER CLOBBERS (#286 lane R2). It reads the landed file first
+and keeps what a human put there: every edge marked `authored: "hand"`, the
+`edge_types` line for a type such an edge draws, and every top-level key this script
+does not generate (`$s282-D5` and its kin). The generated null it would otherwise
+re-declare beside a hand edge is suppressed, and the file's own `generatorVerdict` is
+extended with a MEASURED sentence naming what this run preserved. Before this, a land
+destroyed the 12 `governedBy` edges s282-D5 resolved and the file told its reader to
+re-run `notes/_lanes/282/logo-land/bind.py` by hand afterwards; that is no longer so.
+
 ⛔ NO PROSE JOIN IS DRAWN, and the number says why. Testing every manifest slug
 as a whole word against every component meta's text fires on 138 of 138 metas
 and yields 1,736 (meta, slug) pairs, because `accessibility`, `no`, `time`,
@@ -144,6 +166,7 @@ except ImportError:  # a scratch corpus with no _helpgate.py is legal (the mutat
     pass
 
 import glob
+import hashlib
 import json
 import re
 import sys
@@ -206,6 +229,37 @@ RULING_ID_RX = re.compile(r"^s\d{2,4}-D\d+$")
 ACTIVE_RX = re.compile(r"-active(-\d+)?$")
 # The three logo filename fields. No logo manifest exists; the filename IS the manifest.
 LOGO_RX = re.compile(r"^(?P<lockup>.+)-(?P<theme>light|dark)-(?P<colourMode>colour|mono)$")
+
+# ------------------------------------------------------------------ the per-size MASTERS (#286 R2)
+#
+# `knowledge/assets/logos/_gen_masters.py` writes `assets/logos/masters/<stem>-<h>.svg` for
+# h in 24 28 32 36 40 — 8 lockups x 5 raw pixel heights = 40 files, accepted by Dave's eye at #285.
+# They were INVISIBLE here until now: `logo_stems()` globs `assets/logos/*.svg` NON-recursively
+# (#286 lane R's finding), so a --land registered 8 of 48 svgs and 0 masters.
+#
+# ⬛ THEY ARE NOT NODES. Dave, 2026-09-18, asked whether a master is its OWN NODE under its lockup
+# or a SIZE FIELD on the lockup's EXISTING node, answered verbatim:
+#     "okay size-on-the-existing-node"
+# (receipt: notes/_lanes/286/DAVE-RULINGS-2026-09-18.md). So a master enters as ONE ENTRY of a
+# `sizes` map on the lockup's existing `logo:` node. NO id is minted, no node is added or removed,
+# and no edge type is invented — the node count before a --land equals the node count after.
+#
+# WHY `sizes` AND NOT `size`. The file's own vocabulary decides it, not a preference: a node's
+# singular fields each carry ONE parsed value (`lockup`, `theme`, `colourMode`, `file`), and the
+# generator's collections are plural (`nodes`, `edges`, `unresolved`, `fills`, `groups`). FIVE
+# masters hang on one node, so the collection name is plural. Dave named the LOCATION, not the
+# spelling; the spelling is read off the file and is declared as this lane's, not his.
+#
+# WHY THIS DOES NOT TOUCH THE #75 DOOR. The docstring's own fence is "A NEW NODE KIND AND A NEW
+# EDGE TYPE ARE CLOSED-VOCABULARY CHANGES (#75)". A FIELD on an existing node of an existing kind
+# is neither. RATIFIES is UNCHANGED and no new ratifying id is asked for or invented.
+MASTERS_DIR = "masters"
+MASTER_RX = re.compile(r"^(?P<stem>.+)-(?P<h>\d+)$")
+# The master's OWN declared geometry. `_gen_masters.py` writes raw pixel width=/height= and NO
+# viewBox on purpose; both are read off the file and the name's height is CHECKED against the
+# file's, never trusted (a master whose name and body disagree is refused and declared).
+SVG_ROOT_RX = re.compile(r"<svg\b([^>]*?)/?>", re.S)
+SVG_ATTR_RX = re.compile(r'([\w-]+)\s*=\s*"([^"]*)"')
 # `_validate_icons.py`'s OWN two rules, re-declared here because they are the join.
 # Never a second geometry index: the same regex, the same normalisation, read from
 # the gate at run time and asserted identical (bite 4).
@@ -275,7 +329,77 @@ def icons_on_disk(corpus=None):
 
 
 def logo_stems(corpus=None):
+    """The LOCKUPS only — `assets/logos/*.svg`, deliberately NOT recursive. The per-size
+    masters live one directory down and are read by `logo_masters()` as FIELDS on these
+    nodes, never as nodes of their own (Dave: "okay size-on-the-existing-node"). Making
+    this glob recursive would mint 40 `logo:<stem>-<h>` ids, which is the shape he refused."""
     return sorted(Path(p).stem for p in glob.glob(str(_k(corpus) / "assets" / "logos" / "*.svg")))
+
+
+def svg_box(raw):
+    """(width, height) as the SVG's own root attributes declare them, or (None, None).
+    Numbers are returned as ints when they are integral — `_gen_masters.py` writes raw
+    pixels — and floats otherwise. Nothing is computed, scaled or assumed."""
+    m = SVG_ROOT_RX.search(raw)
+    if not m:
+        return None, None
+    a = dict(SVG_ATTR_RX.findall(m.group(1)))
+    out = []
+    for k in ("width", "height"):
+        v = (a.get(k) or "").strip()
+        try:
+            f = float(v)
+        except ValueError:
+            out.append(None)
+            continue
+        out.append(int(f) if f == int(f) else f)
+    return out[0], out[1]
+
+
+def logo_masters(corpus=None):
+    """Reads `assets/logos/masters/*.svg` and returns (sizes, refused).
+
+    sizes   {stem: {"<h>": {"file", "width", "height", "sha256"}}} — every value MEASURED
+            off the file on disk: the path relative to knowledge/, the SVG's own declared
+            width and height, and the sha256 of its bytes.
+    refused [unresolved rows] — a master this function will not attach, with the reason.
+            A refusal is DECLARED, never a silent drop: the name that does not parse, the
+            `.svg` whose root carries no width/height, and the one whose declared height
+            disagrees with the height in its own filename (the name is a claim about the
+            file and the file is the authority; a disagreement is a question, not a value).
+            Every refusal is LEDGER-ONLY (`source: null`, type `logo:`) — the class the
+            malformed lockup stem already uses. It cannot be a `t: null` EDGE, because a
+            size is a FIELD and a field has no arrow; and a source-bearing null that is not
+            also an edge would break the partition bite 19 asserts.
+    """
+    d = _k(corpus) / "assets" / "logos" / MASTERS_DIR
+    sizes, refused = {}, []
+    for p in sorted(glob.glob(str(d / "*.svg"))):
+        p = Path(p)
+        rel = f"assets/logos/{MASTERS_DIR}/{p.name}"
+        m = MASTER_RX.match(p.stem)
+        if not m:
+            refused.append({"source": None, "type": "logo:", "note": rel, "why":
+                            "a file in assets/logos/masters/ is not named <stem>-<height>.svg, "
+                            "so it names no lockup and no size; no field is invented"})
+            continue
+        raw = p.read_bytes()
+        w, h = svg_box(raw.decode("utf-8", "replace"))
+        if w is None or h is None:
+            refused.append({"source": None, "type": "logo:", "note": rel,
+                            "why": "the master's <svg> root declares no numeric width/height, so "
+                                   "its size cannot be MEASURED; no size is computed or guessed"})
+            continue
+        if h != int(m.group("h")):
+            refused.append({"source": None, "type": "logo:", "note": rel,
+                            "why": f"the filename claims height {m.group('h')} and the file "
+                                   f"declares height {h} — the name and the bytes disagree and "
+                                   "that is a question, not a value; no field is attached"})
+            continue
+        sizes.setdefault(m.group("stem"), {})[m.group("h")] = {
+            "file": rel, "width": w, "height": h,
+            "sha256": hashlib.sha256(raw).hexdigest()}
+    return sizes, refused
 
 
 def rulings(corpus=None):
@@ -711,6 +835,24 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
         logo_fields[stem] = f
         add(LOGO + stem, stem, file=f"assets/logos/{stem}.svg", **f)
 
+    # ---- the per-size MASTERS, as a FIELD on the lockup's existing node ----
+    # Dave, 2026-09-18: "okay size-on-the-existing-node". NO node is minted here — the map is
+    # written onto a node `add()` already made — so len(nodes) is the same either side of this
+    # block, and a --land cannot change the node count by reading a master.
+    masters, master_refused = ({}, []) if no_logos else logo_masters(corpus)
+    masters_attached = 0
+    for stem in sorted(masters):
+        if stem not in logo_fields:
+            unresolved.append({"source": None, "type": "logo:", "note": stem, "why":
+                               "masters/ carries sizes for a stem that is NOT a parsed logo node "
+                               "(no lockup .svg of that name, or the name carries no three "
+                               "fields); a master never mints the node it hangs on"})
+            continue
+        nodes[LOGO + stem]["sizes"] = {h: masters[stem][h]
+                                       for h in sorted(masters[stem], key=int)}
+        masters_attached += len(masters[stem])
+    unresolved.extend(master_refused)
+
     logo_comp = {}
     if not no_logos:
         for sn, stem in sorted(scan_logo_refs(corpus)):
@@ -922,6 +1064,14 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
         "usesIcon_pairs": len(comp_icon),
         "icons_unused": len(slugs) - len({i for _c, i in comp_icon}),
         "logos_read": len(logo_fields),
+        # the masters, as FIELDS (Dave 2026-09-18, "okay size-on-the-existing-node"). A master
+        # is counted here and NOWHERE in node_counts — that is the whole point of the shape.
+        "masters_on_disk": sum(len(v) for v in masters.values()) + len(master_refused),
+        "masters_attached": masters_attached,
+        "masters_refused": master_refused,
+        "logos_with_sizes": sorted(s for s in logo_fields
+                                   if nodes.get(LOGO + s, {}).get("sizes")),
+        "master_size_steps": sorted({int(h) for v in masters.values() for h in v}),
         "logos_named_by_ruling": sorted(named),
         "logos_unbound": unbound,
         "usesLogo_components": len({c for c, _s in logo_comp}),
@@ -989,6 +1139,141 @@ def ruling_exists(rid, corpus=None):
     return any(r["id"] == rid for r in rulings(corpus))
 
 
+# ------------------------------------------------------------------ merge-on-write (#286 R2)
+#
+# ⛔ WHAT THIS FIXES. Until #286 `--land` was a CLOBBER: it built a payload and wrote it over the
+# landed file. Everything a human had put in that file since the last run was destroyed. Measured
+# by #286 lane R on the live tree before any write: a --land removed the 12 hand-authored
+# `governedBy` edges s282-D5 resolved, re-declared 6 of them as `t: null` stubs, and dropped the
+# `ratified` and `$s282-D5` top-level fields. The file's OWN `$description` carried the workaround
+# — "Re-apply notes/_lanes/282/logo-land/bind.py after any regeneration" — a hand-repair step
+# standing in for a generator that could not hold a ruling. That is now the generator's job.
+#
+# ⬛ HOW, AND WHY IT IS NOT A SPECIAL CASE. Nothing below names s282-D5, `governedBy`, a rule id or
+# any value this tree happens to carry today. The merge reads PROVENANCE MARKERS that were already
+# in the file's own vocabulary, and preserves whatever wears them:
+#   1. an edge marked `authored: "hand"` is KEPT, verbatim;
+#   2. a GENERATED edge is DROPPED when a kept hand edge already speaks for the same (source, type)
+#      — otherwise the run would re-declare, beside the drawn edge, the very null the hand edge
+#      resolved (that is the 6 stubs #286 lane R predicted);
+#   3. the `unresolved` ledger loses the rows those same (source, type) pairs would re-open — a
+#      resolved null is not an open null;
+#   4. an `edge_types` status line is kept from the landed file for any type a kept hand edge
+#      draws, because the generated line for such a type says "never drawn" and that is false;
+#   5. a TOP-LEVEL key the generator does not produce is carried over verbatim (this is what saves
+#      `$s282-D5`, and anything a later lane files beside it, with no code change here).
+# The generator still OWNS every field it generates: nodes, generated edges, and the payload's own
+# `$description`/`edge_types`/`unresolved` are OVERLAID. Preservation is additive, never a veto.
+VERDICT_KEY = "generatorVerdict"
+VERDICT_MARK = " || MERGE-ON-WRITE (#286 lane R2): "
+
+
+def merge_landed(prev, pay):
+    """Overlay `pay` (generated) onto `prev` (what is on disk). Returns (payload, receipt).
+
+    `prev` is the file as it stands; `pay` is this build. The result is `pay` plus everything
+    `prev` carries that wears a hand-authored marker or a key this generator never writes.
+    The receipt is MEASURED — every count in it is of something this call actually did.
+    """
+    if not isinstance(prev, dict):
+        return pay, {"merged": False, "why": "the landed file is not a JSON object"}
+    hand = [e for e in prev.get("edges") or [] if isinstance(e, dict)
+            and e.get("authored") == "hand"]
+    spoken = {(e.get("s"), e.get("type")) for e in hand}
+    gen_edges = pay.get("edges") or []
+    kept_gen = [e for e in gen_edges if (e.get("s"), e.get("type")) not in spoken]
+    dropped = len(gen_edges) - len(kept_gen)
+    pay["edges"] = kept_gen + hand
+    gen_un = pay.get("unresolved") or []
+    pay["unresolved"] = [u for u in gen_un if (u.get("source"), u.get("type")) not in spoken]
+    dropped_un = len(gen_un) - len(pay["unresolved"])
+    hand_types = sorted({e.get("type") for e in hand})
+    kept_status = [t for t in hand_types if (prev.get("edge_types") or {}).get(t)]
+    for t in kept_status:
+        pay.setdefault("edge_types", {})[t] = prev["edge_types"][t]
+    # ROW-LEVEL FIELDS (#286 lane R2, second finding). An edge is not the only thing a human
+    # writes into a landed file. `notes/_lanes/280/inscribe-active/_inscribe2.py` — bind.py's
+    # opposite number for the icon file — put a `flagged_as` sentence of Dave's on 14 rows of
+    # the `ruled` ledger, and that string appears NOWHERE in this generator, so a regenerate
+    # dropped all 14. The rule is the same one as above and is stated by SHAPE, not by name:
+    # in any top-level LIST OF RECORDS both files carry, a row the generator rebuilds keeps
+    # every FIELD the landed row has and this build does not produce. The generator still wins
+    # on every field it does produce, so its own prose stays live. An identity that is not
+    # unique on both sides is left alone and COUNTED, never merged on a guess.
+    fields_kept, ambiguous = {}, []
+    for k, gv in list(pay.items()):
+        pv = prev.get(k)
+        if not (isinstance(gv, list) and isinstance(pv, list) and gv and pv):
+            continue
+        if not all(isinstance(r, dict) and "source" in r for r in gv + pv):
+            continue
+        def _ident(rows):
+            out = {}
+            for r in rows:
+                out.setdefault((r.get("source"), r.get("type")), []).append(r)
+            return out
+        pi, gi = _ident(pv), _ident(gv)
+        for key, rows in gi.items():
+            was = pi.get(key) or []
+            if len(rows) != 1 or len(was) != 1:
+                if was:
+                    ambiguous.append({"field": k, "identity": list(key),
+                                      "landed_rows": len(was), "built_rows": len(rows)})
+                continue
+            extra = [f for f in was[0] if f not in rows[0]]
+            for f in extra:
+                rows[0][f] = was[0][f]
+            if extra:
+                fields_kept.setdefault(k, {})["/".join(str(x) for x in key)] = sorted(extra)
+    carried = [k for k in prev if k not in pay]
+    for k in carried:
+        pay[k] = prev[k]
+    return pay, {"merged": True, "hand_edges_kept": len(hand),
+                 "row_fields_kept": fields_kept,
+                 "row_fields_kept_count": sum(len(v) for row in fields_kept.values()
+                                              for v in row.values()),
+                 "row_identities_not_unique": ambiguous,
+                 "hand_edge_types": hand_types,
+                 "generated_edges_dropped_as_spoken_for": dropped,
+                 "unresolved_rows_dropped_as_resolved": dropped_un,
+                 "edge_type_status_kept": kept_status,
+                 "top_level_fields_carried": carried}
+
+
+def extend_verdict(pay, receipt):
+    """Extend the landed file's own `generatorVerdict` so the record says what this run did.
+
+    A verdict block is any top-level dict carrying a `generatorVerdict` STRING — the shape
+    notes/_lanes/282/logo-land/bind.py composed when it recorded that a --land "did not pick
+    the new rules up ... and drew 0 edges". That sentence stays: it is true of the run it
+    describes. This appends, after a marker, what THIS run did — and REPLACES any clause it
+    appended before, so a second --land does not grow the string. Every number is the merge's
+    own receipt, so the verdict cannot claim a preservation that did not happen.
+    """
+    if not receipt.get("merged"):
+        return []
+    said = ("the generator no longer clobbers: --land now READS the landed file and MERGES, "
+            "keeping %d hand-authored edge(s) (%s) verbatim, %d row field(s) the build does "
+            "not produce, suppressing the %d generated "
+            "edge(s) and %d unresolved row(s) those edges speak for, keeping the edge_types "
+            "status line(s) for %s, and carrying the %d top-level field(s) it does not generate "
+            "(%s). Re-applying notes/_lanes/282/logo-land/bind.py after a regenerate is NO "
+            "LONGER NEEDED — verified by this run's own before/after diff, not asserted."
+            % (receipt["hand_edges_kept"], ", ".join(receipt["hand_edge_types"]) or "none",
+               receipt["row_fields_kept_count"],
+               receipt["generated_edges_dropped_as_spoken_for"],
+               receipt["unresolved_rows_dropped_as_resolved"],
+               ", ".join(receipt["edge_type_status_kept"]) or "none",
+               len(receipt["top_level_fields_carried"]),
+               ", ".join(receipt["top_level_fields_carried"]) or "none"))
+    touched = []
+    for k, v in pay.items():
+        if isinstance(v, dict) and isinstance(v.get(VERDICT_KEY), str):
+            v[VERDICT_KEY] = v[VERDICT_KEY].split(VERDICT_MARK)[0] + VERDICT_MARK + said
+            touched.append(k)
+    return touched
+
+
 def land(corpus=None, ratified=None, **kw):
     """Refuses unless the id is well-formed, RECORDED in _rulings.json, and LISTED in
     RATIFIES. RATIFIES now holds the four s277-D4..D7 ids and NOTHING else, so every
@@ -1027,6 +1312,7 @@ def land(corpus=None, ratified=None, **kw):
                 "Nothing was written. This is a question for Dave, not an overwrite."
                 % (", ".join(DAVE_EXPORTS),
                    "\n".join("  %s: landed %s, this build %s" % d for d in drift)))
+    merges = {}
     for pay, name in ((ipay, LANDED_ICONS), (lpay, LANDED_LOGOS)):
         pay["ratified"] = ratified
         pay["$description"] = (f"RATIFIED {name} under {ratified} (#277 lane RI; s269-D1 STEP 4). "
@@ -1038,9 +1324,34 @@ def land(corpus=None, ratified=None, **kw):
                 "below are DAVE'S OWN ANSWERS, read back from his exports "
                 f"({', '.join(DAVE_EXPORTS)}) on every run — a regenerate keeps them, and "
                 "--land refuses if this file records an answer his exports do not.")
-        (_k(corpus) / name).write_text(json.dumps(pay, indent=2, ensure_ascii=False) + "\n",
-                                       encoding="utf-8")
-    report["landed"] = {"ratified": ratified, "files": [LANDED_ICONS, LANDED_LOGOS]}
+        # MERGE-ON-WRITE. Read what is on disk BEFORE writing over it, and keep what a human
+        # put there (see merge_landed above). The generated $description is composed first and
+        # then AMENDED by the receipt, so the file's own opening sentence stops instructing a
+        # reader to re-apply a hand-repair script the generator now does itself.
+        target = _k(corpus) / name
+        receipt = {"merged": False, "why": "no landed file on disk — first write"}
+        if target.exists():
+            try:
+                prev = json.loads(target.read_text(encoding="utf-8"))
+            except ValueError as exc:
+                raise SystemExit(f"REFUSED — {name} is on disk but is not valid JSON ({exc}). "
+                                 "A merge cannot read it, and overwriting it would destroy "
+                                 "whatever it holds. Nothing was written.")
+            pay, receipt = merge_landed(prev, pay)
+        if receipt.get("merged") and receipt["hand_edges_kept"]:
+            pay["$description"] += (
+                " HAND-AUTHORED STATE IS PRESERVED: this run read the file first and kept "
+                f"{receipt['hand_edges_kept']} edge(s) marked `authored: \"hand\"` "
+                f"({', '.join(receipt['hand_edge_types'])}) and the "
+                f"{len(receipt['top_level_fields_carried'])} top-level field(s) the generator "
+                "does not produce. Hand-authoring an edge here is therefore SAFE ACROSS A "
+                "REGENERATE — mark it `authored: \"hand\"` and it survives.")
+        receipt["verdict_blocks_extended"] = extend_verdict(pay, receipt)
+        merges[name] = receipt
+        target.write_text(json.dumps(pay, indent=2, ensure_ascii=False) + "\n",
+                          encoding="utf-8")
+    report["landed"] = {"ratified": ratified, "files": [LANDED_ICONS, LANDED_LOGOS],
+                        "merge": merges}
     return report
 
 
@@ -1114,6 +1425,20 @@ def _mini(tmp):
                        ("mark-light-mono", "c"), ("badname", "d")):
         (k / "assets" / "logos" / f"{stem}.svg").write_text(f"<svg><!--{body}--></svg>",
                                                             encoding="utf-8")
+    # the per-size MASTERS (#286 R2): 3 good ones on 2 lockups, and THREE that must be
+    # refused and DECLARED — a height the file's own <svg> contradicts, a master with no
+    # declared geometry, and one whose stem is no logo node at all. None of the six may
+    # mint a node; the three good ones are fields on nodes that already exist.
+    (k / "assets" / "logos" / MASTERS_DIR).mkdir(parents=True)
+    for nm, attrs in (("mark-light-colour-24", 'width="48" height="24"'),
+                      ("mark-light-colour-32", 'width="64" height="32"'),
+                      ("mark-dark-colour-40", 'width="80" height="40"'),
+                      ("mark-light-colour-99", 'width="80" height="40"'),   # name vs bytes
+                      ("mark-light-mono-24", ""),                           # no geometry
+                      ("badname-24", 'width="48" height="24"')):            # no such node
+        (k / "assets" / "logos" / MASTERS_DIR / f"{nm}.svg").write_text(
+            f"<svg {attrs} xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0 L1 1\"/></svg>",
+            encoding="utf-8")
 
     # one.reference.html: the alpha geometry (NORMALISED differently — extra whitespace,
     # so a generator that skipped norm() finds nothing), one unmatched path, one sprite.
@@ -1579,6 +1904,84 @@ def selftest():
                  "is nothing of his to keep here — the mechanism is bites 20 and 21", lambda:
              not _live_p.exists() and not _have)
 
+    # 23 — THE MASTERS ARE FIELDS, NOT NODES (#286 R2; Dave: "okay size-on-the-existing-node").
+    #      Every figure on a size is MEASURED off the file — the sha256 below is recomputed
+    #      here from the exact bytes _mini wrote, so a generator that invented, copied or
+    #      cached a digest goes red. The three refusals must be DECLARED, never dropped.
+    _m24 = ('<svg width="48" height="24" xmlns="http://www.w3.org/2000/svg">'
+            '<path d="M0 0 L1 1"/></svg>').encode("utf-8")
+    _lsz = {n["id"]: n.get("sizes") for n in lpay["nodes"]}
+    _mun = [u for u in lpay["unresolved"] if u["type"] == "logo:"]
+    bite(23, "the per-size masters enter as a `sizes` FIELD on the lockup's existing node — no id is minted, the width/height/sha256 are measured off the file, and a master whose name fights its bytes, whose geometry is undeclared, or whose stem is no node is REFUSED and declared", lambda:
+         # not one master is a node, at any of the three shapes lane R listed
+         not any(re.search(r"-\d+$", i) for i in _lsz)
+         and rep["node_counts"]["logo"] == 3 and rep["masters_on_disk"] == 6
+         and rep["masters_attached"] == 3 and rep["master_size_steps"] == [24, 32, 40]
+         and rep["logos_with_sizes"] == ["mark-dark-colour", "mark-light-colour"]
+         # the field itself: keyed by RAW HEIGHT, carrying the relative path and the measurement
+         and sorted(_lsz["logo:mark-light-colour"]) == ["24", "32"]
+         and _lsz["logo:mark-light-colour"]["24"] == {
+             "file": "assets/logos/masters/mark-light-colour-24.svg",
+             "width": 48, "height": 24, "sha256": hashlib.sha256(_m24).hexdigest()}
+         and _lsz["logo:mark-light-mono"] is None
+         # three refusals, each saying its own reason in its own words
+         and len(_mun) == 4
+         and any("name and the bytes disagree" in u["why"] for u in _mun)
+         and any("no numeric width/height" in u["why"] for u in _mun)
+         and any("never mints the node it hangs on" in u["why"] for u in _mun))
+
+    # 24 — MERGE-ON-WRITE (#286 R2). A --land must not eat what a human put in the file.
+    #      The hand edge here is marked with the file's OWN marker (`authored: "hand"`) and
+    #      names a relation the generator only ever declares as a null — the exact shape
+    #      s282-D5 has in the live tree — and the top-level block carries a generatorVerdict
+    #      of bind.py's own shape. Nothing in the merge names either of them.
+    _h1 = _h2 = _v1 = _v2 = _stub = _desc = None
+    _renull = _reun = ["the setup never ran"]
+    _m24msg = "the setup raised"
+    with tempfile.TemporaryDirectory() as td:
+        try:
+            k24 = _with_exports(td, _sheet(alpha=CLEAN))
+            land(k24, "s277-D4")
+            _p = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
+            _stub = any(e["type"] == "governedBy" and e["t"] is None for e in _p["edges"])
+            _p["edges"] = [e for e in _p["edges"] if not (e["type"] == "governedBy"
+                                                          and e["s"] == "logo:mark-light-colour")]
+            _p["edges"].append({"s": "logo:mark-light-colour", "t": "rule:made-up-001",
+                                "type": "governedBy", "fam": FAMILY, "authored": "hand",
+                                "why": "a human ruled this, and no corpus can say it"})
+            _p["edge_types"]["governedBy"] = "RESOLVED BY HAND — 1 edge drawn"
+            _p["$hand-block"] = {"ruled": "a lane's own record",
+                                 VERDICT_KEY: "the generator drew 0 edges"}
+            (k24 / LANDED_LOGOS).write_text(json.dumps(_p, indent=2) + "\n", encoding="utf-8")
+            land(k24, "s277-D4")                       # the run that used to destroy it
+            _a = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
+            _h1 = [e for e in _a["edges"] if e.get("authored") == "hand"]
+            _renull = [e for e in _a["edges"] if e["type"] == "governedBy" and e["t"] is None
+                       and e["s"] == "logo:mark-light-colour"]
+            _reun = [u for u in _a["unresolved"] if u["type"] == "governedBy"
+                     and u["source"] == "logo:mark-light-colour"]
+            _v1 = _a.get("$hand-block", {}).get(VERDICT_KEY, "")
+            _desc = _a["$description"]
+            land(k24, "s277-D4")                       # and a SECOND run is idempotent
+            _b = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
+            _h2 = [e for e in _b["edges"] if e.get("authored") == "hand"]
+            _v2 = _b.get("$hand-block", {}).get(VERDICT_KEY, "")
+            _m24msg = "ok"
+        except Exception as e:
+            _m24msg = f"the setup raised {type(e).__name__}: {e}"
+    bite(24, "--land MERGES: a hand-authored edge, its edge_types line and a top-level block the generator does not produce all survive a regenerate, the null the generator would re-declare beside the hand edge is suppressed, the verdict records what was preserved, and a second run changes nothing more", lambda:
+         _m24msg == "ok" and _stub is True
+         # the hand edge survives, verbatim, and the null stub for it does NOT come back
+         and len(_h1) == 1 and _h1[0]["t"] == "rule:made-up-001"
+         and _h1[0]["why"] == "a human ruled this, and no corpus can say it"
+         and _renull == [] and _reun == []
+         # the hand-set status line and the unresolved row are honoured, not overwritten
+         and _v1.startswith("the generator drew 0 edges")
+         and VERDICT_MARK.strip() in _v1 and "hand-authored edge(s)" in _v1
+         and "HAND-AUTHORED STATE IS PRESERVED" in _desc
+         # idempotent: the second land neither loses the edge nor grows the verdict
+         and _h2 == _h1 and _v2 == _v1)
+
     print("SELFTEST PASS" if not fails else f"SELFTEST FAIL — bites {fails}")
     return 1 if fails else 0
 
@@ -1615,6 +2018,18 @@ def main():
     if "--land" in argv:
         rep = land(corpus, opt("--ratified"), **kw)
         print(f"LANDED — ratified {rep['landed']['ratified']} · {rep['landed']['files']}")
+        print(f"  masters: {rep['masters_attached']} of {rep['masters_on_disk']} attached as "
+              f"`sizes` fields on {len(rep['logos_with_sizes'])} existing logo node(s) at steps "
+              f"{rep['master_size_steps']} — 0 nodes minted (Dave: size-on-the-existing-node)")
+        for name, m in rep["landed"]["merge"].items():
+            if not m.get("merged"):
+                print(f"  {name}: no merge — {m.get('why')}")
+                continue
+            print(f"  {name}: MERGED — kept {m['hand_edges_kept']} hand-authored edge(s) "
+                  f"{m['hand_edge_types']}, dropped {m['generated_edges_dropped_as_spoken_for']} "
+                  f"generated edge(s) and {m['unresolved_rows_dropped_as_resolved']} unresolved "
+                  f"row(s) they speak for, carried {m['top_level_fields_carried']}, "
+                  f"extended verdict in {m['verdict_blocks_extended']}")
         return 0
 
     out = Path(opt("--dry-run") or opt("--out") or str(DEFAULT_OUT))

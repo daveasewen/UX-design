@@ -1,0 +1,46 @@
+after #286 2026-09-18 — #286 lane R2: the 40 masters registered as sizes on the 8 logo nodes — Dave's 'size-on-the-ex…
+
+Lane R2 registered the 40 accepted masters as a `sizes` map on the 8 existing logo nodes,
+under Dave's ruling "okay size-on-the-existing-node" — not as 40 new nodes and not as a new
+node kind, so the #75 closed-vocabulary fence is untouched.
+
+Lane C2 re-derived R2's central claim independently (notes/_lanes/286/C2/verify.py), parsing
+HEAD and the working copy side by side rather than reading R2's own proof file:
+
+  node count 8 == 8 · node id sets identical · edge multiset identical at 33 == 33
+  12 `governedBy` edges present and BYTE-IDENTICAL to HEAD, all still authored: "hand"
+  every node carries a `sizes` map of exactly 5 entries
+  all 40 sha256 digests recomputed from the bytes on disk and MATCHED — 40/40
+  steps [24, 28, 32, 36, 40] on all 8 stems
+
+GREEN. No STOP condition met.
+
+The second half of R2's work is the durable one: `gen_kg_icons.py --land` now MERGES instead
+of clobbering. It reads the landed file, keeps every edge marked `authored: "hand"` verbatim,
+suppresses the generated stubs and unresolved rows those edges speak for, keeps the
+`edge_types` status lines they draw, carries every top-level key the generator does not
+produce, and keeps row-level fields the build does not write. That is what saved the 12
+`governedBy` edges of s282-D5 and the 14 `flagged_as` sentences in the icon file — the latter
+found only because R2's FIRST land ate them, was caught by measurement, and was reverted
+byte-for-byte before anything landed for keeps. `bind.py` and `_inscribe2.py`, the two
+hand-repair scripts standing in for a generator that could not hold a ruling, are no longer
+needed for edges or row fields.
+
+OBSERVED by the C2 check, not a defect in the lane under check: `hexagon-dark-colour` and
+`hexagon-light-colour` carry identical sha256 at all five steps — byte-identical files under
+different names. A property of the master corpus, faithfully recorded. Flagged for Dave.
+
+Also carried in this commit: lane P's push report (the clean-tree gate counts an untracked
+file — `_git_commit.sh:174` has no status-code filter and no `-uno`), and the
+`.t3-rendered` leftover that was the single path refusing that push, committed here as a
+session record so the push path is clear.
+
+`_CHAIN.md` was STALE at lane open — the same pre-existing drift lanes C and R2 both
+measured, not caused here. `_gen_chain.py` was run and the result staged. The four fenced
+generators were not run.
+
+CARRIED, not settled: W-286r reads as MET but its state is still `open` — the conductor's
+close, not a commit lane's. The field key `sizes` is R2's reading of the file's own
+vocabulary, not Dave's word; he ruled the location. The explorer does not yet show the field.
+The boot-drift CEILING BREACH and the boot double-count lane C left standing are untouched
+and will BLOCK at the wrap's --wrap run.

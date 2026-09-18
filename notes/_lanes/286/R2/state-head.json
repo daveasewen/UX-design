@@ -5241,27 +5241,8 @@
     },
     {
       "links": [
-        "knowledge/_git_commit.sh",
-        "notes/_subreports/2026-09-18-285-P-push.md",
-        "notes/_subreports/2026-09-18-286-C-commit.md"
-      ],
-      "home": "notes/_subreports/2026-09-18-286-P-push.md",
-      "id": "W-286p",
-      "title": "#286 lane P — the push REFUSED: one untracked leftover is a dirty tree",
-      "state": "open",
-      "owner": "dave",
-      "opened": 286,
-      "project": "apollo",
-      "closes_when": "notes/_lanes/286/C/MSG-286-commit-2.txt.t3-rendered has been landed, removed or reconciled by a lane entitled to touch it, `bash knowledge/_git_commit.sh --push` has printed the literal `✅ pushed and VERIFIED: remote master == local db0830f7…` line, and CI has been read back for db0830f7 so its colour is known rather than inherited",
-      "body": "ANSWERED the conductor's question: YES, the clean-tree gate counts an untracked file. _git_commit.sh:174 takes `git status --short -- . ':(exclude)notes/_REHEARSAL-LOG.jsonl'` and tests it non-empty — no status-code filter, no -uno — so a `??` path refuses the push exactly as an ` M` path does; the s137-D1 exclusion is one named file and nothing else. Verbatim refusal, exit 1: `✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths: ?? notes/_lanes/286/C/MSG-286-commit-2.txt.t3-rendered`. No `✅ pushed and VERIFIED` line, so per #227 no push. Refusal fires at the FIRST gate: branch check passed, credential gate / push / after-verify never reached, no token requested or entered. Local HEAD db0830f7 [ahead 2]; ls-remote still 09ddf155. CI read three times at ~90s (16:42/16:44/16:45Z), identical four rows each time, all `gates`, all completed failure, none in progress: 09ddf155, d2ae9c73, 77b491b8, 9a97e006. NO run for db0830f7 and there cannot be one — it is not on the remote. INHERITED: 09ddf155 and its parent d2ae9c73 fail the same two steps in the same `gates` job — `Survey the COMMITTED tree` and `Knowledge build — all derived views + blocking gates` — while `render` and `release` pass in both, so the red predates 09ddf155. db0830f7's own colour is UNKNOWN until pushed and was not extrapolated. Lane committed nothing and did not touch the leftover.",
-      "condition": "stated"
-    },
-    {
-      "links": [
         "notes/_subreports/2026-09-18-286-V-verifier.md",
-        "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md",
-        "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md",
-        "notes/_lanes/286/R2/"
+        "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md"
       ],
       "home": "notes/_subreports/2026-09-18-286-R-masters-registered.md",
       "state": "open",
@@ -5272,7 +5253,7 @@
       "id": "W-286r",
       "title": "#286 lane R — the masters were NOT registered, and the generator is why",
       "closes_when": "Dave has ruled the SHAPE of the master registration - the gen_kg_icons.py fence is released by his \"okay go on everything\" but the generator cannot see knowledge/assets/logos/masters/, so a --land would register ZERO of the 40 masters; the three shapes lane R lays out at its section 7 are a closed-vocabulary question and none of them is a lane's call",
-      "body": "THE FINDING, carried into the #286 commit message: the 40 accepted masters live in knowledge/assets/logos/masters/ and are invisible to the generator's corpus scan - `8 logos` -> `logo: 8`. The task's acceptable outcome (40 masters, or the 20 masterbrand ones) is NOT reachable by running the generator. Lane R ran no generator and registered nothing; lane V confirmed both halves independently (claims 23, 24). The fence is released and the door behind it is bricked up. ⬛ #286 lane R2 UPDATE: the shape IS now ruled and the registration IS done. Dave, 2026-09-18, verbatim: \"okay size-on-the-existing-node\" — a master is a SIZE FIELD on its lockup's existing node, which is lane R's shape 1 and refuses its shapes 2 and 3. gen_kg_icons.py was taught assets/logos/masters/ and landed once: 40 masters attached as `sizes` on the 8 existing nodes, nodes 8 -> 8, edges 33 -> 33 multiset identical, the 12 hand-authored governedBy edges byte-identical after the run. Receipt: notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md (row W-286rb). ⇒ THIS ROW'S `closes_when` READS AS MET; its state is left to the conductor, not moved by lane R2."
+      "body": "THE FINDING, carried into the #286 commit message: the 40 accepted masters live in knowledge/assets/logos/masters/ and are invisible to the generator's corpus scan - `8 logos` -> `logo: 8`. The task's acceptable outcome (40 masters, or the 20 masterbrand ones) is NOT reachable by running the generator. Lane R ran no generator and registered nothing; lane V confirmed both halves independently (claims 23, 24). The fence is released and the door behind it is bricked up."
     },
     {
       "links": [
@@ -10609,24 +10590,18 @@
         "knowledge/assets/logos/masters/",
         "notes/_lanes/285/logo-masters-2/BRIEF.md",
         "notes/_lanes/285/logo-masters-2/MASTERS-2026-09-18.html",
-        "notes/_subreports/2026-09-18-284-LM-logo-masters.md",
-        "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md",
-        "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md",
-        "notes/_subreports/2026-09-18-286-R-masters-registered.md",
-        "notes/_lanes/277/icons-propose/gen_kg_icons.py",
-        "knowledge/_logo_nodes.json"
+        "notes/_subreports/2026-09-18-284-LM-logo-masters.md"
       ],
       "home": "notes/_subreports/2026-09-18-285-LM2-logo-masters-regen.md",
       "id": "W-285lm",
       "title": "#285 lane LM2 — the wordmark distortion fixed: 20 masterbrand masters regenerated with rigid wordmark snapping",
-      "state": "done",
+      "state": "open",
       "owner": "dave",
       "opened": 285,
       "project": "apollo",
       "closes_when": "Dave has looked at the 4x before/after contact sheet and either accepted the regenerated masters by eye or named what still looks wrong",
       "condition": "stated",
-      "body": "⬛ #285: Dave's word on the regenerated masters was \"accept\" — THE EYE-HALF OF `closes_when` IS CLOSED (the 4x before/after contact sheet was looked at and the masters accepted by eye). ⚠ The row stays OPEN: registration in `_logo_nodes.json` (behind the `gen_kg_icons.py` fence) is STILL OWED and still Dave's word on how. `closes_when` is UNCHANGED — no close condition was invented or rewritten here.  ⬛ #286 lane R: the FENCE IS RELEASED but the GENERATOR CANNOT DO THE JOB, so nothing was landed. Dave 2026-09-18, verbatim: \"okay go on everything\" — given to an opener whose item 2 was \"How the accepted masters get registered — the icon generator is fenced, and running it is your call\" (receipt: notes/_lanes/286/DAVE-RULINGS-2026-09-18.md). MEASURED, not asserted: gen_kg_icons.py:278 `logo_stems()` globs `assets/logos/*.svg` NON-RECURSIVELY; the 40 masters live in `assets/logos/masters/`, so they are invisible to it — 8 of 48 svgs are read. A --dry-run into notes/_lanes/286/R/dryrun reads 8 logos and emits the SAME 8 logo nodes already landed: 0 master nodes added. The same run would DESTROY hand-authored state: 12 `governedBy` edges ruled by s282-D5 revert to 6 declared nulls, and the `ratified`, `$s282-D5`, `$description` and `edge_types` fields are overwritten. The live file's own `$s282-D5.generatorVerdict` already records this from #282. So --land was NOT run: a wrong registration is worse than an open row. STILL OWED AND STILL RULING-SHAPED: the SHAPE of a per-size master node (a `size` field on 8 nodes, or 40 `logo:<stem>-<h>` nodes, or a new node kind) is a closed-vocabulary question (#75) and no ruling covers it — DAVE-RULINGS-2026-09-18.md records it as expressly still his. Receipt: notes/_subreports/2026-09-18-286-R-masters-registered.md.",
-      "closed_by": "#286 2026-09-18 lane R2 — BOTH HALVES NOW MET. (1) THE EYE: Dave accepted the regenerated masters at #285 on the 4x before/after contact sheet — the literal `closes_when`. (2) THE REGISTRATION the row was held open for is DONE. Dave ruled the shape on 2026-09-18, verbatim: \"okay size-on-the-existing-node\" — a master is a SIZE FIELD on its lockup's existing node, not a node of its own (receipt: notes/_lanes/286/DAVE-RULINGS-2026-09-18.md). `gen_kg_icons.py` was taught `assets/logos/masters/` and run ONCE with --land --ratified s277-D4. MEASURED, not asserted: knowledge/_logo_nodes.json nodes 8 -> 8 (0 added, 0 removed), edges 33 -> 33 with the multiset identical, and the only changes are a new `sizes` map on each of the 8 logo nodes (40 entries, heights 24/28/32/36/40, each carrying the relative path, the SVG's own width/height and its sha256 — all 40 re-verified against the bytes on disk) plus `$description` and `$s282-D5.generatorVerdict`. HAND-AUTHORED STATE SURVIVED: the 12 `governedBy` edges of s282-D5 are byte-identical after the run, 0 t:null stubs came back, `ratified` and `$s282-D5` are intact, and no field was lost anywhere in either output (loss test parsed). `--land` now MERGES on write instead of clobbering, so re-applying notes/_lanes/282/logo-land/bind.py after a regenerate is no longer needed. Receipt: notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md."
+      "body": "⬛ #285: Dave's word on the regenerated masters was \"accept\" — THE EYE-HALF OF `closes_when` IS CLOSED (the 4x before/after contact sheet was looked at and the masters accepted by eye). ⚠ The row stays OPEN: registration in `_logo_nodes.json` (behind the `gen_kg_icons.py` fence) is STILL OWED and still Dave's word on how. `closes_when` is UNCHANGED — no close condition was invented or rewritten here.  ⬛ #286 lane R: the FENCE IS RELEASED but the GENERATOR CANNOT DO THE JOB, so nothing was landed. Dave 2026-09-18, verbatim: \"okay go on everything\" — given to an opener whose item 2 was \"How the accepted masters get registered — the icon generator is fenced, and running it is your call\" (receipt: notes/_lanes/286/DAVE-RULINGS-2026-09-18.md). MEASURED, not asserted: gen_kg_icons.py:278 `logo_stems()` globs `assets/logos/*.svg` NON-RECURSIVELY; the 40 masters live in `assets/logos/masters/`, so they are invisible to it — 8 of 48 svgs are read. A --dry-run into notes/_lanes/286/R/dryrun reads 8 logos and emits the SAME 8 logo nodes already landed: 0 master nodes added. The same run would DESTROY hand-authored state: 12 `governedBy` edges ruled by s282-D5 revert to 6 declared nulls, and the `ratified`, `$s282-D5`, `$description` and `edge_types` fields are overwritten. The live file's own `$s282-D5.generatorVerdict` already records this from #282. So --land was NOT run: a wrong registration is worse than an open row. STILL OWED AND STILL RULING-SHAPED: the SHAPE of a per-size master node (a `size` field on 8 nodes, or 40 `logo:<stem>-<h>` nodes, or a new node kind) is a closed-vocabulary question (#75) and no ruling covers it — DAVE-RULINGS-2026-09-18.md records it as expressly still his. Receipt: notes/_subreports/2026-09-18-286-R-masters-registered.md."
     },
     {
       "links": [
@@ -10670,45 +10645,6 @@
       "project": "apollo",
       "closes_when": "Dave has ruled or explicitly parked the report's ruling-shaped questions - chiefly the wording of the eight DRAFT lines in knowledge/_standing.md, HOW the accepted masters get registered in _logo_nodes.json behind the gen_kg_icons.py fence, the _gauge_tokens.py 256,000 wording fix carried from #284, the delegation rule his own sentence states, the boot ceiling at its tenth reading, whether the skills get a second run after #286's cold boot measurement, whether the ritual owes a RESUME contract after a mid-ritual sub death, what to do about _seam.py's SCRATCH arm deleting a lane's own /tmp files, and what a session should do at the hard wall",
       "why": "The #285 wrap inscribed nothing and verified that by json.load over the rulings list (620 unchanged at the open and at the close); it STRUCK two carries with receipts - the #284 masters acceptance, which Dave reopened himself with a 4x crop of the wordmark, and the showroom's 108 stale pages, re-synced at ff354475 and verified by decoding all 108 payloads rather than sampling; it recorded Dave's re-acceptance of the regenerated masters in his own words as an ENACTMENT of s282-D3 rather than a closure of row W-285lm, whose registration half is untouched behind the generator fence; it named the connector question as ANSWERED BY AN ACT rather than a sentence, which makes #286's first move a measurement; it measured the delegation rule OBEYED for a whole session - seven Agent lanes at spawnDepth 1, none in seat, 3,382 cl100k of replies against about 738,851 real of sub FILL - without treating that as a closure of a ruling-shaped carry; it closed the one gate fail that was its own (ds-021 on knowledge/_seam.py, registered estimate-only as a declaration, not a ruling) while carrying the six inherited ones in the #243 declared not-a-wrap form for the eleventh wrap; and it named a wrap sub's mid-ritual death on a network error as luck rather than design, because nothing guarantees all-or-nothing across the ritual",
-      "condition": "stated"
-    },
-    {
-      "links": [
-        "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md",
-        "notes/_subreports/2026-09-18-286-P-push.md",
-        "notes/_subreports/2026-09-18-286-C-commit.md",
-        "knowledge/_git_commit.sh",
-        "notes/_lanes/286/C2/verify.py"
-      ],
-      "home": "notes/_subreports/2026-09-18-286-C2-commit-and-push.md",
-      "id": "W-286cs",
-      "title": "#286 lane C2 — lane R2 re-verified independently, committed, and pushed",
-      "state": "open",
-      "owner": "claude",
-      "opened": 286,
-      "project": "apollo",
-      "closes_when": "Dave has read this lane's independent re-derivation of lane R2 and the CI read-back appended to it, and has said either that the `sizes` registration stands as committed or what about it is wrong",
-      "body": "INDEPENDENT CHECK OF LANE R2, re-derived by notes/_lanes/286/C2/verify.py from `git show HEAD:knowledge/_logo_nodes.json` and the working copy, not read off R2's report: node count 8 == 8, node id sets identical, edge multiset identical at 33 == 33, 12 `governedBy` edges present and BYTE-IDENTICAL to HEAD, every one of the 8 nodes carrying a `sizes` map of exactly 5 entries, and all 40 sha256 digests recomputed from the bytes on disk and matched — 40/40, steps [24, 28, 32, 36, 40]. GREEN; no STOP condition met. OBSERVED, not a defect in R2: `hexagon-dark-colour` and `hexagon-light-colour` carry identical sha256 at all five steps — the two masters are byte-identical files under different names, a property of the master corpus that the registration faithfully records. `hexagon-*-mono` and both `masterbrand` pairs do differ. Flagged for Dave's eye, nothing changed on account of it. COMMIT: through `knowledge/_git_commit.sh` with SESSION_N=286, --quiet, msgfile under notes/_lanes/286/C2/, every path named — R2's four tracked outputs, the amended rulings file, notes/_lanes/286/{R2,P,C2}/, the .t3-rendered leftover that refused lane P's push (committed as a session record per the brief), the P/R2/C2 reports, and _CHAIN.md, which _gen_chain.py --check was RED on at lane open with the same pre-existing staleness lane C and lane R2 both measured. notes/_lanes/286/C2/ had to be named too: the push gate refuses on ANY untracked path (_git_commit.sh:174, lane P's finding), so leaving this lane's own working files untracked would have reproduced the failure it was sent to clear. The four fenced generators were not run; the T3 prefix was never hand-written; `rm .git/index.lock` was never run. CARRIED, not settled: W-286r reads as MET but its state is still `open` and that close is the conductor's, not a commit lane's; the field key `sizes` is R2's reading of the file's vocabulary and not Dave's word; the explorer does not yet show the field; the boot-drift CEILING BREACH and the boot double-count lane C left standing are untouched and will BLOCK at the wrap's --wrap run.",
-      "condition": "stated"
-    },
-    {
-      "links": [
-        "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md",
-        "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md",
-        "notes/_subreports/2026-09-18-286-R-masters-registered.md",
-        "notes/_lanes/277/icons-propose/gen_kg_icons.py",
-        "knowledge/_logo_nodes.json",
-        "knowledge/assets/logos/masters/"
-      ],
-      "home": "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md",
-      "id": "W-286rb",
-      "title": "#286 lane R2 — the 40 logo masters registered as `sizes` on the 8 existing nodes, and --land taught to merge instead of clobber",
-      "state": "open",
-      "owner": "dave",
-      "opened": 286,
-      "project": "apollo",
-      "closes_when": "Dave has read the report and either accepted `sizes` as the field name and the generator-wins-on-fields-it-writes default, or named a different field name or a different rule for a field both a human and the generator write",
-      "body": "⬛ LANDED. The 40 accepted per-size logo masters are registered in knowledge/_logo_nodes.json as a `sizes` map on the 8 EXISTING logo nodes — Dave 2026-09-18, verbatim: \"okay size-on-the-existing-node\" (receipt: notes/_lanes/286/DAVE-RULINGS-2026-09-18.md). MEASURED: nodes 8 -> 8 (0 added, 0 removed), edges 33 -> 33 with the multiset identical, and the only other changes are `$description` and `$s282-D5.generatorVerdict`. Each of the 40 entries carries the relative path, the SVG's own width/height and its sha256, all re-verified against the bytes on disk. gen_kg_icons.py gained logo_masters()/svg_box() and 2 selftest bites (24, all green); `logo_stems()` is deliberately still NON-recursive, because making it recursive is how 40 `logo:<stem>-<h>` ids would be minted — the shape Dave refused. #75 is untouched: a FIELD on an existing kind is neither a new node kind nor a new edge type, and RATIFIES is unchanged.  ⬛ --land NOW MERGES INSTEAD OF CLOBBERING. It reads the landed file first and keeps, by provenance marker and not by today's values: every edge marked `authored: \"hand\"` (the 12 governedBy edges of s282-D5 are byte-identical after the run, and 0 t:null stubs came back), the edge_types line for a type such an edge draws, every top-level key the generator does not produce (`$s282-D5`, `ratified`), and — after the finding below — every row-level FIELD of a rebuilt ledger row that the build does not produce. The generatorVerdict now records what was preserved, idempotently.  ⛔ SECOND FINDING, not in the brief: `_icon_nodes.json` has its OWN hand-repair script (notes/_lanes/280/inscribe-active/_inscribe2.py, bind.py's opposite number) and the first --land of this lane ate its 14 `flagged_as` sentences (`flagged_as` appears 0 times in the generator). The STOP condition fired: both outputs were restored byte-for-byte to HEAD (sha-proved; git checkout was unavailable — another lane held .git/index.lock, which was left alone), the merge was widened, rehearsed against a throwaway symlink corpus with the live tree re-hashed untouched, and only then landed for keeps — the live output is byte-identical to the rehearsal. Nothing is lost in either file now (parsed loss test empty); the icon file's residual diff is ADDITIONS of Dave's own words (13 $his_note, 10 $his_flags) plus prose the current generator composes differently, including `his_answer` on icon:jade-lifestyle — declared, his to rule if he wants a rule about who owns a field both a human and a generator write.  ⬛ CHECKS: showroom --check, polarity, mention-map, doc-rows and _validate_kg all GREEN before and after. `_gen_chain.py --check` was ALREADY RED at lane open (not this lane; the commit lane must run the generator and stage it). `_compose_slice.py --selftest` fails the IDENTICAL 6 of 79 bites before and after — proved by swapping the pre-land files back in and restoring by sha; they are #281/#282 residue.  ⚠ OWED, NOT BUILT: notes/_KG-EXPLORER.html carries 0 occurrences of `sizes` — the builder copies every unowned node field and INSPECT renders the full record, so the field appears when the explorer is next rebuilt (no --check exists on that builder, so nothing is red meanwhile). W-285lm is CLOSED by this work, its `closes_when` unchanged.",
       "condition": "stated"
     },
     {
