@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""#285 wrap — step 5b, the POST-WRAP ADDENDUM: the shipped sha, the push verdict QUOTED, the CI read.
+
+⛔ HOMED IN THE ⏱ LATEST DELTA, NOT ON THE BANNER. The `s241-D2` cap is BLOCKING at 10 lines /
+1,200 cl100k and this banner closed at 1,196 / 10, so an eleventh line would be refused — the
+cap's own words settle it ("the ⏱ LATEST DELTA is the sole home for gauge / declared-skip /
+not-done detail"), and the delta is IN the read chain. ⛔ The 5b-vs-cap conflict is ruling-shaped,
+Dave's, and carried: this is the FIFTH wrap to meet it and the FOURTH to answer it this way.
+
+⚠ The wrap commit could not name itself — that gap is DECLARED in `COMMIT STATE #285`. This is
+where it is closed, and nothing here is paraphrased: the push verdict is the script's own literal
+line and the CI read is the API's own fields.
+"""
+import os, sys
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
+sys.path.insert(0, HERE)
+from run_ops import run
+
+ADDENDUM = (
+"- ⬛ **POST-WRAP ADDENDUM (5b) — THE SHIPPED SHA, THE PUSH VERDICT QUOTED, AND THE CI READ, "
+"CLOSING THE DECLARED HASH GAP IN `COMMIT STATE #285`.** ✅ **SHIPPED `d2ae9c73`**, on the `#243` "
+"DECLARED not-a-wrap path, **ELEVENTH wrap running**. ⚠ **It took FOUR runs and every refusal was "
+"the script working:** the `#208` reuse gate caught a msgfile whose line 1 already carried a T3 "
+"prefix (this seat had written the prefix by hand — the script adds it) · the `#208` MENTION-MAP "
+"gate found `knowledge/_graph-mention-map.json` stale, regenerated it and **refused to stage a "
+"path this seat had not named** (the P5 rule) · the doc-row gate refused POST-STAGING because the "
+"C, C2 and P lanes had each filed a report and **none of them rowed it** — three `_state.add()` "
+"rows (`W-285c`, `W-285cs`, `W-285p`), ⛔ **not a `DOC_ROW_ACK`**, because the gate names the "
+"remedy and an ack would have declared the gap instead of closing it. ★★ **AND THE SHOWROOM GATE "
+"PASSED CLEAN WITHOUT `SHOWROOM_ACK` FOR THE FIRST TIME IN THIS RUN** — `gen_showroom --check OK "
+"— 137 page(s) + index in sync` — which is `ff354475` discharging a gap the last seven wraps "
+"declared. ⚠ **`W-285c2` WAS REFUSED BY THE STORE'S ID PATTERN — THE SECOND INSTANCE IN ONE "
+"SESSION** (lane C met it on `W-285lm2`): `id does not match "
+"'^(?:W-[0-9]{1,3}[a-z]{0,2}|G[0-9]{1,2}[a-z]?)$'`, no digit after the trailing letters; the row "
+"is `W-285cs`. ⛔ **A FINDING, NOT A FIX — an id scheme is a convention and widening one at a wrap "
+"is not a wrap's call.** ✅ **PUSHED AND VERIFIED — the script's own literal verdict line, quoted "
+"and not paraphrased:** `✅ pushed and VERIFIED: remote master == local "
+"d2ae9c73b2f8a8549714cee116b929d4ca0ec246` (`77b491b8..d2ae9c73  master -> master` — the two lane "
+"commits `b99d092c` and `ff354475`, which stood UNPUSHED when this ritual opened and on which lane "
+"P's push correctly refused, are on the remote with this wrap's). ⚙ **CI WAS READ OVER THE PUBLIC "
+"API AND ONLY WHAT WAS READ IS CLAIMED.** `GET "
+"https://api.github.com/repos/daveasewen/UX-design/actions/runs?per_page=3` returned run "
+"**`35363982989`**, workflow **`gates`**, `head_sha` "
+"**`d2ae9c73b2f8a8549714cee116b929d4ca0ec246`** — this wrap's own commit — with **`status: "
+"in_progress`** and **`conclusion: null`**, created `2026-09-18T15:41:44Z`; re-read twice over the "
+"following five minutes and still `in_progress`. ⛔ **NO COLOUR IS CLAIMED: an in-progress run has "
+"no conclusion, and inventing one would be the exact thing the read was done to avoid.** Beneath "
+"it, run **`35351006805`** (`gates`, `head_sha` **`77b491b8`** — #284's post-wrap addendum commit) "
+"and run **`35350595685`** (`gates`, `head_sha` **`9a97e006`** — #284's wrap commit) both read "
+"**`completed` / `failure`**. ⛔ **That red is INHERITED and predates every commit of #285**; lane "
+"P recorded the same two runs at the session's open. **This wrap makes NO claim about CI's colour "
+"on `b99d092c`, `ff354475` or `d2ae9c73`.** The conductor may read it back at the #286 opener. "
+"⛔ **AND THE `s271-D4` RE-READ RAN HERE, AS THE RITUAL'S FINAL BEAT, WITH NOTHING TO STRIKE BY "
+"CONSTRUCTION: #285 inscribed no ruling and `json.load` counts 620 at the close, with no `s285-` "
+"id in the store.** All **17** of the hook's open items were re-read and every one carries the "
+"words *\"put to Dave at the wrap call\"*. ⚠ **A probe of that obligation returned a FALSE "
+"NEGATIVE and is reported rather than trusted** — item 2's phrase is split across a line break, so "
+"a literal substring match missed it; the items were read. Four that MOVED WITHOUT BEING RULED — "
+"the re-acceptance, the connector act, the eight DRAFT standing constraints and the session's own "
+"delegation behaviour — are **named rather than struck** at "
+"`notes/_lanes/285/W/WRAP-REPORT.md`.")
+
+ls = os.path.join(ROOT, "_LIVE-STATE.md")
+anchor = [l.rstrip("\n") for l in open(ls, encoding="utf-8")
+          if l.startswith("- ⬛ **POST-WRAP ADDENDUM (5b) — HOMED HERE")]
+assert len(anchor) >= 1, "REFUSED — the #285 delta's 5b line was not found"
+target = anchor[0]
+assert "FIFTH wrap to meet it" in target, "REFUSED — matched a PRIOR delta's 5b line, not #285's"
+
+ops = [{"op": "insert", "file": "_LIVE-STATE.md", "at": target, "where": "before",
+        "lines": [ADDENDUM, ""]}]
+sys.exit(run("addendum", ops, write="--write" in sys.argv, min_bytes=1_000))
