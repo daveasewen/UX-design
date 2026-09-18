@@ -867,6 +867,13 @@ changed **with its mtime restored** (the nastiest case: a provenance line that i
 is not) — each of which must be rejected **on its own named leg**. Verified by mutating the checker to
 accept everything: the CONTROL still passed and all five mutation arms went red, `rc=1`.
 
+**★★★ THE LANE SEAM — `s283-D1`, Dave's, EVERY SESSION.** Before every lane is cut and after every lane
+lands: `python3 knowledge/_seam.py`, and its **FILL line is QUOTED IN CHAT verbatim**. Three lines: FILL
+with the verdict against the ruled lines (stop 180,000 · tolerated 220,000 · hard 256,000), DISK, and the
+session's OWN scratch cleaned mechanically with `/tmp/gitshim` on the keep-list (the #282 4c collision).
+A seam that runs it and does not quote it has not run it. Born on the arc #277 → #281 → #282, each one
+further from the instrument. Advisory; blocking is his.
+
 **★★ THE SEAM OBLIGATION — WHERE THE BLOCK IS DEMANDED (wired #179 under `s179-D1`; before that the
 checker existed and no seam asked for it, which is [[instrument-without-a-consumer]] verbatim).**
 **You do not run `--block` at a seam. You run the plain check-in, and the seam block comes with it** —
