@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 34,845 tape (cl100k ESTIMATE); this file already
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 34,935 tape (cl100k ESTIMATE); this file already
 > carries the part of it a cold session needs, and the rest is retrieval surface you are not
 > meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
@@ -81,6 +81,8 @@
 - **CLOUD MEMORY (step 3):** the hook `notes/_lanes/284/WRAP-MEMORY-HOOK.md` was written FIRST regardless of reach, and the store write was then attempted from this seat as #279–#283 did; **the result is recorded at the hook's own foot and in this wrap's filed report.**
 - ⚠ **THE CARRY SET IS `_CARRIES.md` § `## residual → #285` (`s225-D2`) — 539 probeable items, FOUR new, ONE STRIKE.** The ages all moved by one. **The one strike is the disk claim above, struck with its receipt and its body left unedited**, which is exactly and only what `s183-D1`/`s188-D2` license. ⚠ **The four new items are INVISIBLE to the probe (`_AGE_RE` misses `[NEW — 0]`) — the SEVENTH wrap to declare that**, and the probe moved 538 → 539 for a different reason: three of #284's new items aged into visibility and two of them were already visible through a bracket in their own text.
 
+- ⬛ **POST-WRAP ADDENDUM (5b) — HOMED HERE AND NOT ON THE ★ LATEST BANNER, DECLARED RATHER THAN QUIET** (the `s241-D2` cap is BLOCKING at 10 lines / 1,200 tape and this banner closed at **1,199 / 10**, so an eleventh line would be refused, correctly; the cap's own words make the ⏱ LATEST DELTA the sole home for this detail, and the delta is IN the read chain — ⛔ **the 5b-vs-cap conflict is ruling-shaped, Dave's, and carried, this being the FOURTH wrap to meet it and the THIRD to answer it this way**). ✅ **SHIPPED `9a97e006` on the `#243` DECLARED not-a-wrap path, the TENTH wrap running. It took THREE runs and both refusals were the script working:** `_gen_chain.py --check` caught `_CHAIN.md` stale against the final tree · the `#208` MENTION-MAP gate found `knowledge/_graph-mention-map.json` stale, regenerated it and **refused to stage a path this seat had not named** (the P5 rule); each was repaired with a FRESH uniquely-named msgfile and the path named, never by widening the stage. ★ **THREE runs here against SIX for `ade8a403`, and the difference is runbook step 0: the `allow_cowork_file_delete` grant was ACTIVE at this seat, so no `.git/index.lock` was ever stranded and `/tmp/gitshim` — which is gone — was never needed.** ✅ **PUSHED AND VERIFIED, the script's own literal verdict line quoted and not paraphrased:** `✅ pushed and VERIFIED: remote master == local 9a97e006de3e2496e7f5b1015706d40793c418b6` (`2345543e..9a97e006  master -> master`; the conductor's `ade8a403`, unpushed at the ritual's open, is on the remote with this wrap's). ⚙ **CI WAS READ AND ONLY WHAT WAS READ IS CLAIMED:** `GET /repos/daveasewen/UX-design/actions/runs?per_page=2` returned run **`35350595685`** (`gates`, `head_sha 9a97e006…`, created 2026-09-18T13:30:19Z) at **`status: in_progress`, `conclusion: null`**, and beneath it run **`35341072505`** (`gates`, `head_sha 2345543e` — #283's shipped wrap commit, NOT this session's) **`completed` / `failure`**. ⛔ **NO COLOUR IS CLAIMED FOR THIS SESSION'S COMMITS: an in-progress run has no conclusion, and the `failure` is INHERITED and predates every commit of #284** — `notes/_lanes/284/DISK-LEVER-2026-09-18.md` recorded the same run at the session's open. The conductor may read it back at the #285 opener. ⛔ **AND THE `s271-D4` RE-READ RAN AS THE RITUAL'S FINAL BEAT WITH NOTHING TO STRIKE BY CONSTRUCTION — #284 inscribed no ruling — and is recorded in full at `notes/_lanes/284/W/WRAP-REPORT.md`, where three items that MOVED WITHOUT BEING RULED (the masters' acceptance, the disk act, and Dave's correction of what the stop line is for) are NAMED rather than struck.**
+
 
 ---
 
@@ -97,8 +99,8 @@
 
 ---
 
-*(Chain ends. **9,255 tape (cl100k ESTIMATE) — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **10,048 tape (cl100k ESTIMATE) — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 34,845 tape (cl100k ESTIMATE) and stays whole for retrieval; you have paid for
-27% of it. Under 40% is this generator's own floor — above it, the wrapper is
+`GOOD-MORNING.md` is 34,935 tape (cl100k ESTIMATE) and stays whole for retrieval; you have paid for
+29% of it. Under 40% is this generator's own floor — above it, the wrapper is
 carrying more than the slice, and `--selftest` says so by name.)*

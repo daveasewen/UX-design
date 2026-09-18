@@ -16,7 +16,7 @@ in the middle of it.
 ## ⛔ READ FIRST, IN THIS ORDER
 
 1. **This file.** It is newer than `_CHAIN.md` and **OUTRANKS it**.
-2. `_CHAIN.md` — the read contract (header → ★ LATEST banner → ⏱ LATEST delta), **9,255 tape**.
+2. `_CHAIN.md` — the read contract (header → ★ LATEST banner → ⏱ LATEST delta), **10,048 tape**.
 3. ⛔ **It does NOT replace `_HANDOFF-130`, `-131`, `-132`, `-133` or `-134`.** Every open item on
    those still stands and **#284 closed none of them — with one named exception: the 40 masters are
    DRAWN and ACCEPTED BY EYE.** ⛔ **Strike nothing else without a receipt.**
@@ -208,9 +208,12 @@ rebuild — and was NOT needed.**
 - **`/sessions` 1.6% used, 9,527,112 KB free** measured here (`df` reads 2% / 9,528,760 KB available)
   against the brief's **0.1% / 9,665,792 KB free** at the rebuild — **both published; the difference
   is this session's own working set on a freshly emptied disk.**
-- **Sizes:** GM **34,845 tape** · LS **67,414** · corpus **102,259** · `_CHAIN.md` **9,255** (slice
-  8,408 + wrapper 847) — ✅ **UNDER the `s214-D6` 10–12K target and at 26.6% of GM against the `<40%`
-  floor.** Against #283's stamp (34,869 / 67,450 / 102,319) GM is **24 DOWN**, LS **36 DOWN**, corpus
+- **Sizes:** GM **34,845 tape** · LS **67,414** · corpus **102,259** · `_CHAIN.md` **10,048** (slice
+  9,200 + wrapper 848) — ✅ **INSIDE the `s214-D6` 10–12K target and at 28.8% of GM against the `<40%`
+  floor.** ⚠ **It read 9,255 — 69 SMALLER than #283's — until the 5b addendum landed in the ⏱ LATEST
+  DELTA, whose home is INSIDE the chain slice: the #241 clause biting exactly as it says it will, and
+  the FINAL reading is the one published. A wrap that wrote a 1,199-tape banner still hands the next
+  session a 724-tape BIGGER chain.** Against #283's stamp (34,869 / 67,450 / 102,319) GM is **24 DOWN**, LS **36 DOWN**, corpus
   **60 DOWN** — ⚠ **the first wrap in three where the rolls paid for their replacement on both files.**
 - ⛔ **THE BANNER'S HEADROOM IS ONE TAPE: 1,199 of the `s241-D2` cap of 1,200 over 10 of 10
   substantive lines**, after SIX measured compression passes (1,286 → 1,199) with nothing dropped —
