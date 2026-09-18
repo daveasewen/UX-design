@@ -1,0 +1,86 @@
+diff --git a/knowledge/_git_commit.sh b/knowledge/_git_commit.sh
+index 368baa8e..f1700401 100644
+--- a/knowledge/_git_commit.sh
++++ b/knowledge/_git_commit.sh
+@@ -14,6 +14,11 @@
+ #                  (runbook step 0.5 — the script cannot do this judgment for you)
+ #   --all-dirty    escape hatch: stage every dirty path, each one ECHOED first. Use only when the
+ #                  reconciliation genuinely covered all of them; it is never the default.
++#   --quiet        VERDICT LINES ONLY on the terminal (#286, #285's move 3): the full transcript
++#                  is written to a file and its path is printed. Gate chatter is filtered; a
++#                  refusal, a gate fail and a non-zero exit are NEVER filtered — on any non-zero
++#                  exit the WHOLE transcript is replayed to stderr. `--quiet=<path>` picks the
++#                  transcript file. Works on every mode (--push / --selftest / --declare-dirt too).
+ # The script REFUSES to stage while any .git/*.lock exists, and never runs rm inside .git.
+ #
+ # ⚠ `git add -A` RETIRED — ruled Dave 2026-08-02 (dream pass 4, P5 "ACCEPTED, option (a)"), enacted
+@@ -28,7 +33,57 @@ cd "$(dirname "$0")/.." || exit 1
+ 
+ RECONCILED=0
+ 
+-# ── W-22 (dream pass 6 P2, pass-8 datapoint ee4): THE INSTRUMENTATION APPENDS ARE DECLARED ────
++# ── `--quiet` — VERDICT LINES ONLY, TRANSCRIPT TO A FILE (#286 lane T; #285 move 3) ───────────
++# MEASURED, #284: the conductor ran this script SIX times IN SEAT for one commit (a showroom
++# refusal, a doc-row refusal, a chain-stale refusal, then a stranded index.lock twice) at roughly
++# 30K tokens of output — the gates this script consumes are each verbose by design, and the
++# conductor pays for all of it in a window that is the session's scarcest surface. #285's move 3
++# names the remedy in four words: "`--quiet` ON `_git_commit.sh` (verdict lines only)".
++#
++# ⛔ THE ONE PROPERTY THAT MATTERS: QUIET NEVER HIDES A REFUSAL. Three mechanisms, not one:
++#   (1) the keep-filter passes every ✗ / ⛔ / ⚠ / ✅ / ✓ line and every line naming a REFUSAL,
++#       a FAIL or a gate, so verdicts stream live exactly as they always did;
++#   (2) on ANY non-zero exit the FULL transcript is replayed to stderr, unfiltered — quiet only
++#       ever pays off on a clean run, which is the run nobody needs to read;
++#   (3) the transcript file is written unconditionally and its path is printed FIRST, so the
++#       filtered lines are never the only copy [[refusal-names-the-first-obstacle]].
++# ⚠ HOW IT IS IMPLEMENTED, and why this shape: the script RE-EXECS ITSELF with `--quiet` stripped
++# and pipes the child through `tee | grep`. A `exec > >(…)` process-substitution filter on the
++# parent would have raced the exit and could TRUNCATE the tail — the sha line is the tail. The
++# child's exit status is taken from PIPESTATUS[0], never from grep (which exits 1 on no match).
++# ⛔ DEFAULT BEHAVIOUR IS UNTOUCHED: with no `--quiet` this block sets QUIET=0 and falls through;
++# nothing else in the script reads QUIET. Verified at #286 by diffing --selftest, --declare-dirt
++# and the no---reconciled refusal path before and after (notes/_lanes/286/T/).
++QUIET=0
++QUIET_LOG=""
++QUIET_ARGS=()
++for _a in "$@"; do
++  case "$_a" in
++    --quiet)   QUIET=1 ;;
++    --quiet=*) QUIET=1; QUIET_LOG="${_a#*=}" ;;
++    *)         QUIET_ARGS+=("$_a") ;;
++  esac
++done
++# the keep-filter. Verdicts, refusals, gate names, the T3 headline and the committed sha line.
++QUIET_KEEP_RE='^(✗|⛔|⚠|✅|✓|— )|REFUS|FAIL|not clean|✗'
++if [ "$QUIET" -eq 1 ] && [ -z "${GIT_COMMIT_QUIET_CHILD:-}" ]; then
++  [ -n "$QUIET_LOG" ] || QUIET_LOG="outputs/_gitcommit-transcript-$(date +%s%N).log"
++  mkdir -p "$(dirname "$QUIET_LOG")" 2>/dev/null || true
++  echo "— --quiet: verdict lines only; FULL transcript → $QUIET_LOG"
++  set -o pipefail
++  GIT_COMMIT_QUIET_CHILD=1 bash "$0" ${QUIET_ARGS[@]+"${QUIET_ARGS[@]}"} 2>&1 |
++    tee "$QUIET_LOG" | grep --line-buffered -E "$QUIET_KEEP_RE"
++  QRC=${PIPESTATUS[0]}
++  if [ "$QRC" -ne 0 ]; then
++    echo "" >&2
++    echo "⛔ --quiet: the run exited $QRC — REPLAYING THE FULL TRANSCRIPT (quiet never hides a refusal):" >&2
++    cat "$QUIET_LOG" >&2
++  fi
++  echo "— --quiet: $(wc -l < "$QUIET_LOG" | tr -d ' ') transcript lines at $QUIET_LOG · exit $QRC"
++  exit "$QRC"
++fi
++
++# ── W-22(dream pass 6 P2, pass-8 datapoint ee4): THE INSTRUMENTATION APPENDS ARE DECLARED ────
+ # The three tracked files our own verification instruments APPEND to while they verify. They are
+ # dirty-at-baseline for a reason that is not a worker's uncommitted draft, and until #188 the only
+ # machinery that knew this was the ONE s137-D1 exclusion — the other two arrived at a push refusal
+@@ -143,6 +198,10 @@ for a in "$@"; do
+     --wrap) WRAP=1 ;;
+     --all-dirty) ALLDIRTY=1 ;;
+     --session=*) ;;
++    # stripped by the --quiet block above before the re-exec; matched here so that a stray
++    # `--quiet` (e.g. GIT_COMMIT_QUIET_CHILD already set in the environment) can never be
++    # mistaken for the msgfile or a path to stage.
++    --quiet|--quiet=*) ;;
+     *) if [ -z "$MSGFILE" ]; then MSGFILE="$a"; else PATHS+=("$a"); fi ;;
+   esac
+ done

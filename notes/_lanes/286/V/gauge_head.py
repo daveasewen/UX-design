@@ -59,19 +59,6 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # ⚠ Anthropic's own framing is "a performance gradient rather than a hard cliff", so this is the
 # last measured-good point, NOT an edge where something breaks. Above it we are extrapolating.
 #
-# ⛔★ WORDING CORRECTED #286, ON DAVE'S #284 CORRECTION — THE NUMBER DID NOT MOVE, THE WORD DID.
-# 256,000 has been called the "hard wall" / "hard line" across this repo's prose and stamps. It is
-# NOT a context wall for THIS model: Anthropic's help centre ("How large is the context window on
-# paid Claude plans?") gives Fable 5.1 / Opus 5 in Cowork on a paid plan a **1M token context
-# window with auto-compaction** near the limit. 256,000 was sourced when the window was 200K-class,
-# so what it names is a QUALITY / TOLERANCE line — the last publicly measured-good recall point —
-# and never a crash edge. ★ THE QUALITY LINE THAT BINDS IS 180,000 (`STOP_LINE_TK` below): Dave's
-# #284 correction is that 180,000 was gauged against the MESSY MIDDLE (lost-in-the-middle recall),
-# which is a quality problem and not a window problem, so it STANDS unchanged by the 1M finding.
-# ⇒ #277's, #281's and #282's recorded "hard-line breaches" of 256,000 were QUALITY breaches, not
-# crash risks. ⛔ NO CONSTANT MOVED AT #286 and no band changed — this is a LABEL fix only, and
-# re-basing any of these figures remains DAVE'S. [[measure-dont-convert-units]]
-#
 # BUDGET_WORKING is DAVE'S, ruled #56 in this session. It is the line jobs are priced against;
 # the gap to HARD is the room a job needs when it turns out bigger than its estimate.
 #
@@ -80,10 +67,7 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # set to 5,000 against a floor of 4,998 — compliance was arithmetically impossible, and three
 # sessions shaved ratified record trying to obey it. A cap must be DERIVED, and a derivation
 # that lands under its own floor is not a strict cap, it is a broken one. [[translate-prose-into-machinery]]
-BUDGET_HARD = 256_000        # SOURCED — last publicly measured-good recall point (93% MRCR v2).
-                             # ⚠ NAME IS HISTORICAL: a QUALITY/TOLERANCE line sourced when the
-                             # window was 200K-class — NOT a context wall for Fable 5.1 / Opus 5
-                             # in Cowork (1M + auto-compaction), per Dave's #284 correction.
+BUDGET_HARD = 256_000        # SOURCED — last publicly measured-good recall point (93% MRCR v2)
 BUDGET_WORKING = 200_000     # SOURCED — the line jobs are priced against
 # ⛔ PROVENANCE CORRECTED #58b, BY DAVE, AND THE CORRECTION IS THE POINT. This line read "DAVE'S,
 # ruled #56" for three sessions. He: *"BTW the 200K and 256K come from established research, its
@@ -478,7 +462,7 @@ def assert_budget_clears_floor(repo: str = REPO) -> list[str]:
     if BUDGET_AMBER >= BUDGET_WORKING or BUDGET_WORKING >= BUDGET_HARD:
         fails.append(
             f"budget thresholds are out of order: amber {BUDGET_AMBER:,} < working "
-            f"{BUDGET_WORKING:,} < quality-max {BUDGET_HARD:,} must hold.")
+            f"{BUDGET_WORKING:,} < hard {BUDGET_HARD:,} must hold.")
     return fails
 
 
@@ -502,13 +486,7 @@ def main() -> int:
         return 2
     print(f"context gauge — unit: REAL Claude tokens ({MODEL})\n")
     print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
-          f"quality-max {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")
-    print("    ⚠ 256,000 is a QUALITY/TOLERANCE line sourced at a 200K-class window, NOT a "
-          "context wall for")
-    print("      Fable 5.1 / Opus 5 in Cowork (1M + auto-compaction) — Dave's #284 correction. "
-          "The quality")
-    print(f"      line that binds is the {STOP_LINE_TK:,} stop line (gauged against the messy "
-          "middle); it STANDS.")
+          f"hard {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")
     print(f"  boot     {boot['total']:,} ± {boot['err']:,}")
     over = "  ⛔ OVER" if boot["firstturn"] > boot["ceiling"] else "  ✅ under"
     print(f"    ceiling  {boot['ceiling']:>8,}  first-turn, SHRINK-ONLY (`s241-D1`, Dave's "

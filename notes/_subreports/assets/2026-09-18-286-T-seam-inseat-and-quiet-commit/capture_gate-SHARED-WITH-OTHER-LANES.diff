@@ -1,0 +1,104 @@
+diff --git a/knowledge/_capture_gate.py b/knowledge/_capture_gate.py
+index a4b03626..b28301ec 100644
+--- a/knowledge/_capture_gate.py
++++ b/knowledge/_capture_gate.py
+@@ -138,7 +138,9 @@ BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)  # used by the #56 TOK
+ # `notes/_MEMENTO-DECISIONS.md` (§ #36, § ★ #74) and the runbook's ds-023 sections. What the
+ # band was FOR — the wrap paid inside the number, the stop line that moves with the wrap price,
+ # the marked-and-forked escape hatch — carries forward in the #56 TOKEN path below, in real
+-# tokens (amber 160,000 · working 200,000 · hard 256,000).
++# tokens (amber 160,000 · working 200,000 · quality-max 256,000 — the figure formerly labelled
++# "hard": a QUALITY/TOLERANCE line sourced at a 200K-class window, NOT a context wall for
++# Fable 5.1 / Opus 5 in Cowork (1M + auto-compaction), per Dave's #284 correction, worded #286).
+ # ⚠ The escape-hatch marker survives the retirement because the TOKEN path uses it: crossing
+ # the working budget is a QUESTION PUT TO DAVE, so the marker names him.
+ RESERVE_SPEND_RE = re.compile(r"RESERVE SPEND\b[^.]{0,40}?\bforked to Dave\b", re.I)
+@@ -555,9 +557,22 @@ MEASURERS = {
+         "silence failure this registry exists to stop. Whether the door is WIRED at all is "
+         "Dave's, and is untouched by this entry."),
+     "_seam.py": ("estimate-only",
+-        "BORN #283 (the lane-seam check, `s283-D1`); the COUNTING SITE was added at #285 by lane "
+-        "SC with the fourth STANDING block (Dave: \"yes to the seam re-quoting the standing "
+-        "constraints\"). `standing_tokens()` encodes the printed constraint block with tiktoken "
++        "BORN #283 (the lane-seam check, `s283-D1`); the FIRST COUNTING SITE was added at #285 by "
++        "lane SC with the fourth STANDING block (Dave: \"yes to the seam re-quoting the standing "
++        "constraints\"), the SECOND at #286 by lane T with the INSEAT block (#285's move 2: "
++        "\"`_seam.py` measures the conductor's own tool-output tokens since the last seam and "
++        "warns above a threshold\"). BOTH are estimate-only for the SAME reason, and the second "
++        "is declared here rather than left to ride on the first entry's coat-tails — a registry "
++        "entry that names one site while the file has two is the stale pin this gate exists to "
++        "catch. `inseat_tokens()` encodes the CONDUCTOR'S OWN `tool_result` text out of the live "
++        "transcript (non-sidechain records, lane returns split out) with tiktoken cl100k ONLY, to "
++        "size what was spent in the seat since the last seam; the threshold it is judged against "
++        "(`INSEAT_WARN_TK` = 10,000) is PICKED, NOT RULED, and says so on the line it prints on. "
++        "⚠ It is NEVER a FILL claim: the seam's FILL line is `_checkin.py`'s REAL reading, and "
++        "this number measures a DIFFERENT OBJECT (tool output landing in the window, not the "
++        "window) — they are never converted into one another [[measure-dont-convert-units]]. "
++        "Unavailable tiktoken makes the line read `?` and the verdict read UNMEASURED; it is "
++        "never read as 0, and the seam's selftest holds that arm. `standing_tokens()` encodes the printed constraint block with tiktoken "
+         "cl100k ONLY, to size the tail it prints — it never calls `_gauge_tokens.count()`, has no "
+         "API path, and the figure is never a FILL claim or a budget figure; the seam's FILL line "
+         "is `_checkin.py`'s REAL reading, imported, not re-derived here. So estimate-only is the "
+@@ -1378,10 +1393,16 @@ def check_preflight_tokens(line, label="GOOD-MORNING.md"):
+         # 256,000 is the largest context at which Claude's recall has been publicly MEASURED
+         # (93% MRCR v2). Past it we are not spending a reserve, we are extrapolating off the end
+         # of the data. A marker cannot buy evidence that does not exist.
++        # ⚠ WORDING CORRECTED #286 (Dave's #284 correction): this is a QUALITY / TOLERANCE line,
++        # NOT a context wall — Fable 5.1 / Opus 5 in Cowork have a 1M window with auto-compaction,
++        # so crossing 256,000 is a RECALL-QUALITY breach, never a crash risk. The number and the
++        # fail are UNCHANGED; only the label is.
+         fails.append(
+-            f"{label}: pre-flight {total:,} is past the HARD line ({gauge.BUDGET_HARD:,}). "
++            f"{label}: pre-flight {total:,} is past the QUALITY-MAX line ({gauge.BUDGET_HARD:,}; "
++            f"historically called the 'hard line'). "
+             f"That line is SOURCED, not picked: it is the last context length at which Claude's "
+-            f"recall has been publicly measured (93% on MRCR v2, falling to 76% at 1M). Beyond "
++            f"recall has been publicly measured (93% on MRCR v2, falling to 76% at 1M). It is a "
++            f"QUALITY line, not a context wall for this model (1M + auto-compaction). Beyond "
+             f"it there is no measurement to reason from, so `RESERVE SPEND` does NOT buy the "
+             f"overrun — SPLIT THE JOB across windows, or delegate part of it to a subagent with "
+             f"its own budget.")
+@@ -1389,7 +1410,7 @@ def check_preflight_tokens(line, label="GOOD-MORNING.md"):
+         if RESERVE_SPEND_RE.search(line):
+             warns.append(
+                 f"{label}: pre-flight {total:,} is over the working budget "
+-                f"({gauge.BUDGET_WORKING:,}) but inside the hard line — ALLOWED, marked and "
++                f"({gauge.BUDGET_WORKING:,}) but inside the quality-max line — ALLOWED, marked and "
+                 f"forked to Dave. ⚠ RARE: a session marking this every wrap has re-dialled the "
+                 f"budget by habit rather than by ruling.")
+         else:
+@@ -4274,6 +4295,8 @@ def boot_stratum_double_count_check(repo):
+ # PASSES; a SILENT one fails the arm. The bar is honesty, not obedience — the wrap that writes
+ # *"104,364 OVER the 200,000 working ceiling"* has done the one thing the arm exists to force,
+ # and a wrap that states a six-figure FILL and says nothing about the wall has not.
++# ⚠ "the wall" above is the HISTORICAL name for 256,000. Worded #286 on Dave's #284 correction:
++# it is a QUALITY / TOLERANCE line, not a context wall for this model (1M + auto-compaction).
+ # ⛔ WHAT IT NEVER TOUCHES: `BUDGET_WORKING` (200,000) and `BUDGET_HARD` (256,000) are SOURCED and
+ # are not moved, widened or re-based here; nor is `gauge.STOP_LINE_TK`. This arm reads them.
+ # ⚠ WHAT IT CANNOT SEE: whether the declared figure is TRUE. A sub cannot re-measure a
+@@ -6525,8 +6548,10 @@ PREFLIGHT_TOKEN_FIXTURES = [
+      "pre-flight #56: boot 26,897 measured + job 150,000 est + wrap 30,000 est "
+      "= 206,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", False),
+     # ⛔ THE ASYMMETRY THAT MATTERS: the marker buys the WORKING overrun and does NOT buy the
+-    # HARD one. Past 256,000 there is no published measurement of Dave's model to reason from,
+-    # and a receipt cannot manufacture evidence. Split the job or delegate it.
++    # QUALITY-MAX one. Past 256,000 there is no published measurement of Dave's model's RECALL to
++    # reason from, and a receipt cannot manufacture evidence. Split the job or delegate it.
++    # ⚠ #286 wording, on Dave's #284 correction: 256,000 bounds measured QUALITY, not the window
++    # (Fable 5.1 / Opus 5 in Cowork: 1M + auto-compaction). The fixture and the fail are unchanged.
+     ("past the HARD line — FAILS EVEN WHEN MARKED",
+      "pre-flight #56: boot 26,897 measured + job 200,000 est + wrap 40,000 est "
+      "= 266,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", True),
+@@ -6559,8 +6584,10 @@ def selftest_preflight_tokens():
+     if (gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD) != (160_000, 200_000, 256_000):
+         failures.append(
+             f"budget = {(gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD)}, ruled "
+-            f"(160,000 / 200,000 / 256,000) at #56. WORKING is DAVE'S; HARD is SOURCED (93% "
+-            f"MRCR v2 at 256K); AMBER is derived at 80% of working. Re-dialling WORKING is his "
++            f"(160,000 / 200,000 / 256,000) at #56. WORKING is DAVE'S; BUDGET_HARD is SOURCED "
++            f"(93% MRCR v2 at 256K) and is a QUALITY-MAX line, NOT a context wall for this model "
++            f"(1M + auto-compaction — Dave's #284 correction, worded #286); "
++            f"AMBER is derived at 80% of working. Re-dialling WORKING is his "
+             f"word — updating this pin is part of doing it.")
+     # ⛔ THE #53 GUARD, asserted rather than trusted: a budget under its own floor is unobeyable.
+     # ⚠ PAIRED HALF OF #79-D1 (Dave: *"make it refuse"*). This reaches the gauge by

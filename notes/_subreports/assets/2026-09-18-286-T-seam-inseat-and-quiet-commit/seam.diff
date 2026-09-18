@@ -1,0 +1,289 @@
+diff --git a/knowledge/_seam.py b/knowledge/_seam.py
+index 26047438..46f89347 100644
+--- a/knowledge/_seam.py
++++ b/knowledge/_seam.py
+@@ -10,14 +10,32 @@ the lanes are cut and where the fill actually moves. Dave, #283 opener, on "I'll
+ every lane seam and say the number in chat": *"can we do this in every session"*. On clearing
+ scratch before a lane at 99% disk: *"good, maybe we make this a regular check- more mechanical"*.
+ 
+-WHAT IT PRINTS — FOUR BLOCKS, quotable verbatim in chat, nothing else:
++WHAT IT PRINTS — FIVE BLOCKS, quotable verbatim in chat, nothing else:
+   FILL  <now> real / <turns> turns · boot <boot> · <verdict against the three lines>
+   DISK  /sessions <pct>% · <free> KB free · <verdict>
++  INSEAT <tokens> cl100k own tool output since the last seam · <n> results · <verdict>
+   SCRATCH <n> own entries · <removed|kept> · <kept-list>
+   STANDING — the standing constraints, one per line, verbatim from `_standing.md`, then
+             STANDING <n> lines · <tokens> cl100k
+ 
+-THE FOURTH BLOCK — WHY IT IS LAST (#285, Dave: *"yes to the seam re-quoting the standing
++THE INSEAT BLOCK — THE DELEGATION LAPSE, AS A NUMBER (#286 lane T, building #285's move 2:
++*"THE SEAM'S IN-SEAT ARM — `_seam.py` measures the conductor's own tool-output tokens since the
++last seam and warns above a threshold"*). #284 MEASURED the lapse and could not make it
++mechanical: the conductor did lane work in seat four times — the disk lever and its spec (~15K),
++SIX runs of the commit script (~30K), two screenshots, the window research — while *"the one
++delegated lane cost the conductor's window about 300 tokens"*. That is the whole argument, and
++until now it existed only in prose, once, in a handoff. This arm reads the conductor's OWN
++transcript (non-sidechain `tool_result` blocks), counts what has landed in the seat SINCE THE
++LAST SEAM, and prints it every time the seam runs — so the lapse is a reading at every seam
++rather than a finding at one wrap. It separates LANE RETURNS (the `Task`/`Agent` tool's own
++results — the cost of delegating, which is the cheap half of #284's number) from everything
++else, because the verdict is about work done IN SEAT, not about work routed out of it.
++⚠ ADVISORY and ESTIMATE-ONLY: cl100k over the transcript's tool-result text, never a FILL claim
++(FILL above is `_checkin.py`'s REAL reading). The threshold is PICKED, not ruled — see
++INSEAT_WARN_TK. The since-marker is a gitignored state file; a missing or unmatched marker is
++NAMED on the line ("since transcript start"), never silently treated as zero.
++
++THE STANDING BLOCK — WHY IT IS LAST (#285, Dave: *"yes to the seam re-quoting the standing
+ constraints"*). Everything read at a session's opener — handoff, chain, check-in, ~80K — becomes
+ the MIDDLE of the context the moment work starts, and standing rules buried there drift out of
+ attention (lost-in-the-middle / U-shaped attention). The seam already runs before and after every
+@@ -41,12 +59,13 @@ The obligation it carries is the CONDUCTOR'S: quote the FILL line in chat at eve
+ seam that runs it and does not quote it has not run it. Promotion to blocking is Dave's.
+ 
+ Usage:
+-  python3 knowledge/_seam.py               # the four blocks; own scratch IS cleaned
++  python3 knowledge/_seam.py               # the five blocks; own scratch IS cleaned
+   python3 knowledge/_seam.py --no-clean    # read only
+   python3 knowledge/_seam.py --no-standing # suppress the STANDING block
+-  python3 knowledge/_seam.py --selftest    # verdict + keep-list + STANDING arms
++  python3 knowledge/_seam.py --no-inseat   # suppress the INSEAT block (and do not move its marker)
++  python3 knowledge/_seam.py --selftest    # verdict + keep-list + INSEAT + STANDING arms
+ """
+-import os, sys, json, subprocess, argparse
++import os, sys, json, subprocess, argparse, glob
+ 
+ _d = os.path.dirname(os.path.abspath(__file__))
+ sys.path.insert(0, _d)
+@@ -59,6 +78,21 @@ DISK_WARN_PCT = 90                # same PICKED figure as _checkin.DISK_WARN_PCT
+ STANDING_PATH = os.path.join(_d, "_standing.md")
+ STANDING_TK_CEILING = 300         # the tail must stay a TAIL — the selftest holds the block here
+ 
++# ── INSEAT constants ──────────────────────────────────────────────────────────────────────────
++# ⚠ INSEAT_WARN_TK IS PICKED, NOT RULED — the same standing as DISK_WARN_PCT above, and it is
++# named as picked so nobody reads it as Dave's line. WHAT PICKED IT, from #284's own measured
++# numbers: the disk lever done in seat cost ~15,000 and the six commit runs ~30,000, while the
++# one DELEGATED lane cost the conductor ~300. 10,000 sits between those two worlds — above any
++# plausible reading-and-routing turn, below every in-seat lane #284 recorded. Promotion to a
++# ruled line, or to blocking, is DAVE'S; this arm reports and never exits non-zero on a reading.
++INSEAT_WARN_TK = 10_000
++# The since-marker. `outputs/` is gitignored (see .gitignore "scratch render output"), so the
++# state never dirties the tree at the commit seam. ⛔ NOT /tmp: THIS FILE'S OWN SCRATCH ARM
++# deletes the user's top-level /tmp entries, so a marker there would be eaten by the next run.
++INSEAT_STATE = os.path.join(os.path.dirname(_d), "outputs", "_seam-inseat-state.json")
++# The conductor's transcript. Single-sourced from `_checkin.py` rather than re-spelled here.
++LANE_TOOLS = ("Task", "Agent")    # a lane's RETURN is a delegation cost, not in-seat lane work
++
+ 
+ def fill_verdict(now: int) -> str:
+     if now >= G.BUDGET_HARD:
+@@ -97,6 +131,143 @@ def scratch_line(clean: bool) -> str:
+     return " · ".join(parts)
+ 
+ 
++# ── THE IN-SEAT ARM (#286 lane T, #285's move 2) ─────────────────────────────────────────────
++def _block_text(b) -> str:
++    """The text of one `tool_result` content block, whatever shape the record carries.
++
++    Deliberately total: a block whose content is a string, a list of {type:text} parts, or
++    anything else all yield SOMETHING measurable. An unreadable shape is measured as its own
++    JSON rather than silently dropped — a tool result that vanishes from the count is the one
++    failure this arm cannot afford [[measuring-tool-must-not-guess]].
++    """
++    c = b.get("content")
++    if isinstance(c, str):
++        return c
++    if isinstance(c, list):
++        out = []
++        for part in c:
++            if isinstance(part, dict):
++                out.append(part.get("text") or json.dumps(part, ensure_ascii=False))
++            else:
++                out.append(str(part))
++        return "\n".join(out)
++    return "" if c is None else json.dumps(c, ensure_ascii=False)
++
++
++def inseat_scan(records: list, after_uuid=None) -> dict:
++    """PURE. Given transcript records (newest last) and the previous seam's marker, return the
++    conductor's own tool output since that marker, split from the lane returns.
++
++    WHAT COUNTS AS IN SEAT: a `type == "user"` record with `isSidechain` false carrying
++    `tool_result` blocks — i.e. output that landed in the CONDUCTOR'S window. A sidechain
++    record is a subagent's own traffic and is never the conductor's cost.
++    WHAT IS SPLIT OUT: results whose `tool_use_id` was issued by a `Task`/`Agent` call — a
++    lane's RETURN. It is a real cost in the seat, but it is the cost of DELEGATING; the verdict
++    is about the other number. Both are printed.
++    ⚠ An `after_uuid` that is not in `records` means the transcript was replaced or compacted:
++    the scan runs from the START and says so (`resumed=False`), never from a guessed offset.
++    """
++    ids = [r.get("uuid") for r in records]
++    start = 0
++    resumed = False
++    if after_uuid and after_uuid in ids:
++        start = ids.index(after_uuid) + 1
++        resumed = True
++    lane_ids = set()
++    for r in records:                      # the whole file: a lane's tool_use may predate the marker
++        msg = r.get("message") or {}
++        for b in msg.get("content") or []:
++            if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("name") in LANE_TOOLS:
++                lane_ids.add(b.get("id"))
++    own, lane = [], []
++    for r in records[start:]:
++        if r.get("type") != "user" or r.get("isSidechain"):
++            continue
++        msg = r.get("message") or {}
++        for b in msg.get("content") or []:
++            if not isinstance(b, dict) or b.get("type") != "tool_result":
++                continue
++            (lane if b.get("tool_use_id") in lane_ids else own).append(_block_text(b))
++    return {"own": own, "lane": lane, "resumed": resumed,
++            "last_uuid": ids[-1] if ids else None, "scanned": len(records) - start}
++
++
++def inseat_tokens(texts: list):
++    """cl100k count of the tool-result text this arm measured — the honest unit, NAMED on the
++    line it prints on. ⚠ ESTIMATE-ONLY by declaration (ds-021 (C), registered in
++    `_capture_gate.py::MEASURERS['_seam.py']`): it never calls `_gauge_tokens.count()` and is
++    never a FILL claim. Unavailable tiktoken returns None and the line says `?`, never a guess.
++    """
++    try:
++        import tiktoken
++        enc = tiktoken.get_encoding("cl100k_base")
++        return sum(len(enc.encode(t)) for t in texts)
++    except Exception:
++        return None
++
++
++def inseat_verdict(own_tk) -> str:
++    if own_tk is None:
++        return "? UNMEASURED — tiktoken unavailable; the cost is not guessed"
++    if own_tk >= INSEAT_WARN_TK:
++        return (f"⚠ {own_tk:,} in seat since the last seam, over the PICKED {INSEAT_WARN_TK:,} "
++                f"— this is lane work being done in the seat (#284's lapse); ROUTE IT")
++    return f"✅ under the PICKED {INSEAT_WARN_TK:,} in-seat line"
++
++
++def _read_state(path: str = INSEAT_STATE) -> dict:
++    try:
++        with open(path, encoding="utf-8") as fh:
++            return json.load(fh)
++    except Exception:
++        return {}
++
++
++def _write_state(transcript: str, last_uuid, path: str = INSEAT_STATE) -> None:
++    try:
++        os.makedirs(os.path.dirname(path), exist_ok=True)
++        with open(path, "w", encoding="utf-8") as fh:
++            json.dump({"transcript": transcript, "last_uuid": last_uuid}, fh)
++    except Exception:
++        pass                       # ADVISORY: a marker that cannot be written costs a reading, never a run
++
++
++def find_transcript():
++    """The conductor's transcript, by `_checkin.py`'s OWN glob (single-sourced, never re-spelled).
++    Returns None rather than exiting — `_checkin.find_transcript` sys.exits, which is right for a
++    check-in and wrong for an advisory block that must never take the seam down."""
++    try:
++        import _checkin
++        hits = glob.glob(_checkin.TRANSCRIPT_GLOB)
++    except Exception:
++        return None
++    return max(hits, key=os.path.getmtime) if hits else None
++
++
++def inseat_block(state_path: str = INSEAT_STATE, move_marker: bool = True) -> str:
++    """The INSEAT line as it prints. ADVISORY: every failure is NAMED, never fatal, never zero."""
++    path = find_transcript()
++    if not path:
++        return ("INSEAT UNREADABLE — no transcript under _checkin.TRANSCRIPT_GLOB. This is an "
++                "ABSENCE OF A MATCH, not a proven absence of in-seat work; NOT read as 0.")
++    try:
++        with open(path, encoding="utf-8") as fh:
++            records = [json.loads(ln) for ln in fh if ln.strip()]
++    except Exception as e:
++        return f"INSEAT UNREADABLE — {type(e).__name__}: {e} (NOT read as 0)"
++    st = _read_state(state_path)
++    after = st.get("last_uuid") if st.get("transcript") == path else None
++    r = inseat_scan(records, after)
++    own_tk, lane_tk = inseat_tokens(r["own"]), inseat_tokens(r["lane"])
++    if move_marker:
++        _write_state(path, r["last_uuid"], state_path)
++    since = "since the last seam" if r["resumed"] else "since transcript start (no prior seam marker)"
++    own_s = "?" if own_tk is None else f"{own_tk:,}"
++    lane_s = "?" if lane_tk is None else f"{lane_tk:,}"
++    return (f"INSEAT {own_s} cl100k own tool output {since} · {len(r['own'])} results "
++            f"(+{len(r['lane'])} lane returns, {lane_s} cl100k) · {inseat_verdict(own_tk)}")
++
++
+ def standing_lines(path: str = STANDING_PATH) -> list:
+     """The constraint lines of `_standing.md`, verbatim — header and frontmatter skipped.
+ 
+@@ -140,6 +311,7 @@ def main(argv=None) -> int:
+     ap.add_argument("--window", type=int, default=G.BUDGET_WORKING)
+     ap.add_argument("--no-clean", action="store_true")
+     ap.add_argument("--no-standing", action="store_true")
++    ap.add_argument("--no-inseat", action="store_true")
+     ap.add_argument("--selftest", action="store_true")
+     a = ap.parse_args(argv)
+     if a.selftest:
+@@ -161,6 +333,8 @@ def main(argv=None) -> int:
+                     print(f"DISK  /sessions UNREADABLE — {r['reason']}")
+     except Exception as e:          # the reading failed — named, never defaulted
+         print(f"FILL  UNREADABLE — {type(e).__name__}: {e}")
++    if not a.no_inseat:            # BEFORE scratch, and never after STANDING (see the docstring)
++        print(inseat_block())
+     print(scratch_line(clean=not a.no_clean))
+     if not a.no_standing:          # LAST, always — the recency end is the whole point
+         print("\n".join(standing_block()))
+@@ -182,6 +356,40 @@ def selftest() -> int:
+     rm = [p for p in own if p not in KEEP]
+     if KEEP[0] in rm or "/tmp/x-litter" not in rm:
+         fails.append(f"[keep-list] {rm}")
++    # ── INSEAT arms (#286). Driven on HAND-BUILT records, in memory: no transcript, no state
++    # file, no /tmp (this file's own scratch arm eats /tmp). Each arm names the class it bites.
++    def rec(uuid, typ, content, side=False):
++        return {"uuid": uuid, "type": typ, "isSidechain": side,
++                "message": {"content": content}}
++    recs = [
++        rec("u1", "assistant", [{"type": "tool_use", "id": "t1", "name": "Bash"}]),
++        rec("u2", "user", [{"type": "tool_result", "tool_use_id": "t1", "content": "IN SEAT"}]),
++        rec("u3", "assistant", [{"type": "tool_use", "id": "t2", "name": "Task"}]),
++        rec("u4", "user", [{"type": "tool_result", "tool_use_id": "t2", "content": "LANE RETURN"}]),
++        rec("u5", "user", [{"type": "tool_result", "tool_use_id": "t3", "content": "SUBAGENT"}], side=True),
++        rec("u6", "assistant", [{"type": "tool_use", "id": "t4", "name": "Read"}]),
++        rec("u7", "user", [{"type": "tool_result", "tool_use_id": "t4",
++                            "content": [{"type": "text", "text": "AFTER THE MARKER"}]}]),
++    ]
++    s_all = inseat_scan(recs, None)
++    if s_all["own"] != ["IN SEAT", "AFTER THE MARKER"]:
++        fails.append(f"[inseat own] wrong set: {s_all['own']}")
++    if s_all["lane"] != ["LANE RETURN"]:
++        fails.append(f"[inseat lane split] a Task result was not split out: {s_all['lane']}")
++    if s_all["resumed"] or s_all["last_uuid"] != "u7":
++        fails.append(f"[inseat marker] resumed={s_all['resumed']} last={s_all['last_uuid']}")
++    s_since = inseat_scan(recs, "u4")          # the marker arm: only what landed AFTER it
++    if s_since["own"] != ["AFTER THE MARKER"] or not s_since["resumed"]:
++        fails.append(f"[inseat since-marker] {s_since['own']} resumed={s_since['resumed']}")
++    s_lost = inseat_scan(recs, "nosuchuuid")   # a replaced/compacted transcript: from the START,
++    if s_lost["resumed"] or len(s_lost["own"]) != 2:   # and SAID so — never a guessed offset
++        fails.append(f"[inseat lost marker] resumed={s_lost['resumed']} own={len(s_lost['own'])}")
++    if "⚠" not in inseat_verdict(INSEAT_WARN_TK) or "⚠" in inseat_verdict(INSEAT_WARN_TK - 1):
++        fails.append("[inseat threshold] warn edge wrong")
++    if "UNMEASURED" not in inseat_verdict(None):
++        fails.append("[inseat unmeasured] a missing count must NAME itself, never read as 0")
++    if inseat_tokens(["hello world"]) is None:
++        fails.append("[inseat tiktoken] unavailable — the cost is UNMEASURED, never guessed")
+     # STANDING arm: the block prints, it is the LAST block, and it stays a tail (≤ ceiling)
+     blk = standing_block()
+     if blk[0] != "STANDING" or len(blk) < 3:
+@@ -195,7 +403,7 @@ def selftest() -> int:
+             fails.append("[standing] tiktoken unavailable — the cost is UNMEASURED, never guessed")
+         elif int(tk) > STANDING_TK_CEILING:
+             fails.append(f"[standing] {tk} cl100k over the {STANDING_TK_CEILING} ceiling")
+-    print("\n".join(fails) if fails else f"seam selftest: {len(arms) + 3} arms, all GREEN")
++    print("\n".join(fails) if fails else f"seam selftest: {len(arms) + 3 + 8} arms, all GREEN")
+     return 1 if fails else 0
+ 
+ 
