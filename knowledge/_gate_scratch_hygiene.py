@@ -32,7 +32,16 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 
 import os, pwd, shutil, subprocess, sys
 
-SCRATCH_ROOTS = ["/var/tmp", "/tmp"]
+SCRATCH_ROOTS = ["/var/tmp", "/tmp",
+                 # #283 (s283-D1, Dave: "make this a regular check - more mechanical"): the SESSION
+                 # HOME is on the same persistent /sessions disk and is NEVER removed when the
+                 # session user dies — 127 dead homes held 4.8G at #283. Our own residue per lane
+                 # (~38M: tokenizer cache, pip) is the ONE part of that leak we can stop.
+                 os.path.expanduser("~/tmp"), os.path.expanduser("~/.cache")]
+# wrap-only: ~/.local holds the session's pip installs (tiktoken) — the gauge needs it until the
+# very end, so it is cleaned by `--clean --wrap` (ritual step 4c), never at a lane seam.
+WRAP_ONLY_ROOTS = [os.path.expanduser("~/.local")]
+KEEP = ("/tmp/gitshim",)   # the mount's git shim — 4c deleted it at #282; named as kept, never removed
 FILL_WARN_PCT = 80
 
 
@@ -88,6 +97,8 @@ def report(clean=False):
         print(f"⚠ {len(own)} scratch entr{'y' if len(own) == 1 else 'ies'} owned by "
               f"{_me()} — REMOVABLE NOW ONLY (the owner dies with the session):")
         for p in own:
+            if p in KEEP:
+                print(f"    {p}  → KEPT (keep-list)"); continue
             print(f"    {p}" + ("  → removed" if clean and _rm(p) else ""))
     else:
         print(f"· no scratch owned by {_me()} under {', '.join(SCRATCH_ROOTS)} — clean wrap")
@@ -134,4 +145,6 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--wrap" in sys.argv:
+        SCRATCH_ROOTS += WRAP_ONLY_ROOTS
     sys.exit(report(clean="--clean" in sys.argv))

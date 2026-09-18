@@ -719,8 +719,11 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    full — 3.2G of dead-session orphans, chiefly the #220 playwright browsers at 984M — and
    `useradd` itself ENOSPC'd five times: no shell at all until a host restart.)*
    Run `python3 knowledge/_gate_scratch_hygiene.py` (ADVISORY, born #227 — promotion is Dave's):
-   it names every `/var/tmp` + `/tmp` entry the CURRENT user owns and the VM fill %. Remove what
-   you own (`--clean` does it), because the next session cannot. Orphans owned by dead sessions
+   it names every `/var/tmp` + `/tmp` + `~/tmp` + `~/.cache` entry the CURRENT user owns and the VM
+   fill %. Remove what you own (`--clean --wrap` does it, and `--wrap` adds `~/.local` — the session
+   home sits on the same persistent disk and is never removed when the user dies; #283 counted 127
+   dead homes holding 4.8G, `s283-D1`), because the next session cannot. ⛔ `--clean` NEVER touches
+   `/tmp/gitshim` — that is `_seam.py`'s keep-list and the #282 4c collision. Orphans owned by dead sessions
    are reported as a total only — drift visibility, not action. ⚠ The wrap is the LAST moment
    this cleanup is possible; a skipped 4c is a permanent squatter, not a deferral.
 
