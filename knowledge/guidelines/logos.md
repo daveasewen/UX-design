@@ -91,14 +91,18 @@ ratio and is never the measure. Whether any lockup may render UNDER x-small is N
   logo-dimension clear space (`va25-014`, 1× hexagon height on all sides, `visual-assets.md`)
   remains the PRINT rule and is untouched. (s282-D5, Dave 2026-09-18) [BLOCKING — vertical
   digital clear space only; the horizontal axis has no rule to check against] {#logo26-009}
-- **Horizontal digital clear space is a floor of 0.25 × logo WIDTH, snapped UP to the 4px grid — and it
-  is applied on the OPEN side only, by alignment:** centred → the same floor on both sides; right-aligned
+- **Horizontal digital clear space is a floor of 0.25 × the LOGOMARK's width — the hexagon alone, never
+  the hexagon-plus-wordmark — snapped UP to the 4px grid, and it is applied on the OPEN side only, by
+  alignment:** centred → the same floor on both sides; right-aligned
   → the floor on the LEFT only, zero on the right (the flush edge); left-aligned → the floor on the RIGHT
   only, zero on the left. Dave: "lets do horizontal clearspace at quarter width snapped up to the 4px.
   but this is zero on the left or right depending on alignment, centre - same both sides. right - only
-  on the left. left - only on the right". At the five steps the masterbrand (315:85) is 89 · 104 · 119 ·
-  133 · 148 px wide ⇒ floors 24 · 28 · 32 · 36 · 40 px; the hexagon (170:85) is 48 · 56 · 64 · 72 · 80
-  wide ⇒ 12 · 16 · 16 · 20 · 20 px. This completes `logo26-009`'s vertical floor; `W-282ll`'s
+  on the left. left - only on the right". Dave, correcting the first cut the same morning: "so the clearspace is defined by the logomark
+  dimensions only, so it would be the same for both, the wordmark and logomark dimensions combined aren't
+  applicable here". The hexagon is 2 × its height wide (170:85), so at the five steps it is 48 · 56 · 64 ·
+  72 · 80 px wide ⇒ horizontal floors 12 · 16 · 16 · 20 · 20 px — THE SAME for the hexagon and the
+  masterbrand at a given height. (The vertical floor of `logo26-009` is on height, which the logomark and
+  the lockup share.) This completes `logo26-009`'s vertical floor; `W-282ll`'s
   horizontal half closes here. (s282-D6, Dave 2026-09-18) [BLOCKING — horizontal digital clear space,
   measured on the open side(s) per alignment] {#logo26-011}
 - **The hexagon alone may be used on the nav-rail head, the app tile and the favicon** —
