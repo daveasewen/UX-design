@@ -91,6 +91,16 @@ ratio and is never the measure. Whether any lockup may render UNDER x-small is N
   logo-dimension clear space (`va25-014`, 1× hexagon height on all sides, `visual-assets.md`)
   remains the PRINT rule and is untouched. (s282-D5, Dave 2026-09-18) [BLOCKING — vertical
   digital clear space only; the horizontal axis has no rule to check against] {#logo26-009}
+- **Horizontal digital clear space is a floor of 0.25 × logo WIDTH, snapped UP to the 4px grid — and it
+  is applied on the OPEN side only, by alignment:** centred → the same floor on both sides; right-aligned
+  → the floor on the LEFT only, zero on the right (the flush edge); left-aligned → the floor on the RIGHT
+  only, zero on the left. Dave: "lets do horizontal clearspace at quarter width snapped up to the 4px.
+  but this is zero on the left or right depending on alignment, centre - same both sides. right - only
+  on the left. left - only on the right". At the five steps the masterbrand (315:85) is 89 · 104 · 119 ·
+  133 · 148 px wide ⇒ floors 24 · 28 · 32 · 36 · 40 px; the hexagon (170:85) is 48 · 56 · 64 · 72 · 80
+  wide ⇒ 12 · 16 · 16 · 20 · 20 px. This completes `logo26-009`'s vertical floor; `W-282ll`'s
+  horizontal half closes here. (s282-D6, Dave 2026-09-18) [BLOCKING — horizontal digital clear space,
+  measured on the open side(s) per alignment] {#logo26-011}
 - **The hexagon alone may be used on the nav-rail head, the app tile and the favicon** —
   each conditional on Create Direct approval AND "HSBC" in view (`va25-016`'s two conditions
   stand, unrelaxed) — **and in responsive layouts at the smaller sizes, tablet-portrait and
