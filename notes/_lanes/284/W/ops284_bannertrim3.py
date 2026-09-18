@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+"""#284 wrap — SIXTH compression pass; 1,201 → 1,200 or under. Punctuation girth only."""
+import sys
+from run_ops import run
+OPS = [
+ {"op": "replace", "file": "GOOD-MORNING.md",
+  "find": ["> - ★★ ② **40 MASTERS DRAWN AND ACCEPTED BY EYE — `s282-D3` ENACTED.** LM: `_gen_masters.py` (`--check` rc 0) + 40 SVGs, 8 lockups × 24/28/32/36/40 raw height, raw px w+h, **no viewBox**, grid-snapped (hexagon on h/4, stems), widths 89/104/119/133/148. His: ***\"the sheet is good BTW\"***. ⚠ B's horizontals a pixel off the H at 24/40, the lane's flaw, accepted. ⛔ **NOT in `_logo_nodes.json`** (fence) — `W-284lm`'s open half."],
+  "replace": ["> - ★★ ② **40 MASTERS DRAWN AND ACCEPTED BY EYE — `s282-D3` ENACTED.** LM: `_gen_masters.py` (`--check` rc 0), 40 SVGs, 8 lockups × 24/28/32/36/40 raw height, raw px w+h, **no viewBox**, grid-snapped (hexagon h/4, stems), widths 89/104/119/133/148. His: ***\"the sheet is good BTW\"***. ⚠ B's horizontals a pixel off the H at 24/40, the lane's flaw, accepted. ⛔ **NOT in `_logo_nodes.json`** (fence) — `W-284lm`'s open half."]},
+]
+if __name__ == "__main__":
+    sys.exit(run("bannertrim3", OPS, write="--write" in sys.argv, min_bytes=100))
