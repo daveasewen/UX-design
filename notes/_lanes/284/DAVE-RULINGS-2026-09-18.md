@@ -9,6 +9,7 @@
 
 - **On delegation (RULING-SHAPED, HIS WORDS):** *"I thought we had a subs strategy, basically everything is Delegated even if its a fable sub and the lane is always an orchestrator and judgment layer so we can get more work done in a session, this seems to have been lost"* — restating #57 / `s204-D1`. The conductor did four pieces of lane work in-seat this session (disk + spec-finding ~15K, six commit-script runs ~30K, two screenshots reviewed in-seat, research in-seat); only the drawing was a lane.
 - *"wrap"*
+- **After the wrap, on the PM topology (`s204-D1`): *"we also had a construction with adversarial PMs too managing subs, what happened to that?"*** — the conductor's answer: it was not used today either. Lane LM ran as a bare build lane with no build-PM and no adversarial verifier-PM; the conductor verified in-seat. Same root cause as the delegation lapse: the topology lives in prose and nothing in the brief template or the seam check asks for it. For #285's first moves: the brief template (`gen_brief.py`) gains a mandatory VERIFIER region naming the adversarial lane, and a lane without one is refused by the template, not remembered by the conductor. Filed after `9a97e006`/`77b491b8`; uncommitted at the time of writing, for #285's opener commit.
 
 ## FINDING put to him in reply (not a ruling until he says so)
 

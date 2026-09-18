@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""_seam.py — THE LANE-SEAM CHECK. Three lines, run before every lane is cut and after every
-lane lands. Born #283 on Dave's two words at the opener.
+"""_seam.py — THE LANE-SEAM CHECK. Four blocks, run before every lane is cut and after every
+lane lands. Born #283 on Dave's two words at the opener; the fourth block added #285.
 
 WHY (measured, three sessions). #277 crossed the 256,000 hard line under pressure. #281 read
 the gauge every turn and overruled it every turn. #282 did not read it at all between two
@@ -10,10 +10,21 @@ the lanes are cut and where the fill actually moves. Dave, #283 opener, on "I'll
 every lane seam and say the number in chat": *"can we do this in every session"*. On clearing
 scratch before a lane at 99% disk: *"good, maybe we make this a regular check- more mechanical"*.
 
-WHAT IT PRINTS — three lines, quotable verbatim in chat, nothing else:
+WHAT IT PRINTS — FOUR BLOCKS, quotable verbatim in chat, nothing else:
   FILL  <now> real / <turns> turns · boot <boot> · <verdict against the three lines>
   DISK  /sessions <pct>% · <free> KB free · <verdict>
   SCRATCH <n> own entries · <removed|kept> · <kept-list>
+  STANDING — the standing constraints, one per line, verbatim from `_standing.md`, then
+            STANDING <n> lines · <tokens> cl100k
+
+THE FOURTH BLOCK — WHY IT IS LAST (#285, Dave: *"yes to the seam re-quoting the standing
+constraints"*). Everything read at a session's opener — handoff, chain, check-in, ~80K — becomes
+the MIDDLE of the context the moment work starts, and standing rules buried there drift out of
+attention (lost-in-the-middle / U-shaped attention). The seam already runs before and after every
+lane; re-quoting the constraints at its TAIL puts them at the RECENCY end every time. The block
+prints LAST for exactly that reason and must not be moved above SCRATCH.
+⚠ `knowledge/_standing.md` is a DRAFT until Dave approves it; the seam re-quotes, it never inscribes.
+Missing file → `STANDING — knowledge/_standing.md ABSENT`, and the run still exits 0.
 
 VERDICTS are the ruled lines, imported from `_gauge_tokens.py`, never restated here:
   STOP_LINE_TK 180,000 (s260-D2/s271-D1) → past it: "STOP LINE PASSED — wrap before the next lane"
@@ -30,9 +41,10 @@ The obligation it carries is the CONDUCTOR'S: quote the FILL line in chat at eve
 seam that runs it and does not quote it has not run it. Promotion to blocking is Dave's.
 
 Usage:
-  python3 knowledge/_seam.py              # the three lines; own scratch IS cleaned
-  python3 knowledge/_seam.py --no-clean   # read only
-  python3 knowledge/_seam.py --selftest   # verdict + keep-list arms
+  python3 knowledge/_seam.py               # the four blocks; own scratch IS cleaned
+  python3 knowledge/_seam.py --no-clean    # read only
+  python3 knowledge/_seam.py --no-standing # suppress the STANDING block
+  python3 knowledge/_seam.py --selftest    # verdict + keep-list + STANDING arms
 """
 import os, sys, json, subprocess, argparse
 
@@ -44,6 +56,8 @@ import _gate_scratch_hygiene as H
 
 KEEP = ("/tmp/gitshim",)          # the mount's git shim — deleted by 4c at #282, never again
 DISK_WARN_PCT = 90                # same PICKED figure as _checkin.DISK_WARN_PCT
+STANDING_PATH = os.path.join(_d, "_standing.md")
+STANDING_TK_CEILING = 300         # the tail must stay a TAIL — the selftest holds the block here
 
 
 def fill_verdict(now: int) -> str:
@@ -83,10 +97,49 @@ def scratch_line(clean: bool) -> str:
     return " · ".join(parts)
 
 
+def standing_lines(path: str = STANDING_PATH) -> list:
+    """The constraint lines of `_standing.md`, verbatim — header and frontmatter skipped.
+
+    THE PARSE, deliberately dumb: everything up to and including the first `---` rule is the
+    header and is dropped; every non-empty line after it is a constraint, printed as written.
+    A file with no rule prints every non-empty line that is not a `#` heading.
+    """
+    src = open(path, encoding="utf-8").read()
+    body = src.split("\n---\n", 1)[1] if "\n---\n" in src else src
+    return [ln.strip() for ln in body.splitlines()
+            if ln.strip() and not ln.strip().startswith("#")]
+
+
+def standing_tokens(lines: list) -> str:
+    """cl100k count of the printed block — the honest unit, named on the line it prints on."""
+    try:
+        import tiktoken
+        return f"{len(tiktoken.get_encoding('cl100k_base').encode(chr(10).join(lines))):,}"
+    except Exception:
+        return "?"
+
+
+def standing_block(path: str = STANDING_PATH) -> list:
+    """The block as it prints. ADVISORY: an absent or unreadable file is NAMED, never fatal."""
+    rel = os.path.relpath(path, os.path.dirname(_d))
+    if rel.startswith(".."):        # outside the repo — name it as given, never as a ../ climb
+        rel = path
+    try:
+        lines = standing_lines(path)
+    except FileNotFoundError:
+        return [f"STANDING — {rel} ABSENT"]
+    except Exception as e:
+        return [f"STANDING — UNREADABLE {type(e).__name__}: {e}"]
+    if not lines:
+        return [f"STANDING — {rel} EMPTY"]
+    return ["STANDING"] + lines + [f"STANDING {len(lines)} lines · {standing_tokens(lines)} cl100k"]
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(add_help=False)
     ap.add_argument("--window", type=int, default=G.BUDGET_WORKING)
     ap.add_argument("--no-clean", action="store_true")
+    ap.add_argument("--no-standing", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
@@ -109,6 +162,8 @@ def main(argv=None) -> int:
     except Exception as e:          # the reading failed — named, never defaulted
         print(f"FILL  UNREADABLE — {type(e).__name__}: {e}")
     print(scratch_line(clean=not a.no_clean))
+    if not a.no_standing:          # LAST, always — the recency end is the whole point
+        print("\n".join(standing_block()))
     return 0
 
 
@@ -127,7 +182,20 @@ def selftest() -> int:
     rm = [p for p in own if p not in KEEP]
     if KEEP[0] in rm or "/tmp/x-litter" not in rm:
         fails.append(f"[keep-list] {rm}")
-    print("\n".join(fails) if fails else f"seam selftest: {len(arms) + 2} arms, all GREEN")
+    # STANDING arm: the block prints, it is the LAST block, and it stays a tail (≤ ceiling)
+    blk = standing_block()
+    if blk[0] != "STANDING" or len(blk) < 3:
+        fails.append(f"[standing] block did not print: {blk[0]}")
+    else:
+        body = blk[1:-1]
+        if not blk[-1].startswith(f"STANDING {len(body)} lines · "):
+            fails.append(f"[standing] tally line wrong: {blk[-1]}")
+        tk = blk[-1].split("·")[-1].strip().split()[0].replace(",", "")
+        if tk == "?":
+            fails.append("[standing] tiktoken unavailable — the cost is UNMEASURED, never guessed")
+        elif int(tk) > STANDING_TK_CEILING:
+            fails.append(f"[standing] {tk} cl100k over the {STANDING_TK_CEILING} ceiling")
+    print("\n".join(fails) if fails else f"seam selftest: {len(arms) + 3} arms, all GREEN")
     return 1 if fails else 0
 
 

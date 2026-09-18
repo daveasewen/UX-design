@@ -5,9 +5,11 @@ Per-size logo masters — 8 lockups x 5 raw-pixel height steps = 40 SVG files.
 Reads the 8 Figma exports in this directory and emits masters/<name>-<h>.svg for
 h in 24 28 32 36 40 (s282-D3).  Each master carries its raw pixel width/height as
 width=/height= and has NO viewBox: coordinates are literal pixels.  The hexagon is
-placed exactly on the pixel grid; the wordmark's cap box is snapped to whole pixels
-and its straight (H/V) stems and bars are snapped to integer px, while curve control
-points are left scaled and unsnapped.
+placed exactly on the pixel grid.  The wordmark is moved RIGIDLY — one uniform scale
+(the file's own h/85) plus a translation that lands its left edge on an integer column
+and its cap line on an integer row.  NOTHING inside a glyph is snapped: no node, no
+control point, no stem.  (#285: per-node snapping plus a non-uniform x/y scale kinked
+the B's bowls and stretched the wordmark up to 4.4% wider than tall.)
 
     python3 _gen_masters.py            # write the 40 masters
     python3 _gen_masters.py --check    # regenerate to memory, diff against disk (exit 1 on drift)
@@ -204,70 +206,47 @@ def wordmark_box(entries):
     return min(xs), max(xs), min(ys), max(ys), hpath
 
 
-def quantise_runs(vals, pin_last=False):
-    """Delta quantisation: anchor the first value, then round each successive gap.
-    Keeps paired stems the same whole-pixel width instead of letting independent
-    rounding make one stem 2px and its twin 3px.  With pin_last the far end is an
-    anchor too (the baseline), so any accumulated residual is pushed into the
-    widest gap — a counter, never a stem."""
-    src = sorted(set(vals))
-    gaps = [src[i + 1] - src[i] for i in range(len(src) - 1)]
-    dst_gaps = [float(rnd(g)) for g in gaps]
-    first = float(rnd(src[0]))
-    if pin_last and gaps:
-        residual = rnd(src[-1]) - (first + sum(dst_gaps))
-        if residual:
-            widest = max(range(len(gaps)), key=lambda i: gaps[i])
-            dst_gaps[widest] += residual
-    out, acc = {src[0]: first}, first
-    for i, g in enumerate(dst_gaps):
-        acc += g
-        out[src[i + 1]] = acc
-    return out
-
-
 def snap_wordmark(entries, h, tally):
+    """RIGID MOVE ONLY (#285).
+
+    One uniform scale — s = h/85, the same factor the hexagon is drawn at, so the
+    wordmark keeps the hexagon's size relationship and its own aspect ratio exactly
+    — plus one translation shared by every coordinate of every wordmark glyph.  No
+    coordinate is moved relative to any other coordinate.  Curves therefore cannot
+    kink and the B's bowls cannot squash; that is the whole point.
+
+    The translation is chosen so the wordmark's left edge lands on an integer column
+    and its cap line on an integer row.  The baseline then falls at cap_top + 35.5668*s,
+    which is NOT an integer at any of the five steps: with one uniform scale the cap
+    line and the baseline cannot both be pinned.  See the report — the two ways to pin
+    both (rescale y, or rescale both by capH/(B-T)) are distortion and over-width
+    respectively, and are declined."""
     s = h / SRC_H
     L, R, T, B = wordmark_box(entries)[:4]
-    hpath = wordmark_box(entries)[4]
     W = rnd(315.0 * s)
-    Lx = float(rnd(L * s))
-    Rx = float(W)                      # flush right: no trailing empty column
-    capH = float(rnd((B - T) * s))
-    top = float(rnd((h - capH) / 2.0))  # the source cap box is centred on h/2
-    base = top + capH
-    kx = (Rx - Lx) / (R - L)
-    ky = capH / (B - T)
+    Lx = float(rnd(L * s))                 # left edge → integer column
+    # W is rounded from 315*s, so at some steps the artwork's own right edge already
+    # sits a fraction past W; rounding Lx UP can add half a pixel on top and flatten
+    # the C's right terminal.  Step Lx down to the next integer column when that push
+    # exceeds TOL (the same quarter-pixel tolerance the hexagon uses).
+    if Lx + (R - L) * s - W > TOL:
+        Lx -= 1.0
+    capS = (B - T) * s                     # cap-height at the file's own scale, undistorted
+    top = float(rnd((h - capS) / 2.0))     # cap line → integer row; box centred on h/2
+    base = top + capS
+    dx = Lx - L * s
+    dy = top - T * s
 
     for e in entries:
         p = e["p"]
-        for c in p.coords():
-            c[0] = Lx + (c[0] - L) * kx
-            c[1] = top + (c[1] - T) * ky
-        # which on-path nodes take part in a straight H/V segment?
-        mark = set()
-        for i, (cmd, _, idx) in enumerate(p.segs):
-            if cmd in ("H", "V"):
-                mark.add(idx)
-                for j in range(i - 1, -1, -1):
-                    if p.segs[j][2] is not None:
-                        mark.add(p.segs[j][2]); break
-        if e is hpath:
-            mx = quantise_runs([p.nodes[i][0] for i in mark])
-            my = quantise_runs([p.nodes[i][1] for i in mark], pin_last=True)
-            for i in mark:
-                nd = p.nodes[i]
-                nd[0], nd[1] = mx[nd[0]], my[nd[1]]
-            tally["h_nodes"] += len(mark)
-        else:
-            for i in mark:
-                nd = p.nodes[i]
-                nd[0], nd[1] = float(rnd(nd[0])), float(rnd(nd[1]))
-            tally["curve_nodes"] += len(mark)
-        tally["free_controls"] += sum(len(ctl) for _, ctl, _ in p.segs)
-        tally["free_nodes"] += len(p.nodes) - len(mark)
-    tally["box"] = {"left": Lx, "right": Rx, "cap_top": top, "baseline": base,
-                    "cap_height": capH, "width": W}
+        for c in p.coords():               # nodes AND control points, one rigid map
+            c[0] = c[0] * s + dx
+            c[1] = c[1] * s + dy
+        tally["rigid_nodes"] += len(p.nodes)
+        tally["rigid_controls"] += sum(len(ctl) for _, ctl, _ in p.segs)
+    tally["box"] = {"left": Lx, "right": Lx + (R - L) * s, "cap_top": top,
+                    "baseline": base, "cap_height": capS, "width": W,
+                    "scale": s, "uniform": True}
     return W
 
 
@@ -275,8 +254,8 @@ def snap_wordmark(entries, h, tally):
 
 def build(name, h):
     entries = read_src(name)
-    tally = {"hex_floats": 0, "hex_kinks": 0, "h_nodes": 0, "curve_nodes": 0,
-             "free_nodes": 0, "free_controls": 0, "box": None}
+    tally = {"hex_floats": 0, "hex_kinks": 0, "rigid_nodes": 0,
+             "rigid_controls": 0, "snapped_nodes": 0, "box": None}
     hexes = [e for e in entries if is_hexagon(e)]
     words = [e for e in entries if not is_hexagon(e)]
     for e in hexes:
