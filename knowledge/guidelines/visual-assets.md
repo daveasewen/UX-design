@@ -95,29 +95,14 @@ is officially a code mask on a square asset.
 
 ## Logos (2025 page — refresh-contaminated, see F1)
 
+*`va25-015` (masthead contract), `va25-016` (never-rules) and `va25-017` (variant selection on photographic backgrounds) moved to `logos.md` under `s282-D5` (Dave 2026-09-18). `va25-014` stays here: it is the PRINT clear space and minimum size, and the ruling did not name it.*
+
 - **The page's numeric rules (absent from the 2026 distillation): clear space = 1×
   hexagon height on all sides; minimum size = 7mm hexagon height / 105×20px /
   26×7mm; positioning = top-left or bottom-left, inset 1× hexagon from edges**
   (exceptions: video open/end frames, eye-line adjustment out-of-home).
   [ADVISORY — numeric receipts backfilling logo26; logo is placed-never-drawn per
   the charter, so these govern placement geometry] {#va25-014}
-- **Masthead contract: the Masterbrand logo appears in ALL digital mastheads;
-  clicking it always returns to the root of the CURRENT business line** — never
-  cross-line, orientation over surprise. ENGINE-CRITICAL → the Header/masthead
-  component (deferred but queued) inherits this behaviour contract.
-  [ADVISORY-derivable — header contract rule, exact] {#va25-015}
-- **Never-rules: no new lock-ups from text for departments/programmes/products;
-  never distort, recolour, reorient or recreate; hexagon-only use needs Create
-  Direct approval AND 'HSBC' context nearby (app tile, profile avatar, favicon);
-  never the legacy Times New Roman logo; third-party use follows the TMLA process;
-  Brand Promise lock-up never wraps lines.** [ADVISORY — receipts; the
-  official-assets curb already fixes logo-placed-never-drawn] {#va25-016}
-- **Variant selection on photographic backgrounds: primary (red hexagon/white
-  infill/black type) on light; white-wordmark version on dark-where-red-reads; mono
-  black on light print, mono-reversed white on dark or HSBC-red; white infill never
-  on mono versions.** Expands logo26's dark = full-colour-negative rule with the
-  legibility ladder. [ADVISORY — variant-selection table; xref logo26]
-  {#va25-017}
 
 ## Photography (2025)
 

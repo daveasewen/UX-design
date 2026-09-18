@@ -12,36 +12,7 @@ for the composition/journey strand; component relevance flagged where real.*
 
 ## Logos (2026)
 
-- **An HSBC logo appears at least once on every piece of communication or customer
-  journey.** In a native app the journey's logon or splash screen satisfies the rule —
-  "the user summoned an HSBC app, they know where the destination is".
-  (s282-D1, Dave 2026-09-17) [BLOCKING-derivable at journey/screen level — a composition gate candidate
-  for the journey tranche; the payments-journey proof is where this bites first]
-  {#logo26-001}
-- **Originals only** (Global Brand Design supplied); never recreate/edit; always in
-  entirety; never alter sizing relationship or positioning; must remain legible; TMLA
-  process for third parties. [IN FORCE by discipline — the icon-source rule's logo
-  analogue: never draw a logo, use the asset] {#logo26-002}
-- **Masterbrand variants + selection rules:** full colour (red/black/white — LIGHT
-  backgrounds) · full colour negative (red/white — DARK backgrounds) · single-colour
-  variants (legibility-driven; NO white infill) · mono reversed (print only, dark/red) ·
-  mono black (print only, light; never on HSBC Red). Never full-colour on a red
-  background (hexagon disappears). [component-relevant — Headers carries the logo; dark
-  theme should use full colour negative. Receipt: webf-008's 2021 phrasing ("alternative
-  Masterbrand + white wordmark") = this variant, name evolved] {#logo26-003}
-- **Regional/bilingual versions** (Trad/Simp Chinese ± English) follow identical
-  sizing/positioning rules; region-text lockups restricted to legal-requirement cases.
-  [reference] {#logo26-004}
-- **Proposition logos** (Asset Management, Private Bank, Life, Innovation Banking) —
-  never create one outside Group Brand agreement. **Identifiers** signpost products/
-  departments/programmes in support of the Masterbrand. [structure] {#logo26-005}
-- **Brand Promise "opening up a world of opportunity" is MANDATORY at Prime and Engage
-  stages** (lock-ups with Masterbrand and proposition logos). [composition-level rule —
-  marketing stages, not product UI; relevant only if generation ever targets
-  Prime/Engage surfaces] {#logo26-006}
-- **Partnerships:** hexagon alone where HSBC is well known; full Masterbrand where less
-  known. End frames (logo + Brand Promise + sonic) close video content. [reference]
-  {#logo26-007}
+*The 2026 Logos section moved to `logos.md` under `s282-D5` (Dave 2026-09-18, "our decisions here over-ride the refresh") — `logo26-001`…`logo26-007` live there, byte-for-byte, with the new Apollo logo rules. Photography and Creative Hexagons stay here.*
 
 ## Photography (2026)
 

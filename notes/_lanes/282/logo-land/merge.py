@@ -1,4 +1,55 @@
----
+#!/usr/bin/env python3
+"""s282-D5 step 2 — build knowledge/guidelines/logos.md as THE ONE LOGO GUIDELINE.
+
+Moves, BYTE-FOR-BYTE: logo26-001..007 out of brand-refresh-assets.md's `## Logos (2026)`
+section, and va25-015/016/017 out of visual-assets.md's `## Logos (2025 page …)` section.
+Every {#id}, every destiny tag and every `(s282-D1, Dave …)` clause survives the move
+unchanged — asserted by byte comparison before writing. va25-014 is NOT moved (the print
+clear space; not named by the ruling). Leaves a one-line pointer where each block was.
+"""
+import re, sys, pathlib, hashlib
+
+ROOT = pathlib.Path("/sessions/tender-hopeful-allen/mnt/UX-design/knowledge/guidelines")
+BRA, VIS, LOG = ROOT/"brand-refresh-assets.md", ROOT/"visual-assets.md", ROOT/"logos.md"
+
+def bullets(txt, header_rx):
+    """Return (header_line, start, end, [(id, block_text)]) for the section."""
+    m = re.search(header_rx, txt, re.M)
+    assert m, header_rx
+    sec_start = m.end()
+    n = re.search(r"^## ", txt[sec_start:], re.M)
+    sec_end = sec_start + n.start()
+    body = txt[sec_start:sec_end]
+    blocks = []
+    idxs = [b.start() for b in re.finditer(r"^- ", body, re.M)] + [len(body)]
+    for a, b in zip(idxs, idxs[1:]):
+        blk = body[a:b]
+        ids = re.findall(r"\{#([a-z0-9-]+)\}", blk)
+        blocks.append((ids[0] if ids else None, blk))
+    return m.group(0), sec_start, sec_end, body, blocks
+
+bra = BRA.read_text(encoding="utf-8")
+vis = VIS.read_text(encoding="utf-8")
+log = LOG.read_text(encoding="utf-8")
+
+bh, bs, be, bbody, bblocks = bullets(bra, r"^## Logos \(2026\)$")
+vh, vs_, ve, vbody, vblocks = bullets(vis, r"^## Logos \(2025 page[^\n]*$")
+
+move_bra = [(i, t) for i, t in bblocks if i and i.startswith("logo26-")]
+move_vis = [(i, t) for i, t in vblocks if i in ("va25-015", "va25-016", "va25-017")]
+keep_vis = [(i, t) for i, t in vblocks if i not in ("va25-015", "va25-016", "va25-017")]
+
+assert [i for i, _ in move_bra] == [f"logo26-{n:03d}" for n in range(1, 8)], move_bra
+assert [i for i, _ in move_vis] == ["va25-015", "va25-016", "va25-017"], move_vis
+assert [i for i, _ in keep_vis] == ["va25-014"], keep_vis
+assert "".join(t for _, t in bblocks).strip() == bbody.strip(), "brand-refresh section is not all bullets"
+
+BRA_MOVED = "".join(t for _, t in move_bra).rstrip("\n")
+VIS_MOVED = "".join(t for _, t in move_vis).rstrip("\n")
+VIS_KEPT  = "".join(t for _, t in keep_vis).rstrip("\n")
+
+# ---------------------------------------------------------------- new logos.md
+NEW = f"""---
 title: Logos — the one logo guideline
 source: MERGED under s282-D5 (Dave 2026-09-18, his own export of the #282 logo review) from
   TWO sources — (1) HSBC Common Toolkit (MCP) "Gaps and edits" branch, Foundations › Logos
@@ -47,7 +98,7 @@ Dark** treatments (the On-Dark artwork is the light/reverse version for dark sur
    material may one day return as an AI-readable "Ask create" assistant — is FILED as a
    carry (W-282ll), not enacted.
 
-That's **8 variants** (2 lockups × {Colour, Monotone} × {On Light, On Dark}) — was 12
+That's **8 variants** (2 lockups × {{Colour, Monotone}} × {{On Light, On Dark}}) — was 12
 before s282-D4. The `hexagon-dark-colour` / `hexagon-light-colour` pair is ONE drawing
 exported twice (619 bytes each, diff = 1 float literal) and BOTH FILES AND BOTH NODES ARE
 KEPT — s282-D5, q1 (a) "Keep both files and both nodes"; no alias, no `activeVariantOf`.
@@ -78,7 +129,7 @@ ratio and is never the measure. Whether any lockup may render UNDER x-small is N
   Dave answered "Full colour both grounds — masterbrand-light-colour on light,
   masterbrand-dark-colour on dark" on all four theme rows of his own export.
   (s282-D5, Dave 2026-09-18) [BLOCKING — masthead variant check; the Header/masthead
-  component inherits it alongside va25-015's behaviour contract] {#logo26-008}
+  component inherits it alongside va25-015's behaviour contract] {{#logo26-008}}
 - **Digital clear space is a FLOOR, not the print rule: vertical clear space ≥ 0.25 × logo
   height, snapped UP to the 4px grid.** At the five `s282-D3` steps that is 24 → 8 · 28 → 8
   · 32 → 8 · 36 → 12 · 40 → 12 px. It is a floor, not a value: anything at or above it that
@@ -90,7 +141,7 @@ ratio and is never the measure. Whether any lockup may render UNDER x-small is N
   STATED AND IS NOT RULED** — it is carried open (W-282ll), never completed by symmetry. The
   logo-dimension clear space (`va25-014`, 1× hexagon height on all sides, `visual-assets.md`)
   remains the PRINT rule and is untouched. (s282-D5, Dave 2026-09-18) [BLOCKING — vertical
-  digital clear space only; the horizontal axis has no rule to check against] {#logo26-009}
+  digital clear space only; the horizontal axis has no rule to check against] {{#logo26-009}}
 - **The hexagon alone may be used on the nav-rail head, the app tile and the favicon** —
   each conditional on Create Direct approval AND "HSBC" in view (`va25-016`'s two conditions
   stand, unrelaxed) — **and in responsive layouts at the smaller sizes, tablet-portrait and
@@ -99,60 +150,15 @@ ratio and is never the measure. Whether any lockup may render UNDER x-small is N
   answers `s230-D2`'s declared residue — "App-shell-nav-rail deliberately NOT rebound (56px
   rail head, no lockup fits)": a lockup now fits, and it is the hexagon.
   (s282-D5, Dave 2026-09-18) [ADVISORY — every use is gated on a human approval (Create
-  Direct) that this repo cannot check, so it advises rather than blocks] {#logo26-010}
+  Direct) that this repo cannot check, so it advises rather than blocks] {{#logo26-010}}
 
 ## Logos (2026 refresh — moved here from `brand-refresh-assets.md` by s282-D5)
 
-- **An HSBC logo appears at least once on every piece of communication or customer
-  journey.** In a native app the journey's logon or splash screen satisfies the rule —
-  "the user summoned an HSBC app, they know where the destination is".
-  (s282-D1, Dave 2026-09-17) [BLOCKING-derivable at journey/screen level — a composition gate candidate
-  for the journey tranche; the payments-journey proof is where this bites first]
-  {#logo26-001}
-- **Originals only** (Global Brand Design supplied); never recreate/edit; always in
-  entirety; never alter sizing relationship or positioning; must remain legible; TMLA
-  process for third parties. [IN FORCE by discipline — the icon-source rule's logo
-  analogue: never draw a logo, use the asset] {#logo26-002}
-- **Masterbrand variants + selection rules:** full colour (red/black/white — LIGHT
-  backgrounds) · full colour negative (red/white — DARK backgrounds) · single-colour
-  variants (legibility-driven; NO white infill) · mono reversed (print only, dark/red) ·
-  mono black (print only, light; never on HSBC Red). Never full-colour on a red
-  background (hexagon disappears). [component-relevant — Headers carries the logo; dark
-  theme should use full colour negative. Receipt: webf-008's 2021 phrasing ("alternative
-  Masterbrand + white wordmark") = this variant, name evolved] {#logo26-003}
-- **Regional/bilingual versions** (Trad/Simp Chinese ± English) follow identical
-  sizing/positioning rules; region-text lockups restricted to legal-requirement cases.
-  [reference] {#logo26-004}
-- **Proposition logos** (Asset Management, Private Bank, Life, Innovation Banking) —
-  never create one outside Group Brand agreement. **Identifiers** signpost products/
-  departments/programmes in support of the Masterbrand. [structure] {#logo26-005}
-- **Brand Promise "opening up a world of opportunity" is MANDATORY at Prime and Engage
-  stages** (lock-ups with Masterbrand and proposition logos). [composition-level rule —
-  marketing stages, not product UI; relevant only if generation ever targets
-  Prime/Engage surfaces] {#logo26-006}
-- **Partnerships:** hexagon alone where HSBC is well known; full Masterbrand where less
-  known. End frames (logo + Brand Promise + sonic) close video content. [reference]
-  {#logo26-007}
+{BRA_MOVED}
 
 ## Logos (2025 page — moved here from `visual-assets.md` by s282-D5; refresh-contaminated, see visual-assets F1)
 
-- **Masthead contract: the Masterbrand logo appears in ALL digital mastheads;
-  clicking it always returns to the root of the CURRENT business line** — never
-  cross-line, orientation over surprise. ENGINE-CRITICAL → the Header/masthead
-  component (deferred but queued) inherits this behaviour contract.
-  [ADVISORY-derivable — header contract rule, exact] {#va25-015}
-- **Never-rules: no new lock-ups from text for departments/programmes/products;
-  never distort, recolour, reorient or recreate; hexagon-only use needs Create
-  Direct approval AND 'HSBC' context nearby (app tile, profile avatar, favicon);
-  never the legacy Times New Roman logo; third-party use follows the TMLA process;
-  Brand Promise lock-up never wraps lines.** [ADVISORY — receipts; the
-  official-assets curb already fixes logo-placed-never-drawn] {#va25-016}
-- **Variant selection on photographic backgrounds: primary (red hexagon/white
-  infill/black type) on light; white-wordmark version on dark-where-red-reads; mono
-  black on light print, mono-reversed white on dark or HSBC-red; white infill never
-  on mono versions.** Expands logo26's dark = full-colour-negative rule with the
-  legibility ladder. [ADVISORY — variant-selection table; xref logo26]
-  {#va25-017}
+{VIS_MOVED}
 
 ## Exported assets
 
@@ -172,3 +178,30 @@ there) · `web-foundations.md` (webf-008 dark-logo receipt ↔ logo26-003) ·
 `_PAYMENTS-JOURNEY-GAPS.md` (logo26-001 lands with Headers) · `icons.md` (icon-003, app
 tiles as a separate branding application) · `hexagon-masks.md` / `imagery.md` (2025-era
 record) · `knowledge/_logo_nodes.json` (the 8 logo nodes this file governs).
+"""
+
+# byte-for-byte proof BEFORE writing
+for rid, blk in move_bra + move_vis:
+    assert blk.rstrip("\n") in NEW, rid
+    assert f"{{#{rid}}}" in NEW, rid
+
+# ------------------------------------------------------------- source surgery
+PTR_BRA = ("*The 2026 Logos section moved to `logos.md` under `s282-D5` (Dave 2026-09-18, "
+           "\"our decisions here over-ride the refresh\") — `logo26-001`…`logo26-007` live "
+           "there, byte-for-byte, with the new Apollo logo rules. Photography and Creative "
+           "Hexagons stay here.*\n")
+PTR_VIS = ("*`va25-015` (masthead contract), `va25-016` (never-rules) and `va25-017` "
+           "(variant selection on photographic backgrounds) moved to `logos.md` under "
+           "`s282-D5` (Dave 2026-09-18). `va25-014` stays here: it is the PRINT clear space "
+           "and minimum size, and the ruling did not name it.*\n")
+
+bra_new = bra[:bs] + "\n\n" + PTR_BRA + "\n" + bra[be:]
+vis_new = vis[:vs_] + "\n\n" + PTR_VIS + "\n" + VIS_KEPT + "\n\n" + vis[ve:]
+
+LOG.write_text(NEW, encoding="utf-8")
+BRA.write_text(bra_new, encoding="utf-8")
+VIS.write_text(vis_new, encoding="utf-8")
+print("moved from brand-refresh-assets.md:", [i for i, _ in move_bra])
+print("moved from visual-assets.md:", [i for i, _ in move_vis])
+print("kept in visual-assets.md:", [i for i, _ in keep_vis])
+print("logos.md bytes:", len(NEW))
