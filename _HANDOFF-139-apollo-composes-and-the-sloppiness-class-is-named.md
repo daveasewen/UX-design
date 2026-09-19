@@ -350,6 +350,38 @@ warns stand uncleared because their runner is `_build_all.py` and this seat was 
 
 ---
 
+## ⛔★★ A NEW CI RED THAT IS **NOT** INHERITED — read job by job on the pushed sha
+
+Run **`35443934929`** on `head_sha=71b3363c` is **completed / failure**, polled to completion over
+the public API:
+
+| job | verdict | steps |
+|---|---|---|
+| **gates** | **failure** | 5 and 6 — **the same two inherited** |
+| **render** | **success** | — |
+| **release** | ⛔ **failure** | **12 — `Build-script selftest — the release refusals, driven (BLOCKING)`** |
+
+⛔ **`release` was SUCCESS on `4cc8b37a` and on `04dbeab1` — re-read here job by job rather than
+remembered — so this one is NEW.** The cause was reproduced locally:
+`bash apollo-spider/build-designer-pack.sh --selftest` prints **`RED — the real receipts are STALE;
+a release would be refused right now. Re-drive: python3 knowledge/_drive_chart_engine.py`** (249
+bites, 0 fail; the other two refusal arms green).
+
+⛔ **THE NAMED REMEDY COULD NOT BE RUN FROM THIS SEAT:** `_drive_chart_engine.py` dies with
+`ModuleNotFoundError: No module named 'playwright'` — **the same render-seat hole lanes B and T
+met**, which is now a fail with two independent victims and a third consequence. ⇒ **#289's first
+mechanical job is to install the render seat and re-drive the chart engine.** ⚠ **The timing points
+at lane A's `canon.css` change staling the chart receipts; that is NOT PROVEN from this seat and is
+stated as a suspicion, never as a cause.**
+
+⚠ **AND #288 SHIPS TWO WRAP COMMITS, DECLARED: `384c26a7` then `71b3363c`.** Naming one path to
+satisfy the mention-map gate switched `_git_commit.sh` into explicit-path staging and left 31 paths
+unstaged on the first run; the second named every one and the tree closed clean. Nothing was lost —
+but a reader should not discover it in `git log`.
+
+
+---
+
 ## ⚙ THE NUMBERS THIS SESSION MUST HAND FORWARD
 
 Measured at this seat by **importing `_checkin.read_fill`** rather than re-implementing it, against
