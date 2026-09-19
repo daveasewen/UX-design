@@ -1,0 +1,49 @@
+#287 post-wrap addendum (5b): the shipped sha, the push verdict quoted, the CI run read to completion, and a lock git could not unlink
+
+Ritual step 5b. The wrap's own sha, push verdict and CI read cannot be in the
+commit that carries them — a commit cannot name itself — so they land here.
+
+WRAP COMMIT 04dbeab1e0181d375d888659d77241f1fa2ad91c — 44 files,
++7,422 / −3,849, tree clean.
+
+PUSH VERDICT, VERBATIM:
+  ✅ pushed and VERIFIED: remote master == local 04dbeab1e0181d375d888659d77241f1fa2ad91c
+independently re-verified with `git ls-remote origin HEAD`.
+
+CI, over the public API on head_sha=04dbeab1, POLLED TO COMPLETION rather than
+stopped at a colour still moving — run 35434571412:
+  RUN     completed / failure
+  gates   failure — the SAME TWO INHERITED STEPS, 5 (Survey the COMMITTED tree)
+          and 6 (Knowledge build)
+  release success
+  render  SUCCESS
+This commit neither introduced a CI failure nor cleared one. Re-read on the
+earlier 75a490cd after ITS completion: gates failure / release success /
+render SUCCESS, run-level failure — which RESOLVES the render colour lane C and
+the #286 wrap could only leave open.
+
+A NEW OBSTACLE, RECORDED RATHER THAN SMOOTHED: git could not unlink its own
+.git/index.lock under the mount ("Operation not permitted" — the #227/#284
+sandbox delete-guard reaching a file git itself owns), so every git write leaked
+a stale lock and the commit script's staging loop could never reach its second
+path. The repair was the runbook's own and the only one this mount allows — mv,
+never rm, into _to_delete/_stale_locks/. DECLARED, NOT HIDDEN: the script staged
+one path and this seat staged the other twenty-one, with the lock moved aside
+between each; the script's post-staging asserts then ran against the FULL index
+(mention map staged, doc rows for staged adds, the T3 subject assert, the
+one-prefix assert) and all were green. Ruling-shaped and not inscribed: whether
+_git_commit.sh's staging loop should clear locks BETWEEN adds rather than once
+before them.
+
+The s214-D6 chain figure is published at BOTH moments rather than one being
+substituted for the other: 11,188 tape at the declare-last stamp, and 12,112
+once this addendum landed in the ⏱ LATEST DELTA — 112 OUTSIDE the ~10–12K band.
+The band was met by the wrap and exceeded by the wrap's own receipt, which is
+the argument inside the 5b-versus-s241-D2-cap question this wrap carries for the
+seventh time.
+
+The s271-D4 re-read ran as the ritual's FINAL beat, after 5/5b, against
+knowledge/_rulings.json. Nothing was struck, by construction: the two rulings
+#287 inscribed close items that were struck from the carry set BEFORE the memory
+hook was written, so no item in the hook's open list is closed by a #287 ruling.
+Every one of the eleven is a question Dave has not answered.
