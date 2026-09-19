@@ -41,3 +41,9 @@ Conductor's reading, marked as such: this is a CORRECTION of lane X's framing, n
 > wrap with all of this in mind
 
 Conductor's reading, marked as such: (1) the Mono 0 value is DOUBTED, not overruled — a review is ordered, and the s219-D3 generation arm is to be BUILT, plus "any other problem with this" (the bento spacing delivery path end to end); the goal he names is the one-shot design not disappointing. (2) The bento template's QUALITY is to be reviewed — a second lane, not folded into the first. (3) A STRAND MAP of Apollo and a clear path to a cohesive presentation on FRIDAY 2026-09-25 is owed — six days from today. Decisions 2 (inline-style rule) and 3 (template status PROPOSED vs beta) were NOT answered and carry.
+
+## After the wrap committed (`04dbeab1` … `4cc8b37a`) — verbatim, UNCOMMITTED at #287, for #288's opener
+
+> I also think we need a definition of an 'Overview dashboard' lets work on this together
+
+Conductor's reading, marked as such: a DEFINITION is owed — what an Overview dashboard is, what it answers, what it must and must not carry (the GPT handoff §7 proposes "system-wide reporting bento and launcher: status, significance, next action; destination pages task-led"). He wants this worked TOGETHER, in the seat, not delegated — a judgment beat, likely feeding the template-quality review (#288 move 3) and the strand map (#288 move 1). Not a ruling yet.

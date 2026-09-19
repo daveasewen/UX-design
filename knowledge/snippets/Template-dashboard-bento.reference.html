@@ -797,11 +797,24 @@
   .tpl-page{ padding:0 0 48px; }                                            /* 1 · the page frame */
   .tpl-bento-stack{ padding:0 32px; }                                       /* 2 · the wall's margin */
   body.tpl-bento-body{ background:var(--wall-ground); }                     /* 3 · s219-D1 pageBg */
-  /* 4 · MAIN SPACING 40px — mono's s219-D1 default, read off role_defaults_219.py --table. */
+  /* 4 · MAIN SPACING — the OUTER (structural bento) gutter, THE SELECTED THEME'S OWN.
+         s219-D3's generation arm, built at #288: canon/gen_bento_role_vars.py mints
+         --bento-dashboard-main per theme from the s219-D3 (6) rails manifest
+         (_bento_edit_rails.json -> role_defaults_219.DEFAULTS -> Dave's #219 receipt):
+         mono 40 · legacy 24 · console 40 · supercharge 24. Dave, #287: "the gutters are
+         also different for the inner and outer bentos we essentially have a structural
+         bento and embedded bentos or tile groupings" — two quantities, each per theme.
+         ⚠ THE 40px FALLBACK IS LOAD-BEARING, NOT A LEFTOVER. Snippets are single-theme by
+         convention (mono) and NO snippet links canon.css (0 of 137, the meta's own probe),
+         so this document has no theme block to read and must still render mono correctly.
+         The DELIVERED CSS — canon.css, where the theme blocks live — is theme-aware. */
   .tpl-page .c-bento.tpl-wall[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento){
-    --bento-gutter:40px; --bento-row-unit:auto; }
-  /* 5 · SUB SPACING 4px — mono's s219-D1 default. (0,4,0) beats canon's (0,2,0) role rule. */
-  .tpl-page .c-bento.tpl-group[data-bento-role="dashboard"]{ --bento-gutter:4px; }
+    --bento-gutter:var(--bento-dashboard-main,40px); --bento-row-unit:auto; }
+  /* 5 · SUB SPACING — the INNER (embedded bento / tile-group) gutter, the selected theme's
+         own: mono 4 · legacy 4 · console 4 · supercharge 2. Same arm, same source.
+         (0,4,0) beats canon's (0,2,0) role rule. Fallback 4px is mono's, as above. */
+  .tpl-page .c-bento.tpl-group[data-bento-role="dashboard"]{
+    --bento-gutter:var(--bento-dashboard-sub,4px); }
   /* 6 · per-group row floors. A nested bento's grid is `minmax(row-unit,auto)` (canon, s245-D8:
          each row grows to ITS OWN content, never below the rung), so these are FLOORS — never fixed
          heights. s245-D9 (#245, Dave: "until thats done we just round to the nearest pixel, which

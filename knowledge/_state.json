@@ -5466,6 +5466,102 @@
     },
     {
       "links": [
+        "notes/_subreports/2026-09-19-288-A-s219-d3-arm.md",
+        "knowledge/_render/_bento_edit_rails.json",
+        "knowledge/snippets/Template-dashboard-bento.reference.html",
+        "knowledge/components/template-dashboard-bento.meta.json",
+        "notes/_lanes/287/DAVE-RULINGS-2026-09-19.md"
+      ],
+      "home": "knowledge/canon/gen_bento_role_vars.py",
+      "id": "W-288a",
+      "title": "#288 A - the s219-D3 generation arm: the dashboard-bento template delivers the SELECTED theme's (outer, inner) gutter pair, generated from the rails manifest, instead of mono's 40/4 pinned as literals",
+      "state": "open",
+      "opened": 288,
+      "owner": "dave",
+      "project": "apollo",
+      "condition": "stated",
+      "closes_when": "the template delivers each theme's own outer and inner gutter pair, proven in a render for all four themes, and Dave has seen it",
+      "body": "Dave at the #287 wrap, verbatim: \"I'm not sure that 0 is right for mono, lets have a proper review and fix this: 'The generation arm that would do that was ruled at #219 and never built.' and any other problem with this, I just need the one-shot design to not disappoint\"; and his #287 correction: \"the gutters are also different for the inner and outer bentos we essentially have a structural bento and embedded bentos or tile groupings\". BUILT: knowledge/canon/gen_bento_role_vars.py reads the s219-D3 (6) rails manifest knowledge/_render/_bento_edit_rails.json (its own $resolved_from is role_defaults_219.DEFAULTS, parsed from Dave's #219 tuner-export receipt), cross-checks it against that owner and REFUSES on drift, and mints --bento-dashboard-main / --bento-dashboard-sub per theme into canon.css between AUTO-BENTO-ROLE-VARS markers. The snippet stays single-theme and declares var(--bento-dashboard-main,40px) / var(--bento-dashboard-sub,4px); the mono fallbacks are load-bearing because no snippet links canon.css. PROVEN in a rendered DOM (chromium, goto file://, computed columnGap) at all four themes: BEFORE every theme got mono's 40/4; AFTER mono 40/4, legacy 24/4, console 40/4, supercharge 24/2 - declared equals measured in all eight readings. NOT DONE and Dave's: TWO RULED SOURCES name the outer gutter of a dashboard-of-bentos and DISAGREE per theme - canon's own role rule reads var(--layout-bento-gutter) (s217-D2; tokens/layout.json layout/bento/gutter $value '0px' BASE tier, legacy+console override to 24px, so mono 0 / supercharge 0 / legacy 24 / console 24) while s219-D1 (5) mainSpacing says mono 40 / legacy 24 / console 40 / supercharge 24. They agree only on legacy. This arm delivers from the source s219-D3 NAMES and picks no winner; Mono's 0 is untouched and stays 0 until Dave's word. The four themes have NOT yet been put side by side for his eye - that is #288 move 2's other half."
+    },
+    {
+      "links": [
+        "notes/_lanes/288/B/four-themes.html",
+        "notes/_lanes/288/B/measurements.json",
+        "knowledge/canon/canon.css",
+        "knowledge/tokens/layout.json",
+        "knowledge/_render/role_defaults_219.py"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-B-bento-renders.md",
+      "id": "W-288b",
+      "title": "#288 lane B - the bento outer/inner gutters read from source and the four themes rendered for Dave's eye",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has ruled Mono's outer gutter by eye from the four-theme sheet",
+      "body": "READ FROM SOURCE at HEAD 4cc8b37a (git show, not the working tree - lane A's edits to canon.css and the snippet were uncommitted in the tree during this lane). --layout-bento-gutter IS the structural (OUTER) gutter for the dashboard role: canon.css:1198-1200 restores the theme token for a bento-of-bentos, with the source comment 'THE OUTER WALL OF A BENTO-OF-BENTOS KEEPS THE THEME GUTTER'. The INNER (embedded bento) gutter is a separate quantity with NO token - canon gives it a flat literal 1px at canon.css:1184. OUTER token per theme (s217-D2): mono 0 (canon.css:537, tokens/layout.json), legacy/common 24px (canon.css:22009, apollo-legacy.overrides.json:188), console 24px (canon.css:24611, apollo-console.overrides.json:27), supercharge 0 by INHERITANCE - no declaration at any scope. Role defaults (s219-D1, role_defaults_219.py --table): mainSpacing 40/24/40/24, subSpacing 4/4/4/2. FOUR DISAGREEMENTS: (1) the outer gutter has two ruled numbers and they differ in 3 of 4 themes - mono's doubted 0 is s217-D2's, while s219-D1 already says 40 for mono; (2) the inner gutter has three answers - canon's flat 1px, subSpacing 4/4/4/2, the template's pinned 4; (3) supercharge's 0 is inherited, never declared; (4) the template out-specifies both, canon.css:18119 (40px) and :18121 (4px), literals, theme-blind. MEASURED, 16 renders at 1440 viewport from showroom/template-dashboard-bento.html (unmodified at HEAD), getBoundingClientRect between sibling tiles: at HEAD all four themes deliver an identical outer 40 / inner 4, while --layout-bento-gutter resolves correctly at the wall in each (0 / 24px / 24px / 0) and reaches the gap in none. That is the s219-D3 arm that was never built, measured rather than argued. The sheet puts both readings side by side plus a Mono ramp at 0 / 8 / 16 / 24 for Dave to rule by eye; the non-HEAD values are applied by render-only override and labelled as such. NOT ESTABLISHED: which of the two outer numbers Dave wants (this lane takes no view); whether canon's flat 1px inner was ever ruled or is a pre-s219-D1 survivor; whether supercharge's 0 was ever decided for supercharge; dark mode and the container-query bands were not rendered. SEPARATE FINDING, handed to the conductor not taken: knowledge/_render/seat_env.sh:44 globs pw-browsers/*/chrome-linux/headless_shell, but playwright 1.63 lays the shell down at chrome-headless-shell-linux-arm64/chrome-headless-shell - the glob misses and the script reports 'headless_shell not found', the fifth-stratum shape it exists to end. Also new: the browser download fails TLS (UNABLE_TO_GET_ISSUER_CERT_LOCALLY) in the node driver while pip's TLS is fine.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-09-19-288-M-strand-map.md",
+        "notes/_lanes/287/DAVE-RULINGS-2026-09-19.md",
+        "notes/_lanes/288/DAVE-RULINGS-2026-09-19.md",
+        "notes/_DEMO-SLIDES-apollo-2026-09-12-v7.html",
+        "notes/_DEMO-PREP-david-rice-hsbc.html"
+      ],
+      "home": "notes/_STRAND-MAP-2026-09-19.html",
+      "id": "W-288m",
+      "title": "#288 M - the Apollo strand map and the path to Friday the 25th: one swiss-design HTML page laying out 6 presentable strands + 2 supporting, each with measured state, file receipts, what is open, what must land by Friday 2026-09-25 and what can wait, plus a day-by-day Sat 19 -> Fri 25 path with the three parallel waves marked",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has read the strand map and said which Friday the 25th is",
+      "body": "His order at the #287 wrap call, verbatim: \"I want to return to the presentation soon, so I need to understand how the multiple strands of Apollo stand and I need a clear path to presenting something cohesive for friday the 25th\", plus #288 turn 3: \"so we also have to actually prepare and create the presentation, we made a good start but I want to change the structure. please include this is the plan.\" DELIVERED: notes/_STRAND-MAP-2026-09-19.html, 53,042 B, 13 sections, self-contained, well-formed by html.parser, 0 dangling anchors, every cited path verified present (41 distinct, 0 missing). Ruling ids confined to a technical footnote; Dave's words quoted verbatim throughout. MEASURED at this seat: 622 rulings / 145 sessions by id; store 711 items, 604 live, 318 dave; explorer v1.27 4,820 nodes / 8,648 edges (deck slides 9 and 11 still print 2,837 / 4,902 - STALE); logo 8 nodes / 33 edges / 40 size entries matching 40 master SVGs; deck 11 slides, highest in-file stamp v7.7 against the commit's v7.8; canon.css :18119 40px and :18121 4px pinned literals; template meta $awaitingDave 3 and $tokenGaps 2 (the #287 handoff declares four - BOTH READINGS PUBLISHED, neither rewritten); template status PROPOSED/NOT REGISTERED in meta against beta in showroom/index.json; newest dashboards artefact 2026-09-02 so no cold one-shot since. NOT ESTABLISHED FROM THIS SEAT and said so on the page's face: which event Friday 2026-09-25 is (s271-D3 rules NO DEMO DATE IS DECIDED - small demo w/c 09-21 or w/c 09-28, Rice 1-3 weeks after, 'a guess' in his own word; 'Friday the 25th' is his NEW word of 2026-09-19 and appears nowhere else in the record); the current quality of a cold one-shot; whether the dial ruled 0 in mono is the structural gutter; and his new deck structure, which the page names as the explicit blocker on wave 2. Audience named correctly as David Rice, Chief AI Officer, HSBC, with the footer stating in words that Sutherland is HSBC's component library and not a person. No repo file was edited, no git write was made, and none of the four fenced generators was run.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "notes/_lanes/288/P/probe-sheet.html",
+        "notes/_lanes/288/P/composed-dashboard.html",
+        "notes/_lanes/288/P/DECISIONS.md",
+        "notes/_lanes/288/P/READS.log",
+        "knowledge/_rulings.json"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-P-composition-probe.md",
+      "id": "W-288p",
+      "title": "#288 lane P — the composition probe: a dashboard composed from the atoms + the rules with the template fenced, rendered beside the traced one",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "condition": "stated",
+      "closes_when": "Dave has looked at the probe sheet and said whether Apollo composes or traces",
+      "body": "Built to answer Dave's #288 complaint verbatim: \"what was the point of building the system if it just traces from existing examples??? ... this isn't Apollo its a dot-to-dot book\". The dashboard template, its showroom page, its meta and every prior dashboard artefact were FENCED - never opened, grepped or diffed; the traced page was rendered by URL only and measured through the DOM. The composed page was built from 12 component snippets, canon.css + type.css, the tokens and the rulings (s219-D1 mainSpacing 40 / subSpacing 4 for Mono, s217-D2/D3 bento-of-bentos, s249-D2 'five is even okay', s249-D5 'No ragged layouts', s251-D1's strip that anchor-links to the needs-attention panel, DP-01..28). 49 numbered decisions logged as they were taken (39 decisions + 10 gaps); 39 reads logged in order, 0 of them fenced. MEASURED at 1440 Mono light: the composed page uses 11 canon .cn-* component scopes, the traced page uses 0; both walls compute a 40px/40px outer gutter. _validate_screen.py verdict on the composed page: PASS (receipt, compose, icon-source, a11y all green); _validate_composition.py: UNPROVEN - C9 cannot read the grammar of a page that LINKS canon.css. THREE STRUCTURAL FINDINGS, all measured: (F2/G7) canon's documented instance-dial recipe '.c-bento.my-wall{...}' is under-specified - the :has() rule that restores the outer gutter sits at (0,4,0) and beats it, so the one ruled dashboard dial silently does nothing; (F3/G8) the compiled responsive bands re-declare --bento-cols-now on the grid and answer the WALL, so a nested bento under 1100px cannot carry its own column count, contradicting layout.json's own $note; (F4/G3) the 320px row unit has no per-instance clause, so DP-06's compact headline row is unreachable at 1440 without an authoring act. DECLARED: _validate_screen.py created knowledge/_screen-gate/composed-dashboard.md (untracked) which this seat could not delete - it is the gate's verdict on the lane's own page and the conductor should remove it; knowledge/_COMPOSE-AUDIT.md was rewritten by _validate_compose.py and was RESTORED to HEAD. No commits, no stash, no other git writes. UNPROVEN: the frozen demo prompt was not recoverable (memento + four briefs + repo grep), so the lane brief's fallback prompt was used and the two pages answer DIFFERENT briefs."
+    },
+    {
+      "links": [
+        "notes/_subreports/2026-09-19-288-T-template-quality.md",
+        "knowledge/snippets/Template-dashboard-bento.reference.html",
+        "knowledge/components/template-dashboard-bento.meta.json",
+        "knowledge/_render/gen_library_214.py",
+        "showroom/index.json",
+        "reviews/ITINERARY-STATUS-2026-08-21-v3.json"
+      ],
+      "home": "notes/_lanes/288/T/template-quality-review.html",
+      "id": "W-288t",
+      "title": "#288 T - the bento template's QUALITY reviewed as a designer and as the one-shot consumer meets it: markup clean, metadata stale, six questions put",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has answered the decision pack's questions",
+      "body": "READ-ONLY pass. MARKUP IS CLEAN: 0 invented regions, 0 dangling vars (82 used / 125 declared), 0 raw font declarations, 0 hex outside the two theme blocks, 0 raw inline lengths (its 9 style attrs are one position, one opacity, six animation-delays). THE DAMAGE IS IN THE METADATA. (1) The meta's antiPatterns:135 and $bentoGrammar.spans:187 forbid data-c=2 and 4 while the shipped wall is 6/4/2 (:1029/:1108/:1166) - legalised by s248-D1 rule 6b and APPROVED by Dave at s248-D4 - so a builder reading the contract would unbuild his own approval with every gate green. (2) The meta's $status:5 is stale in four of five claims: 32 rulings name the file, component-types.json:472 registers it, 196 canon selectors carry its scope; only NOT GATED is true. (3) showroom/index.json CANNOT express proposed - STATUSES is a fixed 3-key list (gen_library_214.py:258-262, s215-D5(2)) and status_of():519 makes beta the residual, so a PROPOSED marker DEMOTES to beta; and gated_slugs():507 reads a snapshot frozen 2026-08-21 while the template was built 2026-08-31, so it can NEVER reach stable. STATUS_OVERRIDES:257 is the empty seat for Dave's ruling. INLINE CENSUS RE-RUN: 566 style= attrs across 137 reference files (lane X's 596 sweeps two _REVIEW-66 scratch files); 87 carry a raw px/rem with no var() - 91 layout declarations, 6 type (Links:125-127, Tags:93-95), ZERO colour, so it is NOT a theming risk; 33 of 87 sit inside APOLLO-DEMO harness blocks. DEF-004 does read inline attrs since #221 but its population is 11 proforma files and its axes exclude width/height/font-size, so nothing watches these. COLOUR: the dark page ground collides at 1.00:1 (surface/subtle dark #1F1F1F == tertiary/background/default dark #1F1F1F) so the file ships #1A1A1A as a declared unruled drift (:300, reason :1376). TYPE: one visible self-declared defect - the Summary value row's 500 weight is lost (:655-657). ONE-SHOT: _compose_slice.py, the shipped skill's mandatory step 1, returns 19 components for 'build a dashboard overview screen' and NO template - roles.json has 0 mentions of it; the rescue is prose at generate-from-canon/SKILL.md:110-125. UNPROVEN: no render at this seat (seat_env.sh reports envdir absent), so 1024/1920/520 are CSS reads; the 520 band of rule 10a (:882) was never measured. CORRECTION: the meta carries THREE $awaitingDave entries, not four, plus two $tokenGaps. The 40/4 gutter pin is IN FLIGHT with lane A and is not reported here.",
+      "condition": "stated"
+    },
+    {
+      "links": [
         "notes/_subreports/2026-08-30-227-segmented-ruling-enact.md"
       ],
       "home": "reviews/SEGMENTED-RULING-2026-08-30-v1.html",
@@ -10840,6 +10936,77 @@
       "project": "apollo",
       "closes_when": "Dave has read _HANDOFF-138 and either ordered #288's first moves as it states them (1 the strand map and the Friday-25th path, 2 the bento spacing review with the s219-D3 arm built, 3 the template quality review, 4 the two carried decisions) or re-ranked them",
       "body": "Every ritual step ran in order 1 - 1b - 2 - 2c - 2c(i) - 2d - 2e - 2f - 2g - 3 - 4 - 4b - 4c - 4d - 5 - 5b. knowledge/_rulings.json moved 620 to 622 on his 'inscribe', the first movement in seven sessions; four carries STRUCK with receipts and a fifth deliberately not struck because its headline stays true; _CARRIES.md residual to #288 probes 560. FILL 181,277 real across 24 turns against 180,375 declared, delta 902; boot 74,120 agreeing to the token, the second reading on #286's setup, so the -7,031 connector lever is a measured effect at n=2. subs 573,531 (n=5) by the log's convention and 568,179 by _checkin.read_fill - two definitions, both published, neither rewritten. Six inherited gate fails carried in the #243 declared not-a-wrap form, the thirteenth wrap; a seventh was born mid-session by a lane and healed by the remedy the gate named.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-288a",
+        "_HANDOFF-139-apollo-composes-and-the-sloppiness-class-is-named.md",
+        "notes/_lanes/288/DAVE-RULINGS-2026-09-19.md"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-A-s219-d3-arm.md",
+      "id": "W-288ar",
+      "title": "#288 lane A filed report — the s219-D3 generation arm",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has read the lane A report and ruled on the outer gutter it leaves open (token 0/24/24/0 versus role default 40/24/40/24) - the arm is built either way",
+      "body": "Filed report for the s219-D3 generation arm build: knowledge/canon/gen_bento_role_vars.py, 289 lines, first consumer of _bento_edit_rails.json. Gates green and a four-theme rendered proof. The arm does NOT settle Mono's 0 and the lane picked no winner.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-288m",
+        "_HANDOFF-139-apollo-composes-and-the-sloppiness-class-is-named.md",
+        "notes/_lanes/288/DAVE-RULINGS-2026-09-19.md"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-M-strand-map.md",
+      "id": "W-288mr",
+      "title": "#288 lane M filed report — the strand map and the path to Friday the 25th",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has read the strand map and said which event Friday 2026-09-25 is - the page declares it NOT ESTABLISHED rather than guessing",
+      "body": "Filed report for notes/_STRAND-MAP-2026-09-19.html: 13 sections, all 13 anchors resolving, 41 cited paths all existing, self-contained, and the Friday date on a band of its own.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "W-288t",
+        "_HANDOFF-139-apollo-composes-and-the-sloppiness-class-is-named.md",
+        "notes/_lanes/288/DAVE-RULINGS-2026-09-19.md"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-T-template-quality.md",
+      "id": "W-288tr",
+      "title": "#288 lane T filed report — the bento template quality review",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has answered the six-question decision pack the review puts to him - the inline-style rule, the template's status, the three $awaitingDave and a max-width ruling",
+      "body": "Filed report for the template quality review: the drawn page is sound and the paperwork is not - zero invented markup and zero dangling vars, against four of the meta's five $status claims measured FALSE and the inline-style census re-run at 87 against #287's 88.",
+      "condition": "stated"
+    },
+    {
+      "links": [
+        "_HANDOFF-139-apollo-composes-and-the-sloppiness-class-is-named.md",
+        "_DECISION-HISTORY/2026-09-19-288-apollo-composes-and-the-sloppiness-class-is-named.md",
+        "notes/_lanes/288/W2/",
+        "notes/_lanes/288/WRAP-MEMORY-HOOK.md",
+        "notes/_lanes/288/DAVE-RULINGS-2026-09-19.md",
+        "_CARRIES.md"
+      ],
+      "home": "notes/_subreports/2026-09-19-288-W2-wrap.md",
+      "id": "W-288ww",
+      "title": "#288 wrap — the delegated capture ritual for #288 to #289",
+      "state": "open",
+      "owner": "dave",
+      "opened": 288,
+      "project": "apollo",
+      "closes_when": "Dave has read _HANDOFF-139 and either ordered #289's first moves as it states them (what the one-shot generates FROM and the #230 pass condition, the sloppiness class and the test brief he writes himself, the deck structure that unblocks wave 2, and which event Friday 2026-09-25 is) or re-ranked them",
+      "body": "Every ritual step ran in order 1 - 1b - 2 - 2c - 2c(i) - 2d - 2e - 2f - 2g - 3 - 4 - 4b - 4c - 4d - 5 - 5b. NO ruling was inscribed and knowledge/_rulings.json stays at 622, verified by json.load with no s288- id, because he did not say inscribe today; all ten ruling-shaped things are carried as questions put. ZERO carries struck and the zero is a judgment: the s219-D3 arm being BUILT discharges half of a carry headline whose other half, Mono's 0 is doubted, stays true, so it is said in a new item instead. _CARRIES.md residual to #289 probes 572 with seventeen new. FILL 197,234 real across 33 turns against 180,585 declared, delta 16,649; boot 74,174 agreeing to the token, the third reading on the Browser-blocked setup. subs 1,004,095 (n=5) by the log's convention and 998,602 by _checkin.read_fill - two definitions, both published, the gap reconciling per lane. Six inherited gate fails carried in the #243 declared not-a-wrap form, the fourteenth wrap; #288 has no lane commit at all, so this wrap is the session's only commit.",
       "condition": "stated"
     },
     {

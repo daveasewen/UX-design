@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>288/P — composition probe: traced vs composed</title>
+<style>
+  :root{ --ink:#1A1A1A; --mute:#6B6B6B; --line:#D7D8D6; --page:#F3F3F3; --paper:#FFFFFF; --flag:#DB0011; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--page); color:var(--ink);
+        font:400 15px/1.55 "Helvetica Neue",Arial,sans-serif; }
+  .sheet{ max-width:1680px; margin:0 auto; padding:32px 32px 80px; }
+  h1{ font-size:28px; font-weight:400; margin:0 0 4px; }
+  h2{ font-size:18px; font-weight:500; margin:40px 0 10px; }
+  .sub{ color:var(--mute); margin:0 0 6px; }
+  .rule{ border:0; border-top:1px solid var(--line); margin:24px 0; }
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  figure{ margin:0; background:var(--paper); border:1px solid var(--line); }
+  figcaption{ padding:10px 14px; border-bottom:1px solid var(--line); }
+  figcaption .k{ font-weight:600; }
+  figcaption .m{ color:var(--mute); font-size:13px; }
+  figure img{ display:block; width:100%; height:auto; }
+  table{ border-collapse:collapse; width:100%; background:var(--paper); font-size:14px; }
+  th,td{ border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  thead th{ background:#EDEDED; font-weight:600; }
+  td.n{ font-variant-numeric:tabular-nums; }
+  code{ font:400 12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .flag{ color:var(--flag); font-weight:600; }
+  .note{ background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--ink);
+         padding:12px 14px; margin:14px 0; }
+  .opinion{ border-left-color:var(--flag); }
+  ul{ margin:8px 0 0 18px; padding:0; }
+  @media (max-width:1100px){ .cols{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <h1>288 / lane P — the composition probe</h1>
+  <p class="sub">Left: the TRACED result already in the tree. Right: a page composed for the
+  same brief from the design system's atoms and the graph's rules, with the template fenced —
+  never opened, never grepped. Both rendered headless at a 1440&nbsp;px wall, Mono, light.
+  <strong>No verdict is offered here. Dave rules by eye.</strong></p>
+
+  <div class="note">
+    <strong>The prompt both answer.</strong> The frozen demo prompt could not be recovered
+    (searched <code>_memento_search "cold-start acceptance W-304"</code>, the #229 cold-start
+    brief, the #230 demo-day brief, the #258 demo-fence brief, and a repo-wide grep) — the
+    briefs describe the test, none carries its text. The fallback in the lane brief was used:
+    <em>"Build an operations dashboard for a bank's Chief AI Officer: AI programmes in flight,
+    their spend against budget, efficiency gains realised, risk and compliance exceptions, and
+    what needs a decision this week. Desktop first, 1440 wide."</em>
+    The traced page was built at an earlier session against its own brief, so the two pages
+    answer DIFFERENT briefs. That is a limit on the comparison and is stated, not hidden.
+  </div>
+
+  <h2>01 · The two pages, same wall width</h2>
+  <div class="cols">
+    <figure>
+      <figcaption>
+        <span class="k">A · TRACED</span> — <code>showroom/template-dashboard-bento.html</code><br>
+        <span class="m">Rendered by URL only. Its source was never read by this lane. Captured
+        from inside the showroom harness's frame, wall measured at 1440&nbsp;px ×
+        1197&nbsp;px.</span>
+      </figcaption>
+      <img src="render/traced-1440.png" alt="The traced dashboard template rendered at 1440 wide in Mono light">
+    </figure>
+    <figure>
+      <figcaption>
+        <span class="k">B · COMPOSED</span> — <code>notes/_lanes/288/P/composed-dashboard.html</code><br>
+        <span class="m">Built this session from <code>knowledge/snippets/*</code>,
+        <code>knowledge/canon/canon.css</code> + <code>type.css</code>,
+        <code>knowledge/tokens/*</code> and the rulings. Wall 1440&nbsp;px ×
+        2016&nbsp;px.</span>
+      </figcaption>
+      <img src="render/composed-1440-mono.png" alt="The composed AI programme dashboard rendered at 1440 wide in Mono light">
+    </figure>
+  </div>
+
+  <h2>02 · Measured facts</h2>
+  <p class="sub">Every number below was read out of the live DOM at 1440&nbsp;px with
+  <code>getComputedStyle</code> / <code>querySelectorAll</code>, not from source. Labelled
+  <strong>measured</strong>.</p>
+  <table>
+    <thead>
+      <tr><th style="width:30%">Measure</th><th style="width:33%">A · traced</th><th style="width:33%">B · composed</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Wall width × document height (px)</td><td class="n">1440 × 1197</td><td class="n">1440 × 2016</td></tr>
+      <tr><td><code>.c-bento</code> instances</td><td class="n">4</td><td class="n">3</td></tr>
+      <tr><td>Top-level tiles in the dashboard wall</td><td class="n">3</td><td class="n">4</td></tr>
+      <tr><td>Total <code>.c-bento__tile</code> count</td><td class="n">10</td><td class="n">12</td></tr>
+      <tr><td>Computed outer gutter between top-level tiles<br><span class="m">column-gap / row-gap on the wall's own grid</span></td>
+          <td class="n">40px / 40px</td><td class="n">40px / 40px</td></tr>
+      <tr><td>Distinct canon components used, by <code>.cn-*</code> class name in the DOM</td>
+          <td class="n"><strong>0</strong><br><span class="m">the page carries no
+          <code>.cn-*</code> component scope at all — its markup and CSS are its own</span></td>
+          <td class="n"><strong>11</strong><br><code>cn-button · cn-card-header-lockup ·
+          cn-chart-bar · cn-chart-line · cn-kpi-tile · cn-legend · cn-list-items ·
+          cn-page-header-lockup · cn-status-indicator · cn-table · cn-tags</code></td></tr>
+      <tr><td>Heading levels present</td>
+          <td class="n">h1 × 1, h3 × 3<br><span class="m">no h2 — the level is skipped</span></td>
+          <td class="n">h1 × 1, h2 × 6</td></tr>
+      <tr><td><code>&lt;svg&gt;</code> elements</td><td class="n">17</td><td class="n">16</td></tr>
+      <tr><td><code>&lt;table&gt;</code> elements</td><td class="n">0</td><td class="n">3</td></tr>
+      <tr><td>Theme carriers on the root<br><span class="m">canon: Mono is the BASE store —
+          the themes registry says "Mono = base, no block emitted", so no
+          <code>[data-apollo-theme="mono"]</code> rule exists</span></td>
+          <td class="n"><code>data-theme="light"</code><br><code>data-apollo-theme="mono"</code>
+          <span class="m">(inert — no such block in canon.css)</span></td>
+          <td class="n"><code>class="canon"</code><br><code>data-theme="light"</code>
+          <span class="m">(no apollo-theme attribute = Mono)</span></td></tr>
+      <tr><td>Custom properties referenced in the page's own source</td><td class="n">82</td><td class="n">23</td></tr>
+      <tr><td>…of those, resolving to <strong>nothing on the root element</strong>
+          <br><span class="m">⚠ NOT a defect count. A var legitimately scoped to a component
+          (<code>--bento-gutter</code> on <code>.c-bento</code>, <code>--data-grid</code> inside a
+          chart scope) is empty at the root by design. Read it as how much of each page's
+          vocabulary is component-scoped rather than page-scoped.</span></td>
+          <td class="n">73 of 82<br><span class="m">incl. <code>--bento-columns</code>,
+          <code>--bento-gutter</code>, <code>--bento-packing</code>,
+          <code>--bento-caption-space</code>, <code>--axis-alpha</code></span></td>
+          <td class="n">3 of 23<br><span class="m"><code>--baseline</code>,
+          <code>--data-axis</code>, <code>--data-grid</code> — all three are dataviz vars
+          declared inside the chart component scopes</span></td></tr>
+      <tr><td>Uncaught page errors at load</td><td class="n">0</td><td class="n">0</td></tr>
+    </tbody>
+  </table>
+
+  <h2>03 · Gate verdicts on the composed page</h2>
+  <p class="sub">Quoted verbatim. The traced page was not gated by this lane — gating it would
+  have meant reading it.</p>
+  <table>
+    <thead><tr><th style="width:26%">Gate</th><th>Verdict, verbatim</th></tr></thead>
+    <tbody>
+      <tr><td><code>_validate_screen.py</code><br><span class="m">the composed-screen pipeline;
+          takes a path, ran on this file</span></td>
+          <td><code>verdict: PASS ✅</code><br>
+              <code>receipt: ✅ 0 region(s) re-hashed and matched</code><br>
+              <code>UNPROVEN:retrievalSet — null (rC Q4, the retrieval-set membership marker, is OPEN and was not invented here); a ruled membership marker carried in the receipt would prove which retrieval set the page was built from</code><br>
+              <code>compose: ✅</code> · <code>icon-source: ✅ all paths library-matched</code> · <code>a11y: ✅</code></td></tr>
+      <tr><td><code>_validate_composition.py</code></td>
+          <td><code>UNPROVEN: the artefact declares neither a base column count nor any @container band; C9 cannot read its grammar</code><br>
+              <code>_validate_composition: UNPROVEN (notes/_lanes/288/P/composed-dashboard.html) - C9 reds 0 [BLOCKING] · C1 0 · C7 0 · C8 0 · C4 0 [advisory] · unproven 1</code></td></tr>
+      <tr><td><code>_validate_compose.py</code></td>
+          <td><code>RESULT: PASS ✅</code> — <span class="flag">but this verdict is NOT about this
+              page.</span> The gate ignores a path argument and scans a fixed set of seven
+              <code>*.canon.html</code> screens. Recorded so the PASS is not read as evidence.</td></tr>
+      <tr><td><code>check-against-design-system</code><br><span class="m">the pack's own skill —
+          guidance, applied by hand to its own procedure</span></td>
+          <td><code>0 blockers · 4 warnings · PASS — no invented components, no invented variants,
+              no invented tokens, no raw hex; four warnings, all of them gaps in the system rather
+              than drift in the page.</code></td></tr>
+      <tr><td><code>_validate_dataviz.py</code> · <code>_validate_binds_resolve.py</code> ·
+          <code>_validate_a11y.py</code> (standalone)</td>
+          <td>OUT OF SCOPE — each discovers its own corpus
+          (<code>knowledge/snippets/*.reference.html</code>,
+          <code>knowledge/_proforma/*.html</code>) and has no path argument. The a11y and
+          icon-source checks DID run on this page, inside <code>_validate_screen.py</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>04 · What the composed page was built from — READS.log, by directory</h2>
+  <p class="sub">Every repo file this lane opened, logged in order in
+  <code>notes/_lanes/288/P/READS.log</code> (39 entries). <strong>Fenced files read:
+  none.</strong></p>
+  <table>
+    <thead><tr><th style="width:40%">Directory</th><th style="width:14%">Reads</th><th>What for</th></tr></thead>
+    <tbody>
+      <tr><td><code>knowledge/snippets/</code></td><td class="n">12</td><td>component markup — Kpi-tile, Stat-card, Table, Status-indicator, Tags, Progress-bar, Page-header-lockup, Card-header-lockup, Button, Chart-bar, List-items, Legend</td></tr>
+      <tr><td><code>knowledge/canon/</code></td><td class="n">8</td><td>canon.css (theme mechanism, bento contract, component scopes), type.css, dv-render.js, dv-behaviour.js, dv-render-bar/line.js, dv-legend.js, gen_theme_cascade.py</td></tr>
+      <tr><td><code>knowledge/tokens/</code></td><td class="n">3</td><td>layout.json (bento group), themes/ listing, themes/_themes.json</td></tr>
+      <tr><td><code>knowledge/_render/</code></td><td class="n">3</td><td>role_defaults_219.py --table, _bento_edit_rails.json, seat_env.sh (read, not edited)</td></tr>
+      <tr><td><code>notes/_briefs/</code></td><td class="n">3</td><td>hunting the frozen demo prompt (not found)</td></tr>
+      <tr><td><code>knowledge/</code> (root files)</td><td class="n">3</td><td>_rulings.json, _memento_search.py, gates</td></tr>
+      <tr><td><code>reviews/</code></td><td class="n">1</td><td>DASHBOARD-PRINCIPLES — tag-stripped extract of the DP-01…29 statements only</td></tr>
+      <tr><td><code>designer-skills-v1/</code></td><td class="n">3</td><td>README, generate-from-canon, check-against-design-system</td></tr>
+      <tr><td><code>_DECISION-HISTORY/</code></td><td class="n">1</td><td>prompt hunt</td></tr>
+      <tr><td><code>knowledge/_screen-gate/</code></td><td class="n">1</td><td>the gate's own output on this page, read back</td></tr>
+    </tbody>
+  </table>
+  <p class="sub">Decisions written down while composing:
+  <strong>49 numbered entries</strong> in <code>notes/_lanes/288/P/DECISIONS.md</code> —
+  39 design decisions, each with the ruling, principle or token it rests on (or marked
+  "designer's call"), and 10 gaps the system could not supply.</p>
+
+  <h2>05 · Two structural facts the compose surfaced</h2>
+  <div class="note">
+    <strong>G7 — the one ruled dashboard dial cannot be set the way canon documents it.</strong>
+    canon.css instructs: <em>"declare instance dials as <code>.c-bento.my-wall{…}</code>"</em>,
+    because the role rules "are (0,2,0)". But the rule that restores the outer gutter for a
+    bento-of-bentos is <code>.c-bento[data-bento-role="dashboard"]:has(&gt; .c-bento__grid &gt; .c-bento)</code>,
+    which <code>:has()</code> lifts to (0,4,0). <strong>Measured:</strong> a bare
+    <code>.c-bento.wall-ops{--bento-gutter:40px}</code> had no effect and the wall rendered at
+    the Mono base 0&nbsp;px, not s219-D1(5)'s mainSpacing of 40. The dial only lands when it
+    repeats the <code>:has()</code>.
+  </div>
+  <div class="note">
+    <strong>G8 — a nested bento cannot carry its own column count below 1100&nbsp;px.</strong>
+    <code>layout.json</code> says columns are <em>"per-instance overridable via
+    <code>--bento-columns</code> — that is how a nested bento carries its own parameter set"</em>.
+    But the compiled bands re-declare <code>--bento-cols-now</code> <em>on the grid</em> at
+    ≤1100 / ≤820 / ≤520, and they answer the WALL, not the window.
+    <strong>Measured:</strong> a 1-column inner wall 896&nbsp;px wide rendered as 3 columns. On a
+    1440-wide dashboard every inner wall is under 1100 unless it spans all six columns, so the
+    per-instance column dial is only reachable for full-width inner walls.
+  </div>
+
+  <h2>06 · The lane's own opinion — one line</h2>
+  <div class="note opinion">
+    <strong>Lane P's opinion (not a verdict, not measured):</strong> the composed page's worst
+    fault is dead ground — canon's fixed 320&nbsp;px row unit gives the five headline metrics a
+    tile roughly twice the height their content needs, and DP-06's stated purpose ("compact, so
+    the first chart starts above the fold") is unreachable without an authoring act, so the page
+    reads airier and taller than an operator's cockpit should.
+  </div>
+
+  <hr class="rule">
+  <p class="sub">Lane P, session #288, 2026-09-19. Renders: headless Chrome for Testing
+  153.0.8010.12 at device-scale 2, HSBC Univers faces resolved (10/10 in the farm),
+  <code>goto(file://…)</code>, never <code>set_content</code>.</p>
+
+</div>
+</body>
+</html>

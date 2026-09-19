@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The bento template — a quality review</title>
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+  --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px; --gutter:2rem;
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--white);color:var(--black);font-family:var(--font);
+  font-size:1rem;line-height:1.75;font-weight:400;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter);}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2);}
+section.tight{padding:var(--s5) 0;}
+h1,h2,h3,h4{margin:0;font-weight:400;letter-spacing:0;}
+h1{font-size:3.5625rem;line-height:1.05;font-weight:300;}
+h2{font-size:2.125rem;line-height:1.15;}
+h3{font-size:1.1875rem;line-height:1.3;font-weight:500;}
+h4{font-size:1rem;font-weight:500;}
+p{margin:0 0 var(--s2);}
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3);}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent);flex:none;}
+.label.n{color:var(--grey-6);}
+.label.n::before{background:var(--grey-5);}
+nav.top{position:sticky;top:0;z-index:9;background:var(--white);
+  border-bottom:1px solid var(--grey-2);}
+nav.top .wrap{display:flex;align-items:center;gap:var(--s4);min-height:54px;flex-wrap:wrap;}
+nav.top .who{font-size:.875rem;font-weight:500;letter-spacing:.04em;}
+nav.top .ctx{font-size:.875rem;color:var(--grey-6);}
+nav.top .links{margin-left:auto;display:flex;gap:var(--s3);flex-wrap:wrap;}
+nav.top a{font-size:.875rem;color:var(--grey-6);text-decoration:none;letter-spacing:.04em;}
+nav.top a:hover{color:var(--black);}
+.verdict{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;}
+.verdict .big{font-size:2.125rem;line-height:1.2;font-weight:300;}
+.verdict .big b{font-weight:500;}
+.meta{font-size:.875rem;color:var(--grey-7);line-height:1.6;}
+.meta div{padding:var(--s1) 0;border-bottom:1px solid var(--grey-2);}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;}
+.finding{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;
+  padding:var(--s5) 0;border-top:1px solid var(--grey-2);}
+.finding:first-of-type{border-top:0;}
+.finding .idx{font-size:4rem;line-height:1;font-weight:200;color:var(--grey-3);display:block;margin-bottom:var(--s1);}
+.finding .rank{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);font-weight:500;}
+code,.file{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8125rem;
+  background:var(--grey-1);padding:.1em .35em;word-break:break-word;}
+.rec{border-top:1px solid var(--grey-3);padding-top:var(--s2);margin-top:var(--s3);font-size:.9375rem;}
+.rec b{font-weight:500;}
+table{width:100%;border-collapse:collapse;font-size:.875rem;margin:var(--s2) 0;}
+th,td{text-align:left;padding:.55rem .75rem .55rem 0;border-bottom:1px solid var(--grey-2);vertical-align:top;}
+th{font-weight:500;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);}
+.grey{background:var(--grey-1);}
+.grey section{border-bottom-color:var(--grey-3);}
+ol.q{list-style:none;counter-reset:q;padding:0;margin:0;}
+ol.q>li{counter-increment:q;padding:var(--s5) 0;border-top:1px solid var(--grey-3);
+  display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;}
+ol.q>li::before{content:counter(q,decimal-leading-zero);font-size:4rem;line-height:1;
+  font-weight:200;color:var(--grey-5);}
+ol.q .body h3{margin-bottom:var(--s2);}
+ul.opt{list-style:none;padding:0;margin:0 0 var(--s2);}
+ul.opt li{padding:.4rem 0 .4rem var(--s3);border-left:1px solid var(--grey-3);margin-bottom:.25rem;font-size:.9375rem;}
+ul.opt li b{font-weight:500;}
+.quote{border-top:1px solid var(--grey-3);padding-top:var(--s3);font-size:1.1875rem;line-height:1.5;margin:var(--s4) 0 0;}
+.quote cite{display:block;font-size:.875rem;font-style:normal;color:var(--grey-6);margin-top:var(--s2);}
+footer{padding:var(--s6) 0;font-size:.8125rem;color:var(--grey-6);line-height:1.7;}
+footer h4{color:var(--grey-7);margin-bottom:var(--s2);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin:var(--s3) 0;}
+.two>div{background:var(--white);padding:var(--s3);}
+.two .hd{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin-bottom:var(--s1);}
+.two .hd.a{color:var(--accent);}
+@media (max-width:820px){
+  .wrap{padding:0 1rem;}
+  h1{font-size:2.25rem;}
+  h2{font-size:1.625rem;}
+  .verdict,.split,.finding,ol.q>li,.two{grid-template-columns:1fr;gap:var(--s3);}
+  ol.q>li::before,.finding .idx{font-size:2.5rem;}
+  section{padding:var(--s5) 0;}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <span class="who">Apollo · session 288 · lane T</span>
+    <span class="ctx">Template quality review</span>
+    <span class="links">
+      <a href="#verdict">Verdict</a>
+      <a href="#findings">Findings</a>
+      <a href="#census">Census</a>
+      <a href="#pack">Decision pack</a>
+    </span>
+  </div>
+</nav>
+
+<section id="verdict">
+  <div class="wrap">
+    <p class="label">The verdict</p>
+    <div class="verdict">
+      <div>
+        <h1>Good page.<br>Stale paperwork.</h1>
+      </div>
+      <div>
+        <p class="big">The drawn page is the <b>best-documented artefact in the tree</b> and would not
+        embarrass you in a one-shot. What would disappoint is everything wrapped around it: the
+        template's own record card <b>tells a builder to undo the layout you approved</b>, its status
+        line has been wrong for twenty sessions, and the <b>inline-style problem is not where anyone
+        has been looking</b>.</p>
+        <p>Nothing in the markup is invented. Nothing in it dangles. Every colour and every type size
+        resolves to a token. The one real colour drift is declared in the file and is a question for
+        you, not a defect. The damage is in the metadata and the delivery path.</p>
+        <div class="meta" style="margin-top:2rem">
+          <div><b>Reviewed</b> — the snippet (1,842 lines), its meta (258 lines), its showroom card,
+            the showroom generator, the shipped pack's build skill, and the 137 snippets it composes from.</div>
+          <div><b>Rendered</b> — no. This seat has no browser; the render environment resolves to nothing here.
+            Everything about 1024 and 1920 below is read from the CSS and labelled as such.</div>
+          <div><b>In flight elsewhere</b> — the gutter delivery path (lane A). Not re-reported here.</div>
+        </div>
+      </div>
+    </div>
+    <p class="quote">“I'm not sure about the quality of the template we need to look at this too.”
+      <br>“I just need the one-shot design to not disappoint, however it is getting better all the time.”
+      <cite>Dave, 2026-09-19</cite></p>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">Findings, ranked by how much each would spoil a one-shot</p>
+    <h2>Seven things, worst first</h2>
+    <p style="max-width:52ch;color:var(--grey-7)">Ranked by the damage a cold builder would actually do
+    if they followed what is written, not by how hard each is to fix.</p>
+  </div>
+
+  <div class="wrap">
+
+    <div class="finding">
+      <div>
+        <span class="idx">01</span>
+        <span class="rank">Would break an approved layout</span>
+      </div>
+      <div class="body">
+        <h3>The record card tells a builder to undo the wall you approved</h3>
+        <p>The meta forbids, in as many words, the very spans the page now ships. Its anti-pattern reads:
+        <i>“Do not invent a span. Only 6 and 3 are square at every compiled band… A <code>data-c="2"</code>
+        tile leaves one column empty at the 3-column band, and no gate sees it.”</i> The wall as built is
+        6, then 4 + 2 — a <code>data-c="4"</code> group beside a <code>data-c="2"</code> group.</p>
+        <p>That 4 + 2 wall is the one you approved on sight. The rule that makes it legal was added later,
+        as a band rule on the rail. But the meta was never amended, so the meta and the markup now say
+        opposite things — and the meta is the file a builder is told to read for the contract.</p>
+        <table>
+          <tr><th>Where</th><th>What it says</th></tr>
+          <tr><td class="file">…/template-dashboard-bento.meta.json:135</td><td>“Do not invent a span. Only 6 and 3…”</td></tr>
+          <tr><td class="file">…/template-dashboard-bento.meta.json:187</td><td>“spans: ONLY data-c=&quot;6&quot; and data-c=&quot;3&quot;”</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:1029</td><td>lead group at <code>data-c="6"</code></td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:1108</td><td>chart group at <code>data-c="4"</code></td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:1166</td><td>rail at <code>data-c="2"</code> — the span its own meta names as the defect</td></tr>
+        </table>
+        <div class="rec"><b>What it would take to close:</b> two amendments to the meta — the anti-pattern
+        and the spans note — naming the band rule that legalises 4 + 2. Fifteen minutes, no code, no gate.
+        It is the single cheapest thing on this page and the most dangerous left alone.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">02</span>
+        <span class="rank">Would make a builder distrust the file</span>
+      </div>
+      <div class="body">
+        <h3>The status line is twenty sessions out of date, and four of its five claims are false</h3>
+        <p>The meta's status banner still reads <i>“PROPOSED… NOT GATED, NOT RULED, NOT REGISTERED —
+        absent from CATEGORIES, MIGRATED_SNIPPETS, component-types.json and _rulings.json.”</i>
+        Measured against the tree this morning:</p>
+        <table>
+          <tr><th>Claim</th><th>Measured</th></tr>
+          <tr><td>absent from <code>_rulings.json</code></td><td><b>False.</b> 32 rulings name it, from the one that ordered it built through to one that sets its layout gate.</td></tr>
+          <tr><td>absent from <code>component-types.json</code></td><td><b>False.</b> Registered as a partials member at line 472.</td></tr>
+          <tr><td>NOT RULED</td><td><b>False.</b> Its rung ladder, its role words, its re-flow band, its composition edges and its status strip are all ruled — several of them in your own words.</td></tr>
+          <tr><td>not projected into canon</td><td><b>False.</b> 196 selectors carry its scope in the compiled canon.</td></tr>
+          <tr><td>NOT GATED</td><td><b>True</b> — and see finding 03 for why, which is not what anyone assumes.</td></tr>
+        </table>
+        <p>A builder who opens this file is told the thing they are about to copy is unapproved
+        scaffolding. It is not. It is the most-ruled component in the library.</p>
+        <div class="rec"><b>What it would take to close:</b> rewrite the status line against the tree.
+        One field. But it is also the field the showroom generator reads (finding 03), so it is not
+        cosmetic.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">03</span>
+        <span class="rank">Cannot be fixed by fixing the template</span>
+      </div>
+      <div class="body">
+        <h3>The showroom cannot say “proposed”, and the template can never reach “stable”</h3>
+        <p>Two separate things, and only one of them is about words.</p>
+        <p><b>The vocabulary.</b> The showroom's status set is fixed at three: stable, beta, deprecated.
+        There is no fourth key and no free-text field. “Beta” is not the generator disagreeing with the
+        meta — beta is the generator's <i>only way of saying</i> “proposed”, because it is the residual
+        bucket. A PROPOSED marker on a meta actively demotes the card to beta by design.</p>
+        <p><b>The trap.</b> To be stable a component must be in the gated set <i>and</i> carry no PROPOSED
+        marker. The gated set is read from a frozen measurement file dated <b>2026-08-21</b>. The template
+        was built <b>2026-08-31</b>. It is not in that file and never can be. 134 of 137 components are in
+        it; this one missed by ten days. So even with a perfect status line, the card stays beta.</p>
+        <table>
+          <tr><th>Where</th><th>What</th></tr>
+          <tr><td class="file">knowledge/_render/gen_library_214.py:258-262</td><td>the three status keys, fixed</td></tr>
+          <tr><td class="file">knowledge/_render/gen_library_214.py:519-528</td><td><code>status_of()</code> — the one derivation</td></tr>
+          <tr><td class="file">knowledge/_render/gen_library_214.py:101</td><td>the gated set's source: a file frozen on 2026-08-21</td></tr>
+          <tr><td class="file">knowledge/_render/gen_library_214.py:257</td><td><code>STATUS_OVERRIDES = {}</code> — the seat left empty for your rulings</td></tr>
+        </table>
+        <div class="rec"><b>What it would take to close:</b> either a fourth status key (a change to the
+        ruled status set, plus one self-test line), or re-measure the gated set at today's date, or use
+        the override seat that is sitting empty waiting for exactly this. Question 2 in the pack.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">04</span>
+        <span class="rank">Would make dark mode unreadable if “fixed”</span>
+      </div>
+      <div class="body">
+        <h3>In dark mode the ruled page ground and the tile surface are the same colour</h3>
+        <p>The ruled page ground for a dashboard resolves, in dark, to <code>#1F1F1F</code>. The tile
+        surface also resolves, in dark, to <code>#1F1F1F</code>. Byte-identical — a contrast ratio of
+        1.00 to 1. With keylines off, which is the ruled default, the bento stops reading as a bento
+        entirely: it becomes one flat dark rectangle with numbers on it.</p>
+        <p>The template does not ship that. It ships <code>#1A1A1A</code> instead, one rung darker, with
+        the reason written into the file. That is a deliberate, declared, <i>unruled</i> drift off the
+        token — and the derivation it drifts from was left expressly open when the rule was made.</p>
+        <table>
+          <tr><th>Where</th><th>What</th></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:247</td><td>light ground <code>#F0F0F0</code> — on token, correct</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:300</td><td>dark ground <code>#1A1A1A</code> — off token, by declaration</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:1376</td><td>the recorded reason</td></tr>
+        </table>
+        <div class="rec"><b>What it would take to close:</b> your eye on the three readings already
+        rendered side by side for you, and one word. Until then any tidy-up that “restores the token”
+        silently ruins the dark page. Question 3 in the pack.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">05</span>
+        <span class="rank">Would look wrong on a wide screen</span>
+      </div>
+      <div class="body">
+        <h3>Nothing caps the page width, and the widest band was never measured</h3>
+        <p>Read from the CSS, not rendered — this seat has no browser.</p>
+        <p><b>At 1024 wide</b> the wall measures about 960 and falls to the three-column band. The rail
+        takes the whole row it lands on and its two cards sit side by side. This is the behaviour you
+        approved and the CSS says it holds.</p>
+        <p><b>At 1920 wide</b> the wall measures about 1856 and stays at six columns. There is no upper
+        bound anywhere: the page frame sets side padding and no maximum width, and the one layout
+        primitive that would cap it — a 1120px container — is defined in the file but never used on any
+        element. The summary rows in the rail deliberately drop their source component's 420px cap, on
+        the principle that the container decides the width. At 1920 the container decides on roughly
+        900px, so a two-word label and a number sit at opposite ends of a very wide row.</p>
+        <p><b>The unmeasured band.</b> The headline row is pinned to four columns at every band by a rule
+        that deliberately opts out of the responsive machinery. Its own comment records it measured at
+        1440, 1100 and 820. The narrowest band, 520, is not in that list — and at 520 four tiles get
+        about 125px each, which will not hold a formatted currency figure.</p>
+        <table>
+          <tr><th>Where</th><th>What</th></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:798</td><td>page frame: side padding, no max-width</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:509</td><td>the 1120px container — defined, never used</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:657</td><td>summary's width cap deliberately not copied</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:882</td><td>headline row pinned to four at every band</td></tr>
+          <tr><td class="file">…/Template-dashboard-bento.reference.html:868</td><td>“measured 4/4/4 at 1440 / 1100 / 820” — 520 absent</td></tr>
+        </table>
+        <div class="rec"><b>What it would take to close:</b> a render at 1920 and at 520 with a real
+        browser, then a decision on whether a dashboard has a maximum width. Neither is settled anywhere
+        in the tree.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">06</span>
+        <span class="rank">One visible type defect, self-declared</span>
+      </div>
+      <div class="body">
+        <h3>The summary values render a weight lighter than the component they came from</h3>
+        <p>The summary block was spliced without its two raw font declarations, so its type now arrives
+        from the composite classes — correct, and the reason the template carries zero raw font
+        declarations anywhere. But the value rows lose their medium weight in the trade, and nothing
+        replaces it. The file says so itself: <i>“the value row's 500 WEIGHT IS LOST… DECLARED, VISIBLE,
+        AND DAVE'S.”</i></p>
+        <p>This is in the position rail, so it is on screen in any one-shot: every figure in the rail
+        reads at the same weight as its own label.</p>
+        <p class="file">…/Template-dashboard-bento.reference.html:655-657</p>
+        <div class="rec"><b>What it would take to close:</b> either a weight channel on the composite, or
+        accept the flatter rail. It has been sitting declared and unanswered since the file was built.</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div>
+        <span class="idx">07</span>
+        <span class="rank">A door that only opens if the builder reads far enough</span>
+      </div>
+      <div class="body">
+        <h3>The pack's own graph reader does not know the template exists</h3>
+        <p>The shipped build skill makes one thing the mandatory first step: ask the graph, do not read
+        the library. I ran that reader against the plainest possible dashboard request. It returned
+        nineteen components. The template is not one of them, and neither is any template. The only time
+        the word bento appears in the whole result is as a passing phrase inside another component's
+        note.</p>
+        <p>The template is saved from this by prose: the same skill, further down, names the file
+        explicitly and says to splice it rather than re-draw the wall. So a builder who reads the whole
+        skill gets there. A builder who does step 1, gets nineteen components and starts building —
+        which is what step 1 tells them to do — does not.</p>
+        <table>
+          <tr><th>Where</th><th>What</th></tr>
+          <tr><td class="file">apollo-spider/skills/generate-from-canon/SKILL.md:110-125</td><td>the prose that does name the template, in detail</td></tr>
+          <tr><td class="file">knowledge/roles.json</td><td>zero mentions of the template — it provides no role</td></tr>
+          <tr><td class="file">designer-skills-v1/ and -v2/ SKILL.md</td><td>zero mentions of the template or the showroom index</td></tr>
+        </table>
+        <div class="rec"><b>What it would take to close:</b> give the template a role in the roles file so
+        the reader can return it. It is the only component of its kind that has none.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="grey">
+<section id="census">
+  <div class="wrap">
+    <p class="label">The inline-style census, re-run</p>
+    <h2>The number everyone is quoting counts two scratch files, and none of it is about colour</h2>
+
+    <div class="split">
+      <div>
+        <p style="font-size:4rem;line-height:1;font-weight:200;margin:0">87</p>
+        <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s1)">inline style attributes
+        across the reviewed snippets that carry a raw pixel or rem value with no token behind it</p>
+        <p style="font-size:4rem;line-height:1;font-weight:200;margin:2rem 0 0">0</p>
+        <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s1)">of them in the template itself</p>
+        <p style="font-size:4rem;line-height:1;font-weight:200;margin:2rem 0 0">0</p>
+        <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s1)">of them are colour</p>
+      </div>
+      <div>
+        <p><b>Where 596 came from.</b> That count sweeps the snippet folder including two review
+        scratch files that are not part of the library. The reviewed population is 566 attributes
+        across 137 files. Within those, 87 carry a raw length with nothing overridable behind it —
+        which is within one of the figure already in circulation, and I would keep quoting 87 as the
+        actionable number.</p>
+
+        <p><b>What they are.</b> Ninety-one raw declarations in total, and the split is the whole story:</p>
+        <table>
+          <tr><th>Class</th><th>Count</th><th>Would a theme switch break it?</th></tr>
+          <tr><td>Layout — gaps, margins, widths, heights</td><td>91</td><td>No. A theme changes colour and radius; these are geometry.</td></tr>
+          <tr><td>Type — six font sizes</td><td>6</td><td><b>Yes</b>, under a size-ramp change. All six are specimen rows in two demo pages.</td></tr>
+          <tr><td>Colour</td><td>0</td><td>Nothing to break.</td></tr>
+        </table>
+
+        <p><b>So the honest headline is this:</b> the inline-style population is not a theming risk.
+        It is a tidiness question. A third of it sits inside blocks the files themselves mark
+        “showroom harness — never copy”. The single largest repeated value is a demo section spacer
+        appearing a dozen times.</p>
+
+        <p><b>And the gate cannot see any of it.</b> The hardcode gate does read inline attributes —
+        that hole was fixed. But its population is eleven pro-forma files. The snippets folder is not
+        in scope at all, and the gate's scope is spacing, radius and border width, which excludes the
+        widths, heights and font sizes that make up most of the 87. So no gate is watching, and
+        widening one would not catch most of them anyway.</p>
+
+        <div class="two">
+          <div><div class="hd">The template's nine inline attributes</div>
+            <p style="font-size:.9375rem;margin:0">One positioning rule on a hidden sprite sheet, one
+            opacity, and six animation delays on chart bars. Not a length among them.</p></div>
+          <div><div class="hd a">Where the template's raw values actually live</div>
+            <p style="font-size:.9375rem;margin:0">129 raw lengths in its own stylesheet — 78 inside
+            spliced component CSS, 22 in its instance dials, 6 in the generated bento block. That, not
+            the inline attributes, is the template's hardcoding surface.</p></div>
+        </div>
+
+        <p style="font-size:.8125rem;color:var(--grey-7)"><b>The command.</b> The census is a short python
+        pass over <code>knowledge/snippets/*.reference.html</code> matching <code>style="…"</code> across
+        line breaks, splitting on semicolons, and counting any declaration whose value contains a bare
+        px/rem/em number and no <code>var(</code>, excluding custom properties. It is quoted in full in
+        the filed report.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="tight">
+  <div class="wrap">
+    <p class="label n">What is clean</p>
+    <div class="split">
+      <div><h3>Four things came back green, and they are the expensive ones</h3></div>
+      <div>
+        <table>
+          <tr><th>Checked</th><th>Result</th></tr>
+          <tr><td>Invented markup</td><td><b>None.</b> Every region is a declared splice from a file on disk, with a line range and a hash. The page's own new CSS is nine relationship rules and it says so.</td></tr>
+          <tr><td>Dangling custom properties</td><td><b>None.</b> 82 referenced, 125 declared, zero unresolved. The silent-black class does not apply here — and the file records that it nearly did, and that a generator caught it, not an eye.</td></tr>
+          <tr><td>Raw font declarations</td><td><b>None</b> in the whole page. Type arrives from composites throughout. This is the anti-pattern the file is strictest about and it holds.</td></tr>
+          <tr><td>Hex outside the theme blocks</td><td><b>None.</b> Every hex sits in one of the two theme declaration blocks, which is the convention.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <p class="label n">Against the one-shot goal</p>
+    <div class="split">
+      <div>
+        <h3>Where it would disappoint</h3>
+        <p class="quote" style="margin-top:var(--s3)">“I Either expect it would use the dashboard bento
+        or it will ask if that is right.”<cite>Dave, the demo-day goal</cite></p>
+      </div>
+      <div>
+        <p>The pass condition had four parts. The template is what makes part three — copy the markup,
+        invent nothing — actually possible, and on that part it delivers completely.</p>
+        <p>Three ways it would still disappoint, in order:</p>
+        <ol style="padding-left:1.2rem">
+          <li style="margin-bottom:var(--s2)"><b>The builder may never reach it.</b> The reader that the
+          skill makes step one does not return it (finding 07). The prose rescue is real but it is at
+          line 119 of a long skill.</li>
+          <li style="margin-bottom:var(--s2)"><b>If they reach it and read the contract, they may
+          unbuild it.</b> The meta tells them the shipped wall is a defect (finding 01).</li>
+          <li><b>On a wide screen it will look unfinished.</b> No width cap, summary rows stretched to
+          900px, and the widest band never measured (finding 05).</li>
+        </ol>
+        <p>None of those three is a problem with the drawing. All three are a problem with what is
+        written around the drawing — which is, for a one-shot, the thing the machine actually reads.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grey">
+<section id="pack">
+  <div class="wrap">
+    <p class="label">Decision pack</p>
+    <h2>Six questions</h2>
+    <p style="max-width:54ch;color:var(--grey-7)">Each has its options and a recommendation. Nothing
+    below is done; a skip on any one is an answer too.</p>
+
+    <ol class="q">
+
+      <li>
+        <div class="body">
+          <h3>The inline-style rule — what, if anything, do we ban?</h3>
+          <p>87 attributes carry a raw length with no token behind it. None is colour. Six are type.
+          No gate covers the population.</p>
+          <ul class="opt">
+            <li><b>A.</b> Ban raw lengths in inline styles across the snippet library, and widen the
+            hardcode gate to cover it. Touches 87 attributes in 40-odd files.</li>
+            <li><b>B.</b> Ban only what a theme can move — the six font sizes — and leave geometry alone.</li>
+            <li><b>C.</b> Ban inline styles in shipped component regions only, and exempt anything inside
+            a demo-harness block, which is a third of the population already.</li>
+            <li><b>D.</b> No rule. Record the census and move on.</li>
+          </ul>
+          <div class="rec"><b>Recommended: C</b>, because the harness blocks are already marked “never
+          copy” so the exemption costs nothing to define, and it aims the rule at the only markup a
+          builder actually lifts.</div>
+        </div>
+      </li>
+
+      <li>
+        <div class="body">
+          <h3>The template's status — proposed, or beta?</h3>
+          <p>The showroom has three status words and no room for a fourth without changing the ruled set.
+          Beta is already the generator's way of saying proposed. Separately, the template can never
+          reach stable because the gated-set snapshot predates it by ten days.</p>
+          <ul class="opt">
+            <li><b>A.</b> Add a fourth status word, “proposed”. Changes the ruled status set and one
+            self-test.</li>
+            <li><b>B.</b> Keep three words, accept beta as the expression of proposed, and fix the meta's
+            status line so it stops contradicting the tree.</li>
+            <li><b>C.</b> Re-measure the gated set at today's date so the template can reach stable on
+            merit, and use the empty override seat in the meantime.</li>
+            <li><b>D.</b> Declare it stable by override now.</li>
+          </ul>
+          <div class="rec"><b>Recommended: B plus C</b>, because B is a text fix with no ruling cost and
+          removes the contradiction, while C repairs the date trap that would otherwise pin every
+          component built after 21 August at beta forever — a problem larger than this template.</div>
+        </div>
+      </li>
+
+      <li>
+        <div class="body">
+          <h3>The dark page ground</h3>
+          <p>The ruled token paints the wall and its tiles the same colour in dark. The template ships one
+          rung darker instead, declared, unruled. Three readings are already rendered for your eye.</p>
+          <ul class="opt">
+            <li><b>A.</b> Ratify what ships — the darker ground — as the dashboard's dark page ground.</li>
+            <li><b>B.</b> Keep the ruled token and turn keylines on in dark, so the bento reads by line
+            rather than by ground.</li>
+            <li><b>C.</b> Derive a new dark page-ground token properly, which is what the original ruling
+            left open.</li>
+          </ul>
+          <div class="rec"><b>Recommended: A</b>, because it is what has shipped and been looked at for
+          twenty sessions, and C can follow later without moving a pixel.</div>
+        </div>
+      </li>
+
+      <li>
+        <div class="body">
+          <h3>May a snippet link the compiled canon stylesheet?</h3>
+          <p>None of the 137 does, so a snippet using a canon structural component has to copy the
+          generated block. This one carries such a copy, and the projector then copies it back into canon —
+          about 8KB of duplicated rules. Nothing compares the copy to its source, so it will rot silently.</p>
+          <ul class="opt">
+            <li><b>A.</b> Let snippets link canon. Changes the self-contained snippet convention for all 137.</li>
+            <li><b>B.</b> Keep the copy and build the gate that byte-compares it against canon. Priced already.</li>
+            <li><b>C.</b> Teach the projector to skip canon-owned selectors, removing the duplication in
+            canon but not the rot risk in the snippet.</li>
+          </ul>
+          <div class="rec"><b>Recommended: B</b>, because the copy is the cheap half and the rot is the
+          expensive half, and B buys the rot protection without reopening a convention that 137 files rely on.</div>
+        </div>
+      </li>
+
+      <li>
+        <div class="body">
+          <h3>Do the other three themes' dashboard defaults belong in the snippet?</h3>
+          <p>Snippets are single-theme by convention. The dashboard's spacing defaults differ per theme.
+          Only one theme's pair is written into this file; the other three live in a generator table.</p>
+          <ul class="opt">
+            <li><b>A.</b> Keep one theme in the snippet. The other three arrive through the generation arm
+            when it is built.</li>
+            <li><b>B.</b> Write all four pairs into the snippet, breaking the single-theme convention here.</li>
+            <li><b>C.</b> Neither — the snippet should carry no spacing literal at all and read the
+            selected theme's value.</li>
+          </ul>
+          <div class="rec"><b>Recommended: A</b>, because C is what the unbuilt generation arm is for and
+          building it is already someone else's job this session; B would create a second home for a fact
+          the generator owns.</div>
+        </div>
+      </li>
+
+      <li>
+        <div class="body">
+          <h3>Does an overview dashboard have a maximum width?</h3>
+          <p>Nothing in the tree settles this. The page has no cap; the one primitive that would cap it is
+          defined and unused; the summary rows deliberately dropped their own cap on the principle that the
+          container decides. At 1920 the container decides on about 900px per row.</p>
+          <ul class="opt">
+            <li><b>A.</b> No cap. A dashboard fills the screen; density is the point.</li>
+            <li><b>B.</b> Cap the wall at the existing 1120px container and centre it.</li>
+            <li><b>C.</b> No cap on the wall, but restore a width cap on the summary rows so figures stay
+            near their labels.</li>
+          </ul>
+          <div class="rec"><b>Recommended: C</b>, because filling a wide screen is right for a bento and
+          wrong for a two-column key-and-value list, and C is the only option that separates the two.
+          This wants a render at 1920 before you commit.</div>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+</div>
+
+<section class="tight">
+  <div class="wrap">
+    <p class="label n">Could not establish from this seat</p>
+    <div class="split">
+      <div><h3>Three honest blanks</h3></div>
+      <div>
+        <ul style="padding-left:1.2rem;font-size:.9375rem">
+          <li style="margin-bottom:.75rem"><b>Any render.</b> No browser and no render environment at this
+          seat; the staging script reports its directory absent. Every claim about 1024, 1920 and 520 is a
+          CSS read and is labelled as one.</li>
+          <li style="margin-bottom:.75rem"><b>Whether the four-column headline row actually holds at 520.</b>
+          The file records measurements at three bands and 520 is not among them.</li>
+          <li><b>What the wide-screen summary rows look like.</b> Predicted from the CSS, never seen.</li>
+        </ul>
+        <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s3)">One correction to the brief:
+        the meta carries <b>three</b> entries awaiting your word, not four, plus the two token gaps.
+        Questions 3, 4 and 5 above are those three.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h4>Technical footer</h4>
+    <p>Rulings and identifiers referenced above, for the record only: the template is named in 32 rulings
+    including s231-D2 (built), s245-D6 (role words), s245-D8 (row-height model), s245-D9 (rung ladder B),
+    s247-D3 (status tiles leave the headline row), s248-D1 (the 3-column re-flow), s248-D4 (the rendered
+    rhythm approved), s251-D1/D2 (the status strip), s255-D1 and s272-D85. The status vocabulary is
+    s215-D5(2). The bento parameters are s217-D2/D3; the dashboard defaults s219-D1; keylines-off
+    s219-D2(4); the unbuilt generation arm s219-D3; the open dark ground s219-D3(4). The hardcode gate is
+    DEF-004; its inline-attribute repair was #221 and the parser seed is _gate_inline_style_parse.py.
+    The one-shot pass condition is s230-D1 and the demo-day brief's THE GOAL.</p>
+    <p>Files: <code>knowledge/snippets/Template-dashboard-bento.reference.html</code> ·
+    <code>knowledge/components/template-dashboard-bento.meta.json</code> ·
+    <code>knowledge/_render/gen_library_214.py</code> · <code>showroom/index.json</code> ·
+    <code>reviews/ITINERARY-STATUS-2026-08-21-v3.json</code> ·
+    <code>apollo-spider/skills/generate-from-canon/SKILL.md</code> ·
+    <code>knowledge/_validate_no_hardcode.py</code>.</p>
+    <p>Apollo session 288, lane T · 2026-09-19 · read-only pass · filed at
+    <code>notes/_subreports/2026-09-19-288-T-template-quality.md</code> · store row W-288t.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo — the strand map and the path to Friday the 25th</title>
+<style>
+:root{
+  --accent:#DA1A00;
+  --black:#000000;
+  --white:#FFFFFF;
+  --grey-1:#F3F3F3;
+  --grey-2:#EDEDED;
+  --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B;
+  --grey-6:#767676;
+  --grey-7:#545454;
+  --grey-8:#333333;
+  --s1:0.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16px; font-weight:400; line-height:1.75;
+  color:var(--black); background:var(--white);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--s4)}
+
+/* nav */
+nav{
+  position:sticky; top:0; z-index:50;
+  background:var(--white); border-bottom:1px solid var(--grey-2);
+}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:var(--s4)}
+.brand{font-size:14px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase}
+.brand .sep{color:var(--grey-5);margin:0 8px}
+.brand .ctx{color:var(--grey-6);font-weight:400}
+nav .links{display:flex;gap:var(--s3);font-size:12px;letter-spacing:0.05em;text-transform:uppercase}
+nav .links a{color:var(--grey-6);text-decoration:none}
+nav .links a:hover{color:var(--black)}
+nav .cta{
+  font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;
+}
+
+/* labels */
+.label{
+  font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3);
+}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label.mute{color:var(--grey-6)}
+.label.mute::before{background:var(--grey-3)}
+
+/* type */
+h1{font-size:84px;font-weight:200;line-height:1.02;letter-spacing:0;margin:0 0 var(--s4)}
+h2{font-size:43px;font-weight:300;line-height:1.12;letter-spacing:-0.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s2)}
+h4{font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.lede{font-size:19px;font-weight:400;line-height:1.6;color:var(--grey-8)}
+.cap{font-size:12px;line-height:1.55;color:var(--grey-6)}
+strong{font-weight:700}
+em{font-style:normal;font-weight:500}
+
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+section.tight{padding:var(--s6) 0}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white);border-bottom:none}
+section.dark h2,section.dark h3{color:var(--white)}
+section.dark p{color:var(--grey-3)}
+section.dark .label{color:var(--white)}
+section.dark .label::before{background:var(--accent)}
+
+/* hero */
+.hero h1{margin-bottom:var(--s5)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s5)}
+.stat .fig{font-size:57px;font-weight:200;line-height:1;letter-spacing:-0.01em}
+.stat .lab{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s1);line-height:1.5}
+
+/* proposition */
+.proposition{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start}
+.proposition .rule{border-left:1px solid var(--grey-3);min-height:140px}
+
+/* quote */
+blockquote{
+  margin:0 0 var(--s3);padding:0 0 0 var(--s3);
+  border-left:2px solid var(--accent);
+  font-size:19px;font-weight:400;line-height:1.55;color:var(--black);
+}
+blockquote.small{font-size:16px;border-left-color:var(--grey-3);line-height:1.7}
+blockquote cite{display:block;margin-top:var(--s1);font-size:12px;font-style:normal;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey-6)}
+
+/* index table */
+table.index{width:100%;border-collapse:collapse;margin-top:var(--s3)}
+table.index th{
+  text-align:left;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--grey-6);padding:0 var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-3);vertical-align:bottom;
+}
+table.index td{padding:var(--s3) var(--s2) var(--s3) 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+table.index td.n{font-size:34px;font-weight:200;line-height:1;color:var(--grey-3);width:64px}
+table.index td.t a{color:var(--black);text-decoration:none;font-weight:500;font-size:19px;line-height:1.3;display:block}
+table.index td.t a:hover{color:var(--accent)}
+table.index td.t .sub{font-size:14px;color:var(--grey-7);font-weight:400;margin-top:4px;line-height:1.5}
+table.index td.s{width:140px}
+table.index td.f{width:280px;font-size:14px;color:var(--grey-7);line-height:1.55}
+
+/* status marks */
+.mark{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  padding:3px 0 4px;border-top:2px solid var(--black);color:var(--black);white-space:nowrap;
+}
+.mark.landed{border-top-color:var(--black)}
+.mark.flight{border-top-color:var(--accent);color:var(--accent)}
+.mark.open{border-top-color:var(--grey-6);color:var(--grey-7)}
+.mark.dark-m{border-top-color:var(--grey-3);color:var(--grey-6)}
+.mark.support{border-top-color:var(--grey-3);color:var(--grey-6)}
+
+/* dimension */
+.dimension .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dimension .idx{font-size:96px;font-weight:200;line-height:0.9;color:var(--grey-3);margin:0 0 var(--s2)}
+.dimension .aside h3{margin-top:var(--s3)}
+.dimension .aside .mark{margin-top:var(--s2)}
+
+/* fact rows */
+dl.facts{margin:var(--s3) 0 0;display:grid;grid-template-columns:200px 1fr;gap:0}
+dl.facts dt{
+  font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);
+  padding:var(--s2) var(--s2) var(--s2) 0;border-top:1px solid var(--grey-2);
+}
+dl.facts dd{margin:0;padding:var(--s2) 0;border-top:1px solid var(--grey-2);font-size:14px;line-height:1.65}
+dl.facts dd code,code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:12px;background:var(--grey-1);padding:1px 4px}
+section.grey dl.facts dd code{background:var(--white)}
+
+/* distinction grid */
+.distinction{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);margin-top:var(--s3)}
+.distinction > div{background:var(--white);padding:var(--s3)}
+section.grey .distinction > div{background:var(--grey-1)}
+.distinction h4{color:var(--grey-6)}
+.distinction .pref h4{color:var(--accent)}
+
+/* the path */
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--grey-2);margin-top:var(--s4);border:1px solid var(--grey-2)}
+.day{background:var(--white);padding:var(--s3) var(--s2);min-height:220px}
+.day .d{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
+.day .dd{font-size:12px;color:var(--grey-6);margin-bottom:var(--s2)}
+.day.fri{background:var(--black);color:var(--white)}
+.day.fri .dd{color:var(--grey-5)}
+.day ul{margin:0;padding-left:14px}
+.day li{font-size:13px;line-height:1.5;margin-bottom:var(--s1)}
+.day.fri li{color:var(--grey-3)}
+.wave{
+  display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:var(--s1);
+}
+.day.fri .wave{color:var(--white)}
+
+ul.plain{margin:0 0 var(--s2);padding-left:18px}
+ul.plain li{margin-bottom:var(--s1);line-height:1.65}
+ol.plain{margin:0 0 var(--s2);padding-left:20px}
+ol.plain li{margin-bottom:var(--s2);line-height:1.65}
+
+.wave-key{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);margin-top:var(--s4)}
+.wave-key .k{border-top:2px solid var(--grey-3);padding-top:var(--s2)}
+.wave-key .k.one{border-top-color:var(--accent)}
+
+/* footnote */
+.tech{font-size:13px;line-height:1.7;color:var(--grey-7)}
+.tech table{width:100%;border-collapse:collapse;margin-top:var(--s2)}
+.tech th{text-align:left;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);padding:0 var(--s2) 6px 0;border-bottom:1px solid var(--grey-3);font-weight:500}
+.tech td{padding:8px var(--s2) 8px 0;border-bottom:1px solid var(--grey-2);vertical-align:top;font-size:12px;line-height:1.6}
+.tech td code{background:transparent;padding:0}
+
+footer{padding:var(--s6) 0;font-size:12px;color:var(--grey-6)}
+footer .wrap{display:flex;justify-content:space-between;gap:var(--s4);flex-wrap:wrap}
+
+@media (max-width:980px){
+  h1{font-size:57px}
+  h2{font-size:34px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .proposition,.dimension .wrap{grid-template-columns:1fr;gap:var(--s4)}
+  .proposition .rule{display:none}
+  .days{grid-template-columns:1fr}
+  .wave-key{grid-template-columns:1fr}
+  dl.facts{grid-template-columns:1fr}
+  dl.facts dt{border-top:1px solid var(--grey-3);padding-bottom:0}
+  dl.facts dd{border-top:none;padding-top:4px}
+  nav .links{display:none}
+  table.index td.f{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">Apollo<span class="sep">/</span><span class="ctx">Strand map</span></span>
+    <span class="links">
+      <a href="#index">Index</a>
+      <a href="#strands">Strands</a>
+      <a href="#date">The date</a>
+      <a href="#path">The path</a>
+      <a href="#wait">What waits</a>
+    </span>
+    <a class="cta" href="#path">Friday 25 Sept</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="label">Strand map · measured 2026-09-19 · session 288</p>
+    <h1>Six strands,<br>six days.</h1>
+    <div class="proposition">
+      <div>
+        <p class="lede">Every live piece of Apollo, what state it is actually in today, and the one thing each needs before Friday.</p>
+      </div>
+      <div class="rule"></div>
+      <div>
+        <p>Two of the six are finished and can be shown as they stand. Two are in flight and will be ready if nothing is added to them. Two are open — and one of those two, the deck, is waiting on a decision only you can make.</p>
+        <p>The single largest risk is not a strand. It is that <strong>nobody has established what Friday the 25th actually is</strong> — a small internal run-through, or the session with David Rice. Those are two different presentations. That question is at the top of the path below.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="fig">6</div><div class="lab">Presentable strands</div></div>
+      <div class="stat"><div class="fig">2</div><div class="lab">Supporting strands<br>(not for the room)</div></div>
+      <div class="stat"><div class="fig">6</div><div class="lab">Days to Friday<br>Sat 19 → Fri 25</div></div>
+      <div class="stat"><div class="fig">1</div><div class="lab">Decision that<br>blocks the deck</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="index">
+  <div class="wrap">
+    <p class="label">The index</p>
+    <h2>What is where, and how it stands.</h2>
+    <p class="lede" style="max-width:780px">Four marks. <strong>Landed</strong> — finished, shown as it is. <strong>In flight</strong> — moving, will be ready. <strong>Open</strong> — real work still to do. <strong>Dark</strong> — I could not establish it from this seat.</p>
+
+    <table class="index">
+      <thead>
+        <tr><th></th><th>Strand</th><th>State</th><th>What must land by Friday</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">01</td>
+          <td class="t"><a href="#s1">The designer pack and the Spider</a><div class="sub">The kit a designer installs, and the agent that builds with it.</div></td>
+          <td class="s"><span class="mark flight">In flight</span></td>
+          <td class="f">Nothing new. One sentence in the deck that says what version is in the room and what it did.</td>
+        </tr>
+        <tr>
+          <td class="n">02</td>
+          <td class="t"><a href="#s2">The bento canon and its dashboard template</a><div class="sub">The grid every overview screen is built on, and the page-scale template that uses it.</div></td>
+          <td class="s"><span class="mark open">Open</span></td>
+          <td class="f">Your eye on four themes side by side, and the missing generation arm built so the template stops shipping one theme's numbers to all four.</td>
+        </tr>
+        <tr>
+          <td class="n">03</td>
+          <td class="t"><a href="#s3">The dashboards one-shot</a><div class="sub">One prompt, cold, producing a dashboard you would not be embarrassed to show.</div></td>
+          <td class="s"><span class="mark open">Open</span></td>
+          <td class="f">A fresh cold run, looked at by eye, with a decision: show it live, or show a recording.</td>
+        </tr>
+        <tr>
+          <td class="n">04</td>
+          <td class="t"><a href="#s4">The knowledge graph and the rulings brain</a><div class="sub">The live field of everything Apollo knows, and the record of every decision you have made.</div></td>
+          <td class="s"><span class="mark landed">Landed</span></td>
+          <td class="f">Only a number correction — the deck prints a graph size that is now well out of date.</td>
+        </tr>
+        <tr>
+          <td class="n">05</td>
+          <td class="t"><a href="#s5">The logo masters</a><div class="sub">Forty cut-for-size logo files, accepted and registered against the graph.</div></td>
+          <td class="s"><span class="mark landed">Landed</span></td>
+          <td class="f">Nothing. Available as a one-slide proof point if a slide needs one.</td>
+        </tr>
+        <tr>
+          <td class="n">06</td>
+          <td class="t"><a href="#s6">The presentation itself</a><div class="sub">Eleven slides, a prep note on the audience, a run-of-show and two evidence pages.</div></td>
+          <td class="s"><span class="mark flight">In flight</span></td>
+          <td class="f">Your new structure — the deck cannot be re-cut without it — then the re-cut itself, then the ask on slide 10.</td>
+        </tr>
+        <tr>
+          <td class="n">07</td>
+          <td class="t"><a href="#s7">The seam and the gauge</a><div class="sub">Supporting. The instrumentation that keeps sessions inside their budget.</div></td>
+          <td class="s"><span class="mark support">Supporting</span></td>
+          <td class="f">Nothing. Not for the room.</td>
+        </tr>
+        <tr>
+          <td class="n">08</td>
+          <td class="t"><a href="#s8">The memory and the Memento brain</a><div class="sub">Supporting. The retrieval index and the carried-decision store.</div></td>
+          <td class="s"><span class="mark support">Supporting</span></td>
+          <td class="f">Nothing. Not for the room.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ STRAND 1 ============ -->
+<div id="strands"></div>
+<section class="dimension" id="s1">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">01</div>
+      <p class="label">Strand one</p>
+      <h3>The designer pack and the Spider</h3>
+      <span class="mark flight">In flight</span>
+    </div>
+    <div>
+      <h2>A designer installs a kit, and an agent builds with it.</h2>
+      <p class="lede">The pack is the design system in a form an AI can read — tokens, components, rules and skills. The Spider is the agent that reads it and builds screens. Version 1.0.13 is running on your work machine right now, on the HSBC CEO banking prototype.</p>
+
+      <p>It is the only strand that has been used outside this repo, by a different model, on a real brief. That makes it the strongest evidence in the room and the one that needs the least work this week.</p>
+
+      <p><strong>What it proved, and what it got wrong.</strong> The Spider's own write-up of that build was checked line by line here. Five of its six factual claims about our system hold. The sixth — its 33-pass / 8-fail gate scoreboard — is arithmetically correct but cannot separate its own failures from ones it inherited, because it never ran the baseline the pack ships for exactly that purpose.</p>
+
+      <p>Its one real analytical miss is the same miss twice: it read two deliberately-ruled numbers as defects. That is not a flaw in the Spider so much as a gap in what the pack tells an agent about which values are intentional.</p>
+
+      <blockquote class="small">don't take it on face value, use your judgment, but what it did worked.<cite>Dave, 2026-09-19</cite></blockquote>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd>Thirteen Spider releases on disk, v1.0.0 through v1.0.13. The designer-skills pack v2.1 bundle is 3.92 MB, last written 2026-09-16.</dd>
+        <dt>Measured</dt>
+        <dd>The Spider's report on our system: five claims verified at file and line, one partly. No gate was re-run to produce that verdict — existing evidence was read against current source.</dd>
+        <dt>Open</dt>
+        <dd>The pack ships with gates that are red before a designer writes a line — a first CI run is red for reasons that are not theirs. Unruled since #219.</dd>
+        <dt>Open</dt>
+        <dd>Nothing in the pack tells a reading agent that a value is ruled rather than accidental. Both of the Spider's misreads are that gap.</dd>
+        <dt>By Friday</dt>
+        <dd><strong>Nothing to build.</strong> One sentence in the deck naming the version in the room and what it produced.</dd>
+        <dt>Can wait</dt>
+        <dd>The red-at-bake gate question and the ruled-value signalling. Both are real; neither shows in a demo.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAND 2 ============ -->
+<section class="dimension grey" id="s2">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">02</div>
+      <p class="label">Strand two</p>
+      <h3>The bento canon and its dashboard template</h3>
+      <span class="mark open">Open</span>
+    </div>
+    <div>
+      <h2>The grid is ruled. The delivery of it is not.</h2>
+      <p class="lede">Bento is canon — promoted, with each theme carrying its own gutter tunings, and bentos nest inside bentos. The dashboard template is the page-scale piece that puts that grid to work. It is where the one-shot design lands.</p>
+
+      <p><strong>Your correction stands at the centre of this strand.</strong> There is no contradiction to resolve by picking a winner — there are two quantities, both deliberately per-theme.</p>
+
+      <blockquote>The problem with the gutters it that they are deliberately different for the themes and the gutters are also different for the inner and outer bentos we essentially have a structural bento and embedded bentos or tile groupings.<cite>Dave, 2026-09-19</cite></blockquote>
+
+      <p><strong>What survives that correction is narrower and real.</strong> The template hard-codes one theme's pair of gutters — 40px outer, 4px inner — as literal numbers, rather than delivering whichever theme is selected. So a console or supercharge dashboard gets mono's spacing.</p>
+
+      <p>The reason is single and named: the piece that would generate per-theme values was ruled into existence a month ago and never built. The manifest it would read declares itself groundwork-only in its own header and has sat unused since.</p>
+
+      <div class="distinction">
+        <div>
+          <h4>What we have</h4>
+          <p style="font-size:14px;margin:0">Two literals pinned in the compiled stylesheet, correct for one theme of four, with a source comment saying so.</p>
+        </div>
+        <div class="pref">
+          <h4>What Friday needs</h4>
+          <p style="font-size:14px;margin:0">The generation arm built, so the template asks the theme for its outer and inner gutter and gets the right pair — and four themes rendered side by side for your eye.</p>
+        </div>
+      </div>
+
+      <p style="margin-top:var(--s4)"><strong>Mono's zero is doubted, not overruled.</strong> The ruled value for mono's bento gutter is 0, taken from your own tuner exports. You said you were not sure that is right. Nothing has been changed on that doubt — the value still stands until a review with your eye on it says otherwise. And whether that particular dial is even the structural gutter is still to be read from source, not assumed.</p>
+
+      <p><strong>The template's own quality is a second question, not a clause of the first.</strong> Its metadata carries three things it says are explicitly awaiting your word, and two places where a token could not be bound and a literal was written down instead with the reason. It has also been carrying two contradictory statuses since #231.</p>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd>The compiled stylesheet pins <code>40px</code> and <code>4px</code> as literals, template-scoped, at two adjacent lines. Not theme-conditioned, and the source comment says they are mono's defaults.</dd>
+        <dt>Measured</dt>
+        <dd>The rails manifest the generation arm would read exists, is generated, and marks itself groundwork-only. Nothing consumes it.</dd>
+        <dt>Measured</dt>
+        <dd>The template declares <strong>three</strong> items awaiting your word and <strong>two</strong> token gaps. <span class="cap">The #287 handoff declares four awaiting items; I read three. Both readings are published; I did not rewrite either.</span></dd>
+        <dt>Measured</dt>
+        <dd>Two statuses for one artefact: the template's own metadata says proposed and not registered; the showroom index says beta. The index is the surface the skill tells builders to search.</dd>
+        <dt>By Friday</dt>
+        <dd><strong>Four themes rendered side by side</strong> for your eye, mono's zero read from source rather than from a report, and <strong>the generation arm built</strong> so the template delivers the selected theme's pair.</dd>
+        <dt>Can wait</dt>
+        <dd>The dark page ground, whether a snippet may link the canon stylesheet, and whether the other three themes' defaults belong in a snippet at all. All three are conventions, none of them visible on Friday.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAND 3 ============ -->
+<section class="dimension" id="s3">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">03</div>
+      <p class="label">Strand three</p>
+      <h3>The dashboards one-shot</h3>
+      <span class="mark open">Open</span>
+    </div>
+    <div>
+      <h2>One prompt, cold, and the result has to land.</h2>
+      <p class="lede">This is the moment the whole demo is built to earn: a frozen prompt, run cold in the editor, producing a compliant dashboard with nothing edited afterwards. Slide 7 is that moment.</p>
+
+      <blockquote>I just need the one-shot design to not disappoint, however it is getting better all the time.<cite>Dave, 2026-09-19</cite></blockquote>
+
+      <p><strong>What exists is a chain of regenerations, not a current reading.</strong> There are three dashboard artefacts on disk — an original cold build, a full regeneration, and a receipt-bearing cut built to prove the provenance machinery on a real generated page. The newest is from 2 September. <strong>Nothing has been run cold since.</strong></p>
+
+      <p>That matters because everything under it has moved: the template, the canon stylesheet, the pack and the Spider have all changed in the seventeen days since. The one-shot's current quality is <em>not established from this seat</em> — it can only be established by running it.</p>
+
+      <p><strong>And a definition is owed before the output can be judged.</strong> You asked for one at the close of #287, and asked to do it together rather than hand it off:</p>
+
+      <blockquote class="small">I also think we need a definition of an 'Overview dashboard' lets work on this together<cite>Dave, 2026-09-19</cite></blockquote>
+
+      <p>Without that definition, a reviewer grading the one-shot is grading against taste rather than a standard — and the Spider's report raised the same problem from the other end, noting that several destinations reuse one reporting wall instead of supporting distinct tasks.</p>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd>Three dashboard artefacts on disk. Newest written 2026-09-02; the original cold build 2026-08-30. No cold run since.</dd>
+        <dt>Measured</dt>
+        <dd>A validator exists that drives the real dashboard page out of the staged pack before a demo — written 2026-09-11, not run since.</dd>
+        <dt>Dark</dt>
+        <dd>The current quality of a cold one-shot. <strong>Not established from this seat.</strong> It needs a run, then your eye.</dd>
+        <dt>By Friday</dt>
+        <dd><strong>Run it cold, look at it.</strong> Then a decision from you: live in the room, or recorded. Live is the stronger proof and the larger risk.</dd>
+        <dt>By Friday, yours</dt>
+        <dd>The Overview dashboard definition — what it answers, what it must carry and what it must not. Half an hour in the seat with me, not a lane.</dd>
+        <dt>Can wait</dt>
+        <dd>The information-architecture problem the Spider raised — one reporting wall serving several destinations. Real, and bigger than a week.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAND 4 ============ -->
+<section class="dimension grey" id="s4">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">04</div>
+      <p class="label">Strand four</p>
+      <h3>The knowledge graph and the rulings brain</h3>
+      <span class="mark landed">Landed</span>
+    </div>
+    <div>
+      <h2>The record of every decision, and the field you can fly through.</h2>
+      <p class="lede">Six hundred and twenty-two rulings, each with your words on its face, what it governs, and its evidence. The explorer draws the whole field — components, patterns, rules, rulings, evidence — as something you can dig into, trace and interrogate.</p>
+
+      <p>This strand is finished for Friday's purposes. It moved twice yesterday: two of your sentences became rulings — the first movement in the store in seven sessions — and the explorer was rebuilt to read the logo size fields, which nothing had read before.</p>
+
+      <p><strong>There is one number to correct in the deck, and it is not small.</strong> Slides 9 and 11 print the graph as 2,837 nodes and 4,902 edges. That was true at the deck's build. Today the explorer reads <strong>4,820 nodes and 8,648 edges</strong> — the field has roughly doubled its edges. Showing the old figure next to the live page would be the worst version of this slide: the truth is better than the claim, and the slide undersells it by 1,983 nodes.</p>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd><strong>622 rulings</strong> across 145 sessions, read by parsing the store. The rendered record page is 1.11 MB and fresh.</dd>
+        <dt>Measured</dt>
+        <dd>The explorer is builder version 1.27, generated 2026-09-19: <strong>4,820 nodes, 8,648 edges</strong>. Largest classes — evidence 1,014, icons 666, artefacts 653, rulings 622, rules 473, patterns 382.</dd>
+        <dt>Measured</dt>
+        <dd>The open-work store holds <strong>711 items, 604 live</strong> — 318 yours, 286 mine. 697 carry a stated close condition; 14 inherited items carry none and are frozen as a declared debt.</dd>
+        <dt>Measured</dt>
+        <dd>The deck's graph figures are stale: 2,837 / 4,902 printed against 4,820 / 8,648 live.</dd>
+        <dt>By Friday</dt>
+        <dd><strong>Correct the two slides' figures</strong> at the moment the deck is re-cut — not before, or it will be done twice.</dd>
+        <dt>Can wait</dt>
+        <dd>Rebuilding the graph after the rulings store settles rather than during, so a build stops baking a snapshot nobody chose. A sequencing fix, invisible in the room.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAND 5 ============ -->
+<section class="dimension" id="s5">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">05</div>
+      <p class="label">Strand five</p>
+      <h3>The logo masters</h3>
+      <span class="mark landed">Landed</span>
+    </div>
+    <div>
+      <h2>Forty files, each cut for the size it is used at.</h2>
+      <p class="lede">Eight lockups — hexagon and masterbrand, light and dark, colour and mono — each with five masters cut for 24, 28, 32, 36 and 40 pixels. Accepted by you, registered against the graph, and now readable in the explorer at their true sizes.</p>
+
+      <p>This is the cleanest finished strand in the set. Every master is on disk, every one is registered as a size record on its own lockup's node rather than as a node of its own — your word settled that — and the explorer draws all five at their declared heights on the lockup's own ground, because that is the entire point of cutting a master per size.</p>
+
+      <p>For Friday it needs nothing. If a slide needs a concrete craft proof point — the system doing something a hand would do badly at scale — this is it.</p>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd><strong>40 master SVG files</strong> on disk under the logo assets, and <strong>40 size entries</strong> across 8 nodes in the logo graph — byte-identical between the two.</dd>
+        <dt>Measured</dt>
+        <dd>The logo graph holds <strong>8 nodes and 33 edges</strong>, unchanged either side of the registration.</dd>
+        <dt>By Friday</dt>
+        <dd><strong>Nothing.</strong> Available as one slide if the deck's new structure wants a craft proof.</dd>
+        <dt>Can wait</dt>
+        <dd>Everything remaining here is housekeeping.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAND 6 ============ -->
+<section class="dimension grey" id="s6">
+  <div class="wrap">
+    <div class="aside">
+      <div class="idx">06</div>
+      <p class="label">Strand six</p>
+      <h3>The presentation itself</h3>
+      <span class="mark flight">In flight</span>
+    </div>
+    <div>
+      <h2>The good start is real. The structure is yours and it is not yet stated.</h2>
+      <p class="lede">The presentation strand was not assumed — it was found. It lives in five places, and they are all still on disk.</p>
+
+      <blockquote>so we also have to actually prepare and create the presentation, we made a good start but I want to change the structure. please include this is the plan. we might have to parallelise some of this to get it nailed quickly.<cite>Dave, 2026-09-19</cite></blockquote>
+
+      <p><strong>The deck.</strong> Eleven slides, built over two days at #268 across seven versions, with a PDF and a picture of every slide filed beside it. Title card is a fly-through of the graph's three islands; slide 2 reverses that animation out through a blend; slide 3 is your car-plant gearbox metaphor drawn as a line model you can orbit.</p>
+
+      <p><strong>The audience note.</strong> A prep page on David Rice, HSBC's first Chief AI Officer — who he is, what he is measured on, and how he will judge Apollo. It carries a correction on its own face: the audience was wrongly recorded as "Sutherland" at #246 and fixed on your word. Sutherland is HSBC's component library, not a person.</p>
+
+      <p><strong>The run-of-show, and two evidence pages</strong> — one on external KPI baselines with twenty sourced rows, one on the delivery-time comparison.</p>
+
+      <p><strong>Three things are open on the deck, and one of them is yours alone.</strong></p>
+
+      <ol class="plain">
+        <li><strong>The new structure.</strong> You have said you want to change it and have not yet said to what. Nothing can be re-cut until you do — which is why the deck is wave 2 in the path below, not wave 1.</li>
+        <li><strong>The ask on slide 10.</strong> It still carries a draft label on its own face: one live project, sponsored, six weeks on the clock, measured against HSBC's own published fifteen percent. Amount and shape are still open, and the slide says so.</li>
+        <li><strong>The version name.</strong> The file's own stamp reads v7.7; the commit that produced it calls the state v7.8. One of them is wrong and it is mechanical. Nothing was renamed to make them agree, because re-dating a stamp to match a commit is how false records get made.</li>
+      </ol>
+
+      <dl class="facts">
+        <dt>Measured</dt>
+        <dd><strong>11 slides</strong> in the deck file, ids s1 through s11, 175 KB. PDF and eleven per-slide pictures filed alongside.</dd>
+        <dt>Measured</dt>
+        <dd>The highest version string inside the deck file is <strong>v7.7</strong>. The last commit on it calls the state v7.8.</dd>
+        <dt>Measured</dt>
+        <dd>Slide 10 carries the words "Draft — the ask slot is Dave's and is not ruled" in the page itself.</dd>
+        <dt>Measured</dt>
+        <dd>Slides 9 and 11 print graph figures that are now stale — see strand four.</dd>
+        <dt>By Friday, yours</dt>
+        <dd><strong>The new structure, slide group by slide group.</strong> Everything else on this strand is blocked behind it.</dd>
+        <dt>By Friday, mine</dt>
+        <dd>The re-cut itself — split by slide group so several lanes can work at once — plus the stale graph figures and the version stamp.</dd>
+        <dt>Can wait</dt>
+        <dd>The ask's exact amount, if Friday turns out to be the internal run-through. It cannot wait if Friday is Rice.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUPPORTING ============ -->
+<section class="tight" id="s7">
+  <div class="wrap">
+    <p class="label mute">Supporting · not presentable</p>
+    <h2 style="font-size:34px">Two strands that hold the others up.</h2>
+    <p class="lede" style="max-width:780px">Both are live, both are load-bearing, and neither belongs in the room. They are here so the map is complete, not so they get a slide.</p>
+
+    <div class="proposition" style="margin-top:var(--s5)">
+      <div>
+        <h3 style="margin-top:0">The seam and the gauge</h3>
+        <span class="mark support">Supporting</span>
+      </div>
+      <div class="rule"></div>
+      <div>
+        <p>The instrumentation that measures what a session costs and refuses to guess when it cannot measure. Eight standing constraints were ratified as written yesterday and the seam now re-quotes them at the tail of every lane.</p>
+        <p>A cold-start measurement was taken twice on the same setup and came within 288 tokens of itself — which turned a suspected saving into a measured one. It also confirms the boot is still over its own ceiling for the twelfth reading running, and that ceiling only ever moves down, and only on your word.</p>
+        <p class="cap">One piece of stale wording remains in live code — four printed strings that still call a budget a hard line. Named, not swept.</p>
+      </div>
+    </div>
+
+    <div class="proposition" style="margin-top:var(--s6)" id="s8">
+      <div>
+        <h3 style="margin-top:0">The memory and the Memento brain</h3>
+        <span class="mark support">Supporting</span>
+      </div>
+      <div class="rule"></div>
+      <div>
+        <p>The retrieval index that lets a session ask for what it needs instead of reading files to find out whether it needs them, plus the store of carried decisions.</p>
+        <p>It works, and it is under pressure: the carried-items file is 24 MB, the retrieval index 37 MB, and the cloud memory archive was within 162 bytes of its cap at last reading. Nothing is at risk — the repo is the record and memory is only the accelerator — but the archive will refuse a write before long.</p>
+        <p class="cap">A parked idea of yours belongs here and is not forgotten: borrowing the Swiss design skill's discipline into Apollo as a taste guarantee. Your words — "Not for now but don't let me forget this."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE DATE ============ -->
+<section class="dark" id="date">
+  <div class="wrap">
+    <p class="label">The one thing only you can settle</p>
+    <h2 style="max-width:900px">Nobody has established what Friday the 25th is.</h2>
+    <p class="lede" style="color:var(--grey-3);max-width:820px">Friday the 25th is your word, said yesterday. It is not in the record anywhere else — and the record is explicit that <strong style="color:#fff">no demo date is decided</strong>.</p>
+
+    <p style="max-width:820px">What the record does hold is your own sentence from 2026-09-14, and a standing rule built on it that forbids any page, banner or index printing either date as fixed:</p>
+
+    <blockquote style="border-left-color:var(--accent);color:var(--white);max-width:820px">none of these dates are decided yet, the first will be next week or the week after, teh second could be any time after but assume at least a week, three at most, but this a guess for date 2<cite style="color:var(--grey-5)">Dave, 2026-09-14</cite></blockquote>
+
+    <p style="max-width:820px">Read plainly, that puts the small internal demo in the week starting the 21st or the week starting the 28th, and the David Rice session somewhere between one and three weeks after it — a bound you yourself labelled a guess.</p>
+
+    <p style="max-width:820px"><strong style="color:#fff">So the 25th could be either, and they are not the same presentation.</strong> An internal run-through can show work in progress, can cut the ask, and can survive a one-shot that stumbles. A session with the Chief AI Officer of HSBC cannot do any of those things. The deck's structure, the ask on slide 10, and whether the one-shot runs live or recorded all change depending on which it is.</p>
+
+    <div class="distinction" style="background:var(--grey-8);max-width:820px;margin-top:var(--s5)">
+      <div style="background:var(--black)">
+        <h4 style="color:var(--grey-5)">If the 25th is internal</h4>
+        <p style="font-size:14px;color:var(--grey-3);margin:0">Structure can stay close to the eleven slides. The ask stays draft. Run the one-shot live — a stumble in front of your own people is information, not damage.</p>
+      </div>
+      <div style="background:var(--black)">
+        <h4 style="color:var(--accent)">If the 25th is Rice</h4>
+        <p style="font-size:14px;color:var(--grey-3);margin:0">The ask must be settled this week. The one-shot goes recorded unless it has been run cold and passed by eye twice. And the re-cut needs two clear days, not one.</p>
+      </div>
+    </div>
+
+    <p style="max-width:820px;margin-top:var(--s5)"><strong style="color:#fff">Yours, and it is the first thing on Monday at the latest:</strong> say which Friday the 25th is. Nothing below is wrong without it, but the sizing of wave 2 is a guess until you answer.</p>
+  </div>
+</section>
+
+<!-- ============ THE PATH ============ -->
+<section id="path">
+  <div class="wrap">
+    <p class="label">The path</p>
+    <h2>Saturday the 19th to Friday the 25th.</h2>
+    <p class="lede" style="max-width:820px">Three waves. Wave 1 runs today, in parallel, because none of its four pieces need anything from the others. Wave 2 is the deck, and it is blocked on your structure. Wave 3 is the commit.</p>
+
+    <div class="wave-key">
+      <div class="k one">
+        <h4 style="color:var(--accent)">Wave 1 — today, in parallel</h4>
+        <p style="font-size:14px;margin:0">This strand map · four-theme bento renders for your eye · the missing generation arm built · the template quality review with a decision pack. Four lanes, no dependencies between them.</p>
+      </div>
+      <div class="k">
+        <h4>Wave 2 — the deck, by slide group</h4>
+        <p style="font-size:14px;margin:0">Blocked on your new structure. Once you give it, the re-cut splits by slide group so several lanes run at once rather than one lane walking the deck end to end.</p>
+      </div>
+      <div class="k">
+        <h4>Wave 3 — commit</h4>
+        <p style="font-size:14px;margin:0">One lane, last, after each wave. It does not overlap the others by design — a commit lane sharing a session with build lanes is how the tree gets committed mid-change.</p>
+      </div>
+    </div>
+
+    <div class="days">
+      <div class="day">
+        <div class="d">Sat</div><div class="dd">19 Sept · today</div>
+        <span class="wave">Wave 1 · 3</span>
+        <ul>
+          <li>This strand map, for your read.</li>
+          <li>Four themes rendered side by side — your eye rules mono's zero.</li>
+          <li>The generation arm built so the template delivers the selected theme's gutters.</li>
+          <li>Template quality review, with a decision pack rather than a list.</li>
+          <li>Commit at close.</li>
+        </ul>
+      </div>
+      <div class="day">
+        <div class="d">Sun</div><div class="dd">20 Sept</div>
+        <span class="wave">Yours</span>
+        <ul>
+          <li>Read the strand map.</li>
+          <li>Say which Friday the 25th is.</li>
+          <li>Rule on the four-theme renders.</li>
+          <li>Give the new deck structure, slide group by slide group.</li>
+        </ul>
+      </div>
+      <div class="day">
+        <div class="d">Mon</div><div class="dd">21 Sept</div>
+        <span class="wave">Wave 2 opens</span>
+        <ul>
+          <li>Overview dashboard definition — half an hour together, in the seat.</li>
+          <li>Deck re-cut begins, split by slide group across lanes.</li>
+          <li>First cold one-shot run on the rebuilt template.</li>
+        </ul>
+      </div>
+      <div class="day">
+        <div class="d">Tue</div><div class="dd">22 Sept</div>
+        <span class="wave">Wave 2</span>
+        <ul>
+          <li>Deck re-cut continues; stale graph figures corrected in the same pass.</li>
+          <li>One-shot looked at by eye, against the definition.</li>
+          <li>Version stamp settled — v7.7 or v7.8, one name.</li>
+        </ul>
+      </div>
+      <div class="day">
+        <div class="d">Wed</div><div class="dd">23 Sept</div>
+        <span class="wave">Decisions</span>
+        <ul>
+          <li>Your read of the re-cut deck.</li>
+          <li>The ask on slide 10 — settled if the 25th is Rice.</li>
+          <li>Live or recorded on the one-shot, decided on what you have seen.</li>
+        </ul>
+      </div>
+      <div class="day">
+        <div class="d">Thu</div><div class="dd">24 Sept</div>
+        <span class="wave">Rehearse</span>
+        <ul>
+          <li>Run it end to end, timed, with the real machine.</li>
+          <li>Second cold one-shot, for confidence not for content.</li>
+          <li>Fix only what the rehearsal breaks.</li>
+        </ul>
+      </div>
+      <div class="day fri">
+        <div class="d">Fri</div><div class="dd">25 Sept</div>
+        <span class="wave">Present</span>
+        <ul>
+          <li>No building on the day.</li>
+          <li>Deck frozen Thursday night.</li>
+          <li>One fallback: the recorded one-shot, ready whether or not it is used.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top:var(--s5);max-width:820px"><strong>The critical path runs through Sunday.</strong> Everything in wave 2 sits behind two answers from you — which Friday it is, and what the new structure is. Give both on Sunday and the week has slack in it. Give them on Tuesday and the rehearsal day disappears.</p>
+
+    <p style="max-width:820px"><strong>Yours, in order:</strong> which Friday the 25th is · the four-theme ruling · the new deck structure.</p>
+  </div>
+</section>
+
+<!-- ============ WHAT WAITS ============ -->
+<section class="grey" id="wait">
+  <div class="wrap">
+    <p class="label">What can wait</p>
+    <h2>Real work that will not be missed on Friday.</h2>
+    <p class="lede" style="max-width:820px">Naming these is as much the point as naming the path. Each is genuinely open; none of them shows in a room.</p>
+
+    <ul class="plain" style="max-width:820px;margin-top:var(--s4)">
+      <li><strong>The inline-style rule.</strong> A census found 88 raw pixel and rem values written directly into markup with no token behind them, and no ruling on inline styles exists anywhere in the 622. A rule is owed; it is not owed this week.</li>
+      <li><strong>The template's two statuses.</strong> Its metadata says proposed and not registered; the showroom index says beta. One artefact, two answers, and the index is the surface builders search.</li>
+      <li><strong>The pack's red-at-bake gates.</strong> A designer's first run of the shipped CI is red for reasons that are not theirs.</li>
+      <li><strong>The three template questions awaiting your word</strong> — the dark page ground, whether a snippet may link the canon stylesheet, and whether the other three themes' dashboard defaults belong in a snippet.</li>
+      <li><strong>The dashboard page's freshness.</strong> Nothing checks the generated dashboard against its own source, so it drifted by eleven thousand lines before anyone noticed.</li>
+      <li><strong>The accumulating delete folder</strong> on a disk that cannot delete, and the memory archive within 162 bytes of its cap.</li>
+      <li><strong>The Swiss taste layer</strong> you parked yesterday — borrowing that skill's discipline into Apollo as a guarantee rather than a hope. Parked by you, carried, and raised at the next design seam.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TECHNICAL ============ -->
+<section class="tight">
+  <div class="wrap">
+    <p class="label mute">Technical footnote — receipts, ids and figures</p>
+    <div class="tech" style="max-width:1000px">
+      <p>Every figure above is either <strong>measured</strong> at this seat on 2026-09-19 or marked as an estimate or as not established. Nothing was carried forward from a prior session's declaration without saying so.</p>
+
+      <h4 style="margin-top:var(--s4)">Ruling ids behind the prose</h4>
+      <table>
+        <tr><th>Id</th><th>What it rules</th></tr>
+        <tr><td><code>s271-D3</code></td><td>No demo date is decided. Small demo w/c 2026-09-21 or w/c 2026-09-28; Rice 1–3 weeks after, labelled a guess in Dave's own word. No surface may print either as fixed.</td></tr>
+        <tr><td><code>s217-D2</code></td><td>Bento promoted to canon with per-theme tunings; gutter is the only divergence; bentos nest. Mono and supercharge gutter 0px, legacy and console 24px, from Dave's tuner exports.</td></tr>
+        <tr><td><code>s219-D3</code></td><td>One vocabulary, three permission levels — generation ships the minted defaults, editing picks within the rails, authoring widens them. The generation arm named here was never built.</td></tr>
+        <tr><td><code>s219-D1</code></td><td>Dashboard main/sub spacing defaults per theme: 40/4 mono, 24/4 legacy, 40/4 console, 24/2 supercharge. pageBg ruled grey; the dark page ground left expressly open.</td></tr>
+        <tr><td><code>s287-D1</code></td><td>The eight standing constraints ratified as written; the seam re-quotes them at every lane tail.</td></tr>
+        <tr><td><code>s287-D2</code></td><td>A per-size logo master is a size field on its lockup's existing node, never its own node and never a new kind. Field name <code>sizes</code>, keys 24/28/32/36/40.</td></tr>
+        <tr><td><code>s268-D8</code></td><td>Deck plot point 04: 137 components in a 102-day window is elapsed time, never build cost; the six-months-to-six-weeks line is stated as an estimate.</td></tr>
+        <tr><td><code>s240-D2</code> · <code>s241-D1</code></td><td>The boot ceiling literal is shrink-only. Raising it is Dave's word alone.</td></tr>
+      </table>
+
+      <h4 style="margin-top:var(--s5)">File receipts, by strand</h4>
+      <table>
+        <tr><th>Strand</th><th>Paths (all verified present at this seat)</th></tr>
+        <tr><td>01 Pack &amp; Spider</td><td><code>apollo-spider/dist/Apollo-Spider-v1.0.13.zip</code> · <code>Apollo-designer-skills-v2.1.zip</code> (3,921,681 B, 2026-09-16) · <code>notes/_lanes/287/GPT-SPIDER-SPACING-HANDOFF-2026-09-18.md</code> · <code>notes/_subreports/2026-09-19-287-X-spider-spacing-handoff-verified.md</code></td></tr>
+        <tr><td>02 Bento &amp; template</td><td><code>knowledge/canon/canon.css</code> lines 18119 (<code>--bento-gutter:40px</code>) and 18121 (<code>--bento-gutter:4px</code>) · <code>knowledge/_render/_bento_edit_rails.json</code> (<code>$groundwork_only</code> in its own header) · <code>knowledge/components/template-dashboard-bento.meta.json</code> (3 <code>$awaitingDave</code>, 2 <code>$tokenGaps</code>, <code>$status</code> PROPOSED / NOT REGISTERED) · <code>showroom/index.json</code> (<code>"status":"beta"</code>) · <code>reviews/BENTO-SNIPPET-2026-08-31-v1.html</code> · <code>notes/_subreports/2026-08-31-231-bento-snippet.md</code></td></tr>
+        <tr><td>03 One-shot</td><td><code>dashboards/international-banking-dashboard.canon.html</code> (2026-08-30) · <code>dashboards/international-banking-dashboard.regen-v1.html</code> (2026-08-30) · <code>dashboards/international-banking-dashboard.regen-v2-receipt.html</code> and <code>dashboards/international-banking-dashboard.regen-v2-receipt.spec.json</code> (2026-09-02) · <code>knowledge/_validate_demo_page.py</code> (2026-09-11) · <code>notes/_briefs/2026-08-31-230-demo-day-brief.md</code></td></tr>
+        <tr><td>04 Graph &amp; rulings</td><td><code>notes/_KG-EXPLORER.html</code> (builder v1.27, generated 2026-09-19, commit 9c013d2d, 4,384,332 B) · <code>notes/_RULINGS.html</code> (1,112,088 B) · <code>knowledge/_rulings.json</code> (622 rulings / 145 sessions) · <code>knowledge/_state.json</code> (711 items, 604 live, 318 Dave's, 286 mine, 697 conditioned, 14 unconditioned)</td></tr>
+        <tr><td>05 Logo masters</td><td><code>knowledge/assets/logos/masters/</code> (40 SVGs) · <code>knowledge/_logo_nodes.json</code> (8 nodes, 33 edges, 40 size entries across 8 nodes) · <code>knowledge/assets/logos/_gen_masters.py</code></td></tr>
+        <tr><td>06 Presentation</td><td><code>notes/_DEMO-SLIDES-apollo-2026-09-12-v7.html</code> (11 sections s1–s11, 174,699 B, highest in-file stamp v7.7) · <code>notes/_subreports/slides-268-v7/</code> (deck-v7.pdf + 11 per-slide PNGs) · <code>notes/_DEMO-PREP-david-rice-hsbc.html</code> · <code>notes/_RUN-OF-SHOW-david-rice-2026-09-10-v1.html</code> · <code>notes/_DEMO-EVIDENCE-external-kpis-2026-09-11-v1.html</code> · <code>notes/_DEMO-EVIDENCE-n-weeks-2026-09-10-v1.html</code> · <code>_HANDOFF-119-the-designer-pack-and-the-deck.md</code></td></tr>
+        <tr><td>07 Seam &amp; gauge</td><td><code>knowledge/_seam.py</code> · <code>knowledge/_gauge_tokens.py</code> · <code>notes/_lanes/287/BOOT-COLD-2026-09-19.md</code> · <code>notes/_GAUGE-LOG.md</code> (1,520,712 B)</td></tr>
+        <tr><td>08 Memory &amp; Memento</td><td><code>knowledge/_memento-index.json</code> (37,110,677 B) · <code>_CARRIES.md</code> (24,216,201 B) · <code>knowledge/_memento_search.py</code> · <code>knowledge/_state.py</code></td></tr>
+        <tr><td>Dave's words</td><td><code>notes/_lanes/287/DAVE-RULINGS-2026-09-19.md</code> · <code>notes/_lanes/288/DAVE-RULINGS-2026-09-19.md</code> · <code>_HANDOFF-138-the-rulings-land-and-the-strand-map-is-ordered.md</code></td></tr>
+      </table>
+
+      <h4 style="margin-top:var(--s5)">Disagreements published rather than reconciled</h4>
+      <ul class="plain" style="font-size:13px">
+        <li>The #287 handoff declares <strong>four</strong> <code>$awaitingDave</code> entries on the dashboard template; parsing the file at this seat returns <strong>three</strong>. Both readings stand; neither was rewritten.</li>
+        <li>The deck's in-file version stamp reads <strong>v7.7</strong>; the commit subject that produced that state calls it <strong>v7.8</strong>. Nothing was renamed.</li>
+        <li>The rulings store reports <strong>145 distinct sessions</strong> when derived from ruling ids at this seat; the #287 wrap declares <strong>160 sessions</strong> from the rendered record. Two probe shapes, not a change in the store. Published, not picked.</li>
+        <li>The deck prints <strong>2,837 nodes / 4,902 edges</strong>; the current explorer reads <strong>4,820 / 8,648</strong>. The deck figure was true when built.</li>
+      </ul>
+
+      <h4 style="margin-top:var(--s5)">Not established from this seat</h4>
+      <ul class="plain" style="font-size:13px">
+        <li><strong>Which event Friday 2026-09-25 is.</strong> Dave's word, said 2026-09-19; no record names it. The standing ruling is that no demo date is decided.</li>
+        <li><strong>The current quality of a cold one-shot.</strong> Nothing has been run cold since 2026-09-02, and everything beneath it has moved since.</li>
+        <li><strong>Whether the dial ruled 0 in mono is the structural gutter</strong> or something else. To be read from source, not assumed.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Apollo · strand map · built 2026-09-19, session 288, lane M</span>
+    <span>The audience is David Rice, Chief AI Officer, HSBC. Sutherland is HSBC's component library, not a person.</span>
+  </div>
+</footer>
+
+</body>
+</html>

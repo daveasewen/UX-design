@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<!-- 288/P — COMPOSED, NOT TRACED. Built from knowledge/snippets/* components, knowledge/canon/canon.css,
+     knowledge/tokens/* and the graph's rulings. The dashboard TEMPLATE was fenced and never opened.
+     Every decision is logged in notes/_lanes/288/P/DECISIONS.md with the rule it rests on.
+     THEME: Mono = the BASE store, so NO data-apollo-theme attribute (gen_theme_cascade.py:
+     "resolve(role, mode, theme): theme override wins; else base (Mono)"). Mode via data-theme. -->
+<html lang="en" class="canon" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI programme operations — Chief AI Officer</title>
+<link rel="stylesheet" href="../../../../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../../../../knowledge/canon/type.css">
+<style>
+/* ── PAGE-LEVEL ONLY. No component styling lives here; every visual value is a token. ──
+   G1 (DECISIONS.md): the dashboard/mono role default is pageBg=grey (s219-D1(3)) and the
+   store has no semantic page-grey role — bound to the nearest intent and FLAGGED. */
+.canon{ --page: var(--tertiary-background-hover); background:var(--page); }
+.pg{ max-width:1440px; margin:0 auto;
+     padding:var(--gap-fixed-subsection-small) var(--gap-fixed-subsection-medium) var(--gap-fixed-section-small); }
+.pg > * + *{ margin-top:var(--gap-fixed-subsection-xsmall); }
+
+/* B3: instance dials are declared as `.c-bento.<name>` — a bare class is (0,1,0) and the
+   role rule at (0,2,0) would beat it (canon.css ROLES comment).
+   ⚠ G7 (DECISIONS.md): that recipe is UNDER-SPECIFIED for the bento-of-bentos case. The
+   rule that restores the outer gutter is
+   `.c-bento[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento)`, whose :has()
+   argument lifts it to (0,4,0) — a bare `.c-bento.wall-ops` at (0,2,0) LOSES, measured.
+   The mainSpacing dial has to repeat the :has() to be heard. */
+.c-bento.wall-ops:has(> .c-bento__grid > .c-bento){ --bento-gutter:40px; } /* mainSpacing 40 */
+.c-bento.wall-headline{ --bento-gutter:4px; --bento-columns:5; }/* subSpacing 4 · C4     */
+.c-bento.wall-evidence{ --bento-gutter:4px; --bento-columns:3; }/* subSpacing 4 · C9     */
+
+/* the card fills its tile — the tile is a slot, the component paints (B4) */
+.fill, .fill > .card{ height:100%; }
+.fill > .card{ display:flex; flex-direction:column; }
+.cn-kpi-tile .board.row{ display:flex; height:100%; }
+.cn-kpi-tile .kpi-tile{ flex:1 1 auto; height:100%; }
+/* the Table component's own width dial, opened to the tile it sits in */
+.cn-table .wrap{ --table-w:100%; }
+/* List-items' OWN density dials (`--row-h`/`--row-pad`, at the values its own density
+   control ships: 64px / 10px). The 320px bento rung is what asks for compact here. */
+.cn-list-items .list{ --row-h:64px; --row-pad:10px; }
+/* The chart tile sits on the 320px bento rung, so the chart canvas is pinned to it.
+   dv-behaviour's fitHeight anticipates exactly this ("a CSS-pinned box would SCALE:
+   keep the bake") and falls back to the authored data-h. */
+.wall-evidence .dv-chart-area{ max-height:216px; }
+/* the spark fills the rung it was given (preserveAspectRatio="none" is the snippet's own) */
+.cn-kpi-tile .kpi-tile{ display:flex; flex-direction:column; }
+.cn-kpi-tile .kpi-spark{ flex:1 1 auto; min-height:0; }
+.cn-kpi-tile .kpi-spark svg{ height:100%; }
+
+/* the attention strip (G6 — no component exists; chips are Status-indicator's) */
+.strip{ display:flex; align-items:center; gap:var(--padding-fixed-medium); flex-wrap:wrap;
+        background:var(--surface); border:1px solid var(--border);
+        border-radius:var(--border-radius-surface);
+        padding:var(--padding-fixed-small) var(--padding-fixed-medium); }
+.strip .chips{ display:flex; gap:var(--gap-fixed-content-small); flex-wrap:wrap; }
+.strip a.chip{ text-decoration:none; }
+.strip a.chip:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+.strip .strip-lbl{ color:var(--muted); }
+
+/* the needs-attention list (G4 — no component exists; rows are List-items-shaped) */
+.na-list{ list-style:none; margin:0; padding:0; }
+.na-list li{ display:flex; align-items:flex-start; justify-content:space-between;
+             gap:var(--gap-fixed-content-medium); padding:var(--padding-fixed-small) 0;
+             border-top:1px solid var(--divider-soft); }
+.na-list li:first-child{ border-top:0; }
+.na-txt{ min-width:0; display:flex; flex-direction:column; gap:var(--gap-fixed-content-xsmall); }
+.na-meta{ color:var(--muted); }
+.na-count{ color:var(--muted); margin:0 0 var(--gap-fixed-content-xsmall); }
+.mini{ min-width:0; padding:0 var(--padding-fixed-small); }
+
+/* dense figures inside a tile */
+.tile-table{ width:100%; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+          overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+</style>
+<script type="application/json" id="provenance-receipt">
+{
+ "$schema": "apollo/provenance-receipt/1",
+ "pack": "UNDECLARED",
+ "generator": "knowledge/gen_provenance_receipt.py",
+ "retrievalSet": null,
+ "$retrievalSetNote": "rC Q4 \u2014 the retrieval-set membership marker \u2014 is OPEN. null is the honest value; the gate reports it UNPROVEN rather than letting a green imply it was checked.",
+ "$key": "sha256 of the page's OWN region bytes (s235-D1). Valid against `pack` only: the hash moves on every regen serial.",
+ "regions": []
+}
+</script>
+</head>
+<body>
+
+<div class="pg">
+
+  <!-- ══ PAGE HEADER — Page-header-lockup, arrangement A (A4) ══════════════════════ -->
+  <div class="cn-page-header-lockup">
+    <div class="ph">
+      <div class="ph-row">
+        <div class="ph-titleblock">
+          <span class="eyebrow t-cm-caption">AI operations</span>
+          <h1 class="ph-title t-cm-heading">AI programme portfolio</h1>
+        </div>
+        <div class="ph-actions">
+          <button class="btn tertiary" type="button">Export portfolio</button>
+          <button class="btn primary" type="button">Open review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ATTENTION STRIP (C2 · s251-D1) — chips anchor-link to the attention panel ══ -->
+  <nav class="strip cn-status-indicator" aria-label="Needs your attention">
+    <span class="strip-lbl t-cm-ctl-14">Needs you this week</span>
+    <div class="chips">
+      <a class="chip err" href="#needs-attention"><span class="dot" aria-hidden="true"></span>2 compliance breaches</a>
+      <a class="chip warn" href="#needs-attention"><span class="dot" aria-hidden="true"></span>1 budget re-forecast overdue</a>
+      <a class="chip warn" href="#needs-attention"><span class="dot" aria-hidden="true"></span>1 model sign-off waiting 9 days</a>
+    </div>
+  </nav>
+
+  <!-- ══ THE WALL — bento-of-bentos, dashboard role (B1 · s217-D3) ══════════════════ -->
+  <div class="c-bento wall-ops" data-bento-role="dashboard">
+    <div class="c-bento__grid">
+
+      <!-- ── ROW 1 · HEADLINE METRICS, five in one row (C3/C4/C5/C6) ──────────────── -->
+      <section class="c-bento__tile c-bento wall-headline" data-c="6" aria-label="Headline metrics">
+        <h2 class="sr-only">Headline metrics</h2>
+        <div class="c-bento__grid">
+
+          <div class="c-bento__tile cn-kpi-tile" data-c="1">
+            <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+              <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7.06124L9 0L2 7.06124V8.77158L8.4 2.31744V18H9.6V2.31744L16 8.77158V7.06124Z" fill="currentColor"/></symbol>
+              <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 10.9388L9 18L16 10.9388V9.22842L9.6 15.6826V0H8.4V15.6826L2 9.22842V10.9388Z" fill="currentColor"/></symbol>
+              <symbol id="kpi-flat" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9388 2L18 9L10.9388 16H9.22842L15.6826 9.6H0V8.4H15.6826L9.22842 2H10.9388Z" fill="currentColor"/></symbol>
+            </svg>
+            <div class="board row">
+              <div class="kpi-tile" role="group" aria-label="Programmes in flight, this quarter">
+                <p class="kpi-lbl t-cm-caption">Programmes in flight</p>
+                <span class="kpi-val t-cm-figure-4"><span>23</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">+1 started</span><span class="kpi-per t-cm-legal">since Q2</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3.0,30.0 20.6,29.0 38.3,31.0 55.9,28.0 73.5,29.5 91.2,27.0 108.8,28.5 126.5,26.0 144.1,27.5 161.7,25.0 179.4,26.5 197.0,24.0"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-bento__tile cn-kpi-tile" data-c="1">
+            <div class="board row">
+              <div class="kpi-tile" role="group" aria-label="Spend against budget, year to date">
+                <p class="kpi-lbl t-cm-caption">Spend against budget</p>
+                <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>41.2m</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">71% of £58.0m</span><span class="kpi-per t-cm-legal">year to date</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3.0,42.0 20.6,39.5 38.3,37.0 55.9,34.0 73.5,31.5 91.2,29.0 108.8,26.0 126.5,23.5 144.1,20.5 161.7,17.0 179.4,14.0 197.0,11.0"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-bento__tile cn-kpi-tile" data-c="1">
+            <div class="board row">
+              <div class="kpi-tile" role="group" aria-label="Efficiency gains realised, annualised">
+                <p class="kpi-lbl t-cm-caption">Gains realised</p>
+                <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>12.4m</span></span>
+                <!-- D2: no green. DP-19 / s249-D3 — hue is reserved for what is wrong. -->
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+£2.1m</span><span class="kpi-per t-cm-legal">vs Q2, annualised</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3.0,40.0 20.6,38.5 38.3,35.0 55.9,34.5 73.5,31.0 91.2,28.5 108.8,26.0 126.5,25.0 144.1,21.0 161.7,18.5 179.4,15.0 197.0,9.0"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-bento__tile cn-kpi-tile" data-c="1">
+            <div class="board row">
+              <div class="kpi-tile" role="group" aria-label="Open risk and compliance exceptions">
+                <!-- D3/G2: polarity is in the COPY ("worse than last week"), because canon's
+                     carrier is data-trend (arithmetic). DP-22's declaration has no home yet. -->
+                <p class="kpi-lbl t-cm-caption">Open exceptions</p>
+                <span class="kpi-val t-cm-figure-4"><span>7</span></span>
+                <span class="kpi-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+3, worse than last week</span><span class="kpi-per t-cm-legal">2 are breaches</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3.0,38.0 20.6,39.0 38.3,36.0 55.9,37.0 73.5,33.0 91.2,34.0 108.8,30.0 126.5,28.0 144.1,24.0 161.7,21.0 179.4,15.0 197.0,8.0"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-bento__tile cn-kpi-tile" data-c="1">
+            <div class="board row">
+              <div class="kpi-tile" role="group" aria-label="Decisions awaiting you this week">
+                <p class="kpi-lbl t-cm-caption">Decisions awaiting you</p>
+                <span class="kpi-val t-cm-figure-4"><span>4</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#kpi-flat"/></svg></span><span class="t-cm-figure-6">of 11 open items</span><span class="kpi-per t-cm-legal">oldest waiting 9 days</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3.0,28.0 20.6,31.0 38.3,26.0 55.9,30.0 73.5,25.0 91.2,29.0 108.8,24.0 126.5,27.0 144.1,23.0 161.7,26.0 179.4,22.0 197.0,25.0"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── ROW 2a · THE DOMINANT TILE (C7 · DP-14) — 4 wide, 2 rows deep ──────────
+           C13/G8: a group of ONE is a plain tile, not a nested bento. Measured: a nested
+           bento narrower than 1100px trips the compiled band `@container bento
+           (max-width:1100px){--bento-cols-now:3}`, which overrides its own
+           `--bento-columns` dial — so a one-column inner wall cannot exist below 1100px. -->
+      <section class="c-bento__tile cn-card-header-lockup fill" data-c="4" data-r="2" aria-label="Programmes in flight">
+            <article class="card">
+              <div class="ch">
+                <div class="ch-titles">
+                  <h2 class="t-cm-ctl-16">Programmes in flight</h2>
+                  <p class="meta t-cm-caption">23 programmes · spend, gain and status · as at 19 September 2026</p>
+                </div>
+                <div class="ch-actions">
+                  <!-- F1/F2 · DP-02/03/28: the filter ships COLLAPSED, as chips, WITH the
+                       wall it filters — never in the page title zone. -->
+                  <div class="cn-tags">
+                    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></symbol></svg>
+                    <div class="filterbar">
+                      <div class="row">
+                        <span class="tag"><span class="lbl">2 filters</span></span>
+                        <span class="tag"><span class="lbl">In flight</span><button class="x" type="button" aria-label="Remove filter: In flight"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                        <span class="tag"><span class="lbl">Group functions</span><button class="x" type="button" aria-label="Remove filter: Group functions"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+                        <a class="tag link" href="#"><span class="lbl">Clear all</span></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="cn-table">
+                 <div class="wrap">
+                  <div class="scroll" role="region" aria-label="Programmes in flight, scrollable" tabindex="0">
+                    <table class="tile-table" data-headers="both">
+                      <caption class="sr-only">Programmes in flight — spend against budget, gain realised and status</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">Programme</th>
+                          <th scope="col">Owner</th>
+                          <th scope="col" class="num">Spend</th>
+                          <th scope="col" class="num">Budget</th>
+                          <th scope="col" class="num">Gain realised</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="cn-status-indicator">
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Contact-centre assist</span></th>
+                          <td data-label="Owner"><span class="v">WPB Operations</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£9.4m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£11.0m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£5.1m</span></td>
+                          <td data-label="Status"><span class="stat ok" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span>On track</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">KYC document triage</span></th>
+                          <td data-label="Owner"><span class="v">Financial Crime</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£7.8m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£7.2m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£3.0m</span></td>
+                          <td data-label="Status"><span class="stat err" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Over budget</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Credit memo drafting</span></th>
+                          <td data-label="Owner"><span class="v">CIB Credit</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£6.1m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£8.5m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£1.9m</span></td>
+                          <td data-label="Status"><span class="stat warn" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Sign-off waiting</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Payments anomaly detection</span></th>
+                          <td data-label="Owner"><span class="v">Payments</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£5.6m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£9.0m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£1.4m</span></td>
+                          <td data-label="Status"><span class="stat ok" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span>On track</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Model documentation copilot</span></th>
+                          <td data-label="Owner"><span class="v">Risk Analytics</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£4.9m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£6.4m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£0.6m</span></td>
+                          <td data-label="Status"><span class="stat err" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Control breach</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Wealth research summarisation</span></th>
+                          <td data-label="Owner"><span class="v">Global Private Banking</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£3.5m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£5.2m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£0.4m</span></td>
+                          <td data-label="Status"><span class="stat inf" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span>In pilot</span></span></td>
+                        </tr>
+                        <tr>
+                          <th scope="row" data-first data-label="Programme"><span class="v">Trade finance doc checking</span></th>
+                          <td data-label="Owner"><span class="v">GTRF</span></td>
+                          <td data-label="Spend" class="num"><span class="v">£3.9m</span></td>
+                          <td data-label="Budget" class="num"><span class="v">£6.0m</span></td>
+                          <td data-label="Gain realised" class="num"><span class="v">£0.0m</span></td>
+                          <td data-label="Status"><span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Paused</span></span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                 </div>
+                </div>
+              </div>
+            </article>
+      </section>
+
+      <!-- ── ROW 2b · NEEDS ATTENTION (C10 · DP-10/11 · s251-D1's anchor target) ──── -->
+      <section class="c-bento__tile cn-card-header-lockup fill" data-c="2" data-r="2" id="needs-attention" tabindex="-1" aria-label="Needs your decision this week">
+            <article class="card">
+              <div class="ch">
+                <div class="ch-titles">
+                  <h2 class="t-cm-ctl-16">Needs your decision this week</h2>
+                  <p class="meta t-cm-caption">4 of 11 open items</p>
+                </div>
+              </div>
+              <div class="body">
+                <ul class="na-list cn-status-indicator">
+                  <li>
+                    <div class="na-txt">
+                      <span class="t-cm-ctl-14">Model documentation copilot — control breach</span>
+                      <span class="stat err" style="margin:0"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Breach · raised 2 days ago</span></span>
+                    </div>
+                    <div class="cn-button"><button class="btn primary mini" type="button">Review</button></div>
+                  </li>
+                  <li>
+                    <div class="na-txt">
+                      <span class="t-cm-ctl-14">KYC document triage — £0.6m over budget</span>
+                      <span class="stat err" style="margin:0"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Re-forecast overdue · due 12 Sep</span></span>
+                    </div>
+                    <div class="cn-button"><button class="btn primary mini" type="button">Approve</button></div>
+                  </li>
+                  <li>
+                    <div class="na-txt">
+                      <span class="t-cm-ctl-14">Credit memo drafting — model sign-off</span>
+                      <span class="stat warn" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Waiting 9 days · Risk Analytics</span></span>
+                    </div>
+                    <div class="cn-button"><button class="btn primary mini" type="button">Sign off</button></div>
+                  </li>
+                  <li>
+                    <div class="na-txt">
+                      <span class="t-cm-ctl-14">Trade finance doc checking — restart or close</span>
+                      <span class="stat warn" data-carries="label" style="margin:0"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Paused 6 weeks · £3.9m committed</span></span>
+                    </div>
+                    <div class="cn-button"><button class="btn tertiary mini" type="button">Decide</button></div>
+                  </li>
+                </ul>
+              </div>
+            </article>
+      </section>
+
+      <!-- ── ROW 3 · EVIDENCE, three tiles at 2+2+2 (C9) ──────────────────────────── -->
+      <section class="c-bento__tile c-bento wall-evidence" data-c="6" data-r="2" aria-label="Spend, gains and exceptions">
+        <div class="c-bento__grid">
+
+          <div class="c-bento__tile cn-card-header-lockup fill" data-c="2" data-r="1">
+            <article class="card">
+              <div class="ch">
+                <div class="ch-titles">
+                  <h2 class="t-cm-ctl-16">Spend against budget <span class="meta t-cm-caption">· top six programmes, £m year to date</span></h2>
+                </div>
+              </div>
+              <div class="body">
+                <div class="cn-chart-bar">
+                  <figure class="dv" id="fig-spend" data-dv-type="grouped-column" data-domain-min="0" data-surface="raised" role="group" aria-labelledby="fig-spend-cap">
+                    <figcaption id="fig-spend-cap" class="sr-only">Spend against budget by programme, £m year to date</figcaption>
+                                        <!-- Legend (DV-D11) — the A/B keys the engine bakes need naming. -->
+                    <div class="cn-legend">
+                      <div class="leg-host" data-leg-place="top">
+                        <div class="leg-slot">
+                          <ul class="dv-leg ovf-wrap t-cm-chart-label" role="group" aria-label="Series">
+                            <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Spend" style="--sc:var(--data-series-1)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="1" aria-pressed="false" aria-label="Isolate Spend"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Spend</span></button></li>
+                            <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Budget" style="--sc:var(--data-series-2)"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="2" aria-pressed="false" aria-label="Isolate Budget"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Budget</span></button></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dv-stage"><div class="dv-chart-area">
+                      <svg class="dv-svg dv-fit" data-pl="40" data-pr="10" data-h="200" data-pt="12" data-pb="44" data-h-min="180" viewBox="0 0 440 200" role="group" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"></svg>
+                    </div></div>
+                    <!-- F3 · DP-04: reveal in place -->
+                    <details class="dv-tbl">
+                      <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="fig-spend-tbl"><span>View as table</span></summary>
+                      <div class="dv-tablepanel" id="fig-spend-tbl" role="region" aria-label="Spend against budget, data table" tabindex="-1">
+                        <table class="dv-table t-cm-legal"></table>
+                      </div>
+                    </details>
+                  </figure>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="c-bento__tile cn-card-header-lockup fill" data-c="2" data-r="1">
+            <article class="card">
+              <div class="ch">
+                <div class="ch-titles">
+                  <h2 class="t-cm-ctl-16">Efficiency gains realised <span class="meta t-cm-caption">· annualised run-rate, £m, by month</span></h2>
+                </div>
+              </div>
+              <div class="body">
+                <div class="cn-chart-line">
+                  <figure class="dv" id="fig-gain" data-dv-type="line" data-surface="raised" role="group" aria-labelledby="fig-gain-cap">
+                    <figcaption id="fig-gain-cap" class="sr-only">Efficiency gains realised, annualised £m by month</figcaption>
+                    <div class="dv-stage"><div class="dv-chart-area">
+                      <svg class="dv-svg dv-fit" data-pl="40" data-pr="10" data-h="200" data-pt="12" data-pb="44" data-h-min="180" viewBox="0 0 440 200" role="group" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"></svg>
+                    </div></div>
+                    <details class="dv-tbl">
+                      <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="fig-gain-tbl"><span>View as table</span></summary>
+                      <div class="dv-tablepanel" id="fig-gain-tbl" role="region" aria-label="Efficiency gains realised, data table" tabindex="-1">
+                        <table class="dv-table t-cm-legal"></table>
+                      </div>
+                    </details>
+                  </figure>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="c-bento__tile cn-card-header-lockup fill" data-c="1" data-r="2">
+            <article class="card">
+              <div class="ch">
+                <div class="ch-titles">
+                  <h2 class="t-cm-ctl-16">Risk &amp; compliance exceptions</h2>
+                  <p class="meta t-cm-caption">7 open · 2 are breaches</p>
+                </div>
+              </div>
+              <div class="body">
+                <!-- E5 revised: at a 448px tile the Table component collapses to its stacked
+                     card form (its own `@container (max-width:600px)` rule). List-items is
+                     the canon component for a dense list of facts at this width. -->
+                <div class="cn-list-items">
+                  <ul class="list">
+                    <li><button class="row" type="button"><span class="body"><span class="line"><span class="title">Model card missing</span><span class="status err"><span class="dot" aria-hidden="true"></span>Breach</span></span><span class="line"><span class="desc">Risk Analytics</span><span class="amount">2d</span></span></span></button></li>
+                    <li><button class="row" type="button"><span class="body"><span class="line"><span class="title">Third-party LLM egress</span><span class="status err"><span class="dot" aria-hidden="true"></span>Breach</span></span><span class="line"><span class="desc">Financial Crime</span><span class="amount">5d</span></span></span></button></li>
+                    <li><button class="row" type="button"><span class="body"><span class="line"><span class="title">Bias test overdue</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span>Overdue</span></span><span class="line"><span class="desc">WPB Operations</span><span class="amount">9d</span></span></span></button></li>
+                    <li><button class="row" type="button"><span class="body"><span class="line"><span class="title">Drift monitor unset</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span>Overdue</span></span><span class="line"><span class="desc">Payments</span><span class="amount">11d</span></span></span></button></li>
+                                                                                <li><button class="row" type="button"><span class="body"><span class="line"><span class="title">Retention policy gap</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span>Overdue</span></span><span class="line"><span class="desc">GTRF</span><span class="amount">14d</span></span></span></button></li>
+                                                          </ul>
+                  <p class="t-cm-legal" style="margin:0"><a class="t-cm-link" href="#">Open the exception register — 7 open</a></p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- E1: the library owns the arithmetic, the author owns the data (dv-render.js header). -->
+<script src="../../../../knowledge/canon/dv-behaviour.js"></script>
+<script src="../../../../knowledge/canon/dv-render.js"></script>
+<script src="../../../../knowledge/canon/dv-render-bar.js"></script>
+<script src="../../../../knowledge/canon/dv-render-line.js"></script>
+<script>
+(function(){
+  if (!window.dvRender) { return; }
+  try {
+    window.dvRender(document.getElementById('fig-spend'), {
+      type: 'grouped-column',
+      categories: ['Contact centre','KYC triage','Credit memo','Payments','Model docs','Wealth'],
+      series: [ { name:'Spend', values:[9.4, 7.8, 6.1, 5.6, 4.9, 3.5] },
+                { name:'Budget', values:[11.0, 7.2, 8.5, 9.0, 6.4, 5.2] } ],
+      unit: '£', categoryLabel: 'Programme',
+      caption: 'Spend against budget by programme, £m year to date'
+    });
+  } catch(e) { console.error('fig-spend', e); }
+  try {
+    window.dvRender(document.getElementById('fig-gain'), {
+      type: 'line',
+      categories: ['Apr','May','Jun','Jul','Aug','Sep'],
+      series: [ { name:'Gains realised', values:[6.2, 7.1, 8.4, 9.6, 11.0, 12.4] } ],
+      unit: '£', categoryLabel: 'Month',
+      caption: 'Efficiency gains realised, annualised £m by month'
+    });
+  } catch(e) { console.error('fig-gain', e); }
+}());
+</script>
+</body>
+</html>
