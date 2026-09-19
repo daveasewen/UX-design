@@ -23,3 +23,21 @@ The opener also reported the SECOND cold boot on the same setup: **74,120 real**
 - **"do it"** ⇒ the 58 locations are amended — including ratified runbook text and the `ruled` text of standing rulings, which #286 said was his word alone. This is that word.
 
 Nothing else was ruled. The boot reading is recorded at `notes/_lanes/287/BOOT-COLD-2026-09-19.md`.
+
+## Later in the session — on lane X's "two ruled spacing sources disagree" framing
+
+> The problem with the gutters it that they are deliberately different for the themes and the gutters are also different for the inner and outer bentos we essentially have a structural bento and embedded bentos or tile groupings.
+
+Conductor's reading, marked as such: this is a CORRECTION of lane X's framing, not a ruling on which source wins. There is no contradiction to resolve by picking one — the outer (structural bento) gutter and the inner (embedded bento / tile-group) gutter are two different quantities, each deliberately per-theme. The defect is that the template pins one theme's pair as literals instead of delivering the selected theme's (outer, inner) pair — the s219-D3 generation arm that was never built. Whether `--layout-bento-gutter` (ruled 0 in Mono, s217-D2) is the structural gutter or something else is still to be read, not assumed.
+
+## At the wrap call — verbatim
+
+> I'm not sure that 0 is right for mono, lets have a proper review and fix this: 'The generation arm that would do that was ruled at #219 and never built.' and any other problem with this, I just need the one-shot design to not disappoint, however it is getting better all the time.
+>
+> I'm not sure about the quality of the template we need to look at this too.
+>
+> I want to return to the presentation soon, so I need to understand how the multiple strands of Apollo stand and I need a clear path to presenting something cohesive for friday the 25th
+>
+> wrap with all of this in mind
+
+Conductor's reading, marked as such: (1) the Mono 0 value is DOUBTED, not overruled — a review is ordered, and the s219-D3 generation arm is to be BUILT, plus "any other problem with this" (the bento spacing delivery path end to end); the goal he names is the one-shot design not disappointing. (2) The bento template's QUALITY is to be reviewed — a second lane, not folded into the first. (3) A STRAND MAP of Apollo and a clear path to a cohesive presentation on FRIDAY 2026-09-25 is owed — six days from today. Decisions 2 (inline-style rule) and 3 (template status PROPOSED vs beta) were NOT answered and carry.
