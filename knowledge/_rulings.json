@@ -1331,7 +1331,7 @@
     "notes/_GAUGE-LOG.md - the #129 block, where both gate readings and the transcribed #127 sample live"
    ],
    "status": "RULED #129, ENACTED #129. Mutation-tested.",
-   "watch": "[BLOCK] The stop line 150,929 and the 200,000 / 256,000 walls did NOT move and may not: a cheaper boot moves the ROOM, never the LINE. [WARN] Second trap: the n=7 mean is 54,434 and a tidy-minded session will want to 'fix' 54,859 to it by hand. That would replace a ruling with an average. [WARN] Third: the parser fix and the re-base landed in the same pass, which is the shape of a gate marking its own homework - both readings are published in the gauge log so the claim can be checked without trusting the enactor.",
+   "watch": "[BLOCK] The stop line 150,929 and the 200,000 / 256,000 walls did NOT move and may not: a cheaper boot moves the ROOM, never the LINE. [WARN] Second trap: the n=7 mean is 54,434 and a tidy-minded session will want to 'fix' 54,859 to it by hand. That would replace a ruling with an average. [WARN] Third: the parser fix and the re-base landed in the same pass, which is the shape of a gate marking its own homework - both readings are published in the gauge log so the claim can be checked without trusting the enactor. [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
    "enacted": "#129 2026-08-08. Constant 65,400 -> 54,859, error bar 1,400 -> 1,178 (half-range widened so the bar covers the whole observed post-break series). Published floor 81,335 -> 70,794 at the chain size on disk; room for job + wrap 118,665 -> 129,206. A SECOND DEFECT was found and fixed in the same pass and it is the same class as the ruling: _parse_boot_samples matched CASE-SENSITIVELY, and every post-mortem since #125 opens the sentence with the word ('Boot 53,681 real'), so three sessions of the evidence this re-base rests on were invisible to the gate that grades the constant - they did not parse, did not REFUSE, and were not counted. One re.I flag on both the match and the refusal probe; parsed samples 28 -> 31. MEASUREMENTS, moved out of `evidence` because evidence carries POINTERS, not prose: samples n=7 - #111 55,733 - #113 54,038 - #117 54,807 - #118 54,404 - #125 53,681 - #126 53,997 - #127 54,375; spread 2,052; pre-break #103-#109 mean 65,337 => step ~10,478 real; n=7 mean 54,434. After enactment boot_constant_drift_check('.') reports 0 failures, note 'constant 54,859 +/-1,178 vs recent mean 54,217 (n=6, last 6 sessions of 31 parsed) - delta -642'. BOTH readings published so the claim can be checked without trusting the enactor: OLD parser + NEW constant FAILS (mean 56,078, delta +1,219, window straddles the break); FIXED parser PASSES (mean 54,325, delta -533) - the constant was NOT fitted to the window, 54,859 is Dave's figure and clears the bar by 645. Mutation bites, in-process, restored after each: constant reverted to 65,400 +/-1,400 => FAILS; error bar collapsed to +/-100 => FAILS; restore => 0 failures.",
    "evidence": [
     "knowledge/_gauge_tokens.py#BOOT_FIRSTTURN_TK = 54_859",
@@ -4020,7 +4020,7 @@
   },
   {
    "id": "s214-D2",
-   "ruled": "256K STAYS THE UNQUALIFIED WALL",
+   "ruled": "256K STAYS THE UNQUALIFIED WALL [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
    "date": "2026-08-21",
    "by": "Dave",
    "says": "256,000 remains the hard wall, unqualified, band or no band. Grounds re-sourced 2026-08-21: no MRCR-style recall figure is published for Fable 5 beyond 256K (Anthropic's 'stays focused across millions of tokens' is launch copy, not a benchmark); every public model's multi-needle recall degrades past 256K; and recall is VERSION-VOLATILE (Opus 4.7 reportedly dropped to ~32% at 1M vs 4.6's ~78% - trade-press figure, the SHAPE is what is leaned on). The recall probe may only ever CLOSE the band, never widen past the wall; widening beyond 256K would require published measurement on the current model, which does not exist. BUDGET_HARD in knowledge/_gauge_tokens.py is untouched by this ruling - it re-confirms the constant.",
@@ -6944,7 +6944,7 @@
   },
   {
    "id": "s260-D2",
-   "ruled": "STOP LINE REPRICED FOR DELEGATED WRAPS: the s214-D4 conditional band ENTERS FORCE. When the wrap is DELEGATED the advisory start-wrap-by line is 180,000 real; when the wrap runs INLINE the advisory stays 150,929. The 200,000 working wall and 256,000 hard wall are UNTOUCHED. s214-D4's staging condition (n>=2 measured delegated hand-overs) is met: #254 delta 4,077, #255 4,154, #256 4,799, #257 10,434, #258 10,382, #259 ~9,870 - 180,000 leaves 20,000 reserve against a max measured hand-over of 10,434.",
+   "ruled": "STOP LINE REPRICED FOR DELEGATED WRAPS: the s214-D4 conditional band ENTERS FORCE. When the wrap is DELEGATED the advisory start-wrap-by line is 180,000 real; when the wrap runs INLINE the advisory stays 150,929. The 200,000 working wall and 256,000 hard wall are UNTOUCHED. s214-D4's staging condition (n>=2 measured delegated hand-overs) is met: #254 delta 4,077, #255 4,154, #256 4,799, #257 10,434, #258 10,382, #259 ~9,870 - 180,000 leaves 20,000 reserve against a max measured hand-over of 10,434. [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
    "date": "2026-09-08",
    "by": "Dave",
    "says": "Dave at #259: \"dude if you are delegating teh wrap do we really have to stop at 145?\"; the conductor recommended ~180K for delegated wraps, 150,929 kept for in-window ones; Dave at #260: \"can we reprice the token ceiling\" then, on the one-word ask, \"yes\".",
@@ -7981,7 +7981,7 @@
   },
   {
    "id": "s271-D1",
-   "ruled": "THE STOP LINE IS ONE NUMBER: 180,000 real FILL. The 150,929 figure is RETIRED — it was chosen before the delegated-wrap strategy, and the strategy (wrap runs in a sub, s260-D2) is why 180,000 was decided. Enacts dream-12 P1 in its smallest form: ONE constant in knowledge/_gauge_tokens.py (STOP_LINE_TK = 180_000, citing s260-D2 and this ruling), _checkin.py prefers it and keeps the _CHAIN.md regex only as a declared fallback; one line by ADDITION in knowledge/_RUNBOOK-context-gauge.md recording that s260-D2 + s271-D1 superseded s214-D4's ~190,000 and the 150,929 inline figure. 200,000 working and 256,000 hard are NOT moved.",
+   "ruled": "THE STOP LINE IS ONE NUMBER: 180,000 real FILL. The 150,929 figure is RETIRED — it was chosen before the delegated-wrap strategy, and the strategy (wrap runs in a sub, s260-D2) is why 180,000 was decided. Enacts dream-12 P1 in its smallest form: ONE constant in knowledge/_gauge_tokens.py (STOP_LINE_TK = 180_000, citing s260-D2 and this ruling), _checkin.py prefers it and keeps the _CHAIN.md regex only as a declared fallback; one line by ADDITION in knowledge/_RUNBOOK-context-gauge.md recording that s260-D2 + s271-D1 superseded s214-D4's ~190,000 and the 150,929 inline figure. 200,000 working and 256,000 hard are NOT moved. [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
    "date": "2026-09-14",
    "by": "Dave",
    "says": "Dave, chat, 2026-09-14, verbatim: \"180 was decided because we use a sub for the wrap the 150 number was chosen before we started this strategy\".",
@@ -9543,7 +9543,7 @@
  },
  {
   "id": "s272-D93",
-  "ruled": "The context stop line: 180,000 real FILL is the WORKING figure (soft — the session aims to finish by it); an overrun to about 220,000 is tolerated without alarm; 256,000 stays the hard line (s271-D1's single stop line stands; this sets its softness and the tolerated overrun). Dave's answer to the '256' clause put at #272's opener.",
+  "ruled": "The context stop line: 180,000 real FILL is the WORKING figure (soft — the session aims to finish by it); an overrun to about 220,000 is tolerated without alarm; 256,000 stays the hard line (s271-D1's single stop line stands; this sets its softness and the tolerated overrun). Dave's answer to the '256' clause put at #272's opener. [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
   "date": "2026-09-15",
   "by": "Dave",
   "says": "we work until around 180, thats the safest but I wont loose any sleep over hitting 220 for example",
@@ -10620,7 +10620,7 @@
   "date": "2026-09-18",
   "by": "Dave",
   "status": "ruled",
-  "ruled": "THE LANE-SEAM CHECK IS STANDING, EVERY SESSION. Before every lane is cut and after every lane lands, the conductor runs `python3 knowledge/_seam.py` and QUOTES its FILL line in chat, verbatim, with the verdict against the ruled lines (stop 180,000 s260-D2/s271-D1 · tolerated 220,000 s272-D93 · hard 256,000). A seam that runs it and does not quote it has not run it. The same call reads DISK and cleans the session's OWN scratch mechanically (the only litter anyone can remove), with the git shim /tmp/gitshim on a named keep-list so ritual step 4c's collision at #282 cannot recur. Born on the three-session arc away from the instrument: #277 crossed under pressure, #281 read the gauge every turn and overruled it, #282 did not read it between two lanes and breached by 81,559. The check is ADVISORY; promotion to blocking is Dave's.",
+  "ruled": "THE LANE-SEAM CHECK IS STANDING, EVERY SESSION. Before every lane is cut and after every lane lands, the conductor runs `python3 knowledge/_seam.py` and QUOTES its FILL line in chat, verbatim, with the verdict against the ruled lines (stop 180,000 s260-D2/s271-D1 · tolerated 220,000 s272-D93 · hard 256,000). A seam that runs it and does not quote it has not run it. The same call reads DISK and cleans the session's OWN scratch mechanically (the only litter anyone can remove), with the git shim /tmp/gitshim on a named keep-list so ritual step 4c's collision at #282 cannot recur. Born on the three-session arc away from the instrument: #277 crossed under pressure, #281 read the gauge every turn and overruled it, #282 did not read it between two lanes and breached by 81,559. The check is ADVISORY; promotion to blocking is Dave's. [wording amended #287 on Dave's 'do it': 256,000 is a tolerance/quality line, not a wall — s287 lane W]",
   "says": "chat #283 2026-09-18, on 'I'll read it at every lane seam this session, and say the number in chat when I do': 'can we do this in every session' · on 'I'll clear scratch before the masters lane starts': 'good, maybe we make this a regular check- more mechanical' · then 'go'",
   "governs": [
    "knowledge/_seam.py",
@@ -10628,6 +10628,41 @@
   ],
   "evidence": [
    "notes/_lanes/283/DAVE-RULINGS-2026-09-18.md"
+  ]
+ },
+ {
+  "id": "s287-D1",
+  "date": "2026-09-19",
+  "by": "Dave",
+  "status": "ruled",
+  "ruled": "THE EIGHT STANDING CONSTRAINTS IN `knowledge/_standing.md` ARE RATIFIED AS WRITTEN AND THE FILE IS OUT OF DRAFT. The eight lines stand with the wording they already carried at the #285 draft - no line was re-worded to ratify it - and `knowledge/_seam.py` re-quotes them verbatim at the TAIL of every lane seam (the seam re-quotes; it never inscribes). The 256,000 wording fix in `knowledge/_gauge_tokens.py` - that 256,000 is not a wall for this model in Cowork - is HIS, not a lane's reading. ⛔ THE JOIN IS NAMED, NOT SMOOTHED: reading *\"okay go on everything\"* (#286, an entire six-word reply to an opener that named exactly three items - the standing wording, HOW the masters get registered, and the gauge wording - plus the cold-boot question) as RATIFICATION-AS-WRITTEN was the CONDUCTOR'S READING at #286, not Dave's sentence; he did not say \"as written\", did not quote a line and did not say \"ratified\". Lane S acted on that reading and inscribed nothing (s271-D4). The word that makes it HIS is *\"inscribe\"*, said on 2026-09-19 to an opener asking whether the two #286 sentences become rulings. With this entry the standing file is no longer a draft and `_seam.py`'s claim that it \"is a DRAFT until Dave approves it\" is false.",
+  "says": "chat #286 2026-09-18, whole reply to the three-item opener: 'okay go on everything' · chat #287 2026-09-19, asked whether the two #286 sentences are inscribed as rulings: 'inscribe'",
+  "governs": [
+   "knowledge/_standing.md",
+   "knowledge/_seam.py",
+   "knowledge/_gauge_tokens.py"
+  ],
+  "evidence": [
+   "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md",
+   "notes/_lanes/287/DAVE-RULINGS-2026-09-19.md"
+  ]
+ },
+ {
+  "id": "s287-D2",
+  "date": "2026-09-19",
+  "by": "Dave",
+  "status": "ruled",
+  "ruled": "A PER-SIZE LOGO MASTER IS A SIZE FIELD ON ITS LOCKUP'S EXISTING NODE IN `knowledge/_logo_nodes.json` - NEVER ITS OWN NODE AND NEVER A NEW KIND. His #286 sentence *\"okay size-on-the-existing-node\"* answered the three shapes lane R left open and refused two of them: shape 2 (forty new `logo:<stem>-<h>` nodes) and shape 3 (a new `logoMaster:` kind) are both refused; shape 1 is his word. THE FIELD IS NAMED `sizes` - a map of RAW HEIGHT (string key: 24 · 28 · 32 · 36 · 40) to that master's record, hanging off each `nodes[]` entry, written MERGE-ON-WRITE so nothing already on a node is overwritten. `sizes` was lane R2's reading of the file's own plural vocabulary (`nodes`, `edges`, `unresolved`, `fills`) until #287; it became HIS word with *\"keep `sizes` and rebuild.\"* on 2026-09-19, which also sends the KG explorer to be rebuilt so something actually READS the field. ⛔ THE NODE COUNT DOES NOT MOVE: 8 nodes / 33 edges at inscription, the same 8 and 33 that s282-D4 / s282-D5 left behind, verified by `json.load` and not taken from a lane's prose.",
+  "says": "chat #286 2026-09-18, on whether a master is its own node under its lockup or a size field on the lockup's existing node: 'okay size-on-the-existing-node' · chat #287 2026-09-19, on the `sizes` key name and rebuilding the KG explorer: 'keep `sizes` and rebuild.'",
+  "governs": [
+   "knowledge/_logo_nodes.json",
+   "knowledge/assets/logos/_gen_masters.py",
+   "knowledge/_build_kg_explorer.py"
+  ],
+  "evidence": [
+   "notes/_lanes/286/DAVE-RULINGS-2026-09-18.md",
+   "notes/_lanes/287/DAVE-RULINGS-2026-09-19.md",
+   "notes/_subreports/2026-09-18-286-R2-masters-registered-as-sizes.md"
   ]
  }
  ]

@@ -50,15 +50,15 @@ These are NEW thresholds with their own provenance [[measure-dont-convert-units]
 
 | number | value | authority |
 |---|---|---|
-| **HARD** | 256,000 | **SOURCED** — the largest context at which Claude's recall has been publicly measured and still holds (93% MRCR v2; 76% at 1M). Past it there is no measurement to reason from. |
+| **QUALITY-MAX** (constant name `BUDGET_HARD`, historically labelled *hard*) | 256,000 | **SOURCED** — the largest context at which Claude's recall has been publicly measured and still holds (93% MRCR v2; 76% at 1M). Past it there is no measurement to reason from. ⚠ **WORDING AMENDED #287 (Dave's *"do it"*):** 256,000 is a **tolerance line — a quality line, not a context wall for this model** (Fable 5.1 / Opus 5 in Cowork: 1M window + auto-compaction); **180,000 is the quality line that binds**. |
 | **WORKING** | 200,000 | **SOURCED**, not Dave's preference — entered force at #56, provenance corrected #58b. The line jobs are priced against it. |
 | **AMBER** | 160,000 | **PICKED**, not derived — corrected #59. 80% of working is a round fraction, not a formula. |
 
 ⚠ **PROVENANCE OF THE TWO ROWS ABOVE WAS ITSELF CORRECTED TWICE AFTER THIS TABLE WAS FIRST WRITTEN
 (#58b, #59) — folded in above; here is why, so a later re-read does not silently drift back.**
 WORKING read "DAVE'S, ruled #56" for three sessions until Dave corrected it himself: *"BTW the 200K
-and 256K come from established research, its been worked out already."* Both HARD and WORKING are
-SOURCED; 200,000 was never his to re-dial by fiat. AMBER read "DERIVED — 80% of working" until #59:
+and 256K come from established research, its been worked out already."* Both QUALITY-MAX (the row
+formerly labelled *hard*, constant `BUDGET_HARD`) and WORKING are SOURCED; 200,000 was never his to re-dial by fiat. AMBER read "DERIVED — 80% of working" until #59:
 a round fraction is a PICK, and labelling a pick "derived" makes it immune to the very rule meant to
 catch it (*"derive a cap, never pick it"* — #53). ★ **THE FORMULA IS THE RULING, THE NUMBER IS NOT:**
 `stop = wall − wrap − step`, each term tagged MEASURED or ESTIMATED; reserve the HIGH end of both
@@ -82,9 +82,12 @@ happens BEFORE entering the band, and anything unclassifiable is judgment by def
 **(2) DECLARATION** — crossing 200,000 is announced in chat at the crossing and recorded at the
 wrap. **(3) PROBE** — the band is legal only while the recall probe (`s214-D3`,
 `knowledge/_recall_probe.py`) is green; one miss closes the band for the session and judgment
-work stops immediately. ⛔ **256,000 stays the UNQUALIFIED wall (`s214-D2`)** — no published
+work stops immediately. ⛔ **256,000 stays the UNQUALIFIED tolerance line (`s214-D2`)** — no published
 recall measurement exists for the current model beyond it, recall is version-volatile between
-model releases, and the probe may only ever CLOSE the band, never widen past the wall.
+model releases, and the probe may only ever CLOSE the band, never widen past that line.
+⚠ **WORDING AMENDED #287 (Dave's *"do it"*):** `s214-D2` inscribed this as *"the unqualified wall"*;
+256,000 is a **tolerance line — a quality line, not a context wall for this model** (1M window +
+auto-compaction), and **180,000 is the quality line that binds**. The number did not move.
 ⚠ A green probe is *necessary, never sufficient* (synthetic recall does not predict downstream
 synthesis — the HELMET finding), which is why judgment work stays illegal in-band regardless.
 
@@ -369,7 +372,7 @@ session, closing #216's carry ⑤ ("announced but uninscribed").**
 - **In force on a delegated-wrap session:** advisory ~190,000. **REVERSION, per the ruling:** on a
   quota-bound day the wrap runs inline (#110 precedent) and the old arithmetic (200,000 − 49,071 =
   **150,929**) returns *for that session*, **announced at the opener**.
-- **The outer lines are UNTOUCHED:** 200,000 working and 256,000 hard hold exactly where the #58b
+- **The outer lines are UNTOUCHED:** 200,000 working and 256,000 quality-max hold exactly where the #58b
   sourcing put them (`s214-D1`/`s214-D2`). The 200–256K MECHANICAL-only band with its recall probe is
   a **separate instrument** (`s214-D1..D6`) and is not this advisory.
 - ⚠ **Generated consumers lag by design:** `_CHAIN.md`'s `STOP` line renders whatever
@@ -387,7 +390,7 @@ the 150 number was chosen before we started this strategy"*. ⇒ **In force from
 line of 180,000 real, whatever the session type**, and it now lives where a script can read it —
 `knowledge/_gauge_tokens.py` § `STOP_LINE_TK` — with `knowledge/_checkin.py` preferring that constant and
 keeping `CHAIN_STOP_RE` only as a declared fallback that WARNS when the chain's scraped figure disagrees.
-⛔ The outer lines are STILL untouched: **200,000 working · 256,000 hard**, exactly as `s214-D1`/`s214-D2`
+⛔ The outer lines are STILL untouched: **200,000 working · 256,000 quality-max**, exactly as `s214-D1`/`s214-D2`
 left them. The DECLARED-gap rule in the bullet above survives unchanged and now applies to the constant.
 
 ### ★ MEASURED, NOT RULED — A LANE IS PRICED AT ITS RETURN, NOT ITS LAUNCH (#237 · #238 datapoints; homed here by ADDITION at the #238 wrap's 2f EXIT CHECK)
@@ -869,7 +872,7 @@ accept everything: the CONTROL still passed and all five mutation arms went red,
 
 **★★★ THE LANE SEAM — `s283-D1`, Dave's, EVERY SESSION.** Before every lane is cut and after every lane
 lands: `python3 knowledge/_seam.py`, and its **FILL line is QUOTED IN CHAT verbatim**. Three lines: FILL
-with the verdict against the ruled lines (stop 180,000 · tolerated 220,000 · hard 256,000), DISK, and the
+with the verdict against the ruled lines (stop 180,000 · tolerated 220,000 · quality-max 256,000), DISK, and the
 session's OWN scratch cleaned mechanically with `/tmp/gitshim` on the keep-list (the #282 4c collision).
 A seam that runs it and does not quote it has not run it. Born on the arc #277 → #281 → #282, each one
 further from the instrument. Advisory; blocking is his.
@@ -923,8 +926,9 @@ trigger is **tiered** — a cheap save at Amber, the full handoff at Red:
 NET OF THE WRAP.** #127's opener took the derived figure (**150,929**) as if it were the CEILING and
 **subtracted the wrap from it a second time**, reporting **~30K** of job room when the real figure was
 **79,012**. Dave corrected it in his own words: *"150,929 is the line at which it is recommended you start
-the wrap, not the limit"* — **200,000 is WORKING, 256,000 is the absolute hard stop, and 150,929 is DERIVED
-as `wall − wrap`.** ★ **The defect is named in `_gauge_tokens.py`'s own comments, eleven lines above the
+the wrap, not the limit"* — **200,000 is WORKING, 256,000 is the TOLERANCE LINE (a quality line, not a
+context wall for this model; 180,000 is the quality line that binds — wording amended #287), and
+150,929 is DERIVED as `wall − wrap`** (the formula's historical term for the 256,000 line). ★ **The defect is named in `_gauge_tokens.py`'s own comments, eleven lines above the
 constant that was quoted** — the guard existed and was not read [[read-chain-is-where-staleness-is-free]].
 ⚠ **Not a cosmetic slip: it materially changed a delegation decision at #127**, which was then declared
 RE-OPENABLE rather than settled. **THE ARITHMETIC, WRITTEN ONCE SO IT CANNOT BE RE-DERIVED WRONG:**

@@ -1,0 +1,92 @@
+# `#287`-C — the commit-and-push lane: three lanes landed, pushed, CI read back
+
+session: `#287` · 2026-09-19
+window: lane C (commit and push)
+sub index: `C`
+brief: conductor Fable 5.1, lane C — commit today's three lanes (I · K · W) through the sanctioned
+script, push, read CI back over the public API
+tokens: `UNMEASURED — lane subagent; message.usage not readable from inside the lane`
+
+## VERDICT
+
+<!-- sha + push verdict + CI appended after the commit, per the #286 C2 order -->
+
+## 1 · The reconciliation — every dirty path named and accounted for
+
+`git status --short` at lane open: **21 entries** · `git diff --stat HEAD` **17 files, +6,165 / −3,835**.
+
+| path | lane | why it is dirty |
+|---|---|---|
+| `knowledge/_rulings.json` | **I** + **W** | I inscribed `s287-D1`/`s287-D2` (620 → **622**, re-derived here by `json.load`); W annotated 6 existing records |
+| `notes/_RULINGS.html` | I | re-rendered from the store in the same change (`_render_rulings.py`) |
+| `knowledge/_seam.py` | I | `:44` DRAFT clause amended — `_standing.md` is no longer a draft |
+| `knowledge/_standing.md` | I | header brought onto the ruling |
+| `knowledge/_kg_explorer.template.html`, `knowledge/_build_kg_explorer.py` | K | explorer reads the `sizes` map; generator at **v1.27** |
+| `notes/_KG-EXPLORER.html` | K | the rebuilt served explorer |
+| `knowledge/_state.json` | K + W | row `W-287k` (K) + 7 rows (W) |
+| `GOOD-MORNING.md`, `_LIVE-STATE.md`, `_CHAIN.md` | W | the wall wording sweep; chain regenerated, `--check` FRESH at lane open (no regeneration needed by this lane) |
+| `knowledge/_RUNBOOK-context-gauge.md`, `notes/_MEMENTO-DECISIONS.md` | W | wall wording |
+| `knowledge/_memento-index.json` | W | memento index rebuilt |
+| `dashboard/index.html` | W | **REGENERATED** — see §2 |
+| `notes/_REHEARSAL-LOG.jsonl`, `notes/_dream/_GRADE-DECISIONS.jsonl` | — | the two append-only instrument logs (W-22 declaration; the script auto-stages what it dirtied, `#261 M2`) |
+| `notes/_lanes/287/` | I · K · W | `DAVE-RULINGS-2026-09-19.md`, `BOOT-COLD-2026-09-19.md`, `K/` evidence — see §3 |
+| the three `notes/_subreports/2026-09-19-287-{I,K,W}-*.md` | I · K · W | the filed reports |
+
+Nothing was dirty that no lane owns. `_gen_chain.py --check` was **GREEN at lane open** — the first
+commit lane in three sessions that did not have to regenerate `_CHAIN.md` itself (#286 lanes C and
+C2 both met it RED).
+
+## 2 · The dashboard regeneration is DECLARED, not hidden
+
+`dashboard/index.html` carries a **9,590-line diff**. Lane W measured that a regeneration from the
+**UNCHANGED `HEAD` `_state.json`** alone moves **11,617 lines** — i.e. the committed dashboard was
+already stale against its own source before #287 touched it. W's seven row edits account for
+~1,262 lines of the delta, most of that `gen_dashboard.py`'s re-ranking cascade.
+
+⬛ **This is stated on the face of the commit message, not buried.** The dashboard in the tree is
+now FRESH against the store for the first time in several sessions, and the bulk of its diff is
+**inherited staleness**, not #287 wording.
+
+## 3 · The 4.3 MB before-copy — MOVED, not committed, and not deleted
+
+`notes/_lanes/287/K/before-_KG-EXPLORER.html` was a **4,361,115-byte** plain copy of the
+pre-rebuild explorer, with an **806,971-byte `.gz` beside it**. Committing the plain copy was
+refused by the brief. The sandbox delete-guard forbids `rm`, so the **#284/#286 `mv` precedent**
+was used — the same move lane C took with the 898 symlinks at #286:
+
+```
+$ mkdir -p _to_delete/287-K-before
+$ mv notes/_lanes/287/K/before-_KG-EXPLORER.html _to_delete/287-K-before/
+$ git check-ignore -v _to_delete/
+.gitignore:34:_to_delete/	_to_delete/
+```
+
+The `mv` **succeeded** — no unlink was needed and none was attempted. `_to_delete/` is gitignored,
+so the copy is outside the commit and outside the index. **`.gitignore` was NOT edited** and no
+path was excluded from staging: the file simply is not in `notes/_lanes/287/` any more.
+The **`.gz` (807 KB) IS committed** — it is the evidence K filed, in the form that was meant to
+be kept. `notes/_lanes/287/` carries **0 symlinks** (checked).
+
+## 4 · The store rows for the three reports
+
+`_gate_doc_rows.py`'s second half (#208) refuses a commit that stages a sub-report with no
+`_state.json` row (`s218-D7`). At lane open only **K** had one (`W-287k`). Rows `W-287i`,
+`W-287w` and `W-287c` were written through **`_state.py`'s module API**, never by hand-editing
+`_state.json`.
+
+⚠ **Writing another lane's row is a judgment this lane made.** Each row's `closes_when` is taken
+from that lane's own filed verdict and nothing was re-worded; the alternative was
+`DOC_ROW_ACK`, which would have shipped three invisible documents to pass a gate. Named here so
+the conductor can correct a close-condition rather than discover it.
+
+## 5 · Compliance
+
+- Commits ONLY via `knowledge/_git_commit.sh`, **every path named explicitly** (P5). The T3 prefix
+  was generated by the script and **never hand-written**; a **fresh** msgfile name was used.
+- `gen_kg_rules.py`, `land_rests_on.py`, `gen_kg_icons.py`, `_build_all.py`: **not run.**
+- `python3 knowledge/_gen_chain.py`: **not run** — `--check` was already green.
+- `rm .git/index.lock` / any `rm` inside `.git`: **never run.**
+- Working files under `notes/_lanes/287/C/` only. `/tmp` not used for the msgfile.
+- `--quiet` used on every invocation.
+
+---

@@ -41,7 +41,8 @@ the MIDDLE of the context the moment work starts, and standing rules buried ther
 attention (lost-in-the-middle / U-shaped attention). The seam already runs before and after every
 lane; re-quoting the constraints at its TAIL puts them at the RECENCY end every time. The block
 prints LAST for exactly that reason and must not be moved above SCRATCH.
-⚠ `knowledge/_standing.md` is a DRAFT until Dave approves it; the seam re-quotes, it never inscribes.
+⚠ `knowledge/_standing.md`'s eight standing lines are RATIFIED AS WRITTEN by Dave (`s287-D1`, 2026-09-19
+— the file is no longer a draft); the seam re-quotes, it never inscribes.
 Missing file → `STANDING — knowledge/_standing.md ABSENT`, and the run still exits 0.
 
 VERDICTS are the ruled lines, imported from `_gauge_tokens.py`, never restated here:

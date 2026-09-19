@@ -2003,14 +2003,14 @@ which contradicts D10."* Verified in code, ruled, and built the same window.
   ⚠ **Never convert cl100k with a fixed ratio and call the result real** — the per-register spread
   at #53 was 1.486–1.664, so one ratio cannot re-denominate a mixed corpus. Reference measurement,
   not a converter: `_CHAIN.md` = **4,384 tape / 6,897 real**.
-- **D24 · The budget is ABSOLUTE: working 200,000 (DAVE'S), hard 256,000 (SOURCED), amber 160,000
+- **D24 · The budget is ABSOLUTE: working 200,000 (DAVE'S), quality-max 256,000 (SOURCED), amber 160,000
   (derived).** ⛔ **The band was REPLACED, not converted** — `45/60/63` were percentages *of the
   window*, and converting them requires multiplying by the unobservable. 256,000 is the largest
   context at which Claude's recall is publicly measured and holding (93% MRCR v2, 76% at 1M).
 - **D25 · A DECLARED gap passes; a SILENT one fails.** D10 (c)'s form, finally mechanised: a term
   is an estimate with an error bar, or `unobservable (<reason>)`. Only silence fails. ★ **That
   asymmetry is the whole fix — it makes publishing cheaper than refusing.**
-- **D26 · The `RESERVE SPEND` marker buys the WORKING overrun and NOT the HARD one.** Past 256,000
+- **D26 · The `RESERVE SPEND` marker buys the WORKING overrun and NOT the QUALITY-MAX one.** Past 256,000
   there is no measurement of this model to reason from, and **a receipt cannot manufacture
   evidence**. The gate says SPLIT THE JOB or DELEGATE IT.
 
@@ -2226,7 +2226,7 @@ been directly readable for twenty-odd sessions while the record declared it unob
 
 **CONDUCTOR REPLAY, independent of the worker, verbatim:** `input_tokens 2 · cache_creation 1,490 ·
 cache_read 290,908` ⇒ **REAL PROMPT TOTAL 292,400**, with **0 records mentioning `compaction`** across
-**213** assistant turns. ⇒ **past WORKING 200,000 and past HARD 256,000, and nothing had been dropped
+**213** assistant turns. ⇒ **past WORKING 200,000 and past QUALITY-MAX 256,000, and nothing had been dropped
 — that is genuine resident fill.** The session stopped on the measurement.
 
 **⛔ AND THE BOOT ESTIMATE WAS ~3× LOW.** Turn one measured **61,582** against the inherited
@@ -3596,7 +3596,7 @@ Runbook step 7's precondition (only-the-proposals-file dirty) is **NOT MET**: th
 
 ### ★ GAUGE — FIRST SESSION EVER PRICED IN DIRECTLY-MEASURED REAL TOKENS
 
-`BOOT 61,854` · `FILL 188,460` real (via the brief's route, run live). Bands: amber 160,000 · working 200,000 · hard 256,000. Stop line **157,566** = `200,000 − 42,434` (#59's measured wrap floor). **Past the stop line by 30,894 at the read-back.** ⇒ **Dave ruled "rulings + boot finding, no builds"** and then *"maybe we just need to wrap"* — **the instrument this session proved is the instrument that stopped it.** ⚠ Cross-check: `_checkin.py`'s cl100k cumulative read 130,546 tape at the same window — **THROUGHPUT, not fill, and not convertible**; the two numbers measure different objects and must never be compared.
+`BOOT 61,854` · `FILL 188,460` real (via the brief's route, run live). Bands: amber 160,000 · working 200,000 · quality-max 256,000. Stop line **157,566** = `200,000 − 42,434` (#59's measured wrap floor). **Past the stop line by 30,894 at the read-back.** ⇒ **Dave ruled "rulings + boot finding, no builds"** and then *"maybe we just need to wrap"* — **the instrument this session proved is the instrument that stopped it.** ⚠ Cross-check: `_checkin.py`'s cl100k cumulative read 130,546 tape at the same window — **THROUGHPUT, not fill, and not convertible**; the two numbers measure different objects and must never be compared.
 
 status: ruled (P2–P7) · floated (P1 replacement) · unruled (the lane-wrap gate seam, the agent-type pin, the two-tier hypothesis) · provenance: local_cfa295ea-b60e-46f9-9918-13bcccab96c6 · 2026-08-02
 
@@ -3953,7 +3953,7 @@ rule + a pointer to this section. The ceiling itself (`CHAIN_BUDGET_TK`, tape) i
 
 ### H4 — the PRICE line, as it stood #104
 
-> **★ PRICE IN REAL TOKENS — THE UNIT IS `_gauge_tokens.py`, NOT A PERCENTAGE (#56, Dave's).** **amber 160,000 (PICKED) · working 200,000 (SOURCED) · hard 256,000 (SOURCED).** ⛔ **PROVENANCE CORRECTED AT SOURCE #83 — this line read *"working 200,000 (DAVE'S)"* and had done since #56, TWENTY-FIVE SESSIONS after Dave himself corrected it in code at #58b: *"the 200K and 256K come from established research, its been worked out already."* BOTH are SOURCED; 200,000 was never his to re-dial by fiat, and a header calling it his invites exactly that. AMBER likewise read `DERIVED` until #59 ruled it `PICKED` — 80% of working is a round fraction, and labelling a pick "derived" makes it immune to the rule meant to catch it. ★ `_gauge_tokens.py:63–83` carried both corrections the whole time; the READ CHAIN carried neither, so every cold session since #58b was handed the wrong provenance first.** [[read-chain-is-where-staleness-is-free]] Unit = the FULL price (boot + job + wrap); ⚠ **a DECLARED gap passes, a SILENT one fails** — that asymmetry is the mechanism. ⛔ **CORRECTED AT SOURCE #58 — this line taught the RETIRED `(45, 60, 63)` percentage band as "live in code, price against it", six sessions after #56 replaced it (*"the band was REPLACED, not CONVERTED"*), and the header is IN THE READ CHAIN, so every cold session was being handed the wrong unit first.** ★ **MEASURED, not assumed:** `_capture_gate.py:135–137` still defines `BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63`, `check_preflight` (lines 899–994) still implements the % path, and the selftest at **:2543** still pins the triple — but the live wrap emits **no band line**, because it matches on the stamp form and #57's stamp is in tokens. ⇒ **the % path is DORMANT, not wrong, and it was the PROSE that was stale.** ⬛ **FORKED TO DAVE, not decided here: retire the % path in code, or keep it as a pinned known-gap?** Deleting a pinned ruling of his is not an agent's move. ⚠ **THE FLOOR IS PART-UNKNOWN = `ds-025`** — disk half **RE-MEASURED #83 = 11,032 real** (the #37 figure this clause carried, *17,810 tape / ~14.0 pts*, was in TWO retired units at once — re-measured on the artefact, **never converted**, #54), harness half still unreachable ⇒ **say which half of your fill is measured.** ⛔ **CORRECTED AT SOURCE #80 — this clause read *"the gate SILENTLY ESTIMATES without it, UNDER-reporting by 414 tape"*, which #79-D1 made FALSE, and it sat IN THE READ CHAIN.** ⚠ **`pip install tiktoken --break-system-packages` FIRST in a cold sandbox:** the gauge now **REFUSES, loud and named** (`MeasurementRefused`), the paired gate reports ONE named failure, and `_build_all.py`'s P5 step is **ABORT as of #80** ⇒ without it there is no build. ★ **READ THE CHAIN ONLY.** ★ **Repo-state claims are verified against `git log` / a real run, never a banner** (#29→#38: ten consecutive).
+> **★ PRICE IN REAL TOKENS — THE UNIT IS `_gauge_tokens.py`, NOT A PERCENTAGE (#56, Dave's).** **amber 160,000 (PICKED) · working 200,000 (SOURCED) · quality-max 256,000 (SOURCED).** ⛔ **PROVENANCE CORRECTED AT SOURCE #83 — this line read *"working 200,000 (DAVE'S)"* and had done since #56, TWENTY-FIVE SESSIONS after Dave himself corrected it in code at #58b: *"the 200K and 256K come from established research, its been worked out already."* BOTH are SOURCED; 200,000 was never his to re-dial by fiat, and a header calling it his invites exactly that. AMBER likewise read `DERIVED` until #59 ruled it `PICKED` — 80% of working is a round fraction, and labelling a pick "derived" makes it immune to the rule meant to catch it. ★ `_gauge_tokens.py:63–83` carried both corrections the whole time; the READ CHAIN carried neither, so every cold session since #58b was handed the wrong provenance first.** [[read-chain-is-where-staleness-is-free]] Unit = the FULL price (boot + job + wrap); ⚠ **a DECLARED gap passes, a SILENT one fails** — that asymmetry is the mechanism. ⛔ **CORRECTED AT SOURCE #58 — this line taught the RETIRED `(45, 60, 63)` percentage band as "live in code, price against it", six sessions after #56 replaced it (*"the band was REPLACED, not CONVERTED"*), and the header is IN THE READ CHAIN, so every cold session was being handed the wrong unit first.** ★ **MEASURED, not assumed:** `_capture_gate.py:135–137` still defines `BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63`, `check_preflight` (lines 899–994) still implements the % path, and the selftest at **:2543** still pins the triple — but the live wrap emits **no band line**, because it matches on the stamp form and #57's stamp is in tokens. ⇒ **the % path is DORMANT, not wrong, and it was the PROSE that was stale.** ⬛ **FORKED TO DAVE, not decided here: retire the % path in code, or keep it as a pinned known-gap?** Deleting a pinned ruling of his is not an agent's move. ⚠ **THE FLOOR IS PART-UNKNOWN = `ds-025`** — disk half **RE-MEASURED #83 = 11,032 real** (the #37 figure this clause carried, *17,810 tape / ~14.0 pts*, was in TWO retired units at once — re-measured on the artefact, **never converted**, #54), harness half still unreachable ⇒ **say which half of your fill is measured.** ⛔ **CORRECTED AT SOURCE #80 — this clause read *"the gate SILENTLY ESTIMATES without it, UNDER-reporting by 414 tape"*, which #79-D1 made FALSE, and it sat IN THE READ CHAIN.** ⚠ **`pip install tiktoken --break-system-packages` FIRST in a cold sandbox:** the gauge now **REFUSES, loud and named** (`MeasurementRefused`), the paired gate reports ONE named failure, and `_build_all.py`'s P5 step is **ABORT as of #80** ⇒ without it there is no build. ★ **READ THE CHAIN ONLY.** ★ **Repo-state claims are verified against `git log` / a real run, never a banner** (#29→#38: ten consecutive).
 
 ### ★ #105-D1 (Dave, 2026-08-05) — research doc lineage
 
@@ -5236,7 +5236,7 @@ prose-in-`evidence`, **+11 legacy `<path>:<int>` entries that are green, unverif
 
 The opener treated **150,929 as the ceiling and then subtracted the wrap AGAIN**, reporting ~30K of job room
 against a real **79,012**. Dave, verbatim: *"150,929 is the line at which it is recommended you start the
-wrap, not the limit"* — 200,000 is working, 256,000 is the hard stop, **150,929 is DERIVED as `wall − wrap`**.
+wrap, not the limit"* — 200,000 is working, 256,000 is the tolerance line (a quality line, not a context wall for this model; 180,000 is the quality line that binds — wording amended #287), **150,929 is DERIVED as `wall − wrap`**.
 ★ **The defect is named in `_gauge_tokens.py`'s own comments eleven lines above the constant that was
 quoted** — the guard existed and was not read [[read-chain-is-where-staleness-is-free]]. ⚠ **It materially
 affected a decision**: the schematic was delegated against an understated budget. **The delegation succeeded;
@@ -5382,7 +5382,7 @@ purpose: the ruled figure is a RULING and the n=7 mean is EVIDENCE, and a future
 "corrects" 54,859 to 54,434 by hand is doing the exact thing this project keeps having to un-do.
 
 ⛔ **WHAT DID NOT MOVE, AND MAY NOT:** the wrap-open stop line **150,929**, `BUDGET_WORKING` 200,000,
-`BUDGET_AMBER` 160,000, `BUDGET_HARD` 256,000. **A cheaper boot moves the ROOM, never the LINE** — the
+`BUDGET_AMBER` 160,000, `BUDGET_HARD` 256,000 (a quality/tolerance line, not a context wall for this model — wording amended #287). **A cheaper boot moves the ROOM, never the LINE** — the
 line carries no boot term [[stop-line-repriced-93]].
 
 ⛔ **A SECOND DEFECT, FOUND WHILE ENACTING, AND IT IS THE SAME CLASS AS THE RULING.**
@@ -5565,7 +5565,7 @@ and this enactment neither fixed nor worsened one of them.
 
 Untouched, by name: the 30 `_capture_gate` pointer entries · the 4 REAL contrast failures · the 19
 `LEGACY_IDS` · type-ratchet debt 1,101 · G1–G17 · recorder constants · v1 pack sync · mono grey ramp ·
-SC dark · stop line 150,929 and the 200,000 / 256,000 walls · `_capture_gate.py`'s caps · the dream-pass
+SC dark · stop line 150,929 and the 200,000 / 256,000 lines · `_capture_gate.py`'s caps · the dream-pass
 proposals file.
 
 ### s129-D5 — "Conclusions that could be queries" is a STANDING HUNT, and inscribed conclusions are DEBT (Dave, mid-session, 2026-08-08)
@@ -5745,7 +5745,7 @@ there to run). **Declared, not excused** [[checkin-at-the-ends-cannot-catch-the-
 
 Untouched, by name: G1–G17 · recorder constants · v1 pack sync · mono grey ramp (**the chip call was
 Dave's, ruled by eye — not extended**) · SC dark · type-ratchet debt 1,101 · the 19 `LEGACY_IDS` ·
-stop line 150,929 and the 200,000 / 256,000 walls · `_capture_gate` caps · `ds-025` · `ds-032` ·
+stop line 150,929 and the 200,000 / 256,000 lines · `_capture_gate` caps · `ds-025` · `ds-032` ·
 the boot-rent plan · **the snippet-corpus button-style question** · **the audit file** · **the 4 REAL
 contrast failure records** (rulings taken, enactment NOT done — the records stand) · the ~90 bare-path
 green-unverifiable evidence entries · the dream-pass proposals. **This wrap ruled nothing, moved no
@@ -5832,7 +5832,7 @@ field. The **error-mark image confirm is still owed** — Dave sent RAG-fill ima
 
 **⛔ DO-NOT-RULE, respected in full at this wrap:** `G1`–`G17` · recorder constants · **v1/v2 pack sync
 (packs are RELEASES — nothing was synced into `designer-skills-*/`)** · mono grey ramp · SC dark ·
-type-ratchet debt 1,101 · the 19 `LEGACY_IDS` · stop line 150,929 and the 200,000 / 256,000 walls ·
+type-ratchet debt 1,101 · the 19 `LEGACY_IDS` · stop line 150,929 and the 200,000 / 256,000 lines ·
 `_capture_gate` caps · `ds-025` · `ds-032` · the boot-rent plan · the snippet-corpus button-style question ·
 the audit file · **the 4 REAL contrast failure records** · the ~90 bare-path evidence entries · the
 dream-pass proposals · **the 156 validator fails** · **the component-spec-KG remedy choice**.

@@ -243,6 +243,14 @@ aside{overflow:auto;background:var(--bg)}
 .modal .icell .box.dk{background:#1A1A1A;color:#FFFFFF}
 .modal .icell .box svg{display:block;width:100%;height:100%}
 .modal .icell small{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.modal .icell small a{color:var(--ink-2);text-underline-offset:3px}
+/* #287 — the per-size masters (`sizes`). The cells are the DRAWN tab's, one per height, wrapping;
+   the record rows are one line per height with the master's own file linked. */
+.modal .icells.masters{grid-template-columns:repeat(auto-fit,minmax(96px,max-content))}
+.modal dl.rec dd .szrow{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:2px 0}
+.modal dl.rec dd .szrow b{font-family:var(--mono);font-size:11px}
+.modal dl.rec dd .szrow a{color:var(--ink-2);font-size:12px;text-underline-offset:3px;word-break:break-all}
+.modal dl.rec dd .szrow small{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
 .modal .mdblk.hit{background:color-mix(in srgb,var(--accent) 16%,transparent);outline:1px solid var(--accent);outline-offset:3px}
 .modal .crumbs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:9px 22px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);flex:0 0 auto}
 .modal .crumbs button{border:1px solid var(--rule);background:var(--bg);color:var(--ink-2);font:inherit;padding:3px 7px;cursor:pointer;border-radius:0}
@@ -890,7 +898,9 @@ function renderPanel(n,nb){
      ['policy',esc(n.policy||'—')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`;
     if(n.checkDesc)h+=`<p>${esc(n.checkDesc)}</p>`;}
   if(n.type==='icon'){h+=`<dl class="sc">`+[['file',esc(n.file||'—')],['group',esc(n.group||'—')],['active',n.active?'<b>yes</b> — an -active twin':'no'],['fill',esc(n.fillMode||'—')+(n.fills?' · '+esc(n.fills.join(' ')):'')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
-  if(n.type==='logo'){h+=`<dl class="sc">`+[['file',esc(n.file||'—')],['lockup',esc(n.lockup||'—')],['theme',esc(n.theme||'—')],['colour',esc(n.colourMode||'—')]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
+  if(n.type==='logo'){const sh=sizeHeights(n);h+=`<dl class="sc">`+[['file',esc(n.file||'—')],['lockup',esc(n.lockup||'—')],['theme',esc(n.theme||'—')],['colour',esc(n.colourMode||'—')],
+    /* #287: the per-size masters registered on the node as `sizes` (#286 lane R2) — named here, drawn in INSPECT’s MASTERS tab */
+    ['masters',sh.length?`<b>${sh.length}</b> · ${esc(sh.join(' · '))} px`:'— none registered']].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
   if(n.type==='iconGroup'){h+=`<dl class="sc">`+[['manifest key',esc(n.groupKey||'—')],['icons',`<b>${n.count??'—'}</b>`]].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`</dl>`}
   if(n.status)h+=`<p class="src">${esc(n.status)}</p>`;
   h+=`<div class="meta"><span><b>${adj.get(n.id).filter(x=>alive(x.e)).length}</b> relations</span>${SNAPS.length&&n.born!=null?`<span>born ${SNAPS[n.born].date}</span>`:''}${n.died!=null?`<span style="color:var(--accent)">gone ${SNAPS[n.died].date}</span>`:''}${n.category?`<span>${esc(n.category)}</span>`:''}${n.date?`<span>ruled ${esc(n.date)}${n.ruled?' · '+esc(n.ruled):''}</span>`:''}${n.sources?`<span><b>${n.sources.length}</b> sources</span>`:''}</div></div>`;
@@ -946,9 +956,20 @@ function fmtVal(v){if(Array.isArray(v))return v.map(x=>esc(String(x))).join(' ·
   if(v===null||v===undefined||v==='')return '—';
   if(typeof v==='object')return esc(JSON.stringify(v));
   return esc(String(v))}
+// #287 — `sizes`: the per-size masters registered on a logo node by gen_kg_icons.py (#286 lane R2,
+// Dave 2026-09-18 "size-on-the-existing-node" · 2026-09-19 "keep `sizes` and rebuild"). It is a MAP
+// of height → {file,width,height,sha256}, and a map through fmtVal() is one line of JSON — so it is
+// read here instead: one row per height, each linking its own master SVG, the digest under it. The
+// heights sort NUMERICALLY (the keys are strings, so "24" < "4" by default and the ladder would lie).
+const sizeHeights=n=>(n&&n.sizes&&typeof n.sizes==='object'&&!Array.isArray(n.sizes))?Object.keys(n.sizes).sort((a,b)=>a-b):[];
+const masterPath=(n,s)=>(((SRC.fileRoot||{})[n.type])||'')+s.file;
+function sizesDL(n){return sizeHeights(n).map(h=>{const s=n.sizes[h]||{},p=masterPath(n,s);
+  return `<div class="szrow"><b>${esc(h)}px</b> <a href="${esc(REL+p)}" target="_blank" rel="noopener">${esc(s.file||'—')}</a>`
+    +`<small>${esc(String(s.width??'—'))}×${esc(String(s.height??'—'))}${s.sha256?' · sha256 '+esc(String(s.sha256).slice(0,12))+'…':''}</small></div>`}).join('')}
 function recDL(n){let rows='';
   for(const k of Object.keys(n)){if(HEADK.has(k)||COORDK.has(k)||RUNK.has(k))continue;
     let v=n[k];if((k==='born'||k==='died')&&typeof v==='number'&&SNAPS[v])v=SNAPS[v].date+' · snapshot '+v;
+    if(k==='sizes'&&sizeHeights(n).length){rows+=`<dt>sizes · the masters</dt><dd>${sizesDL(n)}</dd>`;continue}
     rows+=`<dt>${esc(KEYNAME[k]||k)}</dt><dd>${fmtVal(v)}</dd>`}
   // the six cells' baked coordinates are stored fields too — one row, not six (they are not reading matter)
   const c=[`force 2D ${n.ox},${n.oy}`];
@@ -1090,6 +1111,23 @@ function svgTab(path){return {key:'drawn',label:'Drawn',build(p){pane(p,path,txt
   const cell=(px,mode)=>`<div class="icell"><div class="box ${mode==='dark'?'dk':'lt'}" style="width:${px}px;height:${px}px">${svg}</div><small>${px}px ${mode}</small></div>`;
   p.innerHTML=`<p class="fnote">the file drawn at its two working sizes, on both grounds — the marks are <code>currentColor</code>, so the ink is the ground’s.</p>`
     +`<div class="icells">${cell(48,'light')}${cell(16,'light')}${cell(48,'dark')}${cell(16,'dark')}</div>`})}}}
+// #287 — MASTERS. A logo lockup carries its per-size masters as the `sizes` map (#286 lane R2); this
+// draws each one AT ITS OWN DECLARED HEIGHT, on the ground the lockup is cut for (`theme`), each cell
+// linking its own file. Same shape as DRAWN above — fetched at runtime, never embedded — so it needs
+// the page SERVED; a master that cannot be read says so in its own cell and the others still draw.
+function mastersTab(n){const hs=sizeHeights(n),dk=n.theme==='dark';
+  return {key:'masters',label:'Masters',build(p){const seq=inspSeq;
+    p.innerHTML=`<p class="fnote">the <b>${hs.length}</b> per-size master${hs.length===1?'':'s'} registered on this lockup as <code>sizes</code>, each drawn at its own declared height on the ${dk?'dark':'light'} ground this lockup is cut for. The digest under each cell is the one stored in the record.</p><div class="icells masters"></div>`;
+    const box=p.querySelector('.masters');
+    hs.forEach(h=>{const s=n.sizes[h]||{},path=masterPath(n,s),c=document.createElement('div');
+      c.className='icell';
+      c.innerHTML=`<div class="box ${dk?'dk':'lt'}" style="width:${Number(s.width)||Number(h)}px;height:${Number(s.height)||Number(h)}px"></div>`
+        +`<small>${esc(h)}px · ${esc(String(s.width??'—'))}×${esc(String(s.height??'—'))}</small>`
+        +`<small><a href="${esc(REL+path)}" target="_blank" rel="noopener">${esc(String(s.file||'').split('/').pop()||'—')}</a></small>`;
+      box.appendChild(c);
+      getText(path).then(txt=>{if(seq!==inspSeq)return;
+        c.querySelector('.box').innerHTML=txt.replace(/<\?xml[^>]*\?>/i,'').replace(/<script[\s\S]*?<\/script>/gi,'').trim()},
+        e=>{if(seq!==inspSeq)return;c.querySelector('.box').textContent='—'})})}}}
 // a ruling (or a session) is one entry inside knowledge/_rulings.json — the modal reads the record,
 // not the 830 KB around it, so the file is parsed and the entry is written out as a definition list.
 const RULKEY={id:'id',ruled:'ruled',date:'date',by:'by',says:'says',governs:'governs',evidence:'evidence',status:'status'};
@@ -1122,7 +1160,8 @@ function artTabs(n,s,df){const t=n.type,slug=n.id.slice(n.id.indexOf(':')+1);
     if(!sn)tabs.push({key:'norender',label:'No render',build(p){p.innerHTML='<p class="fnote">no <code>renderedBy</code> snippet is stored for this component, so there is nothing to render.</p>'}});
     return tabs}
   if(t==='snippet'&&path)return [renderTab(path,SNIPDIR),sourceTab(path,'Source')];
-  if((t==='icon'||t==='logo')&&path)return [svgTab(path),sourceTab(path,'SVG source')];
+  if((t==='icon'||t==='logo')&&path)return sizeHeights(n).length?[svgTab(path),mastersTab(n),sourceTab(path,'SVG source')]
+                                                                 :[svgTab(path),sourceTab(path,'SVG source')];
   if(t==='rule'&&df)return [fileTab(df,'In the guideline','{#'+slug+'}'),
     {key:'about',label:'Where',build(p){p.innerHTML=`<p class="fnote">the rule’s own row is highlighted in its guideline above — the guideline is the artefact, the rule is a line of it. Its record file is <code>${esc(s?s.path:'—')}</code>.</p>`}}];
   if(t==='ruling')return [rulingTab(slug)];

@@ -1,8 +1,10 @@
 # STANDING CONSTRAINTS — re-quoted at every lane seam by `_seam.py`
 
-⬛ **RATIFIED by Dave at #286, 2026-09-18 — his words: *"okay go on everything"*.**
-Receipt: `notes/_lanes/286/DAVE-RULINGS-2026-09-18.md` (which also records that reading *"okay go
-on everything"* as ratification-as-written is the conductor's reading, not Dave's sentence).
+⬛ **RATIFIED by Dave — his words: *"okay go on everything"* (#286, 2026-09-18), INSCRIBED as
+`s287-D1` on his word *"inscribe"* (#287, 2026-09-19). The file is out of DRAFT.**
+Receipts: `notes/_lanes/286/DAVE-RULINGS-2026-09-18.md` (which records that reading *"okay go on
+everything"* as ratification-as-written was the **conductor's** reading at #286, not Dave's
+sentence) and `notes/_lanes/287/DAVE-RULINGS-2026-09-19.md` (the word that makes it his).
 Each line carries its own receipt in parentheses, drawn from the record (`_HANDOFF-135-*.md`,
 `notes/_lanes/284/DAVE-RULINGS-2026-09-18.md`). The eight lines are UNCHANGED from the #285 draft.
 
